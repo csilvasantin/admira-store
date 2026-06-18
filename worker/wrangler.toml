@@ -1,0 +1,13 @@
+name = "admira-inventory"
+main = "inventory-worker.js"
+compatibility_date = "2025-06-01"
+
+# CMDB ITIL de admira.store — capa editable (GET/PUT /cmdb sobre KV).
+# Fuente de verdad: assets/data/cmdb.json en el repo. Este worker permite
+# editar en caliente desde inventario.html.
+
+[[kv_namespaces]]
+binding = "CMDB_KV"
+id = "f93630cd80c140998714489943221ae9"
+
+# Secret (no en este archivo): wrangler secret put CMDB_TOKEN

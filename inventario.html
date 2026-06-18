@@ -146,9 +146,9 @@
    configurado (INVENTORY_API), intenta leer de ahí primero y permite guardar
    (PUT con token). Estado IoT en vivo reutilizando los proxies existentes.   */
 
-// Worker KV opcional. Vacío = solo repo JSON. Cuando se despliegue
-// inventory-worker, poner aquí su URL (sin barra final).
-const INVENTORY_API = '';
+// Worker KV (capa editable). Vacío = solo repo JSON. Si responde, la página
+// lee de aquí primero (con fallback al repo) y guarda con PUT + token.
+const INVENTORY_API = 'https://admira-inventory.csilvasantin.workers.dev';
 
 const LS_OVERLAY = 'admira_cmdb_overlay_v1';
 const $ = s => document.querySelector(s);
