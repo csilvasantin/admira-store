@@ -1,0 +1,306 @@
+{
+  "meta": {
+    "schema": "admira.cmdb/1",
+    "standard": "ITIL CMDB (Configuration Management Database)",
+    "site": "admira.store",
+    "version": 1,
+    "updated": "2026-06-18",
+    "notes": "Inventario ITIL del punto Admira XP. Cada elemento es un Configuration Item (CI). Dos grupos: IoT (conectados a la red) y Analógico (no conectados). La fuente de verdad es este JSON versionado en el repo; el worker inventory-worker (KV) es la capa editable opcional."
+  },
+  "statuses": {
+    "operational": { "label_es": "Operativo", "label_en": "Operational", "color": "#54f0a8" },
+    "degraded":    { "label_es": "Degradado", "label_en": "Degraded",    "color": "#f5c451" },
+    "maintenance": { "label_es": "Mantenimiento", "label_en": "Maintenance", "color": "#78b6ff" },
+    "incident":    { "label_es": "Incidencia", "label_en": "Incident",   "color": "#ff6b6b" },
+    "retired":     { "label_es": "Retirado",  "label_en": "Retired",     "color": "#8a93a3" },
+    "planned":     { "label_es": "Planificado","label_en": "Planned",    "color": "#b78bff" }
+  },
+  "groups": [
+    {
+      "id": "iot",
+      "name_es": "IoT · Conectados",
+      "name_en": "IoT · Connected",
+      "icon": "📡",
+      "desc_es": "Activos con conectividad de red: signage, sensores, tótems y control. Reportan estado en vivo.",
+      "desc_en": "Network-connected assets: signage, sensors, totems and control. They report live status."
+    },
+    {
+      "id": "analogico",
+      "name_es": "Analógico · No conectados",
+      "name_en": "Analog · Not connected",
+      "icon": "🪑",
+      "desc_es": "Mobiliario y elementos físicos sin conexión. Estado gestionado manualmente por ITIL.",
+      "desc_en": "Physical furniture and elements with no connection. Status managed manually via ITIL."
+    }
+  ],
+  "items": [
+    {
+      "id": "CI-IOT-001", "group": "iot", "twinType": "led", "icon": "💡",
+      "ci_class": "Pantalla LED", "name": "LED Banner · pared larga superior",
+      "status": "operational",
+      "location": "Sala de venta · pared larga · franja superior",
+      "owner": "Admira XP", "vendor": "Admira", "model": "LED Banner 160x90", "serial": "",
+      "connectivity": { "protocol": "HTTP / Worker", "surface_ref": "ds1" },
+      "live": { "source": "marketplace", "key": "ds1" },
+      "depends_on": ["CI-IOT-014", "CI-IOT-013"],
+      "maintenance": { "interval_days": 90, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Superficie de signage controlada por el marketplace de OmniPublicity."
+    },
+    {
+      "id": "CI-IOT-002", "group": "iot", "twinType": "tft", "icon": "📺",
+      "ci_class": "Pantalla TFT", "name": "Pantalla TFT · pared larga inferior",
+      "status": "operational",
+      "location": "Sala de venta · pared larga · franja inferior",
+      "owner": "Admira XP", "vendor": "", "model": "TFT 43\"", "serial": "",
+      "connectivity": { "protocol": "HTTP / Worker", "surface_ref": "ds2" },
+      "live": { "source": "marketplace", "key": "ds2" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 90, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-IOT-003", "group": "iot", "twinType": "escaparate", "icon": "🪟",
+      "ci_class": "Escaparate digital", "name": "Escaparate digital · sobre la puerta",
+      "status": "operational",
+      "location": "Fachada · sobre la puerta de entrada",
+      "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "HTTP / Worker", "surface_ref": "escaparate", "note": "Reflejo físico vía conectar.html?screen=escaparate" },
+      "live": { "source": "marketplace", "key": "escaparate" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 90, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Se puede reflejar en una pantalla física por QR (pantalla.html)."
+    },
+    {
+      "id": "CI-IOT-004", "group": "iot", "twinType": "metahuman", "icon": "🤖",
+      "ci_class": "Tótem AI (Metahuman)", "name": "Tótem Metahuman · asistente AI",
+      "status": "operational",
+      "location": "Entrada · tótem de bienvenida",
+      "owner": "Admira XP", "vendor": "Admira", "model": "MetaHuman UE5 + LLM", "serial": "",
+      "connectivity": { "protocol": "HTTPS", "endpoint": "admira-grok-proxy.csilvasantin.workers.dev", "stream": "Pixel Streaming (Tailscale funnel)" },
+      "live": { "source": "grok" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 60, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Cerebro LLM (Gemini/Grok) + cara viva Pixel Streaming."
+    },
+    {
+      "id": "CI-IOT-005", "group": "iot", "twinType": "camera", "icon": "🎥",
+      "ci_class": "Cámara people-counting", "name": "Cámara Hikvision · aforo",
+      "status": "operational",
+      "location": "Techo · puerta de entrada",
+      "owner": "Admira XP", "vendor": "Hikvision", "model": "People Counting", "serial": "",
+      "connectivity": { "protocol": "HTTPS (proxy CORS)", "endpoint": "aforo-proxy.csilvasantin.workers.dev", "upstream": "ieu.ai/api/ocuppancy" },
+      "live": { "source": "occupancy" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 180, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Marca el aforo real del punto; el gemelo respira con la gente real."
+    },
+    {
+      "id": "CI-IOT-006", "group": "iot", "twinType": "tablet", "icon": "📱",
+      "ci_class": "Tablet de satisfacción", "name": "Tablet Satisfacción · NPS",
+      "status": "operational",
+      "location": "Mostrador · salida",
+      "owner": "Admira XP", "vendor": "", "model": "Tablet 10\"", "serial": "",
+      "connectivity": { "protocol": "HTTPS / WiFi" },
+      "live": { "source": "manual" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 120, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Captura encuesta de satisfacción del cliente."
+    },
+    {
+      "id": "CI-IOT-007", "group": "iot", "twinType": "aroma", "icon": "🌸",
+      "ci_class": "Difusor de aroma IoT", "name": "Difusor de Aroma · ambient scenting",
+      "status": "operational",
+      "location": "Sala de venta · pared",
+      "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "WiFi / BLE" },
+      "live": { "source": "manual" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 30, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Recarga de fragancia cada 30 días."
+    },
+    {
+      "id": "CI-IOT-008", "group": "iot", "twinType": "djBooth", "icon": "🎧",
+      "ci_class": "Audio / hilo musical", "name": "Mesa DJ · hilo musical",
+      "status": "operational",
+      "location": "Sala de venta · zona central",
+      "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "WiFi / streaming" },
+      "live": { "source": "manual" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 180, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Hilo musical config-driven por STORE_CFG (lounge/techno/pop...)."
+    },
+    {
+      "id": "CI-IOT-009", "group": "iot", "twinType": "turnKiosk", "icon": "🎟️",
+      "ci_class": "Gestor de turnos", "name": "Kiosko de Turnos",
+      "status": "operational",
+      "location": "Entrada · cola",
+      "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "HTTP / Worker" },
+      "live": { "source": "manual" },
+      "depends_on": ["CI-IOT-014", "CI-IOT-001"],
+      "maintenance": { "interval_days": 120, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Muestra el turno en la pantalla de la pared larga."
+    },
+    {
+      "id": "CI-IOT-010", "group": "iot", "twinType": "gondola", "icon": "🛒",
+      "ci_class": "Góndola digital", "name": "Góndola digital · destacados",
+      "status": "operational",
+      "location": "Sala de venta · centro",
+      "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "HTTP / Worker", "surface_ref": "gondola" },
+      "live": { "source": "marketplace", "key": "gondola" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 90, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-IOT-011", "group": "iot", "twinType": "hue", "icon": "🔆",
+      "ci_class": "Iluminación inteligente", "name": "Luces Philips Hue · despacho + comedor",
+      "status": "operational",
+      "location": "Despacho (luz 9) y comedor (luz 8)",
+      "owner": "Admira XP", "vendor": "Philips", "model": "Hue", "serial": "",
+      "connectivity": { "protocol": "LAN (Hue Bridge)", "note": "Solo red local; sin telemetría desde la nube." },
+      "live": { "source": "lan" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Controlado vía /hue y /lamp en el gemelo."
+    },
+    {
+      "id": "CI-IOT-012", "group": "iot", "twinType": "streamdeck", "icon": "🎛️",
+      "ci_class": "Consola de control", "name": "Elgato Stream Deck · control room",
+      "status": "operational",
+      "location": "Trastienda · puesto de control",
+      "owner": "Admira XP", "vendor": "Elgato", "model": "Stream Deck", "serial": "",
+      "connectivity": { "protocol": "LAN (proxy :9124)", "note": "Proxy en Mac Mini." },
+      "live": { "source": "lan" },
+      "depends_on": ["CI-IOT-014"],
+      "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Botonera física que dispara acciones del gemelo."
+    },
+    {
+      "id": "CI-IOT-013", "group": "iot", "twinType": "telegram", "icon": "✉️",
+      "ci_class": "Bridge de notificaciones", "name": "Bridge Telegram · alertas del punto",
+      "status": "operational",
+      "location": "Cloud (Cloudflare Worker)",
+      "owner": "Admira XP", "vendor": "Cloudflare", "model": "Worker", "serial": "",
+      "connectivity": { "protocol": "HTTPS", "endpoint": "admira-telegram-bridge.csilvasantin.workers.dev" },
+      "live": { "source": "telegram" },
+      "depends_on": [],
+      "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Canal de alertas operativas del punto."
+    },
+    {
+      "id": "CI-IOT-014", "group": "iot", "twinType": "network", "icon": "🌐",
+      "ci_class": "Red / conectividad", "name": "Router + red de tienda",
+      "status": "operational",
+      "location": "Trastienda · rack",
+      "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "WAN/LAN" },
+      "live": { "source": "manual" },
+      "depends_on": [],
+      "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "CI de infraestructura: del que dependen todos los IoT del punto."
+    },
+
+    {
+      "id": "CI-ANA-001", "group": "analogico", "twinType": "door", "icon": "🚪",
+      "ci_class": "Acceso", "name": "Puerta de entrada",
+      "status": "operational",
+      "location": "Fachada", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-002", "group": "analogico", "twinType": "counter", "icon": "🧾",
+      "ci_class": "Mobiliario de venta", "name": "Mostrador / caja",
+      "status": "operational",
+      "location": "Sala de venta · zona de caja", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-003", "group": "analogico", "twinType": "shelves", "icon": "📚",
+      "ci_class": "Mobiliario de venta", "name": "Estantería",
+      "status": "operational",
+      "location": "Sala de venta · pared", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-004", "group": "analogico", "twinType": "wineRack", "icon": "🍾",
+      "ci_class": "Mobiliario de venta", "name": "Botellero",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-005", "group": "analogico", "twinType": "lottery", "icon": "🎰",
+      "ci_class": "Mobiliario de venta", "name": "Expositor de lotería",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-006", "group": "analogico", "twinType": "vending", "icon": "🥤",
+      "ci_class": "Mobiliario de venta", "name": "Máquina de vending",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—", "note": "Candidata a migrar a IoT si se telemetriza." }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 90, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-007", "group": "analogico", "twinType": "magazines", "icon": "📰",
+      "ci_class": "Mobiliario de venta", "name": "Revistero",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-008", "group": "analogico", "twinType": "manager", "icon": "💼",
+      "ci_class": "Mobiliario de oficina", "name": "Escritorio del manager",
+      "status": "operational",
+      "location": "Despacho", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-009", "group": "analogico", "twinType": "plant", "icon": "🌿",
+      "ci_class": "Decoración", "name": "Planta",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 14, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": "Riego quincenal."
+    },
+    {
+      "id": "CI-ANA-010", "group": "analogico", "twinType": "floorLamp", "icon": "💡",
+      "ci_class": "Decoración / iluminación", "name": "Lámpara de pie",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "Eléctrica (sin red)" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 365, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    },
+    {
+      "id": "CI-ANA-011", "group": "analogico", "twinType": "rug", "icon": "🟫",
+      "ci_class": "Decoración", "name": "Alfombra",
+      "status": "operational",
+      "location": "Sala de venta", "owner": "Admira XP", "vendor": "", "model": "", "serial": "",
+      "connectivity": { "protocol": "—" }, "live": { "source": "none" },
+      "depends_on": [], "maintenance": { "interval_days": 180, "last": "" },
+      "acquired": "", "warranty_until": "", "notes": ""
+    }
+  ]
+}
