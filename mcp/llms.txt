@@ -1,0 +1,65 @@
+# Admira · admira.store — Servidor MCP & API del gemelo (MCP)
+
+> admira.store es la casa del servidor MCP real del ecosistema AdmiraNeXT
+> (mcp.admira.store) y de la API compartida (api.admira.store). Es el gemelo digital
+> de la red de retail media: flota de pantallas/robots, qué emite cada una en vivo,
+> su audiencia on-device y el proof-of-play de cada circuito. Punto de entrada para
+> que cualquier agente (Claude, Codex, OpenCode, ChatGPT, bots…) y cualquier humano
+> consulten e interactúen con la red. Para silicio (bots) y carbono (humanos).
+
+Sitio: https://www.admira.store
+Hub MCP: https://www.admira.store/mcp/
+Manifest máquina: https://www.admira.store/mcp/manifest.json
+Versión: v.26.06.25.r1
+Repo: https://github.com/csilvasantin/admira-store
+
+## Servidor MCP (conectar de verdad)
+
+El ecosistema expone un servidor MCP real, servido bajo este dominio:
+- Endpoint: https://mcp.admira.store/mcp (transporte streamable-http, sin auth)
+- Salud: GET https://mcp.admira.store/
+- Tools: fleet_status, list_screens, screen_now, emission_report, register_device
+- Config de cliente: {"mcpServers":{"xpaceos":{"url":"https://mcp.admira.store/mcp"}}}
+- Prueba rápida:
+  curl -s https://mcp.admira.store/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+- Docs de las herramientas: https://www.xpaceos.com/mcp/
+
+## API en vivo (base: https://api.admira.store)
+
+Lecturas (abiertas; CORS refleja el origen):
+- GET /emit/range?loc={loc} — proof-of-play: pases, segundos, byType, top creatividades.
+- GET /audience/range?loc={loc} — audiencia: muestras, presencia, pico, género, edad, hora.
+
+Escrituras (telemetría, sin credencial):
+- POST /emit — registra un pase. body: {loc, screen, type, title, secs, num?}.
+- POST /audience — registra una muestra de cámara. body: {loc, screen, faces, gender, genderScore, ageBucket, emotion?}.
+
+Ejemplo: https://api.admira.store/audience/range?loc=xtanco-demo
+
+## Herramientas (qué hace cada una)
+
+- fleet_status — visión general: pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia).
+- list_screens — inventario de Xpaces activos: ubicación, id de pantalla, tipo y orientación.
+- screen_now — qué emite AHORA una pantalla y su audiencia por cámara (personas · edad · género), y si está conectada.
+- emission_report — proof-of-play de un circuito: pases, segundos, por tipo y por segmento.
+- register_device — da de alta una pantalla o robot (auto-alta) y devuelve la URL del canal para emitir.
+
+## Privacidad
+
+Detección on-device (@vladmandic/human, TensorFlow.js). No se almacenan imágenes ni
+datos personales: solo conteos agregados (presencia, género, edad, hora). Género y edad
+son estimaciones estadísticas, no identificación de personas.
+
+## Federación
+
+Misma convención /mcp/ en cada pata del ecosistema AdmiraNeXT:
+- Producción (Clear Channel): https://www.clearchannel.tv/mcp/
+- Preproducción (Audiencia): https://www.admira.app/mcp/
+- Operar (el OS retail): https://www.xpaceos.com/mcp/
+- Crear (estudio): https://www.admira.studio/mcp/
+- Consejo de Silicio: https://www.admira.live/mcp/
+
+## Convenciones
+
+- Versionado visible: v.AA.MM.DD.rN.
+- Avisos de cambios: Telegram grupo AdmiraXP, firmados "Admira IA".

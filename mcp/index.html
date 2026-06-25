@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>admira.store · MCP — servidor MCP & API del gemelo</title>
+<meta name="description" content="Casa del servidor MCP real del ecosistema AdmiraNeXT (mcp.admira.store) y de la API compartida (api.admira.store): flota, emisión en vivo, audiencia on-device y proof-of-play. Para silicio y carbono.">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<style>
+  :root{ --bg:#070b12; --panel:#0e1622; --line:#1d2a3a; --txt:#e9f1f7; --mut:#7e95a8; --acc:#34d0c0; --pur:#9b8cff; --good:#3ddc84; }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:radial-gradient(1100px 560px at 50% -10%,#101c2b,var(--bg));color:var(--txt);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100%}
+  .wrap{max-width:820px;margin:0 auto;padding:48px 22px 80px}
+  .kick{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:3px;text-transform:uppercase;color:var(--mut)}
+  h1{font-size:34px;margin:10px 0 6px;font-weight:680;letter-spacing:-.02em}
+  h1 b{background:linear-gradient(90deg,var(--acc),var(--pur));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--mut);font-size:16px;margin:0 0 28px;max-width:62ch}
+  .status{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 ui-monospace,Menlo,monospace;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:7px 13px;margin-bottom:30px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--mut);box-shadow:0 0 0 0 transparent}
+  .dot.up{background:var(--good);box-shadow:0 0 10px var(--good)}
+  .dot.down{background:#ff5a5a;box-shadow:0 0 10px #ff5a5a}
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:36px 0 14px;font-family:ui-monospace,Menlo,monospace}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+  .endpoint{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .url{font-size:16px;color:var(--acc);word-break:break-all}
+  button.copy{border:1px solid var(--line);background:#0a121c;color:var(--txt);border-radius:8px;padding:8px 14px;font:600 13px ui-monospace,Menlo,monospace;cursor:pointer}
+  button.copy:hover{border-color:var(--acc);color:var(--acc)}
+  pre{background:#0a121c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;color:#cfe3f2;margin:0}
+  .tool{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .tool:last-child{border-bottom:0}
+  .tool b{font-family:ui-monospace,Menlo,monospace;color:var(--pur);font-size:14px;align-self:start}
+  .tool span{color:var(--mut);font-size:14px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:620px){.two{grid-template-columns:1fr}}
+  .pill{display:inline-block;font:600 11px ui-monospace,Menlo,monospace;color:var(--pur);border:1px solid rgba(155,140,255,.4);border-radius:6px;padding:2px 8px;margin-right:6px}
+  a{color:var(--acc)}
+  footer{color:var(--mut);font-size:13px;margin-top:40px;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick">admira.store · Model Context Protocol</div>
+  <h1>El <b>servidor MCP</b> del gemelo</h1>
+  <p class="lead">admira.store es la casa del servidor MCP real del ecosistema AdmiraNeXT (<code>mcp.admira.store</code>) y de la API compartida (<code>api.admira.store</code>): ver la flota, qué emite cada pantalla en vivo, su audiencia on-device y el proof-of-play de cada circuito. Para <b>agentes (silicio)</b> y <b>personas (carbono)</b>.</p>
+
+  <div class="status"><span class="dot" id="dot"></span><span id="status">comprobando servidor…</span></div>
+
+  <h2>Endpoint MCP</h2>
+  <div class="card endpoint">
+    <code class="url" id="ep">https://mcp.admira.store/mcp</code>
+    <button class="copy" onclick="copyEp()">Copiar</button>
+  </div>
+  <p style="color:var(--mut);font-size:13.5px;margin:8px 2px 0">Transporte: <span class="pill">MCP Streamable HTTP</span> · <code>POST /mcp</code> (JSON-RPC) · salud en <code>GET /</code>. Sin auth: el alta es aditiva y acotada (no pisa inventario curado).</p>
+
+  <h2>Herramientas</h2>
+  <div class="card" id="tools">
+    <div class="tool"><b>fleet_status</b><span>Visión general: pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia).</span></div>
+    <div class="tool"><b>list_screens</b><span>Inventario de Xpaces activos: ubicación, id de pantalla, tipo y orientación. Filtro opcional.</span></div>
+    <div class="tool"><b>screen_now</b><span>Qué emite AHORA una pantalla y su audiencia por cámara (personas · edad · género), y si está conectada.</span></div>
+    <div class="tool"><b>emission_report</b><span>Proof-of-play de un circuito: pases, segundos, por tipo y por segmento.</span></div>
+    <div class="tool"><b>register_device</b><span>Da de alta una pantalla o robot (auto-alta) y devuelve la URL del canal para emitir.</span></div>
+  </div>
+
+  <h2>API REST en vivo</h2>
+  <div class="two">
+    <div>
+      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Lectura (proof-of-play + audiencia):</p>
+      <pre>GET https://api.admira.store/emit/range?loc={loc}
+GET https://api.admira.store/audience/range?loc={loc}</pre>
+    </div>
+    <div>
+      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Ejemplo:</p>
+      <pre>curl -s \
+ "https://api.admira.store/audience/range?loc=xtanco-demo"</pre>
+    </div>
+  </div>
+
+  <h2>Cómo conectar (silicio)</h2>
+  <div class="two">
+    <div>
+      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Cliente MCP con servidores remotos (config):</p>
+      <pre>{
+  "mcpServers": {
+    "xpaceos": {
+      "url": "https://mcp.admira.store/mcp"
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Prueba rápida (tools/list):</p>
+      <pre>curl -s https://mcp.admira.store/mcp \
+ -H "Content-Type: application/json" \
+ -d '{"jsonrpc":"2.0","id":1,
+      "method":"tools/list"}'</pre>
+    </div>
+  </div>
+
+  <h2>Para carbono</h2>
+  <p style="color:var(--mut);max-width:64ch">¿Eres humano? Esto es cómo una IA se asoma a la red: pídele a tu agente que cargue este MCP y pregúntale <i>"¿qué pantallas hay y qué están emitiendo?"</i> o <i>"da de alta una pantalla en &lt;dirección&gt;"</i>. La red responde en tiempo real.</p>
+
+  <footer>
+    admira.store · gemelo digital de la red AdmiraNeXT · el MCP se mantiene actualizado con la red.<br>
+    Patas: <a href="https://www.xpaceos.com/mcp/">xpaceos</a> (Operar) · <a href="https://www.admira.studio/mcp/">studio</a> (Crear) · <a href="https://www.admira.app/mcp/">admira.app</a> (Preprod) · <a href="https://www.clearchannel.tv/mcp/">clearchannel.tv</a> (Prod).
+  </footer>
+</div>
+
+<script>
+  const EP = 'https://mcp.admira.store/mcp';
+  function copyEp(){ navigator.clipboard.writeText(EP).then(()=>{}); }
+  fetch('https://mcp.admira.store/', {cache:'no-store'})
+    .then(r=>r.json())
+    .then(j=>{ const ok=j&&j.ok; document.getElementById('dot').className='dot '+(ok?'up':'down');
+      document.getElementById('status').textContent = ok ? ('servidor en línea · '+(j.tools?j.tools.length:0)+' herramientas') : 'servidor no responde'; })
+    .catch(()=>{ document.getElementById('dot').className='dot down'; document.getElementById('status').textContent='servidor no alcanzable (¿aún desplegando?)'; });
+</script>
+</body>
+</html>
