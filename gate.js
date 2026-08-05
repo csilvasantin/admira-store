@@ -67,7 +67,25 @@
 
   var body = function () { return ov.querySelector('.ag-body'); };
 
+  // ── DESTINO TRAS EL LOGIN ───────────────────────────────────────────────
+  // Con sesión válida, admira.store no enseña su propia copia del gemelo: lleva
+  // al gemelo de XpaceOS, que es el vivo. La copia local de este repo lleva
+  // parada desde el 10-jul-2026 y es 188 KB más pequeña que la de XpaceOS, así
+  // que quien entrara aquí veía una versión atrasada del mismo producto.
+  // Se indexa por SITIO a propósito: gate.js nació como fichero común de las
+  // webs de Admira y, aunque hoy las copias ya han derivado, un destino fijo
+  // arrastraría a admira.app o a clearchannel.tv si alguien vuelve a unificarlo.
+  var DESTINO = {
+    'admira.store': 'https://www.xpaceos.com/admira-xp/'
+  };
+
   function reveal() {
+    var destino = DESTINO[SITE];
+    // Guarda anti-bucle: si ya estamos en el destino, se revela y punto.
+    if (destino && location.href.indexOf(destino) !== 0) {
+      location.replace(destino);
+      return;
+    }
     document.documentElement.classList.remove('admira-gating');
     ov.remove();
   }
