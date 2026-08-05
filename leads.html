@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Prospects · XpaceOS</title>
+<style>
+  :root{ --bg:#040a10; --card:#06141d; --line:rgba(120,243,255,.22); --ink:#dff8ff; --muted:#8fb6c4; --cyan:#78f3ff; --amber:#ffd866; --green:#37e07a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(circle at 20% 0,rgba(120,243,255,.06),transparent 40%),var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+
+  /* Gate */
+  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
+  #gate .box{width:380px;max-width:94vw;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 24px;box-shadow:0 22px 60px rgba(0,0,0,.6)}
+  #gate h1{margin:0 0 4px;font-size:20px}
+  #gate p{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.45}
+  #gate input{width:100%;background:#02141c;border:1px solid #2a5664;border-radius:8px;color:var(--ink);font-size:15px;padding:11px 12px;font-family:ui-monospace,Menlo,monospace}
+  #gate input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px rgba(120,243,255,.18)}
+  #gate button{width:100%;margin-top:12px;padding:12px;border-radius:9px;border:1px solid var(--cyan);background:linear-gradient(180deg,#0e3a44,#072028);color:var(--ink);font-weight:600;font-size:15px;cursor:pointer}
+  #gate button:hover{background:linear-gradient(180deg,#125866,#0a2c36)}
+  #gateMsg{min-height:18px;margin-top:10px;font-size:12.5px;color:#ff8866}
+  #gate .pub{margin-top:16px;font-size:12px;color:var(--muted)}
+
+  /* Dashboard */
+  #app{display:none;max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+  header.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+  header.bar .logo{font-weight:800;font-size:20px;letter-spacing:.01em}
+  header.bar .logo .os{color:var(--cyan);font-size:12px;vertical-align:super}
+  header.bar .count{color:var(--green);font-family:ui-monospace,Menlo,monospace;font-size:13px}
+  header.bar .spacer{flex:1}
+  .btn{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+  .btn:hover{border-color:var(--cyan)}
+  .btn.amber{border-color:rgba(255,216,102,.5);color:var(--amber)}
+  #search{flex:1 1 240px;min-width:200px;background:#02141c;border:1px solid #2a5664;border-radius:8px;color:var(--ink);font-size:14px;padding:9px 12px}
+  #search:focus{outline:none;border-color:var(--cyan)}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:880px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(120,243,255,.10);vertical-align:top}
+  th{position:sticky;top:0;background:#08171f;color:var(--cyan);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;z-index:1}
+  tr:hover td{background:rgba(120,243,255,.04)}
+  td.name{font-weight:600;white-space:nowrap}
+  td.date{color:var(--muted);white-space:nowrap;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+  td.notes{max-width:260px;color:var(--muted)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(120,243,255,.08);border:1px solid rgba(120,243,255,.2);font-size:11px;color:#bfe9f3;white-space:nowrap}
+  .src{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted)}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  .consent-y{color:var(--green)} .consent-n{color:#6f8a96}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <h1>🔒 Prospects · XpaceOS</h1>
+    <p>Área privada de Admira. Introduce el token de acceso para ver los contactos captados.</p>
+    <input id="token" type="password" placeholder="Token de acceso" autocomplete="off" spellcheck="false">
+    <button id="enter">Entrar</button>
+    <div id="gateMsg"></div>
+    <div class="pub">¿Querías reservar una demo? Escríbenos a <a href="mailto:info@admira.com">info@admira.com</a>.</div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="bar">
+    <div class="logo">Xpace<span class="os">OS</span> · Prospects</div>
+    <div class="count" id="count"></div>
+    <div class="spacer"></div>
+    <input id="search" type="search" placeholder="Buscar nombre, empresa, email, interés…">
+    <button class="btn" id="refresh">↻ Actualizar</button>
+    <button class="btn amber" id="export">⤓ CSV</button>
+    <button class="btn" id="logout">Salir</button>
+  </header>
+  <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th>Fecha</th><th>Nombre</th><th>Empresa</th><th>Cargo</th><th>Email</th><th>Teléfono</th><th>Interés</th><th>Mensaje</th><th>OK</th><th>Origen</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" style="display:none">Sin contactos todavía.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ENDPOINT = 'https://pixer-eleven.csilvasantin.workers.dev/leads';
+  var TKEY = 'xpaceos_leads_token';
+  var all = [];
+
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtDate(ts){
+    try{ var d=new Date(ts); var p=function(n){return (n<10?'0':'')+n;};
+      return p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){ return ''; }
+  }
+
+  async function fetchLeads(token){
+    var r = await fetch(ENDPOINT + '?token=' + encodeURIComponent(token) + '&format=json', { cache:'no-store' });
+    if(r.status === 401) throw new Error('unauthorized');
+    if(!r.ok) throw new Error('http ' + r.status);
+    var j = await r.json();
+    return (j && j.leads) || [];
+  }
+
+  function render(){
+    var q = ($('search').value || '').trim().toLowerCase();
+    var list = all;
+    if(q){
+      list = all.filter(function(l){
+        return [l.name,l.company,l.role,l.email,l.phone,l.interest,l.notes,l.source]
+          .join(' ').toLowerCase().indexOf(q) >= 0;
+      });
+    }
+    $('count').textContent = list.length + (list.length===1?' contacto':' contactos') + (q?(' · de '+all.length):'');
+    if(!list.length){ $('rows').innerHTML=''; $('empty').style.display='block'; return; }
+    $('empty').style.display='none';
+    $('rows').innerHTML = list.map(function(l){
+      var email = l.email ? '<a href="mailto:'+esc(l.email)+'">'+esc(l.email)+'</a>' : '';
+      var phone = l.phone ? '<a href="tel:'+esc(l.phone)+'">'+esc(l.phone)+'</a>' : '';
+      var interest = l.interest ? '<span class="tag">'+esc(l.interest)+'</span>' : '';
+      return '<tr>'+
+        '<td class="date">'+fmtDate(l.ts)+'</td>'+
+        '<td class="name">'+esc(l.name)+'</td>'+
+        '<td>'+esc(l.company)+'</td>'+
+        '<td>'+esc(l.role)+'</td>'+
+        '<td>'+email+'</td>'+
+        '<td>'+phone+'</td>'+
+        '<td>'+interest+'</td>'+
+        '<td class="notes">'+esc(l.notes)+'</td>'+
+        '<td class="'+(l.consent?'consent-y':'consent-n')+'">'+(l.consent?'✓':'·')+'</td>'+
+        '<td class="src">'+esc(l.source)+'</td>'+
+      '</tr>';
+    }).join('');
+  }
+
+  async function load(token){
+    all = await fetchLeads(token);
+    all.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+    render();
+  }
+
+  function showApp(){ $('gate').style.display='none'; $('app').style.display='block'; }
+  function showGate(msg){ $('app').style.display='none'; $('gate').style.display='flex'; if(msg) $('gateMsg').textContent=msg; setTimeout(function(){ try{$('token').focus();}catch(e){} },50); }
+
+  async function tryToken(token, fromGate){
+    try{
+      await load(token);
+      localStorage.setItem(TKEY, token);
+      showApp();
+    }catch(e){
+      if(e.message==='unauthorized'){
+        localStorage.removeItem(TKEY);
+        showGate(fromGate ? 'Token incorrecto.' : '');
+      } else {
+        if(fromGate) $('gateMsg').textContent='No se pudo conectar. Reintenta.';
+        else showGate('');
+      }
+    }
+  }
+
+  // Wire
+  $('enter').addEventListener('click', function(){ var t=$('token').value.trim(); if(t) tryToken(t, true); });
+  $('token').addEventListener('keydown', function(e){ if(e.key==='Enter'){ var t=$('token').value.trim(); if(t) tryToken(t, true); } });
+  $('search').addEventListener('input', render);
+  $('refresh').addEventListener('click', function(){ var t=localStorage.getItem(TKEY); if(t) load(t).catch(function(){ showGate(''); }); });
+  $('logout').addEventListener('click', function(){ localStorage.removeItem(TKEY); all=[]; $('rows').innerHTML=''; $('search').value=''; showGate(''); });
+  $('export').addEventListener('click', function(){
+    var t=localStorage.getItem(TKEY); if(!t) return;
+    window.location.href = ENDPOINT + '?token=' + encodeURIComponent(t) + '&format=csv';
+  });
+
+  // Auto-login si ya hay token guardado
+  var saved = localStorage.getItem(TKEY);
+  if(saved){ tryToken(saved, false); } else { showGate(''); }
+})();
+</script>
+</body>
+</html>

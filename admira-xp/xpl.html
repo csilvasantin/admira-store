@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condicional · Editor de Reglas · Admira</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#131822; --panel2:#1a212e; --line:#26303f;
+    --ink:#e8eef7; --mut:#8a97ab; --acc:#5bd6c0; --acc2:#7aa2ff; --warn:#ffb454; --bad:#ff6b6b;
+    --rad:14px; --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden}
+  header{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#10151e,#0b0e14)}
+  header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.3px}
+  header h1 .tag{color:var(--acc);font-family:var(--mono)}
+  header .sub{color:var(--mut);font-size:12px}
+  header .spacer{flex:1}
+  .pill{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+  button{font-family:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--ink);
+    border-radius:10px;padding:7px 12px;font-size:13px;transition:.12s}
+  button:hover{border-color:var(--acc);color:#fff}
+  button.primary{background:var(--acc);color:#06231e;border-color:var(--acc);font-weight:700}
+  button.primary:hover{filter:brightness(1.08)}
+  button.ghost{background:transparent}
+  button.danger:hover{border-color:var(--bad);color:var(--bad)}
+  main{flex:1;display:grid;grid-template-columns:minmax(360px,420px) 1fr;min-height:0}
+  /* ---- Panel de reglas (izquierda) ---- */
+  .rules{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:var(--panel)}
+  .rules .top{padding:12px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+  .rules .top b{font-size:13px}
+  .rules .list{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:var(--rad);overflow:hidden;flex:none}
+  .card.off{opacity:.5}
+  .card .head{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line);background:#161d28}
+  .card .head .name{flex:1;font-weight:600;font-size:13px;background:transparent;border:none;color:var(--ink);outline:none}
+  .card .sentence{padding:10px 12px;font-size:13px;line-height:1.5;color:#cdd8e8}
+  .card .sentence .kw{color:var(--acc);font-weight:700;font-family:var(--mono);font-size:11px}
+  .switch{position:relative;width:34px;height:19px;border-radius:999px;background:#2a3444;border:1px solid var(--line);cursor:pointer;flex:none}
+  .switch.on{background:var(--acc)}
+  .switch i{position:absolute;top:1px;left:1px;width:15px;height:15px;border-radius:50%;background:#fff;transition:.15s}
+  .switch.on i{left:16px}
+  .x{color:var(--mut);border:none;background:transparent;font-size:16px;padding:2px 6px}
+  .x:hover{color:var(--bad)}
+  /* ---- Builder ---- */
+  .builder{padding:12px;border-top:1px solid var(--line);background:#0f141d;display:none;flex-direction:column;gap:10px}
+  .builder.show{display:flex}
+  .builder .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .builder label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);width:100%}
+  select,input[type=text],input[type=number]{font-family:inherit;background:var(--panel2);color:var(--ink);
+    border:1px solid var(--line);border-radius:9px;padding:7px 9px;font-size:13px;outline:none}
+  select:focus,input:focus{border-color:var(--acc2)}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  /* ---- Escena (derecha) ---- */
+  .stage{display:flex;flex-direction:column;min-height:0;background:radial-gradient(120% 80% at 50% 0%,#101622,#0b0e14)}
+  .stage .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);border:1px solid var(--line);
+    border-radius:999px;padding:5px 11px;cursor:pointer;user-select:none}
+  .chip.on{color:#06231e;background:var(--warn);border-color:var(--warn);font-weight:700}
+  .chip.on.blue{background:var(--acc2);border-color:var(--acc2);color:#06122e}
+  .canvas-wrap{flex:1;position:relative;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px}
+  canvas{width:100%;height:100%;border-radius:16px;border:1px solid var(--line);background:#0a0d13}
+  .hud{position:absolute;left:24px;top:24px;font-family:var(--mono);font-size:11px;color:var(--mut);
+    background:#0b0e14cc;border:1px solid var(--line);border-radius:10px;padding:8px 10px;line-height:1.7;backdrop-filter:blur(4px)}
+  .hud b{color:var(--ink)}
+  .toast{position:absolute;right:24px;bottom:24px;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  .toast div{font-size:12px;background:#0b0e14cc;border:1px solid var(--acc);color:var(--acc);border-radius:10px;padding:6px 10px;animation:pop .3s}
+  @keyframes pop{from{transform:translateY(8px);opacity:0}}
+  .empty{color:var(--mut);font-size:13px;text-align:center;padding:30px 16px;line-height:1.6}
+  .empty button{margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Condicional <span class="tag">·rules</span></h1>
+  <span class="sub">las mismas reglas gobiernan canal, gemelo y pantallas · admira.tv/condicional</span>
+  <span class="spacer"></span>
+  <span class="pill" id="langPill" title="cambiar idioma">ES</span>
+  <button class="ghost" id="btnCode">&lt;/&gt; código</button>
+  <button class="ghost" id="btnSamples">ejemplos</button>
+  <a href="index.html" target="_blank" class="pill" style="text-decoration:none;color:var(--acc2);border-color:var(--acc2)" title="abrir el gemelo con estas reglas">▶ gemelo</a>
+</header>
+
+<main>
+  <!-- IZQUIERDA: reglas -->
+  <section class="rules">
+    <div class="top">
+      <b>Reglas</b>
+      <span class="pill" id="ruleCount">0</span>
+      <span class="spacer" style="flex:1"></span>
+      <button class="primary" id="btnAdd">+ regla</button>
+    </div>
+    <div class="list" id="ruleList"></div>
+  </section>
+
+  <!-- DERECHA: escena -->
+  <section class="stage">
+    <div class="bar">
+      <span style="font-size:12px;color:var(--mut)">Mundo:</span>
+      <span class="chip" data-fact="rain">🌧️ lluvia</span>
+      <span class="chip blue" data-fact="night">🌙 noche</span>
+      <span class="chip" data-fact="wind">💨 viento</span>
+      <span class="chip" data-fact="rush">🧑‍🤝‍🧑 cola</span>
+      <span class="chip" data-fact="weekend">📅 finde</span>
+      <span class="chip" data-fact="holiday">🎉 festivo</span>
+      <span class="chip" data-fact="thief">🦹 ladrón</span>
+      <span class="spacer" style="flex:1"></span>
+      <button class="ghost" id="btnPlay">⏸ pausa</button>
+    </div>
+    <div class="bar" style="padding-top:0;border-bottom:1px solid var(--line)">
+      <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:7px">
+        🌡️ <span id="tempLbl" style="font-family:var(--mono);color:var(--ink);width:42px">19°</span>
+        <input type="range" id="tempR" min="-5" max="42" value="19" style="width:120px">
+      </label>
+      <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:7px;margin-left:6px">
+        👥 <span id="peopLbl" style="font-family:var(--mono);color:var(--ink);width:30px">8</span>
+        <input type="range" id="peopR" min="0" max="40" value="8" style="width:110px">
+      </label>
+      <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px;margin-left:6px">🍂
+        <select id="seasonR" style="padding:4px 7px">
+          <option value="spring">🌸 primavera</option><option value="summer">☀️ verano</option>
+          <option value="autumn" selected>🍂 otoño</option><option value="winter">❄️ invierno</option>
+        </select>
+      </label>
+      <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px;margin-left:6px" title="audiencia mirando la pantalla (cámara de admira.tv)">👁️
+        <span id="viewLbl" style="font-family:var(--mono);color:var(--ink);width:18px">3</span>
+        <input type="range" id="viewR" min="0" max="12" value="3" style="width:84px">
+      </label>
+      <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:5px;margin-left:6px">📷
+        <select id="audGenderR" style="padding:4px 6px" title="género de la audiencia (cámara)">
+          <option value="female">♀️ mujer</option><option value="male">♂️ hombre</option><option value="mixed">⚥ mixto</option>
+        </select>
+        <select id="audAgeR" style="padding:4px 6px" title="edad de la audiencia (cámara)">
+          <option value="nino">🧒 niño</option><option value="joven">🧑 joven</option><option value="adulto" selected>🧔 adulto</option><option value="senior">👴 senior</option><option value="vejez">👵 vejez</option>
+        </select>
+      </label>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="cv"></canvas>
+      <div class="hud" id="hud"></div>
+      <div class="toast" id="toast"></div>
+    </div>
+  </section>
+</main>
+
+<!-- Modal código -->
+<dialog id="codeDlg" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:16px;width:min(680px,92vw);padding:0">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)">
+    <b>Código XPL</b><span class="sub" style="color:var(--mut);font-size:12px">— las reglas en texto</span>
+    <span style="flex:1"></span>
+    <button class="ghost" onclick="document.getElementById('codeDlg').close()">cerrar</button>
+  </div>
+  <pre id="codeOut" style="margin:0;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;max-height:60vh;overflow:auto;color:#cdd8e8"></pre>
+</dialog>
+
+<script src="scripts/xpl-runtime.js"></script>
+<script>
+/* ===========================================================================
+ * Playground de XPL: editor visual + mini-mundo (adapter simulado).
+ * ========================================================================= */
+const $ = s => document.querySelector(s);
+let LANG = 'es';
+const T = (es, en) => LANG === 'en' ? en : es;
+
+/* ---------- MUNDO SIMULADO (adapter) ------------------------------------- */
+const World = {
+  weather: 'sun',          // sun|rain|snow
+  temperature: 19,         // °C
+  wind: false,
+  season: 'autumn',        // spring|summer|autumn|winter
+  night: false,
+  weekend: false,
+  holiday: false,
+  rush: false,
+  thief: false,
+  hour: 13,
+  people: 8,               // footfall (sensor de calle)
+  viewers: 3,              // audiencia mirando la pantalla (cámara de admira.tv)
+  audGender: 'female',     // none|female|male|mixed
+  audAge: 'adulto',        // none|nino|joven|adulto|senior|vejez
+  satisfaction: 72,
+  money: 1840,
+  lightOn: true,
+  screen: { ad: null, tone: 'calm' },   // estado del escaparate/pantallas
+  npcs: [],
+  _toasts: [],
+
+  fact(id){
+    switch(id){
+      case 'rain':  return this.weather === 'rain';
+      case 'temperature': return this.temperature;
+      case 'wind':  return this.wind;
+      case 'season':return this.season;
+      case 'night': return this.night;
+      case 'weekend': return this.weekend;
+      case 'holiday': return this.holiday;
+      case 'rush':  return this.rush;
+      case 'thief': return this.thief;
+      case 'doorOpen': return !this.night;
+      case 'hour':  return this.hour;
+      case 'dayPart': { const h=this.hour;
+        if(this.night) return 'night';
+        if(h<12) return 'morning'; if(h<15) return 'noon'; if(h<21) return 'afternoon'; return 'night'; }
+      case 'satisfaction': return this.satisfaction;
+      case 'money': return this.money;
+      case 'people': return this.people;
+      case 'viewers': return this.viewers;
+      case 'audGender': return this.viewers > 0 ? this.audGender : 'none';
+      case 'audAge': return this.viewers > 0 ? this.audAge : 'none';
+    }
+    return 0;
+  },
+  act(id, value, npc){
+    switch(id){
+      case 'equip':   if(npc) npc.props[value]=true; break;
+      case 'unequip': if(npc) npc.props[value]=false; break;
+      case 'setMood': if(npc) npc.mood=value; break;
+      case 'say':     if(npc){ npc.bubble=value; npc.bubbleT=140; } break;
+      case 'dance':   if(npc){ npc.dancing=true; npc.danceT=30; } break;
+      case 'goInside':if(npc){ npc.zone='in'; npc.tx=null; } break;
+      // — pantallas del gemelo —
+      case 'showAd':      this.screen.ad = value; break;
+      case 'clearScreen': this.screen.ad = null; break;
+      case 'screenTone':  this.screen.tone = value; break;
+      // — mundo —
+      case 'setWeather': this.weather=value; this._toasts.push('🌦️ '+T('clima → ','weather → ')+value); break;
+      case 'setLight': this.lightOn=(value==='on'); break;
+      case 'jingle':  this._toasts.push((value==='alert'?'📣':value==='promo'?'🎵':'🔔')+' '+T('sonido','sound')); break;
+      case 'command': this._toasts.push('⌘ '+value); break;
+    }
+  }
+};
+// el motor relee el escaparate cada tick: si ninguna regla de pantalla está
+// activa, el anuncio se "apaga" solo. Lo controlamos marcando ad=null antes
+// de cada tick y dejando que las reglas 'while' lo vuelvan a poner.
+World._beforeTick = function(){ this.screen._adPrev = this.screen.ad; this.screen.ad = null; };
+World._afterTick  = function(){ /* si nada lo puso, queda apagado */ };
+// el motor espera world.npcs() como función
+World.npcs = function(){ return this._list; };
+
+/* ---------- generar NPCs ------------------------------------------------- */
+const NAMES = ['Ana','Leo','Sam','Iris','Dani','Noa','Max','Bea','Tom','Vera','Gus','Lola'];
+function makeNpcs(){
+  const out=[];
+  for(let i=0;i<10;i++){
+    const kind = i<2 ? 'staff' : (i===9 ? 'special' : 'cust');
+    out.push({
+      id:i, name:NAMES[i%NAMES.length]+(i>=NAMES.length?'·'+i:''),
+      kind,
+      zone: Math.random()<0.65?'out':'in',
+      mood:'neutral',
+      props:{umbrella:false,hat:false,glow:false},
+      x: 60+Math.random()*(820-120), y:0, vx:(Math.random()<.5?-1:1)*(0.3+Math.random()*0.5),
+      tx:null, bubble:null, bubbleT:0, dancing:false, danceT:0, phase:Math.random()*6.28,
+      umbrella:false // espejo plano para el selector (se sincroniza con props)
+    });
+  }
+  return out;
+}
+World._list = makeNpcs();
+World.npcs = function(){ return this._list; };
+
+/* ---------- ENGINE ------------------------------------------------------- */
+const engine = XPL.createEngine(World);
+
+/* ---------- ESTADO DE REGLAS -------------------------------------------- */
+let RULES = [];
+let editingId = null;
+let uid = 1;
+
+function blankRule(){
+  return { id:'r'+(uid++), name:T('Regla nueva','New rule'), enabled:true, priority:0,
+    when:{ join:'and', conds:[ { fact:'rain', value:true } ] },
+    who:{ group:'all', filter:{} },
+    do:[ { id:'showAd', value:'rainboots' } ] };
+}
+
+/* ---------- SAMPLES ------------------------------------------------------ */
+const SAMPLES = [
+  // ⭐ el caso estrella: señalización contextual en las pantallas
+  { name:'Llueve → botas de agua en pantalla', priority:3, when:{conds:[{fact:'rain',value:true}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'rainboots'},{id:'equip',value:'umbrella'}] },
+  { name:'Calor → helado en pantalla', priority:1, when:{conds:[{fact:'temperature',op:'>=',value:28}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'icecream'}] },
+  { name:'Frío O lluvia → chubasqueros', priority:1, when:{join:'or',conds:[{fact:'temperature',op:'<=',value:8},{fact:'rain',value:true}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'raincoat'}] },
+  { name:'Verano Y mediodía → gafas de sol', priority:2, when:{join:'and',conds:[{fact:'season',value:'summer'},{fact:'dayPart',value:'noon'}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'sunglasses'}] },
+  // 📷 audiencia por cámara (admira.tv) → señalización segmentada por quién mira
+  { name:'Mujer adulta mirando → nueva colección premium', priority:4, when:{join:'and',conds:[{fact:'audGender',value:'female'},{fact:'audAge',value:'adulto'}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'newColl'},{id:'screenTone',value:'lux'}] },
+  { name:'Joven mirando → happy hour', priority:3, when:{conds:[{fact:'audAge',value:'joven'}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'happyhour'},{id:'screenTone',value:'hype'}] },
+  { name:'Nadie mirando → apagar pantallas', priority:0, when:{conds:[{fact:'viewers',op:'<=',value:0}]}, who:{group:'all',filter:{}}, do:[{id:'clearScreen'}] },
+  { name:'Mucha gente → oferta flash (manda)', priority:5, when:{conds:[{fact:'people',op:'>=',value:20}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'promo'},{id:'screenTone',value:'hype'},{id:'jingle',value:'promo'}] },
+  { name:'Noche → happy hour + glow', priority:1, when:{conds:[{fact:'night',value:true}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'happyhour'},{id:'equip',value:'glow'}] },
+  { name:'Finde → plan finde', priority:1, when:{conds:[{fact:'weekend',value:true}]}, who:{group:'all',filter:{}}, do:[{id:'showAd',value:'weekendDeal'}] },
+  { name:'Cola → clientes felices', when:{conds:[{fact:'rush',value:true}]}, who:{group:'cust',filter:{}}, do:[{id:'setMood',value:'happy'},{id:'say',value:'¡Vale la pena esperar!'}] },
+  { name:'Ladrón → pantallas alerta + todos dentro', priority:99, when:{conds:[{fact:'thief',value:true}]}, who:{group:'cust',filter:{}}, do:[{id:'clearScreen'},{id:'jingle',value:'alert'},{id:'goInside'}] }
+];
+
+/* ===========================================================================
+ * RENDER: lista de reglas
+ * ========================================================================= */
+function syncEngine(){ engine.setRules(RULES); renderCode();
+  try{ localStorage.setItem('xpl_rules', JSON.stringify(RULES)); }catch(e){} }
+
+function renderRules(){
+  const list = $('#ruleList');
+  $('#ruleCount').textContent = RULES.length;
+  if(!RULES.length){
+    list.innerHTML = `<div class="empty">${T('Sin reglas todavía.','No rules yet.')}<br>${T('Crea una o carga un ejemplo.','Create one or load a sample.')}
+      <br><button class="primary" onclick="addRule()">+ ${T('regla','rule')}</button></div>`;
+    return;
+  }
+  list.innerHTML='';
+  for(const r of RULES){
+    const card=document.createElement('div');
+    card.className='card'+(r.enabled?'':' off');
+    const sent = XPL.ruleSentence(r, LANG)
+      .replace(/\b(CUANDO|WHEN|ENTONCES|THEN|PARA|FOR|coge|take|Y|AND|O|OR|y|and)\b/g, m=>`<span class="kw">${m}</span>`);
+    card.innerHTML = `
+      <div class="head">
+        <div class="switch ${r.enabled?'on':''}" data-tog="${r.id}"><i></i></div>
+        <input class="name" value="${r.name.replace(/"/g,'&quot;')}" data-name="${r.id}">
+        <button class="x" data-edit="${r.id}" title="${T('editar','edit')}">✎</button>
+        <button class="x" data-del="${r.id}" title="${T('borrar','delete')}">✕</button>
+      </div>
+      <div class="sentence">${sent}</div>
+      ${editingId===r.id ? builderHTML(r) : ''}`;
+    list.appendChild(card);
+  }
+}
+
+/* ---------- Builder (formulario por dropdowns) -------------------------- */
+function opt(arr, sel, valKey){
+  return arr.map(o=>`<option value="${o.id}" ${o.id===sel?'selected':''}>${(o.icon?o.icon+' ':'')+XPL.label(o,LANG)}</option>`).join('');
+}
+function builderHTML(r){
+  const needWho = (r.do||[]).some(a=>(XPL.byId(XPL.ACTIONS,a.id)||{}).scope==='npc');
+  const hasScreen = (r.do||[]).some(a=>(XPL.byId(XPL.ACTIONS,a.id)||{}).scope==='screen');
+  // bloque WHEN — varias condiciones unidas por Y/O
+  const W = XPL.condsOf(r.when);            // {join, conds}
+  const joinLbl = W.join==='or' ? T('O','OR') : T('Y','AND');
+  let whenRow='';
+  W.conds.forEach((c,ci)=>{
+    const f = XPL.byId(XPL.FACTS, c.fact) || XPL.FACTS[0];
+    let row = `<select data-b="fact" data-ci="${ci}">${opt(XPL.FACTS, c.fact)}</select>`;
+    if(f.type==='num'){
+      row += `<select data-b="op" data-ci="${ci}">${opt(XPL.OPS, c.op||'>=')}</select>
+              <input type="number" data-b="val" data-ci="${ci}" value="${c.value!=null?c.value:0}" style="width:74px">
+              ${f.unit?`<span style="color:var(--mut);font-size:12px">${f.unit}</span>`:''}`;
+    } else if(f.type==='enum'){
+      row += `<span style="color:var(--mut);font-size:12px">${T('es','is')}</span><select data-b="eval" data-ci="${ci}">${opt(f.values, c.value)}</select>`;
+    } else {
+      row += `<select data-b="bool" data-ci="${ci}">
+        <option value="true" ${c.value!==false?'selected':''}>${T('sí ocurre','is true')}</option>
+        <option value="false" ${c.value===false?'selected':''}>${T('no ocurre','is false')}</option></select>`;
+    }
+    if(W.conds.length>1) row += `<button class="x" data-rmcond="${ci}" title="${T('quitar','remove')}">✕</button>`;
+    if(ci>0) whenRow += `<div class="row" style="margin:-4px 0"><button class="ghost" data-join="1" style="padding:2px 10px;font-size:11px;color:var(--acc)">${joinLbl}</button></div>`;
+    whenRow += `<div class="row">${row}</div>`;
+  });
+  whenRow += `<div class="row"><button class="ghost" data-addcond="1" style="padding:4px 10px;font-size:12px">+ ${T('condición','condition')}</button></div>`;
+  // bloque WHO
+  let whoRow='';
+  if(needWho){
+    const attrSel = r.who.filter && r.who.filter.attr || '';
+    whoRow = `<label>${T('para quién','for whom')}</label><div class="row">
+      <select data-b="group">${opt(XPL.GROUPS, r.who.group)}</select>
+      <select data-b="fattr"><option value="">${T('— sin filtro —','— no filter —')}</option>${opt(XPL.ATTRS, attrSel)}</select>`;
+    if(attrSel){
+      const a=XPL.byId(XPL.ATTRS,attrSel);
+      if(a.type==='bool'){
+        whoRow+=`<select data-b="fval">
+          <option value="true" ${r.who.filter.value!==false?'selected':''}>${T('sí','yes')}</option>
+          <option value="false" ${r.who.filter.value===false?'selected':''}>${T('no','no')}</option></select>`;
+      } else {
+        whoRow+=`<select data-b="fval">${opt(a.values, r.who.filter.value)}</select>`;
+      }
+    }
+    whoRow+=`</div>`;
+  }
+  // bloque DO (primera acción; soporta varias mostrándolas)
+  let doRows='';
+  (r.do||[]).forEach((act,idx)=>{
+    const a=XPL.byId(XPL.ACTIONS,act.id)||XPL.ACTIONS[0];
+    let pr='';
+    if(a.param){
+      if(a.param.kind==='enum') pr=`<select data-b="aval" data-i="${idx}">${opt(a.param.values, act.value)}</select>`;
+      else pr=`<input type="text" data-b="aval" data-i="${idx}" value="${(act.value||'').replace(/"/g,'&quot;')}" placeholder="${a.param.placeholder||''}" style="flex:1;min-width:120px">`;
+    }
+    doRows+=`<div class="row">
+      <select data-b="act" data-i="${idx}">${opt(XPL.ACTIONS, act.id)}</select>${pr}
+      ${(r.do.length>1)?`<button class="x" data-rmact="${idx}">✕</button>`:''}
+    </div>`;
+  });
+
+  const prioRow = hasScreen ? `<label>${T('prioridad de pantalla','screen priority')}</label><div class="row">
+      <input type="number" data-b="prio" value="${r.priority||0}" style="width:70px" min="0" max="99">
+      <span style="color:var(--mut);font-size:11px">${T('si varias reglas compiten por el escaparate, gana la de número más alto','if rules compete for the screen, highest number wins')}</span>
+    </div>` : '';
+  return `<div class="builder show" data-builder="${r.id}">
+    <label>${T('cuando','when')}</label>${whenRow}
+    ${whoRow}
+    <label>${T('entonces','then')}</label>${doRows}
+    ${prioRow}
+    <div class="row"><button class="ghost" data-addact="1">+ ${T('acción','action')}</button>
+      <span class="spacer" style="flex:1"></span>
+      <button class="primary" data-done="1">${T('hecho','done')}</button></div>
+  </div>`;
+}
+
+/* ===========================================================================
+ * EVENTOS de la lista
+ * ========================================================================= */
+$('#ruleList').addEventListener('click', e=>{
+  const t=e.target;
+  const tog=t.closest('[data-tog]'); if(tog){ const r=find(tog.dataset.tog); r.enabled=!r.enabled; syncEngine(); renderRules(); return; }
+  if(t.dataset.edit){ editingId = editingId===t.dataset.edit?null:t.dataset.edit; renderRules(); return; }
+  if(t.dataset.del){ RULES=RULES.filter(r=>r.id!==t.dataset.del); if(editingId===t.dataset.del)editingId=null; syncEngine(); renderRules(); return; }
+  if(t.dataset.done){ editingId=null; renderRules(); return; }
+  const bb=t.closest('[data-builder]');
+  if(t.dataset.addcond!=null && bb){ const r=find(bb.dataset.builder); const w=normWhen(r); w.conds.push({fact:'temperature',op:'>=',value:25}); syncEngine(); renderRules(); return; }
+  if(t.dataset.rmcond!=null && bb){ const r=find(bb.dataset.builder); const w=normWhen(r); w.conds.splice(+t.dataset.rmcond,1); syncEngine(); renderRules(); return; }
+  if(t.dataset.join!=null && bb){ const r=find(bb.dataset.builder); const w=normWhen(r); w.join = w.join==='or'?'and':'or'; syncEngine(); renderRules(); return; }
+  if(t.dataset.addact!=null && bb){ const r=find(bb.dataset.builder); r.do.push({id:'say',value:'¡Hey!'}); syncEngine(); renderRules(); return; }
+  if(t.dataset.rmact!=null && bb){ const r=find(bb.dataset.builder); r.do.splice(+t.dataset.rmact,1); syncEngine(); renderRules(); return; }
+});
+// normaliza r.when a {join,conds} (mutable) y lo deja asignado
+function normWhen(r){ const w=XPL.condsOf(r.when); r.when={join:w.join,conds:w.conds.slice()}; return r.when; }
+$('#ruleList').addEventListener('change', e=>{
+  const b=e.target.closest('[data-builder]'); if(!b) return;
+  const r=find(b.dataset.builder); const t=e.target; const k=t.dataset.b;
+  const i=t.dataset.i!=null?+t.dataset.i:null; const ci=t.dataset.ci!=null?+t.dataset.ci:0;
+  if(k==='fact'){ const w=normWhen(r); const f=XPL.byId(XPL.FACTS,t.value); const nc={fact:t.value};
+    if(f.type==='num'){nc.op='>=';nc.value=f.min!=null?Math.round((f.min+(f.max||100))/2):0;}
+    else if(f.type==='enum'){nc.value=f.values[0].id;}
+    else nc.value=true; w.conds[ci]=nc; }
+  else if(k==='op'){ normWhen(r).conds[ci].op=t.value; }
+  else if(k==='val'){ normWhen(r).conds[ci].value=+t.value; }
+  else if(k==='eval'){ normWhen(r).conds[ci].value=t.value; }
+  else if(k==='bool'){ normWhen(r).conds[ci].value=(t.value==='true'); }
+  else if(k==='prio'){ r.priority=+t.value||0; }
+  else if(k==='group'){ r.who.group=t.value; }
+  else if(k==='fattr'){ r.who.filter = t.value?{attr:t.value}:{}; if(t.value){const a=XPL.byId(XPL.ATTRS,t.value); r.who.filter.value=a.type==='bool'?true:(a.values[0].id);} }
+  else if(k==='fval'){ const a=XPL.byId(XPL.ATTRS,r.who.filter.attr); r.who.filter.value = a&&a.type==='bool'?(t.value==='true'):t.value; }
+  else if(k==='act'){ const a=XPL.byId(XPL.ACTIONS,t.value); r.do[i]={id:t.value}; if(a.param) r.do[i].value=a.param.kind==='enum'?a.param.values[0].id:''; }
+  else if(k==='aval'){ r.do[i].value = t.value; }
+  syncEngine(); renderRules();
+});
+// editar nombre en vivo
+$('#ruleList').addEventListener('input', e=>{
+  if(e.target.dataset.name){ const r=find(e.target.dataset.name); r.name=e.target.value; renderCode(); }
+});
+
+function find(id){ return RULES.find(r=>r.id===id); }
+function addRule(){ const r=blankRule(); RULES.push(r); editingId=r.id; syncEngine(); renderRules(); }
+
+/* ---------- botones cabecera -------------------------------------------- */
+$('#btnAdd').onclick=addRule;
+$('#btnSamples').onclick=()=>{ RULES = SAMPLES.map(s=>({id:'r'+(uid++),enabled:true,...JSON.parse(JSON.stringify(s))})); editingId=null; syncEngine(); renderRules(); };
+$('#langPill').onclick=()=>{ LANG=LANG==='es'?'en':'es'; $('#langPill').textContent=LANG.toUpperCase(); document.documentElement.lang=LANG; renderRules(); };
+$('#btnCode').onclick=()=>{ renderCode(); $('#codeDlg').showModal(); };
+function renderCode(){
+  const head = LANG==='en'?'// XPL — rules\n':'// XPL — reglas\n';
+  $('#codeOut').textContent = head + RULES.map(r=>
+    (r.enabled?'':'// (off) ')+`# ${r.name}\n`+XPL.ruleSentence(r,LANG)+'\n'
+  ).join('\n');
+}
+
+/* ---------- chips de mundo ---------------------------------------------- */
+document.querySelectorAll('.chip[data-fact]').forEach(ch=>{
+  ch.onclick=()=>{
+    const f=ch.dataset.fact;
+    if(f==='rain'){ World.weather = World.weather==='rain'?'sun':'rain'; }
+    else World[f]=!World[f];
+    refreshChips();
+  };
+});
+function refreshChips(){
+  document.querySelectorAll('.chip[data-fact]').forEach(ch=>{
+    const f=ch.dataset.fact;
+    const on = f==='rain'?World.weather==='rain':World[f];
+    ch.classList.toggle('on',!!on);
+  });
+}
+// sliders / selector
+$('#tempR').oninput=e=>{ World.temperature=+e.target.value; $('#tempLbl').textContent=World.temperature+'°'; };
+$('#peopR').oninput=e=>{ World.people=+e.target.value; $('#peopLbl').textContent=World.people; };
+$('#seasonR').onchange=e=>{ World.season=e.target.value; };
+$('#viewR').oninput=e=>{ World.viewers=+e.target.value; $('#viewLbl').textContent=World.viewers; };
+$('#audGenderR').onchange=e=>{ World.audGender=e.target.value; };
+$('#audAgeR').onchange=e=>{ World.audAge=e.target.value; };
+
+/* ===========================================================================
+ * MINI-MUNDO (canvas) + bucle
+ * ========================================================================= */
+const cv=$('#cv'), ctx=cv.getContext('2d');
+function resize(){ const w=cv.clientWidth,h=cv.clientHeight; cv.width=w*devicePixelRatio; cv.height=h*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+new ResizeObserver(resize).observe(cv); resize();
+
+let playing=true, t=0;
+$('#btnPlay').onclick=()=>{ playing=!playing; $('#btnPlay').textContent=playing?'⏸ pausa':'▶ play'; };
+
+function step(){
+  const W=cv.clientWidth, H=cv.clientHeight;
+  const ground = H*0.72, doorX = W*0.5;
+  // mover NPCs
+  for(const n of World._list){
+    // sincroniza espejo plano para selectores
+    n.umbrella = !!n.props.umbrella;
+    if(n.zone==='in'){ n.tx = n.tx==null?doorX:n.tx; }
+    const target = n.zone==='in' ? doorX : null;
+    if(target!=null){ n.x += Math.sign(target-n.x)*1.4; if(Math.abs(target-n.x)<2) n.vx=0; }
+    else { n.x += n.vx; if(n.x<50){n.x=50;n.vx*=-1;} if(n.x>W-50){n.x=W-50;n.vx*=-1;} if(n.vx===0)n.vx=(Math.random()<.5?-1:1)*.4; }
+    if(n.bubbleT>0)n.bubbleT--; if(n.danceT>0)n.danceT--; else n.dancing=false;
+    n.phase+=0.08;
+  }
+  if(playing){ World._beforeTick(); engine.tick(); World._afterTick(); t++; }
+  draw(W,H,ground,doorX);
+  // toasts del mundo
+  while(World._toasts.length){ pushToast(World._toasts.shift()); }
+  requestAnimationFrame(step);
+}
+
+function draw(W,H,ground,doorX){
+  ctx.clearRect(0,0,W,H);
+  // cielo
+  const night=World.night;
+  const sky=ctx.createLinearGradient(0,0,0,ground);
+  if(night){ sky.addColorStop(0,'#0a1024'); sky.addColorStop(1,'#141a2e'); }
+  else { sky.addColorStop(0,'#1b2740'); sky.addColorStop(1,'#26344f'); }
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,ground);
+  // suelo
+  ctx.fillStyle=night?'#0c1018':'#10161f'; ctx.fillRect(0,ground,W,H-ground);
+  ctx.strokeStyle='#1f2a3a'; ctx.beginPath(); ctx.moveTo(0,ground); ctx.lineTo(W,ground); ctx.stroke();
+  // tienda
+  const sw=170, sh=120, sx=doorX-sw/2, sy=ground-sh;
+  ctx.fillStyle=night?'#161d2a':'#1a2230'; ctx.fillRect(sx,sy,sw,sh);
+  // — PANTALLAS / escaparate (aquí entra la publicidad contextual) —
+  const ad = World.screen.ad ? XPL.byId(XPL.ADS, World.screen.ad) : null;
+  for(let i=0;i<2;i++){
+    const px=sx+15+i*80, py=sy+22, pw=60, ph=54;
+    if(ad){
+      ctx.fillStyle=ad.bg; ctx.fillRect(px,py,pw,ph);
+      // brillo de pantalla
+      ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fillRect(px,py,pw,ph/2);
+      // creatividad: emoji grande + nombre
+      ctx.textAlign='center'; ctx.font='26px var(--sans)';
+      ctx.fillText(ad.icon, px+pw/2, py+30);
+      ctx.fillStyle='#fff'; ctx.font='700 8px var(--mono),monospace';
+      ctx.fillText((LANG==='en'?ad.en:ad.es).toUpperCase().slice(0,12), px+pw/2, py+ph-7);
+    } else {
+      ctx.fillStyle=World.lightOn?(night?'#2a2410':'#26303f'):'#0e131c';
+      ctx.fillRect(px,py,pw,ph);
+    }
+    ctx.strokeStyle='#0a0d13'; ctx.lineWidth=2; ctx.strokeRect(px,py,pw,ph);
+  }
+  if(World.lightOn && !ad){ ctx.fillStyle='#ffe9a8'; for(let i=0;i<2;i++){ctx.globalAlpha=.12;ctx.fillRect(sx+8+i*80,sy+16,74,68);ctx.globalAlpha=1;} }
+  // rótulo
+  ctx.fillStyle=World.lightOn?'#5bd6c0':'#33414f'; ctx.font='700 13px var(--mono),monospace';
+  ctx.textAlign='center'; ctx.fillText('XPACEOS', doorX, sy+15);
+  // puerta
+  ctx.fillStyle='#0a0d13'; ctx.fillRect(doorX-16,ground-44,32,44);
+
+  // NPCs
+  for(const n of World._list){ drawNpc(n, ground); }
+
+  // lluvia / nieve
+  if(World.weather==='rain') drawRain(W,ground,'#7fb0ff');
+  if(World.weather==='snow') drawRain(W,ground,'#ffffff',true);
+  // viñeta noche
+  if(night){ ctx.fillStyle='rgba(4,8,20,.28)'; ctx.fillRect(0,0,W,H); }
+
+  updateHud();
+}
+
+const MOODFACE = {happy:'◡',neutral:'–',sad:'◠'};
+const KINDCOL = {cust:'#7aa2ff', staff:'#5bd6c0', special:'#ffb454'};
+function drawNpc(n, ground){
+  const bob = n.dancing ? Math.sin(n.phase*2)*4 : Math.sin(n.phase)*1.2;
+  const x=n.x, y=ground-2+bob;
+  // sombra
+  ctx.fillStyle='rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(x,ground+3,9,3,0,0,6.28); ctx.fill();
+  // cuerpo
+  const col=KINDCOL[n.kind]||'#7aa2ff';
+  ctx.fillStyle=col;
+  ctx.beginPath(); ctx.roundRect(x-7,y-30,14,24,6); ctx.fill();
+  // cabeza
+  ctx.fillStyle='#e9d9c5'; ctx.beginPath(); ctx.arc(x,y-36,7,0,6.28); ctx.fill();
+  // cara (humor)
+  ctx.fillStyle='#222'; ctx.font='10px monospace'; ctx.textAlign='center';
+  ctx.fillText(MOODFACE[n.mood]||'–', x, y-33);
+  // props
+  if(n.props.hat){ ctx.fillStyle='#222'; ctx.fillRect(x-8,y-44,16,4); ctx.fillRect(x-5,y-50,10,7); }
+  if(n.props.glow){ ctx.save(); ctx.globalAlpha=.5; ctx.fillStyle='#ffe9a8';
+    ctx.beginPath(); ctx.arc(x,y-20,22,0,6.28); ctx.fill(); ctx.restore(); }
+  if(n.props.umbrella){
+    ctx.fillStyle='#ff6b6b';
+    ctx.beginPath(); ctx.moveTo(x-16,y-44); ctx.quadraticCurveTo(x,y-58,x+16,y-44); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='#cdd8e8'; ctx.beginPath(); ctx.moveTo(x,y-44); ctx.lineTo(x,y-30); ctx.stroke();
+  }
+  // bocadillo
+  if(n.bubbleT>0 && n.bubble){
+    ctx.font='11px var(--sans)'; const w=ctx.measureText(n.bubble).width+14;
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.roundRect(x-w/2,y-72,w,20,6); ctx.fill();
+    ctx.fillStyle='#222'; ctx.fillText(n.bubble,x,y-58);
+  }
+}
+function drawRain(W,ground,color,snow){
+  ctx.strokeStyle=color; ctx.fillStyle=color; ctx.globalAlpha=.5;
+  for(let i=0;i<70;i++){
+    const x=(i*61 + t*(snow?2:9))%W; const y=((i*53)+(t*(snow?3:14)))%(ground);
+    if(snow){ ctx.beginPath(); ctx.arc(x,y,1.6,0,6.28); ctx.fill(); }
+    else { ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x-2,y+9); ctx.stroke(); }
+  }
+  ctx.globalAlpha=1;
+}
+function updateHud(){
+  const umb=World._list.filter(n=>n.props.umbrella).length;
+  const ad=World.screen.ad?XPL.byId(XPL.ADS,World.screen.ad):null;
+  const adTxt=ad?`${ad.icon} ${LANG==='en'?ad.en:ad.es}`:T('— apagadas —','— off —');
+  $('#hud').innerHTML =
+    `<b>${T('clima','weather')}</b> ${World.weather} · 🌡️${World.temperature}° · ${World.season}<br>`+
+    `<b>👥</b> ${World.people} · <b>${T('hora','hour')}</b> ${World.hour}:00 · <b>☂</b> ${umb}<br>`+
+    `<b>📺 ${T('pantallas','screens')}</b> ${adTxt}`;
+}
+function pushToast(msg){
+  const box=$('#toast'); const d=document.createElement('div'); d.textContent=msg; box.appendChild(d);
+  setTimeout(()=>d.remove(),2600);
+}
+
+/* ---------- arranque ---------------------------------------------------- */
+(function loadInitial(){
+  try{ const saved=JSON.parse(localStorage.getItem('xpl_rules')||'null');
+    if(Array.isArray(saved)&&saved.length){ RULES=saved; saved.forEach(r=>{const n=+(String(r.id).replace(/\D/g,''));if(n>=uid)uid=n+1;}); return; }
+  }catch(e){}
+  RULES = [ {id:'r'+(uid++),enabled:true,...JSON.parse(JSON.stringify(SAMPLES[0]))} ];
+})();
+syncEngine(); renderRules(); refreshChips();
+requestAnimationFrame(step);
+</script>
+</body>
+</html>

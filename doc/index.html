@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>XpaceOS · Spec de elementos isométricos (Admira XP)</title>
+<meta name="description" content="Especificación técnica bilingüe (ES/EN) para crear elementos a medida que encajan en los Xpacios isométricos de Admira XP. · Bilingual technical spec for custom isometric assets." />
+<script>
+  (function(){try{var k='xpace_lang',l=localStorage.getItem(k);
+    if(!l){l=(navigator.language||'es').toLowerCase().indexOf('en')===0?'en':'es';}
+    document.documentElement.lang=(l==='en')?'en':'es';}catch(e){}})();
+</script>
+<style>
+  :root{
+    --bg:#02080d; --ink:#dff8ff; --mut:#75aab9; --brand:#78f3ff; --accent:#ffd866;
+    --card:#0a1620; --card2:#0d1c28; --line:rgba(120,243,255,.18);
+    --warn:#ff4f4f;
+    --top:#a88860; --side:#6a5030; --face:#8b6b45; --wall:#e8dcc0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  /* i18n */
+  html[lang="es"] .i[lang="en"]{display:none}
+  html[lang="en"] .i[lang="es"]{display:none}
+  .wrap{max-width:860px;margin:0 auto;padding:54px 22px 120px}
+  .langbar{display:flex;justify-content:flex-end;margin-bottom:8px}
+  #langToggle{cursor:pointer;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.12em;color:var(--accent);background:rgba(120,243,255,.10);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+  #langToggle:hover{border-color:rgba(120,243,255,.55);text-decoration:none}
+  header.doc{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:40px}
+  .kicker{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  h1{font-size:34px;line-height:1.15;margin:0 0 12px;letter-spacing:-.01em}
+  .sub{color:var(--mut);font-size:16px;margin:0;max-width:640px}
+  .meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--mut);margin-top:18px;letter-spacing:.04em}
+  h2{font-size:22px;margin:48px 0 14px;letter-spacing:-.01em;scroll-margin-top:24px}
+  h2 .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);font-size:15px;margin-right:10px;letter-spacing:.1em}
+  h3{font-size:16px;margin:26px 0 8px;color:var(--brand);font-weight:600}
+  p{margin:10px 0}
+  ul{margin:10px 0;padding-left:22px}
+  li{margin:6px 0}
+  strong{color:#fff}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:rgba(120,243,255,.10);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--brand)}
+  pre{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.55;color:var(--ink)}
+  pre code{background:none;border:0;padding:0;color:inherit}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:18px 0}
+  .callout{border-left:3px solid var(--accent);background:rgba(255,216,102,.06);border-radius:8px;padding:14px 18px;margin:18px 0;color:var(--ink)}
+  .callout b{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  th{color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+  td code{font-size:.85em}
+  .swatch{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid rgba(255,255,255,.2)}
+  .toc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--mut);margin:0 0 8px}
+  .toc a{display:inline-block;margin:3px 14px 3px 0}
+  figure{margin:24px 0}
+  figcaption{color:var(--mut);font-size:13px;text-align:center;margin-top:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .diagram{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:20px;display:block;width:100%}
+  html[lang="es"] .diagram .i[lang="en"]{display:none}
+  html[lang="en"] .diagram .i[lang="es"]{display:none}
+  footer.doc{margin-top:70px;padding-top:24px;border-top:1px solid var(--line);color:var(--mut);font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .pill{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.1em;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mut);margin-right:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="langbar"><a href="#" id="langToggle" role="button" aria-label="Switch language">EN</a></div>
+
+  <header class="doc">
+    <p class="kicker"><span class="i" lang="es">XpaceOS · Documentación técnica</span><span class="i" lang="en">XpaceOS · Technical documentation</span></p>
+    <h1><span class="i" lang="es">Cómo crear elementos para los Xpacios isométricos</span><span class="i" lang="en">How to create elements for the isometric Xpaces</span></h1>
+    <p class="sub"><span class="i" lang="es">Especificación para diseñar props, mobiliario y superficies a medida que encajen, pixel-perfect, en el motor isométrico de <strong>Admira XP</strong> (el Digital Twin de XpaceOS).</span><span class="i" lang="en">Spec for designing custom props, furniture and surfaces that fit, pixel-perfect, the isometric engine of <strong>Admira XP</strong> (the XpaceOS Digital Twin).</span></p>
+    <p class="meta"><span class="i" lang="es">Documento de referencia · derivado del motor real (game.html) · proyección 80×28</span><span class="i" lang="en">Reference document · derived from the real engine (game.html) · 80×28 projection</span></p>
+  </header>
+
+  <p class="toc">
+    <a href="#proyeccion">01 <span class="i" lang="es">Proyección</span><span class="i" lang="en">Projection</span></a>
+    <a href="#huella">02 <span class="i" lang="es">Huella</span><span class="i" lang="en">Footprint</span></a>
+    <a href="#anclaje">03 <span class="i" lang="es">Anclaje</span><span class="i" lang="en">Anchor</span></a>
+    <a href="#luz">04 <span class="i" lang="es">Iluminación</span><span class="i" lang="en">Lighting</span></a>
+    <a href="#render">05 Render</a>
+    <a href="#pantallas">06 <span class="i" lang="es">Pantallas</span><span class="i" lang="en">Screens</span></a>
+    <a href="#entrega">07 <span class="i" lang="es">Entregables</span><span class="i" lang="en">Deliverables</span></a>
+    <a href="#nativo">08 <span class="i" lang="es">Vía nativa</span><span class="i" lang="en">Native path</span></a>
+  </p>
+
+  <div class="callout">
+    <span class="i" lang="es"><b>En una frase:</b> cada elemento vive sobre una rejilla de rombos de <strong>80×28 px</strong>; las líneas de suelo van a <strong>±19,3°</strong> y las alturas suben <strong>verticales en píxeles puros</strong>. Si se dibuja con otro ángulo, no encaja.</span>
+    <span class="i" lang="en"><b>In one sentence:</b> every element lives on a grid of <strong>80×28 px</strong> diamonds; floor lines run at <strong>±19.3°</strong> and heights rise <strong>straight up in pure pixels</strong>. Draw it at any other angle and it won't fit.</span>
+  </div>
+
+  <!-- 01 -->
+  <h2 id="proyeccion"><span class="n">01</span><span class="i" lang="es">Proyección — qué define "nuestro" isométrico</span><span class="i" lang="en">Projection — what defines "our" isometric</span></h2>
+  <p><span class="i" lang="es">No es el isométrico clásico 2:1. El tile base es <strong>80 × 28 px</strong>:</span><span class="i" lang="en">It's not the classic 2:1 isometric. The base tile is <strong>80 × 28 px</strong>:</span></p>
+  <ul>
+    <li><span class="i" lang="es"><strong>Ratio del rombo:</strong> <code>tileW:tileH = 80:28 ≈ 2,86:1</code></span><span class="i" lang="en"><strong>Diamond ratio:</strong> <code>tileW:tileH = 80:28 ≈ 2.86:1</code></span></li>
+    <li><span class="i" lang="es"><strong>Ángulo de las líneas de suelo:</strong> <code>atan(14/40) ≈ 19,3°</code> sobre la horizontal — un dimétrico "aplanado", más bajo que el 26,57° estándar.</span><span class="i" lang="en"><strong>Floor-line angle:</strong> <code>atan(14/40) ≈ 19.3°</code> from horizontal — a "flattened" dimetric, lower than the standard 26.57°.</span></li>
+    <li><span class="i" lang="es"><strong>Eje vertical (altura):</strong> recto hacia arriba, en <strong>píxeles puros</strong>. Un objeto de altura <code>H</code> sube <code>H</code> px verticales, sin inclinarse.</span><span class="i" lang="en"><strong>Vertical axis (height):</strong> straight up, in <strong>pure pixels</strong>. An object of height <code>H</code> rises <code>H</code> vertical px, with no tilt.</span></li>
+  </ul>
+  <p><span class="i" lang="es">Un tile de suelo es un rombo de 80 ancho × 28 alto. Vértices respecto al de arriba: derecha <code>(+40,+14)</code>, abajo <code>(0,+28)</code>, izquierda <code>(−40,+14)</code>.</span><span class="i" lang="en">A floor tile is a diamond 80 wide × 28 tall. Vertices relative to the top one: right <code>(+40,+14)</code>, bottom <code>(0,+28)</code>, left <code>(−40,+14)</code>.</span></p>
+
+  <figure>
+    <svg class="diagram" viewBox="0 0 620 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Isometric 80x28 tile diagram with a sample block, its three faces and the anchor point">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#78f3ff"/></marker>
+      </defs>
+      <g stroke="rgba(120,243,255,.16)" fill="none" stroke-width="1">
+        <polygon points="150,250 230,290 150,330 70,290"/>
+        <polygon points="230,290 310,330 230,370 150,330"/>
+        <polygon points="230,210 310,250 230,290 150,250"/>
+      </g>
+      <polygon points="150,250 230,290 150,330 70,290" fill="rgba(120,243,255,.06)" stroke="#78f3ff" stroke-width="1.5"/>
+      <line x1="70" y1="290" x2="230" y2="290" stroke="#ffd866" stroke-width="1" stroke-dasharray="4 3" marker-start="url(#arrow)" marker-end="url(#arrow)" opacity=".8"/>
+      <text x="150" y="284" fill="#ffd866" font-size="12" font-family="monospace" text-anchor="middle">tileW = 80</text>
+      <line x1="248" y1="250" x2="248" y2="330" stroke="#ffd866" stroke-width="1" stroke-dasharray="4 3" marker-start="url(#arrow)" marker-end="url(#arrow)" opacity=".8"/>
+      <text x="256" y="294" fill="#ffd866" font-size="12" font-family="monospace" text-anchor="start">tileH=28</text>
+      <text x="96" y="278" fill="#75aab9" font-size="11" font-family="monospace"><tspan class="i" lang="es">19,3°</tspan><tspan class="i" lang="en">19.3°</tspan></text>
+
+      <polygon points="430,180 510,220 430,260 350,220" fill="#a88860"/>
+      <polygon points="350,220 430,260 430,330 350,290" fill="#6a5030"/>
+      <polygon points="430,260 510,220 510,290 430,330" fill="#8b6b45"/>
+      <line x1="430" y1="180" x2="350" y2="220" stroke="#fff" stroke-opacity=".25" stroke-width="1.5"/>
+      <text x="430" y="216" fill="#02080d" font-size="11" font-family="monospace" text-anchor="middle" font-weight="700">TOP</text>
+      <text x="388" y="296" fill="#dff8ff" font-size="11" font-family="monospace" text-anchor="middle"><tspan class="i" lang="es">IZQ</tspan><tspan class="i" lang="en">LEFT</tspan></text>
+      <text x="472" y="296" fill="#02080d" font-size="11" font-family="monospace" text-anchor="middle"><tspan class="i" lang="es">DER</tspan><tspan class="i" lang="en">RIGHT</tspan></text>
+      <circle cx="430" cy="330" r="5" fill="#ff4f4f" stroke="#fff" stroke-width="1.5"/>
+      <text x="440" y="352" fill="#ff4f4f" font-size="12" font-family="monospace"><tspan class="i" lang="es">anchor (apoyo en suelo)</tspan><tspan class="i" lang="en">anchor (floor contact)</tspan></text>
+      <line x1="525" y1="290" x2="525" y2="220" stroke="#ffd866" stroke-width="1" stroke-dasharray="4 3" marker-start="url(#arrow)" marker-end="url(#arrow)" opacity=".8"/>
+      <text x="533" y="258" fill="#ffd866" font-size="11" font-family="monospace"><tspan class="i" lang="es">altura (px)</tspan><tspan class="i" lang="en">height (px)</tspan></text>
+    </svg>
+    <figcaption><span class="i" lang="es">Tile base 80×28 (izq.) · prisma con 3 caras y anclaje (der.)</span><span class="i" lang="en">Base tile 80×28 (left) · prism with 3 faces and anchor (right)</span></figcaption>
+  </figure>
+
+  <div class="callout"><span class="i" lang="es"><b>Regla de oro para diseño:</b> verticales = verticales en pantalla; horizontales siguen ±19,3°. Cualquier sprite con otro ángulo NO encaja.</span><span class="i" lang="en"><b>Golden design rule:</b> verticals = verticals on screen; horizontals follow ±19.3°. Any sprite at another angle will NOT fit.</span></div>
+
+  <!-- 02 -->
+  <h2 id="huella"><span class="n">02</span><span class="i" lang="es">Huella (footprint) — todo va sobre rejilla</span><span class="i" lang="en">Footprint — everything sits on the grid</span></h2>
+  <p><span class="i" lang="es">Cada elemento ocupa <strong>N×M tiles</strong> de suelo. La huella se mide en tiles; la altura, en píxeles.</span><span class="i" lang="en">Each element occupies <strong>N×M floor tiles</strong>. The footprint is measured in tiles; the height, in pixels.</span></p>
+  <ul>
+    <li><span class="i" lang="es"><strong>Ancho</strong> = nº de tiles en X · <strong>Fondo</strong> = nº de tiles en Y · <strong>Altura</strong> = px</span><span class="i" lang="en"><strong>Width</strong> = tiles in X · <strong>Depth</strong> = tiles in Y · <strong>Height</strong> = px</span></li>
+    <li><span class="i" lang="es">1 tile = 80×28 px. Ej.: un mostrador de <code>1×2 tiles</code> = 40 px de frente × 80 px de fondo en planta.</span><span class="i" lang="en">1 tile = 80×28 px. E.g. a <code>1×2 tile</code> counter = 40 px frontage × 80 px depth in plan.</span></li>
+  </ul>
+  <table>
+    <tr><th><span class="i" lang="es">Elemento (motor real)</span><span class="i" lang="en">Element (real engine)</span></th><th><span class="i" lang="es">Huella</span><span class="i" lang="en">Footprint</span></th><th><span class="i" lang="es">Altura</span><span class="i" lang="en">Height</span></th></tr>
+    <tr><td><span class="i" lang="es">Mostrador</span><span class="i" lang="en">Counter</span></td><td><code>1×2</code></td><td><code>16 px</code></td></tr>
+    <tr><td><span class="i" lang="es">Caja registradora</span><span class="i" lang="en">Cash register</span></td><td><code>1×2</code></td><td><code>16 px</code></td></tr>
+    <tr><td><span class="i" lang="es">Aromatizador</span><span class="i" lang="en">Air freshener</span></td><td><code>1×1</code></td><td><code>44 px</code></td></tr>
+    <tr><td><span class="i" lang="es">Kiosco / tótem</span><span class="i" lang="en">Kiosk / totem</span></td><td><code>~0,64×0,64</code></td><td><span class="i" lang="es"><code>variable</code></span><span class="i" lang="en"><code>variable</code></span></td></tr>
+  </table>
+
+  <!-- 03 -->
+  <h2 id="anclaje"><span class="n">03</span><span class="i" lang="es">Anclaje (pivot) — para que no "flote"</span><span class="i" lang="en">Anchor (pivot) — so it doesn't "float"</span></h2>
+  <ul>
+    <li><span class="i" lang="es">El anclaje es la <strong>esquina origen del tile de la huella</strong> (vértice superior del rombo base, el punto rojo del diagrama). El objeto se apoya ahí, crece hacia arriba (altura) y hacia derecha/abajo (huella).</span><span class="i" lang="en">The anchor is the <strong>origin corner of the footprint tile</strong> (top vertex of the base diamond, the red dot in the diagram). The object rests there, grows upward (height) and toward right/down (footprint).</span></li>
+    <li><span class="i" lang="es">Entregar cada PNG con su <strong>anchor marcado</strong>, o mejor en un JSON acompañante.</span><span class="i" lang="en">Ship each PNG with its <strong>anchor marked</strong>, or better, in an accompanying JSON.</span></li>
+  </ul>
+  <pre><code>{
+  "id": "expositor-tabaco",
+  "footprint": [1, 2],     <span class="i" lang="es">// ancho × fondo en tiles</span><span class="i" lang="en">// width × depth in tiles</span>
+  "heightPx": 90,
+  "anchor": [40, 118],     <span class="i" lang="es">// px del PNG que toca el suelo en la esquina origen</span><span class="i" lang="en">// px of the PNG touching the floor at the origin corner</span>
+  "screenRect": null,      <span class="i" lang="es">// o [x,y,w,h] si lleva pantalla</span><span class="i" lang="en">// or [x,y,w,h] if it has a screen</span>
+  "palette": { "top":"#a88860", "left":"#6a5030", "right":"#8b6b45" }
+}</code></pre>
+
+  <!-- 04 -->
+  <h2 id="luz"><span class="n">04</span><span class="i" lang="es">Iluminación — 3 caras fijas</span><span class="i" lang="en">Lighting — 3 fixed faces</span></h2>
+  <p><span class="i" lang="es">Todo se modela como prisma con tres tonos del mismo color. Luz implícita desde <strong>arriba-izquierda</strong>. Mantener este esquema en TODOS los elementos para coherencia visual.</span><span class="i" lang="en">Everything is modeled as a prism with three shades of the same color. Implicit light from the <strong>top-left</strong>. Keep this scheme on ALL elements for visual consistency.</span></p>
+  <table>
+    <tr><th><span class="i" lang="es">Cara</span><span class="i" lang="en">Face</span></th><th><span class="i" lang="es">Tono</span><span class="i" lang="en">Shade</span></th><th><span class="i" lang="es">Ejemplo (madera)</span><span class="i" lang="en">Example (wood)</span></th></tr>
+    <tr><td><span class="i" lang="es">Superior (top)</span><span class="i" lang="en">Top</span></td><td><span class="i" lang="es">la más clara</span><span class="i" lang="en">the lightest</span></td><td><code><span class="swatch" style="background:#a88860"></span>#a88860</code></td></tr>
+    <tr><td><span class="i" lang="es">Derecha</span><span class="i" lang="en">Right</span></td><td><span class="i" lang="es">media / base</span><span class="i" lang="en">mid / base</span></td><td><code><span class="swatch" style="background:#8b6b45"></span>#8b6b45</code></td></tr>
+    <tr><td><span class="i" lang="es">Izquierda</span><span class="i" lang="en">Left</span></td><td><span class="i" lang="es">la más oscura</span><span class="i" lang="en">the darkest</span></td><td><code><span class="swatch" style="background:#6a5030"></span>#6a5030</code></td></tr>
+  </table>
+  <p><span class="i" lang="es">Color de pared del local actual: <code><span class="swatch" style="background:#e8dcc0"></span>#e8dcc0</code>.</span><span class="i" lang="en">Wall color of the current venue: <code><span class="swatch" style="background:#e8dcc0"></span>#e8dcc0</code>.</span></p>
+
+  <!-- 05 -->
+  <h2 id="render"><span class="n">05</span><span class="i" lang="es">Dos modos de render</span><span class="i" lang="en">Two render modes</span></h2>
+  <p><span class="i" lang="es">Entregar compatible con ambos. Si entregáis PNG, hacedlo en estilo <strong>16-bit</strong> (es el de feria).</span><span class="i" lang="en">Deliver compatible with both. If you ship PNGs, use the <strong>16-bit</strong> style (that's the trade-show one).</span></p>
+  <ul>
+    <li><span class="i" lang="es"><strong>flat:</strong> color plano por cara (look limpio/retro).</span><span class="i" lang="en"><strong>flat:</strong> solid color per face (clean/retro look).</span></li>
+    <li><span class="i" lang="es"><strong>16-bit:</strong> gradiente diagonal en la cara superior, gradiente vertical en laterales, <em>sheen</em> blanco al 12–20% en aristas superiores, líneas de arista negras de 0,6 px.</span><span class="i" lang="en"><strong>16-bit:</strong> diagonal gradient on the top face, vertical gradient on the sides, white <em>sheen</em> at 12–20% on top edges, 0.6 px black edge lines.</span></li>
+    <li><span class="i" lang="es"><strong>Neón (opcional):</strong> glow de color en las dos aristas superiores, para acentos/marca.</span><span class="i" lang="en"><strong>Neon (optional):</strong> colored glow on the two top edges, for accents/branding.</span></li>
+    <li><span class="i" lang="es"><strong>Sombra:</strong> elipse de contacto en el suelo bajo la huella (la pinta el motor) — dejad hueco transparente, no la queméis.</span><span class="i" lang="en"><strong>Shadow:</strong> contact ellipse on the floor under the footprint (the engine draws it) — leave transparent space, don't bake it in.</span></li>
+  </ul>
+
+  <!-- 06 -->
+  <h2 id="pantallas"><span class="n">06</span><span class="i" lang="es">Superficies de pantalla (signage)</span><span class="i" lang="en">Screen surfaces (signage)</span></h2>
+  <p><span class="i" lang="es">Si el elemento lleva pantalla, su contenido es una zona <strong>16:9</strong>, base <strong>160×90 px</strong>, que el motor rellena con vídeo/imagen en vivo.</span><span class="i" lang="en">If the element has a screen, its content is a <strong>16:9</strong> area, base <strong>160×90 px</strong>, which the engine fills with live video/image.</span></p>
+  <div class="callout"><span class="i" lang="es"><b>Importante:</b> dejad la pantalla como <strong>hueco/marco transparente</strong>. No queméis contenido dentro — el twin lo inyecta en tiempo real.</span><span class="i" lang="en"><b>Important:</b> leave the screen as a <strong>transparent hole/frame</strong>. Don't bake content inside — the twin injects it in real time.</span></div>
+
+  <!-- 07 -->
+  <h2 id="entrega"><span class="n">07</span><span class="i" lang="es">Entregables técnicos</span><span class="i" lang="en">Technical deliverables</span></h2>
+  <ul>
+    <li><span class="i" lang="es"><strong>PNG transparentes</strong>, preferible <strong>@2x</strong> (tile lógico 160×56) + versión @1x. Alpha real, sin sombra quemada.</span><span class="i" lang="en"><strong>Transparent PNGs</strong>, preferably <strong>@2x</strong> (logical tile 160×56) + an @1x version. Real alpha, no baked shadow.</span></li>
+    <li><span class="i" lang="es">Un archivo por elemento (+ hoja de sprites si hay estados: on/off, día/noche…).</span><span class="i" lang="en">One file per element (+ a sprite sheet if there are states: on/off, day/night…).</span></li>
+    <li><span class="i" lang="es"><strong>JSON</strong> por elemento: <code>footprint</code>, <code>heightPx</code>, <code>anchor</code>, <code>screenRect</code>, <code>palette</code>.</span><span class="i" lang="en"><strong>JSON</strong> per element: <code>footprint</code>, <code>heightPx</code>, <code>anchor</code>, <code>screenRect</code>, <code>palette</code>.</span></li>
+    <li><span class="i" lang="es">Paleta limitada y plana (encaja con el look canvas); evitar texturas fotográficas.</span><span class="i" lang="en">Limited, flat palette (matches the canvas look); avoid photographic textures.</span></li>
+  </ul>
+
+  <!-- 08 -->
+  <h2 id="nativo"><span class="n">08</span><span class="i" lang="es">Alternativa nativa (opcional, integración más barata)</span><span class="i" lang="en">Native alternative (optional, cheaper integration)</span></h2>
+  <p><span class="i" lang="es">El motor dibuja por código, no por imágenes. La primitiva es:</span><span class="i" lang="en">The engine draws by code, not by images. The primitive is:</span></p>
+  <pre><code>drawIsoBlock(col, row, <span class="i" lang="es">ancho, fondo, alturaPx</span><span class="i" lang="en">width, depth, heightPx</span>, topCol, leftCol, rightCol, neonCol)
+<span class="i" lang="es">//            ↑ posición en rejilla   ↑ huella en tiles  ↑ px   ↑ 3 caras + neón opc.</span><span class="i" lang="en">//            ↑ grid position         ↑ footprint tiles  ↑ px   ↑ 3 faces + optional neon</span></code></pre>
+  <p><span class="i" lang="es">Si pixeria entrega el elemento <strong>descompuesto en cajas</strong> (lista de prismas: huella + altura + 3 colores), lo integramos sin imágenes y pesa <strong>0 KB</strong>. Ideal para mobiliario sencillo (mostrador, expositor, peana).</span><span class="i" lang="en">If pixeria delivers the element <strong>decomposed into boxes</strong> (a list of prisms: footprint + height + 3 colors), we integrate it with no images and it weighs <strong>0 KB</strong>. Ideal for simple furniture (counter, display, plinth).</span></p>
+
+  <footer class="doc">
+    XpaceOS · Admira XP Digital Twin — <a href="https://www.xpaceos.com">xpaceos.com</a><br>
+    <span class="i" lang="es">Proyección 80×28 · Esta página es de referencia técnica (no indexada).</span><span class="i" lang="en">80×28 projection · This page is technical reference (not indexed).</span>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    var KEY='xpace_lang';
+    function apply(l){l=(l==='en')?'en':'es';document.documentElement.lang=l;try{localStorage.setItem(KEY,l)}catch(e){}
+      var b=document.getElementById('langToggle');if(b)b.textContent=(l==='es')?'EN':'ES';}
+    var saved;try{saved=localStorage.getItem(KEY)}catch(e){}
+    apply(saved||document.documentElement.lang||'es');
+    var b=document.getElementById('langToggle');
+    if(b)b.addEventListener('click',function(e){e.preventDefault();apply(document.documentElement.lang==='es'?'en':'es');});
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buscador de elementos urbanos · XpaceOS</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{ --bg:#0b0e14; --panel:#131822; --line:#26303f; --ink:#e8eef7; --mut:#8a97ab; --acc:#5bd6c0; --acc2:#7aa2ff; --mono:'SF Mono',ui-monospace,Menlo,monospace; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+  #app{display:flex;height:100%}
+  #side{width:340px;flex:none;min-width:0;overflow:hidden;background:var(--panel);transition:width .28s ease}
+  #side.collapsed{width:0}
+  .side-in{width:340px;height:100%;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+  /* pestaña plegable (como Google Maps) */
+  #side-toggle{position:fixed;top:50%;left:340px;transform:translateY(-50%);z-index:1100;width:22px;height:56px;
+    background:var(--panel);border:1px solid var(--line);border-left:none;border-radius:0 10px 10px 0;color:var(--mut);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font:700 15px var(--mono);
+    transition:left .28s ease,color .15s;box-shadow:3px 0 12px #0006}
+  #side-toggle:hover{color:var(--ink)}
+  #side-toggle.collapsed{left:54px}
+  /* mini-rail de iconos cuando el panel está plegado (estilo Google Maps) */
+  #rail{position:fixed;left:0;top:0;bottom:0;width:54px;z-index:1100;background:var(--panel);border-right:1px solid var(--line);
+    display:none;flex-direction:column;align-items:center;gap:6px;padding:12px 0;box-shadow:3px 0 12px #0005}
+  #rail.show{display:flex}
+  #rail button{width:40px;height:40px;border:1px solid transparent;background:transparent;color:var(--mut);border-radius:11px;
+    cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;position:relative}
+  #rail button:hover{background:#1a212e;color:var(--ink)}
+  #rail .rbadge{position:absolute;top:1px;right:1px;min-width:15px;height:15px;border-radius:8px;background:var(--acc);color:#06231e;
+    font:700 9px var(--mono);display:flex;align-items:center;justify-content:center;padding:0 3px}
+  header{padding:12px 14px;border-bottom:1px solid var(--line)}
+  header h1{font-size:15px;margin:0;font-weight:800}
+  header h1 .tag{color:var(--acc);font-family:var(--mono)}
+  header .sub{color:var(--mut);font-size:11px;margin-top:2px}
+  .ctrls{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+  select,button.btn{font-family:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:#1a212e;color:var(--ink);border-radius:9px;padding:8px 11px;font-weight:600}
+  button.btn.primary{background:var(--acc);color:#06231e;border-color:var(--acc)}
+  button.btn:hover{border-color:var(--acc)}
+  .stat{color:var(--mut);font-size:11px;font-family:var(--mono)}
+  #list{flex:1;overflow:auto;padding:6px 10px}
+  .it{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;cursor:pointer}
+  .it:hover{border-color:var(--acc2)}
+  .it b{font-size:13px}
+  .it .meta{color:var(--mut);font-size:11px;font-family:var(--mono);margin:3px 0 7px}
+  .it .acts{display:flex;gap:6px;flex-wrap:wrap}
+  .it .acts a,.it .acts button{font-size:11.5px;text-decoration:none;border:1px solid var(--line);border-radius:7px;padding:4px 8px;color:var(--acc2);background:#0e1622;cursor:pointer;font-weight:600}
+  .it .acts button.add{color:#06231e;background:var(--acc);border-color:var(--acc)}
+  #map{flex:1}
+  .circuit{border-top:1px solid var(--line);padding:10px 14px;max-height:34%;overflow:auto}
+  .circuit h3{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--acc)}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);border:1px solid var(--line);border-radius:7px;padding:3px 7px;margin:0 4px 4px 0}
+  .chip a{color:var(--bad,#ff6b6b);text-decoration:none}
+  .leaflet-popup-content{font-family:-apple-system,sans-serif}
+  .leaflet-container{background:#0a0d13}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="side"><div class="side-in">
+    <header>
+      <h1>Buscador urbano <span class="tag">· XpaceOS</span></h1>
+      <div class="sub">elementos de OOH en la ciudad · sin clave (OpenStreetMap)</div>
+    </header>
+    <div class="ctrls">
+      <select id="kind">
+        <option value="kiosk">📰 Kioskos de prensa</option>
+        <option value="ad">🪧 Soportes publicitarios (MUPI/valla)</option>
+        <option value="busstop">🚏 Marquesinas de bus</option>
+      </select>
+      <button class="btn primary" id="search">🔍 Buscar en el área visible</button>
+      <div class="stat" id="stat">mueve el mapa a tu zona y busca</div>
+    </div>
+    <div id="list"></div>
+    <div class="circuit">
+      <h3>🎬 Circuito del emulador <button class="btn" id="open-emu" style="float:right;padding:3px 8px;font-size:11px">abrir ▶</button></h3>
+      <div id="chips" class="stat">vacío · añade kioskos con ➕</div>
+    </div>
+  </div></div>
+  <div id="map"></div>
+  <button id="side-toggle" title="ocultar / mostrar panel">‹</button>
+  <div id="rail">
+    <button id="rail-menu" title="abrir panel">☰</button>
+    <button id="rail-search" title="buscar kioskos">🔍</button>
+    <button id="rail-circuit" title="circuito del emulador">🎬<span class="rbadge" id="rail-count" style="display:none">0</span></button>
+    <button id="rail-emu" title="abrir emulador">🗺️</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const BCN=[41.3954,2.1620];
+const map=L.map('map',{zoomControl:true}).setView(BCN,14);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:'© OpenStreetMap · © CARTO', maxZoom:20 }).addTo(map);
+const $=s=>document.querySelector(s);
+let markers=[];
+function clearMarkers(){ markers.forEach(m=>map.removeLayer(m)); markers=[]; }
+
+// Overpass query por tipo de elemento
+function queryFor(kind, b){
+  const bbox=`${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
+  if(kind==='kiosk') return `node["shop"="kiosk"](${bbox});node["shop"="newsagent"](${bbox});`;
+  if(kind==='ad')    return `node["advertising"](${bbox});way["advertising"](${bbox});`;
+  if(kind==='busstop') return `node["highway"="bus_stop"](${bbox});`;
+  return '';
+}
+async function search(){
+  const kind=$('#kind').value, b=map.getBounds();
+  $('#stat').textContent='buscando…';
+  const q=`[out:json][timeout:25];(${queryFor(kind,b)});out center 200;`;
+  try{
+    const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q)});
+    const d=await r.json(); const els=(d.elements||[]).map(e=>({
+      id:e.type[0]+e.id, lat:e.lat||(e.center&&e.center.lat), lon:e.lon||(e.center&&e.center.lon),
+      t:e.tags||{} })).filter(e=>e.lat&&e.lon);
+    render(els);
+    $('#stat').textContent=els.length+' encontrados en el área';
+  }catch(e){ $('#stat').textContent='error de red (Overpass); reintenta'; }
+}
+function svLink(lat,lon){ return `https://www.google.com/maps?q=&layer=c&cbll=${lat},${lon}`; }
+function elName(t){
+  if(t.name) return t.name;
+  if(t.operator) return t.operator;
+  if(t.shop==='newsagent') return 'Kiosko de prensa';
+  if(t.shop==='kiosk') return 'Kiosko';
+  if(t.advertising) return 'Soporte '+t.advertising;
+  if(t.highway==='bus_stop') return 'Marquesina bus';
+  return 'Elemento';
+}
+function render(els){
+  clearMarkers(); const list=$('#list'); list.innerHTML='';
+  els.forEach(e=>{
+    const name=elName(e.t);
+    const addr=[e.t['addr:street'],e.t['addr:housenumber']].filter(Boolean).join(' ');
+    const m=L.circleMarker([e.lat,e.lon],{radius:7,color:'#5bd6c0',weight:2,fillColor:'#5bd6c0',fillOpacity:.5}).addTo(map);
+    m.bindPopup(`<b>${name}</b><br><small>${addr||(e.lat.toFixed(5)+', '+e.lon.toFixed(5))}</small><br>
+      <a href="${svLink(e.lat,e.lon)}" target="_blank">📷 Street View</a> · <a href="#" onclick="addStop('${e.id}','${name.replace(/'/g,'')}',${e.lat},${e.lon});return false">➕ al circuito</a>`);
+    markers.push(m);
+    const div=document.createElement('div'); div.className='it';
+    div.innerHTML=`<b>${name}</b><div class="meta">📍 ${addr||e.lat.toFixed(5)+', '+e.lon.toFixed(5)}</div>
+      <div class="acts"><a href="${svLink(e.lat,e.lon)}" target="_blank">📷 Street View</a>
+      <button class="add" data-id="${e.id}" data-n="${name.replace(/"/g,'')}" data-la="${e.lat}" data-lo="${e.lon}">➕ al circuito</button></div>`;
+    div.querySelector('.acts a').addEventListener('click',ev=>ev.stopPropagation());
+    div.onclick=()=>{ map.setView([e.lat,e.lon],18); m.openPopup(); };
+    div.querySelector('.add').onclick=ev=>{ ev.stopPropagation(); const b=ev.target; addStop(b.dataset.id,b.dataset.n,+b.dataset.la,+b.dataset.lo); };
+    list.appendChild(div);
+  });
+}
+// circuito compartido con el emulador (localStorage)
+function circuit(){ try{ return JSON.parse(localStorage.getItem('mupiCircuit')||'[]'); }catch(e){ return []; } }
+function saveCircuit(c){ localStorage.setItem('mupiCircuit', JSON.stringify(c)); renderChips(); }
+window.addStop=function(id,name,lat,lon){ const c=circuit(); if(c.find(s=>s.id===id)) return; c.push({id,name,lat,lon}); saveCircuit(c); $('#stat').textContent='➕ '+name+' al circuito ('+c.length+')'; };
+function renderChips(){ const c=circuit(); $('#chips').innerHTML = c.length? c.map(s=>`<span class="chip">📍 ${s.name} <a href="#" onclick="delStop('${s.id}');return false">✕</a></span>`).join('') : 'vacío · añade kioskos con ➕';
+  const rc=$('#rail-count'); if(rc){ rc.textContent=c.length; rc.style.display=c.length?'flex':'none'; } }
+window.delStop=function(id){ saveCircuit(circuit().filter(s=>s.id!==id)); };
+$('#open-emu').onclick=()=>window.open('../emulador/','_blank');
+$('#search').onclick=search;
+// panel plegable estilo Google Maps
+(function(){
+  const side=$('#side'), tog=$('#side-toggle'), rail=$('#rail');
+  function set(col){ side.classList.toggle('collapsed',col); tog.classList.toggle('collapsed',col); rail.classList.toggle('show',col); tog.textContent=col?'›':'‹';
+    try{ localStorage.setItem('buscadorCollapsed', col?'1':'0'); }catch(e){}
+    setTimeout(()=>{ try{ map.invalidateSize(); }catch(e){} }, 300); }
+  tog.onclick=()=>set(!side.classList.contains('collapsed'));
+  $('#rail-menu').onclick=()=>set(false);
+  $('#rail-search').onclick=()=>{ set(false); setTimeout(()=>{ try{ $('#search').focus(); }catch(e){} },360); };
+  $('#rail-circuit').onclick=()=>{ set(false); setTimeout(()=>{ const c=document.querySelector('.circuit'); if(c) c.scrollIntoView({behavior:'smooth'}); },360); };
+  $('#rail-emu').onclick=()=>window.open('../emulador/','_blank');
+  let init=false; try{ init=localStorage.getItem('buscadorCollapsed')==='1'; }catch(e){}
+  if(init) set(true);
+})();
+renderChips();
+setTimeout(search, 500);   // primera búsqueda en BCN
+</script>
+</body>
+</html>

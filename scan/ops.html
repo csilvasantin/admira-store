@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XpaceScan · Sala de Máquinas</title>
+<link rel="icon" href="../favicon.ico">
+<style>
+:root{
+  --bg:#050a08; --panel:#0b1410; --line:#123524; --txt:#d7ffe9;
+  --dim:#6fa88a; --acc:#28e07c; --warn:#ffb347; --err:#ff5d5d; --blu:#66ccff;
+}
+*{box-sizing:border-box}
+html,body{margin:0; height:100%; background:var(--bg); color:var(--txt);
+  font:14px/1.5 -apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif; overflow:hidden}
+#frame{display:grid; height:100vh;
+  grid-template-rows:46px 1fr auto; grid-template-columns:1fr;
+  grid-template-areas:"top" "center" "bottom"}
+#frame.hide-experto #bar-bottom{display:none}
+.bar{background:var(--panel)}
+#bar-top{grid-area:top; display:flex; align-items:center; gap:12px; padding:0 14px;
+  border-bottom:1px solid var(--line)}
+.logo{font-weight:700; letter-spacing:.5px; color:var(--acc)}
+.ver{margin-left:auto; font-size:11px; color:var(--dim); white-space:nowrap}
+.ver a{color:var(--acc)}
+#pf-toggles{display:flex; gap:8px}
+#pf-toggles button{background:none; border:1px solid var(--line); color:var(--dim);
+  border-radius:6px; padding:2px 9px; font-size:12px; cursor:pointer}
+#pf-toggles button.on{color:var(--acc); border-color:var(--acc)}
+#center{grid-area:center; overflow:auto; padding:16px; display:grid; gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); align-content:start}
+#pipeline{grid-column:1/-1; display:flex; gap:0; align-items:center; flex-wrap:wrap;
+  background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 16px}
+.stage{display:flex; align-items:center; gap:8px}
+.stage .dot{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.stage.done .dot{background:var(--acc)}
+.stage.run .dot{background:var(--warn); animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.stage .lbl{font-size:12px; color:var(--dim)}
+.stage.done .lbl,.stage.run .lbl{color:var(--txt)}
+.arrow{margin:0 12px; color:var(--line)}
+.maquina{background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:14px; min-height:260px; display:flex; flex-direction:column}
+.maquina h3{margin:0 0 2px; font-size:14px; display:flex; align-items:center; gap:8px}
+.maquina .estado-dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.maquina.viva .estado-dot{background:var(--acc); box-shadow:0 0 8px var(--acc)}
+.maquina .rol{font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px}
+.maquina .focus{font-size:13px; color:var(--warn); min-height:20px; margin-bottom:8px}
+.prog{height:14px; background:#03120a; border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; margin-bottom:4px}
+.prog .fill{height:100%; width:0%; background:linear-gradient(90deg,#123524,var(--acc));
+  transition:width .8s}
+.prog-lbl{font-size:12px; color:var(--acc); min-height:18px; margin-bottom:8px;
+  font-variant-numeric:tabular-nums}
+.feed{flex:1; overflow:auto; border-top:1px dashed var(--line); padding-top:8px;
+  font:11.5px/1.6 ui-monospace,Menlo,monospace; color:var(--dim)}
+.feed .e{margin-bottom:6px}
+.feed .t{color:#3d6b52; margin-right:6px}
+.feed .err{color:var(--err)} .feed .hito{color:var(--acc)}
+#bar-bottom{grid-area:bottom; border-top:1px solid var(--line); padding:8px 14px;
+  max-height:140px; overflow:auto; font:11.5px/1.6 ui-monospace,Menlo,monospace; color:var(--dim)}
+.pill{background:rgba(5,10,8,.7); border:1px solid var(--line); border-radius:999px;
+  padding:3px 12px; font-size:12px; color:var(--dim)}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="bar-top" class="bar">
+    <span class="logo">XPACESCAN · SALA DE MÁQUINAS</span>
+    <span class="pill" id="reloj">—</span>
+    <div id="pf-toggles"><button id="tg-experto" class="on" title="experto">⌥</button></div>
+    <span class="ver">v26.07.02.1 · <a href="index.html">capturar</a> · <a href="visor.html">visor</a> · <a href="https://admira.live/diario.html">diario</a></span>
+  </div>
+
+  <div id="center">
+    <div id="pipeline">
+      <span class="stage" data-k="captura"><span class="dot"></span><span class="lbl">📱 Captura</span></span><span class="arrow">→</span>
+      <span class="stage" data-k="frames"><span class="dot"></span><span class="lbl">🎞 Frames</span></span><span class="arrow">→</span>
+      <span class="stage" data-k="colmap"><span class="dot"></span><span class="lbl">📐 COLMAP (poses)</span></span><span class="arrow">→</span>
+      <span class="stage" data-k="entren"><span class="dot"></span><span class="lbl">🧠 Entrenamiento 3DGS</span></span><span class="arrow">→</span>
+      <span class="stage" data-k="splat"><span class="dot"></span><span class="lbl">🧊 Splat</span></span><span class="arrow">→</span>
+      <span class="stage" data-k="visor"><span class="dot"></span><span class="lbl">🕹 Visor isométrico</span></span>
+    </div>
+    <div class="maquina" id="m-mac">
+      <h3><span class="estado-dot"></span>MacBookProNegro14</h3>
+      <div class="rol">Morfeo · captura + COLMAP</div>
+      <div class="focus"></div>
+      <div class="prog"><div class="fill"></div></div><div class="prog-lbl">sin tarea activa</div>
+      <div class="feed"></div>
+    </div>
+    <div class="maquina" id="m-ts">
+      <h3><span class="estado-dot"></span>ThinkStation PGX</h3>
+      <div class="rol">GB10 · entrenamiento 3DGS</div>
+      <div class="focus"></div>
+      <div class="prog"><div class="fill"></div></div><div class="prog-lbl">sin tarea activa</div>
+      <div class="feed"></div>
+    </div>
+    <div class="maquina" id="m-dgx">
+      <h3><span class="estado-dot"></span>DGX Spark</h3>
+      <div class="rol">GB10 · COLMAP A/B + refuerzo</div>
+      <div class="focus"></div>
+      <div class="prog"><div class="fill"></div></div><div class="prog-lbl">sin tarea activa</div>
+      <div class="feed"></div>
+    </div>
+  </div>
+
+  <div id="bar-bottom" class="bar"><b style="color:var(--dim)">EXPERTO · feed crudo</b><div id="raw"></div></div>
+</div>
+
+<script>
+const API='https://admira-telegram.csilvasantin.workers.dev';
+const $=s=>document.querySelector(s);
+$('#tg-experto').onclick=()=>{ $('#frame').classList.toggle('hide-experto');
+  $('#tg-experto').classList.toggle('on'); };
+
+const MAQ={ 'MacBookProNegro14':'#m-mac', 'lenovo-thinkstation':'#m-ts',
+  'spark-1e61':'#m-dgx', 'dgx-spark':'#m-dgx' };
+const ETAPAS=[['captura',/captura|vídeo|video/i],['frames',/frames/i],
+  ['colmap',/colmap|features|matching|mapper|nube/i],
+  ['entren',/entrenami|entrenando|splatfacto|iter/i],
+  ['splat',/splat export|SPLAT EXPORTADO/i],['visor',/visor|publicada/i]];
+
+function esXS(e){ return e.persona==='XpaceScan' || /XpaceScan/i.test(e.text||''); }
+function hora(ts){ return new Date(ts*1000).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); }
+
+async function tick(){
+  $('#reloj').textContent=new Date().toLocaleTimeString('es-ES');
+  try{
+    const d=await fetch(API+'/api/diary?limit=120').then(r=>r.json());
+    const es=(d.entries||[]).filter(esXS);
+    // feeds por máquina
+    document.querySelectorAll('.feed').forEach(f=>f.innerHTML='');
+    document.querySelectorAll('.maquina').forEach(m=>m.classList.remove('viva'));
+    const raw=[];
+    for(const e of es){
+      const sel=MAQ[e.machine]; raw.push(`[${hora(e.date)}] ${e.machine}: ${e.text}`);
+      if(!sel) continue;
+      const cls=/ERROR/i.test(e.text)?'err':(/TERMINADO|EXPORTADO|lista|OK/i.test(e.text)?'hito':'');
+      $(sel+' .feed').insertAdjacentHTML('beforeend',
+        `<div class="e ${cls}"><span class="t">${hora(e.date)}</span>${e.text.replace(/^🧊 XpaceScan · /,'')}</div>`);
+    }
+    $('#raw').innerHTML=raw.slice(0,40).join('<br>');
+    // progreso por máquina: primer (más reciente) mensaje con [NN% ...]
+    const hecho={};
+    for(const e of es){
+      const sel=MAQ[e.machine]; if(!sel||hecho[sel]) continue;
+      const m=(e.text||'').match(/\[(\d+)%(?:[^\]]*?(faltan[^\]]+))?\]/);
+      if(m){ hecho[sel]=1;
+        $(sel+' .prog .fill').style.width=m[1]+'%';
+        $(sel+' .prog-lbl').textContent=m[1]+'%'+(m[2]?' · '+m[2]:'')+
+          (m[1]==='100'?' · ✅ completado':'');
+      } else if(/ERROR/i.test(e.text)){ hecho[sel]=1;
+        $(sel+' .prog-lbl').textContent='⛔ error — ver feed'; }
+    }
+    // etapas del pipeline (según lo más reciente que mencione cada etapa)
+    const todo=es.map(e=>e.text).join(' · ');
+    for(const [k,re] of ETAPAS){
+      const st=document.querySelector(`.stage[data-k=${k}]`);
+      st.className='stage'+(re.test(todo)?' done':'');
+    }
+    // la etapa "en curso" = la última mencionada por la entrada más reciente
+    if(es[0]) for(const [k,re] of ETAPAS) if(re.test(es[0].text)){
+      const st=document.querySelector(`.stage[data-k=${k}]`);
+      if(!/TERMINADO|EXPORTADO/i.test(es[0].text)) st.className='stage run';
+    }
+    // presencia → focus + dot viva
+    const p=await fetch(API+'/api/presence').then(r=>r.json()).catch(()=>null);
+    for(const b of ((p&&p.presence)||[])){
+      const sel=MAQ[b.machine]; if(!sel) continue;
+      const viva=(Date.now()/1000-(b.updated||0))<900;
+      if(viva) $(sel).classList.add('viva');
+      if(b.focus) $(sel+' .focus').textContent=b.focus;
+    }
+  }catch(err){ $('#raw').innerHTML='error API: '+err.message; }
+}
+tick(); setInterval(tick,10000);
+</script>
+</body>
+</html>

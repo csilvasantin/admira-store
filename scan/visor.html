@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XpaceScan · Visor isométrico del gemelo</title>
+<link rel="icon" href="../favicon.ico">
+<style>
+:root{
+  --bg:#050a08; --panel:#0b1410; --line:#123524; --txt:#d7ffe9;
+  --dim:#6fa88a; --acc:#28e07c; --warn:#ffb347; --err:#ff5d5d;
+}
+*{box-sizing:border-box}
+html,body{margin:0; height:100%; background:var(--bg); color:var(--txt);
+  font:14px/1.5 -apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif; overflow:hidden}
+/* CUADRO portería: 4 barras + centro */
+#frame{display:grid; height:100vh;
+  grid-template-rows:46px 1fr auto;
+  grid-template-columns:210px 1fr 250px;
+  grid-template-areas:"top top top" "left center right" "bottom bottom bottom"}
+#frame.hide-avanzado{grid-template-columns:210px 1fr 0}
+#frame.hide-avanzado #bar-right{display:none}
+#frame.hide-experto #bar-bottom{display:none}
+.bar{background:var(--panel); overflow:auto}
+#bar-top{grid-area:top; display:flex; align-items:center; gap:12px; padding:0 14px;
+  border-bottom:1px solid var(--line); overflow:hidden}
+#bar-left{grid-area:left; border-right:1px solid var(--line); padding:12px}
+#bar-right{grid-area:right; border-left:1px solid var(--line); padding:12px}
+#bar-bottom{grid-area:bottom; border-top:1px solid var(--line); padding:8px 14px;
+  max-height:170px; font:12px/1.5 ui-monospace,Menlo,monospace}
+#center{grid-area:center; position:relative; overflow:auto; background:#000}
+canvas{display:block}
+.logo{font-weight:700; letter-spacing:.5px; color:var(--acc)}
+.ver{margin-left:auto; font-size:11px; color:var(--dim); white-space:nowrap}
+#pf-toggles{display:flex; gap:8px}
+#pf-toggles button{background:none; border:1px solid var(--line); color:var(--dim);
+  border-radius:6px; padding:2px 9px; font-size:12px; cursor:pointer}
+#pf-toggles button.on{color:var(--acc); border-color:var(--acc)}
+h3{margin:2px 0 8px; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--dim)}
+.grp{margin-bottom:16px}
+button.op{display:block; width:100%; text-align:left; margin:4px 0; padding:7px 10px;
+  background:#03120a; color:var(--txt); border:1px solid var(--line); border-radius:8px; cursor:pointer}
+button.op:hover{border-color:var(--acc)}
+button.op.on{border-color:var(--acc); color:var(--acc)}
+input[type=text],select{width:100%; background:#03120a; border:1px solid var(--line);
+  color:var(--txt); border-radius:8px; padding:7px 9px; margin:4px 0}
+label.sm{font-size:12px; color:var(--dim)}
+#hud{position:absolute; top:10px; left:12px; display:flex; gap:8px; pointer-events:none}
+.pill{background:rgba(5,10,8,.75); border:1px solid var(--line); border-radius:999px;
+  padding:3px 12px; font-size:12px; color:var(--dim)}
+#nodo-panel{position:absolute; right:12px; top:10px; width:230px; display:none;
+  background:rgba(11,20,16,.95); border:1px solid var(--acc); border-radius:12px; padding:12px}
+#nodo-panel h4{margin:0 0 6px; color:var(--acc)}
+#nodo-panel .k{color:var(--dim)}
+#nodo-panel button{margin-top:8px}
+#drop-hint{position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(40,224,124,.08); border:2px dashed var(--acc); font-size:18px; color:var(--acc);
+  pointer-events:none}
+textarea#nodos-json{width:100%; height:80px; background:#03120a; color:var(--txt);
+  border:1px solid var(--line); border-radius:8px; font:11px/1.4 ui-monospace,Menlo,monospace}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="bar-top" class="bar">
+    <span class="logo">XPACESCAN · VISOR</span>
+    <span class="pill" id="modo-pill">demo</span>
+    <div id="pf-toggles">
+      <button id="tg-avanzado" class="on" title="avanzado">▤</button>
+      <button id="tg-experto" class="on" title="experto">⌥</button>
+    </div>
+    <span class="ver">v26.07.02.1 · <a href="index.html">capturar</a> · <a href="../admira-xp/">gemelo XPL</a></span>
+  </div>
+
+  <div id="bar-left" class="bar">
+    <div class="grp">
+      <h3>Vista isométrica</h3>
+      <button class="op" data-rot="-1">⟲ Girar 90°</button>
+      <button class="op" data-rot="1">⟳ Girar 90°</button>
+      <button class="op" id="btn-zoom-in">＋ Acercar</button>
+      <button class="op" id="btn-zoom-out">－ Alejar</button>
+      <button class="op" id="btn-reset">⌂ Vista inicial</button>
+    </div>
+    <div class="grp">
+      <h3>Modo</h3>
+      <button class="op on" id="btn-demo">Xpacio demo</button>
+      <button class="op" id="btn-carga">Escena capturada…</button>
+    </div>
+    <div class="grp">
+      <h3>Capas</h3>
+      <button class="op on" id="btn-iot">Nodos IoT Admira</button>
+      <button class="op on" id="btn-grid">Rejilla suelo</button>
+    </div>
+  </div>
+
+  <div id="center">
+    <div id="hud">
+      <span class="pill" id="pill-cam">iso NE</span>
+      <span class="pill" id="pill-obj">—</span>
+    </div>
+    <div id="nodo-panel"></div>
+    <div id="drop-hint">suelta aquí el .ply / .splat / .ksplat</div>
+  </div>
+
+  <div id="bar-right" class="bar">
+    <div class="grp">
+      <h3>Avanzado · escena</h3>
+      <label class="sm">URL de escena (.ply nube / .splat / .ksplat)</label>
+      <input type="text" id="src-url" placeholder="scenes/mi-xpacio/points.ply">
+      <button class="op" id="btn-load-url">Cargar URL</button>
+      <label class="sm">…o arrastra el archivo al centro</label>
+    </div>
+    <div class="grp">
+      <h3>Avanzado · render</h3>
+      <label class="sm">Tamaño de punto</label>
+      <input type="text" id="pt-size" value="0.035">
+      <button class="op" id="btn-apply-pt">Aplicar</button>
+    </div>
+    <div class="grp">
+      <h3>Pipeline</h3>
+      <div class="sm" style="color:var(--dim)">
+        móvil → <a href="index.html">/scan</a> graba vídeo →
+        <code>scan-to-splat.sh</code> en el Mac → .ply/.splat → este visor.
+      </div>
+    </div>
+  </div>
+
+  <div id="bar-bottom" class="bar">
+    <b style="color:var(--dim)">EXPERTO</b> ·
+    nodos IoT (JSON editable, coords en metros del gemelo):
+    <textarea id="nodos-json" spellcheck="false"></textarea>
+    <button class="op" id="btn-nodos-apply" style="width:auto;display:inline-block">Aplicar nodos</button>
+    <span class="sm">acciones XPL vía <a href="../admira-xp/xpl.html">motor XPL</a> (worker xpl-store)</span>
+    <div id="log"></div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+
+const $=id=>document.getElementById(id);
+const logEl=$('log');
+const log=m=>{logEl.innerHTML+=m+'<br>'; logEl.scrollTop=1e9; console.log('[visor]',m);};
+
+/* ---------- toggles portería ---------- */
+$('tg-avanzado').onclick=()=>{ $('frame').classList.toggle('hide-avanzado');
+  $('tg-avanzado').classList.toggle('on'); resize(); };
+$('tg-experto').onclick=()=>{ $('frame').classList.toggle('hide-experto');
+  $('tg-experto').classList.toggle('on'); resize(); };
+
+/* ---------- escena three ---------- */
+const center=$('center');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+center.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x000503);
+
+let viewSize=9, rotStep=0; // 0=NE,1=NW,2=SW,3=SE
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,-100,300);
+function isoAngle(){ return Math.PI/4 + rotStep*Math.PI/2; }
+function placeCam(){
+  const a=isoAngle(), d=40, elev=Math.atan(1/Math.SQRT2); // isométrica clásica ~35.26°
+  cam.position.set(Math.cos(a)*d, Math.tan(elev)*d, Math.sin(a)*d);
+  cam.lookAt(0,0.8,0);
+  const names=['NE','NW','SW','SE'];
+  $('pill-cam').textContent='iso '+names[((rotStep%4)+4)%4];
+}
+function resize(){
+  requestAnimationFrame(()=>{
+    const w=center.clientWidth, h=center.clientHeight, ar=w/h;
+    cam.left=-viewSize*ar; cam.right=viewSize*ar; cam.top=viewSize; cam.bottom=-viewSize;
+    cam.updateProjectionMatrix(); renderer.setSize(w,h);
+  });
+}
+addEventListener('resize',resize);
+
+scene.add(new THREE.AmbientLight(0xffffff,.55));
+const sun=new THREE.DirectionalLight(0xffffff,1.1); sun.position.set(6,10,4); scene.add(sun);
+const grid=new THREE.GridHelper(24,24,0x28e07c,0x123524); grid.position.y=0.001; scene.add(grid);
+
+/* ---------- Xpacio demo (procedural) ---------- */
+const demo=new THREE.Group(); scene.add(demo);
+function box(w,h,d,x,z,c,y){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),
+  new THREE.MeshLambertMaterial({color:c}));
+  m.position.set(x,(y??0)+h/2,z); demo.add(m); return m; }
+function buildDemo(){
+  box(12,.12,9, 0,0, 0x0e1f16);                 // suelo
+  box(12,3,.15, 0,-4.5, 0x14281d);              // pared N
+  box(.15,3,9, -6,0, 0x14281d);                 // pared O
+  box(2.4,1.1,.9, -3.5,-3.7, 0x1d4030);         // mostrador
+  box(.9,2.1,.5, 3.8,-4.1, 0x2a5a41);           // expositor
+  box(.9,2.1,.5, 5,-4.1, 0x2a5a41);
+  box(1.6,.75,.8, 1.5,1.8, 0x1d4030);           // mesa
+  box(.5,.5,.5, .6,2.6, 0x163024); box(.5,.5,.5, 2.4,2.6, 0x163024); // taburetes
+}
+buildDemo();
+
+/* ---------- nodos IoT ---------- */
+let NODOS=[
+ {id:'pantalla-01', tipo:'pantalla', x:-5.7, y:1.6, z:-2.0, xpl:'showContent', desc:'Pantalla Admira 55" pared O'},
+ {id:'pantalla-02', tipo:'pantalla', x:1.0,  y:2.2, z:-4.3, xpl:'showAd',      desc:'Pantalla escaparate N'},
+ {id:'sensor-puerta', tipo:'sensor', x:5.5,  y:2.4, z:3.9,  xpl:'peopleIn',    desc:'Contador de entrada'},
+ {id:'camara-01', tipo:'camara',    x:-5.6, y:2.8, z:4.2,  xpl:'audience',    desc:'Cámara audiencia'},
+ {id:'robot-xpaceos', tipo:'robot', x:3.0,  y:0.0, z:1.0,  xpl:'emit',        desc:'Robot XpaceOS (pecho emite)'}
+];
+$('nodos-json').value=JSON.stringify(NODOS,null,1);
+const COLORES={pantalla:0x28e07c, sensor:0xffb347, camara:0x66ccff, robot:0xff5d8f};
+const iotGroup=new THREE.Group(); scene.add(iotGroup);
+function buildNodos(){
+  iotGroup.clear();
+  for(const n of NODOS){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.16,16,16),
+      new THREE.MeshBasicMaterial({color:COLORES[n.tipo]||0xffffff}));
+    m.position.set(n.x, n.y+.16, n.z); m.userData=n;
+    const halo=new THREE.Mesh(new THREE.RingGeometry(.22,.28,32),
+      new THREE.MeshBasicMaterial({color:COLORES[n.tipo]||0xffffff, side:THREE.DoubleSide, transparent:true, opacity:.7}));
+    halo.rotation.x=-Math.PI/2; halo.position.y=-n.y-.14; m.add(halo); m.userData.halo=halo;
+    iotGroup.add(m);
+  }
+}
+buildNodos();
+$('btn-nodos-apply').onclick=()=>{ try{ NODOS=JSON.parse($('nodos-json').value);
+  buildNodos(); log('nodos IoT actualizados: '+NODOS.length);}catch(e){log('JSON inválido: '+e.message);} };
+
+/* click en nodo */
+const ray=new THREE.Raycaster(), mouse=new THREE.Vector2();
+renderer.domElement.addEventListener('click',ev=>{
+  const r=renderer.domElement.getBoundingClientRect();
+  mouse.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(mouse,cam);
+  const hit=ray.intersectObjects(iotGroup.children,false)[0];
+  const p=$('nodo-panel');
+  if(hit){ const n=hit.object.userData;
+    $('pill-obj').textContent=n.id;
+    p.style.display='block';
+    p.innerHTML=`<h4>${n.id}</h4>
+      <div><span class="k">tipo</span> ${n.tipo} · <span class="k">xpl</span> ${n.xpl}</div>
+      <div>${n.desc}</div>
+      <div><span class="k">pos</span> ${n.x}, ${n.y}, ${n.z} m</div>
+      <button class="op" onclick="window.open('../admira-xp/xpl.html','_blank')">⚡ Regla XPL sobre este nodo</button>`;
+  } else { p.style.display='none'; $('pill-obj').textContent='—'; }
+});
+
+/* ---------- carga de escenas capturadas ---------- */
+const capturado=new THREE.Group(); scene.add(capturado);
+let splatViewer=null, ptsMat=null;
+function setModo(m){ $('modo-pill').textContent=m;
+  $('btn-demo').classList.toggle('on',m==='demo');
+  $('btn-carga').classList.toggle('on',m!=='demo');
+  demo.visible=(m==='demo');
+}
+async function loadPLY(srcOrBuffer,name){
+  const loader=new PLYLoader();
+  const geo=(srcOrBuffer instanceof ArrayBuffer)?loader.parse(srcOrBuffer)
+    :await loader.loadAsync(srcOrBuffer);
+  geo.computeBoundingBox();
+  const c=new THREE.Vector3(); geo.boundingBox.getCenter(c); geo.translate(-c.x,-c.y,-c.z);
+  // escala de COLMAP es arbitraria: normalizar al tamaño de la rejilla (~14 u)
+  const dim=new THREE.Vector3(); geo.boundingBox.getSize(dim);
+  const esc=14/Math.max(dim.x,dim.y,dim.z); geo.scale(esc,esc,esc);
+  geo.computeBoundingBox(); geo.translate(0,-geo.boundingBox.min.y,0);
+  log('autoescala ×'+esc.toFixed(2));
+  ptsMat=new THREE.PointsMaterial({size:parseFloat($('pt-size').value)||.035,
+    vertexColors:geo.hasAttribute('color')});
+  if(!geo.hasAttribute('color')) ptsMat.color.set(0x28e07c);
+  capturado.clear(); capturado.add(new THREE.Points(geo,ptsMat));
+  setModo('nube: '+name); log(`PLY cargado: ${name} · ${geo.attributes.position.count.toLocaleString()} puntos`);
+}
+async function loadSplat(src,name){
+  try{
+    const GS=await import('https://unpkg.com/@mkkellogg/gaussian-splats-3d@0.4.7/build/gaussian-splats-3d.module.js');
+    if(splatViewer){ splatViewer.dispose(); splatViewer=null; }
+    capturado.clear();
+    splatViewer=new GS.DropInViewer({gpuAcceleratedSort:false, sharedMemoryForWorkers:false});
+    await splatViewer.addSplatScene(src,{showLoadingUI:false});
+    capturado.add(splatViewer);
+    setModo('splat: '+name); log('splat 3DGS cargado: '+name);
+  }catch(e){ log('ERROR cargando splat: '+e.message); }
+}
+function route(src,name){
+  const n=(name||src).toLowerCase();
+  if(n.endsWith('.splat')||n.endsWith('.ksplat')) return loadSplat(src,name||src);
+  return loadPLY(src,name||src).catch(e=>log('ERROR PLY: '+e.message));
+}
+$('btn-load-url').onclick=()=>{ const u=$('src-url').value.trim(); if(u) route(u,u.split('/').pop()); };
+$('btn-carga').onclick=()=>$('src-url').focus();
+$('btn-demo').onclick=()=>{ capturado.clear(); if(splatViewer){splatViewer.dispose();splatViewer=null;} setModo('demo'); };
+$('btn-apply-pt').onclick=()=>{ if(ptsMat){ ptsMat.size=parseFloat($('pt-size').value)||.035; log('tamaño punto → '+ptsMat.size);} };
+
+/* drag & drop */
+center.addEventListener('dragover',e=>{e.preventDefault(); $('drop-hint').style.display='flex';});
+center.addEventListener('dragleave',()=>$('drop-hint').style.display='none');
+center.addEventListener('drop',async e=>{
+  e.preventDefault(); $('drop-hint').style.display='none';
+  const f=e.dataTransfer.files[0]; if(!f) return;
+  log('archivo: '+f.name+' ('+(f.size/1048576).toFixed(1)+' MB)');
+  if(/\.(splat|ksplat)$/i.test(f.name)) route(URL.createObjectURL(f),f.name);
+  else loadPLY(await f.arrayBuffer(),f.name).catch(err=>log('ERROR PLY: '+err.message));
+});
+
+/* ---------- controles ---------- */
+document.querySelectorAll('[data-rot]').forEach(b=>b.onclick=()=>{ rotStep+=parseInt(b.dataset.rot); placeCam(); });
+$('btn-zoom-in').onclick=()=>{ viewSize=Math.max(2,viewSize*.8); resize(); };
+$('btn-zoom-out').onclick=()=>{ viewSize=Math.min(40,viewSize/.8); resize(); };
+$('btn-reset').onclick=()=>{ viewSize=9; rotStep=0; placeCam(); resize(); };
+$('btn-iot').onclick=()=>{ iotGroup.visible=!iotGroup.visible; $('btn-iot').classList.toggle('on'); };
+$('btn-grid').onclick=()=>{ grid.visible=!grid.visible; $('btn-grid').classList.toggle('on'); };
+
+/* ?src= en URL */
+const qs=new URLSearchParams(location.search);
+if(qs.get('src')) route(qs.get('src'));
+
+/* ---------- loop ---------- */
+const clock=new THREE.Clock();
+function anim(){
+  requestAnimationFrame(anim);
+  const t=clock.getElapsedTime();
+  iotGroup.children.forEach((m,i)=>{ const s=1+Math.sin(t*3+i)*.15; m.scale.setScalar(s); });
+  if(splatViewer&&splatViewer.update) try{splatViewer.update();}catch(_){/*DropInViewer se auto-gestiona*/}
+  renderer.render(scene,cam);
+}
+placeCam(); resize(); anim();
+log('visor isométrico listo — v26.07.02.1 · Apple M5 · demo con '+NODOS.length+' nodos IoT');
+</script>
+</body>
+</html>

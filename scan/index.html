@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#050a08">
+<title>XpaceScan — captura 3D del Xpacio · XpaceOS</title>
+<meta name="description" content="XpaceScan captura tu espacio físico en 3D desde el móvil y lo convierte en un gemelo digital fotorreal para XpaceOS: escanea, procesa y opera el Xpacio en vivo.">
+<link rel="canonical" href="https://www.xpaceos.com/scan/">
+<meta property="og:title" content="XpaceScan — captura 3D del Xpacio">
+<meta property="og:description" content="Captura tu espacio en 3D desde el móvil y conviértelo en un gemelo digital fotorreal para XpaceOS.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="XpaceOS">
+<meta property="og:url" content="https://www.xpaceos.com/scan/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="XpaceScan — captura 3D del Xpacio">
+<meta name="twitter:description" content="Captura tu espacio en 3D desde el móvil y conviértelo en un gemelo digital fotorreal para XpaceOS.">
+<meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<link rel="icon" href="../favicon.ico">
+<style>
+:root{
+  --bg:#050a08; --panel:#0b1410; --line:#123524; --txt:#d7ffe9;
+  --dim:#6fa88a; --acc:#28e07c; --warn:#ffb347; --err:#ff5d5d;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0; height:100%; background:var(--bg); color:var(--txt);
+  font:15px/1.45 -apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif; overflow:hidden}
+#frame{display:grid; height:100dvh;
+  grid-template-rows:48px 1fr auto; grid-template-columns:1fr}
+/* barra superior = principal */
+#bar-top{display:flex; align-items:center; gap:10px; padding:0 12px;
+  background:var(--panel); border-bottom:1px solid var(--line)}
+#bar-top .logo{font-weight:700; letter-spacing:.5px; color:var(--acc)}
+#bar-top .ver{margin-left:auto; font-size:11px; color:var(--dim)}
+#pf-toggles{display:flex; gap:8px}
+#pf-toggles button{background:none; border:1px solid var(--line); color:var(--dim);
+  border-radius:6px; padding:2px 8px; font-size:12px}
+#pf-toggles button.on{color:var(--acc); border-color:var(--acc)}
+/* centro */
+#stage{position:relative; overflow:hidden; background:#000}
+video#cam{width:100%; height:100%; object-fit:cover}
+video#playback{width:100%; height:100%; object-fit:contain; background:#000; display:none}
+#overlay{position:absolute; inset:0; pointer-events:none; display:flex;
+  flex-direction:column; justify-content:space-between; padding:14px}
+#hud{display:flex; gap:10px; align-items:center; font-variant-numeric:tabular-nums}
+.pill{background:rgba(5,10,8,.7); border:1px solid var(--line); border-radius:999px;
+  padding:4px 12px; font-size:13px}
+#rec-dot{width:10px; height:10px; border-radius:50%; background:var(--dim); display:inline-block; margin-right:6px}
+.recording #rec-dot{background:var(--err); animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+#tips{align-self:center; max-width:340px; background:rgba(5,10,8,.75);
+  border:1px solid var(--line); border-radius:12px; padding:12px 16px; font-size:13px; color:var(--dim)}
+#tips b{color:var(--txt)}
+/* barra inferior = controles + experto */
+#bar-bottom{background:var(--panel); border-top:1px solid var(--line);
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+#controls{display:flex; align-items:center; justify-content:center; gap:16px}
+#btn-rec{width:72px; height:72px; border-radius:50%; border:4px solid var(--txt);
+  background:var(--err); font-size:0}
+#btn-rec.stopped{background:var(--err)}
+#btn-rec.armed{background:var(--err)}
+#btn-rec.recording{border-radius:16px; background:var(--err); width:60px; height:60px; margin:6px}
+button.side{background:var(--panel); border:1px solid var(--line); color:var(--txt);
+  border-radius:10px; padding:12px 16px; font-size:14px}
+button.side:disabled{opacity:.35}
+button.primary{background:var(--acc); color:#03170c; border:none; font-weight:700}
+input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
+  border-radius:8px; padding:8px 10px; width:130px; font-size:14px}
+#experto{display:none; margin-top:10px; border-top:1px dashed var(--line); padding-top:8px;
+  font:11px/1.5 ui-monospace,Menlo,monospace; color:var(--dim); max-height:120px; overflow:auto}
+#frame.show-experto #experto{display:block}
+.row{display:flex; gap:10px; align-items:center; justify-content:center; margin-bottom:10px; flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="bar-top">
+    <span class="logo">XPACESCAN</span>
+    <span class="pill" id="estado"><span id="rec-dot"></span><span id="estado-txt">listo</span></span>
+    <div id="pf-toggles">
+      <button id="tg-experto" title="modo experto">⌥</button>
+    </div>
+    <span class="ver">v26.07.02.1 · xpaceos.com</span>
+  </div>
+
+  <div id="stage">
+    <video id="cam" autoplay muted playsinline></video>
+    <video id="playback" controls playsinline></video>
+    <div id="overlay">
+      <div id="hud">
+        <span class="pill" id="crono">00:00</span>
+        <span class="pill" id="frames">~0 frames</span>
+      </div>
+      <div id="tips">
+        <b>Cómo escanear el Xpacio</b><br>
+        1 · Camina <b>despacio</b> por todo el espacio.<br>
+        2 · Movimiento <b>lateral y envolvente</b>, no gires en seco.<br>
+        3 · Cubre cada zona desde <b>dos ángulos</b>.<br>
+        4 · 60–120 s de vídeo. Buena luz, sin gente si es posible.
+      </div>
+    </div>
+  </div>
+
+  <div id="bar-bottom">
+    <div class="row">
+      <input id="scene" placeholder="nombre-escena" value="">
+    </div>
+    <div id="controls">
+      <button class="side" id="btn-retake" disabled>↺ Repetir</button>
+      <button id="btn-rec" class="stopped" aria-label="grabar"></button>
+      <button class="side primary" id="btn-share" disabled>Compartir</button>
+    </div>
+    <div class="row" style="margin:10px 0 0">
+      <button class="side" id="btn-download" disabled>⬇ Descargar vídeo</button>
+    </div>
+    <div id="experto">EXPERTO · log<br></div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const logEl=$('experto');
+const log=m=>{logEl.innerHTML+=m+'<br>'; logEl.scrollTop=1e9; console.log('[scan]',m);};
+$('tg-experto').onclick=()=>{ $('frame').classList.toggle('show-experto');
+  $('tg-experto').classList.toggle('on'); };
+
+let stream=null, rec=null, chunks=[], blob=null, t0=0, timer=null, mime='';
+const MIMES=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];
+
+function ext(){ return mime.includes('mp4')?'mp4':'webm'; }
+function sceneName(){
+  const v=$('scene').value.trim().replace(/[^a-z0-9-_]/gi,'-').toLowerCase();
+  return v||('xpacio-'+new Date().toISOString().slice(0,10));
+}
+
+async function initCam(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:'environment', width:{ideal:1920}, height:{ideal:1080}, frameRate:{ideal:30}},
+      audio:false});
+    $('cam').srcObject=stream;
+    const s=stream.getVideoTracks()[0].getSettings();
+    log(`cámara ${s.width}x${s.height}@${s.frameRate||'?'}fps (${s.facingMode||'?'})`);
+    mime=MIMES.find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||'';
+    log('mime: '+(mime||'por defecto del navegador'));
+  }catch(e){
+    $('estado-txt').textContent='sin cámara';
+    log('ERROR cámara: '+e.message+' (¿HTTPS? ¿permiso?)');
+  }
+}
+
+function tick(){
+  const s=Math.floor((Date.now()-t0)/1000);
+  $('crono').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  $('frames').textContent='~'+(s*3)+' frames';
+  if(s>=180){ stopRec(); log('corte automático a 180 s'); }
+}
+
+function startRec(){
+  if(!stream) return;
+  chunks=[]; blob=null;
+  $('playback').style.display='none'; $('cam').style.display='block';
+  try{ rec=mime?new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:12_000_000})
+              :new MediaRecorder(stream); }
+  catch(e){ log('ERROR MediaRecorder: '+e.message); return; }
+  rec.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+  rec.onstop=()=>{
+    blob=new Blob(chunks,{type:rec.mimeType||mime||'video/webm'});
+    log(`vídeo listo: ${(blob.size/1048576).toFixed(1)} MB`);
+    const url=URL.createObjectURL(blob);
+    $('playback').src=url; $('playback').style.display='block'; $('cam').style.display='none';
+    $('btn-share').disabled=!navigator.canShare; $('btn-download').disabled=false; $('btn-retake').disabled=false;
+    $('estado-txt').textContent='grabado';
+  };
+  rec.start(1000); t0=Date.now(); timer=setInterval(tick,500);
+  document.getElementById('frame').classList.add('recording');
+  $('btn-rec').className='recording'; $('estado-txt').textContent='grabando';
+  $('tips').style.display='none';
+  log('grabando…');
+}
+function stopRec(){
+  if(rec&&rec.state!=='inactive') rec.stop();
+  clearInterval(timer);
+  document.getElementById('frame').classList.remove('recording');
+  $('btn-rec').className='stopped';
+}
+$('btn-rec').onclick=()=>{ (rec&&rec.state==='recording')?stopRec():startRec(); };
+$('btn-retake').onclick=()=>{ blob=null; $('playback').style.display='none';
+  $('cam').style.display='block'; $('tips').style.display='block';
+  $('btn-share').disabled=$('btn-download').disabled=$('btn-retake').disabled=true;
+  $('crono').textContent='00:00'; $('frames').textContent='~0 frames';
+  $('estado-txt').textContent='listo'; };
+
+$('btn-download').onclick=()=>{
+  if(!blob) return;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=sceneName()+'.'+ext(); a.click();
+};
+$('btn-share').onclick=async()=>{
+  if(!blob) return;
+  const file=new File([blob], sceneName()+'.'+ext(), {type:blob.type});
+  try{
+    if(navigator.canShare&&navigator.canShare({files:[file]}))
+      await navigator.share({files:[file], title:'XpaceScan '+sceneName()});
+    else log('share de archivos no soportado — usa Descargar');
+  }catch(e){ log('share cancelado: '+e.message); }
+};
+
+log('XpaceScan v26.07.02.1 — el vídeo se procesa con scan-to-splat.sh → visor.html');
+initCam();
+</script>
+</body>
+</html>

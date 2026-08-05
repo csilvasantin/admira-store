@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CPM &amp; Impactos — XpaceOS · medición de audiencia en el gemelo digital</title>
+<meta name="description" content="Cómo XpaceOS mide impactos y calcula el CPM en el gemelo digital: aforo × visibilidad, conteo real por cámara on-device y CPM dinámico por demanda.">
+<link rel="canonical" href="https://www.xpaceos.com/cpm/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CPM & Impactos — XpaceOS">
+<meta property="og:description" content="Cómo XpaceOS mide impactos y calcula el CPM en el gemelo digital: aforo × visibilidad, conteo real por cámara on-device y CPM dinámico por demanda.">
+<meta property="og:url" content="https://www.xpaceos.com/cpm/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CPM & Impactos — XpaceOS">
+<meta name="twitter:description" content="Medición de impactos y CPM dinámico en el gemelo digital de XpaceOS.">
+<meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<style>
+  :root{
+    --bg:#02080d;--ink:#dff8ff;--mut:#75aab9;--brand:#78f3ff;--accent:#ffd866;
+    --good:#88ffaa;--warn:#ff8866;--card:#0a1620;--card2:#0d1c28;
+    --line:rgba(120,243,255,.18);--lenovo:#E2231A;--nvidia:#76B900;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,sans-serif;line-height:1.55}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{color:var(--ink)}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+  header{padding:16px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(2,8,13,.92);backdrop-filter:blur(8px);z-index:10}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .logo{font-weight:800;letter-spacing:.02em}
+  .logo .os{color:var(--brand)}
+  .logo .sub{color:var(--mut);font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px}
+  nav a{color:var(--mut);font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.06em;margin-left:18px}
+  .hero{padding:56px 0 24px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--accent);letter-spacing:.16em;border:1px solid rgba(255,216,102,.45);padding:6px 12px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+  h1{font-size:clamp(28px,5vw,44px);line-height:1.08;margin:0 0 14px;letter-spacing:-.01em}
+  h1 .grad{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:18px;color:var(--mut);max-width:760px;margin:0 0 8px}
+  section{padding:36px 0;border-top:1px solid var(--line)}
+  h2{font-size:24px;margin:0 0 8px}
+  h2 .num{color:var(--brand);font-family:ui-monospace,Menlo,monospace;font-size:18px;margin-right:10px}
+  .sec-lede{color:var(--mut);max-width:820px;margin:0 0 22px}
+  .cards{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:780px){.cards{grid-template-columns:1fr 1fr 1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column}
+  .card .n{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--brand);letter-spacing:.12em}
+  .card h3{font-size:18px;margin:8px 0 4px}
+  .card .tag{align-self:flex-start;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:12px}
+  .tag.live{color:var(--good);border:1px solid rgba(136,255,170,.45);background:rgba(136,255,170,.08)}
+  .tag.soon{color:var(--accent);border:1px solid rgba(255,216,102,.4);background:rgba(255,216,102,.07)}
+  .card p{color:var(--mut);font-size:14px;margin:6px 0}
+  .formula{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--ink);background:rgba(0,0,0,.32);border-left:2px solid var(--brand);padding:10px 12px;border-radius:6px;margin:12px 0;line-height:1.5}
+  .pros{list-style:none;padding:0;margin:8px 0 0;font-size:13px}
+  .pros li{margin:4px 0;color:var(--mut)}
+  .pros li b{color:var(--good)}
+  .pros li.con b{color:var(--warn)}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--brand);font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  td.r,th.r{text-align:right;font-family:ui-monospace,Menlo,monospace}
+  .pill{font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:2px 7px;border-radius:6px}
+  .pill.cam{color:var(--good);background:rgba(136,255,170,.1)}
+  .pill.est{color:var(--mut);background:rgba(120,243,255,.06)}
+  code{font-family:ui-monospace,Menlo,monospace;background:rgba(120,243,255,.08);color:var(--brand);padding:2px 6px;border-radius:5px;font-size:13px}
+  .hud{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;font-family:ui-monospace,Menlo,monospace;font-size:13px;max-width:380px}
+  .hud .row{display:flex;justify-content:space-between;padding:3px 0}
+  .hud .tot{border-top:1px dashed var(--line);margin-top:8px;padding-top:8px}
+  .hud .rev{color:var(--good)}
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);font-size:12px;font-family:ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">Xpace<span class="os">OS</span><span class="sub">CPM &amp; Impactos</span></div>
+  <nav><a href="/">← XpaceOS</a><a href="https://www.admira.app">Admira.app</a><a href="https://www.pixeria.com">PixerIA</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <span class="badge">Admira XP · gemelo digital</span>
+    <h1>Medir <span class="grad">impactos</span> y calcular el <span class="grad">CPM</span> en el mundo real</h1>
+    <p class="lede">Cada pantalla del gemelo digital es inventario publicitario. XpaceOS cuantifica cuánta gente ve cada anuncio y traduce esos impactos en un CPM accionable — la base de la capa de venta programática de Admira.app.</p>
+    <p class="lede" style="font-size:15px">Tres modelos, de lo determinista a lo medido a lo dinámico. Los <b style="color:var(--good)">tres ya corren</b> en el gemelo: aforo×visibilidad, atención medida y CPM dinámico por demanda×calidad.</p>
+  </div>
+
+  <section>
+    <h2><span class="num">3 modelos</span>Cómo se calculan los impactos</h2>
+    <p class="sec-lede">El gemelo ya simula aforo real, transeúntes, tiempo de permanencia y —con cámara— las caras frente a cada pantalla. Sobre esos datos se construyen tres formas de medir, cada una más fina que la anterior.</p>
+    <div class="cards">
+
+      <div class="card">
+        <div class="n">01</div>
+        <h3>Aforo × visibilidad</h3>
+        <span class="tag live">● en producción</span>
+        <p>El estándar DOOH: <b>impactos = audiencia × oportunidad de ver (OTS)</b>. El escaparate cuenta los transeúntes de la calle; el interior, los clientes presentes — cada pantalla ponderada por su factor de visibilidad.</p>
+        <div class="formula">impactos = audiencia × factor_visibilidad<br>· escaparate → transeúntes<br>· interior → clientes en tienda</div>
+        <ul class="pros">
+          <li><b>+</b> funciona en todas las pantallas, sin cámara</li>
+          <li><b>+</b> robusto y explicable</li>
+          <li class="con"><b>–</b> es estimación, no medición</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="n">02</div>
+        <h3>Conteo real por cámara</h3>
+        <span class="tag live">● en producción</span>
+        <p>Donde hay cámara, el modelo de visión <b>on-device</b> (Nvidia edge) cuenta las caras reales frente a la pantalla y su demografía (género · edad). Impacto verificado, no estimado.</p>
+        <div class="formula">impactos = caras detectadas (LiveCam)<br>+ género / tramo de edad<br>📷 medido · datos anónimos, sin almacenamiento</div>
+        <ul class="pros">
+          <li><b>+</b> impactos verificados + perfil de audiencia</li>
+          <li><b>+</b> separa "pasa" de "mira"</li>
+          <li class="con"><b>–</b> solo pantallas con cámara · aviso AI Act</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="n">03</div>
+        <h3>Dwell + CPM dinámico</h3>
+        <span class="tag live">● en producción</span>
+        <p>La capa de <b>pricing inteligente</b>: cada mirada se pondera por <b>dwell</b> (segundos de atención) y el CPM <b>deja de ser fijo</b> — se ajusta en vivo según la demanda (ocupación + prime) y la calidad de la audiencia.</p>
+        <div class="formula">CPM_dinámico = base × demanda × calidad<br>· demanda = ocupación de tienda + prime time<br>· calidad = tasa de atención global<br>ingreso = Σ impactos × CPM_din × (atención × dwell)</div>
+        <ul class="pros">
+          <li><b>+</b> "el precio se ajusta a quién mira <i>y cuánto</i>"</li>
+          <li><b>+</b> el tótem (dwell alto) vale premium; el escaparate, descuento</li>
+          <li><b>+</b> cierra el loop con OmniPublicity (demanda RTB)</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">👁</span>Quién <b>pasa</b> vs quién <b>mira</b></h2>
+    <p class="sec-lede">No todo el que tiene la pantalla en su campo de visión la mira. Sobre los impactos (oportunidad de ver) XpaceOS calcula la <b>atención</b>: cuánta de esa audiencia <b>dirige la mirada</b> a cada pantalla. Quien pasa por delante del escaparate sin levantar la vista cuenta como impacto pero no como mirada; quien se planta frente al tótem, sí.</p>
+    <div class="formula" style="max-width:620px">impactos (OTS) = audiencia × visibilidad   <span style="opacity:.6">// pudieron verla</span><br>miradas (atención) = audiencia × atención   <span style="opacity:.6">// la miraron · atención ≤ visibilidad</span><br>tasa_atención = miradas ÷ impactos</div>
+    <ul class="pros" style="font-size:13.5px">
+      <li><b>+</b> separa el tráfico que solo <b>pasa</b> del que de verdad <b>impacta</b></li>
+      <li><b>+</b> el escaparate genera muchos impactos pero baja atención; el tótem, pocos impactos pero casi todos miran</li>
+      <li><b>+</b> donde hay <b>cámara</b>, la atención se <span class="pill cam">📷 mide</span> (una cara frontal detectada está mirando) en vez de estimarse</li>
+      <li><b>+</b> es la base del modelo 3: el CPM se ajusta a <i>quién mira</i>, no solo a <i>quién pasa</i></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">→</span>Del impacto al CPM</h2>
+    <p class="sec-lede">Un CPM de referencia convierte los impactos acumulados del día en ingreso estimado por pantalla. Cuando un slot se vende en Admira.app a un CPM dado, el gemelo muestra cuánta audiencia genera y, por tanto, su valor. El <b>valor por atención</b> aplica el mismo CPM solo a las miradas reales — el anticipo del pricing del modelo 3.</p>
+    <div class="formula" style="max-width:620px">ingreso_estimado (€) = impactos ÷ 1000 × CPM<br>valor_atención (€) = miradas ÷ 1000 × CPM</div>
+  </section>
+
+  <section>
+    <h2><span class="num">⚙</span>Visibilidad y atención por pantalla</h2>
+    <p class="sec-lede"><b>Visibilidad</b> = oportunidad de ver (OTS); <b>atención</b> = qué fracción de la audiencia la mira de verdad (siempre ≤ visibilidad). La <b>tasa</b> es cuántos de los que pudieron verla la miraron. El tótem usa cámara, así que su atención es <span class="pill cam">📷 medida</span>; el resto, <span class="pill est">~ estimada</span>.</p>
+    <table>
+      <tr><th>Pantalla</th><th>Audiencia</th><th class="r">Visib.</th><th class="r">Atención</th><th class="r">Tasa 👁</th><th>Medición</th></tr>
+      <tr><td>Escaparate · sobre la puerta</td><td>transeúntes (calle)</td><td class="r">0.85</td><td class="r">0.20</td><td class="r">24%</td><td><span class="pill est">~ estimado</span></td></tr>
+      <tr><td>TFT · pared larga</td><td>clientes en tienda</td><td class="r">0.55</td><td class="r">0.30</td><td class="r">55%</td><td><span class="pill est">~ estimado</span></td></tr>
+      <tr><td>Monitor superior · pared izq.</td><td>clientes en tienda</td><td class="r">0.45</td><td class="r">0.22</td><td class="r">49%</td><td><span class="pill est">~ estimado</span></td></tr>
+      <tr><td>Monitor inferior · pared izq.</td><td>clientes en tienda</td><td class="r">0.40</td><td class="r">0.18</td><td class="r">45%</td><td><span class="pill est">~ estimado</span></td></tr>
+      <tr><td>Tótem AI · MetaHuman</td><td>caras frente al tótem</td><td class="r">0.35</td><td class="r">0.32</td><td class="r">📷 ~100%</td><td><span class="pill cam">📷 medido</span></td></tr>
+    </table>
+    <p class="sec-lede" style="font-size:12.5px;margin-top:10px;opacity:.75">El escaparate concentra <b>impactos</b> (mucha calle) pero poca atención; el tótem concentra <b>atención</b> (quien se para mira) pero pocos impactos. Esa asimetría es justo lo que un anunciante necesita para elegir pantalla.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">▶</span>En el gemelo: <code>/impactos</code></h2>
+    <p class="sec-lede">Dentro de cualquier tienda del gemelo, el comando <code>/impactos</code> abre un panel en vivo con los impactos acumulados del día por pantalla, el total, el CPM de referencia y el ingreso estimado. Acumula un registro por minuto de jornada (open→close).</p>
+    <div class="hud">
+      <div class="row" style="font-size:11px;opacity:.55"><span>PANTALLA</span><span>impactos · 👁 miran</span></div>
+      <div class="row"><span>📷 Tótem AI</span><span><b>1.240</b> <span style="color:#9ad8ff;font-size:11px">👁 1.240 (100%)</span></span></div>
+      <div class="row"><span>~ Escaparate</span><span><b>8.900</b> <span style="color:#9ad8ff;font-size:11px">👁 2.094 (24%)</span></span></div>
+      <div class="row"><span>~ TFT pared</span><span><b>3.300</b> <span style="color:#9ad8ff;font-size:11px">👁 1.800 (55%)</span></span></div>
+      <div class="row"><span>~ Monitor sup.</span><span><b>2.700</b> <span style="color:#9ad8ff;font-size:11px">👁 1.320 (49%)</span></span></div>
+      <div class="row"><span>~ Monitor inf.</span><span><b>2.400</b> <span style="color:#9ad8ff;font-size:11px">👁 1.080 (45%)</span></span></div>
+      <div class="row tot"><span>TOTAL impactos</span><b>18.540</b></div>
+      <div class="row" style="color:#9ad8ff"><span>👁 Atención (miran)</span><b>7.534 · 41%</b></div>
+      <div class="row"><span>CPM ref</span><b>8.00 €</b></div>
+      <div class="row rev"><span>Ingreso estim.</span><b>148.32 €</b></div>
+      <div class="row" style="opacity:.7"><span>↳ valor atención</span><b>60.27 €</b></div>
+    </div>
+    <p class="sec-lede" style="margin-top:16px;font-size:13px">Controles: <code>/impactos cpm &lt;n&gt;</code> ajusta el CPM · <code>/impactos reset</code> reinicia el día · <code>/impactos off</code> cierra el panel. <span style="opacity:.7">📷 = medido por cámara · ~ = estimado (aforo × visibilidad) · 👁 = quien mira ≠ quien pasa.</span></p>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  XpaceOS · CPM &amp; Impactos — PixerIA crea → XpaceOS distribuye → Admira.app vende · powered by Admira, Lenovo &amp; Nvidia
+</div></footer>
+</body>
+</html>

@@ -1,57 +1,21 @@
 {
-  "name": "admira-store-mcp",
-  "title": "Admira · admira.store — Servidor MCP & API del gemelo (XpaceOS)",
-  "description": "Casa del servidor MCP real del ecosistema AdmiraNeXT (mcp.admira.store) y de la API compartida (api.admira.store). admira.store es el gemelo digital de la red de retail media: flota, emisión en vivo, audiencia on-device y proof-of-play. Para silicio (bots) y carbono (humanos).",
-  "version": "v.26.06.25.r1",
-  "site": "https://www.admira.store",
-  "hub": "https://www.admira.store/mcp/",
-  "llms_txt": "https://www.admira.store/mcp/llms.txt",
-  "repo": "https://github.com/csilvasantin/admira-store",
-  "stage": "gemelo",
-  "contact": { "telegram_group": "AdmiraXP", "signature": "Admira IA" },
-
-  "mcp_server": {
-    "endpoint": "https://mcp.admira.store/mcp",
-    "transport": "streamable-http",
-    "auth": "none",
-    "health": "https://mcp.admira.store/",
-    "tools": ["fleet_status", "list_screens", "screen_now", "emission_report", "register_device"],
-    "client_config": { "mcpServers": { "xpaceos": { "url": "https://mcp.admira.store/mcp" } } },
-    "docs": "https://www.xpaceos.com/mcp/",
-    "note": "Servidor MCP real del ecosistema XpaceOS, servido bajo el dominio admira.store. Cubre flota, emisión y audiencia. El alta es aditiva y acotada: no pisa inventario curado."
-  },
-
-  "http_api": {
-    "base_url": "https://api.admira.store",
-    "notes": "Worker pixer-eleven (Cloudflare). Lecturas (/…/range) abiertas, CORS refleja el origen. Escrituras (/emit, /audience) son telemetría sin credencial. SIN PII: la cámara procesa on-device y solo envía conteos agregados.",
-    "read": [
-      { "method": "GET", "path": "/emit/range", "desc": "Proof-of-play por circuito: pases, segundos, byType, top creatividades, por pantalla y día.", "query": ["loc"], "example": "https://api.admira.store/emit/range?loc=xtanco-demo" },
-      { "method": "GET", "path": "/audience/range", "desc": "Audiencia por circuito: muestras, presencia, pico, género {male,female}, edad {nino,joven,adulto,senior}, franja horaria {0..23}.", "query": ["loc"], "example": "https://api.admira.store/audience/range?loc=xtanco-demo" }
-    ],
-    "interact": [
-      { "method": "POST", "path": "/emit", "desc": "Registra un pase (proof-of-play).", "body": { "loc": "string", "screen": "string", "type": "image|video|animation", "title": "string", "secs": "number", "num": "number?" } },
-      { "method": "POST", "path": "/audience", "desc": "Registra una muestra de cámara (audiencia).", "body": { "loc": "string", "screen": "string", "faces": "number", "gender": "male|female|''", "genderScore": "number", "ageBucket": "nino|joven|adulto|senior|''", "emotion": "string?" } }
-    ]
-  },
-
-  "privacy": {
-    "on_device": true,
-    "engine": "@vladmandic/human (TensorFlow.js)",
-    "stored": "solo conteos agregados (presencia, género, edad, hora)",
-    "note": "No se almacenan imágenes ni datos personales. Género y edad son estimaciones estadísticas, no identificación de personas."
-  },
-
-  "federation": {
-    "note": "Misma convención /mcp/ en cada pata del ecosistema AdmiraNeXT.",
-    "produccion": "https://www.clearchannel.tv/mcp/",
-    "preproduccion": "https://www.admira.app/mcp/",
-    "operar": "https://www.xpaceos.com/mcp/",
-    "crear": "https://www.admira.studio/mcp/",
-    "consejo": "https://www.admira.live/mcp/"
-  },
-
-  "conventions": {
-    "versioning": "v.AA.MM.DD.rN",
-    "changes": "Telegram grupo AdmiraXP, firmado 'Admira IA'"
+  "name": "XpaceOS",
+  "description": "MCP de la red XpaceOS de retail media: flota, emisión en vivo, audiencia, proof-of-play y alta de pantallas/robots. Puente silicio↔carbono. Doctrina: en Xpaces todos los elementos son movibles y sustituibles siempre (config, no motor).",
+  "version": "1.0.1",
+  "endpoint": "https://mcp.admira.store/mcp",
+  "transport": "streamable-http",
+  "auth": "none",
+  "docs": "https://www.xpaceos.com/mcp/",
+  "tools": [
+    { "name": "fleet_status", "description": "Pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia)." },
+    { "name": "list_screens", "description": "Inventario de Xpaces activos: ubicación, screen, tipo y orientación." },
+    { "name": "screen_now", "description": "Qué emite ahora una pantalla y su audiencia por cámara; si está conectada." },
+    { "name": "emission_report", "description": "Proof-of-play de un circuito: pases, segundos, por tipo y segmento." },
+    { "name": "register_device", "description": "Da de alta una pantalla o robot y devuelve la URL del canal." }
+  ],
+  "ecosystem": {
+    "create": "https://www.pixeria.com",
+    "operate": "https://www.xpaceos.com",
+    "broadcast": "https://admira.tv"
   }
 }

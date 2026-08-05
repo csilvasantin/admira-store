@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XpaceOS · Club Backoffice</title>
+<meta name="description" content="Centro de mando de la tarjeta de fidelidad del Club: socios, segmentos, recompensas y métricas en vivo.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#02080d">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+  :root{
+    --bg:#02080d;--ink:#dff8ff;--mut:#75aab9;--brand:#78f3ff;--accent:#ffd866;
+    --good:#88ffaa;--warn:#ff8866;--danger:#ff4f5e;--own:#b78cff;
+    --card:#0a1620;--card2:#0d1c28;--line:rgba(120,243,255,.18);--line2:rgba(120,243,255,.10);
+    --bronze:#cd7f32;--silver:#c0c8d0;--gold:#ffd866;--platinum:#78f3ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100%;line-height:1.5}
+  a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+  button,select,input,textarea{font-family:inherit}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+  /* ── Gate ── */
+  .gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(ellipse at 30% 0%,rgba(120,243,255,.10),transparent 55%),var(--bg);z-index:1000}
+  .gate-card{width:min(420px,94vw);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 30px;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  .gate-logo{font-size:13px;letter-spacing:.18em;color:var(--accent);font-weight:bold;text-align:center}
+  .gate-logo .dot{color:var(--brand)}
+  .gate-card h1{font-size:23px;margin:14px 0 4px;text-align:center;letter-spacing:-.01em}
+  .gate-card p{color:var(--mut);font-size:13px;text-align:center;margin:0 0 22px}
+  .gate-card input{width:100%;padding:13px 15px;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:10px;font-size:14px;letter-spacing:.06em;outline:0}
+  .gate-card input:focus{border-color:var(--brand)}
+  .gate-card .btn{width:100%;margin-top:14px}
+  .gate-err{color:var(--danger);font-size:12px;text-align:center;margin-top:12px;min-height:16px}
+
+  /* ── Buttons ── */
+  .btn{background:transparent;border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:9px 15px;font-size:13px;cursor:pointer;transition:border-color .12s,background .12s,opacity .12s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;justify-content:center}
+  .btn:hover{border-color:var(--brand)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.primary{background:var(--brand);color:#001620;border-color:var(--brand);font-weight:700}
+  .btn.good{background:var(--good);color:#003318;border-color:var(--good);font-weight:700}
+  .btn.accent{background:var(--accent);color:#2a1e00;border-color:var(--accent);font-weight:700}
+  .btn.danger{border-color:var(--danger);color:var(--danger)}.btn.danger:hover{background:rgba(255,79,94,.12)}
+  .btn.ghost{color:var(--mut)}
+  .btn.sm{padding:6px 11px;font-size:12px}
+  .btn.xs{padding:3px 8px;font-size:11px}
+
+  /* ── Header ── */
+  header{padding:13px 22px;background:linear-gradient(to bottom,rgba(2,8,13,.96),rgba(2,8,13,.7));border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:sticky;top:0;z-index:40;backdrop-filter:blur(8px)}
+  .logo{font-family:ui-monospace,monospace;font-size:13px;letter-spacing:.16em;color:var(--accent);font-weight:bold;white-space:nowrap}
+  .logo .dot{color:var(--brand)}
+  .logo .sub{color:var(--mut);margin-left:9px;font-weight:normal;letter-spacing:.1em;font-size:11px}
+  .tabs{display:flex;gap:4px;flex-wrap:wrap}
+  .tab{background:transparent;border:1px solid transparent;border-radius:8px;color:var(--mut);padding:7px 13px;font-size:13px;cursor:pointer;transition:.12s}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:rgba(120,243,255,.10);border-color:var(--line);color:var(--brand);font-weight:600}
+  .hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .lang-toggle{appearance:none;border:1px solid var(--line);background:rgba(120,243,255,.06);color:var(--brand);font:700 11px/1 ui-monospace,monospace;letter-spacing:.12em;padding:7px 10px;border-radius:7px;cursor:pointer}
+  .lang-toggle:hover{border-color:var(--brand)}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:22px 22px 70px}
+  .view{display:none}.view.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2.section{font-size:20px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  .section-desc{color:var(--mut);font-size:13px;margin:0 0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  .card h3{margin:0 0 14px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .card h3 .count{margin-left:auto;font-size:12px;color:var(--mut);font-weight:normal}
+
+  /* ── KPI grid ── */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:18px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px;position:relative;overflow:hidden}
+  .kpi .v{font-size:30px;font-weight:800;font-family:ui-monospace,monospace;color:var(--brand);line-height:1}
+  .kpi .v.accent{color:var(--accent)}.kpi .v.good{color:var(--good)}.kpi .v.warn{color:var(--warn)}
+  .kpi .l{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-top:7px}
+  .kpi .sub{font-size:11px;color:var(--mut);margin-top:3px;opacity:.8}
+  .kpi.live .v::before{content:"●";color:var(--good);font-size:12px;margin-right:7px;vertical-align:middle;animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+  .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+
+  /* ── Tier bars ── */
+  .tierbar{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13px}
+  .tierbar .nm{width:78px;color:var(--ink);display:flex;align-items:center;gap:5px}
+  .tierbar .track{flex:1;height:9px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden}
+  .tierbar .fill{height:100%;border-radius:6px}
+  .tierbar .n{width:34px;text-align:right;color:var(--mut);font-family:ui-monospace,monospace;font-size:12px}
+
+  /* ── Birthdays / lists ── */
+  .blist{display:flex;flex-direction:column;gap:7px}
+  .brow{display:flex;align-items:center;gap:10px;font-size:13px;padding:7px 9px;border:1px solid var(--line2);border-radius:9px;cursor:pointer}
+  .brow:hover{border-color:var(--brand)}
+  .brow .av{font-size:18px}
+  .brow .bd{margin-left:auto;font-family:ui-monospace,monospace;font-size:12px;color:var(--accent)}
+  .empty{color:var(--mut);text-align:center;padding:24px 16px;font-size:13px}
+
+  /* ── Segments ── */
+  .seg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .seg{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px 18px;cursor:pointer;transition:.12s;position:relative}
+  .seg:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .seg .ic{font-size:22px}
+  .seg .v{font-size:27px;font-weight:800;font-family:ui-monospace,monospace;color:var(--brand);margin-top:8px}
+  .seg .nm{font-size:14px;color:var(--ink);margin-top:3px;font-weight:600}
+  .seg .ds{font-size:12px;color:var(--mut);margin-top:4px;line-height:1.4}
+
+  /* ── Toolbar / table ── */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar input[type=text],.toolbar select{background:var(--card2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:9px 12px;font-size:13px;outline:0}
+  .toolbar input[type=text]:focus,.toolbar select:focus{border-color:var(--brand)}
+  .toolbar input[type=text]{min-width:220px}
+  .toolbar .grow{flex:1}
+  .chk{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);cursor:pointer}
+  .chk input{accent-color:var(--brand);width:15px;height:15px}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:13px}
+  table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+  table.tbl th,table.tbl td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line2);white-space:nowrap}
+  table.tbl th{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:rgba(255,255,255,.02);position:sticky;top:0}
+  table.tbl tbody tr{cursor:pointer}
+  table.tbl tbody tr:hover td{background:rgba(120,243,255,.05)}
+  .who{display:flex;align-items:center;gap:9px}
+  .who .av{font-size:18px;width:24px;text-align:center}
+  .who .nm{font-weight:600;color:var(--ink)}
+  .tier-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid;letter-spacing:.02em}
+  .stamps-mini{display:inline-flex;gap:3px;align-items:center}
+  .stamps-mini i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12);display:inline-block}
+  .stamps-mini i.on{background:var(--accent)}
+  .pill{display:inline-block;font-size:10px;font-family:ui-monospace,monospace;padding:2px 7px;border-radius:999px;letter-spacing:.04em}
+  .pill.free{background:rgba(136,255,170,.14);color:var(--good);border:1px solid rgba(136,255,170,.4)}
+  .pill.bd{background:rgba(255,216,102,.14);color:var(--accent);border:1px solid rgba(255,216,102,.4)}
+  .pill.warn{background:rgba(255,136,102,.14);color:var(--warn);border:1px solid rgba(255,136,102,.4)}
+  .pager{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:16px;color:var(--mut);font-size:13px}
+
+  /* ── Drawer ── */
+  .drawer-bg{position:fixed;inset:0;background:rgba(2,8,13,.6);backdrop-filter:blur(4px);z-index:60;display:none}
+  .drawer-bg.open{display:block}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--card);border-left:1px solid var(--line);z-index:61;transform:translateX(100%);transition:transform .22s ease;overflow-y:auto;display:flex;flex-direction:column}
+  .drawer.open{transform:none}
+  .drawer-head{padding:20px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
+  .drawer-head .top{display:flex;align-items:flex-start;gap:14px}
+  .drawer-head .av{font-size:40px;line-height:1}
+  .drawer-head .nm{font-size:21px;font-weight:700}
+  .drawer-head .id{font-family:ui-monospace,monospace;font-size:11px;color:var(--mut)}
+  .drawer-head .x{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--mut);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:18px}
+  .drawer-head .x:hover{border-color:var(--brand);color:var(--ink)}
+  .drawer-body{padding:20px 22px;display:flex;flex-direction:column;gap:18px}
+  .dstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .dstat{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:11px 12px}
+  .dstat .v{font-size:19px;font-weight:800;font-family:ui-monospace,monospace;color:var(--brand)}
+  .dstat .l{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+  .progress{height:8px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin:8px 0}
+  .progress .f{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent))}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+  .field input,.field textarea,.field select{background:var(--card2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:9px 11px;font-size:13px;outline:0;width:100%}
+  .field input:focus,.field textarea:focus{border-color:var(--brand)}
+  .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .block{border:1px solid var(--line2);border-radius:11px;padding:14px}
+  .block h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+  .stamp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .stamp-ctl .dots{display:flex;gap:5px}
+  .stamp-ctl .dots i{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.12)}
+  .stamp-ctl .dots i.on{background:var(--accent)}
+  .vhist{font-size:12px}
+  .vhist .vrow{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line2)}
+  .vhist .vrow .t{color:var(--mut);font-family:ui-monospace,monospace;min-width:108px}
+  .vhist .vrow .p{flex:1;color:var(--ink)}
+  .vhist .vrow .r{font-family:ui-monospace,monospace;color:var(--accent)}
+
+  /* ── Rewards editor ── */
+  .tier-edit{display:grid;grid-template-columns:50px 1.3fr 90px 90px 2fr 70px 36px;gap:8px;align-items:center;margin-bottom:8px}
+  .tier-edit input{background:var(--card2);border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:7px 9px;font-size:12px;outline:0;width:100%}
+  .tier-edit input:focus{border-color:var(--brand)}
+  .tier-edit .th{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+  @media(max-width:760px){.tier-edit{grid-template-columns:1fr 1fr;border:1px solid var(--line2);border-radius:10px;padding:10px;gap:6px}.tier-edit .th{display:none}}
+
+  /* ── Charts ── */
+  .chart-legend{display:flex;gap:16px;font-size:11px;color:var(--mut);margin-top:8px;flex-wrap:wrap}
+  .chart-legend .k{display:inline-flex;align-items:center;gap:6px}
+  .chart-legend .sw{width:12px;height:4px;border-radius:2px;display:inline-block}
+  svg.chart{width:100%;height:auto;display:block}
+  .chart-x{display:flex;justify-content:space-between;font-family:ui-monospace,monospace;font-size:10px;color:var(--mut);margin-top:4px}
+
+  /* ── Toast ── */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-size:13px;z-index:200;opacity:0;transition:.25s;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:90vw}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #toast.err{border-color:var(--danger);color:#ffb3ba}
+  #toast.ok{border-color:var(--good)}
+
+  .loading{color:var(--mut);font-size:13px;padding:30px;text-align:center}
+  .foot{color:var(--mut);font-size:11px;text-align:center;margin-top:30px;font-family:ui-monospace,monospace;letter-spacing:.06em}
+  @media(max-width:560px){.dstats{grid-template-columns:1fr 1fr}.wrap{padding:16px 14px 60px}}
+</style>
+</head>
+<body>
+
+<!-- ── GATE ── -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-logo">XPACE<span class="dot">·</span>OS <span class="sub" data-i18n="gate.sub">CLUB BACKOFFICE</span></div>
+    <h1 data-i18n="gate.title">Centro de mando del Club</h1>
+    <p data-i18n="gate.desc">Introduce la clave de administración para gestionar la tarjeta de fidelidad.</p>
+    <input type="password" id="gateInput" autocomplete="current-password" placeholder="ADMIN_TOKEN" data-i18n-ph="gate.ph">
+    <button class="btn primary" id="gateBtn" data-i18n="gate.btn">Entrar</button>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app" hidden>
+  <header>
+    <div class="logo">XPACE<span class="dot">·</span>OS <span class="sub" id="clubName">CLUB</span></div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-view="dashboard" data-i18n="tab.dashboard">Panel</button>
+      <button class="tab" data-view="members" data-i18n="tab.members">Socios</button>
+      <button class="tab" data-view="segments" data-i18n="tab.segments">Segmentos</button>
+      <button class="tab" data-view="rewards" data-i18n="tab.rewards">Recompensas</button>
+      <button class="tab" data-view="settings" data-i18n="tab.settings">Ajustes</button>
+    </div>
+    <div class="hdr-right">
+      <button class="lang-toggle" id="langToggle">EN</button>
+      <a class="btn ghost sm" href="/">← XpaceOS</a>
+      <button class="btn ghost sm" id="lockBtn" data-i18n="lock">Salir</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- DASHBOARD -->
+    <section class="view on" id="view-dashboard">
+      <h2 class="section" data-i18n="dash.title">Panel del Club</h2>
+      <p class="section-desc" data-i18n="dash.desc">Salud del programa de fidelidad en tiempo real, leído del mismo backend que la PWA del socio.</p>
+      <div class="kpis" id="kpis"><div class="loading" data-i18n="loading">Cargando…</div></div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span data-i18n="dash.activity">Actividad · últimos 30 días</span> <span class="count" id="actCount"></span></h3>
+          <div id="chart"></div>
+          <div class="chart-legend">
+            <span class="k"><span class="sw" style="background:rgba(120,243,255,.55)"></span><span data-i18n="dash.visits">Visitas</span></span>
+            <span class="k"><span class="sw" style="background:var(--accent)"></span><span data-i18n="dash.revenue">Ingresos</span></span>
+            <span class="k"><span class="sw" style="background:var(--good)"></span><span data-i18n="dash.signups">Altas</span></span>
+          </div>
+        </div>
+        <div class="card">
+          <h3 data-i18n="dash.tiers">Distribución por nivel</h3>
+          <div id="tierDist"></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>🎂 <span data-i18n="dash.bdays">Próximos cumpleaños</span> <span class="count" id="bdCount"></span></h3>
+          <div class="blist" id="bdays"></div>
+        </div>
+        <div class="card">
+          <h3>⚡ <span data-i18n="dash.quick">Acciones rápidas</span></h3>
+          <div class="blist" id="quick"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section class="view" id="view-members">
+      <h2 class="section" data-i18n="mem.title">Socios</h2>
+      <p class="section-desc" data-i18n="mem.desc">Toda la base del Club. Busca, filtra por nivel o segmento, y pulsa una fila para gestionar al socio.</p>
+      <div class="toolbar">
+        <input type="text" id="q" placeholder="Buscar por nombre o id…" data-i18n-ph="mem.search">
+        <select id="tierFilter"></select>
+        <select id="segFilter"></select>
+        <select id="sortSel"></select>
+        <label class="chk"><input type="checkbox" id="archChk"> <span data-i18n="mem.archived">Ver archivados</span></label>
+        <div class="grow"></div>
+        <span class="count mono" id="memCount" style="color:var(--mut);font-size:12px"></span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr>
+            <th data-i18n="col.member">Socio</th>
+            <th data-i18n="col.tier">Nivel</th>
+            <th data-i18n="col.stamps">Sellos</th>
+            <th data-i18n="col.visits">Visitas</th>
+            <th data-i18n="col.spend">Gasto</th>
+            <th data-i18n="col.last">Última</th>
+            <th data-i18n="col.flags">Estado</th>
+          </tr></thead>
+          <tbody id="memRows"><tr><td colspan="7"><div class="loading" data-i18n="loading">Cargando…</div></td></tr></tbody>
+        </table>
+      </div>
+      <div class="pager" id="pager"></div>
+    </section>
+
+    <!-- SEGMENTS -->
+    <section class="view" id="view-segments">
+      <h2 class="section" data-i18n="seg.title">Segmentos accionables</h2>
+      <p class="section-desc" data-i18n="seg.desc">Grupos vivos calculados sobre toda la base. Pulsa uno para abrir esa lista en Socios.</p>
+      <div class="seg-grid" id="segGrid"><div class="loading" data-i18n="loading">Cargando…</div></div>
+    </section>
+
+    <!-- REWARDS -->
+    <section class="view" id="view-rewards">
+      <h2 class="section" data-i18n="rew.title">Recompensas y reglas</h2>
+      <p class="section-desc" data-i18n="rew.desc">Define la mecánica del Club. Los cambios afectan en vivo a cómo gana el socio y a cómo se calculan los niveles.</p>
+      <div class="card">
+        <h3 data-i18n="rew.program">Programa de sellos</h3>
+        <div class="grid2">
+          <div class="field"><label data-i18n="rew.stamps">Sellos para premio</label><input type="number" id="cfgStamps" min="2" max="50"></div>
+          <div class="field"><label data-i18n="rew.label">Etiqueta del premio</label><input type="text" id="cfgReward" maxlength="40"></div>
+          <div class="field"><label data-i18n="rew.club">Nombre del Club</label><input type="text" id="cfgClub" maxlength="40"></div>
+          <div class="field"><label data-i18n="rew.currency">Moneda</label><input type="text" id="cfgCurrency" maxlength="4"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="rew.ladder">Escalera de niveles</h3>
+        <p class="section-desc" data-i18n="rew.ladderDesc">El socio sube al nivel más alto cuyo umbral de gasto Y visitas cumple. De menor a mayor.</p>
+        <div class="tier-edit"><span class="th">Emoji</span><span class="th" data-i18n="rew.name">Nombre</span><span class="th" data-i18n="rew.minSpend">Gasto≥</span><span class="th" data-i18n="rew.minVisits">Visitas≥</span><span class="th" data-i18n="rew.perk">Beneficio</span><span class="th" data-i18n="rew.color">Color</span><span class="th"></span></div>
+        <div id="tierEdit"></div>
+        <button class="btn sm ghost" id="addTier" style="margin-top:8px">+ <span data-i18n="rew.addTier">Añadir nivel</span></button>
+      </div>
+      <div class="row-actions">
+        <button class="btn primary" id="saveCfg" data-i18n="rew.save">Guardar reglas</button>
+        <button class="btn ghost" id="resetCfg" data-i18n="rew.reload">Descartar cambios</button>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <h2 class="section" data-i18n="set.title">Ajustes</h2>
+      <p class="section-desc" data-i18n="set.desc">Datos del programa, alta de socios y registro de auditoría.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3 data-i18n="set.join">Alta de socios</h3>
+          <p class="section-desc" data-i18n="set.joinDesc">Código de alta de la PWA del socio. Compártelo o ponlo en un QR en el punto de venta.</p>
+          <div class="field"><label data-i18n="set.joinCode">Código de alta</label><input type="text" id="joinCode" readonly class="mono"></div>
+          <div class="row-actions" style="margin-top:12px">
+            <button class="btn sm" id="copyJoin" data-i18n="set.copy">Copiar código</button>
+            <button class="btn sm accent" id="exportCsv" data-i18n="set.export">Exportar socios CSV</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3 data-i18n="set.about">Sistema</h3>
+          <div class="vhist" id="aboutBox"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><span data-i18n="set.audit">Registro de auditoría</span> <span class="count" id="logCount"></span></h3>
+        <div class="vhist" id="auditLog"><div class="loading" data-i18n="loading">Cargando…</div></div>
+      </div>
+    </section>
+
+    <div class="foot" id="foot"></div>
+  </div>
+</div>
+
+<!-- ── MEMBER DRAWER ── -->
+<div class="drawer-bg" id="drawerBg"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<div id="toast"></div>
+
+<script>
+const API = 'https://admira-loyalty.csilvasantin.workers.dev';
+const TOKEN_KEY = 'loyalty_admin_token';
+const LANG_KEY = 'loyalty_admin_lang';
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let TOKEN = '';
+try { TOKEN = localStorage.getItem(TOKEN_KEY) || ''; } catch {}
+let LANG = 'es';
+try { LANG = localStorage.getItem(LANG_KEY) || 'es'; } catch {}
+
+let RULES = null;        // current program rules
+let RULES_DRAFT = null;  // editable copy in rewards view
+let STATS = null;
+const memState = { q:'', tier:'', segment:'', sort:'last_seen_at', dir:'desc', limit:50, offset:0, archived:false, total:0 };
+
+// ── i18n ──
+const I18N = {
+  es:{
+    'gate.sub':'CLUB BACKOFFICE','gate.title':'Centro de mando del Club','gate.desc':'Introduce la clave de administración para gestionar la tarjeta de fidelidad.','gate.ph':'ADMIN_TOKEN','gate.btn':'Entrar','gate.bad':'Clave incorrecta','gate.neterr':'No se pudo conectar con el backend',
+    loading:'Cargando…',lock:'Salir',
+    'tab.dashboard':'Panel','tab.members':'Socios','tab.segments':'Segmentos','tab.rewards':'Recompensas','tab.settings':'Ajustes',
+    'dash.title':'Panel del Club','dash.desc':'Salud del programa de fidelidad en tiempo real, leído del mismo backend que la PWA del socio.','dash.activity':'Actividad · últimos 30 días','dash.tiers':'Distribución por nivel','dash.bdays':'Próximos cumpleaños','dash.quick':'Acciones rápidas','dash.visits':'Visitas','dash.revenue':'Ingresos','dash.signups':'Altas','dash.noBdays':'Sin cumpleaños esta semana.',
+    'kpi.members':'socios','kpi.active':'en tienda ahora','kpi.new7':'altas (7 días)','kpi.visits30':'visitas (30 días)','kpi.rev30':'ingresos (30 días)','kpi.pending':'premios pendientes','kpi.redeem':'tasa de canje','kpi.almost':'a 1 sello del premio','kpi.bday':'cumpleaños hoy','kpi.lapsed':'dormidos (>30 días)',
+    'quick.pending':'{n} socios con premio pendiente de canjear','quick.almost':'{n} socios a un sello del premio','quick.lapsed':'{n} socios dormidos para reactivar','quick.bday':'{n} cumpleaños hoy — felicítalos','quick.none':'Todo al día. Nada urgente.',
+    'mem.title':'Socios','mem.desc':'Toda la base del Club. Busca, filtra por nivel o segmento, y pulsa una fila para gestionar al socio.','mem.search':'Buscar por nombre o id…','mem.archived':'Ver archivados',
+    'col.member':'Socio','col.tier':'Nivel','col.stamps':'Sellos','col.visits':'Visitas','col.spend':'Gasto','col.last':'Última','col.flags':'Estado',
+    'mem.none':'Sin socios para este filtro.','mem.count':'{n} socios','prev':'‹ Anterior','next':'Siguiente ›','page':'Página {p} de {t}',
+    'flag.free':'PREMIO','flag.bday':'CUMPLE','flag.new':'NUEVO','last.never':'nunca','last.today':'hoy','last.days':'hace {n} d',
+    'tier.all':'Todos los niveles','seg.all':'Todos los segmentos',
+    'sort.last_seen_at':'Última visita','sort.created_at':'Más recientes','sort.total_spend':'Mayor gasto','sort.total_visits':'Más visitas','sort.stamps':'Más sellos','sort.name':'Nombre A-Z',
+    'seg.title':'Segmentos accionables','seg.desc':'Grupos vivos calculados sobre toda la base. Pulsa uno para abrir esa lista en Socios.',
+    'seg.birthday':'Cumpleaños hoy','seg.birthday.d':'Felicítalos y dales un detalle.',
+    'seg.birthday_week':'Cumpleaños 7 días','seg.birthday_week.d':'Prepara la sorpresa de la semana.',
+    'seg.lapsed':'Dormidos','seg.lapsed.d':'Más de 30 días sin venir. Reactívalos.',
+    'seg.champions':'Campeones','seg.champions.d':'Tus mayores gastadores. Cuídalos.',
+    'seg.almost_free':'Casi premio','seg.almost_free.d':'A un sello del premio. Empújalos.',
+    'seg.pending_free':'Premio pendiente','seg.pending_free.d':'Tienen un premio por canjear.',
+    'seg.new':'Nuevos (7 días)','seg.new.d':'Recién llegados. Dales la bienvenida.',
+    'seg.active':'En tienda ahora','seg.active.d':'Check-in reciente en el espacio físico.',
+    'rew.title':'Recompensas y reglas','rew.desc':'Define la mecánica del Club. Los cambios afectan en vivo a cómo gana el socio y a cómo se calculan los niveles.','rew.program':'Programa de sellos','rew.stamps':'Sellos para premio','rew.label':'Etiqueta del premio','rew.club':'Nombre del Club','rew.currency':'Moneda','rew.ladder':'Escalera de niveles','rew.ladderDesc':'El socio sube al nivel más alto cuyo umbral de gasto Y visitas cumple. De menor a mayor.','rew.name':'Nombre','rew.minSpend':'Gasto≥','rew.minVisits':'Visitas≥','rew.perk':'Beneficio','rew.color':'Color','rew.addTier':'Añadir nivel','rew.save':'Guardar reglas','rew.reload':'Descartar cambios','rew.saved':'Reglas guardadas ✓','rew.minTiers':'Necesitas al menos un nivel.',
+    'set.title':'Ajustes','set.desc':'Datos del programa, alta de socios y registro de auditoría.','set.join':'Alta de socios','set.joinDesc':'Código de alta de la PWA del socio. Compártelo o ponlo en un QR en el punto de venta.','set.joinCode':'Código de alta','set.copy':'Copiar código','set.copied':'Código copiado ✓','set.export':'Exportar socios CSV','set.about':'Sistema','set.audit':'Registro de auditoría','set.noLog':'Sin acciones registradas.',
+    'dr.member':'Socio','dr.tierNow':'Nivel actual','dr.toNext':'Para {tier}: faltan {spend} de gasto y {visits} visitas','dr.maxTier':'Nivel máximo alcanzado 🏆','dr.stamps':'Sellos','dr.visits':'Visitas','dr.spend':'Gasto','dr.stampctl':'Tarjeta de sellos','dr.addStamp':'+1 sello','dr.subStamp':'−1 sello','dr.grantFree':'Conceder premio','dr.redeem':'Canjear premio','dr.hasFree':'Premio listo para canjear','dr.profile':'Perfil','dr.name':'Nombre','dr.emoji':'Avatar','dr.bday':'Cumpleaños (MM-DD)','dr.note':'Nota interna','dr.save':'Guardar cambios','dr.history':'Historial de visitas','dr.noVisits':'Sin visitas todavía.','dr.archive':'Archivar socio','dr.unarchive':'Restaurar socio','dr.archived':'Archivado','dr.free':'gratis','dr.saved':'Socio actualizado ✓','dr.redeemed':'Premio canjeado ✓','dr.granted':'Premio concedido ✓',
+    'confirm.archive':'¿Archivar a {name}? Dejará de contar en las métricas activas.','confirm.redeem':'¿Canjear el premio de {name}? Reinicia su tarjeta de sellos.',
+    err:'Error',
+  },
+  en:{
+    'gate.sub':'CLUB BACKOFFICE','gate.title':'Club command center','gate.desc':'Enter the admin key to manage the loyalty card.','gate.ph':'ADMIN_TOKEN','gate.btn':'Enter','gate.bad':'Wrong key','gate.neterr':'Could not reach the backend',
+    loading:'Loading…',lock:'Log out',
+    'tab.dashboard':'Dashboard','tab.members':'Members','tab.segments':'Segments','tab.rewards':'Rewards','tab.settings':'Settings',
+    'dash.title':'Club dashboard','dash.desc':'Live health of the loyalty program, read from the same backend as the member PWA.','dash.activity':'Activity · last 30 days','dash.tiers':'Tier distribution','dash.bdays':'Upcoming birthdays','dash.quick':'Quick actions','dash.visits':'Visits','dash.revenue':'Revenue','dash.signups':'Sign-ups','dash.noBdays':'No birthdays this week.',
+    'kpi.members':'members','kpi.active':'in store now','kpi.new7':'sign-ups (7d)','kpi.visits30':'visits (30d)','kpi.rev30':'revenue (30d)','kpi.pending':'pending rewards','kpi.redeem':'redemption rate','kpi.almost':'one stamp from reward','kpi.bday':'birthdays today','kpi.lapsed':'lapsed (>30d)',
+    'quick.pending':'{n} members with a reward to redeem','quick.almost':'{n} members one stamp from the reward','quick.lapsed':'{n} lapsed members to win back','quick.bday':'{n} birthdays today — say happy birthday','quick.none':'All caught up. Nothing urgent.',
+    'mem.title':'Members','mem.desc':'The whole Club base. Search, filter by tier or segment, click a row to manage a member.','mem.search':'Search by name or id…','mem.archived':'Show archived',
+    'col.member':'Member','col.tier':'Tier','col.stamps':'Stamps','col.visits':'Visits','col.spend':'Spend','col.last':'Last','col.flags':'Status',
+    'mem.none':'No members for this filter.','mem.count':'{n} members','prev':'‹ Prev','next':'Next ›','page':'Page {p} of {t}',
+    'flag.free':'REWARD','flag.bday':'BDAY','flag.new':'NEW','last.never':'never','last.today':'today','last.days':'{n}d ago',
+    'tier.all':'All tiers','seg.all':'All segments',
+    'sort.last_seen_at':'Last visit','sort.created_at':'Newest','sort.total_spend':'Top spend','sort.total_visits':'Most visits','sort.stamps':'Most stamps','sort.name':'Name A-Z',
+    'seg.title':'Actionable segments','seg.desc':'Live groups computed over the whole base. Click one to open that list in Members.',
+    'seg.birthday':'Birthdays today','seg.birthday.d':'Wish them well and give a treat.',
+    'seg.birthday_week':'Birthdays 7 days','seg.birthday_week.d':'Prep this week of surprises.',
+    'seg.lapsed':'Lapsed','seg.lapsed.d':'Over 30 days away. Win them back.',
+    'seg.champions':'Champions','seg.champions.d':'Your top spenders. Look after them.',
+    'seg.almost_free':'Almost reward','seg.almost_free.d':'One stamp from the reward. Nudge them.',
+    'seg.pending_free':'Pending reward','seg.pending_free.d':'They have a reward to redeem.',
+    'seg.new':'New (7 days)','seg.new.d':'Just joined. Welcome them.',
+    'seg.active':'In store now','seg.active.d':'Recent check-in in the physical space.',
+    'rew.title':'Rewards & rules','rew.desc':'Define the Club mechanic. Changes affect live how members earn and how tiers are computed.','rew.program':'Stamp program','rew.stamps':'Stamps for reward','rew.label':'Reward label','rew.club':'Club name','rew.currency':'Currency','rew.ladder':'Tier ladder','rew.ladderDesc':'A member reaches the highest tier whose spend AND visit thresholds they meet. Low to high.','rew.name':'Name','rew.minSpend':'Spend≥','rew.minVisits':'Visits≥','rew.perk':'Perk','rew.color':'Color','rew.addTier':'Add tier','rew.save':'Save rules','rew.reload':'Discard changes','rew.saved':'Rules saved ✓','rew.minTiers':'You need at least one tier.',
+    'set.title':'Settings','set.desc':'Program data, member onboarding and audit log.','set.join':'Member onboarding','set.joinDesc':'Join code for the member PWA. Share it or put it on a QR at the point of sale.','set.joinCode':'Join code','set.copy':'Copy code','set.copied':'Code copied ✓','set.export':'Export members CSV','set.about':'System','set.audit':'Audit log','set.noLog':'No actions logged.',
+    'dr.member':'Member','dr.tierNow':'Current tier','dr.toNext':'To {tier}: {spend} more spend and {visits} visits','dr.maxTier':'Top tier reached 🏆','dr.stamps':'Stamps','dr.visits':'Visits','dr.spend':'Spend','dr.stampctl':'Stamp card','dr.addStamp':'+1 stamp','dr.subStamp':'−1 stamp','dr.grantFree':'Grant reward','dr.redeem':'Redeem reward','dr.hasFree':'Reward ready to redeem','dr.profile':'Profile','dr.name':'Name','dr.emoji':'Avatar','dr.bday':'Birthday (MM-DD)','dr.note':'Internal note','dr.save':'Save changes','dr.history':'Visit history','dr.noVisits':'No visits yet.','dr.archive':'Archive member','dr.unarchive':'Restore member','dr.archived':'Archived','dr.free':'free','dr.saved':'Member updated ✓','dr.redeemed':'Reward redeemed ✓','dr.granted':'Reward granted ✓',
+    'confirm.archive':'Archive {name}? They will drop out of active metrics.','confirm.redeem':'Redeem the reward of {name}? This resets their stamp card.',
+    err:'Error',
+  }
+};
+function t(k, vars){ let s = (I18N[LANG] && I18N[LANG][k]) || (I18N.es[k]) || k; if(vars) for(const v in vars) s = s.replace('{'+v+'}', vars[v]); return s; }
+
+function applyLang(){
+  document.documentElement.lang = LANG;
+  $$('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
+  $$('[data-i18n-ph]').forEach(el=>{ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
+  $('#langToggle').textContent = LANG==='es'?'EN':'ES';
+  try{ localStorage.setItem(LANG_KEY, LANG); }catch{}
+}
+
+// ── formatting ──
+let CURRENCY = 'EUR';
+function money(n){ try{ return new Intl.NumberFormat(LANG==='es'?'es-ES':'en-US',{style:'currency',currency:CURRENCY,maximumFractionDigits:0}).format(Number(n)||0); }catch{ return (Number(n)||0)+' '+CURRENCY; } }
+function num(n){ return new Intl.NumberFormat(LANG==='es'?'es-ES':'en-US').format(Number(n)||0); }
+function pct(n){ return Math.round((Number(n)||0)*100)+'%'; }
+function lastSeen(days){ if(days==null) return t('last.never'); if(days<=0) return t('last.today'); return t('last.days',{n:days}); }
+function tierColor(key){ const tr=(RULES&&RULES.tiers||[]).find(x=>x.key===key); return tr?tr.color:'#78f3ff'; }
+
+// ── toast ──
+let toastTimer=null;
+function toast(msg, kind){ const el=$('#toast'); el.textContent=msg; el.className=(kind||''); requestAnimationFrame(()=>el.classList.add('show')); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2600); }
+
+// ── api ──
+async function api(path, opts){
+  opts = opts || {};
+  const headers = Object.assign({}, opts.headers, { 'Authorization':'Bearer '+TOKEN });
+  if(opts.body && !headers['Content-Type']) headers['Content-Type']='application/json';
+  const r = await fetch(API+path, Object.assign({cache:'no-store'}, opts, {headers}));
+  if(r.status===401){ lock(); throw new Error('unauthorized'); }
+  let d=null; try{ d=await r.json(); }catch{}
+  if(!r.ok || (d && d.error)) throw new Error((d&&d.error)||('HTTP '+r.status));
+  return d;
+}
+
+// ── gate / auth ──
+function showGate(){ $('#gate').style.display='flex'; $('#app').hidden=true; $('#gateInput').focus(); }
+function lock(){ TOKEN=''; try{ localStorage.removeItem(TOKEN_KEY); }catch{} showGate(); }
+async function tryLogin(tok){
+  $('#gateErr').textContent='';
+  try{
+    const r = await fetch(API+'/admin/ping',{headers:{'Authorization':'Bearer '+tok}});
+    if(r.status===200){ TOKEN=tok; try{ localStorage.setItem(TOKEN_KEY,tok); }catch{} enterApp(); return; }
+    if(r.status===401||r.status===503){ $('#gateErr').textContent=t('gate.bad'); return; }
+    $('#gateErr').textContent='HTTP '+r.status;
+  }catch(e){ $('#gateErr').textContent=t('gate.neterr'); }
+}
+
+function enterApp(){
+  $('#gate').style.display='none';
+  $('#app').hidden=false;
+  loadDashboard();
+}
+
+// ── views ──
+function switchView(v){
+  $$('.tab').forEach(b=>b.classList.toggle('on', b.dataset.view===v));
+  $$('.view').forEach(s=>s.classList.toggle('on', s.id==='view-'+v));
+  if(v==='dashboard') loadDashboard();
+  else if(v==='members') loadMembers();
+  else if(v==='segments') renderSegments();
+  else if(v==='rewards') loadRewards();
+  else if(v==='settings') loadSettings();
+}
+
+// ── DASHBOARD ──
+async function loadDashboard(){
+  try{
+    const [stats, series] = await Promise.all([ api('/admin/stats'), api('/admin/series?days=30') ]);
+    STATS = stats; RULES = stats.rules; CURRENCY = RULES.currency||'EUR';
+    $('#clubName').textContent = (RULES.clubName||'CLUB').toUpperCase();
+    renderKpis(stats); renderChart(series.series); renderTierDist(stats); renderBdays(stats); renderQuick(stats);
+    $('#foot').textContent = 'XpaceOS · '+(RULES.clubName||'Club')+' · '+num(stats.members)+' '+t('kpi.members')+' · backend admira-loyalty';
+  }catch(e){ if(e.message!=='unauthorized') $('#kpis').innerHTML='<div class="empty">'+t('err')+': '+esc(e.message)+'</div>'; }
+}
+function kpi(v,label,sub,cls,live){ return `<div class="kpi${live?' live':''}"><div class="v ${cls||''}">${v}</div><div class="l">${label}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`; }
+function renderKpis(s){
+  $('#kpis').innerHTML = [
+    kpi(num(s.members), t('kpi.members'), '+'+num(s.newMembers30)+' (30d)'),
+    kpi(num(s.activeNow), t('kpi.active'), null, 'good', true),
+    kpi(num(s.newMembers7), t('kpi.new7')),
+    kpi(num(s.visits.d30), t('kpi.visits30'), num(s.visits.d1)+' (24h)'),
+    kpi(money(s.revenue.d30), t('kpi.rev30'), null, 'accent'),
+    kpi(num(s.pendingFree), t('kpi.pending'), null, s.pendingFree?'good':''),
+    kpi(pct(s.redemptionRate), t('kpi.redeem'), num(s.redemptions.total)+' total'),
+    kpi(num(s.almostFree), t('kpi.almost'), null, s.almostFree?'accent':''),
+    kpi(num(s.birthdaysToday), t('kpi.bday'), null, s.birthdaysToday?'accent':''),
+    kpi(num(s.lapsed), t('kpi.lapsed'), null, s.lapsed?'warn':''),
+  ].join('');
+}
+function renderChart(series){
+  const W=680, H=180, pad=8, base=H-22;
+  const n=series.length||1;
+  const maxV=Math.max(1,...series.map(s=>s.visits));
+  const maxR=Math.max(1,...series.map(s=>s.revenue));
+  const maxS=Math.max(1,...series.map(s=>s.signups));
+  const bw=(W-pad*2)/n;
+  let bars='',rpts=[],spts=[];
+  series.forEach((s,i)=>{
+    const x=pad+i*bw;
+    const bh=(s.visits/maxV)*base;
+    bars+=`<rect x="${(x+1).toFixed(1)}" y="${(base-bh).toFixed(1)}" width="${(bw-2).toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="rgba(120,243,255,.5)"></rect>`;
+    rpts.push(`${(x+bw/2).toFixed(1)},${(base-(s.revenue/maxR)*base).toFixed(1)}`);
+    spts.push(`${(x+bw/2).toFixed(1)},${(base-(s.signups/maxS)*base).toFixed(1)}`);
+  });
+  const svg=`<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img">
+    <line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="rgba(120,243,255,.18)" stroke-width="1"/>
+    ${bars}
+    <polyline points="${rpts.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <polyline points="${spts.join(' ')}" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 3" opacity=".8"/>
+  </svg>`;
+  const first=series[0]?series[0].date.slice(5):'', mid=series[Math.floor(n/2)]?series[Math.floor(n/2)].date.slice(5):'', last=series[n-1]?series[n-1].date.slice(5):'';
+  $('#chart').innerHTML = svg + `<div class="chart-x"><span>${first}</span><span>${mid}</span><span>${last}</span></div>`;
+  const totV=series.reduce((a,s)=>a+s.visits,0), totR=series.reduce((a,s)=>a+s.revenue,0);
+  $('#actCount').textContent = num(totV)+' '+t('dash.visits').toLowerCase()+' · '+money(totR);
+}
+function renderTierDist(s){
+  const tiers = RULES.tiers||[];
+  const total = Math.max(1, Object.values(s.tierDistribution||{}).reduce((a,b)=>a+b,0));
+  $('#tierDist').innerHTML = tiers.map(tr=>{
+    const c = (s.tierDistribution&&s.tierDistribution[tr.key])||0;
+    const w = Math.round((c/total)*100);
+    return `<div class="tierbar"><div class="nm">${tr.emoji||''} ${esc(tr.name)}</div><div class="track"><div class="fill" style="width:${w}%;background:${tr.color}"></div></div><div class="n">${num(c)}</div></div>`;
+  }).join('') || '<div class="empty">—</div>';
+}
+function renderBdays(s){
+  $('#bdCount').textContent = s.birthdaysWeek?(num(s.birthdaysWeek)):'';
+  const list = s.upcomingBirthdays||[];
+  if(!list.length){ $('#bdays').innerHTML='<div class="empty">'+t('dash.noBdays')+'</div>'; return; }
+  $('#bdays').innerHTML = list.map(b=>`<div class="brow" data-mid="${b.id}"><span class="av">${esc(b.avatarEmoji||'🙂')}</span><span>${esc(b.name)}</span><span class="bd">${esc(b.birthday)}</span></div>`).join('');
+  $$('#bdays .brow').forEach(r=>r.onclick=()=>openMember(Number(r.dataset.mid)));
+}
+function renderQuick(s){
+  const items=[];
+  if(s.birthdaysToday) items.push({seg:'birthday',txt:t('quick.bday',{n:s.birthdaysToday}),ic:'🎂'});
+  if(s.pendingFree) items.push({seg:'pending_free',txt:t('quick.pending',{n:s.pendingFree}),ic:'🎁'});
+  if(s.almostFree) items.push({seg:'almost_free',txt:t('quick.almost',{n:s.almostFree}),ic:'⭐'});
+  if(s.lapsed) items.push({seg:'lapsed',txt:t('quick.lapsed',{n:s.lapsed}),ic:'😴'});
+  if(!items.length){ $('#quick').innerHTML='<div class="empty">'+t('quick.none')+'</div>'; return; }
+  $('#quick').innerHTML = items.map(i=>`<div class="brow" data-seg="${i.seg}"><span class="av">${i.ic}</span><span>${esc(i.txt)}</span><span class="bd">→</span></div>`).join('');
+  $$('#quick .brow').forEach(r=>r.onclick=()=>{ memState.segment=r.dataset.seg; memState.offset=0; $('#segFilter').value=r.dataset.seg; switchView('members'); });
+}
+
+// ── MEMBERS ──
+function tierBadge(tr){ return `<span class="tier-badge" style="color:${tr.color};border-color:${tr.color}66;background:${tr.color}14">${tr.emoji||''} ${esc(tr.name)}</span>`; }
+function stampsMini(stamps, free){
+  const max = (RULES&&RULES.stampsForFree)||5;
+  if(free) return `<span class="pill free">${t('flag.free')}</span>`;
+  let dots=''; for(let i=0;i<max;i++) dots+=`<i class="${i<stamps?'on':''}"></i>`;
+  return `<span class="stamps-mini">${dots}</span>`;
+}
+async function loadMembers(){
+  const p = new URLSearchParams({ q:memState.q, tier:memState.tier, segment:memState.segment, sort:memState.sort, dir:memState.dir, limit:memState.limit, offset:memState.offset });
+  if(memState.archived) p.set('archived','1');
+  $('#memRows').innerHTML = `<tr><td colspan="7"><div class="loading">${t('loading')}</div></td></tr>`;
+  try{
+    const d = await api('/admin/members?'+p.toString());
+    RULES = d.rules; CURRENCY=RULES.currency||'EUR'; memState.total=d.total;
+    $('#memCount').textContent = t('mem.count',{n:num(d.total)});
+    if(!d.members.length){ $('#memRows').innerHTML = `<tr><td colspan="7"><div class="empty">${t('mem.none')}</div></td></tr>`; renderPager(); return; }
+    $('#memRows').innerHTML = d.members.map(m=>{
+      const flags=[];
+      if(m.freePending) flags.push(`<span class="pill free">${t('flag.free')}</span>`);
+      if(m.isBirthday) flags.push(`<span class="pill bd">${t('flag.bday')}</span>`);
+      if(m.almostFree) flags.push(`<span class="pill warn">★</span>`);
+      return `<tr data-mid="${m.id}">
+        <td><div class="who"><span class="av">${esc(m.avatarEmoji||'🙂')}</span><span class="nm">${esc(m.name)}</span></div></td>
+        <td>${tierBadge(m.tier)}</td>
+        <td>${stampsMini(m.stamps,m.freePending)}</td>
+        <td class="mono">${num(m.totalVisits)}</td>
+        <td class="mono">${money(m.totalSpend)}</td>
+        <td class="mono" style="color:var(--mut)">${lastSeen(m.daysSinceVisit)}</td>
+        <td>${flags.join(' ')||'<span style="color:var(--mut)">·</span>'}</td>
+      </tr>`;
+    }).join('');
+    $$('#memRows tr[data-mid]').forEach(r=>r.onclick=()=>openMember(Number(r.dataset.mid)));
+    renderPager();
+  }catch(e){ if(e.message!=='unauthorized') $('#memRows').innerHTML=`<tr><td colspan="7"><div class="empty">${t('err')}: ${esc(e.message)}</div></td></tr>`; }
+}
+function renderPager(){
+  const pages = Math.max(1, Math.ceil(memState.total/memState.limit));
+  const page = Math.floor(memState.offset/memState.limit)+1;
+  $('#pager').innerHTML = pages<=1 ? '' :
+    `<button class="btn sm ghost" id="prevPg" ${page<=1?'disabled':''}>${t('prev')}</button>
+     <span>${t('page',{p:page,t:pages})}</span>
+     <button class="btn sm ghost" id="nextPg" ${page>=pages?'disabled':''}>${t('next')}</button>`;
+  const pv=$('#prevPg'), nx=$('#nextPg');
+  if(pv) pv.onclick=()=>{ memState.offset=Math.max(0,memState.offset-memState.limit); loadMembers(); };
+  if(nx) nx.onclick=()=>{ memState.offset+=memState.limit; loadMembers(); };
+}
+
+// ── SEGMENTS ──
+const SEGMENTS = [
+  {key:'birthday',ic:'🎂',stat:'birthdaysToday'},
+  {key:'birthday_week',ic:'🗓️',stat:'birthdaysWeek'},
+  {key:'pending_free',ic:'🎁',stat:'pendingFree'},
+  {key:'almost_free',ic:'⭐',stat:'almostFree'},
+  {key:'lapsed',ic:'😴',stat:'lapsed'},
+  {key:'champions',ic:'🏆',stat:null},
+  {key:'new',ic:'✨',stat:'newMembers7'},
+  {key:'active',ic:'🟢',stat:'activeNow'},
+];
+function renderSegments(){
+  if(!STATS){ $('#segGrid').innerHTML='<div class="loading">'+t('loading')+'</div>'; loadDashboard().then(()=>STATS&&renderSegments()); return; }
+  $('#segGrid').innerHTML = SEGMENTS.map(sg=>{
+    const v = sg.stat!=null ? num(STATS[sg.stat]||0) : '↗';
+    return `<div class="seg" data-seg="${sg.key}"><div class="ic">${sg.ic}</div><div class="v">${v}</div><div class="nm">${t('seg.'+sg.key)}</div><div class="ds">${t('seg.'+sg.key+'.d')}</div></div>`;
+  }).join('');
+  $$('#segGrid .seg').forEach(c=>c.onclick=()=>{ memState.segment=c.dataset.seg; memState.tier=''; memState.q=''; memState.offset=0; $('#segFilter').value=c.dataset.seg; $('#tierFilter').value=''; $('#q').value=''; switchView('members'); });
+}
+
+// ── DRAWER ──
+async function openMember(id){
+  const bg=$('#drawerBg'), dr=$('#drawer');
+  bg.classList.add('open'); dr.classList.add('open'); dr.setAttribute('aria-hidden','false');
+  dr.innerHTML = `<div class="drawer-body"><div class="loading">${t('loading')}</div></div>`;
+  try{
+    const d = await api('/admin/member?id='+id);
+    renderDrawer(d.member, d.visits);
+  }catch(e){ if(e.message!=='unauthorized') dr.innerHTML=`<div class="drawer-body"><div class="empty">${t('err')}: ${esc(e.message)}</div></div>`; }
+}
+function closeDrawer(){ $('#drawerBg').classList.remove('open'); $('#drawer').classList.remove('open'); $('#drawer').setAttribute('aria-hidden','true'); }
+function renderDrawer(m, visits){
+  const max=(RULES&&RULES.stampsForFree)||5;
+  let dots=''; for(let i=0;i<max;i++) dots+=`<i class="${i<m.stamps?'on':''}"></i>`;
+  const nx = m.tier.next;
+  let nextLine;
+  if(nx){
+    const needSpend=Math.max(0,nx.minSpend-m.totalSpend), needVisits=Math.max(0,nx.minVisits-m.totalVisits);
+    nextLine = `<div class="progress"><div class="f" style="width:${Math.min(100,Math.round((m.totalSpend/Math.max(1,nx.minSpend))*100))}%"></div></div><div style="font-size:11px;color:var(--mut)">${t('dr.toNext',{tier:nx.name,spend:money(needSpend),visits:needVisits})}</div>`;
+  } else { nextLine = `<div style="font-size:12px;color:var(--accent);margin-top:6px">${t('dr.maxTier')}</div>`; }
+
+  const vhist = visits&&visits.length ? visits.map(v=>{
+    const dt=new Date(v.ts*1000); const dts=dt.toLocaleDateString(LANG==='es'?'es-ES':'en-US',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString(LANG==='es'?'es-ES':'en-US',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="vrow"><span class="t">${dts}</span><span class="p">${esc(v.product||'·')}${v.was_free?` <span class="pill free">${t('dr.free')}</span>`:''}</span><span class="r">${v.was_free?'—':money(v.revenue)}</span></div>`;
+  }).join('') : `<div class="empty">${t('dr.noVisits')}</div>`;
+
+  $('#drawer').innerHTML = `
+    <div class="drawer-head">
+      <div class="top">
+        <span class="av">${esc(m.avatarEmoji||'🙂')}</span>
+        <div><div class="nm">${esc(m.name)} ${m.isBirthday?`<span class="pill bd">🎂 ${t('flag.bday')}</span>`:''} ${m.archived?`<span class="pill warn">${t('dr.archived')}</span>`:''}</div>
+          <div class="id">#${m.id} · ${tierBadge(m.tier)}</div></div>
+        <button class="x" id="drClose">✕</button>
+      </div>
+      ${nextLine}
+    </div>
+    <div class="drawer-body">
+      <div class="dstats">
+        <div class="dstat"><div class="v">${num(m.stamps)}/${max}</div><div class="l">${t('dr.stamps')}</div></div>
+        <div class="dstat"><div class="v">${num(m.totalVisits)}</div><div class="l">${t('dr.visits')}</div></div>
+        <div class="dstat"><div class="v">${money(m.totalSpend)}</div><div class="l">${t('dr.spend')}</div></div>
+      </div>
+
+      <div class="block">
+        <h4>${t('dr.stampctl')}</h4>
+        <div class="stamp-ctl">
+          <div class="dots">${dots}</div>
+          <div class="grow" style="flex:1"></div>
+          <button class="btn xs" data-act="sub">${t('dr.subStamp')}</button>
+          <button class="btn xs accent" data-act="add">${t('dr.addStamp')}</button>
+        </div>
+        <div class="row-actions" style="margin-top:10px">
+          ${m.freePending
+            ? `<div style="flex:1;font-size:12px;color:var(--good);align-self:center">✓ ${t('dr.hasFree')}</div><button class="btn good sm" data-act="redeem">${t('dr.redeem')}</button>`
+            : `<button class="btn sm" data-act="grant">${t('dr.grantFree')}</button>`}
+        </div>
+      </div>
+
+      <div class="block">
+        <h4>${t('dr.profile')}</h4>
+        <div class="field" style="margin-bottom:10px"><label>${t('dr.name')}</label><input type="text" id="dName" value="${esc(m.name)}" maxlength="32"></div>
+        <div class="grid2" style="gap:10px">
+          <div class="field"><label>${t('dr.emoji')}</label><input type="text" id="dEmoji" value="${esc(m.avatarEmoji||'')}" maxlength="8"></div>
+          <div class="field"><label>${t('dr.bday')}</label><input type="text" id="dBday" value="${esc(m.birthday||'')}" placeholder="07-15" maxlength="5"></div>
+        </div>
+        <div class="field" style="margin-top:10px"><label>${t('dr.note')}</label><textarea id="dNote" rows="2" maxlength="400">${esc(m.note||'')}</textarea></div>
+        <div class="row-actions" style="margin-top:12px">
+          <button class="btn primary sm" id="dSave">${t('dr.save')}</button>
+          <div class="grow" style="flex:1"></div>
+          <button class="btn ghost sm ${m.archived?'':'danger'}" id="dArch">${m.archived?t('dr.unarchive'):t('dr.archive')}</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h4>${t('dr.history')}</h4>
+        <div class="vhist">${vhist}</div>
+      </div>
+    </div>`;
+
+  $('#drClose').onclick=closeDrawer;
+  const adj = async (patch, okKey)=>{
+    try{ const d=await api('/admin/member/adjust',{method:'POST',body:JSON.stringify(Object.assign({id:m.id},patch))}); toast(t(okKey||'dr.saved'),'ok'); renderDrawer(d.member, visits); refreshCurrentView(); }
+    catch(e){ if(e.message!=='unauthorized') toast(t('err')+': '+e.message,'err'); }
+  };
+  $('#drawer [data-act="add"]').onclick=()=>adj({addStamps:1});
+  $('#drawer [data-act="sub"]').onclick=()=>adj({addStamps:-1});
+  const grant=$('#drawer [data-act="grant"]'); if(grant) grant.onclick=()=>adj({grantFree:true},'dr.granted');
+  const redeem=$('#drawer [data-act="redeem"]'); if(redeem) redeem.onclick=async()=>{
+    if(!confirm(t('confirm.redeem',{name:m.name}))) return;
+    try{ const d=await api('/admin/member/redeem',{method:'POST',body:JSON.stringify({id:m.id})}); toast(t('dr.redeemed'),'ok'); renderDrawer(d.member, visits); refreshCurrentView(); }
+    catch(e){ if(e.message!=='unauthorized') toast(t('err')+': '+e.message,'err'); }
+  };
+  $('#dSave').onclick=()=>adj({ name:$('#dName').value, avatarEmoji:$('#dEmoji').value, birthday:$('#dBday').value.trim(), note:$('#dNote').value });
+  $('#dArch').onclick=()=>{ if(!m.archived && !confirm(t('confirm.archive',{name:m.name}))) return; adj({archived:!m.archived}); };
+}
+function refreshCurrentView(){
+  const on=$('.view.on'); if(!on) return;
+  if(on.id==='view-members') loadMembers();
+  else if(on.id==='view-dashboard') loadDashboard();
+  else if(on.id==='view-segments'){ loadDashboard().then(renderSegments); }
+}
+
+// ── REWARDS ──
+async function loadRewards(){
+  try{ const d=await api('/admin/config'); RULES=d.rules; CURRENCY=RULES.currency||'EUR'; RULES_DRAFT=JSON.parse(JSON.stringify(RULES)); renderRewards(); }
+  catch(e){ if(e.message!=='unauthorized') toast(t('err')+': '+e.message,'err'); }
+}
+function renderRewards(){
+  const r=RULES_DRAFT;
+  $('#cfgStamps').value=r.stampsForFree; $('#cfgReward').value=r.rewardLabel||''; $('#cfgClub').value=r.clubName||''; $('#cfgCurrency').value=r.currency||'EUR';
+  $('#tierEdit').innerHTML = (r.tiers||[]).map((tr,i)=>`
+    <div class="tier-edit" data-i="${i}">
+      <input data-f="emoji" value="${esc(tr.emoji||'')}" maxlength="4">
+      <input data-f="name" value="${esc(tr.name||'')}" maxlength="24">
+      <input data-f="minSpend" type="number" min="0" value="${Number(tr.minSpend||0)}">
+      <input data-f="minVisits" type="number" min="0" value="${Number(tr.minVisits||0)}">
+      <input data-f="perk" value="${esc(tr.perk||'')}" maxlength="120">
+      <input data-f="color" value="${esc(tr.color||'#78f3ff')}" maxlength="9">
+      <button class="btn xs danger" data-del="${i}">✕</button>
+    </div>`).join('');
+  $$('#tierEdit .tier-edit input').forEach(inp=>inp.oninput=()=>{ const row=inp.closest('.tier-edit'); const i=Number(row.dataset.i); const f=inp.dataset.f; RULES_DRAFT.tiers[i][f] = (f==='minSpend'||f==='minVisits')?Number(inp.value)||0:inp.value; });
+  $$('#tierEdit [data-del]').forEach(b=>b.onclick=()=>{ RULES_DRAFT.tiers.splice(Number(b.dataset.del),1); renderRewards(); });
+}
+function bindRewards(){
+  $('#addTier').onclick=()=>{ RULES_DRAFT.tiers.push({key:'tier'+(RULES_DRAFT.tiers.length+1),name:'Nuevo',emoji:'⭐',color:'#78f3ff',minSpend:0,minVisits:0,perk:''}); renderRewards(); };
+  $('#resetCfg').onclick=()=>{ RULES_DRAFT=JSON.parse(JSON.stringify(RULES)); renderRewards(); };
+  $('#saveCfg').onclick=async()=>{
+    const patch={ stampsForFree:Number($('#cfgStamps').value)||5, rewardLabel:$('#cfgReward').value, clubName:$('#cfgClub').value, currency:$('#cfgCurrency').value, tiers:RULES_DRAFT.tiers };
+    if(!patch.tiers.length){ toast(t('rew.minTiers'),'err'); return; }
+    try{ const d=await api('/admin/config',{method:'POST',body:JSON.stringify(patch)}); RULES=d.rules; CURRENCY=RULES.currency||'EUR'; RULES_DRAFT=JSON.parse(JSON.stringify(RULES)); renderRewards(); $('#clubName').textContent=(RULES.clubName||'CLUB').toUpperCase(); toast(t('rew.saved'),'ok'); }
+    catch(e){ if(e.message!=='unauthorized') toast(t('err')+': '+e.message,'err'); }
+  };
+}
+
+// ── SETTINGS ──
+async function loadSettings(){
+  if(!RULES){ try{ RULES=(await api('/admin/config')).rules; CURRENCY=RULES.currency||'EUR'; }catch{} }
+  if(RULES) $('#joinCode').value = RULES.joinCode||'';
+  $('#aboutBox').innerHTML = [
+    ['Backend','admira-loyalty.csilvasantin.workers.dev'],
+    ['Club', RULES?RULES.clubName:'—'],
+    [t('rew.stamps'), RULES?RULES.stampsForFree:'—'],
+    ['Currency', RULES?RULES.currency:'—'],
+    [t('kpi.members'), STATS?num(STATS.members):'—'],
+  ].map(([k,v])=>`<div class="vrow"><span class="p" style="color:var(--mut)">${esc(k)}</span><span class="r" style="color:var(--ink)">${esc(v)}</span></div>`).join('');
+  try{
+    const d=await api('/admin/log?limit=60');
+    $('#logCount').textContent = d.log.length;
+    $('#auditLog').innerHTML = d.log.length ? d.log.map(l=>{
+      const dt=new Date(l.ts*1000); const dts=dt.toLocaleDateString(LANG==='es'?'es-ES':'en-US',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString(LANG==='es'?'es-ES':'en-US',{hour:'2-digit',minute:'2-digit'});
+      return `<div class="vrow"><span class="t">${dts}</span><span class="p"><b style="color:var(--brand)">${esc(l.action)}</b>${l.target_id?` #${l.target_id}`:''} ${l.detail?`· ${esc(l.detail)}`:''}</span></div>`;
+    }).join('') : `<div class="empty">${t('set.noLog')}</div>`;
+  }catch(e){ if(e.message!=='unauthorized') $('#auditLog').innerHTML=`<div class="empty">${t('err')}: ${esc(e.message)}</div>`; }
+}
+
+// ── build selects ──
+function buildSelects(){
+  const tierSel=$('#tierFilter'); tierSel.innerHTML=`<option value="">${t('tier.all')}</option>`+ (RULES&&RULES.tiers||[]).map(tr=>`<option value="${tr.key}">${tr.emoji||''} ${esc(tr.name)}</option>`).join('');
+  tierSel.value=memState.tier;
+  const segSel=$('#segFilter'); segSel.innerHTML=`<option value="">${t('seg.all')}</option>`+ SEGMENTS.map(s=>`<option value="${s.key}">${t('seg.'+s.key)}</option>`).join('');
+  segSel.value=memState.segment;
+  const sortSel=$('#sortSel'); const sorts=['last_seen_at','created_at','total_spend','total_visits','stamps','name'];
+  sortSel.innerHTML=sorts.map(s=>`<option value="${s}">${t('sort.'+s)}</option>`).join('');
+  sortSel.value=memState.sort;
+}
+
+// ── events ──
+function bind(){
+  $('#gateBtn').onclick=()=>tryLogin($('#gateInput').value.trim());
+  $('#gateInput').onkeydown=e=>{ if(e.key==='Enter') tryLogin($('#gateInput').value.trim()); };
+  $('#langToggle').onclick=()=>{ LANG=LANG==='es'?'en':'es'; applyLang(); buildSelects(); refreshCurrentView(); if($('#view-rewards').classList.contains('on'))renderRewards(); if($('#view-settings').classList.contains('on'))loadSettings(); if($('#view-segments').classList.contains('on'))renderSegments(); };
+  $('#lockBtn').onclick=lock;
+  $$('#tabs .tab').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
+  $('#drawerBg').onclick=closeDrawer;
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+  let qTimer=null;
+  $('#q').oninput=e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ memState.q=e.target.value.trim(); memState.offset=0; loadMembers(); },280); };
+  $('#tierFilter').onchange=e=>{ memState.tier=e.target.value; memState.offset=0; loadMembers(); };
+  $('#segFilter').onchange=e=>{ memState.segment=e.target.value; memState.offset=0; loadMembers(); };
+  $('#sortSel').onchange=e=>{ memState.sort=e.target.value; memState.offset=0; loadMembers(); };
+  $('#archChk').onchange=e=>{ memState.archived=e.target.checked; memState.offset=0; loadMembers(); };
+  $('#copyJoin').onclick=()=>{ const v=$('#joinCode').value; navigator.clipboard?.writeText(v); toast(t('set.copied'),'ok'); };
+  $('#exportCsv').onclick=()=>{ window.open(API+'/admin/export?admin_token='+encodeURIComponent(TOKEN),'_blank'); };
+  bindRewards();
+}
+
+// ── init ──
+applyLang();
+buildSelects();
+bind();
+if(TOKEN){ tryLogin(TOKEN); } else { showGate(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es" data-layer="os">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datos necesarios · XpaceOS para Altadis</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/tokens.css">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/meta.css">
+<style>
+  [data-layer="os"]{ --altadis:#e4322b; --altadis-soft:rgba(228,50,43,.14); --altadis-line:rgba(228,50,43,.42); }
+  body{ padding:0; }
+  .wrap{ max-width:760px; margin:0 auto; padding:0 var(--admira-space-4) var(--admira-space-6); }
+  .top{ text-align:center; padding:var(--admira-space-6) var(--admira-space-4) var(--admira-space-4); background:radial-gradient(ellipse at 50% -20%, var(--admira-spine-soft), transparent 60%); border-bottom:1px solid var(--admira-border); }
+  .top .k{ font-family:var(--admira-font-mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase; color:var(--admira-cyan); }
+  .top h1{ font-size:clamp(26px,5vw,38px); font-weight:800; letter-spacing:-.02em; margin:8px 0 6px; }
+  .top p{ color:var(--admira-text-muted); margin:0; font-size:14px; }
+
+  fieldset{ border:1px solid var(--admira-border); border-radius:var(--admira-radius-lg); background:var(--admira-bg-elev); padding:20px 22px; margin-top:var(--admira-space-4); }
+  legend{ font-family:var(--admira-font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--admira-cyan); padding:0 8px; }
+  .f{ margin-top:14px; }
+  .f label{ display:block; font-size:14px; font-weight:600; color:var(--admira-text); margin-bottom:4px; }
+  .f .hint{ font-size:12px; color:var(--admira-text-muted); margin-bottom:6px; }
+  .f .req{ color:var(--altadis); }
+  input[type=text], textarea, select{ width:100%; background:var(--admira-bg); color:var(--admira-text); border:1px solid var(--admira-border); border-radius:var(--admira-radius-md); padding:10px 12px; font:inherit; font-size:14px; }
+  input:focus, textarea:focus, select:focus{ outline:0; border-color:var(--admira-spine-line); box-shadow:0 0 0 2px var(--admira-spine-soft); }
+  textarea{ min-height:64px; resize:vertical; }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .color-row{ display:flex; gap:10px; align-items:center; }
+  .color-row input[type=color]{ width:46px; height:40px; padding:0; border:1px solid var(--admira-border); border-radius:8px; background:var(--admira-bg); }
+
+  .bar{ position:sticky; bottom:0; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; padding:14px; margin-top:var(--admira-space-5); background:rgba(7,10,16,.92); backdrop-filter:blur(8px); border-top:1px solid var(--admira-border); }
+  .btn{ display:inline-flex; gap:8px; align-items:center; cursor:pointer; border:0; font:inherit; font-weight:700; font-size:14px; padding:11px 20px; border-radius:var(--admira-radius-md); }
+  .btn.primary{ background:var(--admira-cyan); color:#021018; }
+  .btn.client{ background:var(--altadis); color:#fff; }
+  .btn.ghost{ background:transparent; color:var(--admira-cyan); border:1px solid var(--admira-spine-line); }
+  .saved{ font-family:var(--admira-font-mono); font-size:11px; color:var(--admira-green); align-self:center; }
+  .note{ font-family:var(--admira-font-mono); font-size:12px; color:var(--admira-text-muted); border:1px dashed var(--admira-border); border-radius:var(--admira-radius-md); padding:12px 14px; margin-top:var(--admira-space-4); }
+  @media (max-width:560px){ .row{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body data-layer="os">
+
+  <div class="top">
+    <div class="k">Formulario interno · datos para la propuesta</div>
+    <h1>Datos para XpaceOS · Altadis</h1>
+    <p>Rellena lo que sepas. Se guarda solo en este navegador. Al final, «Copiar resumen» o «Enviar por email» para mandárnoslo.</p>
+  </div>
+
+  <div class="wrap">
+    <form id="form">
+
+      <fieldset>
+        <legend>1 · Relación y presentación</legend>
+        <div class="row">
+          <div class="f"><label>Años operando la red de Altadis <span class="req">*</span></label><input type="text" data-q="Años de relación" placeholder="p. ej. 6 años"></div>
+          <div class="f"><label>Fecha y hora de la presentación</label><input type="text" data-q="Fecha/hora presentación" placeholder="martes DD/MM · HH:MM"></div>
+        </div>
+        <div class="f"><label>¿Qué operamos hoy exactamente?</label><div class="hint">Servicios/alcance del contrato actual (para el marco de renovación).</div><textarea data-q="Servicios actuales" placeholder="signage, instalación, mantenimiento, contenidos…"></textarea></div>
+        <div class="row">
+          <div class="f"><label>Interlocutor/decisor en Altadis</label><input type="text" data-q="Interlocutor Altadis" placeholder="nombre y cargo"></div>
+          <div class="f"><label>Asistentes a la reunión</label><input type="text" data-q="Asistentes" placeholder="perfiles que estarán"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2 · La red (bloque 01 · oportunidad)</legend>
+        <div class="row">
+          <div class="f"><label>Nº de estancos de la red <span class="req">*</span></label><input type="text" data-q="Nº estancos" placeholder="p. ej. 1.200"></div>
+          <div class="f"><label>Cobertura geográfica</label><input type="text" data-q="Cobertura" placeholder="regiones / nacional"></div>
+        </div>
+        <div class="row">
+          <div class="f"><label>Visitas/tráfico diario por estanco <span class="req">*</span></label><input type="text" data-q="Visitas/día por estanco" placeholder="media de personas/día"></div>
+          <div class="f"><label>Tiempo medio en el mostrador</label><input type="text" data-q="Tiempo en mostrador" placeholder="p. ej. 45 s"></div>
+        </div>
+        <div class="f"><label>Parque de pantallas actual</label><input type="text" data-q="Pantallas actuales" placeholder="cuántas/qué tipo hay instaladas hoy"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3 · Demo en vivo (bloque 02)</legend>
+        <div class="f"><label>¿Hay un estanco real para la demo en vivo?</label><div class="hint">Ubicación y si tiene pantalla/conexión para gobernarlo el martes.</div><textarea data-q="Estanco demo" placeholder="sí/no · dónde · qué tiene"></textarea></div>
+        <div class="f"><label>¿Qué queremos demostrar gobernando en vivo?</label><input type="text" data-q="Qué demostrar" placeholder="cambio de campaña, medición, etc."></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>4 · Negocio (bloque 03)</legend>
+        <div class="row">
+          <div class="f"><label>Revenue share para Altadis</label><input type="text" data-q="Revenue share" placeholder="% propuesto"></div>
+          <div class="f"><label>eCPM estimado</label><input type="text" data-q="eCPM" placeholder="€ por mil impactos"></div>
+        </div>
+        <div class="row">
+          <div class="f"><label>Ingreso medio por estanco</label><input type="text" data-q="Ingreso/estanco" placeholder="€/mes estimado"></div>
+          <div class="f"><label>Impactos/día estimados</label><input type="text" data-q="Impactos/día" placeholder="audiencia total/día"></div>
+        </div>
+        <div class="row">
+          <div class="f"><label>Nº de estancos del piloto <span class="req">*</span></label><input type="text" data-q="Estancos piloto" placeholder="p. ej. 20"></div>
+          <div class="f"><label>Duración del piloto</label><input type="text" data-q="Duración piloto" placeholder="p. ej. 8 semanas"></div>
+        </div>
+        <div class="f"><label>KPIs del piloto a acordar</label><input type="text" data-q="KPIs piloto" placeholder="audiencia, atención, ingresos…"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>5 · Cumplimiento</legend>
+        <div class="f"><label>Restricciones de contenido del sector</label><div class="hint">Qué NO se puede mostrar; normativa aplicable.</div><textarea data-q="Restricciones contenido" placeholder="normativa tabaco, límites de publicidad…"></textarea></div>
+        <div class="f"><label>Categorías de anunciantes permitidas</label><input type="text" data-q="Anunciantes permitidos" placeholder="qué sectores pueden anunciarse"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>6 · Marca Altadis</legend>
+        <div class="f"><label>Color oficial de Altadis</label><div class="hint">Para el acento de la web (ahora #e4322b provisional).</div>
+          <div class="color-row"><input type="color" id="brandColor" value="#e4322b"><input type="text" data-q="Color Altadis (hex)" id="brandHex" placeholder="#RRGGBB"></div>
+        </div>
+        <div class="f"><label>¿Podemos usar el logo de Altadis en la web?</label><select data-q="Uso logo"><option value="">—</option><option>Sí</option><option>No</option><option>Solo en privado</option></select></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>7 · Credenciales y competencia</legend>
+        <div class="f"><label>Resultados/hitos de la relación actual</label><div class="hint">Datos que ya tengamos y refuercen «ya os conocemos».</div><textarea data-q="Resultados actuales" placeholder="métricas, casos, hitos…"></textarea></div>
+        <div class="f"><label>¿Quién compite en el concurso?</label><div class="hint">Para afinar el «por qué distintos».</div><input type="text" data-q="Competidores" placeholder="competidores conocidos"></div>
+        <div class="f"><label>Otra cosa que debamos saber</label><textarea data-q="Notas" placeholder="cualquier dato relevante"></textarea></div>
+      </fieldset>
+
+    </form>
+
+    <div class="note" id="status">Tus respuestas se guardan automáticamente en este navegador. <span class="req">*</span> = lo más importante para la presentación.</div>
+  </div>
+
+  <div class="bar">
+    <span class="saved" id="saved"></span>
+    <button class="btn primary" id="copy">📋 Copiar resumen</button>
+    <button class="btn client" id="email">✉️ Enviar por email</button>
+    <button class="btn ghost" id="clear">Limpiar</button>
+  </div>
+
+<script>
+  const KEY = 'altadis-datos-v1';
+  const form = document.getElementById('form');
+  const fields = [...form.querySelectorAll('[data-q]')];
+  const saved = document.getElementById('saved');
+
+  // Restaurar
+  try {
+    const data = JSON.parse(localStorage.getItem(KEY) || '{}');
+    fields.forEach(f => { if (data[f.dataset.q] != null) f.value = data[f.dataset.q]; });
+    syncColor();
+  } catch (e) {}
+
+  function persist() {
+    const data = {};
+    fields.forEach(f => { if (f.value.trim()) data[f.dataset.q] = f.value.trim(); });
+    localStorage.setItem(KEY, JSON.stringify(data));
+    saved.textContent = '✓ guardado ' + new Date().toLocaleTimeString('es-ES');
+  }
+  form.addEventListener('input', persist);
+
+  // Color picker <-> hex
+  const bc = document.getElementById('brandColor'), bh = document.getElementById('brandHex');
+  function syncColor(){ if (bh.value && /^#?[0-9a-fA-F]{6}$/.test(bh.value)) bc.value = bh.value.startsWith('#') ? bh.value : '#'+bh.value; }
+  bc.addEventListener('input', () => { bh.value = bc.value; persist(); });
+  bh.addEventListener('input', () => { syncColor(); });
+
+  function buildSummary() {
+    let out = 'DATOS · XpaceOS para Altadis\\n' + new Date().toLocaleString('es-ES') + '\\n\\n';
+    const groups = form.querySelectorAll('fieldset');
+    groups.forEach(g => {
+      const legend = g.querySelector('legend').textContent.trim();
+      const lines = [...g.querySelectorAll('[data-q]')].filter(f => f.value.trim()).map(f => '  - ' + f.dataset.q + ': ' + f.value.trim());
+      if (lines.length) out += '## ' + legend + '\\n' + lines.join('\\n') + '\\n\\n';
+    });
+    return out.trim();
+  }
+
+  document.getElementById('copy').addEventListener('click', async () => {
+    const txt = buildSummary();
+    try { await navigator.clipboard.writeText(txt); saved.textContent = '✓ resumen copiado'; }
+    catch (e) { prompt('Copia este texto:', txt); }
+  });
+
+  document.getElementById('email').addEventListener('click', () => {
+    const body = encodeURIComponent(buildSummary());
+    window.location.href = 'mailto:hola@admiranext.com?subject=' + encodeURIComponent('Datos XpaceOS · Altadis') + '&body=' + body;
+  });
+
+  document.getElementById('clear').addEventListener('click', () => {
+    if (confirm('¿Borrar todo lo escrito?')) { localStorage.removeItem(KEY); fields.forEach(f => f.value=''); saved.textContent='borrado'; }
+  });
+</script>
+</body>
+</html>

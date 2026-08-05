@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XpaceScan · Película del gemelo</title>
+<link rel="icon" href="../favicon.ico">
+<style>
+:root{ --bg:#04070a; --panel:#0b1410; --line:#123524; --txt:#d7ffe9; --dim:#6fa88a; --acc:#28e07c; }
+*{box-sizing:border-box}
+html,body{margin:0; height:100%; background:var(--bg); color:var(--txt);
+  font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif; overflow:hidden}
+#wrap{position:relative; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; background:#000}
+canvas#gl{width:100%; height:100%; object-fit:contain; display:block}
+#ui{position:absolute; left:0; right:0; bottom:0; padding:10px 14px; display:flex; gap:10px;
+  align-items:center; background:linear-gradient(transparent,rgba(0,0,0,.75))}
+button{background:var(--panel); color:var(--txt); border:1px solid var(--line); border-radius:8px;
+  padding:8px 14px; cursor:pointer; font-size:14px}
+button:hover{border-color:var(--acc)}
+button.rec{color:#ff5d5d; border-color:#ff5d5d}
+input[type=range]{flex:1}
+#hud{position:absolute; top:12px; left:14px; font-size:12px; color:var(--dim)}
+#hud b{color:var(--acc)}
+label.file{font-size:12px; color:var(--dim); cursor:pointer}
+#msg{position:absolute; top:12px; right:14px; font-size:12px; color:var(--dim)}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="gl"></canvas>
+  <div id="hud"><b>XPACESCAN</b> · Xpacio capturado con iPhone → gemelo 3D (COLMAP · 58.408 puntos · 301 cámaras)</div>
+  <div id="msg"></div>
+  <div id="ui">
+    <button id="play">⏵</button>
+    <input type="range" id="tl" min="0" max="300" value="0" step="0.1">
+    <select id="vel"><option value="1">1×</option><option value="1.5" selected>1.5×</option><option value="2">2×</option><option value="3">3×</option></select>
+    <label class="file"><input type="file" id="vfile" accept="video/*" style="display:none">📹 vídeo PiP</label>
+    <button id="rec" class="rec">⏺ Exportar vídeo</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+const $=id=>document.getElementById(id);
+const msg=t=>{$('msg').textContent=t;};
+const qs=new URLSearchParams(location.search);
+const BASE='scenes/xpacio-starwars-hd/';
+
+/* ── renderer a 1920x1080 fijo (calidad de grabación), CSS escala ── */
+const canvas=$('gl');
+const renderer=new THREE.WebGLRenderer({canvas, antialias:true, preserveDrawingBuffer:true});
+renderer.setSize(1920,1080,false);
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x04070a);
+scene.fog=new THREE.FogExp2(0x04070a, 0.028);
+const cam=new THREE.PerspectiveCamera(62, 1920/1080, .05, 200);
+
+/* ── cargar datos ── */
+async function loadBin(){
+  const buf=await (await fetch(BASE+'pelicula.bin')).arrayBuffer();
+  const hlen=new DataView(buf).getUint32(0,true);
+  const hdr=JSON.parse(new TextDecoder().decode(new Uint8Array(buf,4,hlen)));
+  let off=4+hlen;
+  const pos=new Float32Array(buf.slice(off,off+hdr.n*12)); off+=hdr.n*12;
+  const col=new Uint8Array(buf.slice(off,off+hdr.n*3)); off+=hdr.n*3;
+  const birth=new Uint16Array(buf.slice(off,off+hdr.n*2));
+  return {hdr,pos,col,birth};
+}
+const [{hdr,pos,col,birth}, tray]=await Promise.all([loadBin(), fetch(BASE+'tray.json').then(r=>r.json())]);
+const MAXF=hdr.maxFrame;
+
+/* ── normalizar escena (centro + escala) y aplicar lo MISMO a la trayectoria ── */
+let mn=[1e9,1e9,1e9], mx=[-1e9,-1e9,-1e9];
+for(let i=0;i<hdr.n;i++) for(let k=0;k<3;k++){ const v=pos[i*3+k]; if(v<mn[k])mn[k]=v; if(v>mx[k])mx[k]=v; }
+const ctr=[(mn[0]+mx[0])/2,(mn[1]+mx[1])/2,(mn[2]+mx[2])/2];
+const esc=16/Math.max(mx[0]-mn[0],mx[1]-mn[1],mx[2]-mn[2]);
+const tf=(x,y,z)=>[(x-ctr[0])*esc, -(y-ctr[1])*esc, -(z-ctr[2])*esc]; // Y abajo de COLMAP → Y arriba
+for(let i=0;i<hdr.n;i++){ const t=tf(pos[i*3],pos[i*3+1],pos[i*3+2]); pos[i*3]=t[0]; pos[i*3+1]=t[1]; pos[i*3+2]=t[2]; }
+const T=tray.map(t=>({f:t.f, p:tf(t.p[0],t.p[1],t.p[2])}));
+
+/* ── nube con shader de revelado ── */
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+const colf=new Float32Array(hdr.n*3); for(let i=0;i<hdr.n*3;i++) colf[i]=col[i]/255;
+geo.setAttribute('color', new THREE.BufferAttribute(colf,3));
+const birthf=new Float32Array(birth);
+geo.setAttribute('birth', new THREE.BufferAttribute(birthf,1));
+const mat=new THREE.ShaderMaterial({
+  uniforms:{ uFrame:{value:0} },
+  vertexShader:`attribute float birth; varying vec3 vC; varying float vA;
+    uniform float uFrame;
+    void main(){ vC=color; float d=uFrame-birth;
+      vA=d<0.0?0.0:clamp(d/6.0,0.0,1.0);
+      vec4 mv=modelViewMatrix*vec4(position,1.0);
+      float grow=mix(2.2,1.0,vA);
+      gl_PointSize=(260.0/-mv.z)*0.05*grow*${innerWidth>0?'1.0':'1.0'};
+      gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`varying vec3 vC; varying float vA;
+    void main(){ if(vA<=0.0) discard;
+      vec2 u=gl_PointCoord-0.5; if(dot(u,u)>0.25) discard;
+      gl_FragColor=vec4(vC*(0.65+0.55*vA), vA); }`,
+  vertexColors:true, transparent:true, depthWrite:false });
+scene.add(new THREE.Points(geo,mat));
+
+/* ── trayectoria cian progresiva ── */
+const tpos=new Float32Array(T.length*3);
+T.forEach((t,i)=>{ tpos[i*3]=t.p[0]; tpos[i*3+1]=t.p[1]+.06; tpos[i*3+2]=t.p[2]; });
+const tgeo=new THREE.BufferGeometry(); tgeo.setAttribute('position', new THREE.BufferAttribute(tpos,3));
+tgeo.setDrawRange(0,0);
+scene.add(new THREE.Line(tgeo, new THREE.LineBasicMaterial({color:0x35e0ff, transparent:true, opacity:.9})));
+const marker=new THREE.Mesh(new THREE.SphereGeometry(.05,12,12), new THREE.MeshBasicMaterial({color:0x35e0ff}));
+scene.add(marker);
+
+/* ── PiP del vídeo real (dentro del canvas para que se grabe) ── */
+const video=document.createElement('video'); video.muted=true; video.playsInline=true; video.crossOrigin='anonymous';
+let pip=null;
+function setVideo(src){ video.src=src; video.load();
+  const vt=new THREE.VideoTexture(video); vt.colorSpace=THREE.SRGBColorSpace;
+  if(pip) pip.material.map=vt;
+  else{
+    const g=new THREE.PlaneGeometry(1,1);
+    pip=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:vt}));
+    pipScene.add(pip);
+    const bord=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(
+      [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]].map(p=>new THREE.Vector3(p[0],p[1],0))),
+      new THREE.LineBasicMaterial({color:0x28e07c}));
+    pip.add(bord);
+  }
+  msg('PiP cargado');
+}
+const pipScene=new THREE.Scene();
+const pipCam=new THREE.OrthographicCamera(0,1920,1080,0,-1,1);
+$('vfile').addEventListener('change',e=>{ const f=e.target.files[0]; if(f) setVideo(URL.createObjectURL(f)); });
+if(qs.get('video')) setVideo(qs.get('video'));
+
+/* ── timeline / animación ── */
+let playing=false, frame=0, lastT=0;
+const FPS_CAP=4; // frames de COLMAP por segundo de vídeo original
+$('play').onclick=()=>{ playing=!playing; $('play').textContent=playing?'⏸':'⏵';
+  if(playing&&video.src){ video.currentTime=frame/FPS_CAP; video.play().catch(()=>{}); } else video.pause(); };
+$('tl').addEventListener('input',e=>{ frame=parseFloat(e.target.value); if(video.src) video.currentTime=frame/FPS_CAP; });
+$('tl').max=MAXF;
+
+function camAt(fr){
+  const i=Math.min(T.length-1, Math.max(0, Math.round(fr/MAXF*(T.length-1))));
+  const ahead=Math.min(T.length-1, i+8);
+  const p=T[i].p, a=T[ahead].p;
+  return {p:new THREE.Vector3(...p), a:new THREE.Vector3(...a), i};
+}
+const smooth={p:null,a:null};
+function updateCam(fr){
+  const {p,a,i}=camAt(fr);
+  // cámara flotante: detrás y por encima del recorrido, mirando adelante
+  const dir=a.clone().sub(p); dir.y=0; if(dir.lengthSq()<1e-4) dir.set(0,0,1); dir.normalize();
+  const want=p.clone().sub(dir.clone().multiplyScalar(2.4)).add(new THREE.Vector3(0.5,1.15,0));
+  const wantLook=p.clone().add(dir.clone().multiplyScalar(2.6)).add(new THREE.Vector3(0,-.55,0));
+  smooth.p=smooth.p?smooth.p.lerp(want,.06):want.clone();
+  smooth.a=smooth.a?smooth.a.lerp(wantLook,.08):wantLook.clone();
+  cam.position.copy(smooth.p); cam.lookAt(smooth.a);
+  marker.position.copy(p);
+  tgeo.setDrawRange(0,i+1);
+}
+
+function layoutPip(){ if(!pip) return;
+  const w=430, h=w*(video.videoHeight&&video.videoWidth?video.videoHeight/video.videoWidth:16/9);
+  pip.scale.set(w,h,1); pip.position.set(1920-w/2-24, 1080-h/2-24, 0);
+}
+
+function anim(ts){
+  requestAnimationFrame(anim);
+  const dt=Math.min(.1,(ts-lastT)/1000)||0; lastT=ts;
+  if(playing){
+    if(video.src&&!video.paused){ frame=video.currentTime*FPS_CAP; video.playbackRate=parseFloat($('vel').value); }
+    else frame+=dt*FPS_CAP*parseFloat($('vel').value);
+    if(frame>=MAXF){ frame=MAXF; if(recorder){stopRec();} else {frame=0; if(video.src)video.currentTime=0;} }
+    $('tl').value=frame;
+  }
+  mat.uniforms.uFrame.value=frame;
+  updateCam(frame);
+  layoutPip();
+  renderer.autoClear=true; renderer.render(scene,cam);
+  if(pip&&video.readyState>=2){ renderer.autoClear=false; renderer.clearDepth(); renderer.render(pipScene,pipCam); }
+}
+requestAnimationFrame(anim);
+
+/* ── grabación → webm (sube a localhost:8898 si estamos en local) ── */
+let recorder=null, chunks=[];
+$('rec').onclick=()=>{ if(recorder){ stopRec(); return; }
+  frame=0; if(video.src){video.currentTime=0; video.play().catch(()=>{});} playing=true; $('play').textContent='⏸';
+  const stream=canvas.captureStream(30);
+  recorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9', videoBitsPerSecond:14_000_000});
+  chunks=[]; recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+  recorder.onstop=async()=>{
+    const blob=new Blob(chunks,{type:'video/webm'});
+    msg('vídeo: '+(blob.size/1048576).toFixed(1)+' MB');
+    if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){
+      try{ await fetch('http://localhost:8898/upload',{method:'POST',body:blob});
+        msg('✅ subido al Mac ('+(blob.size/1048576).toFixed(1)+' MB)'); return; }catch(_){}
+    }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='xpacescan-pelicula.webm'; a.click();
+  };
+  recorder.start(1000); $('rec').textContent='⏹ Grabando…'; msg('grabando…');
+};
+function stopRec(){ if(!recorder)return; recorder.stop(); recorder=null;
+  $('rec').textContent='⏺ Exportar vídeo'; playing=false; $('play').textContent='⏵'; video.pause(); }
+
+msg('listo — '+hdr.n.toLocaleString()+' puntos');
+</script>
+</body>
+</html>

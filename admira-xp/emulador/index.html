@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emulador MUPI · admira.tv en la calle · XpaceOS</title>
+<style>
+  :root{ --bg:#0b0e14; --panel:#131822e6; --line:#26303f; --ink:#e8eef7; --mut:#8a97ab; --acc:#5bd6c0; --acc2:#7aa2ff; --mono:'SF Mono',ui-monospace,Menlo,monospace; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+  #stage{position:fixed;inset:0;overflow:hidden;background:#060a10}
+  #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  #empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--mut);text-align:center;padding:24px}
+  #empty .big{font-size:48px}
+  #empty b{color:var(--ink)}
+  /* MUPI en perspectiva */
+  #mupi{position:absolute;top:0;left:0;width:300px;height:500px;transform-origin:0 0;background:#000;
+    overflow:hidden;box-shadow:0 0 0 3px #0008, 0 10px 40px #000a;will-change:transform}
+  #mupi-media{position:absolute;inset:0;background:#0a0d13}
+  #mupi-media img,#mupi-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #mupi .glow{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 60px #0006;background:linear-gradient(120deg,#fff1 0%,#0000 30%)}
+  #mupi .badge{position:absolute;top:10px;left:0;right:0;text-align:center;font:700 16px var(--mono);color:#fff;letter-spacing:2px;text-shadow:0 2px 6px #000c;z-index:2}
+  #mupi .cap{position:absolute;bottom:12px;left:0;right:0;text-align:center;font:700 15px var(--mono);color:#fff;text-shadow:0 2px 6px #000d;z-index:2;padding:0 10px}
+  #mupi .seg{position:absolute;bottom:42px;left:0;right:0;text-align:center;font:700 12px var(--mono);color:#ffffffcc;text-shadow:0 1px 4px #000c;z-index:2}
+  /* asas de ajuste */
+  .handle{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--acc);border:2px solid #06231e;
+    transform:translate(-50%,-50%);cursor:grab;z-index:50;display:none;box-shadow:0 2px 8px #000a}
+  .handle.show{display:block}
+  .handle:active{cursor:grabbing}
+  /* HUD */
+  #hud{position:fixed;left:14px;bottom:14px;z-index:60;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:12px 14px;backdrop-filter:blur(8px);max-width:340px;box-shadow:0 12px 40px #0007}
+  #hud h1{font-size:14px;margin:0 0 2px;font-weight:800}
+  #hud h1 .tag{color:var(--acc);font-family:var(--mono)}
+  #hud .sub{color:var(--mut);font-size:11px;margin-bottom:10px}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+  button.btn,select{font-family:inherit;font-size:12.5px;cursor:pointer;border:1px solid var(--line);background:#1a212e;color:var(--ink);border-radius:9px;padding:7px 11px;font-weight:600}
+  button.btn:hover{border-color:var(--acc)}
+  button.btn.on{background:var(--acc);color:#06231e;border-color:var(--acc)}
+  .kiosk{font:700 13px var(--mono);color:var(--acc2)}
+  .stat{color:var(--mut);font-size:11px;font-family:var(--mono);margin-top:8px}
+  #drop{position:fixed;inset:0;z-index:80;background:#0bf3;border:3px dashed var(--acc);display:none;align-items:center;justify-content:center;font:700 22px var(--mono);color:#fff}
+  #drop.show{display:flex}
+  a{color:var(--acc2)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="bg" alt="" hidden>
+  <div id="empty">
+    <div class="big">📋📡</div>
+    <div><b>Pega aquí (⌘V / Ctrl+V)</b> una captura de Street View del kiosko.<br>
+    También puedes arrastrarla o <b>📷 Cargar captura</b>.<br>
+    El MUPI se <b>encaja solo</b> sobre la pantalla y empieza a emitir <b>admira.tv</b>.</div>
+  </div>
+  <div id="mupi">
+    <div id="mupi-media"></div>
+    <div class="glow"></div>
+    <div class="badge">📡 admira.tv</div>
+    <div class="seg" id="mupi-seg"></div>
+    <div class="cap" id="mupi-cap"></div>
+  </div>
+  <div class="handle" data-c="0"></div>
+  <div class="handle" data-c="1"></div>
+  <div class="handle" data-c="2"></div>
+  <div class="handle" data-c="3"></div>
+</div>
+
+<div id="hud">
+  <h1>Emulador MUPI <span class="tag">· admira.tv</span></h1>
+  <div class="sub">la emisión real, sobre la pantalla real del kiosko</div>
+  <div class="row">
+    <button class="btn" id="prev">‹</button>
+    <span class="kiosk" id="kiosk">Salmerón · Gràcia</span>
+    <button class="btn" id="next">›</button>
+  </div>
+  <div class="row">
+    <button class="btn" id="load">📷 Cargar captura</button>
+    <button class="btn" id="auto">🎯 Auto-encajar</button>
+    <button class="btn" id="adjust">✥ Ajustar a mano</button>
+    <button class="btn" id="save">💾 Guardar imagen</button>
+  </div>
+  <div class="row">
+    <button class="btn" id="rec">🎥 Grabar vídeo</button>
+    <select id="dur" title="duración del vídeo"><option value="5">5s</option><option value="10" selected>10s</option><option value="15">15s</option><option value="20">20s</option><option value="30">30s</option></select>
+  </div>
+  <div class="row">
+    <label class="stat">público</label>
+    <select id="seg-g"><option value="">auto</option><option value="female">♀ mujer</option><option value="male">♂ hombre</option><option value="mixed">⚥ mixto</option></select>
+    <select id="seg-a"><option value="">auto</option><option value="nino">niño</option><option value="joven">joven</option><option value="adulto">adulto</option><option value="senior">senior</option></select>
+  </div>
+  <div class="stat" id="stat">conectando admira.tv…</div>
+</div>
+<div id="drop">suelta la captura de Street View 📷</div>
+<input type="file" id="file" accept="image/*" hidden>
+
+<script src="../scripts/xpl-runtime.js?v=13"></script>
+<script src="../scripts/xpl-stock.js?v=13"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const stage=$('#stage'), mupi=$('#mupi'), bg=$('#bg'), empty=$('#empty');
+const W=300,H=500;                       // tamaño base del MUPI (se deforma por homografía)
+// circuito compartido con el buscador (localStorage 'mupiCircuit'); fallback a Salmerón.
+function circuit(){ try{ const c=JSON.parse(localStorage.getItem('mupiCircuit')||'[]'); return c.length?c:[{id:'salmeron',name:'Salmerón · Gràcia'}]; }catch(e){ return [{id:'salmeron',name:'Salmerón · Gràcia'}]; } }
+let STOPS=circuit(), IDX=0;
+function KIOSKID(){ return STOPS[IDX] ? STOPS[IDX].id : 'salmeron'; }
+
+/* ---------- homografía: mapear (0,0)-(W,H) a 4 esquinas (matrix3d) ---------- */
+function adj(m){return[m[4]*m[8]-m[5]*m[7],m[2]*m[7]-m[1]*m[8],m[1]*m[5]-m[2]*m[4],m[5]*m[6]-m[3]*m[8],m[0]*m[8]-m[2]*m[6],m[2]*m[3]-m[0]*m[5],m[3]*m[7]-m[4]*m[6],m[1]*m[6]-m[0]*m[7],m[0]*m[4]-m[1]*m[3]];}
+function mm(a,b){var r=[];for(var i=0;i<3;i++)for(var j=0;j<3;j++){var s=0;for(var k=0;k<3;k++)s+=a[3*i+k]*b[3*k+j];r[3*i+j]=s;}return r;}
+function mv(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
+function basis(p){var m=[p[0][0],p[1][0],p[2][0],p[0][1],p[1][1],p[2][1],1,1,1];var v=mv(adj(m),[p[3][0],p[3][1],1]);return mm(m,[v[0],0,0,0,v[1],0,0,0,v[2]]);}
+function applyMupi(c){ // c = [TL,TR,BL,BR] en coords de stage
+  var src=[[0,0],[W,0],[0,H],[W,H]];
+  var s=basis(src), d=basis(c), t=mm(d,adj(s));
+  for(var i=0;i<9;i++)t[i]/=t[8];
+  var m=[t[0],t[3],0,t[6], t[1],t[4],0,t[7], 0,0,1,0, t[2],t[5],0,t[8]];
+  mupi.style.transform='matrix3d('+m.join(',')+')';
+  // asas
+  $$('.handle').forEach((h,i)=>{ h.style.left=c[i][0]+'px'; h.style.top=c[i][1]+'px'; });
+}
+
+/* ---------- estado (fondo + esquinas) por kiosko ---------- */
+let corners=null;
+function defaultCorners(){ var w=stage.clientWidth,h=stage.clientHeight; var cx=w*0.62,cy=h*0.5,bw=w*0.12,bh=h*0.34;
+  return [[cx-bw,cy-bh],[cx+bw,cy-bh],[cx-bw,cy+bh],[cx+bw,cy+bh]]; }
+function loadState(){
+  try{ var st=JSON.parse(localStorage.getItem('mupiEmu_'+KIOSKID())||'null');
+    if(st){ if(st.bg){ bg.src=st.bg; bg.hidden=false; empty.style.display='none'; } corners=st.corners||null; } }catch(e){}
+  if(!corners) corners=defaultCorners();
+  applyMupi(corners);
+}
+function saveState(){ try{ localStorage.setItem('mupiEmu_'+KIOSKID(), JSON.stringify({ bg: bg.hidden?'':bg.src, corners })); }catch(e){} }
+
+/* ---------- cargar captura (downscale a dataURL) ---------- */
+function setBackdrop(file){
+  var fr=new FileReader();
+  fr.onload=()=>{ var im=new Image(); im.onload=()=>{
+    var max=1600, sc=Math.min(1,max/Math.max(im.width,im.height));
+    var cv=document.createElement('canvas'); cv.width=im.width*sc; cv.height=im.height*sc;
+    cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+    bg.onload=()=>{ bg.onload=null; setTimeout(autoFit, 60); };   // captura nueva → auto-encaje
+    bg.src=cv.toDataURL('image/jpeg',0.85); bg.hidden=false; empty.style.display='none'; saveState();
+  }; im.src=fr.result; };
+  fr.readAsDataURL(file);
+}
+$('#load').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{ if(e.target.files[0]) setBackdrop(e.target.files[0]); };
+// drag & drop
+['dragenter','dragover'].forEach(ev=>window.addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.add('show');}));
+['dragleave','drop'].forEach(ev=>window.addEventListener(ev,e=>{e.preventDefault();if(ev==='drop'||e.relatedTarget===null)$('#drop').classList.remove('show');}));
+window.addEventListener('drop',e=>{ e.preventDefault(); $('#drop').classList.remove('show'); var f=[...(e.dataTransfer.files||[])].find(x=>/^image\//.test(x.type)); if(f) setBackdrop(f); });
+// PEGAR (⌘V/Ctrl+V): la vía más cómoda — copias la captura y la pegas aquí
+window.addEventListener('paste',e=>{
+  var items=(e.clipboardData||window.clipboardData||{}).items||[];
+  for(var i=0;i<items.length;i++){
+    if(items[i].type && items[i].type.indexOf('image')===0){
+      var f=items[i].getAsFile(); if(f){ setBackdrop(f); e.preventDefault(); }
+      return;
+    }
+  }
+});
+
+/* ---------- ajustar esquinas ---------- */
+let adjusting=false;
+$('#adjust').onclick=function(){ adjusting=!adjusting; this.classList.toggle('on',adjusting); $$('.handle').forEach(h=>h.classList.toggle('show',adjusting)); };
+$$('.handle').forEach(h=>{
+  h.addEventListener('mousedown',e=>{ e.preventDefault(); var i=+h.dataset.c;
+    function mv2(ev){ var r=stage.getBoundingClientRect(); corners[i]=[ev.clientX-r.left,ev.clientY-r.top]; applyMupi(corners); }
+    function up(){ window.removeEventListener('mousemove',mv2); window.removeEventListener('mouseup',up); saveState(); }
+    window.addEventListener('mousemove',mv2); window.addEventListener('mouseup',up);
+  });
+});
+window.addEventListener('resize',()=>{ if(corners) applyMupi(corners); });
+
+/* ---------- AUTO-ENCAJE: detectar el panel del kiosko y poner el MUPI solo ----------
+   El MUPI es una pantalla ILUMINADA (rectángulo brillante y vertical) sobre el kiosko.
+   1) dibujo la captura recortada igual que en pantalla (object-fit:cover) en un canvas
+      de trabajo → coords canvas == coords del stage (×escala).
+   2) detección: brillo + zona; saco el mayor blob brillante con forma de pantalla.
+   3) 4 esquinas del blob (min/max de x±y) → cuadrilátero en perspectiva. */
+function workCanvas(){
+  const sw=stage.clientWidth, sh=stage.clientHeight;
+  const cw=Math.min(420, sw), ch=Math.round(cw*sh/sw);
+  const cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+  const cx=cv.getContext('2d',{willReadFrequently:true});
+  const iw=bg.naturalWidth, ih=bg.naturalHeight; if(!iw) return null;
+  const ar=iw/ih, sar=sw/sh; let sx,sy,sW,sH;
+  if(ar>sar){ sH=ih; sW=ih*sar; sx=(iw-sW)/2; sy=0; } else { sW=iw; sH=iw/sar; sx=0; sy=(ih-sH)/2; }
+  cx.drawImage(bg, sx,sy,sW,sH, 0,0, cw,ch);
+  return { cv, cx, cw, ch, kx:sw/cw, ky:sh/ch };   // kx,ky: canvas→stage
+}
+// blob de píxeles "pantalla" alrededor de seed (o por brillo global si seed=null)
+function detectBlob(W, seed){
+  const {cw,ch}=W, data=W.cx.getImageData(0,0,cw,ch).data;
+  const lum=i=>0.299*data[i]+0.587*data[i+1]+0.114*data[i+2];
+  const N=cw*ch; let sum=0; for(let p=0;p<N;p++) sum+=lum(p*4); const mean=sum/N;
+  let mark;
+  if(seed){
+    // flood-fill por similitud de brillo desde el clic (tolerante)
+    const si=(seed.y*cw+seed.x)*4, sl=lum(si), tol=44;
+    mark=new Uint8Array(N); const st=[seed.y*cw+seed.x];
+    while(st.length){ const q=st.pop(); if(mark[q]) continue; const l=lum(q*4);
+      if(Math.abs(l-sl)>tol) continue; mark[q]=1;
+      const x=q%cw,y=(q/cw)|0;
+      if(x>0)st.push(q-1); if(x<cw-1)st.push(q+1); if(y>0)st.push(q-cw); if(y<ch-1)st.push(q+cw);
+    }
+  } else {
+    // brillo alto; nos quedamos con el COMPONENTE conexo mayor (evita cielo disperso)
+    const thr=Math.max(150, mean+34); const bright=new Uint8Array(N);
+    for(let p=0;p<N;p++) bright[p]= lum(p*4)>thr ?1:0;
+    mark=new Uint8Array(N); let best=null,bestN=0;
+    for(let p=0;p<N;p++){ if(!bright[p]||mark[p]) continue;
+      const comp=[]; const st=[p]; while(st.length){ const q=st.pop(); if(mark[q]||!bright[q])continue; mark[q]=1; comp.push(q);
+        const x=q%cw,y=(q/cw)|0; if(x>0)st.push(q-1); if(x<cw-1)st.push(q+1); if(y>0)st.push(q-cw); if(y<ch-1)st.push(q+cw); }
+      if(comp.length>bestN){ bestN=comp.length; best=comp; } }
+    mark=new Uint8Array(N); if(best) for(const q of best) mark[q]=1;
+  }
+  // 4 esquinas del blob
+  let n=0,TL=1e9,TR=-1e9,BL=1e9,BR=-1e9,tl,tr,bl,br;
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  for(let q=0;q<N;q++){ if(!mark[q])continue; n++; const x=q%cw,y=(q/cw)|0;
+    if(x+y<TL){TL=x+y;tl=[x,y];} if(x+y>BR){BR=x+y;br=[x,y];}
+    if(x-y>TR){TR=x-y;tr=[x,y];} if(x-y<BL){BL=x-y;bl=[x,y];}
+    if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; }
+  if(n<60||!tl) return null;
+  return { corners:[tl,tr,bl,br], n, w:maxx-minx, h:maxy-miny, kx:W.kx, ky:W.ky };
+}
+function fitFromBlob(b){
+  if(!b) return false;
+  // filtro de cordura: algo vertical-ish y no minúsculo
+  if(b.h < stage.clientHeight*0.12) return false;
+  corners=b.corners.map(c=>[c[0]*b.kx, c[1]*b.ky]);
+  applyMupi(corners); saveState(); return true;
+}
+function autoFit(){
+  if(bg.hidden){ flash('carga primero una captura 📷'); return; }
+  const W=workCanvas(); if(!W){ return; }
+  const ok=fitFromBlob(detectBlob(W,null));
+  flash(ok? '🎯 panel detectado · si no encaja, toca el panel o «✥ a mano»'
+          : 'no vi el panel claro · toca el panel del kiosko 👆');
+}
+function flash(t){ const s=document.getElementById('stat'); const o=s.textContent; s.textContent=t; setTimeout(()=>{ if(s.textContent===t) s.textContent=o; }, 4000); }
+$('#auto').onclick=autoFit;
+// clic en el panel (cuando NO estoy en modo ajuste) → flood-fill desde el clic
+stage.addEventListener('click',e=>{
+  if(adjusting || bg.hidden) return;
+  if(e.target.closest('#hud')||e.target.closest('.handle')) return;
+  const W=workCanvas(); if(!W) return;
+  const r=stage.getBoundingClientRect();
+  const sx=Math.round((e.clientX-r.left)/W.kx), sy=Math.round((e.clientY-r.top)/W.ky);
+  if(sx<0||sy<0||sx>=W.cw||sy>=W.ch) return;
+  fitFromBlob(detectBlob(W,{x:sx,y:sy})) ? flash('🎯 encajado al panel') : flash('ahí no detecto pantalla; prueba en el centro del panel');
+});
+
+/* ---------- emisión: asset real de admira.tv por segmento ---------- */
+const XPL=window.XPL;
+const TS=h=>h<12?'manana':h<15?'mediodia':h<21?'tarde':'noche';
+let cur={sig:'',asset:null,picking:false};
+function segNow(){ var g=$('#seg-g').value, a=$('#seg-a').value, h=new Date().getHours();
+  return { g:g, a:a, aud:g==='female'?'f':g==='male'?'m':'', age:a||'', ts:TS(h) }; }
+function setMedia(asset){
+  var m=$('#mupi-media'); if(m.__k===asset.url) return; m.__k=asset.url; m.innerHTML='';
+  var vid=asset.type==='video'||asset.type==='animation'||/\.(mp4|webm|mov)(\?|$)/i.test(asset.url||'');
+  var n=document.createElement(vid?'video':'img'); n.crossOrigin='anonymous'; n.src=asset.url;
+  if(vid){ n.muted=true;n.loop=true;n.autoplay=true;n.playsInline=true;n.setAttribute('playsinline','');n.setAttribute('muted','');var p=n.play&&n.play();if(p&&p.catch)p.catch(()=>{}); }
+  m.appendChild(n);
+}
+function tick(){
+  if(!window.XPLStock){ return; }
+  var s=segNow();
+  $('#mupi-seg').textContent=[ s.g?({female:'♀ mujer',male:'♂ hombre',mixed:'⚥ mixto'}[s.g]):'', s.a||'' ].filter(Boolean).join(' · ')||'· auto ·';
+  var sig=[s.aud,s.age,s.ts].join('|');
+  if(sig!==cur.sig && !cur.picking){ cur.picking=true; cur.sig=sig;
+    window.XPLStock.pickAsync({audience:s.aud,age:s.age,timeSlot:s.ts}).then(a=>{ cur.picking=false;
+      if(a){ cur.asset=a; setMedia(a); $('#mupi-cap').textContent='📡 '+String(a.title||a.type||'admira.tv').replace(/&#39;/g,"'").slice(0,30); } }).catch(()=>cur.picking=false);
+  }
+  var n=(window.XPLStock&&window.XPLStock.ready())?window.XPLStock.count():0;
+  $('#stat').textContent='📡 '+(n?(n+' assets de admira.tv · emitiendo'):'conectando admira.tv…');
+}
+$('#seg-g').onchange=$('#seg-a').onchange=()=>{ cur.sig=''; tick(); };
+// --- circuito: ‹ › navegan las paradas que añadiste en el buscador ---
+function showStop(){
+  const s=STOPS[IDX]||{name:'Salmerón · Gràcia'};
+  const k=$('#kiosk'); k.textContent=(s.name||('Parada '+(IDX+1)))+(STOPS.length>1?(' ('+(IDX+1)+'/'+STOPS.length+')'):'');
+  k.style.cursor=s.lat?'pointer':'default';
+  k.onclick=s.lat?()=>window.open('https://www.google.com/maps?q=&layer=c&cbll='+s.lat+','+s.lon,'_blank'):null;
+  // recargar fondo+esquinas de ESTA parada
+  bg.hidden=true; bg.removeAttribute('src'); empty.style.display='flex'; corners=null;
+  loadState();
+  if(bg.hidden) flash(s.lat?('parada sin captura · toca el nombre para abrir Street View y captúrala'):'parada sin captura · 📷 Cargar captura');
+}
+$('#prev').onclick=()=>{ STOPS=circuit(); IDX=(IDX-1+STOPS.length)%STOPS.length; showStop(); };
+$('#next').onclick=()=>{ STOPS=circuit(); IDX=(IDX+1)%STOPS.length; showStop(); };
+
+/* ---------- GUARDAR: hornear captura + MUPI en perspectiva → PNG ---------- */
+function solve3(M,r){ // x con M·x=r (M 3x3 row-major)
+  const a=M, det=a[0]*(a[4]*a[8]-a[5]*a[7])-a[1]*(a[3]*a[8]-a[5]*a[6])+a[2]*(a[3]*a[7]-a[4]*a[6]);
+  if(Math.abs(det)<1e-9) return null;
+  const v=[a[4]*a[8]-a[5]*a[7],a[2]*a[7]-a[1]*a[8],a[1]*a[5]-a[2]*a[4],
+           a[5]*a[6]-a[3]*a[8],a[0]*a[8]-a[2]*a[6],a[2]*a[3]-a[0]*a[5],
+           a[3]*a[7]-a[4]*a[6],a[1]*a[6]-a[0]*a[7],a[0]*a[4]-a[1]*a[3]].map(x=>x/det);
+  return [v[0]*r[0]+v[1]*r[1]+v[2]*r[2], v[3]*r[0]+v[4]*r[1]+v[5]*r[2], v[6]*r[0]+v[7]*r[1]+v[8]*r[2]];
+}
+function drawTri(ctx,img,s,d){
+  const M=[s[0][0],s[0][1],1, s[1][0],s[1][1],1, s[2][0],s[2][1],1];
+  const A=solve3(M,[d[0][0],d[1][0],d[2][0]]), B=solve3(M,[d[0][1],d[1][1],d[2][1]]); if(!A||!B) return;
+  // clip a un triángulo ligeramente INFLADO (~0.8px hacia fuera) para tapar las costuras del mallado
+  const cx=(d[0][0]+d[1][0]+d[2][0])/3, cy=(d[0][1]+d[1][1]+d[2][1])/3, PX=0.8;
+  const e=d.map(p=>{ const dx=p[0]-cx, dy=p[1]-cy, l=Math.hypot(dx,dy)||1; return [p[0]+dx/l*PX, p[1]+dy/l*PX]; });
+  ctx.save(); ctx.beginPath(); ctx.moveTo(e[0][0],e[0][1]); ctx.lineTo(e[1][0],e[1][1]); ctx.lineTo(e[2][0],e[2][1]); ctx.closePath(); ctx.clip();
+  ctx.setTransform(A[0],B[0],A[1],B[1],A[2],B[2]); ctx.drawImage(img,0,0); ctx.restore();
+}
+function warpImage(ctx,img,dst,sw,sh,nx,ny){
+  const [TL,TR,BL,BR]=dst, NX=nx||12, NY=ny||18;
+  const P=(u,v)=>[ (1-u)*(1-v)*TL[0]+u*(1-v)*TR[0]+(1-u)*v*BL[0]+u*v*BR[0],
+                   (1-u)*(1-v)*TL[1]+u*(1-v)*TR[1]+(1-u)*v*BL[1]+u*v*BR[1] ];
+  for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){
+    const u0=i/NX,u1=(i+1)/NX,v0=j/NY,v1=(j+1)/NY;
+    const s00=[u0*sw,v0*sh],s10=[u1*sw,v0*sh],s01=[u0*sw,v1*sh],s11=[u1*sw,v1*sh];
+    const d00=P(u0,v0),d10=P(u1,v0),d01=P(u0,v1),d11=P(u1,v1);
+    drawTri(ctx,img,[s00,s10,s11],[d00,d10,d11]); drawTri(ctx,img,[s00,s11,s01],[d00,d11,d01]);
+  }
+  ctx.setTransform(1,0,0,1,0,0);
+}
+function exportImage(){
+  if(bg.hidden){ flash('pega o carga una captura primero 📋'); return; }
+  const node=$('#mupi-media').querySelector('img,video');
+  const sw=stage.clientWidth, sh=stage.clientHeight, SC=2;
+  const cv=document.createElement('canvas'); cv.width=Math.round(sw*SC); cv.height=Math.round(sh*SC);
+  const cx=cv.getContext('2d');
+  const iw=bg.naturalWidth, ih=bg.naturalHeight, ar=iw/ih, sar=sw/sh; let sx,sy,sW,sH;
+  if(ar>sar){ sH=ih; sW=ih*sar; sx=(iw-sW)/2; sy=0;} else { sW=iw; sH=iw/sar; sx=0; sy=(ih-sH)/2; }
+  cx.drawImage(bg, sx,sy,sW,sH, 0,0, cv.width, cv.height);
+  if(node && corners){
+    const dst=corners.map(c=>[c[0]*SC,c[1]*SC]);
+    const isV=node.tagName==='VIDEO', w2=isV?node.videoWidth:node.naturalWidth, h2=isV?node.videoHeight:node.naturalHeight;
+    if(w2&&h2) warpImage(cx,node,dst,w2,h2);
+    const tx=(dst[0][0]+dst[1][0])/2, ty=(dst[0][1]+dst[1][1])/2;
+    cx.setTransform(1,0,0,1,0,0); cx.textAlign='center'; cx.font='bold '+Math.round(15*SC)+'px ui-monospace,monospace';
+    cx.shadowColor='#000'; cx.shadowBlur=6*SC; cx.fillStyle='#fff'; cx.fillText('admira.tv', tx, ty+20*SC); cx.shadowBlur=0;
+  }
+  try{
+    cv.toBlob(b=>{ if(!b){ flash('no se pudo generar (¿contenido aún cargando?)'); return; }
+      const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+      a.download='mupi-'+(STOPS[IDX]?STOPS[IDX].id:'kiosko')+'.png';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+      flash('💾 imagen guardada con el MUPI encima'); }, 'image/png');
+  }catch(e){ flash('⚠ el contenido bloquea el guardado (CORS) · reintenta en unos segundos'); }
+}
+$('#save').onclick=exportImage;
+
+/* ---------- GRABAR VÍDEO: clip del MUPI emitiendo (duración elegible) → WebM ---------- */
+let recording=false;
+function recordVideo(){
+  if(recording) return;
+  if(bg.hidden){ flash('pega o carga una captura primero 📋'); return; }
+  if(!('MediaRecorder' in window)){ flash('este navegador no soporta grabación'); return; }
+  const node=$('#mupi-media').querySelector('video,img');
+  const secs=parseInt($('#dur').value||'10',10);
+  const sw=stage.clientWidth, sh=stage.clientHeight, RW=Math.min(1280,sw), sc=RW/sw, RH=Math.round(sh*sc);
+  const cv=document.createElement('canvas'); cv.width=RW; cv.height=RH; const cx=cv.getContext('2d');
+  const iw=bg.naturalWidth, ih=bg.naturalHeight, ar=iw/ih, sar=sw/sh; let sx,sy,sW,sH;
+  if(ar>sar){ sH=ih; sW=ih*sar; sx=(iw-sW)/2; sy=0;} else { sW=iw; sH=iw/sar; sx=0; sy=(ih-sH)/2; }
+  const dstAt=()=>corners.map(c=>[c[0]*sc,c[1]*sc]);
+  const stream=cv.captureStream(30);
+  let mime='video/webm;codecs=vp9'; if(!MediaRecorder.isTypeSupported(mime)) mime='video/webm;codecs=vp8'; if(!MediaRecorder.isTypeSupported(mime)) mime='video/webm';
+  let rec; try{ rec=new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond:6000000}); }catch(e){ flash('no pude iniciar la grabación'); return; }
+  const chunks=[]; rec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
+  recording=true; const btn=$('#rec'); btn.classList.add('on'); btn.textContent='⏺ Grabando…';
+  if(node&&node.tagName==='VIDEO'){ try{ node.currentTime=0; node.play(); }catch(e){} }
+  let timer, t0=performance.now();
+  // setInterval (no requestAnimationFrame): sigue corriendo aunque la pestaña no tenga foco.
+  function frame(){
+    cx.drawImage(bg, sx,sy,sW,sH, 0,0, RW,RH);
+    const d=dstAt();
+    if(node){ const isV=node.tagName==='VIDEO', w2=isV?node.videoWidth:node.naturalWidth, h2=isV?node.videoHeight:node.naturalHeight;
+      if(w2&&h2) warpImage(cx,node,d,w2,h2,8,11); }
+    cx.setTransform(1,0,0,1,0,0); cx.textAlign='center'; cx.font='bold 13px ui-monospace,monospace'; cx.shadowColor='#000'; cx.shadowBlur=5; cx.fillStyle='#fff';
+    cx.fillText('admira.tv',(d[0][0]+d[1][0])/2,(d[0][1]+d[1][1])/2+15); cx.shadowBlur=0;
+    const el=(performance.now()-t0)/1000;
+    btn.textContent='⏺ '+el.toFixed(1)+'s / '+secs+'s';
+    if(el>=secs || !recording){ clearInterval(timer); try{ rec.stop(); }catch(e){} }
+  }
+  timer=setInterval(frame, 34);
+  rec.onstop=()=>{ clearInterval(timer); recording=false; btn.classList.remove('on'); btn.textContent='🎥 Grabar vídeo';
+    const blob=new Blob(chunks,{type:'video/webm'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mupi-'+(STOPS[IDX]?STOPS[IDX].id:'kiosko')+'-'+secs+'s.webm';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+    flash('🎥 vídeo guardado ('+secs+'s · '+Math.round(blob.size/1024)+' KB)'); };
+  rec.start(200);
+}
+$('#rec').onclick=()=>{ if(recording){ recording=false; } else recordVideo(); };
+
+/* ---------- arranque ---------- */
+STOPS=circuit(); IDX=0;
+loadState();
+{ const s=STOPS[0]; const k=$('#kiosk'); k.textContent=(s.name||'Salmerón · Gràcia')+(STOPS.length>1?(' (1/'+STOPS.length+')'):'');
+  if(s.lat){ k.style.cursor='pointer'; k.onclick=()=>window.open('https://www.google.com/maps?q=&layer=c&cbll='+s.lat+','+s.lon,'_blank'); } }
+if(window.XPLStock&&window.XPLStock.ensure){ window.XPLStock.ensure().then(()=>tick()).catch(()=>{}); }
+setInterval(tick, 4000); tick();   // rota contenido / mantiene emisión
+</script>
+</body>
+</html>

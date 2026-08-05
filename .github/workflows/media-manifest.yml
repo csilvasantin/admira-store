@@ -1,0 +1,49 @@
+name: Regenerar manifests de medios (música + vídeo)
+
+# Al soltar/quitar mp3 (music/) o vídeos signage_*.mp4 (assets/videos/), o editar
+# sus titles.json, regenera los manifest.json. NO se dispara con los manifest.json
+# (para no entrar en bucle con su propio commit).
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'admira-xp/music/*.mp3'
+      - 'admira-xp/music/titles.json'
+      - 'admira-xp/assets/videos/*.mp4'
+      - 'admira-xp/assets/videos/titles.json'
+      - 'admira-xp/assets/images-signage/*.png'
+      - 'admira-xp/assets/images-signage/*.jpg'
+      - 'admira-xp/assets/images-signage/*.jpeg'
+      - 'admira-xp/assets/images-signage/*.webp'
+      - 'admira-xp/assets/images-signage/*.gif'
+      - 'admira-xp/assets/images-signage/titles.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: media-manifest
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generar manifests
+        run: node admira-xp/scripts/build-media-manifest.mjs
+      - name: Commit si cambió
+        run: |
+          if git diff --quiet -- admira-xp/music/manifest.json admira-xp/assets/videos/manifest.json admira-xp/assets/images-signage/manifest.json; then
+            echo "manifests sin cambios"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add admira-xp/music/manifest.json admira-xp/assets/videos/manifest.json admira-xp/assets/images-signage/manifest.json
+            git commit -m "auto: regenera manifests de medios (música + vídeo)"
+            git push
+          fi

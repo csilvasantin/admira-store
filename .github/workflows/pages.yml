@@ -1,0 +1,59 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Build signed static artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          release="$(sed -n 's/.*admiranext-version.*content="\(v\.[^"]*\)".*/\1/p' index.html | head -1)"
+          declared_version="$(jq -r '.version // empty' release-signature.json)"
+          deployer="$(jq -r '.deployer // empty' release-signature.json)"
+          machine="$(jq -r '.machine // empty' release-signature.json)"
+          signature="$(jq -r '.signature // empty' release-signature.json)"
+          test -n "$release"
+          test "$declared_version" = "$release"
+          test "$signature" = "$deployer · $machine"
+          mkdir -p _site
+          git archive HEAD | tar -x -C _site
+          jq -n \
+            --arg version "$release" \
+            --arg deployedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg deployer "$deployer" \
+            --arg machine "$machine" \
+            --arg signature "$signature" \
+            --arg git "$GITHUB_SHA" \
+            '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:$signature,git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false}' \
+            > _site/version.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

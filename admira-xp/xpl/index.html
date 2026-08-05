@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XPL · Panel de Control · XpaceOS</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#131822; --panel2:#1a212e; --line:#26303f;
+    --ink:#e8eef7; --mut:#8a97ab; --acc:#5bd6c0; --acc2:#7aa2ff; --warn:#ffb454; --bad:#ff6b6b; --ok:#5bd6c0;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden}
+  header{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#10151e,#0b0e14)}
+  header h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.3px}
+  header h1 .tag{color:var(--acc);font-family:var(--mono);font-weight:700}
+  header .sub{color:var(--mut);font-size:12px}
+  header .spacer{flex:1}
+  .pill{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:4px 10px;text-decoration:none}
+  a.pill{color:var(--acc2);border-color:var(--acc2)}
+  nav{display:flex;gap:4px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
+  nav button{font-family:inherit;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--mut);
+    border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600}
+  nav button:hover{color:var(--ink)}
+  nav button.on{background:var(--panel2);color:#fff;border-color:var(--line)}
+  main{flex:1;min-height:0;position:relative}
+  .view{position:absolute;inset:0;display:none;overflow:auto}
+  .view.on{display:block}
+  iframe{width:100%;height:100%;border:none;background:var(--bg)}
+  /* ---- Gemelo ---- */
+  .wrap{max-width:920px;margin:0 auto;padding:22px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .card h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);font-weight:700}
+  .big{font-size:26px;font-weight:800;display:flex;align-items:center;gap:10px}
+  .muted{color:var(--mut);font-size:13px;line-height:1.6}
+  .dot{width:10px;height:10px;border-radius:50%;background:#5a6678;display:inline-block;flex:none}
+  .dot.live{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  button.btn{font-family:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--ink);
+    border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600}
+  button.btn:hover{border-color:var(--acc)}
+  button.btn.primary{background:var(--acc);color:#06231e;border-color:var(--acc)}
+  button.btn.warn:hover{border-color:var(--warn);color:var(--warn)}
+  .scr{margin-top:8px;border-radius:12px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:4px;color:#fff;border:1px solid var(--line);background:#0a0d13;transition:background .4s}
+  .scr .ic{font-size:42px;line-height:1}
+  .scr .lb{font:700 11px var(--mono);letter-spacing:1px}
+  .cli{font-family:var(--mono);font-size:12.5px;line-height:2}
+  .cli b{color:var(--acc)}
+  .cli span{color:var(--mut)}
+  /* ---- Catálogo ---- */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+  td .sw{display:inline-block;width:13px;height:13px;border-radius:4px;vertical-align:middle;margin-right:7px;border:1px solid #0006}
+  .tag2{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--acc2);border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+  h2.sec{font-size:14px;margin:22px 0 8px;color:var(--ink)}
+  .lead{color:var(--mut);font-size:13px;line-height:1.7;margin:0 0 6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>XPL <span class="tag">·panel</span></h1>
+  <span class="sub">panel de control · lenguaje del gemelo · XpaceOS</span>
+  <span class="spacer"></span>
+  <a class="pill" href="../buscador/" target="_blank" title="buscador de elementos urbanos (kioskos) en el mapa">🔎 buscador</a>
+  <a class="pill" href="../emulador/" target="_blank" title="emulador Street View: admira.tv sobre el MUPI real">🗺️ emulador</a>
+  <a class="pill" href="../index.html" target="_blank" title="abrir el gemelo en una pestaña nueva">▶ abrir gemelo</a>
+</header>
+
+<nav>
+  <button data-view="estudio" class="on">🎛️ Estudio</button>
+  <button data-view="backoffice">🗂️ Backoffice</button>
+  <button data-view="resolucion">🔎 Resolución</button>
+  <button data-view="probador">🧪 Probador</button>
+  <button data-view="gemelo">📺 Gemelo</button>
+  <button data-view="catalogo">📚 Catálogo</button>
+</nav>
+
+<main>
+  <!-- ESTUDIO: editor + simulador (reutiliza xpl.html) -->
+  <section class="view on" id="v-estudio">
+    <iframe id="estudio-frame" src="../xpl.html" title="Editor y simulador XPL"></iframe>
+  </section>
+
+  <!-- BACKOFFICE: segmentar contenidos por scope y publicar al store remoto -->
+  <section class="view" id="v-backoffice">
+    <div class="wrap">
+      <div class="card">
+        <h3>🗂️ Segmentar contenidos · store remoto</h3>
+        <p class="muted" style="margin-top:0">Edita las reglas por <b>ámbito</b> y publícalas. Cada gemelo baja LO SUYO por su pantalla, en cascada: <b>global → circuito → pantalla</b> (lo más específico manda).</p>
+        <div class="crow" style="margin-top:6px">
+          <select id="bo-scope-kind">
+            <option value="global">🌍 Global (todas las pantallas)</option>
+            <option value="circuit">🔗 Circuito / cliente</option>
+            <option value="screen">📺 Pantalla concreta</option>
+          </select>
+          <input type="text" id="bo-scope-id" placeholder="id (p.ej. estancos / xtore-inicial)" style="flex:1;min-width:160px;display:none">
+          <button class="btn" id="bo-load">📥 Editar este ámbito</button>
+          <button class="btn primary" id="bo-publish">📤 Publicar</button>
+          <span class="pill" id="bo-token-pill" title="token de escritura">🔑 token</span>
+        </div>
+        <div class="muted" id="bo-msg" style="margin-top:8px"></div>
+        <div class="muted" id="bo-current" style="margin-top:4px"></div>
+        <!-- historial del ámbito cargado -->
+        <div id="bo-history" style="margin-top:10px;display:none">
+          <h3 style="margin:0 0 6px">🕘 Historial de este ámbito</h3>
+          <div class="muted" id="bo-history-list">—</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>🖥️ Gemelos abiertos <span class="pill" id="bo-count">0</span> <button class="btn" id="bo-refresh" style="float:right;padding:4px 10px">↻</button></h3>
+        <div class="muted" id="bo-gemelos">cargando…</div>
+        <div class="muted" style="margin-top:6px;font-size:11px">Control remoto: cada botón encola un comando para esa pantalla (el gemelo lo ejecuta en ≤3s).</div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>🔗 Vincular pantalla → circuito</h3>
+        <p class="muted" style="margin-top:0">Asocia una pantalla a un circuito/cliente. Así sus reglas de <b>circuito</b> le llegan solas (el store lo resuelve, sin configurar el kiosko).</p>
+        <div class="row" style="gap:8px">
+          <input type="text" id="bind-screen" placeholder="pantalla (p.ej. xtore-inicial)" style="font-family:var(--mono);padding:6px 9px;min-width:180px">
+          <span class="muted">→</span>
+          <input type="text" id="bind-circuit" placeholder="circuito (p.ej. estancos)" list="bind-circuit-list" style="font-family:var(--mono);padding:6px 9px;min-width:150px">
+          <datalist id="bind-circuit-list"></datalist>
+          <button class="btn primary" id="bind-save">Vincular</button>
+        </div>
+        <div class="muted" id="bind-msg" style="margin-top:6px"></div>
+        <div class="muted" id="bind-list" style="margin-top:8px"></div>
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+        <div class="card">
+          <h3>📺 Pantallas vistas</h3>
+          <div class="muted" id="bo-screens">cargando…</div>
+        </div>
+        <div class="card">
+          <h3>🗂️ Ámbitos con reglas</h3>
+          <div class="muted" id="bo-scopes">—</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Cómo funciona</h3>
+        <div class="muted" style="line-height:1.7">
+          1) Elige el ámbito (global / circuito:&lt;id&gt; / pantalla:&lt;screenId&gt;).<br>
+          2) <b>📥 Editar</b> → carga sus reglas en el <b>🎛️ Estudio</b> (te lleva allí). Edítalas como siempre.<br>
+          3) Vuelve aquí y <b>📤 Publicar</b> → se guardan en el store; los gemelos de ese ámbito las recogen en ≤20s.<br>
+          <span style="color:var(--mut)">Resolución en el gemelo: global, luego circuito, luego pantalla; mismo id en un ámbito más específico sustituye al heredado.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOLUCIÓN: qué recibe de verdad una pantalla tras la cascada -->
+  <section class="view" id="v-resolucion">
+    <div class="wrap">
+      <div class="card">
+        <h3>🔎 Qué recibe una pantalla (cascada resuelta)</h3>
+        <p class="muted" style="margin-top:0">Simula la resolución del gemelo: fusiona <b>global → circuito → pantalla</b> y muestra las reglas EFECTIVAS, marcando de qué capa viene cada una. Así ves lo que de verdad emitirá esa pantalla, sin abrir el gemelo.</p>
+        <div class="row" style="gap:8px">
+          <label class="muted" style="font-size:12px">📺 pantalla</label>
+          <input id="rs-screen" type="text" placeholder="xtore-inicial" style="font-family:var(--mono);padding:6px 9px;min-width:160px">
+          <label class="muted" style="font-size:12px">🔗 circuito</label>
+          <input id="rs-circuit" type="text" placeholder="(opcional)" style="font-family:var(--mono);padding:6px 9px;min-width:130px">
+          <button class="btn primary" id="rs-go">Resolver</button>
+        </div>
+        <div class="muted" id="rs-screens" style="margin-top:8px;font-size:12px"></div>
+      </div>
+      <div class="card" style="margin-top:14px" id="rs-out" hidden>
+        <h3>Reglas efectivas <span class="pill" id="rs-count">0</span></h3>
+        <div class="muted" id="rs-scopes" style="margin:0 0 10px"></div>
+        <div id="rs-rules"></div>
+        <div class="muted" style="margin-top:10px;font-size:11.5px">
+          <span class="tag2" style="border-color:var(--acc2);color:var(--acc2)">global</span>
+          <span class="tag2" style="border-color:var(--acc);color:var(--acc)">circuito</span>
+          <span class="tag2" style="border-color:var(--warn);color:var(--warn)">pantalla</span>
+          — la capa más específica que define un id <b>gana</b>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBADOR: réplica de las pantallas del Xtanco + CLI para simular segmentaciones -->
+  <section class="view" id="v-probador">
+    <div class="wrap" style="max-width:1000px">
+      <div class="card">
+        <h3>🧪 Probador de segmentaciones <span class="muted" style="font-weight:400">· sin tocar el gemelo</span></h3>
+        <p class="muted" style="margin-top:0">Carga las reglas de una pantalla y simula <b>quién pasa / quién mira</b> con el CLI. Las pantallas reaccionan con el <b>motor XPL real</b> — igual que el Xtanco — para que veas las segmentaciones antes de desplegar.</p>
+        <div class="row" style="gap:8px">
+          <label class="muted" style="font-size:12px">📥 reglas de</label>
+          <input id="pr-screen" type="text" placeholder="xtore-ext-demo" value="xtore-ext-demo" style="font-family:var(--mono);padding:6px 9px;min-width:150px">
+          <button class="btn" id="pr-load">Cargar reglas</button>
+          <span class="pill" id="pr-rules">0 reglas</span>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:14px;grid-template-columns:1fr 1fr">
+        <div class="card" style="display:flex;flex-direction:column;align-items:center">
+          <h3 style="align-self:flex-start">🪧 Pantalla de EXTERIOR (MUPI · viandante)</h3>
+          <div id="pr-ext" style="width:140px;height:236px;border-radius:12px;border:2px solid #ffffff22;overflow:hidden;position:relative;background:#0a0d13;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;box-shadow:0 8px 24px #0007">
+            <div id="pr-ext-media" style="position:absolute;inset:0;display:none;background:#000;overflow:hidden"></div>
+            <div style="position:absolute;top:6px;left:0;right:0;font:700 8px var(--mono);color:#fff9;letter-spacing:1px;z-index:2;text-shadow:0 1px 2px #000a">MUPI · EXTERIOR</div>
+            <div id="pr-ext-ic" style="font-size:60px;line-height:1;z-index:1"></div>
+            <div id="pr-ext-lb" style="font:700 12px var(--mono);margin-top:6px;padding:0 8px;z-index:2;text-shadow:0 1px 3px #000c"></div>
+            <div id="pr-ext-seg" style="position:absolute;bottom:6px;left:0;right:0;font:700 9px var(--mono);color:#fffc;z-index:2;text-shadow:0 1px 2px #000a"></div>
+          </div>
+          <div class="muted" id="pr-ext-fact" style="margin-top:8px;font-size:11px;font-family:var(--mono)"></div>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;align-items:center">
+          <h3 style="align-self:flex-start">📺 Pantalla INTERIOR (escaparate · cámara)</h3>
+          <div id="pr-int" style="width:220px;height:130px;border-radius:12px;border:2px solid #ffffff22;overflow:hidden;position:relative;background:#0a0d13;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;box-shadow:0 8px 24px #0007">
+            <div id="pr-int-media" style="position:absolute;inset:0;display:none;background:#000;overflow:hidden"></div>
+            <div style="position:absolute;top:6px;left:8px;font:700 8px var(--mono);color:#fff9;letter-spacing:1px;z-index:2;text-shadow:0 1px 2px #000a">XPACEOS · LIVE</div>
+            <div id="pr-int-ic" style="font-size:46px;line-height:1;z-index:1"></div>
+            <div id="pr-int-lb" style="font:700 11px var(--mono);margin-top:4px;padding:0 8px;z-index:2;text-shadow:0 1px 3px #000c"></div>
+          </div>
+          <div class="muted" id="pr-int-fact" style="margin-top:8px;font-size:11px;font-family:var(--mono)"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>🎮 CLI del probador</h3>
+        <div class="muted" id="pr-world" style="font-family:var(--mono);font-size:11.5px;margin-bottom:8px"></div>
+        <form id="pr-form" autocomplete="off" style="display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:rgba(0,0,0,.25)">
+          <span style="color:var(--acc);font-family:var(--mono)">›</span>
+          <input id="pr-cli" type="text" spellcheck="false" placeholder="/viandante mujer senior · /camara hombre joven · /lluvia · /hora 22 · /help" style="flex:1;background:transparent;border:0;outline:0;color:var(--ink);font-family:var(--mono);font-size:13px">
+        </form>
+        <div id="pr-log" class="muted" style="margin-top:8px;font-family:var(--mono);font-size:12px;line-height:1.7;min-height:18px;white-space:pre-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GEMELO: estado en vivo + control + CLI -->
+  <section class="view" id="v-gemelo">
+    <div class="wrap">
+      <div class="grid">
+        <div class="card">
+          <h3>Conexión con el gemelo</h3>
+          <div class="big"><span class="dot" id="g-dot"></span><span id="g-conn">comprobando…</span></div>
+          <div class="muted" id="g-seen" style="margin-top:6px"></div>
+        </div>
+        <div class="card">
+          <h3>Pantalla condicional ahora</h3>
+          <div class="scr" id="g-scr"><div class="ic" id="g-ic">—</div><div class="lb" id="g-lb">apagada</div></div>
+        </div>
+        <div class="card">
+          <h3>Estado</h3>
+          <div class="muted">
+            Encendida: <b id="g-on">—</b><br>
+            Dentro del Xtanco: <b id="g-inside">—</b><br>
+            Reglas activas: <b id="g-rules">—</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Control remoto</h3>
+        <p class="muted" style="margin-top:0">Afecta a la pestaña del gemelo que tengas abierta (misma máquina).</p>
+        <div class="row">
+          <button class="btn primary" data-cmd="/condicional on">Encender pantalla</button>
+          <button class="btn warn" data-cmd="/condicional off">Apagar pantalla</button>
+          <button class="btn" data-cmd="/condicional reload">Recargar reglas</button>
+          <button class="btn" data-cmd="/ifthendothat on">Abrir compositor en el gemelo</button>
+        </div>
+        <div class="muted" id="g-cmdmsg" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>🎮 CLI de emisión · control remoto</h3>
+        <p class="muted" style="margin-top:0">Como el CLI de admira.tv: escribe un comando y se envía a la pantalla destino por el store (el gemelo lo ejecuta en ≤3s). Manda <b>por encima de las reglas</b> durante 2 min; <b>/auto</b> lo libera.</p>
+        <div class="row" style="gap:8px;align-items:center">
+          <label class="muted" style="font-size:12px">📺 pantalla</label>
+          <input id="cli-screen" type="text" placeholder="xtore-inicial" style="font-family:var(--mono);padding:6px 9px;min-width:170px">
+        </div>
+        <form id="cli-form" autocomplete="off" style="display:flex;align-items:center;gap:7px;margin-top:8px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:rgba(0,0,0,.2)">
+          <span style="color:var(--acc);font-family:var(--mono)">›</span>
+          <input id="cli-in" type="text" spellcheck="false" placeholder="/show icecream · /tone hype · /clear · /auto · /weather sun" style="flex:1;background:transparent;border:0;outline:0;color:var(--ink);font-family:var(--mono);font-size:13px">
+        </form>
+        <div class="muted" id="cli-msg" style="margin-top:8px;font-family:var(--mono);font-size:12px;min-height:16px"></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Comandos CLI (chat del gemelo · Telegram · StreamDeck)</h3>
+        <div class="cli">
+          <b>/show</b> <span>&lt;creatividad&gt;</span> · <b>/tone</b> <span>calm|hype|lux</span> · <b>/clear</b> · <b>/auto</b> <span>(soltar)</span> · <b>/weather</b> <span>sun|rain|snow</span> &nbsp;<span>— emisión (override)</span><br>
+          <b>/condicional</b> <span>on | off | toggle | reload | status</span> &nbsp;<span>— la pantalla condicional</span><br>
+          <b>/ifthendothat</b> <span>on | off | toggle</span> &nbsp;<span>— el compositor IF·THEN·DO THAT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGO: referencia del lenguaje -->
+  <section class="view" id="v-catalogo">
+    <div class="wrap" id="cat"></div>
+  </section>
+</main>
+
+<script src="../scripts/xpl-runtime.js?v=13"></script>
+<script src="../scripts/xpl-stock.js?v=13"></script>
+<script>
+const $=s=>document.querySelector(s);
+const XPL=window.XPL;
+
+/* ---------- navegación por pestañas ---------- */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+b.dataset.view));
+    if(b.dataset.view==='catalogo') renderCatalog();
+    if(b.dataset.view==='gemelo') refreshGemelo();
+    if(b.dataset.view==='backoffice') initBackoffice();
+    if(b.dataset.view==='resolucion') initResolucion();
+    if(b.dataset.view==='probador') initProbador();
+  };
+});
+
+/* ---------- BACKOFFICE: store remoto (segmentar por ámbito) ---------- */
+const STORE='https://xpl.admira.store';   // dominio propio CF (esquiva bloqueo workers.dev en ES)
+let BO_TOKEN=localStorage.getItem('xpl_store_token')||'';
+function boScope(){
+  const kind=$('#bo-scope-kind').value;
+  if(kind==='global') return 'global';
+  const id=($('#bo-scope-id').value||'').trim();
+  return id ? kind+':'+id : null;
+}
+function boMsg(t,err){ const e=$('#bo-msg'); e.textContent=t; e.style.color=err?'var(--bad)':'var(--mut)'; }
+$('#bo-scope-kind').onchange=()=>{ $('#bo-scope-id').style.display=$('#bo-scope-kind').value==='global'?'none':'block'; };
+$('#bo-token-pill').onclick=()=>{ const t=prompt('Token de escritura XPL (publicar):',BO_TOKEN); if(t!==null){ BO_TOKEN=t.trim(); localStorage.setItem('xpl_store_token',BO_TOKEN); boMsg(BO_TOKEN?'token guardado':'token borrado'); } };
+let boLiveTimer=null;
+function initBackoffice(){ loadLive(); if(!boLiveTimer) boLiveTimer=setInterval(()=>{ if($('#v-backoffice').classList.contains('on')) loadLive(); }, 6000); }
+$('#bo-refresh').onclick=loadLive;
+async function boCmd(screen, text){
+  if(!BO_TOKEN){ boMsg('falta el token (🔑) para controlar gemelos',true); return; }
+  try{
+    const r=await fetch(STORE+'/xpl/cmd?screen='+encodeURIComponent(screen),{method:'POST',headers:{'Content-Type':'application/json','X-XPL-Token':BO_TOKEN},body:JSON.stringify({text})});
+    const d=await r.json(); boMsg(r.ok&&!d.error ? ('→ «'+text+'» enviado a '+screen) : (d.error||'error'), !(r.ok&&!d.error));
+  }catch(e){ boMsg('no se pudo enviar el comando',true); }
+}
+/* ---------- CLI de emisión (control remoto, estilo admira.tv) ---------- */
+(function(){
+  const form=$('#cli-form'), inp=$('#cli-in'), scr=$('#cli-screen'), msg=$('#cli-msg');
+  if(!form) return;
+  const hist=[]; let hi=-1;
+  scr.value = (localStorage.getItem('pixer-xtore-screen-id')||'xtore-inicial');
+  function cmsg(t,err){ if(msg){ msg.textContent=t; msg.style.color=err?'var(--bad)':'var(--mut)'; } }
+  async function send(screen, text){
+    if(!BO_TOKEN){ const t=prompt('Token de escritura XPL (para controlar gemelos):',''); if(t){ BO_TOKEN=t.trim(); localStorage.setItem('xpl_store_token',BO_TOKEN); } else { cmsg('necesitas el token 🔑',true); return; } }
+    try{
+      const r=await fetch(STORE+'/xpl/cmd?screen='+encodeURIComponent(screen),{method:'POST',headers:{'Content-Type':'application/json','X-XPL-Token':BO_TOKEN},body:JSON.stringify({text})});
+      const d=await r.json().catch(()=>({}));
+      cmsg(r.ok&&!d.error ? ('✓ «'+text+'» → '+screen+'  · el gemelo lo ejecuta en ≤3s') : ('⚠ '+(d.error||('HTTP '+r.status))), !(r.ok&&!d.error));
+    }catch(e){ cmsg('⚠ no se pudo enviar (red)',true); }
+  }
+  form.onsubmit=ev=>{ ev.preventDefault();
+    let text=inp.value.trim(); if(!text) return;
+    if(text[0]!=='/') text='/'+text;
+    const screen=(scr.value||'').trim(); if(!screen){ cmsg('pon una pantalla destino',true); scr.focus(); return; }
+    hist.unshift(text); hi=-1; inp.value=''; send(screen,text);
+  };
+  inp.onkeydown=e=>{
+    if(e.key==='ArrowUp'){ if(hi<hist.length-1){ hi++; inp.value=hist[hi]; } e.preventDefault(); }
+    else if(e.key==='ArrowDown'){ if(hi>0){ hi--; inp.value=hist[hi]; } else { hi=-1; inp.value=''; } e.preventDefault(); }
+  };
+})();
+async function loadLive(){
+  try{
+    const d=await fetch(STORE+'/xpl/live').then(r=>r.json());
+    const now=Date.now(); const gs=d.gemelos||[];
+    $('#bo-count').textContent=d.count||0;
+    $('#bo-gemelos').innerHTML=gs.length ? gs.map(g=>{
+      const ago=Math.round((now-g.lastSeen)/1000);
+      const loc=[g.city,g.country].filter(Boolean).join(', ');
+      return '<div style="border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px">'+
+        '<div class="row" style="justify-content:space-between;gap:8px"><b style="color:var(--ink)">📺 '+g.screen+'</b>'+
+        '<span style="color:'+(ago<70?'var(--ok)':'var(--mut)')+';font-size:11px">'+(ago<70?'🟢 ':'')+ago+'s</span></div>'+
+        '<div style="color:var(--mut);font-size:11.5px;margin:3px 0 7px;font-family:var(--mono)">🖥️ '+(g.device||'?')+' · 🌐 '+(g.ip||'?')+(loc?' ('+loc+')':'')+'</div>'+
+        '<div class="row" style="gap:5px"><button class="btn" data-cmd-screen="'+g.screen+'" data-cmd-text="/condicional on">💡 encender</button>'+
+        '<button class="btn" data-cmd-screen="'+g.screen+'" data-cmd-text="/condicional off">🌙 apagar</button>'+
+        '<button class="btn" data-cmd-screen="'+g.screen+'" data-cmd-text="/condicional reload">🔄 recargar reglas</button>'+
+        '<button class="btn" data-cmd-screen="'+g.screen+'" data-cmd-text="/ifthendothat on">🗂️ compositor</button></div></div>';
+    }).join('') : '<i>ningún gemelo abierto ahora mismo.</i>';
+    $('#bo-gemelos').querySelectorAll('[data-cmd-screen]').forEach(b=>b.onclick=()=>boCmd(b.dataset.cmdScreen,b.dataset.cmdText));
+    // pantallas vistas (para el selector) + scopes
+    $('#bo-screens').innerHTML=(d.screens||[]).length ? d.screens.map(s=>{
+      const ago=Math.round((now-s.lastSeen)/1000); const when=ago<90?'🟢 '+ago+'s':'hace '+Math.round(ago/60)+'min';
+      return '<div class="row" style="justify-content:space-between;gap:8px"><a href="#" data-screen="'+s.screen+'" style="color:var(--acc2);text-decoration:none">📺 '+s.screen+'</a><span style="color:var(--mut);font-size:11px">'+(s.circuit?'🔗'+s.circuit+' · ':'')+when+'</span></div>';
+    }).join('') : '<i>ninguna pantalla aún</i>';
+    window.__boScopes=d.scopes||[];
+    $('#bo-scopes').innerHTML=(d.scopes||[]).length ? d.scopes.map(s=>'<span class="tag2">'+s+'</span>').join(' ') : '<i>sin reglas publicadas</i>';
+    loadBinds();
+    $('#bo-screens').querySelectorAll('[data-screen]').forEach(a=>a.onclick=e=>{ e.preventDefault(); $('#bo-scope-kind').value='screen'; $('#bo-scope-id').style.display='block'; $('#bo-scope-id').value=a.dataset.screen; boMsg('ámbito → pantalla '+a.dataset.screen); });
+  }catch(e){ $('#bo-gemelos').textContent='error de conexión con el store'; }
+}
+$('#bo-load').onclick=async()=>{
+  const scope=boScope(); if(!scope){ boMsg('indica el id del circuito/pantalla',true); return; }
+  try{
+    const d=await fetch(STORE+'/xpl/scope?scope='+encodeURIComponent(scope)).then(r=>r.json());
+    if(d.error){ boMsg(d.error,true); return; }
+    localStorage.setItem('xpl_rules', JSON.stringify(d.rules||[]));
+    $('#bo-current').textContent='Editando «'+scope+'» ('+(d.rules||[]).length+' reglas). Edítalas en Estudio y vuelve a Publicar.';
+    loadHistory(scope);   // muestra el historial de este ámbito (con rollback)
+    const fr=$('#estudio-frame'); fr.src=fr.src;   // recarga el editor con estas reglas
+    document.querySelector('nav button[data-view="estudio"]').click();
+  }catch(e){ boMsg('no se pudo cargar el ámbito',true); }
+};
+$('#bo-publish').onclick=async()=>{
+  const scope=boScope(); if(!scope){ boMsg('indica el id del circuito/pantalla',true); return; }
+  if(!BO_TOKEN){ boMsg('falta el token (🔑) para publicar',true); return; }
+  let rules=[]; try{ rules=JSON.parse(localStorage.getItem('xpl_rules')||'[]'); }catch(e){}
+  try{
+    const r=await fetch(STORE+'/xpl/scope?scope='+encodeURIComponent(scope),{method:'POST',headers:{'Content-Type':'application/json','X-XPL-Token':BO_TOKEN},body:JSON.stringify({rules})});
+    const d=await r.json();
+    if(!r.ok||d.error){ boMsg(d.error||('HTTP '+r.status),true); return; }
+    boMsg('✓ Publicado en «'+scope+'» ('+d.count+' reglas). Los gemelos de ese ámbito lo recogen en ≤20s.');
+    loadLive();
+  }catch(e){ boMsg('no se pudo publicar',true); }
+};
+
+/* ---------- RESOLUCIÓN: cascada efectiva por pantalla ---------- */
+const ORIGIN_COLOR={global:'var(--acc2)',circuit:'var(--acc)',screen:'var(--warn)'};
+const ORIGIN_ES={global:'global',circuit:'circuito',screen:'pantalla'};
+let rsInit=false;
+function initResolucion(){
+  if(!rsInit){ rsInit=true;
+    $('#rs-go').onclick=resolveScreen;
+    $('#rs-screen').addEventListener('keydown',e=>{ if(e.key==='Enter') resolveScreen(); });
+    if(!$('#rs-screen').value) $('#rs-screen').value=(localStorage.getItem('pixer-xtore-screen-id')||'');
+  }
+  // sugerir pantallas vistas (reutiliza el store live)
+  fetch(STORE+'/xpl/live').then(r=>r.json()).then(d=>{
+    const ss=(d.screens||[]);
+    $('#rs-screens').innerHTML = ss.length ? ('vistas: '+ss.map(s=>'<a href="#" data-rs="'+s.screen+'" data-rc="'+(s.circuit||'')+'" style="color:var(--acc2);text-decoration:none">📺'+s.screen+'</a>').join(' · ')) : '';
+    $('#rs-screens').querySelectorAll('[data-rs]').forEach(a=>a.onclick=e=>{ e.preventDefault(); $('#rs-screen').value=a.dataset.rs; $('#rs-circuit').value=a.dataset.rc; resolveScreen(); });
+  }).catch(()=>{});
+}
+async function resolveScreen(){
+  const screen=($('#rs-screen').value||'').trim();
+  const circuit=($('#rs-circuit').value||'').trim();
+  if(!screen){ $('#rs-screens').innerHTML='<span style="color:var(--bad)">indica una pantalla</span>'; return; }
+  const q='screen='+encodeURIComponent(screen)+(circuit?'&circuit='+encodeURIComponent(circuit):'');
+  try{
+    const d=await fetch(STORE+'/xpl/resolve?'+q).then(r=>r.json());
+    const rules=d.rules||[], origin=d.origin||{};
+    $('#rs-out').hidden=false;
+    $('#rs-count').textContent=rules.length;
+    const sc=d.scopes||{};
+    const cInfo = d.circuit ? (' · circuito <b>'+d.circuit+'</b>'+(d.circuitFrom==='bind'?' <span style="color:var(--mut)">(vínculo)</span>':'')) : '';
+    $('#rs-scopes').innerHTML='capas → 🌍 global <b>'+(sc.global||0)+'</b> · 🔗 circuito <b>'+(sc.circuit||0)+'</b> · 📺 pantalla <b>'+(sc.screen||0)+'</b>'+cInfo;
+    $('#rs-rules').innerHTML = rules.length ? rules.map(r=>{
+      const og=origin[r.id]||'global'; const col=ORIGIN_COLOR[og]||'var(--mut)';
+      let sentence=''; try{ sentence=XPL.ruleSentence(r,'es'); }catch(e){ sentence='(regla '+(r.id||'?')+')'; }
+      const prio=Number(r.priority||0);
+      return '<div style="border:1px solid var(--line);border-left:3px solid '+col+';border-radius:9px;padding:9px 12px;margin-bottom:8px">'+
+        '<div class="row" style="justify-content:space-between;gap:8px">'+
+        '<span class="tag2" style="border-color:'+col+';color:'+col+'">'+(ORIGIN_ES[og]||og)+'</span>'+
+        '<span style="color:var(--mut);font-size:11px;font-family:var(--mono)">id '+(r.id||'?')+' · prio '+prio+'</span></div>'+
+        '<div style="margin-top:5px;font-size:13px;line-height:1.5">'+sentence+'</div></div>';
+    }).join('') : '<i>esta pantalla no recibe ninguna regla (ni global, ni circuito, ni propia).</i>';
+  }catch(e){ $('#rs-out').hidden=false; $('#rs-rules').innerHTML='<span style="color:var(--bad)">error consultando el store</span>'; }
+}
+
+/* ---------- HISTORIAL de un scope (en el Backoffice) ---------- */
+async function loadHistory(scope){
+  const box=$('#bo-history'), list=$('#bo-history-list');
+  try{
+    const d=await fetch(STORE+'/xpl/history?scope='+encodeURIComponent(scope)).then(r=>r.json());
+    const h=d.history||[];
+    box.style.display='block';
+    list.innerHTML = h.length ? h.map(v=>{
+      const when=new Date(v.ts).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      return '<div class="row" style="justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding:4px 0">'+
+        '<span>🕘 '+when+' · <b>'+v.count+'</b> reglas'+(v.note?' · <i style="color:var(--mut)">'+v.note+'</i>':'')+'</span>'+
+        '<button class="btn" data-rollback="'+v.ts+'" style="padding:3px 9px;font-size:12px">↩︎ restaurar</button></div>';
+    }).join('') : '<i>sin versiones previas</i>';
+    list.querySelectorAll('[data-rollback]').forEach(b=>b.onclick=()=>rollbackScope(scope,b.dataset.rollback));
+  }catch(e){ box.style.display='block'; list.innerHTML='<span style="color:var(--bad)">no se pudo leer el historial</span>'; }
+}
+async function rollbackScope(scope,ts){
+  if(!BO_TOKEN){ boMsg('falta el token (🔑) para restaurar',true); return; }
+  if(!confirm('¿Restaurar esa versión de «'+scope+'»? La actual se guardará en el historial.')) return;
+  try{
+    const r=await fetch(STORE+'/xpl/rollback?scope='+encodeURIComponent(scope)+'&ts='+ts,{method:'POST',headers:{'X-XPL-Token':BO_TOKEN}});
+    const d=await r.json();
+    if(!r.ok||d.error){ boMsg(d.error||('HTTP '+r.status),true); return; }
+    boMsg('✓ Restaurada versión en «'+scope+'» ('+d.count+' reglas). Recargando…');
+    loadHistory(scope); loadLive();
+  }catch(e){ boMsg('no se pudo restaurar',true); }
+}
+
+/* ---------- VÍNCULOS pantalla → circuito ---------- */
+async function loadBinds(){
+  try{
+    const d=await fetch(STORE+'/xpl/binds').then(r=>r.json());
+    const bs=d.binds||[];
+    $('#bind-list').innerHTML = bs.length ? ('Vínculos: '+bs.map(b=>'<span class="tag2">📺'+b.screen+' → 🔗'+b.circuit+' <a href="#" data-unbind="'+b.screen+'" style="color:var(--bad);text-decoration:none">✕</a></span>').join(' ')) : '<i>sin vínculos · todas las pantallas resuelven solo global + su propio scope</i>';
+    $('#bind-list').querySelectorAll('[data-unbind]').forEach(a=>a.onclick=e=>{ e.preventDefault(); saveBind(a.dataset.unbind,''); });
+    // sugerencias de circuito = scopes circuit:* + circuitos ya vinculados
+    const circs=new Set(bs.map(b=>b.circuit));
+    (window.__boScopes||[]).forEach(s=>{ if(s.indexOf('circuit:')===0) circs.add(s.slice(8)); });
+    $('#bind-circuit-list').innerHTML=[...circs].map(c=>'<option value="'+c+'">').join('');
+  }catch(e){ $('#bind-list').textContent='no se pudieron leer los vínculos'; }
+}
+async function saveBind(screen, circuit){
+  if(!BO_TOKEN){ $('#bind-msg').innerHTML='<span style="color:var(--bad)">falta el token (🔑)</span>'; return; }
+  try{
+    const r=await fetch(STORE+'/xpl/bind?screen='+encodeURIComponent(screen)+'&circuit='+encodeURIComponent(circuit),{method:'POST',headers:{'X-XPL-Token':BO_TOKEN}});
+    const d=await r.json();
+    if(!r.ok||d.error){ $('#bind-msg').innerHTML='<span style="color:var(--bad)">'+(d.error||('HTTP '+r.status))+'</span>'; return; }
+    $('#bind-msg').textContent = circuit ? ('✓ '+screen+' → '+circuit) : ('✓ vínculo de '+screen+' quitado');
+    loadBinds();
+  }catch(e){ $('#bind-msg').innerHTML='<span style="color:var(--bad)">no se pudo guardar</span>'; }
+}
+$('#bind-save').onclick=()=>{
+  const s=($('#bind-screen').value||'').trim(), c=($('#bind-circuit').value||'').trim();
+  if(!s){ $('#bind-msg').innerHTML='<span style="color:var(--bad)">pon una pantalla</span>'; return; }
+  saveBind(s,c);
+};
+
+/* ---------- PROBADOR: motor XPL real + CLI (simula segmentaciones) ---------- */
+const PR = (function(){
+  const DEF = ()=>({ rain:false, wind:false, night:false, weekend:false, holiday:false, doorOpen:true, thief:false, rush:false,
+    hour:13, temperature:20, people:5, satisfaction:70, money:0, season:'summer', dayPart:'noon',
+    viewers:0, audGender:'none', audAge:'none', extGender:'none', extAge:'none' });
+  let tw = DEF();
+  let tScreen={ad:null,tone:'calm'}, tExt={ad:null};
+  let engine=null, ruleCount=0, started=false;
+  const world={
+    fact:id=>{ if(id in tw) return tw[id]; const f=XPL.byId(XPL.FACTS,id); return f&&f.type==='bool'?false:(f&&f.type==='enum'?'none':0); },
+    npcs:()=>[],
+    act:(id,v)=>{ if(id==='showAd')tScreen.ad=v; else if(id==='clearScreen')tScreen.ad=null;
+      else if(id==='screenTone')tScreen.tone=v; else if(id==='showExtAd')tExt.ad=v; else if(id==='clearExtScreen')tExt.ad=null; }
+  };
+  function ensure(){ if(!engine) engine=XPL.createEngine(world); }
+  function tick(){ ensure(); tScreen.ad=null; tExt.ad=null; engine.tick(); render(); }
+  function $e(id){ return document.getElementById(id); }
+
+  // ── conexión con admira.tv: el asset REAL del Stock que casa con el segmento ──
+  let REAL=true;                       // /contenido on|off
+  const extC={sig:'',asset:null,picking:false}, intC={sig:'',asset:null,picking:false};
+  // mapeo creatividad → categoría del Stock (mejor casado; '' = auto)
+  const CREATIVE_CAT={ perfume_mujer:'producto', perfume_hombre:'producto', vapeadores:'producto',
+    prensa_loteria:'atraer', chuches:'producto', newColl:'marca', nightlife:'atraer', hotCoffee:'producto', icecream:'producto' };
+  function tsFromHour(h){ return h<12?'manana':h<15?'mediodia':h<21?'tarde':'noche'; }
+  function setMedia(boxId, mediaId, asset){
+    const m=$e(mediaId); if(!m) return;
+    if(m.__key!==asset.url){ m.__key=asset.url; m.innerHTML='';
+      const isVid=asset.type==='video'||asset.type==='animation'||/\.(mp4|webm|mov)(\?|$)/i.test(asset.url||'');
+      const node=document.createElement(isVid?'video':'img');
+      node.src=asset.url; node.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+      if(isVid){ node.muted=true; node.loop=true; node.autoplay=true; node.playsInline=true; node.setAttribute('playsinline',''); node.setAttribute('muted',''); const p=node.play&&node.play(); if(p&&p.catch)p.catch(()=>{}); }
+      m.appendChild(node); }
+    m.style.display='block';
+  }
+  function clearMedia(mediaId){ const m=$e(mediaId); if(m){ m.__key=''; m.innerHTML=''; m.style.display='none'; } }
+  function resolveContent(state, gender, age, creativeId){
+    if(!REAL || !window.XPLStock || !creativeId){ state.asset=null; return; }
+    const aud=gender==='female'?'f':gender==='male'?'m':'';
+    const ag=(age&&age!=='none')?age:'';
+    const sig=[CREATIVE_CAT[creativeId]||'',aud,ag,tsFromHour(tw.hour)].join('|');
+    if(sig!==state.sig && !state.picking){ state.picking=true; state.sig=sig;
+      window.XPLStock.pickAsync({category:CREATIVE_CAT[creativeId]||'',audience:aud,age:ag,timeSlot:tsFromHour(tw.hour)})
+        .then(a=>{ state.asset=a||null; state.picking=false; render(); }).catch(()=>{state.picking=false;}); }
+  }
+  function paintScreen(prefix, ad, state){
+    const box=$e('pr-'+prefix), ic=$e('pr-'+prefix+'-ic'), lb=$e('pr-'+prefix+'-lb'), media='pr-'+prefix+'-media';
+    if(!ad){ box.style.background='#0a0d13'; ic.style.display='block'; ic.textContent='—'; lb.textContent='apagada'; clearMedia(media); return; }
+    if(REAL && state.asset){
+      setMedia('pr-'+prefix, media, state.asset); ic.style.display='none'; box.style.background='#000';
+      lb.textContent='📡 '+ad.es.toUpperCase()+' · '+String(state.asset.title||state.asset.type||'admira.tv').replace(/&#39;/g,"'").slice(0,26);
+    } else {
+      clearMedia(media); ic.style.display='block'; box.style.background=ad.bg; ic.textContent=ad.icon;
+      lb.textContent=ad.es.toUpperCase()+(REAL?' · buscando…':'');
+    }
+  }
+  function render(){
+    const GS={female:'♀ mujer',male:'♂ hombre',mixed:'⚥ mixto'}, AS={nino:'niño',joven:'joven',adulto:'adulto',senior:'senior'};
+    const extAd=tExt.ad?XPL.byId(XPL.ADS,tExt.ad):null, intAd=tScreen.ad?XPL.byId(XPL.ADS,tScreen.ad):null;
+    resolveContent(extC, tw.extGender, tw.extAge, tExt.ad);
+    resolveContent(intC, tw.audGender, tw.audAge, tScreen.ad);
+    paintScreen('ext', extAd, extC);
+    paintScreen('int', intAd, intC);
+    const eseg=[GS[tw.extGender]||'',AS[tw.extAge]||''].filter(Boolean).join(' · ');
+    $e('pr-ext-seg').textContent=eseg?('▸ '+eseg):'';
+    $e('pr-ext-fact').textContent='viandante: '+tw.extGender+' / '+tw.extAge;
+    $e('pr-int-fact').textContent='cámara: '+tw.audGender+' / '+tw.audAge+' · '+tw.viewers+' mirando';
+    $e('pr-world').textContent='🌍 '+[ tw.rain?'lluvia':'', tw.night?'noche':'', tw.weekend?'finde':'', tw.holiday?'festivo':'',
+      'hora '+tw.hour, tw.temperature+'°', tw.people+' personas',
+      (window.XPLStock&&window.XPLStock.ready())?('📡 '+window.XPLStock.count()+' assets admira.tv'):'📡 conectando admira.tv…' ].filter(Boolean).join(' · ');
+  }
+  function log(t){ const l=$e('pr-log'); l.textContent=(t+'\n'+l.textContent).split('\n').slice(0,8).join('\n'); }
+  const GMAP={mujer:'female',hombre:'male',mixto:'mixed',nadie:'none',female:'female',male:'male',mixed:'mixed',none:'none'};
+  const AMAP={nino:'nino','niño':'nino',joven:'joven',adulto:'adulto',senior:'senior',nadie:'none',none:'none'};
+  async function loadRules(scr){
+    if(!scr){ log('uso: /cargar <pantalla>'); return; }
+    try{ const d=await fetch(STORE+'/xpl/resolve?screen='+encodeURIComponent(scr)).then(r=>r.json());
+      ensure(); engine.setRules(d.rules||[]); ruleCount=(d.rules||[]).length;
+      $e('pr-rules').textContent=ruleCount+' reglas';
+      log('✓ '+ruleCount+' reglas de «'+scr+'»'+(d.circuit?' (circuito '+d.circuit+')':'')); tick();
+    }catch(e){ log('⚠ no pude cargar reglas de '+scr); }
+  }
+  function cmd(line){
+    const a=line.trim().replace(/^\//,'').split(/\s+/); const c=(a.shift()||'').toLowerCase();
+    if(c==='help'||c===''){ log('/viandante <mujer|hombre|mixto|nadie> [nino|joven|adulto|senior] · /camara <…> · /lluvia|/noche|/finde|/festivo [on|off] · /hora N · /temp N · /gente N · /contenido on|off (real admira.tv ↔ icono) · /stock · /cargar <pantalla> · /reset'); return; }
+    if(c==='contenido'){ REAL=a[0]?(a[0].toLowerCase()==='on'):!REAL; extC.sig=intC.sig=''; extC.asset=intC.asset=null; log('contenido real (admira.tv) → '+(REAL?'on':'off')); tick(); return; }
+    if(c==='stock'){ log('📡 '+(window.XPLStock&&window.XPLStock.ready()?(window.XPLStock.count()+' assets cargados de admira.tv'):'cargando índice…')); return; }
+    if(c==='viandante'||c==='v'){ if(a[0]&&GMAP[a[0].toLowerCase()]!==undefined){ tw.extGender=GMAP[a[0].toLowerCase()]; if(tw.extGender==='none')tw.extAge='none'; } if(a[1]&&AMAP[a[1].toLowerCase()]!==undefined)tw.extAge=AMAP[a[1].toLowerCase()]; log('viandante → '+tw.extGender+' / '+tw.extAge); }
+    else if(c==='camara'||c==='cam'){ if(a[0]&&GMAP[a[0].toLowerCase()]!==undefined){ tw.audGender=GMAP[a[0].toLowerCase()]; if(tw.audGender==='none')tw.audAge='none'; } if(a[1]&&AMAP[a[1].toLowerCase()]!==undefined)tw.audAge=AMAP[a[1].toLowerCase()]; tw.viewers=(tw.audGender==='none')?0:Math.max(1,tw.viewers||1); log('cámara → '+tw.audGender+' / '+tw.audAge); }
+    else if(['lluvia','noche','finde','festivo','viento'].includes(c)){ const m={lluvia:'rain',noche:'night',finde:'weekend',festivo:'holiday',viento:'wind'}[c]; tw[m]=a[0]?(a[0].toLowerCase()==='on'):!tw[m]; log(c+' → '+(tw[m]?'on':'off')); }
+    else if(c==='hora'){ tw.hour=Math.max(0,Math.min(23,parseInt(a[0]||'13',10)||0)); tw.night=(tw.hour<8||tw.hour>=21); log('hora → '+tw.hour); }
+    else if(c==='temp'){ tw.temperature=parseInt(a[0]||'20',10)||0; log('temp → '+tw.temperature+'°'); }
+    else if(c==='gente'){ tw.people=Math.max(0,parseInt(a[0]||'0',10)||0); tw.rush=tw.people>=12; log('gente → '+tw.people); }
+    else if(c==='cargar'){ $e('pr-screen').value=a[0]||''; loadRules((a[0]||'').trim()); return; }
+    else if(c==='reset'){ tw=DEF(); log('mundo reiniciado'); }
+    else { log('? desconocido: '+c+' (prueba /help)'); return; }
+    tick();
+  }
+  function initProbador(){
+    if(!started){ started=true;
+      $e('pr-form').addEventListener('submit',ev=>{ ev.preventDefault(); const i=$e('pr-cli'); const v=i.value; i.value=''; if(v.trim()) cmd(v); });
+      $e('pr-load').onclick=()=>loadRules(($e('pr-screen').value||'').trim());
+      if(window.XPLStock&&window.XPLStock.ensure){ window.XPLStock.ensure().then(()=>render()).catch(()=>{}); }
+      loadRules(($e('pr-screen').value||'xtore-ext-demo').trim());
+    } else { tick(); }
+  }
+  return { initProbador };
+})();
+function initProbador(){ return PR.initProbador(); }
+
+/* ---------- GEMELO: estado en vivo ---------- */
+function readState(){ try{ return JSON.parse(localStorage.getItem('xpl_state')||'null'); }catch(e){ return null; } }
+function refreshGemelo(){
+  const s=readState();
+  const fresh = s && (Date.now()-s.ts)<4000;
+  $('#g-dot').classList.toggle('live', !!fresh);
+  $('#g-conn').textContent = fresh ? 'gemelo conectado' : 'gemelo no abierto';
+  if(s){
+    const ago=Math.max(0,Math.round((Date.now()-s.ts)/1000));
+    $('#g-seen').textContent = fresh ? 'recibiendo estado en vivo' : ('última señal hace '+ago+'s · abre el gemelo para conectar');
+    const ad = s.ad ? XPL.byId(XPL.ADS, s.ad) : null;
+    const scr=$('#g-scr');
+    if(ad && s.on && s.inside){ scr.style.background=ad.bg; $('#g-ic').textContent=ad.icon; $('#g-lb').textContent=ad.es.toUpperCase(); }
+    else { scr.style.background='#0a0d13'; $('#g-ic').textContent='—'; $('#g-lb').textContent = s.on? 'sin anuncio' : 'apagada'; }
+    $('#g-on').textContent = s.on?'sí':'no';
+    $('#g-inside').textContent = s.inside?'sí':'no';
+    $('#g-rules').textContent = s.rules!=null?s.rules:'—';
+  } else {
+    $('#g-seen').textContent='nunca conectado · abre el gemelo (▶) en otra pestaña';
+  }
+}
+// botones de control → escriben un comando que el gemelo (otra pestaña) ejecuta
+document.querySelectorAll('[data-cmd]').forEach(b=>{
+  b.onclick=()=>{
+    try{ localStorage.setItem('xpl_cmd', JSON.stringify({cmd:b.dataset.cmd, ts:Date.now()})); }catch(e){}
+    $('#g-cmdmsg').textContent='Enviado: '+b.dataset.cmd+(readState()&&(Date.now()-readState().ts)<4000?'':' · (no veo el gemelo abierto; lo recibirá al abrirlo)');
+    setTimeout(refreshGemelo, 400);
+  };
+});
+window.addEventListener('storage', e=>{ if(e.key==='xpl_state') refreshGemelo(); });
+setInterval(()=>{ if($('#v-gemelo').classList.contains('on')) refreshGemelo(); }, 1500);
+
+/* ---------- CATÁLOGO ---------- */
+let catDone=false;
+function renderCatalog(){
+  if(catDone) return; catDone=true;
+  const L=o=>XPL.label(o,'es');
+  const facts = XPL.FACTS.map(f=>{
+    let rango = f.type==='bool' ? 'sí / no'
+      : f.type==='enum' ? f.values.map(v=>(v.icon?v.icon+' ':'')+L(v)).join(' · ')
+      : (f.min!=null? f.min+'…'+f.max+(f.unit||'') : 'número');
+    return `<tr><td>${f.icon||''} <b>${L(f)}</b></td><td><span class="tag2">${f.type}</span></td><td class="muted">${rango}</td></tr>`;
+  }).join('');
+  const acts = XPL.ACTIONS.map(a=>{
+    let p = a.param ? (a.param.kind==='enum'? a.param.values.map(v=>(v.icon?v.icon+' ':'')+L(v)).join(' · ') : '“'+(a.param.placeholder||'texto')+'”') : '—';
+    const scopeES={npc:'NPCs',world:'mundo',screen:'pantalla'}[a.scope]||a.scope;
+    return `<tr><td><b>${L(a)}</b></td><td><span class="tag2">${scopeES}</span></td><td class="muted">${p}</td></tr>`;
+  }).join('');
+  const ads = XPL.ADS.map(a=>`<tr><td><span class="sw" style="background:${a.bg}"></span>${a.icon} <b>${L(a)}</b></td><td class="muted">${a.en}</td></tr>`).join('');
+  const ops = XPL.OPS.map(o=>`<span class="tag2">${L(o)}</span>`).join(' ');
+  $('#cat').innerHTML = `
+    <p class="lead">El lenguaje <b>XPL</b> compone reglas <b>CUANDO &lt;condición&gt; (PARA &lt;quién&gt;) ENTONCES &lt;acción&gt;</b>.
+    Varias condiciones se unen con <b>Y / O</b>. Cuando varias reglas compiten por la pantalla, gana la de mayor <b>prioridad</b>.</p>
+    <h2 class="sec">🌦️ Condiciones (${XPL.FACTS.length})</h2>
+    <table><thead><tr><th>condición</th><th>tipo</th><th>valores / rango</th></tr></thead><tbody>${facts}</tbody></table>
+    <p class="lead" style="margin-top:10px">Operadores para condiciones numéricas: ${ops}</p>
+    <h2 class="sec">⚡ Acciones (${XPL.ACTIONS.length})</h2>
+    <table><thead><tr><th>acción</th><th>ámbito</th><th>parámetro</th></tr></thead><tbody>${acts}</tbody></table>
+    <h2 class="sec">🖼️ Creatividades de pantalla (${XPL.ADS.length})</h2>
+    <table><thead><tr><th>creatividad</th><th>en inglés</th></tr></thead><tbody>${ads}</tbody></table>
+    <p class="lead" style="margin-top:18px">Diseña reglas en <b>🎛️ Estudio</b> · míralas en vivo en el gemelo (<b>▶ abrir gemelo</b>).</p>`;
+}
+
+refreshGemelo();
+</script>
+</body>
+</html>

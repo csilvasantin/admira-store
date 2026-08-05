@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XpaceOS Robot · Vertical Admira.tv chest screen simulator</title>
+<meta name="description" content="XpaceOS Robot simulator: a mobile retail media robot with a vertical 9:16 chest screen fed by Admira.tv digital signage.">
+<meta property="og:title" content="XpaceOS Robot · Vertical Admira.tv chest screen">
+<meta property="og:description" content="Simulate a robot surface where the chest display is powered by vertical Admira.tv signage content.">
+<meta property="og:url" content="https://www.xpaceos.com/robot/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<link rel="canonical" href="https://www.xpaceos.com/robot/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<meta name="theme-color" content="#02080d">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/tokens.css">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/nav.css">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#02080d;
+    --ink:#e6fbff;
+    --mut:#80aeba;
+    --soft:#446570;
+    --line:rgba(120,243,255,.18);
+    --brand:#78f3ff;
+    --accent:#ffd866;
+    --green:#88ffaa;
+    --red:#ff5d55;
+    --violet:#9d8cff;
+    --panel:#081721;
+    --panel2:#0d202d;
+    --shadow:0 28px 90px rgba(0,0,0,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,sans-serif;line-height:1.5}
+  body{overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(circle at 18% 8%,rgba(120,243,255,.16),transparent 32%),radial-gradient(circle at 78% 12%,rgba(255,216,102,.10),transparent 30%),radial-gradient(circle at 60% 82%,rgba(157,140,255,.12),transparent 38%),#02080d}
+  body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 78%)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit}
+  .wrap{width:min(1180px,100% - 40px);margin:0 auto}
+  header{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:rgba(2,8,13,.9);backdrop-filter:blur(14px)}
+  header .wrap{min-height:72px;display:flex;align-items:center;gap:22px}
+  .brand-logo{display:inline-flex;align-items:center;width:148px;min-height:34px}
+  .brand-logo img{display:block;width:100%;height:auto}
+  nav{margin-left:auto;display:flex;gap:18px;align-items:center;font-size:13px;flex-wrap:wrap}
+  nav a{color:var(--mut)}
+  nav a:hover,nav a.active{color:var(--ink)}
+  .nav-contact{padding:6px 14px;border:1px solid var(--line);border-radius:6px;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .nav-contact:hover{border-color:rgba(120,243,255,.55);background:rgba(120,243,255,.06)}
+  main{min-height:calc(100vh - 72px)}
+  .simulator{padding:18px 0 22px}
+  .sim-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.42fr);gap:24px;align-items:stretch}
+  .stage{position:relative;min-height:calc(100svh - 112px);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(13,32,45,.92),rgba(2,8,13,.96)),radial-gradient(circle at 50% 8%,rgba(120,243,255,.20),transparent 34%);box-shadow:var(--shadow)}
+  .stage::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.07),transparent 38%),radial-gradient(ellipse at center bottom,rgba(120,243,255,.16),transparent 55%);pointer-events:none}
+  .stage::after{content:"";position:absolute;left:8%;right:8%;bottom:82px;height:1px;background:linear-gradient(90deg,transparent,rgba(230,251,255,.48),transparent)}
+  .scanline{position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand),transparent);opacity:.55;animation:scan 5.8s linear infinite}
+  @keyframes scan{from{transform:translateY(0)}to{transform:translateY(720px)}}
+  .hud{position:absolute;z-index:4;left:22px;right:22px;top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid rgba(120,243,255,.32);border-radius:7px;background:rgba(2,8,13,.62);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--brand);text-transform:uppercase}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  .mission{color:var(--accent)}
+  .robot-area{position:absolute;inset:50px 0 64px;display:grid;place-items:center}
+  .robot{position:relative;width:min(620px,82vw);max-height:calc(100svh - 190px);aspect-ratio:1258/1422;transform:translateY(0);transition:transform .35s ease}
+  .robot-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 30px 70px rgba(0,0,0,.42))}
+  .robot.walk{animation:walk 3.8s ease-in-out infinite}
+  .robot.wave .arm.right{animation:wave 1.6s ease-in-out infinite}
+  @keyframes walk{0%,100%{transform:translateY(8px) translateX(-10px)}50%{transform:translateY(0) translateX(10px)}}
+  @keyframes wave{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(-42deg) translateY(-20px)}}
+  .part{position:absolute}
+  .head{left:31%;top:0;width:38%;height:112px;border:1px solid rgba(230,251,255,.28);border-radius:28px;background:linear-gradient(155deg,#e7f1f1,#8ca0a6 56%,#40535a);box-shadow:inset 0 18px 34px rgba(255,255,255,.36),0 22px 56px rgba(0,0,0,.38)}
+  .visor{left:17%;right:17%;top:37px;height:34px;border-radius:18px;background:#081016;box-shadow:inset 0 0 20px rgba(120,243,255,.28)}
+  .visor::after{content:"";position:absolute;left:18%;right:18%;top:12px;height:9px;background:linear-gradient(90deg,var(--brand) 0 25%,transparent 25% 42%,var(--brand) 42% 58%,transparent 58% 75%,var(--brand) 75%);filter:drop-shadow(0 0 9px rgba(120,243,255,.95))}
+  .neck{left:43%;top:106px;width:14%;height:52px;border-radius:0 0 12px 12px;background:linear-gradient(180deg,#b2c1c5,#536871)}
+  .torso{left:18%;top:148px;width:64%;height:286px;border:1px solid rgba(230,251,255,.22);border-radius:48px 48px 34px 34px;background:linear-gradient(145deg,#dce7e8 0%,#82979f 42%,#293b43 100%);box-shadow:inset 0 22px 38px rgba(255,255,255,.26),0 24px 64px rgba(0,0,0,.42)}
+  .torso::after{content:"";position:absolute;left:50%;bottom:30px;width:44%;height:18px;transform:translateX(-50%);border-radius:18px;background:linear-gradient(90deg,transparent,var(--brand),transparent);opacity:.68}
+  .chest{position:absolute;left:39.8%;top:31.6%;width:19.3%;aspect-ratio:9/16;border:2px solid rgba(120,243,255,.72);border-radius:8%;background:#02080d;overflow:hidden;box-shadow:0 0 20px rgba(120,243,255,.30),inset 0 0 18px rgba(120,243,255,.15);transition:left .28s ease,top .28s ease,width .28s ease,aspect-ratio .28s ease,border-radius .28s ease}
+  .chest.screen-landscape{left:34.7%;top:38.2%;width:29.7%;aspect-ratio:16/9;border-radius:6%}
+  .chest iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#02080d;transform:scale(1.01);transform-origin:center}
+  .camera-view{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;background:#02080d;opacity:0;pointer-events:none;transition:opacity .24s ease}
+  .camera-active iframe{opacity:0;pointer-events:none}
+  .camera-active .camera-view{opacity:1}
+  .screen-glass{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,.16),transparent 28%),repeating-linear-gradient(0deg,rgba(255,255,255,.055) 0 1px,transparent 1px 4px)}
+  .screen-fallback{position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;padding:14px;background:radial-gradient(circle at center,rgba(120,243,255,.18),transparent 62%),#02080d;color:var(--ink);font-weight:900}
+  .screen-fallback small{display:block;margin-bottom:7px;color:var(--accent);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}
+  .screen-fallback b{display:block;font-size:clamp(20px,3vw,29px);line-height:1}
+  .screen-loaded .screen-fallback{display:none}
+  .screen-off .chest{opacity:0;visibility:hidden;pointer-events:none}
+  .arm{top:184px;width:88px;height:242px;border-radius:48px;background:linear-gradient(150deg,#b9c9cc,#526870);box-shadow:inset 0 14px 24px rgba(255,255,255,.16);transform-origin:50% 24px}
+  .arm.left{left:4%;transform:rotate(13deg)}
+  .arm.right{right:4%;transform:rotate(-14deg)}
+  .arm::after{content:"";position:absolute;left:22px;bottom:-28px;width:44px;height:60px;border-radius:20px;background:linear-gradient(160deg,#e2eeee,#6a7d84)}
+  .hip{left:30%;top:420px;width:40%;height:76px;border:1px solid rgba(230,251,255,.18);border-radius:24px;background:linear-gradient(180deg,#92a9af,#34474f)}
+  .leg{top:490px;width:86px;height:126px;border-radius:28px;background:linear-gradient(160deg,#c1d1d3,#536870)}
+  .leg.left{left:27%}
+  .leg.right{right:27%}
+  .leg::after{content:"";position:absolute;left:-18px;right:-18px;bottom:-25px;height:40px;border-radius:26px 26px 12px 12px;background:linear-gradient(180deg,#e7f1f1,#63777e)}
+  .floor-label{position:absolute;z-index:3;left:22px;right:22px;bottom:22px;display:flex;justify-content:space-between;gap:12px;color:var(--mut);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+  .floor-label b{color:var(--green)}
+  .console{display:flex;flex-direction:column;gap:16px}
+  .panel{border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,rgba(13,32,45,.92),rgba(8,23,33,.92));padding:18px}
+  .panel h2{margin:0 0 14px;font-size:16px;letter-spacing:.02em}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{min-height:78px;border:1px solid rgba(120,243,255,.14);border-radius:8px;padding:12px;background:rgba(255,255,255,.035)}
+  .stat span{display:block;color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase}
+  .stat b{display:block;margin-top:8px;color:var(--ink);font-size:20px}
+  .controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .mode{min-height:44px;border:1px solid rgba(120,243,255,.22);border-radius:8px;background:rgba(120,243,255,.06);color:var(--ink);cursor:pointer;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .mode:hover,.mode.active{border-color:rgba(120,243,255,.7);background:rgba(120,243,255,.16)}
+  .feed-row{display:flex;gap:8px;margin-top:12px}
+  .feed-row a,.feed-row button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 12px;border-radius:8px;border:1px solid rgba(120,243,255,.26);background:rgba(255,255,255,.04);color:var(--ink);font-weight:700}
+  .feed-row a{flex:1;color:#061016;background:var(--brand)}
+  .feed-row button{cursor:pointer}
+  .cli-panel{display:grid;gap:12px}
+  .cli-form{display:flex;align-items:center;gap:8px;min-height:46px;border:1px solid rgba(120,243,255,.28);border-radius:8px;background:#050d13;padding:0 12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .cli-prompt{color:var(--green);font-weight:900}
+  .cli-form input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:12px}
+  .cli-form input::placeholder{color:#5a7480}
+  .cli-run{min-height:30px;border:1px solid rgba(120,243,255,.32);border-radius:6px;background:rgba(120,243,255,.12);color:var(--ink);cursor:pointer;font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;padding:0 10px}
+  .cli-run:hover{border-color:rgba(120,243,255,.68);background:rgba(120,243,255,.20)}
+  .cli-log{min-height:78px;max-height:132px;overflow:auto;border:1px solid rgba(120,243,255,.12);border-radius:8px;background:rgba(0,0,0,.18);padding:10px 12px;color:var(--mut);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.45}
+  .cli-log p{margin:0 0 5px}
+  .cli-log b{color:var(--brand)}
+  .emission-controller{display:flex;align-items:center;justify-content:center;gap:10px;padding:4px 0 2px}
+  .emit-btn{width:40px;height:40px;border-radius:50%;border:1px solid rgba(120,243,255,.38);background:rgba(5,13,19,.78);color:var(--ink);cursor:pointer;display:grid;place-items:center;font-size:15px;line-height:1;box-shadow:inset 0 0 16px rgba(120,243,255,.05);transition:border-color .16s ease,background .16s ease,transform .1s ease,color .16s ease}
+  .emit-btn:hover{border-color:rgba(120,243,255,.74);background:rgba(120,243,255,.13);color:var(--brand)}
+  .emit-btn:active{transform:scale(.92)}
+  .emit-btn.audio-live{border-color:rgba(121,255,178,.68);color:var(--green);box-shadow:0 0 14px rgba(121,255,178,.15),inset 0 0 16px rgba(121,255,178,.08)}
+  .emit-btn[data-player-command="/playnext"],.emit-btn[data-player-command="/playprevious"]{width:44px;height:44px}
+  .emission-modes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+  .emission-mode{min-height:36px;border:1px solid rgba(120,243,255,.22);border-radius:8px;background:rgba(120,243,255,.06);color:var(--mut);cursor:pointer;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;letter-spacing:.01em;text-transform:uppercase;white-space:nowrap;padding:0 4px}
+  .emission-mode[data-emission="portrait"],.emission-mode[data-emission="landscape"]{font-size:9px;letter-spacing:0}
+  .emission-mode:hover{border-color:rgba(120,243,255,.62);color:var(--ink)}
+  .emission-mode.active{border-color:rgba(255,216,107,.78);background:rgba(255,216,107,.12);color:var(--gold)}
+  .ds-autonomy{margin:10px 0 0;border:1px solid rgba(121,255,178,.28);border-radius:8px;background:rgba(121,255,178,.06);padding:9px 10px;color:var(--mut);font:10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+  .ds-autonomy b{color:var(--green);letter-spacing:.06em;text-transform:uppercase}
+  .ds-autonomy kbd{color:var(--ink);font:inherit;border:1px solid rgba(255,255,255,.18);border-radius:4px;padding:1px 5px;background:rgba(0,0,0,.25)}
+  @media (max-width:560px){.emission-modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .timeline{display:grid;gap:10px}
+  .event{display:grid;grid-template-columns:72px 1fr;gap:12px;padding-top:10px;border-top:1px solid var(--line)}
+  .event span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--accent)}
+  .event p{margin:0;color:var(--mut);font-size:14px}
+  footer{padding:24px 0 34px;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
+  footer .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  footer a{color:var(--mut)}
+  footer a:hover{color:var(--ink)}
+  .sig{margin-left:auto;color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+  @media (max-width:960px){
+    .sim-grid{grid-template-columns:1fr}.stage{min-height:calc(100svh - 104px)}.robot{width:min(620px,90vw);max-height:calc(100svh - 190px)}.stat-grid{grid-template-columns:repeat(4,1fr)}
+  }
+  @media (max-width:640px){
+    .wrap{width:min(100% - 28px,1180px)}header .wrap{min-height:58px}nav{display:none}.simulator{padding-top:8px}.stage{min-height:calc(100svh - 82px)}.hud{left:14px;right:14px;top:14px}.pill{min-height:30px;padding:0 10px;font-size:10px}.robot-area{inset:54px -8px 76px}.robot{width:min(390px,98vw);max-height:calc(100svh - 176px)}.floor-label{left:14px;right:14px;bottom:14px;font-size:10px}.stat-grid{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr}.feed-row{flex-direction:column}.feed-row a,.feed-row button{width:100%}.event{grid-template-columns:1fr;gap:4px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand-logo" href="/" aria-label="XpaceOS">
+      <img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS">
+    </a>
+    <nav aria-label="Primary">
+      <a href="/#plataforma">Platform</a>
+      <a href="/admira-xp/">Live demo</a>
+      <a class="active" href="/robot/">Robot</a>
+      <a href="https://admira.tv/" target="_blank" rel="noopener">Admira.tv</a>
+      <a class="nav-contact" href="/#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="simulator" aria-label="XpaceOS robot simulator">
+    <div class="wrap sim-grid">
+      <div class="stage">
+        <div class="scanline" aria-hidden="true"></div>
+        <div class="hud">
+          <span class="pill"><span class="dot"></span>robot_surface online</span>
+          <span class="pill mission" id="mission-label">mission · visitor greeting</span>
+        </div>
+        <div class="robot-area">
+          <div class="robot" id="robot" role="img" aria-label="Robot with a chest screen fed by Admira.tv">
+            <img class="robot-photo" src="/assets/xpaceos-robot-chest-photo.png?v=admirito-alpha" alt="">
+            <div class="chest" id="chest">
+              <div class="screen-fallback"><div><small>Admira.tv local feed</small><b>DOOH</b></div></div>
+              <iframe id="admira-feed" title="Admira.tv digital signage feed" src="https://admira.tv/canal.html?clean=1&screen=xpaceos-robot-chest&circuit=xpaceos-robot&slot=auto&refresh=20&max=24&muted=1&volume=1&cam=1&bridge=20260621-audio&mode=local&modeLock=1" loading="eager" referrerpolicy="no-referrer-when-downgrade" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; camera; microphone"></iframe>
+              <video id="robot-camera" class="camera-view" autoplay playsinline muted></video>
+              <div class="screen-glass" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <div class="floor-label"><span id="surface-label">Admira.tv local chest screen · local decision</span><b id="feed-state">feed loading</b></div>
+      </div>
+
+      <aside class="console" aria-label="Robot console">
+        <div class="panel">
+          <h2>Surface status</h2>
+          <div class="stat-grid">
+            <div class="stat"><span>Screen</span><b id="screen-stat">Live</b></div>
+            <div class="stat"><span>Source</span><b id="source-stat">Admira.tv</b></div>
+            <div class="stat"><span>Format</span><b id="format-stat">Auto</b></div>
+            <div class="stat"><span>Mode</span><b id="mode-stat">Patrol</b></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Mission mode</h2>
+          <div class="controls" role="group" aria-label="Robot mission mode">
+            <button class="mode" type="button" data-mode="patrol">Patrol</button>
+            <button class="mode active" type="button" data-mode="greet">Greet</button>
+            <button class="mode" type="button" data-mode="standby">Standby</button>
+          </div>
+          <div class="feed-row">
+            <a id="open-feed" href="https://admira.tv/canal.html?clean=1&screen=xpaceos-robot-chest&circuit=xpaceos-robot&slot=auto&refresh=20&max=24&muted=1&volume=1&cam=1&bridge=20260621-audio&mode=local&modeLock=1" target="_blank" rel="noopener">Open feed</a>
+            <button type="button" id="reload-feed">Reload feed</button>
+          </div>
+        </div>
+
+        <div class="panel cli-panel">
+          <h2>Emission Mode</h2>
+          <div class="emission-modes" aria-label="Emission Mode">
+            <button class="emission-mode active" type="button" data-emission="local">Local</button>
+            <button class="emission-mode" type="button" data-emission="sync">Sincro</button>
+            <button class="emission-mode" type="button" data-emission="conditional">Cond</button>
+            <button class="emission-mode" type="button" data-emission="portrait">Portrait</button>
+            <button class="emission-mode" type="button" data-emission="landscape">Landscape</button>
+          </div>
+          <p class="ds-autonomy"><b>DS autónomo</b> · La máquina sigue emitiendo y se recupera sola hasta un kill-switch remoto autorizado o la salida local del player con <kbd>Escape</kbd>. Cambiar, pausar o silenciar contenido no mata el proceso DS.</p>
+          <form class="cli-form" id="admira-cli" autocomplete="off">
+            <span class="cli-prompt">adtv&gt;</span>
+            <input id="admira-cli-input" type="text" placeholder="/tag robots · /medio video · /slot tarde · /reload" spellcheck="false" aria-label="Admira.tv CLI command">
+            <button class="cli-run" type="submit">Run</button>
+          </form>
+          <div class="emission-controller" aria-label="Emission controller">
+            <button class="emit-btn" type="button" data-player-command="/playfirst" title="Primero" aria-label="Primero">⏮</button>
+            <button class="emit-btn" type="button" data-player-command="/playprevious" title="Anterior" aria-label="Anterior">◀</button>
+            <button class="emit-btn" id="audio-toggle" type="button" data-audio-toggle title="Mute" aria-label="Mute">🔇</button>
+            <button class="emit-btn" type="button" data-player-command="/playnext" title="Siguiente" aria-label="Siguiente">▶</button>
+            <button class="emit-btn" type="button" data-player-command="/playlast" title="Último" aria-label="Último">⏭</button>
+          </div>
+          <div class="cli-log" id="admira-cli-log" aria-live="polite">
+            <p><b>ready</b> emission mode · local</p>
+            <p>modes: Local, Sincro, Condicional, Portrait, Landscape · CLI commands still available below.</p>
+          </div>
+        </div>
+
+        <div class="panel timeline" aria-label="Signal timeline">
+          <h2>Signal path</h2>
+          <div class="event"><span>01 · FEED</span><p>Admira.tv renders a clean vertical playlist for the chest display.</p></div>
+          <div class="event"><span>02 · ROBOT</span><p>XpaceOS treats the robot as a mobile surface with location and mission context.</p></div>
+          <div class="event"><span>03 · MEDIA</span><p>Every visible impression can become inventory for retail media and live demos.</p></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 ADmiraNeXT · XpaceOS Robot</span>
+    <a href="/">XpaceOS</a>
+    <a href="/admira-xp/">Admira XP</a>
+    <a href="https://admira.tv/" target="_blank" rel="noopener">Admira.tv</a>
+    <span class="sig">ROBOT_SURFACE · v2026.06.21</span>
+  </div>
+</footer>
+
+<script>
+  const robot = document.getElementById('robot');
+  const chest = document.getElementById('chest');
+  const iframe = document.getElementById('admira-feed');
+  const cameraVideo = document.getElementById('robot-camera');
+  const feedState = document.getElementById('feed-state');
+  const surfaceLabel = document.getElementById('surface-label');
+  const screenStat = document.getElementById('screen-stat');
+  const sourceStat = document.getElementById('source-stat');
+  const formatStat = document.getElementById('format-stat');
+  const modeStat = document.getElementById('mode-stat');
+  const missionLabel = document.getElementById('mission-label');
+  const modeButtons = Array.from(document.querySelectorAll('[data-mode]'));
+  const emissionButtons = Array.from(document.querySelectorAll('[data-emission]'));
+  const audioToggle = document.getElementById('audio-toggle');
+  const cliForm = document.getElementById('admira-cli');
+  const cliInput = document.getElementById('admira-cli-input');
+  const cliLog = document.getElementById('admira-cli-log');
+  const openFeed = document.getElementById('open-feed');
+  const feedBase = 'https://admira.tv/canal.html';
+  const defaultFeedParams = {
+    clean: '1',
+    screen: 'xpaceos-robot-chest',
+    circuit: 'xpaceos-robot',
+    slot: 'auto',
+    refresh: '20',
+    max: '24',
+    muted: '1',
+    volume: '1',
+    cam: '1',
+    bridge: '20260621-audio',
+    modeLock: '1'
+  };
+  const feedParams = Object.assign({}, defaultFeedParams);
+  const pendingBridge = new Map();
+  let cameraStream = null;
+  let screenEnabled = true;
+  let admiraMode = 'local';
+
+  function modeSurfaceLabel(){
+    if (admiraMode === 'sync') return 'Cloning www.admira.tv/canal · synchronized';
+    if (admiraMode === 'conditional') return 'Admira.tv conditional chest screen · XPL';
+    if (admiraMode === 'portrait') return 'Admira.tv portrait chest screen · 9:16';
+    if (admiraMode === 'landscape') return 'Admira.tv landscape chest screen · 16:9';
+    return 'Admira.tv local chest screen · local decision';
+  }
+
+  function modeFeedText(){
+    if (admiraMode === 'sync') return 'sincro feed live';
+    if (admiraMode === 'conditional') return 'conditional feed live';
+    if (admiraMode === 'portrait') return 'portrait feed live';
+    if (admiraMode === 'landscape') return 'landscape feed live';
+    return 'local feed live';
+  }
+
+  function setChestOrientation(orientation, locked){
+    const isLandscape = orientation === 'landscape';
+    chest.classList.toggle('screen-landscape', isLandscape);
+    formatStat.textContent = isLandscape ? '16:9' : (locked ? '9:16' : 'Auto');
+  }
+
+  function admiraFeedUrl(extra){
+    const params = Object.assign({}, feedParams, extra || {});
+    params.clean = '1';
+    if (admiraMode === 'sync') {
+      delete params.tag;
+      delete params.format;
+      delete params.slot;
+      params.mode = 'sync';
+      params.sincro = '1';
+      params.max = '50';
+      params.syncSlot = '20';
+      params.syncSource = 'canal';
+    } else if (admiraMode === 'conditional') {
+      delete params.tag;
+      delete params.format;
+      params.mode = 'conditional';
+      params.xpl = 'https://xpl.xpaceos.com/admira-tv.json';
+    } else if (admiraMode === 'portrait') {
+      params.mode = 'local';
+      params.tag = 'vertical';
+      params.format = '9:16';
+    } else if (admiraMode === 'landscape') {
+      params.mode = 'local';
+      params.tag = 'horizontal';
+      params.format = '16:9';
+    } else {
+      params.mode = 'local';
+      delete params.tag;
+      delete params.format;
+    }
+    const qs = new URLSearchParams(params);
+    return feedBase + '?' + qs.toString();
+  }
+
+  function normTag(value){
+    return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  }
+
+  function canonicalPlayTag(value){
+    const tag = normTag(value).replace(/^#/, '').replace(/\s+/g, '-');
+    if (['music','musica','muscia'].includes(tag)) return 'musica';
+    if (['tecnologia','technology','tech'].includes(tag)) return 'tecnologia';
+    return tag;
+  }
+
+  function parsePlayTag(raw, cmd){
+    const parts = String(raw || '').trim().replace(/^\//, '').split(/\s+/);
+    const first = (parts.shift() || '').toLowerCase();
+    const command = (cmd || first).toLowerCase();
+    if (command === 'playtag') return canonicalPlayTag(parts.join(' '));
+    if (command.indexOf('playtag') === 0) return canonicalPlayTag(command.slice(7) + (parts.length ? ' ' + parts.join(' ') : ''));
+    return '';
+  }
+
+  function cliWrite(kind, text){
+    const p = document.createElement('p');
+    p.innerHTML = '<b>' + kind + '</b> ' + text.replace(/[<>]/g, '');
+    cliLog.prepend(p);
+    while (cliLog.children.length > 8) cliLog.lastElementChild.remove();
+  }
+
+  function stopCamera(report){
+    if (cameraStream) {
+      cameraStream.getTracks().forEach((track) => track.stop());
+      cameraStream = null;
+    }
+    cameraVideo.pause();
+    cameraVideo.srcObject = null;
+    chest.classList.remove('camera-active');
+    sourceStat.textContent = admiraMode === 'conditional' ? 'XPL' : 'Admira.tv';
+    if (screenStat.textContent === 'Camera') screenStat.textContent = 'Live';
+    surfaceLabel.textContent = modeSurfaceLabel();
+    if (report) cliWrite('ack', '/stopcamera · camera off');
+  }
+
+  function applyFeed(reason){
+    if (!screenEnabled) {
+      cliWrite('lock', 'pantalla off · use /pantalla on');
+      return;
+    }
+    stopCamera(false);
+    chest.classList.remove('screen-loaded');
+    feedState.textContent = 'feed loading';
+    syncAudioControl();
+    const nextFeed = admiraFeedUrl({ robot: Date.now() });
+    iframe.src = nextFeed;
+    openFeed.href = nextFeed;
+    const modeLabel = admiraMode === 'sync' ? 'Sincro · www.admira.tv/canal' : admiraMode === 'conditional' ? 'Condicional · XPL' : admiraMode === 'portrait' ? 'Portrait · 9:16' : admiraMode === 'landscape' ? 'Landscape · 16:9' : 'Local · local decision';
+    surfaceLabel.textContent = modeSurfaceLabel();
+    sourceStat.textContent = admiraMode === 'conditional' ? 'XPL' : 'Admira.tv';
+    cliWrite('feed', reason + ' · ' + modeLabel);
+  }
+
+  function syncEmissionButtons(){
+    emissionButtons.forEach((button) => button.classList.toggle('active', button.dataset.emission === admiraMode));
+  }
+
+  function setAdmiraMode(mode){
+    admiraMode = ['sync','conditional','portrait','landscape'].includes(mode) ? mode : 'local';
+    if (admiraMode === 'local') {
+      Object.keys(feedParams).forEach((key) => delete feedParams[key]);
+      Object.assign(feedParams, defaultFeedParams);
+    }
+    if (admiraMode === 'landscape') setChestOrientation('landscape', true);
+    else if (admiraMode === 'portrait') setChestOrientation('portrait', true);
+    else setChestOrientation('portrait', false);
+    syncEmissionButtons();
+    screenStat.textContent = 'Live';
+    applyFeed(admiraMode === 'sync' ? 'Emission Mode · Sincro' : admiraMode === 'conditional' ? 'Emission Mode · Condicional' : admiraMode === 'portrait' ? 'Emission Mode · Portrait' : admiraMode === 'landscape' ? 'Emission Mode · Landscape' : 'Emission Mode · Local');
+  }
+
+  function applyPlayTag(tag, raw){
+    const clean = canonicalPlayTag(tag);
+    if (!clean) {
+      cliWrite('err', 'usage: /playtagmusic or /playtag <tag>');
+      return;
+    }
+    admiraMode = 'portrait';
+    setChestOrientation('portrait', true);
+    syncEmissionButtons();
+    feedParams.tag = clean;
+    feedParams.format = '9:16';
+    cliWrite('play', '/' + raw + ' · tag=' + clean);
+    applyFeed('playtag=' + clean);
+  }
+
+  function setFeedAudio(on){
+    feedParams.muted = on ? '0' : '1';
+    feedParams.volume = on ? '1' : '0';
+    syncAudioControl();
+    cliWrite('audio', on ? 'audio on · volume=1' : 'audio off');
+    applyFeed(on ? 'audio on' : 'audio off');
+  }
+
+  function syncAudioControl(){
+    const live = feedParams.muted === '0' && feedParams.volume !== '0';
+    audioToggle.classList.toggle('audio-live', live);
+    audioToggle.textContent = live ? '🔊' : '🔇';
+    audioToggle.title = live ? 'Mute' : 'Audio on';
+    audioToggle.setAttribute('aria-label', live ? 'Mute' : 'Audio on');
+  }
+
+  function setChestScreen(on){
+    screenEnabled = !!on;
+    if (!screenEnabled) {
+      stopCamera(false);
+      robot.classList.add('screen-off');
+      screenStat.textContent = 'Off';
+      sourceStat.textContent = 'None';
+      feedState.textContent = 'screen off';
+      surfaceLabel.textContent = 'robot chest screen · off';
+      cliWrite('ack', '/pantalla off · chest screen hidden');
+      return;
+    }
+    robot.classList.remove('screen-off');
+    screenStat.textContent = 'Live';
+    sourceStat.textContent = admiraMode === 'conditional' ? 'XPL' : 'Admira.tv';
+    surfaceLabel.textContent = modeSurfaceLabel();
+    cliWrite('ack', '/pantalla on · chest screen live');
+    applyFeed('screen on');
+  }
+
+  function sendPlayerCommand(raw){
+    if (!screenEnabled) {
+      cliWrite('lock', 'pantalla off · use /pantalla on');
+      return;
+    }
+    stopCamera(false);
+    const requestId = 'robot-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+    pendingBridge.set(requestId, raw);
+    try{
+      iframe.contentWindow.postMessage({ source:'xpaceos-robot-cli', command:raw, requestId }, 'https://admira.tv');
+      cliWrite('send', raw + ' → chest player');
+      window.setTimeout(() => {
+        if (!pendingBridge.has(requestId)) return;
+        pendingBridge.delete(requestId);
+        cliWrite('wait', raw + ' sent; no ack yet');
+      }, 1800);
+    }catch(e){
+      pendingBridge.delete(requestId);
+      cliWrite('err', 'could not send ' + raw);
+    }
+  }
+
+  async function playCamera(){
+    if (!screenEnabled) {
+      cliWrite('lock', 'pantalla off · use /pantalla on');
+      return;
+    }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      cliWrite('err', 'camera unavailable in this browser');
+      return;
+    }
+    stopCamera(false);
+    setChestOrientation('portrait', true);
+    chest.classList.add('screen-loaded', 'camera-active');
+    feedState.textContent = 'camera opening';
+    surfaceLabel.textContent = 'robot camera view · local device';
+    screenStat.textContent = 'Camera';
+    sourceStat.textContent = 'Camera';
+    try{
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1080 },
+          height: { ideal: 1920 },
+          aspectRatio: { ideal: 0.5625 }
+        }
+      });
+      cameraVideo.srcObject = cameraStream;
+      await cameraVideo.play();
+      feedState.textContent = 'camera live';
+      cliWrite('ack', '/playcamera · camera live');
+    }catch(e){
+      stopCamera(false);
+      feedState.textContent = modeFeedText();
+      screenStat.textContent = 'Live';
+      cliWrite('err', 'camera blocked or unavailable');
+    }
+  }
+
+  const modes = {
+    patrol: { label: 'Patrol', mission: 'mission · retail media patrol', className: 'walk', screen: 'Live' },
+    greet: { label: 'Greet', mission: 'mission · visitor greeting', className: 'wave', screen: 'Live' },
+    standby: { label: 'Standby', mission: 'mission · charging dock', className: '', screen: 'Ready' }
+  };
+
+  function setMode(name){
+    const mode = modes[name] || modes.patrol;
+    robot.className = 'robot ' + mode.className;
+    modeStat.textContent = mode.label;
+    screenStat.textContent = mode.screen;
+    missionLabel.textContent = mode.mission;
+    modeButtons.forEach((button) => button.classList.toggle('active', button.dataset.mode === name));
+  }
+
+  modeButtons.forEach((button) => {
+    button.addEventListener('click', () => setMode(button.dataset.mode));
+  });
+  emissionButtons.forEach((button) => {
+    button.addEventListener('click', () => setAdmiraMode(button.dataset.emission));
+  });
+  document.querySelectorAll('[data-player-command]').forEach((button) => {
+    button.addEventListener('click', () => runCli(button.dataset.playerCommand));
+  });
+  audioToggle.addEventListener('click', () => {
+    const audioIsLive = feedParams.muted === '0' && feedParams.volume !== '0';
+    runCli(audioIsLive ? '/audiooff' : '/audioon');
+  });
+
+  iframe.addEventListener('load', () => {
+    if (chest.classList.contains('camera-active')) return;
+    chest.classList.add('screen-loaded');
+    feedState.textContent = modeFeedText();
+  });
+
+  function revealFeed(){
+    if (chest.classList.contains('camera-active')) return;
+    if (chest.classList.contains('screen-loaded')) return;
+    chest.classList.add('screen-loaded');
+    feedState.textContent = modeFeedText();
+  }
+
+  document.getElementById('reload-feed').addEventListener('click', () => {
+    applyFeed('reload');
+  });
+
+  function runCli(raw){
+    const value = raw.trim();
+    if (!value) return;
+    const input = value.replace(/^\//, '');
+    const parts = input.split(/\s+/);
+    const cmd = (parts.shift() || '').toLowerCase();
+    const rest = parts.join(' ').trim();
+    cliWrite('cmd', '/' + input);
+
+    if (cmd === 'help' || cmd === '?') {
+      cliWrite('help', 'Emission Mode: Local, Sincro, Condicional, Portrait, Landscape · /pantalla off|on /audioon /audiooff /playtagmusic /playcamera /playnext /tag /medio /slot /reload');
+      return;
+    }
+    if ((cmd === 'pantalla' || cmd === 'screen') && ['off','on'].includes(rest.toLowerCase())) {
+      setChestScreen(rest.toLowerCase() === 'on');
+      return;
+    }
+    if (cmd === 'pantallaoff' || cmd === 'screenoff') {
+      setChestScreen(false);
+      return;
+    }
+    if (cmd === 'pantallaon' || cmd === 'screenon') {
+      setChestScreen(true);
+      return;
+    }
+    if (cmd === 'audioon' || cmd === 'soundon' || cmd === 'unmute' || (cmd === 'audio' && rest !== 'off')) {
+      setFeedAudio(true);
+      return;
+    }
+    if (cmd === 'audiooff' || cmd === 'soundoff' || cmd === 'muteoff' || (cmd === 'audio' && rest === 'off')) {
+      setFeedAudio(false);
+      return;
+    }
+    const playTag = parsePlayTag(value, cmd);
+    if (playTag) {
+      applyPlayTag(playTag, input);
+      return;
+    }
+    if (cmd === 'playcamera' || cmd === 'camera') {
+      playCamera();
+      return;
+    }
+    if (cmd === 'stopcamera' || cmd === 'camerastop') {
+      stopCamera(true);
+      feedState.textContent = modeFeedText();
+      screenStat.textContent = 'Live';
+      return;
+    }
+    if (['playnext','next','playprevious','playprev','previous','prev','playfirst','first','playlast','last'].includes(cmd) || cmd === 'play' || /^play\d+$/.test(cmd)) {
+      sendPlayerCommand('/' + input);
+      return;
+    }
+    if (cmd === 'reload') { applyFeed('reload'); return; }
+    if (cmd === 'vertical' || cmd === 'portrait') {
+      setAdmiraMode('portrait');
+      return;
+    }
+    if (cmd === 'horizontal' || cmd === 'landscape') {
+      setAdmiraMode('landscape');
+      return;
+    }
+    if (cmd === 'tag') {
+      feedParams.tag = (rest || 'vertical').toLowerCase();
+      applyFeed('tag=' + feedParams.tag);
+      return;
+    }
+    if (cmd === 'medio' || cmd === 'media') {
+      const medio = (rest || 'all').toLowerCase();
+      if (!['all','video','image','audio'].includes(medio)) { cliWrite('err', 'medio must be all, video, image or audio'); return; }
+      feedParams.medio = medio;
+      applyFeed('medio=' + medio);
+      return;
+    }
+    if (cmd === 'category' || cmd === 'categoria') {
+      feedParams.category = (rest || 'all').toLowerCase();
+      applyFeed('category=' + feedParams.category);
+      return;
+    }
+    if (cmd === 'slot') {
+      const slot = (rest || 'auto').toLowerCase();
+      if (!['auto','all','manana','mediodia','tarde','noche'].includes(slot)) { cliWrite('err', 'slot must be auto, all, manana, mediodia, tarde or noche'); return; }
+      feedParams.slot = slot;
+      applyFeed('slot=' + slot);
+      return;
+    }
+    if (cmd === 'max') {
+      const max = Math.max(1, Math.min(200, parseInt(rest, 10) || 24));
+      feedParams.max = String(max);
+      applyFeed('max=' + max);
+      return;
+    }
+    if (cmd === 'refresh') {
+      const refresh = Math.max(10, Math.min(900, parseInt(rest, 10) || 20));
+      feedParams.refresh = String(refresh);
+      applyFeed('refresh=' + refresh + 's');
+      return;
+    }
+    if (cmd === 'mute' || cmd === 'muted') {
+      const muted = rest === '0' ? '0' : '1';
+      setFeedAudio(muted === '0');
+      return;
+    }
+    if (cmd === 'admiratv') {
+      const mode = rest.toLowerCase();
+      if (['sincro','sync','sincronizado'].includes(mode)) { setAdmiraMode('sync'); return; }
+      if (['cond','condicional','conditional','xpl'].includes(mode)) { setAdmiraMode('conditional'); return; }
+      if (['local','off'].includes(mode)) { setAdmiraMode('local'); return; }
+      if (['portrait','vertical'].includes(mode)) { setAdmiraMode('portrait'); return; }
+      if (['landscape','horizontal'].includes(mode)) { setAdmiraMode('landscape'); return; }
+      cliWrite('err', 'usage: /admiraTV sincro|cond|local|portrait|landscape');
+      return;
+    }
+    if (cmd === 'admiratvsincro' || cmd === 'admiratvsync' || cmd === 'sincro' || cmd === 'sync') {
+      setAdmiraMode(/^(off|0|false|no|local)$/i.test(rest) ? 'local' : 'sync');
+      return;
+    }
+    if (cmd === 'admiratvcondicional' || cmd === 'admiratvconditional' || cmd === 'condicional' || cmd === 'conditional' || cmd === 'xpl') {
+      setAdmiraMode('conditional');
+      return;
+    }
+    if (cmd === 'admiratvlocal' || cmd === 'local' || cmd === 'admiratvsincrooff' || cmd === 'sincrooff' || cmd === 'syncoff') {
+      setAdmiraMode('local');
+      return;
+    }
+    if (cmd === 'screen') {
+      feedParams.screen = rest || defaultFeedParams.screen;
+      applyFeed('screen=' + feedParams.screen);
+      return;
+    }
+    if (cmd === 'reset' || cmd === 'clear') {
+      Object.keys(feedParams).forEach((key) => delete feedParams[key]);
+      Object.assign(feedParams, defaultFeedParams);
+      admiraMode = 'local';
+      syncEmissionButtons();
+      applyFeed('reset');
+      return;
+    }
+    if (cmd === 'direct' || cmd === 'directo') {
+      cliWrite('lock', '/' + cmd + ' disabled here: use Emission Mode or Admira.tv CLI commands');
+      return;
+    }
+    cliWrite('err', 'unknown command /' + cmd + ' · try /help');
+  }
+
+  cliForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    runCli(cliInput.value);
+    cliInput.value = '';
+  });
+
+  cliInput.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    runCli(cliInput.value);
+    cliInput.value = '';
+  });
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://admira.tv') return;
+    const data = event.data || {};
+    if (data.source !== 'admira-tv-canal') return;
+    if (data.event === 'media-state') {
+      if (admiraMode !== 'portrait' && admiraMode !== 'landscape') {
+        setChestOrientation(data.orientation === 'landscape' ? 'landscape' : 'portrait', false);
+      }
+      return;
+    }
+    if (!data.requestId) return;
+    const raw = pendingBridge.get(data.requestId) || 'command';
+    pendingBridge.delete(data.requestId);
+    cliWrite(data.ok ? 'ack' : 'err', raw + ' · ' + (data.message || (data.ok ? 'ok' : 'failed')));
+  });
+
+  window.setTimeout(revealFeed, 1500);
+
+  setMode('greet');
+  syncAudioControl();
+</script>
+</body>
+</html>

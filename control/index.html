@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XpaceOS · Control del circuito</title>
+<meta name="description" content="Consola del dueño del circuito: playlist propia, política de aprobación, lista negra y aceptación o rechazo de ofertas de emisión. El dueño manda en sus pantallas.">
+<meta name="robots" content="noindex">
+<script src="https://www.admira.app/locations.js"></script>
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/emission-calendar.css">
+<script defer src="https://csilvasantin.github.io/admira-design/emission-calendar.js"></script>
+<style>
+  :root{--bg:#02080d;--ink:#dff8ff;--mut:#75aab9;--brand:#78f3ff;--accent:#ffd866;--good:#88ffaa;--warn:#ff8866;--danger:#ff4f5e;--own:#b78cff;--card:#0a1620;--card2:#0d1c28;--line:rgba(120,243,255,.18)}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100%}
+  a{color:var(--brand);text-decoration:none} a:hover{text-decoration:underline}
+  button,select,input{font-family:inherit}
+  header{padding:13px 22px;background:linear-gradient(to bottom,rgba(2,8,13,.95),rgba(2,8,13,.6));border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+  .logo{font-family:monospace;font-size:13px;letter-spacing:.16em;color:var(--accent);font-weight:bold;white-space:nowrap}
+  .logo .dot{color:var(--brand)}
+  .logo .sub{color:var(--mut);margin-left:10px;font-weight:normal;letter-spacing:.1em;font-size:11px}
+  header .sel{display:flex;align-items:center;gap:7px}
+  header label,.scrhead label{font-size:11px;color:var(--mut);font-family:monospace;letter-spacing:.06em;text-transform:uppercase}
+  select,input[type=date],input[type=text]{background:var(--card2);border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:8px 10px;font-size:13px;outline:0}
+  select:focus,input:focus{border-color:var(--brand)}
+  .grow{flex:1}
+  .btn{background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:8px 14px;font-size:13px;cursor:pointer;transition:border-color .12s,background .12s;white-space:nowrap}
+  .btn:hover{border-color:var(--brand)}
+  .btn.primary{background:var(--brand);color:#001620;border-color:var(--brand);font-weight:700}
+  .btn.good{background:var(--good);color:#003318;border-color:var(--good);font-weight:700}
+  .btn.danger{border-color:var(--danger);color:var(--danger)} .btn.danger:hover{background:rgba(255,79,94,.12)}
+  .btn.own{background:var(--own);color:#1a0033;border-color:var(--own);font-weight:700}
+  .btn.ghost{color:var(--mut)} .btn.sm{padding:5px 10px;font-size:12px}
+  .btn.live{border-color:var(--good);color:var(--good)} .btn.live.on{background:rgba(136,255,170,.14)}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 22px 60px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  .card h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:10px}
+  .card .desc{color:var(--mut);font-size:13px;margin:0 0 16px}
+  .card h2 .count{margin-left:auto;font-size:13px;color:var(--mut);font-weight:normal;font-family:monospace}
+  .policy{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .opt{flex:1;min-width:240px;border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;transition:border-color .12s,background .12s}
+  .opt.sel{border-color:var(--brand);background:rgba(120,243,255,.07)}
+  .opt b{font-size:14px} .opt p{margin:4px 0 0;color:var(--mut);font-size:12px}
+  .opt .dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:1px solid var(--mut);margin-right:7px;vertical-align:middle}
+  .opt.sel .dot{background:var(--brand);border-color:var(--brand)}
+  .ctrlfoot{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);cursor:pointer}
+  .toggle input{width:15px;height:15px;accent-color:var(--own)}
+  .bl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .bl-col label{display:block;font-size:11px;color:var(--mut);font-family:monospace;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+  .bl-col input{width:100%}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:24px}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,79,94,.12);border:1px solid rgba(255,79,94,.4);color:#ffb3ba;border-radius:999px;padding:3px 9px;font-size:12px}
+  .chip .x{cursor:pointer;opacity:.7} .chip .x:hover{opacity:1}
+  .offer{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;margin-bottom:9px;flex-wrap:wrap}
+  .offer .adv{font-weight:700;color:var(--brand)} .offer .meta{color:var(--mut);font-size:13px}
+  .offer .where{font-family:monospace;font-size:11px;color:var(--accent);background:rgba(255,216,102,.1);border:1px solid rgba(255,216,102,.3);padding:2px 8px;border-radius:999px}
+  .offer .price{font-weight:700;color:var(--accent)}
+  .offer .acts{margin-left:auto;display:flex;gap:8px}
+  .empty{color:var(--mut);text-align:center;padding:26px 20px;font-size:14px}
+  .scrhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .foot{color:var(--mut);font-size:12px;margin-top:14px;text-align:center;font-family:monospace}
+  @media(max-width:760px){.bl-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">XPACE<span class="dot">·</span>OS <span class="sub">CONTROL DEL CIRCUITO</span></div>
+  <div class="sel"><label>Circuito</label><select id="circuitSel"></select></div>
+  <div class="sel"><label>Día</label><input type="date" id="dateInp"></div>
+  <div class="grow"></div>
+  <a class="btn ghost" href="https://admira.tv/cms" target="_blank" rel="noopener">🛠 CMS</a>
+  <a class="btn ghost" href="https://admira.tv/canal.html" target="_blank" rel="noopener">📺 Canal</a>
+  <a class="btn ghost" href="/">← XpaceOS</a>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Política de aprobación <span class="count" id="policyHint"></span></h2>
+    <p class="desc">Tú mandas en tu circuito. Decide cómo entran las ofertas de emisión de terceros (marketplace de admira.app).</p>
+    <div class="policy">
+      <div class="opt" data-policy="manual"><div><span class="dot"></span><b>Manual — apruebo cada oferta</b></div><p>Nada de pago emite sin tu visto bueno. Las ofertas llegan a la bandeja para aceptar o rechazar.</p></div>
+      <div class="opt" data-policy="auto"><div><span class="dot"></span><b>Auto — acepto salvo lista negra</b></div><p>Las ofertas entran solas salvo que choquen con tu lista negra. Menos fricción.</p></div>
+    </div>
+    <div class="ctrlfoot">
+      <label class="toggle"><input type="checkbox" id="ownPri"> Prioridad a mi contenido propio</label>
+      <div class="grow"></div>
+      <button class="btn primary" id="savePolicy">Guardar política</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Lista negra</h2>
+    <p class="desc">Anunciantes, categorías o términos que rechazas automáticamente, emita quien emita. Escribe y pulsa Enter.</p>
+    <div class="bl-grid">
+      <div class="bl-col"><label>Anunciantes</label><input type="text" id="blAdv" placeholder="Ej. Casino X + Enter"><div class="chips" id="chAdv"></div></div>
+      <div class="bl-col"><label>Categorías</label><input type="text" id="blCat" placeholder="Ej. tabaco + Enter"><div class="chips" id="chCat"></div></div>
+      <div class="bl-col"><label>Términos (en título)</label><input type="text" id="blTerm" placeholder="Ej. apuestas + Enter"><div class="chips" id="chTerm"></div></div>
+    </div>
+    <div class="ctrlfoot" style="margin-top:14px"><div class="grow"></div><button class="btn danger" id="saveBl">Guardar lista negra</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Bandeja de ofertas <span class="count" id="offCount"></span></h2>
+    <p class="desc">Ofertas de pago esperando tu decisión en todo el circuito (día seleccionado).</p>
+    <div id="offers"></div>
+  </div>
+
+  <div class="card">
+    <h2>Playlist por pantalla</h2>
+    <p class="desc">Tu parrilla del día por pantalla: contenido propio, ofertas aceptadas y huecos libres. Añade tu contenido y emite.</p>
+    <div class="scrhead">
+      <div class="sel"><label>Pantalla</label><select id="screenSel"></select></div>
+      <div class="grow"></div>
+      <button class="btn own" id="addOwn">+ Contenido propio</button>
+      <button class="btn live" id="autoBtn">▶ Emitir auto</button>
+      <button class="btn primary" id="emitBtn">Emitir ahora</button>
+    </div>
+    <div id="cal"></div>
+    <div class="foot" id="foot"></div>
+  </div>
+</div>
+
+<script>
+const WORKER='https://api.admira.store';   // dominio propio CF (esquiva bloqueo ISP de workers.dev en ES)
+const $=(s)=>document.querySelector(s);
+const fmtEur=new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const state={stores:[],store:null,circuit:'',date:'',control:null,screens:[],screen:null,cal:null,offers:[],auto:false,autoTimer:null,offTimer:null};
+function slug(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function todayMadrid(){const p={};new Intl.DateTimeFormat('es-ES',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);return `${p.year}-${p.month}-${p.day}`;}
+function gridKey(){return localStorage.getItem('grid_key')||'';}
+function ensureKey(){let k=gridKey();if(!k){k=prompt('Clave de administración (GRID_KEY):')||'';if(k)localStorage.setItem('grid_key',k);}return k;}
+function toast(m,e){if(window.EmissionCalendar)EmissionCalendar.toast(m,e);}
+async function api(path,opts){const r=await fetch(WORKER+path,opts);let d=null;try{d=await r.json();}catch{}if(!r.ok||(d&&d.error))throw new Error((d&&d.error)||('HTTP '+r.status));return d;}
+function isScreen(sf){return ['pantalla','escaparate','vending','mostrador'].includes(sf.surface);}
+function screensOf(store){return store.surfaces.filter(isScreen).map(sf=>({id:slug(store.id)+'-'+slug(sf.name),name:sf.name,surface:sf.surface,pixerScreens:Array.isArray(sf.pixerScreens)?sf.pixerScreens:[]}));}
+
+async function loadCatalog(){
+  let list=[];
+  try{if(window.loadOmnipLocationsAsync){const r=await window.loadOmnipLocationsAsync();list=Array.isArray(r)?r:(r&&r.locations)||[];}}catch{}
+  if(!list.length&&window.loadOmnipLocations){try{list=window.loadOmnipLocations();}catch{}}
+  if(!list.length)list=window.OMNIP_LOCATIONS_DEFAULT||[];
+  state.stores=list.filter(s=>Array.isArray(s.surfaces)&&s.surfaces.some(isScreen));
+  const sel=$('#circuitSel');sel.innerHTML='';
+  state.stores.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.name;sel.appendChild(o);});
+}
+async function selectCircuit(id){
+  state.store=state.stores.find(s=>s.id===id)||state.stores[0];
+  state.circuit=state.store.id;
+  state.screens=screensOf(state.store);
+  const k=gridKey();
+  await Promise.all(state.screens.map(sc=>api('/grid/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,screen:sc.id,name:sc.name,circuit:state.circuit,pixerScreens:sc.pixerScreens})}).catch(()=>{})));
+  const sel=$('#screenSel');sel.innerHTML='';
+  state.screens.forEach(sc=>{const o=document.createElement('option');o.value=sc.id;o.textContent=sc.name;sel.appendChild(o);});
+  await loadControl();await loadOffers();selectScreen(state.screens[0]?.id);
+}
+
+// ── Control ──
+async function loadControl(){
+  try{const d=await api('/grid/control?circuit='+encodeURIComponent(state.circuit));state.control=d.control;}
+  catch{state.control={policy:'manual',ownPriority:true,blacklist:{advertisers:[],categories:[],terms:[]}};}
+  renderControl();
+}
+function renderControl(){
+  const c=state.control;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.toggle('sel',o.dataset.policy===c.policy));
+  $('#ownPri').checked=c.ownPriority!==false;
+  $('#policyHint').textContent=c.policy==='auto'?'auto · acepta salvo lista negra':'manual · tú apruebas';
+  renderChips();
+}
+function renderChips(){
+  const c=state.control.blacklist||{advertisers:[],categories:[],terms:[]};
+  const draw=(el,arr,kind)=>{el.innerHTML=(arr||[]).map((v,i)=>`<span class="chip"><b>${esc(v)}</b><span class="x" data-kind="${kind}" data-i="${i}">✕</span></span>`).join('');};
+  draw($('#chAdv'),c.advertisers,'advertisers');draw($('#chCat'),c.categories,'categories');draw($('#chTerm'),c.terms,'terms');
+  document.querySelectorAll('.chip .x').forEach(x=>x.onclick=()=>{state.control.blacklist[x.dataset.kind].splice(+x.dataset.i,1);renderChips();});
+}
+function addChip(kind,inp){const v=inp.value.trim();if(!v)return;if(!state.control.blacklist[kind])state.control.blacklist[kind]=[];if(!state.control.blacklist[kind].includes(v))state.control.blacklist[kind].push(v);inp.value='';renderChips();}
+async function saveControl(msg){
+  const k=ensureKey();if(!k){toast('Necesitas la clave',true);return;}
+  const c=state.control;
+  try{const d=await api('/grid/control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,circuit:state.circuit,policy:c.policy,ownPriority:$('#ownPri').checked,blacklist:c.blacklist})});state.control=d.control;renderControl();toast(msg||'Guardado ✓');loadOffers();}
+  catch(e){toast('Error: '+e.message,true);}
+}
+
+// ── Ofertas agregadas ──
+async function loadOffers(){
+  const all=[];
+  await Promise.all(state.screens.map(async sc=>{try{const d=await api(`/grid/day?screen=${encodeURIComponent(sc.id)}&date=${state.date}`);(d.pendingOffers||[]).forEach(o=>all.push({...o,_screen:sc.id,_screenName:sc.name}));}catch{}}));
+  all.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  state.offers=all;renderOffers();
+}
+function renderOffers(){
+  $('#offCount').textContent=state.offers.length?`${state.offers.length} por decidir`:'';
+  const el=$('#offers');
+  if(!state.offers.length){el.innerHTML='<div class="empty">Sin ofertas pendientes. Todo bajo control.</div>';return;}
+  el.innerHTML=state.offers.map(o=>`<div class="offer">
+    <span class="where">${esc(o._screenName)} · ${esc(o.bandId)}</span>
+    <span class="adv">${esc(o.advertiser||'—')}</span>
+    <span class="meta">${esc(o.title||'')}${o.category?' · '+esc(o.category):''} · ${o.creative?o.creative.type:''}</span>
+    <span class="price">${fmtEur.format(o.price||0)}</span>
+    <span class="acts"><button class="btn good sm" data-act="accept" data-s="${o._screen}" data-id="${o.id}">Aceptar</button><button class="btn danger sm" data-act="reject" data-s="${o._screen}" data-id="${o.id}">Rechazar</button></span></div>`).join('');
+  el.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>decide(b.dataset.s,b.dataset.id,b.dataset.act));
+}
+async function decide(screen,id,decision){
+  const k=ensureKey();if(!k){toast('Necesitas la clave',true);return;}
+  try{await api('/grid/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,screen,date:state.date,id,decision})});
+    toast(decision==='accept'?'Oferta aceptada ✓':'Oferta rechazada');await loadOffers();if(state.cal&&screen===state.screen?.id)state.cal.refresh();}
+  catch(e){toast('Error: '+e.message,true);}
+}
+
+// ── Pantalla (módulo, role owner) ──
+function selectScreen(id){
+  state.screen=state.screens.find(s=>s.id===id)||state.screens[0];
+  if(!state.screen){$('#cal').innerHTML='<div class="empty">Sin pantallas.</div>';return;}
+  const opts={workerBase:WORKER,role:'owner',screen:state.screen.id,date:state.date,circuit:state.circuit,screenName:state.screen.name,storeName:state.store.name,getKey:gridKey,onData:onCalData};
+  if(!state.cal)state.cal=EmissionCalendar.mount($('#cal'),opts); else state.cal.setContext({screen:state.screen.id,date:state.date,circuit:state.circuit,screenName:state.screen.name,storeName:state.store.name});
+}
+function onCalData(d){
+  $('#foot').textContent=`${state.store.name} · ${state.screen.name} · ${d.date} · ${d.config.pixerScreens&&d.config.pixerScreens.length?('→ '+d.config.pixerScreens.join(', ')):'sin pixerScreen'} · política ${d.config.policy==='inherit'?('circuito ('+(state.control?.policy||'manual')+')'):d.config.policy}`;
+}
+
+function emitNow(){if(state.cal)state.cal.emit();}
+function toggleAuto(){state.auto=!state.auto;const b=$('#autoBtn');b.classList.toggle('on',state.auto);b.textContent=state.auto?'■ Emitir auto':'▶ Emitir auto';if(state.auto){emitNow();state.autoTimer=setInterval(emitNow,30000);}else clearInterval(state.autoTimer);}
+
+async function init(){
+  state.date=todayMadrid();$('#dateInp').value=state.date;
+  await loadCatalog();
+  const xt=state.stores.find(s=>s.id==='xtanco')||state.stores[0];
+  $('#circuitSel').value=xt?.id||'';await selectCircuit(xt?.id);
+  $('#circuitSel').onchange=e=>selectCircuit(e.target.value);
+  $('#screenSel').onchange=e=>selectScreen(e.target.value);
+  $('#dateInp').onchange=e=>{state.date=e.target.value||todayMadrid();loadOffers();if(state.cal)state.cal.setContext({date:state.date});};
+  document.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{state.control.policy=o.dataset.policy;renderControl();});
+  $('#savePolicy').onclick=()=>saveControl('Política guardada ✓');
+  $('#blAdv').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addChip('advertisers',e.target);}};
+  $('#blCat').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addChip('categories',e.target);}};
+  $('#blTerm').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addChip('terms',e.target);}};
+  $('#saveBl').onclick=()=>saveControl('Lista negra guardada ✓');
+  $('#addOwn').onclick=()=>{if(state.cal&&state.cal.day)state.cal.openOwn(state.cal.day.bands[0]?.id);};
+  $('#emitBtn').onclick=emitNow;$('#autoBtn').onclick=toggleAuto;
+  state.offTimer=setInterval(loadOffers,20000);
+}
+window.addEventListener('DOMContentLoaded',()=>{ if(window.EmissionCalendar) init(); else window.addEventListener('load',init); });
+</script>
+</body>
+</html>

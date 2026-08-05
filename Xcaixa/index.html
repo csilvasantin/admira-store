@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Xcaixa · Xpacio Sucursal · XpaceOS</title>
+<meta name="description" content="Gemelo isométrico simulado de una sucursal bancaria: escaparate LED, videowall, cajeros 24h, asesoría y medición de impactos por superficie.">
+<link rel="canonical" href="https://www.xpaceos.com/Xcaixa/">
+<meta property="og:title" content="Xcaixa · Xpacio Sucursal">
+<meta property="og:description" content="Una sucursal bancaria como gemelo isométrico operativo. Maqueta de propuesta.">
+<meta property="og:url" content="https://www.xpaceos.com/Xcaixa/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<link rel="icon" href="/favicon.ico">
+<meta name="theme-color" content="#03080f">
+<style>
+:root{--bg:#03080f;--panel:rgba(6,14,26,.91);--ink:#eaf4ff;--mut:#8296b4;--ice:#8fd6ff;--blue:#0089d0;--deep:#0a3f7a;--gold:#ffce3a;--red:#e0483d;--green:#4dff9e;--line:rgba(143,214,255,.2)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}body{background:radial-gradient(circle at 50% 0,#0d3560,#03080f 60%);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}button,a{font:inherit}
+#c{position:fixed;inset:0;display:block;touch-action:none}
+.hud{position:fixed;z-index:5}
+.top{top:0;left:0;right:0;display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(180deg,rgba(3,8,15,.96),transparent);pointer-events:none}.top>*{pointer-events:auto}
+.back{color:var(--mut);text-decoration:none;border:1px solid var(--line);padding:6px 10px;border-radius:8px}.back:hover{border-color:var(--ice);color:var(--ice)}
+.brand b{font-size:17px}.brand .x{color:var(--ice)}.brand small{color:var(--mut);font-size:10px}
+.spacer{flex:1}
+.badge{border:1px solid rgba(255,206,58,.35);color:var(--gold);background:rgba(255,206,58,.07);border-radius:999px;padding:5px 10px;font-size:10px;white-space:nowrap}.badge::before{content:"●";margin-right:6px;animation:pulse 1.6s infinite}@keyframes pulse{50%{opacity:.3}}
+.intro{top:76px;left:18px;max-width:340px;padding:16px 18px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px}
+.intro h1{font:800 22px/1.05 system-ui,sans-serif;margin:0 0 7px}.intro h1 span{color:var(--ice)}
+.intro p{font:11px/1.5 system-ui,sans-serif;color:var(--mut);margin:0}
+.intro .legend{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:9px;color:var(--mut)}
+.chip.sim{color:var(--gold);border-color:rgba(255,206,58,.35)}
+.chip.cat{color:var(--green);border-color:rgba(77,255,158,.4)}
+#branch{width:100%;margin-top:11px;background:rgba(3,8,15,.9);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 8px;font:11px/1.3 ui-monospace,monospace;cursor:pointer}
+#branch:hover{border-color:var(--ice)}
+.inventory{left:18px;bottom:18px;width:250px;max-height:40vh;overflow:auto;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:12px}
+.inventory h2{font-size:10px;color:var(--mut);letter-spacing:.1em;margin:0 0 8px}
+.irow{display:grid;grid-template-columns:9px 1fr auto;gap:8px;align-items:center;padding:7px 6px;border-radius:8px;cursor:pointer}
+.irow:hover,.irow.on{background:rgba(143,214,255,.09)}
+.irow .dot{width:8px;height:8px;border-radius:50%;background:var(--ice);box-shadow:0 0 8px currentColor}
+.irow.screen .dot{background:var(--gold)}
+.irow b{font-size:11px}.irow small{display:block;color:var(--mut);font-size:8.5px;margin-top:2px}.irow em{font-style:normal;font-size:8px;color:var(--gold)}
+.metrics{right:18px;top:76px;width:212px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:14px}
+.metrics h2{font-size:10px;color:var(--mut);letter-spacing:.1em;margin:0 0 4px;display:flex;justify-content:space-between;align-items:center}
+.metrics .src{font-size:8px;color:var(--gold);border:1px solid rgba(255,206,58,.3);border-radius:999px;padding:2px 5px;letter-spacing:0}
+.m{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)}
+.m:last-of-type{border-bottom:0}
+.m span{font-size:9.5px;color:var(--mut)}
+.m b{font:800 19px/1 system-ui,sans-serif;color:var(--ink);font-variant-numeric:tabular-nums}
+.m b i{font-style:normal;font-size:9px;color:var(--mut);font-weight:400;margin-left:3px}
+.spark{height:26px;margin-top:6px;display:flex;align-items:flex-end;gap:2px}
+.spark div{flex:1;background:linear-gradient(180deg,var(--ice),rgba(143,214,255,.16));border-radius:1px;transition:height .5s}
+.mfoot{margin-top:10px;font:8.5px/1.45 system-ui,sans-serif;color:var(--mut)}
+.controls{right:18px;bottom:18px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.controls button{color:var(--ink);background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:11px;cursor:pointer}
+.controls button:hover,.controls button.on{border-color:var(--ice);color:var(--ice);background:rgba(143,214,255,.09)}
+.controls .fr{text-decoration:none;color:var(--green);background:var(--panel);backdrop-filter:blur(12px);border:1px solid rgba(77,255,158,.45);border-radius:9px;padding:8px 11px;font-size:11px}
+.controls .fr:hover{background:rgba(77,255,158,.1)}
+.detail{top:0;right:0;width:340px;height:100%;z-index:8;padding:18px;background:rgba(4,11,21,.97);backdrop-filter:blur(16px);border-left:1px solid var(--line);transform:translateX(102%);transition:transform .24s;display:flex;flex-direction:column;gap:13px;overflow:auto}
+.detail.open{transform:none}
+.close{align-self:flex-end;border:0;background:none;color:var(--mut);cursor:pointer;font-size:18px}
+.hero-mark{height:132px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;background:radial-gradient(circle,rgba(0,137,208,.24),transparent 65%);font:800 46px/1 system-ui,sans-serif;color:var(--ice);text-shadow:0 0 22px rgba(143,214,255,.4)}
+.detail .k{font-size:9px;color:var(--gold);letter-spacing:.12em}
+.detail h2{font:800 23px/1.05 system-ui,sans-serif;margin:0}
+.detail p{font:13px/1.55 system-ui,sans-serif;color:var(--mut);margin:0}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:10px;color:var(--mut)}.kv b{color:var(--ink);text-align:right}
+.kv b.sim{color:var(--gold)}
+.notice{margin-top:auto;padding:12px;border:1px solid rgba(255,206,58,.3);border-radius:10px;background:rgba(255,206,58,.06);font:11px/1.5 system-ui,sans-serif;color:#f5dd8a}
+.label{position:fixed;z-index:4;transform:translate(-50%,-100%);pointer-events:none;background:rgba(3,8,15,.82);border:1px solid var(--line);border-radius:7px;padding:4px 7px;font-size:9px;white-space:nowrap;color:var(--mut)}
+.label b{color:var(--ink)}
+.label.screen{border-color:rgba(255,206,58,.4)}.label.screen b{color:var(--gold)}
+.loading{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:var(--bg);color:var(--ice);font-size:11px;letter-spacing:.12em}.loading.hide{display:none}
+.foot{bottom:3px;left:0;right:0;text-align:center;color:var(--mut);font-size:8px;opacity:.7;pointer-events:none}
+@media(max-width:980px){.metrics{display:none}}
+@media(max-width:760px){.top{padding:10px}.brand small,.intro,.inventory{display:none}.badge{font-size:8px}.controls{right:10px;bottom:16px}.controls button{padding:9px;font-size:10px}.detail{width:min(92vw,340px)}.label{font-size:8px}.foot{display:none}}
+</style>
+<script defer src="https://www.pixeria.com/assets/analytics.js?v=20260716-xcaixa"></script>
+</head>
+<body>
+<canvas id="c" aria-label="Gemelo isométrico interactivo de una sucursal bancaria"></canvas>
+<div class="loading" id="loading">CONSTRUYENDO XCAIXA · SUCURSAL…</div>
+
+<header class="hud top">
+  <a class="back" href="/xpacios/" aria-label="Volver a Xpacios">←</a>
+  <div class="brand"><b><span class="x">X</span>caixa</b> <small>· Sucursal · XpaceOS</small></div>
+  <span class="spacer"></span>
+  <span class="badge">MAQUETA · SIMULACIÓN OPERATIVA</span>
+</header>
+
+<section class="hud intro">
+  <h1 id="bName">La sucursal<br><span>como medio inteligente.</span></h1>
+  <p id="bAddr">Gemelo isométrico de una oficina de 14 × 9 m. Cada superficie visible —escaparate, videowall, tótem y cajeros— es un soporte con audiencia e impactos medibles. Gira la sala, toca cualquier superficie y prueba las escenas.</p>
+  <select id="branch" aria-label="Sucursal del catálogo"></select>
+  <div class="legend" id="bLegend"><span class="chip sim">SIN CATÁLOGO</span><span class="chip">14 × 9 m</span><span class="chip">XPL preparado</span></div>
+</section>
+
+<aside class="hud inventory" id="inventory"><h2>INVENTARIO · SUPERFICIES Y ZONAS</h2></aside>
+
+<aside class="hud metrics">
+  <h2>MEDICIÓN <span class="src" id="mSrc">SIMULADO</span></h2>
+  <div class="m"><span>Aforo ahora</span><b id="mAforo">0<i>pers.</i></b></div>
+  <div class="m"><span>Impactos hoy</span><b id="mImp">0</b></div>
+  <div class="m"><span>CPM medio</span><b id="mCpm">0<i>€</i></b></div>
+  <div class="spark" id="spark"></div>
+  <p class="mfoot" id="catFoot">Valores generados para la demostración. Al conectar XPL se mostrará origen, última actualización y estado; si la señal cae, vuelve a «sin datos».</p>
+</aside>
+
+<div class="hud controls">
+  <button id="spin" class="on">↻ Auto-giro</button>
+  <button id="rotate">⟳ Girar 90°</button>
+  <button id="scene">🌙 Escena Nocturna 24h</button>
+  <button id="rush">◉ Hora punta</button>
+  <button id="labels" class="on">⌖ Etiquetas</button>
+  <button id="reset">⌂ Isométrica</button>
+  <a id="fotorreal" class="fr" href="#" target="_blank" rel="noopener" hidden>🛰️ Gemelo fotorreal ↗</a>
+</div>
+
+<aside class="hud detail" id="detail">
+  <button class="close" id="close">✕</button>
+  <div class="hero-mark" id="dMark">■</div>
+  <span class="k" id="dK">SUPERFICIE · INVENTARIO</span>
+  <h2 id="dName">—</h2>
+  <p id="dText">—</p>
+  <div>
+    <div class="kv"><span>Identificador</span><b id="dId">—</b></div>
+    <div class="kv"><span>Zona</span><b id="dZone">—</b></div>
+    <div class="kv"><span>Superficie</span><b id="dSize">—</b></div>
+    <div class="kv"><span>Impactos / día</span><b id="dImp" class="sim">—</b></div>
+    <div class="kv"><span>CPM estimado</span><b id="dCpm" class="sim">—</b></div>
+    <div class="kv"><span>Origen del dato</span><b id="dSrc" class="sim">—</b></div>
+    <div class="kv"><span>Telemetría en vivo</span><b class="sim">SIMULADA</b></div>
+  </div>
+  <div class="notice" id="dNotice">Los activos de marca (logotipo, creatividades y rótulos reales) están pendientes de aportación del cliente. Las piezas visibles son marcadores provisionales.</div>
+</aside>
+
+<div class="hud foot">Xcaixa · Xpacio simulado · Maqueta de propuesta AdmiraNeXT · XpaceOS · v1.0</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+/* Layout en metros. Suelo 14 x 9, origen en el centro. Fachada = z positivo. */
+const W=14, DEP=9;
+
+/* `cat` = superficie del catálogo omnipublicity a la que corresponde este objeto.
+   Si la sucursal trae esa superficie, sus impactos y CPM MANDAN sobre los de aquí,
+   que solo son el respaldo cuando no hay dato. El videowall no existe en el catálogo:
+   se queda simulado y así se etiqueta. */
+const ITEMS=[
+ {id:"escaparate-01",type:"screen",name:"Escaparate LED",zone:"Fachada",size:"4,2 × 2,4 m",imp:4200,cpm:5.4,mark:"▭",
+  cat:"Fachada / escaparate financiero",
+  story:"La superficie de mayor alcance: emite a la calle 24 h y es el único soporte que trabaja con la oficina cerrada. Su audiencia es el tránsito peatonal, no el cliente que entra."},
+ {id:"videowall-01",type:"screen",name:"Videowall interior",zone:"Pared norte",size:"3,6 × 2,0 m",imp:1450,cpm:8.9,mark:"▣",
+  cat:null,
+  story:"Visible desde toda la sala y desde la zona de espera. Es el soporte con más tiempo de exposición por persona, y por eso el de CPM más alto. Todavía no figura en el catálogo: sería alta nueva."},
+ {id:"totem-01",type:"screen",name:"Tótem de bienvenida",zone:"Entrada",size:"0,9 × 1,9 m",imp:980,cpm:6.2,mark:"▮",
+  cat:"Turno / atencion al cliente",
+  story:"Primer punto de contacto. Recibe, orienta y dirige el turno. Su impacto se concentra en los primeros segundos de la visita."},
+ {id:"atm-01",type:"screen",name:"Cajero 24h · 1",zone:"Zona 24h",size:"0,4 × 0,3 m",imp:620,cpm:11.5,mark:"▪",
+  cat:"Interior zona cajeros",
+  story:"Pantalla pequeña pero con atención cautiva y plena: el usuario mira de frente durante toda la operación."},
+ {id:"atm-02",type:"screen",name:"Cajero 24h · 2",zone:"Zona 24h",size:"0,4 × 0,3 m",imp:590,cpm:11.5,mark:"▪",
+  cat:"Interior zona cajeros",
+  story:"Segundo cajero de la zona 24 h. Mismo perfil de atención; se usa para reparto de carga y para pruebas A/B de creatividad."},
+ {id:"asesoria-01",type:"zone",name:"Mesas de asesoría",zone:"Ala oeste",size:"3 puestos",imp:null,cpm:null,mark:"▤",
+  story:"Tres puestos de atención personal. No es un soporte publicitario: se modela como zona para medir recorrido, tiempo de espera y conversión."},
+ {id:"espera-01",type:"zone",name:"Zona de espera",zone:"Centro",size:"6 plazas",imp:null,cpm:null,mark:"▥",
+  story:"El punto donde la audiencia está quieta y disponible. Determina el valor del videowall: sin espera no hay exposición sostenida."},
+ {id:"caja-01",type:"zone",name:"Mostrador de caja",zone:"Fondo",size:"2 posiciones",imp:null,cpm:null,mark:"▦",
+  story:"Operativa de caja. Se modela para cerrar el recorrido entrada → espera → atención → salida y completar el embudo."}
+];
+
+const canvas=document.getElementById("c");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x03080f,26,56);
+const root=new THREE.Group();scene.add(root);
+
+let aspect=innerWidth/innerHeight;
+const D=7.6;
+const camera=new THREE.OrthographicCamera(-D*aspect,D*aspect,D,-D,.1,120);
+function iso(){camera.position.set(15,14,15);camera.lookAt(0,0,0)}
+iso();
+const controls=new OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.target.set(0,1,0);
+controls.maxPolarAngle=Math.PI*.48;controls.minZoom=.6;controls.maxZoom=2.6;
+
+const ambient=new THREE.AmbientLight(0x7fa3d8,1.35);scene.add(ambient);
+const key=new THREE.DirectionalLight(0xe9f6ff,2.1);
+key.position.set(9,17,8);key.castShadow=true;key.shadow.mapSize.set(2048,2048);
+key.shadow.camera.left=-11;key.shadow.camera.right=11;key.shadow.camera.top=9;key.shadow.camera.bottom=-9;
+scene.add(key);
+const rim=new THREE.PointLight(0x0089d0,12,26);rim.position.set(0,5,-3);scene.add(rim);
+
+/* Suelo y retícula métrica */
+const floorMat=new THREE.MeshStandardMaterial({color:0x0c1c31,roughness:.5,metalness:.34});
+const floor=new THREE.Mesh(new THREE.BoxGeometry(W,.18,DEP),floorMat);
+floor.position.y=-.1;floor.receiveShadow=true;root.add(floor);
+const grid=new THREE.GridHelper(W,W,0x2f5a8e,0x16304f);
+grid.scale.z=DEP/W;grid.position.y=.011;
+grid.material.transparent=true;grid.material.opacity=.34;root.add(grid);
+
+function wall(w,h,d,x,y,z){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:0x142b48,roughness:.74,metalness:.16,transparent:true,opacity:.72}));
+  m.position.set(x,y,z);m.receiveShadow=true;root.add(m);return m;
+}
+wall(W,3.6,.14,0,1.8,-DEP/2);      // pared norte
+wall(.14,3.6,DEP,-W/2,1.8,0);      // pared oeste
+
+/* Fachada acristalada al sur: montantes + vidrio */
+const glassMat=new THREE.MeshPhysicalMaterial({color:0x8fd6ff,transparent:true,opacity:.07,roughness:.04,metalness:.04,transmission:.3,side:THREE.DoubleSide});
+const glass=new THREE.Mesh(new THREE.PlaneGeometry(W,3.2),glassMat);
+glass.position.set(0,1.6,DEP/2);root.add(glass);
+for(let x=-W/2;x<=W/2;x+=2.33){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(.08,3.2,.1),new THREE.MeshStandardMaterial({color:0x1d3f68,metalness:.6,roughness:.35}));
+  m.position.set(x,1.6,DEP/2);root.add(m);
+}
+
+/* Marcador de marca — pendiente de activo real del cliente */
+function brandMark(){
+  const g=new THREE.Group();
+  const star=new THREE.Shape();
+  for(let i=0;i<10;i++){
+    const r=i%2?.16:.42, a=Math.PI/2+i*Math.PI/5;
+    const px=Math.cos(a)*r, py=Math.sin(a)*r;
+    i?star.lineTo(px,py):star.moveTo(px,py);
+  }
+  star.closePath();
+  const m=new THREE.Mesh(new THREE.ShapeGeometry(star),new THREE.MeshBasicMaterial({color:0x8fd6ff,side:THREE.DoubleSide,transparent:true,opacity:.5}));
+  g.add(m);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(.56,.6,32),new THREE.MeshBasicMaterial({color:0x8fd6ff,side:THREE.DoubleSide,transparent:true,opacity:.28}));
+  g.add(ring);
+  g.position.set(-4.4,2.5,-DEP/2+.1);
+  root.add(g);
+  return g;
+}
+const mark=brandMark();
+
+function plinth(x,z,w,d,h,c=0x1a3357){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:c,metalness:.48,roughness:.34,emissive:0x0d2247,emissiveIntensity:.3}));
+  m.position.set(x,h/2,z);m.castShadow=true;m.receiveShadow=true;root.add(m);return m;
+}
+
+/* Textura de pantalla: creatividad de muestra, marcada como tal */
+function screenTex(title,sub){
+  const cv=document.createElement("canvas");cv.width=640;cv.height=360;
+  const x=cv.getContext("2d");
+  const gr=x.createLinearGradient(0,0,640,360);
+  gr.addColorStop(0,"#062038");gr.addColorStop(1,"#0089d0");
+  x.fillStyle=gr;x.fillRect(0,0,640,360);
+  x.fillStyle="#eaf4ff";x.font="800 62px system-ui";x.fillText(title,44,150);
+  x.fillStyle="#bfe4ff";x.font="500 26px system-ui";x.fillText(sub,46,200);
+  x.fillStyle="#ffce3a";x.fillRect(46,252,14,14);
+  x.fillStyle="#9ab4d8";x.font="20px ui-monospace";x.fillText("CREATIVIDAD DE MUESTRA",76,265);
+  return new THREE.CanvasTexture(cv);
+}
+/* La pantalla es una caja fina, no un plano: la creatividad va solo en la cara frontal (+z)
+   y el resto es carcasa oscura. Un plano se volvería invisible por detrás, y a doble cara
+   mostraría el texto en espejo al girar la sala. */
+function panel(w,h,x,y,z,ry,title,sub){
+  const tex=screenTex(title,sub);tex.colorSpace=THREE.SRGBColorSpace;
+  const face=new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:0xffffff,emissiveIntensity:.9});
+  const shell=new THREE.MeshStandardMaterial({color:0x0a1526,roughness:.55,metalness:.5});
+  /* Orden de caras de BoxGeometry: +x, -x, +y, -y, +z, -z */
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.06),[shell,shell,shell,shell,face,shell]);
+  m.position.set(x,y,z);m.rotation.y=ry;m.castShadow=true;root.add(m);
+  const glow=new THREE.PointLight(0x0089d0,3.2,7);
+  glow.position.set(x+Math.sin(ry)*.4,y,z+Math.cos(ry)*.4);root.add(glow);
+  return {mesh:m,glow,face};
+}
+
+const parts={};
+/* Escaparate LED — mira a la calle (z+) */
+parts["escaparate-01"]=panel(4.2,2.4,3.4,1.75,DEP/2-.12,Math.PI,"OFERTA","Escaparate · 24 h");
+/* Videowall interior — pared norte */
+parts["videowall-01"]=panel(3.6,2.0,-.6,1.85,-DEP/2+.1,0,"HIPOTECAS","Videowall · sala");
+/* Tótem de bienvenida */
+plinth(5.6,2.4,1.0,.5,.12);
+parts["totem-01"]=panel(.9,1.9,5.6,1.05,2.42,Math.PI*.82,"TURNO","Tótem");
+
+/* Cajeros 24h */
+function atm(x,z,id){
+  const body=new THREE.Mesh(new THREE.BoxGeometry(.95,1.9,.6),new THREE.MeshStandardMaterial({color:0x16304f,metalness:.55,roughness:.35}));
+  body.position.set(x,.95,z);body.castShadow=true;root.add(body);
+  parts[id]=panel(.5,.36,x,1.42,z+.31,0,"24h","");
+  return body;
+}
+atm(-5.2,3.1,"atm-01");
+atm(-3.9,3.1,"atm-02");
+
+/* Mesas de asesoría (ala oeste) */
+const deskGroup=new THREE.Group();root.add(deskGroup);
+[-2.2,-.1,2.0].forEach(z=>{
+  const d=new THREE.Mesh(new THREE.BoxGeometry(1.9,.08,.9),new THREE.MeshStandardMaterial({color:0x1e3a5e,roughness:.5,metalness:.3}));
+  d.position.set(-4.4,.74,z);d.castShadow=true;deskGroup.add(d);
+  [[-.85,-.35],[-.85,.35],[.85,-.35],[.85,.35]].forEach(([dx,dz])=>{
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.74,6),new THREE.MeshStandardMaterial({color:0x2b4a72,metalness:.6,roughness:.3}));
+    leg.position.set(-4.4+dx,.37,z+dz);deskGroup.add(leg);
+  });
+  [-1.05,1.05].forEach(dx=>{
+    const s=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.06,12),new THREE.MeshStandardMaterial({color:0x2f5a8e,roughness:.7}));
+    s.position.set(-4.4+dx,.46,z);s.castShadow=true;deskGroup.add(s);
+    const bk=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.5,6),new THREE.MeshStandardMaterial({color:0x2f5a8e}));
+    bk.position.set(-4.4+dx,.25,z);deskGroup.add(bk);
+  });
+});
+
+/* Zona de espera (centro) */
+const waitGroup=new THREE.Group();root.add(waitGroup);
+[[-.4,1.2],[1.4,1.2]].forEach(([x,z])=>{
+  const sofa=new THREE.Mesh(new THREE.BoxGeometry(1.6,.42,.7),new THREE.MeshStandardMaterial({color:0x244768,roughness:.82}));
+  sofa.position.set(x,.21,z);sofa.castShadow=true;waitGroup.add(sofa);
+  const bk=new THREE.Mesh(new THREE.BoxGeometry(1.6,.46,.14),new THREE.MeshStandardMaterial({color:0x2c5480,roughness:.82}));
+  bk.position.set(x,.55,z-.28);waitGroup.add(bk);
+});
+const table=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.06,16),new THREE.MeshStandardMaterial({color:0x1e3a5e,metalness:.4,roughness:.4}));
+table.position.set(.5,.42,2.3);waitGroup.add(table);
+
+/* Mostrador de caja (fondo) */
+const counter=new THREE.Mesh(new THREE.BoxGeometry(4.0,1.05,.75),new THREE.MeshStandardMaterial({color:0x1a3357,metalness:.45,roughness:.36,emissive:0x0d2247,emissiveIntensity:.32}));
+counter.position.set(3.0,.52,-2.9);counter.castShadow=true;root.add(counter);
+const cTop=new THREE.Mesh(new THREE.BoxGeometry(4.2,.06,.92),new THREE.MeshStandardMaterial({color:0x2f5a8e,metalness:.6,roughness:.25}));
+cTop.position.set(3.0,1.08,-2.9);root.add(cTop);
+
+/* Plantas — dan escala y calidez a la escena */
+function plant(x,z){
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(.16,.13,.3,10),new THREE.MeshStandardMaterial({color:0x2b4a72,roughness:.7}));
+  pot.position.set(x,.15,z);pot.castShadow=true;root.add(pot);
+  const leaf=new THREE.Mesh(new THREE.IcosahedronGeometry(.34,0),new THREE.MeshStandardMaterial({color:0x2f7a58,roughness:.85,flatShading:true}));
+  leaf.position.set(x,.6,z);leaf.castShadow=true;root.add(leaf);
+}
+plant(6.3,-2.4);plant(-6.2,3.4);plant(6.4,.2);
+
+/* Zonas seleccionables — planos sutiles sobre el suelo */
+const zoneMeshes={};
+function zoneRect(id,x,z,w,d){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color:0x8fd6ff,transparent:true,opacity:.05,side:THREE.DoubleSide}));
+  m.rotation.x=-Math.PI/2;m.position.set(x,.02,z);m.userData.zoneId=id;root.add(m);
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:0x4f83bd,transparent:true,opacity:.3}));
+  e.rotation.x=-Math.PI/2;e.position.set(x,.025,z);root.add(e);
+  zoneMeshes[id]={fill:m,edge:e};return m;
+}
+zoneRect("asesoria-01",-4.4,-.1,2.8,6.0);
+zoneRect("espera-01",.5,1.6,3.6,2.6);
+zoneRect("caja-01",3.0,-2.5,4.4,1.6);
+
+/* Etiquetas y selección */
+const labels=[];
+const anchors={
+ "escaparate-01":[3.4,3.1,DEP/2-.12],"videowall-01":[-.6,3.05,-DEP/2+.1],"totem-01":[5.6,2.15,2.42],
+ "atm-01":[-5.2,2.1,3.1],"atm-02":[-3.9,2.1,3.1],
+ "asesoria-01":[-4.4,1.4,-.1],"espera-01":[.5,1.1,1.6],"caja-01":[3.0,1.6,-2.5]
+};
+ITEMS.forEach(it=>{
+  const el=document.createElement("div");
+  el.className="label"+(it.type==="screen"?" screen":"");
+  el.innerHTML=`<b>${it.name}</b>`;
+  document.body.appendChild(el);
+  labels.push({it,el,pos:new THREE.Vector3(...anchors[it.id])});
+});
+
+const inv=document.getElementById("inventory");
+ITEMS.forEach(it=>{
+  const r=document.createElement("div");
+  r.className="irow"+(it.type==="screen"?" screen":"");
+  r.dataset.id=it.id;
+  r.innerHTML=`<span class="dot"></span><span><b>${it.name}</b><small>${it.zone} · ${it.size}</small></span><em>${it.type==="screen"?"SOPORTE":"ZONA"}</em>`;
+  r.onclick=()=>openItem(it);
+  inv.appendChild(r);
+});
+
+const detail=document.getElementById("detail");
+function openItem(it){
+  document.querySelectorAll(".irow").forEach(r=>r.classList.toggle("on",r.dataset.id===it.id));
+  document.getElementById("dMark").textContent=it.mark;
+  document.getElementById("dK").textContent=it.type==="screen"?"SUPERFICIE PUBLICITARIA · INVENTARIO":"ZONA OPERATIVA · INVENTARIO";
+  document.getElementById("dName").textContent=it.name;
+  document.getElementById("dText").textContent=it.catDesc?`${it.catDesc}. ${it.story}`:it.story;
+  document.getElementById("dId").textContent=it.id;
+  document.getElementById("dZone").textContent=it.zone;
+  document.getElementById("dSize").textContent=it.size;
+  document.getElementById("dImp").textContent=it.imp?it.imp.toLocaleString("es-ES"):"— no es soporte";
+  document.getElementById("dCpm").textContent=it.cpm?it.cpm.toFixed(2).replace(".",",")+" €":"— no es soporte";
+  const src=document.getElementById("dSrc");
+  if(it.type!=="screen"){src.textContent="— no es soporte";src.className="sim"}
+  else if(it.src==="catálogo"){src.textContent=`CATÁLOGO · ${sucursal?.id||""}`;src.className="";src.style.color="var(--green)"}
+  else{src.textContent="SIMULADO · no está en el catálogo";src.className="sim";src.style.color=""}
+  detail.classList.add("open");
+  Object.entries(zoneMeshes).forEach(([id,z])=>z.fill.material.opacity=id===it.id?.16:.05);
+  spin=false;spinBtn.classList.remove("on");
+}
+document.getElementById("close").onclick=()=>{
+  detail.classList.remove("open");
+  document.querySelectorAll(".irow").forEach(r=>r.classList.remove("on"));
+  Object.values(zoneMeshes).forEach(z=>z.fill.material.opacity=.05);
+};
+
+/* Visitantes simulados */
+const visitors=[];
+function person(i){
+  const g=new THREE.Group();
+  const m=new THREE.MeshStandardMaterial({color:[0xff9d72,0x8fd6ff,0xb59cff,0x88ffaa,0xffce3a,0xff7fa8][i%6],roughness:.65});
+  const b=new THREE.Mesh(new THREE.CapsuleGeometry(.13,.46,4,8),m);b.position.y=.5;b.castShadow=true;g.add(b);
+  const h=new THREE.Mesh(new THREE.SphereGeometry(.14,10,8),new THREE.MeshStandardMaterial({color:0xd6a985}));h.position.y=.98;g.add(h);
+  g.userData.phase=i*1.7;g.userData.rx=3.0+i*.55;g.userData.rz=1.4+i*.3;
+  root.add(g);visitors.push(g);
+}
+for(let i=0;i<6;i++)person(i);
+
+/* Controles de escena */
+let spin=true,showLabels=innerWidth>760,night=false,rush=false;
+const spinBtn=document.getElementById("spin"),labelsBtn=document.getElementById("labels");
+const sceneBtn=document.getElementById("scene"),rushBtn=document.getElementById("rush");
+labelsBtn.classList.toggle("on",showLabels);
+spinBtn.onclick=()=>{spin=!spin;spinBtn.classList.toggle("on",spin)};
+document.getElementById("rotate").onclick=()=>{spin=false;spinBtn.classList.remove("on");root.rotation.y+=Math.PI/2};
+
+function setNight(v){
+  night=v;sceneBtn.classList.toggle("on",night);
+  ambient.intensity=night?.42:1.35;
+  key.intensity=night?.35:2.1;
+  rim.intensity=night?22:12;
+  floorMat.emissive=new THREE.Color(night?0x061c3f:0x000000);
+  floorMat.emissiveIntensity=night?.5:0;
+  /* De noche la oficina cierra: solo el escaparate y los cajeros siguen emitiendo.
+     No basta con quitar la emisión — la luz ambiente seguiría iluminando la textura y la
+     creatividad se leería igual. Se oscurece también el color, que multiplica al mapa. */
+  ["videowall-01","totem-01"].forEach(id=>{
+    parts[id].face.emissiveIntensity=night?0:.9;
+    parts[id].face.color.setHex(night?0x141c28:0xffffff);
+    parts[id].glow.intensity=night?0:3.2;
+  });
+  parts["escaparate-01"].glow.intensity=night?7:3.2;
+  deskGroup.visible=!night;waitGroup.visible=!night;
+}
+function setRush(v){rush=v;rushBtn.classList.toggle("on",rush)}
+sceneBtn.onclick=()=>setNight(!night);
+rushBtn.onclick=()=>setRush(!rush);
+
+/* Enlace directo a una escena: /Xcaixa/?escena=noche | punta
+   Permite abrir la demostración ya en el estado que toca, sin tocar botones en vivo. */
+const QS=new URLSearchParams(location.search);
+const escena=QS.get("escena");
+if(escena==="noche")setNight(true);
+if(escena==="punta")setRush(true);
+
+/* ── Catálogo omnipublicity ──────────────────────────────────────────────────
+   La sucursal se elige con ?loc=<id> y sus superficies reales mandan sobre los
+   valores de respaldo de ITEMS. Se lee del bundle local (sucursales.json, 44 KB,
+   mismo origen): el GET /locations del worker devuelve las 8770 locations de toda
+   la red — 8,9 MB — y no es aceptable en una demostración en vivo. Con ?live=1 se
+   contrasta contra el worker para probar que el catálogo está de verdad detrás.
+   Regla del método: si no hay dato, se dice «sin catálogo»; nunca se inventa. */
+const OMNIP_API="https://omnipublicity-api.csilvasantin.workers.dev";
+const LOC_DEFECTO="caixabank-0008-placa-catalunya";
+let sucursal=null, catSnapshot=null, catOrigen="sin catálogo";
+
+function fmtCpm(v){
+  /* El catálogo guarda el CPM como texto ("€8"); aquí se opera en número. */
+  if(typeof v==="number")return v;
+  const n=parseFloat(String(v||"").replace(/[^\d.,]/g,"").replace(",","."));
+  return isFinite(n)?n:null;
+}
+function aplicarSucursal(loc){
+  sucursal=loc;
+  const sel=document.getElementById("branch");
+  if(loc){
+    document.getElementById("bName").innerHTML=`${loc.name.replace(/^CaixaBank\s*/,"")}<br><span>como medio inteligente.</span>`;
+    document.getElementById("bAddr").textContent=loc.addr;
+    if(sel)sel.value=loc.id;
+  }
+  const porNombre={};
+  (loc?.surfaces||[]).forEach(s=>{porNombre[s.name]=s});
+  let conCatalogo=0;
+  ITEMS.forEach(it=>{
+    if(it.type!=="screen")return;
+    const s=it.cat?porNombre[it.cat]:null;
+    if(s){
+      it.imp=s.impr??it.imp;
+      const c=fmtCpm(s.cpm);if(c!=null)it.cpm=c;
+      it.src="catálogo";it.catDesc=s.desc;it.estado=s.status;
+      conCatalogo++;
+    }else{
+      it.src="simulado";
+    }
+  });
+  catOrigen=loc?`catálogo · ${conCatalogo} de ${ITEMS.filter(i=>i.type==="screen").length} superficies`:"sin catálogo";
+  const leg=document.getElementById("bLegend");
+  if(leg)leg.innerHTML=loc
+    ?`<span class="chip cat">CATÁLOGO · ${conCatalogo} superficies</span><span class="chip sim">AFORO SIMULADO</span><span class="chip">14 × 9 m</span>`
+    :`<span class="chip sim">SIN CATÁLOGO</span><span class="chip">14 × 9 m</span>`;
+  document.getElementById("mSrc").textContent=loc?"CATÁLOGO+SIM":"SIMULADO";
+  /* Sucursales con gemelo FOTORREAL (globo 3D de Google + Street View con la pantalla
+     integrada en su fachada real). Solo las que están calibradas: el enlace no aparece
+     donde no hay nada medido. */
+  const FOTORREAL={"caixabank-0019-avinguda-diagonal-lateral-muntanya":"https://admira.tv/adcelerate/demo/best-caixa/?loc=caixabank-0019-avinguda-diagonal-lateral-muntanya","caixabank-0012-carrer-de-pau-claris":"https://admira.tv/adcelerate/demo/best-caixa/?loc=caixabank-0012-carrer-de-pau-claris"};
+  const fr=document.getElementById("fotorreal");
+  if(fr){ const u=loc&&FOTORREAL[loc.id]; fr.hidden=!u; if(u)fr.href=u; }
+  /* El inventario dice de dónde sale cada soporte, no solo qué es. */
+  ITEMS.forEach(it=>{
+    const r=document.querySelector(`.irow[data-id="${it.id}"]`);
+    if(!r)return;
+    const em=r.querySelector("em");
+    if(it.type!=="screen"){em.textContent="ZONA";em.style.color="";return}
+    em.textContent=it.src==="catálogo"?"CATÁLOGO":"SIMULADO";
+    em.style.color=it.src==="catálogo"?"var(--green)":"var(--gold)";
+    r.querySelector("small").textContent=`${it.zone} · ${it.imp?it.imp.toLocaleString("es-ES")+" impr/día":it.size}`;
+  });
+  const pie=document.getElementById("catFoot");
+  if(pie)pie.textContent=loc
+    ? `Impactos y CPM por superficie: catálogo omnipublicity (${catOrigen}), instantánea ${catSnapshot||"—"}. El aforo y la telemetría en vivo siguen simulados: al conectar XPL mostrarán origen, última actualización y estado; si la señal cae, vuelven a «sin datos».`
+    : `Sin datos del catálogo: se muestran los valores de respaldo del Xpacio. Ningún valor se inventa como real.`;
+}
+
+async function cargarCatalogo(){
+  const id=QS.get("loc")||LOC_DEFECTO;
+  let lista=[];
+  try{
+    const r=await fetch("./sucursales.json",{cache:"no-cache"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    lista=d.sucursales||[];
+    catSnapshot=d.snapshot?new Date(d.snapshot*1000).toLocaleDateString("es-ES"):null;
+  }catch(e){
+    console.warn("Xcaixa · sin bundle de sucursales:",e.message);
+    aplicarSucursal(null);return;
+  }
+  const sel=document.getElementById("branch");
+  if(sel){
+    sel.innerHTML=lista.map(l=>`<option value="${l.id}">${l.name.replace(/^CaixaBank\s*/,"")}</option>`).join("");
+    sel.onchange=()=>{
+      const l=lista.find(x=>x.id===sel.value);
+      if(l){aplicarSucursal(l);history.replaceState(null,"",`?loc=${l.id}${escena?`&escena=${escena}`:""}`)}
+    };
+  }
+  aplicarSucursal(lista.find(l=>l.id===id)||lista[0]||null);
+
+  /* ?live=1 → contrasta contra el worker. Pesado a propósito: solo bajo demanda. */
+  if(QS.get("live")==="1"){
+    try{
+      const r=await fetch(OMNIP_API+"/locations",{cache:"no-store"});
+      const d=await r.json();
+      const viva=(d.locations||[]).find(l=>l.id===(sucursal?.id||id));
+      if(viva){
+        catSnapshot=d.updatedAt?new Date(d.updatedAt*1000).toLocaleString("es-ES"):catSnapshot;
+        aplicarSucursal(viva);
+        document.getElementById("mSrc").textContent="CATÁLOGO EN VIVO";
+      }
+    }catch(e){console.warn("Xcaixa · sin catálogo en vivo:",e.message)}
+  }
+}
+cargarCatalogo();
+labelsBtn.onclick=e=>{showLabels=!showLabels;e.currentTarget.classList.toggle("on",showLabels)};
+document.getElementById("reset").onclick=()=>{
+  root.rotation.y=0;camera.zoom=1;camera.updateProjectionMatrix();
+  controls.target.set(0,1,0);iso();controls.update();
+};
+
+/* Selección por clic sobre superficies y zonas */
+const pickables=[...Object.values(parts).map(p=>(p.mesh.userData.pickId=Object.keys(parts).find(k=>parts[k].mesh===p.mesh),p.mesh)),...Object.values(zoneMeshes).map(z=>z.fill)];
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
+canvas.addEventListener("pointerup",e=>{
+  if(Math.abs(e.movementX)>4||Math.abs(e.movementY)>4)return;
+  pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(pointer,camera);
+  const hit=ray.intersectObjects(pickables,false)[0];
+  if(!hit)return;
+  const id=hit.object.userData.pickId||hit.object.userData.zoneId;
+  const it=ITEMS.find(i=>i.id===id);
+  if(it)openItem(it);
+});
+
+/* Medición simulada — nunca se presenta como señal real */
+const spark=document.getElementById("spark");
+const bars=[...Array(16)].map(()=>{const d=document.createElement("div");d.style.height="20%";spark.appendChild(d);return d});
+let aforo=7,impactos=3120,tAcc=0;
+function tickMetrics(dt){
+  tAcc+=dt;
+  if(tAcc<1.1)return;
+  tAcc=0;
+  const target=night?1:(rush?17:8);
+  aforo+=Math.round((target-aforo)*.34+(Math.random()*2-1));
+  aforo=Math.max(0,aforo);
+  impactos+=Math.round(aforo*(rush?2.6:1.3));
+  /* El CPM medio parte del catálogo de la sucursal cuando lo hay, para que el panel
+     y las fichas cuenten lo mismo. La variación por escena sí es simulada. */
+  const conCpm=ITEMS.filter(i=>i.type==="screen"&&i.cpm);
+  const base=conCpm.length?conCpm.reduce((a,i)=>a+i.cpm,0)/conCpm.length:7.2;
+  const cpm=Math.max(0,base+(rush?1.9:0)+(night?-1.4:0)+Math.random()*.5);
+  document.getElementById("mAforo").innerHTML=aforo+'<i>pers.</i>';
+  document.getElementById("mImp").textContent=impactos.toLocaleString("es-ES");
+  document.getElementById("mCpm").innerHTML=cpm.toFixed(2).replace(".",",")+'<i>€</i>';
+  bars.shift().remove();
+  const d=document.createElement("div");
+  d.style.height=Math.min(100,12+aforo*5)+"%";
+  spark.appendChild(d);bars.push(d);
+}
+
+/* Proyecta las etiquetas y las separa en vertical cuando se solapan.
+   La sala gira, así que el solape depende del ángulo y hay que resolverlo en cada frame. */
+const LBL_H=17, LBL_W=112;
+function updateLabels(){
+  const shown=[];
+  labels.forEach(({el,pos})=>{
+    const v=pos.clone();root.localToWorld(v);v.project(camera);
+    if(!showLabels||v.z>=1){el.style.display="none";return}
+    el.style.display="block";
+    shown.push({el,x:(v.x*.5+.5)*innerWidth,y:(-v.y*.5+.5)*innerHeight});
+  });
+  shown.sort((a,b)=>a.y-b.y);
+  shown.forEach((s,i)=>{
+    for(let j=0;j<i;j++){
+      const p=shown[j];
+      if(Math.abs(p.x-s.x)<LBL_W && s.y-p.y<LBL_H) s.y=p.y+LBL_H;
+    }
+    s.el.style.left=s.x+"px";
+    s.el.style.top=s.y+"px";
+  });
+}
+
+function resize(){
+  aspect=innerWidth/innerHeight;
+  if(aspect>=1){camera.left=-D*aspect;camera.right=D*aspect;camera.top=D;camera.bottom=-D}
+  else{camera.left=-D;camera.right=D;camera.top=D/aspect;camera.bottom=-D/aspect}
+  camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);
+}
+addEventListener("resize",resize);resize();
+
+let last=performance.now();
+function loop(now){
+  const dt=Math.min((now-last)/1000,.05);last=now;
+  if(spin)root.rotation.y+=dt*.1;
+  const speed=rush?1.9:1;
+  visitors.forEach((v,i)=>{
+    v.userData.phase+=dt*(.18+i*.012)*speed;
+    const a=v.userData.phase;
+    v.position.set(Math.cos(a)*v.userData.rx,0,Math.sin(a)*v.userData.rz);
+    v.rotation.y=-a;
+    v.visible=night?false:(i<(rush?6:4));
+  });
+  mark.rotation.y=Math.sin(now*.0004)*.12;
+  tickMetrics(dt);
+  controls.update();
+  renderer.render(scene,camera);
+  updateLabels();
+  requestAnimationFrame(loop);
+}
+document.getElementById("loading").classList.add("hide");
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

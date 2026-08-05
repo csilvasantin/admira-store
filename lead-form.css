@@ -1,0 +1,32 @@
+/* ===== XpaceOS · formulario de lead unificado (home + gemelo Admira XP) =====
+   El MISMO formulario que abre el gemelo (comando /contacto). Estética on-brand
+   teal oscuro. Lo usa la home (trigger [data-admira-contact]) y es reutilizable
+   en cualquier página de Admira cargando lead-form.css + lead-form.js. */
+
+#xleadBack{position:fixed;inset:0;z-index:100200;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,8,14,.62);backdrop-filter:blur(3px)}
+#xleadBack.show{display:flex}
+#xleadCard{position:relative;width:420px;max-width:96vw;max-height:94vh;overflow:auto;background:linear-gradient(180deg,#06141d,#030b12);border:1px solid rgba(120,243,255,.34);border-radius:14px;box-shadow:0 22px 60px rgba(0,0,0,.62);color:#dff8ff;padding:20px 20px 18px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+#xleadCard h3{margin:0;font:700 19px -apple-system,"Segoe UI",sans-serif;color:#eafeff}
+#xleadCard .xl-sub{margin:5px 0 14px;font-size:12.5px;color:#8fb6c4;line-height:1.4}
+#xleadCard label{display:block;font:600 10.5px ui-monospace,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:#79f3ff;margin:0 0 4px}
+#xleadCard .xl-f{margin-bottom:11px}
+#xleadCard input,#xleadCard select,#xleadCard textarea{width:100%;box-sizing:border-box;background:#02141c;border:1px solid #2a5664;border-radius:8px;color:#eafeff;font-size:14px;padding:9px 11px;font-family:inherit}
+#xleadCard textarea{resize:vertical;min-height:56px}
+#xleadCard input:focus,#xleadCard select:focus,#xleadCard textarea:focus{outline:none;border-color:#78f3ff;box-shadow:0 0 0 2px rgba(120,243,255,.18)}
+#xleadCard .xl-row{display:flex;gap:10px}
+#xleadCard .xl-row>div{flex:1}
+#xleadCard .xl-consent{display:flex;align-items:flex-start;gap:8px;margin:2px 0 14px}
+#xleadCard .xl-consent input{width:16px;height:16px;margin-top:1px;flex:0 0 auto}
+#xleadCard .xl-consent span{font-size:11.5px;color:#9fc4d2;line-height:1.35;text-transform:none;letter-spacing:0;font-weight:400}
+#xleadErr{display:none;color:#ff8866;font-size:12px;margin-bottom:8px}
+#xleadBtns{display:flex;gap:10px}
+#xleadBtns button{flex:1;padding:11px;border-radius:9px;font:600 14px inherit;cursor:pointer;border:1px solid}
+#xleadSend{background:linear-gradient(180deg,#0e3a44,#072028);border-color:#78f3ff;color:#eafeff}
+#xleadSend:hover{background:linear-gradient(180deg,#125866,#0a2c36)}
+#xleadSend[disabled]{opacity:.55;cursor:default}
+#xleadCancel{background:transparent;border-color:#33555f;color:#8fb6c4}
+#xleadCancel:hover{border-color:#5a8694;color:#cfe9f2}
+#xleadOK{display:none;text-align:center;padding:14px 4px}
+#xleadOK h3{margin-bottom:6px}
+#xleadOK p{color:#9fc4d2;font-size:13.5px;margin:0}
+#xleadClose{position:absolute;top:10px;right:14px;background:transparent;border:0;color:#6f9aa8;font-size:22px;line-height:1;cursor:pointer}

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>El Apartamento de Sheldon · Xperiencia Admira</title>
+<style>
+  :root{
+    --amber:#ffb84d;         /* mostaza cálida */
+    --amber-soft:rgba(255,184,77,.16);
+    --deep:#140d08;          /* fondo salón noche */
+    --deep2:#221609;
+    --panel:rgba(30,20,12,.90);
+    --ink:#f6ecdd;
+    --muted:#c3a785;
+    --wood:#8a5a32;
+    /* acentos cómic */
+    --flash-red:#e23b2e;
+    --flash-yellow:#ffd23a;
+    --hero-blue:#2f7de0;
+    --sofa-green:#3f7d5a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--deep);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+  button{font-family:inherit}
+  a{color:var(--amber);text-decoration:none}
+
+  /* ---------- escena ---------- */
+  #scene{position:fixed;inset:0;overflow:hidden;
+    background:
+      radial-gradient(120% 95% at 50% 12%, #3a2712 0%, #2a1c0d 40%, var(--deep2) 70%, var(--deep) 100%);
+    transition:filter 1.4s ease, background 1.4s ease;}
+  /* luz cálida ambiental (lámpara) */
+  .glow-amb{position:absolute;inset:-10% -10% 30% -10%;pointer-events:none;filter:blur(46px);opacity:.55;
+    background:
+      radial-gradient(38% 55% at 78% 16%, rgba(255,184,77,.35), transparent 70%),
+      radial-gradient(45% 55% at 20% 22%, rgba(226,59,46,.16), transparent 70%),
+      radial-gradient(55% 50% at 50% 4%, rgba(255,210,58,.14), transparent 70%);
+    animation:flick 7s ease-in-out infinite alternate;}
+  @keyframes flick{from{opacity:.48}to{opacity:.62}}
+
+  /* ventana nocturna con ciudad (Pasadena) */
+  .window{position:absolute;left:6%;top:12%;width:20vw;max-width:250px;height:34vh;border-radius:4px;
+    background:linear-gradient(180deg,#0b1830 0%,#132444 55%,#1c2f52 100%);
+    border:7px solid #3a2410;box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 40px rgba(0,0,0,.4);opacity:.9}
+  .window::before{content:"";position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 14px, rgba(255,210,120,.10) 14px 16px),
+      repeating-linear-gradient(0deg, transparent 0 22px, rgba(255,210,120,.06) 22px 24px);}
+  .window::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:5px;transform:translateX(-50%);
+    background:#3a2410;box-shadow:0 0 0 100vmax transparent}
+  .win-cross{position:absolute;left:0;right:0;top:50%;height:5px;background:#3a2410}
+
+  /* estanterías de cómics (parallax) */
+  .shelves{position:absolute;inset:0;pointer-events:none}
+  .shelf{position:absolute;background:linear-gradient(180deg,#5a3a20,#3d2614);
+    border-top:2px solid rgba(255,200,140,.18);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+  .comic{position:absolute;bottom:2px;border-radius:1px 1px 0 0;box-shadow:0 0 6px rgba(0,0,0,.3)}
+
+  /* banderas de superhéroes */
+  .flag{position:absolute;top:0;width:44px;height:64px;border-radius:0 0 3px 3px;
+    box-shadow:0 6px 14px rgba(0,0,0,.45);opacity:.94;transform-origin:top center;animation:sway 6s ease-in-out infinite alternate}
+  @keyframes sway{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
+  .flag .em{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:22px}
+
+  /* alfombra / suelo de madera */
+  .floor{position:absolute;left:0;right:0;bottom:0;height:30%;
+    background:linear-gradient(180deg, transparent, rgba(90,58,32,.28) 40%, rgba(120,78,40,.4));
+    box-shadow:0 -1px 50px rgba(0,0,0,.35);}
+  .floor::before{content:"";position:absolute;inset:0;opacity:.3;
+    background:repeating-linear-gradient(90deg, transparent 0 70px, rgba(60,36,18,.5) 70px 72px);}
+  .rug{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);width:min(60vw,620px);height:16%;
+    border-radius:50%;background:radial-gradient(60% 100% at 50% 50%, rgba(63,125,90,.28), rgba(63,125,90,.06) 70%, transparent);
+    filter:blur(1px)}
+
+  /* motas de polvo cálidas (partículas) */
+  .dust{position:absolute;inset:0;pointer-events:none;opacity:.55}
+
+  /* ---------- sofá central: EL SITIO ---------- */
+  #hero{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);width:min(46vh,420px);
+    filter:drop-shadow(0 22px 40px rgba(0,0,0,.55));z-index:5;transition:transform .6s ease}
+  .hero-glow{position:absolute;left:50%;bottom:20%;transform:translateX(-50%);width:min(30vh,280px);height:44%;
+    z-index:4;pointer-events:none;filter:blur(24px);
+    background:radial-gradient(50% 55% at 50% 55%, rgba(255,184,77,.5), rgba(255,210,58,.16) 55%, transparent 74%)}
+  .spot-ring{position:absolute;left:50%;bottom:20%;transform:translateX(-50%) rotate(0deg);
+    width:min(20vh,180px);height:min(20vh,180px);border-radius:50%;z-index:6;pointer-events:none;
+    border:2px dashed rgba(255,184,77,.55);animation:spin 22s linear infinite}
+  @keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+
+  /* ---------- hotspots ---------- */
+  .hotspot{position:absolute;transform:translate(-50%,-50%);z-index:7;cursor:pointer;
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    background:rgba(30,20,12,.6);border:1px solid var(--amber-soft);backdrop-filter:blur(4px);
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease}
+  .hotspot .dot{width:12px;height:12px;border-radius:50%;background:var(--amber);box-shadow:0 0 14px var(--amber)}
+  .hotspot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--amber);
+    opacity:.5;animation:ping 2.4s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes ping{0%{transform:scale(.7);opacity:.7}80%,100%{transform:scale(1.9);opacity:0}}
+  .hotspot:hover{transform:translate(-50%,-50%) scale(1.12);background:rgba(255,184,77,.32);
+    box-shadow:0 0 24px rgba(255,184,77,.5)}
+  .hotspot .tag{position:absolute;top:-34px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    font-size:12px;letter-spacing:.3px;color:var(--ink);background:rgba(18,10,4,.9);
+    padding:4px 9px;border-radius:8px;border:1px solid var(--amber-soft);opacity:0;transition:opacity .2s;pointer-events:none}
+  .hotspot:hover .tag{opacity:1}
+  .hotspot.green .dot{background:var(--sofa-green);box-shadow:0 0 14px var(--sofa-green)}
+  .hotspot.green::after{border-color:var(--sofa-green)}
+  .hotspot.red .dot{background:var(--flash-red);box-shadow:0 0 14px var(--flash-red)}
+  .hotspot.red::after{border-color:var(--flash-red)}
+  .hotspot.blue .dot{background:var(--hero-blue);box-shadow:0 0 14px var(--hero-blue)}
+  .hotspot.blue::after{border-color:var(--hero-blue)}
+
+  /* ---------- HUD ---------- */
+  .hud{position:fixed;z-index:20}
+  .top{top:0;left:0;right:0;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:linear-gradient(180deg, rgba(20,13,8,.8), transparent);pointer-events:none}
+  .brand{display:flex;align-items:center;gap:12px;pointer-events:auto}
+  .crest{width:34px;height:34px;flex:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+  .brand .t b{font-weight:700;letter-spacing:.4px;font-size:15px}
+  .brand .t span{display:block;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase}
+
+  /* saga switcher */
+  .saga{display:flex;gap:8px;pointer-events:auto}
+  .saga a,.saga button{display:flex;align-items:center;gap:8px;background:rgba(30,20,12,.6);color:var(--muted);
+    border:1px solid var(--amber-soft);border-radius:999px;padding:7px 14px;font-size:12.5px;cursor:pointer;
+    transition:all .2s;backdrop-filter:blur(6px)}
+  .saga .em{font-size:15px}
+  .saga a:hover{color:var(--ink);border-color:var(--wood)}
+  .saga .active{color:#231405;background:linear-gradient(120deg,var(--amber),#ffd98a);border-color:transparent;font-weight:650}
+
+  /* audiencia (el Xpacio te ve) */
+  .aud{bottom:20px;left:20px;pointer-events:auto;display:flex;align-items:center;gap:12px;
+    background:var(--panel);border:1px solid var(--amber-soft);border-radius:14px;padding:11px 14px;backdrop-filter:blur(10px)}
+  .aud .eye{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:rgba(255,184,77,.16);border:1px solid rgba(255,184,77,.4)}
+  .aud .eye .pupil{width:9px;height:9px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber);
+    animation:look 4s ease-in-out infinite}
+  @keyframes look{0%,100%{transform:translateX(-4px)}50%{transform:translateX(4px)}}
+  .aud .lab{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .aud .val{font-size:14px;font-weight:650}
+  .aud .val b{color:var(--amber)}
+  .aud .mood{font-size:12px;color:var(--muted)}
+
+  /* twin badge */
+  .twin{bottom:20px;right:20px;pointer-events:auto;display:flex;align-items:center;gap:10px;
+    background:var(--panel);border:1px solid var(--amber-soft);border-radius:14px;padding:10px 14px;backdrop-filter:blur(10px);
+    font-size:12px;color:var(--muted)}
+  .twin .live{width:8px;height:8px;border-radius:50%;background:var(--sofa-green);box-shadow:0 0 8px var(--sofa-green);
+    animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{50%{opacity:.3}}
+
+  /* hint */
+  .hint{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:15;color:var(--muted);
+    font-size:12.5px;letter-spacing:.5px;background:rgba(18,10,4,.55);padding:6px 14px;border-radius:999px;
+    border:1px solid var(--amber-soft);backdrop-filter:blur(6px);animation:fadehint 1s ease .6s both}
+  @keyframes fadehint{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+  /* ---------- panel detalle ---------- */
+  #panel{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);z-index:40;
+    background:linear-gradient(180deg, rgba(34,23,13,.98), rgba(18,11,5,.98));
+    border-left:1px solid var(--amber-soft);box-shadow:-30px 0 80px rgba(0,0,0,.5);
+    transform:translateX(105%);transition:transform .5s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;overflow:hidden}
+  #panel.open{transform:translateX(0)}
+  #panel .ph{position:relative;height:180px;flex:none;display:grid;place-items:center;overflow:hidden;
+    background:radial-gradient(70% 90% at 50% 30%, rgba(255,184,77,.4), rgba(24,15,7,.2));border-bottom:1px solid var(--amber-soft)}
+  #panel .ph .icon{font-size:74px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.5));z-index:2}
+  #panel .ph .rings{position:absolute;inset:0;background:
+    repeating-radial-gradient(circle at 50% 34%, transparent 0 22px, rgba(255,184,77,.10) 22px 23px);opacity:.6}
+  #panel .close{position:absolute;top:14px;right:14px;z-index:5;width:34px;height:34px;border-radius:10px;
+    background:rgba(0,0,0,.35);border:1px solid var(--amber-soft);color:var(--ink);font-size:18px;cursor:pointer}
+  #panel .body{padding:22px 24px;overflow-y:auto}
+  #panel .kicker{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber)}
+  #panel h2{margin:6px 0 4px;font-size:23px;line-height:1.15}
+  #panel .lore{color:#e6d6bf;font-size:14px;line-height:1.6;margin:14px 0}
+  .layer{margin-top:18px;border:1px solid var(--amber-soft);border-radius:14px;overflow:hidden;background:rgba(255,184,77,.06)}
+  .layer .lh{display:flex;align-items:center;gap:8px;padding:10px 14px;font-size:11px;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--amber);background:rgba(255,184,77,.12);border-bottom:1px solid var(--amber-soft)}
+  .layer .lb{padding:14px}
+  .layer .lb p{margin:0 0 10px;font-size:13.5px;line-height:1.55;color:#ecdcc4}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+  .chip{font-size:11px;color:var(--ink);background:rgba(255,184,77,.10);border:1px solid var(--amber-soft);
+    border-radius:999px;padding:4px 10px}
+  .cta{margin:18px 0 6px;display:flex;gap:10px}
+  .cta button{flex:1;padding:12px;border-radius:12px;border:none;font-size:13.5px;font-weight:600;cursor:pointer;transition:transform .15s}
+  .cta button:active{transform:scale(.97)}
+  .cta .primary{background:linear-gradient(120deg,var(--flash-red),#ff7a4d);color:#fff}
+  .cta .ghost{background:transparent;border:1px solid var(--amber-soft);color:var(--ink)}
+
+  /* ---------- overlay teatral "Penny" ---------- */
+  #holo{position:fixed;inset:0;z-index:60;display:none;place-items:center;
+    background:radial-gradient(60% 60% at 50% 45%, rgba(40,26,12,.6), rgba(8,5,2,.94))}
+  #holo.on{display:grid}
+  .holo-fig{position:relative;width:min(62vh,420px);text-align:center}
+  .holo-door{position:relative;width:min(30vh,220px);height:min(42vh,320px);margin:0 auto;
+    background:linear-gradient(180deg,#7a1f1a,#5a1512);border:5px solid #3a0f0d;border-radius:6px;
+    box-shadow:0 20px 50px rgba(0,0,0,.6), inset 0 0 40px rgba(0,0,0,.5)}
+  .holo-door .num{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:26px;font-weight:800;
+    letter-spacing:2px;color:#ffd98a;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+  .holo-door .knob{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:16px;height:16px;
+    border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe6a0,#a9791f)}
+  .holo-door .panel-l{position:absolute;left:14px;top:60px;right:14px;bottom:60px;border:3px solid rgba(0,0,0,.3);border-radius:4px}
+  .holo-knock{position:absolute;left:50%;top:-8px;transform:translateX(-50%);font-size:34px;opacity:0;
+    animation:knockpulse 1.4s ease-in-out infinite}
+  @keyframes knockpulse{0%,100%{opacity:0;transform:translate(-50%,4px)}30%{opacity:1;transform:translate(-50%,-6px)}}
+  .holo-name{margin-top:14px;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--amber)}
+  .holo-msg{margin:14px auto 0;max-width:520px;padding:0 24px;color:#fdf1dc;font-size:17px;line-height:1.6;min-height:64px}
+  .holo-msg .cursor{display:inline-block;width:9px;height:20px;background:var(--amber);margin-left:3px;
+    vertical-align:-3px;animation:blink 1s steps(2) infinite}
+  .holo-close{margin-top:24px;background:rgba(30,20,12,.7);border:1px solid var(--amber-soft);color:var(--ink);
+    padding:11px 22px;border-radius:999px;cursor:pointer;font-size:13px;letter-spacing:.5px}
+  .holo-tag{position:absolute;top:24px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;color:var(--muted);border:1px solid var(--amber-soft);padding:5px 12px;border-radius:999px;
+    background:rgba(18,10,4,.5)}
+
+  /* intro */
+  #intro{position:fixed;inset:0;z-index:80;background:var(--deep);display:grid;place-items:center;
+    transition:opacity 1.2s ease;text-align:center;padding:24px}
+  #intro.gone{opacity:0;pointer-events:none}
+  #intro .crest{width:96px;height:96px;margin:0 auto 20px;animation:rise 1.4s cubic-bezier(.16,1,.3,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:none}}
+  #intro h1{font-size:clamp(26px,5vw,44px);margin:0;letter-spacing:1px;
+    background:linear-gradient(120deg,#fff,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+  #intro p{color:var(--muted);letter-spacing:3px;text-transform:uppercase;font-size:12px;margin:14px 0 26px}
+  #intro button{background:linear-gradient(120deg,var(--flash-red),#ff7a4d);color:#fff;border:none;
+    padding:14px 30px;border-radius:999px;font-size:14px;font-weight:650;cursor:pointer;letter-spacing:.5px;
+    box-shadow:0 10px 30px rgba(226,59,46,.4)}
+
+  @media (max-width:640px){
+    .aud .lab,.twin{display:none}
+    .saga .txt{display:none}
+    .top{padding:12px 14px}
+    .window{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== escena ===== -->
+<div id="scene">
+  <div class="glow-amb"></div>
+
+  <!-- ventana nocturna -->
+  <div class="window"><div class="win-cross"></div></div>
+
+  <!-- estanterías de cómics -->
+  <div class="shelves" id="shelves"></div>
+
+  <!-- banderas de superhéroes -->
+  <div class="flag" style="left:70%;background:linear-gradient(180deg,#c81f1f,#8a1414)"><span class="em">⚡</span></div>
+  <div class="flag" style="left:78%;background:linear-gradient(180deg,#1f4fc8,#122f8a)"><span class="em">🦸</span></div>
+  <div class="flag" style="left:86%;background:linear-gradient(180deg,#0f7d3f,#0a5a2c)"><span class="em">🟢</span></div>
+
+  <div class="floor"></div>
+  <div class="rug"></div>
+  <canvas class="dust" id="dust"></canvas>
+
+  <div class="hero-glow"></div>
+  <div class="spot-ring"></div>
+  <!-- EL SITIO: sofá con el cojín marcado de Sheldon (SVG) -->
+  <svg id="hero" viewBox="0 0 300 180" aria-hidden="true">
+    <defs>
+      <linearGradient id="sofa" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4c8c66"/><stop offset="1" stop-color="#2c5a40"/>
+      </linearGradient>
+      <linearGradient id="cushion" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffcf6b"/><stop offset="1" stop-color="#e09a2e"/>
+      </linearGradient>
+    </defs>
+    <!-- sombra -->
+    <ellipse cx="150" cy="172" rx="120" ry="10" fill="rgba(0,0,0,.35)"/>
+    <!-- respaldo -->
+    <rect x="20" y="30" width="260" height="70" rx="16" fill="url(#sofa)"/>
+    <!-- cojines respaldo -->
+    <rect x="30" y="38" width="76" height="56" rx="12" fill="#3f7d5a"/>
+    <rect x="112" y="38" width="76" height="56" rx="12" fill="#468a63"/>
+    <rect x="194" y="38" width="76" height="56" rx="12" fill="#3f7d5a"/>
+    <!-- brazos -->
+    <rect x="8" y="60" width="34" height="86" rx="14" fill="#2c5a40"/>
+    <rect x="258" y="60" width="34" height="86" rx="14" fill="#2c5a40"/>
+    <!-- asiento base -->
+    <rect x="30" y="96" width="240" height="52" rx="14" fill="#367050"/>
+    <!-- cojines de asiento -->
+    <rect x="38" y="100" width="70" height="44" rx="11" fill="#3f7d5a"/>
+    <!-- EL SITIO (cojín central, resaltado dorado) -->
+    <rect x="115" y="98" width="72" height="48" rx="11" fill="url(#cushion)" stroke="#fff2cf" stroke-width="2"/>
+    <text x="151" y="128" font-size="26" text-anchor="middle">🪑</text>
+    <rect x="194" y="100" width="70" height="44" rx="11" fill="#3f7d5a"/>
+  </svg>
+
+  <!-- hotspots (posición en %) -->
+  <div class="hotspot green" style="left:50%;top:66%" data-id="spot"><span class="dot"></span><span class="tag">El Sitio de Sheldon</span></div>
+  <div class="hotspot blue" style="left:24%;top:30%" data-id="boards"><span class="dot"></span><span class="tag">Las pizarras de ecuaciones</span></div>
+  <div class="hotspot" style="left:14%;top:64%" data-id="softkitty"><span class="dot"></span><span class="tag">Soft Kitty</span></div>
+  <div class="hotspot red" style="left:74%;top:26%" data-id="flash"><span class="dot"></span><span class="tag">Vitrina Flash + figuras</span></div>
+  <div class="hotspot" style="left:86%;top:58%" data-id="elevator"><span class="dot"></span><span class="tag">El ascensor averiado</span></div>
+  <div class="hotspot" style="left:60%;top:80%" data-id="console"><span class="dot"></span><span class="tag">La consola del salón</span></div>
+</div>
+
+<!-- ===== HUD superior ===== -->
+<div class="hud top">
+  <div class="brand">
+    <svg class="crest" viewBox="0 0 100 100"><rect x="8" y="20" width="84" height="60" rx="12" fill="#3f7d5a" stroke="#ffb84d" stroke-width="3"/><rect x="38" y="30" width="24" height="26" rx="6" fill="#ffcf6b"/><path d="M50 62 l8 8 -8 14 -8-14 z" fill="#e23b2e"/></svg>
+    <div class="t"><b>El Apartamento de Sheldon</b><span>Xperiencia Admira</span></div>
+  </div>
+  <div class="saga">
+    <button class="active"><span class="em">🛋️</span><span class="txt">Apartamento de Sheldon</span></button>
+    <a href="../batcueva/"><span class="em">🦇</span><span class="txt">La Batcueva</span></a>
+    <a href="../soledad/"><span class="em">❄️</span><span class="txt">Fortaleza de la Soledad</span></a>
+  </div>
+</div>
+
+<!-- audiencia -->
+<div class="hud aud" id="aud">
+  <div class="eye"><div class="pupil"></div></div>
+  <div>
+    <div class="lab">El Xpacio te ve</div>
+    <div class="val"><b id="audN">4</b> visitantes · <span class="mood" id="audMood">fans · risas</span></div>
+  </div>
+</div>
+
+<!-- twin -->
+<div class="hud twin"><span class="live"></span>Gemelo digital sincronizado · XpaceOS</div>
+
+<div class="hint">Toca la <b>memorabilia</b> para activarla · siéntate en <b>El Sitio</b>… si te atreves 🛋️</div>
+
+<!-- ===== panel detalle ===== -->
+<aside id="panel">
+  <div class="ph"><div class="rings"></div><div class="icon" id="pIcon">🛋️</div>
+    <button class="close" onclick="closePanel()">✕</button></div>
+  <div class="body">
+    <div class="kicker" id="pKicker">Memorabilia</div>
+    <h2 id="pTitle">—</h2>
+    <div class="lore" id="pLore"></div>
+    <div class="layer">
+      <div class="lh">⚡ Capa Admira · lo que la hace viva</div>
+      <div class="lb"><p id="pLayer"></p><div class="chips" id="pChips"></div></div>
+    </div>
+    <div class="cta">
+      <button class="primary" id="pCta">Activar</button>
+      <button class="ghost" onclick="closePanel()">Volver al salón</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== overlay teatral "Knock knock knock… Penny" ===== -->
+<div id="holo">
+  <div class="holo-tag">Escena viva · narrativa reactiva XpaceOS</div>
+  <div class="holo-fig">
+    <div class="holo-door">
+      <div class="num">4A</div>
+      <div class="knob"></div>
+      <div class="panel-l"></div>
+      <div class="holo-knock">✊</div>
+    </div>
+    <div class="holo-name">Puerta del 4A · Sheldon llama</div>
+    <div class="holo-msg" id="holoMsg"></div>
+    <button class="holo-close" onclick="closeHolo()">Cerrar escena</button>
+  </div>
+</div>
+
+<!-- ===== intro ===== -->
+<div id="intro">
+  <div>
+    <svg class="crest" viewBox="0 0 100 100"><rect x="8" y="20" width="84" height="60" rx="12" fill="#3f7d5a" stroke="#ffb84d" stroke-width="3"/><rect x="38" y="30" width="24" height="26" rx="6" fill="#ffcf6b"/><path d="M50 62 l8 8 -8 14 -8-14 z" fill="#e23b2e"/></svg>
+    <h1>El Apartamento de Sheldon</h1>
+    <p>Una Xperiencia inmersiva de Admira</p>
+    <button onclick="enter()">Entrar en el 4A ❤️</button>
+  </div>
+</div>
+
+<script>
+/* ---------- datos de la memorabilia ---------- */
+const ITEMS = {
+  spot:{icon:"🛋️",kicker:"Reliquia · el altar del 4A",title:"El Sitio de Sheldon",
+    lore:"«That's my spot.» En invierno da calor, en verano corre la brisa, y frente al televisor mantiene un ángulo de 45 grados. Sheldon lo declaró un punto fijo en un universo en constante cambio. Sentarse ahí es sacrilegio.",
+    layer:"El cojín esconde un sensor de presión y presencia: si alguien se sienta, la sala «protesta» —la voz de la IA carraspea, las luces parpadean y una alerta salta al backoffice. Ese mismo evento físico dispara contenido de marca contextual: quien toca la reliquia recibe la escena patrocinada. La memorabilia se vuelve un disparador de campaña.",
+    chips:["Sensor de presión","Presencia + evento físico","Contenido contextual","Alerta a backoffice"],cta:"Sentarse (bajo tu responsabilidad)"},
+  boards:{icon:"🧮",kicker:"Interacción STEM · pantalla táctil",title:"Las Pizarras de Ecuaciones",
+    lore:"Teoría de cuerdas garabateada de madrugada, con un error deliberado que solo Sheldon —o quizá su hermana— sabría corregir. La física del apartamento nunca duerme.",
+    layer:"Las pizarras son una pantalla táctil que resuelve física en vivo: el visitante arrastra variables y ve la ecuación animarse. Un motor de branding STEM inserta al patrocinador (universidad, marca tech) como «laboratorio oficial» de la sala, con analítica de qué fórmulas se tocan más.",
+    chips:["Pantalla táctil","Física interactiva","Branding STEM","Analítica de interacción"],cta:"Resolver la ecuación"},
+  softkitty:{icon:"🐱",kicker:"Audio interactivo",title:"Soft Kitty",
+    lore:"«Soft kitty, warm kitty, little ball of fur…» La nana que Sheldon exige cuando está enfermo. Aquí, el gatito de peluche sigue esperando que alguien se la cante.",
+    layer:"Un micrófono y altavoz direccional convierten la pieza en una experiencia de audio interactiva: acércate y la sala tararea la nana, o te invita a cantarla y la completa. La captura de voz (anónima y efímera) mide engagement, y el jingle puede ser el de un anunciante. Sonido como gancho emocional medible.",
+    chips:["Audio direccional","Voz interactiva","Jingle de marca","Engagement sonoro"],cta:"Cantar la nana"},
+  flash:{icon:"⚡",kicker:"Vitrina viva · coleccionismo",title:"La Vitrina Flash y las Figuras",
+    lore:"La bandera de The Flash presidiendo la pared, y bajo ella la vitrina de figuras de acción numeradas: cada una, una batalla de merchandising ganada en la Comic-Con.",
+    layer:"La vitrina lleva pantalla táctil perimetral con la ficha de cada figura, su autenticidad NFT y el making-of. Un QR/NFC abre la pieza en tu móvil y, si está a la venta, cierra la compra ahí mismo. Coleccionismo físico que se convierte en punto de conversión digital.",
+    chips:["Vitrina táctil","Autenticidad NFT","QR/NFC → compra","Coleccionable"],cta:"Ver la colección"},
+  elevator:{icon:"🚧",kicker:"Realidad aumentada · narrativa",title:"El Ascensor Averiado",
+    lore:"Fuera de servicio desde aquel experimento de propelente de cohete de Leonard que salió… regular. Cuatro pisos de escaleras que forjaron amistades y quejas legendarias.",
+    layer:"Apunta el móvil al hueco del ascensor y una proyección AR reconstruye el accidente que lo dejó averiado, con la escena narrada. Un mapping ambienta el rellano. La avería estática se vuelve una cápsula de storytelling inmersivo —y un espacio patrocinable de «reparación en curso».",
+    chips:["AR sin marcador","Projection mapping","Storytelling inmersivo","WebAR"],cta:"Reconstruir el accidente"},
+  console:{icon:"🎮",kicker:"Cerebro de la saga",title:"La Consola del Salón",
+    lore:"El mando universal desde el sofá: TV, luces, videojuegos y —cómo no— un protocolo de acuerdo de compañeros de piso de 42 páginas. El centro de mando doméstico de todo el 4A.",
+    layer:"Es la maqueta física del gemelo digital: cada Xperiencia de Admira tiene su réplica en XpaceOS. Desde el backoffice se cambia la escena, se programa una parrilla, se lanza una megafonía o se mide la audiencia de las tres salas de la saga. Una sala. Un mando. Control total y remoto.",
+    chips:["Gemelo digital XpaceOS","Backoffice remoto","Parrilla + megafonía","Métricas de audiencia"],cta:"Abrir el gemelo"}
+};
+
+/* ---------- render estanterías de cómics (determinista) ---------- */
+(function(){
+  const S=document.getElementById('shelves');
+  const cols=["#c81f1f","#1f4fc8","#0f7d3f","#e0a11f","#8a1fa8","#d84f1f","#1fa8a0"];
+  // 3 baldas a la izquierda de la ventana
+  const rows=[[7,12],[7,24],[7,36]]; // left%, top%
+  rows.forEach(([left,top],ri)=>{
+    const shelf=document.createElement('div');shelf.className='shelf';
+    shelf.style.left=left+'%';shelf.style.top=top+'%';shelf.style.width='16%';shelf.style.height='10px';
+    S.appendChild(shelf);
+    for(let i=0;i<12;i++){
+      const c=document.createElement('div');c.className='comic';
+      const h=22+((ri*7+i*11)%16); // 22–38px determinista
+      const w=4+((i*5)%3);
+      c.style.left=(left+0.6+i*1.28)+'%';
+      c.style.top='calc('+top+'% - '+h+'px)';
+      c.style.width=w+'px';c.style.height=h+'px';
+      c.style.background=cols[(ri*3+i)%cols.length];
+      S.appendChild(c);
+    }
+  });
+})();
+
+/* ---------- motas de polvo cálidas (canvas, sin Math.random del entorno) ---------- */
+(function(){
+  const c=document.getElementById('dust'),x=c.getContext('2d');let W,H,motes=[];
+  let seed=4242; const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;
+    motes=Array.from({length:52},()=>({x:rnd()*W,y:rnd()*H,r:rnd()*1.8+.5,s:rnd()*.28+.06,d:rnd()*6}));}
+  resize();addEventListener('resize',resize);
+  (function loop(){x.clearRect(0,0,W,H);x.fillStyle='rgba(255,214,150,.6)';
+    motes.forEach(f=>{f.y-=f.s;f.x+=Math.sin((f.y+f.d)/50)*.25;if(f.y<-4){f.y=H+4;f.x=rnd()*W;}
+      x.beginPath();x.arc(f.x,f.y,f.r,0,7);x.fill();});requestAnimationFrame(loop);})();
+})();
+
+/* ---------- panel ---------- */
+const $=id=>document.getElementById(id);
+function openItem(id){
+  const it=ITEMS[id];if(!it)return;
+  $('pIcon').textContent=it.icon;$('pKicker').textContent=it.kicker;
+  $('pTitle').textContent=it.title;$('pLore').textContent=it.lore;$('pLayer').textContent=it.layer;
+  $('pChips').innerHTML=it.chips.map(c=>`<span class="chip">${c}</span>`).join('');
+  const cta=$('pCta');cta.textContent=it.cta;
+  cta.onclick=()=>{ if(id==='spot'){closePanel();openHolo();} else {cta.textContent='✓ Activado en la sala';setTimeout(()=>cta.textContent=it.cta,1600);} };
+  $('panel').classList.add('open');
+}
+function closePanel(){$('panel').classList.remove('open');}
+document.querySelectorAll('.hotspot').forEach(h=>h.addEventListener('click',()=>openItem(h.dataset.id)));
+
+/* ---------- overlay "Knock knock knock… Penny" (typewriter) ---------- */
+const HOLO_MSG="Knock, knock, knock… Penny. Knock, knock, knock… Penny. Knock, knock, knock… Penny. Estás en Mi Sitio. En invierno da calor, en verano corre la brisa y ofrece un ángulo perfecto de 45 grados con el televisor. Es, sencillamente, un punto fijo en un universo en constante cambio. Bienvenido al 4A… la sala te está observando. Bazinga.";
+let typeTimer;
+function openHolo(){
+  $('holo').classList.add('on');const m=$('holoMsg');m.innerHTML='<span class="cursor"></span>';
+  let i=0;clearInterval(typeTimer);
+  typeTimer=setInterval(()=>{i++;m.innerHTML=HOLO_MSG.slice(0,i)+'<span class="cursor"></span>';
+    if(i>=HOLO_MSG.length)clearInterval(typeTimer);},32);
+}
+function closeHolo(){$('holo').classList.remove('on');clearInterval(typeTimer);}
+
+/* ---------- audiencia simulada (el Xpacio te ve) ---------- */
+(function(){
+  const moods=["fans · risas","familia · nostalgia","jóvenes · curiosidad","geeks · complicidad","adultos · interés"];
+  let n=4,mi=0,seed=11;const rnd=()=>{seed=(seed*48271)%2147483647;return seed/2147483647;};
+  setInterval(()=>{n=Math.max(1,Math.min(9,n+(rnd()<.5?-1:1)));mi=(mi+1)%moods.length;
+    $('audN').textContent=n;$('audMood').textContent=moods[mi];},3200);
+})();
+
+/* ---------- intro ---------- */
+function enter(){$('intro').classList.add('gone');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePanel();closeHolo();}});
+</script>
+</body>
+</html>

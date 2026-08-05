@@ -1,0 +1,10 @@
+# XpaceOS — www.xpaceos.com
+User-agent: *
+Allow: /
+# Paneles internos / operativos (no indexar)
+Disallow: /control/
+Disallow: /backoffice/
+Disallow: /admira-xp/xpl.html
+Disallow: /admira-xp/inventario.html
+
+Sitemap: https://www.xpaceos.com/sitemap.xml

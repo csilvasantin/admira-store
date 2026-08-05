@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inventario ITIL · Xpacios · admira.store</title>
+<meta name="description" content="CMDB ITIL multi-Xpacio de Admira XP — cada Xpacio es una entidad con elementos IoT y analógicos; serie, compra y garantía por elemento.">
+<link rel="icon" href="favicon.ico">
+<script src="qrcode.min.js"></script>
+<style>
+  :root{
+    --bg:#05080f; --bg2:#0a1320; --panel:rgba(10,19,32,.92);
+    --cyan:#78f3ff; --cyan-dim:rgba(120,243,255,.55); --line:rgba(120,243,255,.18);
+    --ink:#dff8ff; --ink-dim:#8fb3c4; --muted:#5f7b8b;
+    --up:#54f0a8; --idle:#f5c451; --down:#ff6b6b; --local:#78b6ff; --na:#5f7b8b; --plan:#b78bff;
+    --iot:#78f3ff; --ana:#b78bff; --xp:#ffd479;
+    --ov-red:#ff6b6b; --ov-amber:#f5c451; --ov-ok:#54f0a8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{ background:radial-gradient(1200px 700px at 80% -10%,#0e2236 0,var(--bg) 60%) fixed,var(--bg);
+    color:var(--ink); font-family:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
+    font-size:14px; line-height:1.45; -webkit-font-smoothing:antialiased; padding:0 0 60px; }
+  a{color:var(--cyan); text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 18px}
+
+  header.top{ border-bottom:1px solid var(--line); background:linear-gradient(180deg,rgba(8,16,28,.95),rgba(5,8,15,.6));
+    backdrop-filter:blur(6px); position:sticky; top:0; z-index:20; }
+  .top .wrap{display:flex; align-items:center; gap:14px; padding:12px 18px; flex-wrap:wrap}
+  .brand{display:flex; flex-direction:column; line-height:1.1}
+  .brand b{font-size:16px; letter-spacing:.5px; color:#fff}
+  .brand small{color:var(--ink-dim); font-size:11px}
+  .crumbs{margin-left:auto; display:flex; gap:14px; font-size:12px; color:var(--ink-dim)}
+  .sync{display:flex; align-items:center; gap:7px; font-size:11px; color:var(--ink-dim)}
+  .sync .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+  .sync.live .dot{background:var(--up); animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(84,240,168,.5)}70%{box-shadow:0 0 0 7px rgba(84,240,168,0)}100%{box-shadow:0 0 0 0 rgba(84,240,168,0)}}
+
+  h1.title{font-size:22px; margin:24px 0 4px; color:#fff; letter-spacing:.5px}
+  .subtitle{color:var(--ink-dim); margin:0 0 16px; max-width:780px}
+  .tag{display:inline-block; font-size:10px; padding:2px 7px; border:1px solid var(--cyan-dim); border-radius:20px; color:var(--cyan); margin-left:8px; vertical-align:middle}
+  .tag.pre{border-color:var(--ana); color:var(--ana)}
+
+  /* selector de Xpacio */
+  .xpbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 16px}
+  .xpchip{background:transparent; border:1px solid var(--line); color:var(--ink-dim); border-radius:10px; padding:8px 13px; font:inherit; font-size:12.5px; cursor:pointer; display:flex; gap:8px; align-items:center}
+  .xpchip:hover{border-color:var(--cyan-dim); color:var(--ink)}
+  .xpchip.on{border-color:var(--xp); color:#fff; background:rgba(255,212,121,.10)}
+  .xpchip .n{color:var(--muted); font-size:11px}
+  .xpchip.add{border-style:dashed; color:var(--xp)}
+
+  .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:10px; margin:0 0 18px}
+  .kpi{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:11px 13px}
+  .kpi b{display:block; font-size:23px; color:#fff; line-height:1}
+  .kpi.alert b{color:var(--ov-red)}
+  .kpi span{font-size:10.5px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.5px}
+
+  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:0 0 12px}
+  .search{flex:1; min-width:200px; display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px}
+  .search input{flex:1; background:transparent; border:0; color:var(--ink); font:inherit; outline:none}
+  .chips{display:flex; gap:6px; flex-wrap:wrap}
+  .chip{background:transparent; border:1px solid var(--line); color:var(--ink-dim); border-radius:20px; padding:6px 12px; font:inherit; font-size:12px; cursor:pointer}
+  .chip:hover{border-color:var(--cyan-dim); color:var(--ink)}
+  .chip.on{background:rgba(120,243,255,.12); border-color:var(--cyan); color:var(--cyan)}
+  .btn{background:rgba(120,243,255,.10); border:1px solid var(--cyan-dim); color:var(--cyan); border-radius:10px; padding:8px 14px; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap}
+  .btn:hover{background:rgba(120,243,255,.20)} .btn.on{background:rgba(120,243,255,.22)}
+  .btn.amber{border-color:var(--xp); color:var(--xp); background:rgba(255,212,121,.08)} .btn.amber:hover{background:rgba(255,212,121,.18)}
+  .seg{display:flex; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .seg button{background:transparent; border:0; color:var(--ink-dim); font:inherit; font-size:12px; padding:8px 12px; cursor:pointer}
+  .seg button.on{background:rgba(120,243,255,.16); color:var(--cyan)}
+  .toolbar2{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:0 0 20px}
+  .spacer{flex:1}
+
+  /* acordeones */
+  details.acc{margin:0 0 12px; border:1px solid var(--line); border-radius:12px; background:rgba(10,19,32,.55); overflow:hidden}
+  details.acc[open]{background:rgba(10,19,32,.8)}
+  details.acc>summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:12px 14px; user-select:none}
+  details.acc>summary::-webkit-details-marker{display:none}
+  details.acc>summary .caret{transition:transform .2s; color:var(--cyan-dim); font-size:11px; width:12px}
+  details.acc[open]>summary .caret{transform:rotate(90deg)}
+  details.acc>summary .gicon{font-size:17px}
+  details.acc>summary .s-title{color:#fff; font-weight:600; font-size:14px}
+  details.acc>summary .s-count{color:var(--ink-dim); font-size:12px}
+  details.acc>summary .s-desc{color:var(--muted); font-size:11.5px; margin-left:auto; text-align:right; max-width:46%}
+  details.acc>summary:hover .s-title{color:var(--cyan)}
+  details.acc.xpac{border-left:3px solid var(--xp); background:rgba(255,212,121,.05)}
+  details.acc.xpac>summary{padding:14px 16px}
+  details.acc.xpac>summary .s-title{font-size:15px}
+  details.acc.grp{border-left:3px solid var(--g-accent,var(--line)); background:rgba(10,19,32,.35)}
+  details.acc.grp.iot{--g-accent:var(--iot)} details.acc.grp.analogico{--g-accent:var(--ana)}
+  details.acc.cat{margin:10px 0; border-color:rgba(120,243,255,.12)}
+  .acc-body{padding:6px 14px 14px}
+  details.acc[open]>.acc-body{animation:accReveal .22s ease}
+  @keyframes accReveal{from{opacity:0; transform:translateY(-4px)}to{opacity:1; transform:none}}
+  .mini-dots{display:inline-flex; gap:3px; align-items:center} .mini-dots i{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px}
+  .card{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--g-accent,var(--line)); border-radius:12px; padding:13px; cursor:pointer; transition:border-color .15s,transform .1s; position:relative}
+  .card.iot{--g-accent:var(--iot)} .card.analogico{--g-accent:var(--ana)}
+  .card:hover{border-color:var(--cyan-dim); transform:translateY(-1px)}
+  .card .row1{display:flex; align-items:center; gap:9px}
+  .card .ci-icon{font-size:20px; width:26px; text-align:center}
+  .card .ci-name{font-weight:600; color:#fff; font-size:13.5px; line-height:1.2}
+  .card .ci-id{font-size:10.5px; color:var(--muted); letter-spacing:.5px}
+  .card .ci-class{font-size:11px; color:var(--cyan); margin:8px 0 6px}
+  .card .meta{font-size:11px; color:var(--ink-dim); display:flex; flex-direction:column; gap:2px}
+  .card .badges{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px}
+  .badge{font-size:10px; padding:3px 8px; border-radius:20px; display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line)}
+  .badge .d{width:7px;height:7px;border-radius:50%}
+  .b-live,.b-maint,.b-warr{color:var(--ink-dim)}
+
+  table.cmdb{width:100%; border-collapse:collapse; font-size:12px}
+  table.cmdb th,table.cmdb td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap}
+  table.cmdb th{color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:.6px; cursor:pointer; user-select:none; position:sticky; top:56px; background:#070d18}
+  table.cmdb th .arr{color:var(--cyan)}
+  table.cmdb tbody tr{cursor:pointer} table.cmdb tbody tr:hover{background:rgba(120,243,255,.06)}
+  table.cmdb td.nm{color:#fff}
+  .gdot{display:inline-block; width:8px;height:8px;border-radius:50%; margin-right:6px; vertical-align:middle}
+  .dotrow{display:inline-flex; align-items:center; gap:5px}
+
+  .scrim{position:fixed; inset:0; background:rgba(2,5,10,.6); backdrop-filter:blur(2px); z-index:40; opacity:0; pointer-events:none; transition:opacity .18s}
+  .scrim.show{opacity:1; pointer-events:auto}
+  .drawer{position:fixed; top:0; right:0; height:100%; width:min(440px,94vw); background:linear-gradient(180deg,#0b1422,#070d18); border-left:1px solid var(--cyan-dim); z-index:41; transform:translateX(100%); transition:transform .22s ease; overflow-y:auto; padding:20px}
+  .drawer.show{transform:translateX(0)}
+  .drawer h3{margin:0 0 2px; color:#fff; font-size:17px}
+  .drawer .dclose{position:absolute; top:14px; right:16px; background:none; border:0; color:var(--ink-dim); font-size:22px; cursor:pointer}
+  .field{display:grid; grid-template-columns:120px 1fr; gap:8px; padding:7px 0; border-bottom:1px dashed var(--line); font-size:12.5px}
+  .field label{color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:.6px; padding-top:2px}
+  .field .val{color:var(--ink)}
+  .field input,.field select,.field textarea{width:100%; background:rgba(120,243,255,.06); border:1px solid var(--line); color:var(--ink); border-radius:6px; padding:5px 7px; font:inherit; font-size:12px}
+  .field textarea{resize:vertical; min-height:48px}
+  .deps{display:flex; gap:6px; flex-wrap:wrap} .deps a{font-size:11px; border:1px solid var(--line); border-radius:6px; padding:2px 7px}
+  .drawer-actions{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap}
+  .qrbox{margin:14px 0; padding:12px; background:#fff; border-radius:10px; width:max-content} .qrbox img,.qrbox canvas{display:block}
+  .qrcap{font-size:10px; color:var(--muted); margin-top:6px; text-align:center}
+  .sect-h{margin:16px 0 6px; font-size:10px; letter-spacing:.6px; text-transform:uppercase; color:var(--muted)}
+  .acc.dwr{margin:12px 0; border-color:rgba(120,243,255,.14); background:rgba(120,243,255,.03)}
+  .acc.dwr>summary{padding:9px 12px}
+  .acc.dwr>summary .s-title{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-dim); font-weight:600}
+  .acc.dwr>summary .s-count{margin-left:auto; font-size:11px; color:var(--muted)}
+  .acc.dwr .acc-body{padding:2px 12px 10px}
+
+  /* modal genérico (alta xpacio / añadir elemento / mapa) */
+  .modal{position:fixed; inset:0; z-index:42; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(2,5,10,.66); backdrop-filter:blur(2px)}
+  .modal.show{display:flex}
+  .modal-card{background:linear-gradient(180deg,#0b1422,#070d18); border:1px solid var(--cyan-dim); border-radius:14px; width:min(620px,96vw); max-height:92vh; overflow:auto; padding:20px; position:relative}
+  .modal-card.wide{width:min(960px,96vw)}
+  .modal-card h3{margin:0 0 10px; color:#fff} .modal-card .dclose{position:absolute; top:12px; right:16px; background:none; border:0; color:var(--ink-dim); font-size:22px; cursor:pointer}
+  .modal-card svg{width:100%; height:auto; display:block; margin-top:8px}
+  .frm label{display:block; font-size:10px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin:10px 0 4px}
+  .frm input,.frm select{width:100%; background:rgba(120,243,255,.06); border:1px solid var(--line); color:var(--ink); border-radius:8px; padding:9px 11px; font:inherit}
+  .typegrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; margin-top:8px}
+  .typecard{border:1px solid var(--line); border-radius:10px; padding:10px; cursor:pointer; display:flex; gap:8px; align-items:center}
+  .typecard:hover{border-color:var(--cyan); background:rgba(120,243,255,.08)}
+  .typecard small{color:var(--muted); display:block; font-size:10px}
+  .node rect{fill:rgba(10,19,32,.95); stroke-width:1.4} .node text{font:11px ui-monospace,monospace; fill:var(--ink)}
+  .node.iot rect{stroke:var(--iot)} .node.analogico rect{stroke:var(--ana)} .node{cursor:pointer}
+  .edge{stroke:var(--cyan-dim); stroke-width:1.2; fill:none; marker-end:url(#arrow)}
+
+  footer{margin-top:40px; border-top:1px solid var(--line); padding-top:16px; color:var(--muted); font-size:11px; display:flex; gap:16px; flex-wrap:wrap; align-items:center}
+  footer a.reset{color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:2px 8px}
+  .empty{color:var(--muted); padding:24px; text-align:center}
+  @media(max-width:560px){ .field{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>ADMIRA · CMDB</b><small>Inventario ITIL de Xpacios</small></div>
+    <nav class="crumbs">
+      <a href="https://www.admira.com">admira.com</a>
+      <a href="https://www.admira.studio">studio</a>
+      <a href="index.html">gemelo</a>
+      <a href="https://www.admira.app">app</a>
+    </nav>
+    <div class="sync" id="syncBadge"><span class="dot"></span><span id="syncTxt">conectando…</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 class="title">Inventario ITIL · Xpacios <span class="tag" id="metaTag">CMDB</span><span class="tag pre" id="envTag" style="display:none">PRE</span></h1>
+  <p class="subtitle">Cada <b>Xpacio</b> es una entidad con sus elementos (Configuration Items), en dos grupos: <b>IoT</b> (conectados, estado en vivo) y <b>analógicos</b>. Cada elemento lleva nº de serie, fecha de compra y garantía (por defecto, compra + 1 año).</p>
+
+  <div class="xpbar" id="xpbar"></div>
+  <div class="kpis" id="kpis"></div>
+
+  <div class="controls">
+    <div class="search">🔎<input id="q" type="search" placeholder="Buscar por nombre, ID, serie, clase, ubicación…" autocomplete="off"></div>
+    <div class="chips" id="statusChips"></div>
+  </div>
+  <div class="toolbar2">
+    <div class="chips" id="groupChips"></div>
+    <div class="seg" id="viewSeg"><button data-v="cards" class="on">▦ Tarjetas</button><button data-v="table">▤ Tabla</button></div>
+    <div class="spacer"></div>
+    <button class="btn" id="btnAddEl" style="display:none">➕ Elemento</button>
+    <button class="btn" id="btnToggleAll">⊞ Expandir todo</button>
+    <button class="btn" id="btnMap">🔗 Mapa</button>
+    <button class="btn" id="btnRefresh">↻ Estado IoT</button>
+    <button class="btn" id="btnEdit">✏ Editar</button>
+    <button class="btn" id="btnCsv">⬇ CSV</button>
+    <button class="btn" id="btnExport">⬇ JSON</button>
+  </div>
+
+  <div id="groups"></div>
+
+  <footer>
+    <span>Fuente: <code id="srcLabel">assets/data/cmdb.json</code></span>
+    <span id="fEdit"></span>
+    <span id="fUpdated"></span>
+    <a href="#" class="reset" id="btnReset">↺ datos repo</a>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<!-- modal: alta de Xpacio -->
+<div class="modal" id="altaModal"><div class="modal-card">
+  <button class="dclose" id="altaClose">×</button>
+  <h3>➕ Alta de Xpacio</h3>
+  <div class="frm">
+    <label>Nombre del Xpacio</label><input id="altaName" placeholder="Admira XP · Nuevo punto">
+    <label>Dirección / ciudad</label><input id="altaAddr" placeholder="Ciudad">
+    <label>Gemelo (Matterport / URL, opcional)</label><input id="altaTwin" placeholder="https://my.matterport.com/show/?m=…">
+    <label>Elementos iniciales</label>
+    <select id="altaTpl">
+      <option value="kit">Kit completo Admira XP (todos los tipos)</option>
+      <option value="iot">Solo IoT (conectados)</option>
+      <option value="empty">Vacío (añadir luego)</option>
+    </select>
+  </div>
+  <div class="drawer-actions"><button class="btn amber" id="altaCreate">Crear Xpacio</button><button class="btn" id="altaCancel">Cancelar</button></div>
+  <div style="color:var(--muted);font-size:11px;margin-top:8px">Los elementos se crean en estado «planificado», sin serie/compra. La garantía se autocompleta a compra + 1 año al fijar la fecha.</div>
+</div></div>
+
+<!-- modal: añadir elemento -->
+<div class="modal" id="addElModal"><div class="modal-card">
+  <button class="dclose" id="addElClose">×</button>
+  <h3>➕ Añadir elemento al Xpacio</h3>
+  <div style="color:var(--ink-dim);font-size:12px">Elige el tipo del catálogo. Se crea una instancia que podrás editar (serie, compra, garantía…).</div>
+  <div class="typegrid" id="typeGrid"></div>
+</div></div>
+
+<!-- modal: mapa -->
+<div class="modal" id="mapWrap"><div class="modal-card wide">
+  <button class="dclose" id="mapClose">×</button>
+  <h3>🔗 Mapa de dependencias</h3>
+  <div style="color:var(--ink-dim);font-size:12px">Flecha A→B = «A depende de B». Click en un nodo abre su ficha.</div>
+  <div id="mapSvg"></div>
+</div></div>
+
+<script>
+/* ── Inventario ITIL multi-Xpacio (CMDB) · admira.store ──────────────────── */
+const INVENTORY_API = ''; // preproducción/sandbox: sin worker/token, edita en local
+const LS_DB = 'admira_cmdb_db_v2';
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const DAY=86400000;
+
+let DB=null, liveState={}, editMode=false;
+let activeXpacio='all', activeFilter='all', groupFilter='all', query='', viewMode='cards';
+let sortKey='id', sortDir=1, groupOpen={}, catOpen={}, xpOpen={}, allExpanded=false;
+
+// ── Fechas / garantía ───────────────────────────────────────────────────────
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function addYears(s,n){ if(!s) return ''; const [y,m,d]=s.split('-').map(Number); if(!y) return '';
+  const mm=String(m).padStart(2,'0'), dd=String(d).padStart(2,'0'); return (y+(n||1))+'-'+mm+'-'+dd; }
+function warranty(it){ const w=it.warranty_until; if(!w) return {state:'none',label:'sin garantía',color:'var(--na)',days:null,until:null};
+  const days=Math.round((new Date(w+'T00:00:00').getTime()-Date.now())/DAY);
+  if(days<0) return {state:'expired',label:'caducada '+(-days)+'d',color:'var(--ov-red)',days,until:w};
+  if(days<=30) return {state:'soon',label:'vence '+days+'d',color:'var(--ov-amber)',days,until:w};
+  return {state:'ok',label:'vigente',color:'var(--ov-ok)',days,until:w}; }
+function warrExpiredOrSoon(it){ const s=warranty(it).state; return s==='expired'||s==='soon'; }
+
+// ── Mantenimiento ────────────────────────────────────────────────────────────
+function maint(it){ const m=it.maintenance||{}; const iv=m.interval_days;
+  if(!iv) return {state:'none',label:'sin plan',color:'var(--na)'};
+  if(!m.last) return {state:'unset',label:'sin registro',color:'var(--ov-amber)',due:null,days:null};
+  const due=new Date(m.last+'T00:00:00').getTime()+iv*DAY; const days=Math.round((due-Date.now())/DAY);
+  const dueStr=new Date(due).toISOString().slice(0,10);
+  if(days<0) return {state:'overdue',label:'vencido '+(-days)+'d',color:'var(--ov-red)',due:dueStr,days};
+  if(days<=14) return {state:'soon',label:'en '+days+'d',color:'var(--ov-amber)',due:dueStr,days};
+  return {state:'ok',label:'en '+days+'d',color:'var(--ov-ok)',due:dueStr,days}; }
+function maintPending(it){ const s=maint(it).state; return s==='overdue'||s==='unset'; }
+
+// ── Live ──────────────────────────────────────────────────────────────────────
+const PROXIES={ marketplace:'https://admira-marketplace.csilvasantin.workers.dev/active-campaigns',
+  occupancy:'https://aforo-proxy.csilvasantin.workers.dev/', grok:'https://admira-grok-proxy.csilvasantin.workers.dev/health',
+  telegram:'https://admira-telegram-bridge.csilvasantin.workers.dev/health' };
+const STATE_COLORS={up:'var(--up)',idle:'var(--idle)',down:'var(--down)',local:'var(--local)',na:'var(--na)'};
+async function fetchProxy(url){ try{ const c=new AbortController(); const t=setTimeout(()=>c.abort(),6000);
+  const r=await fetch(url,{cache:'no-store',signal:c.signal}); clearTimeout(t); if(!r.ok) return {ok:false,status:r.status};
+  let body=null; try{body=await r.json();}catch(_){body=await r.text().catch(()=>null);} return {ok:true,body};
+  }catch(e){ return {ok:false,err:String(e.name||e)}; } }
+async function refreshLive(){ if(!DB) return; setSync('poll');
+  const els=allEls(); const need=new Set(els.map(i=>i.live&&i.live.source).filter(Boolean)); const res={};
+  await Promise.all(['marketplace','occupancy','grok','telegram'].filter(s=>need.has(s)).map(async s=>{ res[s]=await fetchProxy(PROXIES[s]); }));
+  for(const it of els){ const src=it.live&&it.live.source;
+    if(!src||src==='none'){ liveState[it.id]={state:'na',label:'—'}; continue; }
+    if(src==='manual'){ liveState[it.id]={state:'na',label:'manual'}; continue; }
+    if(src==='lan'){ liveState[it.id]={state:'local',label:'red local'}; continue; }
+    const r=res[src]; if(!r||!r.ok){ liveState[it.id]={state:'down',label:'sin respuesta'}; continue; }
+    if(src==='marketplace'){ const m=(r.body&&(r.body.campaigns||r.body.bySurface))||{}; const c=m[it.live.key];
+      liveState[it.id]=c?{state:'up',label:'campaña activa',detail:c.name||c.title||''}:{state:'idle',label:'online · sin campaña'};
+    } else if(src==='occupancy'){ const b=r.body||{}; const n=b.occupancy??b.count??b.people??b.current??null;
+      liveState[it.id]={state:'up',label:n!=null?('aforo '+n):'online'};
+    } else { liveState[it.id]={state:'up',label:'online'}; } }
+  setSync('live'); render(); }
+function setSync(mode){ const b=$('#syncBadge'),t=$('#syncTxt');
+  if(mode==='live'){ b.classList.add('live'); t.textContent='IoT en vivo · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); }
+  else if(mode==='poll'){ b.classList.remove('live'); t.textContent='consultando proxies…'; }
+  else { b.classList.remove('live'); t.textContent=mode; } }
+
+// ── Acceso a datos ──────────────────────────────────────────────────────────
+function allEls(){ return DB.xpacios.flatMap(x=>x.elements); }
+function xpById(id){ return DB.xpacios.find(x=>x.id===id); }
+function findEl(id){ for(const x of DB.xpacios){ const e=x.elements.find(el=>el.id===id); if(e) return {el:e,xp:x}; } return null; }
+function scopeXpacios(){ return activeXpacio==='all'?DB.xpacios:DB.xpacios.filter(x=>x.id===activeXpacio); }
+function scopeEls(){ return scopeXpacios().flatMap(x=>x.elements); }
+function statusDef(id){ return (DB.statuses&&DB.statuses[id])||{label_es:id,color:'var(--na)'}; }
+function groupColor(g){ return g==='iot'?'var(--iot)':'var(--ana)'; }
+function liveOf(id){ return liveState[id]||{state:'na',label:'…'}; }
+
+// ── Carga ─────────────────────────────────────────────────────────────────────
+async function loadDB(){
+  let base=null;
+  if(INVENTORY_API){ const r=await fetchProxy(INVENTORY_API+'/cmdb'); if(r.ok&&r.body&&r.body.xpacios) base=r.body; }
+  if(!base){ const r=await fetch('assets/data/cmdb.json',{cache:'no-store'}); base=await r.json(); }
+  try{ const ov=JSON.parse(localStorage.getItem(LS_DB)||'null'); if(ov&&ov.xpacios) base.xpacios=ov.xpacios; }catch(_){}
+  DB=base;
+  $('#metaTag').textContent='v'+(DB.meta?.version||1);
+  $('#fUpdated').textContent='Actualizado: '+(DB.meta?.updated||'');
+  $('#fEdit').textContent=INVENTORY_API?'Capa editable: worker KV':'Modo sandbox: edición local + export';
+  $('#srcLabel').textContent=INVENTORY_API?INVENTORY_API+'/cmdb':'assets/data/cmdb.json';
+  if(location.hostname.includes('xpaceos')||!INVENTORY_API) $('#envTag').style.display='';
+}
+function persist(){ try{ localStorage.setItem(LS_DB, JSON.stringify({version:DB.meta.version, xpacios:DB.xpacios})); }catch(_){}
+  if(INVENTORY_API){ const tok=localStorage.getItem('admira_cmdb_token')||'';
+    fetch(INVENTORY_API+'/cmdb',{method:'PUT',headers:{'content-type':'application/json',...(tok?{authorization:'Bearer '+tok}:{})},body:JSON.stringify(DB)}).catch(e=>console.warn('PUT',e)); } }
+
+// ── Chips / selector ────────────────────────────────────────────────────────
+function buildXpbar(){
+  const bar=$('#xpbar'); bar.innerHTML='';
+  const mk=(id,label,n,extra)=>{ const b=document.createElement('button'); b.className='xpchip'+(activeXpacio===id?' on':'')+(extra||'');
+    b.innerHTML=label+(n!=null?` <span class="n">${n}</span>`:''); b.onclick=()=>{ activeXpacio=id; buildXpbar(); buildChips(); syncAddElBtn(); render(); }; bar.appendChild(b); return b; };
+  mk('all','🗂️ Todos los Xpacios', allEls().length);
+  for(const x of DB.xpacios) mk(x.id,'🏪 '+esc(x.name), x.elements.length);
+  const add=document.createElement('button'); add.className='xpchip add'; add.textContent='➕ Nuevo Xpacio'; add.onclick=openAlta; bar.appendChild(add);
+}
+function buildChips(){
+  const c=$('#statusChips'); c.innerHTML='';
+  const mk=(k,l)=>{ const b=document.createElement('button'); b.className='chip'+(activeFilter===k?' on':''); b.textContent=l; b.onclick=()=>{activeFilter=k; buildChips(); render();}; c.appendChild(b); };
+  mk('all','Todos'); for(const k in (DB.statuses||{})) mk(k,DB.statuses[k].label_es);
+  const g=$('#groupChips'); g.innerHTML='';
+  const mg=(k,l)=>{ const b=document.createElement('button'); b.className='chip'+(groupFilter===k?' on':''); b.textContent=l; b.onclick=()=>{groupFilter=k; buildChips(); render();}; g.appendChild(b); };
+  mg('all','Todos los grupos'); mg('iot','📡 IoT'); mg('analogico','🪑 Analógico');
+}
+function syncAddElBtn(){ $('#btnAddEl').style.display=(editMode&&activeXpacio!=='all')?'':'none'; }
+
+// ── KPIs ────────────────────────────────────────────────────────────────────
+function kpis(){
+  const xs=scopeXpacios(), it=scopeEls();
+  const data=[
+    ['Xpacios',activeXpacio==='all'?DB.xpacios.length:1,false],
+    ['Elementos',it.length,false],
+    ['IoT',it.filter(i=>i.group==='iot').length,false],
+    ['Analógicos',it.filter(i=>i.group==='analogico').length,false],
+    ['IoT en vivo ↑',it.filter(i=>i.group==='iot'&&liveOf(i.id).state==='up').length,false],
+    ['Rev. pendiente',it.filter(maintPending).length,true],
+    ['Garantía ⚠',it.filter(warrExpiredOrSoon).length,true],
+  ];
+  $('#kpis').innerHTML=data.map(([l,v,a])=>`<div class="kpi${a&&v?' alert':''}"><b>${v}</b><span>${l}</span></div>`).join('');
+}
+
+function matches(it){
+  if(groupFilter!=='all' && it.group!==groupFilter) return false;
+  if(activeFilter!=='all' && it.status!==activeFilter) return false;
+  if(!query) return true;
+  return norm(it.id+' '+it.name+' '+it.ci_class+' '+it.location+' '+it.twinType+' '+(it.vendor||'')+' '+(it.model||'')+' '+(it.serial||'')+' '+(it.category||'')).includes(query);
+}
+
+function miniDots(items){
+  const c={}; items.forEach(it=>{ const s=statusDef(it.status); c[s.color]=(c[s.color]||0)+1; });
+  const dots=Object.entries(c).map(([col,n])=>`<i style="background:${col}" title="${n}"></i>`).join('');
+  const tags=[]; const live=items.filter(i=>i.group==='iot'&&liveOf(i.id).state==='up').length;
+  const pend=items.filter(maintPending).length; const warr=items.filter(warrExpiredOrSoon).length;
+  if(live) tags.push('🟢'+live); if(pend) tags.push('🛠'+pend); if(warr) tags.push('🛡'+warr);
+  return `<span class="mini-dots">${dots}</span>${tags.length?' '+tags.join(' '):''}`;
+}
+
+function liveBadge(it){ if(it.group!=='iot') return ''; const s=liveOf(it.id);
+  return `<span class="badge b-live" title="${esc(s.detail||'')}"><span class="d" style="background:${STATE_COLORS[s.state]||'var(--na)'}"></span>${esc(s.label)}</span>`; }
+function maintBadge(it){ const m=maint(it); if(m.state==='none') return '';
+  return `<span class="badge b-maint" title="${m.due?('próxima: '+m.due):''}"><span class="d" style="background:${m.color}"></span>🛠 ${esc(m.label)}</span>`; }
+function warrBadge(it){ const w=warranty(it); if(w.state==='none'||w.state==='ok') return '';
+  return `<span class="badge b-warr" title="${w.until?('garantía hasta '+w.until):''}"><span class="d" style="background:${w.color}"></span>🛡 ${esc(w.label)}</span>`; }
+
+function card(it,xp){ const sd=statusDef(it.status);
+  return `<div class="card ${it.group}" data-id="${it.id}">
+    <div class="row1"><div class="ci-icon">${it.icon||'▪'}</div>
+      <div><div class="ci-name">${esc(it.name)}</div><div class="ci-id">${it.id}${it.serial?(' · '+esc(it.serial)):''}</div></div></div>
+    <div class="ci-class">${esc(it.ci_class)}${(activeXpacio==='all'&&xp)?` · <span style="color:var(--xp)">${esc(xp.name)}</span>`:''}</div>
+    <div class="meta"><span>📍 ${esc(it.location||'—')}</span><span>🔌 ${esc((it.connectivity&&it.connectivity.protocol)||'—')}</span></div>
+    <div class="badges"><span class="badge"><span class="d" style="background:${sd.color}"></span>${esc(sd.label_es)}</span>${liveBadge(it)}${maintBadge(it)}${warrBadge(it)}</div>
+  </div>`; }
+
+// grupos → categorías (acordeones) para una lista de elementos de un Xpacio
+function buildGroupsHTML(els, xp){
+  const searching=!!query||activeFilter!=='all'; let out='';
+  for(const g of DB.groups){
+    if(groupFilter!=='all' && g.id!==groupFilter) continue;
+    const gi=els.filter(i=>i.group===g.id); const total=xp.elements.filter(i=>i.group===g.id).length;
+    if(searching && !gi.length) continue;
+    const catOrder=[]; xp.elements.filter(i=>i.group===g.id).forEach(i=>{ const c=i.category||'Otros'; if(!catOrder.includes(c)) catOrder.push(c); });
+    let cats='';
+    for(const cn of catOrder){
+      const ci=gi.filter(i=>(i.category||'Otros')===cn); if(searching && !ci.length) continue;
+      const tot=xp.elements.filter(i=>i.group===g.id&&(i.category||'Otros')===cn).length;
+      const key=xp.id+'::'+g.id+'::'+cn; const open=searching?true:(catOpen[key]===true);
+      cats+=`<details class="acc cat" data-cat="${esc(key)}" ${open?'open':''}>
+        <summary><span class="caret">▶</span><span class="s-title">${esc(cn)}</span>
+          <span class="s-count">${ci.length}${ci.length!==tot?'/'+tot:''}</span><span class="s-desc">${miniDots(ci)}</span></summary>
+        <div class="acc-body"><div class="grid">${ci.length?ci.map(i=>card(i,xp)).join(''):'<div class="empty">Sin resultados.</div>'}</div></div></details>`;
+    }
+    const gkey=xp.id+'::'+g.id; const gopen=searching?true:(groupOpen[gkey]!==false);
+    out+=`<details class="acc grp ${g.id}" data-grp="${esc(gkey)}" ${gopen?'open':''}>
+      <summary><span class="caret">▶</span><span class="gicon">${g.icon}</span><span class="s-title">${esc(g.name_es)}</span>
+        <span class="s-count">${gi.length}/${total}</span><span class="s-desc">${miniDots(gi)}</span></summary>
+      <div class="acc-body">${cats||'<div class="empty">Sin resultados.</div>'}</div></details>`;
+  }
+  return out||'<div class="empty">Sin resultados con el filtro actual.</div>';
+}
+
+const COLS=[{k:'id',t:'ID'},{k:'name',t:'Activo'},{k:'xp',t:'Xpacio'},{k:'group',t:'Grupo'},{k:'status',t:'Estado'},
+  {k:'serial',t:'Nº serie'},{k:'purchase_date',t:'Compra'},{k:'warr',t:'Garantía'},{k:'live',t:'En vivo'},{k:'maint',t:'Mantenim.'}];
+function sortVal(it,k){
+  if(k==='live') return liveOf(it.id).state;
+  if(k==='maint'){ const m=maint(it); return m.days==null?9999:m.days; }
+  if(k==='warr'){ const w=warranty(it); return w.days==null?99999:w.days; }
+  if(k==='xp'){ const f=findEl(it.id); return f?norm(f.xp.name):''; }
+  if(k==='status'){ const o={incident:0,degraded:1,maintenance:2,planned:3,operational:4,retired:5}; return o[it.status]??9; }
+  return norm(it[k]); }
+function renderTable(items){
+  const showXp=activeXpacio==='all';
+  const cols=COLS.filter(c=>c.k!=='xp'||showXp);
+  const ths=cols.map(c=>`<th data-k="${c.k}">${c.t}${sortKey===c.k?` <span class="arr">${sortDir>0?'▲':'▼'}</span>`:''}</th>`).join('');
+  const rows=items.map(it=>{ const sd=statusDef(it.status), lv=liveOf(it.id), m=maint(it), w=warranty(it); const f=showXp?findEl(it.id):null;
+    const cells=[ `<td>${it.id}</td>`, `<td class="nm">${it.icon||''} ${esc(it.name)}</td>` ];
+    if(showXp) cells.push(`<td style="color:var(--xp)">${esc(f?f.xp.name:'')}</td>`);
+    cells.push(`<td><span class="dotrow"><span class="gdot" style="background:${groupColor(it.group)}"></span>${it.group==='iot'?'IoT':'Analóg.'}</span></td>`);
+    cells.push(`<td><span class="dotrow"><span class="gdot" style="background:${sd.color}"></span>${esc(sd.label_es)}</span></td>`);
+    cells.push(`<td>${esc(it.serial||'—')}</td>`);
+    cells.push(`<td>${esc(it.purchase_date||'—')}</td>`);
+    cells.push(`<td>${w.state==='none'?'—':`<span class="dotrow"><span class="gdot" style="background:${w.color}"></span>${esc(it.warranty_until||'')}</span>`}</td>`);
+    cells.push(`<td>${it.group==='iot'?`<span class="dotrow"><span class="gdot" style="background:${STATE_COLORS[lv.state]}"></span>${esc(lv.label)}</span>`:'—'}</td>`);
+    cells.push(`<td>${m.state==='none'?'—':`<span class="dotrow"><span class="gdot" style="background:${m.color}"></span>${esc(m.label)}</span>`}</td>`);
+    return `<tr data-id="${it.id}">${cells.join('')}</tr>`; }).join('');
+  return `<table class="cmdb"><thead><tr>${ths}</tr></thead><tbody>${rows||`<tr><td colspan="${cols.length}" class="empty">Sin resultados.</td></tr>`}</tbody></table>`;
+}
+
+function xpacioSummary(xp,els){
+  const tags=[]; const live=els.filter(i=>i.group==='iot'&&liveOf(i.id).state==='up').length;
+  const pend=els.filter(maintPending).length; const warr=els.filter(warrExpiredOrSoon).length;
+  if(live) tags.push('🟢'+live+' vivo'); if(pend) tags.push('🛠'+pend); if(warr) tags.push('🛡'+warr);
+  return (xp.addr?('📍 '+esc(xp.addr)+' · '):'')+(tags.join(' ')||'ok');
+}
+
+function render(){
+  kpis(); const host=$('#groups'); const searching=!!query||activeFilter!=='all';
+  let items=scopeEls().filter(matches);
+  if(viewMode==='table'){ items.sort((a,b)=>{ const va=sortVal(a,sortKey),vb=sortVal(b,sortKey); return (va<vb?-1:va>vb?1:0)*sortDir; });
+    host.innerHTML=renderTable(items);
+    host.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{ const k=th.dataset.k; if(sortKey===k) sortDir*=-1; else {sortKey=k; sortDir=1;} render(); });
+    host.querySelectorAll('tr[data-id]').forEach(tr=>tr.onclick=()=>openDrawer(tr.dataset.id)); return; }
+  host.innerHTML='';
+  if(activeXpacio==='all'){
+    for(const xp of DB.xpacios){
+      const els=xp.elements.filter(matches); if(searching && !els.length) continue;
+      const open=searching?true:(xpOpen[xp.id]!==false);
+      host.insertAdjacentHTML('beforeend',`<details class="acc xpac" data-xp="${xp.id}" ${open?'open':''}>
+        <summary><span class="caret">▶</span><span class="gicon">🏪</span><span class="s-title">${esc(xp.name)}</span>
+          <span class="s-count">${els.length}/${xp.elements.length} elem</span><span class="s-desc">${xpacioSummary(xp,els)}</span></summary>
+        <div class="acc-body">${buildGroupsHTML(els,xp)}</div></details>`);
+    }
+    if(!host.innerHTML) host.innerHTML='<div class="empty">Sin resultados.</div>';
+  } else {
+    const xp=xpById(activeXpacio); host.innerHTML=xp?buildGroupsHTML(xp.elements.filter(matches),xp):'<div class="empty">Xpacio no encontrado.</div>';
+  }
+  host.querySelectorAll('details.xpac').forEach(d=>d.addEventListener('toggle',()=>{ if(!searching) xpOpen[d.dataset.xp]=d.open; }));
+  host.querySelectorAll('details.grp').forEach(d=>d.addEventListener('toggle',()=>{ if(!searching) groupOpen[d.dataset.grp]=d.open; }));
+  host.querySelectorAll('details.cat').forEach(d=>d.addEventListener('toggle',()=>{ if(!searching) catOpen[d.dataset.cat]=d.open; }));
+  host.querySelectorAll('.card').forEach(el=>el.onclick=()=>openDrawer(el.dataset.id));
+}
+
+// ── Drawer ────────────────────────────────────────────────────────────────────
+function field(label,key,it,opts){ opts=opts||{}; const v=getNested(it,key); const vv=v!=null?v:'';
+  if(!editMode){ const disp=opts.select?(opts.select[vv]||vv):vv; return `<div class="field"><label>${label}</label><div class="val">${esc(disp)||'—'}</div></div>`; }
+  if(opts.select){ const o=Object.entries(opts.select).map(([k,l])=>`<option value="${k}" ${k===vv?'selected':''}>${esc(l)}</option>`).join('');
+    return `<div class="field"><label>${label}</label><select data-k="${key}">${o}</select></div>`; }
+  if(opts.area) return `<div class="field"><label>${label}</label><textarea data-k="${key}">${esc(vv)}</textarea></div>`;
+  return `<div class="field"><label>${label}</label><input data-k="${key}" ${opts.type?`type="${opts.type}"`:''} value="${esc(vv)}"></div>`; }
+function getNested(it,key){ if(key.includes('.')){ const [a,b]=key.split('.'); return (it[a]||{})[b]; } return it[key]; }
+function setNested(it,key,val){ if(key.includes('.')){ const [a,b]=key.split('.'); it[a]=it[a]||{}; it[a][b]=val; } else it[key]=val; }
+function deepLink(id){ return location.origin+location.pathname+'?ci='+encodeURIComponent(id); }
+
+function openDrawer(id){
+  const f=findEl(id); if(!f) return; const it=f.el, xp=f.xp;
+  history.replaceState(null,'','?ci='+encodeURIComponent(id));
+  const d=$('#drawer'); const conn=it.connectivity||{}; const live=liveOf(it.id); const m=maint(it); const w=warranty(it);
+  const statusOpts=Object.fromEntries(Object.entries(DB.statuses).map(([k,v])=>[k,v.label_es]));
+  const up=(it.depends_on||[]); const down=xp.elements.filter(x=>(x.depends_on||[]).includes(id)).map(x=>x.id);
+  const linkArr=arr=>arr.length?arr.map(x=>`<a href="#" data-dep="${x}">${x}</a>`).join(' '):'<span class="val">—</span>';
+  d.innerHTML=`<button class="dclose" id="dclose">×</button>
+    <div style="font-size:26px">${it.icon||'▪'}</div>
+    <h3>${esc(it.name)}</h3>
+    <div class="ci-id" style="margin-bottom:6px"><span class="gdot" style="background:${groupColor(it.group)}"></span>${it.id} · ${esc(it.ci_class)} · <span style="color:var(--xp)">🏪 ${esc(xp.name)}</span></div>
+    ${it.group==='iot'?`<div class="badge b-live" style="margin-bottom:8px"><span class="d" style="background:${STATE_COLORS[live.state]}"></span>EN VIVO: ${esc(live.label)}${live.detail?(' · '+esc(live.detail)):''}</div>`:''}
+    ${field('Estado','status',it,{select:statusOpts})}
+    ${field('Clase CI','ci_class',it)}
+    ${field('Tipo gemelo','twinType',it)}
+    ${field('Ubicación','location',it)}
+    ${field('Responsable','owner',it)}
+    ${field('Fabricante','vendor',it)}
+    ${field('Modelo','model',it)}
+    <div class="sect-h">Trazabilidad</div>
+    ${field('Nº de serie','serial',it)}
+    ${field('Fecha de compra','purchase_date',it,{type:'date'})}
+    ${field('Garantía (fin)','warranty_until',it,{type:'date'})}
+    ${!editMode&&w.state!=='none'?`<div class="field"><label>Estado garantía</label><div class="val" style="color:${w.color}">🛡 ${esc(w.label)}${w.until?(' · hasta '+w.until):''}</div></div>`:''}
+    <div class="field"><label>Conectividad</label><div class="val">${esc(conn.protocol||'—')}${conn.endpoint?('<br><small>'+esc(conn.endpoint)+'</small>'):''}${conn.surface_ref?('<br><small>surface: '+esc(conn.surface_ref)+'</small>'):''}</div></div>
+    <details class="acc dwr" open><summary><span class="caret">▶</span><span class="s-title">Relaciones</span><span class="s-count">${up.length}↑ ${down.length}↓</span></summary><div class="acc-body">
+      <div class="field"><label>Depende de</label><div class="val deps">${linkArr(up)}</div></div>
+      <div class="field"><label>Le afecta a</label><div class="val deps">${linkArr(down)}</div></div></div></details>
+    <details class="acc dwr" open><summary><span class="caret">▶</span><span class="s-title">Mantenimiento</span>${m.state!=='none'?`<span class="s-count" style="color:${m.color}">🛠 ${esc(m.label)}</span>`:''}</summary><div class="acc-body">
+      <div class="field"><label>Plan</label><div class="val">cada ${esc((it.maintenance||{}).interval_days||'—')} días${m.due?(' · próxima '+m.due):''}</div></div>
+      ${field('Último','maintenance.last',it,{type:'date'})}</div></details>
+    ${field('Notas','notes',it,{area:true})}
+    <details class="acc dwr"><summary><span class="caret">▶</span><span class="s-title">Etiqueta física (QR)</span></summary><div class="acc-body">
+      <div class="qrbox" id="qrbox"></div><div class="qrcap" id="qrcap"></div></div></details>
+    <div class="drawer-actions">
+      ${editMode?`<button class="btn" id="dsave">💾 Guardar</button>`:''}
+      ${editMode?`<button class="btn" id="ddel" style="border-color:var(--ov-red);color:var(--ov-red)">🗑 Eliminar</button>`:''}
+      <button class="btn" id="dcopy">📋 Copiar enlace</button>
+      <button class="btn" id="dgemelo">Gemelo →</button></div>`;
+  $('#scrim').classList.add('show'); d.classList.add('show'); d.setAttribute('aria-hidden','false');
+  $('#dclose').onclick=closeDrawer;
+  $('#dgemelo').onclick=()=>window.open('index.html?focus='+encodeURIComponent(it.twinType||''),'_blank','noopener');
+  $('#dcopy').onclick=()=>{ navigator.clipboard?.writeText(deepLink(id)); $('#dcopy').textContent='✓ copiado'; setTimeout(()=>$('#dcopy').textContent='📋 Copiar enlace',1200); };
+  d.querySelectorAll('[data-dep]').forEach(a=>a.onclick=e=>{e.preventDefault(); openDrawer(a.dataset.dep);});
+  if(editMode&&$('#dsave')) $('#dsave').onclick=()=>saveItem(id);
+  if(editMode&&$('#ddel')) $('#ddel').onclick=()=>delItem(id);
+  try{ const box=$('#qrbox'); box.innerHTML=''; new QRCode(box,{text:deepLink(id),width:120,height:120,correctLevel:QRCode.CorrectLevel.M});
+    $('#qrcap').textContent=id+' · escanear abre esta ficha'; }catch(e){ const b=$('#qrbox'); if(b) b.remove(); }
+}
+function closeDrawer(){ $('#scrim').classList.remove('show'); $('#drawer').classList.remove('show'); $('#drawer').setAttribute('aria-hidden','true'); history.replaceState(null,'',location.pathname); }
+function saveItem(id){ const f=findEl(id); if(!f) return; const it=f.el;
+  $('#drawer').querySelectorAll('[data-k]').forEach(el=>setNested(it,el.dataset.k,el.value));
+  if(it.purchase_date && !it.warranty_until) it.warranty_until=addYears(it.purchase_date,1); // garantía por defecto 1 año
+  persist(); closeDrawer(); render(); }
+function delItem(id){ const f=findEl(id); if(!f) return; if(!confirm('¿Eliminar '+id+' del Xpacio '+f.xp.name+'?')) return;
+  f.xp.elements=f.xp.elements.filter(e=>e.id!==id); persist(); closeDrawer(); buildXpbar(); render(); }
+
+// ── Alta de Xpacio ──────────────────────────────────────────────────────────
+function openAlta(){ $('#altaName').value=''; $('#altaAddr').value=''; $('#altaTwin').value=''; $('#altaTpl').value='kit'; $('#altaModal').classList.add('show'); $('#altaName').focus(); }
+function closeAlta(){ $('#altaModal').classList.remove('show'); }
+function nextXpId(){ let max=0; DB.xpacios.forEach(x=>{ const m=/XP-(\d+)/.exec(x.id); if(m) max=Math.max(max,+m[1]); }); return 'XP-'+String(max+1).padStart(3,'0'); }
+function newElement(xpId, c, seq){ const id=xpId+'-'+String(seq).padStart(3,'0');
+  return { id, twinType:c.type, group:c.group, category:c.category, ci_class:c.ci_class, name:c.name, icon:c.icon,
+    status:'planned', location:'', owner:'Admira XP', vendor:'', model:'', serial:'', purchase_date:'', warranty_until:'',
+    connectivity:c.connectivity||{protocol:'—'}, live:c.live||{source:'none'}, depends_on:[], maintenance:{interval_days:c.maint_days||365,last:''}, notes:'' }; }
+function createXpacio(){
+  const name=$('#altaName').value.trim()||'Xpacio sin nombre'; const addr=$('#altaAddr').value.trim();
+  const twin=$('#altaTwin').value.trim(); const tpl=$('#altaTpl').value; const id=nextXpId();
+  let cat=DB.catalog||[]; if(tpl==='iot') cat=cat.filter(c=>c.group==='iot'); if(tpl==='empty') cat=[];
+  const elements=cat.map((c,i)=>newElement(id,c,i+1));
+  // cablear dependencia a la red si existe
+  const net=elements.find(e=>e.twinType==='network');
+  if(net) elements.forEach(e=>{ if(e.group==='iot'&&e!==net&&e.twinType!=='telegram') e.depends_on=[net.id]; });
+  const xp={ id, name, addr, twin, status:'planned', created:todayStr(), elements };
+  DB.xpacios.push(xp); persist(); closeAlta(); activeXpacio=id; editMode=true; $('#btnEdit').textContent='✓ Editando'; $('#btnEdit').classList.add('on');
+  buildXpbar(); buildChips(); syncAddElBtn(); render();
+}
+
+// ── Añadir elemento ───────────────────────────────────────────────────────────
+function openAddEl(){ if(activeXpacio==='all') return; const grid=$('#typeGrid');
+  grid.innerHTML=(DB.catalog||[]).map(c=>`<div class="typecard" data-type="${esc(c.type)}"><span style="font-size:18px">${c.icon||'▪'}</span><div><b style="font-size:12px">${esc(c.ci_class)}</b><small>${c.group==='iot'?'IoT':'Analógico'} · ${esc(c.category||'')}</small></div></div>`).join('');
+  grid.querySelectorAll('.typecard').forEach(el=>el.onclick=()=>addElement(el.dataset.type));
+  $('#addElModal').classList.add('show'); }
+function closeAddEl(){ $('#addElModal').classList.remove('show'); }
+function addElement(type){ const xp=xpById(activeXpacio); if(!xp) return; const c=(DB.catalog||[]).find(x=>x.type===type); if(!c) return;
+  let n=0; xp.elements.forEach(e=>{ const m=new RegExp('^'+xp.id+'-(\\d+)$').exec(e.id); if(m) n=Math.max(n,+m[1]); });
+  const el=newElement(xp.id,c,n+1); el.status='planned'; xp.elements.push(el); persist(); closeAddEl(); buildXpbar(); render(); openDrawer(el.id); }
+
+// ── Export ─────────────────────────────────────────────────────────────────────
+function download(name,content,type){ const b=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function exportJSON(){ DB.meta.updated=todayStr(); download('cmdb.json',JSON.stringify(DB,null,2),'application/json'); }
+function exportCSV(){
+  const cols=['xpacio','xpacio_id','id','group','category','ci_class','name','status','serial','purchase_date','warranty_until','location','vendor','model','protocol','live','maint_due','depends_on','notes'];
+  const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"'; const lines=[cols.join(',')];
+  for(const xp of scopeXpacios()) for(const it of xp.elements){ const m=maint(it), lv=liveOf(it.id);
+    lines.push([xp.name,xp.id,it.id,it.group,it.category,it.ci_class,it.name,statusDef(it.status).label_es,it.serial,it.purchase_date,it.warranty_until,
+      it.location,it.vendor,it.model,(it.connectivity||{}).protocol,(it.group==='iot'?lv.label:''),m.due||'',(it.depends_on||[]).join('|'),it.notes].map(q).join(',')); }
+  download('cmdb.csv',lines.join('\n'),'text/csv');
+}
+
+// ── Mapa de dependencias (del scope actual) ─────────────────────────────────────
+function depth(id,list,memo,seen){ memo=memo||{}; seen=seen||new Set(); if(memo[id]!=null) return memo[id]; if(seen.has(id)) return 0; seen.add(id);
+  const it=list.find(x=>x.id===id); const ds=(it&&it.depends_on)||[]; const d=ds.length?1+Math.max(...ds.map(x=>depth(x,list,memo,seen))):0; memo[id]=d; return d; }
+function buildMap(){
+  const list=scopeEls(); const related=new Set();
+  for(const it of list){ if((it.depends_on||[]).length){ related.add(it.id); it.depends_on.forEach(x=>related.add(x)); } }
+  const nodes=list.filter(i=>related.has(i.id));
+  if(!nodes.length){ $('#mapSvg').innerHTML='<div class="empty">No hay relaciones en este ámbito.</div>'; return; }
+  const memo={}; const maxD=Math.max(0,...nodes.map(n=>depth(n.id,list,memo)));
+  const cols={}; nodes.forEach(n=>{ (cols[memo[n.id]]=cols[memo[n.id]]||[]).push(n); });
+  const COLW=230,ROWH=60,PADX=20,PADY=26,NW=190,NH=40; const maxRows=Math.max(...Object.values(cols).map(a=>a.length),1);
+  const W=PADX*2+(maxD+1)*COLW, H=PADY*2+maxRows*ROWH; const pos={};
+  for(let dd=0; dd<=maxD; dd++){ const l=cols[dd]||[]; const x=PADX+(maxD-dd)*COLW; l.forEach((n,i)=>{ pos[n.id]={x,y:PADY+i*ROWH+(maxRows-l.length)*ROWH/2}; }); }
+  let edges=''; for(const n of nodes) for(const dep of (n.depends_on||[])){ if(!pos[dep]) continue; const a=pos[n.id],b=pos[dep];
+    const x1=a.x,y1=a.y+NH/2,x2=b.x+NW,y2=b.y+NH/2,mx=(x1+x2)/2; edges+=`<path class="edge" d="M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}"/>`; }
+  let ns=''; for(const n of nodes){ const p=pos[n.id]; ns+=`<g class="node ${n.group}" data-id="${n.id}" transform="translate(${p.x},${p.y})">
+    <rect width="${NW}" height="${NH}" rx="8"/><text x="10" y="17">${n.icon||''} ${esc(n.id)}</text>
+    <text x="10" y="31" style="fill:var(--ink-dim);font-size:9.5px">${esc((n.name||'').slice(0,26))}</text></g>`; }
+  $('#mapSvg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMin meet">
+    <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--cyan-dim)"/></marker></defs>${edges}${ns}</svg>`;
+  $('#mapSvg').querySelectorAll('.node').forEach(g=>g.onclick=()=>{ closeMap(); openDrawer(g.dataset.id); });
+}
+function openMap(){ buildMap(); $('#mapWrap').classList.add('show'); }
+function closeMap(){ $('#mapWrap').classList.remove('show'); }
+
+// ── Init ────────────────────────────────────────────────────────────────────
+$('#q').addEventListener('input',e=>{ query=norm(e.target.value.trim()); render(); });
+$('#btnRefresh').onclick=refreshLive;
+$('#btnExport').onclick=exportJSON; $('#btnCsv').onclick=exportCSV;
+$('#btnMap').onclick=openMap; $('#mapClose').onclick=closeMap; $('#mapWrap').onclick=e=>{ if(e.target===$('#mapWrap')) closeMap(); };
+$('#btnAddEl').onclick=openAddEl; $('#addElClose').onclick=closeAddEl; $('#addElModal').onclick=e=>{ if(e.target===$('#addElModal')) closeAddEl(); };
+$('#altaClose').onclick=closeAlta; $('#altaCancel').onclick=closeAlta; $('#altaCreate').onclick=createXpacio; $('#altaModal').onclick=e=>{ if(e.target===$('#altaModal')) closeAlta(); };
+$('#btnToggleAll').onclick=()=>{ allExpanded=!allExpanded;
+  DB.xpacios.forEach(xp=>{ xpOpen[xp.id]=allExpanded; for(const g of DB.groups){ groupOpen[xp.id+'::'+g.id]=allExpanded;
+    xp.elements.filter(i=>i.group===g.id).forEach(i=>{ catOpen[xp.id+'::'+g.id+'::'+(i.category||'Otros')]=allExpanded; }); } });
+  $('#btnToggleAll').textContent=allExpanded?'⊟ Contraer todo':'⊞ Expandir todo'; render(); };
+$('#btnEdit').onclick=()=>{ editMode=!editMode; $('#btnEdit').textContent=editMode?'✓ Editando':'✏ Editar'; $('#btnEdit').classList.toggle('on'); syncAddElBtn(); };
+$('#viewSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ viewMode=b.dataset.v; $('#viewSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); render(); });
+$('#btnReset').onclick=e=>{ e.preventDefault(); if(confirm('¿Descartar las ediciones locales y recargar los datos del repo?')){ localStorage.removeItem(LS_DB); location.reload(); } };
+$('#scrim').onclick=closeDrawer;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeDrawer(); closeMap(); closeAlta(); closeAddEl(); } });
+
+(async()=>{
+  try{ await loadDB(); buildXpbar(); buildChips(); syncAddElBtn(); render(); await refreshLive(); setInterval(refreshLive,60000);
+    const ci=new URLSearchParams(location.search).get('ci'); if(ci&&findEl(ci)) openDrawer(ci);
+  }catch(e){ $('#groups').innerHTML='<div class="empty">No se pudo cargar el CMDB: '+esc(String(e))+'</div>'; setSync('error'); }
+})();
+</script>
+</body>
+</html>

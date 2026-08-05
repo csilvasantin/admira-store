@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es" data-layer="os">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guion · XpaceOS para Altadis · 3 × 15 min</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/tokens.css">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/meta.css">
+<style>
+  [data-layer="os"]{ --altadis:#e4322b; --altadis-soft:rgba(228,50,43,.14); --altadis-line:rgba(228,50,43,.42); }
+  body{ padding:0; }
+  .wrap{ max-width:820px; margin:0 auto; padding:0 var(--admira-space-4) var(--admira-space-6); }
+  .top{ text-align:center; padding:var(--admira-space-6) var(--admira-space-4) var(--admira-space-4); background:radial-gradient(ellipse at 50% -20%, var(--admira-spine-soft), transparent 60%); border-bottom:1px solid var(--admira-border); }
+  .top .k{ font-family:var(--admira-font-mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase; color:var(--admira-cyan); }
+  .top h1{ font-size:clamp(26px,5vw,40px); font-weight:800; letter-spacing:-.02em; margin:8px 0 6px; }
+  .top p{ color:var(--admira-text-muted); margin:0; }
+  .top .web{ font-family:var(--admira-font-mono); font-size:12px; }
+
+  .blk{ border:1px solid var(--admira-border); border-radius:var(--admira-radius-lg); background:var(--admira-bg-elev); padding:24px; margin-top:var(--admira-space-5); position:relative; }
+  .blk-head{ display:flex; align-items:baseline; gap:14px; border-bottom:1px solid var(--admira-border); padding-bottom:12px; margin-bottom:16px; }
+  .blk-n{ font-family:var(--admira-font-mono); font-size:26px; font-weight:800; color:var(--admira-cyan); }
+  .blk-t{ font-size:22px; font-weight:800; letter-spacing:-.01em; margin:0; }
+  .chip{ font-family:var(--admira-font-mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; padding:4px 10px; border-radius:999px; border:1px solid var(--admira-spine-line); color:var(--admira-cyan); background:var(--admira-spine-soft); margin-left:auto; white-space:nowrap; }
+  .obj{ color:var(--admira-text); font-size:15px; margin:0 0 14px; }
+  .obj b{ color:var(--admira-cyan); }
+  h4{ font-family:var(--admira-font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--admira-text-muted); margin:18px 0 8px; }
+  .time{ display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:14px; color:var(--admira-text-muted); }
+  .time .t{ font-family:var(--admira-font-mono); color:var(--altadis); white-space:nowrap; }
+  .say{ list-style:none; padding:0; margin:0; }
+  .say li{ padding:8px 0 8px 18px; border-bottom:1px solid rgba(120,243,255,.06); position:relative; font-size:15px; }
+  .say li::before{ content:"▸"; position:absolute; left:0; color:var(--admira-cyan); }
+  .say li:last-child{ border-bottom:0; }
+  .quote{ border-left:3px solid var(--altadis); background:rgba(228,50,43,.06); padding:10px 14px; border-radius:6px; font-size:16px; color:var(--admira-text); margin:6px 0; }
+  .show{ font-family:var(--admira-font-mono); font-size:12px; color:var(--admira-text-muted); margin-top:10px; }
+  .show b{ color:var(--admira-cyan); }
+  .trans{ margin-top:14px; padding:10px 14px; border:1px dashed var(--admira-spine-line); border-radius:8px; font-size:14px; color:var(--admira-text); }
+  .trans b{ color:var(--admira-cyan); }
+  .demo{ border:1px solid var(--altadis-line); background:var(--altadis-soft); border-radius:10px; padding:14px 16px; margin:12px 0; }
+  .demo h4{ color:var(--altadis); margin-top:0; }
+  .qa{ margin-top:8px; }
+  .qa .q{ font-weight:700; color:var(--admira-text); margin-top:14px; }
+  .qa .a{ color:var(--admira-text-muted); font-size:14px; margin-top:4px; }
+  .qa .a b{ color:var(--admira-cyan); }
+  .todo{ color:var(--admira-amber); }
+  footer{ text-align:center; color:var(--admira-text-muted); font-family:var(--admira-font-mono); font-size:11px; padding:var(--admira-space-5) 0; border-top:1px solid var(--admira-border); margin-top:var(--admira-space-5); }
+</style>
+</head>
+<body data-layer="os">
+
+  <div class="top">
+    <div class="k">Guion de presentación · uso interno</div>
+    <h1>XpaceOS para Altadis</h1>
+    <p>Renovación de contrato · 3 bloques × 15 min · <b>45 min</b> + Q&amp;A</p>
+    <p class="web">apoyo visual: <a href="https://www.xpaceos.com/altadis/">www.xpaceos.com/altadis</a></p>
+  </div>
+
+  <div class="wrap">
+
+    <!-- APERTURA -->
+    <div class="blk">
+      <div class="blk-head"><span class="blk-n">▶</span><h3 class="blk-t">Apertura</h3><span class="chip">~2 min · dentro del bloque 1</span></div>
+      <p class="obj"><b>Objetivo:</b> marcar el tono desde la primera frase — no venimos a renovar lo mismo.</p>
+      <div class="quote">«Llevamos [<span class="todo">X años — TODO</span>] operando vuestra red de estancos. Hoy no venimos a renovar lo mismo: venimos a multiplicarlo.»</div>
+      <ul class="say">
+        <li>«En 45 minutos, en tres bloques, vais a ver tres cosas: la <b>oportunidad</b> que tenéis delante, <b>cómo funciona</b> —y no con slides, en vivo— y el <b>negocio</b> que genera.»</li>
+        <li>«Y al final entenderéis por qué seguir con nosotros no es seguir igual.»</li>
+      </ul>
+      <div class="show">EN PANTALLA: <b>hero</b> de la web — «No renovamos lo mismo: lo multiplicamos.»</div>
+    </div>
+
+    <!-- BLOQUE 01 -->
+    <div class="blk">
+      <div class="blk-head"><span class="blk-n">01</span><h3 class="blk-t">La oportunidad: el estanco como medio</h3><span class="chip">15 min</span></div>
+      <p class="obj"><b>Objetivo:</b> que vean su red como un activo de medios desaprovechado — y que el cambio es viable hoy.</p>
+      <h4>Reparto del tiempo</h4>
+      <div class="time">
+        <span class="t">0–2'</span><span>Apertura (arriba).</span>
+        <span class="t">2–8'</span><span>La oportunidad: la atención existe, hoy no se mide ni se monetiza.</span>
+        <span class="t">8–13'</span><span>«Lo de siempre vs XpaceOS» — recorrer la comparación.</span>
+        <span class="t">13–15'</span><span>Transición a la demo.</span>
+      </div>
+      <h4>Qué decir</h4>
+      <ul class="say">
+        <li>«Cada día miles de personas entran en vuestros estancos. Es tráfico recurrente, de proximidad y de confianza.»</li>
+        <li>«Pero esa atención hoy es <b>invisible</b> para lo digital: no se mide y no se monetiza. Sois el último medio físico con público diario que sigue fuera del juego.»</li>
+        <li>«No hablamos de poner más pantallas. Hablamos de convertir ese tráfico en <b>inventario medible y rentable</b>, sin tocar vuestra operativa.»</li>
+        <li>(Comparación) «Esto es lo de siempre —un loop fijo, sin medir, puro coste. Y esto es con XpaceOS —contenido por audiencia, medido, que genera ingresos.»</li>
+      </ul>
+      <div class="show">EN PANTALLA: bloque <b>01</b> + tabla <b>«lo de siempre vs XpaceOS»</b>. <span class="todo">Citar cifras reales: nº estancos, visitas/día — TODO.</span></div>
+      <div class="trans"><b>Transición:</b> «Y esto ya se puede hacer hoy porque la IA corre en local, en el propio estanco. Pero no os lo voy a contar… os lo voy a enseñar en vivo.»</div>
+    </div>
+
+    <!-- BLOQUE 02 -->
+    <div class="blk">
+      <div class="blk-head"><span class="blk-n">02</span><h3 class="blk-t">Cómo funciona: demo en vivo, no slides</h3><span class="chip">15 min</span></div>
+      <p class="obj"><b>Objetivo:</b> el momento «wow» y el diferenciador nº1. Que vean el sistema funcionando, no descrito.</p>
+      <div class="demo">
+        <h4>⚑ Checklist antes de empezar</h4>
+        <ul class="say">
+          <li>Estanco demo / pantalla de muestra encendida y conectada.</li>
+          <li>Panel del gemelo digital abierto en otra pantalla. <span class="todo">Probar el día antes — TODO.</span></li>
+          <li>Plan B grabado por si falla la conexión (vídeo de la demo).</li>
+        </ul>
+      </div>
+      <h4>Reparto del tiempo</h4>
+      <div class="time">
+        <span class="t">0–1'</span><span>«Aquí somos distintos: no os cuento cómo funciona, os lo enseño, ahora.»</span>
+        <span class="t">1–10'</span><span>LA DEMO en vivo (abajo, paso a paso).</span>
+        <span class="t">10–14'</span><span>Las 3 capacidades: crear · orquestar · monetizar.</span>
+        <span class="t">14–15'</span><span>Transición al negocio.</span>
+      </div>
+      <h4>La demo, paso a paso</h4>
+      <ul class="say">
+        <li><b>1.</b> «Esto es el gemelo digital del estanco. Lo que veis en esta pantalla es un espejo del punto de venta.»</li>
+        <li><b>2.</b> Cambiar una campaña en el panel → señalar cómo cambia la pantalla del estanco. «Lo he hecho aquí; ha pasado allí.»</li>
+        <li><b>3.</b> «Y ha pasado en <b>menos de 200 ms</b>, sin pasar por la nube. Corre en el propio estanco.»</li>
+        <li><b>4.</b> Mostrar la medición de audiencia (perfil anónimo). «Sabemos cuántos miran y qué perfil, sin guardar ni una sola imagen.»</li>
+      </ul>
+      <h4>Las 3 capacidades (mientras se ve)</h4>
+      <ul class="say">
+        <li><b>Crear:</b> el contenido se genera con IA para cada campaña y franja, sin productora.»</li>
+        <li><b>Orquestar:</b> el gemelo distribuye y mide en tiempo real toda la red desde un panel.»</li>
+        <li><b>Monetizar:</b> ese inventario se abre a anunciantes y se vende en tiempo real.»</li>
+      </ul>
+      <div class="show">EN PANTALLA: bloque <b>02</b> + <b>gemelo digital</b> en vivo (admira XP).</div>
+      <div class="trans"><b>Transición:</b> «Ya habéis visto que funciona. La pregunta ahora es: ¿cuánto vale esto para Altadis?»</div>
+    </div>
+
+    <!-- BLOQUE 03 -->
+    <div class="blk">
+      <div class="blk-head"><span class="blk-n">03</span><h3 class="blk-t">El negocio: de coste a ingreso</h3><span class="chip">15 min</span></div>
+      <p class="obj"><b>Objetivo:</b> convertir el «wow» en decisión. Cambiar el marco: de gasto a fuente de ingresos. Cerrar con la petición.</p>
+      <h4>Reparto del tiempo</h4>
+      <div class="time">
+        <span class="t">0–3'</span><span>El cambio de marco: de línea de coste a línea de ingreso.</span>
+        <span class="t">3–8'</span><span>Modelo: ingresos compartidos · doble uso · cumplimiento.</span>
+        <span class="t">8–12'</span><span>Despliegue: piloto → medición → expansión.</span>
+        <span class="t">12–15'</span><span>El cierre y la petición.</span>
+      </div>
+      <h4>Qué decir</h4>
+      <ul class="say">
+        <li>«Hoy la señalización es una <b>línea de coste</b> en vuestro P&amp;L. Con XpaceOS pasa a ser una <b>línea de ingreso</b>.»</li>
+        <li>«El inventario de la red se monetiza con anunciantes y vosotros participáis de los ingresos generados en vuestros estancos.»</li>
+        <li>«Doble uso: cuando queréis comunicar algo vuestro, la red es vuestra; el resto del tiempo, trabaja y genera ingresos.»</li>
+        <li>«Todo gobernado por reglas de contenido conformes a la normativa del sector.»</li>
+        <li>(Despliegue) «No hace falta jugársela. Arrancamos con un piloto medible, validamos con datos reales y escalamos.»</li>
+      </ul>
+      <div class="show">EN PANTALLA: bloque <b>03</b> + pasos piloto→expansión. <span class="todo">Citar eCPM / €-estanco reales — TODO.</span></div>
+      <h4>Cierre (la petición)</h4>
+      <div class="quote">«No os pedimos que cambiéis de proveedor ni que empecéis de cero. Os pedimos renovar con quien ya conoce vuestra red — y subir de nivel el mismo día. Propongo arrancar con un piloto de [<span class="todo">N</span>] estancos.»</div>
+    </div>
+
+    <!-- CIERRE -->
+    <div class="blk">
+      <div class="blk-head"><span class="blk-n">✦</span><h3 class="blk-t">Cierre — los 4 motivos, en una frase</h3><span class="chip">~1 min</span></div>
+      <ul class="say">
+        <li>Somos los únicos que os lo <b>demostramos en vivo</b>.</li>
+        <li>Convertimos vuestro <b>coste en ingreso</b>.</li>
+        <li>Con <b>IA local</b>: privacidad y tiempo real, sin depender de la nube.</li>
+        <li>Y ya <b>conocemos vuestra red</b>: cero riesgo de transición.</li>
+      </ul>
+      <div class="quote">«Renovar con nosotros no es seguir igual. Es subir de nivel el mismo día.»</div>
+    </div>
+
+    <!-- Q&A -->
+    <div class="blk">
+      <div class="blk-head"><span class="blk-n">?</span><h3 class="blk-t">Preguntas probables y respuestas</h3><span class="chip">prep</span></div>
+      <div class="qa">
+        <div class="q">¿Y la privacidad / RGPD?</div>
+        <div class="a"><b>IA local, perfil anónimo.</b> No se envían ni se guardan imágenes; solo conteo y perfil agregado. Cumple por diseño.</div>
+        <div class="q">¿Y si se cae la conexión del estanco?</div>
+        <div class="a"><b>Corre en el edge.</b> El estanco sigue mostrando contenido aunque caiga internet; se sincroniza al volver.</div>
+        <div class="q">¿Qué nos cuesta el cambio / la operativa?</div>
+        <div class="a"><b>0€ de cambio operativo.</b> Aprovecha la red que ya operamos; empezamos con un piloto medible antes de escalar.</div>
+        <div class="q">¿Y la normativa de publicidad del sector?</div>
+        <div class="a">El contenido se gobierna con <b>reglas centrales de cumplimiento</b>; el inventario se monetiza con anunciantes permitidos conforme a la normativa aplicable.</div>
+        <div class="q">¿Por qué vosotros y no otro proveedor?</div>
+        <div class="a">Ya <b>operamos vuestra red</b> (sin riesgo de transición) y somos los <b>únicos que lo demostramos en vivo</b>. Lo acabáis de ver.</div>
+        <div class="q">¿Qué resultados garantizáis?</div>
+        <div class="a">Un <b>piloto con KPIs acordados</b> antes de escalar: audiencia, atención e ingresos por estanco, con datos reales.</div>
+      </div>
+    </div>
+
+    <footer>// Guion uso interno · XpaceOS para Altadis · v.AdmiraNeXT.2026.05.26.r1 · no enlazar públicamente</footer>
+  </div>
+</body>
+</html>

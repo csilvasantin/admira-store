@@ -1,42 +1,25 @@
-# Admira · admira.store — Servidor MCP & API del gemelo (MCP)
+# XpaceOS · MCP — conecta con la red de retail media
 
-> admira.store es la casa del servidor MCP real del ecosistema AdmiraNeXT
-> (mcp.admira.store) y de la API compartida (api.admira.store). Es el gemelo digital
-> de la red de retail media: flota de pantallas/robots, qué emite cada una en vivo,
-> su audiencia on-device y el proof-of-play de cada circuito. Punto de entrada para
-> que cualquier agente (Claude, Codex, OpenCode, ChatGPT, bots…) y cualquier humano
-> consulten e interactúen con la red. Para silicio (bots) y carbono (humanos).
+> Servidor MCP de XpaceOS: el puente para que agentes (silicio) y personas (carbono)
+> se conecten a la red de retail media — ver la flota, qué emite cada pantalla en vivo,
+> su audiencia por cámara, el proof-of-play de cada circuito y dar de alta nuevas
+> pantallas o robots. Para silicio (bots) y carbono (humanos).
 
-Sitio: https://www.admira.store
-Hub MCP: https://www.admira.store/mcp/
-Manifest máquina: https://www.admira.store/mcp/manifest.json
-Versión: v.26.06.25.r1
-Repo: https://github.com/csilvasantin/admira-store
+Sitio / docs: https://www.xpaceos.com/mcp/
+Manifest máquina: https://www.xpaceos.com/mcp/manifest.json
+Repo: https://github.com/csilvasantin/xpaceos
 
-## Servidor MCP (conectar de verdad)
+## Servidor MCP (cómo conectar)
 
-El ecosistema expone un servidor MCP real, servido bajo este dominio:
-- Endpoint: https://mcp.admira.store/mcp (transporte streamable-http, sin auth)
-- Salud: GET https://mcp.admira.store/
-- Tools: fleet_status, list_screens, screen_now, emission_report, register_device
-- Config de cliente: {"mcpServers":{"xpaceos":{"url":"https://mcp.admira.store/mcp"}}}
+- Endpoint: https://mcp.admira.store/mcp
+- Transporte: MCP Streamable HTTP (JSON-RPC sobre POST /mcp); salud en GET /
+- Auth: none (el alta es aditiva y acotada, no pisa inventario curado)
+- Config de cliente:
+  {"mcpServers":{"xpaceos":{"url":"https://mcp.admira.store/mcp"}}}
 - Prueba rápida:
   curl -s https://mcp.admira.store/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
-- Docs de las herramientas: https://www.xpaceos.com/mcp/
 
-## API en vivo (base: https://api.admira.store)
-
-Lecturas (abiertas; CORS refleja el origen):
-- GET /emit/range?loc={loc} — proof-of-play: pases, segundos, byType, top creatividades.
-- GET /audience/range?loc={loc} — audiencia: muestras, presencia, pico, género, edad, hora.
-
-Escrituras (telemetría, sin credencial):
-- POST /emit — registra un pase. body: {loc, screen, type, title, secs, num?}.
-- POST /audience — registra una muestra de cámara. body: {loc, screen, faces, gender, genderScore, ageBucket, emotion?}.
-
-Ejemplo: https://api.admira.store/audience/range?loc=xtanco-demo
-
-## Herramientas (qué hace cada una)
+## Herramientas
 
 - fleet_status — visión general: pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia).
 - list_screens — inventario de Xpaces activos: ubicación, id de pantalla, tipo y orientación.
@@ -46,20 +29,35 @@ Ejemplo: https://api.admira.store/audience/range?loc=xtanco-demo
 
 ## Privacidad
 
-Detección on-device (@vladmandic/human, TensorFlow.js). No se almacenan imágenes ni
-datos personales: solo conteos agregados (presencia, género, edad, hora). Género y edad
-son estimaciones estadísticas, no identificación de personas.
+La audiencia se mide on-device (cámara del gemelo, @vladmandic/human): no se almacenan
+imágenes ni datos personales, solo conteos agregados (presencia, género, edad). Las métricas
+de género y edad son estimaciones estadísticas, no identificación de personas.
+
+## Ecosistema
+
+Tres capas de la red AdmiraNeXT, una por verbo:
+- Crear: https://www.pixeria.com
+- Operar: https://www.xpaceos.com
+- Emitir: https://admira.tv
 
 ## Federación
 
-Misma convención /mcp/ en cada pata del ecosistema AdmiraNeXT:
+Misma convención /mcp/ en cada pata del ecosistema:
 - Producción (Clear Channel): https://www.clearchannel.tv/mcp/
-- Preproducción (Audiencia): https://www.admira.app/mcp/
-- Operar (el OS retail): https://www.xpaceos.com/mcp/
-- Crear (estudio): https://www.admira.studio/mcp/
+- Preproducción: https://www.admira.app/mcp/
 - Consejo de Silicio: https://www.admira.live/mcp/
+
+## Doctrina Xpaces · elementos (obligatoria)
+
+En los Xpaces **todos los elementos tienen que ser movibles y sustituibles siempre**.
+
+- **Movibles:** posición, escala y orientación viven en la configuración del Xpacio; nunca hardcodeadas en el motor.
+- **Sustituibles:** se puede cambiar la representación (sprite → multivista → GLB → captura) o el propio activo sin reconstruir la sala.
+- **Alcance:** mobiliario, pantallas, sensores, figuras, NPCs, zonas de interés y cualquier pieza del gemelo.
+- Si un elemento no se puede reubicar o reemplazar desde datos, es un defecto de diseño — no una excepción aceptable.
+- Método humano: https://www.xpaceos.com/ayuda/
+- Comandos CLI layout/mobiliario: https://www.xpaceos.com/help/
 
 ## Convenciones
 
-- Versionado visible: v.AA.MM.DD.rN.
 - Avisos de cambios: Telegram grupo AdmiraXP, firmados "Admira IA".

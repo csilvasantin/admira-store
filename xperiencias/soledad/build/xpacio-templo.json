@@ -1,0 +1,88 @@
+{
+  "_comment": "El Templo de la Soledad modelado como Xpacio en XpaceOS. Calca la forma de admira-app/locations.js (window.OMNIP_LOCATIONS_DEFAULT): cada estacion = una surface con {name,desc,status,impr,cpm,surface}. Se puede inyectar en el catalogo OmniPublicity o cargar via omnipublicity-api. Las 6 estaciones (E1..E6) se exponen ademas en '_stations' con su id, capa Admira y estado software/hardware.",
+  "id": "xpacio-templo-soledad",
+  "name": "Templo de la Soledad de Superman",
+  "kind": "Xperiencia inmersiva · Fortaleza de la Soledad (3a sala de la saga)",
+  "addr": "Immersive Labs · Xpacio de marca",
+  "coords": [-3.70379, 40.41678],
+  "twin": "https://www.xpaceos.com/xperiencias/soledad/",
+  "yokup": { "intervencion": "iv-1784134056479", "tecnico": "tech-1784134939061", "estado": "en_curso" },
+  "saga": ["xperiencias/sheldon", "xperiencias/batcueva", "xperiencias/soledad"],
+  "surfaces": [
+    {
+      "id": "E1",
+      "name": "Cristal de Jor-El · holograma conversacional",
+      "desc": "Estacion estrella (interior): holograma IA de Jor-El que da la bienvenida, guia y responde en cualquier idioma. Pipeline digitalavatar.ai (embed.js + brain.digitalavatar.ai). Opcion premium MetaHuman/Unreal por Pixel Streaming.",
+      "status": "live",
+      "impr": 320,
+      "cpm": "€0",
+      "surface": "pantalla"
+    },
+    {
+      "id": "E2",
+      "name": "Escudo de la Casa de El · pantalla de branding",
+      "desc": "Emblema heraldico presidiendo el templo; lienzo de marca conmutable. Senalizacion reactiva conectada a omnipublicity-api / pixer-worker; inventario monetizable, parrilla programable. Cambia de version del emblema segun el perfil que segmenta la camara (regla XPL).",
+      "status": "live",
+      "impr": 640,
+      "cpm": "€9",
+      "surface": "pantalla"
+    },
+    {
+      "id": "E3",
+      "name": "La Capa · vitrina viva",
+      "desc": "Reliquia estrella en vitrina de metacrilato con pantalla tactil perimetral + lector NFC + QR dinamico. Ficha, making-of, certificado NFT y checkout en el movil. Memorabilia -> punto de conversion (proof-of-play, tracking de escaneos a leads).",
+      "status": "live",
+      "impr": 210,
+      "cpm": "€5",
+      "surface": "mostrador"
+    },
+    {
+      "id": "E4",
+      "name": "La Kryptonita · zona reactiva",
+      "desc": "Cristal verde latente con LED RGB y sensores de proximidad (ToF/PIR) integrados a la iluminacion DMX y al audio de sala. Al acercarse, las luces palidecen, la estatua se debilita y el ambiente cae. Motor de reglas XPL (xpl-templo.js): CUANDO proximidad -> ENTONCES escena.",
+      "status": "sched",
+      "impr": 0,
+      "cpm": "€0",
+      "surface": "vending"
+    },
+    {
+      "id": "E5",
+      "name": "La Capsula de Kal-El · AR + projection mapping",
+      "desc": "Replica de capsula con proyector(es) para mapping y WebAR sin marcador. El movil abre la capsula y reproduce el viaje/aterrizaje; el mapping la envuelve en la reentrada. WebAR servido desde el ecosistema + mapping sincronizado.",
+      "status": "sched",
+      "impr": 0,
+      "cpm": "€0",
+      "surface": "escaparate"
+    },
+    {
+      "id": "E6",
+      "name": "La Consola de Cristales · gemelo digital",
+      "desc": "Panel tactil grande sobre atril de cristal = maqueta del gemelo XpaceOS en modo kiosko (admira-xp / control), enlazado al backoffice remoto real. Demo de operacion: cambiar escena, programar parrilla, lanzar megafonia, ver audiencia de las 3 salas de la saga.",
+      "status": "live",
+      "impr": 120,
+      "cpm": "€0",
+      "surface": "pwa"
+    }
+  ],
+  "cameras": true,
+  "segmentation": {
+    "required": true,
+    "schedule": { "start": "10:00", "end": "21:00" },
+    "typologies": ["interior"],
+    "genders": ["hombre", "mujer"],
+    "ages": ["nino", "joven", "adulto", "senior"],
+    "timeSlots": ["manana", "mediodia", "tarde", "noche"],
+    "metadata": [
+      { "key": "aforo-max", "label": "Aforo maximo", "value": "25", "type": "number" },
+      { "key": "privacidad", "label": "Camara edge-only, sin grabacion (RGPD)", "value": "on-device", "type": "text" }
+    ]
+  },
+  "_stations": [
+    { "id": "E1", "surfaceRef": "pantalla", "capaAdmira": "digitalavatar.ai (embed.js + brain.digitalavatar.ai/metahuman/{ask,say})", "software": "hecho (persona Jor-El)", "hardware": "panel/Pepper's Ghost + mini-PC + micro/altavoz (Yokup)" },
+    { "id": "E2", "surfaceRef": "pantalla", "capaAdmira": "omnipublicity-api + pixer-worker (senalizacion reactiva)", "software": "hecho (regla XPL 'crest' por audiencia)", "hardware": "panel-escudo LED/LCD + reproductor (Yokup)" },
+    { "id": "E3", "surfaceRef": "mostrador", "capaAdmira": "memorabilia -> conversion (QR/NFC, proof-of-play)", "software": "pendiente (ficha + checkout web)", "hardware": "vitrina tactil + NFC (Yokup)" },
+    { "id": "E4", "surfaceRef": "vending", "capaAdmira": "motor XPL (xpl-templo.js) + DMX/DALI", "software": "hecho (reglas krypto/esclusa)", "hardware": "LED RGB + sensores ToF/PIR + controlador DMX (Yokup)" },
+    { "id": "E5", "surfaceRef": "escaparate", "capaAdmira": "WebAR + projection mapping", "software": "pendiente (escena WebAR)", "hardware": "capsula + proyector(es) + calibracion (Yokup)" },
+    { "id": "E6", "surfaceRef": "pwa", "capaAdmira": "gemelo XpaceOS (admira-xp) + backoffice", "software": "hecho (kiosko existente)", "hardware": "panel tactil + atril + mini-PC (Yokup)" }
+  ]
+}

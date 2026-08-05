@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="es" data-layer="os">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XpaceOS para Altadis — Renovación: por qué seguimos y por qué distintos</title>
+<meta name="description" content="Propuesta de renovación de AdmiraNext para Altadis. Por qué somos distintos: demo en vivo con gemelo digital (no slides), de coste a ingreso (monetización RTB), IA local en el edge e incumbente con salto a un OS con IA. En 3 bloques de 15 min.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="XpaceOS para Altadis — renovación, y por qué distintos">
+<meta property="og:description" content="No renovamos lo mismo: lo multiplicamos. Demo en vivo, de coste a ingreso, IA local. 3 bloques de 15 min.">
+<meta property="og:url" content="https://www.xpaceos.com/altadis/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="XpaceOS para Altadis — renovación, y por qué distintos">
+<meta name="twitter:description" content="No renovamos lo mismo: lo multiplicamos. Demo en vivo, de coste a ingreso, IA local.">
+<meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<link rel="canonical" href="https://www.xpaceos.com/altadis/">
+
+<!-- Sistema de diseño compartido + metaestilo del ecosistema -->
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/tokens.css">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/nav.css">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/meta.css">
+
+<style>
+  [data-layer="os"] {
+    --altadis:      #e4322b;
+    --altadis-soft: rgba(228, 50, 43, .14);
+    --altadis-line: rgba(228, 50, 43, .42);
+  }
+  body { padding-top: 0; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 var(--admira-space-4); }
+  a { color: var(--admira-cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: var(--admira-space-4); }
+  .cta { display: inline-flex; gap: 8px; align-items: center; background: var(--admira-cyan); color: #021018; padding: 12px 22px; border-radius: var(--admira-radius-md); font-weight: 700; font-size: 14px; letter-spacing: .03em; }
+  .cta:hover { filter: brightness(1.08); text-decoration: none; }
+  .cta.secondary { background: transparent; color: var(--admira-cyan); border: 1px solid var(--admira-spine-line); }
+  .cta.client { background: var(--altadis); color: #fff; }
+
+  .clientbar { text-align: center; font-family: var(--admira-font-mono); font-size: 12px; letter-spacing: .08em; color: var(--admira-text); padding: 9px var(--admira-space-4); background: linear-gradient(90deg, var(--admira-spine-soft), var(--altadis-soft)); border-bottom: 1px solid var(--admira-border); }
+  .clientbar .altadis { color: var(--altadis); font-weight: 700; }
+  .clientbar .xp { color: var(--admira-cyan); font-weight: 700; }
+
+  .blocknav { display: flex; gap: 6px; }
+  .blocknav a .bn { color: var(--admira-cyan); font-family: var(--admira-font-mono); margin-right: 6px; }
+
+  /* Incumbente badge en hero */
+  .incumbent { display: inline-flex; align-items: center; gap: 8px; font-family: var(--admira-font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--admira-cyan); border: 1px solid var(--admira-spine-line); background: var(--admira-spine-soft); padding: 6px 12px; border-radius: 999px; margin-bottom: var(--admira-space-3); }
+  .hero-kicker { color: var(--altadis); font-weight: 700; }
+
+  /* ===== POR QUÉ DISTINTOS (banda destacada) ===== */
+  .diff { padding: var(--admira-space-5) 0 var(--admira-space-6); background: radial-gradient(ellipse at 50% -20%, var(--altadis-soft), transparent 60%); border-top: 1px solid var(--admira-border); }
+  .diff-head { text-align: center; margin-bottom: var(--admira-space-4); }
+  .diff-head .k { font-family: var(--admira-font-mono); font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: var(--altadis); }
+  .diff-head h2 { font-size: clamp(26px,5vw,40px); font-weight: 800; letter-spacing: -.02em; margin: 8px 0 0; }
+  .diff-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .diff-card { background: var(--admira-bg-elev); border: 1px solid var(--admira-border); border-radius: var(--admira-radius-lg); padding: 22px; position: relative; overflow: hidden; }
+  .diff-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--admira-cyan); }
+  .diff-card .di { font-size: 26px; }
+  .diff-card h3 { margin: 10px 0 6px; font-size: 17px; line-height: 1.2; }
+  .diff-card p { margin: 0; color: var(--admira-text-muted); font-size: 13px; }
+
+  /* ===== ESTILO COMÚN DE BLOQUE ===== */
+  .block { padding: var(--admira-space-6) 0; border-top: 1px solid var(--admira-border); position: relative; }
+  .block::before { content: attr(data-n); position: absolute; top: 18px; right: 4%; font-family: var(--admira-font-mono); font-size: clamp(80px, 16vw, 190px); font-weight: 800; line-height: 1; color: rgba(80, 200, 255, .045); pointer-events: none; z-index: 0; }
+  .block .wrap { position: relative; z-index: 1; }
+  .block-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: var(--admira-space-3); }
+  .block-num { font-family: var(--admira-font-mono); font-size: 30px; font-weight: 800; color: var(--admira-cyan); text-shadow: var(--admira-spine-glow); line-height: 1; }
+  .block-meta { display: block; font-family: var(--admira-font-mono); font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: var(--admira-text-muted); margin-bottom: 6px; }
+  .block-meta .min { color: var(--altadis); }
+  .block-title { font-size: clamp(24px, 4.4vw, 38px); font-weight: 800; letter-spacing: -.02em; margin: 0; line-height: 1.08; }
+  .block .lede { color: var(--admira-text-muted); font-size: 17px; max-width: 760px; margin: 0 0 var(--admira-space-5); }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+  .card { background: var(--admira-bg-elev); border: 1px solid var(--admira-border); border-radius: var(--admira-radius-lg); padding: 22px; transition: transform var(--admira-tx-fast), border-color var(--admira-tx-fast); }
+  .card:hover { transform: translateY(-2px); border-color: var(--admira-spine-line); }
+  .card .k { font-family: var(--admira-font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--admira-cyan); }
+  .card h3 { margin: 8px 0 6px; font-size: 19px; }
+  .card .tag { font-family: var(--admira-font-mono); font-size: 11px; color: var(--admira-text-dim); }
+  .card p { margin: 6px 0 0; color: var(--admira-text-muted); font-size: 14px; }
+
+  .stat { background: var(--admira-bg-elev); border: 1px solid var(--admira-border); border-radius: var(--admira-radius-md); padding: 18px; }
+  .stat .v { font-size: 26px; font-weight: 800; color: var(--admira-cyan); font-family: var(--admira-font-mono); }
+  .stat .v.todo { color: var(--admira-amber); }
+  .stat .l { font-size: 11px; color: var(--admira-text-muted); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+
+  /* Comparación: lo de siempre vs XpaceOS */
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--admira-border); border-radius: var(--admira-radius-lg); overflow: hidden; }
+  .vs .col { padding: 8px 0; }
+  .vs .col.old { background: rgba(255,255,255,.02); }
+  .vs .col.new { background: var(--admira-spine-soft); }
+  .vs .ch { font-family: var(--admira-font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 12px 18px; border-bottom: 1px solid var(--admira-border); }
+  .vs .col.old .ch { color: var(--admira-text-dim); }
+  .vs .col.new .ch { color: var(--admira-cyan); }
+  .vs .r { padding: 11px 18px; font-size: 14px; border-bottom: 1px solid rgba(120,243,255,.06); }
+  .vs .col.old .r { color: var(--admira-text-muted); }
+  .vs .col.new .r { color: var(--admira-text); }
+  .vs .r:last-child { border-bottom: 0; }
+
+  .flow { background: var(--admira-bg-elev); border: 1px solid var(--admira-border); border-radius: var(--admira-radius-lg); padding: 24px; font-family: var(--admira-font-mono); font-size: 12px; color: var(--admira-text-muted); }
+  .flow .step { padding: 10px 12px; background: rgba(0,0,0,.3); border-left: 2px solid var(--admira-cyan); margin-bottom: 6px; border-radius: 4px; }
+  .flow .step b { color: var(--admira-cyan); display: block; letter-spacing: .06em; font-size: 11px; }
+  .flow .step span { color: var(--admira-text); font-size: 13px; }
+  .flow .step.client { border-left-color: var(--altadis); }
+  .flow .step.client b { color: var(--altadis); }
+  .flow .arrow { text-align: center; color: var(--admira-cyan); margin: 6px 0; }
+  .flow .lat { text-align: center; color: var(--admira-green); font-size: 11px; letter-spacing: .14em; margin-top: 12px; }
+
+  .split { display: grid; grid-template-columns: 1.1fr 1fr; gap: 26px; align-items: start; }
+  .steps { counter-reset: s; display: grid; gap: 12px; }
+  .steps .s { position: relative; padding: 16px 18px 16px 56px; background: var(--admira-bg-elev); border: 1px solid var(--admira-border); border-radius: var(--admira-radius-md); }
+  .steps .s::before { counter-increment: s; content: counter(s); position: absolute; left: 16px; top: 16px; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--altadis-soft); color: var(--altadis); border: 1px solid var(--altadis-line); font-family: var(--admira-font-mono); font-weight: 700; font-size: 13px; }
+  .steps .s b { color: var(--admira-text); }
+  .steps .s p { margin: 4px 0 0; color: var(--admira-text-muted); font-size: 14px; }
+
+  .bignote { text-align: center; padding: var(--admira-space-5) var(--admira-space-4); }
+  .bignote h2 { font-size: clamp(22px,4vw,34px); font-weight: 800; letter-spacing: -.02em; margin: 0 0 10px; }
+  .bignote h2 .hl { color: var(--admira-cyan); }
+  .bignote p { color: var(--admira-text-muted); max-width: 640px; margin: 0 auto; }
+
+  .note { font-family: var(--admira-font-mono); font-size: 12px; color: var(--admira-text-muted); border: 1px dashed var(--admira-border); border-radius: var(--admira-radius-md); padding: 12px 14px; margin-top: var(--admira-space-4); }
+  .note b { color: var(--admira-cyan); }
+
+  footer { padding: var(--admira-space-5) 0; border-top: 1px solid var(--admira-border); font-size: 13px; color: var(--admira-text-muted); text-align: center; }
+  footer .sig { font-family: var(--admira-font-mono); font-size: 11px; letter-spacing: .1em; color: var(--admira-cyan); }
+
+  @media (max-width: 860px) {
+    .diff-grid { grid-template-columns: 1fr 1fr; }
+    .grid3, .split { grid-template-columns: 1fr; }
+    .blocknav { display: none; }
+  }
+  @media (max-width: 480px) { .diff-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-layer="os">
+
+  <nav class="admira-nav admira-nav-static" aria-label="Navegación">
+    <a class="admira-nav-brand" href="https://www.xpaceos.com">
+      <span class="admira-nav-brand-name">Admira</span>
+      <span class="admira-nav-brand-tag">Xperience</span>
+    </a>
+    <div class="admira-nav-items blocknav">
+      <a class="admira-nav-link" href="#distintos">Por qué distintos</a>
+      <a class="admira-nav-link" href="#oportunidad"><span class="bn">01</span>Oportunidad</a>
+      <a class="admira-nav-link" href="#funciona"><span class="bn">02</span>Cómo funciona</a>
+      <a class="admira-nav-link" href="#negocio"><span class="bn">03</span>Negocio</a>
+      <a class="admira-nav-link admira-nav-link-cta" href="mailto:hola@admiranext.com?subject=Renovaci%C3%B3n%20XpaceOS%20Altadis">Contacto</a>
+    </div>
+  </nav>
+
+  <hr class="admira-spine-rail">
+
+  <div class="clientbar">
+    <span class="xp">XpaceOS</span> · renovación de contrato · <span class="altadis">ALTADIS</span> · presentación próximo martes
+  </div>
+
+  <!-- HERO -->
+  <header class="admira-meta-hero">
+    <span class="incumbent">● Ya operamos vuestra red · renovación</span>
+    <p class="admira-meta-eyebrow"><span class="hero-kicker">Por qué seguir con nosotros — y por qué distintos</span></p>
+    <h1 class="admira-meta-title">No renovamos lo mismo: lo multiplicamos.</h1>
+    <p class="admira-meta-sub">Convertimos la red de estancos de Altadis en un medio publicitario inteligente que se mide y se monetiza. El martes no os enseñaremos slides: gobernaremos un estanco en vivo desde el gemelo digital. Esto es lo que nos hace distintos.</p>
+    <div class="ctas" style="justify-content:center">
+      <a class="cta" href="#distintos">Por qué somos distintos →</a>
+      <a class="cta secondary" href="#funciona">Ver la demo en vivo</a>
+    </div>
+  </header>
+
+  <!-- POR QUÉ DISTINTOS -->
+  <section class="diff" id="distintos">
+    <div class="wrap">
+      <div class="diff-head">
+        <div class="k">Renovación · qué nos hace diferentes</div>
+        <h2>Cuatro razones para seguir con nosotros</h2>
+      </div>
+      <div class="diff-grid">
+        <div class="diff-card">
+          <div class="di">🎛️</div>
+          <h3>Demostramos en vivo, no en slides</h3>
+          <p>El martes gobernamos un estanco real desde el gemelo digital, delante de vosotros. Nadie más lo hace así.</p>
+        </div>
+        <div class="diff-card">
+          <div class="di">💶</div>
+          <h3>De coste a ingreso</h3>
+          <p>Vuestra red deja de ser un gasto de señalización y pasa a generar ingresos como medio publicitario.</p>
+        </div>
+        <div class="diff-card">
+          <div class="di">⚡</div>
+          <h3>IA local, no la nube</h3>
+          <p>Medimos audiencia y reaccionamos en tiempo real dentro del estanco, con privacidad y sin depender de la conexión.</p>
+        </div>
+        <div class="diff-card">
+          <div class="di">🤝</div>
+          <h3>Ya os conocemos</h3>
+          <p>Operamos vuestra red hoy. La renovación es el salto a un sistema operativo con IA, sin empezar de cero.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOQUE 01 · OPORTUNIDAD -->
+  <section class="block" id="oportunidad" data-n="01">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="block-num">01</span>
+        <div>
+          <span class="block-meta">Bloque 1 / 3 · <span class="min">15 min</span></span>
+          <h2 class="block-title">La oportunidad: el estanco como medio</h2>
+        </div>
+      </div>
+      <p class="lede">La red ya existe y nosotros ya la operamos. Lo que falta es convertir el tráfico diario de cada estanco en un medio publicitario medible y rentable —sin cambiar la operativa del punto de venta.</p>
+
+      <div class="vs" style="margin-bottom:22px">
+        <div class="col old">
+          <div class="ch">Lo de siempre · signage</div>
+          <div class="r">Pantallas repitiendo un loop fijo</div>
+          <div class="r">Sin medición de quién mira</div>
+          <div class="r">Coste fijo, sin retorno</div>
+          <div class="r">Se presenta en slides</div>
+          <div class="r">Depende de la nube y la conexión</div>
+        </div>
+        <div class="col new">
+          <div class="ch">Con XpaceOS</div>
+          <div class="r">Contenido por franja, audiencia y campaña</div>
+          <div class="r">Audiencia medida (anónima) por estanco</div>
+          <div class="r">Inventario que genera ingresos (RTB)</div>
+          <div class="r">Se demuestra en vivo en el espacio real</div>
+          <div class="r">IA local en el edge · &lt; 200 ms</div>
+        </div>
+      </div>
+
+      <div class="grid4">
+        <div class="stat"><div class="v todo">— estancos</div><div class="l">red operada (TODO)</div></div>
+        <div class="stat"><div class="v todo">— visitas/día</div><div class="l">tráfico diario (TODO)</div></div>
+        <div class="stat"><div class="v todo">— s</div><div class="l">tiempo en mostrador (TODO)</div></div>
+        <div class="stat"><div class="v">0€</div><div class="l">cambio en la operativa</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOQUE 02 · CÓMO FUNCIONA -->
+  <section class="block" id="funciona" data-n="02">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="block-num">02</span>
+        <div>
+          <span class="block-meta">Bloque 2 / 3 · <span class="min">15 min</span></span>
+          <h2 class="block-title">Cómo funciona: demo en vivo, no slides</h2>
+        </div>
+      </div>
+      <p class="lede">El martes gobernaremos un estanco real desde un único panel. Lo que cambiamos en el gemelo digital, cambia en el punto de venta —en menos de 200 ms. Tres capacidades trabajando juntas: crear, orquestar y monetizar.</p>
+
+      <div class="split">
+        <div class="grid3" style="grid-template-columns:1fr">
+          <div class="card"><div class="k">Crear</div><h3>Contenido con IA</h3><span class="tag">// motor de creación</span><p>Piezas para cada campaña, formato de pantalla y franja, sin productora.</p></div>
+          <div class="card"><div class="k">Orquestar</div><h3>Gemelo digital</h3><span class="tag">// núcleo del sistema</span><p>Distribuye contenido, mide audiencia y mantiene un espejo en tiempo real de cada estanco.</p></div>
+          <div class="card"><div class="k">Monetizar</div><h3>Demanda en tiempo real</h3><span class="tag">// mercado de anunciantes</span><p>Abre el inventario a anunciantes y lo vende en tiempo real, con reporting por punto de venta.</p></div>
+        </div>
+        <div class="flow">
+          <div style="color:var(--admira-cyan);letter-spacing:.16em;margin-bottom:12px">FLUJO DE CONTROL</div>
+          <div class="step"><b>① PANEL OPERADOR</b><span>Gemelo digital · una sola pantalla</span></div>
+          <div class="arrow">↓</div>
+          <div class="step" style="border-left-color:var(--admira-amber)"><b>② MOTOR XPACEOS</b><span>crear → orquestar → monetizar</span></div>
+          <div class="arrow">↓</div>
+          <div class="step client"><b>③ ESTANCO FÍSICO</b><span>pantalla · contenido · audiencia anónima</span></div>
+          <div class="lat">● &lt; 200 ms · IA local en el edge · sin depender de la nube</div>
+        </div>
+      </div>
+
+      <div class="note"><b>La demo es la diferencia:</b> el martes no veréis un PowerPoint — gobernaremos el espacio real delante de vosotros. <a href="https://csilvasantin.github.io/01.-AdmiraXperience-Game/" target="_blank" rel="noopener">abrir gemelo digital ↗</a></div>
+    </div>
+  </section>
+
+  <!-- BLOQUE 03 · NEGOCIO -->
+  <section class="block" id="negocio" data-n="03">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="block-num">03</span>
+        <div>
+          <span class="block-meta">Bloque 3 / 3 · <span class="min">15 min</span></span>
+          <h2 class="block-title">El negocio: de coste a ingreso</h2>
+        </div>
+      </div>
+      <p class="lede">La renovación no es un coste de señalización: es un medio nuevo con coste marginal bajo e ingresos compartidos. Arrancamos con un piloto medible y escalamos a la red.</p>
+
+      <div class="grid3" style="margin-bottom:22px">
+        <div class="card"><div class="k">Modelo</div><h3>Ingresos compartidos</h3><p>El inventario de la red se monetiza con anunciantes; Altadis participa de los ingresos generados en sus estancos.</p></div>
+        <div class="card"><div class="k">Doble uso</div><h3>Campañas propias + de terceros</h3><p>Altadis comunica en su red cuando quiere; el resto del tiempo, el inventario genera ingresos.</p></div>
+        <div class="card"><div class="k">Control</div><h3>Reglas y cumplimiento</h3><p>Contenido conforme a la normativa del sector, gobernado por reglas centrales.</p></div>
+      </div>
+
+      <div class="split">
+        <div class="steps">
+          <div class="s"><b>Piloto</b><p>Un conjunto reducido de estancos instrumentados y medidos durante un periodo acordado.</p></div>
+          <div class="s"><b>Medición</b><p>Audiencia, atención e ingresos por estanco — datos reales para validar el caso.</p></div>
+          <div class="s"><b>Expansión</b><p>Despliegue progresivo a la red con la operativa ya probada.</p></div>
+        </div>
+        <div class="grid4" style="align-content:start">
+          <div class="stat"><div class="v todo">— estancos</div><div class="l">en piloto (TODO)</div></div>
+          <div class="stat"><div class="v todo">— impactos/día</div><div class="l">audiencia (TODO)</div></div>
+          <div class="stat"><div class="v todo">— € eCPM</div><div class="l">monetización (TODO)</div></div>
+          <div class="stat"><div class="v todo">— €/estanco</div><div class="l">ingreso medio (TODO)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CIERRE: por qué renovar -->
+  <section class="bignote" style="border-top:1px solid var(--admira-border)">
+    <div class="wrap">
+      <h2>No es renovar un proveedor. Es <span class="hl">subir de nivel</span> el mismo día.</h2>
+      <p>Seguimos operando vuestra red, sin empezar de cero, y la convertimos en un medio que se mide y se monetiza. Y lo demostramos en vivo.</p>
+      <div class="ctas" style="justify-content:center">
+        <a class="cta client" href="mailto:hola@admiranext.com?subject=Renovaci%C3%B3n%20XpaceOS%20Altadis%20-%20piloto">Reservar la demo del martes →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cierre: ecosistema (discreto) -->
+  <section class="admira-ecosystem">
+    <p class="admira-eco-kicker">Un sistema · tres capacidades · el gemelo en el centro</p>
+    <div class="admira-eco-orbit">
+      <div class="admira-twin" aria-hidden="true">
+        <span class="admira-twin-core">XP</span>
+        <span class="admira-twin-orbit"></span>
+        <span class="admira-twin-node" style="--i:0;--n:3" data-node="studio"></span>
+        <span class="admira-twin-node" style="--i:1;--n:3" data-node="os"></span>
+        <span class="admira-twin-node" style="--i:2;--n:3" data-node="app"></span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p>XpaceOS para Altadis · propuesta de renovación · AdmiraNext · <a href="mailto:hola@admiranext.com">hola@admiranext.com</a></p>
+      <p class="sig">// AdmiraNeXT · v.AdmiraNeXT.2026.05.26.r3</p>
+    </div>
+  </footer>
+
+</body>
+</html>

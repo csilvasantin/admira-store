@@ -3,9 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>admira.store · MCP — servidor MCP & API del gemelo</title>
-<meta name="description" content="Casa del servidor MCP real del ecosistema AdmiraNeXT (mcp.admira.store) y de la API compartida (api.admira.store): flota, emisión en vivo, audiencia on-device y proof-of-play. Para silicio y carbono.">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<title>XpaceOS · MCP — conecta con la red</title>
+<meta name="description" content="Servidor MCP de XpaceOS: el puente para que agentes (silicio) y personas (carbono) se conecten a la red de retail media — flota, emisión en vivo, audiencia y alta de pantallas.">
+<link rel="canonical" href="https://www.xpaceos.com/mcp/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="XpaceOS · MCP — conecta con la red">
+<meta property="og:description" content="Servidor MCP de XpaceOS: el puente para que agentes y personas se conecten a la red de retail media — flota, emisión en vivo, audiencia y alta de pantallas.">
+<meta property="og:url" content="https://www.xpaceos.com/mcp/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="XpaceOS · MCP — conecta con la red">
+<meta name="twitter:description" content="El puente MCP para conectar agentes y personas a la red de retail media de XpaceOS.">
+<meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <style>
   :root{ --bg:#070b12; --panel:#0e1622; --line:#1d2a3a; --txt:#e9f1f7; --mut:#7e95a8; --acc:#34d0c0; --pur:#9b8cff; --good:#3ddc84; }
   *{box-sizing:border-box}
@@ -40,13 +50,13 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="kick">admira.store · Model Context Protocol</div>
-  <h1>El <b>servidor MCP</b> del gemelo</h1>
-  <p class="lead">admira.store es la casa del servidor MCP real del ecosistema AdmiraNeXT (<code>mcp.admira.store</code>) y de la API compartida (<code>api.admira.store</code>): ver la flota, qué emite cada pantalla en vivo, su audiencia on-device y el proof-of-play de cada circuito. Para <b>agentes (silicio)</b> y <b>personas (carbono)</b>.</p>
+  <div class="kick">XpaceOS · Model Context Protocol</div>
+  <h1>Conecta con la <b>red XpaceOS</b></h1>
+  <p class="lead">El puente para que <b>agentes (silicio)</b> y <b>personas (carbono)</b> se conecten a la red de retail media: ver la flota, qué emite cada pantalla en vivo, su audiencia, el proof-of-play de cada circuito y dar de alta nuevas pantallas o robots.</p>
 
   <div class="status"><span class="dot" id="dot"></span><span id="status">comprobando servidor…</span></div>
 
-  <h2>Endpoint MCP</h2>
+  <h2>Endpoint</h2>
   <div class="card endpoint">
     <code class="url" id="ep">https://mcp.admira.store/mcp</code>
     <button class="copy" onclick="copyEp()">Copiar</button>
@@ -60,20 +70,6 @@
     <div class="tool"><b>screen_now</b><span>Qué emite AHORA una pantalla y su audiencia por cámara (personas · edad · género), y si está conectada.</span></div>
     <div class="tool"><b>emission_report</b><span>Proof-of-play de un circuito: pases, segundos, por tipo y por segmento.</span></div>
     <div class="tool"><b>register_device</b><span>Da de alta una pantalla o robot (auto-alta) y devuelve la URL del canal para emitir.</span></div>
-  </div>
-
-  <h2>API REST en vivo</h2>
-  <div class="two">
-    <div>
-      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Lectura (proof-of-play + audiencia):</p>
-      <pre>GET https://api.admira.store/emit/range?loc={loc}
-GET https://api.admira.store/audience/range?loc={loc}</pre>
-    </div>
-    <div>
-      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Ejemplo:</p>
-      <pre>curl -s \
- "https://api.admira.store/audience/range?loc=xtanco-demo"</pre>
-    </div>
   </div>
 
   <h2>Cómo conectar (silicio)</h2>
@@ -100,15 +96,28 @@ GET https://api.admira.store/audience/range?loc={loc}</pre>
   <h2>Para carbono</h2>
   <p style="color:var(--mut);max-width:64ch">¿Eres humano? Esto es cómo una IA se asoma a la red: pídele a tu agente que cargue este MCP y pregúntale <i>"¿qué pantallas hay y qué están emitiendo?"</i> o <i>"da de alta una pantalla en &lt;dirección&gt;"</i>. La red responde en tiempo real.</p>
 
+  <h2>Doctrina Xpaces · elementos</h2>
+  <div class="card">
+    <p style="margin:0 0 10px;color:var(--txt)"><span class="pill">SIEMPRE</span> En los Xpaces <b>todos los elementos tienen que ser movibles y sustituibles</b>.</p>
+    <ul style="margin:0;padding-left:18px;color:var(--mut);font-size:14px">
+      <li><b style="color:var(--txt)">Movibles:</b> posición, escala y orientación viven en la config del Xpacio (no hardcode en el motor).</li>
+      <li><b style="color:var(--txt)">Sustituibles:</b> se puede cambiar sprite / multivista / GLB / captura o el propio activo sin reconstruir la sala.</li>
+      <li><b style="color:var(--txt)">Aplica a:</b> mobiliario, pantallas, sensores, figuras, NPCs, zonas de interés y cualquier pieza del gemelo.</li>
+      <li>Si un elemento no se puede reubicar o reemplazar desde datos → es un defecto de diseño, no una excepción.</li>
+    </ul>
+    <p style="margin:12px 0 0;color:var(--mut);font-size:13px">Método canónico: <a href="https://www.xpaceos.com/ayuda/">xpaceos.com/ayuda</a> · comandos layout/mobiliario: <a href="https://www.xpaceos.com/help/">xpaceos.com/help</a> · texto máquina: <a href="https://www.xpaceos.com/mcp/llms.txt">mcp/llms.txt</a>.</p>
+  </div>
+
   <footer>
-    admira.store · gemelo digital de la red AdmiraNeXT · el MCP se mantiene actualizado con la red.<br>
-    Patas: <a href="https://www.xpaceos.com/mcp/">xpaceos</a> (Operar) · <a href="https://www.admira.studio/mcp/">studio</a> (Crear) · <a href="https://www.admira.app/mcp/">admira.app</a> (Preprod) · <a href="https://www.clearchannel.tv/mcp/">clearchannel.tv</a> (Prod).
+    XpaceOS · capa Operar de Admira · el MCP se mantiene actualizado con la red.<br>
+    Hermanos: <a href="https://admira.tv">admira.tv</a> (Emitir) · <a href="https://www.pixeria.com">pixeria.com</a> (Crear).
   </footer>
 </div>
 
 <script>
   const EP = 'https://mcp.admira.store/mcp';
   function copyEp(){ navigator.clipboard.writeText(EP).then(()=>{}); }
+  // Comprobación de salud (GET /)
   fetch('https://mcp.admira.store/', {cache:'no-store'})
     .then(r=>r.json())
     .then(j=>{ const ok=j&&j.ok; document.getElementById('dot').className='dot '+(ok?'up':'down');
