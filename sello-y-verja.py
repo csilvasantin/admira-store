@@ -46,7 +46,7 @@ if not ancla:
     sys.exit("✗ No hay dónde anclar el sello en index.html")
 
 bloque = (
-    f'  <meta name="admiranext-version" content="AdmiraNeXT {SELLO}"/>\n'
+    f'  <meta name="admiranext-version" content="{SELLO}"/>\n'
     f'  <!-- Espejo de www.xpaceos.com ({ORIGEN_SHA}), sincronizado con\n'
     f'       sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->\n'
 )
