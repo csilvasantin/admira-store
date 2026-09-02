@@ -1,11 +1,10 @@
 (() => {
   const root = typeof self !== 'undefined' ? self : (typeof window !== 'undefined' ? window : globalThis);
-  // Version format: AdmiraNext vYY.DD.MM.R.
-  // YY is the year, DD.MM is the current day/month, R restarts at 1 each day.
+  // Version format: v.DD.MM.YYYY.rN.HH:MM (R restarts at 1 each day).
   root.XTANCO_APP = Object.freeze({
     name: 'Admira XP // The Xpace OS',
-    version: 'AdmiraNext v26.02.08.7',
-    build: '20260802-0007',
-    cacheName: 'admiranext-v26-06-23-0001',
+    version: 'v.02.09.2026.r4.12:45',
+    build: '20260902-1245',
+    cacheName: 'admiranext-v02-09-2026-r4-1245',
   });
 })();

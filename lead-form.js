@@ -24,7 +24,7 @@
       interest: 'Interés', pick: 'Elige…', notes: '¿Qué te gustaría ver?',
       consent: 'Acepto que Admira me contacte sobre XpaceOS.',
       send: 'Enviar', cancel: 'Cancelar', sending: 'Enviando…',
-      okTitle: '¡Gracias! 🎉', okMsg: 'Te contactaremos muy pronto.',
+      okTitle: '¡Gracias! 🎉', okMsg: 'Te contactaremos muy pronto.', close: 'Cerrar',
       offMsg: 'Guardado ✓ — se enviará en cuanto haya conexión.',
       errName: 'Pon tu nombre.', errContact: 'Pon un email o un teléfono.', errEmail: 'Email no válido.' },
     en: { title: "Let's talk", sub: 'Leave your details and we’ll show XpaceOS in your space.',
@@ -32,7 +32,7 @@
       interest: 'Interest', pick: 'Choose…', notes: 'What would you like to see?',
       consent: 'I agree Admira may contact me about XpaceOS.',
       send: 'Send', cancel: 'Cancel', sending: 'Sending…',
-      okTitle: 'Thank you! 🎉', okMsg: 'We’ll be in touch very soon.',
+      okTitle: 'Thank you! 🎉', okMsg: 'We’ll be in touch very soon.', close: 'Close',
       offMsg: 'Saved ✓ — it will be sent once you’re back online.',
       errName: 'Enter your name.', errContact: 'Enter an email or a phone.', errEmail: 'Invalid email.' }
   };
@@ -76,36 +76,51 @@
   }
 
   /* ── modal ─────────────────────────────────────────────────────────── */
-  var built = false, autoTimer = null, pendingSource = 'xpaceos-home';
+  var built = false, autoTimer = null, pendingSource = 'xpaceos-home', previousFocus = null;
   function q(id) { return document.getElementById(id); }
   function val(id) { var e = q(id); return e ? String(e.value || '').trim() : ''; }
   function build() {
     if (built) return;
     var back = document.createElement('div'); back.id = 'xleadBack';
     back.innerHTML =
-      '<div id="xleadCard" role="dialog" aria-modal="true">' +
+      '<div id="xleadCard" role="dialog" aria-modal="true" aria-labelledby="xlT" aria-describedby="xlSub" tabindex="-1">' +
         '<button id="xleadClose" type="button" aria-label="close">×</button>' +
-        '<div id="xleadForm">' +
+        '<form id="xleadForm" novalidate>' +
           '<h3 id="xlT"></h3><div class="xl-sub" id="xlSub"></div>' +
-          '<div id="xleadErr"></div>' +
-          '<div class="xl-f"><label id="lbName"></label><input id="xleadName" autocomplete="name" maxlength="120"></div>' +
-          '<div class="xl-row"><div class="xl-f"><label id="lbCompany"></label><input id="xleadCompany" autocomplete="organization" maxlength="120"></div>' +
-            '<div class="xl-f"><label id="lbRole"></label><input id="xleadRole" autocomplete="organization-title" maxlength="80"></div></div>' +
-          '<div class="xl-row"><div class="xl-f"><label id="lbEmail"></label><input id="xleadEmail" type="email" inputmode="email" autocomplete="email" maxlength="160"></div>' +
-            '<div class="xl-f"><label id="lbPhone"></label><input id="xleadPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40"></div></div>' +
-          '<div class="xl-f"><label id="lbInterest"></label><select id="xleadInterest"></select></div>' +
-          '<div class="xl-f"><label id="lbNotes"></label><textarea id="xleadNotes" maxlength="500"></textarea></div>' +
+          '<div id="xleadErr" role="alert" aria-live="polite"></div>' +
+          '<div class="xl-f"><label id="lbName" for="xleadName"></label><input id="xleadName" autocomplete="name" maxlength="120"></div>' +
+          '<div class="xl-row"><div class="xl-f"><label id="lbCompany" for="xleadCompany"></label><input id="xleadCompany" autocomplete="organization" maxlength="120"></div>' +
+            '<div class="xl-f"><label id="lbRole" for="xleadRole"></label><input id="xleadRole" autocomplete="organization-title" maxlength="80"></div></div>' +
+          '<div class="xl-row"><div class="xl-f"><label id="lbEmail" for="xleadEmail"></label><input id="xleadEmail" type="email" inputmode="email" autocomplete="email" maxlength="160"></div>' +
+            '<div class="xl-f"><label id="lbPhone" for="xleadPhone"></label><input id="xleadPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40"></div></div>' +
+          '<div class="xl-f"><label id="lbInterest" for="xleadInterest"></label><select id="xleadInterest"></select></div>' +
+          '<div class="xl-f"><label id="lbNotes" for="xleadNotes"></label><textarea id="xleadNotes" maxlength="500"></textarea></div>' +
           '<label class="xl-consent"><input type="checkbox" id="xleadConsent"><span id="lbConsent"></span></label>' +
-          '<div id="xleadBtns"><button id="xleadCancel" type="button"></button><button id="xleadSend" type="button"></button></div>' +
-        '</div>' +
-        '<div id="xleadOK"><h3 id="xlOkT"></h3><p id="xlOkM"></p></div>' +
+          '<div id="xleadBtns"><button id="xleadCancel" type="button"></button><button id="xleadSend" type="submit"></button></div>' +
+        '</form>' +
+        '<div id="xleadOK" role="status" aria-live="polite"><h3 id="xlOkT"></h3><p id="xlOkM"></p></div>' +
       '</div>';
     document.body.appendChild(back);
     back.addEventListener('click', function (e) { if (e.target === back) close(); });
     q('xleadClose').addEventListener('click', close);
     q('xleadCancel').addEventListener('click', close);
-    q('xleadSend').addEventListener('click', submit);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && back.classList.contains('show')) close(); });
+    q('xleadForm').addEventListener('submit', function (e) { e.preventDefault(); submit(); });
+    q('xleadForm').addEventListener('keydown', function (e) {
+      var tag = e.target && e.target.tagName;
+      if (e.key === 'Enter' && tag !== 'TEXTAREA' && tag !== 'SELECT' && tag !== 'BUTTON') {
+        e.preventDefault(); submit();
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (!back.classList.contains('show')) return;
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key !== 'Tab') return;
+      var focusable = back.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href]');
+      if (!focusable.length) { e.preventDefault(); q('xleadCard').focus(); return; }
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
     // Reidioma en caliente si el usuario cambia el idioma de la página.
     window.addEventListener('admira:languagechange', function () { if (back.classList.contains('show')) fill(); });
     built = true;
@@ -116,6 +131,7 @@
     q('lbName').textContent = t.name; q('lbCompany').textContent = t.company; q('lbRole').textContent = t.role;
     q('lbEmail').textContent = t.email; q('lbPhone').textContent = t.phone; q('lbInterest').textContent = t.interest;
     q('lbNotes').textContent = t.notes; q('lbConsent').textContent = t.consent;
+    q('xleadClose').setAttribute('aria-label', t.close);
     q('xleadCancel').textContent = t.cancel; q('xleadSend').textContent = t.send;
     var sel = q('xleadInterest'); var prev = sel.value; var L = lng();
     sel.innerHTML = '';
@@ -125,9 +141,15 @@
     q('xlOkT').textContent = t.okTitle; q('xlOkM').textContent = t.okMsg;
   }
   function setErr(m) { var e = q('xleadErr'); if (!e) return; if (m) { e.textContent = m; e.style.display = 'block'; } else { e.style.display = 'none'; } }
-  function close() { var b = q('xleadBack'); if (b) b.classList.remove('show'); if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } }
+  function close() {
+    var b = q('xleadBack'); if (b) b.classList.remove('show');
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    if (previousFocus && typeof previousFocus.focus === 'function') { try { previousFocus.focus(); } catch (e) {} }
+    previousFocus = null;
+  }
   function open(opts) {
     build();
+    previousFocus = document.activeElement;
     if (opts && typeof opts === 'string') pendingSource = opts;
     else if (opts && opts.source) pendingSource = opts.source;
     else pendingSource = 'xpaceos-home';

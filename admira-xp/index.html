@@ -16,6 +16,7 @@
   <style>
   body::after{content:'';position:fixed;inset:0;z-index:99999;background:#05080d;pointer-events:none;opacity:0;transition:opacity .45s ease}
   html.adm-direct body::after{opacity:1;content:'· CARGANDO GEMELO ·';color:#3df08a;display:flex;align-items:center;justify-content:center;font:600 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.22em}
+  html[lang="en"].adm-direct body::after{content:'· LOADING DIGITAL TWIN ·'}
   </style>
 <link rel="canonical" href="https://www.xpaceos.com/admira-xp/">
 <meta name="description" content="El gemelo digital jugable de XpaceOS: opera un espacio de retail físico en vivo —signage, audiencia y monetización— desde un único panel. Corriendo sobre Lenovo edge + Nvidia GPU.">
@@ -668,8 +669,17 @@
     .splash-lang-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
     .splash-lang-btn.is-active{color:#0a0a0a;background:#ffd86a}
   </style>
-  <!-- Idioma por defecto inglés; respeta la elección guardada antes de cargar el panel de contacto -->
-  <script>try{document.documentElement.lang=localStorage.getItem('xtanco_lang')==='es'?'es':'en';}catch(e){document.documentElement.lang='en';}</script>
+  <!-- Idioma por defecto inglés. Una entrada dedicada puede fijarlo con
+       ?lang=en&langlock=1 sin alterar la preferencia guardada del usuario. -->
+  <script>(function(){
+    var requested='';
+    try{requested=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();}catch(e){}
+    window.XPACE_LANG_OVERRIDE=(requested==='es'||requested==='en')?requested:'';
+    try{window.XPACE_LANG_LOCKED=!!(window.XPACE_LANG_OVERRIDE&&new URLSearchParams(location.search).get('langlock')==='1');}catch(e){window.XPACE_LANG_LOCKED=false;}
+    var initial=window.XPACE_LANG_OVERRIDE;
+    if(!initial){try{initial=localStorage.getItem('xtanco_lang')==='es'?'es':'en';}catch(e){initial='en';}}
+    document.documentElement.lang=initial||'en';
+  })();</script>
   <!-- GUARDIA DE RED (01-08-2026) — ningún fetch del gemelo puede colgarse para siempre.
        El kiosko sondea cada 1-2,5 s contra backends que flaquean de verdad: *.workers.dev
        falla a ratos desde el navegador (bloqueo intermitente de los ISP de aquí) y el Funnel
@@ -1303,7 +1313,7 @@
         if(tried===m[1]){ __verReloading=true; return; }   // ya intentado: no repetir
         try{ sessionStorage.setItem('__xtVerReloadTarget', m[1]); }catch(_){}
         __verReloading=true;
-        try{ const t=document.createElement('div'); t.textContent='🔄 Nueva versión '+m[1]+' · recargando…';
+        try{ const t=document.createElement('div'); t.textContent=(document.documentElement.lang==='en'?'🔄 New version ':'🔄 Nueva versión ')+m[1]+(document.documentElement.lang==='en'?' · reloading…':' · recargando…');
           t.style.cssText='position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483646;background:#04140a;border:1px solid #2ee06a;border-radius:9px;padding:8px 16px;color:#9effa0;font:700 12px monospace;box-shadow:0 0 24px rgba(46,224,106,.5);';
           document.body.appendChild(t); }catch(_){}
         setTimeout(()=>{ try{ location.reload(); }catch(_){} }, 3500);
@@ -1325,7 +1335,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js"></script>
+<script src="xtanco-version.js?v=20260902-1245"></script>
 <script src="xtanco-runtime-config.js?r=24"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -2371,14 +2381,14 @@ function drawClubBurst(ctx,w,h){
   ctx.scale(pulse,pulse);
   if(isBday){
     ctx.fillStyle='rgba(0,0,0,0.55)';
-    ctx.fillText('¡CUMPLEAÑOS FELIZ!',2,2);
+    ctx.fillText(lang==='en'?'HAPPY BIRTHDAY!':'¡CUMPLEAÑOS FELIZ!',2,2);
     ctx.fillStyle='#ffd866';
-    ctx.fillText('¡CUMPLEAÑOS FELIZ!',0,0);
+    ctx.fillText(lang==='en'?'HAPPY BIRTHDAY!':'¡CUMPLEAÑOS FELIZ!',0,0);
   } else {
     ctx.fillStyle='rgba(0,0,0,0.55)';
-    ctx.fillText('¡BIENVENIDO AL CLUB!',2,2);
+    ctx.fillText(lang==='en'?'WELCOME TO THE CLUB!':'¡BIENVENIDO AL CLUB!',2,2);
     ctx.fillStyle='#bff7ff';
-    ctx.fillText('¡BIENVENIDO AL CLUB!',0,0);
+    ctx.fillText(lang==='en'?'WELCOME TO THE CLUB!':'¡BIENVENIDO AL CLUB!',0,0);
   }
   ctx.restore();
   // Cake / badge — big emoji
@@ -2969,7 +2979,7 @@ async function dsImportProcessAndNotify(fileList,targetSurfaceId){
   if(!eligible.length){
     dsImportSetStatus('error','Sin archivos válidos. Acepto PNG/JPG/WEBP/GIF/MP4/WEBM.', 100);
     dsImportHideStatus(2200);
-    if(typeof showEv==='function') showEv('Sin archivos válidos para DS (imagen/vídeo)','#ff8866');
+    if(typeof showEv==='function') showEv(lang==='en'?'No valid DS files found (image/video)':'Sin archivos válidos para DS (imagen/vídeo)','#ff8866');
     return [];
   }
   // Where will the result land?
@@ -3096,8 +3106,8 @@ function dsUpdateDragHighlight(surfaceId,clientX,clientY){
     svg.classList.add('is-active');
   }
   if(drop) drop.classList.add('has-target');
-  if(title) title.textContent='Suelta aquí: '+dsSurfaceLabel(surfaceId);
-  if(sub) sub.textContent='Se fija sólo en esta pantalla. Doble clic sobre la pantalla para liberar el pin.';
+  if(title) title.textContent=(lang==='en'?'Drop here: ':'Suelta aquí: ')+dsSurfaceLabel(surfaceId);
+  if(sub) sub.textContent=lang==='en'?'It will be pinned only to this screen. Double-click the screen to release it.':'Se fija sólo en esta pantalla. Doble clic sobre la pantalla para liberar el pin.';
 }
 
 (function setupDSImportUI(){
@@ -3616,11 +3626,11 @@ function checkDSConditions(){
 // DS content messages that rotate (fallback when no video file)
 const DS_MSGS=[
   {txt:'★ XTANCO ★',sub:'Digital Twin',bg:'#0a1a2a',fg:'#ffaa33'},
-  {txt:'ADMIRA',sub:'Red de Estancos',bg:'#1a0a1a',fg:'#cc66ff'},
-  {txt:'TABACO',sub:'Marcas Premium',bg:'#1a1a0a',fg:'#ffdd44'},
-  {txt:'LOTERÍA',sub:'Tu suerte aquí',bg:'#0a1a0a',fg:'#44ff66'},
-  {txt:'VAPES',sub:'Última generación',bg:'#0a0a1a',fg:'#44aaff'},
-  {txt:'PRENSA',sub:'Diarios y Revistas',bg:'#1a0a0a',fg:'#ff6644'},
+  {txt:'ADMIRA',txtEn:'ADMIRA',sub:'Red de Estancos',subEn:'Tobacconist Network',bg:'#1a0a1a',fg:'#cc66ff'},
+  {txt:'TABACO',txtEn:'TOBACCO',sub:'Marcas Premium',subEn:'Premium Brands',bg:'#1a1a0a',fg:'#ffdd44'},
+  {txt:'LOTERÍA',txtEn:'LOTTERY',sub:'Tu suerte aquí',subEn:'Your luck is here',bg:'#0a1a0a',fg:'#44ff66'},
+  {txt:'VAPES',txtEn:'VAPES',sub:'Última generación',subEn:'Next generation',bg:'#0a0a1a',fg:'#44aaff'},
+  {txt:'PRENSA',txtEn:'PRESS',sub:'Diarios y Revistas',subEn:'News and Magazines',bg:'#1a0a0a',fg:'#ff6644'},
 ];
 
 function renderDSCanvas(ctx,w,h,frame,displayIdx){
@@ -3647,7 +3657,7 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
       if(display&&display.paused){
         ctx.fillStyle='#00000088';ctx.fillRect(0,0,w,h);
         ctx.fillStyle='#ffffff';ctx.font='bold 14px monospace';ctx.textAlign='center';
-        ctx.fillText('PAUSA',w/2,h/2+5);
+        ctx.fillText(lang==='en'?'PAUSED':'PAUSA',w/2,h/2+5);
       }
       return;
     }
@@ -3704,7 +3714,7 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
     if(display&&display.paused){
       ctx.fillStyle='#00000088';ctx.fillRect(0,0,w,h);
       ctx.fillStyle='#ffffff';ctx.font='bold 14px monospace';ctx.textAlign='center';
-      ctx.fillText('PAUSA',w/2,h/2+5);
+      ctx.fillText(lang==='en'?'PAUSED':'PAUSA',w/2,h/2+5);
     }
     return;
   }
@@ -3726,13 +3736,14 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
     if(display&&display.paused){
       ctx.fillStyle='#00000088';ctx.fillRect(0,0,w,h);
       ctx.fillStyle='#ffffff';ctx.font='bold 14px monospace';ctx.textAlign='center';
-      ctx.fillText('PAUSA',w/2,h/2+5);
+      ctx.fillText(lang==='en'?'PAUSED':'PAUSA',w/2,h/2+5);
     }
     return;
   }
   // Fallback: animated text slides
   const msgIdx=Math.floor(frame/180)%DS_MSGS.length;
-  const m=DS_MSGS[msgIdx];
+  const mRaw=DS_MSGS[msgIdx];
+  const m=(typeof lang!=='undefined'&&lang==='en')?{...mRaw,txt:mRaw.txtEn||mRaw.txt,sub:mRaw.subEn||mRaw.sub}:mRaw;
   const t=frame*0.02;
   // Animated gradient background
   const grd=ctx.createLinearGradient(0,0,w,h);
@@ -4058,21 +4069,21 @@ function describeCameraError(error){
   const message=String(error&&error.message||'').trim();
   const raw=(name+' '+message).trim().toLowerCase();
   if(raw.includes('notallowederror')||raw.includes('permissiondeniederror')||raw.includes('permission denied')||raw.includes('permission dismissed')||raw.includes('denied permission')){
-    return 'Permiso de cámara denegado';
+    return lang==='en'?'Camera permission denied':'Permiso de cámara denegado';
   }
   if(raw.includes('notreadableerror')||raw.includes('trackstarterror')||raw.includes('starting video input failed')||raw.includes('could not start video source')||raw.includes('device in use')||raw.includes('concurrent mic process limit')){
-    return 'La cámara está ocupada por otra app';
+    return lang==='en'?'The camera is being used by another app':'La cámara está ocupada por otra app';
   }
   if(raw.includes('notfounderror')||raw.includes('devicesnotfounderror')||raw.includes('overconstrainederror')||raw.includes('requested device not found')||raw.includes('no camera')){
-    return 'No hay ninguna cámara disponible';
+    return lang==='en'?'No camera is available':'No hay ninguna cámara disponible';
   }
   if(raw.includes('securityerror')||raw.includes('secure context')){
-    return 'El navegador ha bloqueado la cámara';
+    return lang==='en'?'The browser blocked the camera':'El navegador ha bloqueado la cámara';
   }
   if(raw.includes('aborterror')){
-    return 'La cámara se ha cancelado antes de arrancar';
+    return lang==='en'?'The camera was cancelled before starting':'La cámara se ha cancelado antes de arrancar';
   }
-  return message||'No se pudo activar la cámara';
+  return message||(lang==='en'?'The camera could not be started':'No se pudo activar la cámara');
 }
 
 async function setLiveCamState(on){
@@ -4080,7 +4091,7 @@ async function setLiveCamState(on){
   // Gemelo config-driven: si el punto declara cameras:false, no hay cámaras
   // que activar (refleja la realidad del punto de admira.app).
   if(targetOn && window.STORE_CFG && window.STORE_CFG.cameras===false){
-    showEv('📷 Este punto no tiene cámaras','#ff99aa');
+    showEv(lang==='en'?'📷 This location has no cameras':'📷 Este punto no tiene cámaras','#ff99aa');
     return false;
   }
   if(targetOn===LIVE_CAM.active&&!LIVE_CAM.requesting){
@@ -4093,7 +4104,7 @@ async function setLiveCamState(on){
     return false;
   }
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    LIVE_CAM.error='Cámara no soportada en este navegador';
+    LIVE_CAM.error=lang==='en'?'Camera not supported by this browser':'Cámara no soportada en este navegador';
     updateLiveCamButtonUi();
     showEv('📷 '+LIVE_CAM.error,P.red);
     return false;
@@ -4121,13 +4132,13 @@ async function setLiveCamState(on){
     }
     stream.getVideoTracks().forEach(track=>{
       track.onended=()=>{
-        LIVE_CAM.error='La cámara se ha detenido';
+        LIVE_CAM.error=lang==='en'?'The camera has stopped':'La cámara se ha detenido';
         stopLiveCam({keepError:true});
         showEv('📷 '+LIVE_CAM.error,P.red);
       };
     });
     showEv('📷 LiveCam ON','#66ddaa');
-    setManagerSayBubble('LiveCam en pantalla');
+    setManagerSayBubble(lang==='en'?'LiveCam on screen':'LiveCam en pantalla');
     updateLiveCamButtonUi();
     return true;
   }catch(e){
@@ -4476,14 +4487,14 @@ function drawLiveCamScreen(vW,vH){
     return;
   }
   const lines=LIVE_CAM.requesting
-    ? ['LIVECAM', 'Solicitando permiso de cámara...']
-    : ['LIVECAM', LIVE_CAM.error||'Activa LiveCam desde la barra superior'];
+    ? ['LIVECAM', lang==='en'?'Requesting camera permission...':'Solicitando permiso de cámara...']
+    : ['LIVECAM', LIVE_CAM.error||(lang==='en'?'Enable LiveCam from the top bar':'Activa LiveCam desde la barra superior')];
   cx.fillStyle='#0a2030';cx.fillRect(0,0,vW,vH);
   cx.strokeStyle='#1d5260';cx.lineWidth=2;cx.strokeRect(3,3,vW-6,vH-6);
   cx.textAlign='center';
   cx.fillStyle='#78f3ff';cx.font='bold 14px monospace';cx.fillText(lines[0],vW/2,34);
   cx.fillStyle='#dff8ff';cx.font='10px monospace';cx.fillText(lines[1],vW/2,54);
-  cx.fillStyle='#7db1bb';cx.font='8px monospace';cx.fillText('Pantalla principal conectada a la cámara del equipo',vW/2,72);
+  cx.fillStyle='#7db1bb';cx.font='8px monospace';cx.fillText(lang==='en'?'Main screen connected to this device camera':'Pantalla principal conectada a la cámara del equipo',vW/2,72);
   cx.textAlign='left';
 }
 
@@ -5295,7 +5306,7 @@ function drawMobileControls(){
   if(G.weather&&G.weather.type){
     const wy=G.holiday&&G.holiday.active?46:30;
     r(2,wy,70,14,'#0a1a2a');rx(2,wy,70,14,'#4488cc',1);
-    tx(G.weather.type==='rain'?'🌧 Lluvia':'☀ Sol',4,wy+11,'#88bbee',6);
+    tx(G.weather.type==='rain'?(lang==='en'?'🌧 Rain':'🌧 Lluvia'):(lang==='en'?'☀ Sun':'☀ Sol'),4,wy+11,'#88bbee',6);
   }
   if(G.supplierDeal&&G.supplierDeal.active){
     const sy=30+(G.holiday&&G.holiday.active?16:0)+(G.weather&&G.weather.type?16:0);
@@ -5305,12 +5316,12 @@ function drawMobileControls(){
   if(G.escaparate&&G.escaparate.boost>0){
     const ey=30+(G.holiday&&G.holiday.active?16:0)+(G.weather&&G.weather.type?16:0)+(G.supplierDeal&&G.supplierDeal.active?16:0);
     r(2,ey,80,14,'#1a0f00');rx(2,ey,80,14,'#ff9900',1);
-    tx('🪟 +clientes',4,ey+11,'#ffcc44',6);
+    tx(lang==='en'?'🪟 +customers':'🪟 +clientes',4,ey+11,'#ffcc44',6);
   }
   if(G.saca&&G.saca.phase!=='idle'){
     const saBadgeRow=(G.holiday&&G.holiday.active?1:0)+(G.weather&&G.weather.type?1:0)+(G.supplierDeal&&G.supplierDeal.active?1:0)+(G.escaparate&&G.escaparate.boost>0?1:0);
     const say=30+saBadgeRow*16;
-    const saLabel=G.saca.phase==='unloading'?'🚚 descargando':G.saca.phase==='outgoing'?'🚚 saliendo':'🚚 La Saca!';
+    const saLabel=G.saca.phase==='unloading'?(lang==='en'?'🚚 unloading':'🚚 descargando'):G.saca.phase==='outgoing'?(lang==='en'?'🚚 leaving':'🚚 saliendo'):(lang==='en'?'🚚 Delivery!':'🚚 La Saca!');
     r(2,say,82,14,'#1a1000');rx(2,say,82,14,'#ffcc00',1);
     tx(saLabel,4,say+11,'#ffee66',6);
   }
@@ -5382,10 +5393,11 @@ const CAM={
 function camModeLabel(){ return CAM.mode==='exacto'?'EXACTO':(CAM.mode==='real'?'REAL':'FAKE'); }
 // Resumen para el "cerebro" de la tienda (contexto IA) y diagnósticos.
 function camBrainLine(){
-  if(CAM.mode==='fake') return 'FAKE (clientes aleatorios del juego; cámara ignorada)';
-  return camModeLabel()+' · cámara Hikvision '+(CAM.connected
-    ? (CAM.occupancy+' dentro (+'+CAM.enter+'/-'+CAM.leave+', pico '+CAM.peak+')')
-    : 'sin conexión');
+  const en=typeof lang!=='undefined'&&lang==='en';
+  if(CAM.mode==='fake') return en?'FAKE (simulated customers; camera ignored)':'FAKE (clientes aleatorios del juego; cámara ignorada)';
+  return camModeLabel()+' · '+(en?'Hikvision camera ':'cámara Hikvision ')+(CAM.connected
+    ? (CAM.occupancy+(en?' inside (':' dentro (')+'+'+CAM.enter+'/-'+CAM.leave+', '+(en?'peak ':'pico ')+CAM.peak+')')
+    : (en?'offline':'sin conexión'));
 }
 function updateCamHud(){
   const val=document.getElementById('bbCamVal'); if(!val) return;
@@ -5393,12 +5405,13 @@ function updateCamHud(){
   const box=document.getElementById('bbCamBox');
   val.textContent=CAM.connected?CAM.occupancy:'—';
   if(dot) dot.style.background=CAM.connected?'#33dd66':'#cc4444';
-  const modeTxt=CAM.mode==='exacto'?'EXACTO — la tienda es exactamente lo que dice la cámara'
-    :CAM.mode==='real'?'REAL — la tienda respira con la gente real'
-    :'FAKE — clientes aleatorios del juego';
+  const en=typeof lang!=='undefined'&&lang==='en';
+  const modeTxt=CAM.mode==='exacto'?(en?'EXACT — store occupancy mirrors the camera':'EXACTO — la tienda es exactamente lo que dice la cámara')
+    :CAM.mode==='real'?(en?'LIVE — the store follows real footfall':'REAL — la tienda respira con la gente real')
+    :(en?'SIMULATED — game-generated customers':'FAKE — clientes aleatorios del juego');
   if(box) box.title=CAM.connected
-    ?'Aforo (cámara Hikvision)\nDentro: '+CAM.occupancy+' · Pico hoy: '+CAM.peak+'\nEntradas: '+CAM.enter+' · Salidas: '+CAM.leave+'\nModo: '+modeTxt+'  (/aforo real | /aforo exacto | /aforo fake)'
-    :'Aforo: cámara sin conexión  (/aforo real | /aforo exacto | /aforo fake)';
+    ?(en?'Occupancy (Hikvision camera)\nInside: '+CAM.occupancy+' · Today peak: '+CAM.peak+'\nEntries: '+CAM.enter+' · Exits: '+CAM.leave+'\nMode: '+modeTxt+'  (/aforo real | /aforo exacto | /aforo fake)':'Aforo (cámara Hikvision)\nDentro: '+CAM.occupancy+' · Pico hoy: '+CAM.peak+'\nEntradas: '+CAM.enter+' · Salidas: '+CAM.leave+'\nModo: '+modeTxt+'  (/aforo real | /aforo exacto | /aforo fake)')
+    :(en?'Occupancy: camera offline  (/aforo real | /aforo exacto | /aforo fake)':'Aforo: cámara sin conexión  (/aforo real | /aforo exacto | /aforo fake)');
 }
 function camApplyToStore(){
   if(CAM.mode==='fake'||!CAM.connected) return;
@@ -5839,7 +5852,7 @@ function isLocalRuntime(){
 }
 
 async function hueProxyJson(path,opts){
-  if(!isLocalRuntime()) return {ok:false,message:'Hue real requiere proxy local'};
+  if(!isLocalRuntime()) return {ok:false,message:(typeof lang!=='undefined'&&lang==='en')?'Live Hue requires the local bridge':'Hue real requiere proxy local'};
   const options=opts||{};
   const res=await fetch(`${location.origin}${path}`,{
     method:options.method||'GET',
@@ -5847,7 +5860,7 @@ async function hueProxyJson(path,opts){
     body:options.body||undefined,
     signal:AbortSignal.timeout(options.timeout||2500),
   });
-  const data=await res.json().catch(()=>({ok:false,message:'Respuesta no válida del proxy Hue'}));
+  const data=await res.json().catch(()=>({ok:false,message:(typeof lang!=='undefined'&&lang==='en')?'Invalid response from Hue proxy':'Respuesta no válida del proxy Hue'}));
   if(!res.ok){
     if(data&&typeof data==='object') return {...data,ok:false};
     return {ok:false,message:`Hue proxy HTTP ${res.status}`};
@@ -5935,7 +5948,7 @@ function applyPhysicalLampState(on,opts){
   HUE.expectedPrimaryOn=nextOn;
   if(G) G.lampIntensity=nextOn?100:0;
   if(options.announce){
-    showEv(`🔘 Botón físico: lámpara ${nextOn?'ON':'OFF'}`,nextOn?'#88ddaa':'#cc8899');
+    showEv(`🔘 ${lang==='en'?'Physical button: lamp':'Botón físico: lámpara'} ${nextOn?'ON':'OFF'}`,nextOn?'#88ddaa':'#cc8899');
   }
 }
 
@@ -6665,13 +6678,17 @@ const LANGS={
     modelStart:['€3,500','€2,800','€4,500','€6,000'],
   },
 };
-let lang=(function(){try{return localStorage.getItem('xtanco_lang')==='es'?'es':'en';}catch(e){return 'en';}})();
+let lang=(function(){
+  if(window.XPACE_LANG_OVERRIDE==='es'||window.XPACE_LANG_OVERRIDE==='en') return window.XPACE_LANG_OVERRIDE;
+  try{return localStorage.getItem('xtanco_lang')==='es'?'es':'en';}catch(e){return 'en';}
+})();
 const T=()=>LANGS[lang];
 function setLanguage(nextLang){
+  if(window.XPACE_LANG_LOCKED&&window.XPACE_LANG_OVERRIDE) nextLang=window.XPACE_LANG_OVERRIDE;
   lang=nextLang==='en'?'en':'es';
   menuSel=lang==='en'?1:0;
   document.documentElement.lang=lang;
-  try{localStorage.setItem('xtanco_lang',lang);}catch(e){}
+  if(!window.XPACE_LANG_LOCKED){try{localStorage.setItem('xtanco_lang',lang);}catch(e){}}
   try{if(typeof applyHtmlLang==='function')applyHtmlLang(lang);}catch(e){}
   // El dock de Telegram (Enviar/Ocultar, cabeceras, placeholder, estados) NO está
   // en la tabla I18N: lo traduce syncDockLanguage(). Sin esta llamada los botones
@@ -6687,7 +6704,7 @@ const S={ERA_SEL:'eraSel',PRELOAD:'preload',MENU:'menu',CLIENT_SEL:'clientSel',M
 const RENDER_TIERS=['8bit','16bit','habbo','real'];
 let renderMode=(function(){ try{ const v=localStorage.getItem('xtanco_render'); if(RENDER_TIERS.indexOf(v)>=0) return v; }catch(_){} return '16bit'; })();
 function setRenderMode(m){ if(RENDER_TIERS.indexOf(m)<0) return false; renderMode=m; try{ localStorage.setItem('xtanco_render',m); }catch(_){} return true; }
-let state=S.ERA_SEL, eraSel=0, menuSel=0, clientSel=0, modelSel=0, tutPage=0, helpPage=0;
+let state=S.ERA_SEL, eraSel=0, menuSel=lang==='en'?1:0, clientSel=0, modelSel=0, tutPage=0, helpPage=0;
 // Señal para el motor de ambiente (assets/js/ambient.js): rumor/lluvia/cafetera solo
 // deben sonar en partida activa, no en menús, pausa ni fin de partida.
 window.ambientActive=function(){return state===S.GAME;};
@@ -8453,7 +8470,7 @@ function restoreSavedFurnitureLayout(){
   shopFurnitureVisible=true;
   edSelIdx=-1;
   try{buildWalkGrid();}catch(e){}
-  return 'Mobiliario en inicio: restaurado en la última posición guardada.';
+  return lang==='en'?'Initial furniture restored to its last saved position.':'Mobiliario en inicio: restaurado en la última posición guardada.';
 }
 function setFurnitureVisibility(value){
   const visible=value!==false;
@@ -10158,7 +10175,7 @@ function doAction(id){
       // Advertising pressures competitors — bigger campaign, bigger dent
       if(G.comp){const pressure=i===0?1:i===1?2.5:5;for(let ci=0;ci<4;ci++) G.comp.shares[ci]=Math.max(15,G.comp.shares[ci]-pressure);}
       // Cancel active rival promo with premium campaign
-      if(i===2&&G.comp&&G.comp.promoTimer>0){G.comp.promoTimer=0;G.comp.promoBrand=-1;showEv('📣 Campaña premium: promo rival cancelada!',P.neon2);}
+      if(i===2&&G.comp&&G.comp.promoTimer>0){G.comp.promoTimer=0;G.comp.promoBrand=-1;showEv(lang==='en'?'📣 Premium campaign: rival promotion cancelled!':'📣 Campaña premium: promo rival cancelada!',P.neon2);}
       else{showEv(T().events[7],P.neon2);}
       addFloat(W/2,H/2-40,'+FAMA',P.neon2);
     }
@@ -10263,7 +10280,7 @@ function doAction(id){
     // Cámara de seguridad → dashboard CPM/audiencia en la TFT de la pared
     // larga (toggle). El canal cede prioridad al CCTV si hay ladrón.
     G.tftCPM=!G.tftCPM;
-    if(typeof showEv==='function') showEv(G.tftCPM?'📊 CPM en pantalla principal — clic en la cámara para quitar':'📊 CPM fuera de la pantalla principal','#ffd866');
+    if(typeof showEv==='function') showEv(lang==='en'?(G.tftCPM?'📊 CPM on the main screen — click the camera to remove':'📊 CPM removed from the main screen'):(G.tftCPM?'📊 CPM en pantalla principal — clic en la cámara para quitar':'📊 CPM fuera de la pantalla principal'),'#ffd866');
     SFX.click&&SFX.click();
     return;
   }
@@ -11006,16 +11023,16 @@ function checkRandomEvents(){
   // Holiday event
   if(G.holiday&&G.holiday.active){G.holiday.timer--;if(G.holiday.timer<=0)G.holiday.active=false;}
   else if(Math.random()<0.001){
-    const names=['Dia del Padre','San Valentín','Navidad','Reyes','Black Friday','Feria'];
+    const names=lang==='en'?['Father’s Day','Valentine’s Day','Christmas','Three Kings Day','Black Friday','Trade Fair']:['Día del Padre','San Valentín','Navidad','Reyes','Black Friday','Feria'];
     G.holiday={active:true,timer:200,name:names[Math.floor(Math.random()*names.length)]};
-    showEv('🎉 '+G.holiday.name+'! x1.8 ventas',P.neon3);SFX.eventChime();
+    showEv('🎉 '+G.holiday.name+'! x1.8 '+(lang==='en'?'sales':'ventas'),P.neon3);SFX.eventChime();
   }
   // Supplier deal
   if(G.supplierDeal&&G.supplierDeal.active){G.supplierDeal.timer--;if(G.supplierDeal.timer<=0)G.supplierDeal.active=false;}
   else if(Math.random()<0.0008){
     const pi=Math.floor(Math.random()*G.prods.length);
     G.supplierDeal={active:true,timer:300,prodIdx:pi};
-    showEv('📦 Oferta proveedor: -50% restock!',P.neonB);SFX.eventChime();
+    showEv(lang==='en'?'📦 Supplier deal: -50% restock!':'📦 Oferta proveedor: -50% reposición!',P.neonB);SFX.eventChime();
   }
   // Weather
   if(G.weather&&G.weather.timer>0){G.weather.timer--;if(G.weather.timer<=0)G.weather.type=null;}
@@ -11032,16 +11049,16 @@ function checkRandomEvents(){
   // VIP customer
   if(Math.random()<0.0005){
     spawnCust(true);
-    showEv('⭐ Cliente VIP!','#ffd700');SFX.eventChime();
+    showEv(lang==='en'?'⭐ VIP customer!':'⭐ ¡Cliente VIP!','#ffd700');SFX.eventChime();
   }
   // Theft attempt
   if(Math.random()<0.0004){
     const hiredCount=G.staff.filter(s=>s.hired).length;
     if(hiredCount<3){
       for(const p of G.prods) p.stock=Math.max(0,Math.floor(p.stock*0.7));
-      showEv('🚨 Hurto: -30% stock (pocas empleadas)',P.red);SFX.inspectionAlarm();
+      showEv(lang==='en'?'🚨 Theft: -30% stock (not enough staff)':'🚨 Hurto: -30% stock (pocas empleadas)',P.red);SFX.inspectionAlarm();
     } else {
-      showEv('🛡 Intento de hurto frustrado!',P.green);
+      showEv(lang==='en'?'🛡 Theft attempt stopped!':'🛡 ¡Intento de hurto frustrado!',P.green);
     }
   }
   // Competitor promo — steals customers for a while
@@ -11058,7 +11075,7 @@ function checkRandomEvents(){
     G.comp.shares[bi]=Math.min(45,G.comp.shares[bi]+8);
     const msg=T().compPromoMsg.replace('{brand}',CFG.COMP_NAMES[bi]);
     showEv(msg,P.red);SFX.inspectionAlarm();
-    addFloat(W/2,H/2-40,'PROMO RIVAL',P.red);
+    addFloat(W/2,H/2-40,lang==='en'?'RIVAL PROMO':'PROMO RIVAL',P.red);
   }
   // Satisfaction slowly shifts comp shares — high sat pulls customers back
   if(tt%120===0){
@@ -11077,7 +11094,7 @@ function checkRandomEvents(){
       const emp=candidates[Math.floor(Math.random()*candidates.length)];
       const bonus=50*emp.level;
       if((G.money||0)<bonus){
-        showEv('🏆 Sin presupuesto para empleado del mes (faltan €'+(bonus-(G.money||0))+')','#cc8866');
+        showEv(lang==='en'?'🏆 Not enough budget for employee of the month (€'+(bonus-(G.money||0))+' short)':'🏆 Sin presupuesto para empleado del mes (faltan €'+(bonus-(G.money||0))+')','#cc8866');
       } else {
         G.money-=bonus;
         emp.morale=Math.min(100,emp.morale+30);
@@ -11087,7 +11104,7 @@ function checkRandomEvents(){
         G.empOfMonth=emp.name;
         addFloat(SHOP.x+SHOP.w/2,SHOP.y+20,'-€'+bonus+' BONUS',P.red);
         addFloat(emp.x,emp.y-40,'🏆 +LVL +€'+bonus,P.neon1);
-        showEv('🏆 '+emp.name+' empleado del mes! +€'+bonus+' bonus',P.neon1);
+        showEv(lang==='en'?'🏆 '+emp.name+' is employee of the month! +€'+bonus+' bonus':'🏆 ¡'+emp.name+' es empleado del mes! +€'+bonus+' bonus',P.neon1);
         SFX.levelUp();
       }
     }
@@ -11482,9 +11499,9 @@ function dvrSeekToTime(str){
   return true;
 }
 function openDVRPanel(){
-  if(state!==S.GAME) return 'Abre el gemelo (en juego) para usar el DVR.';
-  if(!REC.recording.length) return 'Aún no hay grabación — deja correr el día un poco (prueba /velocidad 8).';
-  if(!enterReplay()) return 'No se pudo entrar en replay.';
+  if(state!==S.GAME) return lang==='en'?'Open the twin in game mode to use the DVR.':'Abre el gemelo (en juego) para usar el DVR.';
+  if(!REC.recording.length) return lang==='en'?'There is no recording yet — let the day run for a while (try /speed 8).':'Aún no hay grabación — deja correr el día un poco (prueba /velocidad 8).';
+  if(!enterReplay()) return lang==='en'?'Could not enter replay mode.':'No se pudo entrar en replay.';
   const e=_dvrEls(); if(e.panel){ e.panel.classList.add('show'); e.panel.setAttribute('aria-hidden','false'); }
   updateDVRPanel();
   // DVR = panel de impactos/CPM en vivo + carrete de la cámara del MUPI (Carlos
@@ -11502,7 +11519,7 @@ function openDVRPanel(){
     if(typeof setAvatar3dTotem==='function') setAvatar3dTotem(false);
     if(typeof setAvatar3dWall==='function') setAvatar3dWall(false);
   }catch(_){}
-  return '⏮ DVR abierto: línea de tiempo + impactos/CPM + 📷 cámara del MUPI. (Avatar 3D en pausa). Pulsa "● EN VIVO" para volver.';
+  return lang==='en'?'⏮ DVR open: timeline + impacts/CPM + 📷 MUPI camera. (Avatar 3D paused.) Press “● LIVE” to return.':'⏮ DVR abierto: línea de tiempo + impactos/CPM + 📷 cámara del MUPI. (Avatar 3D en pausa). Pulsa "● EN VIVO" para volver.';
 }
 function closeDVRPanel(){
   exitReplay();
@@ -11526,8 +11543,8 @@ window.openDVRPanel=openDVRPanel; window.closeDVRPanel=closeDVRPanel;
 // El rango llega siempre hasta la fecha real (new Date()) y se amplía solo.
 const XCAL=(function(){
   const START=new Date(2026,0,1);
-  const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const DOW=['L','M','X','J','V','S','D'];
+  const MONTHS={es:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
+  const DOW={es:['L','M','X','J','V','S','D'],en:['M','T','W','T','F','S','S']};
   function today(){ try{ if(typeof gameDate==='function'){ const g=gameDate(); return new Date(g.getFullYear(),g.getMonth(),g.getDate()); } }catch(_){} const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); }
   function key(d){ return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
   function mulberry(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
@@ -11576,14 +11593,15 @@ const XCAL=(function(){
   }
   let viewY,viewM,el,body,dayCur=0,kpi='aud';
   const POS='xcal-pos', SIZE='xcal-size';
-  const KPIS=[{k:'aud',l:'Audiencia'},{k:'fac',l:'Facturación'},{k:'tm',l:'Ticket Medio'},{k:'prod',l:'Producto top'}];
+  const KPIS=[{k:'aud',es:'Audiencia',en:'Audience'},{k:'fac',es:'Facturación',en:'Revenue'},{k:'tm',es:'Ticket Medio',en:'Average ticket'},{k:'prod',es:'Producto top',en:'Top product'}];
   const PROD_ICON={'Tabaco':'🚬','Vapeadores':'💨','Prensa':'📰','Lotería':'🎟️','Souvenirs':'🎁','Bebidas':'🥤'};
+  const PROD_EN={Tabaco:'Tobacco',Vapeadores:'Vapes',Prensa:'Press','Lotería':'Lottery',Souvenirs:'Souvenirs',Bebidas:'Drinks'};
   function ensure(){
     if(el) return el;
     el=document.createElement('div'); el.id='xcalPanel';
     el.style.cssText='position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:2147482500;width:min(560px,94vw);height:auto;max-width:96vw;max-height:90vh;min-width:320px;min-height:260px;resize:both;display:none;flex-direction:column;background:rgba(6,14,22,.97);border:1px solid #5fb0ff;border-radius:12px;color:#dbeaff;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;box-shadow:0 14px 40px rgba(0,0,0,.55);overflow:hidden';
     // Estructura fija: barra arrastrable + contenido (que se re-renderiza).
-    el.innerHTML='<div id="xcBar" style="flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-bottom:1px dashed #2f6a8a;cursor:move;user-select:none;touch-action:none"><b>📅 CALENDARIO · Xtanco</b><span data-xc="close" title="Cerrar" style="cursor:pointer;color:#999;padding:0 4px">×</span></div>'+
+    el.innerHTML='<div id="xcBar" style="flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-bottom:1px dashed #2f6a8a;cursor:move;user-select:none;touch-action:none"><b>📅 '+(lang==='en'?'CALENDAR':'CALENDARIO')+' · Xtanco</b><span data-xc="close" title="'+(lang==='en'?'Close':'Cerrar')+'" style="cursor:pointer;color:#999;padding:0 4px">×</span></div>'+
       '<div id="xcContent" style="flex:1 1 auto;overflow:auto;min-height:0"></div>';
     document.body.appendChild(el);
     body=el.querySelector('#xcContent');
@@ -11596,7 +11614,7 @@ const XCAL=(function(){
       else if(a==='kpi'){ kpi=b.getAttribute('data-k')||'aud'; renderMonth(); }
       else if(a==='day'){ openDay(new Date(+b.getAttribute('data-y'),+b.getAttribute('data-m'),+b.getAttribute('data-d'))); }
       else if(a==='dvr'){ close(); try{ const m=(typeof openDVRPanel==='function')?openDVRPanel():null; if(m&&typeof showEv==='function') showEv(String(m).slice(0,80),'#78f3ff'); }catch(_){} }
-      else if(a==='vdvr'){ const dt=dayDate; close(); try{ if(enterDayReplay(dt)){ if(typeof showEv==='function') showEv('⏮ DVR del '+fmt(dt)+' — reproduciendo el día','#78f3ff'); } else if(typeof showEv==='function') showEv('Abre el gemelo (en juego) para el DVR del día','#ff8866'); }catch(_){} }
+      else if(a==='vdvr'){ const dt=dayDate; close(); try{ if(enterDayReplay(dt)){ if(typeof showEv==='function') showEv(lang==='en'?'⏮ DVR for '+fmt(dt)+' — replaying the day':'⏮ DVR del '+fmt(dt)+' — reproduciendo el día','#78f3ff'); } else if(typeof showEv==='function') showEv(lang==='en'?'Open the twin in game mode to use the day DVR':'Abre el gemelo (en juego) para el DVR del día','#ff8866'); }catch(_){} }
       else if(a==='play'){ playDay(); }
     });
     el.addEventListener('input',ev=>{ const s=ev.target.closest('#xcScrub'); if(s){ dayCur=+s.value||0; paintScrub(); } });
@@ -11627,6 +11645,7 @@ const XCAL=(function(){
   }
   function renderMonth(){
     ensure(); loadMonthReal(); const t=today();
+    const en=lang==='en', months=en?MONTHS.en:MONTHS.es, dow=en?DOW.en:DOW.es;
     const first=new Date(viewY,viewM,1); let lead=(first.getDay()+6)%7; // L=0
     const dim=new Date(viewY,viewM+1,0).getDate();
     const canPrev=!(viewY===2026&&viewM===0), canNext=!(viewY===t.getFullYear()&&viewM===t.getMonth());
@@ -11637,43 +11656,44 @@ const XCAL=(function(){
       const future=dt>t, before=dt<START;
       if(future||before){ cells+='<div style="opacity:.18;padding:6px 0;text-align:center;border:1px solid #16303f;border-radius:6px">'+d+'</div>'; continue; }
       const st=stats(dt); const isToday=(key(dt)===key(t)); const kc=kpiCell(st);
-      const realDot=st._real?'<span title="datos reales" style="position:absolute;top:2px;right:3px;width:5px;height:5px;border-radius:50%;background:#2ee06a"></span>':'';
-      cells+='<div data-xc="day" data-y="'+viewY+'" data-m="'+viewM+'" data-d="'+d+'" title="'+fmt(dt)+(st._real?' · real':' · estimación')+(kc.t?(' · '+kc.t):'')+'" '+
+      const realDot=st._real?'<span title="'+(en?'real data':'datos reales')+'" style="position:absolute;top:2px;right:3px;width:5px;height:5px;border-radius:50%;background:#2ee06a"></span>':'';
+      cells+='<div data-xc="day" data-y="'+viewY+'" data-m="'+viewM+'" data-d="'+d+'" title="'+fmt(dt)+(st._real?' · real':(en?' · estimate':' · estimación'))+(kc.t?(' · '+(en?(PROD_EN[kc.t]||kc.t):kc.t)):'')+'" '+
         'style="position:relative;cursor:pointer;padding:5px 0 4px;text-align:center;border:1px solid '+(isToday?'#ffd866':'#1f4357')+';border-radius:6px;background:'+kc.col+'22">'+realDot+
         '<div style="font-weight:bold;color:'+(isToday?'#ffd866':'#dbeaff')+'">'+d+'</div>'+
         '<div style="font-size:'+(kpi==='prod'?'12px':'8px')+';color:'+kc.col+';font-weight:bold">'+kc.val+'</div></div>';
     }
-    const hdr=DOW.map(x=>'<div style="text-align:center;font-size:9px;opacity:.6">'+x+'</div>').join('');
-    const kpiSel=KPIS.map(x=>'<span data-xc="kpi" data-k="'+x.k+'" style="cursor:pointer;font-size:9px;border:1px solid '+(kpi===x.k?'#ffd866':'#2f6a8a')+';color:'+(kpi===x.k?'#ffd866':'#9fd0ff')+';border-radius:6px;padding:2px 7px;white-space:nowrap">'+x.l+'</span>').join(' ');
+    const hdr=dow.map(x=>'<div style="text-align:center;font-size:9px;opacity:.6">'+x+'</div>').join('');
+    const kpiSel=KPIS.map(x=>'<span data-xc="kpi" data-k="'+x.k+'" style="cursor:pointer;font-size:9px;border:1px solid '+(kpi===x.k?'#ffd866':'#2f6a8a')+';color:'+(kpi===x.k?'#ffd866':'#9fd0ff')+';border-radius:6px;padding:2px 7px;white-space:nowrap">'+x[en?'en':'es']+'</span>').join(' ');
     body.innerHTML=
-      '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 11px"><span data-xc="prev" style="cursor:'+(canPrev?'pointer':'default')+';opacity:'+(canPrev?1:.3)+';padding:2px 8px;border:1px solid #2f6a8a;border-radius:6px">‹</span><b style="font-size:13px">'+MES[viewM]+' '+viewY+'</b><span data-xc="next" style="cursor:'+(canNext?'pointer':'default')+';opacity:'+(canNext?1:.3)+';padding:2px 8px;border:1px solid #2f6a8a;border-radius:6px">›</span></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 11px"><span data-xc="prev" style="cursor:'+(canPrev?'pointer':'default')+';opacity:'+(canPrev?1:.3)+';padding:2px 8px;border:1px solid #2f6a8a;border-radius:6px">‹</span><b style="font-size:13px">'+months[viewM]+' '+viewY+'</b><span data-xc="next" style="cursor:'+(canNext?'pointer':'default')+';opacity:'+(canNext?1:.3)+';padding:2px 8px;border:1px solid #2f6a8a;border-radius:6px">›</span></div>'+
       '<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:0 11px 8px">'+kpiSel+'</div>'+
       '<div style="padding:0 11px 12px"><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px">'+hdr+'</div>'+
       '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'+cells+'</div>'+
-      '<div style="font-size:9px;opacity:.55;margin-top:9px;text-align:center">Pulsa un día para ver entradas, actividad y el DVR del día. KPI: '+(KPIS.find(x=>x.k===kpi)||{}).l+'. Días sin jugar = estimación.</div></div>';
+      '<div style="font-size:9px;opacity:.55;margin-top:9px;text-align:center">'+(en?'Select a day to see entries, activity and its DVR. KPI: ':'Pulsa un día para ver entradas, actividad y el DVR del día. KPI: ')+(KPIS.find(x=>x.k===kpi)||{})[en?'en':'es']+(en?'. Unplayed days = estimate.':'. Días sin jugar = estimación.')+'</div></div>';
   }
   let dayDate=null,dayData=null;
   function openDay(dt){
     if(XCAL._pl){ clearInterval(XCAL._pl); XCAL._pl=null; }
     dayDate=dt; dayData=stats(dt); dayCur=0;
     const t=today(); const isToday=(key(dt)===key(t));
-    const dname=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][dt.getDay()];
+    const en=lang==='en';
+    const dname=(en?['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'])[dt.getDay()];
     const s=dayData;
-    const top=s.compras.slice(0,4).map(c=>'<span style="display:inline-block;background:#0e2233;border:1px solid #235;border-radius:5px;padding:1px 6px;margin:2px 3px 0 0">'+c.name+' <b>'+c.n+'</b></span>').join('');
+    const top=s.compras.slice(0,4).map(c=>'<span style="display:inline-block;background:#0e2233;border:1px solid #235;border-radius:5px;padding:1px 6px;margin:2px 3px 0 0">'+(en?(PROD_EN[c.name]||c.name):c.name)+' <b>'+c.n+'</b></span>').join('');
     const big=(lbl,val,col)=>'<div style="flex:1;min-width:74px;background:#08151f;border:1px solid #1f4357;border-radius:8px;padding:7px 8px"><div style="font-size:8px;opacity:.6;text-transform:uppercase;letter-spacing:.05em">'+lbl+'</div><div style="font-size:16px;font-weight:bold;color:'+col+'">'+val+'</div></div>';
     body.innerHTML=
-      '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-bottom:1px dashed #16303f"><b style="font-size:12px">'+dname+' '+fmt(dt)+(isToday?' · <span style="color:#ffd866">hoy</span>':'')+(s._real?' <span style="color:#2ee06a;font-size:9px">● real</span>':' <span style="opacity:.5;font-size:9px">≈ estimación</span>')+'</b><span data-xc="back" style="cursor:pointer;font-size:10px;border:1px solid #2f6a8a;border-radius:6px;padding:2px 7px">‹ calendario</span></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-bottom:1px dashed #16303f"><b style="font-size:12px">'+dname+' '+fmt(dt)+(isToday?' · <span style="color:#ffd866">'+(en?'today':'hoy')+'</span>':'')+(s._real?' <span style="color:#2ee06a;font-size:9px">● real</span>':' <span style="opacity:.5;font-size:9px">≈ '+(en?'estimate':'estimación')+'</span>')+'</b><span data-xc="back" style="cursor:pointer;font-size:10px;border:1px solid #2f6a8a;border-radius:6px;padding:2px 7px">‹ '+(en?'calendar':'calendario')+'</span></div>'+
       '<div style="padding:11px">'+
         '<div style="display:flex;flex-wrap:wrap;gap:7px">'+
-          big('🏪 Entraron',s.entran,'#7dff9e')+big('🚶 Pasaron',s.pasan,'#9fd0ff')+big('💶 Ventas',s.ventas+'€','#ffd866')+big('📈 Beneficio',s.beneficio+'€','#ffd866')+big('😊 Satisf.',s.sat+'%','#7dff9e')+big('🪪 Socios',s.socios,'#c9a0ff')+
+          big(en?'🏪 Entered':'🏪 Entraron',s.entran,'#7dff9e')+big(en?'🚶 Passed':'🚶 Pasaron',s.pasan,'#9fd0ff')+big(en?'💶 Sales':'💶 Ventas',s.ventas+'€','#ffd866')+big(en?'📈 Profit':'📈 Beneficio',s.beneficio+'€','#ffd866')+big(en?'😊 Satisf.':'😊 Satisf.',s.sat+'%','#7dff9e')+big(en?'🪪 Members':'🪪 Socios',s.socios,'#c9a0ff')+
         '</div>'+
-        '<div style="margin-top:10px;font-size:10px;opacity:.75">🛒 Qué compraron</div><div style="margin-top:2px">'+top+'</div>'+
-        '<div style="margin-top:8px;font-size:10px">'+(s.incidencias?('⚠️ '+s.incidencias+' incidencia(s)'):'✅ Sin incidencias')+(s.ladron?'  ·  🚨 1 intento de hurto':'')+'</div>'+
-        '<div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap"><b style="font-size:11px">⏮ DVR del día</b><span style="display:flex;gap:6px">'+
+        '<div style="margin-top:10px;font-size:10px;opacity:.75">'+(en?'🛒 What they bought':'🛒 Qué compraron')+'</div><div style="margin-top:2px">'+top+'</div>'+
+        '<div style="margin-top:8px;font-size:10px">'+(s.incidencias?('⚠️ '+s.incidencias+(en?' incident(s)':' incidencia(s)')):(en?'✅ No incidents':'✅ Sin incidencias'))+(s.ladron?(en?'  ·  🚨 1 theft attempt':'  ·  🚨 1 intento de hurto'):'')+'</div>'+
+        '<div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap"><b style="font-size:11px">'+(en?'⏮ Day DVR':'⏮ DVR del día')+'</b><span style="display:flex;gap:6px">'+
           (isToday
-            ? '<span data-xc="dvr" style="cursor:pointer;font-size:10px;border:1px solid #78f3ff;color:#78f3ff;border-radius:6px;padding:3px 8px">▶ DVR visual de hoy</span>'
-            : '<span data-xc="vdvr" title="Ver el día en la cámara (anónimo)" style="cursor:pointer;font-size:10px;border:1px solid #78f3ff;color:#78f3ff;border-radius:6px;padding:3px 8px">▶ DVR visual del día</span>')+
-          '<span data-xc="play" title="Recorrer las horas en el gráfico" style="cursor:pointer;font-size:10px;border:1px solid #2f6a8a;color:#9fd0ff;border-radius:6px;padding:3px 8px">barras</span>'+
+            ? '<span data-xc="dvr" style="cursor:pointer;font-size:10px;border:1px solid #78f3ff;color:#78f3ff;border-radius:6px;padding:3px 8px">'+(en?'▶ Today’s visual DVR':'▶ DVR visual de hoy')+'</span>'
+            : '<span data-xc="vdvr" title="'+(en?'View the day on the anonymous camera':'Ver el día en la cámara (anónimo)')+'" style="cursor:pointer;font-size:10px;border:1px solid #78f3ff;color:#78f3ff;border-radius:6px;padding:3px 8px">'+(en?'▶ Day visual DVR':'▶ DVR visual del día')+'</span>')+
+          '<span data-xc="play" title="'+(en?'Play through the hours on the chart':'Recorrer las horas en el gráfico')+'" style="cursor:pointer;font-size:10px;border:1px solid #2f6a8a;color:#9fd0ff;border-radius:6px;padding:3px 8px">'+(en?'bars':'barras')+'</span>'+
         '</span></div>'+
         '<div id="xcChart" style="display:flex;align-items:flex-end;gap:3px;height:74px;margin-top:8px;padding:6px;background:#04101a;border:1px solid #16303f;border-radius:8px"></div>'+
         '<input id="xcScrub" type="range" min="0" max="12" value="0" step="1" style="width:100%;accent-color:#78f3ff;margin-top:7px">'+
@@ -11691,7 +11711,7 @@ const XCAL=(function(){
   function paintScrub(){
     const info=el.querySelector('#xcScrubInfo'); if(!info||!dayData) return;
     const h=dayData.hours[dayCur]||{h:9,in:0,pass:0};
-    info.innerHTML='🕒 <b>'+String(h.h).padStart(2,'0')+':00</b> · entraron <b>'+h.in+'</b> · pasaron <b>'+h.pass+'</b>';
+    info.innerHTML='🕒 <b>'+String(h.h).padStart(2,'0')+':00</b> · '+(lang==='en'?'entered':'entraron')+' <b>'+h.in+'</b> · '+(lang==='en'?'passed':'pasaron')+' <b>'+h.pass+'</b>';
     paintChart();
   }
   function playDay(){
@@ -11766,7 +11786,7 @@ const XCAL=(function(){
 window.XCAL=XCAL;
 // La fecha del topbar abre el calendario.
 (function(){ const wire=()=>{ const d=document.getElementById('bbDate'), c=document.getElementById('bbClock');
-  [d,c].forEach(elx=>{ if(elx&&!elx.__xcal){ elx.__xcal=1; elx.style.cursor='pointer'; elx.title='Abrir calendario histórico'; elx.addEventListener('click',()=>{ try{XCAL.open();}catch(e){} }); } }); };
+  [d,c].forEach(elx=>{ if(elx&&!elx.__xcal){ elx.__xcal=1; elx.style.cursor='pointer'; elx.title=lang==='en'?'Open historical calendar':'Abrir calendario histórico'; elx.addEventListener('click',()=>{ try{XCAL.open();}catch(e){} }); } }); };
   if(document.readyState!=='loading') wire(); else document.addEventListener('DOMContentLoaded',wire); })();
 (function wireDVR(){
   const e=_dvrEls(); if(!e.panel) return;
@@ -11892,7 +11912,8 @@ const MUPICAM_DVR_WINDOW=12;
 function mupiCamRenderGallery(){
   const p=mupiCamGalleryEl(); if(!p) return;
   const body=p.querySelector('#mcBody'); if(!body) return;
-  const md=p.querySelector('#mcMode'); if(md) md.textContent=(MUPICAM._mode==='pixel')?'🟦 NPC':'🧑 humano';
+  const en=lang==='en';
+  const md=p.querySelector('#mcMode'); if(md) md.textContent=(MUPICAM._mode==='pixel')?'🟦 NPC':(en?'🧑 human':'🧑 humano');
   // En modo DVR (replay) filtramos el carrete a la franja del momento que se está
   // revisando: solo los capturados entre (cursor - ventana) y el cursor.
   const replayOn=(typeof REC!=='undefined'&&REC&&REC.replay&&REC.replay.on);
@@ -11905,18 +11926,18 @@ function mupiCamRenderGallery(){
     shots=shots.filter(s=>typeof s.t==='number'&&s.t<=nowT+1&&s.t>=nowT-MUPICAM_DVR_WINDOW);
   }
   // Cabecera contextual (incluye el contador): en DVR indica la hora del cursor.
-  const who=(cam==='int')?'clientes':'viandantes';
+  const who=en?((cam==='int')?'customers':'passers-by'):((cam==='int')?'clientes':'viandantes');
   const icon=(cam==='int')?'🏪':'🚶';
   const sub=p.querySelector('#mcSub');
   if(sub){ sub.innerHTML=replayOn&&nowT!=null
-      ? ('⏪ DVR · <b>'+shots.length+'</b> '+who+' en torno a <b>'+mupiCamTimeLabel(nowT)+'</b>')
-      : (icon+' <b>'+shots.length+'</b> '+who+' · foto + hora al pasar'); }
+      ? ('⏪ DVR · <b>'+shots.length+'</b> '+who+(en?' around ':' en torno a ')+'<b>'+mupiCamTimeLabel(nowT)+'</b>')
+      : (icon+' <b>'+shots.length+'</b> '+who+(en?' · photo + passing time':' · foto + hora al pasar')); }
   if(!shots.length){
-    const emptyLive=(cam==='int')
-      ? 'Aún sin clientes capturados.<br>Deja entrar gente a la tienda (prueba <b>/audiencia 6</b> o <b>/velocidad 8</b>).'
-      : 'Aún sin viandantes capturados.<br>Deja pasar gente por delante del MUPI (prueba <b>/audienciaOUT 6</b> o <b>/velocidad 8</b>).';
+    const emptyLive=en
+      ? ((cam==='int')?'No customers captured yet.<br>Let people enter the store (try <b>/audience 6</b> or <b>/speed 8</b>).':'No passers-by captured yet.<br>Let people walk past the MUPI (try <b>/audienceOUT 6</b> or <b>/speed 8</b>).')
+      : ((cam==='int')?'Aún sin clientes capturados.<br>Deja entrar gente a la tienda (prueba <b>/audiencia 6</b> o <b>/velocidad 8</b>).':'Aún sin viandantes capturados.<br>Deja pasar gente por delante del MUPI (prueba <b>/audienciaOUT 6</b> o <b>/velocidad 8</b>).');
     body.innerHTML=replayOn
-      ? ('<div style="opacity:.6;padding:14px;text-align:center;font-size:10px;line-height:1.5">Nadie en '+(cam==='int'?'la tienda':'la calle')+' en ese momento.<br>Mueve la línea de tiempo del DVR a otra hora.</div>')
+      ? ('<div style="opacity:.6;padding:14px;text-align:center;font-size:10px;line-height:1.5">'+(en?('Nobody was '+(cam==='int'?'in the store':'on the street')+' at that time.<br>Move the DVR timeline to another time.'):'Nadie en '+(cam==='int'?'la tienda':'la calle')+' en ese momento.<br>Mueve la línea de tiempo del DVR a otra hora.')+'</div>')
       : ('<div style="opacity:.6;padding:14px;text-align:center;font-size:10px;line-height:1.5">'+emptyLive+'</div>');
     return;
   }
@@ -11926,22 +11947,22 @@ function mupiCamRenderGallery(){
     if(pix){ img=s.pixel||s.normal; rendering='pixelated'; }      // NPC pixelado
     else if(s.human){ img=s.human;                                // humano IA generado
       overlay = s._pubOk
-        ? '<div title="En el Stock de PixerIA" style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border:1px solid #7dff9e;border-radius:5px;font-size:10px;line-height:1;padding:2px 3px">✅</div>'
+        ? '<div title="'+(en?'In PixerIA Stock':'En el Stock de PixerIA')+'" style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border:1px solid #7dff9e;border-radius:5px;font-size:10px;line-height:1;padding:2px 3px">✅</div>'
         : (s._pub
           ? '<div style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border-radius:5px;font-size:10px;line-height:1;padding:2px 3px">⏳</div>'
-          : '<div data-act="pub" data-uid="'+s._uid+'" title="Guardar este humano en el Stock de PixerIA" style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border:1px solid #aa66ff;border-radius:5px;font-size:10px;line-height:1;padding:2px 3px;cursor:pointer">📌</div>');
+          : '<div data-act="pub" data-uid="'+s._uid+'" title="'+(en?'Save this person to PixerIA Stock':'Guardar este humano en el Stock de PixerIA')+'" style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border:1px solid #aa66ff;border-radius:5px;font-size:10px;line-height:1;padding:2px 3px;cursor:pointer">📌</div>');
     }
     else {                                                        // muñeco + botón para humanizar
       img=s.normal;
       overlay=s._gen
         ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-radius:4px;font-size:14px">⏳</div>'
-        : '<div data-act="gen" data-uid="'+s._uid+'" title="Crear humano IA con PixerIA" style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border:1px solid #5fb0ff;border-radius:5px;font-size:10px;line-height:1;padding:2px 3px;cursor:pointer">✨</div>';
+        : '<div data-act="gen" data-uid="'+s._uid+'" title="'+(en?'Create an AI person with PixerIA':'Crear humano IA con PixerIA')+'" style="position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);border:1px solid #5fb0ff;border-radius:5px;font-size:10px;line-height:1;padding:2px 3px;cursor:pointer">✨</div>';
     }
     const errMark=s._err?' <span style="color:#ff8866" title="'+String(s._err).replace(/"/g,'')+'">⚠</span>':'';
     const clickGen=(!pix&&!s.human&&!s._gen)?(' data-act="gen" data-uid="'+s._uid+'" style="cursor:pointer;width:54px;height:auto;border:1px solid #2a3a30;border-radius:4px;background:#0a0e0c;image-rendering:'+rendering+'"'):(' style="width:54px;height:auto;border:1px solid #2a3a30;border-radius:4px;background:#0a0e0c;image-rendering:'+rendering+'"');
     return '<div style="display:flex;flex-direction:column;align-items:center;gap:2px">'+
       '<div style="position:relative">'+
-        '<img src="'+img+'" alt="viandante '+s.hhmm+'"'+clickGen+'>'+overlay+
+        '<img src="'+img+'" alt="'+(en?'passer-by ':'viandante ')+s.hhmm+'"'+clickGen+'>'+overlay+
       '</div>'+
       '<span style="font-size:8px;opacity:.75">🕒 '+s.hhmm+errMark+'</span></div>';
   }).join('');
@@ -11956,7 +11977,7 @@ async function mupiCamHumanize(uid){
   const shot=MUPICAM.shots.find(s=>s._uid===uid);
   if(!shot||shot._gen||shot.human) return;
   shot._gen=true; shot._err=null; try{ mupiCamRenderGallery(); }catch(e){}
-  try{ if(typeof showEv==='function') showEv('✨ PixerIA generando humano…','#aa66ff'); }catch(e){}
+  try{ if(typeof showEv==='function') showEv(lang==='en'?'✨ PixerIA is generating a person…':'✨ PixerIA generando humano…','#aa66ff'); }catch(e){}
   try{
     const r=await fetch('https://pixer-eleven.csilvasantin.workers.dev/image/edit',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -11964,7 +11985,7 @@ async function mupiCamHumanize(uid){
         prompt:'Conviértelo en una persona real que se parezca a este personaje, como si hubiera pasado por delante de la tienda.'}),
     });
     const d=await r.json().catch(()=>({}));
-    if(d&&d.ok&&d.image){ shot.human=d.image; MUPICAM._mode='normal'; try{ if(typeof showEv==='function') showEv('🧑 Humano IA listo','#5fd0ff'); }catch(e){} }
+    if(d&&d.ok&&d.image){ shot.human=d.image; MUPICAM._mode='normal'; try{ if(typeof showEv==='function') showEv(lang==='en'?'🧑 AI person ready':'🧑 Humano IA listo','#5fd0ff'); }catch(e){} }
     else { shot._err=(d&&(d.error||d.detail))||('HTTP '+r.status); try{ if(typeof showEv==='function') showEv('⚠️ '+shot._err,'#ff8866'); }catch(e){} }
   }catch(e){ shot._err=String((e&&e.message)||e); }
   shot._gen=false; try{ mupiCamRenderGallery(); }catch(e){}
@@ -11976,7 +11997,7 @@ async function mupiCamPublish(uid){
   if(!shot||!shot.human||shot._pub||shot._pubOk) return;
   const m=/^data:([^;]+);base64,(.*)$/s.exec(shot.human); if(!m) return;
   shot._pub=true; shot._err=null; try{ mupiCamRenderGallery(); }catch(e){}
-  try{ if(typeof showEv==='function') showEv('📌 Publicando humano en Stock…','#aa66ff'); }catch(e){}
+  try{ if(typeof showEv==='function') showEv(lang==='en'?'📌 Publishing person to Stock…':'📌 Publicando humano en Stock…','#aa66ff'); }catch(e){}
   try{
     const camTag=(shot.cam==='int')?'tienda':'calle';
     const r=await fetch('https://pixer-eleven.csilvasantin.workers.dev/stock/publish',{
@@ -11988,7 +12009,7 @@ async function mupiCamPublish(uid){
         comment:'Generado en el gemelo desde la cámara MUPI '+camTag }),
     });
     const d=await r.json().catch(()=>({}));
-    if(d&&d.ok){ shot._pubOk=true; shot._pubUrl=d.url||''; try{ if(typeof showEv==='function') showEv('✅ Humano guardado en Stock de PixerIA','#5fd0ff'); }catch(e){} }
+    if(d&&d.ok){ shot._pubOk=true; shot._pubUrl=d.url||''; try{ if(typeof showEv==='function') showEv(lang==='en'?'✅ Person saved to PixerIA Stock':'✅ Humano guardado en Stock de PixerIA','#5fd0ff'); }catch(e){} }
     else { shot._pub=false; shot._err=(d&&(d.error||d.detail))||('HTTP '+r.status); try{ if(typeof showEv==='function') showEv('⚠️ '+shot._err,'#ff8866'); }catch(e){} }
   }catch(e){ shot._pub=false; shot._err=String((e&&e.message)||e); }
   try{ mupiCamRenderGallery(); }catch(e){}
@@ -12001,8 +12022,9 @@ function mupiCamOpenGallery(){
     // Anonimizador pegado a la banda negra izquierda (como el menú Opciones) para no
     // pisar el Xpacio (Carlos, r31). El ancho se adapta al letterbox tras crearlo.
     p.style.cssText='position:fixed;top:38px;left:0;bottom:8px;z-index:2147482000;width:110px;display:flex;flex-direction:column;background:rgba(6,16,10,.94);border:1px solid #5fb0ff;border-radius:0 10px 10px 0;color:#dbeaff;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;box-shadow:0 0 22px rgba(95,176,255,.25);overflow:hidden';
-    p.innerHTML='<div id="mcHdr" style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px dashed #2f6a8a;letter-spacing:.06em;cursor:move;user-select:none;touch-action:none"><b>📷 CÁMARA MUPI</b><span style="display:flex;gap:6px;align-items:center"><span id="mcCam" title="alternar cámara exterior (calle) / interior (tienda)" style="cursor:pointer;font-size:9px;border:1px solid #7dff9e;color:#7dff9e;border-radius:5px;padding:1px 6px">🌐 Exterior</span><span id="mcMode" title="alternar humano IA / NPC pixelado" style="cursor:pointer;font-size:9px;border:1px solid #5fb0ff;border-radius:5px;padding:1px 6px">🧑 humano</span><span id="mcClose" style="cursor:pointer;color:#999;padding:0 4px">×</span></span></div>'+
-      '<div id="mcSub" style="padding:4px 9px;font-size:9px;opacity:.7;border-bottom:1px solid rgba(95,176,255,.15)">🚶 <b>0</b> viandantes · foto + hora al pasar</div>'+
+    const en=lang==='en';
+    p.innerHTML='<div id="mcHdr" style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px dashed #2f6a8a;letter-spacing:.06em;cursor:move;user-select:none;touch-action:none"><b>📷 '+(en?'MUPI CAMERA':'CÁMARA MUPI')+'</b><span style="display:flex;gap:6px;align-items:center"><span id="mcCam" title="'+(en?'switch between outdoor (street) and indoor (store) camera':'alternar cámara exterior (calle) / interior (tienda)')+'" style="cursor:pointer;font-size:9px;border:1px solid #7dff9e;color:#7dff9e;border-radius:5px;padding:1px 6px">🌐 Exterior</span><span id="mcMode" title="'+(en?'switch between AI person and pixel NPC':'alternar humano IA / NPC pixelado')+'" style="cursor:pointer;font-size:9px;border:1px solid #5fb0ff;border-radius:5px;padding:1px 6px">'+(en?'🧑 human':'🧑 humano')+'</span><span id="mcClose" style="cursor:pointer;color:#999;padding:0 4px">×</span></span></div>'+
+      '<div id="mcSub" style="padding:4px 9px;font-size:9px;opacity:.7;border-bottom:1px solid rgba(95,176,255,.15)">🚶 <b>0</b> '+(en?'passers-by · photo + passing time':'viandantes · foto + hora al pasar')+'</div>'+
       '<div id="mcBody" style="padding:8px 9px;overflow:auto"></div>';
     document.body.appendChild(p);
     // Ajusta el ancho a la banda negra izquierda (letterbox del canvas), como el menú
@@ -12023,13 +12045,13 @@ function mupiCamOpenGallery(){
     // (Carlos, 14-jul-2026): Aceptar abre pixeria.com/anonimizador para crear
     // audiencia anónima y enviarla a la tienda; Cancelar anula la pulsación.
     const ttl=p.querySelector('#mcHdr b');
-    if(ttl){ ttl.style.cursor='pointer'; ttl.title='Abrir el Anonimizador de PixerIA';
+    if(ttl){ ttl.style.cursor='pointer'; ttl.title=en?'Open PixerIA Anonymizer':'Abrir el Anonimizador de PixerIA';
       let tdx=0,tdy=0;
       ttl.addEventListener('pointerdown',e=>{ tdx=e.clientX; tdy=e.clientY; });
       ttl.addEventListener('click',e=>{
         if(Math.hypot(e.clientX-tdx,e.clientY-tdy)>6) return;   // fue arrastre del panel, no clic
         e.stopPropagation();
-        if(confirm('\u00bfAcceder al Anonimizador de PixerIA?\n\nAceptar: abre pixeria.com/anonimizador para crear audiencia an\u00f3nima y enviarla a la tienda.\nCancelar: nada.')){
+        if(confirm(en?'Open PixerIA Anonymizer?\n\nOK: opens pixeria.com/anonimizador to create an anonymous audience and send it to the store.\nCancel: do nothing.':'\u00bfAcceder al Anonimizador de PixerIA?\n\nAceptar: abre pixeria.com/anonimizador para crear audiencia an\u00f3nima y enviarla a la tienda.\nCancelar: nada.')){
           window.open('https://www.pixeria.com/anonimizador','_blank','noopener');
         }
       });
@@ -12719,7 +12741,7 @@ function updateGame(){
               if(txt && window.xtAPI && typeof window.xtAPI.telegramSend==='function'){
                 window.xtAPI.telegramSend('📊 Cierre del día — AdmiraGrok\n\n'+txt+'\n\nVentas: '+stats.ventas+'€ · Satisfacción: '+stats.satisfaccion+'% · Fama: '+stats.fama+'%\nClientes: '+stats.clientes+' · Socios: '+stats.socios+' ('+stats.sociosTienda+' tienda + '+stats.sociosWeb+' web)');
               }
-              if(typeof showEv==='function') showEv('📊 AdmiraGrok ha comentado el cierre del día','#88ccff');
+              if(typeof showEv==='function') showEv(lang==='en'?'📊 AdmiraGrok reviewed the end-of-day report':'📊 AdmiraGrok ha comentado el cierre del día','#88ccff');
             }
           }catch(e){}
           finally{ G._grokDayCommentInFlight=false; }
@@ -13096,7 +13118,7 @@ function updateGame(){
           G.thief.phase='fleeing';
           G.thief.cooldown=9999;
           G.doorOpen=80;
-          showEv(lang==='en'?'🛡 Guardia Civil intercepts the thief':'🛡 Guardia Civil intercepta al ladrón','#55cc77');
+          showEv(lang==='en'?'🛡 Civil Guard intercepts the thief':'🛡 Guardia Civil intercepta al ladrón','#55cc77');
           addFloat(G.thief.x,G.thief.y-34,lang==='en'?'CAUGHT':'PILLADO','#55cc77');
           setManagerSayBubble(lang==='en'?'Guardia Civil in action!':'¡Guardia Civil en acción!');
         }
@@ -13509,8 +13531,8 @@ function spawnCust(isVip,isSponsor,force){
         newCust.bTimer=Math.max(newCust.bTimer||0,420);
         window.LoyaltyBridge.markInScene(fan.id, null);
         if(typeof showEv==='function'){
-          if(fan.isBirthday) showEv('🎂 ¡Cumple de '+newCust.fanName+'! Pulsa encima para felicitar','#ff7eb6');
-          else showEv('🪪 '+newCust.fanName+' entró del Xtanco Club','#78f3ff');
+          if(fan.isBirthday) showEv(lang==='en'?'🎂 It is '+newCust.fanName+'’s birthday! Tap to congratulate them':'🎂 ¡Cumple de '+newCust.fanName+'! Pulsa encima para felicitar','#ff7eb6');
+          else showEv(lang==='en'?'🪪 '+newCust.fanName+' entered through Xtanco Club':'🪪 '+newCust.fanName+' entró del Xtanco Club','#78f3ff');
         }
         try{
           const cakeBubble=fan.isBirthday?' Hoy cumple, ¡felicítale!':'';
@@ -14009,23 +14031,23 @@ function resolveCustomerCheckout(c){
       G.money+=rev;G.weekRevenue+=rev;G.yearRevenue+=rev;G.totalRevenue+=rev;
       addFloat(c.x+7,c.y-28,'€'+rev,c.vip?'#ffd700':P.green);SFX.cashRegister();
     }else{
-      addFloat(c.x+7,c.y-28,'GRATIS','#55ccff');SFX.cashRegister();
-      const freeMsg=c.fanCustomerId?'🪪 Xtanco Club: '+(c.fanName||'socio')+' canjea sello':'Tarjeta Fidelidad: compra gratis';
+      addFloat(c.x+7,c.y-28,lang==='en'?'FREE':'GRATIS','#55ccff');SFX.cashRegister();
+      const freeMsg=lang==='en'?(c.fanCustomerId?'🪪 Xtanco Club: '+(c.fanName||'member')+' redeems a stamp':'Loyalty Card: free purchase'):(c.fanCustomerId?'🪪 Xtanco Club: '+(c.fanName||'socio')+' canjea sello':'Tarjeta Fidelidad: compra gratis');
       showEv(freeMsg,'#55ccff');
       if(G.loyaltyCard) G.loyaltyCard.targetId=null;
     }
     // ── TPV TICKET — ticker desglose en bocadillo del Store Manager ──
     try{
-      const prodLbl=(typeof prodName==='function')?prodName(c.wantsProdIdx>=0?c.wantsProdIdx:0):'Producto';
+      const prodLbl=(typeof prodName==='function')?prodName(c.wantsProdIdx>=0?c.wantsProdIdx:0):(lang==='en'?'Product':'Producto');
       const priceLbl=baseRev+'€';
       let modifiers=[];
       if(c.vip) modifiers.push('VIP +50%');
-      if(c.persona==='impulsive') modifiers.push('+impulsivo');
-      if(c.persona==='loyal') modifiers.push('+fiel');
+      if(c.persona==='impulsive') modifiers.push(lang==='en'?'+impulsive':'+impulsivo');
+      if(c.persona==='loyal') modifiers.push(lang==='en'?'+loyal':'+fiel');
       if(c.recurringDiscount) modifiers.push('-'+c.recurringDiscount+'% sponsor');
-      if(c.fanCustomerId) modifiers.push('🪪 socio');
+      if(c.fanCustomerId) modifiers.push(lang==='en'?'🪪 member':'🪪 socio');
       const modTxt=modifiers.length?(' · '+modifiers.join(' · ')):'';
-      const totalTxt=c.loyaltyFree?'GRATIS (sello)':(rev+'€');
+      const totalTxt=c.loyaltyFree?(lang==='en'?'FREE (stamp)':'GRATIS (sello)'):(rev+'€');
       if(typeof setManagerSayBubble==='function'){
         setManagerSayBubble('🧾 '+prodLbl+' '+priceLbl+modTxt+' = '+totalTxt);
       }
@@ -14042,7 +14064,7 @@ function resolveCustomerCheckout(c){
         c.bMsg=(c.fanEmoji||'🙂')+' '+(c.fanName||'')+' · '+c.fanStamps+'/5'+(c.fanFreePending?' 🎁':'');
         c.bTimer=Math.max(c.bTimer||0,300);
         if(r.customer.freePending && typeof showEv==='function'){
-          showEv('🎁 '+c.fanName+' ha completado los 5 sellos: próxima compra gratis','#54e08d');
+          showEv(lang==='en'?'🎁 '+c.fanName+' completed 5 stamps: next purchase is free':'🎁 '+c.fanName+' ha completado los 5 sellos: próxima compra gratis','#54e08d');
         }
       });
     }
@@ -14184,7 +14206,7 @@ function setDoorMode(mode){
   if(['auto','sensor','automatic','automatica','automática'].includes(clean)){
     G.doorMode='auto';
     showEv('Puerta en modo sensor','#55ccff');
-    return 'Puerta en modo sensor automático';
+    return lang==='en'?'Door set to automatic sensor mode':'Puerta en modo sensor automático';
   }
   return 'Uso: /door open | /door close | /door auto';
 }
@@ -18699,12 +18721,18 @@ function drawEscaparate(){
   cx.setTransform(ax,ay,bx,by,iTL.x,iTL.y);
 
   // ── PRODUCT POSTERS ──
-  const posters=[
-    {label:'LOTERÍA',  icon:'🎫', bg:'#c41e3a', hi:'#ffdd00', sub:'¡Juega y Gana!'},
-    {label:'VAPES',    icon:'💨', bg:'#1a2a6c', hi:'#88ccff', sub:'Última Generación'},
-    {label:'TABACO',   icon:'🚬', bg:'#5a3a18', hi:'#c8a060', sub:'Premium Selection'},
-    {label:'PRENSA',   icon:'📰', bg:'#1a5a38', hi:'#aaddbb', sub:'Hoy en Portada'},
-    {label:'OFERTA',   icon:'⭐', bg:'#b85000', hi:'#ffeebb', sub:'Precio Especial'},
+  const posters=lang==='en'?[
+    {label:'LOTTERY', icon:'🎫', bg:'#c41e3a', hi:'#ffdd00', sub:'Play and Win!'},
+    {label:'VAPES',   icon:'💨', bg:'#1a2a6c', hi:'#88ccff', sub:'Next Generation'},
+    {label:'TOBACCO', icon:'🚬', bg:'#5a3a18', hi:'#c8a060', sub:'Premium Selection'},
+    {label:'PRESS',   icon:'📰', bg:'#1a5a38', hi:'#aaddbb', sub:'Today’s Headlines'},
+    {label:'OFFER',   icon:'⭐', bg:'#b85000', hi:'#ffeebb', sub:'Special Price'},
+  ]:[
+    {label:'LOTERÍA', icon:'🎫', bg:'#c41e3a', hi:'#ffdd00', sub:'¡Juega y Gana!'},
+    {label:'VAPES',   icon:'💨', bg:'#1a2a6c', hi:'#88ccff', sub:'Última Generación'},
+    {label:'TABACO',  icon:'🚬', bg:'#5a3a18', hi:'#c8a060', sub:'Selección Premium'},
+    {label:'PRENSA',  icon:'📰', bg:'#1a5a38', hi:'#aaddbb', sub:'Hoy en Portada'},
+    {label:'OFERTA',  icon:'⭐', bg:'#b85000', hi:'#ffeebb', sub:'Precio Especial'},
   ];
   const cycleLen=420; // frames per poster (7 seconds)
   const basePIdx=(Math.floor(tt/cycleLen)+esc.phase)%posters.length;
@@ -19091,7 +19119,7 @@ function drawIsoTabletKiosk(col,row){
     // Cabecera "QUÉ TAL" (7px, franja oscura de 9px)
     const headH=9;
     r(tabX,tabY,tabW,headH,'#10141c');
-    tx('QUÉ TAL',tabX+tabW/2,tabY+7,'#78f3ff',7,'center');
+    tx(lang==='en'?'RATE US':'QUÉ TAL',tabX+tabW/2,tabY+7,'#78f3ff',7,'center');
 
     // 3 caras (celda ~12.6px de ancho, zona de 13px de alto)
     const faces=['😊','😐','😡'];
@@ -19133,7 +19161,7 @@ function drawIsoTabletKiosk(col,row){
   } else {
     // Pantalla en reposo: "VOTA" a 8px con pulso suave + LED cian
     cx.globalAlpha=0.35+0.15*Math.sin(tt*0.05);
-    tx('VOTA',tabX+tabW/2,tabY+tabH/2+3,'#9aa4b2',8,'center');
+  tx(lang==='en'?'RATE':'VOTA',tabX+tabW/2,tabY+tabH/2+3,'#9aa4b2',8,'center');
     cx.globalAlpha=1;
     r(tabX+tabW/2-1,tabY+tabH-4,2,2,'#78f3ff');    // LED de espera
   }
@@ -19587,7 +19615,7 @@ function openMetahumanPanel(){
   _mhPositionPanel();
   mhFaceOn();
   if(els.prompt){ try{ els.prompt.focus({preventScroll:true}); }catch(e){} }
-  if(typeof showEv==='function') showEv('🤖 Metahuman activado · pregúntale algo','#78f3ff');
+  if(typeof showEv==='function') showEv(lang==='en'?'🤖 Metahuman enabled · ask it something':'🤖 Metahuman activado · pregúntale algo','#78f3ff');
   try{
     if(window.LoyaltyBridge){
       const url=window.LoyaltyBridge.pwaUrl();
@@ -20596,8 +20624,8 @@ function drawIsoTurnKiosk(col,row){
   r(sx,sy,sw,1,'#123a4d');                             // brillo superior del cristal
 
   // Rótulo "TURNO" en cian (8px ≈ 24px de ancho, holgado en 38)
-  tx('TURNO',poleCX+1,sy+10,'#062028',8,'center');     // sombra 1px
-  tx('TURNO',poleCX,sy+9,'#8defff',8,'center');
+  tx(lang==='en'?'TURN':'TURNO',poleCX+1,sy+10,'#062028',8,'center');     // sombra 1px
+  tx(lang==='en'?'TURN':'TURNO',poleCX,sy+9,'#8defff',8,'center');
   r(sx+2,sy+3,2,2,'#d9a83f');                          // pips "ahora atendiendo"
   r(sx+sw-4,sy+3,2,2,'#d9a83f');
   r(sx+2,sy+12,sw-4,1,'#123a4d');                      // separador
@@ -20867,11 +20895,13 @@ function drawSecurityCCTV(vW,vH){
   for(let y=0;y<vH;y+=3){cx.fillStyle='rgba(0,0,0,0.22)';cx.fillRect(0,y,vW,1);}
   cx.strokeStyle='#2cff77';cx.lineWidth=1;cx.strokeRect(3,3,vW-6,vH-6);
   cx.fillStyle='#2cff77';cx.font='bold 7px monospace';cx.textAlign='left';
-  cx.fillText('CAM 01  PUERTA',7,11);
+  cx.fillText(lang==='en'?'CAM 01  ENTRANCE':'CAM 01  PUERTA',7,11);
   cx.fillStyle=`rgba(255,40,40,${pulse})`;cx.font='bold 10px monospace';cx.textAlign='center';
   const th=G&&G.thief?G.thief:null;
-  const label=th&&th.phase==='looting'?'ROBO EN CURSO':th&&th.phase==='fleeing'?(th.caught?'LADRON PILLADO':'LADRON HUYENDO'):'LADRON ENTRANDO';
-  cx.fillText('ALERTA '+label,vW/2,24);
+  const label=lang==='en'
+    ? (th&&th.phase==='looting'?'THEFT IN PROGRESS':th&&th.phase==='fleeing'?(th.caught?'THIEF CAUGHT':'THIEF ESCAPING'):'THIEF ENTERING')
+    : (th&&th.phase==='looting'?'ROBO EN CURSO':th&&th.phase==='fleeing'?(th.caught?'LADRÓN PILLADO':'LADRÓN HUYENDO'):'LADRÓN ENTRANDO');
+  cx.fillText((lang==='en'?'ALERT ':'ALERTA ')+label,vW/2,24);
   // Simplified CCTV view: door on right, floor grid and thief marker.
   cx.strokeStyle='rgba(70,255,130,0.25)';cx.lineWidth=0.6;
   for(let x=12;x<vW;x+=18){cx.beginPath();cx.moveTo(x,34);cx.lineTo(x-20,vH-8);cx.stroke();}
@@ -20890,7 +20920,7 @@ function drawSecurityCCTV(vW,vH){
     cx.strokeStyle='#ff3030';cx.lineWidth=1;cx.beginPath();cx.arc(tx2,ty2,13+Math.sin(tt*0.25)*3,0,Math.PI*2);cx.stroke();
   }
   cx.fillStyle='#ffffffaa';cx.font='6px monospace';cx.textAlign='right';
-  cx.fillText(new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),vW-7,vH-6);
+  cx.fillText(new Date().toLocaleTimeString(lang==='en'?'en-US':'es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),vW-7,vH-6);
   cx.textAlign='left';
 }
 
@@ -20921,22 +20951,23 @@ function drawTftCrosssell(xs,vW,vH){
   cx.textAlign='left';
 }
 function drawTftCPM(vW,vH){
+  const en=lang==='en';
   cx.fillStyle='#0c0f08';cx.fillRect(0,0,vW,vH);
   for(let y=0;y<vH;y+=3){cx.fillStyle='rgba(0,0,0,0.18)';cx.fillRect(0,y,vW,1);}
   cx.strokeStyle='#ffcc66';cx.lineWidth=1;cx.strokeRect(2,2,vW-4,vH-4);
   cx.fillStyle='#ffcc66';cx.font='bold 7px monospace';cx.textAlign='center';
-  cx.fillText('AUDIENCIA · CPM',vW/2,11);
+  cx.fillText(en?'AUDIENCE · CPM':'AUDIENCIA · CPM',vW/2,11);
   const entran=(G&&G.custIn)|0, pasan=(G&&G.passersbyToday)|0;
   // dos contadores grandes
   cx.textAlign='center';
   cx.fillStyle='#9effa0';cx.font='bold 16px monospace';cx.fillText(String(entran),vW*0.27,32);
-  cx.font='6px monospace';cx.fillText('ENTRAN (interior)',vW*0.27,40);
+  cx.font='6px monospace';cx.fillText(en?'ENTER (inside)':'ENTRAN (interior)',vW*0.27,40);
   cx.fillStyle='#8ed2ff';cx.font='bold 16px monospace';cx.fillText(String(pasan),vW*0.73,32);
-  cx.font='6px monospace';cx.fillText('PASAN (exterior)',vW*0.73,40);
+  cx.font='6px monospace';cx.fillText(en?'PASS BY (outside)':'PASAN (exterior)',vW*0.73,40);
   // tasa de ATENCIÓN: quién MIRA la pantalla vs quién solo pasa por delante
   const tA=(typeof impactsTotals==='function')?impactsTotals():{att:0,look:0};
   cx.fillStyle='#9ad8ff';cx.font='bold 6px monospace';cx.textAlign='center';
-  cx.fillText('👁 '+Math.round(tA.att*100)+'% MIRAN · '+Math.round(tA.look).toLocaleString('es')+' miradas',vW/2,51);
+  cx.fillText('👁 '+Math.round(tA.att*100)+'% '+(en?'WATCH · ':'MIRAN · ')+Math.round(tA.look).toLocaleString(en?'en-US':'es')+(en?' views':' miradas'),vW/2,51);
   // barras por franja (mismas cifras que el HUD /cpm)
   const aud=(typeof IMPACTS!=='undefined'&&IMPACTS.aud&&IMPACTS.aud.hours)||{};
   const hrs=Object.keys(aud).map(Number).sort((a,b)=>a-b).filter(h=>(aud[h].int+aud[h].ext)>0);
@@ -20954,12 +20985,12 @@ function drawTftCPM(vW,vH){
       x0+=bw+1;
     }
   } else {
-    cx.fillStyle='#ffffff55';cx.font='6px monospace';cx.fillText('// acumulando audiencia por franja…',vW/2,62);
+    cx.fillStyle='#ffffff55';cx.font='6px monospace';cx.fillText(en?'// building audience by time slot…':'// acumulando audiencia por franja…',vW/2,62);
   }
   // pie: total + cpm + ingreso
   const t=(typeof impactsTotals==='function')?impactsTotals():{imp:0,revenue:0};
   cx.fillStyle='#ffe6a8';cx.font='bold 6px monospace';
-  cx.fillText('IMPACTOS '+Math.round(t.imp).toLocaleString('es')+'  ·  CPM '+((typeof IMPACTS!=='undefined'?IMPACTS.cpm:8).toFixed(2))+'€  ·  ING '+t.revenue.toFixed(2)+'€',vW/2,vH-7);
+  cx.fillText((en?'IMPACTS ':'IMPACTOS ')+Math.round(t.imp).toLocaleString(en?'en-US':'es')+'  ·  CPM '+((typeof IMPACTS!=='undefined'?IMPACTS.cpm:8).toFixed(2))+'€  ·  '+(en?'REV ':'ING ')+t.revenue.toFixed(2)+'€',vW/2,vH-7);
   cx.textAlign='left';
 }
 
@@ -21075,7 +21106,7 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
     const artistName=dashIdx>0?dsArtist.substring(0,dashIdx):dsArtist;
     const songName=dashIdx>0?dsArtist.substring(dashIdx+3):'';
     cx.fillStyle='#ffee44';cx.font='bold 9px monospace';
-    cx.fillText('Este video está patrocinado por...',cX,16);
+    cx.fillText(lang==='en'?'This video is sponsored by...':'Este video está patrocinado por...',cX,16);
     cx.fillStyle='#ffffff';cx.font='bold 16px monospace';
     cx.fillText(artistName,cX,40);
     if(songName){
@@ -21179,7 +21210,7 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
     // Text
     cx.textAlign='center';
     cx.fillStyle='#fff';cx.font='bold '+Math.max(5,Math.round(sH*0.1))+'px monospace';
-    cx.fillText('DELEGACIÓN',cX,cY+sH*0.42);
+    cx.fillText(lang==='en'?'DELEGATION':'DELEGACIÓN',cX,cY+sH*0.42);
     cx.textAlign='left';
   } else if(G&&(!bgMusic.paused||(G.staff&&G.staff.some(s=>s.hired&&s.role===4)))){
     // ── MUSIC / DJ EQ VISUALIZER ──
@@ -21265,11 +21296,11 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
       cx.globalAlpha=1;
       // Text
       cx.fillStyle='#88ccee';cx.font='bold 10px monospace';
-      cx.fillText('VAPEADORES',cX,60);
+      cx.fillText(lang==='en'?'VAPERS':'VAPEADORES',cX,60);
       cx.fillStyle='#ffffff';cx.font='bold 9px monospace';
-      cx.fillText('Día de lluvia, día de vapor',cX,74);
+      cx.fillText(lang==='en'?'Rainy day, vaping day':'Día de lluvia, día de vapor',cX,74);
       cx.fillStyle='#ccaa44';cx.font='7px monospace';
-      cx.fillText('★ OFERTA ★',cX,86);
+      cx.fillText(lang==='en'?'★ SPECIAL OFFER ★':'★ OFERTA ★',cX,86);
     } else if(isSunAd){
       // ── SUN AD: Paquete de cigarrillos ──
       cx.fillStyle='#1a1a08';cx.fillRect(0,0,vW,vH);
@@ -21290,11 +21321,11 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
       cx.fillStyle='#ccaa44';cx.fillRect(cX-12,40,24,3);
       // Text
       cx.fillStyle='#ffdd44';cx.font='bold 11px monospace';
-      cx.fillText('TABACO',cX,60);
+      cx.fillText(lang==='en'?'TOBACCO':'TABACO',cX,60);
       cx.fillStyle='#ffffff';cx.font='9px monospace';
-      cx.fillText('Sol y terraza, mejor momento',cX,74);
+      cx.fillText(lang==='en'?'Sun and terrace, the perfect moment':'Sol y terraza, mejor momento',cX,74);
       cx.fillStyle='#ccaa44';cx.font='7px monospace';
-      cx.fillText('☀ DISFRUTA ☀',cX,86);
+      cx.fillText(lang==='en'?'☀ ENJOY ☀':'☀ DISFRUTA ☀',cX,86);
     } else {
       // ── DEFAULT: Compra Fortuna (random slogans) ──
       cx.fillStyle='#002244';cx.fillRect(0,0,vW,vH);
@@ -21313,7 +21344,7 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
       cx.fillStyle='#8899bb';cx.font='9px monospace';cx.fillText(slogans[si],cX,72);
       cx.strokeStyle='#cc9933';cx.lineWidth=0.5;
       cx.beginPath();cx.moveTo(20,78);cx.lineTo(140,78);cx.stroke();
-      cx.fillStyle='#ccaa44';cx.font='7px monospace';cx.fillText('Compra Fortuna',cX,86);
+      cx.fillStyle='#ccaa44';cx.font='7px monospace';cx.fillText(lang==='en'?'Choose Fortuna':'Compra Fortuna',cX,86);
     }
     cx.textAlign='left';
   }
@@ -21443,11 +21474,11 @@ function drawExteriorAd(g,age,vW,vH){
   cx.textAlign='center';
   cx.fillStyle=fem?'#ff9ecf':'#9ec3ff'; cx.font='bold 8px sans-serif'; cx.fillText('ADMIRA',vW/2,11);
   cx.fillStyle='#ffffff'; cx.font='bold '+(label.length>12?9:11)+'px sans-serif'; cx.fillText(label.slice(0,24),vW/2,vH-15);
-  cx.fillStyle='#ffd866'; cx.font='bold 9px sans-serif'; cx.fillText(camp?'· CAMPAÑA ·':'· OFERTA ·',vW/2,vH-4);
+  cx.fillStyle='#ffd866'; cx.font='bold 9px sans-serif'; cx.fillText(camp?(lang==='en'?'· CAMPAIGN ·':'· CAMPAÑA ·'):(lang==='en'?'· OFFER ·':'· OFERTA ·'),vW/2,vH-4);
   // Etiqueta de segmento (género + edad): la publi va dirigida.
-  const AGE={nino:'NIÑO',joven:'JOVEN',adulto:'ADULTO',senior:'SENIOR'};
+  const AGE=lang==='en'?{nino:'CHILD',joven:'YOUNG',adulto:'ADULT',senior:'SENIOR'}:{nino:'NIÑO',joven:'JOVEN',adulto:'ADULTO',senior:'SENIOR'};
   cx.textAlign='right'; cx.fillStyle='rgba(255,255,255,.85)'; cx.font='bold 7px sans-serif';
-  cx.fillText((fem?'♀':'♂')+' '+(AGE[age]||'ADULTO'),vW-3,11); cx.textAlign='left';
+  cx.fillText((fem?'♀':'♂')+' '+(AGE[age]||(lang==='en'?'ADULT':'ADULTO')),vW-3,11); cx.textAlign='left';
 }
 // ¿Se muestra el NÚMERO de turno en la pantalla secundaria de la pared larga?
 // /turno on|off lo controla. false = la pantalla deja solo la publi (producto/TPV).
@@ -21551,7 +21582,7 @@ function drawTurnManager(){
     // ── Separador horizontal ──
     cx.strokeStyle='#1e6a72';cx.globalAlpha=0.6;cx.lineWidth=1;cx.beginPath();cx.moveTo(6,38);cx.lineTo(vW-6,38);cx.stroke();cx.globalAlpha=1;
     // ── ABAJO: gestor de turnos ──
-    cx.fillStyle='#8defff';cx.font='bold 6px monospace';cx.fillText('TURNO · CAJA',cX,46);
+    cx.fillStyle='#8defff';cx.font='bold 6px monospace';cx.fillText(lang==='en'?'TURN · REGISTER':'TURNO · CAJA',cX,46);
     cx.fillStyle='#ffd86b';cx.font='bold 13px monospace';cx.fillText(num,cX,vH-2);
   }
   cx.setTransform(1,0,0,1,0,0);
@@ -21746,7 +21777,7 @@ function drawAromatizer(col=13,row=1,yPx){
   cx.beginPath();cx.arc(bodyX+5,bodyY-7,2.5,0,Math.PI*2);cx.fill();
   cx.strokeStyle='#0c2a33';cx.lineWidth=0.7;cx.stroke();
   cx.fillStyle='#0c2a33';cx.font='bold 5px monospace';cx.textAlign='center';
-  cx.fillText('OLOR',bodyX,bodyY+19);
+  cx.fillText(lang==='en'?'SCENT':'OLOR',bodyX,bodyY+19);
 
   if(!editorSceneActive){
     const minX=bodyX-15, maxX=bodyX+15;
@@ -22075,7 +22106,7 @@ function drawIsoLottery(col,row){
   rx(p.x-25,p.y-69,50,12,'#d9a83f',1);      // ribete oro
   r(p.x-23,p.y-67,46,9,'#f5e8aa');          // cara iluminada
   r(p.x-23,p.y-67,46,2,'#f3dc9e');          // bisel superior claro
-  tx('LOTERIAS',p.x,p.y-60,'#735615',7,'center'); // 8·0.6·7≈34px, cabe en 46
+  tx(lang==='en'?'LOTTERY':'LOTERIAS',p.x,p.y-60,'#735615',7,'center'); // 8·0.6·7≈34px, cabe en 46
   // Bombillos de marquesina en los extremos de la placa
   r(p.x-24,p.y-65,2,2,'#f5e8aa');
   r(p.x+22,p.y-65,2,2,'#f5e8aa');
@@ -22472,7 +22503,7 @@ function drawIsoWineRack(col,row){
   }
   // Label on front
   r(p.x-10,p.y-52,20,7,'#f0e8d0');
-  tx('VINOS',p.x,p.y-47,'#5a2020',6,'center');
+  tx(lang==='en'?'WINE':'VINOS',p.x,p.y-47,'#5a2020',6,'center');
 }
 
 // ── VENDING MACHINE (máquina expendedora) ────────────────────
@@ -22675,7 +22706,7 @@ function drawIsoMagazineRack(col,row,bw,bd){
   r(ctr.x-17,sy,34,9,'#f0e8d0');
   r(ctr.x-17,sy,34,2,'#fffaf0');
   rx(ctr.x-17,sy,34,9,'#8d8577',1);
-  tx('PRENSA',ctr.x,sy+7,'#3a3a5a',6,'center');
+  tx(lang==='en'?'PRESS':'PRENSA',ctr.x,sy+7,'#3a3a5a',6,'center');
 }
 
 // ── DRAW STAFF (ISOMETRIC) ───────────────────────────────────
@@ -23235,7 +23266,7 @@ function drawIsoSaca(saca){
     r(bx,by,14,7,'#8B5A2B');
     rx(bx,by,14,7,'#6a3f18',1);
     cx.fillStyle='#ffe0a0';cx.font='4px monospace';cx.textAlign='center';
-    cx.fillText(b%2===0?'TABACO':'CIGS',bx+7,by+5);
+    cx.fillText(b%2===0?(lang==='en'?'TOBACCO':'TABACO'):'CIGS',bx+7,by+5);
     cx.textAlign='left';
     // Tape line across top
     r(bx+2,by,10,1,'#c8a060');
@@ -23292,7 +23323,7 @@ function drawIsoSaca(saca){
       cx.globalAlpha=fadeA;
       r(x-8,y-44,42,13,'#1a1a2a');
       rx(x-8,y-44,42,13,'#ffcc00',1);
-      tx('LA SACA',x+13,y-34,'#ffcc00',7,'center');
+      tx(lang==='en'?'DELIVERY':'LA SACA',x+13,y-34,'#ffcc00',7,'center');
       cx.globalAlpha=1;
     }
   } else if(saca.phase==='unloading'){
@@ -23317,7 +23348,7 @@ function drawIsoThief(th){
       cx.globalAlpha=fadeA*(0.6+0.4*Math.sin(tt*0.15));
       r(x-12,y-48,50,15,'#2a0a0add');
       rx(x-12,y-48,50,15,'#cc2222',1.5);
-      tx('LADRÓN!',x+13,y-37,'#ff4444',8,'center');
+      tx(lang==='en'?'THIEF!':'LADRÓN!',x+13,y-37,'#ff4444',8,'center');
       cx.globalAlpha=1;
     }
   } else if(th.phase==='looting'){
@@ -23359,12 +23390,12 @@ function drawIsoGuardiaCivil(gc){
       cx.globalAlpha=fadeA;
       r(x-18,y-48,66,15,'#102010dd');
       rx(x-18,y-48,66,15,'#55aa55',1.5);
-      tx('GUARDIA CIVIL',x+15,y-37,'#77dd77',7,'center');
+      tx(lang==='en'?'CIVIL GUARD':'GUARDIA CIVIL',x+15,y-37,'#77dd77',7,'center');
       cx.globalAlpha=1;
     }
   } else if(gc.phase==='patrolling'){
     cx.globalAlpha=0.55+0.25*Math.sin(tt*0.12);
-    tx('VIGILANCIA',x+7,y-36,'#77dd77',7,'center');
+    tx(lang==='en'?'SECURITY':'VIGILANCIA',x+7,y-36,'#77dd77',7,'center');
     cx.globalAlpha=1;
   } else if(gc.phase==='leaving'){
     cx.globalAlpha=0.75;
@@ -23386,7 +23417,7 @@ function drawIsoOpinador(op){
       cx.globalAlpha=fadeA;
       r(x-18,y-48,62,15,'#202838dd');
       rx(x-18,y-48,62,15,'#55ccff',1.4);
-      tx('OPINADOR',x+13,y-37,'#9fe7ff',7,'center');
+      tx(lang==='en'?'REVIEWER':'OPINADOR',x+13,y-37,'#9fe7ff',7,'center');
       cx.globalAlpha=1;
     }
   } else if(op.phase==='voting'){
@@ -24066,7 +24097,7 @@ function drawMarketplaceOverlay(){
     cx.textAlign='left';
     cx.textBaseline='middle';
     cx.fillStyle=hiloCamp.brandColor||'#54e08d';
-    cx.fillText('🎵 PAUSA AUDIO',px+8,py+pillH/2);
+    cx.fillText(lang==='en'?'🎵 AUDIO PAUSED':'🎵 PAUSA AUDIO',px+8,py+pillH/2);
     cx.fillStyle='#fff';
     const txt=' · '+(hiloCamp.brandName||'').toUpperCase();
     cx.fillText(txt,px+8+78,py+pillH/2);
@@ -25480,7 +25511,7 @@ function showCustCardDOM(d){
   const ph=w.querySelector('.cc-photo'), phImg=ph.querySelector('img');
   if(d.spriteImg){ phImg.src=d.spriteImg; ph.style.display='block'; } else { phImg.removeAttribute('src'); ph.style.display='none'; }
   w.querySelector('.cc-name').textContent=(d.name||'');
-  w.querySelector('.cc-sub').textContent=/SOCIO/i.test(d.title||'')?'Ficha de socio · Xtanco Club':(/AUDIENCIA/i.test(d.title||'')?'Audiencia anónima · pixeria':'Ficha de cliente');
+  w.querySelector('.cc-sub').textContent=lang==='en'?(/SOCIO|MEMBER/i.test(d.title||'')?'Member profile · Xtanco Club':(/AUDIENCIA|AUDIENCE/i.test(d.title||'')?'Anonymous audience · Pixeria':'Customer profile')):(/SOCIO/i.test(d.title||'')?'Ficha de socio · Xtanco Club':(/AUDIENCIA/i.test(d.title||'')?'Audiencia anónima · pixeria':'Ficha de cliente'));
   w.querySelector('.cc-lines').innerHTML=(d.lines||[]).map(l=>'<div>'+esc(l)+'</div>').join('');
   if(_custCardPos){ w.style.left=_custCardPos.x+'px'; w.style.top=_custCardPos.y+'px'; }
   else { w.style.left='24px'; w.style.top='84px'; }
@@ -26442,6 +26473,7 @@ function autoEnterVertical(id){
   try{ if(typeof startMusic==='function') startMusic(); }catch(e){}
   try{ updateMobileSkipButton(); }catch(e){}
   try{ updateEraVerticalDock(); }catch(e){}
+  try{ document.documentElement.classList.remove('adm-direct'); }catch(e){}
   return true;
 }
 try {
@@ -26501,7 +26533,7 @@ try {
           // Confirma al iframe padre (pixeria) el resultado del embed para que
           // sepa que la sala renderizó (o falló) y pueda quitar su spinner.
           const tellParent=(ok,extra)=>{ try{ if(window.parent&&window.parent!==window) window.parent.postMessage(Object.assign({type:'xpace:distro',id:distroParam,ok:!!ok},extra||{}),'*'); }catch(_){} };
-          try{ const item=await distroGet(distroParam); const n=distroApply(item); if(typeof showEv==='function') showEv('📐 Vista de distribución','#88ffcc'); tellParent(true,{furniture:n,name:item&&item.name||null}); }
+          try{ const item=await distroGet(distroParam); const n=distroApply(item); if(typeof showEv==='function') showEv(lang==='en'?'📐 Layout view':'📐 Vista de distribución','#88ffcc'); tellParent(true,{furniture:n,name:item&&item.name||null}); }
           catch(e){ console.warn('distro apply failed:',e); tellParent(false,{error:String(e&&e.message||e)}); }
         },350);
       })();
@@ -26703,7 +26735,7 @@ window.xtAPI = (function(){
     HUE.expectedPrimaryOn=null;
     HUE.sceneKey='';
     HUE.sceneTick=-9999;
-    showEv('💡 Luz en automático','#88ccff');
+    showEv(lang==='en'?'💡 Lighting set to automatic':'💡 Luz en automático','#88ccff');
     return {ok:true,message:'Luz AUTO',data:{mode:'auto'}};
   }
 
@@ -26725,7 +26757,7 @@ window.xtAPI = (function(){
     HUE.expectedPrimaryOn=null;
     HUE.sceneKey='';
     HUE.sceneTick=-9999;
-    showEv('🟣 Hue en automático','#cc99ff');
+    showEv(lang==='en'?'🟣 Hue set to automatic':'🟣 Hue en automático','#cc99ff');
     return {ok:true,message:'Hue AUTO',data:{mode:'auto'}};
   }
 
@@ -27685,19 +27717,19 @@ window.xtAPI = (function(){
       //                     de activos) para verse pasar uno tras otro.
       // Ambos cuentan en el marcador /cpm y en las franjas (custIn/passersbyToday).
       if(['audienciain','audin','publicoin','entran'].includes(cmd)){
-        if(!G||state!==S.GAME) return {ok:false,message:'Entra en una partida primero.'};
+        if(!G||state!==S.GAME) return {ok:false,message:lang==='en'?'Enter a game first.':'Entra en una partida primero.'};
         const n=Math.max(1,Math.min(20,parseInt(arg,10)||1));
         let done=0;
         for(let i=0;i<n;i++){ try{ if(spawnCust(false,false,true)) done++; }catch(e){} }
-        if(typeof showEv==='function') showEv('🏪 +'+done+' clientes entrando (audienciaIN)','#9effa0');
-        return {ok:true,message:'Entran '+done+' clientes · dentro ahora: '+(G.custs||[]).length+' · entradas hoy: '+(G.custIn|0),data:{in:done}};
+        if(typeof showEv==='function') showEv(lang==='en'?'🏪 +'+done+' customers entering (inside audience)':'🏪 +'+done+' clientes entrando (audienciaIN)','#9effa0');
+        return {ok:true,message:lang==='en'?'Entering: '+done+' customers · inside now: '+(G.custs||[]).length+' · entries today: '+(G.custIn|0):'Entran '+done+' clientes · dentro ahora: '+(G.custs||[]).length+' · entradas hoy: '+(G.custIn|0),data:{in:done}};
       }
       if(['audienciaout','audout','publicoout','pasan'].includes(cmd)){
-        if(!G||state!==S.GAME) return {ok:false,message:'Entra en una partida primero.'};
+        if(!G||state!==S.GAME) return {ok:false,message:lang==='en'?'Enter a game first.':'Entra en una partida primero.'};
         const n=Math.max(1,Math.min(40,parseInt(arg,10)||1));
         G.audOutQueue=(G.audOutQueue|0)+n;
-        if(typeof showEv==='function') showEv('🚶 +'+n+' transeúntes hacia el escaparate (audienciaOUT)','#8ed2ff');
-        return {ok:true,message:'Pasarán '+n+' transeúntes por delante del escaparate (en cola: '+(G.audOutQueue|0)+') · pasan hoy: '+(G.passersbyToday|0),data:{out:n,queue:G.audOutQueue|0}};
+        if(typeof showEv==='function') showEv(lang==='en'?'🚶 +'+n+' passers-by toward the storefront (outside audience)':'🚶 +'+n+' transeúntes hacia el escaparate (audienciaOUT)','#8ed2ff');
+        return {ok:true,message:lang==='en'?n+' passers-by will cross the storefront (queued: '+(G.audOutQueue|0)+') · passed today: '+(G.passersbyToday|0):'Pasarán '+n+' transeúntes por delante del escaparate (en cola: '+(G.audOutQueue|0)+') · pasan hoy: '+(G.passersbyToday|0),data:{out:n,queue:G.audOutQueue|0}};
       }
 
       // ── /impactos — impactos y CPM por pantalla (aforo×visibilidad + cámara) ──
@@ -27705,25 +27737,26 @@ window.xtAPI = (function(){
       // (📷 = medido por cámara, ~ = estimado por aforo×visibilidad), el CPM de
       // referencia y el ingreso estimado. /impactos cpm <n> · /impactos reset.
       if(['impactos','impacts','impresiones','cpm'].includes(cmd)){
+        const en=lang==='en';
         const a=String(arg||'').trim().toLowerCase();
         const stopIMP=(silent)=>{
           if(IMPACTS.timer){ clearInterval(IMPACTS.timer); IMPACTS.timer=null; }
           IMPACTS.on=false;
           const h=document.getElementById('impactsHud'); if(h) h.style.display='none';
-          if(!silent && typeof showEv==='function') showEv('📊 Impactos OFF','#ffcc66');
+          if(!silent && typeof showEv==='function') showEv(en?'📊 Impacts OFF':'📊 Impactos OFF','#ffcc66');
         };
         if(['off','stop','cerrar','close','0','no','desactivar'].includes(a) || (!a && IMPACTS.on)){
-          stopIMP(false); return {ok:true,message:'Impactos desactivado',data:{on:false}};
+          stopIMP(false); return {ok:true,message:en?'Impacts disabled':'Impactos desactivado',data:{on:false}};
         }
-        if(a==='reset'){ impactsReset(); if(typeof showEv==='function') showEv('📊 Impactos reiniciados','#ffcc66'); }
-        if(a==='tft'||a==='pantalla'){ G.tftCPM=!G.tftCPM; if(typeof showEv==='function') showEv(G.tftCPM?'📊 CPM en la pantalla principal':'📊 CPM fuera de la pantalla','#ffd866'); return {ok:true,message:'CPM en TFT: '+(G.tftCPM?'ON':'OFF'),data:{tft:!!G.tftCPM}}; }
+        if(a==='reset'){ impactsReset(); if(typeof showEv==='function') showEv(en?'📊 Impacts reset':'📊 Impactos reiniciados','#ffcc66'); }
+        if(a==='tft'||a==='pantalla'){ G.tftCPM=!G.tftCPM; if(typeof showEv==='function') showEv(en?(G.tftCPM?'📊 CPM on the main screen':'📊 CPM removed from the screen'):(G.tftCPM?'📊 CPM en la pantalla principal':'📊 CPM fuera de la pantalla'),'#ffd866'); return {ok:true,message:(en?'CPM on TFT: ':'CPM en TFT: ')+(G.tftCPM?'ON':'OFF'),data:{tft:!!G.tftCPM}}; }
         const mCpm=a.match(/^cpm\s+([\d.]+)/); if(mCpm){ const v=parseFloat(mCpm[1]); if(v>0) IMPACTS.cpm=v; }
         impactsEnsureDay();
         let h=document.getElementById('impactsHud');
         if(!h){
           h=document.createElement('div'); h.id='impactsHud';
           h.style.cssText='position:fixed;top:72px;right:16px;z-index:2147482000;min-width:248px;background:rgba(6,16,10,.94);border:1px solid #ffcc66;border-radius:10px;color:#ffe6a8;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;box-shadow:0 0 22px rgba(255,204,102,.25);overflow:hidden';
-          h.innerHTML='<div id="impHdr" style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px dashed #8a6a2f;letter-spacing:.06em;cursor:move;user-select:none;touch-action:none"><b>📊 IMPACTOS · CPM</b><span id="impClose" style="cursor:pointer;color:#999;padding:0 4px">×</span></div><div id="impBody" style="padding:8px 10px;line-height:1.6"></div>';
+          h.innerHTML='<div id="impHdr" style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px dashed #8a6a2f;letter-spacing:.06em;cursor:move;user-select:none;touch-action:none"><b>📊 '+(en?'IMPACTS':'IMPACTOS')+' · CPM</b><span id="impClose" style="cursor:pointer;color:#999;padding:0 4px">×</span></div><div id="impBody" style="padding:8px 10px;line-height:1.6"></div>';
           document.body.appendChild(h);
           const c=h.querySelector('#impClose'); if(c){ c.onclick=()=>stopIMP(false); c.onpointerdown=function(e){ e.stopPropagation(); }; }
           // Restaurar última posición guardada (si no hay, queda arriba-derecha).
@@ -27779,12 +27812,12 @@ window.xtAPI = (function(){
           const marcador=
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px">'+
               '<div style="background:rgba(0,0,0,.35);border:1px solid rgba(158,255,160,.35);border-radius:8px;padding:8px 10px;text-align:center">'+
-                '<div style="font-size:9.5px;letter-spacing:.1em;color:#9effa0">🏪 EN TIENDA AHORA</div>'+big(dentro,flashIn)+
-                '<div style="font-size:9px;opacity:.65">'+entran+' entran hoy (acumulado)</div>'+
+                '<div style="font-size:9.5px;letter-spacing:.1em;color:#9effa0">'+(en?'🏪 IN STORE NOW':'🏪 EN TIENDA AHORA')+'</div>'+big(dentro,flashIn)+
+                '<div style="font-size:9px;opacity:.65">'+entran+(en?' entered today (total)':' entran hoy (acumulado)')+'</div>'+
               '</div>'+
               '<div style="background:rgba(0,0,0,.35);border:1px solid rgba(120,200,255,.35);border-radius:8px;padding:8px 10px;text-align:center">'+
                 '<div style="font-size:9.5px;letter-spacing:.1em;color:#8ed2ff">🚶 EXTERIOR</div>'+big(pasan,flashOut)+
-                '<div style="font-size:9px;opacity:.65">pasan por la puerta hoy</div>'+
+                '<div style="font-size:9px;opacity:.65">'+(en?'passed the door today':'pasan por la puerta hoy')+'</div>'+
               '</div>'+
             '</div>';
           // Franjas horarias: barras apiladas (verde=interior, azul=exterior)
@@ -27801,59 +27834,59 @@ window.xtAPI = (function(){
               const hInt=Math.max(t?2:0,Math.round(H*(b.int/maxT)));
               const hExt=Math.max(b.ext?1:0,Math.round(H*(b.ext/maxT)));
               const isP=prime&&prime.hour===h;
-              return '<div title="'+String(h).padStart(2,'0')+'h · entran '+b.int+' · pasan '+b.ext+'" style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:0;flex:1;min-width:7px">'+
+              return '<div title="'+String(h).padStart(2,'0')+'h · '+(en?'entered ':'entran ')+b.int+' · '+(en?'passed ':'pasan ')+b.ext+'" style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:0;flex:1;min-width:7px">'+
                 '<div style="width:100%;height:'+hExt+'px;background:#8ed2ff;opacity:.85"></div>'+
                 '<div style="width:100%;height:'+hInt+'px;background:#9effa0"></div>'+
                 '<div style="font-size:7.5px;opacity:'+(isP?'1':'.5')+';margin-top:2px;color:'+(isP?'#ffd866':'inherit')+'">'+(isP?'⭐':String(h).padStart(2,'0'))+'</div>'+
               '</div>';
             }).join('');
             franjas='<div style="background:rgba(0,0,0,.3);border:1px solid #3a4a2a;border-radius:8px;padding:7px 9px 5px;margin-bottom:9px">'+
-              '<div style="display:flex;justify-content:space-between;font-size:9px;letter-spacing:.08em;margin-bottom:5px"><span>AUDIENCIA POR FRANJA</span>'+
+              '<div style="display:flex;justify-content:space-between;font-size:9px;letter-spacing:.08em;margin-bottom:5px"><span>'+(en?'AUDIENCE BY TIME SLOT':'AUDIENCIA POR FRANJA')+'</span>'+
               (prime?'<span style="color:#ffd866">⭐ prime '+String(prime.hour).padStart(2,'0')+'–'+String((prime.hour+1)%24).padStart(2,'0')+'h · '+prime.total+'</span>':'')+'</div>'+
               '<div style="display:flex;align-items:flex-end;gap:2px;height:'+(H+12)+'px">'+bars+'</div>'+
-              '<div style="font-size:8px;opacity:.55;margin-top:2px"><span style="color:#9effa0">■</span> entran · <span style="color:#8ed2ff">■</span> pasan</div>'+
+              '<div style="font-size:8px;opacity:.55;margin-top:2px"><span style="color:#9effa0">■</span> '+(en?'entered':'entran')+' · <span style="color:#8ed2ff">■</span> '+(en?'passed':'pasan')+'</div>'+
             '</div>';
           }
           // Por pantalla: impactos (OTS) + 👁 los que MIRAN de verdad (atención).
           // Quien PASA por delante tuvo oportunidad de ver; quien MIRA cuenta como
           // atención real. El tótem con cámara lo MIDE (cara frontal = mira).
-          let rows='<div style="display:flex;justify-content:space-between;font-size:8.5px;opacity:.55;letter-spacing:.05em;margin-bottom:1px"><span>PANTALLA</span><span>impactos · 👁 miran</span></div>';
+          let rows='<div style="display:flex;justify-content:space-between;font-size:8.5px;opacity:.55;letter-spacing:.05em;margin-bottom:1px"><span>'+(en?'SCREEN':'PANTALLA')+'</span><span>'+(en?'impacts · 👁 views':'impactos · 👁 miran')+'</span></div>';
           for(const s of IMPACTS.SCREENS){
             const d=IMPACTS.day[s.id]||{est:0,look:0,measured:false};
-            const badge=d.measured?'<span title="medido por cámara">📷</span>':'<span title="estimado" style="opacity:.55">~</span>';
+            const badge=d.measured?'<span title="'+(en?'camera-measured':'medido por cámara')+'">📷</span>':'<span title="'+(en?'estimated':'estimado')+'" style="opacity:.55">~</span>';
             const lk=Math.round(d.look||0), pct=d.est>0?Math.round((d.look||0)/d.est*100):0;
-            rows+='<div style="display:flex;justify-content:space-between;align-items:baseline"><span>'+badge+' '+s.label+'</span><span><b>'+Math.round(d.est).toLocaleString('es')+'</b> <span style="color:#9ad8ff;font-size:9.5px" title="miradas — atención real">👁 '+lk.toLocaleString('es')+' ('+pct+'%)</span></span></div>';
+            rows+='<div style="display:flex;justify-content:space-between;align-items:baseline"><span>'+badge+' '+s.label+'</span><span><b>'+Math.round(d.est).toLocaleString(en?'en':'es')+'</b> <span style="color:#9ad8ff;font-size:9.5px" title="'+(en?'views — real attention':'miradas — atención real')+'">👁 '+lk.toLocaleString(en?'en':'es')+' ('+pct+'%)</span></span></div>';
           }
           const t=impactsTotals();
           const dyn=(typeof impactsDyn==='function')?impactsDyn():{cpmDyn:IMPACTS.cpm,demandMult:1,qualityMult:1,revenueDyn:t.revenue,isPrime:false};
           // Impactos de publi EXTERIOR por segmento (género × edad) — RTB segmentado.
           let segHtml='';
           try{ const ea=(typeof G!=='undefined'&&G&&G.extAdImpacts)||{}; const ks=Object.keys(ea);
-            if(ks.length){ const AGEL={nino:'Niño',joven:'Joven',adulto:'Adulto',senior:'Senior'};
+            if(ks.length){ const AGEL=en?{nino:'Child',joven:'Young adult',adulto:'Adult',senior:'Senior'}:{nino:'Niño',joven:'Joven',adulto:'Adulto',senior:'Senior'};
               const all=ks.map(k=>{const cpm=segCpm(k); return {k,n:ea[k],cpm,rev:ea[k]/1000*cpm};});
               const extTot=all.reduce((s,r)=>s+r.rev,0);
               const r2=all.map(r=>{const p=r.k.split('_'); return Object.assign({lbl:(p[1]==='f'?'♀':'♂')+' '+(AGEL[p[0]]||p[0])},r);}).sort((a,b)=>b.rev-a.rev).slice(0,8);
-              segHtml='<div style="border-top:1px dashed #2f6a8a;margin-top:6px;padding-top:6px;font-size:9px;letter-spacing:.05em;color:#8ed2ff">📣 PUBLI EXTERIOR · impactos × CPM por segmento (RTB · admira.app)</div>'+
+              segHtml='<div style="border-top:1px dashed #2f6a8a;margin-top:6px;padding-top:6px;font-size:9px;letter-spacing:.05em;color:#8ed2ff">'+(en?'📣 OUTDOOR ADS · impacts × CPM by segment (RTB · admira.app)':'📣 PUBLI EXTERIOR · impactos × CPM por segmento (RTB · admira.app)')+'</div>'+
                 r2.map(r=>'<div style="display:flex;justify-content:space-between"><span>'+r.lbl+' <span style="opacity:.5;font-size:8.5px">@'+r.cpm.toFixed(1)+'€</span></span><span><b>'+r.n+'</b> <span style="color:#9effa0">'+r.rev.toFixed(2)+'€</span></span></div>').join('')+
-                '<div style="display:flex;justify-content:space-between;color:#9effa0;margin-top:2px"><span>Ingreso publi exterior</span><b>'+extTot.toFixed(2)+'€</b></div>';
+                '<div style="display:flex;justify-content:space-between;color:#9effa0;margin-top:2px"><span>'+(en?'Outdoor ad revenue':'Ingreso publi exterior')+'</span><b>'+extTot.toFixed(2)+'€</b></div>';
             }
           }catch(e){}
           body.innerHTML=marcador+franjas+rows+
-            '<div style="border-top:1px dashed #8a6a2f;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between"><span>TOTAL impactos</span><b>'+Math.round(t.imp).toLocaleString('es')+'</b></div>'+
-            '<div style="display:flex;justify-content:space-between;color:#9ad8ff"><span>👁 Atención (miran)</span><b>'+Math.round(t.look).toLocaleString('es')+' · '+Math.round(t.att*100)+'%</b></div>'+
+            '<div style="border-top:1px dashed #8a6a2f;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between"><span>'+(en?'TOTAL impacts':'TOTAL impactos')+'</span><b>'+Math.round(t.imp).toLocaleString(en?'en':'es')+'</b></div>'+
+            '<div style="display:flex;justify-content:space-between;color:#9ad8ff"><span>'+(en?'👁 Attention (views)':'👁 Atención (miran)')+'</span><b>'+Math.round(t.look).toLocaleString(en?'en':'es')+' · '+Math.round(t.att*100)+'%</b></div>'+
             '<div style="display:flex;justify-content:space-between"><span>CPM ref</span><b>'+IMPACTS.cpm.toFixed(2)+' €</b></div>'+
-            '<div style="display:flex;justify-content:space-between;color:#9effa0"><span>Ingreso estim.</span><b>'+t.revenue.toFixed(2)+' €</b></div>'+
-            '<div style="border-top:1px dashed #6a4a8a;margin-top:6px;padding-top:6px;font-size:9px;letter-spacing:.06em;color:#c9a8ff">⚡ MODELO 3 · CPM DINÁMICO'+(dyn.isPrime?' <span style="color:#ffd866">⭐ prime</span>':'')+'</div>'+
-            '<div style="display:flex;justify-content:space-between"><span>CPM dinámico</span><b style="color:#c9a8ff">'+dyn.cpmDyn.toFixed(2)+' €</b></div>'+
-            '<div style="display:flex;justify-content:space-between;font-size:9.5px;opacity:.75" title="demanda RTB (ocupación+prime) × calidad (atención)"><span>↳ demanda ×'+dyn.demandMult.toFixed(2)+' · calidad ×'+dyn.qualityMult.toFixed(2)+'</span></div>'+
-            '<div style="display:flex;justify-content:space-between;color:#c9a8ff"><span>Ingreso dinámico</span><b>'+dyn.revenueDyn.toFixed(2)+' €</b></div>'+
+            '<div style="display:flex;justify-content:space-between;color:#9effa0"><span>'+(en?'Estimated revenue':'Ingreso estim.')+'</span><b>'+t.revenue.toFixed(2)+' €</b></div>'+
+            '<div style="border-top:1px dashed #6a4a8a;margin-top:6px;padding-top:6px;font-size:9px;letter-spacing:.06em;color:#c9a8ff">'+(en?'⚡ MODEL 3 · DYNAMIC CPM':'⚡ MODELO 3 · CPM DINÁMICO')+(dyn.isPrime?' <span style="color:#ffd866">⭐ prime</span>':'')+'</div>'+
+            '<div style="display:flex;justify-content:space-between"><span>'+(en?'Dynamic CPM':'CPM dinámico')+'</span><b style="color:#c9a8ff">'+dyn.cpmDyn.toFixed(2)+' €</b></div>'+
+            '<div style="display:flex;justify-content:space-between;font-size:9.5px;opacity:.75" title="'+(en?'RTB demand (occupancy+prime) × quality (attention)':'demanda RTB (ocupación+prime) × calidad (atención)')+'"><span>↳ '+(en?'demand':'demanda')+' ×'+dyn.demandMult.toFixed(2)+' · '+(en?'quality':'calidad')+' ×'+dyn.qualityMult.toFixed(2)+'</span></div>'+
+            '<div style="display:flex;justify-content:space-between;color:#c9a8ff"><span>'+(en?'Dynamic revenue':'Ingreso dinámico')+'</span><b>'+dyn.revenueDyn.toFixed(2)+' €</b></div>'+
             segHtml+
-            '<div style="margin-top:5px;font-size:9.5px;opacity:.6">📷 medido · ~ estimado · 👁 miran≠pasan · ⚡ CPM por demanda×calidad<br>/cpm cpm &lt;n&gt; · /cpm reset · /cpm off</div>';
+            '<div style="margin-top:5px;font-size:9.5px;opacity:.6">'+(en?'📷 measured · ~ estimated · 👁 views≠passes · ⚡ CPM by demand×quality':'📷 medido · ~ estimado · 👁 miran≠pasan · ⚡ CPM por demanda×calidad')+'<br>/cpm cpm &lt;n&gt; · /cpm reset · /cpm off</div>';
         };
         render();
         if(!IMPACTS.timer) IMPACTS.timer=setInterval(render,1000);
         IMPACTS.on=true;
-        return {ok:true,message:'Impactos ON · marcador en vivo · CPM '+IMPACTS.cpm+'€',data:{on:true}};
+        return {ok:true,message:(en?'Impacts ON · live counter · CPM ':'Impactos ON · marcador en vivo · CPM ')+IMPACTS.cpm+'€',data:{on:true}};
       }
 
       // ── /mupicam — carrete de la cámara de publicidad exterior del MUPI ──
@@ -28057,7 +28090,7 @@ window.xtAPI = (function(){
         if(TP.timer) clearInterval(TP.timer);
         tick(true);
         TP.timer=setInterval(()=>tick(false),7000);
-        if(typeof showEv==='function') showEv('🎯 Target Publicity ON · '+(TP.mode==='genero'?'género':'aforo'),'#66ddaa');
+        if(typeof showEv==='function') showEv('🎯 Target Publicity ON · '+(lang==='en'?(TP.mode==='genero'?'gender':'occupancy'):(TP.mode==='genero'?'género':'aforo')),'#66ddaa');
         const note=TP.mode==='genero'
           ?(!(typeof LIVE_CAM!=='undefined'&&LIVE_CAM&&LIVE_CAM.active)?' · LiveCam off (señal simulada — activa LiveCam para sexo+edad real)':' · LiveCam on · cargando modelo facial on-device')
           :'';
@@ -28072,14 +28105,14 @@ window.xtAPI = (function(){
         const a=String(arg||'').trim().toLowerCase();
         if(['off','stop','cerrar','close','0','no','quitar','desactivar'].includes(a) || (!a && GENVIDEO.on)){
           if(typeof genVideoStop==='function') genVideoStop();
-          if(typeof showEv==='function') showEv('🎬 Género→vídeo OFF','#ff99aa');
+          if(typeof showEv==='function') showEv(lang==='en'?'🎬 Gender→video OFF':'🎬 Género→vídeo OFF','#ff99aa');
           return {ok:true,message:'Género→vídeo desactivado',data:{on:false}};
         }
         GENVIDEO.on=true; GENVIDEO.gender=''; GENVIDEO.pending='';
         const camOn=!!(typeof LIVE_CAM!=='undefined'&&LIVE_CAM&&LIVE_CAM.active);
         if(camOn&&typeof startFaceLoop==='function'){ try{ startFaceLoop(); }catch(_){} }
         if(typeof genVideoStart==='function') genVideoStart();
-        if(typeof showEv==='function') showEv('🎬 Género→vídeo ON'+(camOn?'':' · enciende 📷 LiveCam'),'#66ddaa');
+        if(typeof showEv==='function') showEv((lang==='en'?'🎬 Gender→video ON':'🎬 Género→vídeo ON')+(camOn?'':(lang==='en'?' · enable 📷 LiveCam':' · enciende 📷 LiveCam')),'#66ddaa');
         return {ok:true,message:'Género→vídeo activado · 👨 hombre→Money For Nothing · 👩 mujer→Take On Me'+(camOn?'':' · ⚠ LiveCam off (enciéndela para que detecte)'),data:{on:true,camOn}};
       }
 
@@ -28101,7 +28134,7 @@ window.xtAPI = (function(){
         const a=String(arg||'').trim().toLowerCase();
         if(a===''||a==='on'||a==='totem'||a==='start'||a==='play'){
           if(typeof setAvatar3dTotem==='function'&&setAvatar3dTotem(true)){
-            if(typeof showEv==='function') showEv('🧑‍💻 Avatar 3D ON · tótem','#5fd0ff');
+            if(typeof showEv==='function') showEv(lang==='en'?'🧑‍💻 Avatar 3D ON · totem':'🧑‍💻 Avatar 3D ON · tótem','#5fd0ff');
             return {ok:true,message:'🧑‍💻 Avatar 3D ENCENDIDO en la pantalla del tótem (DigitalAvatar.ai). Pregúntale con /avatar3d <pregunta>. Apágalo con /avatar3d off.'};
           }
           return {ok:false,message:'Avatar3D no disponible.'};
@@ -28335,7 +28368,7 @@ window.xtAPI = (function(){
           if(ready.length>=1){
             const c=ready[0];
             ov.setState('done','🎵 '+((c.title&&c.title.trim())||title),c.audio_url,c.image_large_url||c.image_url||'');
-            try{ if(typeof showEv==='function') showEv('🎵 Admira DJ tiene la canción lista','#88ffaa'); }catch(e){}
+            try{ if(typeof showEv==='function') showEv(lang==='en'?'🎵 Admira DJ has the track ready':'🎵 Admira DJ tiene la canción lista','#88ffaa'); }catch(e){}
             return;
           }
         }
@@ -28584,7 +28617,7 @@ window.xtAPI = (function(){
         customAction:'pixerai'
       },
       {
-        label:'✏ Mobiliario',
+        label:isEs?'✏ Mobiliario':'✏ Furniture',
         status:isEs?'editor':'editor',
         customAction:'editor'
       },
@@ -28603,7 +28636,7 @@ window.xtAPI = (function(){
       })(),
       {
         // Debajo de DVR / a la derecha de Menu (8º slot, fila 2 col 4). Mismo que /impactos.
-        label:'📊 Audiencia',
+        label:isEs?'📊 Audiencia':'📊 Audience',
         status:(typeof IMPACTS!=='undefined'&&IMPACTS.on)
           ?(isEs?'en vivo':'live')
           :(isEs?'impactos·CPM':'impacts·CPM'),
@@ -28641,7 +28674,7 @@ window.xtAPI = (function(){
     const tgHidden=!!(window.isTelegramDockHidden&&window.isTelegramDockHidden());
     return [
       {label:isEs?'Ladrón':'Thief',status:thiefActive?(isEs?'en tienda':'in store'):(isEs?'listo':'ready'),command:'/ladron',alert:thiefActive},
-      {label:'Guardia Civil',status:guardiaActive?(isEs?'activo':'active'):(isEs?'fuera':'away'),command:'/guardiacivil',active:guardiaActive},
+      {label:isEs?'Guardia Civil':'Civil Guard',status:guardiaActive?(isEs?'activo':'active'):(isEs?'fuera':'away'),command:'/guardiacivil',active:guardiaActive},
       {label:isEs?'Opinador':'Reviewer',status:opinadorActive?(isEs?'en ruta':'en route'):(isEs?'rápido':'quick'),command:'/opinador',active:opinadorActive},
       {label:'Unitree Bot',status:robotActive?(isEs?'en tienda':'in store'):'demo',command:'/robot',active:robotActive},
       {label:'🦆 Sponsor',status:sponsorActive?(isEs?'+1 más':'add 1 more'):(isEs?'invitar':'invite'),command:'/sponsor on',active:sponsorActive},
@@ -28655,10 +28688,10 @@ window.xtAPI = (function(){
   // pixeria.com (type 'furni' del Stock) y lo coloca en el Xpacio del gemelo.
   async function openPixerAi(){
     try{
-      if(typeof showEv==='function') showEv('🎨 Importando lo último de Pixeria…','#aa66ff');
+      if(typeof showEv==='function') showEv(lang==='en'?'🎨 Importing the latest item from Pixeria…':'🎨 Importando lo último de Pixeria…','#aa66ff');
       const items=await fetchPixeriaCatalog('furni');
       if(!items||!items.length){
-        if(typeof showEv==='function') showEv('Pixeria: aún no hay mobiliario','#ff99aa');
+        if(typeof showEv==='function') showEv(lang==='en'?'Pixeria: no furniture available yet':'Pixeria: aún no hay mobiliario','#ff99aa');
         return;
       }
       const m=items[0]; // el Stock ordena por createdAt desc → el más reciente
@@ -28980,7 +29013,7 @@ window.xtAPI = (function(){
     if(!ov){
       ov=document.createElement('div'); ov.id='turnFullOv';
       ov.style.cssText='position:fixed;inset:0;z-index:2147482600;background:#031316f2;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;backdrop-filter:blur(4px)';
-      ov.innerHTML='<button id="turnFullX" style="position:absolute;top:14px;right:18px;z-index:2;font:700 15px ui-monospace,monospace;background:#0b2a30;color:#8defff;border:1px solid #1e6a72;border-radius:10px;padding:8px 16px;cursor:pointer">\u2715 Volver al Xtanco</button>'+
+      ov.innerHTML='<button id="turnFullX" style="position:absolute;top:14px;right:18px;z-index:2;font:700 15px ui-monospace,monospace;background:#0b2a30;color:#8defff;border:1px solid #1e6a72;border-radius:10px;padding:8px 16px;cursor:pointer">'+(lang==='en'?'\u2715 Back to Xtanco':'\u2715 Volver al Xtanco')+'</button>'+
         '<div id="turnFullBody" style="max-width:92vw;max-height:86vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center"></div>';
       document.body.appendChild(ov);
       ov.querySelector('#turnFullX').onclick=()=>{ ov.style.display='none'; };
@@ -31353,7 +31386,7 @@ window.xtAPI = (function(){
     el.innerHTML=
       '<div class="sd-grid" id="sdGrid"></div>'+
       '<div class="sd-foot"><span class="sd-foot-label" id="sdFootLabel">Admira Events</span>'+
-      '<span class="sd-foot-status" id="sdFootStatus">Galleon 100 SD · página 1</span></div>';
+      '<span class="sd-foot-status" id="sdFootStatus">Galleon 100 SD · '+(lang==='en'?'page 1':'página 1')+'</span></div>';
     document.body.appendChild(el);
     renderStreamDeckGrid();
     return el;
@@ -31384,7 +31417,7 @@ window.xtAPI = (function(){
         if(status){
           status.textContent=(res && res.ok)
             ? '✓ '+btn.cmd+' → '+(String(res.result||'').slice(0,60)||'OK')
-            : '✗ '+(res && res.error || 'fallo');
+            : '✗ '+(res && res.error || (isEn?'failed':'fallo'));
         }
       });
       grid.appendChild(cell);
@@ -32173,6 +32206,9 @@ window.xtAPI = (function(){
 <script>
 (function(){
   const PIXER_WORKER='https://pixer-eleven.csilvasantin.workers.dev';
+  const REMOTE_API='https://api.admira.store';
+  const REMOTE_PLAYLIST_API='https://omnipublicity-api.csilvasantin.workers.dev/control/playlist';
+  const REMOTE_CACHE_NAME='xtore-remote-v1';
   const KEY='pixer-xtore-screen-id';
   // XTANCO INICIAL: el gemelo standalone (sin ?loc) es el demo público canónico
   // y reporta SIEMPRE bajo el mismo screenId fijo 'xtore-inicial'. Así pixeria
@@ -32258,6 +32294,8 @@ window.xtAPI = (function(){
   };
 
   let lastItemId=null, totalCount=0, currentPixerItem=null, firstPollDone=false;
+  let remoteShowingId=null, remoteGeneration=0, remotePlaylist=[], remoteReady=new Set(), remoteDownloading=new Map();
+  let remoteTagMode=false, remoteIndex=0, remotePlaying=false;
 
   function pixerItemToPlaylistName(item){
     const t=String(item.title||'Pixer item').replace(/[^\w\s\-áéíóúñÁÉÍÓÚÑ.,!?]/g,'').trim().slice(0,40);
@@ -32408,7 +32446,7 @@ window.xtAPI = (function(){
   // ⚠ PRIORIDAD 0 (interrupt): toma TODA la pantalla por encima de todo lo que
   // se esté emitiendo (juego, escaparate, menú). Se va solo al terminar el
   // vídeo/audio (imágenes: 12s) y vuelve lo de antes. Ignora el estado del juego.
-  function showPriorityInterrupt(item){
+  function showPriorityInterrupt(item,onDone){
     const titleSafe=item.title?String(item.title).replace(/</g,'&lt;'):'';
     // AUDIO/MÚSICA: NO tapa la pantalla — SUENA por encima de lo que se emite, con
     // un distintivo flotante; se quita al terminar la pista.
@@ -32420,7 +32458,8 @@ window.xtAPI = (function(){
       document.body.appendChild(ela);
       const a=document.createElement('audio'); a.src=item.url; a.autoplay=true;
       ela.appendChild(a);
-      const off=()=>{ try{ela.remove();}catch(e){} };
+      let finished=false;
+      const off=()=>{ if(finished) return; finished=true; try{ela.remove();}catch(e){}; try{ if(onDone) onDone(); }catch(e){} };
       try{ a.muted=false; }catch(e){} if(a.play) a.play().catch(()=>{});
       a.addEventListener('ended',off);
       return;
@@ -32434,10 +32473,146 @@ window.xtAPI = (function(){
       ? `<img src="${item.url}" style="max-width:100%;max-height:100%;object-fit:contain;">`
       : `<video src="${item.url}" autoplay playsinline style="max-width:100%;max-height:100%;object-fit:contain;"></video>`;
     el.innerHTML='<div style="position:absolute;top:14px;left:18px;color:#ff6644;font:700 14px monospace;letter-spacing:.05em;z-index:2;">⚠ PRIORIDAD 0'+(titleSafe?' · '+titleSafe:'')+'</div>'+inner;
-    const dismiss=()=>{ try{ el.remove(); }catch(e){} };
+    let finished=false;
+    const dismiss=()=>{ if(finished) return; finished=true; try{ el.remove(); }catch(e){}; try{ if(onDone) onDone(); }catch(e){} };
     const m=el.querySelector('video');
     if(m){ try{ m.muted=false; }catch(e){} if(m.play) m.play().catch(()=>{ try{ m.muted=true; m.play(); }catch(e){} }); m.addEventListener('ended',dismiss); }
     else { setTimeout(dismiss, 12000); }
+  }
+
+  // ── MANDO ADMIRA.TV PARA XTORE ──────────────────────────────────────────
+  // Los players clásicos ya escuchan /locations/cmd. El gemelo Xtore sólo
+  // publicaba heartbeat/feed y por eso el CMS podía encolar content-N/tag-X,
+  // pero nunca recibía ACK ni progreso. Esta junta conserva el juego autónomo
+  // y sólo monta una emisión prioritaria mientras haya una orden remota activa.
+  const remoteCmdState={since:0,init:false,busy:false};
+  function remoteKind(item){
+    const t=String(item&&((item.type||item.kind)||'video')).toLowerCase();
+    return t.startsWith('image')||['jpg','jpeg','png','webp','gif'].includes(t)?'image':
+      t.startsWith('audio')||['mp3','wav','m4a','aac'].includes(t)?'audio':'video';
+  }
+  function remoteItem(item){
+    return {id:String(item.id||''),num:Number(item.num)||null,title:String(item.title||item.name||('Contenido '+(item.num||''))),
+      type:remoteKind(item),kind:remoteKind(item),url:String(item.url||''),thumb:String(item.thumb||item.thumbnail||item.poster||''),
+      dur:Number(item.duration||item.dur)||null,tags:Array.isArray(item.tags)?item.tags:[]};
+  }
+  function remoteCanon(value){
+    return String(value||'').trim().replace(/^#+/,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+  async function remoteJson(url,options){
+    const r=await fetch(url,options); if(!r.ok) throw new Error('http '+r.status); return r.json();
+  }
+  async function remoteStock(){
+    const d=await remoteJson(REMOTE_API+'/stock/list?limit=1000&t='+Date.now(),{cache:'no-store'});
+    return (Array.isArray(d)?d:(d.items||d.stock||[])).map(remoteItem).filter(x=>x.id&&x.url);
+  }
+  async function publishRemotePlaylist(items){
+    await remoteJson(REMOTE_PLAYLIST_API,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({screen:screenId,items:items.map(x=>({id:x.id,title:x.title,type:x.type,url:x.url,thumb:x.thumb,dur:x.dur}))})});
+  }
+  async function publishRemoteCache(){
+    const contents=remotePlaylist.map(x=>({id:x.id,title:x.title,type:x.type,url:x.url,thumb:x.thumb,duration:x.dur,
+      ready:remoteReady.has(x.id),pct:remoteReady.has(x.id)?100:Number(remoteDownloading.get(x.id)||0)}));
+    const downloading=remotePlaylist.filter(x=>!remoteReady.has(x.id)).map(x=>({id:x.id,pct:Number(remoteDownloading.get(x.id)||0)}));
+    try{ await remoteJson(PIXER_WORKER+'/screen/cache',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({screen:screenId,ready:[...remoteReady],downloading,total:remotePlaylist.length,contents})}); }catch(_){}
+  }
+  async function publishRemoteNow(item){
+    try{ await remoteJson(PIXER_WORKER+'/signage/now',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({screen:screenId,item:item?{id:item.id,num:item.num,title:item.title,type:item.type,kind:item.kind,url:item.url,thumb:item.thumb,dur:item.dur,tags:item.tags}:null,
+        device:{role:'xtore-game',version:getVersion()},lastSeen:Date.now(),producer:'xtore-remote'})}); }catch(_){}
+  }
+  async function postRemoteAck(c,status){
+    if(!c||!c.action||!c.cid) return false;
+    const body=JSON.stringify({id:screenId,screen:screenId,cid:c.cid,action:c.action,status});
+    for(let attempt=0;attempt<3;attempt++){
+      try{ await remoteJson(REMOTE_API+'/locations/cmd/ack',{method:'POST',headers:{'Content-Type':'application/json'},body}); return true; }
+      catch(_){ if(attempt<2) await new Promise(resolve=>setTimeout(resolve,350*(attempt+1))); }
+    }
+    return false;
+  }
+  function stopRemotePlayback(clearPlaylist){
+    remoteGeneration++; remotePlaying=false; remoteShowingId=null; remoteTagMode=false; remoteIndex=0;
+    for(const id of ['pixerPrio0','pixerPrio0Audio']){ const el=document.getElementById(id); if(el) try{el.remove();}catch(_){} }
+    publishRemoteNow(null);
+    if(clearPlaylist){ remotePlaylist=[]; remoteReady.clear(); remoteDownloading.clear(); publishRemotePlaylist([]).catch(()=>{}); publishRemoteCache(); }
+    sendHeartbeat(true);
+  }
+  function playRemoteAt(index,generation){
+    if(generation!==remoteGeneration||!remotePlaylist.length) return;
+    const len=remotePlaylist.length; remoteIndex=((index%len)+len)%len;
+    const item=remotePlaylist[remoteIndex];
+    if(!remoteReady.has(item.id)){
+      setTimeout(()=>playRemoteAt(remoteIndex,generation),500); return;
+    }
+    remotePlaying=true; remoteShowingId=item.id; publishRemoteNow(item); sendHeartbeat(true);
+    showPriorityInterrupt(item,()=>{
+      if(generation!==remoteGeneration) return;
+      remotePlaying=false;
+      if(remoteTagMode&&remotePlaylist.length){ playRemoteAt(remoteIndex+1,generation); }
+      else { remoteShowingId=null; publishRemoteNow(null); sendHeartbeat(true); }
+    });
+  }
+  async function ensureRemoteCached(item,generation){
+    let cache=null;
+    try{ if('caches' in window) cache=await caches.open(REMOTE_CACHE_NAME); }catch(_){}
+    try{
+      if(cache&&await cache.match(item.url)){ remoteReady.add(item.id); remoteDownloading.delete(item.id); await publishRemoteCache(); return true; }
+      remoteDownloading.set(item.id,0); await publishRemoteCache();
+      const r=await fetch(item.url,{cache:'no-store'}); if(!r.ok) throw new Error('asset '+r.status);
+      const probe=r.clone(), total=Number(r.headers.get('content-length'))||0;
+      const cacheWrite=cache?cache.put(item.url,r).catch(()=>{}):Promise.resolve();
+      if(probe.body&&probe.body.getReader){
+        const reader=probe.body.getReader(); let loaded=0,last=-1;
+        while(true){ const part=await reader.read(); if(part.done) break; loaded+=part.value.byteLength;
+          const pct=total?Math.min(99,Math.round(loaded*100/total)):Math.min(95,last+5);
+          if(pct>=last+5){ last=pct; remoteDownloading.set(item.id,pct); publishRemoteCache(); }
+          if(generation!==remoteGeneration) try{ await reader.cancel(); }catch(_){}
+          if(generation!==remoteGeneration) return false;
+        }
+      }
+      await cacheWrite;
+      if(generation!==remoteGeneration) return false;
+      remoteReady.add(item.id); remoteDownloading.delete(item.id); await publishRemoteCache(); return true;
+    }catch(_){ remoteDownloading.delete(item.id); await publishRemoteCache(); return false; }
+  }
+  async function applyRemoteSelection(items,isTag){
+    if(!items.length) throw new Error('sin contenidos');
+    stopRemotePlayback(false);
+    const generation=remoteGeneration;
+    remotePlaylist=items; remoteReady=new Set(); remoteDownloading=new Map(); remoteTagMode=!!isTag; remoteIndex=0;
+    await publishRemotePlaylist(items); await publishRemoteCache();
+    (async()=>{ for(let i=0;i<items.length;i++){
+      if(generation!==remoteGeneration) return;
+      const ok=await ensureRemoteCached(items[i],generation);
+      if(ok&&!remotePlaying) playRemoteAt(i,generation);
+    } })();
+  }
+  async function executeRemoteCommand(c){
+    const cmd=String(c&&c.cmd||'').replace(/^\//,'').trim().toLowerCase();
+    if(cmd==='content-clear'||cmd==='tag-'){ stopRemotePlayback(true); return 'executed'; }
+    const content=/^content-(\d{1,6})$/.exec(cmd), tag=/^tag-([a-z0-9_,+\-]+)$/.exec(cmd);
+    if(!content&&!tag) return 'failed';
+    const stock=await remoteStock(); let items=[];
+    if(content) items=stock.filter(x=>String(x.num)===content[1]).slice(0,1);
+    else { const wanted=tag[1].split(/[,+]/).map(remoteCanon).filter(Boolean);
+      items=stock.filter(x=>{ const tags=(x.tags||[]).map(remoteCanon); return wanted.every(t=>tags.includes(t)); }); }
+    if(!items.length) return 'failed';
+    await applyRemoteSelection(items,!!tag); return 'executed';
+  }
+  async function pollRemoteCommands(){
+    if(remoteCmdState.busy) return; remoteCmdState.busy=true;
+    try{
+      const d=await remoteJson(REMOTE_API+'/locations/cmd?id='+encodeURIComponent(screenId)+'&since='+remoteCmdState.since+'&t='+Date.now(),{cache:'no-store'});
+      if(!remoteCmdState.init){ remoteCmdState.since=Number(d.seq)||0; remoteCmdState.init=true; return; }
+      for(const c of (d.commands||[])){
+        if(!Number.isSafeInteger(c.cid)||c.cid<=remoteCmdState.since) continue;
+        let status='failed'; try{ status=await executeRemoteCommand(c); }catch(_){}
+        if(!await postRemoteAck(c,status)) break;
+        remoteCmdState.since=c.cid;
+      }
+    }catch(_){} finally{ remoteCmdState.busy=false; }
   }
 
   function renderItem(item){
@@ -32491,7 +32666,8 @@ window.xtAPI = (function(){
   let lastHeartbeatAt=0, lastHeartbeatState='';
   async function sendHeartbeat(force){
     const now=Date.now();
-    const state=(lastItemId||'')+'|'+totalCount;
+    const effectiveShowingId=remoteShowingId||lastItemId;
+    const state=(effectiveShowingId||'')+'|'+totalCount;
     const stateChanged=state!==lastHeartbeatState;
     const elapsed=now-lastHeartbeatAt;
     // Permite forzar el primer envio, los cambios de estado y 1 vez por minuto.
@@ -32502,7 +32678,7 @@ window.xtAPI = (function(){
       await fetch(PIXER_WORKER+'/signage/heartbeat',{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({screen:screenId,role:'xtore-game',version:getVersion(),
-          feed_count:totalCount,showing_id:lastItemId,
+          feed_count:totalCount,showing_id:effectiveShowingId,
           loc:(window.STORE_CFG&&window.STORE_CFG.id)||'',locName:(window.STORE_CFG&&window.STORE_CFG.name)||''}),
       });
     }catch{}
@@ -32517,7 +32693,7 @@ window.xtAPI = (function(){
   function mudanzaToast(msg, undoFn){
     // Aviso en la barra superior (limpio), no un banner sobre el Xpacio.
     if(typeof window.xpTopNotify==='function'){
-      window.xpTopNotify(msg, '#9effa0', undoFn?{label:'↶ Deshacer', fn:undoFn}:null);
+      window.xpTopNotify(msg, '#9effa0', undoFn?{label:lang==='en'?'↶ Undo':'↶ Deshacer', fn:undoFn}:null);
       return;
     }
     // Fallback (por si la barra no está lista): toast clásico compacto.
@@ -32526,7 +32702,7 @@ window.xtAPI = (function(){
     t.style.cssText='position:fixed;top:44px;right:14px;z-index:2147483647;background:#04140a;border:1px solid #2ee06a;border-radius:8px;padding:8px 12px;color:#9effa0;font:700 12px monospace;display:flex;align-items:center;gap:10px;';
     const span=document.createElement('span'); span.textContent=msg; t.appendChild(span);
     if(undoFn){
-      const b=document.createElement('button'); b.textContent='↶ Deshacer';
+      const b=document.createElement('button'); b.textContent=lang==='en'?'↶ Undo':'↶ Deshacer';
       b.style.cssText='cursor:pointer;background:#0a2a18;border:1px solid #2ee06a;color:#9effa0;border-radius:7px;padding:4px 9px;font:700 11px monospace;';
       b.onclick=()=>{ try{ undoFn(); }catch(_){ } try{ t.remove(); }catch(_){ } };
       t.appendChild(b);
@@ -32545,8 +32721,8 @@ window.xtAPI = (function(){
           const prev=window.XPACE_DISTRO.snapshot();   // sala actual → para "Deshacer"
           const item=await window.XPACE_DISTRO.get(p.id);
           const n=window.XPACE_DISTRO.apply(item);
-          mudanzaToast('🚚 Mudanza en '+screenId+' · '+(p.name||item.name||'')+' · '+n+' muebles',
-            ()=>{ const m=window.XPACE_DISTRO.apply(prev); reportCurrentLayout(); mudanzaToast('↶ Mudanza deshecha · '+m+' muebles'); });
+          mudanzaToast('🚚 '+(lang==='en'?'Layout moved to ':'Mudanza en ')+screenId+' · '+(p.name||item.name||'')+' · '+n+' '+(lang==='en'?'items':'muebles'),
+            ()=>{ const m=window.XPACE_DISTRO.apply(prev); reportCurrentLayout(); mudanzaToast('↶ '+(lang==='en'?'Move undone · '+m+' items':'Mudanza deshecha · '+m+' muebles')); });
           reportCurrentLayout();   // el estado actual cambió → repórtalo a pixeria
         }
       }
@@ -32637,17 +32813,17 @@ window.xtAPI = (function(){
       c.customSpriteImg=im;
       // El `name` puede traer la AUDIENCIA de pixeria empaquetada: "Anónimo||{json}".
       // La separamos: parte visible = nombre; parte de datos = segmento (sexo/edad/desc).
-      const raw=String(entry.name||'Anónimo');
+      const raw=String(entry.name||(lang==='en'?'Anonymous':'Anónimo'));
       let nm=raw, segData=null;
       const sep=raw.indexOf('||');
-      if(sep>=0){ nm=raw.slice(0,sep)||'Anónimo'; try{ segData=JSON.parse(raw.slice(sep+2)); }catch(_){ segData=null; } }
+      if(sep>=0){ nm=raw.slice(0,sep)||(lang==='en'?'Anonymous':'Anónimo'); try{ segData=JSON.parse(raw.slice(sep+2)); }catch(_){ segData=null; } }
       c.fanName=nm;
       c.npcSegment=segData;                   // {sex, age, desc} → ficha de cliente
       // Ack al worker EN CUANTO se crea el NPC (antes de los FX, para que un error
       // visual no impida confirmar a Pixeria que el NPC YA está en la tienda).
       if(entry&&entry.id){ try{ fetch(PIXER_WORKER+'/twin/spawn/ack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:entry.id,screen:screenId})}); }catch(_){} }
       c.arriveFx=260;                         // ~4s de entrada llamativa (halo + rebote ¡!)
-      if(typeof showEv==='function') showEv('🏪 ¡'+nm+' acaba de entrar en la tienda!','#ffd23f');
+      if(typeof showEv==='function') showEv(lang==='en'?'🏪 '+nm+' just entered the store!':'🏪 ¡'+nm+' acaba de entrar en la tienda!','#ffd23f');
       twinArrivalBanner(nm);
       return true;
     }catch(_){ return false; }
@@ -32656,7 +32832,7 @@ window.xtAPI = (function(){
   function twinArrivalBanner(name){
     try{
       const t=document.createElement('div');
-      t.textContent='🏪 ¡'+name+' ya está en la tienda!';
+      t.textContent=lang==='en'?'🏪 '+name+' is now in the store!':'🏪 ¡'+name+' ya está en la tienda!';
       t.style.cssText='position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-8px);z-index:2147483646;background:rgba(4,20,10,.96);border:2px solid #ffd23f;border-radius:12px;padding:11px 22px;color:#ffe98a;font:800 16px monospace;letter-spacing:.04em;box-shadow:0 0 30px rgba(255,210,63,.55);opacity:0;transition:opacity .35s,transform .35s;';
       document.body.appendChild(t);
       requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
@@ -32733,6 +32909,7 @@ window.xtAPI = (function(){
     updateIdentityBadge(); setInterval(updateIdentityBadge,1500);   // badge identidad (idea #2)
     setInterval(pollLayoutLive,3000);       // sync EN VIVO bidireccional (solo en sala visible)
     pollTwinCmd(); setInterval(pollTwinCmd,2500);   // CLI keyless: ejecuta comandos de pixeria EN VIVO
+    pollRemoteCommands(); setInterval(pollRemoteCommands,2500); // Remote Admira.tv: content-N / tag-X + ACK/progreso
     pollNpcQueue(); setInterval(pollNpcQueue,6000);  // NPCs enviados desde el Anonimizador → paseando por la tienda
     setInterval(()=>sendHeartbeat(false),300000);
   },3000);
@@ -33140,7 +33317,7 @@ window.xtAPI = (function(){
       // Directo al Xtanco por defecto (Carlos, 13-jul-2026): fuera XPACE INVADERS del camino
       // de entrada. El arcade queda como easter egg con ?arcade=1; los modos con entrada
       // propia (view/distro/present/preview) siguen intactos.
-      if(!_as && _qs.get('arcade')!=='1' && !_qs.get('view') && !_qs.get('distro') && !_qs.get('present') && !_qs.get('preview')){ _as='xtanco'; }
+      if(!_as && !_qs.get('play') && _qs.get('arcade')!=='1' && !_qs.get('view') && !_qs.get('distro') && !_qs.get('present') && !_qs.get('preview')){ _as='xtanco'; }
     if(_as){
       const _cmap={xtanco:0,loterias:1,supermercado:2,shoptalk:3,creator:4};
       const _ci=Object.prototype.hasOwnProperty.call(_cmap,_as)?_cmap[_as]:0;
@@ -33172,30 +33349,120 @@ window.xtAPI = (function(){
    setLanguage() llama a applyHtmlLang(); el selector del splash llama a setLanguage(). */
 (function(){
   var I18N = [
+    {sel:'title', en:'Admira XP // XpaceOS — NVIDIA Digital Twin', es:'Admira XP // XpaceOS — Gemelo Digital NVIDIA'},
+    {sel:'#saveTplModal .save-tpl-head h2', en:'⭐ Save as template', es:'⭐ Guardar como plantilla'},
+    {sel:'#saveTplCloseBtn', attr:'title', en:'Cancel', es:'Cancelar'},
+    {sel:'#saveTplModal .save-tpl-row label', idx:0, en:'Name', es:'Nombre'},
+    {sel:'#saveTplModal .save-tpl-row label', idx:1, en:'Icon', es:'Icono'},
+    {sel:'#saveTplModal .save-tpl-row label', idx:2, en:'Preview', es:'Vista previa'},
+    {sel:'#saveTplName', attr:'placeholder', en:'My custom Xpace', es:'Mi Xpacio personalizado'},
+    {sel:'#saveTplCancelBtn', en:'Cancel', es:'Cancelar'},
+    {sel:'#saveTplSaveBtn', en:'⭐ Save template', es:'⭐ Guardar plantilla'},
+    {sel:'[data-ctx-act="rename"]', en:'✏ Rename', es:'✏ Renombrar'},
+    {sel:'[data-ctx-act="duplicate"]', en:'📋 Duplicate', es:'📋 Duplicar'},
+    {sel:'[data-ctx-act="delete"]', en:'🗑 Delete', es:'🗑 Eliminar'},
+    {sel:'#splashIntro', attr:'aria-label', en:'Welcome to Digital Twin', es:'Bienvenido a Digital Twin'},
+    {sel:'#splashNav', attr:'aria-label', en:'Main navigation', es:'Navegación principal'},
     {sel:'#navigatorBtn', en:'↗ Navigator', es:'↗ Navegador'},
+    {sel:'#navigatorBtn', attr:'title', en:'Navigator · Digital Twin flowchart', es:'Navigator · diagrama de flujo del DigitalTwin'},
     {sel:'#splashJugarBtn', en:'▶ PLAY', es:'▶ JUGAR'},
     {sel:'#splashDemoBtn', en:'▶ DEMO', es:'▶ DEMO'},
     {sel:'.splash-hint', en:'PLAY · enter your Xpace · DEMO · hands-free autoplay', es:'JUGAR · entra a tu Xpacio · DEMO · autoplay sin manos'},
     {sel:'#splashContactBtn', en:'Contact', es:'Contacto'},
+    {sel:'#pfOptions', attr:'aria-label', en:'Options', es:'Opciones'},
+    {sel:'#pfOptions', attr:'title', en:'Options', es:'Opciones'},
+    {sel:'#pfToggles', attr:'aria-label', en:'Modes: advanced, expert', es:'Modos: avanzado, experto'},
+    {sel:'[data-quad-toggle="right"]', attr:'aria-label', en:'Open advanced menu', es:'Desplegar menú avanzado'},
+    {sel:'[data-quad-toggle="right"]', attr:'title', en:'Advanced menu', es:'Menú avanzado'},
+    {sel:'#pfExpert', attr:'aria-label', en:'Expert mode — show or hide the bottom menu', es:'Modo experto — mostrar u ocultar el menú inferior'},
+    {sel:'#pfExpert', attr:'title', en:'Expert mode · show/hide bottom menu', es:'Modo experto · mostrar/ocultar menú inferior'},
     {sel:'.stat-label', idx:0, en:'Sales', es:'Ventas'},
     {sel:'.stat-label', idx:1, en:'Profit', es:'Beneficio'},
     {sel:'.stat-label', idx:2, en:'Sat', es:'Sat'},
     {sel:'.stat-label', idx:3, en:'Pass/In', es:'Pasan/Entran'},
     {sel:'.stat-label', idx:4, en:'👁 Real audience', es:'👁 Aforo real'},
+    {sel:'#bbCamBox', attr:'title', en:'Live audience (Hikvision camera)', es:'Aforo real (cámara Hikvision)'},
     {sel:'#bbStatus', en:'Idle', es:'En espera'},
     {sel:'#btnQuit', en:'⏻ Quit', es:'⏻ Salir'},
     {sel:'#btnQuit', attr:'title', en:'Close audio and video, back to main menu', es:'Cerrar audios y videos, volver al menú principal'},
     {sel:'#btnConnectScreen', en:'📺 Screen', es:'📺 Pantalla'},
     {sel:'#btnConnectScreen', attr:'title', en:'Connect a physical screen (QR): the twin storefront mirrors live', es:'Conectar una pantalla física (QR): el escaparate del gemelo se refleja en vivo'},
+    {sel:'.quad-left', attr:'aria-label', en:'Options', es:'Opciones'},
+    {sel:'.quad-left > .qm-title', en:'Options', es:'Opciones'},
+    {sel:'[data-xp-do="mega"]', en:'📢 Make announcement', es:'📢 Lanzar aviso'},
+    {sel:'[data-xp-do="mega"]', attr:'title', en:'Write and play a voice announcement', es:'Redactar y lanzar un aviso por voz'},
+    {sel:'[data-xp-do="megaStop"]', en:'⏹ Stop', es:'⏹ Detener'},
+    {sel:'[data-xp-do="megaStop"]', attr:'title', en:'Stop the current announcement', es:'Detener el aviso en curso'},
+    {sel:'[data-xp-do="musicToggle"]', en:'▶ Play / Pause', es:'▶ Play / Pausa'},
+    {sel:'[data-xp-do="musicToggle"]', attr:'title', en:'Play / pause background music', es:'Reproducir / pausar la música'},
+    {sel:'[data-xp-do="musicPrev"]', en:'◀ Previous', es:'◀ Anterior'},
+    {sel:'[data-xp-do="musicPrev"]', attr:'title', en:'Previous track', es:'Canción anterior'},
+    {sel:'[data-xp-do="musicNext"]', en:'▶ Next', es:'▶ Siguiente'},
+    {sel:'[data-xp-do="musicNext"]', attr:'title', en:'Next track', es:'Canción siguiente'},
+    {sel:'[data-xp-do="sfxToggle"]', en:'🔊 Sound effects (FX)', es:'🔊 Efectos (FX)'},
+    {sel:'[data-xp-do="sfxToggle"]', attr:'title', en:'Sound effects on/off', es:'Efectos de sonido on/off'},
+    {sel:'[data-xp-do="imgGen"]', en:'✨ Generate image (PixerIA)', es:'✨ Generar imagen (PixerIA)'},
+    {sel:'[data-xp-do="imgGen"]', attr:'title', en:'Generate an image with PixerIA and show it on screen', es:'Generar una imagen con PixerIA y mostrarla en pantalla'},
+    {sel:'[data-xp-do="dsToggle"]', en:'▶ Play / Pause', es:'▶ Play / Pausa'},
+    {sel:'[data-xp-do="dsToggle"]', attr:'title', en:'Play / pause screen video', es:'Reproducir / pausar el vídeo de las pantallas'},
+    {sel:'[data-xp-do="dsPrev"]', en:'◀ Previous video', es:'◀ Vídeo anterior'},
+    {sel:'[data-xp-do="dsPrev"]', attr:'title', en:'Previous video', es:'Vídeo anterior'},
+    {sel:'[data-xp-do="dsNext"]', en:'▶ Next video', es:'▶ Vídeo siguiente'},
+    {sel:'[data-xp-do="dsNext"]', attr:'title', en:'Next video', es:'Vídeo siguiente'},
+    {sel:'[data-xp-do="dsMute"]', en:'🔈 Screen audio', es:'🔈 Audio DS'},
+    {sel:'[data-xp-do="dsMute"]', attr:'title', en:'Screen audio on/off', es:'Audio de las pantallas on/off'},
+    {sel:'[data-xp-do="avatarShow"]', en:'👤 Show presenter', es:'👤 Mostrar presentador'},
+    {sel:'[data-xp-do="avatarShow"]', attr:'title', en:'Show presenter panel (MetaHuman)', es:'Mostrar el panel del presentador (MetaHuman)'},
+    {sel:'[data-xp-do="avatarHide"]', en:'✕ Hide', es:'✕ Ocultar'},
+    {sel:'[data-xp-do="avatarHide"]', attr:'title', en:'Hide presenter panel', es:'Ocultar el panel del presentador'},
+    {sel:'[data-xp-do="aforoReal"]', en:'📷 Live occupancy (camera)', es:'📷 Aforo real (cámara)'},
+    {sel:'[data-xp-do="aforoReal"]', attr:'title', en:'Target occupancy from the Hikvision camera', es:'Aforo objetivo por cámara Hikvision (ambiente)'},
+    {sel:'[data-xp-do="aforoExact"]', en:'🎯 Exact occupancy (1:1)', es:'🎯 Aforo exacto (1:1)'},
+    {sel:'[data-xp-do="aforoExact"]', attr:'title', en:'Strict 1:1 mirror: store occupancy equals camera occupancy', es:'Espejo 1:1 estricto: la tienda = exactamente la cámara'},
+    {sel:'[data-xp-do="aforoFake"]', en:'🎲 Simulated occupancy', es:'🎲 Aforo del juego'},
+    {sel:'[data-xp-do="aforoFake"]', attr:'title', en:'Customers generated by the simulation', es:'Clientes en modo aleatorio del juego'},
+    {sel:'[data-xp-do="aforoStatus"]', en:'ℹ Status', es:'ℹ Estado'},
+    {sel:'[data-xp-do="aforoStatus"]', attr:'title', en:'Show current occupancy status', es:'Ver el estado actual del aforo'},
+    {sel:'.quad-left .qm-acc-head', idx:0, en:'📢 PA system', es:'📢 Megafonía'},
+    {sel:'.quad-left .qm-acc-head', idx:1, en:'♪ Background music', es:'♪ Hilo Musical'},
+    {sel:'.quad-left .qm-acc-head', idx:2, en:'🖼 Image', es:'🖼 Imagen'},
+    {sel:'.quad-left .qm-acc-head', idx:3, en:'📺 Video', es:'📺 Video'},
+    {sel:'.quad-left .qm-acc-head', idx:4, en:'🤖 Avatar', es:'🤖 Avatar'},
+    {sel:'.quad-left .qm-acc-head', idx:5, en:'🔢 Occupancy', es:'🔢 Contador'},
+    {sel:'#quadOptVersion', attr:'title', en:'Help · features', es:'Ayuda · funcionalidades'},
+    {sel:'.quad-right', attr:'aria-label', en:'Advanced options', es:'Opciones Avanzadas'},
+    {sel:'.quad-right > .qm-title', en:'Advanced options', es:'Opciones Avanzadas'},
+    {sel:'.quad-right > .qm-head', en:'Team · Customers', es:'Equipo · Clientes'},
+    {sel:'.quad-right > .qm-hint', html:true, en:'The <b>TEAM / CUSTOMERS</b> panel and its actors (Thief, Civil Guard, Reviewer, Unitree, Sponsor…) appears below when Advanced ▾ is open.', es:'El panel de <b>EQUIPO / CLIENTES</b> y sus actores (Ladrón, Guardia Civil, Opinador, Unitree, Sponsor…) aparece abajo al abrir Avanzado ▾'},
     {sel:'#ksTitle', en:'UNDER MAINTENANCE', es:'EN MANTENIMIENTO'},
     {sel:'#ksMsg', en:'We are preparing a new version of the Xpace OS. Come back in a few minutes.', es:'Estamos preparando una nueva versión del Xpace OS. Vuelve en unos minutos.'},
     {sel:'#dsImportTitle', en:'Drop here to import DS content', es:'Suelta para importar contenido DS'},
+    {sel:'#dsImportSub', en:'PNG / JPG / WEBP / GIF / MP4 / WEBM · fitted to 160×90', es:'PNG / JPG / WEBP / GIF / MP4 / WEBM · se ajusta a 160×90'},
     {sel:'#dsImportStatusText', en:'Importing…', es:'Importando…'},
     {sel:'#mhStatus', en:'ready', es:'listo'},
+    {sel:'#mhClose', attr:'aria-label', en:'Close', es:'Cerrar'},
+    {sel:'#mhFaceWrap .mh-face-badge', html:true, en:'<span class="dot"></span>LIVE', es:'<span class="dot"></span>EN VIVO'},
+    {sel:'#mhFace', attr:'title', en:'Live MetaHuman', es:'MetaHuman en vivo'},
     {sel:'#mhPrompt', attr:'placeholder', en:'Ask your Metahuman agent... (Ctrl/⌘+Enter sends)', es:'Pregunta a tu agente Metahuman... (Ctrl/⌘+Enter envía)'},
     {sel:'#mhAskBtn', en:'Ask', es:'Preguntar'},
+    {sel:'#mhMicBtn', attr:'title', en:'Ask by voice', es:'Preguntar hablando (voz)'},
+    {sel:'#mhMicBtn', attr:'aria-label', en:'Speak', es:'Hablar'},
+    {sel:'.mh-hint', en:'Ctrl/⌘ + Enter · 🎙️ voice', es:'Ctrl/⌘ + Enter · 🎙️ voz'},
     {sel:'#mhAnswer', en:'Tap the totem to start. The agent thinks with Grok while the voice wave animates.', es:'Toca el tótem para empezar. El agente piensa con Grok mientras anima la onda de voz.'},
     {sel:'#mhClubToggle', en:'Show QR', es:'Ver QR'},
+    {sel:'#mhClubQr', attr:'aria-label', en:'QR code to join Xtanco Club', es:'QR para unirse al Xtanco Club'},
+    {sel:'.mh-club-head > span', en:'🪪 Xtanco Club · mobile loyalty card', es:'🪪 Xtanco Club · tarjeta de fidelidad móvil'},
+    {sel:'.mh-club-hint', en:'Scan with your phone to create your card. Every 5 visits, one purchase is free.', es:'Escanea con el móvil para crear tu tarjeta. Cada 5 visitas, una compra gratis.'},
+    {sel:'#dvrLive', en:'● LIVE', es:'● EN VIVO'},
+    {sel:'#dvrLive', attr:'title', en:'Return to LIVE', es:'Volver a EN VIVO'},
+    {sel:'#dvrPlay', attr:'title', en:'Play / Pause', es:'Reproducir / Pausa'},
+    {sel:'#dvrStepB', attr:'title', en:'One step back', es:'Un paso atrás'},
+    {sel:'#dvrStepF', attr:'title', en:'One step forward', es:'Un paso adelante'},
+    {sel:'#dvrScrub', attr:'aria-label', en:'Day timeline', es:'Línea de tiempo del día'},
+    {sel:'#dvrTime', attr:'title', en:'Enter a time (HH:MM) and press Enter to jump there', es:'Escribe una hora (HH:MM) y pulsa Enter para saltar ahí'},
+    {sel:'#dvrTime', attr:'aria-label', en:'Time — editable to jump', es:'Hora — editable para saltar'},
+    {sel:'#dvrGo', attr:'title', en:'Go to entered time', es:'Ir a la hora escrita'},
+    {sel:'#dvrClose', attr:'title', en:'Close DVR', es:'Cerrar DVR'},
     {sel:'#robotGrokStatus', en:'Grok ready', es:'Grok listo'},
     {sel:'#robotGrokPrompt', attr:'placeholder', en:'Ask the Unitree Bot about stock, customers, layout or the store...', es:'Pregunta al Unitree Bot sobre stock, clientes, layout o la tienda...'},
     {sel:'#robotGrokAskBtn', en:'Ask Grok', es:'Preguntar a Grok'},
@@ -33203,6 +33470,18 @@ window.xtAPI = (function(){
     {sel:'#robotGrokSpeakBtn', en:'Audio', es:'Audio'},
     {sel:'#robotGrokAnswer', en:'Tap the robot and ask any operational question.', es:'Pulsa el robot y consulta cualquier duda operativa.'},
     {sel:'#evdHelpBtn', en:'? HELP', es:'? AYUDA'},
+    {sel:'#evdHelpBtn', attr:'aria-label', en:'Help · features', es:'Ayuda · funcionalidades'},
+    {sel:'#evdMuteBtn', attr:'aria-label', en:'Mute music', es:'Silenciar música'},
+    {sel:'#mobileSkipBtn', en:'PLAY', es:'JUEGO'},
+    {sel:'#mobileSkipBtn', attr:'aria-label', en:'Enter the experience', es:'Entrar al juego'},
+    {sel:'#demoBtn', attr:'aria-label', en:'Automatic demo', es:'Demo automático'},
+    {sel:'#characterSocioFocusBtn', en:'Members', es:'Socios'},
+    {sel:'#charActionsHideBtn', attr:'title', en:'Show/hide contextual actions', es:'Mostrar/ocultar acciones contextuales'},
+    {sel:'#characterDockActions', attr:'aria-label', en:'Contextual actions for the active tab', es:'Acciones contextuales del tab activo'},
+    {sel:'#telegramHelpPanel', attr:'aria-label', en:'Available commands', es:'Comandos disponibles'},
+    {sel:'#telegramQuickActions', attr:'aria-label', en:'Quick scene actions', es:'Acciones rápidas de escena'},
+    {sel:'#telegramHideBtn', attr:'title', en:'Show/hide the CLI response (right half)', es:'Mostrar/ocultar la respuesta del CLI (mitad derecha)'},
+    {sel:'#dockSiteLink', attr:'title', en:'Open OmniPublicity — XpaceOS programmatic module', es:'Abrir OmniPublicity — modulo programatico del Xpace OS'},
     {sel:'#demoOverlay', en:'▶ DEMO MODE · no human intervention', es:'▶ MODO DEMO · sin intervención humana'}
   ];
   window.applyHtmlLang = function(l){
@@ -33213,11 +33492,14 @@ window.xtAPI = (function(){
         var el = (typeof it.idx==='number') ? nodes[it.idx] : nodes[0];
         if(!el) return;
         var val = it[l]; if(val==null) return;
-        if(it.attr) el.setAttribute(it.attr, val); else el.textContent = val;
+        if(it.attr) el.setAttribute(it.attr, val); else if(it.html) el.innerHTML=val; else el.textContent = val;
       }catch(e){}
     });
   };
-  function curLang(){ try{ return localStorage.getItem('xtanco_lang')==='es'?'es':'en'; }catch(e){ return 'en'; } }
+  function curLang(){
+    if(window.XPACE_LANG_OVERRIDE==='es'||window.XPACE_LANG_OVERRIDE==='en') return window.XPACE_LANG_OVERRIDE;
+    try{ return localStorage.getItem('xtanco_lang')==='es'?'es':'en'; }catch(e){ return 'en'; }
+  }
   function wire(){
     var box = document.getElementById('splashLang');
     if(box) box.querySelectorAll('.splash-lang-btn').forEach(function(b){
@@ -33228,7 +33510,8 @@ window.xtAPI = (function(){
       });
     });
     var cur = curLang();
-    window.applyHtmlLang(cur);
+    if(typeof setLanguage==='function') setLanguage(cur); else window.applyHtmlLang(cur);
+    if(window.XPACE_LANG_LOCKED && box){ box.hidden=true; box.style.setProperty('display','none','important'); }
     document.querySelectorAll('#splashLang .splash-lang-btn').forEach(function(b){ b.classList.toggle('is-active', b.dataset.lang===cur); });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', wire); else wire();
@@ -33244,7 +33527,10 @@ window.xtAPI = (function(){
    Solo explica — no toca el estado del juego, seguro para que lo use cualquiera. */
 (function(){
   if(window.TwinPresent) return;
-  function L(){ try{ return localStorage.getItem('xtanco_lang')==='es'?'es':'en'; }catch(e){ return 'en'; } }
+  function L(){
+    if(window.XPACE_LANG_OVERRIDE==='es'||window.XPACE_LANG_OVERRIDE==='en') return window.XPACE_LANG_OVERRIDE;
+    try{ return localStorage.getItem('xtanco_lang')==='es'?'es':'en'; }catch(e){ return 'en'; }
+  }
   var T={
     es:{ swipe:'Desliza o toca los lados · Esc para salir', of:'de', auto:'Auto', cta:'Pide la demo', close:'Cerrar' },
     en:{ swipe:'Swipe or tap the sides · Esc to exit', of:'of', auto:'Auto', cta:'Book the demo', close:'Close' }
@@ -33526,7 +33812,7 @@ window.xtAPI = (function(){
 (function(){
   if(window.__PERCIBE) return;
   var franjaNow=function(){ var h=new Date().getHours();
-    return h<12?'mañana':h<16?'mediodía':h<20?'tarde':'noche'; };
+    return lang==='en'?(h<12?'morning':h<16?'midday':h<20?'afternoon':'night'):(h<12?'mañana':h<16?'mediodía':h<20?'tarde':'noche'); };
 
   // Escenas deterministas (fallback demo-proof). Cada una: público → creativo adaptado.
   var SCENES=[
@@ -33551,6 +33837,13 @@ window.xtAPI = (function(){
       head:'La pantalla que te ve', sub:'Se adapta a quién la mira. Acércate.', cta:'XpaceOS',
       why:'Nadie mira → contenido de marca para atraer (idle)' }
   ];
+  var SCENES_EN=[
+    { people:2, m:65, f:35, age:'25-40', franja:'afternoon', tag:'SPORT · TECH', emoji:'⌚', bg:'linear-gradient(140deg,#123a7a,#2f7fff 70%,#4f97ff)', border:'#7db3ff', head:'Performance without limits', sub:'Smartwatch Series X — measure, improve, repeat.', cta:'20% off today', why:'Mostly men aged 25-40 · afternoon → aspirational tech product' },
+    { people:1, m:0, f:100, age:'20-30', franja:'midday', tag:'BEAUTY · PREMIUM', emoji:'💄', bg:'linear-gradient(140deg,#7a1550,#ff4fa3 72%,#ff86c2)', border:'#ff9ccb', head:'Your ritual, your moment', sub:'New premium collection · limited edition.', cta:'Discover it', why:'Young woman · individual attention → aspirational fashion/beauty' },
+    { people:4, m:50, f:50, age:'families', franja:'morning', tag:'FAMILY · OFFER', emoji:'🛒', bg:'linear-gradient(140deg,#7a4410,#f7a83d 70%,#ffcf8a)', border:'#ffcf8a', head:'Everything for your family', sub:'Family pack — save on the weekly shop.', cta:'2-for-1 this weekend', why:'Mixed group (4) · morning → high-volume family offer' },
+    { people:3, m:30, f:70, age:'50+', franja:'afternoon', tag:'HEALTH · WELLBEING', emoji:'🌿', bg:'linear-gradient(140deg,#0d5a3c,#37c98a 72%,#8ff0c4)', border:'#8ff0c4', head:'Take care of yourself every day', sub:'Senior wellbeing, close to you.', cta:'Free consultation', why:'Mostly women aged 50+ → friendly health and wellbeing message' },
+    { people:0, m:0, f:0, age:'—', franja:'—', idle:true, tag:'BRAND · ATTRACT', emoji:'✨', bg:'linear-gradient(140deg,#062733,#0e4a5a 68%,#137d90)', border:'#78f3ff', head:'The screen that sees you', sub:'It adapts to whoever is watching. Come closer.', cta:'XpaceOS', why:'Nobody is watching → brand content designed to attract attention' }
+  ];
 
   var idx=0, liveMode=false, root=null, els={};
 
@@ -33560,47 +33853,49 @@ window.xtAPI = (function(){
     var fresh=!!(camOn&&lf&&lf.faces>0&&(performance.now()-lf.ts)<6000);
     if(!fresh) return null;
     var isF=lf.gender==='female';
-    var base=SCENES[isF?1:0];
+    var base=(lang==='en'?SCENES_EN:SCENES)[isF?1:0];
     var people=lf.faces||1;
     return { live:true, people:people, m:isF?0:100, f:isF?100:0,
       age:lf.ageBucket||base.age, franja:franjaNow(),
       tag:base.tag, emoji:base.emoji, bg:base.bg, border:base.border,
       head:base.head, sub:base.sub, cta:base.cta,
-      why:'Cámara on-device · '+people+' cara(s) · '+(isF?'femenino':'masculino')+(lf.age?(' ~'+lf.age+'a'):'')+' · anónimo, sin almacenamiento' };
+      why:lang==='en'?('On-device camera · '+people+' face(s) · '+(isF?'female':'male')+(lf.age?(' ~age '+lf.age):'')+' · anonymous, no storage'):('Cámara on-device · '+people+' cara(s) · '+(isF?'femenino':'masculino')+(lf.age?(' ~'+lf.age+'a'):'')+' · anónimo, sin almacenamiento') };
   }
 
   function current(){
     if(liveMode){ var l=liveScene(); if(l) return l; }
-    return SCENES[((idx%SCENES.length)+SCENES.length)%SCENES.length];
+    var scenes=lang==='en'?SCENES_EN:SCENES;
+    return scenes[((idx%scenes.length)+scenes.length)%scenes.length];
   }
 
   function build(){
     if(root) return;
+    var en=lang==='en';
     root=document.createElement('div');
     root.id='percibeOverlay';
     root.innerHTML=
       '<div class="pcb-scan" id="pcbScan"></div>'+
-      '<button class="pcb-close" id="pcbClose" title="Salir (Esc)">✕</button>'+
+      '<button class="pcb-close" id="pcbClose" title="'+(en?'Exit (Esc)':'Salir (Esc)')+'">✕</button>'+
       '<div class="pcb-top">'+
         '<div class="pcb-brand"><div class="pcb-eye">👁</div><div>'+
-          '<div class="pcb-title">LA PANTALLA TE VE</div>'+
-          '<div class="pcb-sub">crear · emitir · <span style="color:#fff">percibir</span> · monetizar</div>'+
+          '<div class="pcb-title">'+(en?'THE SCREEN SEES YOU':'LA PANTALLA TE VE')+'</div>'+
+          '<div class="pcb-sub">'+(en?'create · broadcast · <span style="color:#fff">perceive</span> · monetize':'crear · emitir · <span style="color:#fff">percibir</span> · monetizar')+'</div>'+
         '</div></div>'+
-        '<div id="pcbBadge" class="pcb-badge sim">SIMULADO</div>'+
+        '<div id="pcbBadge" class="pcb-badge sim">'+(en?'SIMULATED':'SIMULADO')+'</div>'+
       '</div>'+
       '<div class="pcb-body">'+
         '<div class="pcb-panel">'+
-          '<div class="pcb-label">Audiencia detectada</div>'+
-          '<div class="pcb-people" id="pcbPeople">0 <small>personas</small></div>'+
+          '<div class="pcb-label">'+(en?'Detected audience':'Audiencia detectada')+'</div>'+
+          '<div class="pcb-people" id="pcbPeople">0 <small>'+(en?'people':'personas')+'</small></div>'+
           '<div class="pcb-dots" id="pcbDots"></div>'+
           '<div class="pcb-splitwrap">'+
-            '<div class="pcb-label" style="margin-bottom:8px">Reparto por género</div>'+
+            '<div class="pcb-label" style="margin-bottom:8px">'+(en?'Gender distribution':'Reparto por género')+'</div>'+
             '<div class="pcb-bar"><div class="m" id="pcbM"></div><div class="f" id="pcbF"></div></div>'+
           '</div>'+
           '<div class="pcb-meta">'+
-            '<div class="pcb-chip">Edad <b id="pcbAge">—</b></div>'+
-            '<div class="pcb-chip">Franja <b id="pcbFranja">—</b></div>'+
-            '<div class="pcb-chip">Emoción <b id="pcbMood">neutra</b></div>'+
+            '<div class="pcb-chip">'+(en?'Age':'Edad')+' <b id="pcbAge">—</b></div>'+
+            '<div class="pcb-chip">'+(en?'Time slot':'Franja')+' <b id="pcbFranja">—</b></div>'+
+            '<div class="pcb-chip">'+(en?'Emotion':'Emoción')+' <b id="pcbMood">'+(en?'neutral':'neutra')+'</b></div>'+
           '</div>'+
         '</div>'+
         '<div class="pcb-panel pcb-creative" id="pcbCre">'+
@@ -33609,18 +33904,18 @@ window.xtAPI = (function(){
           '<div><div class="pcb-cre-head" id="pcbHead">—</div>'+
           '<div class="pcb-cre-sub" id="pcbSub">—</div></div>'+
           '<div class="pcb-cre-cta" id="pcbCta">—</div>'+
-          '<div class="pcb-cre-why" id="pcbWhy"><b>por qué:</b> —</div>'+
+          '<div class="pcb-cre-why" id="pcbWhy"><b>'+(en?'why:':'por qué:')+'</b> —</div>'+
         '</div>'+
       '</div>'+
       '<div class="pcb-ctl">'+
-        '<span class="hint">← · →/espacio · L live · Esc</span>'+
-        '<button id="pcbPrev" title="Anterior">◀</button>'+
-        '<button id="pcbLive" title="Alternar cámara real / simulado">EN VIVO</button>'+
-        '<button id="pcbNext" title="Siguiente audiencia">SIGUIENTE ▶</button>'+
+        '<span class="hint">'+(en?'← · →/space · L live · Esc':'← · →/espacio · L live · Esc')+'</span>'+
+        '<button id="pcbPrev" title="'+(en?'Previous':'Anterior')+'">◀</button>'+
+        '<button id="pcbLive" title="'+(en?'Switch live camera / simulation':'Alternar cámara real / simulado')+'">'+(en?'LIVE':'EN VIVO')+'</button>'+
+        '<button id="pcbNext" title="'+(en?'Next audience':'Siguiente audiencia')+'">'+(en?'NEXT ▶':'SIGUIENTE ▶')+'</button>'+
       '</div>'+
       '<div class="pcb-foot">'+
-        '<span class="fp">🔒 first-party · sin cookies · on-device</span>'+
-        '<span class="src">dato de zona <b>ADcelerate</b> (telco) × cámara del punto = <b>audiencia real</b></span>'+
+        '<span class="fp">🔒 first-party · '+(en?'cookieless':'sin cookies')+' · on-device</span>'+
+        '<span class="src">'+(en?'area data':'dato de zona')+' <b>ADcelerate</b> (telco) × '+(en?'in-store camera = <b>real audience</b>':'cámara del punto = <b>audiencia real</b>')+'</span>'+
         '<span class="cpm" id="pcbCpm">clearchannel.tv · proof-of-play · CPM €—</span>'+
       '</div>';
     document.body.appendChild(root);
@@ -33645,9 +33940,9 @@ window.xtAPI = (function(){
     // Badge live/sim
     var isLive=!!s.live;
     els.badge.className='pcb-badge '+(isLive?'live':'sim');
-    els.badge.textContent=isLive?'● EN VIVO (cámara on-device)':'SIMULADO · demo';
+    els.badge.textContent=lang==='en'?(isLive?'● LIVE (on-device camera)':'SIMULATED · demo'):(isLive?'● EN VIVO (cámara on-device)':'SIMULADO · demo');
     // Audiencia
-    els.people.innerHTML=s.people+' <small>'+(s.people===1?'persona':'personas')+'</small>';
+    els.people.innerHTML=s.people+' <small>'+(lang==='en'?(s.people===1?'person':'people'):(s.people===1?'persona':'personas'))+'</small>';
     // Dots
     els.dots.innerHTML='';
     if(s.people===0){ var e=document.createElement('div'); e.className='pcb-dot empty'; els.dots.appendChild(e); }
@@ -33656,12 +33951,12 @@ window.xtAPI = (function(){
     els.m.style.width=s.m+'%'; els.m.textContent=s.m>=12?(s.m+'% ♂'):'';
     els.f.style.width=s.f+'%'; els.f.textContent=s.f>=12?(s.f+'% ♀'):'';
     els.age.textContent=s.age; els.franja.textContent=s.franja;
-    els.mood.textContent=s.idle?'—':(isLive?'atención':'interés');
+    els.mood.textContent=s.idle?'—':(lang==='en'?(isLive?'attention':'interest'):(isLive?'atención':'interés'));
     // Creativo adaptado
     els.cre.style.background=s.bg; els.cre.style.borderColor=s.border;
     els.tag.textContent=s.tag; els.emoji.textContent=s.emoji;
     els.head.textContent=s.head; els.sub.textContent=s.sub; els.cta.textContent=s.cta;
-    els.why.innerHTML='<b>por qué:</b> '+s.why;
+    els.why.innerHTML='<b>'+(lang==='en'?'why:':'por qué:')+'</b> '+s.why;
     // CPM demo (dato monetización: audiencia segmentada sube el CPM)
     var cpm=s.people===0?4.0:(6.5+s.people*1.4+(Math.max(s.m,s.f)-50)*0.05);
     els.cpm.textContent='clearchannel.tv · proof-of-play · CPM €'+cpm.toFixed(2);
@@ -33694,7 +33989,7 @@ window.xtAPI = (function(){
     render(false);
     root.classList.add('on'); sweep();
     document.addEventListener('keydown',keyHandler,true);
-    try{ if(typeof showEv==='function') showEv('👁 LA PANTALLA TE VE · →/espacio siguiente · L en vivo · Esc salir','#78f3ff'); }catch(_){}
+    try{ if(typeof showEv==='function') showEv(lang==='en'?'👁 THE SCREEN SEES YOU · →/space next · L live · Esc exit':'👁 LA PANTALLA TE VE · →/espacio siguiente · L en vivo · Esc salir','#78f3ff'); }catch(_){}
     var fab=document.getElementById('percibeFab'); if(fab) fab.style.display='none';
   }
   function close(){
@@ -33707,7 +34002,7 @@ window.xtAPI = (function(){
   // Botón flotante discreto (aparece a los 2 s; el presentador también puede usar Shift+V o /pantallateve)
   function fab(){
     if(document.getElementById('percibeFab')) return;
-    var b=document.createElement('div'); b.id='percibeFab'; b.textContent='👁'; b.title='La pantalla te ve (Shift+V)';
+    var b=document.createElement('div'); b.id='percibeFab'; b.textContent='👁'; b.title=lang==='en'?'The screen sees you (Shift+V)':'La pantalla te ve (Shift+V)';
     b.onclick=open; document.body.appendChild(b);
     setTimeout(function(){ b.style.display='flex'; },2000);
   }
@@ -33903,7 +34198,7 @@ window.xtAPI = (function(){
   ];
   var layer=document.createElement('div'); layer.id='screenInfoLayer'; document.body.appendChild(layer);
   var pop=document.createElement('div'); pop.id='screenInfoPop';
-  pop.innerHTML='<div class="si-close">✕</div><div class="si-name"></div><div class="si-tag" title="Clic para copiar"></div><button class="si-audio" type="button"></button><div class="si-hint"></div>';
+  pop.innerHTML='<div class="si-close">✕</div><div class="si-name"></div><div class="si-tag" title="'+(lang==='en'?'Click to copy':'Clic para copiar')+'"></div><button class="si-audio" type="button"></button><div class="si-hint"></div>';
   document.body.appendChild(pop);
   pop.querySelector('.si-close').onclick=function(){pop.classList.remove('show');};
   pop.querySelector('.si-tag').onclick=function(){ try{navigator.clipboard.writeText(this.textContent);}catch(e){} };
@@ -33921,16 +34216,18 @@ window.xtAPI = (function(){
   window.__setInfoBadges=function(on){ layer.classList.toggle('show-badges', !!on); if(!on){ try{ pop.classList.remove('show'); }catch(e){} } return layer.classList.contains('show-badges'); };
   window.__infoBadgesShown=function(){ return layer.classList.contains('show-badges'); };
   function openPop(s,b){
-    pop.querySelector('.si-name').textContent='📺 '+s.label;
+    var en=lang==='en';
+    var labelsEn={ds1:'DS · Left wall · top',ds2:'DS · Left wall · bottom',escaparate:'Storefront · above the door',metahuman:'Metahuman · AI totem'};
+    pop.querySelector('.si-name').textContent='📺 '+(en?(labelsEn[s.id]||s.label):s.label);
     pop.querySelector('.si-tag').textContent=s.tag;
-    pop.querySelector('.si-hint').innerHTML='Tag único de esta pantalla. Asigna este tag a un contenido en <b style="color:#dff8ff">admira.studio</b> y se emitirá aquí.';
+    pop.querySelector('.si-hint').innerHTML=en?'Unique tag for this screen. Assign it to content in <b style="color:#dff8ff">admira.studio</b> and it will play here.':'Tag único de esta pantalla. Asigna este tag a un contenido en <b style="color:#dff8ff">admira.studio</b> y se emitirá aquí.';
     // Toggle de sonido de la fuente de esta pantalla (por defecto silenciada;
     // desmutear una silencia las demás). El hilo musical va aparte.
     var ab=pop.querySelector('.si-audio');
     function renderAudio(){
       var on=(typeof window.__dsSurfaceAudioOn==='function')&&window.__dsSurfaceAudioOn(s.id);
       ab.classList.toggle('on',!!on);
-      ab.textContent=on?'🔊 Sonido: ACTIVO':'🔇 Sonido: silenciado';
+      ab.textContent=en?(on?'🔊 Sound: ON':'🔇 Sound: muted'):(on?'🔊 Sonido: ACTIVO':'🔇 Sonido: silenciado');
     }
     ab.onclick=function(ev){
       ev.stopPropagation();
@@ -34232,8 +34529,9 @@ window.xtAPI = (function(){
   // sobre el Xpacio (el #percibeFab queda oculto por CSS). Toggle del overlay.
   function makePercibe(){
     var e=document.createElement('button'); e.type='button'; e.className='tg-quick-btn'; e.id='advPercibeBtn';
-    e.title='La pantalla te ve (Shift+V)';
-    e.innerHTML='<strong>👁</strong><span>La pantalla te ve</span>';
+    var en=typeof lang!=='undefined'&&lang==='en';
+    e.title=(en?'The screen sees you':'La pantalla te ve')+' (Shift+V)';
+    e.innerHTML='<strong>👁</strong><span>'+(en?'The screen sees you':'La pantalla te ve')+'</span>';
     e.addEventListener('click',function(ev){ ev.preventDefault(); ev.stopPropagation(); try{ if(window.__PERCIBE) window.__PERCIBE.toggle(); }catch(_){}} );
     return e;
   }

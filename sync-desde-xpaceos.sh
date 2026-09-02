@@ -27,6 +27,13 @@ git -C "$ORIGEN" pull -q --ff-only || { echo "✗ El clon de xpaceos ha divergid
 ORIGEN_SHA="$(git -C "$ORIGEN" rev-parse --short HEAD)"
 echo "  origen en $ORIGEN_SHA"
 
+# El espejo se construye desde el commit, no desde el working tree del clon.
+# Así una captura de QA o cualquier otro fichero local sin commitear nunca puede
+# colarse accidentalmente en admira.store.
+ORIGEN_LIMPIO="$(mktemp -d)"
+trap 'rm -rf "$ORIGEN_LIMPIO"' EXIT
+git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
+
 # Lo PROPIO de admira.store, que el espejo no puede pisar:
 #  · CNAME     — o el dominio se lo queda xpaceos.com y esta web se cae
 #  · gate.js   — la verja de acceso de admira.studio/store/app
@@ -40,7 +47,17 @@ rsync -a --delete \
   --exclude 'sync-desde-xpaceos.sh' \
   --exclude 'sello-y-verja.py' \
   --exclude '.gitignore' \
-  "$ORIGEN"/ ./
+  "$ORIGEN_LIMPIO"/ ./
+
+# Carlos decidió que la portada de admira.store sea la misma experiencia que
+# xpaceos.com/nvidia. Conservamos todos los assets del espejo y promovemos el
+# entrypoint NVIDIA a la raíz, con metadatos del dominio que realmente se sirve.
+cp nvidia/index.html index.html
+sed -i.bak \
+  -e 's#https://www\.xpaceos\.com/nvidia/#https://www.admira.store/#g' \
+  -e 's#https://www\.xpaceos\.com/assets/#https://www.admira.store/assets/#g' \
+  index.html
+rm index.html.bak
 
 # Sello canónico (norma 07) + reposición de la verja, en un solo paso.
 SELLO="v.$(date +%d.%m.%Y).r1.$(date +%H:%M)"
