@@ -17,12 +17,19 @@ echo "→ Sello y firma…"
 SELLO="$(sed -n 's/.*admiranext-version[^>]*content="[^"]*\(v\.[^"]*\)".*/\1/p' index.html | head -1)"
 [ -n "$SELLO" ] || { echo "  ✖ index.html no declara sello canónico (norma 07)"; exit 1; }
 GIT="$(git rev-parse HEAD)"
+# GitHub Pages valida release-signature.json antes de construir. El espejo trae
+# la firma del origen XpaceOS, pero admira.store necesita la de esta publicación.
+# Regenerarla aquí evita que Pages rechace todas las releases por una versión o
+# una identidad heredadas del repositorio fuente.
+jq -n --arg v "$SELLO" --arg a "$ADMIRA_RELEASE_AGENT" --arg m "$ADMIRA_RELEASE_MACHINE" \
+      '{version:$v,deployer:$a,machine:$m,signature:($a+" · "+$m)}' \
+      > release-signature.json
 jq -n --arg v "$SELLO" --arg t "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
       --arg a "$ADMIRA_RELEASE_AGENT" --arg m "$ADMIRA_RELEASE_MACHINE" \
       --arg g "$GIT" --arg gs "${GIT:0:7}" \
       '{version:$v,deployedAt:$t,deployer:$a,machine:$m,signature:($a+" · "+$m),git:$g,gitShort:$gs,gitFull:$g,dirty:false}' \
       > version.json
-git add version.json && git commit -q -m "sello $SELLO · $ADMIRA_RELEASE_AGENT · $ADMIRA_RELEASE_MACHINE" || true
+git add release-signature.json version.json && git commit -q -m "sello $SELLO · $ADMIRA_RELEASE_AGENT · $ADMIRA_RELEASE_MACHINE" || true
 echo "  ✓ $SELLO · $ADMIRA_RELEASE_AGENT · $ADMIRA_RELEASE_MACHINE"
 
 echo "→ GitHub (push de código, backup)…"
