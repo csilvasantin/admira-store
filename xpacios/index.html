@@ -202,7 +202,8 @@
   // Índice de Xpacios COMPARTIDO en el backend (pixer-eleven /layout/report+current,
   // screen="xpacios-index"), con fallback a localStorage. Cada Xpacio creado es una
   // capa de decoración propia sobre la base 3D (Barcelona/Desigual), abrible con ?xpacio=<id>.
-  const API="https://pixer-eleven.csilvasantin.workers.dev", IDX="xpacios-index", BASE="/xpacios/xtanco-barcelona/";
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  const API="https://api.admira.store", IDX="xpacios-index", BASE="/xpacios/xtanco-barcelona/";
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
   function fmtDate(ts){ try{ return new Date(ts).toLocaleDateString("es-ES",{day:"2-digit",month:"short"}); }catch(e){ return ""; } }
   function localIdx(){ try{ return JSON.parse(localStorage.getItem("xpacios-index")||"[]"); }catch(e){ return []; } }

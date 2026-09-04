@@ -285,9 +285,10 @@ function maint(it){ const m=it.maintenance||{}; const iv=m.interval_days;
 function maintPending(it){ const s=maint(it).state; return s==='overdue'||s==='unset'; }
 
 // ── Live ──────────────────────────────────────────────────────────────────────
-const PROXIES={ marketplace:'https://admira-marketplace.csilvasantin.workers.dev/active-campaigns',
-  occupancy:'https://aforo-proxy.csilvasantin.workers.dev/', grok:'https://admira-grok-proxy.csilvasantin.workers.dev/health',
-  telegram:'https://admira-telegram-bridge.csilvasantin.workers.dev/health' };
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const PROXIES={ marketplace:'https://marketplace.admira.store/active-campaigns',
+  occupancy:'https://aforo.admira.store/', grok:'https://grok.admira.store/health',
+  telegram:'https://bridge.admira.store/health' };
 const STATE_COLORS={up:'var(--up)',idle:'var(--idle)',down:'var(--down)',local:'var(--local)',na:'var(--na)'};
 async function fetchProxy(url){ try{ const c=new AbortController(); const t=setTimeout(()=>c.abort(),6000);
   const r=await fetch(url,{cache:'no-store',signal:c.signal}); clearTimeout(t); if(!r.ok) return {ok:false,status:r.status};

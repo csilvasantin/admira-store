@@ -5,7 +5,8 @@
    (sigue el idioma de la página). Se engancha solo a los disparadores
    [data-admira-contact] y [data-lead-open]. Expone window.openLeadForm. */
 (function () {
-  var ENDPOINT = 'https://pixer-eleven.csilvasantin.workers.dev/lead';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  var ENDPOINT = 'https://api.admira.store/lead';
   var QKEY = 'xpace_lead_queue';
 
   function lng() {

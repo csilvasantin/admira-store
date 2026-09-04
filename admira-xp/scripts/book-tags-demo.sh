@@ -12,7 +12,8 @@
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 API='https://api.admira.store'
-STOCK='https://pub-bf043a4daa3b43b7a0b769617729d074.r2.dev/stock/index.json'
+# Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+STOCK='https://stock.admira.store/stock/index.json'
 DATE="${DATE:-$(python3 -c 'import datetime;print(datetime.date.today().isoformat())')}"
 BANDS=(manana mediodia tarde noche)   # reserva en las 4 franjas → siempre emite
 # Panel (tag) → título del anuncio demo

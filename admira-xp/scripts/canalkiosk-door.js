@@ -12,7 +12,8 @@
   if (typeof window === 'undefined') return;
   if (window.__CANALKIOSK_DOOR === '4') return; window.__CANALKIOSK_DOOR = '4';
   var GRID  = 'https://api.admira.store/grid/day?screen=sim-gracia-kiosko';
-  var STOCK = 'https://pub-bf043a4daa3b43b7a0b769617729d074.r2.dev/stock/index.json';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  var STOCK = 'https://stock.admira.store/stock/index.json';
   var items = [], thumbs = {}, period = 10000, curIdx = -1;
   var vid = document.createElement('video');
   vid.muted = true; vid.playsInline = true; vid.crossOrigin = 'anonymous'; vid.preload = 'auto'; vid.loop = true;

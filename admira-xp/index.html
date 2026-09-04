@@ -1380,7 +1380,8 @@ window.STORE_CFG=null; window.STORE_CFG_READY=false;
 (function loadStoreCfg(){
   let loc=''; try{ loc=(new URLSearchParams(window.location.search).get('loc')||'').trim().toLowerCase(); }catch(e){}
   if(!loc){ window.STORE_CFG_READY=true; return; }
-  const API='https://pixer-eleven.csilvasantin.workers.dev/da/locations';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  const API='https://api.admira.store/da/locations';
   // Reintentos: el worker omnipublicity puede estar "frío" y fallar el primer
   // fetch → sin reintento el twin se quedaba sin config (sin pantallas/nombre).
   const MAX=4;
@@ -2265,8 +2266,8 @@ const VIDEO_FILES={
 // físicas, que eligen calidad según su resolución (auto por pantalla).
 const SIGNAGE_HD={
   'George Michael - Freedom! 90':[
-    {h:480,src:'https://pixer-eleven.csilvasantin.workers.dev/signage/media/freedom90_480.mp4'},
-    {h:720,src:'https://pixer-eleven.csilvasantin.workers.dev/signage/media/freedom90_720.mp4'},
+    {h:480,src:'https://api.admira.store/signage/media/freedom90_480.mp4'},
+    {h:720,src:'https://api.admira.store/signage/media/freedom90_720.mp4'},
   ],
 };
 // Versión VERTICAL (9:16) de cada vídeo, para el canal del tótem (Lenovo en
@@ -3286,7 +3287,8 @@ function dsControl(arg){
 // que una pantalla física (pantalla.html?screen=escaparate, mismo origen)
 // refleje en vivo el mismo vídeo/imagen. Solo hace POST cuando el contenido
 // cambia, más un keepalive cada 20s que refresca el TTL del puntero en KV.
-const SIGNAGE_NOW_URL='https://pixer-eleven.csilvasantin.workers.dev/signage/now';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const SIGNAGE_NOW_URL='https://api.admira.store/signage/now';
 let _escNowSig='';
 function escaparateNowItem(){
   const pin=(DS_PIN&&typeof DS_PIN==='object')?DS_PIN['escaparate']:null;
@@ -3336,7 +3338,7 @@ async function emitEscaparateNow(force){
       const body = it.src
         ? {kind:it.kind, src:it.src, title:marker+(it.name||'')}
         : {kind:'text', src:'about:blank', title:marker+'__idle__'};
-      fetch('https://pixer-eleven.csilvasantin.workers.dev/signage/push',{
+      fetch('https://api.admira.store/signage/push',{
         method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
         body:JSON.stringify(body),
       }).catch(()=>{});
@@ -3381,7 +3383,7 @@ async function emitTotemNow(force){
       const body = it.src
         ? {kind:it.kind, src:it.src, title:marker+(it.name||'')}
         : {kind:'text', src:'about:blank', title:marker+'__idle__'};
-      fetch('https://pixer-eleven.csilvasantin.workers.dev/signage/push',{
+      fetch('https://api.admira.store/signage/push',{
         method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
         body:JSON.stringify(body),
       }).catch(()=>{});
@@ -10918,7 +10920,7 @@ function showDayEndResults(){
       const rev={}; let tot=0; for(const k in G.extAdImpacts){ const r=G.extAdImpacts[k]/1000*segCpm(k); rev[k]=+r.toFixed(2); tot+=r; }
       summary.extAdsRev=rev; summary.extAdsRevTotal=+tot.toFixed(2);
     } }catch(e){}
-    fetch('https://pixer-eleven.csilvasantin.workers.dev/day/save',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({loc,date:dstr,summary})}).catch(()=>{});
+    fetch('https://api.admira.store/day/save',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({loc,date:dstr,summary})}).catch(()=>{});
   }catch(e){}
   let ov=document.getElementById('dayEndOverlay');
   if(!ov){
@@ -11287,7 +11289,7 @@ window.segCpm=segCpm; window.SEG_CPM_DEFAULT=SEG_CPM_DEFAULT;
 // Lee la tabla CPM por segmento que fija admira.app (KV) y la aplica en vivo.
 function loadSegCpm(){
   try{ const loc=(typeof avatar3dLoc==='function')?avatar3dLoc():((typeof window!=='undefined'&&window.STORE_CFG&&window.STORE_CFG.id)||'xtanco-generic');
-    fetch('https://pixer-eleven.csilvasantin.workers.dev/segcpm?loc='+encodeURIComponent(loc),{cache:'no-store'})
+    fetch('https://api.admira.store/segcpm?loc='+encodeURIComponent(loc),{cache:'no-store'})
       .then(r=>r.json()).then(d=>{ if(d&&d.cpm&&Object.keys(d.cpm).length){ window.STORE_CFG=window.STORE_CFG||{}; window.STORE_CFG.segCpm=d.cpm; } }).catch(()=>{});
   }catch(e){}
 }
@@ -11296,7 +11298,7 @@ setTimeout(loadSegCpm,2500); setInterval(loadSegCpm,60000);
 // segmento → el escaparate la muestra a ese segmento (en vez de la base).
 function loadCampaigns(){
   try{ const loc=(typeof avatar3dLoc==='function')?avatar3dLoc():((typeof window!=='undefined'&&window.STORE_CFG&&window.STORE_CFG.id)||'xtanco-generic');
-    fetch('https://pixer-eleven.csilvasantin.workers.dev/campaign/list?loc='+encodeURIComponent(loc),{cache:'no-store'})
+    fetch('https://api.admira.store/campaign/list?loc='+encodeURIComponent(loc),{cache:'no-store'})
       .then(r=>r.json()).then(d=>{ const cs=(d&&d.campaigns)||[]; const map={};
         for(const c of cs){ if(c&&c.active!==false&&c.seg&&c.creativeUrl&&/^https?:/.test(c.creativeUrl)&&!map[c.seg]) map[c.seg]={url:c.creativeUrl,label:(c.product||c.name||'')}; }
         window.__campCreatives=map;
@@ -11319,7 +11321,7 @@ function pushLiveDay(){
     try{ const ah=(typeof IMPACTS!=='undefined'&&IMPACTS.aud&&IMPACTS.aud.hours)?IMPACTS.aud.hours:null; if(ah){ const hrs=Object.keys(ah).map(h=>({h:+h,in:Math.round(ah[h].int||0),pass:Math.round(ah[h].ext||0)})).sort((a,b)=>a.h-b.h); if(hrs.length) summary.hours=hrs; } }catch(e){}
     const loc=(typeof avatar3dLoc==='function')?avatar3dLoc():((typeof window!=='undefined'&&window.STORE_CFG&&window.STORE_CFG.id)||'xtanco-generic');
     const dstr=gameDateKey();
-    fetch('https://pixer-eleven.csilvasantin.workers.dev/day/save',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({loc,date:dstr,summary})}).catch(()=>{});
+    fetch('https://api.admira.store/day/save',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({loc,date:dstr,summary})}).catch(()=>{});
   }catch(e){}
 }
 setInterval(pushLiveDay,45000);
@@ -11555,7 +11557,7 @@ const XCAL=(function(){
   function loadMonthReal(){
     const mk=viewY*100+viewM; if(realLoadedMonth===mk) return; realLoadedMonth=mk;
     const from=''+viewY+String(viewM+1).padStart(2,'0')+'01', to=''+viewY+String(viewM+1).padStart(2,'0')+'31';
-    fetch('https://pixer-eleven.csilvasantin.workers.dev/day/range?loc='+encodeURIComponent(dayLoc())+'&from='+from+'&to='+to,{cache:'no-store'})
+    fetch('https://api.admira.store/day/range?loc='+encodeURIComponent(dayLoc())+'&from='+from+'&to='+to,{cache:'no-store'})
       .then(r=>r.json()).then(d=>{ if(d&&d.days&&Object.keys(d.days).length){ Object.assign(realMap,d.days); renderMonth(); } }).catch(()=>{});
   }
   // Estadística mostrada = síntesis determinista con los datos REALES superpuestos
@@ -11979,7 +11981,7 @@ async function mupiCamHumanize(uid){
   shot._gen=true; shot._err=null; try{ mupiCamRenderGallery(); }catch(e){}
   try{ if(typeof showEv==='function') showEv(lang==='en'?'✨ PixerIA is generating a person…':'✨ PixerIA generando humano…','#aa66ff'); }catch(e){}
   try{
-    const r=await fetch('https://pixer-eleven.csilvasantin.workers.dev/image/edit',{
+    const r=await fetch('https://api.admira.store/image/edit',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({image:shot.normal,sys:MUPI_HUMAN_SYS,
         prompt:'Conviértelo en una persona real que se parezca a este personaje, como si hubiera pasado por delante de la tienda.'}),
@@ -12000,7 +12002,7 @@ async function mupiCamPublish(uid){
   try{ if(typeof showEv==='function') showEv(lang==='en'?'📌 Publishing person to Stock…':'📌 Publicando humano en Stock…','#aa66ff'); }catch(e){}
   try{
     const camTag=(shot.cam==='int')?'tienda':'calle';
-    const r=await fetch('https://pixer-eleven.csilvasantin.workers.dev/stock/publish',{
+    const r=await fetch('https://api.admira.store/stock/publish',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({ type:'image', motor:'nano-banana', mime:m[1], base64:m[2],
         title:'Audiencia '+camTag+' · '+(shot.hhmm||''),
@@ -12080,7 +12082,7 @@ window.mupiCamOpenGallery=mupiCamOpenGallery; window.mupiCamCloseGallery=mupiCam
 // (shopLayout) + staff + zonas. Canal compartido: worker pixer-eleven
 // /layout/* (KV). El gemelo PUBLICA su distribución actual y APLICA una de la
 // librería; pixeria.com/assets hace lo mismo → back-and-forth. (Carlos 2026-06-11)
-function distroBase(){ try{ return window.LAYOUT_BASE || PIXERIA_STOCK_BASE; }catch(_){ return 'https://pixer-eleven.csilvasantin.workers.dev'; } }
+function distroBase(){ try{ return window.LAYOUT_BASE || PIXERIA_STOCK_BASE; }catch(_){ return 'https://api.admira.store'; } }
 function distroCleanFurniture(){
   return (typeof shopLayout!=='undefined'?shopLayout:[]||[]).map(it=>{
     const o={ id:it.id, type:it.type, col:it.col, row:it.row, sx:it.sx||1, sy:it.sy||1 };
@@ -17433,7 +17435,7 @@ function openNetworkView(){
   state = S.NETWORK; netSel = 0;
   if(!Array.isArray(window.STORE_LIST) || !window.STORE_LIST.length){
     netLoading = true;
-    fetch('https://pixer-eleven.csilvasantin.workers.dev/da/locations',{cache:'no-store'})
+    fetch('https://api.admira.store/da/locations',{cache:'no-store'})
       .then(rs=>rs.json()).then(d=>{ window.STORE_LIST=(d&&Array.isArray(d.locations))?d.locations:[]; netLoading=false; netSel=0; })
       .catch(()=>{ netLoading=false; });
   }
@@ -19510,7 +19512,8 @@ function mhWallTick(force){
   p.style.right='auto'; p.style.bottom='auto'; p.style.width=Math.round(w)+'px';
 }
 setInterval(function(){ try{ mhWallTick(); }catch(_){} }, 150);
-window.MH_SAY_URL = window.MH_SAY_URL || 'https://omnipublicity-api.csilvasantin.workers.dev/metahuman/say';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+window.MH_SAY_URL = window.MH_SAY_URL || 'https://brain.digitalavatar.ai/metahuman/say';
 window.MH_ROOM = window.MH_ROOM || 'xtanco';
 function mhSayToFace(text){
   try{
@@ -19761,7 +19764,7 @@ async function askMetahuman(text){
 // A diferencia del Grok-proxy (solo texto), ESTE además devuelve y reproduce la VOZ.
 const AVATAR3D_CFG=(typeof RUNTIME_CONFIG!=='undefined'&&RUNTIME_CONFIG.avatar3d&&typeof RUNTIME_CONFIG.avatar3d==='object')?RUNTIME_CONFIG.avatar3d:{};
 const AVATAR3D={
-  url:(typeof AVATAR3D_CFG.url==='string'&&AVATAR3D_CFG.url)?AVATAR3D_CFG.url.replace(/\/+$/,''):'https://pixer-eleven.csilvasantin.workers.dev/da',
+  url:(typeof AVATAR3D_CFG.url==='string'&&AVATAR3D_CFG.url)?AVATAR3D_CFG.url.replace(/\/+$/,''):'https://api.admira.store/da',
   loc:(typeof AVATAR3D_CFG.loc==='string'&&AVATAR3D_CFG.loc)?AVATAR3D_CFG.loc:'',
   totemUrl:(typeof AVATAR3D_CFG.totemUrl==='string'&&AVATAR3D_CFG.totemUrl)?AVATAR3D_CFG.totemUrl:'https://digitalavatar.ai/best.html?kiosk=1',
 };
@@ -19914,7 +19917,8 @@ function setAdmiraTvCommand(arg){
 //     panel se queda vigilando /signage/now hasta verla EN ANTENA y lo anuncia.
 // Motor: el mismo que usa el compositor de pixeria.com/tiktok — POST /xai/video
 // (grok-imagine-video, 9:16) → polling → POST /stock/publish.
-const PIXER_API='https://pixer-eleven.csilvasantin.workers.dev';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const PIXER_API='https://api.admira.store';
 const TIKTOK={ on:false, t0:0, phase:'', log:[], asset:null, tick:0, watch:0, sim:false, done:false, estMs:150000, run:0, pend:null, auto:false };
 function tiktokEl(){
   let p=document.getElementById('tiktokPanel');
@@ -21376,14 +21380,14 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
 // Se usan en el gestor de turnos y en el cross-sell de la pared. Carga perezosa
 // con CORS (Stock devuelve ACAO:* → no contamina el canvas para los recortes MUPI).
 const PROD_IMG_URLS=[
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456721736-xh2wdf', // 0 Tabaco
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456736385-ffnzsv', // 1 Vapeadores
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456752716-ykstvn', // 2 Lotería
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456770044-55bsze', // 3 Prensa
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456787273-o3aiq5', // 4 Chuches
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456804126-z6nveh', // 5 Recarga
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456817146-fyprdp', // 6 Premium
-  'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781456830612-cxn4rl', // 7 Accesorios
+  'https://api.admira.store/stock/asset/1781456721736-xh2wdf', // 0 Tabaco
+  'https://api.admira.store/stock/asset/1781456736385-ffnzsv', // 1 Vapeadores
+  'https://api.admira.store/stock/asset/1781456752716-ykstvn', // 2 Lotería
+  'https://api.admira.store/stock/asset/1781456770044-55bsze', // 3 Prensa
+  'https://api.admira.store/stock/asset/1781456787273-o3aiq5', // 4 Chuches
+  'https://api.admira.store/stock/asset/1781456804126-z6nveh', // 5 Recarga
+  'https://api.admira.store/stock/asset/1781456817146-fyprdp', // 6 Premium
+  'https://api.admira.store/stock/asset/1781456830612-cxn4rl', // 7 Accesorios
 ];
 const PROD_IMG=[];
 function prodImg(idx){
@@ -21394,13 +21398,13 @@ function prodImg(idx){
 }
 // ── Publi exterior SEGMENTADA (género × edad) con creatividades PixerIA ──
 const AD_IMG_URLS={
-  perfume_hombre:'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781457584646-kwjbkt',
-  perfume_mujer :'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781457601753-gw2e8c',
-  nino          :'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781458926417-hhd549',
-  joven_m       :'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781458950325-69g2jr',
-  joven_f       :'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781458968110-br2vg8',
-  senior_m      :'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781458987495-f5x4bx',
-  senior_f      :'https://pixer-eleven.csilvasantin.workers.dev/stock/asset/1781459005560-xpanl8',
+  perfume_hombre:'https://api.admira.store/stock/asset/1781457584646-kwjbkt',
+  perfume_mujer :'https://api.admira.store/stock/asset/1781457601753-gw2e8c',
+  nino          :'https://api.admira.store/stock/asset/1781458926417-hhd549',
+  joven_m       :'https://api.admira.store/stock/asset/1781458950325-69g2jr',
+  joven_f       :'https://api.admira.store/stock/asset/1781458968110-br2vg8',
+  senior_m      :'https://api.admira.store/stock/asset/1781458987495-f5x4bx',
+  senior_f      :'https://api.admira.store/stock/asset/1781459005560-xpanl8',
 };
 const AD_IMG={};
 function adImg(id){ if(!id||!AD_IMG_URLS[id]) return null; let im=AD_IMG[id]; if(!im){ im=new Image(); im.crossOrigin='anonymous'; im.src=AD_IMG_URLS[id]; AD_IMG[id]=im; return null; } return (im.complete&&im.naturalWidth>0)?im:null; }
@@ -22517,7 +22521,8 @@ const CUSTOM_IMG_CACHE=Object.create(null);   // url -> {img, loaded, error}
 // Catálogo de elementos en la nube (Pixeria → Stock del pixer-worker, R2+KV).
 // Los elementos de los Xpacios se crean en pixeria.com y se publican como
 // type 'furni'; el juego los lista y coloca como muebles 'custom'.
-const PIXERIA_STOCK_BASE='https://pixer-eleven.csilvasantin.workers.dev';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const PIXERIA_STOCK_BASE='https://api.admira.store';
 let IMPORT_CATALOG=[];                          // último /stock/list?type=furni
 async function fetchPixeriaCatalog(typeFilter){
   const t=typeFilter||'furni';
@@ -27923,7 +27928,8 @@ window.xtAPI = (function(){
       //   /targetPublicity off     → desactiva   ·   /targetPublicity (solo) = toggle
       if(['targetpublicity','targetpubliticy','targetpub'].includes(cmd)){
         const TP=(window.__TARGETPUB=window.__TARGETPUB||{on:false,mode:'aforo',timer:null,lastSig:'',gender:'F',lastCreative:null});
-        const WORKER='https://pixer-eleven.csilvasantin.workers.dev';
+        // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+        const WORKER='https://api.admira.store';
         const a=String(arg||'').trim().toLowerCase();
 
         const stopTP=(silent)=>{
@@ -28990,7 +28996,7 @@ window.xtAPI = (function(){
     if(!d) return 'Uso: Admira crea imagen <descripci\u00f3n>  (o /creaimagen <descripci\u00f3n>)';
     window.ADMIRA_CREA = { desc: d.slice(0,60), t0: Date.now(), eta: 18000, img: null, until: 0 };
     try{
-      const base = (typeof GROK!=='undefined' && GROK && GROK.proxyUrl) ? GROK.proxyUrl : 'https://admira-grok-proxy.csilvasantin.workers.dev';
+      const base = (typeof GROK!=='undefined' && GROK && GROK.proxyUrl) ? GROK.proxyUrl : 'https://grok.admira.store';
       const r = await fetch(base + '/grok/image', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: 'Creatividad de publicidad para pantalla de tienda (digital signage), colores vivos, sin texto peque\u00f1o: ' + d })
@@ -30401,7 +30407,7 @@ window.xtAPI = (function(){
     const name=parts.join(' ').slice(0,40);
     if(!name) return 'Falta el nombre. Uso: /nuevoMiembro <nombre> [rol]';
     try{
-      const res=await fetch('https://omnipublicity-api.csilvasantin.workers.dev/location/'+encodeURIComponent(cfg.id)+'/employee',{
+      const res=await fetch('https://brain.digitalavatar.ai/location/'+encodeURIComponent(cfg.id)+'/employee',{
         method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,role})
       });
       const j=await res.json().catch(()=>({}));
@@ -30438,7 +30444,7 @@ window.xtAPI = (function(){
     if(G&&G.staff) idx=G.staff.findIndex(s=>s&&!s.fired&&String(s.name||'').toLowerCase()===name.toLowerCase());
     if(idx===0) return '⚠️ No se puede echar al cajero principal ('+(G.staff[0].name||'')+'), es el control del jugador.';
     try{
-      const res=await fetch('https://omnipublicity-api.csilvasantin.workers.dev/location/'+encodeURIComponent(cfg.id)+'/employee/remove',{
+      const res=await fetch('https://brain.digitalavatar.ai/location/'+encodeURIComponent(cfg.id)+'/employee/remove',{
         method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})
       });
       const j=await res.json().catch(()=>({}));
@@ -32205,9 +32211,11 @@ window.xtAPI = (function(){
 <!-- Pixer signage: la Xtore se anuncia al worker, polea el feed y muestra el último item en overlay -->
 <script>
 (function(){
-  const PIXER_WORKER='https://pixer-eleven.csilvasantin.workers.dev';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  const PIXER_WORKER='https://api.admira.store';
   const REMOTE_API='https://api.admira.store';
-  const REMOTE_PLAYLIST_API='https://omnipublicity-api.csilvasantin.workers.dev/control/playlist';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  const REMOTE_PLAYLIST_API='https://brain.digitalavatar.ai/control/playlist';
   const REMOTE_CACHE_NAME='xtore-remote-v1';
   const KEY='pixer-xtore-screen-id';
   // XTANCO INICIAL: el gemelo standalone (sin ?loc) es el demo público canónico
@@ -34279,7 +34287,8 @@ window.xtAPI = (function(){
      Bloque autocontenido y reversible. NO toca el pipeline de rotación existente. -->
 <script id="signageFeedScript">
 (function(){
-  var BASE='https://pixer-eleven.csilvasantin.workers.dev';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  var BASE='https://api.admira.store';
   var SCREENS=[
     {id:'ds1',tag:'XT-GRACIA-P1'},{id:'ds2',tag:'XT-GRACIA-P2'},
     {id:'escaparate',tag:'XT-GRACIA-ESC'},{id:'metahuman',tag:'XT-GRACIA-MH'}
@@ -34319,7 +34328,8 @@ window.xtAPI = (function(){
 <script id="admiraTvChannelScript">
 (function(){
   if(window.__ADMIRATV_CHANNEL) return; window.__ADMIRATV_CHANNEL='2';
-  var STOCK='https://pub-bf043a4daa3b43b7a0b769617729d074.r2.dev/stock/index.json';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  var STOCK='https://stock.admira.store/stock/index.json';
   // surfaceId → tag de la pantalla (en minúsculas). Cada pantalla emite únicamente
   // el contenido del Stock etiquetado con SU tag. Nada de fallback.
   var PANELS=[

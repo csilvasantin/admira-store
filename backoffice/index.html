@@ -358,7 +358,8 @@
 <div id="toast"></div>
 
 <script>
-const API = 'https://admira-loyalty.csilvasantin.workers.dev';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const API = 'https://loyalty.admira.store';
 const TOKEN_KEY = 'loyalty_admin_token';
 const LANG_KEY = 'loyalty_admin_lang';
 const $ = s => document.querySelector(s);
@@ -783,7 +784,7 @@ async function loadSettings(){
   if(!RULES){ try{ RULES=(await api('/admin/config')).rules; CURRENCY=RULES.currency||'EUR'; }catch{} }
   if(RULES) $('#joinCode').value = RULES.joinCode||'';
   $('#aboutBox').innerHTML = [
-    ['Backend','admira-loyalty.csilvasantin.workers.dev'],
+    ['Backend','loyalty.admira.store'],
     ['Club', RULES?RULES.clubName:'—'],
     [t('rew.stamps'), RULES?RULES.stampsForFree:'—'],
     ['Currency', RULES?RULES.currency:'—'],

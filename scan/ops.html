@@ -108,7 +108,8 @@ html,body{margin:0; height:100%; background:var(--bg); color:var(--txt);
 </div>
 
 <script>
-const API='https://admira-telegram.csilvasantin.workers.dev';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const API='https://bot.yokup.com';
 const $=s=>document.querySelector(s);
 $('#tg-experto').onclick=()=>{ $('#frame').classList.toggle('hide-experto');
   $('#tg-experto').classList.toggle('on'); };

@@ -626,7 +626,8 @@ addEventListener("keydown",e=>{ if(mode!=="edit")return;
 /* ---------- integración con la flota Admira (emisión real) ----------
    La página actúa como nodo de señalización: reporta presencia, emisión
    y proof-of-play a los workers reales (endpoints abiertos, CORS OK). */
-const FLEET = { xpl:"https://xpl.admira.store", pix:"https://pixer-eleven.csilvasantin.workers.dev",
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const FLEET = { xpl:"https://xpl.admira.store", pix:"https://api.admira.store",
   circuit:"xtanco-valencia", loc:"xtanco-valencia", instance:"xpacio-"+Math.floor(performance.now()) };
 const sid = id => "xtanco-valencia-"+id.toLowerCase();
 const todayStr = ()=>{ const d=new Date(); return ""+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"); };

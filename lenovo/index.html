@@ -888,7 +888,8 @@ function applyLanguage(lang) {
 // Same GET /locations that feeds the admira.app map and that the
 // OmniPublicity backoffice publishes to. Register a twin there → it
 // shows up here. Train-proof: single fetch, 7s timeout, no retry loop.
-const GEMELOS_API = 'https://omnipublicity-api.csilvasantin.workers.dev/locations';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const GEMELOS_API = 'https://brain.digitalavatar.ai/locations';
 const SURF_ICON = { pantalla:'📺', escaparate:'🪟', mostrador:'🧾', vending:'🥤', pwa:'📱' };
 let gemelosData = null; // null = loading · 'error' · []/[…] = data
 
@@ -961,7 +962,8 @@ try {
 }
 
 
-const VISIT_NOTIFY_ENDPOINT = 'https://admira-telegram-bridge.csilvasantin.workers.dev/visits/xpaceos';
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const VISIT_NOTIFY_ENDPOINT = 'https://bridge.admira.store/visits/xpaceos';
 
 function notifyXpaceVisit() {
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
@@ -1014,7 +1016,8 @@ window.addEventListener('pagehide', () => window.clearTimeout(nextShootingStarTi
 
 // Métricas live — silently fail si los workers están dormidos.
 (async () => {
-  const PIXER = 'https://pixer-eleven.csilvasantin.workers.dev';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  const PIXER = 'https://api.admira.store';
   const SUNO  = 'https://macmini.tail48b61c.ts.net/suno';
 
   // Pantallas + feed

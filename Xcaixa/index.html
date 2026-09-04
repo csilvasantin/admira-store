@@ -453,7 +453,8 @@ if(escena==="punta")setRush(true);
    la red — 8,9 MB — y no es aceptable en una demostración en vivo. Con ?live=1 se
    contrasta contra el worker para probar que el catálogo está de verdad detrás.
    Regla del método: si no hay dato, se dice «sin catálogo»; nunca se inventa. */
-const OMNIP_API="https://omnipublicity-api.csilvasantin.workers.dev";
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const OMNIP_API="https://brain.digitalavatar.ai";
 const LOC_DEFECTO="caixabank-0008-placa-catalunya";
 let sucursal=null, catSnapshot=null, catOrigen="sin catálogo";
 

@@ -1000,7 +1000,8 @@ function updateWalk(dt){
    MODO DECORAR — editor 3D: coloca pósters en las paredes
    ============================================================ */
 const XPACIO_ID = (new URLSearchParams(location.search).get('xpacio')||'xtanco-bcn-gracia').replace(/[^a-z0-9_-]/gi,'').slice(0,48);
-const DECOR_BASE = "https://pixer-eleven.csilvasantin.workers.dev";   // decor compartida (backend)
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const DECOR_BASE = "https://api.admira.store";   // decor compartida (backend)
 const POSTER_KEY="decor:"+XPACIO_ID;                                   // fallback local
 const posters=[]; let selPoster=null, draggingPoster=null;
 const objects=[]; let selObj=null, draggingObj=null;                  // mobiliario colocable (editor de objetos)
@@ -1450,7 +1451,8 @@ addEventListener("keydown",e=>{ if(mode==="tour"&&e.code==="Escape") exitTour();
 /* ---------- integración con la flota Admira (emisión real) ----------
    La página actúa como nodo de señalización: reporta presencia, emisión
    y proof-of-play a los workers reales (endpoints abiertos, CORS OK). */
-const FLEET = { xpl:"https://xpl.admira.store", pix:"https://pixer-eleven.csilvasantin.workers.dev",
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const FLEET = { xpl:"https://xpl.admira.store", pix:"https://api.admira.store",
   circuit:"xtanco-bcn-gracia", loc:"xtanco-bcn-gracia", instance:"xpacio-"+Math.floor(performance.now()) };
 const sid = id => "xtanco-bcn-gracia-"+id.toLowerCase();
 const todayStr = ()=>{ const d=new Date(); return ""+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"); };

@@ -11,7 +11,8 @@
   'use strict';
   if (window.__ADMIRA_GATE) return; window.__ADMIRA_GATE = true;
 
-  var GATE = 'https://admira-gate.csilvasantin.workers.dev';
+  // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+  var GATE = 'https://gate.admira.store';
   var CLIENT_ID = '861856772040-quq6ut76k4mqj3fdq87h6g6caht3nm4l.apps.googleusercontent.com';
   var LS = 'admira_gate_session';
   var SITE = location.hostname.replace(/^www\./, '') || 'admira';

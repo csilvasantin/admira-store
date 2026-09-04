@@ -726,7 +726,8 @@ setStatus(navigator.gpu ? "Listo · WebGPU" : "Listo · WASM");
 //  muestra la audiencia/atribución que mide el edge (/signage/audience).
 //  Cierra el relato "twin = realidad" + el bucle de medición agéntico.
 // ════════════════════════════════════════════════════════════════════
-const WORKER = "https://pixer-eleven.csilvasantin.workers.dev";
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const WORKER = "https://api.admira.store";
 const LIVE_KEY = "twin_live_screens_v1";
 const liveBtn = document.getElementById("liveBtn");
 const livePanel = document.getElementById("livePanel");
