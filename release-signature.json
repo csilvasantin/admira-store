@@ -1,6 +1,6 @@
 {
-  "version": "v.02.09.2026.r1.17:18",
-  "deployer": "OraculoMini",
+  "version": "v.04.09.2026.r1.22:29",
+  "deployer": "MorfeoMacMini",
   "machine": "MacMini",
-  "signature": "OraculoMini · MacMini"
+  "signature": "MorfeoMacMini · MacMini"
 }
