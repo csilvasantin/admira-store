@@ -9,7 +9,7 @@ const [entry, app, sitemap] = await Promise.all([
 
 assert.match(entry, /<html lang="en">/);
 assert.match(entry, /canonical" href="https:\/\/www\.xpaceos\.com\/nvidia\/"/);
-assert.match(entry, /\/admira-xp\/\?lang=en&amp;langlock=1&amp;build=20260902-1245/);
+assert.match(entry, /\/admira-xp\/\?lang=en&amp;langlock=1&amp;build=20260904-2244/);
 assert.doesNotMatch(entry, /play=shoptalk|nvidia=1/);
 assert.match(app, /window\.XPACE_LANG_OVERRIDE/);
 assert.match(app, /window\.XPACE_LANG_LOCKED/);

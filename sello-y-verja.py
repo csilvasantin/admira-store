@@ -51,5 +51,31 @@ bloque = (
     f'       sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->\n'
 )
 s = s[:ancla.end()] + bloque + s[ancla.end():]
+# — el castellano (Carlos, 5-sep-2026): admira.store es el gemelo EN CASTELLANO de
+#   xpaceos.com. El origen arranca en inglés (Shoptalk) y guarda el idioma elegido en
+#   localStorage; aquí el HTML ya sale en castellano (html lang, título, descripción
+#   del diccionario I18N.es) y el arranque por defecto es 'es'. Quien elija inglés en
+#   admira.store lo conserva, igual que en el origen.
+s = re.sub(r'<html lang="en">', '<html lang="es">', s, count=1)
+s = s.replace("applyLanguage(localStorage.getItem('xpaceosLang') || 'en');", "applyLanguage(localStorage.getItem('xpaceosLang') || 'es');")
+s = re.sub(r"applyLanguage\('en'\);", "applyLanguage('es');", s)
+es_block = re.search(r"\n\s*es:\s*\{(.*?)\n\s*\}", s, re.S)
+titulo = descripcion = None
+if es_block:
+    t = re.search(r"\btitle:\s*(['\"`])(.*?)\1\s*,", es_block.group(1))
+    d = re.search(r"\bdescription:\s*(['\"`])(.*?)\1\s*,", es_block.group(1))
+    if t:
+        titulo = t.group(2).replace("\\'", "'")
+        s = re.sub(r'<title>[^<]*</title>', lambda m: '<title>' + titulo + '</title>', s, count=1)
+    if d:
+        descripcion = d.group(2).replace("\\'", "'").replace('"', '&quot;')
+        s = re.sub(r'(<meta name="description" content=")[^"]*(")', lambda m: m.group(1) + descripcion + m.group(2), s, count=1)
+        s = re.sub(r'(<meta property="og:description" content=")[^"]*(")', lambda m: m.group(1) + descripcion + m.group(2), s, count=1)
+    if titulo:
+        s = re.sub(r'(<meta property="og:title" content=")[^"]*(")', lambda m: m.group(1) + titulo.replace('"', '&quot;') + m.group(2), s, count=1)
+s = re.sub(r'(<meta property="og:locale" content=")[^"]+(")', r'\1es_ES\2', s, count=1)
+s = re.sub(r'<link rel="canonical" href="[^"]+">', '<link rel="canonical" href="https://www.admira.store/">', s, count=1)
+s = re.sub(r'(<meta property="og:url" content=")[^"]+(")', r'\1https://www.admira.store/\2', s, count=1)
+castellano = "html lang=es · título ES" if titulo else "html lang=es · título sin diccionario"
 open(DESTINO, "w", encoding="utf-8").write(s)
-print(f"  sello {SELLO} · espejo de xpaceos@{ORIGEN_SHA} · verja {verja}")
+print(f"  sello {SELLO} · espejo de xpaceos@{ORIGEN_SHA} · verja {verja} · {castellano}")

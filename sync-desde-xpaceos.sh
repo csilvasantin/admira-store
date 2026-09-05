@@ -49,15 +49,11 @@ rsync -a --delete \
   --exclude '.gitignore' \
   "$ORIGEN_LIMPIO"/ ./
 
-# Carlos decidió que la portada de admira.store sea la misma experiencia que
-# xpaceos.com/nvidia. Conservamos todos los assets del espejo y promovemos el
-# entrypoint NVIDIA a la raíz, con metadatos del dominio que realmente se sirve.
-cp nvidia/index.html index.html
-sed -i.bak \
-  -e 's#https://www\.xpaceos\.com/nvidia/#https://www.admira.store/#g' \
-  -e 's#https://www\.xpaceos\.com/assets/#https://www.admira.store/assets/#g' \
-  index.html
-rm index.html.bak
+# La portada de admira.store ES la portada de xpaceos.com, en castellano (Carlos,
+# 5-sep-2026: «xpaceos.com y su gemelo digital en castellano que es admira.store»).
+# Hasta hoy este paso promovía la experiencia NVIDIA en inglés a la raíz; sigue
+# viva en /nvidia/, pero la raíz vuelve a ser el gemelo. El castellano lo fija
+# sello-y-verja.py sobre el index.html recién espejado.
 
 # Sello canónico (norma 07) + reposición de la verja, en un solo paso.
 SELLO="v.$(date +%d.%m.%Y).r1.$(date +%H:%M)"

@@ -1,38 +1,1680 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="admiranext-version" content="v.04.09.2026.r1.22:29"/>
-  <!-- Espejo de www.xpaceos.com (0695bae), sincronizado con
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="admiranext-version" content="v.05.09.2026.r1.06:24"/>
+  <!-- Espejo de www.xpaceos.com (3a74d5f), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
-  <meta name="theme-color" content="#05080d">
-  <meta name="description" content="XpaceOS running on NVIDIA: an interactive digital twin for physical retail, presented entirely in English.">
-  <meta property="og:title" content="XpaceOS × NVIDIA — Live Digital Twin">
-  <meta property="og:description" content="Operate screens, audience, staff and retail experiences from one live digital twin.">
-  <meta property="og:url" content="https://www.admira.store/">
-  <meta property="og:image" content="https://www.admira.store/assets/xpaceos-logo-card.jpg">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://www.admira.store/">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <title>XpaceOS × NVIDIA — Live Digital Twin</title>
-  <style>
-    *{box-sizing:border-box}
-    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#05080d}
-    iframe{display:block;width:100%;height:100%;border:0;background:#05080d}
-    .loading{position:fixed;inset:0;display:grid;place-items:center;color:#76b900;background:#05080d;font:700 12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em;text-transform:uppercase;z-index:0}
-    iframe{position:relative;z-index:1}
-  </style>
+<!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
+<link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<!-- Dominios propios: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633). -->
+<link rel="dns-prefetch" href="https://brain.digitalavatar.ai">
+<link rel="dns-prefetch" href="https://api.admira.store">
+<link rel="dns-prefetch" href="https://admira.tv">
+<link rel="dns-prefetch" href="https://stock.admira.store">
+<title>XpaceOS — El sistema operativo del comercio físico · Demostrado en vivo en Shoptalk Europe 2026</title>
+<meta name="description" content="XpaceOS de ADmiraNeXT convierte cada tienda y cada stand en un medio publicitario inteligente. Tres capas integradas — PixerIA (creación IA), Admira XP (gemelo digital) y OmniPublicity (mercado RTB) — corriendo sobre Lenovo edge + Nvidia GPU. Demostrado en vivo en Shoptalk Europe, Fira Barcelona, 9-11 junio 2026.">
+<meta property="og:title" content="XpaceOS — El sistema operativo del comercio físico · Demostrado en vivo en Shoptalk Europe 2026">
+<meta property="og:description" content="XpaceOS de ADmiraNeXT convierte cada tienda y cada stand en un medio publicitario inteligente. Tres capas integradas — PixerIA (creación IA), Admira XP (gemelo digital) y OmniPublicity (mercado RTB) — corriendo sobre Lenovo edge + Nvidia GPU. Demostrado en vivo en Shoptalk Europe, Fira Barcelona, 9-11 junio 2026.">
+<meta property="og:url" content="https://www.admira.store/">
+<meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<meta property="og:image:alt" content="XpaceOS — the operating system for physical retail">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="XpaceOS">
+<meta property="og:locale" content="es_ES">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="XpaceOS — Shown live at Shoptalk Europe 2026">
+<meta name="twitter:description" content="The operating system for physical retail. Three integrated layers on Lenovo + Nvidia edge. Shown at Shoptalk Europe, Fira Barcelona.">
+<meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://www.admira.store/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<meta name="theme-color" content="#02080d">
+<link rel="preload" as="image" href="/assets/xpaceos-logo-transparent.webp" type="image/webp">
+<link rel="preload" as="image" href="/assets/xpaceos-robots.webp" type="image/webp">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/tokens.css">
+<link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/nav.css">
+<link rel="stylesheet" href="/lead-form.css">
+<script defer src="/lead-form.js"></script>
+
+<!-- Google Tag Manager -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied' });
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KD696XW');
+</script>
+<!-- End Google Tag Manager -->
+
+<style>
+  :root{
+    --bg:#02080d;--ink:#dff8ff;--mut:#75aab9;--brand:#78f3ff;--accent:#ffd866;
+    --good:#88ffaa;--warn:#ff8866;--card:#0a1620;--card2:#0d1c28;
+    --line:rgba(120,243,255,.18);
+    --lenovo:#E2231A;--nvidia:#76B900
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,sans-serif;line-height:1.55}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .skip-link{position:fixed;top:10px;left:10px;z-index:200000;transform:translateY(-160%);padding:10px 14px;border-radius:6px;background:var(--brand);color:#001620;font-weight:700}
+  .skip-link:focus{transform:translateY(0);outline:3px solid var(--accent);outline-offset:2px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  header{padding:18px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(2,8,13,.92);backdrop-filter:blur(8px);z-index:10}
+  header .wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .brand-logo{display:inline-flex;align-items:center;width:150px;min-height:34px;text-decoration:none}
+  .brand-logo:hover{text-decoration:none;filter:brightness(1.08)}
+  .brand-logo img{display:block;width:100%;height:auto}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  nav{margin-left:auto;display:flex;gap:18px;font-size:13px;flex-wrap:wrap}
+  nav a{color:var(--mut)}
+  nav a:hover{color:var(--ink)}
+  nav .live{color:var(--warn);font-family:monospace;font-size:11px;letter-spacing:.12em}
+  nav .live::before{content:"●";color:var(--warn);margin-right:4px;animation:pulse 1.5s ease-in-out infinite}
+  .language-switcher{display:inline-flex;align-items:center;margin-left:4px;border-left:1px solid var(--line);padding-left:16px}
+  .lang-toggle{appearance:none;border:1px solid var(--line);background:rgba(120,243,255,.06);color:var(--brand);font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:6px;cursor:pointer;text-decoration:none;transition:border-color .15s,background .15s,color .15s}
+  .lang-toggle:hover{border-color:rgba(120,243,255,.55);background:rgba(120,243,255,.12);color:var(--ink);text-decoration:none}
+  .nav-contact{margin-left:14px;padding:5px 14px;border:1px solid var(--line);border-radius:6px;color:var(--ink);font-family:monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;transition:border-color .15s,background .15s}
+  .nav-contact:hover{border-color:rgba(120,243,255,.55);background:rgba(120,243,255,.06);text-decoration:none}
+
+  /* Admira · Xperience band — saltar entre soluciones del grupo */
+  /* Estilo unificado proviene del design system (.admira-nav-static) */
+
+  .hero{position:relative;overflow:hidden;padding:28px 0 82px;background:#02080d}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,8,13,.98) 0%,rgba(2,8,13,.88) 42%,rgba(2,8,13,.64) 100%),radial-gradient(ellipse at 18% 0%,rgba(120,243,255,.16),transparent 52%),radial-gradient(ellipse at 68% 36%,rgba(255,199,30,.08),transparent 40%),radial-gradient(ellipse at 92% 78%,rgba(34,177,76,.08),transparent 46%);pointer-events:none}
+  .starfield{position:absolute;inset:-22%;overflow:hidden;pointer-events:none;opacity:.74;transform:rotate(-8deg)}
+  .starfield::before,.starfield::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.64) 0 1px,transparent 1.7px),radial-gradient(circle,rgba(120,243,255,.34) 0 1px,transparent 1.9px),radial-gradient(circle,rgba(255,216,102,.28) 0 1px,transparent 2px);background-size:260px 180px,390px 270px,610px 430px;background-position:0 0,110px 70px,240px 120px;filter:drop-shadow(0 0 6px rgba(120,243,255,.24));animation:earthStarDrift 78s linear infinite,starBreath 8s ease-in-out infinite}
+  .starfield::after{opacity:.45;background-size:180px 130px,330px 220px,520px 360px;background-position:80px 40px,10px 160px,220px 90px;animation-duration:116s,11s;animation-direction:normal,alternate}
+  .shooting-star{position:absolute;left:var(--x,72%);top:var(--y,18%);width:clamp(90px,16vw,180px);height:1px;opacity:0;transform:rotate(18deg);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.92),rgba(120,243,255,.16));filter:drop-shadow(0 0 8px rgba(120,243,255,.75));animation:shootingStar var(--duration,1.9s) ease-out forwards}
+  .shooting-star::after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 0 12px rgba(120,243,255,.9)}
+  .hero .wrap{position:relative;z-index:1}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(360px,.72fr);gap:44px;align-items:center}
+  .hero-copy{max-width:760px}
+  .hero h1{font-size:60px;line-height:1.05;margin:0 0 22px;letter-spacing:-.02em;font-weight:800}
+  .hero h1 .grad{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lede{font-size:19px;color:var(--mut);max-width:760px;margin:0 0 28px}
+  .hero-visual{position:relative;margin:0;min-height:390px;border:1px solid rgba(120,243,255,.24);border-radius:18px;overflow:hidden;background:#02080d;box-shadow:0 28px 80px rgba(0,0,0,.36)}
+  .hero-visual img{display:block;width:100%;height:100%;min-height:390px;object-fit:cover;object-position:center;filter:saturate(.9) contrast(1.06)}
+  .hero-visual::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,8,13,.05),rgba(2,8,13,.52)),radial-gradient(circle at 18% 12%,rgba(120,243,255,.24),transparent 34%);pointer-events:none}
+  .hero-visual::after{content:"AI media · Digital Twin · Live bidding";position:absolute;left:18px;right:18px;bottom:18px;padding:11px 14px;border:1px solid rgba(120,243,255,.32);border-radius:999px;background:rgba(2,8,13,.58);backdrop-filter:blur(10px);color:#e8fbff;font-family:monospace;font-size:11px;letter-spacing:.12em;text-align:center;text-transform:uppercase}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-family:monospace;font-size:11px;color:var(--accent);letter-spacing:.18em;border:1px solid rgba(255,216,102,.45);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .cta{display:inline-flex;gap:10px;align-items:center;background:var(--brand);color:#001620;padding:12px 22px;border:0;border-radius:8px;font-family:inherit;font-weight:700;font-size:14px;line-height:1.55;letter-spacing:.04em;cursor:pointer}
+  .cta.secondary{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+  .cta.event{background:linear-gradient(90deg,var(--lenovo),var(--nvidia));color:#fff;border:0}
+
+  section{padding:74px 0;border-top:1px solid var(--line)}
+  section h2{font-size:32px;margin:0 0 18px;letter-spacing:-.01em}
+  section h2 .num{color:var(--brand);font-family:monospace;font-size:18px;margin-right:10px;vertical-align:middle}
+  section .lede{color:var(--mut);font-size:16px;max-width:780px;margin:0 0 32px}
+
+  /* Booth section */
+  #booth{background:linear-gradient(180deg,transparent,rgba(226,35,26,.04),rgba(118,185,0,.04),transparent)}
+  .booth-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:start}
+  .booth-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px}
+  .booth-card h3{margin:0 0 10px;font-size:22px}
+  .booth-card .partners{display:flex;gap:14px;align-items:center;margin:14px 0 18px;flex-wrap:wrap}
+  .booth-card .partners .p{font-family:monospace;font-size:11px;letter-spacing:.16em;padding:8px 14px;border-radius:6px;font-weight:bold}
+  .booth-card .partners .p.lenovo{background:rgba(226,35,26,.12);color:var(--lenovo);border:1px solid rgba(226,35,26,.4)}
+  .booth-card .partners .p.nvidia{background:rgba(118,185,0,.12);color:var(--nvidia);border:1px solid rgba(118,185,0,.4)}
+  .booth-card .partners .x{color:var(--mut);font-size:12px}
+  .booth-card .when{font-family:monospace;font-size:13px;color:var(--accent);margin-bottom:8px}
+  .booth-card p{color:var(--mut);font-size:14px;margin:8px 0}
+  .booth-card ul{color:var(--mut);font-size:14px;padding-left:18px;margin:8px 0}
+  .booth-card ul li{margin-bottom:6px}
+  .booth-visual{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:30px;font-family:monospace;font-size:12px;color:var(--mut);min-height:300px;display:flex;flex-direction:column;justify-content:space-between}
+  .booth-visual .surface{padding:10px 12px;background:rgba(0,0,0,.3);border-left:2px solid var(--brand);margin-bottom:6px}
+  .booth-visual .surface b{color:var(--brand);display:block;letter-spacing:.06em;font-size:11px}
+  .booth-visual .surface span{color:var(--ink);font-size:13px}
+  .booth-visual .arrow{text-align:center;color:var(--accent);font-size:18px;margin:8px 0}
+
+  /* Platform showcase (Shoptalk demo · AdmiraNext) */
+  .platform-lockup{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 26px}
+  .platform-lockup .p{font-family:monospace;font-size:11px;letter-spacing:.16em;padding:8px 14px;border-radius:6px;font-weight:bold}
+  .platform-lockup .p.lenovo{background:rgba(226,35,26,.12);color:var(--lenovo);border:1px solid rgba(226,35,26,.4)}
+  .platform-lockup .p.nvidia{background:rgba(118,185,0,.12);color:var(--nvidia);border:1px solid rgba(118,185,0,.4)}
+  .platform-lockup .x{color:var(--mut);font-size:12px}
+  .platform-lockup .when{font-family:monospace;font-size:12px;color:var(--accent);margin-left:auto}
+  .layer .who.dom{font-style:normal;font-family:monospace;color:var(--brand);font-size:12px;letter-spacing:.04em}
+  .layer .who.dom .lbl{color:var(--mut);font-weight:normal;text-transform:uppercase;letter-spacing:.1em;font-size:10px}
+  .layer .who.dom a{color:var(--brand)}
+  .layer .who.dom.native{color:var(--mut)}
+  .layer.here{border-color:rgba(120,243,255,.5);box-shadow:0 0 0 1px rgba(120,243,255,.25) inset}
+  .layer.here .lkind{color:var(--brand)}
+  .platform-flow{margin:24px 0 0;font-family:monospace;font-size:13px;color:var(--mut);text-align:center;letter-spacing:.02em}
+  .platform-flow b{color:var(--ink)}
+
+  .layers{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .layers.suite{grid-template-columns:repeat(4,1fr);gap:16px}
+  .layer{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px;transition:transform .12s,border-color .12s;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+  .layer:hover{border-color:var(--brand);transform:translateY(-3px)}
+  .layer .lnum{position:absolute;top:14px;right:18px;font-family:monospace;font-size:48px;font-weight:800;color:rgba(120,243,255,.10)}
+  .layer .lkind{font-family:monospace;font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
+  .layer h3{margin:0;font-size:24px;color:var(--ink)}
+  .layer .who{font-size:13px;color:var(--mut);font-style:italic}
+  .layer p{margin:0;color:var(--mut);font-size:14px}
+  .layer ul{margin:0;padding:0 0 0 18px;color:var(--mut);font-size:13px}
+  .layer ul li{margin-bottom:4px}
+  .layer .more{margin-top:auto;font-size:13px;color:var(--brand);font-family:monospace;letter-spacing:.04em}
+  .deep{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:34px;margin-bottom:18px}
+  .deep h3{margin:0 0 6px;font-size:22px;color:var(--accent)}
+  .deep .who{font-size:13px;color:var(--mut);font-style:italic;margin-bottom:14px}
+  .deep p{color:var(--ink);font-size:15px}
+  .deep .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:22px 0;font-family:monospace;font-size:12px}
+  .deep .feats div{background:rgba(0,0,0,.3);border:1px solid var(--line);padding:12px 14px;border-radius:6px;color:var(--mut);line-height:1.5}
+  .deep .feats div b{color:var(--brand);display:block;letter-spacing:.05em;margin-bottom:2px}
+  .deep .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .deep .links a{font-family:monospace;font-size:12px;border:1px solid var(--line);padding:6px 12px;border-radius:6px;color:var(--brand)}
+  .deep .links a:hover{border-color:var(--brand);text-decoration:none}
+
+  /* Live twins catalog (fed from the shared OmniPublicity worker) */
+  .gm-live{margin-top:22px}
+  .gm-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  .gm-badge{display:inline-flex;align-items:center;gap:7px;font-family:monospace;font-size:11px;color:var(--good);letter-spacing:.14em;border:1px solid rgba(136,255,170,.4);padding:4px 10px;border-radius:999px;text-transform:uppercase}
+  .gm-dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:gmpulse 1.8s infinite}
+  @keyframes gmpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .gm-count{font-family:monospace;font-size:12px;color:var(--mut)}
+  .gm-sub{color:var(--mut);font-size:14px;margin:0 0 16px;max-width:760px}
+  .gm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:12px}
+  .gm-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:7px;transition:border-color .12s,transform .12s}
+  .gm-card:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .gm-card .nm{font-weight:700;font-size:15px;color:var(--ink)}
+  .gm-card .kd{font-family:monospace;font-size:10px;letter-spacing:.07em;color:var(--accent);text-transform:uppercase}
+  .gm-card .ad{font-size:12px;color:var(--mut);line-height:1.4}
+  .gm-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:8px}
+  .gm-chip{font-family:monospace;font-size:10px;color:var(--mut);border:1px solid var(--line);border-radius:4px;padding:2px 7px;display:inline-flex;gap:4px;align-items:center;letter-spacing:.03em}
+  .gm-chip.live{color:var(--good);border-color:rgba(136,255,170,.35)}
+  .gm-foot{margin-top:16px;font-size:13px;color:var(--mut);max-width:760px}
+
+  /* Pulso vivo de cada ficha de la suite — señal real, no adorno */
+  .layer .pulse{display:flex;align-items:center;gap:7px;font-family:monospace;font-size:11px;color:var(--good);letter-spacing:.03em;min-height:16px}
+  .layer .pulse .pv{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .layer .pulse.off{color:var(--mut)}
+  .layer .pulse.off .gm-dot{background:var(--mut);box-shadow:none;animation:none}
+
+  /* Dispatch log — qué recibe cada superficie del gemelo y si lo confirma */
+  .ds-rows{display:flex;flex-direction:column;gap:8px}
+  .ds-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+  .ds-row .sf{font-family:monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);min-width:132px;display:flex;align-items:center;gap:6px}
+  .ds-row .ti{flex:1;min-width:0;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ds-row .ti.idle{color:var(--mut);font-style:italic}
+  .ds-row .wh{font-family:monospace;font-size:10px;color:var(--mut);white-space:nowrap}
+  .ds-row .ak{font-family:monospace;font-size:10px;letter-spacing:.05em;border:1px solid var(--line);border-radius:4px;padding:2px 7px;white-space:nowrap;color:var(--mut)}
+  .ds-row .ak.ok{color:var(--good);border-color:rgba(136,255,170,.35)}
+  @media (max-width:640px){
+    .ds-row{flex-wrap:wrap;gap:7px}
+    .ds-row .sf{min-width:0}
+    .ds-row .ti{flex:1 1 100%;order:3;white-space:normal}
+  }
+
+  /* Live studio library (same public R2 index that pixeria.com/stock reads) */
+  .px-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+  .px-card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .12s,transform .12s;color:inherit}
+  .px-card:hover{border-color:var(--brand);transform:translateY(-2px);text-decoration:none}
+  .px-thumb{position:relative;aspect-ratio:16/9;background:#0b1016 center/cover no-repeat;display:flex;align-items:center;justify-content:center;gap:9px;border-bottom:1px solid var(--line);overflow:hidden}
+  .px-ico{font-size:24px;opacity:.62}
+  /* Sin miniatura (la mayoría del vídeo generado no la trae): el hueco se
+     resuelve con el mismo idioma visual que las capas — el número, grande. */
+  .px-num{font-family:monospace;font-size:34px;font-weight:800;color:rgba(120,243,255,.16);letter-spacing:-.02em}
+  .px-kind{position:absolute;left:7px;top:7px;font-family:monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--bg);background:var(--brand);border-radius:3px;padding:2px 6px;font-weight:700}
+  .px-body{padding:11px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .px-body .nm{font-size:13px;line-height:1.35;color:var(--ink);font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .px-body .mt{font-family:monospace;font-size:10px;color:var(--accent);letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .px-body .wh{font-family:monospace;font-size:10px;color:var(--mut);margin-top:auto;padding-top:4px}
+  .gm-foot b{color:var(--brand)}
+  .gm-state{font-family:monospace;font-size:12px;color:var(--mut);padding:18px 0;grid-column:1/-1}
+  .gm-state.err{color:var(--warn)}
+
+  /* Hardware partners panel */
+  .hw{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .hw .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;position:relative;overflow:hidden}
+  .hw .box.lenovo{border-color:rgba(226,35,26,.3)}
+  .hw .box.lenovo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--lenovo)}
+  .hw .box.nvidia{border-color:rgba(118,185,0,.3)}
+  .hw .box.nvidia::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--nvidia)}
+  .hw .box .who{font-family:monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+  .hw .box.lenovo .who{color:var(--lenovo)}
+  .hw .box.nvidia .who{color:var(--nvidia)}
+  .hw .box h3{margin:0 0 10px;font-size:20px}
+  .hw .box p{color:var(--mut);font-size:14px;margin:0 0 12px}
+  .hw .box ul{margin:0;padding-left:18px;color:var(--mut);font-size:13px}
+
+  .vs{overflow-x:auto}
+  table.vs-table{width:100%;border-collapse:collapse;font-size:14px}
+  table.vs-table th,table.vs-table td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  table.vs-table th{font-family:monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:rgba(255,216,102,.04)}
+  table.vs-table td b{color:var(--ink)}
+  table.vs-table .ok{color:var(--good)}
+  table.vs-table .partial{color:var(--accent)}
+  table.vs-table .no{color:var(--warn)}
+  table.vs-table tr:hover td{background:rgba(120,243,255,.03)}
+
+  .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:18px}
+  .nums .n{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+  .nums .n .v{font-size:32px;font-weight:800;color:var(--brand);font-family:monospace}
+  .nums .n .l{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+  .nums .n .v.live::before{content:"●";color:var(--good);font-size:14px;margin-right:6px;vertical-align:middle;animation:pulse 1.5s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  @keyframes earthStarDrift{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-160px,92px,0)}}
+  @keyframes starBreath{0%,100%{opacity:.34}50%{opacity:.58}}
+  @keyframes shootingStar{0%{opacity:0;transform:translate3d(0,0,0) rotate(18deg) scaleX(.65)}10%{opacity:.9}100%{opacity:0;transform:translate3d(-360px,150px,0) rotate(18deg) scaleX(1)}}
+  @media (prefers-reduced-motion:reduce){.starfield::before,.starfield::after,.shooting-star{animation:none}.shooting-star{display:none}}
+
+  .stack-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;font-family:monospace;font-size:13px}
+  .stack-row .row{background:var(--card);border:1px solid var(--line);padding:12px 14px;border-radius:8px}
+  .stack-row .row b{color:var(--accent);letter-spacing:.04em;display:block;margin-bottom:2px}
+  .stack-row .row span{color:var(--mut);font-size:12px}
+
+
+  .demo-gate{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(2,8,13,.50);backdrop-filter:blur(6px);z-index:1000;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .demo-gate.open{display:flex}
+  .demo-gate .crt{position:relative;width:min(520px,92vw);display:flex;flex-direction:column;align-items:center;gap:16px;padding:34px 38px;background:#0a0703;border:1px solid #5a3a00;box-shadow:0 0 0 2px #1a0e00,0 0 60px rgba(255,176,0,.16) inset,0 0 80px rgba(255,176,0,.10);border-radius:8px;overflow:hidden;color:#ffb000}
+  .demo-gate .crt::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0px,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px)}
+  .demo-gate .crt::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
+  .demo-gate .crt > *{position:relative;z-index:1}
+  .demo-gate .gate-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border:1px solid rgba(255,176,0,.45);background:rgba(255,176,0,.06);color:#ffb000;border-radius:6px;cursor:pointer;font:700 18px/1 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;z-index:2}
+  .demo-gate .gate-close:hover{background:rgba(255,176,0,.14)}
+  .demo-gate .gate-logo{margin:0;font-size:34px;line-height:1;letter-spacing:.08em;font-weight:900;text-shadow:0 0 4px #ffb000,0 0 18px rgba(255,176,0,.55);text-align:center}
+  .demo-gate .gate-logo span{display:block;font-size:15px;letter-spacing:.42em;margin-top:8px;text-transform:uppercase;color:#cc8a00}
+  .demo-gate .gate-tag{margin:4px 0 0;font-size:11px;letter-spacing:.36em;text-transform:uppercase;text-align:center;text-shadow:0 0 6px rgba(255,176,0,.6)}
+  .demo-gate .gate-prompt{margin:0;color:#cc8a00;font-size:13px;letter-spacing:.08em}
+  .demo-gate .gate-prompt .cursor{display:inline-block;background:#ffb000;width:.6em;height:.9em;vertical-align:-2px;animation:crtBlink 1s steps(2) infinite}
+  .demo-gate input{width:280px;max-width:100%;padding:11px 14px;border:1px solid #5a3a00;background:#1a0e00;color:#ffb000;text-align:center;outline:0;font:14px ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;letter-spacing:.18em;text-shadow:0 0 4px #ffb000;caret-color:#ffb000}
+  .demo-gate input:focus{border-color:#ffb000;box-shadow:0 0 0 2px rgba(255,176,0,.25)}
+  .demo-gate .gate-submit{width:280px;max-width:100%;padding:11px;border:0;background:#ffb000;color:#1a0e00;cursor:pointer;font:800 13px ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;letter-spacing:.28em;text-transform:uppercase;box-shadow:0 0 12px rgba(255,176,0,.4)}
+  .demo-gate .gate-submit:hover{background:#ffd166}
+  .demo-gate .gate-error{display:none;margin:0;color:#ff4f4f;font-size:11px;letter-spacing:.14em;text-align:center;text-shadow:0 0 6px rgba(255,79,79,.7)}
+  @keyframes crtBlink{0%{opacity:1}50%{opacity:0}}
+
+  footer{padding:40px 0;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  footer a{color:var(--mut)}
+  footer .footer-logo{width:126px;margin-right:8px}
+  footer .footer-logo img{display:block;width:100%;height:auto;opacity:.92}
+  footer .sig{margin-left:auto;font-family:monospace;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+
+  /* Botón hamburguesa — sólo visible en móvil */
+  .nav-toggle{display:none;margin-left:auto;width:42px;height:42px;align-items:center;justify-content:center;background:rgba(120,243,255,.06);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--brand);flex:0 0 auto;position:relative;z-index:50}
+  .nav-toggle:hover{border-color:rgba(120,243,255,.55)}
+  .nav-toggle .bars,.nav-toggle .bars::before,.nav-toggle .bars::after{display:block;width:20px;height:2px;background:currentColor;border-radius:2px;transition:transform .25s ease,opacity .2s ease,top .25s ease}
+  .nav-toggle .bars{position:relative}
+  .nav-toggle .bars::before,.nav-toggle .bars::after{content:"";position:absolute;left:0}
+  .nav-toggle .bars::before{top:-6px}
+  .nav-toggle .bars::after{top:6px}
+  .nav-toggle[aria-expanded="true"] .bars{background:transparent}
+  .nav-toggle[aria-expanded="true"] .bars::before{top:0;transform:rotate(45deg)}
+  .nav-toggle[aria-expanded="true"] .bars::after{top:0;transform:rotate(-45deg)}
+  .nav-backdrop{display:none;position:fixed;inset:0;background:rgba(2,8,13,.62);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease;z-index:30}
+  .nav-backdrop.open{opacity:1;visibility:visible}
+
+  /* Scroll-spy — resalta la sección activa en el nav (desktop) */
+  nav a.nav-link.active{color:var(--ink)}
+  @media (min-width:821px){
+    nav a.nav-link{position:relative}
+    nav a.nav-link.active::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:2px;background:var(--brand);border-radius:2px;box-shadow:0 0 8px rgba(120,243,255,.45)}
+  }
+
+  /* Eyebrow para diferenciar las dos vistas (suite vs capas) */
+  .sec-kicker{display:inline-flex;align-items:center;gap:8px;font-family:monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(255,216,102,.35);border-radius:999px;padding:5px 12px;margin:0 0 16px}
+  .sec-kicker.os{color:var(--brand);border-color:rgba(120,243,255,.35)}
+
+  @media (max-width:900px){
+    .layers.suite{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:820px){
+    .brand-logo{width:128px}
+    .nav-toggle{display:inline-flex}
+    header .wrap{flex-wrap:nowrap;gap:14px}
+    nav{display:none;position:fixed;top:0;right:0;height:100dvh;width:min(82vw,320px);margin:0;padding:84px 22px 28px;flex-direction:column;align-items:stretch;gap:2px;font-size:15px;background:rgba(4,11,17,.98);backdrop-filter:blur(14px);border-left:1px solid var(--line);box-shadow:-20px 0 60px rgba(0,0,0,.5);z-index:35;overflow-y:auto}
+    nav.open{display:flex}
+    .nav-backdrop{display:block}
+    nav a{padding:12px 4px;border-bottom:1px solid rgba(120,243,255,.08)}
+    nav .live{padding:12px 4px;font-size:12px}
+    .language-switcher{border-left:0;padding-left:0;margin:14px 0 0}
+    .lang-toggle{width:100%;text-align:center;padding:12px}
+    .nav-contact{margin:12px 0 0;text-align:center;padding:12px 14px}
+    body.nav-open-lock{overflow:hidden}
+    .hero{padding:28px 0 54px}
+    .starfield{inset:-18%;opacity:.62}
+    .starfield::before,.starfield::after{background-size:190px 140px,260px 190px,420px 300px}
+    .hero-grid{grid-template-columns:1fr;gap:28px}
+    .hero h1{font-size:38px}
+    .hero-visual{min-height:280px;border-radius:14px}
+    .hero-visual img{min-height:280px}
+    .hero-visual::after{font-size:9px;letter-spacing:.08em}
+    .layers{grid-template-columns:1fr}
+    .layers.suite{grid-template-columns:1fr}
+    .booth-grid{grid-template-columns:1fr}
+    .hw{grid-template-columns:1fr}
+  }
+
+  /* ── DEMO VIVA en la sección 00: el canal real, con marco 16:9 ── */
+  .live-demo{margin:26px 0 0;border:1px solid rgba(120,243,255,.24);border-radius:16px;
+    overflow:hidden;background:#02080d;box-shadow:0 22px 60px rgba(0,0,0,.34)}
+  .live-demo-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:11px 15px;border-bottom:1px solid rgba(120,243,255,.16);background:rgba(2,8,13,.6)}
+  .live-demo-k{font-family:monospace;font-size:11px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase}
+  .live-demo-frame{display:block;width:100%;aspect-ratio:16/9;border:0;background:#000}
+  .live-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;
+    border:1px solid rgba(255,80,80,.55);background:rgba(2,8,13,.72);
+    color:#ffd9d9;font-family:monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+  .live-tag i{width:7px;height:7px;border-radius:50%;background:#ff4d4d;
+    box-shadow:0 0 8px #ff4d4d;animation:livePulse 1.5s infinite}
+  @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @media (prefers-reduced-motion:reduce){.live-tag i{animation:none}}
+</style>
+<!-- Structured data — ayuda a Google/LLMs a entender qué es XpaceOS (Morfeo, Track A SEO) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.xpaceos.com/#org",
+      "name": "XpaceOS",
+      "alternateName": "XpaceOS by AdmiraNext",
+      "url": "https://www.xpaceos.com",
+      "logo": "https://www.xpaceos.com/assets/xpaceos-logo-card.jpg",
+      "description": "The operating system for physical retail — three integrated layers (AI creation, digital twin distribution and an RTB marketplace) running on Lenovo edge + Nvidia GPU.",
+      "sameAs": [
+        "https://admira.studio/",
+        "https://admira.tv/",
+        "https://admira.live/",
+        "https://admira.app/",
+        "https://www.pixeria.com/",
+        "https://www.clearchannel.tv/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.xpaceos.com/#website",
+      "url": "https://www.xpaceos.com",
+      "name": "XpaceOS",
+      "inLanguage": ["en", "es"],
+      "publisher": { "@id": "https://www.xpaceos.com/#org" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "XpaceOS",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Lenovo ThinkEdge + Nvidia GPU (edge)",
+      "url": "https://www.xpaceos.com",
+      "publisher": { "@id": "https://www.xpaceos.com/#org" },
+      "description": "XpaceOS turns every store, shop window and booth into an intelligent advertising medium: PixerIA (AI content creation), Admira XP (digital twin distribution) and OmniPublicity (real-time bidding marketplace). Shown live at Shoptalk Europe 2026.",
+      "offers": { "@type": "Offer", "availability": "https://schema.org/PreOrder", "url": "https://www.xpaceos.com/#contact" }
+    }
+  ]
+}
+</script>
 </head>
-<body>
-  <div class="loading" aria-hidden="true">Loading NVIDIA Digital Twin…</div>
-  <iframe
-    src="/admira-xp/?lang=en&amp;langlock=1&amp;build=20260902-1245"
-    title="XpaceOS NVIDIA Digital Twin"
-    allow="autoplay; fullscreen; microphone; camera"
-    referrerpolicy="strict-origin-when-cross-origin"
-  ></iframe>
-  <noscript><a href="/admira-xp/?lang=en&amp;langlock=1&amp;build=20260902-1245">Open the NVIDIA Digital Twin</a></noscript>
+<body id="top">
+<a class="skip-link" href="#main-content" data-i18n="skip">Skip to content</a>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KD696XW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<!-- barra superior Admira · Xperience eliminada (a petición) -->
+
+<header>
+  <div class="wrap">
+    <a class="brand-logo" href="#top" aria-label="XpaceOS">
+      <img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS">
+    </a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav"><span class="bars" aria-hidden="true"></span></button>
+    <nav id="primary-nav">
+      <a class="nav-link" href="#booth" data-i18n="nav.booth">Shoptalk booth</a>
+      <a class="nav-link" href="#plataforma" data-i18n="nav.platform">Platform</a>
+      <a class="nav-link" href="#capas" data-i18n="nav.layers">3 layers</a>
+      <a class="nav-link" href="#hardware">Lenovo + Nvidia</a>
+      <a class="nav-link" href="#stack">Stack</a>
+      <a href="/cpm/">CPM</a>
+      <a href="/robot/">Robot</a>
+      <a href="/ayuda/" data-i18n="nav.method">Method</a>
+      <a href="/admira-xp/" class="live" data-demo-gate data-i18n="nav.demo">Live demo</a>
+      <span class="language-switcher" aria-label="Language selection">
+        <button type="button" class="lang-toggle" id="lang-toggle" data-lang-target="es" aria-label="Switch to Spanish">ESP</button>
+      </span>
+      <a class="nav-contact" href="#contact" data-admira-contact data-i18n="contact">Contact</a>
+    </nav>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+</header>
+
+<main id="main-content" tabindex="-1">
+<div class="hero">
+  <div class="starfield" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="badge" data-i18n="hero.badge">✅ SHOWN LIVE @ SHOPTALK EUROPE 2026 · BARCELONA</span>
+      <h1 data-i18n-html="hero.title">The operating system<br>for <span class="grad">physical retail</span>.</h1>
+      <p class="lede" data-i18n-html="hero.lede">XpaceOS turns every store, every shop window and every booth into an intelligent advertising medium. Three integrated layers — AI creation, distribution on a Digital Twin and a real-time bidding marketplace — running on <b style="color:var(--lenovo)">Lenovo edge</b> + <b style="color:var(--nvidia)">Nvidia GPU</b>. Shown live at Shoptalk Europe, June 9–11, at Fira Barcelona.</p>
+      <div class="ctas">
+        <a class="cta event" href="#booth" data-i18n="hero.boothCta">How the booth went →</a>
+        <a class="cta secondary" href="#capas" data-i18n="hero.howCta">How it works</a>
+      </div>
+    </div>
+    <figure class="hero-visual" aria-label="XpaceOS retail robotics preview">
+      <img src="/assets/xpaceos-robots.webp" alt="Robots connected through the XpaceOS retail operating system">
+    </figure>
+  </div>
+</div>
+
+<section id="booth">
+  <div class="wrap">
+    <h2 data-i18n-html="booth.title"><span class="num">00</span>The booth was the demo</h2>
+    <p class="lede" data-i18n="booth.lede">We did not bring a slide deck. We brought the system running. The XpaceOS booth at Shoptalk was controlled live by the Digital Twin — screens, music, lighting, scent — from a single monitor that any visitor could touch to see the physical space change in real time.</p>
+    <!-- DEMO VIVA (Carlos, 2026-07-21): aquí sí — la sección dice que no trajimos
+         diapositivas sino el sistema corriendo, así que enseñamos el canal REAL
+         emitiendo ahora. El contenido es el que haya en antena, sin maquillar:
+         ese es el argumento. Si no hay señal, no se pinta nada. -->
+    <figure class="live-demo" id="liveDemo" hidden>
+      <div class="live-demo-hd"><span class="live-tag"><i></i><span id="liveTag">LIVE</span></span>
+        <span class="live-demo-k">This is the channel running right now — not a recording</span></div>
+      <iframe class="live-demo-frame" title="XpaceOS live channel"
+              src="https://admira.tv/canal?screen=xpaceos-web&embed=mupi&chrome=0&shot=0"
+              loading="lazy" referrerpolicy="no-referrer"
+              sandbox="allow-scripts allow-same-origin"></iframe>
+    </figure>
+
+    <div class="booth-grid">
+      <div class="booth-card">
+        <div class="when" data-i18n="booth.when">SHOPTALK EUROPE · JUN 9-11 2026 · FIRA BARCELONA</div>
+        <h3 data-i18n="booth.cardTitle">XpaceOS booth — the twin controlling the space</h3>
+        <div class="partners">
+          <span class="p lenovo">LENOVO</span>
+          <span class="x">×</span>
+          <span class="p nvidia">NVIDIA</span>
+          <span class="x">×</span>
+          <span class="p" style="color:var(--accent);border:1px solid rgba(255,216,102,.4)">ADmiraNeXT</span>
+        </div>
+        <p data-i18n="booth.cardCopy">A monitor in the booth runs the Digital Twin of the booth itself. Touch a screen in the twin → the physical screen changes. Turn up the volume in the twin → the booth gets louder. Activate the scent diffuser from the twin → the booth smells like fresh coffee.</p>
+        <ul>
+          <li data-i18n-html="booth.li1">📺 <b>Signage screens</b> synchronized with the twin</li>
+          <li data-i18n-html="booth.li2">🔊 <b>Spatial audio</b> programmable by booth zone</li>
+          <li data-i18n-html="booth.li3">💡 <b>Hue lighting</b> reactive to content</li>
+          <li data-i18n-html="booth.li4">👃 <b>Scent marketing</b> triggered by events</li>
+          <li data-i18n-html="booth.li5">📡 <b>Audience capture</b> with camera and anonymous profile</li>
+          <li data-i18n-html="booth.li6">🎯 <b>Lead scan</b> with integrated Club QR</li>
+        </ul>
+        <div class="ctas" style="margin-top:18px">
+          <a class="cta secondary" href="https://europe.shoptalk.com/" target="_blank" rel="noopener">Shoptalk Europe ↗</a>
+          <button type="button" class="cta secondary" data-admira-contact data-lead-source="xpaceos-booth" data-i18n="booth.bookDemo">Book demo</button>
+        </div>
+      </div>
+
+      <div class="booth-visual">
+        <div>
+          <div style="color:var(--accent);font-size:11px;letter-spacing:.18em;margin-bottom:14px" data-i18n="flow.title">CONTROL FLOW</div>
+          <div class="surface">
+            <b data-i18n="flow.oneTitle">① OPERATOR MONITOR</b>
+            <span data-i18n="flow.oneText">Digital Twin · Lenovo ThinkEdge + Nvidia GPU</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="surface" style="border-left-color:var(--accent)">
+            <b>② XPACE OS RUNTIME</b>
+            <span>PixerIA → Admira XP → OmniPublicity</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="surface" style="border-left-color:var(--lenovo)">
+            <b data-i18n="flow.threeTitle">③ PHYSICAL BOOTH (2.4m × 4m)</b>
+            <span data-i18n="flow.threeText">Screens · audio · light · scent · camera</span>
+          </div>
+        </div>
+        <div style="text-align:center;color:var(--good);font-family:monospace;font-size:11px;letter-spacing:.18em;margin-top:14px" data-i18n="flow.latency">● LATENCY &lt; 200 ms</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="plataforma">
+  <div class="wrap">
+    <h2 data-i18n-html="platform.title"><span class="num">01</span>The AdmiraNext platform, live at the booth</h2>
+    <div class="sec-kicker" data-i18n="platform.kicker">The suite — sister products, each on its own site</div>
+    <p class="lede" data-i18n="platform.lede">At the Lenovo × Nvidia booth we did not show a single tool — we ran the whole AdmiraNext platform end to end. Three connected products that any visitor could use, from creating the content to putting it on air.</p>
+
+    <div class="platform-lockup">
+      <span class="p lenovo">LENOVO</span>
+      <span class="x">×</span>
+      <span class="p nvidia">NVIDIA</span>
+      <span class="x">×</span>
+      <span class="p" style="color:var(--accent);border:1px solid rgba(255,216,102,.4)">ADmiraNeXT</span>
+      <span class="when" data-i18n="platform.when">SHOPTALK EUROPE · JUN 9-11 2026 · FIRA BARCELONA</span>
+    </div>
+
+    <div class="layers suite">
+      <div class="layer">
+        <div class="lnum">A</div>
+        <div class="lkind" data-i18n="platform.studioKind">Creating</div>
+        <h3>admira.studio</h3>
+        <div class="who dom"><span class="lbl" data-i18n="platform.brand">brand</span> · <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a></div>
+        <div class="pulse" id="pulse-studio"><span class="gm-dot"></span><span class="pv">…</span></div>
+        <p data-i18n="platform.studioCopy">The AI content factory. Briefs in; signage-ready audio, music, image and video out in minutes — the creative fuel for every screen in the space.</p>
+        <a class="more" href="https://admira.studio/" target="_blank" rel="noopener">→ admira.studio</a>
+      </div>
+      <div class="layer">
+        <div class="lnum">B</div>
+        <div class="lkind" data-i18n="platform.tvKind">Emitting</div>
+        <h3>admira.tv</h3>
+        <div class="who dom native"><span class="lbl" data-i18n="platform.brand">brand</span> · <span data-i18n="platform.tvBrand">native to Admira</span></div>
+        <div class="pulse" id="pulse-tv"><span class="gm-dot"></span><span class="pv">…</span></div>
+        <p data-i18n="platform.tvCopy">The live DOOH channel. Everything created flows onto the network of screens — a shared grid, per-surface scheduling and the on-air layer that puts content in front of real audiences.</p>
+        <a class="more" href="https://admira.tv/" target="_blank" rel="noopener">→ admira.tv</a>
+      </div>
+      <div class="layer here">
+        <div class="lnum">C</div>
+        <div class="lkind" data-i18n="platform.xpaceKind">Distributing · you are here</div>
+        <h3>admira.live</h3>
+        <div class="who dom"><span class="lbl" data-i18n="platform.brand">brand</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>
+        <div class="pulse" id="pulse-live"><span class="gm-dot"></span><span class="pv">…</span></div>
+        <p data-i18n="platform.xpaceCopy">The retail operating system you are reading right now. The Digital Twin distributes that content across every surface of the physical space and turns each one into measurable inventory.</p>
+        <a class="more" href="https://admira.live/" target="_blank" rel="noopener">→ admira.live</a>
+      </div>
+      <div class="layer">
+        <div class="lnum">D</div>
+        <div class="lkind" data-i18n="platform.appKind">Selling</div>
+        <h3>admira.app</h3>
+        <div class="who dom"><span class="lbl" data-i18n="platform.brand">brand</span> · <a href="https://www.clearchannel.tv" target="_blank" rel="noopener">clearchannel.tv</a></div>
+        <div class="pulse" id="pulse-app"><span class="gm-dot"></span><span class="pv">…</span></div>
+        <p data-i18n="platform.appCopy">The marketplace that monetizes it all. Every visible surface becomes tradeable DOOH inventory — programmatic demand, per-impression pricing and audited CPM across the whole network.</p>
+        <a class="more" href="https://admira.app/" target="_blank" rel="noopener">→ admira.app</a>
+      </div>
+    </div>
+
+    <p class="platform-flow" data-i18n-html="platform.flow"><b>admira.studio</b> creating → <b>admira.tv</b> emitting → <b>admira.live</b> distributing → <b>admira.app</b> selling. Four distinct products, one chain: one login and one shared dataset end to end.</p>
+  </div>
+</section>
+
+<section id="hardware">
+  <div class="wrap">
+    <h2 data-i18n-html="hardware.title"><span class="num">02</span>The hardware that makes the demo possible</h2>
+    <p class="lede" data-i18n="hardware.lede">XpaceOS needs low-latency local inference so the audience captured by the camera can trigger relevant content before the visitor looks away. Lenovo edge and Nvidia GPU are the two pillars that make the booth demo viable without depending on cloud connectivity.</p>
+    <div class="hw">
+      <div class="box lenovo">
+        <div class="who">LENOVO · COMPUTE EDGE</div>
+        <h3 data-i18n="hardware.lenovoTitle">ThinkEdge — the booth server</h3>
+        <p data-i18n="hardware.lenovoCopy">Compact, fanless in passive variants, certified for retail environments. It hosts the XpaceOS runtime and the Digital Twin, while also serving local signage when venue connectivity is unreliable.</p>
+        <ul>
+          <li data-i18n="hardware.lenovoLi1">ThinkEdge SE350 / SE450 depending on scenario</li>
+          <li data-i18n="hardware.lenovoLi2">Provisioning through the ADmiraNeXT setup wizard</li>
+          <li data-i18n="hardware.lenovoLi3">4G/5G failover if venue Wi-Fi drops</li>
+          <li data-i18n="hardware.lenovoLi4">Telemetry aggregated into the XpaceOS dashboard</li>
+        </ul>
+      </div>
+      <div class="box nvidia">
+        <div class="who">NVIDIA · AI INFERENCE</div>
+        <h3 data-i18n="hardware.nvidiaTitle">RTX / Jetson — the inference that moves the booth</h3>
+        <p data-i18n="hardware.nvidiaCopy">Dedicated GPU for Audience AI (anonymous profile, estimated gender/age), gesture recognition on interactive screens and PixerIA inference when a visitor requests live content from the booth.</p>
+        <ul>
+          <li data-i18n="hardware.nvidiaLi1">Audience capture without sending images to the cloud</li>
+          <li data-i18n="hardware.nvidiaLi2">Local PixerIA for live demos</li>
+          <li data-i18n="hardware.nvidiaLi3">Digital Twin response under 200 ms</li>
+          <li data-i18n="hardware.nvidiaLi4">Multi-stream: screens + tablets + camera</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capas">
+  <div class="wrap">
+    <h2 data-i18n-html="layers.title"><span class="num">03</span>The three layers of XpaceOS</h2>
+    <div class="sec-kicker os" data-i18n="layers.kicker">Inside the OS — the functional layers of XpaceOS</div>
+    <p class="lede" data-i18n="layers.lede">Each layer solves one part of the puzzle. Together, they form the full chain from creative prompt to advertising impression with audited metrics. Others sell fragments. XpaceOS is the whole operating system.</p>
+    <div class="layers">
+      <div class="layer">
+        <div class="lnum">01</div>
+        <div class="lkind" data-i18n="layers.pixerKind">Creation</div>
+        <h3>PixerIA</h3>
+        <div class="who" data-i18n="layers.pixerWho">For creatives, brands and store operators</div>
+        <p data-i18n="layers.pixerCopy">Structured briefs generate audio, songs with lyrics, images and video in minutes. Connected engines: Suno, Lyria 3, ElevenLabs, FLUX, Imagen 4, Veo 3, Grok Imagine. Public URL import (YouTube, Vimeo, TikTok...) via yt-dlp.</p>
+        <a class="more" href="#pixer" data-i18n="layers.more">→ see detail</a>
+      </div>
+      <div class="layer">
+        <div class="lnum">02</div>
+        <div class="lkind" data-i18n="layers.xpKind">Distribution</div>
+        <h3>Admira XP</h3>
+        <div class="who" data-i18n="layers.xpWho">For retailers who want to test before investing</div>
+        <p data-i18n="layers.xpCopy">Digital signage on top of a Digital Twin — an isometric replica of your store or booth running in the browser. Schedule playlists, measure impressions, simulate traffic and audit audience before touching a single cable. The same engine controls the physical space when you are ready.</p>
+        <a class="more" href="#xp" data-i18n="layers.more">→ see detail</a>
+      </div>
+      <div class="layer">
+        <div class="lnum">03</div>
+        <div class="lkind">Marketplace</div>
+        <h3>OmniPublicity</h3>
+        <div class="who" data-i18n="layers.omniWho">For advertisers and programmatic agencies</div>
+        <p data-i18n="layers.omniCopy">Real-Time Bidding over physical assets: every visible slot is auctioned in under 200 ms to the advertiser with the best offer for that audience, moment and context. Omnichannel inventory: screen, window, counter, vending, PWA.</p>
+        <a class="more" href="#omni" data-i18n="layers.more">→ see detail</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pixer">
+  <div class="wrap">
+    <h2 data-i18n-html="pixer.title"><span class="num">04</span>PixerIA · Creation layer</h2>
+    <div class="deep">
+      <h3 data-i18n="pixer.deepTitle">Structured brief → signage-ready asset in minutes</h3>
+      <div class="who" data-i18n="pixer.who">The retailer does not need an external agency: PixerIA generates the content inside the platform.</div>
+      <p data-i18n="pixer.copy">Four content types — Audio, Music, Images, Video — each with its own operational brief. The platform orchestrates the right engines for each case: multilingual TTS for voice, Suno with custom lyrics for sonic brand identity, Imagen 4 / FLUX for visual batches, Veo 3 for video with native audio.</p>
+      <div class="feats">
+        <div data-i18n-html="pixer.feat1"><b>SUNO</b>chirp-v4 / v4.5 · custom lyrics · 2 clips per song</div>
+        <div data-i18n-html="pixer.feat2"><b>LYRIA 3</b>Google · 30s or 2min with sung vocals</div>
+        <div data-i18n-html="pixer.feat3"><b>ELEVENLABS</b>ultra-realistic multilingual voices</div>
+        <div data-i18n-html="pixer.feat4"><b>IMAGEN 4 · FLUX · GROK</b>static image 1024-2K</div>
+        <div data-i18n-html="pixer.feat5"><b>VEO 3</b>720p video with native audio</div>
+        <div><b>YT-DLP IMPORT</b>YouTube/Vimeo/X/TikTok/Instagram → mp3 or mp4</div>
+      </div>
+      <p data-i18n="pixer.outro">Each asset is delivered with a descriptive title and auto-generated cover, ready to push to the Digital Twin feed with one click.</p>
+      <div class="links">
+        <a href="https://www.pixeria.com/" target="_blank" rel="noopener">↗ PixerIA live · pixeria.com</a>
+        <a href="https://www.pixeria.com/stock" target="_blank" rel="noopener" data-i18n="pixer.stockLink">↗ the whole studio library</a>
+        <a href="#xp" data-i18n="pixer.next">↓ next: Admira XP</a>
+      </div>
+    </div>
+
+    <div class="gm-live" id="pixstock">
+      <div class="gm-head">
+        <span class="gm-badge"><span class="gm-dot"></span><span data-i18n="pixstock.badge">Fresh out of the studio</span></span>
+        <span class="gm-count" id="px-count"></span>
+      </div>
+      <p class="gm-sub" data-i18n="pixstock.sub">Not a mockup. This is the real PixerIA library, read live from the same shared index that pixeria.com publishes to and the Digital Twin plays from.</p>
+      <div class="px-grid" id="px-grid"><div class="gm-state" data-i18n="pixstock.loading">Loading the studio library…</div></div>
+      <p class="gm-foot" data-i18n-html="pixstock.foot">One shared dataset: create it in <b>admira.studio</b> → it lands here and in the Digital Twin playlist. No export, no hand-off, no separate integration.</p>
+    </div>
+  </div>
+</section>
+
+<section id="xp">
+  <div class="wrap">
+    <h2 data-i18n-html="xp.title"><span class="num">05</span>Admira XP · Distribution layer</h2>
+    <div class="deep">
+      <h3 data-i18n="xp.deepTitle">Digital signage on top of a Digital Twin of the physical space</h3>
+      <div class="who" data-i18n="xp.who">The simulator is the first demo, but also the production control tool.</div>
+      <p data-i18n-html="xp.copy">Admira XP renders your store or booth in isometric perspective with real customers, screens, window display, counter and scent device. Every screen in the digital twin is a configurable real surface: assign playlists, schedule audio takes, define rules by time/weather/customer profile and see the result before installing a single device in the physical store. <b>And when the space is live, the same twin becomes the real-time control panel.</b></p>
+      <div class="feats">
+        <div data-i18n-html="xp.feat1"><b>DIGITAL TWIN</b>isometric replica with simulated and real traffic</div>
+        <div><b>SIGNAGE PLAYLIST</b>imagen, video, IFRAME YouTube, Pixer Feed live</div>
+        <div data-i18n-html="xp.feat3"><b>AUDIENCE CAPTURE</b>anonymous profile, gender, estimated age</div>
+        <div data-i18n-html="xp.feat4"><b>METRICS</b>impressions, attention, Club conversion</div>
+        <div data-i18n-html="xp.feat5"><b>SPACE CONTROL</b>scent, music, Hue lighting, ESL</div>
+        <div data-i18n-html="xp.feat6"><b>XTAPI API</b>status, telegram, external command</div>
+      </div>
+      <p data-i18n="xp.outro">The Xtanco twin (tobacco shops) is the first production vertical. The Shoptalk Europe booth was the second — it demonstrated the full case in a closed trade-show space.</p>
+      <div class="links">
+        <a href="/admira-xp/" data-demo-gate>↗ Admira XP live</a>
+        <a href="#omni" data-i18n="xp.next">↓ next: OmniPublicity</a>
+      </div>
+    </div>
+
+    <div class="gm-live" id="despacho">
+      <div class="gm-head">
+        <span class="gm-badge"><span class="gm-dot"></span><span data-i18n="ds.badge">Dispatch to the twin · live</span></span>
+        <span class="gm-count" id="ds-count"></span>
+      </div>
+      <p class="gm-sub" data-i18n="ds.sub">The other half of the chain. Every surface of the Digital Twin receives its piece and acknowledges it back — this is the real dispatch log, not a diagram.</p>
+      <div class="ds-rows" id="ds-rows"><div class="gm-state" data-i18n="ds.loading">Reading the dispatch log…</div></div>
+      <p class="gm-foot" data-i18n-html="ds.foot">Created in <b>admira.studio</b> → dispatched here → acknowledged by the surface. The same piece, the same id, end to end.</p>
+    </div>
+
+    <div class="gm-live" id="gemelos">
+      <div class="gm-head">
+        <span class="gm-badge"><span class="gm-dot"></span><span data-i18n="gemelos.badge">Digital twins in production</span></span>
+        <span class="gm-count" id="gm-count"></span>
+      </div>
+      <p class="gm-sub" data-i18n="gemelos.sub">These are the real twins already registered in the platform, pulled live from the shared catalog — the same dataset the OmniPublicity backoffice writes to.</p>
+      <div class="gm-grid" id="gm-grid"><div class="gm-state" data-i18n="gemelos.loading">Loading live catalog…</div></div>
+      <p class="gm-foot" data-i18n-html="gemelos.foot">One shared dataset: register a twin in the <b>OmniPublicity backoffice</b> → it appears here and on the <b>admira.app</b> live map. No separate integration.</p>
+    </div>
+  </div>
+</section>
+
+<section id="omni">
+  <div class="wrap">
+    <h2 data-i18n-html="omni.title"><span class="num">06</span>OmniPublicity · Marketplace layer</h2>
+    <div class="deep">
+      <h3 data-i18n="omni.deepTitle">Real-Time Bidding on every visible physical slot</h3>
+      <div class="who" data-i18n="omni.who">The same model as Google Ads and The Trade Desk, on your real screens.</div>
+      <p data-i18n="omni.copy">Every time a real customer enters a screen's field of view, OmniPublicity triggers an auction in milliseconds. Advertisers bid based on context (time, weather, available stock), audience (Club profile, gender, age) and moment. The best fit wins, not the biggest budget.</p>
+      <div class="feats">
+        <div data-i18n-html="omni.feat1"><b>RTB &lt; 200ms</b>auction per impression, not per annual contract</div>
+        <div data-i18n-html="omni.feat2"><b>OMNICHANNEL INVENTORY</b>screens, windows, vending, counter, PWA</div>
+        <div data-i18n-html="omni.feat3"><b>BIDDING CONTEXT</b>time, weather, customer profile, stock, active promo</div>
+        <div data-i18n-html="omni.feat4"><b>ELEGANT FALLBACK</b>if nobody bids, retailer-owned content</div>
+        <div data-i18n-html="omni.feat5"><b>TRACEABILITY</b>each impression signed with surface, winner, CPM, attention</div>
+        <div data-i18n-html="omni.feat6"><b>SHARED BACKEND</b>same XpaceOS — no separate integration</div>
+      </div>
+      <div class="links">
+        <a href="https://csilvasantin.github.io/omnipublicity/" target="_blank" rel="noopener">↗ OmniPublicity live</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <h2 data-i18n-html="stack.title"><span class="num">07</span>How it is built inside</h2>
+    <p class="lede" data-i18n="stack.lede">Small stack, explicit decisions, everything open on GitHub Pages + Cloudflare, running on Lenovo edge with Nvidia inference. No opaque SaaS.</p>
+    <div class="stack-row">
+      <div class="row"><b>PixerIA</b><span data-i18n="stack.pixer">Static SPA · Gemini · Suno proxy · Pollinations · ElevenLabs worker</span></div>
+      <div class="row"><b>Admira XP</b><span data-i18n="stack.xp">Isometric canvas · Service Worker · KV signage feed · YouTube IFRAME</span></div>
+      <div class="row"><b>OmniPublicity</b><span>RTB engine sobre Cloudflare Workers · KV bid log · audit trail</span></div>
+      <div class="row"><b>Suno-local</b><span data-i18n="stack.suno">Native Node · Clerk auth cookie · Tailscale Funnel /suno</span></div>
+      <div class="row"><b>Admira-tube</b><span data-i18n="stack.tube">Native Node · yt-dlp + ffmpeg · Funnel /admira/tube</span></div>
+      <div class="row"><b>Pixer-eleven</b><span>Cloudflare Worker · signage push/feed/ack/heartbeat · KV</span></div>
+      <div class="row" style="border-color:rgba(226,35,26,.4)"><b style="color:var(--lenovo)">Lenovo edge</b><span>ThinkEdge SE350/SE450 · Linux · runtime XpaceOS local</span></div>
+      <div class="row" style="border-color:rgba(118,185,0,.4)"><b style="color:var(--nvidia)">Nvidia GPU</b><span>RTX / Jetson · Audience AI + Pixer inferencia &lt;200ms</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="metricas">
+  <div class="wrap">
+    <h2 data-i18n-html="metrics.title"><span class="num">08</span>Pilot status</h2>
+    <p class="lede" data-i18n="metrics.lede">Live metrics from the Xtanco simulator running in production and the Shoptalk EU setup. If the workers are asleep, the numbers show "—".</p>
+    <div class="nums">
+      <div class="n"><div class="v live" id="m-screens">—</div><div class="l" data-i18n="metrics.screens">signage players online</div></div>
+      <div class="n"><div class="v" id="m-feed">—</div><div class="l" data-i18n="metrics.feed">dispatches to the twin · 24 h</div></div>
+      <div class="n"><div class="v" id="m-engines">—</div><div class="l" data-i18n="metrics.engines">AI engines in the library</div></div>
+      <div class="n"><div class="v" id="m-days">—</div><div class="l" data-i18n="metrics.days">days since Shoptalk EU 2026</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="footer-logo" href="#top" aria-label="XpaceOS"><img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS"></a>
+    <span>© 2026 ADmiraNeXT · XpaceOS</span>
+    <a href="https://www.pixeria.com/" target="_blank" rel="noopener">PixerIA</a>
+    <a href="/admira-xp/" data-demo-gate>Admira XP</a>
+    <a href="https://csilvasantin.github.io/omnipublicity/" target="_blank" rel="noopener">OmniPublicity</a>
+    <a href="https://europe.shoptalk.com/" target="_blank" rel="noopener">Shoptalk EU</a>
+    <a href="/ayuda/">Método Xpacios</a>
+    <a href="/backoffice/" rel="nofollow">Club</a>
+    <span class="sig">XPACEOS · v.07.08.2026.r1.18:43 · TrinityMBAAzul · MacBookAirAzul</span>
+  </div>
+</footer>
+
+
+<script>
+const I18N = {
+  en: {
+    title: 'XpaceOS — The operating system for physical retail · Shown live at Shoptalk Europe 2026',
+    description: 'XpaceOS by ADmiraNeXT turns every store and every booth into an intelligent advertising medium. Three integrated layers — PixerIA (AI creation), Admira XP (digital twin) and OmniPublicity (RTB marketplace) — running on Lenovo edge + Nvidia GPU. Shown live at Shoptalk Europe, Fira Barcelona, June 9-11, 2026.',
+    'event.date': 'JUNE 9-11',
+    'event.cta': 'how the booth went →',
+    'nav.booth': 'Shoptalk booth',
+    'nav.platform': 'Platform',
+    'nav.method': 'Method',
+    'nav.layers': '3 layers',
+    'nav.demo': 'Live demo',
+    contact: 'Contact',
+    skip: 'Skip to content',
+    lang_toggle: 'ESP',
+    lang_toggle_aria: 'Switch to Spanish',
+    'demoGate.tag': 'restricted access',
+    'demoGate.prompt': '> password',
+    'demoGate.button': 'unlock',
+    'demoGate.error': 'access denied',
+    'hero.badge': '✅ SHOWN LIVE @ SHOPTALK EUROPE 2026 · BARCELONA',
+    'hero.title': 'The operating system<br>for <span class="grad">physical retail</span>.',
+    'hero.lede': 'XpaceOS turns every store, every shop window and every booth into an intelligent advertising medium. Three integrated layers — AI creation, distribution on a Digital Twin and a real-time bidding marketplace — running on <b style="color:var(--lenovo)">Lenovo edge</b> + <b style="color:var(--nvidia)">Nvidia GPU</b>. Shown live at Shoptalk Europe, June 9–11, at Fira Barcelona.',
+    'hero.boothCta': 'How the booth went →',
+    'hero.howCta': 'How it works',
+    'booth.title': '<span class="num">00</span>The booth was the demo',
+    'booth.lede': 'We did not bring a slide deck. We brought the system running. The XpaceOS booth at Shoptalk was controlled live by the Digital Twin — screens, music, lighting, scent — from a single monitor that any visitor could touch to see the physical space change in real time.',
+    'booth.when': 'SHOPTALK EUROPE · JUN 9-11 2026 · FIRA BARCELONA',
+    'booth.cardTitle': 'XpaceOS booth — the twin controlling the space',
+    'booth.cardCopy': 'A monitor in the booth runs the Digital Twin of the booth itself. Touch a screen in the twin → the physical screen changes. Turn up the volume in the twin → the booth gets louder. Activate the scent diffuser from the twin → the booth smells like fresh coffee.',
+    'booth.li1': '📺 <b>Signage screens</b> synchronized with the twin',
+    'booth.li2': '🔊 <b>Spatial audio</b> programmable by booth zone',
+    'booth.li3': '💡 <b>Hue lighting</b> reactive to content',
+    'booth.li4': '👃 <b>Scent marketing</b> triggered by events',
+    'booth.li5': '📡 <b>Audience capture</b> with camera and anonymous profile',
+    'booth.li6': '🎯 <b>Lead scan</b> with integrated Club QR',
+    'booth.bookDemo': 'Book demo',
+    'platform.title': '<span class="num">01</span>The AdmiraNext platform, live at the booth',
+    'platform.kicker': 'The suite — sister products, each on its own site',
+    'platform.lede': 'At the Lenovo × Nvidia booth we did not show a single tool — we ran the whole AdmiraNext platform end to end. Four connected products that any visitor could use, from creating the content to putting it on air and selling the space.',
+    'platform.when': 'SHOPTALK EUROPE · JUN 9-11 2026 · FIRA BARCELONA',
+    'platform.brand': 'brand',
+    'platform.tvBrand': 'native to Admira',
+    'platform.studioKind': 'Creating',
+    'platform.studioCopy': 'The AI content factory. Briefs in; signage-ready audio, music, image and video out in minutes — the creative fuel for every screen in the space.',
+    'platform.tvKind': 'Emitting',
+    'platform.tvCopy': 'The live DOOH channel. Everything created flows onto the network of screens — a shared grid, per-surface scheduling and the on-air layer that puts content in front of real audiences.',
+    'platform.xpaceKind': 'Distributing · you are here',
+    'platform.xpaceCopy': 'The retail operating system you are reading right now. The Digital Twin distributes that content across every surface of the physical space and turns each one into measurable inventory.',
+    'platform.appKind': 'Selling',
+    'platform.appCopy': 'The marketplace that monetizes it all. Every visible surface becomes tradeable DOOH inventory — programmatic demand, per-impression pricing and audited CPM across the whole network.',
+    'platform.flow': '<b>admira.studio</b> creating → <b>admira.tv</b> emitting → <b>admira.live</b> distributing → <b>admira.app</b> selling. Four distinct products, one chain: one login and one shared dataset end to end.',
+    'flow.title': 'CONTROL FLOW',
+    'flow.oneTitle': '① OPERATOR MONITOR',
+    'flow.oneText': 'Digital Twin · Lenovo ThinkEdge + Nvidia GPU',
+    'flow.threeTitle': '③ PHYSICAL BOOTH (2.4m × 4m)',
+    'flow.threeText': 'Screens · audio · light · scent · camera',
+    'flow.latency': '● LATENCY < 200 ms',
+    'hardware.title': '<span class="num">02</span>The hardware that makes the demo possible',
+    'hardware.lede': 'XpaceOS needs low-latency local inference so the audience captured by the camera can trigger relevant content before the visitor looks away. Lenovo edge and Nvidia GPU are the two pillars that make the booth demo viable without depending on cloud connectivity.',
+    'hardware.lenovoTitle': 'ThinkEdge — the booth server',
+    'hardware.lenovoCopy': 'Compact, fanless in passive variants, certified for retail environments. It hosts the XpaceOS runtime and the Digital Twin, while also serving local signage when venue connectivity is unreliable.',
+    'hardware.lenovoLi1': 'ThinkEdge SE350 / SE450 depending on scenario',
+    'hardware.lenovoLi2': 'Provisioning through the ADmiraNeXT setup wizard',
+    'hardware.lenovoLi3': '4G/5G failover if venue Wi-Fi drops',
+    'hardware.lenovoLi4': 'Telemetry aggregated into the XpaceOS dashboard',
+    'hardware.nvidiaTitle': 'RTX / Jetson — the inference that moves the booth',
+    'hardware.nvidiaCopy': 'Dedicated GPU for Audience AI (anonymous profile, estimated gender/age), gesture recognition on interactive screens and PixerIA inference when a visitor requests live content from the booth.',
+    'hardware.nvidiaLi1': 'Audience capture without sending images to the cloud',
+    'hardware.nvidiaLi2': 'Local PixerIA for live demos',
+    'hardware.nvidiaLi3': 'Digital Twin response under 200 ms',
+    'hardware.nvidiaLi4': 'Multi-stream: screens + tablets + camera',
+    'layers.title': '<span class="num">03</span>The three layers of XpaceOS',
+    'layers.kicker': 'Inside the OS — the functional layers of XpaceOS',
+    'layers.lede': 'Each layer solves one part of the puzzle. Together, they form the full chain from creative prompt to advertising impression with audited metrics. Others sell fragments. XpaceOS is the whole operating system.',
+    'layers.pixerKind': 'Creation',
+    'layers.pixerWho': 'For creatives, brands and store operators',
+    'layers.pixerCopy': 'Structured briefs generate audio, songs with lyrics, images and video in minutes. Connected engines: Suno, Lyria 3, ElevenLabs, FLUX, Imagen 4, Veo 3, Grok Imagine. Public URL import (YouTube, Vimeo, TikTok...) via yt-dlp.',
+    'layers.xpKind': 'Distribution',
+    'layers.xpWho': 'For retailers who want to test before investing',
+    'layers.xpCopy': 'Digital signage on top of a Digital Twin — an isometric replica of your store or booth running in the browser. Schedule playlists, measure impressions, simulate traffic and audit audience before touching a single cable. The same engine controls the physical space when you are ready.',
+    'layers.omniWho': 'For advertisers and programmatic agencies',
+    'layers.omniCopy': 'Real-Time Bidding over physical assets: every visible slot is auctioned in under 200 ms to the advertiser with the best offer for that audience, moment and context. Omnichannel inventory: screen, window, counter, vending, PWA.',
+    'layers.more': '→ see detail',
+    'pixer.title': '<span class="num">04</span>PixerIA · Creation layer',
+    'pixer.deepTitle': 'Structured brief → signage-ready asset in minutes',
+    'pixer.who': 'The retailer does not need an external agency: PixerIA generates the content inside the platform.',
+    'pixer.copy': 'Four content types — Audio, Music, Images, Video — each with its own operational brief. The platform orchestrates the right engines for each case: multilingual TTS for voice, Suno with custom lyrics for sonic brand identity, Imagen 4 / FLUX for visual batches, Veo 3 for video with native audio.',
+    'pixer.feat1': '<b>SUNO</b>chirp-v4 / v4.5 · custom lyrics · 2 clips per song',
+    'pixer.feat2': '<b>LYRIA 3</b>Google · 30s or 2min with sung vocals',
+    'pixer.feat3': '<b>ELEVENLABS</b>ultra-realistic multilingual voices',
+    'pixer.feat4': '<b>IMAGEN 4 · FLUX · GROK</b>static image 1024-2K',
+    'pixer.feat5': '<b>VEO 3</b>720p video with native audio',
+    'pixer.outro': 'Each asset is delivered with a descriptive title and auto-generated cover, ready to push to the Digital Twin feed with one click.',
+    'ds.badge': 'Dispatch to the twin · live',
+    'ds.sub': 'The other half of the chain. Every surface of the Digital Twin receives its piece and acknowledges it back — this is the real dispatch log, not a diagram.',
+    'ds.foot': 'Created in <b>admira.studio</b> → dispatched here → acknowledged by the surface. The same piece, the same id, end to end.',
+    'ds.loading': 'Reading the dispatch log…',
+    'ds.error': 'Dispatch log unreachable right now.',
+    'ds.empty': 'No dispatch on record yet.',
+    'ds.idle': 'standing by',
+    'ds.ack': '✓ played',
+    'ds.pending': '⏳ queued',
+    'ds.count': '{n} dispatches on record · {s} surfaces',
+    'pulse.studio': '{n} pieces · {t} created today',
+    'pulse.tv': 'on air: {title}',
+    'pulse.tvIdle': 'channel standing by',
+    'pulse.live': '{n} twins · {s} surfaces',
+    'pulse.app': '{s} surfaces live as inventory',
+    'pulse.off': 'live signal unreachable',
+    'pixer.stockLink': '↗ the whole studio library',
+    'pixer.next': '↓ next: Admira XP',
+    'pixstock.badge': 'Fresh out of the studio',
+    'pixstock.sub': 'Not a mockup. This is the real PixerIA library, read live from the same shared index that pixeria.com publishes to and the Digital Twin plays from.',
+    'pixstock.foot': 'One shared dataset: create it in <b>admira.studio</b> → it lands here and in the Digital Twin playlist. No export, no hand-off, no separate integration.',
+    'pixstock.loading': 'Loading the studio library…',
+    'pixstock.error': 'Studio library unreachable right now — the pieces are still there.',
+    'pixstock.empty': 'The library is empty right now.',
+    'pixstock.count': '{n} pieces in the library · {t} today · {e} engines',
+    'pixstock.today': 'today',
+    'pixstock.now': 'just now',
+    'pixstock.min': '{n} min ago',
+    'pixstock.hour': '{n} h ago',
+    'pixstock.day': '{n} d ago',
+    'xp.title': '<span class="num">05</span>Admira XP · Distribution layer',
+    'xp.deepTitle': 'Digital signage on top of a Digital Twin of the physical space',
+    'xp.who': 'The simulator is the first demo, but also the production control tool.',
+    'xp.copy': 'Admira XP renders your store or booth in isometric perspective with real customers, screens, window display, counter and scent device. Every screen in the digital twin is a configurable real surface: assign playlists, schedule audio takes, define rules by time/weather/customer profile and see the result before installing a single device in the physical store. <b>And when the space is live, the same twin becomes the real-time control panel.</b>',
+    'xp.feat1': '<b>DIGITAL TWIN</b>isometric replica with simulated and real traffic',
+    'xp.feat3': '<b>AUDIENCE CAPTURE</b>anonymous profile, gender, estimated age',
+    'xp.feat4': '<b>METRICS</b>impressions, attention, Club conversion',
+    'xp.feat5': '<b>SPACE CONTROL</b>scent, music, Hue lighting, ESL',
+    'xp.feat6': '<b>XTAPI API</b>status, telegram, external command',
+    'xp.outro': 'The Xtanco twin (tobacco shops) is the first production vertical. The Shoptalk Europe booth was the second — it demonstrated the full case in a closed trade-show space.',
+    'xp.next': '↓ next: OmniPublicity',
+    'gemelos.badge': 'Digital twins in production',
+    'gemelos.sub': 'These are the real twins already registered in the platform, pulled live from the shared catalog — the same dataset the OmniPublicity backoffice writes to.',
+    'gemelos.foot': 'One shared dataset: register a twin in the <b>OmniPublicity backoffice</b> → it appears here and on the <b>admira.app</b> live map. No separate integration.',
+    'gemelos.loading': 'Loading live catalog…',
+    'gemelos.error': 'Live catalog unavailable right now — retrying shortly.',
+    'gemelos.empty': 'No twins published yet.',
+    'gemelos.surfaces': 'surfaces',
+    'gemelos.live': 'LIVE',
+    'gemelos.count': '{n} twins · {s} surfaces · live from the shared catalog',
+    'gemelos.more': 'more twins in the live catalog',
+    'omni.title': '<span class="num">06</span>OmniPublicity · Marketplace layer',
+    'omni.deepTitle': 'Real-Time Bidding on every visible physical slot',
+    'omni.who': 'The same model as Google Ads and The Trade Desk, on your real screens.',
+    'omni.copy': 'Every time a real customer enters a screen\\u0027s field of view, OmniPublicity triggers an auction in milliseconds. Advertisers bid based on context (time, weather, available stock), audience (Club profile, gender, age) and moment. The best fit wins, not the biggest budget.',
+    'omni.feat1': '<b>RTB &lt; 200ms</b>auction per impression, not per annual contract',
+    'omni.feat2': '<b>OMNICHANNEL INVENTORY</b>screens, windows, vending, counter, PWA',
+    'omni.feat3': '<b>BIDDING CONTEXT</b>time, weather, customer profile, stock, active promo',
+    'omni.feat4': '<b>ELEGANT FALLBACK</b>if nobody bids, retailer-owned content',
+    'omni.feat5': '<b>TRACEABILITY</b>each impression signed with surface, winner, CPM, attention',
+    'omni.feat6': '<b>SHARED BACKEND</b>same XpaceOS — no separate integration',
+    'stack.title': '<span class="num">07</span>How it is built inside',
+    'stack.lede': 'Small stack, explicit decisions, everything open on GitHub Pages + Cloudflare, running on Lenovo edge with Nvidia inference. No opaque SaaS.',
+    'stack.pixer': 'Static SPA · Gemini · Suno proxy · Pollinations · ElevenLabs worker',
+    'stack.xp': 'Isometric canvas · Service Worker · KV signage feed · YouTube IFRAME',
+    'stack.suno': 'Native Node · Clerk auth cookie · Tailscale Funnel /suno',
+    'stack.tube': 'Native Node · yt-dlp + ffmpeg · Funnel /admira/tube',
+    'metrics.title': '<span class="num">08</span>Pilot status',
+    'metrics.lede': 'Live metrics from the Xtanco pilot in production and the shared library. Each number comes from the same source the rest of this page reads; if a source does not answer, its number stays "—" instead of guessing.',
+    'metrics.screens': 'signage players online',
+    'metrics.feed': 'dispatches to the twin · 24 h',
+    'metrics.engines': 'AI engines in the library',
+    'metrics.days': 'days since Shoptalk EU 2026'
+  },
+  es: {
+    title: 'XpaceOS — El sistema operativo del comercio físico · Demostrado en vivo en Shoptalk Europe 2026',
+    description: 'XpaceOS de ADmiraNeXT convierte cada tienda y cada stand en un medio publicitario inteligente. Tres capas integradas — PixerIA (creación IA), Admira XP (gemelo digital) y OmniPublicity (mercado RTB) — corriendo sobre Lenovo edge + Nvidia GPU. Demostrado en vivo en Shoptalk Europe, Fira Barcelona, 9-11 junio 2026.',
+    'event.date': '9–11 JUNIO',
+    'event.cta': 'así fue el stand →',
+    'nav.booth': 'Stand Shoptalk',
+    'nav.platform': 'Plataforma',
+    'nav.method': 'Método',
+    'nav.layers': '3 capas',
+    'nav.demo': 'Demo en vivo',
+    contact: 'Contacto',
+    skip: 'Saltar al contenido',
+    lang_toggle: 'ENG',
+    lang_toggle_aria: 'Cambiar a inglés',
+    'demoGate.tag': 'acceso restringido',
+    'demoGate.prompt': '> password',
+    'demoGate.button': 'desbloquear',
+    'demoGate.error': 'acceso denegado',
+    'hero.title': 'El sistema operativo<br>del <span class="grad">comercio físico</span>.',
+    'hero.lede': 'XpaceOS convierte cada tienda, cada escaparate y cada stand en un medio publicitario inteligente. Tres capas integradas — creación con IA, distribución sobre un Gemelo Digital y mercado de subastas en tiempo real — corriendo sobre <b style="color:var(--lenovo)">Lenovo edge</b> + <b style="color:var(--nvidia)">Nvidia GPU</b>. Demostrado en vivo en Shoptalk Europe, del 9 al 11 de junio, en Fira Barcelona.',
+    'hero.badge': '✅ DEMOSTRADO EN VIVO @ SHOPTALK EUROPE 2026 · BARCELONA',
+    'hero.boothCta': 'Así fue el stand →',
+    'hero.howCta': 'Cómo funciona',
+    'booth.title': '<span class="num">00</span>El stand fue la demo',
+    'booth.lede': 'No llevamos una presentación. Llevamos el sistema corriendo. El propio stand de XpaceOS en Shoptalk estuvo controlado en directo por el Gemelo Digital — pantallas, música, iluminación, aroma — desde un único monitor que cualquier visitante podía tocar y ver cómo cambiaba el espacio físico en tiempo real.',
+    'booth.when': 'SHOPTALK EUROPE · 9–11 JUN 2026 · FIRA BARCELONA',
+    'booth.cardTitle': 'Stand XpaceOS — el gemelo controlando el espacio',
+    'booth.cardCopy': 'Un monitor en el stand corre el Gemelo Digital del propio stand. Toca una pantalla en el gemelo → cambia la pantalla física. Sube el volumen en el gemelo → suena más en el stand. Activa el difusor de aroma desde el gemelo → huele a café recién hecho.',
+    'booth.li1': '📺 <b>Pantallas de cartelería digital</b> sincronizadas con el gemelo',
+    'booth.li2': '🔊 <b>Audio espacial</b> programable por zona del stand',
+    'booth.li3': '💡 <b>Iluminación Hue</b> reactiva al contenido',
+    'booth.li4': '👃 <b>Marketing olfativo</b> activable por evento',
+    'booth.li5': '📡 <b>Captación de audiencia</b> con cámara y perfil anónimo',
+    'booth.li6': '🎯 <b>Captura de contactos</b> con QR del Club integrado',
+    'booth.bookDemo': 'Reservar demo',
+    'platform.title': '<span class="num">01</span>La plataforma AdmiraNext, en vivo en el stand',
+    'platform.kicker': 'La suite — productos hermanos, cada uno con su propia web',
+    'platform.lede': 'En el stand Lenovo × Nvidia no enseñamos una sola herramienta — corrimos toda la plataforma AdmiraNext de punta a punta. Cuatro productos conectados que cualquier visitante pudo usar, desde crear el contenido hasta ponerlo en antena y comercializar el espacio.',
+    'platform.when': 'SHOPTALK EUROPE · 9-11 JUN 2026 · FIRA BARCELONA',
+    'platform.brand': 'marca',
+    'platform.tvBrand': 'nativa de Admira',
+    'platform.studioKind': 'Creando',
+    'platform.studioCopy': 'La fábrica de contenido con IA. Entra un encargo; salen audio, música, imagen y vídeo listos para cartelería digital en minutos — el combustible creativo de cada pantalla del espacio.',
+    'platform.tvKind': 'Emitiendo',
+    'platform.tvCopy': 'El canal DOOH en vivo. Todo lo creado sale a la red de pantallas — parrilla compartida, programación por superficie y la capa en antena que pone el contenido ante audiencias reales.',
+    'platform.xpaceKind': 'Distribuyendo · estás aquí',
+    'platform.xpaceCopy': 'El sistema operativo del comercio físico que estás leyendo ahora mismo. El Gemelo Digital distribuye ese contenido por cada superficie del espacio físico y convierte cada una en inventario medible.',
+    'platform.appKind': 'Comercializando',
+    'platform.appCopy': 'El mercado que lo monetiza todo. Cada superficie visible se convierte en inventario DOOH negociable — demanda programática, precio por impresión y CPM auditado en toda la red.',
+    'platform.flow': '<b>admira.studio</b> creando → <b>admira.tv</b> emitiendo → <b>admira.live</b> distribuyendo → <b>admira.app</b> comercializando. Cuatro soluciones distintas, una sola cadena: un login y un mismo dato de punta a punta.',
+    'flow.title': 'FLUJO DE CONTROL',
+    'flow.oneTitle': '① MONITOR DEL OPERADOR',
+    'flow.oneText': 'Gemelo Digital · Lenovo ThinkEdge + Nvidia GPU',
+    'flow.threeTitle': '③ STAND FÍSICO (2.4m × 4m)',
+    'flow.threeText': 'Pantallas · audio · luz · aroma · cámara',
+    'flow.latency': '● LATENCIA < 200 ms',
+    'hardware.title': '<span class="num">02</span>El hardware que hace posible la demo',
+    'hardware.lede': 'XpaceOS necesita inferencia local de baja latencia para que la audiencia capturada por la cámara dispare contenido relevante antes de que el visitante mire a otro lado. Lenovo edge y Nvidia GPU son los dos pilares que hacen viable la demo en sala de feria sin depender de la nube.',
+    'hardware.lenovoTitle': 'ThinkEdge — el servidor del stand',
+    'hardware.lenovoCopy': 'Compacto, sin ventilador en variantes pasivas, certificado para entornos de comercio físico. Aloja el entorno de ejecución de XpaceOS y del Gemelo Digital, además de servir la cartelería digital local cuando la conectividad de la feria es irregular.',
+    'hardware.lenovoLi1': 'ThinkEdge SE350 / SE450 según escenario',
+    'hardware.lenovoLi2': 'Provisionamiento mediante el asistente de configuración de ADmiraNeXT',
+    'hardware.lenovoLi3': 'Conmutación a 4G/5G si cae el Wi-Fi de la feria',
+    'hardware.lenovoLi4': 'Telemetría agregada al panel de XpaceOS',
+    'hardware.nvidiaTitle': 'RTX / Jetson — la inferencia que mueve el stand',
+    'hardware.nvidiaCopy': 'GPU dedicada para IA de audiencia (perfil anónimo, género/edad estimados), reconocimiento de gestos en pantallas interactivas e inferencia de PixerIA cuando el visitante encarga contenido en directo desde el stand.',
+    'hardware.nvidiaLi1': 'Captación de audiencia sin enviar imagen a la nube',
+    'hardware.nvidiaLi2': 'PixerIA local para demos en directo',
+    'hardware.nvidiaLi3': 'Reactividad del Gemelo < 200 ms',
+    'hardware.nvidiaLi4': 'Flujos múltiples: pantallas + tablets + cámara',
+    'layers.title': '<span class="num">03</span>Las tres capas de XpaceOS',
+    'layers.kicker': 'Dentro del OS — las capas funcionales de XpaceOS',
+    'layers.lede': 'Cada capa resuelve una pieza del puzzle. Juntas, forman la cadena completa que va del encargo creativo a la impresión publicitaria con métrica auditada. Otros venden trozos. XpaceOS es el sistema operativo entero.',
+    'layers.pixerKind': 'Creación',
+    'layers.pixerWho': 'Para creativos, marca y operadores de tienda',
+    'layers.pixerCopy': 'Encargos estructurados generan en minutos audio, música con letra, imágenes y video. Motores conectados: Suno, Lyria 3, ElevenLabs, FLUX, Imagen 4, Veo 3, Grok Imagine. Importación desde URL pública (YouTube, Vimeo, TikTok…) vía yt-dlp.',
+    'layers.xpKind': 'Distribución',
+    'layers.xpWho': 'Para comercios que quieren probar antes de invertir',
+    'layers.xpCopy': 'Cartelería digital sobre un Gemelo Digital — una réplica isométrica de tu tienda o stand corriendo en el navegador. Programa listas de reproducción, mide impresiones, simula tráfico y audita audiencia antes de tocar un solo cable. El mismo motor controla el espacio físico cuando estás listo.',
+    'layers.omniWho': 'Para anunciantes y agencias programáticas',
+    'layers.omniCopy': 'Puja en tiempo real sobre activos físicos: cada hueco visible se subasta en menos de 200 ms al anunciante con la mejor oferta para esa audiencia, ese momento y ese contexto. Inventario omnicanal: pantalla, escaparate, mostrador, máquina expendedora, PWA.',
+    'layers.more': '→ ver detalle',
+    'pixer.title': '<span class="num">04</span>PixerIA · Capa de creación',
+    'pixer.deepTitle': 'Encargo estructurado → activo listo para cartelería digital en minutos',
+    'pixer.who': 'El comercio no necesita agencia externa: PixerIA genera el contenido en la propia plataforma.',
+    'pixer.copy': 'Cuatro tipos de contenido — Audio, Música, Imágenes, Video — con un encargo operativo por cada uno. La plataforma orquesta los motores adecuados según el caso: TTS multilingüe para voz, Suno con letra personalizada para identidad sonora de marca, Imagen 4 / FLUX para visuales en serie, Veo 3 para video con audio nativo.',
+    'pixer.feat1': '<b>SUNO</b>chirp-v4 / v4.5 · letra propia · 2 clips por canción',
+    'pixer.feat2': '<b>LYRIA 3</b>Google · 30s o 2min con voz cantando',
+    'pixer.feat3': '<b>ELEVENLABS</b>voces ultrarrealistas multilingüe',
+    'pixer.feat4': '<b>IMAGEN 4 · FLUX · GROK</b>imagen estática 1024-2K',
+    'pixer.feat5': '<b>VEO 3</b>video 720p con audio nativo',
+    'pixer.outro': 'Cada activo sale con título descriptivo y carátula generada automáticamente, listo para enviarse al flujo del Gemelo Digital con un clic.',
+    'ds.badge': 'Despacho al gemelo · en vivo',
+    'ds.sub': 'La otra mitad de la cadena. Cada superficie del Gemelo Digital recibe su pieza y la confirma de vuelta — esto es el registro real de despacho, no un esquema.',
+    'ds.foot': 'Creado en <b>admira.studio</b> → despachado aquí → confirmado por la superficie. La misma pieza, el mismo id, de punta a punta.',
+    'ds.loading': 'Leyendo el registro de despacho…',
+    'ds.error': 'El registro de despacho no responde ahora mismo.',
+    'ds.empty': 'Todavía no hay ningún despacho registrado.',
+    'ds.idle': 'en espera',
+    'ds.ack': '✓ emitida',
+    'ds.pending': '⏳ en cola',
+    'ds.count': '{n} despachos registrados · {s} superficies',
+    'pulse.studio': '{n} piezas · {t} creadas hoy',
+    'pulse.tv': 'en antena: {title}',
+    'pulse.tvIdle': 'canal a la espera',
+    'pulse.live': '{n} gemelos · {s} superficies',
+    'pulse.app': '{s} superficies vivas como inventario',
+    'pulse.off': 'sin señal en vivo',
+    'pixer.stockLink': '↗ toda la biblioteca del estudio',
+    'pixer.next': '↓ siguiente: Admira XP',
+    'pixstock.badge': 'Recién salido del estudio',
+    'pixstock.sub': 'No es una maqueta. Es la biblioteca real de PixerIA, leída en vivo del mismo índice compartido donde publica pixeria.com y del que se sirve el Gemelo Digital.',
+    'pixstock.foot': 'Un solo dato compartido: créalo en <b>admira.studio</b> → aparece aquí y en la lista de reproducción del Gemelo Digital. Sin exportar, sin traspasos, sin integración aparte.',
+    'pixstock.loading': 'Cargando la biblioteca del estudio…',
+    'pixstock.error': 'La biblioteca del estudio no responde ahora mismo — las piezas siguen ahí.',
+    'pixstock.empty': 'La biblioteca está vacía ahora mismo.',
+    'pixstock.count': '{n} piezas en la biblioteca · {t} hoy · {e} motores',
+    'pixstock.today': 'hoy',
+    'pixstock.now': 'ahora mismo',
+    'pixstock.min': 'hace {n} min',
+    'pixstock.hour': 'hace {n} h',
+    'pixstock.day': 'hace {n} d',
+    'xp.title': '<span class="num">05</span>Admira XP · Capa de distribución',
+    'xp.deepTitle': 'Cartelería digital sobre un Gemelo Digital del espacio físico',
+    'xp.who': 'El simulador es la primera demo, pero también la herramienta de control en producción.',
+    'xp.copy': 'Admira XP renderiza tu tienda o tu stand en perspectiva isométrica con clientes reales, pantallas, escaparate, mostrador y aparato de olores. Cada pantalla del gemelo digital es una superficie real configurable: asignas listas de reproducción, programas tomas de audio, defines reglas por hora/clima/perfil de cliente y ves el resultado antes de instalar nada en la tienda física. <b>Y cuando el espacio está montado, el mismo gemelo es el panel de control en directo.</b>',
+    'xp.feat1': '<b>GEMELO DIGITAL</b>réplica isométrica con tráfico simulado y real',
+    'xp.feat3': '<b>AUDIENCE CAPTURE</b>perfil anónimo, género, edad estimada',
+    'xp.feat4': '<b>METRICAS</b>impresiones, atención, conversión a Club',
+    'xp.feat5': '<b>CONTROL DE ESPACIO</b>aroma, música, iluminación Hue, ESL',
+    'xp.feat6': '<b>XTAPI API</b>estado, telegram, comando externo',
+    'xp.outro': 'El gemelo Xtanco (estancos) es la primera vertical en producción. El stand de Shoptalk Europe fue la segunda — demostró el caso completo en un espacio cerrado de feria.',
+    'xp.next': '↓ siguiente: OmniPublicity',
+    'gemelos.badge': 'Gemelos en producción',
+    'gemelos.sub': 'Estos son los gemelos reales ya dados de alta en la plataforma, leídos en vivo del catálogo compartido — el mismo conjunto de datos en el que escribe el panel de OmniPublicity.',
+    'gemelos.foot': 'Un mismo conjunto de datos: das de alta un gemelo en el <b>panel de OmniPublicity</b> → aparece aquí y en el <b>mapa en vivo de admira.app</b>. Sin integración aparte.',
+    'gemelos.loading': 'Cargando catálogo en vivo…',
+    'gemelos.error': 'Catálogo en vivo no disponible ahora mismo — reintentando.',
+    'gemelos.empty': 'Aún no hay gemelos publicados.',
+    'gemelos.surfaces': 'superficies',
+    'gemelos.live': 'EN VIVO',
+    'gemelos.count': '{n} gemelos · {s} superficies · en vivo del catálogo compartido',
+    'gemelos.more': 'gemelos más en el catálogo en vivo',
+    'omni.title': '<span class="num">06</span>OmniPublicity · Capa de mercado',
+    'omni.deepTitle': 'Puja en tiempo real sobre cada hueco físico visible',
+    'omni.who': 'El mismo modelo que Google Ads y The Trade Desk, sobre tus pantallas reales.',
+    'omni.copy': 'Cada vez que un cliente real entra al campo de visión de una pantalla, OmniPublicity dispara una subasta en milisegundos. Los anunciantes pujan según contexto (hora, clima, stock disponible), audiencia (perfil Club, género, edad) y momento. Gana el mejor encaje, no el mayor presupuesto.',
+    'omni.feat1': '<b>RTB &lt; 200ms</b>subasta por impresión, no por contrato anual',
+    'omni.feat2': '<b>INVENTARIO OMNICANAL</b>pantallas, escaparates, vending, mostrador, PWA',
+    'omni.feat3': '<b>BIDDING CONTEXT</b>hora, climatología, perfil cliente, stock, promo activa',
+    'omni.feat4': '<b>RESPALDO ELEGANTE</b>si nadie puja, contenido propio del comercio',
+    'omni.feat5': '<b>TRAZABILIDAD</b>cada impresión firmada con superficie, ganador, CPM, atención',
+    'omni.feat6': '<b>BACKEND COMPARTIDO</b>mismo XpaceOS — sin integración separada',
+    'stack.title': '<span class="num">07</span>Cómo está montado por dentro',
+    'stack.lede': 'Arquitectura pequeña, decisiones explícitas, todo abierto en GitHub Pages + Cloudflare, ejecutándose sobre Lenovo edge con inferencia Nvidia. Sin SaaS opaco.',
+    'stack.pixer': 'SPA estática · Gemini · proxy Suno · Pollinations · servicio ElevenLabs',
+    'stack.xp': 'Canvas isométrico · Service Worker · flujo de cartelería digital en KV · YouTube IFRAME',
+    'stack.suno': 'Node nativo · cookie de auth Clerk · Tailscale Funnel /suno',
+    'stack.tube': 'Node nativo · yt-dlp + ffmpeg · Funnel /admira/tube',
+    'metrics.title': '<span class="num">08</span>Estado del piloto',
+    'metrics.lede': 'Métricas en vivo del piloto Xtanco en producción y de la biblioteca compartida. Cada número sale de la misma fuente que lee el resto de esta página; si una fuente no responde, su número se queda en "—" en vez de inventarse.',
+    'metrics.screens': 'reproductores de cartelería en línea',
+    'metrics.feed': 'despachos al gemelo · 24 h',
+    'metrics.engines': 'motores de IA en la biblioteca',
+    'metrics.days': 'días desde Shoptalk EU 2026'
+  }
+};
+
+function applyLanguage(lang) {
+  const dict = I18N[lang] || I18N.en;
+  document.documentElement.lang = lang;
+  document.title = dict.title || I18N.en.title;
+  const desc = document.querySelector('meta[name="description"]');
+  if (desc && dict.description) desc.setAttribute('content', dict.description);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+  const langToggle = document.getElementById('lang-toggle');
+  if (langToggle) {
+    const next = lang === 'en' ? 'es' : 'en';
+    langToggle.dataset.langTarget = next;
+    langToggle.textContent = dict.lang_toggle || (lang === 'en' ? 'ESP' : 'ENG');
+    langToggle.setAttribute('aria-label', dict.lang_toggle_aria || (lang === 'en' ? 'Switch to Spanish' : 'Cambiar a inglés'));
+  }
+  try { localStorage.setItem('xpaceosLang', lang); } catch {}
+  try { window.dispatchEvent(new CustomEvent('admira:languagechange', { detail: { lang } })); } catch {}
+  if (typeof renderGemelos === 'function') renderGemelos();
+  if (typeof renderPixStock === 'function') renderPixStock();
+  if (typeof renderDespacho === 'function') renderDespacho();
+  if (typeof renderPulses === 'function') renderPulses();
+}
+
+// El formulario de contacto de la home es ahora el MISMO modal de lead del
+// gemelo (lead-form.js). Se abre desde [data-admira-contact] y va a /lead +
+// Telegram. Ver lead-form.js / [[reference_admira_xp_lead_capture]].
+
+// Live demo abierto: los enlaces [data-demo-gate] abren directamente, sin login.
+
+
+// ─── Live twins catalog (shared OmniPublicity catalog) ─────────────
+// Same GET /locations that feeds the admira.app map and that the
+// OmniPublicity backoffice publishes to. Register a twin there → it
+// shows up here. Train-proof: single fetch, 7s timeout, no retry loop.
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const GEMELOS_API = 'https://brain.digitalavatar.ai/locations?view=summary'; // resumen (id, nombre, tipo, superficies): el catálogo entero son ~9 MB de JSON para 24 tarjetas · DEC-mtl47kozreul
+const SURF_ICON = { pantalla:'📺', escaparate:'🪟', mostrador:'🧾', vending:'🥤', pwa:'📱' };
+const GEMELOS_MAX = 24; // tope de tarjetas renderizadas — el catálogo puede tener miles
+let gemelosData = null; // null = loading · 'error' · []/[…] = data
+
+function gmDict() { return I18N[document.documentElement.lang] || I18N.en; }
+function gmEsc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderGemelos() {
+  const grid = document.getElementById('gm-grid');
+  if (!grid) return;
+  const countEl = document.getElementById('gm-count');
+  const d = gmDict();
+  if (countEl) countEl.textContent = '';
+  if (gemelosData === null) {
+    grid.innerHTML = `<div class="gm-state">${d['gemelos.loading']}</div>`;
+    return;
+  }
+  if (gemelosData === 'error') {
+    grid.innerHTML = `<div class="gm-state err">${d['gemelos.error']}</div>`;
+    return;
+  }
+  if (!gemelosData.length) {
+    grid.innerHTML = `<div class="gm-state">${d['gemelos.empty']}</div>`;
+    return;
+  }
+  const totalSurf = gemelosData.reduce((n, loc) => n + (Array.isArray(loc.surfaces) ? loc.surfaces.length : 0), 0);
+  const shown = gemelosData.slice(0, GEMELOS_MAX);
+  grid.innerHTML = shown.map(loc => {
+    const surfaces = Array.isArray(loc.surfaces) ? loc.surfaces : [];
+    const live = surfaces.filter(s => s.status === 'live').length;
+    const types = [...new Set(surfaces.map(s => s.surface))];
+    const chips = types.map(t => `<span class="gm-chip">${SURF_ICON[t] || '▫'} ${gmEsc(t)}</span>`).join('');
+    const liveChip = live ? `<span class="gm-chip live">● ${live} ${d['gemelos.live']}</span>` : '';
+    return `<div class="gm-card">
+      <div class="kd">${gmEsc(loc.kind || '')}</div>
+      <div class="nm">${gmEsc(loc.name || loc.id || '')}</div>
+      <div class="ad">${gmEsc(loc.addr || '')}</div>
+      <div class="gm-chips"><span class="gm-chip">${surfaces.length} ${d['gemelos.surfaces']}</span>${liveChip}${chips}</div>
+    </div>`;
+  }).join('');
+  if (gemelosData.length > shown.length) {
+    const rest = gemelosData.length - shown.length;
+    grid.insertAdjacentHTML('beforeend', `<div class="gm-state">+ ${rest} ${d['gemelos.more'] || 'more'}</div>`);
+  }
+  if (countEl) countEl.textContent = (d['gemelos.count'] || '').replace('{n}', gemelosData.length).replace('{s}', totalSurf);
+}
+
+async function loadGemelos() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 7000);
+    const r = await fetch(GEMELOS_API, { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const json = await r.json();
+    gemelosData = (json && Array.isArray(json.locations)) ? json.locations : [];
+  } catch (e) {
+    gemelosData = 'error';
+  }
+  renderGemelos();
+  if (typeof renderPulses === 'function') renderPulses();
+}
+renderGemelos();
+loadGemelos();
+
+// ─── Live studio library · PixerIA / admira.studio ──────────────────
+// El puente real entre las capas 04 (crear) y 05 (distribuir): lo que se
+// crea en pixeria.com aterriza en este índice público de R2, y de ahí lo
+// leen tanto la galería pixeria.com/stock como la parrilla del gemelo.
+// Se lee el índice de R2 (no el worker) A PROPÓSITO, y por dominio propio:
+// LaLiga hace que los ISP bloqueen *.workers.dev y *.r2.dev en horas de
+// fútbol (FLT-1633). Carga perezosa — son ~290 KB y no deben pesar en la
+// primera pintada de la home.
+const PIXSTOCK_INDEX = 'https://stock.admira.store/stock/index.json';
+const PIXSTOCK_MAX = 8;                       // tarjetas pintadas
+const PIXSTOCK_THUMB_MAX = 3000000;           // 3 MB: por encima, la imagen no se usa de miniatura (pesa más que la página)
+const PIXSTOCK_KINDS = { video:'🎬', image:'🖼', audio:'🔊', music:'🎵', locucion:'🎙' };
+let pixStockData = null;                      // null = cargando · 'error' · {…}
+
+function pxWhen(iso, d) {
+  const t = Date.parse(iso || '');
+  if (!Number.isFinite(t)) return '';
+  const min = Math.max(0, Math.round((Date.now() - t) / 60000));
+  if (min < 2) return d['pixstock.now'];
+  if (min < 60) return (d['pixstock.min'] || '{n} min').replace('{n}', min);
+  const h = Math.round(min / 60);
+  if (h < 24) return (d['pixstock.hour'] || '{n} h').replace('{n}', h);
+  return (d['pixstock.day'] || '{n} d').replace('{n}', Math.round(h / 24));
+}
+
+function renderPixStock() {
+  const grid = document.getElementById('px-grid');
+  if (!grid) return;
+  const countEl = document.getElementById('px-count');
+  const d = gmDict();
+  if (countEl) countEl.textContent = '';
+  if (pixStockData === null) { grid.innerHTML = `<div class="gm-state">${d['pixstock.loading']}</div>`; return; }
+  if (pixStockData === 'error') { grid.innerHTML = `<div class="gm-state err">${d['pixstock.error']}</div>`; return; }
+  const items = pixStockData.items || [];
+  if (!items.length) { grid.innerHTML = `<div class="gm-state">${d['pixstock.empty']}</div>`; return; }
+  grid.innerHTML = items.slice(0, PIXSTOCK_MAX).map(it => {
+    const kind = String(it.type || '');
+    const ico = PIXSTOCK_KINDS[kind] || '▫';
+    const isImg = kind === 'image' && Number(it.size || 0) < PIXSTOCK_THUMB_MAX;
+    const thumb = it.thumbnail || (isImg ? it.url : '');
+    const title = it.title || `#${gmEsc(it.num || '')} · ${gmEsc(kind)}`;
+    const style = thumb ? ` style="background-image:url('${gmEsc(thumb).replace(/'/g, '%27')}')"` : '';
+    const hole = thumb ? '' : `<span class="px-ico">${ico}</span><span class="px-num">#${gmEsc(it.num || '')}</span>`;
+    return `<a class="px-card" href="https://www.pixeria.com/stock" target="_blank" rel="noopener">
+      <div class="px-thumb"${style}><span class="px-kind">${gmEsc(kind)}</span>${hole}</div>
+      <div class="px-body">
+        <div class="nm">${gmEsc(title)}</div>
+        <div class="mt">${gmEsc(it.motor || '—')}</div>
+        <div class="wh">${pxWhen(it.createdAt, d)}</div>
+      </div>
+    </a>`;
+  }).join('');
+  if (countEl) {
+    countEl.textContent = (d['pixstock.count'] || '')
+      .replace('{n}', pixStockData.total)
+      .replace('{t}', pixStockData.today)
+      .replace('{e}', pixStockData.engines);
+  }
+}
+
+async function loadPixStock() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 9000);
+    const r = await fetch(PIXSTOCK_INDEX, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const json = await r.json();
+    const all = (Array.isArray(json) ? json : (json.items || []))
+      .filter(it => it && PIXSTOCK_KINDS[it.type]);           // solo contenido creativo (fuera mobiliario/NPC/enlaces del gemelo)
+    all.sort((a, b) => Date.parse(b.createdAt || 0) - Date.parse(a.createdAt || 0));
+    const dayAgo = Date.now() - 864e5;
+    pixStockData = {
+      items: all,
+      total: all.length,
+      today: all.filter(it => Date.parse(it.createdAt || 0) > dayAgo).length,
+      engines: new Set(all.map(it => it.motor).filter(Boolean)).size,
+    };
+  } catch (e) {
+    pixStockData = 'error';
+  }
+  renderPixStock();
+  renderPulses();
+  // Métrica honesta: los créditos de Suno eran un "—" perpetuo (el navegador
+  // de Suno duerme a propósito y el endpoint responde con
+  // access-control-allow-origin: null, así que el navegador jamás podría
+  // leerlo). Ese hueco lo ocupa un dato del mismo índice compartido.
+  const mEng = document.getElementById('m-engines');
+  if (mEng && pixStockData && pixStockData !== 'error') mEng.textContent = pixStockData.engines;
+}
+
+// ─── Registro de despacho al Gemelo Digital ─────────────────────────
+// La otra mitad de la cadena: qué pieza ha recibido cada superficie del
+// gemelo y si la ha confirmado (ack). Se agrupa por superficie y se queda
+// el último despacho de cada una — la lista cruda repite la misma pieza
+// decenas de veces porque la parrilla la reproduce en bucle.
+const DS_ICON = { pantalla:'📺', totem:'📺', escaparate:'🪟', mostrador:'🧾', vending:'🥤', pwa:'📱' };
+let despachoData = null; // null = cargando · 'error' · []
+
+function renderDespacho() {
+  const box = document.getElementById('ds-rows');
+  if (!box) return;
+  const countEl = document.getElementById('ds-count');
+  const d = gmDict();
+  if (countEl) countEl.textContent = '';
+  if (despachoData === null) { box.innerHTML = `<div class="gm-state">${d['ds.loading']}</div>`; return; }
+  if (despachoData === 'error') { box.innerHTML = `<div class="gm-state err">${d['ds.error']}</div>`; return; }
+  if (!despachoData.rows.length) { box.innerHTML = `<div class="gm-state">${d['ds.empty']}</div>`; return; }
+  box.innerHTML = despachoData.rows.map(r => `<div class="ds-row">
+    <span class="sf">${DS_ICON[r.surface] || '▫'} ${gmEsc(r.surface)}</span>
+    <span class="ti${r.idle ? ' idle' : ''}">${r.idle ? gmEsc(d['ds.idle']) : gmEsc(r.title)}</span>
+    <span class="wh">${pxWhen(r.iso, d)}</span>
+    ${r.idle ? '' : `<span class="ak${r.ack ? ' ok' : ''}">${r.ack ? d['ds.ack'] : d['ds.pending']}</span>`}
+  </div>`).join('');
+  if (countEl) {
+    countEl.textContent = (d['ds.count'] || '')
+      .replace('{n}', despachoData.total)
+      .replace('{s}', despachoData.rows.length);
+  }
+}
+
+async function loadDespacho() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 8000);
+    // El worker capa a 50 por dentro (Math.min(50, limit)) pidas lo que pidas.
+    // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+    const r = await fetch('https://api.admira.store/signage/feed?limit=50', { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const items = (await r.json()).items || [];
+    const seen = new Map();
+    for (const it of items) {                       // el feed llega del más reciente al más antiguo
+      const raw = String(it.title || '');
+      const m = raw.match(/^\[scr:([^\]]+)\]\s*/);   // el destino viaja en el propio título
+      const surface = (m ? m[1] : (it.target || it.screen || '—')).toLowerCase();
+      if (seen.has(surface)) continue;
+      const title = raw.replace(/^\[scr:[^\]]+\]\s*/, '');
+      seen.set(surface, {
+        surface,
+        title,
+        idle: /^__idle__$/.test(title) || !title,
+        ack: !!it.acked_at,
+        iso: new Date(it.ts || 0).toISOString(),
+      });
+    }
+    despachoData = { rows: [...seen.values()], total: items.length };
+    // Métrica honesta: antes se pintaba items.length, que con el tope de 50
+    // del worker era SIEMPRE 50 — el límite disfrazado de dato. Ahora son los
+    // despachos de las últimas 24 h, y si los 50 que caben entran todos en
+    // esa ventana, el número lleva "+": no sabemos cuántos más hubo.
+    const dayAgo = Date.now() - 864e5;
+    const last24 = items.filter(it => (it.ts || 0) > dayAgo).length;
+    const mFeed = document.getElementById('m-feed');
+    if (mFeed) mFeed.textContent = (items.length >= 50 && last24 === items.length) ? '50+' : last24;
+  } catch (e) {
+    despachoData = 'error';
+  }
+  renderDespacho();
+}
+
+// ─── Pulso vivo de las cuatro fichas de la suite ────────────────────
+// Cada producto de la cadena enseña su señal REAL, del mismo dato del que
+// ya vive el resto de la página: studio ← índice del estudio · tv ← qué
+// está en antena ahora mismo · live/app ← catálogo compartido de gemelos.
+// Ninguna ficha inventa un número: si su fuente no responde, se apaga.
+let onAirData = null; // null = sin pedir · 'error' · {title} · {} = nadie emitiendo
+
+function pulseSet(id, text, off) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('off', !!off);
+  el.querySelector('.pv').textContent = text;
+}
+
+function renderPulses() {
+  const d = gmDict();
+  const fmt = (k, map) => Object.entries(map).reduce((s, [t, v]) => s.replace(t, v), d[k] || '');
+
+  if (pixStockData && pixStockData !== 'error') {
+    pulseSet('pulse-studio', fmt('pulse.studio', { '{n}': pixStockData.total, '{t}': pixStockData.today }));
+  } else if (pixStockData === 'error') {
+    pulseSet('pulse-studio', d['pulse.off'], true);
+  }
+
+  if (onAirData && onAirData !== 'error') {
+    pulseSet('pulse-tv', onAirData.title ? fmt('pulse.tv', { '{title}': onAirData.title }) : d['pulse.tvIdle'], !onAirData.title);
+  } else if (onAirData === 'error') {
+    pulseSet('pulse-tv', d['pulse.off'], true);
+  }
+
+  if (Array.isArray(gemelosData)) {
+    const surf = gemelosData.reduce((n, l) => n + (Array.isArray(l.surfaces) ? l.surfaces.length : 0), 0);
+    const live = gemelosData.reduce((n, l) => n + (Array.isArray(l.surfaces) ? l.surfaces.filter(s => s.status === 'live').length : 0), 0);
+    pulseSet('pulse-live', fmt('pulse.live', { '{n}': gemelosData.length.toLocaleString(document.documentElement.lang), '{s}': surf.toLocaleString(document.documentElement.lang) }));
+    pulseSet('pulse-app', fmt('pulse.app', { '{s}': live.toLocaleString(document.documentElement.lang) }));
+  } else if (gemelosData === 'error') {
+    pulseSet('pulse-live', d['pulse.off'], true);
+    pulseSet('pulse-app', d['pulse.off'], true);
+  }
+}
+
+// Qué está EN ANTENA ahora: pantallas con rol de canal vivas, y el título
+// resuelto contra el índice del estudio — la prueba de que lo creado en
+// Pixeria es exactamente lo que se emite. Contra el worker: es una
+// respuesta diminuta y si el ISP lo bloquea, la ficha se apaga y ya.
+async function loadOnAir() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 8000);
+    // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+    const r = await fetch('https://api.admira.store/signage/screens', { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if (!r.ok) throw new Error('http ' + r.status);
+    const j = await r.json();
+    const live = (j.screens || []).filter(s => s.online && s.showing_id);
+    // Métrica honesta: el propio hero de esta web se registra como pantalla
+    // (screen=xpaceos-web), así que contarla sería contar visitantes y
+    // llamarlos "reproductores de cartelería". Fuera. Si no queda ninguno,
+    // el número es 0 — que es la verdad, no un guion.
+    const players = live.filter(s => s.screen !== 'xpaceos-web');
+    const mScreens = document.getElementById('m-screens');
+    if (mScreens) mScreens.textContent = players.length;
+    const canal = live.find(s => s.role === 'canal') || live[0];
+    let title = '';
+    if (canal) {
+      const items = (pixStockData && pixStockData !== 'error') ? pixStockData.items : [];
+      const hit = items.find(it => it.id === canal.showing_id);
+      title = (hit && (hit.title || `#${hit.num}`)) || String(canal.showing_id).slice(0, 18);
+    }
+    onAirData = { title };
+  } catch (e) {
+    onAirData = 'error';
+  }
+  renderPulses();
+}
+
+renderPixStock();
+// Carga perezosa CON RED DE SEGURIDAD: el observador dispara al acercarse
+// cualquiera de las dos secciones que beben del índice, pero hay contextos
+// (pestaña en segundo plano, documento sin pintar) donde nunca llega a
+// disparar y la tira se quedaba en "Cargando…" para siempre. El plazo de
+// 6 s —ya pasada la primera pintada— garantiza el dato.
+(() => {
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    loadPixStock().then(loadOnAir);
+    loadDespacho();
+  };
+  const hosts = ['plataforma', 'pixstock', 'despacho'].map(id => document.getElementById(id)).filter(Boolean);
+  if ('IntersectionObserver' in window && hosts.length) {
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) { io.disconnect(); start(); }
+    }, { rootMargin: '400px' });
+    hosts.forEach(h => io.observe(h));
+  }
+  setTimeout(start, 6000);
+})();
+
+document.getElementById('lang-toggle')?.addEventListener('click', event => {
+  applyLanguage(event.currentTarget.dataset.langTarget || (document.documentElement.lang === 'en' ? 'es' : 'en'));
+});
+
+try {
+  applyLanguage(localStorage.getItem('xpaceosLang') || 'es');
+} catch {
+  applyLanguage('es');
+}
+
+
+// Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
+const VISIT_NOTIFY_ENDPOINT = 'https://bridge.admira.store/visits/xpaceos';
+
+function notifyXpaceVisit() {
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+  const payload = {
+    page: location.href,
+    title: document.title,
+    referrer: document.referrer || 'direct',
+    lang: document.documentElement.lang || navigator.language || 'n/a',
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'n/a',
+    screen: `${window.screen.width}x${window.screen.height}`,
+  };
+  const body = JSON.stringify(payload);
+  fetch(VISIT_NOTIFY_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body,
+    credentials: 'omit',
+    keepalive: true,
+  }).catch(() => {});
+}
+
+notifyXpaceVisit();
+
+
+const starfield = document.querySelector('.starfield');
+let nextShootingStarTimer = 0;
+
+function scheduleShootingStar() {
+  if (!starfield || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const delay = 5200 + Math.random() * 7600;
+  nextShootingStarTimer = window.setTimeout(() => {
+    const star = document.createElement('span');
+    star.className = 'shooting-star';
+    star.style.setProperty('--x', `${62 + Math.random() * 34}%`);
+    star.style.setProperty('--y', `${8 + Math.random() * 42}%`);
+    star.style.setProperty('--duration', `${1.45 + Math.random() * .75}s`);
+    starfield.appendChild(star);
+    star.addEventListener('animationend', () => star.remove(), { once: true });
+    scheduleShootingStar();
+  }, delay);
+}
+
+scheduleShootingStar();
+window.addEventListener('pagehide', () => window.clearTimeout(nextShootingStarTimer));
+
+// Métricas live — pantallas, despachos y motores los rellenan loadOnAir(),
+// loadDespacho() y loadPixStock(): son las MISMAS fuentes que ya alimentan el
+// pulso de la suite, la tira del estudio y el registro de despacho. Antes este
+// bloque repetía esas dos peticiones (y una tercera a Suno, imposible de leer
+// desde el navegador por CORS). Aquí queda solo lo que no depende de nadie.
+(() => {
+  // Días desde Shoptalk EU 2026 — cerró el 11 junio 2026
+  try {
+    const target = new Date('2026-06-11T18:00:00+02:00').getTime();
+    const days = Math.max(0, Math.floor((Date.now() - target) / (1000*60*60*24)));
+    document.getElementById('m-days').textContent = days;
+  } catch {}
+})();
+
+// Nav móvil (hamburguesa) + scroll-spy
+(() => {
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  const backdrop = document.getElementById('nav-backdrop');
+  if (toggle && nav) {
+    const setOpen = (open) => {
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      nav.classList.toggle('open', open);
+      if (backdrop) backdrop.classList.toggle('open', open);
+      document.body.classList.toggle('nav-open-lock', open);
+    };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
+    if (backdrop) backdrop.addEventListener('click', () => setOpen(false));
+    nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  // Scroll-spy: resalta en el nav la sección visible (basado en scroll, sin IO)
+  const spyLinks = Array.from(document.querySelectorAll('nav a.nav-link'));
+  const sections = [];
+  spyLinks.forEach(a => {
+    const href = a.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      const el = document.querySelector(href);
+      if (el) sections.push({ el, link: a });
+    }
+  });
+  // Ordena por posición real en el documento (el nav no está en orden físico)
+  sections.sort((a, b) =>
+    (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+  if (sections.length) {
+    const syncSpy = () => {
+      const mid = window.scrollY + window.innerHeight * 0.35;
+      let current = null;
+      for (const s of sections) {
+        if (s.el.getBoundingClientRect().top + window.scrollY <= mid) current = s.link;
+      }
+      spyLinks.forEach(l => l.classList.toggle('active', l === current));
+    };
+    window.addEventListener('scroll', syncSpy, { passive: true });
+    window.addEventListener('resize', syncSpy, { passive: true });
+    syncSpy();
+  }
+})();
+</script>
+
+
+<script>
+/* DEMO VIVA: se muestra si el CANAL QUE SE EMBEBE tiene programación en antena, y el
+   rótulo dice la verdad sobre cuántas pantallas físicas emiten ahora.
+
+   Por qué cambió (Neo, 21-jul-2026): la versión anterior decidía mirando cuatro pantallas
+   FÍSICAS (dgx-spark, rosa, plata, crema) que **no son lo que muestra el iframe** — el
+   iframe embebe `xpaceos-web`. Con la flota apagada, la demo quedaba oculta aunque el
+   canal estuviera emitiendo perfectamente: medido hoy, `xpaceos-web` tenía un vídeo en
+   antena y la sección seguía invisible para todos los visitantes.
+
+   Se mide `item`, NO `lastSeen`. `item` es la programación real del canal; `lastSeen` se
+   actualiza cada vez que ALGUIEN abre el canal — incluida esta misma página — así que
+   usarlo aquí sería circular: la web se daría por viva sólo porque alguien la está mirando.
+
+   Sigue sin haber marco muerto: si no hay programación, no se pinta. Y el rótulo nunca
+   finge pantallas que no existen. */
+(function(){
+  var fig=document.getElementById('liveDemo'), tag=document.getElementById('liveTag');
+  if(!fig||!tag) return;
+  var CANAL='xpaceos-web';                                   // el que embebe el iframe
+  var SCREENS=['dgx-spark','macbookairrosa','macbookairplata','macbookaircrema'];
+  var API='https://api.admira.store/signage/now?screen=';
+  function now(s){
+    return fetch(API+encodeURIComponent(s)+'&_t='+Date.now(),{cache:'no-store'})
+      .then(function(r){return r.json();}).catch(function(){return null;});
+  }
+  function refresh(){
+    Promise.all([now(CANAL)].concat(SCREENS.map(now))).then(function(res){
+      var canal=res[0], enAntena=!!(canal&&canal.item);
+      // Pantallas FÍSICAS con reproducción fresca (<10 min). Aquí lastSeen sí vale: son
+      // equipos ajenos a esta web, nadie los toca por visitarla.
+      var n=res.slice(1).reduce(function(a,d){
+        return a+((d&&d.lastSeen&&(Date.now()-d.lastSeen)<600000)?1:0);
+      },0);
+      fig.hidden=!enAntena;
+      tag.textContent = n>0 ? ('LIVE · '+n+' screen'+(n>1?'s':'')+' emitting')
+                            : 'LIVE · channel on air';
+    });
+  }
+  refresh(); setInterval(refresh, 60000);
+})();
+</script>
+  <script src="/assets/admira-version-watch.js" defer></script>
 </body>
 </html>
