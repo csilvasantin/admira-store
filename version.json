@@ -4,8 +4,8 @@
   "deployer": "SmithMacMini",
   "machine": "MacMini",
   "signature": "SmithMacMini \u00b7 MacMini",
-  "git": "pending",
-  "gitShort": "pending",
-  "gitFull": "pending",
-  "dirty": true
+  "git": "b1d03eefdc171e2f5264f44ea1e99bc3be8380ca",
+  "gitShort": "b1d03ee",
+  "gitFull": "b1d03eefdc171e2f5264f44ea1e99bc3be8380ca",
+  "dirty": false
 }
