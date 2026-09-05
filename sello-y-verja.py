@@ -20,6 +20,93 @@ import os
 import re
 import sys
 
+
+def parse_js_object(block):
+    """Lee pares clave: 'valor' de un objeto JS (I18N.es). Los valores pueden
+    llevar HTML con comillas dobles; las simples van escapadas."""
+    out = {}
+    i, n = 0, len(block)
+    while i < n:
+        while i < n and block[i] in " \t\n\r,":
+            i += 1
+        if i >= n:
+            break
+        if block[i] in "'\"":
+            q = block[i]
+            i += 1
+            key = []
+            while i < n and block[i] != q:
+                if block[i] == "\\" and i + 1 < n:
+                    key.append(block[i + 1])
+                    i += 2
+                    continue
+                key.append(block[i])
+                i += 1
+            key = "".join(key)
+            i += 1
+        else:
+            m = re.match(r"[\w.]+", block[i:])
+            if not m:
+                i += 1
+                continue
+            key = m.group(0)
+            i += m.end()
+        while i < n and block[i] in " \t":
+            i += 1
+        if i >= n or block[i] != ":":
+            continue
+        i += 1
+        while i < n and block[i] in " \t":
+            i += 1
+        if i >= n or block[i] not in "'\"`":
+            continue
+        q = block[i]
+        i += 1
+        val = []
+        while i < n:
+            if block[i] == "\\" and i + 1 < n:
+                nxt = block[i + 1]
+                val.append({"n": "\n", "t": "\t", "'": "'", '"': '"', "\\": "\\", "`": "`"}.get(nxt, nxt))
+                i += 2
+                continue
+            if block[i] == q:
+                i += 1
+                break
+            val.append(block[i])
+            i += 1
+        out[key] = "".join(val)
+    return out
+
+
+def bake_i18n(html, es, attr, html_inner):
+    """Sustituye el interior de cada nodo con data-i18n / data-i18n-html."""
+    n = 0
+
+    def repl(m):
+        nonlocal n
+        key = m.group("key")
+        if key not in es:
+            return m.group(0)
+        n += 1
+        return m.group("open") + es[key] + m.group("close")
+
+    if html_inner:
+        pat = re.compile(
+            r'(?P<open><(?P<tag>[a-zA-Z0-9]+)(?P<pre>[^>]*?)\s' + attr + r'="(?P<key>[^"]+)"(?P<post>[^>]*)>)'
+            r'(?P<body>.*?)'
+            r'(?P<close></(?P=tag)>)',
+            re.S,
+        )
+    else:
+        pat = re.compile(
+            r'(?P<open><(?P<tag>[a-zA-Z0-9]+)(?P<pre>[^>]*?)\s' + attr + r'="(?P<key>[^"]+)"(?P<post>[^>]*)>)'
+            r'(?P<body>[^<]*)'
+            r'(?P<close></(?P=tag)>)',
+            re.S,
+        )
+    return pat.sub(repl, html), n
+
+
 SELLO = os.environ["SELLO"]
 ORIGEN_SHA = os.environ["ORIGEN_SHA"]
 DESTINO = "index.html"
@@ -76,6 +163,24 @@ if es_block:
 s = re.sub(r'(<meta property="og:locale" content=")[^"]+(")', r'\1es_ES\2', s, count=1)
 s = re.sub(r'<link rel="canonical" href="[^"]+">', '<link rel="canonical" href="https://www.admira.store/">', s, count=1)
 s = re.sub(r'(<meta property="og:url" content=")[^"]+(")', r'\1https://www.admira.store/\2', s, count=1)
-castellano = "html lang=es · título ES" if titulo else "html lang=es · título sin diccionario"
+if titulo:
+    s = re.sub(r'(<meta name="twitter:title" content=")[^"]*(")', lambda m: m.group(1) + titulo.replace('"', '&quot;') + m.group(2), s, count=1)
+    s = re.sub(r'(<meta property="og:image:alt" content=")[^"]*(")', lambda m: m.group(1) + titulo.replace('"', '&quot;') + m.group(2), s, count=1)
+if descripcion:
+    s = re.sub(r'(<meta name="twitter:description" content=")[^"]*(")', lambda m: m.group(1) + descripcion + m.group(2), s, count=1)
+
+# Hornear I18N.es en el HTML visible (DEC-0508 / FLT-1729). Sin esto el crawler,
+# el primer paint y quien tenga JS apagado siguen viendo el inglés de xpaceos.com.
+horneados = 0
+es_dict = parse_js_object(es_block.group(1)) if es_block else {}
+if es_dict:
+    s, n_txt = bake_i18n(s, es_dict, "data-i18n", html_inner=False)
+    s, n_html = bake_i18n(s, es_dict, "data-i18n-html", html_inner=True)
+    horneados = n_txt + n_html
+
+castellano = (
+    f"html lang=es · título ES · {horneados} nodos horneados"
+    if titulo else "html lang=es · título sin diccionario"
+)
 open(DESTINO, "w", encoding="utf-8").write(s)
 print(f"  sello {SELLO} · espejo de xpaceos@{ORIGEN_SHA} · verja {verja} · {castellano}")

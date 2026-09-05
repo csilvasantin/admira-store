@@ -23,9 +23,19 @@ AQUI="$(pwd)"
 
 echo "→ Actualizando el origen ($ORIGEN)…"
 git -C "$ORIGEN" fetch -q origin
-git -C "$ORIGEN" pull -q --ff-only || { echo "✗ El clon de xpaceos ha divergido: resuélvelo antes de espejar." >&2; exit 1; }
+# SYNC_BEFORE / SYNC_SHA: el gemelo va a −1 día (DEC-0508). Así admira.store no
+# copia el experimento de hoy en xpaceos.com; copia lo que ya llevó un día vivo.
+if [ -n "${SYNC_SHA:-}" ]; then
+  git -C "$ORIGEN" checkout -q "$SYNC_SHA"
+elif [ -n "${SYNC_BEFORE:-}" ]; then
+  OLD="$(git -C "$ORIGEN" rev-list -n 1 --before="$SYNC_BEFORE" origin/main)"
+  [ -n "$OLD" ] || { echo "✗ no hay commit de xpaceos anterior a «$SYNC_BEFORE»" >&2; exit 1; }
+  git -C "$ORIGEN" checkout -q "$OLD"
+else
+  git -C "$ORIGEN" pull -q --ff-only || { echo "✗ El clon de xpaceos ha divergido: resuélvelo antes de espejar." >&2; exit 1; }
+fi
 ORIGEN_SHA="$(git -C "$ORIGEN" rev-parse --short HEAD)"
-echo "  origen en $ORIGEN_SHA"
+echo "  origen en $ORIGEN_SHA${SYNC_BEFORE:+ (antes de $SYNC_BEFORE)}"
 
 # El espejo se construye desde el commit, no desde el working tree del clon.
 # Así una captura de QA o cualquier otro fichero local sin commitear nunca puede
@@ -41,12 +51,14 @@ git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 echo "→ Espejando contenido…"
 rsync -a --delete \
   --exclude '.git/' \
+  --exclude '.github/' \
   --exclude 'CNAME' \
   --exclude 'gate.js' \
   --exclude 'deploy.sh' \
   --exclude 'sync-desde-xpaceos.sh' \
   --exclude 'sello-y-verja.py' \
   --exclude '.gitignore' \
+  --exclude 'tests/' \
   "$ORIGEN_LIMPIO"/ ./
 
 # La portada de admira.store ES la portada de xpaceos.com, en castellano (Carlos,

@@ -1,0 +1,49 @@
+name: Espejo xpaceos a −1 día
+
+# DEC-0508: admira.store es el gemelo en castellano. Se sincroniza cada noche
+# con el xpaceos.com de AYER, no con el HEAD de hoy, para no copiar un
+# experimento a media mañana. El sello y el castellano los pone sello-y-verja.py.
+
+on:
+  schedule:
+    - cron: "20 4 * * *"   # 06:20 Madrid (UTC+2 en septiembre)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-xpaceos
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: store
+      - uses: actions/checkout@v4
+        with:
+          repository: csilvasantin/xpaceos
+          path: xpaceos
+          fetch-depth: 0
+      - name: Espejar commit de hace 24 h y hornear castellano
+        working-directory: store
+        env:
+          SYNC_BEFORE: "24 hours ago"
+          GIT_AUTHOR_NAME: SmithMacMini
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: SmithMacMini
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          bash ./sync-desde-xpaceos.sh ../xpaceos
+          git add -A
+          if git diff --cached --quiet; then
+            echo "sin cambios"
+            exit 0
+          fi
+          SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' index.html | head -1)"
+          git commit -m "espejo xpaceos −1d · ${SELLO} · sync automático DEC-0508"
+          git push origin HEAD:main
