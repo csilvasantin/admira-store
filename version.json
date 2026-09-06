@@ -1,11 +1,11 @@
 {
-  "version": "v.05.09.2026.r3.07:41",
-  "deployedAt": "2026-09-05T05:41:15Z",
-  "deployer": "MorfeoMacMini",
-  "machine": "MacMini",
-  "signature": "MorfeoMacMini · MacMini",
-  "git": "2e6c88bdbf186243e20acde3e88b0603e880695c",
-  "gitShort": "2e6c88b",
-  "gitFull": "2e6c88bdbf186243e20acde3e88b0603e880695c",
+  "version": "v.03.09.2026.r1.08:07",
+  "deployedAt": "2026-09-03T06:07:18Z",
+  "deployer": "NeoMBP14",
+  "machine": "MacBookProNegro14",
+  "signature": "NeoMBP14 · MacBookProNegro14",
+  "git": "0695bae360d8b8d67cd0a005c22c71316690d598",
+  "gitShort": "0695bae",
+  "gitFull": "0695bae360d8b8d67cd0a005c22c71316690d598",
   "dirty": false
 }
