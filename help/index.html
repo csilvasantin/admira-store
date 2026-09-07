@@ -3,159 +3,301 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ayuda · XpaceOS — comandos del CLI del gemelo (Admira XP)</title>
-<meta name="description" content="Referencia completa y bilingüe (ES/EN) de TODOS los comandos del CLI del gemelo digital Admira XP / XpaceOS: consulta, equipo, stock, DVR/velocidad, tienda, pantallas, escena en vivo, IA, música y render. · Full bilingual command reference for the XpaceOS digital twin CLI.">
-<link rel="canonical" href="https://www.xpaceos.com/help">
+<title>Ayuda · XpaceOS — cómo usar el sistema operativo del comercio físico</title>
+<meta name="description" content="Ayuda de XpaceOS para personas: qué es, cómo probar el gemelo digital de cualquier espacio, escanear tu tienda en 3D con el móvil, operar con reglas XPL, emitir y medir, dar de alta pantallas y conectar tu agente por MCP.">
+<link rel="canonical" href="https://www.xpaceos.com/help/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Ayuda · XpaceOS — comandos del CLI del gemelo">
-<meta property="og:description" content="Referencia completa y bilingüe de todos los comandos del CLI del simulador Admira XP, el gemelo digital de XpaceOS.">
-<meta property="og:url" content="https://www.xpaceos.com/help">
+<meta property="og:title" content="Ayuda · XpaceOS">
+<meta property="og:description" content="Cómo usar XpaceOS: probar el gemelo, escanear tu espacio, operar con XPL, emitir y medir, conectar tu agente.">
+<meta property="og:url" content="https://www.xpaceos.com/help/">
 <meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Ayuda · XpaceOS — comandos del CLI del gemelo">
-<meta name="twitter:description" content="Referencia completa y bilingüe de todos los comandos del CLI del gemelo digital Admira XP.">
-<meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
-<script>
-  (function(){try{var k='xpace_lang',l=localStorage.getItem(k);
-    if(!l){l=(navigator.language||'es').toLowerCase().indexOf('en')===0?'en':'es';}
-    document.documentElement.lang=(l==='en')?'en':'es';}catch(e){}})();
-</script>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<meta name="admiranext-version" content="v.05.09.2026.r8.23:45">
 <style>
-  :root{--bg:#02080d;--ink:#dff8ff;--mut:#75aab9;--brand:#78f3ff;--accent:#ffd866;--card:#0a1620;--line:rgba(120,243,255,.18);--good:#88ffaa}
+  :root{--bg:#070b12;--panel:#0e1622;--line:#1d2a3a;--txt:#e9f1f7;--mut:#7e95a8;--acc:#34d0c0;--pur:#9b8cff;--good:#3ddc84;--warn:#ffb347}
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.55}
-  a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
-  code{background:#0a1a26;color:var(--accent);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:.92em;border:1px solid var(--line)}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
-  header{padding:16px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(2,8,13,.93);backdrop-filter:blur(8px);z-index:10}
-  header .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .logo{font-family:monospace;font-size:13px;letter-spacing:.16em;color:var(--accent);font-weight:bold}
-  .logo .dot{color:var(--brand)}
-  nav{margin-left:auto;display:flex;gap:12px;font-size:12px;flex-wrap:wrap;align-items:center}
-  nav a{color:var(--mut)}nav a:hover{color:var(--ink)}
-  #langToggle{cursor:pointer;font-family:monospace;font-size:11px;letter-spacing:.12em;color:var(--accent);background:#0a1a26;border:1px solid var(--line);border-radius:6px;padding:4px 10px}
-  .hero{padding:42px 0 16px;background:radial-gradient(ellipse at 20% 0%,rgba(120,243,255,.10),transparent 55%)}
-  .hero h1{font-size:34px;line-height:1.12;margin:0 0 12px;letter-spacing:-.02em;font-weight:800}
-  .hero h1 .grad{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero p.lede{font-size:16px;color:var(--mut);max-width:780px;margin:0 0 16px}
-  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 0}
-  #q{flex:1;min-width:220px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:11px 14px;font:inherit;font-size:15px;outline:none}
-  #q:focus{border-color:var(--brand)}
-  .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--mut);font-size:12px}
-  .tip{background:linear-gradient(180deg,rgba(255,216,102,.10),rgba(255,216,102,.02));border-left:3px solid var(--accent);padding:10px 14px;border-radius:6px;color:var(--ink);font-size:13px;margin:16px 0 6px}
-  .tip strong{color:var(--accent)}
-  main{max-width:1080px;margin:0 auto;padding:6px 22px 60px}
-  .cat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 14px}
-  .cat h2{font-size:16px;margin:0 0 2px;color:var(--brand);display:flex;gap:9px;align-items:baseline}
-  .cat h2 .num{color:var(--mut);font-family:monospace;font-size:12px}
-  .cat .desc{color:var(--mut);font-size:13px;margin:0 0 10px}
-  .cmds{display:flex;flex-wrap:wrap;gap:7px}
-  .cmd{cursor:pointer;background:#06121b;border:1px solid var(--line);border-radius:7px;padding:5px 10px;color:var(--ink);font-family:monospace;font-size:13px;white-space:nowrap;transition:border-color .12s,background .12s}
-  .cmd:hover{border-color:var(--brand);background:#0a1a26}
-  .cmd.copied{border-color:var(--good);background:var(--good);color:#03140a}
-  footer{max-width:1080px;margin:0 auto;padding:0 22px 50px;color:var(--mut);font-size:12px}
-  #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#04140a;border:1px solid var(--good);color:#9effa0;border-radius:10px;padding:9px 16px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
-  #toast.show{opacity:1}
-  @media (max-width:720px){.hero h1{font-size:26px}}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 -apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif}
+  a{color:var(--acc)}
+  header{position:sticky;top:0;z-index:5;background:rgba(7,11,18,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .bar{max-width:1040px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .bar .logo{font-weight:800;letter-spacing:.08em;color:var(--acc);text-decoration:none;font-size:13px}
+  .bar nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .bar nav a,.bar nav button{font:inherit;font-size:13px;color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:transparent;cursor:pointer}
+  .bar nav a:hover,.bar nav button:hover{color:var(--txt);border-color:var(--acc)}
+  main{max-width:1040px;margin:0 auto;padding:36px 20px 80px}
+  h1{font-size:38px;line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
+  h1 span{color:var(--acc)}
+  .lede{color:var(--mut);font-size:18px;max-width:760px;margin:0 0 26px}
+  .toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:0 0 40px}
+  .toc a{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--txt);text-decoration:none;font-size:14px}
+  .toc a:hover{border-color:var(--acc)}
+  .toc .n{font-family:ui-monospace,Menlo,monospace;color:var(--acc);font-size:12px}
+  section{border-top:1px solid var(--line);padding:34px 0}
+  section h2{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  section h2 .n{font-family:ui-monospace,Menlo,monospace;color:var(--acc);font-size:14px;margin-right:10px}
+  .k{color:var(--mut);font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+  .card h3{margin:0 0 8px;font-size:16px}
+  .card p,.card li{color:var(--mut);font-size:14px;margin:0}
+  .card ol,.card ul{padding-left:18px;margin:6px 0 0;display:flex;flex-direction:column;gap:4px}
+  .card b{color:var(--txt)}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:#0a1220;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:#cfe8ff}
+  pre{background:#0a1220;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.5;color:#cfe8ff;margin:10px 0 0;white-space:pre-wrap;word-break:break-word;max-width:100%}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#04201c;font-weight:700;padding:10px 16px;border-radius:10px;text-decoration:none;font-size:14px;margin-top:12px}
+  .cta.sec{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+  .tip{border-left:3px solid var(--pur);padding:8px 14px;color:var(--mut);font-size:14px;margin-top:12px;background:rgba(155,140,255,.06);border-radius:0 10px 10px 0}
+  footer{border-top:1px solid var(--line);color:var(--mut);font-size:13px;padding:24px 20px;text-align:center}
+  footer a{color:var(--mut)}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:30px}}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <span class="logo">XPACEOS<span class="dot">·</span><span data-i="help">AYUDA</span></span>
+<header><div class="bar">
+  <a class="logo" href="/">XPACEOS · <span data-i18n="help">AYUDA</span></a>
   <nav>
-    <a href="https://www.pixeria.com/crear/">▶ <span data-i="opencli">Abrir el CLI</span></a>
-    <a href="https://www.xpaceos.com/admira-xp/">🎮 <span data-i="twin">Gemelo</span></a>
-    <a href="/ayuda/">◇ <span data-i="method">Método Xpacios</span></a>
-    <a href="/">↗ XpaceOS</a>
-    <a href="#" id="langToggle" role="button" aria-label="Switch language">EN</a>
+    <a href="/#prueba" data-i18n="nav.try">Prueba el gemelo</a>
+    <a href="/scan/" data-i18n="nav.scan">Escanear</a>
+    <a href="/help/cli/" data-i18n="nav.cli">Comandos CLI</a>
+    <a href="/mcp/">MCP</a>
+    <a href="/ayuda/" data-i18n="nav.method">Método</a>
+    <button type="button" id="langToggle" aria-label="Switch language">EN</button>
   </nav>
 </div></header>
 
-<div class="hero"><div class="wrap">
-  <h1><span data-i="h1a">Comandos del CLI</span> · <span class="grad"><span data-i="h1b">Gemelo Admira XP</span></span></h1>
-  <p class="lede" data-i="lede">Todo el vocabulario del Xtanco. Estos comandos se ejecutan desde el <b>CLI Xtanco</b> de <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> (estando En vivo, sin clave) o en la consola del propio gemelo. Convención: invocar sin argumentos suele hacer <em>toggle</em>; los aliases en mayúsculas/minúsculas valen igual.</p>
-  <div class="bar">
-    <input id="q" type="search" placeholder="Buscar… (velocidad, ladron, restock)" autocomplete="off" spellcheck="false">
-    <span class="pill" id="count"></span>
-  </div>
-  <div class="tip"><span data-i="tip">💡 Haz clic en cualquier comando para <strong>copiarlo</strong> y pégalo en el CLI. Los que llevan número o texto (<code>/velocidad 8</code>, <code>/reloj 14:30</code>) son ejemplos — cámbialos a tu gusto.</span></div>
-  <div class="tip" style="border-left-color:var(--brand);background:linear-gradient(180deg,rgba(120,243,255,.10),rgba(120,243,255,.02))"><span data-i="tipMove">📐 <strong>Doctrina Xpaces:</strong> todos los elementos del gemelo son <strong>movibles y sustituibles siempre</strong>. Layout, mobiliario, pantallas y activos viven en la config — se reubican o se reemplazan sin tocar el motor. Ver <a href="/ayuda/">Método Xpacio</a> y <a href="/mcp/">MCP</a>.</span></div>
-</div></div>
+<main>
+  <h1 data-i18n-html="h1">Cómo usar <span>XpaceOS</span></h1>
+  <p class="lede" data-i18n="lede">XpaceOS convierte cada tienda, escaparate o stand en un medio publicitario inteligente. Esta ayuda es para personas: qué es, qué puedes hacer hoy y por dónde empezar. Los agentes de IA tienen la suya en <a href="/mcp/">/mcp</a> y la misma guía como herramienta <code>help</code>.</p>
 
-<main><div id="cats"></div></main>
-<footer><span data-i="foot">Referencia generada desde <code>helpSections()</code> del gemelo · todos los comandos son accesibles desde el CLI.</span> · Admira Digital Networks · <a href="https://www.xpaceos.com/">XpaceOS</a></footer>
-<div id="toast">copiado ✓</div>
+  <div class="toc">
+    <a href="#que-es"><span class="n">00</span><span data-i18n="toc.0">Qué es XpaceOS</span></a>
+    <a href="#gemelo"><span class="n">01</span><span data-i18n="toc.1">Prueba el gemelo</span></a>
+    <a href="#escanea"><span class="n">02</span><span data-i18n="toc.2">Escanea tu espacio</span></a>
+    <a href="#xpl"><span class="n">03</span><span data-i18n="toc.3">Opera con reglas XPL</span></a>
+    <a href="#emite"><span class="n">04</span><span data-i18n="toc.4">Emite y mide</span></a>
+    <a href="#alta"><span class="n">05</span><span data-i18n="toc.5">Da de alta una pantalla</span></a>
+    <a href="#mcp"><span class="n">06</span><span data-i18n="toc.6">Conecta tu agente (MCP)</span></a>
+    <a href="#soporte"><span class="n">07</span><span data-i18n="toc.7">Método y soporte</span></a>
+  </div>
+
+  <section id="que-es">
+    <h2><span class="n">00</span><span data-i18n="s0.h">Qué es XpaceOS</span></h2>
+    <p class="k" data-i18n="s0.k">tres capas · cuatro productos · un mismo dato</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s0.a.h">Las tres capas</h3><ul>
+        <li data-i18n-html="s0.a.1"><b>PixerIA</b> crea el contenido con IA (audio, música, imagen, vídeo) a partir de un encargo. → <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a></li>
+        <li data-i18n-html="s0.a.2"><b>Admira XP</b> lo distribuye sobre un Gemelo Digital del espacio: una réplica isométrica de tu tienda que corre en el navegador y controla el espacio real.</li>
+        <li data-i18n-html="s0.a.3"><b>OmniPublicity</b> vende cada superficie visible en un mercado de subastas en tiempo real (RTB). → <a href="/cpm/">CPM</a></li>
+      </ul></div>
+      <div class="card"><h3 data-i18n="s0.b.h">La cadena de productos</h3><ul>
+        <li data-i18n-html="s0.b.1"><b>admira.studio</b> creando → <b>admira.tv</b> emitiendo → <b>admira.live</b> distribuyendo → <b>admira.app</b> vendiendo. Un login y un mismo dato de punta a punta.</li>
+        <li data-i18n-html="s0.b.2">Corre sobre <b>Lenovo edge</b> + <b>Nvidia GPU</b>: inferencia local para que la audiencia captada por cámara dispare contenido antes de que el visitante mire a otro lado.</li>
+        <li data-i18n-html="s0.b.3">Hoy en producción: <b>8.775 gemelos</b> y <b>23.985 superficies</b> vivas en el catálogo compartido.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="gemelo">
+    <h2><span class="n">01</span><span data-i18n="s1.h">Prueba el gemelo</span></h2>
+    <p class="k" data-i18n="s1.k">cualquier espacio real, en tu navegador, sin instalar nada</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s1.a.h">Desde la portada</h3><ol>
+        <li data-i18n-html="s1.a.1">Entra en <a href="/#prueba">xpaceos.com/#prueba</a>.</li>
+        <li data-i18n="s1.a.2">Busca por nombre, dirección o marca, o filtra por marca y tipo de superficie.</li>
+        <li data-i18n="s1.a.3">Toca una tarjeta: su Gemelo Digital se carga ahí mismo con las pantallas y superficies reales de ese punto.</li>
+        <li data-i18n="s1.a.4">«Abrir a pantalla completa» para operarlo con todo el espacio.</li>
+      </ol><a class="cta" href="/#prueba" data-i18n="s1.cta">Prueba el gemelo →</a></div>
+      <div class="card"><h3 data-i18n="s1.b.h">Enlaces directos</h3>
+        <p data-i18n-html="s1.b.1">Gemelo de un punto concreto: <code>/admira-xp/?loc=&lt;id&gt;</code> (p. ej. <a href="/admira-xp/?loc=mango-001" target="_blank" rel="noopener">?loc=mango-001</a>).</p>
+        <p data-i18n-html="s1.b.2" style="margin-top:8px">Portada con ese gemelo ya cargado: <code>/?twin=&lt;id&gt;</code>.</p>
+        <p data-i18n-html="s1.b.3" style="margin-top:8px">Dentro del gemelo hay un CLI con todo el vocabulario (velocidad, reloj, stock, pantallas, IA, música…): <a href="/help/cli/">referencia de comandos</a>.</p>
+        <div class="tip" data-i18n="s1.tip">El gemelo de referencia es el Xtanco (estanco). Los demás espacios usan el mismo motor con su configuración real: nombre, pantallas y superficies del catálogo.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="escanea">
+    <h2><span class="n">02</span><span data-i18n="s2.h">Escanea tu espacio (XpaceScan)</span></h2>
+    <p class="k" data-i18n="s2.k">del móvil al gemelo 3D sin cables</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s2.a.h">En el móvil</h3><ol>
+        <li data-i18n-html="s2.a.1">Abre <a href="/scan/">xpaceos.com/scan</a> y permite la cámara.</li>
+        <li data-i18n="s2.a.2">Graba 60–120 s caminando despacio, con movimiento lateral y envolvente, cubriendo cada zona desde dos ángulos.</li>
+        <li data-i18n-html="s2.a.3">Pulsa <b>☁︎ Subir a XpaceOS</b>. El vídeo sube por trozos con progreso.</li>
+        <li data-i18n="s2.a.4">Copia o comparte el enlace del visor que aparece. Ese enlace es tu escena.</li>
+      </ol><a class="cta" href="/scan/" data-i18n="s2.cta">Abrir XpaceScan →</a></div>
+      <div class="card"><h3 data-i18n="s2.b.h">En el visor</h3>
+        <p data-i18n-html="s2.b.1"><a href="/scan/visor.html">visor.html?scene=&lt;id&gt;</a> enseña el estado: <b>subido</b> → <b>reconstruyendo</b> (con porcentaje y máquina) → <b>gemelo listo</b>. Cuando está listo, la nube de puntos se carga sola.</p>
+        <p data-i18n-html="s2.b.2" style="margin-top:8px">La reconstrucción la hace un Mac o el DGX del equipo con <code>scan/pipeline/scan-pull.sh &lt;id&gt;</code> (COLMAP). El resultado se publica y el visor lo recoge.</p>
+        <p data-i18n-html="s2.b.3" style="margin-top:8px">Cada nodo IoT del visor (pantalla, sensor, cámara, robot) enseña sus <b>reglas XPL reales</b> al tocarlo.</p>
+        <div class="tip" data-i18n="s2.tip">Buena luz, sin gente si es posible y sin giros en seco. Si la reconstrucción falla, casi siempre es por poco solape entre tomas.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="xpl">
+    <h2><span class="n">03</span><span data-i18n="s3.h">Opera con reglas XPL</span></h2>
+    <p class="k" data-i18n="s3.k">CUANDO hechos · PARA quién · ENTONCES acciones</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s3.a.h">Qué es una regla</h3>
+        <p data-i18n-html="s3.a.1">XPL (Xpace Layer) es el «si pasa esto, haz aquello» del espacio. <b>CUANDO</b> llueve, es de noche o hay público joven mirando; <b>PARA</b> todas las pantallas, el escaparate o los clientes de una zona; <b>ENTONCES</b> muestra una creatividad, cambia el tono de pantalla, la luz o el contenido real del Stock.</p>
+        <pre>CUANDO  lluvia = sí  Y  hora ≥ 18
+PARA    pantallas del escaparate
+ENTONCES showAd(botas-de-agua) · screenTone(calm)</pre>
+      </div>
+      <div class="card"><h3 data-i18n="s3.b.h">Dónde se editan</h3><ul>
+        <li data-i18n-html="s3.b.1">Editor y playground: <a href="/admira-xp/xpl.html" target="_blank" rel="noopener">admira-xp/xpl.html</a>. Autoría por ámbito en el <a href="/backoffice/" rel="nofollow">backoffice</a>.</li>
+        <li data-i18n-html="s3.b.2">El motor (<code>xpl.admira.store</code>) sirve las reglas a cada pantalla en cascada <b>global → circuito → pantalla</b>; el gemelo las baja al arrancar.</li>
+        <li data-i18n-html="s3.b.3">Para verlas desde fuera: herramienta <code>xpl_rules</code> del MCP o el nodo en el visor 3D.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="emite">
+    <h2><span class="n">04</span><span data-i18n="s4.h">Emite y mide</span></h2>
+    <p class="k" data-i18n="s4.k">de la pieza creada al pase auditado</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s4.a.h">Emitir</h3>
+        <p data-i18n-html="s4.a.1">Lo que se crea en <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a> sale a la red de pantallas por <a href="https://admira.tv" target="_blank" rel="noopener">admira.tv</a>. El gemelo reproduce la pieza y la confirma: el mismo id de punta a punta.</p>
+        <p data-i18n-html="s4.a.2" style="margin-top:8px">Desde un agente: <code>publish_asset</code> publica una pieza de Pixeria en una pantalla concreta y <code>screen_now</code> comprueba que la ha recogido.</p>
+      </div>
+      <div class="card"><h3 data-i18n="s4.b.h">Medir</h3>
+        <p data-i18n-html="s4.b.1"><b>Proof-of-play</b> por circuito: pases, segundos y desglose por tipo y segmento (<code>emission_report</code>). La audiencia se estima en el propio equipo con la cámara: conteos agregados, sin imágenes ni datos personales.</p>
+        <p data-i18n-html="s4.b.2" style="margin-top:8px">Precio y mercado: <a href="/cpm/">CPM</a> · venta de superficies en <a href="https://admira.app" target="_blank" rel="noopener">admira.app</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="alta">
+    <h2><span class="n">05</span><span data-i18n="s5.h">Da de alta una pantalla</span></h2>
+    <p class="k" data-i18n="s5.k">auto-alta: la red crece sola</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s5.a.h">Desde el equipo que va a emitir</h3><ol>
+        <li data-i18n-html="s5.a.1">Abre el canal en ese equipo (<a href="https://admira.tv" target="_blank" rel="noopener">admira.tv</a>) o el gemelo con su <code>?loc=</code>.</li>
+        <li data-i18n="s5.a.2">La pantalla se anuncia (latido) y aparece en la flota con su id, versión y lo que está emitiendo.</li>
+        <li data-i18n="s5.a.3">Ponle nombre y dirección para que entre en el catálogo y en el mapa.</li>
+      </ol></div>
+      <div class="card"><h3 data-i18n="s5.b.h">Desde un agente</h3>
+        <p data-i18n-html="s5.b.1"><code>register_device</code> con nombre y dirección (o coordenadas) devuelve la URL del canal para ese equipo. Solo añade soportes nuevos: nunca pisa ubicaciones curadas.</p>
+        <p data-i18n-html="s5.b.2" style="margin-top:8px">Robots y otros soportes: <a href="/robot/">/robot</a> · hardware de referencia: <a href="/lenovo/">Lenovo</a> · <a href="/nvidia/">NVIDIA</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="mcp">
+    <h2><span class="n">06</span><span data-i18n="s6.h">Conecta tu agente (MCP)</span></h2>
+    <p class="k" data-i18n="s6.k">silicio ↔ carbono · la misma red, en lenguaje natural</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s6.a.h">En dos líneas</h3>
+        <p data-i18n="s6.a.1">Cualquier cliente MCP (Claude Code, Claude Desktop, Cursor, ChatGPT con conectores…) puede cargar el servidor de XpaceOS y preguntar por la red como si hablara con una persona.</p>
+        <pre>claude mcp add --transport http xpaceos https://mcp.admira.store/mcp</pre>
+        <pre>{ "mcpServers": { "xpaceos": { "url": "https://mcp.admira.store/mcp" } } }</pre>
+        <a class="cta sec" href="/mcp/" data-i18n="s6.cta">Guía completa del MCP →</a>
+      </div>
+      <div class="card"><h3 data-i18n="s6.b.h">Qué le puedes pedir</h3><ul>
+        <li data-i18n="s6.b.1">«¿Qué pantallas hay y qué están emitiendo?»</li>
+        <li data-i18n="s6.b.2">«Busca los gemelos de Mango en Barcelona y abre el primero.»</li>
+        <li data-i18n="s6.b.3">«¿Cómo va la escena que subí esta mañana desde el móvil?»</li>
+        <li data-i18n="s6.b.4">«¿Qué reglas XPL tiene la pantalla del escaparate?»</li>
+        <li data-i18n="s6.b.5">«Publica la pieza #409 en xtore-inicial y confírmame que la ha recogido.»</li>
+        <li data-i18n="s6.b.6">«Explícame cómo escanear mi tienda» (la herramienta help responde con esta misma guía).</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="soporte">
+    <h2><span class="n">07</span><span data-i18n="s7.h">Método y soporte</span></h2>
+    <p class="k" data-i18n="s7.k">por dónde seguir</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="s7.a.h">Método y doctrina</h3><ul>
+        <li data-i18n-html="s7.a.1"><a href="/ayuda/">Método Xpacio Simulado</a>: cómo se construye y evoluciona un Xpacio, paso a paso.</li>
+        <li data-i18n-html="s7.a.2"><b>Doctrina Xpaces:</b> todos los elementos del gemelo son movibles y sustituibles siempre. Si algo no se puede reubicar o reemplazar desde datos, es un defecto de diseño.</li>
+        <li data-i18n-html="s7.a.3">Caso de éxito: <a href="/#booth">el stand de Shoptalk Europe 2026</a>, controlado en vivo por el gemelo.</li>
+      </ul></div>
+      <div class="card"><h3 data-i18n="s7.b.h">Hablar con el equipo</h3>
+        <p data-i18n-html="s7.b.1">Botón <b>«Reservar demo»</b> de la portada: el formulario llega al equipo de AdmiraNeXT por Telegram y te contestamos.</p>
+        <p data-i18n-html="s7.b.2" style="margin-top:8px">Versión y sello del sitio: <code>/version.json</code>. Cada cambio publicado lleva su sello y su responsable.</p>
+        <a class="cta" href="/#contact" data-i18n="s7.cta">Reservar demo →</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>© 2026 ADmiraNeXT · XpaceOS · <a href="/">portada</a> · <a href="/help/cli/">comandos CLI</a> · <a href="/mcp/">MCP</a> · <a href="/ayuda/">método</a> · <span data-i18n="foot.v">esta ayuda es la misma que devuelve la herramienta <code>help</code> del MCP</span></footer>
 
 <script>
-const UI={
-  es:{help:'AYUDA',opencli:'Abrir el CLI',twin:'Gemelo',method:'Método Xpacios',h1a:'Comandos del CLI',h1b:'Gemelo Admira XP',
-    lede:'Todo el vocabulario del Xtanco. Estos comandos se ejecutan desde el <b>CLI Xtanco</b> de <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> (estando En vivo, sin clave) o en la consola del propio gemelo. Convención: invocar sin argumentos suele hacer <em>toggle</em>; los aliases valen igual.',
-    tip:'💡 Haz clic en cualquier comando para <strong>copiarlo</strong> y pégalo en el CLI. Los que llevan número o texto (<code>/velocidad 8</code>, <code>/reloj 14:30</code>) son ejemplos — cámbialos a tu gusto.',
-    tipMove:'📐 <strong>Doctrina Xpaces:</strong> todos los elementos del gemelo son <strong>movibles y sustituibles siempre</strong>. Layout, mobiliario, pantallas y activos viven en la config — se reubican o se reemplazan sin tocar el motor. Ver <a href="/ayuda/">Método Xpacio</a> y <a href="/mcp/">MCP</a>.',
-    foot:'Referencia generada desde <code>helpSections()</code> del gemelo · todos los comandos son accesibles desde el CLI.',
-    qph:'Buscar… (velocidad, ladron, restock)', cmds:'comandos', clic:'Clic para copiar', toast:'copiado: '},
-  en:{help:'HELP',opencli:'Open the CLI',twin:'Twin',method:'Xpacio method',h1a:'CLI commands',h1b:'Admira XP twin',
-    lede:'The twin’s full vocabulary. Run these from the <b>Xtanco CLI</b> at <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> (while Live, no key) or in the twin’s own console. Convention: calling with no args usually toggles; aliases work the same.',
-    tip:'💡 Click any command to <strong>copy</strong> it and paste it in the CLI. Ones with a number or text (<code>/velocidad 8</code>, <code>/reloj 14:30</code>) are examples — change them.',
-    tipMove:'📐 <strong>Xpaces doctrine:</strong> every element in the twin must be <strong>movable and replaceable at all times</strong>. Layout, furniture, screens and assets live in config — rehome or swap them without touching the engine. See <a href="/ayuda/">Xpacio method</a> and <a href="/mcp/">MCP</a>.',
-    foot:'Reference generated from the twin’s <code>helpSections()</code> · every command is reachable from the CLI.',
-    qph:'Search… (velocidad, ladron, restock)', cmds:'commands', clic:'Click to copy', toast:'copied: '}
-};
-// Fuente de verdad: helpSections() de game.html (gemelo). Mantener en sync si cambian los comandos.
-const CATS=[
-  {t:'Consulta',tEn:'Status & queries',d:'Estado del Xpacio, equipo, stock y turnos.',dEn:'Xpacio status, staff, stock and shifts.',c:['/status','/staff','/stock','/turno']},
-  {t:'Turnos (pantalla pared larga)',tEn:'Queue screen (long wall)',d:'Controla el número de turno de la pantalla secundaria. /turno off apaga el número y deja solo la publi. next/previous avanzan o retroceden; un número fija el turno; auto vuelve al modo automático.',dEn:'Controls the turn number on the secondary screen. /turno off hides the number leaving only the ad. next/previous step it; a number sets the turn; auto returns to automatic.',c:['/turno on','/turno off','/turno next','/turno previous','/turno 15','/turno auto']},
-  {t:'Equipo y stock',tEn:'Staff & stock',d:'Contratar, formar y reponer producto.',dEn:'Hire, train and restock.',c:['/hire 1','/hire dj','/hire all','/train 1','/train all','/restock 2','/restock all','/restock prensa']},
-  {t:'Equipo del punto (gemelo)',tEn:'Point team (twin)',d:'Alta, baja y parte de miembros del equipo del punto.',dEn:'Add, remove and report point team members.',c:['/nuevoMiembro Laura azafata','/nuevoMiembro Pedro cajero','/echarMiembro Laura','/report Marta']},
-  {t:'DVR · velocidad · replay',tEn:'DVR · speed · replay',d:'Acelera la simulación (⏩ /velocidad x1–x8 = más clientes/ventas), graba y rebobina el día.',dEn:'Speed up the sim (⏩ /velocidad x1–x8 = more customers/sales), record and replay the day.',c:['/velocidad 1','/velocidad 2','/velocidad 4','/velocidad 8','/dvr','/envivo','/calendario']},
-  {t:'Personal (panel /staff)',tEn:'Staff panel (/staff)',d:'Gestión fina del equipo: bonus, empleado del mes, formar/contratar/echar.',dEn:'Fine staff control: bonus, employee of the month, train/hire/fire.',c:['/staff','/staff bonus 0 100','/staff eotm 0','/staff eotm ana','/staff train 1','/staff hire 2','/staff fire 1']},
-  {t:'Tienda',tEn:'Store',d:'Publicidad, mejora de local, aforo (cámara), visitas oficiales y guardar.',dEn:'Advertising, store upgrade, real occupancy (camera), official visits and save.',c:['/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
-  {t:'Look & feel',tEn:'Look & feel',d:'Número en la camiseta de los clientes.',dEn:'Number on customers’ shirts.',c:['/camiseta on','/camiseta off','/camiseta']},
-  {t:'Tiempo y ambiente',tEn:'Time & ambience',d:'Hora del juego, franja, clima y luces.',dEn:'Game clock, time of day, weather and lights.',c:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
-  {t:'Pantalla y directo',tEn:'Screens & live',d:'LED/TFT, cámaras, comunicar (Grok/ElevenLabs), AdmiraTube, publicidad segmentada e impactos/CPM.',dEn:'LED/TFT, cameras, broadcast (Grok/ElevenLabs), AdmiraTube, segmented ads and impressions/CPM.',c:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
-  {t:'Digital Signage (vídeos)',tEn:'Digital Signage (video)',d:'Modo autónomo: el player DS sigue activo, emite desde caché y se recupera solo hasta recibir un kill-switch remoto autorizado o una salida local del player (Escape; cinco toques en Android). /ds off solo pausa el contenido: no mata el proceso. next/previous cambia de vídeo, audio on/off controla el sonido y /info muestra u oculta las fichas de pantalla.',dEn:'Autonomous mode: the DS player stays alive, plays from cache and self-recovers until an authorized remote kill-switch or a local player exit (Escape; five taps on Android). /ds off only pauses content; it does not kill the process. next/previous changes video, audio on/off controls sound, and /info toggles screen info cards.',c:['/ds on','/ds off','/ds next','/ds previous','/ds audio on','/ds audio off','/info','/info on','/info off']},
-  {t:'Mupi del Xtanco (tótem vertical)',tEn:'Xtanco Mupi (vertical totem)',d:'El tótem de la sala es el Mupi del punto: 9:16 y espejado al canal «totem» (Lenovo vertical). ARRANCA SOLO, sin comandos, con el espacio TikTok: las piezas 9:16 creadas en el compositor de Pixeria (pixeria.com/tiktok) llegan al catálogo etiquetadas «tiktok» y el canal las aísla. Y lo que acabas de crear NO espera turno: en menos de 20 s el Mupi lo detecta, lo pone en exclusiva 3 minutos (en bucle, con el chip «✦ RECIÉN CREADO») y después lo suelta al FINAL del loop, que sigue por la pieza siguiente — no vuelve a sonar hasta que el bucle dé la vuelta entera. /admiratv sin nada conmuta encendido/apagado; /admiratv <espacio> cambia de espacio (tiktok, musica…) y /admiratv all quita el filtro y emite el canal entero. Lo que elijas se recuerda: si lo apagas, sigue apagado al volver a entrar.',dEn:'The room totem is the store Mupi: 9:16, mirrored to the «totem» channel (vertical Lenovo). It STARTS ON ITS OWN, no commands, in the TikTok space: the 9:16 pieces made in the Pixeria composer (pixeria.com/tiktok) reach the catalogue tagged «tiktok» and the channel isolates them. And whatever you just created does not wait its turn: within 20 s the Mupi picks it up, plays it exclusively for 3 minutes (looping, with a «✦ RECIÉN CREADO» chip) and then drops it at the END of the loop, which carries on with the next piece — it will not play again until the loop comes full circle. /admiratv with no argument toggles on/off; /admiratv <space> switches space (tiktok, musica…) and /admiratv all drops the filter and plays the whole channel. Your choice is remembered: turn it off and it stays off.',c:['/admiratv','/admiratv on','/admiratv off','/admiratv tiktok','/admiratv all']},
-  {t:'Campañas de TikTok (rodar en Pixeria)',tEn:'TikTok campaigns (shoot in Pixeria)',d:'Lo que escribas detrás del comando ES EL TITULAR, igual que el campo de arriba en el compositor de pixeria.com/tiktok: `/tiktok pizzeria del barrio` desarrolla ese titular en la campaña entera (titular final, detalle, marca, objetivo y público) y con ese guion rueda el vídeo — como pulsar «Desarrollar idea». Sin titular, `/tiktok` a secas inventa la idea completa desde cero, como el botón «Crear idea». La campaña desarrollada se ve en el panel y ahí SE PARA: desarrollar la idea es gratis, rodar gasta créditos, así que espera tu OK — `/tiktok ok` rueda, `/tiktok no` la descarta sin gastar nada, y `/tiktok ya <titular>` hace las dos cosas del tirón sin preguntar. `/tiktok <titular>` rueda una campaña vertical 9:16 de 15s en Pixeria con el mismo motor que el compositor (Grok Imagine) y la publica en el catálogo con la etiqueta «tiktok» — así el Mupi del Xtanco la coge SOLO en menos de 20 s y la emite 3 minutos en exclusiva. Tarda entre 1 y 3 minutos, y NO te deja esperando a ciegas: sale un panel de rodaje con la fase, el cronómetro, una barra de avance y el registro de pasos; la cinta LED de la tienda canta la fase desde dentro del Xpacio; y al terminar el propio panel vigila el tótem y avisa cuando la pieza está EN ANTENA. `/tiktok demo <titular>` desarrolla la idea DE VERDAD (eso no cuesta nada) y sólo finge el rodaje, que es lo que gasta créditos. `/tiktok cerrar` esconde el panel. Nota: el director creativo del compositor vive detrás de la verja del perímetro (sesión de Google, mismo dominio), así que desde el Xtanco el titular se desarrolla con el cerebro sin clave del worker pidiéndole los mismos campos del formulario.',dEn:'`/tiktok <topic>` shoots a 15s vertical 9:16 campaign in Pixeria with the same engine as the composer (Grok Imagine) and publishes it to the catalogue tagged «tiktok» — so the Xtanco Mupi picks it up ON ITS OWN within 20s and plays it exclusively for 3 minutes. It takes 1–3 minutes and never leaves you staring at nothing: a shoot panel shows the phase, a stopwatch, a progress bar and the step log; the store LED strip announces the phase from inside the Xpace; and when it is done the panel watches the totem and tells you when the piece is ON AIR. Whatever you type after the command IS THE HEADLINE, exactly like the top field of the pixeria.com/tiktok composer: `/tiktok neighbourhood pizza place` develops that headline into the whole campaign (final headline, detail, brand, objective, audience) and shoots the video from that script — like pressing «Desarrollar idea». With no headline, plain `/tiktok` invents the full idea from scratch, like the «Crear idea» button. It then STOPS and waits: developing the idea is free, shooting costs credits — `/tiktok ok` shoots, `/tiktok no` discards it at no cost, `/tiktok ya <headline>` does both without asking. `/tiktok demo <headline>` develops the idea for real (that is free) and only fakes the shoot. `/tiktok cerrar` hides the panel.',c:['/tiktok <titular>','/tiktok pizzeria del barrio','/tiktok ok','/tiktok no','/tiktok ya <titular>','/tiktok demo <titular>','/tiktok cerrar']},
-  {t:'Condicional (contenidos condicionados)',tEn:'Conditional (conditional content)',d:'/xpl activa o desactiva el Condicional (contenidos condicionados): la 1ª vez lo pone ON, la 2ª OFF (es un interruptor, no lleva on/off). Antes abría el editor; ahora conmuta el estado.',dEn:'/xpl turns the Conditional (conditional content) ON or OFF: first time ON, second time OFF (it is a toggle, no on/off argument). It used to open the editor; now it switches the state.',c:['/xpl']},
-  {t:'Escena en vivo',tEn:'Live scene',d:'Personajes y eventos: DJ, ladrón, guardia, opinador, robot, sponsor, socio, puerta, subasta.',dEn:'Characters and events: DJ, thief, guard, reviewer, robot, sponsor, member, door, auction.',c:['/dj','/ladron','/guardiacivil','/opinador','/robot','/sponsor','/socio','/door open','/door close','/door auto','/subasta','/subasta off']},
-  {t:'Notificaciones al personal',tEn:'Staff notifications',d:'Avisos al equipo, dashboards, listado de socios, heatmap y sponsor recurrente.',dEn:'Team alerts, dashboards, members list, heatmap and recurring sponsor.',c:['/personal socio','/personal dashboard','/socios listado','/heatmap','/heatmap reset','/sponsor recurrente 120 10']},
-  {t:'Atmósfera',tEn:'Atmosphere',d:'Sonido ambiente y voces.',dEn:'Ambient sound and voices.',c:['/ambiente','/ambiente vol 50','/voces']},
-  {t:'Operativa real',tEn:'Real ops',d:'Devoluciones y pedidos.',dEn:'Returns and orders.',c:['/devolucion','/pedido']},
-  {t:'Integración AdmiraNext',tEn:'AdmiraNext integration',d:'Exportar socios al ecosistema.',dEn:'Export members to the ecosystem.',c:['/socios export']},
-  {t:'IA y contenido',tEn:'AI & content',d:'Grok, dibujo IA, Metahuman, Avatar3D, logs e importar mobiliario/vídeo.',dEn:'Grok, AI drawing, Metahuman, Avatar3D, logs and importing furniture/video.',c:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
-  {t:'Ajustes rápidos',tEn:'Quick tweaks',d:'Forzar métricas (caja, satisfacción, fama, semana, año…).',dEn:'Force metrics (cash, satisfaction, fame, week, year…).',c:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
-  {t:'Música y layout',tEn:'Music & layout',d:'Canciones (on/off, siguiente/anterior, por número), mobiliario, equipo en el plano y distribución de la sala. Doctrina: todo elemento es movible y sustituible vía config/layout — no hardcodear en el motor.',dEn:'Songs (on/off, next/previous, by number), furniture, team on the plan and room layout. Doctrine: every element is movable and replaceable via config/layout — never hardcode in the engine.',c:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
-  {t:'Estilo visual',tEn:'Visual style',d:'Tier de render del gemelo (8-bit limpio, 16-bit, Habbo, realista).',dEn:'Twin render tier (clean 8-bit, 16-bit, Habbo, realistic).',c:['/render 8bit','/render 16bit','/render habbo','/render real']},
-  {t:'Mapa de navegación',tEn:'Navigation map',d:'Vistas, red de tiendas, Stream Deck y diagnóstico.',dEn:'Views, store network, Stream Deck and diagnostics.',c:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']}
-];
-const elCats=document.getElementById('cats'),elQ=document.getElementById('q'),elCount=document.getElementById('count'),toast=document.getElementById('toast');
-let LANG=document.documentElement.lang==='en'?'en':'es', toastT=null;
-function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),1200);}
-function fallback(cmd,done){const t=document.createElement('textarea');t.value=cmd;document.body.appendChild(t);t.select();try{document.execCommand('copy');}catch(_){}t.remove();done();}
-function copy(cmd,btn){const done=()=>{btn.classList.add('copied');setTimeout(()=>btn.classList.remove('copied'),500);showToast(UI[LANG].toast+cmd);};try{navigator.clipboard.writeText(cmd).then(done,()=>fallback(cmd,done));}catch(_){fallback(cmd,done);}}
-function applyUI(){
-  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(UI[LANG][k]!=null)el.innerHTML=UI[LANG][k];});
-  elQ.placeholder=UI[LANG].qph; document.getElementById('langToggle').textContent=LANG==='es'?'EN':'ES';
+const I18N={en:{
+ help:'HELP','nav.try':'Try the twin','nav.scan':'Scan','nav.cli':'CLI commands','nav.method':'Method',
+ h1:'How to use <span>XpaceOS</span>',
+ lede:'XpaceOS turns every store, shop window or booth into an intelligent advertising medium. This help is for people: what it is, what you can do today and where to start. AI agents have theirs at /mcp and the same guide as the help tool.',
+ 'toc.0':'What XpaceOS is','toc.1':'Try the twin','toc.2':'Scan your space','toc.3':'Operate with XPL rules','toc.4':'Broadcast and measure','toc.5':'Register a screen','toc.6':'Connect your agent (MCP)','toc.7':'Method and support',
+ 's0.h':'What XpaceOS is','s0.k':'three layers · four products · one shared dataset','s0.a.h':'The three layers',
+ 's0.a.1':'<b>PixerIA</b> creates the content with AI (audio, music, image, video) from a brief. → <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a>',
+ 's0.a.2':'<b>Admira XP</b> distributes it on a Digital Twin of the space: an isometric replica of your store that runs in the browser and controls the real space.',
+ 's0.a.3':'<b>OmniPublicity</b> sells every visible surface in a real-time bidding marketplace (RTB). → <a href="/cpm/">CPM</a>',
+ 's0.b.h':'The product chain',
+ 's0.b.1':'<b>admira.studio</b> creating → <b>admira.tv</b> broadcasting → <b>admira.live</b> distributing → <b>admira.app</b> selling. One login and one dataset end to end.',
+ 's0.b.2':'Runs on <b>Lenovo edge</b> + <b>Nvidia GPU</b>: local inference so the audience captured by the camera triggers content before the visitor looks away.',
+ 's0.b.3':'In production today: <b>8,775 twins</b> and <b>23,985 live surfaces</b> in the shared catalog.',
+ 's1.h':'Try the twin','s1.k':'any real space, in your browser, nothing to install','s1.a.h':'From the home page',
+ 's1.a.1':'Go to <a href="/#prueba">xpaceos.com/#prueba</a>.','s1.a.2':'Search by name, address or brand, or filter by brand and surface type.',
+ 's1.a.3':'Tap a card: its Digital Twin loads right there with the real screens and surfaces of that place.','s1.a.4':'“Open full screen” to operate it with the whole space.',
+ 's1.cta':'Try the twin →','s1.b.h':'Direct links',
+ 's1.b.1':'Twin of a specific place: <code>/admira-xp/?loc=&lt;id&gt;</code> (e.g. <a href="/admira-xp/?loc=mango-001" target="_blank" rel="noopener">?loc=mango-001</a>).',
+ 's1.b.2':'Home page with that twin already loaded: <code>/?twin=&lt;id&gt;</code>.',
+ 's1.b.3':'Inside the twin there is a CLI with the whole vocabulary (speed, clock, stock, screens, AI, music…): <a href="/help/cli/">command reference</a>.',
+ 's1.tip':'The reference twin is the Xtanco (tobacco shop). Every other space uses the same engine with its real configuration: name, screens and surfaces from the catalog.',
+ 's2.h':'Scan your space (XpaceScan)','s2.k':'from the phone to the 3D twin, no cables','s2.a.h':'On the phone',
+ 's2.a.1':'Open <a href="/scan/">xpaceos.com/scan</a> and allow the camera.','s2.a.2':'Record 60–120 s walking slowly, with lateral and wrapping movement, covering each zone from two angles.',
+ 's2.a.3':'Tap <b>☁︎ Upload to XpaceOS</b>. The video uploads in chunks with progress.','s2.a.4':'Copy or share the viewer link that appears. That link is your scene.',
+ 's2.cta':'Open XpaceScan →','s2.b.h':'In the viewer',
+ 's2.b.1':'<a href="/scan/visor.html">visor.html?scene=&lt;id&gt;</a> shows the state: <b>uploaded</b> → <b>reconstructing</b> (with progress and machine) → <b>twin ready</b>. When ready, the point cloud loads by itself.',
+ 's2.b.2':'Reconstruction runs on a team Mac or the DGX with <code>scan/pipeline/scan-pull.sh &lt;id&gt;</code> (COLMAP). The result is published and the viewer picks it up.',
+ 's2.b.3':'Every IoT node in the viewer (screen, sensor, camera, robot) shows its <b>real XPL rules</b> when tapped.',
+ 's2.tip':'Good light, no people if possible and no sharp turns. When reconstruction fails it is almost always too little overlap between shots.',
+ 's3.h':'Operate with XPL rules','s3.k':'WHEN facts · FOR whom · THEN actions','s3.a.h':'What a rule is',
+ 's3.a.1':'XPL (Xpace Layer) is the “if this happens, do that” of the space. <b>WHEN</b> it rains, it is night or a young audience is watching; <b>FOR</b> all screens, the shop window or the customers in a zone; <b>THEN</b> show a creative, change the screen tone, the light or the real content from the Stock.',
+ 's3.b.h':'Where rules are edited',
+ 's3.b.1':'Editor and playground: <a href="/admira-xp/xpl.html" target="_blank" rel="noopener">admira-xp/xpl.html</a>. Authoring by scope in the <a href="/backoffice/" rel="nofollow">backoffice</a>.',
+ 's3.b.2':'The engine (<code>xpl.admira.store</code>) serves rules to each screen in cascade <b>global → circuit → screen</b>; the twin downloads them at start.',
+ 's3.b.3':'To read them from outside: the <code>xpl_rules</code> MCP tool or the node in the 3D viewer.',
+ 's4.h':'Broadcast and measure','s4.k':'from the created piece to the audited play','s4.a.h':'Broadcast',
+ 's4.a.1':'What is created on <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a> goes out to the screen network through <a href="https://admira.tv" target="_blank" rel="noopener">admira.tv</a>. The twin plays the piece and confirms it: the same id end to end.',
+ 's4.a.2':'From an agent: <code>publish_asset</code> publishes a Pixeria piece on a specific screen and <code>screen_now</code> checks it was picked up.',
+ 's4.b.h':'Measure',
+ 's4.b.1':'<b>Proof-of-play</b> per circuit: plays, seconds and breakdown by type and segment (<code>emission_report</code>). Audience is estimated on-device with the camera: aggregate counts, no images or personal data.',
+ 's4.b.2':'Price and marketplace: <a href="/cpm/">CPM</a> · surface sales on <a href="https://admira.app" target="_blank" rel="noopener">admira.app</a>.',
+ 's5.h':'Register a screen','s5.k':'self-registration: the network grows by itself','s5.a.h':'From the device that will play',
+ 's5.a.1':'Open the channel on that device (<a href="https://admira.tv" target="_blank" rel="noopener">admira.tv</a>) or the twin with its <code>?loc=</code>.',
+ 's5.a.2':'The screen announces itself (heartbeat) and shows up in the fleet with its id, version and what it is playing.','s5.a.3':'Give it a name and address so it enters the catalog and the map.',
+ 's5.b.h':'From an agent',
+ 's5.b.1':'<code>register_device</code> with a name and address (or coordinates) returns the channel URL for that device. It only adds new supports: it never overwrites curated locations.',
+ 's5.b.2':'Robots and other supports: <a href="/robot/">/robot</a> · reference hardware: <a href="/lenovo/">Lenovo</a> · <a href="/nvidia/">NVIDIA</a>.',
+ 's6.h':'Connect your agent (MCP)','s6.k':'silicon ↔ carbon · the same network, in natural language','s6.a.h':'In two lines',
+ 's6.a.1':'Any MCP client (Claude Code, Claude Desktop, Cursor, ChatGPT with connectors…) can load the XpaceOS server and ask about the network as if talking to a person.',
+ 's6.cta':'Full MCP guide →','s6.b.h':'What you can ask',
+ 's6.b.1':'“Which screens are there and what are they playing?”','s6.b.2':'“Find the Mango twins in Barcelona and open the first one.”',
+ 's6.b.3':'“How is the scene I uploaded from my phone this morning doing?”','s6.b.4':'“Which XPL rules does the shop-window screen have?”',
+ 's6.b.5':'“Publish piece #409 on xtore-inicial and confirm it was picked up.”','s6.b.6':'“Explain how to scan my store” (the help tool answers with this same guide).',
+ 's7.h':'Method and support','s7.k':'where to go next','s7.a.h':'Method and doctrine',
+ 's7.a.1':'<a href="/ayuda/">Simulated Xpacio Method</a>: how an Xpacio is built and evolves, step by step.',
+ 's7.a.2':'<b>Xpaces doctrine:</b> every element of the twin is movable and replaceable, always. If something cannot be relocated or replaced from data, it is a design defect.',
+ 's7.a.3':'Case study: <a href="/#booth">the Shoptalk Europe 2026 booth</a>, controlled live by the twin.',
+ 's7.b.h':'Talk to the team','s7.b.1':'The <b>“Book a demo”</b> button on the home page: the form reaches the AdmiraNeXT team on Telegram and we answer.',
+ 's7.b.2':'Site version and seal: <code>/version.json</code>. Every published change carries its seal and its owner.','s7.cta':'Book a demo →',
+ 'foot.v':'this help is the same text the MCP <code>help</code> tool returns'
+}};
+const ES={}; document.querySelectorAll('[data-i18n],[data-i18n-html]').forEach(el=>{const k=el.getAttribute('data-i18n')||el.getAttribute('data-i18n-html'); ES[k]=el.hasAttribute('data-i18n-html')?el.innerHTML:el.textContent;});
+I18N.es=ES;
+function setLang(lang){
+  const d=I18N[lang]||I18N.es; document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n'); if(d[k]) el.textContent=d[k];});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.getAttribute('data-i18n-html'); if(d[k]) el.innerHTML=d[k];});
+  document.getElementById('langToggle').textContent=lang==='es'?'EN':'ES';
+  try{localStorage.setItem('xpaceosLang',lang);}catch{}
 }
-function render(filter){
-  filter=(filter||'').trim().toLowerCase();elCats.innerHTML='';let total=0;
-  CATS.forEach((cat,i)=>{
-    const title=LANG==='en'?cat.tEn:cat.t, desc=LANG==='en'?cat.dEn:cat.d;
-    const matched=cat.c.filter(c=>!filter||c.toLowerCase().includes(filter)||title.toLowerCase().includes(filter)||desc.toLowerCase().includes(filter));
-    if(!matched.length)return; total+=matched.length;
-    const sec=document.createElement('section');sec.className='cat';
-    const h=document.createElement('h2');h.innerHTML='<span class="num">'+String(i+1).padStart(2,'0')+'</span>'+title;sec.appendChild(h);
-    const d=document.createElement('p');d.className='desc';d.textContent=desc;sec.appendChild(d);
-    const wrap=document.createElement('div');wrap.className='cmds';
-    matched.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='cmd';b.textContent=c;b.title=UI[LANG].clic;b.onclick=()=>copy(c,b);wrap.appendChild(b);});
-    sec.appendChild(wrap);elCats.appendChild(sec);
-  });
-  const all=CATS.reduce((n,c)=>n+c.c.length,0);
-  elCount.textContent=(filter?total+' / '+all:all+' '+UI[LANG].cmds);
-}
-document.getElementById('langToggle').addEventListener('click',e=>{e.preventDefault();LANG=LANG==='es'?'en':'es';document.documentElement.lang=LANG;try{localStorage.setItem('xpace_lang',LANG);}catch(_){}applyUI();render(elQ.value);});
-elQ.addEventListener('input',()=>render(elQ.value));
-applyUI();render('');
+document.getElementById('langToggle').onclick=()=>setLang(document.documentElement.lang==='es'?'en':'es');
+try{ const saved=localStorage.getItem('xpaceosLang'); if(saved==='en') setLang('en'); }catch{}
 </script>
 </body>
 </html>

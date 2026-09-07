@@ -1,9 +1,11 @@
 # XpaceOS · MCP — conecta con la red de retail media
 
-> Servidor MCP de XpaceOS: el puente para que agentes (silicio) y personas (carbono)
-> se conecten a la red de retail media — ver la flota, qué emite cada pantalla en vivo,
-> su audiencia por cámara, el proof-of-play de cada circuito y dar de alta nuevas
-> pantallas o robots. Para silicio (bots) y carbono (humanos).
+> Servidor MCP de XpaceOS (v2.0.0): el puente para que agentes (silicio) y personas (carbono)
+> se conecten al sistema operativo del comercio físico — la red de pantallas (flota, emisión en
+> vivo, audiencia, proof-of-play, alta, publicar), el catálogo de 8.775 gemelos digitales,
+> XpaceScan (3D desde el móvil), el motor de reglas XPL y la ayuda para humanos.
+
+Ayuda para humanos: https://www.xpaceos.com/help/  (misma guía que la tool `help` y el resource xpaceos://help)
 
 Sitio / docs: https://www.xpaceos.com/mcp/
 Manifest máquina: https://www.xpaceos.com/mcp/manifest.json
@@ -13,9 +15,13 @@ Repo: https://github.com/csilvasantin/xpaceos
 
 - Endpoint: https://mcp.admira.store/mcp
 - Transporte: MCP Streamable HTTP (JSON-RPC sobre POST /mcp); salud en GET /
-- Auth: none (el alta es aditiva y acotada, no pisa inventario curado)
-- Config de cliente:
-  {"mcpServers":{"xpaceos":{"url":"https://mcp.admira.store/mcp"}}}
+- Auth: lecturas abiertas; ESCRITURAS (register_device, publish_asset) con la clave de flota AdmiraNeXT:
+  `Authorization: Bearer <clave>` (persona+equipo; ver https://www.admiranext.com/mcp/#identidad). Quedan firmadas
+  (firmado_por = NeoMacBookPro14, MorfeoMacMini…). `quien_soy` dice quién eres según la clave. Sin clave, el alta
+  responde isError. Directorio de los MCP de la suite: https://www.admiranext.com/mcp/#directorio (FLT-2137).
+- Claude Code: claude mcp add --transport http xpaceos https://mcp.admira.store/mcp
+- Config de cliente (JSON):
+  {"mcpServers":{"xpaceos":{"url":"https://mcp.admira.store/mcp","headers":{"Authorization":"Bearer <clave de flota>"}}}}
 - Prueba rápida:
   curl -s https://mcp.admira.store/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 
@@ -26,6 +32,20 @@ Repo: https://github.com/csilvasantin/xpaceos
 - screen_now — qué emite AHORA una pantalla y su audiencia por cámara (personas · edad · género), y si está conectada.
 - emission_report — proof-of-play de un circuito: pases, segundos, por tipo y por segmento.
 - register_device — da de alta una pantalla o robot (auto-alta) y devuelve la URL del canal para emitir.
+- publish_asset — publica una pieza de la biblioteca de Pixeria en una pantalla (el puente crear→distribuir).
+- search_twins — busca en el catálogo de 8.775 gemelos (texto, marca, superficie, solo en vivo); devuelve el enlace de cada gemelo (/admira-xp/?loc=<id>).
+- twin_detail — ficha de un gemelo: superficies con estado, coordenadas, enlace y reglas XPL resueltas.
+- catalog_stats — totales del catálogo por marca, tipo de superficie y estado.
+- list_scenes / scene_status — escenas de XpaceScan (vídeo 3D subido desde xpaceos.com/scan): estado, progreso, ficheros, visor.
+- xpl_rules — reglas XPL (CUANDO·PARA·ENTONCES) resueltas para una pantalla en cascada global→circuito→pantalla.
+- signage_feed — lo último que ha salido a la red de pantallas.
+- help — la ayuda para humanos por tema (gemelo, escanea, xpl, emite, alta, mcp, método).
+
+## Resources
+
+- xpaceos://help (text/markdown) — la guía de xpaceos.com/help.
+- xpaceos://llms.txt (text/plain) — este fichero.
+- xpaceos://catalog/stats (application/json) — totales del catálogo.
 
 ## Privacidad
 
@@ -56,7 +76,8 @@ En los Xpaces **todos los elementos tienen que ser movibles y sustituibles siemp
 - **Alcance:** mobiliario, pantallas, sensores, figuras, NPCs, zonas de interés y cualquier pieza del gemelo.
 - Si un elemento no se puede reubicar o reemplazar desde datos, es un defecto de diseño — no una excepción aceptable.
 - Método humano: https://www.xpaceos.com/ayuda/
-- Comandos CLI layout/mobiliario: https://www.xpaceos.com/help/
+- Ayuda para humanos: https://www.xpaceos.com/help/
+- Comandos CLI layout/mobiliario: https://www.xpaceos.com/help/cli/
 
 ## Convenciones
 

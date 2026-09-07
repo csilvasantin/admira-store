@@ -71,6 +71,16 @@ input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
   font:11px/1.5 ui-monospace,Menlo,monospace; color:var(--dim); max-height:120px; overflow:auto}
 #frame.show-experto #experto{display:block}
 .row{display:flex; gap:10px; align-items:center; justify-content:center; margin-bottom:10px; flex-wrap:wrap}
+#up-bar{display:none; height:6px; background:#03120a; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin:0 0 10px}
+#up-bar i{display:block; height:100%; width:0; background:var(--acc); transition:width .25s}
+#frame.uploading #up-bar{display:block}
+#escena-panel{display:none; margin:10px 0 0; padding:12px 14px; background:#03120a; border:1px solid var(--acc); border-radius:12px; font-size:13px}
+#escena-panel.show{display:block}
+#escena-panel .id{font:12px ui-monospace,Menlo,monospace; color:var(--acc); word-break:break-all}
+#escena-panel .acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+#escena-panel .acts a, #escena-panel .acts button{flex:1; text-align:center; text-decoration:none; background:var(--panel); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:10px 12px; font-size:13px}
+#escena-panel .acts a.primary{background:var(--acc); color:#03170c; border:none; font-weight:700}
+#escena-panel .estado{color:var(--dim); margin-top:8px}
 </style>
 </head>
 <body>
@@ -81,7 +91,7 @@ input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
     <div id="pf-toggles">
       <button id="tg-experto" title="modo experto">⌥</button>
     </div>
-    <span class="ver">v26.07.02.1 · xpaceos.com</span>
+    <span class="ver">v26.09.05.2 · xpaceos.com</span>
   </div>
 
   <div id="stage">
@@ -109,10 +119,21 @@ input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
     <div id="controls">
       <button class="side" id="btn-retake" disabled>↺ Repetir</button>
       <button id="btn-rec" class="stopped" aria-label="grabar"></button>
-      <button class="side primary" id="btn-share" disabled>Compartir</button>
+      <button class="side primary" id="btn-upload" disabled>☁︎ Subir a XpaceOS</button>
     </div>
+    <div id="up-bar" style="margin-top:10px"><i id="up-fill"></i></div>
     <div class="row" style="margin:10px 0 0">
+      <button class="side" id="btn-share" disabled>Compartir</button>
       <button class="side" id="btn-download" disabled>⬇ Descargar vídeo</button>
+    </div>
+    <div id="escena-panel">
+      <b>Escena subida a XpaceOS</b> · <span class="id" id="escena-id"></span>
+      <div class="estado" id="escena-estado">en cola de reconstrucción — el gemelo aparecerá en el visor cuando esté listo</div>
+      <div class="acts">
+        <a class="primary" id="escena-visor" href="#" target="_blank" rel="noopener">Abrir visor</a>
+        <button id="escena-copiar">Copiar enlace</button>
+        <button id="escena-share">Compartir enlace</button>
+      </div>
     </div>
     <div id="experto">EXPERTO · log<br></div>
   </div>
@@ -170,7 +191,7 @@ function startRec(){
     log(`vídeo listo: ${(blob.size/1048576).toFixed(1)} MB`);
     const url=URL.createObjectURL(blob);
     $('playback').src=url; $('playback').style.display='block'; $('cam').style.display='none';
-    $('btn-share').disabled=!navigator.canShare; $('btn-download').disabled=false; $('btn-retake').disabled=false;
+    $('btn-share').disabled=!navigator.canShare; $('btn-download').disabled=false; $('btn-retake').disabled=false; $('btn-upload').disabled=false;
     $('estado-txt').textContent='grabado';
   };
   rec.start(1000); t0=Date.now(); timer=setInterval(tick,500);
@@ -188,7 +209,8 @@ function stopRec(){
 $('btn-rec').onclick=()=>{ (rec&&rec.state==='recording')?stopRec():startRec(); };
 $('btn-retake').onclick=()=>{ blob=null; $('playback').style.display='none';
   $('cam').style.display='block'; $('tips').style.display='block';
-  $('btn-share').disabled=$('btn-download').disabled=$('btn-retake').disabled=true;
+  $('btn-share').disabled=$('btn-download').disabled=$('btn-retake').disabled=$('btn-upload').disabled=true;
+  $('escena-panel').classList.remove('show'); $('frame').classList.remove('uploading');
   $('crono').textContent='00:00'; $('frames').textContent='~0 frames';
   $('estado-txt').textContent='listo'; };
 
@@ -207,7 +229,71 @@ $('btn-share').onclick=async()=>{
   }catch(e){ log('share cancelado: '+e.message); }
 };
 
-log('XpaceScan v26.07.02.1 — el vídeo se procesa con scan-to-splat.sh → visor.html');
+/* ---------- subida directa móvil → R2 (worker xpacescan) ----------
+   Cierra el círculo sin AirDrop: el vídeo va por trozos de 8 MB (multipart de R2) al
+   worker, y el visor lo recoge por URL (?scene=<id>). Dominio propio primero; si el
+   operador lo bloquea (LaLiga en horas de fútbol) cae a workers.dev. Misión yokup 1236. */
+const SCAN_APIS=['https://scan.admira.store','https://xpacescan.csilvasantin.workers.dev'];
+let SCAN_API=SCAN_APIS[0];
+async function api(path,opt={},tries=SCAN_APIS.length){
+  for(let i=0;i<tries;i++){
+    try{
+      const r=await fetch(SCAN_API+path,opt);
+      if(r.status>=500&&i<tries-1) throw new Error('http '+r.status);
+      return r;
+    }catch(e){
+      const next=SCAN_APIS[(SCAN_APIS.indexOf(SCAN_API)+1)%SCAN_APIS.length];
+      log('API '+SCAN_API+' no responde ('+e.message+') → '+next); SCAN_API=next;
+      if(i===tries-1) throw e;
+    }
+  }
+}
+async function putPart(id,n,chunk){
+  for(let intento=1;intento<=3;intento++){
+    try{
+      const r=await api(`/scenes/${id}/parts/${n}`,{method:'PUT',body:chunk});
+      const j=await r.json(); if(!r.ok||!j.ok) throw new Error(j.error||('http '+r.status));
+      return j.etag;
+    }catch(e){ log(`parte ${n} intento ${intento}: ${e.message}`); if(intento===3) throw e; await new Promise(r=>setTimeout(r,1200*intento)); }
+  }
+}
+let escena=null;
+$('btn-upload').onclick=async()=>{
+  if(!blob||escena) return;
+  const PART=8*1024*1024, parts=Math.max(1,Math.ceil(blob.size/PART));
+  $('btn-upload').disabled=true; $('btn-rec').disabled=true; $('frame').classList.add('uploading');
+  $('estado-txt').textContent='subiendo 0%'; $('up-fill').style.width='0%';
+  try{
+    const dur=Math.round(($('playback').duration||0));
+    let r=await api('/scenes',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:sceneName(),size:blob.size,mime:blob.type||('video/'+ext()),parts,duration:dur,device:navigator.userAgent.slice(0,80)})});
+    let j=await r.json(); if(!r.ok||!j.ok) throw new Error(j.error||('http '+r.status));
+    const id=j.id; log('escena '+id+' · '+parts+' partes');
+    const etags=[];
+    for(let n=1;n<=parts;n++){
+      const chunk=blob.slice((n-1)*PART, Math.min(n*PART,blob.size));
+      etags.push({partNumber:n, etag:await putPart(id,n,chunk)});
+      const pct=Math.round(n/parts*100);
+      $('up-fill').style.width=pct+'%'; $('estado-txt').textContent='subiendo '+pct+'%';
+    }
+    r=await api(`/scenes/${id}/complete`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({parts:etags})});
+    j=await r.json(); if(!r.ok||!j.ok) throw new Error(j.error||('http '+r.status));
+    escena=j.scene;
+    $('estado-txt').textContent='subida ✓'; log('subida completa: '+(escena.video.size/1048576).toFixed(1)+' MB → '+escena.visor);
+    $('escena-id').textContent=escena.id; $('escena-visor').href=escena.visor;
+    $('escena-panel').classList.add('show'); $('frame').classList.remove('uploading');
+    $('btn-rec').disabled=false;
+    try{ localStorage.setItem('xpacescan-last',escena.id); }catch(_){}
+  }catch(e){
+    log('ERROR subida: '+e.message); $('estado-txt').textContent='fallo al subir';
+    $('btn-upload').disabled=false; $('btn-rec').disabled=false; $('frame').classList.remove('uploading');
+  }
+};
+$('escena-copiar').onclick=async()=>{ if(!escena) return; try{ await navigator.clipboard.writeText(escena.visor); $('escena-copiar').textContent='Copiado ✓'; }catch(_){ prompt('Enlace del visor', escena.visor); } };
+$('escena-share').onclick=async()=>{ if(!escena) return; try{ await navigator.share({title:'XpaceScan '+escena.name, url:escena.visor}); }catch(_){} };
+$('btn-retake').addEventListener('click',()=>{ escena=null; $('escena-copiar').textContent='Copiar enlace'; });
+
+log('XpaceScan v26.09.05.2 — graba → ☁︎ Subir a XpaceOS → el visor recibe el gemelo (?scene=id)');
 initCam();
 </script>
 </body>

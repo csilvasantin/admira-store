@@ -1,21 +1,93 @@
 {
   "name": "XpaceOS",
-  "description": "MCP de la red XpaceOS de retail media: flota, emisión en vivo, audiencia, proof-of-play y alta de pantallas/robots. Puente silicio↔carbono. Doctrina: en Xpaces todos los elementos son movibles y sustituibles siempre (config, no motor).",
-  "version": "1.0.1",
+  "description": "MCP de XpaceOS, el sistema operativo del comercio físico: la red de pantallas (flota, emisión en vivo, audiencia, proof-of-play, alta, publicar), el catálogo de 8.775 gemelos digitales, XpaceScan (3D desde el móvil), el motor de reglas XPL y la ayuda para humanos. Puente silicio↔carbono. Doctrina: en Xpaces todos los elementos son movibles y sustituibles siempre (config, no motor).",
+  "version": "v.05.09.2026.r8.23:45",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
-  "auth": "none",
+  "auth": {
+    "lectura": "none",
+    "escritura": "Authorization: Bearer <clave de flota AdmiraNeXT> (register_device, publish_asset)",
+    "identidad": "https://www.admiranext.com/mcp/identidad-flota.mjs",
+    "directorio": "https://www.admiranext.com/mcp/#directorio"
+  },
   "docs": "https://www.xpaceos.com/mcp/",
   "tools": [
-    { "name": "fleet_status", "description": "Pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia)." },
-    { "name": "list_screens", "description": "Inventario de Xpaces activos: ubicación, screen, tipo y orientación." },
-    { "name": "screen_now", "description": "Qué emite ahora una pantalla y su audiencia por cámara; si está conectada." },
-    { "name": "emission_report", "description": "Proof-of-play de un circuito: pases, segundos, por tipo y segmento." },
-    { "name": "register_device", "description": "Da de alta una pantalla o robot y devuelve la URL del canal." }
+    {
+      "name": "fleet_status",
+      "description": "Pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia)."
+    },
+    {
+      "name": "list_screens",
+      "description": "Inventario de Xpaces activos: ubicación, screen, tipo y orientación."
+    },
+    {
+      "name": "screen_now",
+      "description": "Qué emite ahora una pantalla y su audiencia por cámara; si está conectada."
+    },
+    {
+      "name": "emission_report",
+      "description": "Proof-of-play de un circuito: pases, segundos, por tipo y segmento."
+    },
+    {
+      "name": "register_device",
+      "description": "Da de alta una pantalla o robot y devuelve la URL del canal."
+    },
+    {
+      "name": "publish_asset",
+      "description": "Publica una pieza de la biblioteca de Pixeria en una pantalla (el puente crear→distribuir)."
+    },
+    {
+      "name": "search_twins",
+      "description": "Busca en el catálogo de 8.775 gemelos por texto, marca o superficie; devuelve el enlace de cada gemelo."
+    },
+    {
+      "name": "twin_detail",
+      "description": "Ficha de un gemelo: superficies con estado, enlace Admira XP (?loc=) y reglas XPL resueltas."
+    },
+    {
+      "name": "catalog_stats",
+      "description": "Totales del catálogo por marca, tipo de superficie y estado."
+    },
+    {
+      "name": "list_scenes",
+      "description": "Escenas de XpaceScan subidas desde el móvil y su estado."
+    },
+    {
+      "name": "scene_status",
+      "description": "Manifiesto de una escena: progreso, máquina, ficheros publicados, visor."
+    },
+    {
+      "name": "xpl_rules",
+      "description": "Reglas XPL resueltas para una pantalla (global → circuito → pantalla)."
+    },
+    {
+      "name": "signage_feed",
+      "description": "Lo último que ha salido a la red de pantallas."
+    },
+    {
+      "name": "help",
+      "description": "La ayuda para humanos de xpaceos.com/help, por tema."
+    }
   ],
   "ecosystem": {
     "create": "https://www.pixeria.com",
     "operate": "https://www.xpaceos.com",
     "broadcast": "https://admira.tv"
-  }
+  },
+  "help": "https://www.xpaceos.com/help/",
+  "claude_code": "claude mcp add --transport http xpaceos https://mcp.admira.store/mcp",
+  "resources": [
+    {
+      "uri": "xpaceos://help",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "xpaceos://llms.txt",
+      "mimeType": "text/plain"
+    },
+    {
+      "uri": "xpaceos://catalog/stats",
+      "mimeType": "application/json"
+    }
+  ]
 }

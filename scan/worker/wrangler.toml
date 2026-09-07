@@ -1,0 +1,21 @@
+# XpaceScan API — subida directa móvil → R2, manifiesto de escena y servido de resultados.
+# Misión yokup 1236 (opción 3 de DEC-mto70hmjfc95). Dominio propio: LaLiga bloquea
+# workers.dev en horas de fútbol (FLT-1633), y así el móvil de Carlos siempre llega.
+name = "xpacescan"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+workers_dev = true
+
+routes = [
+  { pattern = "scan.admira.store", custom_domain = true }
+]
+
+[[r2_buckets]]
+binding = "SCAN"
+bucket_name = "xpacescan"
+
+[vars]
+PUBLIC_BASE = "https://scan.admira.store"
+VISOR_BASE = "https://www.xpaceos.com/scan/visor.html"
+MAX_SCENE_BYTES = "524288000"
+# Secretos: SCAN_TOKEN (pipeline → resultados), BOT_SAY_URL/BOT_SAY_TOKEN (aviso al grupo, opcional)

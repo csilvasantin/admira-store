@@ -70,7 +70,7 @@ a{color:var(--acc)}
       <button id="tg-avanzado" class="on" title="avanzado">▤</button>
       <button id="tg-experto" class="on" title="experto">⌥</button>
     </div>
-    <span class="ver">v26.07.02.1 · <a href="index.html">capturar</a> · <a href="../admira-xp/">gemelo XPL</a></span>
+    <span class="ver">v26.09.05.3 · <a href="index.html">capturar</a> · <a href="../admira-xp/">gemelo XPL</a></span>
   </div>
 
   <div id="bar-left" class="bar">
@@ -98,6 +98,7 @@ a{color:var(--acc)}
     <div id="hud">
       <span class="pill" id="pill-cam">iso NE</span>
       <span class="pill" id="pill-obj">—</span>
+      <span class="pill" id="pill-scene" style="display:none"></span>
     </div>
     <div id="nodo-panel"></div>
     <div id="drop-hint">suelta aquí el .ply / .splat / .ksplat</div>
@@ -118,10 +119,20 @@ a{color:var(--acc)}
       <button class="op" id="btn-apply-pt">Aplicar</button>
     </div>
     <div class="grp">
+      <h3>Escena en la nube</h3>
+      <label class="sm">id de escena (subida desde <a href="index.html">/scan</a>)</label>
+      <input type="text" id="scene-id" placeholder="xpacio-20260905-ab12">
+      <button class="op" id="btn-scene">Abrir escena</button>
+      <div class="sm" id="scene-info" style="color:var(--dim)">—</div>
+      <button class="op" id="btn-scenes-list">Últimas escenas…</button>
+      <div id="scenes-list" class="sm"></div>
+    </div>
+    <div class="grp">
       <h3>Pipeline</h3>
       <div class="sm" style="color:var(--dim)">
-        móvil → <a href="index.html">/scan</a> graba vídeo →
-        <code>scan-to-splat.sh</code> en el Mac → .ply/.splat → este visor.
+        móvil → <a href="index.html">/scan</a> graba y <b>sube</b> (☁︎) →
+        <code>scan-pull.sh &lt;id&gt;</code> en un Mac/DGX reconstruye y publica →
+        este visor con <code>?scene=&lt;id&gt;</code>.
       </div>
     </div>
   </div>
@@ -246,7 +257,9 @@ renderer.domElement.addEventListener('click',ev=>{
       <div><span class="k">tipo</span> ${n.tipo} · <span class="k">xpl</span> ${n.xpl}</div>
       <div>${n.desc}</div>
       <div><span class="k">pos</span> ${n.x}, ${n.y}, ${n.z} m</div>
-      <button class="op" onclick="window.open('../admira-xp/xpl.html','_blank')">⚡ Regla XPL sobre este nodo</button>`;
+      <div id="xpl-live" class="sm" style="color:var(--dim)">⚡ XPL: consultando reglas en vivo…</div>
+      <button class="op" onclick="window.open('../admira-xp/xpl.html?screen=${encodeURIComponent(n.id)}','_blank')">⚡ Regla XPL sobre este nodo</button>`;
+    xplLive(n);
   } else { p.style.display='none'; $('pill-obj').textContent='—'; }
 });
 
@@ -315,9 +328,68 @@ $('btn-reset').onclick=()=>{ viewSize=9; rotStep=0; placeCam(); resize(); };
 $('btn-iot').onclick=()=>{ iotGroup.visible=!iotGroup.visible; $('btn-iot').classList.toggle('on'); };
 $('btn-grid').onclick=()=>{ grid.visible=!grid.visible; $('btn-grid').classList.toggle('on'); };
 
-/* ?src= en URL */
+/* ---------- XPL en vivo: reglas reales del motor para el nodo (worker xpl-store) ----------
+   El nodo del visor ES una pantalla del motor: se resuelve por su id en cascada
+   global→circuito(escena)→pantalla, igual que hace el gemelo. Misión yokup 1236. */
+const XPL_STORE='https://xpl.admira.store';
+async function xplLive(n){
+  const el=$('xpl-live'); if(!el) return;
+  try{
+    const circ=SCENE?SCENE.id:'';
+    const r=await fetch(`${XPL_STORE}/xpl/resolve?screen=${encodeURIComponent(n.id)}${circ?'&circuit='+encodeURIComponent(circ):''}&ts=${Date.now()}`,{cache:'no-store'});
+    const d=await r.json();
+    const rules=Array.isArray(d.rules)?d.rules:[]; const sc=d.scopes||{};
+    el.innerHTML=`⚡ XPL en vivo · <b>${rules.length}</b> regla${rules.length===1?'':'s'} para <code>${n.id}</code> (global ${sc.global||0} · circuito ${sc.circuit||0} · pantalla ${sc.screen||0})`
+      +(rules.length?'<br>'+rules.slice(0,4).map(x=>'· '+(x.name||x.id||'regla')).join('<br>'):'<br>· sin reglas propias: hereda el comportamiento por defecto del gemelo');
+  }catch(e){ el.textContent='⚡ XPL: motor no disponible ('+e.message+')'; }
+}
+
+/* ---------- escena en la nube (worker xpacescan · scan.admira.store) ---------- */
+const SCAN_APIS=['https://scan.admira.store','https://xpacescan.csilvasantin.workers.dev'];
+let SCAN_API=SCAN_APIS[0], SCENE=null, sceneTimer=null, sceneLoaded='';
+async function scanFetch(path){
+  for(let i=0;i<SCAN_APIS.length;i++){
+    try{ const r=await fetch(SCAN_API+path,{cache:'no-store'}); if(r.status>=500) throw new Error('http '+r.status); return r; }
+    catch(e){ SCAN_API=SCAN_APIS[(SCAN_APIS.indexOf(SCAN_API)+1)%SCAN_APIS.length]; if(i===SCAN_APIS.length-1) throw e; }
+  }
+}
+const fileUrl=(id,name)=>`${SCAN_API}/scenes/${encodeURIComponent(id)}/files/${encodeURIComponent(name)}`; // mismo host que contestó: si el dominio propio no llega (IPv6/LaLiga), el respaldo sirve también los ficheros
+const ESTADOS={uploading:'subiendo desde el móvil',uploaded:'subido · en cola de reconstrucción',processing:'reconstruyendo',ready:'gemelo listo',error:'error en la reconstrucción'};
+async function openScene(id){
+  id=String(id||'').trim(); if(!id) return;
+  clearInterval(sceneTimer); sceneLoaded='';
+  const pill=$('pill-scene'); pill.style.display='inline-block'; pill.textContent='escena '+id+' · …';
+  $('scene-id').value=id;
+  const tick=async()=>{
+    try{
+      const r=await scanFetch('/scenes/'+encodeURIComponent(id)); const d=await r.json();
+      if(!r.ok||!d.ok){ pill.textContent='escena '+id+' · '+(d.error||'no encontrada'); $('scene-info').textContent=d.error||'no encontrada'; clearInterval(sceneTimer); return; }
+      SCENE=d.scene;
+      const st=ESTADOS[SCENE.status]||SCENE.status; const prog=SCENE.progress?(' '+SCENE.progress+'%'):'';
+      pill.textContent=`${SCENE.name} · ${st}${prog}`;
+      $('scene-info').innerHTML=`<b>${SCENE.name}</b> · ${st}${prog}<br>vídeo ${(SCENE.video?.size/1048576||0).toFixed(1)} MB${SCENE.duration?' · '+SCENE.duration+' s':''}${SCENE.machine?' · '+SCENE.machine:''}${SCENE.note?'<br>'+SCENE.note:''}<br>`
+        +(SCENE.video?`<a href="${fileUrl(SCENE.id,SCENE.video.name)}" target="_blank">vídeo original</a> · `:'')+`<a href="${location.pathname}?scene=${SCENE.id}">enlace del visor</a>`;
+      if(Array.isArray(SCENE.nodes)&&SCENE.nodes.length&&!sceneLoaded){ NODOS=SCENE.nodes; $('nodos-json').value=JSON.stringify(NODOS,null,1); buildNodos(); log('nodos IoT de la escena: '+NODOS.length); }
+      if(SCENE.status==='ready'){
+        const f=(SCENE.files||[]).find(x=>x.name===SCENE.primary)||(SCENE.files||[]).find(x=>/\.(ply|splat|ksplat)$/i.test(x.name));
+        if(f&&sceneLoaded!==f.name){ sceneLoaded=f.name; log('escena lista → cargando '+f.name); route(fileUrl(SCENE.id,f.name),f.name); }
+        clearInterval(sceneTimer);
+      }
+    }catch(e){ pill.textContent='escena '+id+' · sin conexión'; log('escena: '+e.message); }
+  };
+  await tick(); sceneTimer=setInterval(tick,15000);
+}
+$('btn-scene').onclick=()=>openScene($('scene-id').value);
+$('btn-scenes-list').onclick=async()=>{
+  try{ const r=await scanFetch('/scenes'); const d=await r.json();
+    $('scenes-list').innerHTML=(d.scenes||[]).slice(0,12).map(s=>`<a href="?scene=${s.id}">${s.name}</a> · ${ESTADOS[s.status]||s.status}`).join('<br>')||'sin escenas';
+  }catch(e){ $('scenes-list').textContent='sin conexión: '+e.message; }
+};
+
+/* ?src= / ?scene= en URL */
 const qs=new URLSearchParams(location.search);
 if(qs.get('src')) route(qs.get('src'));
+if(qs.get('scene')) openScene(qs.get('scene'));
 
 /* ---------- loop ---------- */
 const clock=new THREE.Clock();
@@ -329,7 +401,7 @@ function anim(){
   renderer.render(scene,cam);
 }
 placeCam(); resize(); anim();
-log('visor isométrico listo — v26.07.02.1 · Apple M5 · demo con '+NODOS.length+' nodos IoT');
+log('visor isométrico listo — v26.09.05.3 · demo con '+NODOS.length+' nodos IoT · ?scene=<id> carga una escena de la nube');
 </script>
 </body>
 </html>
