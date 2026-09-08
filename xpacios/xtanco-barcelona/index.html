@@ -245,7 +245,7 @@
 </style>
   <script defer src="https://www.pixeria.com/assets/analytics.js?v=20260714-coverage"></script>
   <script defer src="https://www.pixeria.com/assets/consent.js?v=20260714-universal"></script>
-</head>
+<link rel="stylesheet" href="/cenital-panel.css?v=destinations-1"><script src="/cenital-panel.js?v=destinations-1"></script><style>#xtanco-overview{display:none;left:20px;right:auto;bottom:25px;width:210px}body.touring #xtanco-overview{display:block}#xtanco-overview #minimap{position:static;display:block;width:150px;height:150px;margin:auto;border:0;background:transparent;padding:0}#xtanco-overview .cenital-body{height:155px}</style></head>
 <body>
 <canvas id="c"></canvas>
 <div id="loading"><div class="ring"></div><div>Construyendo Xtanco Barcelona…</div></div>
@@ -329,7 +329,7 @@
 <div id="joy"><div id="joyNub"></div></div>
 <div id="walkHint"><b>WASD</b> / flechas para moverte · arrastra para mirar · <b>Esc</b> para salir</div>
 <div id="tourHint">Pulsa los <b>puntos</b> del suelo para recorrer · arrastra para mirar · <b>Esc</b> para salir</div>
-<canvas id="minimap" width="150" height="150" title="Planta del Xtanco · tu posición"></canvas>
+<div id="xtanco-overview" class="cenital-floating"><canvas id="minimap" width="150" height="150" title="Planta de Xtanco Barcelona · tu posición"></canvas></div>
 <canvas id="editMap" width="150" height="150" title="Planta · objetos y pósters"></canvas>
 <div id="objCount" title="Inventario de piezas colocadas por tipo"></div>
 
@@ -1401,6 +1401,7 @@ function goToMarker(eye){ const dx=eye.x-persp.position.x, dz=eye.z-persp.positi
   tT=0; }
 // ── minimapa de planta ──
 const mmCanvas=document.getElementById("minimap"), mmCtx=mmCanvas?mmCanvas.getContext("2d"):null;
+const xtancoOverview=CenitalPanel.create({host:document.getElementById('xtanco-overview'),content:mmCanvas,key:'xtanco-interior',name:'Xtanco · Barcelona',theme:'xtanco'});
 const LMINX=bb.minx-CX, LMAXX=bb.maxx-CX, LMINZ=bb.minz-CZ, LMAXZ=bb.maxz-CZ;
 function mmMap(lx,lz){ const W=150,H=150,pad=13, s=Math.min((W-2*pad)/(LMAXX-LMINX),(H-2*pad)/(LMAXZ-LMINZ));
   return [pad+(lx-LMINX)*s, pad+(lz-LMINZ)*s]; }
