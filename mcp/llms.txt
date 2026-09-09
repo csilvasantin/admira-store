@@ -1,6 +1,6 @@
 # XpaceOS · MCP — conecta con la red de retail media
 
-> Servidor MCP de XpaceOS (v2.0.0): el puente para que agentes (silicio) y personas (carbono)
+> Servidor MCP de XpaceOS (v2.2.0): el puente para que agentes (silicio) y personas (carbono)
 > se conecten al sistema operativo del comercio físico — la red de pantallas (flota, emisión en
 > vivo, audiencia, proof-of-play, alta, publicar), el catálogo de 8.775 gemelos digitales,
 > XpaceScan (3D desde el móvil), el motor de reglas XPL y la ayuda para humanos.
@@ -9,6 +9,7 @@ Ayuda para humanos: https://www.xpaceos.com/help/  (misma guía que la tool `hel
 
 Sitio / docs: https://www.xpaceos.com/mcp/
 Manifest máquina: https://www.xpaceos.com/mcp/manifest.json
+Registro de la Galaxia Admira: https://www.xpaceos.com/mcp/galaxia.json
 Repo: https://github.com/csilvasantin/xpaceos
 
 ## Servidor MCP (cómo conectar)
@@ -27,6 +28,7 @@ Repo: https://github.com/csilvasantin/xpaceos
 
 ## Herramientas
 
+- quien_soy — identidad persona+equipo que firma la conexión; sin clave, lector anónimo.
 - fleet_status — visión general: pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia).
 - list_screens — inventario de Xpaces activos: ubicación, id de pantalla, tipo y orientación.
 - screen_now — qué emite AHORA una pantalla y su audiencia por cámara (personas · edad · género), y si está conectada.
@@ -40,12 +42,14 @@ Repo: https://github.com/csilvasantin/xpaceos
 - xpl_rules — reglas XPL (CUANDO·PARA·ENTONCES) resueltas para una pantalla en cascada global→circuito→pantalla.
 - signage_feed — lo último que ha salido a la red de pantallas.
 - help — la ayuda para humanos por tema (gemelo, escanea, xpl, emite, alta, mcp, método).
+- galaxy — directorio de servidores, hubs, identificadores y flujos de la Galaxia Admira; filtros opcionales element / flow.
 
 ## Resources
 
 - xpaceos://help (text/markdown) — la guía de xpaceos.com/help.
 - xpaceos://llms.txt (text/plain) — este fichero.
 - xpaceos://catalog/stats (application/json) — totales del catálogo.
+- xpaceos://galaxy (application/json) — registro conectable de la Galaxia Admira.
 
 ## Privacidad
 
@@ -55,10 +59,36 @@ de género y edad son estimaciones estadísticas, no identificación de personas
 
 ## Ecosistema
 
-Tres capas de la red AdmiraNeXT, una por verbo:
+La Galaxia Admira comparte identidad de flota e identificadores canónicos entre productos:
 - Crear: https://www.pixeria.com
 - Operar: https://www.xpaceos.com
 - Emitir: https://admira.tv
+- Coordinar y probar: https://www.yokup.com
+- Deliberar y orquestar: https://www.admira.live
+
+### Conectar varios elementos en el mismo cliente
+
+Directorio operativo: https://www.xpaceos.com/mcp/galaxia.json
+Censo vivo de productos: https://www.yokup.com/mcp/galaxia.json
+Directorio canónico de la suite: https://www.admiranext.com/mcp/#directorio
+
+Config mínima para el flujo crear → operar → emitir → probar:
+
+{"mcpServers":{"pixeria":{"url":"https://mcp-pixeria.admira.store/mcp"},"xpaceos":{"url":"https://mcp.admira.store/mcp","headers":{"Authorization":"Bearer <clave de flota>"}},"admiratv":{"url":"https://mcp-tv.admira.store/mcp","headers":{"Authorization":"Bearer <clave de flota>"}},"yokup":{"url":"https://yokup.com/mcp","headers":{"Authorization":"Bearer <credencial individual o clave de flota>"}}}}
+
+La clave nunca se copia a documentación, prompts, commits ni capturas: se guarda en el almacén
+seguro del cliente. Antes de escribir, llama a quien_soy / yokup_whoami y verifica persona+equipo.
+
+### Contrato de relevo entre elementos
+
+- Pixeria entrega asset_id / número / tags.
+- XpaceOS recibe asset_id y screen_id; entrega twin_id, screen_id, circuit_id y scene_id.
+- Admira.tv recibe asset_id + screen_id/circuit_id; entrega airtime_id y proof-of-play.
+- Yokup recibe project_id + mission_id + proof_url y conserva la trazabilidad del trabajo.
+- Admira.live coordina persona+equipo, decisiones, encargos y mensajes.
+
+Flujo comprobable recomendado:
+search_stock → publish_asset → screen_now → on_air → airtime_report → yokup_task_update.
 
 ## Federación
 

@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>XpaceOS · MCP — conecta con la red</title>
-<meta name="description" content="Servidor MCP de XpaceOS: el puente para que agentes (silicio) y personas (carbono) se conecten a la red de retail media — flota, emisión en vivo, audiencia y alta de pantallas.">
+<title>XpaceOS · MCP — conecta la Galaxia Admira</title>
+<meta name="description" content="Servidor MCP de XpaceOS y directorio operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo en un mismo cliente.">
 <link rel="canonical" href="https://www.xpaceos.com/mcp/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="XpaceOS · MCP — conecta con la red">
-<meta property="og:description" content="Servidor MCP de XpaceOS: el puente para que agentes y personas se conecten a la red de retail media — flota, emisión en vivo, audiencia y alta de pantallas.">
+<meta property="og:title" content="XpaceOS · MCP — conecta la Galaxia Admira">
+<meta property="og:description" content="Carga juntos los MCP de Admira y pasa el mismo asset, pantalla, circuito, misión e identidad de punta a punta.">
 <meta property="og:url" content="https://www.xpaceos.com/mcp/">
 <meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="XpaceOS · MCP — conecta con la red">
-<meta name="twitter:description" content="El puente MCP para conectar agentes y personas a la red de retail media de XpaceOS.">
+<meta name="twitter:title" content="XpaceOS · MCP — conecta la Galaxia Admira">
+<meta name="twitter:description" content="El puente MCP para conectar creación, operación, emisión, medición y trabajo en la Galaxia Admira.">
 <meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <style>
@@ -42,7 +42,16 @@
   .tool b{font-family:ui-monospace,Menlo,monospace;color:var(--pur);font-size:14px;align-self:start}
   .tool span{color:var(--mut);font-size:14px}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:620px){.two{grid-template-columns:1fr}}
+  .two>*{min-width:0}
+  .galaxy{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 14px}
+  .galaxy a{display:flex;flex-direction:column;gap:2px;padding:12px 10px;border:1px solid var(--line);border-radius:10px;background:#0a121c;text-decoration:none;min-width:0}
+  .galaxy a:hover{border-color:var(--acc)}
+  .galaxy b{font:600 12px/1.2 ui-monospace,Menlo,monospace;color:var(--txt)}
+  .galaxy span{font-size:11px;color:var(--mut)}
+  .flow{color:var(--mut);font:12px/1.7 ui-monospace,Menlo,monospace;overflow-wrap:anywhere}
+  .flow strong{color:var(--acc)}
+  @media(max-width:760px){.galaxy{grid-template-columns:1fr 1fr}}
+  @media(max-width:620px){.two{grid-template-columns:1fr}.galaxy{grid-template-columns:1fr}}
   .pill{display:inline-block;font:600 11px ui-monospace,Menlo,monospace;color:var(--pur);border:1px solid rgba(155,140,255,.4);border-radius:6px;padding:2px 8px;margin-right:6px}
   a{color:var(--acc)}
   footer{color:var(--mut);font-size:13px;margin-top:40px;border-top:1px solid var(--line);padding-top:18px}
@@ -51,8 +60,8 @@
 <body>
 <div class="wrap">
   <div class="kick">XpaceOS · Model Context Protocol</div>
-  <h1>Conecta con la <b>red XpaceOS</b></h1>
-  <p class="lead">El puente para que <b>agentes (silicio)</b> y <b>personas (carbono)</b> se conecten a la red de retail media: ver la flota, qué emite cada pantalla en vivo, su audiencia, el proof-of-play de cada circuito y dar de alta nuevas pantallas o robots.</p>
+  <h1>Conecta la <b>Galaxia Admira</b></h1>
+  <p class="lead">XpaceOS es el nexo operativo para que <b>agentes (silicio)</b> y <b>personas (carbono)</b> conecten creación, gemelos, pantallas, emisión, audiencia y trabajo sin perder el mismo identificador ni la identidad que firma cada acción.</p>
 
   <div class="status"><span class="dot" id="dot"></span><span id="status">comprobando servidor…</span></div>
 
@@ -63,8 +72,9 @@
   </div>
   <p style="color:var(--mut);font-size:13.5px;margin:8px 2px 0">Transporte: <span class="pill">MCP Streamable HTTP</span> · <code>POST /mcp</code> (JSON-RPC) · salud en <code>GET /</code>. Lecturas sin clave; <code>register_device</code> y <code>publish_asset</code> exigen la <a href="https://www.admiranext.com/mcp/#identidad">clave de flota AdmiraNeXT</a> (<code>Authorization: Bearer</code>) y quedan firmadas por el agente. <code>quien_soy</code> dice quién eres. Directorio de la suite: <a href="https://www.admiranext.com/mcp/#directorio">admiranext.com/mcp</a>.</p>
 
-  <h2>Herramientas <small style="font-weight:400;color:var(--mut);font-size:13px">· 14 en v2.0.0 · red, catálogo de gemelos, XpaceScan, XPL, antena y ayuda</small></h2>
+  <h2>Herramientas <small style="font-weight:400;color:var(--mut);font-size:13px">· 16 en v2.2.0 · identidad, red, catálogo, XpaceScan, XPL, antena, ayuda y galaxia</small></h2>
   <div class="card" id="tools">
+    <div class="tool"><b>quien_soy</b><span>Verifica la identidad persona+equipo que firma la conexión; sin clave, lector anónimo.</span></div>
     <div class="tool"><b>fleet_status</b><span>Visión general: pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia).</span></div>
     <div class="tool"><b>list_screens</b><span>Inventario de Xpaces activos: ubicación, id de pantalla, tipo y orientación. Filtro opcional.</span></div>
     <div class="tool"><b>screen_now</b><span>Qué emite AHORA una pantalla y su audiencia por cámara (personas · edad · género), y si está conectada.</span></div>
@@ -78,7 +88,43 @@
     <div class="tool"><b>scene_status</b><span>Manifiesto de una escena: progreso de la reconstrucción, máquina, ficheros publicados, vídeo original.</span></div>
     <div class="tool"><b>xpl_rules</b><span>Reglas XPL (CUANDO · PARA · ENTONCES) resueltas para una pantalla en cascada global → circuito → pantalla.</span></div>
     <div class="tool"><b>signage_feed</b><span>Lo último que ha salido a la red de pantallas: pieza, tipo, destino y hora.</span></div>
-    <div class="tool"><b>help</b><span>La ayuda para humanos de xpaceos.com/help, entera o por tema (gemelo, escanea, xpl, emite, alta, mcp, método).</span></div>
+    <div class="tool"><b>help</b><span>La ayuda para humanos de xpaceos.com/help, entera o por tema (gemelo, escanea, xpl, emite, alta, mcp, galaxia, método).</span></div>
+    <div class="tool"><b>galaxy</b><span>Directorio conectable de servidores, hubs, autenticación, identificadores y flujos de la Galaxia Admira. Filtra por elemento o flujo.</span></div>
+  </div>
+
+  <h2>Conectar la Galaxia Admira</h2>
+  <div class="card">
+    <p style="margin:0;color:var(--txt)">Carga varios servidores en el <b>mismo cliente MCP</b>. Cada elemento conserva su responsabilidad y entrega al siguiente identificadores canónicos, no texto ambiguo.</p>
+    <div class="galaxy" aria-label="Elementos operativos de la Galaxia Admira">
+      <a href="https://www.pixeria.com" target="_blank" rel="noopener"><b>Pixeria</b><span>crear · asset_id</span></a>
+      <a href="https://www.xpaceos.com" target="_blank" rel="noopener"><b>XpaceOS</b><span>operar · screen_id</span></a>
+      <a href="https://admira.tv" target="_blank" rel="noopener"><b>Admira.tv</b><span>emitir · circuit_id</span></a>
+      <a href="https://www.yokup.com" target="_blank" rel="noopener"><b>Yokup</b><span>probar · mission_id</span></a>
+      <a href="https://www.admira.live" target="_blank" rel="noopener"><b>Admira.live</b><span>coordinar · persona+equipo</span></a>
+    </div>
+    <p class="flow"><strong>Flujo comprobable:</strong> search_stock → publish_asset → screen_now → on_air → airtime_report → yokup_task_update</p>
+    <p style="margin:10px 0 0;color:var(--mut);font-size:13px">Contrato máquina completo: <a href="/mcp/galaxia.json">galaxia.json</a> · censo vivo de productos: <a href="https://www.yokup.com/mcp/galaxia.json">Yokup</a> · directorio canónico e identidad: <a href="https://www.admiranext.com/mcp/#directorio">AdmiraNeXT</a>.</p>
+  </div>
+
+  <div class="two">
+    <div>
+      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Config multi-servidor (lecturas abiertas):</p>
+      <pre>{
+ "mcpServers": {
+  "pixeria": {"url":"https://mcp-pixeria.admira.store/mcp"},
+  "xpaceos": {"url":"https://mcp.admira.store/mcp"},
+  "admiratv": {"url":"https://mcp-tv.admira.store/mcp"}
+ }
+}</pre>
+    </div>
+    <div>
+      <p style="color:var(--mut);font-size:13.5px;margin:0 0 8px">Para escribir, añade el mismo header seguro:</p>
+      <pre>"headers": {
+ "Authorization":
+ "Bearer &lt;clave de flota&gt;"
+}</pre>
+      <p style="color:var(--mut);font-size:13px">Nunca pongas la clave en una URL, prompt, commit o captura. Guárdala en el almacén seguro del cliente y verifica primero <code>quien_soy</code>.</p>
+    </div>
   </div>
 
   <h2>Cómo conectar (silicio)</h2>
@@ -109,7 +155,9 @@
     <div class="tool"><b>xpaceos://help</b><span>La guía para humanos en Markdown (la misma que <a href="/help/">xpaceos.com/help</a>).</span></div>
     <div class="tool"><b>xpaceos://llms.txt</b><span>Resumen para modelos: endpoint, herramientas, ecosistema y doctrina.</span></div>
     <div class="tool"><b>xpaceos://catalog/stats</b><span>Totales del catálogo de gemelos (JSON).</span></div>
+    <div class="tool"><b>xpaceos://galaxy</b><span>Registro de servidores, hubs, identificadores compartidos y flujos de la Galaxia Admira (JSON).</span></div>
   </div>
+  <p style="color:var(--mut);font-size:13px">El mismo contrato se puede leer por web en <a href="/mcp/galaxia.json">/mcp/galaxia.json</a> o dentro del cliente como <code>xpaceos://galaxy</code>.</p>
 
   <h2>Para carbono</h2>
   <p style="color:var(--mut);max-width:64ch">¿Eres humano? Esto es cómo una IA se asoma a la red: pídele a tu agente que cargue este MCP y pregúntale <i>"¿qué pantallas hay y qué están emitiendo?"</i> o <i>"da de alta una pantalla en &lt;dirección&gt;"</i>. La red responde en tiempo real.</p>
@@ -127,8 +175,8 @@
   </div>
 
   <footer>
-    XpaceOS · capa Operar de Admira · el MCP se mantiene actualizado con la red.<br>
-    Hermanos: <a href="https://admira.tv">admira.tv</a> (Emitir) · <a href="https://www.pixeria.com">pixeria.com</a> (Crear).
+    XpaceOS · capa Operar y nexo de la Galaxia Admira · el MCP se mantiene actualizado con la red.<br>
+    Hermanos: <a href="https://www.pixeria.com">Pixeria</a> (Crear) · <a href="https://admira.tv">Admira.tv</a> (Emitir) · <a href="https://www.yokup.com">Yokup</a> (Coordinar trabajo) · <a href="https://www.admira.live">Admira.live</a> (Consejo).
   </footer>
 </div>
 

@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ayuda · XpaceOS — cómo usar el sistema operativo del comercio físico</title>
-<meta name="description" content="Ayuda de XpaceOS para personas: qué es, cómo probar el gemelo digital de cualquier espacio, escanear tu tienda en 3D con el móvil, operar con reglas XPL, emitir y medir, dar de alta pantallas y conectar tu agente por MCP.">
+<meta name="description" content="Ayuda de XpaceOS para personas: prueba el gemelo, escanea tu tienda, opera con XPL y conecta creación, pantallas, emisión, audiencia y trabajo en la Galaxia Admira mediante MCP.">
 <link rel="canonical" href="https://www.xpaceos.com/help/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ayuda · XpaceOS">
-<meta property="og:description" content="Cómo usar XpaceOS: probar el gemelo, escanear tu espacio, operar con XPL, emitir y medir, conectar tu agente.">
+<meta property="og:description" content="Cómo usar XpaceOS y conectar los elementos de la Galaxia Admira: crear, operar, emitir, medir y coordinar.">
 <meta property="og:url" content="https://www.xpaceos.com/help/">
 <meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<meta name="admiranext-version" content="v.05.09.2026.r8.23:45">
+<meta name="admiranext-version" content="v.08.09.2026.r1.09:27">
 <style>
   :root{--bg:#070b12;--panel:#0e1622;--line:#1d2a3a;--txt:#e9f1f7;--mut:#7e95a8;--acc:#34d0c0;--pur:#9b8cff;--good:#3ddc84;--warn:#ffb347}
   *{box-sizing:border-box}
@@ -33,7 +33,7 @@
   .toc a{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--txt);text-decoration:none;font-size:14px}
   .toc a:hover{border-color:var(--acc)}
   .toc .n{font-family:ui-monospace,Menlo,monospace;color:var(--acc);font-size:12px}
-  section{border-top:1px solid var(--line);padding:34px 0}
+  section{border-top:1px solid var(--line);padding:34px 0;scroll-margin-top:82px}
   section h2{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
   section h2 .n{font-family:ui-monospace,Menlo,monospace;color:var(--acc);font-size:14px;margin-right:10px}
   .k{color:var(--mut);font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 14px}
@@ -48,9 +48,11 @@
   .cta{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#04201c;font-weight:700;padding:10px 16px;border-radius:10px;text-decoration:none;font-size:14px;margin-top:12px}
   .cta.sec{background:transparent;color:var(--acc);border:1px solid var(--acc)}
   .tip{border-left:3px solid var(--pur);padding:8px 14px;color:var(--mut);font-size:14px;margin-top:12px;background:rgba(155,140,255,.06);border-radius:0 10px 10px 0}
+  .route{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+  .route span{font:600 12px/1.3 ui-monospace,Menlo,monospace;border:1px solid var(--line);border-radius:999px;padding:6px 9px;color:var(--acc);background:#0a1220}
   footer{border-top:1px solid var(--line);color:var(--mut);font-size:13px;padding:24px 20px;text-align:center}
   footer a{color:var(--mut)}
-  @media (max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:30px}}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:30px}section{scroll-margin-top:150px}}
 </style>
 </head>
 <body>
@@ -78,7 +80,8 @@
     <a href="#emite"><span class="n">04</span><span data-i18n="toc.4">Emite y mide</span></a>
     <a href="#alta"><span class="n">05</span><span data-i18n="toc.5">Da de alta una pantalla</span></a>
     <a href="#mcp"><span class="n">06</span><span data-i18n="toc.6">Conecta tu agente (MCP)</span></a>
-    <a href="#soporte"><span class="n">07</span><span data-i18n="toc.7">Método y soporte</span></a>
+    <a href="#galaxia"><span class="n">07</span><span data-i18n="toc.galaxy">Conecta la Galaxia Admira</span></a>
+    <a href="#soporte"><span class="n">08</span><span data-i18n="toc.8">Método y soporte</span></a>
   </div>
 
   <section id="que-es">
@@ -206,8 +209,31 @@ ENTONCES showAd(botas-de-agua) · screenTone(calm)</pre>
     </div>
   </section>
 
+  <section id="galaxia">
+    <h2><span class="n">07</span><span data-i18n="sg.h">Conecta la Galaxia Admira</span></h2>
+    <p class="k" data-i18n="sg.k">cinco responsabilidades · una identidad · identificadores compartidos</p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="sg.a.h">Qué conecta cada elemento</h3><ul>
+        <li data-i18n-html="sg.a.1"><b>Pixeria</b> crea y entrega un <code>asset_id</code>.</li>
+        <li data-i18n-html="sg.a.2"><b>XpaceOS</b> coloca esa pieza en un <code>twin_id</code> y un <code>screen_id</code>.</li>
+        <li data-i18n-html="sg.a.3"><b>Admira.tv</b> la emite en un <code>circuit_id</code> y produce el proof-of-play.</li>
+        <li data-i18n-html="sg.a.4"><b>Yokup</b> une la prueba a un <code>project_id</code> y un <code>mission_id</code>.</li>
+        <li data-i18n-html="sg.a.5"><b>Admira.live</b> coordina decisiones y encargos con identidad <code>persona+equipo</code>.</li>
+      </ul><div class="route" aria-label="Flujo de la Galaxia Admira"><span>CREAR</span><span>→ OPERAR</span><span>→ EMITIR</span><span>→ PROBAR</span><span>→ COORDINAR</span></div></div>
+      <div class="card"><h3 data-i18n="sg.b.h">Cómo se conectan</h3>
+        <p data-i18n-html="sg.b.1">Carga varios servidores en el <b>mismo cliente MCP</b>. La clave de flota permite escrituras donde corresponda y <code>quien_soy</code> / <code>yokup_whoami</code> verifican quién firma.</p>
+        <pre>search_stock → publish_asset
+→ screen_now → on_air
+→ airtime_report
+→ yokup_task_update</pre>
+        <p data-i18n-html="sg.b.2" style="margin-top:10px">Directorio y configuración listos para máquina: <a href="/mcp/galaxia.json">mcp/galaxia.json</a>. Censo vivo de sitios: <a href="https://www.yokup.com/mcp/galaxia.json">Yokup</a>. Identidad y directorio canónico: <a href="https://www.admiranext.com/mcp/#directorio">AdmiraNeXT</a>.</p>
+        <div class="tip" data-i18n="sg.tip">La credencial nunca viaja en URLs, prompts, commits ni capturas. Guárdala en el almacén seguro del cliente MCP.</div>
+      </div>
+    </div>
+  </section>
+
   <section id="soporte">
-    <h2><span class="n">07</span><span data-i18n="s7.h">Método y soporte</span></h2>
+    <h2><span class="n">08</span><span data-i18n="s7.h">Método y soporte</span></h2>
     <p class="k" data-i18n="s7.k">por dónde seguir</p>
     <div class="grid">
       <div class="card"><h3 data-i18n="s7.a.h">Método y doctrina</h3><ul>
@@ -230,7 +256,7 @@ const I18N={en:{
  help:'HELP','nav.try':'Try the twin','nav.scan':'Scan','nav.cli':'CLI commands','nav.method':'Method',
  h1:'How to use <span>XpaceOS</span>',
  lede:'XpaceOS turns every store, shop window or booth into an intelligent advertising medium. This help is for people: what it is, what you can do today and where to start. AI agents have theirs at /mcp and the same guide as the help tool.',
- 'toc.0':'What XpaceOS is','toc.1':'Try the twin','toc.2':'Scan your space','toc.3':'Operate with XPL rules','toc.4':'Broadcast and measure','toc.5':'Register a screen','toc.6':'Connect your agent (MCP)','toc.7':'Method and support',
+ 'toc.0':'What XpaceOS is','toc.1':'Try the twin','toc.2':'Scan your space','toc.3':'Operate with XPL rules','toc.4':'Broadcast and measure','toc.5':'Register a screen','toc.6':'Connect your agent (MCP)','toc.galaxy':'Connect the Admira Galaxy','toc.8':'Method and support',
  's0.h':'What XpaceOS is','s0.k':'three layers · four products · one shared dataset','s0.a.h':'The three layers',
  's0.a.1':'<b>PixerIA</b> creates the content with AI (audio, music, image, video) from a brief. → <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a>',
  's0.a.2':'<b>Admira XP</b> distributes it on a Digital Twin of the space: an isometric replica of your store that runs in the browser and controls the real space.',
@@ -279,6 +305,13 @@ const I18N={en:{
  's6.b.1':'“Which screens are there and what are they playing?”','s6.b.2':'“Find the Mango twins in Barcelona and open the first one.”',
  's6.b.3':'“How is the scene I uploaded from my phone this morning doing?”','s6.b.4':'“Which XPL rules does the shop-window screen have?”',
  's6.b.5':'“Publish piece #409 on xtore-inicial and confirm it was picked up.”','s6.b.6':'“Explain how to scan my store” (the help tool answers with this same guide).',
+ 'sg.h':'Connect the Admira Galaxy','sg.k':'five responsibilities · one identity · shared identifiers','sg.a.h':'What each element connects',
+ 'sg.a.1':'<b>Pixeria</b> creates and hands off an <code>asset_id</code>.','sg.a.2':'<b>XpaceOS</b> places that asset in a <code>twin_id</code> and a <code>screen_id</code>.',
+ 'sg.a.3':'<b>Admira.tv</b> broadcasts it in a <code>circuit_id</code> and produces proof-of-play.','sg.a.4':'<b>Yokup</b> attaches the proof to a <code>project_id</code> and a <code>mission_id</code>.',
+ 'sg.a.5':'<b>Admira.live</b> coordinates decisions and assignments with <code>person+machine</code> identity.','sg.b.h':'How they connect',
+ 'sg.b.1':'Load several servers in the <b>same MCP client</b>. The fleet key enables writes where allowed, while <code>quien_soy</code> / <code>yokup_whoami</code> verify who signs.',
+ 'sg.b.2':'Machine-ready directory and config: <a href="/mcp/galaxia.json">mcp/galaxia.json</a>. Live site census: <a href="https://www.yokup.com/mcp/galaxia.json">Yokup</a>. Canonical identity and directory: <a href="https://www.admiranext.com/mcp/#directorio">AdmiraNeXT</a>.',
+ 'sg.tip':'Credentials never travel in URLs, prompts, commits or screenshots. Keep them in the MCP client’s secure store.',
  's7.h':'Method and support','s7.k':'where to go next','s7.a.h':'Method and doctrine',
  's7.a.1':'<a href="/ayuda/">Simulated Xpacio Method</a>: how an Xpacio is built and evolves, step by step.',
  's7.a.2':'<b>Xpaces doctrine:</b> every element of the twin is movable and replaceable, always. If something cannot be relocated or replaced from data, it is a design defect.',

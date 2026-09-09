@@ -1,9 +1,15 @@
 {
   "name": "XpaceOS",
-  "description": "MCP de XpaceOS, el sistema operativo del comercio físico: la red de pantallas (flota, emisión en vivo, audiencia, proof-of-play, alta, publicar), el catálogo de 8.775 gemelos digitales, XpaceScan (3D desde el móvil), el motor de reglas XPL y la ayuda para humanos. Puente silicio↔carbono. Doctrina: en Xpaces todos los elementos son movibles y sustituibles siempre (config, no motor).",
-  "version": "v.05.09.2026.r8.23:45",
+  "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
+  "version": "v.08.09.2026.r1.09:27",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
+  "server": {
+    "name": "xpaceos-mcp",
+    "version": "2.2.0",
+    "health": "https://mcp.admira.store/",
+    "tool_count": 16
+  },
   "auth": {
     "lectura": "none",
     "escritura": "Authorization: Bearer <clave de flota AdmiraNeXT> (register_device, publish_asset)",
@@ -12,6 +18,10 @@
   },
   "docs": "https://www.xpaceos.com/mcp/",
   "tools": [
+    {
+      "name": "quien_soy",
+      "description": "Identidad persona+equipo de la conexión según la clave de flota; sin clave, lector anónimo."
+    },
     {
       "name": "fleet_status",
       "description": "Pantallas/robots dados de alta y cuáles emiten ahora (asset + audiencia)."
@@ -67,12 +77,25 @@
     {
       "name": "help",
       "description": "La ayuda para humanos de xpaceos.com/help, por tema."
+    },
+    {
+      "name": "galaxy",
+      "description": "Directorio conectable de servidores, hubs, identificadores compartidos y flujos de la Galaxia Admira."
     }
   ],
   "ecosystem": {
     "create": "https://www.pixeria.com",
     "operate": "https://www.xpaceos.com",
-    "broadcast": "https://admira.tv"
+    "broadcast": "https://admira.tv",
+    "coordinate": "https://www.yokup.com",
+    "council": "https://www.admira.live"
+  },
+  "galaxy": {
+    "registry": "https://www.xpaceos.com/mcp/galaxia.json",
+    "live_census": "https://www.yokup.com/mcp/galaxia.json",
+    "suite_directory": "https://www.admiranext.com/mcp/#directorio",
+    "identity": "https://www.admiranext.com/mcp/identidad-flota.mjs",
+    "contract": "Los elementos se conectan cargando varios servidores MCP en el mismo cliente y pasando identificadores canónicos entre herramientas: asset_id, twin_id, screen_id, circuit_id, scene_id, project_id, mission_id y persona+equipo."
   },
   "help": "https://www.xpaceos.com/help/",
   "claude_code": "claude mcp add --transport http xpaceos https://mcp.admira.store/mcp",
@@ -87,6 +110,10 @@
     },
     {
       "uri": "xpaceos://catalog/stats",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "xpaceos://galaxy",
       "mimeType": "application/json"
     }
   ]

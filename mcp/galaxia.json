@@ -1,0 +1,135 @@
+{
+  "name": "Galaxia Admira · registro de conexiones MCP",
+  "version": "v.08.09.2026.r1.09:27",
+  "updated_at": "2026-09-08T07:27:11Z",
+  "description": "Directorio operativo para cargar juntos los elementos de Admira y encadenar sus herramientas sin perder identidad ni trazabilidad.",
+  "protocol": "Model Context Protocol · Streamable HTTP",
+  "sources": {
+    "suite_directory": "https://www.admiranext.com/mcp/#directorio",
+    "live_census": "https://www.yokup.com/mcp/galaxia.json",
+    "fleet_identity": "https://www.admiranext.com/mcp/identidad-flota.mjs"
+  },
+  "identity": {
+    "read": "Las lecturas indicadas como abiertas no necesitan credencial.",
+    "write": "Las escrituras usan Authorization: Bearer <clave de flota AdmiraNeXT> cuando el servidor lo admite.",
+    "principal": "La identidad canónica es persona+equipo; quien_soy o *_whoami debe verificarse antes de escribir.",
+    "never": "No copies claves en este fichero, URLs, prompts, commits ni capturas. Usa el almacén seguro del cliente MCP."
+  },
+  "servers": [
+    {
+      "id": "pixeria",
+      "name": "Pixeria",
+      "verb": "crear",
+      "endpoint": "https://mcp-pixeria.admira.store/mcp",
+      "health": "https://mcp-pixeria.admira.store/",
+      "auth": "lectura abierta",
+      "tools": ["search_stock", "stock_stats", "get_asset"],
+      "hands_off": ["asset_id", "asset_number", "title", "tags", "media_url"]
+    },
+    {
+      "id": "xpaceos",
+      "name": "XpaceOS",
+      "verb": "operar",
+      "endpoint": "https://mcp.admira.store/mcp",
+      "health": "https://mcp.admira.store/",
+      "auth": "lectura abierta; escritura con clave de flota",
+      "tools": ["quien_soy", "fleet_status", "list_screens", "screen_now", "emission_report", "register_device", "publish_asset", "search_twins", "twin_detail", "catalog_stats", "list_scenes", "scene_status", "xpl_rules", "signage_feed", "help"],
+      "accepts": ["asset_id", "asset_number"],
+      "hands_off": ["twin_id", "screen_id", "circuit_id", "scene_id", "channel_url"]
+    },
+    {
+      "id": "admira-tv",
+      "name": "Admira.tv",
+      "verb": "emitir_y_federar",
+      "endpoint": "https://mcp-tv.admira.store/mcp",
+      "health": "https://mcp-tv.admira.store/",
+      "auth": "lectura abierta; escritura con clave de flota; circuitos externos con clave cx_",
+      "tools": ["quien_soy", "on_air", "airtime_report", "channel_url", "player_info", "circuit_info", "circuits", "circuit_register", "circuit_screens", "request_airtime", "offer_airtime", "airtime_decide", "airtime_status"],
+      "accepts": ["asset_id", "screen_id", "circuit_id"],
+      "hands_off": ["airtime_id", "proof_of_play", "audience_summary"]
+    },
+    {
+      "id": "yokup",
+      "name": "Yokup",
+      "verb": "coordinar_y_probar",
+      "endpoint": "https://yokup.com/mcp",
+      "health": "https://api.yokup.com/projects",
+      "auth": "credencial individual o clave de flota; permisos por proyecto",
+      "tools": ["yokup_whoami", "yokup_projects", "yokup_contacts", "yokup_missions", "yokup_mission", "yokup_inbox", "yokup_send_message", "yokup_delivery", "yokup_claim", "yokup_task_update", "yokup_activity"],
+      "accepts": ["project_id", "mission_id", "proof_url", "persona_machine"],
+      "hands_off": ["mission_id", "task_code", "delivery_receipt", "report"]
+    },
+    {
+      "id": "admira-live",
+      "name": "Admira.live · Consejo",
+      "verb": "deliberar_y_orquestar",
+      "endpoint": "https://mcp.admira.live/mcp",
+      "health": "https://mcp.admira.live/salud",
+      "auth": "clave de flota o clave de consejero",
+      "capabilities": ["consejo", "flota", "AgoraMatrix", "Yokup", "Telegram humano"],
+      "accepts": ["persona_machine", "project_id", "mission_id"],
+      "hands_off": ["decision", "assignment", "message_receipt"]
+    },
+    {
+      "id": "council-readonly",
+      "name": "Consejo MCP público",
+      "verb": "consultar",
+      "endpoint": "https://council-mcp.admira.store/mcp",
+      "health": "https://council-mcp.admira.store/",
+      "auth": "lectura abierta",
+      "tools": ["list_consejeros", "ask_consejero", "ask_council"],
+      "hands_off": ["answer", "councillor"]
+    },
+    {
+      "id": "admiranext-presentations",
+      "name": "Generador de Presentaciones AdmiraNeXT",
+      "verb": "presentar",
+      "endpoint": "https://www.admiranext.com/mcp",
+      "docs": "https://www.admiranext.com/mcp/generador",
+      "auth": "token individual anmcp_ emitido desde /usuarios",
+      "capabilities": ["presentaciones", "decks", "versiones", "URLs de audiencia"],
+      "hands_off": ["presentation_id", "deck_id", "audience_url"]
+    }
+  ],
+  "hubs": [
+    {"id": "ainimation", "name": "AInimation Studio", "url": "https://www.ainimation.studio/mcp/", "role": "autoría y generación de animación"},
+    {"id": "digitalavatar", "name": "DigitalAvatar.ai", "url": "https://www.digitalavatar.ai/mcp/", "role": "humanos digitales y conversación"},
+    {"id": "clearchannel", "name": "ClearChannel.tv", "url": "https://www.clearchannel.tv/mcp/", "role": "audiencia × emisión en producción"},
+    {"id": "admira-app", "name": "Admira.app", "url": "https://www.admira.app/mcp/", "role": "audiencia × emisión en preproducción"},
+    {"id": "digital-signage-ai", "name": "DigitalSignage.ai", "url": "https://www.digitalsignage.ai/mcp/", "role": "edición white-label internacional"},
+    {"id": "academy", "name": "Admira Academy", "url": "https://admira.academy/help/", "role": "formación"}
+  ],
+  "shared_identifiers": {
+    "asset_id": "pieza creativa estable desde Pixeria hasta el proof-of-play",
+    "twin_id": "espacio físico o gemelo, usado como loc",
+    "screen_id": "superficie o player destino",
+    "circuit_id": "agrupación de pantallas y contrato de antena",
+    "scene_id": "captura XpaceScan y sus artefactos 3D",
+    "project_id": "slug de proyecto del censo Yokup",
+    "mission_id": "misión trazable DCL/FLT en Yokup",
+    "persona_machine": "identidad de flota persona+equipo que firma escrituras"
+  },
+  "flows": [
+    {
+      "id": "create-operate-broadcast-prove",
+      "steps": ["pixeria.search_stock → asset_id", "xpaceos.publish_asset(asset_id, screen_id)", "xpaceos.screen_now(screen_id)", "admira-tv.on_air(screen_id)", "admira-tv.airtime_report(circuit_id)", "yokup.yokup_task_update(mission_id, proof_url)"]
+    },
+    {
+      "id": "scan-operate",
+      "steps": ["XpaceScan → scene_id", "xpaceos.scene_status(scene_id)", "xpaceos.twin_detail(twin_id)", "xpaceos.xpl_rules(screen_id)"]
+    },
+    {
+      "id": "coordinate",
+      "steps": ["yokup.yokup_whoami", "yokup.yokup_mission(project_id, mission_id)", "admira-live.consejo_preguntar", "yokup.yokup_task_update"]
+    }
+  ],
+  "client_config_example": {
+    "mcpServers": {
+      "pixeria": {"url": "https://mcp-pixeria.admira.store/mcp"},
+      "xpaceos": {"url": "https://mcp.admira.store/mcp", "headers": {"Authorization": "Bearer <clave de flota>"}},
+      "admiratv": {"url": "https://mcp-tv.admira.store/mcp", "headers": {"Authorization": "Bearer <clave de flota>"}},
+      "yokup": {"url": "https://yokup.com/mcp", "headers": {"Authorization": "Bearer <credencial individual o clave de flota>"}},
+      "admiralive": {"url": "https://mcp.admira.live/mcp", "headers": {"Authorization": "Bearer <clave de flota o consejero>"}}
+    }
+  }
+}
