@@ -1253,7 +1253,10 @@
   <iframe id="admiraTube2" title="AdmiraTube 2" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
 </div>
 <!-- Avatar 3D (DigitalAvatar.ai) montado sobre la pantalla del tótem en la vista 2D cuando /avatar3d on -->
-<iframe id="totemAvatar" title="Avatar 3D · DigitalAvatar.ai" allow="microphone; autoplay; camera; fullscreen" referrerpolicy="no-referrer-when-downgrade" style="display:none;position:absolute;overflow:hidden;border:0;background:#000;z-index:6"></iframe>
+<!-- Luz del gemelo bajo el tótem: mismo degradado + halo cian que pinta drawIsoMetahuman()
+     en el quad de pantalla. Se ve durante el hueco del swap con fade (nunca negro). -->
+<div id="totemAvatarGlow" style="display:none;position:absolute;pointer-events:none;z-index:5;background:radial-gradient(circle at 50% 34%,rgba(120,243,255,.20) 0%,rgba(120,243,255,0) 55%),linear-gradient(180deg,#1a2436 0%,#262040 50%,#0d1626 100%)"></div>
+<iframe id="totemAvatar" title="Avatar 3D · DigitalAvatar.ai" allow="microphone; autoplay; camera; fullscreen" referrerpolicy="no-referrer-when-downgrade" style="display:none;position:absolute;overflow:hidden;border:0;background:transparent;opacity:0;transition:opacity .35s ease;z-index:6"></iframe>
 <!-- Avatar 3D sobre la pantalla TFT de la pared larga (vista 2D) cuando /avatar3d ds on -->
 <iframe id="wallAvatar" title="Avatar 3D · pared larga" allow="microphone; autoplay; camera; fullscreen" referrerpolicy="no-referrer-when-downgrade" style="display:none;position:absolute;overflow:hidden;border:0;background:#000;z-index:5"></iframe>
 <script>
@@ -19827,8 +19830,15 @@ function setAvatar3dTotem(on){
 const TOTEM_SPACE_KEY='xtanco_totem_space';   // '' = el usuario lo apagó · '<tag>' = espacio
 const TOTEM_SPACE_DEFAULT='tiktok';           // espacio de fábrica del Mupi
 const TOTEM_SCREEN_ID='xtanco-totem';         // id de esta pantalla en la flota
-function admiraTvUrl(space){
+// MODO CONDICIONAL (FLT-100243): el canal decide qué emitir según la audiencia
+// (lane/sexo) que le llega del circuito. OFF por defecto: solo con
+// ?totem=condicional en la URL de la página o con «/admiratv condicional».
+let TOTEM_COND=false;
+try{ TOTEM_COND=/^(condicional|conditional|1)$/i.test(String(new URLSearchParams(location.search).get('totem')||'').trim()); }catch(_){}
+const TOTEM_COND_QS='&mode=conditional&audience=remote&circuit=xtanco';
+function admiraTvUrl(space,cond){
   const tag=String(space==null?TOTEM_SPACE_DEFAULT:space).trim().toLowerCase();
+  const c=(cond==null)?TOTEM_COND:!!cond;
   // shot=0: el tótem del gemelo NO sube fotogramas a /signage/shot (no es una
   // pantalla física). muted=1: la sala ya tiene su propia música.
   // 'all' (o vacío) = sin filtro, el canal entero.
@@ -19839,7 +19849,8 @@ function admiraTvUrl(space){
   // freshtail=1: y entra por la COLA del loop, no por la cabeza (el orden de
   // casa del canal es lo más nuevo primero). Es sólo para ESTA pantalla.
   return 'https://admira.tv/canal.html?clean=1&screen='+encodeURIComponent(TOTEM_SCREEN_ID)+'&shot=0&muted=1&fresh=180&refresh=20&freshtail=1'
-    +((tag&&tag!=='all')?('&tag='+encodeURIComponent(tag)):'');
+    +((tag&&tag!=='all')?('&tag='+encodeURIComponent(tag)):'')
+    +(c?TOTEM_COND_QS:'');
 }
 const ADMIRATV_URL=admiraTvUrl();
 function totemSpaceLabel(space){
@@ -19879,11 +19890,13 @@ function restoreTotemPin(pin){
   return true;
 }
 // /admiratv [on|off] · /admiratv <espacio>  (p.ej. /admiratv tiktok · /admiratv all)
+// /admiratv condicional → canal en modo condicional (audiencia remota, circuito xtanco)
 function setAdmiraTvCommand(arg){
   const a=String(arg||'').trim().toLowerCase();
   let want, space=null;
   if(a==='on'||a==='1'||a==='encender') want=true;
   else if(a==='off'||a==='0'||a==='apagar') want=false;
+  else if(a==='condicional'||a==='conditional'){ want=true; TOTEM_COND=true; }
   else if(a){ want=true; space=a; }                 // cualquier otra palabra = espacio/tag
   else want=!admiraTvOn();
   const sp=(space!=null)?space:(totemSavedSpace()||TOTEM_SPACE_DEFAULT);
@@ -19901,7 +19914,7 @@ function setAdmiraTvCommand(arg){
     if(typeof positionTotemAvatar==='function') positionTotemAvatar();
   }catch(e){ return '⚠️ admiratv: '+((e&&e.message)||e); }
   return want
-    ? ('📺 Admira.tv ENCENDIDO en el Mupi del Xtanco · espacio «'+((!sp||sp==='all')?'todo el canal':sp)+'».')
+    ? ('📺 Admira.tv ENCENDIDO en el Mupi del Xtanco · espacio «'+((!sp||sp==='all')?'todo el canal':sp)+'»'+(TOTEM_COND?' · modo CONDICIONAL':'')+'.')
     : '📺 Admira.tv APAGADO (el tótem vuelve a su estado anterior).';
 }
 // ── /tiktok: rodar una campaña de TikTok en Pixeria SIN espera muda ─────────
@@ -20195,23 +20208,76 @@ function setTiktokCommand(arg){
 // gemelo (no solo en la pantalla física), usando el quad cacheado del tótem.
 function positionTotemAvatar(){
   const el=document.getElementById('totemAvatar'); if(!el) return;
+  const glow=document.getElementById('totemAvatarGlow');
+  const chip=document.getElementById('totemDebugChip');
   const pin=(typeof DS_PIN==='object'&&DS_PIN)?DS_PIN['metahuman']:null;
   const q=(typeof DS_SURFACE_QUADS==='object'&&DS_SURFACE_QUADS)?DS_SURFACE_QUADS.metahuman:null;
   // Mostrar siempre que haya pin web + quad del tótem (vale en juego Y en demo).
   const on=pin&&pin.kind==='web'&&pin.src&&q;
-  if(!on){ if(el.style.display!=='none'){ el.style.display='none'; el.src='about:blank'; } return; }
+  if(!on){ totemSwapSrc(el,null); if(glow) glow.style.display='none'; if(chip) chip.style.display='none'; return; }
   try{
     const canvasRect=cv.getBoundingClientRect();
     const scaleX=canvasRect.width/W, scaleY=canvasRect.height/H;
     const x=q[0].x, y=q[0].y, w=q[1].x-q[0].x, h=q[2].y-q[1].y;
-    el.style.left=(canvasRect.left+x*scaleX)+'px';
-    el.style.top=(canvasRect.top+y*scaleY)+'px';
-    el.style.width=Math.max(40,w*scaleX)+'px';
-    el.style.height=Math.max(60,h*scaleY)+'px';
-    if((el.src||'').indexOf(pin.src)<0) el.src=pin.src;
-    el.style.display='block';
+    const L=(canvasRect.left+x*scaleX)+'px', T=(canvasRect.top+y*scaleY)+'px';
+    const Wd=Math.max(40,w*scaleX)+'px', Hd=Math.max(60,h*scaleY)+'px';
+    el.style.left=L; el.style.top=T; el.style.width=Wd; el.style.height=Hd;
+    if(glow){ glow.style.left=L; glow.style.top=T; glow.style.width=Wd; glow.style.height=Hd; glow.style.display='block'; }
+    if(chip){ chip.style.left=L; chip.style.top=T; chip.style.display='block'; }
+    // Cambio de pin (avatar→canal, canal→avatar, canal→canal) = SWAP CON FADE,
+    // nunca src en seco (contrato FLT-100234: sin boca muerta ni negro).
+    if((el.src||'').indexOf(pin.src)<0) totemSwapSrc(el,pin.src);
+    else if(el.style.display==='none') totemSwapSrc(el,pin.src);
   }catch(e){}
 }
+// ── SWAP CON FADE del tótem (FLT-100243) ─────────────────────────────────────
+// 1) opacidad 1→0 (350 ms, transición CSS de #totemAvatar) → 2) cambia src →
+// 3) al `load` del iframe (o a los 1500 ms como tope) opacidad 0→1 (350 ms).
+// Mientras tanto, detrás se ve #totemAvatarGlow (la luz del gemelo). src=null
+// = retirar el tótem (fade y display:none). Idempotente: positionTotemAvatar()
+// corre en cada frame y solo se arma un swap por destino.
+const TOTEM_FADE_MS=350, TOTEM_LOAD_CAP_MS=1500;
+function totemSwapSrc(el,src){
+  const ST=window.__totemSwap||(window.__totemSwap={seq:0,want:undefined});
+  const target=src||'about:blank';
+  if(ST.want===target) return;                       // ya vamos hacia ese destino
+  ST.want=target; const seq=++ST.seq;
+  const wasOn=(el.style.display!=='none')&&!!el.src&&el.src!=='about:blank';
+  const arrive=function(){
+    if(ST.seq!==seq) return;                         // llegó otro swap por el camino
+    if(!src){ el.style.display='none'; el.src='about:blank'; el.onload=null; return; }
+    let shown=false;
+    const show=function(){ if(shown||ST.seq!==seq) return; shown=true; el.style.opacity='1'; };
+    el.onload=show;
+    el.style.opacity='0';
+    el.src=src; el.style.display='block';
+    setTimeout(show,TOTEM_LOAD_CAP_MS);
+  };
+  if(wasOn){ el.style.opacity='0'; setTimeout(arrive,TOTEM_FADE_MS); }
+  else arrive();
+}
+// ── Chip de debug de audiencia (OFF por defecto; solo con ?debugchip=1) ──────
+// El canal (admira.tv) avisa por postMessage {source:'admira-tv-canal',
+// event:'audience', lane, sex, fresh}; lo pintamos en la esquina del tótem.
+// Sin el parámetro no se crea nodo ni listener.
+(function(){
+  let on=false; try{ on=new URLSearchParams(location.search).get('debugchip')==='1'; }catch(_){}
+  if(!on) return;
+  const chip=document.createElement('div');
+  chip.id='totemDebugChip';
+  chip.style.cssText='display:none;position:absolute;z-index:7;pointer-events:none;margin:3px;padding:1px 5px;font:10px/14px ui-monospace,Menlo,monospace;color:#78f3ff;background:rgba(10,13,18,.82);border:1px solid rgba(120,243,255,.45);border-radius:4px;white-space:nowrap';
+  chip.textContent='audience · —';
+  document.body.appendChild(chip);
+  window.addEventListener('message',function(ev){
+    const d=ev&&ev.data; if(!d||typeof d!=='object'||d.source!=='admira-tv-canal'||d.event!=='audience') return;
+    const o=String(ev.origin||'');
+    const okOrigin=/^https:\/\/(www\.)?admira\.tv$/i.test(o) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(o);
+    if(!okOrigin) return;
+    chip.textContent=String(d.lane==null?'—':d.lane)+' · '+String(d.sex==null?'—':d.sex)+' · '+(d.fresh?'fresh':'stale');
+    chip.style.display='block';
+    try{ positionTotemAvatar(); }catch(_){}
+  });
+})();
 function avatar3dLoc(){
   const c=(typeof window!=='undefined'&&window.STORE_CFG)?window.STORE_CFG:{};
   return AVATAR3D.loc||c.loc||c.locationId||c.client||c.id||'xtanco-generic';
@@ -29970,7 +30036,7 @@ window.xtAPI = (function(){
       {title:'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
       {title:'Pantalla y directo',items:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
       {title:'Digital Signage (vídeos)',items:['/ds on','/ds off','/ds next','/ds previous','/ds audio on','/ds audio off','/info','/info on','/info off']},
-      {title:'Mupi del Xtanco (tótem vertical)',items:['/admiratv','/admiratv on','/admiratv off','/admiratv tiktok','/admiratv all']},
+      {title:'Mupi del Xtanco (tótem vertical)',items:['/admiratv','/admiratv on','/admiratv off','/admiratv tiktok','/admiratv all','/admiratv condicional (player condicionado por audiencia · también ?totem=condicional en la URL · chip de debug con ?debugchip=1)']},
       {title:'Campañas de TikTok (rodar en Pixeria)',items:['/tiktok <titular>','/tiktok pizzeria del barrio','/tiktok ok','/tiktok no','/tiktok ya <titular>','/tiktok demo <titular>','/tiktok cerrar']},
       {title:'Condicional (contenidos condicionados)',items:['/xpl (1ª vez ON · 2ª OFF)']},
       {title:'Escena en vivo',items:['/dj','/ladron','/guardiacivil','/opinador','/robot','/sponsor','/socio','/door open','/door close','/door auto','/subasta','/subasta off']},
