@@ -3323,6 +3323,7 @@ function escaparateNowItem(){
   return out;
 }
 async function emitEscaparateNow(force){
+  if(new URLSearchParams(location.search).get('virtualPlayer')==='xtore-virtual-zapatillas')return;
   try{
     const it=escaparateNowItem();
     const sig=it.src?(it.kind+'|'+it.src):(it.kind+'|'+(it.name||'')+(it.local?'|local':''));
@@ -3639,6 +3640,7 @@ const DS_MSGS=[
 ];
 
 function renderDSCanvas(ctx,w,h,frame,displayIdx){
+  if(displayIdx===0&&window.__xtoreWindowPlayer){window.__xtoreWindowPlayer.draw(ctx,w,h);return;}
   const display=DS_DISPLAYS[displayIdx];
   // Xtanco Club celebration takes over every screen for a few seconds.
   if(typeof drawClubBurst==='function' && drawClubBurst(ctx,w,h)) return;
@@ -11854,14 +11856,14 @@ function mupiCamDraw(TL,TR){
   cx.closePath(); cx.fill();
   cx.fillStyle='#0a0e12'; cx.beginPath(); cx.arc(mx+5, camY, 1.6, 0, Math.PI*2); cx.fill();   // lente
   cx.fillStyle='#3a6ea5'; cx.beginPath(); cx.arc(mx+5.4, camY-0.4, 0.6, 0, Math.PI*2); cx.fill();
-  if(MUPICAM.on && Math.sin(tt*0.12)>0.4){ cx.fillStyle='#ff3b3b'; cx.beginPath(); cx.arc(mx-3, camY-2, 0.8, 0, Math.PI*2); cx.fill(); } // LED REC sutil
+  if((window.__xtoreWindowPlayer?window.__xtoreWindowPlayer.cameraActive():MUPICAM.on) && Math.sin(tt*0.12)>0.4){ cx.fillStyle='#ff3b3b'; cx.beginPath(); cx.arc(mx-3, camY-2, 0.8, 0, Math.PI*2); cx.fill(); } // LED REC sutil
   cx.restore();
 }
 // "Fotografía" al viandante p recortando la región del canvas donde está.
 // Produce dataURL normal (ampliado, suavizado) y pixelado (baja-res reescalada).
 function mupiCamSnap(p, cam){
   cam=(cam==='int')?'int':'ext';
-  if(!MUPICAM.on || !p) return;
+  if(window.__xtoreWindowPlayer||!MUPICAM.on || !p) return;
   if(cam==='ext' && p._snapped) return;
   if(typeof state!=='undefined' && typeof S!=='undefined' && state!==S.GAME) return;
   if(typeof REC!=='undefined' && REC && REC.replay && REC.replay.on) return;   // no fotografiar el pasado
@@ -12021,6 +12023,7 @@ async function mupiCamPublish(uid){
 }
 window.mupiCamPublish=mupiCamPublish;
 function mupiCamOpenGallery(){
+  if(window.__xtoreWindowPlayer){window.__xtoreWindowPlayer.openCamera();return;}
   let p=mupiCamGalleryEl();
   if(!p){
     p=document.createElement('div'); p.id='mupiCamPanel';
@@ -18621,6 +18624,12 @@ function drawEscaparate(){
     {x:iTL.x,y:iTL.y},{x:iTR.x,y:iTR.y},
     {x:iBR.x,y:iBR.y},{x:iBL.x,y:iBL.y},
   ];
+
+  // In the shoes twin the interior player owns both surfaces; local ads cannot override it.
+  if(window.__xtoreWindowPlayer){
+    cx.save();cx.setTransform(ax,ay,bx,by,iTL.x,iTL.y);
+    window.__xtoreWindowPlayer.draw(cx,vW,vH);cx.restore();return;
+  }
 
   // Xtanco Club celebration overrides the escaparate too.
   if(typeof isClubBurstActive==='function' && isClubBurstActive()){
@@ -27875,20 +27884,20 @@ window.xtAPI = (function(){
         const render=()=>{
           const body=document.getElementById('impBody'); if(!body) return;
           const entran=(typeof G!=='undefined'&&G)?(G.custIn|0):0;
-          const pasan=(typeof G!=='undefined'&&G)?(G.passersbyToday|0):0;
+          const pasan=window.__xtoreWindowPlayer?.exterior?.()??null;
           const dentro=(typeof G!=='undefined'&&G&&Array.isArray(G.custs))?G.custs.length:0;
           const flashIn=(dentro!==prevIn&&prevIn>=0), flashOut=(pasan!==prevOut&&prevOut>=0);
           prevIn=dentro; prevOut=pasan;
-          const big=(n,flash)=>'<div style="font-size:26px;font-weight:800;line-height:1.1;color:'+(flash?'#fff':'#ffe6a8')+';text-shadow:'+(flash?'0 0 14px rgba(255,230,150,.95)':'none')+'">'+n.toLocaleString('es')+'</div>';
+          const big=(n,flash)=>'<div style="font-size:26px;font-weight:800;line-height:1.1;color:'+(flash?'#fff':'#ffe6a8')+';text-shadow:'+(flash?'0 0 14px rgba(255,230,150,.95)':'none')+'">'+(n===null?'—':n.toLocaleString('es'))+'</div>';
           const marcador=
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px">'+
               '<div style="background:rgba(0,0,0,.35);border:1px solid rgba(158,255,160,.35);border-radius:8px;padding:8px 10px;text-align:center">'+
                 '<div style="font-size:9.5px;letter-spacing:.1em;color:#9effa0">'+(en?'🏪 IN STORE NOW':'🏪 EN TIENDA AHORA')+'</div>'+big(dentro,flashIn)+
-                '<div style="font-size:9px;opacity:.65">'+entran+(en?' entered today (total)':' entran hoy (acumulado)')+'</div>'+
+                '<div style="font-size:9px;opacity:.65">'+entran+(en?' entered today · simulation':' entran hoy · simulación')+'</div>'+
               '</div>'+
               '<div style="background:rgba(0,0,0,.35);border:1px solid rgba(120,200,255,.35);border-radius:8px;padding:8px 10px;text-align:center">'+
                 '<div style="font-size:9.5px;letter-spacing:.1em;color:#8ed2ff">🚶 EXTERIOR</div>'+big(pasan,flashOut)+
-                '<div style="font-size:9px;opacity:.65">'+(en?'passed the door today':'pasan por la puerta hoy')+'</div>'+
+                '<div id="xtore-exterior-source" style="font-size:9px;opacity:.8">'+(pasan===null?(en?'Puerta Cam · no current signal':'Puerta Cam · sin señal actual'):(en?'Puerta Cam · detected people passes · this session':'Puerta Cam · pasos de personas · esta sesión'))+'</div>'+
               '</div>'+
             '</div>';
           // Franjas horarias: barras apiladas (verde=interior, azul=exterior)
@@ -27942,7 +27951,7 @@ window.xtAPI = (function(){
                 '<div style="display:flex;justify-content:space-between;color:#9effa0;margin-top:2px"><span>'+(en?'Outdoor ad revenue':'Ingreso publi exterior')+'</span><b>'+extTot.toFixed(2)+'€</b></div>';
             }
           }catch(e){}
-          body.innerHTML=marcador+franjas+rows+
+          body.innerHTML=marcador+'<div style="margin:8px 0;font-size:9px;opacity:.7">'+(en?'TWIN MODEL · estimates below are separate from Puerta Cam':'MODELO DEL GEMELO · estimaciones separadas de Puerta Cam')+'</div>'+franjas+rows+
             '<div style="border-top:1px dashed #8a6a2f;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between"><span>'+(en?'TOTAL impacts':'TOTAL impactos')+'</span><b>'+Math.round(t.imp).toLocaleString(en?'en':'es')+'</b></div>'+
             '<div style="display:flex;justify-content:space-between;color:#9ad8ff"><span>'+(en?'👁 Attention (views)':'👁 Atención (miran)')+'</span><b>'+Math.round(t.look).toLocaleString(en?'en':'es')+' · '+Math.round(t.att*100)+'%</b></div>'+
             '<div style="display:flex;justify-content:space-between"><span>CPM ref</span><b>'+IMPACTS.cpm.toFixed(2)+' €</b></div>'+
@@ -34789,5 +34798,8 @@ window.xtAPI = (function(){
   setInterval(scan, 1500);
 })();
 </script>
+<script>if(new URLSearchParams(location.search).get("virtualPlayer")==="xtore-virtual-zapatillas"){try{for(const l of ["es","en"]){if(typeof LANGS!=="undefined"&&LANGS[l])LANGS[l].ledMsgs=["ADMIRA · XTORE ZAPATILLAS","PLAYER VIRTUAL · INTERIOR + ESCAPARATE","PUERTA CAM · PROGRAMACIÓN CONDICIONAL"];}}catch(_){}}</script>
+<link rel="stylesheet" href="scripts/xtore-window.css?v=expert-1">
+<script type="module" src="scripts/xtore-window.mjs?v=expert-1"></script>
 </body>
 </html>

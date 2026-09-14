@@ -1,6 +1,8 @@
 {
-  "version": "v.11.09.2026.r1.15:52",
-  "deployer": "NeoMBA16",
+  "version": "v.13.09.2026.r2.11:49",
+  "signature": "Codex · MacBookAir16plata",
   "machine": "MacBookAir16plata",
-  "signature": "NeoMBA16 · MacBookAir16plata"
+  "agent": "Codex",
+  "deployer": "Codex",
+  "evidence": "Herramientas Xtore dentro de Experto, ventanas movibles con cierre y contador Exterior basado en pasos de Puerta Cam. Pruebas de protocolo, caducidad y QA de interfaz."
 }
