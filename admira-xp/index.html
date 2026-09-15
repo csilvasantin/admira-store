@@ -1414,7 +1414,8 @@ window.STORE_CFG=null; window.STORE_CFG_READY=false;
 // ═══════════════════════════════════════════════════════════════
 //  ADMIRA XP // THE XPACE OS — XTANCO — runtime version/build
 // ═══════════════════════════════════════════════════════════════
-const cv=document.getElementById('c'), cx=cv.getContext('2d');
+const cv=document.getElementById('c');
+let cx=cv.getContext('2d');
 // Canvas de fondo a pantalla completa para el cosmos de la página 1 (XPACE INVADERS)
 const _cosmosBg=document.getElementById('cosmosBg');
 const _cosmosCtx=_cosmosBg?_cosmosBg.getContext('2d'):null;
@@ -5229,7 +5230,7 @@ function updateHtmlBar(){
   document.getElementById('bbSat').textContent=(G.satisfaction|0)+'%';
   const trafficLabel=document.getElementById('bbTrafficLabel');
   if(trafficLabel) trafficLabel.textContent=lang==='en'?'Pass/In':'Pasan/Entran';
-  document.getElementById('bbCli').textContent=(G.passersbyToday||0)+'/'+(G.customersToday||0);
+  document.getElementById('bbCli').textContent=exteriorPersonPassagesForDisplay()+'/'+(G.customersToday||0);
   const se=document.getElementById('bbStatus');
   se.textContent=trimHudLabel(ops.focus.label+' · '+ops.focus.detail,38);
   se.style.color=ops.focus.color;
@@ -11367,13 +11368,13 @@ function impactsTick(){
   b.int+=inDelta; b.ext+=passersDelta;
 }
 // Franja con más audiencia total del día (prime time) → {hour,int,ext,total} | null
-function impactsPrime(){
+function impactsPrime(scope){
   const aud=IMPACTS.aud; if(!aud) return null;
   let best=null;
-  for(const k in aud.hours){ const b=aud.hours[k], t=b.int+b.ext; if(t>0&&(!best||t>best.total)) best={hour:+k,int:b.int,ext:b.ext,total:t}; }
+  for(const k in aud.hours){ const b=aud.hours[k], t=scope==='in'?b.int:b.int+b.ext; if(t>0&&(!best||t>best.total)) best={hour:+k,int:b.int,ext:b.ext,total:t}; }
   return best;
 }
-function impactsTotals(){ let imp=0, look=0; for(const s of IMPACTS.SCREENS){ const d=IMPACTS.day[s.id]; if(d){ imp+=d.est; look+=d.look||0; } } return {imp, look, att: imp>0?look/imp:0, revenue:imp/1000*IMPACTS.cpm, lookRevenue:look/1000*IMPACTS.cpm}; }
+function impactsTotals(scope){ let imp=0, look=0; for(const s of IMPACTS.SCREENS){ if(scope&&s.src!==scope)continue; const d=IMPACTS.day[s.id]; if(d){ imp+=d.est; look+=d.look||0; } } return {imp, look, att: imp>0?look/imp:0, revenue:imp/1000*IMPACTS.cpm, lookRevenue:look/1000*IMPACTS.cpm}; }
 
 // ── MODELO 3 · CPM DINÁMICO ────────────────────────────────────
 // El CPM deja de ser fijo: CPM_dyn = base × demanda × calidad.
@@ -11382,20 +11383,21 @@ function impactsTotals(){ let imp=0, look=0; for(const s of IMPACTS.SCREENS){ co
 //  · calidad  = tasa de ATENCIÓN global (cuánta de la audiencia mira de verdad).
 // Y el ingreso pondera cada pantalla por su calidad real (atención × dwell):
 // el tótem (mucha atención, dwell alto) vale premium; el escaparate, descuento.
-function impactsDyn(){
+function impactsDyn(scope){
   const base=IMPACTS.cpm||8, dRef=IMPACTS.dwellRef||3;
   const inside=(typeof G!=='undefined'&&G&&Array.isArray(G.custs))?G.custs.length:0;
   let cap=10; try{ if(typeof getCurrentCustomerCap==='function'){ const c=getCurrentCustomerCap(); if(c>0) cap=c; } }catch(_){}
   const occ=Math.max(0,Math.min(1, inside/cap));
-  const prime=(typeof impactsPrime==='function')?impactsPrime():null;
+  const prime=(typeof impactsPrime==='function')?impactsPrime(scope):null;
   const hNow=(typeof G!=='undefined'&&G&&Number.isFinite(G.gameTime))?Math.floor(G.gameTime)%24:-1;
   const isPrime=!!(prime&&prime.hour===hNow);
   const demandMult=Math.max(0.6,Math.min(1.8, 0.8 + 0.6*occ + (isPrime?0.3:0)));
-  const t=impactsTotals();
+  const t=impactsTotals(scope);
   const qualityMult=Math.max(0.6,Math.min(1.8, 0.7 + (t.att||0)));
   const cpmDyn=base*demandMult*qualityMult;
   let revDyn=0;
   for(const s of IMPACTS.SCREENS){
+    if(scope&&s.src!==scope)continue;
     const d=IMPACTS.day[s.id]; if(!d) continue;
     const attRate=d.est>0?(d.look/d.est):0;
     const qf=Math.max(0.3,Math.min(3, attRate*((s.dwell||dRef)/dRef)));   // factor calidad de la pantalla
@@ -11861,13 +11863,27 @@ function mupiCamDraw(TL,TR){
 }
 // "Fotografía" al viandante p recortando la región del canvas donde está.
 // Produce dataURL normal (ampliado, suavizado) y pixelado (baja-res reescalada).
+// A capture triggered by an operational actor must include the current world
+// as well as its transparent marks, never the transparent layer alone.
+let shopCaptureFrame=null;
+function getShopCaptureFrame(){
+  if(cx.canvas===cv)return cv;
+  if(!shopCaptureFrame)shopCaptureFrame=document.createElement('canvas');
+  if(shopCaptureFrame.width!==cv.width)shopCaptureFrame.width=cv.width;
+  if(shopCaptureFrame.height!==cv.height)shopCaptureFrame.height=cv.height;
+  const capture=shopCaptureFrame.getContext('2d');
+  capture.clearRect(0,0,cv.width,cv.height);
+  capture.drawImage(cv,0,0);
+  capture.drawImage(cx.canvas,0,0);
+  return shopCaptureFrame;
+}
 function mupiCamSnap(p, cam){
   cam=(cam==='int')?'int':'ext';
   if(window.__xtoreWindowPlayer||!MUPICAM.on || !p) return;
   if(cam==='ext' && p._snapped) return;
   if(typeof state!=='undefined' && typeof S!=='undefined' && state!==S.GAME) return;
   if(typeof REC!=='undefined' && REC && REC.replay && REC.replay.on) return;   // no fotografiar el pasado
-  let src; try{ src=cx.canvas; }catch(_){ return; }
+  let src; try{ src=getShopCaptureFrame(); }catch(_){ return; }
   const cw=src.width, ch=src.height;
   const sw=40, sh=52;                                  // recorte que encuadra al chibi (cabeza→pies)
   let sx=Math.round((p.x|0)+7-sw/2), sy=Math.round((p.y|0)-28);
@@ -13631,8 +13647,17 @@ function makePasserbyRoute(){
   return route;
 }
 
+function xtoreRealExteriorActive(){return !!window.__xtoreWindowPlayer;}
+function exteriorPersonPassagesForDisplay(){
+  if(!xtoreRealExteriorActive())return G?(G.passersbyToday||0):0;
+  // Display adapter only: cumulative measured passages are not the active
+  // trajectories count and must never be copied into the economic simulation.
+  let value;try{value=window.__xtoreWindowPlayer.exterior?.();}catch(_){}
+  return Number.isSafeInteger(value)&&value>=0?value:'—';
+}
+
 function spawnPasserby(){
-  if(!G) return null;
+  if(!G||xtoreRealExteriorActive()) return null;
   if(!Array.isArray(G.passersby)) G.passersby=[];
   if(G.passersby.length>=PASSERBY_MAX_ACTIVE) return null;
   const route=makePasserbyRoute();
@@ -13665,6 +13690,9 @@ function spawnPasserby(){
 
 function updatePassersby(){
   if(!G) return;
+  // A linked real-data twin never creates random/queued exterior traffic.
+  // Real tracks are a separate rendering layer and cannot enter G or its counters.
+  if(xtoreRealExteriorActive()){if(G.passersby?.length)G.passersby=[];return;}
   if(!Array.isArray(G.passersby)) G.passersby=[];
   if(!Number.isFinite(G.passerbySpawnCooldown)) scheduleNextPasserby();
   if(!G.dayEnded){
@@ -17897,8 +17925,44 @@ function drawCityBg(){
   cx.restore();
 }
 
+// The running shop owns one operational pass in every visual mode. Better/Best
+// receives that pass on a transparent layer; callbacks still run exactly once,
+// preserving hitboxes, speech, timers, screen quads and physical-device state.
+function drawShopOperation(fn,kind='device'){
+  const target=window.__xtancoPremiumView?.operationContext?.(kind);
+  if(!target||target===cx)return fn();
+  const previous=cx;
+  target.save();
+  try{
+    target.setTransform(1,0,0,1,0,0);
+    const clipHeight=editorSceneActive&&!isXpaceCreator()?SHOP.h:Math.max(SHOP.h,H-SHOP.y);
+    target.beginPath();target.rect(SHOP.x,SHOP.y,SHOP.w,clipHeight);target.clip();
+    // The Canvas clip cannot be read or copied. Floor effects need the same
+    // explicit diamond clip as the base pass, before furniture transforms.
+    if(kind==='heatmap'||kind==='floor-effect'){
+      const floor=[toIso(0,0),toIso(ISO.cols,0),toIso(ISO.cols,ISO.rows),toIso(0,ISO.rows)];
+      target.beginPath();target.moveTo(floor[0].x,floor[0].y);
+      for(let i=1;i<floor.length;i++)target.lineTo(floor[i].x,floor[i].y);
+      target.closePath();target.clip();
+    }
+    target.setTransform(previous.getTransform());
+    for(const property of ['fillStyle','strokeStyle','globalAlpha','globalCompositeOperation',
+      'lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur',
+      'shadowColor','shadowOffsetX','shadowOffsetY','font','textAlign','textBaseline',
+      'direction','filter','imageSmoothingEnabled','imageSmoothingQuality','fontKerning',
+      'fontStretch','fontVariantCaps','letterSpacing','wordSpacing','textRendering']){
+      if(property in previous&&property in target)target[property]=previous[property];
+    }
+    target.setLineDash(previous.getLineDash());
+    cx=target;
+    return fn();
+  }finally{cx=previous;target.restore();}
+}
+
 // ── DRAW SHOP (ISOMETRIC — Kairosoft warm style) ─────────────
 function drawShop(){
+  const premiumView=window.__xtancoPremiumView;
+  const premiumActive=!!premiumView?.begin?.(cx,cv);
   // Clip to shop area. Extended down to the full canvas height so passersby
   // walking on the sidewalk past the building footprint (route reaches y≈470,
   // SHOP.h is 466) aren't clipped at the lower edge.
@@ -17962,11 +18026,11 @@ function drawShop(){
   }
 
   // ── SOCIO HEAT MAP — extraído a assets/js/heatmap.js (Fase 1 modularización) ──
-  if(window.drawSocioHeatmap) window.drawSocioHeatmap({cx,ISO,tt,G,toIso});
+  if(window.drawSocioHeatmap) drawShopOperation(()=>window.drawSocioHeatmap({cx,ISO,tt,G,toIso}),'heatmap');
 
   // ── WEATHER FLOOR EFFECTS ──
   const weatherFloor=G&&G.weather&&G.weather.type;
-  if(!editorSceneActive&&weatherFloor==='rain'){
+  if(!editorSceneActive&&weatherFloor==='rain')drawShopOperation(()=>{
     // Wet puddle near entrance door — ripples outward
     const dp=toIso(ISO.cols-1,3);
     cx.globalAlpha=0.22+Math.abs(Math.sin(tt*0.05))*0.06;
@@ -17982,7 +18046,7 @@ function drawShop(){
     cx.globalAlpha=0.2*(1-ripT2);
     cx.beginPath();cx.ellipse(dp.x-8,dp.y+10,4+ripT2*16,(4+ripT2*16)*0.38,0,0,Math.PI*2);cx.stroke();
     cx.globalAlpha=1;
-  }
+  },'floor-effect');
   cx.restore();
 
   // ── BACK WALL (cream/beige, Kairosoft style) ──
@@ -18257,22 +18321,22 @@ function drawShop(){
   // Xpace Creator. Skip de todos los elementos de pared hardcoded.
   if(!isShoptalkBooth()){
     // ── CLOCK on left wall ──
-    drawWallClock();
+    drawShopOperation(()=>drawWallClock());
     // ── LED on LEFT WALL (top edge) ──
     const ledItem=shopLayout.find(i=>i.id==='led');
-    if(ledItem) drawLED(ledItem.sx||1,ledItem.sy||1);
+    if(ledItem) drawShopOperation(()=>drawLED(ledItem.sx||1,ledItem.sy||1));
     // ── LED on BACK WALL (top edge, continues from left wall) ──
-    drawBackWallLED();
+    drawShopOperation(()=>drawBackWallLED());
     // ── AIR CONDITIONING on left wall (drawn AFTER LED so it's visible) ──
-    drawAirConditioning();
+    drawShopOperation(()=>drawAirConditioning());
     // ── TURN MANAGER between the back-wall displays/windows ──
-    drawTurnManager();
+    drawShopOperation(()=>drawTurnManager());
     // ── SECURITY CAMERA in the corner, aimed at the entrance ──
-    drawCornerSecurityCamera();
+    drawShopOperation(()=>drawCornerSecurityCamera());
     // ── TFT ALTADIS (16:9 screen on back wall, above 2nd window) ──
     // Pantalla de la pared larga: se muestra si el punto tiene ≥1 pantalla
     // (o si no hay punto activo → comportamiento original).
-    if(!window.STORE_CFG || (window.STORE_CFG.screens|0)>=1) drawAltadisTFT();
+    if(!window.STORE_CFG || (window.STORE_CFG.screens|0)>=1) drawShopOperation(()=>drawAltadisTFT());
   }
 
   // ── BLANK XPACE (Creator / Shoptalk): renderizar SOLO los items wall
@@ -18280,20 +18344,20 @@ function drawShop(){
   // existe; TFT centrado en su item.col + offset vertical item.wallY.
   if(isShoptalkBooth()){
     const ledItem=shopLayout.find(i=>i.type==='led');
-    if(ledItem) drawLED(ledItem.sx||1,ledItem.sy||1);
+    if(ledItem) drawShopOperation(()=>drawLED(ledItem.sx||1,ledItem.sy||1));
     const tftItem=shopLayout.find(i=>i.type==='tft');
     if(tftItem){
-      drawAltadisTFT(
+      drawShopOperation(()=>drawAltadisTFT(
         typeof tftItem.col==='number'?tftItem.col:7,
         typeof tftItem.wallY==='number'?tftItem.wallY:undefined
-      );
+      ));
     }
     const doorItem=shopLayout.find(i=>i.type==='door');
     if(doorItem){
-      drawCreatorDoor(
+      drawShopOperation(()=>drawCreatorDoor(
         typeof doorItem.col==='number'?doorItem.col:6,
         typeof doorItem.wallY==='number'?doorItem.wallY:undefined
-      );
+      ));
     }
   }
 
@@ -18331,7 +18395,7 @@ function drawShop(){
       entities.push({type:'cust',data:c,col:0,row:0,depth:c.y+20}); // feet Y
     }
     // Exterior passersby — they move past the door but never enter the shop
-    for(const p of (G.passersby||[])){
+    for(const p of (xtoreRealExteriorActive()?[]:G.passersby||[])){
       entities.push({type:'passerby',data:p,col:0,row:0,depth:p.y+20});
     }
     // La Saca delivery person (active phases only)
@@ -18394,32 +18458,32 @@ function drawShop(){
       drawFurnitureContactShadow(e.col,e.row,sbw,sbd);
     }
     switch(e.type){
-      case 'counter': drawScaled(e,drawIsoCounter); break;
-      case 'shelves': drawScaled(e,drawIsoShelves); break;
-      case 'lottery': drawScaled(e,drawIsoLottery); break;
-      case 'manager': drawScaled(e,drawIsoManager); break;
+      case 'counter': drawShopOperation(()=>drawScaled(e,drawIsoCounter)); break;
+      case 'shelves': drawShopOperation(()=>drawScaled(e,drawIsoShelves)); break;
+      case 'lottery': drawShopOperation(()=>drawScaled(e,drawIsoLottery)); break;
+      case 'manager': drawShopOperation(()=>drawScaled(e,drawIsoManager)); break;
       case 'plant': drawScaled(e,drawIsoPlant); break;
-      case 'floorLamp': drawScaled(e,drawIsoFloorLamp); break;
+      case 'floorLamp': drawShopOperation(()=>drawScaled(e,drawIsoFloorLamp)); break;
       case 'vending': drawScaled(e,drawIsoVending); break;
       case 'wineRack': drawScaled(e,drawIsoWineRack); break;
       case 'magazines': drawMagazineRack(e); break;
       case 'rug': drawScaled(e,drawIsoRug); break;
-      case 'djBooth': drawScaled(e,drawIsoDJBooth); break;
-      case 'tablet': drawScaled(e,drawIsoTabletKiosk); break;
-      case 'turnKiosk': drawScaled(e,drawIsoTurnKiosk); break;
-      case 'aroma': drawAromatizer(e.col,e.row,typeof e.wallY==='number'?e.wallY:undefined); break;
-      case 'metahuman': drawScaled(e,drawIsoMetahuman); break;
-      case 'custom': drawCustomFurni(e); break;
-      case 'staff': drawIsoStaff(e.data); break;
-      case 'cust': drawIsoCust(e.data); break;
-      case 'passerby': drawIsoCust(e.data); break;
-      case 'saca': drawIsoSaca(e.data); break;
-      case 'thief': drawIsoThief(e.data); break;
-      case 'guardiaCivil': drawIsoGuardiaCivil(e.data); break;
-      case 'opinador': drawIsoOpinador(e.data); break;
-      case 'unitreeBot': drawIsoUnitreeBot(e.data); break;
+      case 'djBooth': drawShopOperation(()=>drawScaled(e,drawIsoDJBooth)); break;
+      case 'tablet': drawShopOperation(()=>drawScaled(e,drawIsoTabletKiosk)); break;
+      case 'turnKiosk': drawShopOperation(()=>drawScaled(e,drawIsoTurnKiosk)); break;
+      case 'aroma': drawShopOperation(()=>drawAromatizer(e.col,e.row,typeof e.wallY==='number'?e.wallY:undefined)); break;
+      case 'metahuman': drawShopOperation(()=>drawScaled(e,drawIsoMetahuman)); break;
+      case 'custom': drawShopOperation(()=>drawCustomFurni(e)); break;
+      case 'staff': drawShopOperation(()=>drawIsoStaff(e.data),'actor'); break;
+      case 'cust': drawShopOperation(()=>drawIsoCust(e.data),'actor'); break;
+      case 'passerby': drawShopOperation(()=>drawIsoCust(e.data),'actor'); break;
+      case 'saca': drawShopOperation(()=>drawIsoSaca(e.data),'actor'); break;
+      case 'thief': drawShopOperation(()=>drawIsoThief(e.data),'actor'); break;
+      case 'guardiaCivil': drawShopOperation(()=>drawIsoGuardiaCivil(e.data),'actor'); break;
+      case 'opinador': drawShopOperation(()=>drawIsoOpinador(e.data),'actor'); break;
+      case 'unitreeBot': drawShopOperation(()=>drawIsoUnitreeBot(e.data),'actor'); break;
     }
-    if(isSelectedEditorFurniture){
+    if(isSelectedEditorFurniture)drawShopOperation(()=>{
       cx.globalAlpha=1;
       if(isWallMountedType(e.type)){
         // Item montado en pared — highlight RECORTADO al render real del
@@ -18459,7 +18523,7 @@ function drawShop(){
         r(sp.x-20,sp.y-29,40,11,'#072232cc');
         tx('● SEL',sp.x,sp.y-21,'#9fe7ff',6,'center');
       }
-    }
+    },'selection');
     if(isEditorFurniture) cx.restore();
   }
 
@@ -18469,12 +18533,12 @@ function drawShop(){
   try{ positionWallAvatar(); }catch(_){}
 
   // ── ESCAPARATE — right wall rows 0-2, above glass door ──
-  if(!editorSceneActive) drawEscaparate();
+  if(!editorSceneActive) drawShopOperation(()=>drawEscaparate());
 
   // ── AROMA MACHINE — wall overlay above exterior ads so waves stay visible ──
   if(!editorSceneActive&&shopFurnitureVisible){
     const aromaItem=shopLayout.find(i=>i.type==='aroma');
-    if(aromaItem) drawAromatizer(aromaItem.col,aromaItem.row);
+    if(aromaItem) drawShopOperation(()=>drawAromatizer(aromaItem.col,aromaItem.row));
   }
 
   // ── GLASS DOOR — drawn LAST, always on top of furniture/characters ──
@@ -18483,8 +18547,16 @@ function drawShop(){
   // ── DOOR FOREGROUND PEOPLE — characters physically in front of the door
   // (passersby on the sidewalk + customers entering/leaving) re-painted
   // ON TOP of the glass-door frame so the wood jambs don't crop their bodies.
-  if(!editorSceneActive && !isShoptalkBooth()) drawDoorForegroundPeople();
+  if(!editorSceneActive && !isShoptalkBooth()) drawShopOperation(()=>drawDoorForegroundPeople(),'actor');
+  if(!editorSceneActive && !isShoptalkBooth()) drawShopOperation(()=>window.__xtoreRealTraffic?.draw(cx,ISO,W,H),'actor');
 
+  // Compose the replacement world before operational marks and all HUD/editor UI.
+  // DS monitors remain DOM behind #c: open their holes before adding the layer,
+  // so a customer drawn in front of a screen is not erased by the punch.
+  if(premiumActive)premiumView.paint(cx,performance.now(),()=>punchDsScreenHoles());
+
+  // Lighting is shared by all visual modes and applies after composition,
+  // before the HUD, including real lamp state and the DJ lighting cues.
   // ── DAY / NIGHT AMBIENT OVERLAY ──
   if(!editorSceneActive&&G&&G.gameTime){
     const nh=G.gameTime;
@@ -18625,10 +18697,11 @@ function drawEscaparate(){
     {x:iBR.x,y:iBR.y},{x:iBL.x,y:iBL.y},
   ];
 
-  // In the shoes twin the interior player owns both surfaces; local ads cannot override it.
+  // The shared receiver owns both surfaces. The exterior selects its own
+  // conditional program while the interior retains the current music playback.
   if(window.__xtoreWindowPlayer){
     cx.save();cx.setTransform(ax,ay,bx,by,iTL.x,iTL.y);
-    window.__xtoreWindowPlayer.draw(cx,vW,vH);cx.restore();return;
+    window.__xtoreWindowPlayer.draw(cx,vW,vH,'exterior');cx.restore();return;
   }
 
   // Xtanco Club celebration overrides the escaparate too.
@@ -18873,7 +18946,7 @@ function drawDoorForegroundPeople(){
   const NEAR=8; // px tolerance — actor x within this distance of doorX (or beyond) is "in/at the threshold"
   // Passersby always live on the sidewalk outside the door — they should never
   // be cropped by the door frame.
-  if(Array.isArray(G.passersby)){
+  if(Array.isArray(G.passersby)&&!xtoreRealExteriorActive()){
     for(const p of G.passersby) try{ drawIsoCust(p); }catch(e){}
     // Cámara del MUPI: la foto se toma AQUÍ, recién dibujado el viandante, para
     // que el recorte del canvas lo contenga (en update sólo se marca _wantSnap;
@@ -20766,7 +20839,7 @@ function _getLedParams(){
     ? (VIDEO_LED_MESSAGES[VIDEO_LIST[dsVideoIdx]] || `  ◆  VISITAS: AHORA SUENA ${VIDEO_LIST[dsVideoIdx].toUpperCase()}  ◆  `)
     : '';
   const liveData=(state===S.GAME||state===S.PAUSE)
-    ? `  ◈  ${lang==='es'?'PASAN':'PASS'}: ${G?(G.passersbyToday||0):0}  ◈  ${lang==='es'?'ENTRAN':'IN'}: ${G?(G.customersToday||0):0}  ◈  ${T().satisfaction}: ${G?(G.satisfaction|0):0}%  ◈  ${T().fame}: ${G?(G.fame|0):0}%  ◈  `
+    ? `  ◈  ${lang==='es'?'PASAN':'PASS'}: ${exteriorPersonPassagesForDisplay()}  ◈  ${lang==='es'?'ENTRAN':'IN'}: ${G?(G.customersToday||0):0}  ◈  ${T().satisfaction}: ${G?(G.satisfaction|0):0}%  ◈  ${T().fame}: ${G?(G.fame|0):0}%  ◈  `
     : '  ◈  ';
   // El nombre+dirección del punto van a la corona de LEDs vía AdmiraLive
   // (G.admiraLiveMsg, inicializado en initGame desde STORE_CFG) → ya entra en
@@ -23682,7 +23755,7 @@ function drawHUD(){
   const insideNow=G.custs?G.custs.length:0;
   const moneyEnd=130;
   tx('📷'+insideNow,moneyEnd,19,'#88ccee',11);
-  tx('↔'+(G.passersbyToday||0),moneyEnd+35,19,'#66ccee',11);
+  tx('↔'+exteriorPersonPassagesForDisplay(),moneyEnd+35,19,'#66ccee',11);
   tx('▲'+(G.custIn||0),moneyEnd+72,19,'#44dd66',11);
   tx('▼'+(G.custOut||0),moneyEnd+105,19,'#dd4444',11);
   // Now playing 🎵 — interactive: ♪ mute | ◀ prev | ▶ next
@@ -26512,6 +26585,7 @@ function loop(){
   cx.save();try{if(codexMapOpen)drawCodexMapOverlay();}catch(e){}cx.restore();
   finalizeFrame();
 }
+window.__xtancoVisualState=()=>({iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:shopFurnitureVisible||editorSceneActive?shopLayout:[],game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&CLIENTS[activeClient]?.id==='xtanco'});
 loop();
 
 // ── DIRECT ENTRY URL: ?play=<verticalId> ─────────────────────────
@@ -27835,9 +27909,11 @@ window.xtAPI = (function(){
         let h=document.getElementById('impactsHud');
         if(!h){
           h=document.createElement('div'); h.id='impactsHud';
-          h.style.cssText='position:fixed;top:72px;right:16px;z-index:2147482000;min-width:248px;background:rgba(6,16,10,.94);border:1px solid #ffcc66;border-radius:10px;color:#ffe6a8;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;box-shadow:0 0 22px rgba(255,204,102,.25);overflow:hidden';
-          h.innerHTML='<div id="impHdr" style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px dashed #8a6a2f;letter-spacing:.06em;cursor:move;user-select:none;touch-action:none"><b>📊 '+(en?'IMPACTS':'IMPACTOS')+' · CPM</b><span id="impClose" style="cursor:pointer;color:#999;padding:0 4px">×</span></div><div id="impBody" style="padding:8px 10px;line-height:1.6"></div>';
+          // Camera bitmap dimensions must not set the floating panel's width.
+          h.style.cssText='position:fixed;top:72px;right:16px;z-index:2147482000;flex-direction:column;width:420px;min-width:min(248px,calc(100vw - 24px));max-width:calc(100vw - 24px);background:rgba(6,16,10,.94);border:1px solid #ffcc66;border-radius:10px;color:#ffe6a8;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;box-shadow:0 0 22px rgba(255,204,102,.25);overflow:hidden';
+          h.innerHTML='<div id="impHdr" style="flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px dashed #8a6a2f;letter-spacing:.06em;cursor:move;user-select:none;touch-action:none"><b>📊 '+(en?'IMPACTS':'IMPACTOS')+' · CPM</b><span id="impClose" style="cursor:pointer;color:#999;padding:0 4px">×</span></div><div id="impSegments" role="group" aria-label="Instore / DooH" style="flex-shrink:0;display:flex;gap:6px;padding:8px 10px 0"><button type="button" data-impact-mode="instore" aria-pressed="true">Instore</button><button type="button" data-impact-mode="dooh" aria-pressed="false">DooH</button></div><div id="impBody" style="flex:1;min-height:0;padding:8px 10px;line-height:1.6;max-height:calc(100dvh - 130px);overflow:auto"></div>';
           document.body.appendChild(h);
+          window.addEventListener('xtore-statistics',()=>{if(IMPACTS.on)h._render?.();});
           const c=h.querySelector('#impClose'); if(c){ c.onclick=()=>stopIMP(false); c.onpointerdown=function(e){ e.stopPropagation(); }; }
           // Restaurar última posición guardada (si no hay, queda arriba-derecha).
           const hdr=h.querySelector('#impHdr');
@@ -27874,48 +27950,53 @@ window.xtAPI = (function(){
             hdr.addEventListener('pointercancel',endDrag);
           }
         }
-        h.style.display='block';
-        // MARCADOR en tiempo real (Carlos 2026-06-10): lo primero del panel son
-        // los dos contadores de audiencia publicitaria del día, en vivo (1s):
-        //   🏪 INTERIOR = gente que ENTRA en la tienda (G.custIn, ++ por entrada)
-        //   🚶 EXTERIOR = gente que PASA por la puerta (G.passersbyToday)
-        // Debajo, por pantalla: impactos (OTS) + 👁 los que MIRAN (atención real).
-        let prevIn=-1, prevOut=-1;
+        h.style.display='flex';
+        let segment='instore',prevIn=-1;
         const render=()=>{
           const body=document.getElementById('impBody'); if(!body) return;
+          for(const button of h.querySelectorAll('[data-impact-mode]')){
+            const selected=button.dataset.impactMode===segment;
+            button.setAttribute('aria-pressed',String(selected));
+            button.style.cssText='flex:1;padding:7px 12px;border-radius:7px;border:1px solid '+(selected?'#8ed2ff':'#475447')+';background:'+(selected?'#163e4b':'#0a1813')+';color:'+(selected?'#d9f4ff':'#abc3b4')+';font:700 12px monospace;cursor:pointer';
+          }
+          if(segment==='dooh'){
+            const counts=window.__xtoreWindowPlayer?.exteriorStatistics?.()??null;
+            if(!body.querySelector('#dooh-view')){
+              const labels=en?{person:'People passing',car:'Cars',motorcycle:'Motorcycles',bicycle:'Bicycles',scooter:'Scooters'}:{person:'Personas que han pasado',car:'Coches',motorcycle:'Motos',bicycle:'Bicis',scooter:'Patinetes'};
+              const views=[['original',en?'With people · original':'Con personas · original'],['clean',en?'Without people · tracking':'Sin personas · seguimiento']];
+              body.innerHTML='<section id="dooh-view"><style>#dooh-view [hidden]{display:none!important}</style><div style="color:#8ed2ff;margin-bottom:8px">EXTERIOR · Puerta Cam</div>'+
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+Object.entries(labels).map(([key,label])=>'<div data-dooh-category="'+key+'" style="'+(key==='person'?'grid-column:1 / -1;':'')+'padding:10px;border:1px solid #346071;border-radius:8px;background:#07171ecc"><div style="color:#bce5fa">'+label+'</div><strong data-dooh-value="'+key+'" style="display:block;font-size:26px;line-height:1.4">—</strong><span style="font-size:9px;opacity:.7">'+(key==='scooter'?(en?'Manual observation':'Observación manual'):(en?'Detected passages':'Pasos detectados'))+'</span></div>').join('')+'</div>'+
+                '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:12px;margin-bottom:10px">'+views.map(([kind,label])=>'<figure style="margin:0;min-width:0"><figcaption style="font-size:10px;color:#bce5fa;margin-bottom:4px">'+label+'</figcaption><div class="dooh-camera-frame" style="position:relative;aspect-ratio:4/3;overflow:hidden;background:#071117;border-radius:6px"><canvas data-xtore-camera-view="'+kind+'" width="1" height="1" hidden style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:none"></canvas><p data-xtore-camera-empty="'+kind+'" style="position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:10px;text-align:center">'+(en?'Waiting for camera':'Esperando cámara')+'</p></div></figure>').join('')+'</div>'+
+                '<details id="dooh-explanation" style="margin-top:10px;font-size:10px;opacity:.8"><summary style="cursor:pointer;color:#8ed2ff">'+(en?'Camera and counting details':'Detalles de cámara y conteo')+'</summary><p id="dooh-source-status" role="status"></p><p>'+(en?'Source: shoe Xtore camera · AdmiraXperience. Same cumulative people counter as the analyzer; tracking IDs (#90…) are not passage totals. Scooters are added manually. The right image uses a temporary background to hide detected people; undetected people may remain visible.':'Fuente: cámara de la Xtore de zapatillas · AdmiraXperience. Mismo acumulado de personas que en el analizador; los identificadores de seguimiento (#90…) no son el total de pasos. Los patinetes se añaden manualmente. La vista derecha usa fondo temporal para ocultar personas detectadas; pueden quedar visibles personas no detectadas.')+'</p></details></section>';
+            }
+            for(const value of body.querySelectorAll('[data-dooh-value]')){
+              const n=counts?.[value.dataset.doohValue]??null;
+              value.textContent=n===null?'—':n.toLocaleString(en?'en':'es');
+            }
+            body.querySelector('#dooh-source-status').textContent=counts?(en?'Counters synchronized with Xtore · this session':'Contadores sincronizados con Xtore · esta sesión'):(en?'No current counter connection':'Sin conexión reciente con los contadores');
+            window.__xtoreWindowPlayer?.renderCameraViews?.(body);
+            return;
+          }
           const entran=(typeof G!=='undefined'&&G)?(G.custIn|0):0;
-          const pasan=window.__xtoreWindowPlayer?.exterior?.()??null;
           const dentro=(typeof G!=='undefined'&&G&&Array.isArray(G.custs))?G.custs.length:0;
-          const flashIn=(dentro!==prevIn&&prevIn>=0), flashOut=(pasan!==prevOut&&prevOut>=0);
-          prevIn=dentro; prevOut=pasan;
-          const big=(n,flash)=>'<div style="font-size:26px;font-weight:800;line-height:1.1;color:'+(flash?'#fff':'#ffe6a8')+';text-shadow:'+(flash?'0 0 14px rgba(255,230,150,.95)':'none')+'">'+(n===null?'—':n.toLocaleString('es'))+'</div>';
-          const marcador=
-            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px">'+
-              '<div style="background:rgba(0,0,0,.35);border:1px solid rgba(158,255,160,.35);border-radius:8px;padding:8px 10px;text-align:center">'+
-                '<div style="font-size:9.5px;letter-spacing:.1em;color:#9effa0">'+(en?'🏪 IN STORE NOW':'🏪 EN TIENDA AHORA')+'</div>'+big(dentro,flashIn)+
-                '<div style="font-size:9px;opacity:.65">'+entran+(en?' entered today · simulation':' entran hoy · simulación')+'</div>'+
-              '</div>'+
-              '<div style="background:rgba(0,0,0,.35);border:1px solid rgba(120,200,255,.35);border-radius:8px;padding:8px 10px;text-align:center">'+
-                '<div style="font-size:9.5px;letter-spacing:.1em;color:#8ed2ff">🚶 EXTERIOR</div>'+big(pasan,flashOut)+
-                '<div id="xtore-exterior-source" style="font-size:9px;opacity:.8">'+(pasan===null?(en?'Puerta Cam · no current signal':'Puerta Cam · sin señal actual'):(en?'Puerta Cam · detected people passes · this session':'Puerta Cam · pasos de personas · esta sesión'))+'</div>'+
-              '</div>'+
-            '</div>';
-          // Franjas horarias: barras apiladas (verde=interior, azul=exterior)
+          const flashIn=dentro!==prevIn&&prevIn>=0;prevIn=dentro;
+          const marcador='<div style="background:rgba(0,0,0,.35);border:1px solid rgba(158,255,160,.35);border-radius:8px;padding:10px;text-align:center"><div style="color:#9effa0">'+(en?'🏪 IN STORE NOW':'🏪 EN TIENDA AHORA')+'</div><strong style="display:block;font-size:26px;color:'+(flashIn?'#fff':'#ffe6a8')+'">'+dentro.toLocaleString(en?'en':'es')+'</strong><div style="font-size:9px;opacity:.65">'+entran+(en?' entered today · simulation':' entran hoy · simulación')+'</div></div>';
+          const avatarAudience=window.__xtancoAvatarAudience?.render?.((typeof G!=='undefined'&&G)?G.custs:[],en)||'';
+          // Franjas horarias de Instore: solo entradas del modelo interior.
           // por hora del día → el anunciante ve CUÁNDO hay audiencia. ⭐ = prime.
           let franjas='';
           const aud=IMPACTS.aud&&IMPACTS.aud.hours||{};
-          const hrs=Object.keys(aud).map(Number).sort((a,b)=>a-b).filter(h=>(aud[h].int+aud[h].ext)>0);
+          const hrs=Object.keys(aud).map(Number).sort((a,b)=>a-b).filter(h=>aud[h].int>0);
           if(hrs.length){
-            const prime=impactsPrime();
-            const maxT=Math.max.apply(null,hrs.map(h=>aud[h].int+aud[h].ext));
+            const prime=impactsPrime('in');
+            const maxT=Math.max.apply(null,hrs.map(h=>aud[h].int));
             const H=34;
             const bars=hrs.map(h=>{
-              const b=aud[h], t=b.int+b.ext;
+              const b=aud[h], t=b.int;
               const hInt=Math.max(t?2:0,Math.round(H*(b.int/maxT)));
-              const hExt=Math.max(b.ext?1:0,Math.round(H*(b.ext/maxT)));
+
               const isP=prime&&prime.hour===h;
-              return '<div title="'+String(h).padStart(2,'0')+'h · '+(en?'entered ':'entran ')+b.int+' · '+(en?'passed ':'pasan ')+b.ext+'" style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:0;flex:1;min-width:7px">'+
-                '<div style="width:100%;height:'+hExt+'px;background:#8ed2ff;opacity:.85"></div>'+
+              return '<div title="'+String(h).padStart(2,'0')+'h · '+(en?'entered ':'entran ')+b.int+'" style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:0;flex:1;min-width:7px">'+
                 '<div style="width:100%;height:'+hInt+'px;background:#9effa0"></div>'+
                 '<div style="font-size:7.5px;opacity:'+(isP?'1':'.5')+';margin-top:2px;color:'+(isP?'#ffd866':'inherit')+'">'+(isP?'⭐':String(h).padStart(2,'0'))+'</div>'+
               '</div>';
@@ -27924,34 +28005,22 @@ window.xtAPI = (function(){
               '<div style="display:flex;justify-content:space-between;font-size:9px;letter-spacing:.08em;margin-bottom:5px"><span>'+(en?'AUDIENCE BY TIME SLOT':'AUDIENCIA POR FRANJA')+'</span>'+
               (prime?'<span style="color:#ffd866">⭐ prime '+String(prime.hour).padStart(2,'0')+'–'+String((prime.hour+1)%24).padStart(2,'0')+'h · '+prime.total+'</span>':'')+'</div>'+
               '<div style="display:flex;align-items:flex-end;gap:2px;height:'+(H+12)+'px">'+bars+'</div>'+
-              '<div style="font-size:8px;opacity:.55;margin-top:2px"><span style="color:#9effa0">■</span> '+(en?'entered':'entran')+' · <span style="color:#8ed2ff">■</span> '+(en?'passed':'pasan')+'</div>'+
+              '<div style="font-size:8px;opacity:.55;margin-top:2px"><span style="color:#9effa0">■</span> '+(en?'entered':'entran')+'</div>'+
             '</div>';
           }
           // Por pantalla: impactos (OTS) + 👁 los que MIRAN de verdad (atención).
           // Quien PASA por delante tuvo oportunidad de ver; quien MIRA cuenta como
           // atención real. El tótem con cámara lo MIDE (cara frontal = mira).
           let rows='<div style="display:flex;justify-content:space-between;font-size:8.5px;opacity:.55;letter-spacing:.05em;margin-bottom:1px"><span>'+(en?'SCREEN':'PANTALLA')+'</span><span>'+(en?'impacts · 👁 views':'impactos · 👁 miran')+'</span></div>';
-          for(const s of IMPACTS.SCREENS){
+          for(const s of IMPACTS.SCREENS.filter(s=>s.src==='in')){
             const d=IMPACTS.day[s.id]||{est:0,look:0,measured:false};
             const badge=d.measured?'<span title="'+(en?'camera-measured':'medido por cámara')+'">📷</span>':'<span title="'+(en?'estimated':'estimado')+'" style="opacity:.55">~</span>';
             const lk=Math.round(d.look||0), pct=d.est>0?Math.round((d.look||0)/d.est*100):0;
             rows+='<div style="display:flex;justify-content:space-between;align-items:baseline"><span>'+badge+' '+s.label+'</span><span><b>'+Math.round(d.est).toLocaleString(en?'en':'es')+'</b> <span style="color:#9ad8ff;font-size:9.5px" title="'+(en?'views — real attention':'miradas — atención real')+'">👁 '+lk.toLocaleString(en?'en':'es')+' ('+pct+'%)</span></span></div>';
           }
-          const t=impactsTotals();
-          const dyn=(typeof impactsDyn==='function')?impactsDyn():{cpmDyn:IMPACTS.cpm,demandMult:1,qualityMult:1,revenueDyn:t.revenue,isPrime:false};
-          // Impactos de publi EXTERIOR por segmento (género × edad) — RTB segmentado.
-          let segHtml='';
-          try{ const ea=(typeof G!=='undefined'&&G&&G.extAdImpacts)||{}; const ks=Object.keys(ea);
-            if(ks.length){ const AGEL=en?{nino:'Child',joven:'Young adult',adulto:'Adult',senior:'Senior'}:{nino:'Niño',joven:'Joven',adulto:'Adulto',senior:'Senior'};
-              const all=ks.map(k=>{const cpm=segCpm(k); return {k,n:ea[k],cpm,rev:ea[k]/1000*cpm};});
-              const extTot=all.reduce((s,r)=>s+r.rev,0);
-              const r2=all.map(r=>{const p=r.k.split('_'); return Object.assign({lbl:(p[1]==='f'?'♀':'♂')+' '+(AGEL[p[0]]||p[0])},r);}).sort((a,b)=>b.rev-a.rev).slice(0,8);
-              segHtml='<div style="border-top:1px dashed #2f6a8a;margin-top:6px;padding-top:6px;font-size:9px;letter-spacing:.05em;color:#8ed2ff">'+(en?'📣 OUTDOOR ADS · impacts × CPM by segment (RTB · admira.app)':'📣 PUBLI EXTERIOR · impactos × CPM por segmento (RTB · admira.app)')+'</div>'+
-                r2.map(r=>'<div style="display:flex;justify-content:space-between"><span>'+r.lbl+' <span style="opacity:.5;font-size:8.5px">@'+r.cpm.toFixed(1)+'€</span></span><span><b>'+r.n+'</b> <span style="color:#9effa0">'+r.rev.toFixed(2)+'€</span></span></div>').join('')+
-                '<div style="display:flex;justify-content:space-between;color:#9effa0;margin-top:2px"><span>'+(en?'Outdoor ad revenue':'Ingreso publi exterior')+'</span><b>'+extTot.toFixed(2)+'€</b></div>';
-            }
-          }catch(e){}
-          body.innerHTML=marcador+'<div style="margin:8px 0;font-size:9px;opacity:.7">'+(en?'TWIN MODEL · estimates below are separate from Puerta Cam':'MODELO DEL GEMELO · estimaciones separadas de Puerta Cam')+'</div>'+franjas+rows+
+          const t=impactsTotals('in');
+          const dyn=(typeof impactsDyn==='function')?impactsDyn('in'):{cpmDyn:IMPACTS.cpm,demandMult:1,qualityMult:1,revenueDyn:t.revenue,isPrime:false};
+          body.innerHTML=marcador+avatarAudience+'<div style="margin:8px 0;font-size:9px;opacity:.7">'+(en?'TWIN MODEL · estimates below are separate from Puerta Cam':'MODELO DEL GEMELO · estimaciones separadas de Puerta Cam')+'</div>'+franjas+rows+
             '<div style="border-top:1px dashed #8a6a2f;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between"><span>'+(en?'TOTAL impacts':'TOTAL impactos')+'</span><b>'+Math.round(t.imp).toLocaleString(en?'en':'es')+'</b></div>'+
             '<div style="display:flex;justify-content:space-between;color:#9ad8ff"><span>'+(en?'👁 Attention (views)':'👁 Atención (miran)')+'</span><b>'+Math.round(t.look).toLocaleString(en?'en':'es')+' · '+Math.round(t.att*100)+'%</b></div>'+
             '<div style="display:flex;justify-content:space-between"><span>CPM ref</span><b>'+IMPACTS.cpm.toFixed(2)+' €</b></div>'+
@@ -27960,11 +28029,13 @@ window.xtAPI = (function(){
             '<div style="display:flex;justify-content:space-between"><span>'+(en?'Dynamic CPM':'CPM dinámico')+'</span><b style="color:#c9a8ff">'+dyn.cpmDyn.toFixed(2)+' €</b></div>'+
             '<div style="display:flex;justify-content:space-between;font-size:9.5px;opacity:.75" title="'+(en?'RTB demand (occupancy+prime) × quality (attention)':'demanda RTB (ocupación+prime) × calidad (atención)')+'"><span>↳ '+(en?'demand':'demanda')+' ×'+dyn.demandMult.toFixed(2)+' · '+(en?'quality':'calidad')+' ×'+dyn.qualityMult.toFixed(2)+'</span></div>'+
             '<div style="display:flex;justify-content:space-between;color:#c9a8ff"><span>'+(en?'Dynamic revenue':'Ingreso dinámico')+'</span><b>'+dyn.revenueDyn.toFixed(2)+' €</b></div>'+
-            segHtml+
             '<div style="margin-top:5px;font-size:9.5px;opacity:.6">'+(en?'📷 measured · ~ estimated · 👁 views≠passes · ⚡ CPM by demand×quality':'📷 medido · ~ estimado · 👁 miran≠pasan · ⚡ CPM por demanda×calidad')+'<br>/cpm cpm &lt;n&gt; · /cpm reset · /cpm off</div>';
         };
+        h._render=render;
+        for(const button of h.querySelectorAll('[data-impact-mode]'))button.onclick=()=>{segment=button.dataset.impactMode;render();};
         render();
-        if(!IMPACTS.timer) IMPACTS.timer=setInterval(render,1000);
+        if(IMPACTS.timer)clearInterval(IMPACTS.timer);
+        IMPACTS.timer=setInterval(render,1000);
         IMPACTS.on=true;
         return {ok:true,message:(en?'Impacts ON · live counter · CPM ':'Impactos ON · marcador en vivo · CPM ')+IMPACTS.cpm+'€',data:{on:true}};
       }
@@ -28693,9 +28764,9 @@ window.xtAPI = (function(){
         active:!!(typeof REC!=='undefined'&&REC.replay&&REC.replay.on)
       },
       {
-        label:'🎨 Pixeria',
-        status:isEs?'último → gemelo':'latest → twin',
-        customAction:'pixerai'
+        label:'ANONYMIZER',
+        status:isEs?'Píxeles ↔ humanos':'Pixels ↔ humans',
+        customAction:'anonymizer'
       },
       {
         label:isEs?'✏ Mobiliario':'✏ Furniture',
@@ -28723,6 +28794,11 @@ window.xtAPI = (function(){
           :(isEs?'impactos·CPM':'impacts·CPM'),
         command:(typeof IMPACTS!=='undefined'&&IMPACTS.on)?'/impactos off':'/impactos',
         active:!!(typeof IMPACTS!=='undefined'&&IMPACTS.on)
+      },
+      {
+        label:'🎨 Pixeria',
+        status:isEs?'último → gemelo':'latest → twin',
+        customAction:'pixerai'
       }
     ];
   }
@@ -28767,6 +28843,12 @@ window.xtAPI = (function(){
   // Apertura síncrona en el click (sin await) para no disparar el popup blocker.
   // Botón "🎨 Pixeria": importa de un toque el ÚLTIMO mobiliario creado en
   // pixeria.com (type 'furni' del Stock) y lo coloca en el Xpacio del gemelo.
+  // Open the existing tool in its own signed-in context. The public route is
+  // gated, so embedding it cannot reliably reuse the user's Pixeria session.
+  // Creation, conversion and sending an NPC remain explicit actions in that tool.
+  function openAnonymizer(){
+    window.open('https://www.pixeria.com/anonimizador','_blank','noopener');
+  }
   async function openPixerAi(){
     try{
       if(typeof showEv==='function') showEv(lang==='en'?'🎨 Importing the latest item from Pixeria…':'🎨 Importando lo último de Pixeria…','#aa66ff');
@@ -32183,6 +32265,7 @@ window.xtAPI = (function(){
         if(kind==='signage'&&typeof toggleSignagePanel==='function') toggleSignagePanel();
         else if(kind==='editor'&&typeof doAction==='function'&&G) doAction('editor');
         else if(kind==='menu'&&typeof doAction==='function'&&G) doAction('menu');
+        else if(kind==='anonymizer') openAnonymizer();
         else if(kind==='pixerai') openPixerAi();
         else if(kind==='telegram' && typeof window.toggleTelegramDock==='function') window.toggleTelegramDock();
         return;
@@ -32211,6 +32294,7 @@ window.xtAPI = (function(){
         if(kind==='signage'&&typeof toggleSignagePanel==='function') toggleSignagePanel();
         else if(kind==='editor'&&typeof doAction==='function'&&G) doAction('editor');
         else if(kind==='menu'&&typeof doAction==='function'&&G) doAction('menu');
+        else if(kind==='anonymizer') openAnonymizer();
         else if(kind==='pixerai') openPixerAi();
         else if(kind==='telegram' && typeof window.toggleTelegramDock==='function') window.toggleTelegramDock();
         return;
@@ -34546,7 +34630,7 @@ window.xtAPI = (function(){
 </script>
 <!-- ════════ Lanzadera lateral en modo experto v1 (2026-07-18) ════════
      Modo EXPERTO (⌘): el dock inferior queda SOLO para el CLI (tiles ocultos).
-     Modo AVANZADO (▤): los 8 iconos (Signage/…/Audiencia) se espejan en el panel
+     Modo AVANZADO (▤): los iconos (Signage/…/Audiencia) se espejan en el panel
      derecho .quad-right, empezando bajo la barra superior, en lugar del texto
      EQUIPO CARBONO. Los originales siguen en #telegramQuickActions (ocultos) → el
      render y el click no cambian; cada icono reenvía el click al original.
@@ -34581,7 +34665,7 @@ window.xtAPI = (function(){
      input ocupa todo el ancho → máximo espacio para escribir. Oculto por defecto. */
   #telegramDock.compose-start.cli-out-hidden .tg-pane.send:not(.help-open):not(.signage-open) #telegramLastResponse{display:none !important}
   #telegramDock.compose-start.cli-out-hidden .tg-pane.send:not(.help-open):not(.signage-open) .tg-cli-row{flex:1 1 100% !important}
-  /* Modo AVANZADO (▤) = los 8 iconos ocupan el panel derecho, en lugar del texto
+  /* Modo AVANZADO (▤) = los iconos ocupan el panel derecho, en lugar del texto
      EQUIPO CARBONO. Reusa la posición del panel .quad-right (derecha, bajo la barra,
      ancho = margen, con su animación de despliegue). */
   /* Título "OPCIONES AVANZADAS" visible (como "Equipo Silicio" pero a la DERECHA);
@@ -34623,12 +34707,15 @@ window.xtAPI = (function(){
   function mirror(){
     var btns=[].slice.call(src.querySelectorAll('.tg-quick-btn'));
     host.innerHTML='';
-    btns.forEach(function(b){
+    function appendAction(b){
       var c=b.cloneNode(true);
       c.addEventListener('click',function(ev){ ev.preventDefault(); ev.stopPropagation(); try{ b.click(); }catch(e){} });
       host.appendChild(c);
-    });
-    host.appendChild(makePercibe());   // el ojo, al final de la lanzadera Avanzada
+    }
+    btns.filter(function(b){return b.getAttribute('data-quick-action')!=='pixerai';}).forEach(appendAction);
+    host.appendChild(makePercibe());
+    // Pixeria keeps its latest-item import and is always the final advanced action.
+    btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
   }
   try{ var mo=new MutationObserver(mirror); mo.observe(src,{childList:true,subtree:true,characterData:true}); }catch(e){}
   mirror();
@@ -34799,7 +34886,12 @@ window.xtAPI = (function(){
 })();
 </script>
 <script>if(new URLSearchParams(location.search).get("virtualPlayer")==="xtore-virtual-zapatillas"){try{for(const l of ["es","en"]){if(typeof LANGS!=="undefined"&&LANGS[l])LANGS[l].ledMsgs=["ADMIRA · XTORE ZAPATILLAS","PLAYER VIRTUAL · INTERIOR + ESCAPARATE","PUERTA CAM · PROGRAMACIÓN CONDICIONAL"];}}catch(_){}}</script>
-<link rel="stylesheet" href="scripts/xtore-window.css?v=expert-1">
-<script type="module" src="scripts/xtore-window.mjs?v=expert-1"></script>
+<link rel="stylesheet" href="scripts/xtore-window.css?v=background-2">
+<script type="module" src="scripts/xtore-window.mjs?v=real-traffic-1"></script>
+<script type="module" src="scripts/real-traffic.mjs?v=1"></script>
+<link rel="stylesheet" href="scripts/avatar-audience.css?v=1">
+<script type="module" src="scripts/avatar-audience.mjs?v=1"></script>
+<link rel="stylesheet" href="scripts/xtanco-premium.css?v=1">
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=1"></script>
 </body>
 </html>

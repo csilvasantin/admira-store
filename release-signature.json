@@ -1,8 +1,10 @@
 {
-  "version": "v.13.09.2026.r2.11:49",
+  "version": "v.13.09.2026.r13.15:50",
   "signature": "Codex · MacBookAir16plata",
   "machine": "MacBookAir16plata",
   "agent": "Codex",
   "deployer": "Codex",
-  "evidence": "Herramientas Xtore dentro de Experto, ventanas movibles con cierre y contador Exterior basado en pasos de Puerta Cam. Pruebas de protocolo, caducidad y QA de interfaz."
+  "evidence": "Panel Instore/DooH con ancho inicial estable y dos superficies de cámara reservadas; cuerpo desplazable con altura guardada. 4 pruebas del panel aprobadas. Comparativa real de layout: 50 transiciones de señal/resolución mantienen ancho y alto (0px de variación), también con altura guardada496px y cuerpo contenido; baseline oscila471.92px de ancho. UI local y acceso a explicación comprobados.",
+  "day": "13.09.2026",
+  "time": "15:50"
 }
