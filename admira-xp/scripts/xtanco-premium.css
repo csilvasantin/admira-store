@@ -1,12 +1,12 @@
-#xtanco-visual-quality{display:inline-flex;align-items:center;gap:2px;padding:2px;border:1px solid #365c68;border-radius:9px;background:#06141bc9;flex-shrink:0}
-#telegramDock #xtanco-visual-quality button{border:0;border-radius:6px;padding:4px 10px;background:transparent;color:#97b4bf;min-width:0;white-space:nowrap}
-#telegramDock #xtanco-visual-quality button[aria-pressed=true]{background:#1d4350;color:#e0faff;box-shadow:inset 0 0 0 1px #69aabd}
-#telegramDock #xtanco-visual-quality [data-visual-mode=better][aria-pressed=true]{background:#06230e;color:#a6ffba;box-shadow:inset 0 0 0 1px #37d867,0 0 9px #27ff5b1f}
-#telegramDock #xtanco-visual-quality [data-visual-mode=best][aria-pressed=true]{background:#3a3020;color:#f4dfb2;box-shadow:inset 0 0 0 1px #b19860}
-#xtanco-visual-quality .quality-status{font:10px/1.3 monospace;color:#d0c095;padding:0 5px;max-width:150px}
-#xtanco-visual-quality .quality-status[hidden]{display:none}
-#xtanco-visual-quality button:focus-visible{outline:2px solid #c6f3f6;outline-offset:2px}
-body[data-xtanco-visual=better] #c,body[data-xtanco-visual=best] #c{image-rendering:auto}
-body[data-xtanco-visual=better] #xtanco-visual-quality{border-color:#245b31;background:#010b04e8}
-body[data-xtanco-visual=better] #xtanco-visual-quality button:focus-visible{outline-color:#8dffa6}
-@media(max-width:680px){#telegramDock #xtanco-visual-quality button{padding:4px 6px}#xtanco-visual-quality .quality-status{max-width:105px}}
+.visual-tier-controls{display:inline-flex;align-items:stretch;gap:3px;padding:3px;border:1px solid #365c68;border-radius:10px;background:#06141bf2;flex-shrink:0}
+.visual-tier-controls button,#telegramDock .visual-tier-controls button,.quad-right .visual-tier-controls button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;border-radius:7px;padding:7px 12px;background:transparent;color:#a9c0c9;min-width:0;white-space:nowrap;font:600 11px/1.2 system-ui,sans-serif;cursor:pointer;letter-spacing:0;text-transform:none}
+.visual-tier-controls button small{font-size:9px;font-weight:400;opacity:.8}
+.visual-tier-controls button[aria-pressed=true],#telegramDock .visual-tier-controls button[aria-pressed=true],.quad-right .visual-tier-controls button[aria-pressed=true]{background:#245266;color:#ecfcff;box-shadow:inset 0 0 0 1px #72b9cb}
+.visual-tier-controls [data-visual-mode=best]{border:1px dashed #61766e!important}
+.visual-tier-controls button:focus-visible{outline:2px solid #c6f3f6;outline-offset:2px}
+#xtanco-advanced-quality{display:flex;flex-direction:column;margin:0 0 12px;padding:3px;min-width:0}
+#xtanco-advanced-quality button{width:100%;padding:10px 2px;white-space:normal;text-align:center;font-size:9px;letter-spacing:-.02em}
+#xtanco-advanced-quality button small{font-size:8px;line-height:1.3}
+#xtanco-best-status{position:fixed;right:24px;bottom:70px;width:min(280px,calc(100vw - 32px));padding:12px 14px;border:1px solid #617065;border-radius:9px;background:#102128;color:#e2d4b8;box-shadow:0 8px 28px #0008;font:11px/1.5 system-ui,sans-serif;white-space:normal;text-align:left;z-index:250}
+#xtanco-best-status[hidden]{display:none}
+@media(max-width:680px){#telegramDock .visual-tier-controls button{padding:5px 6px}#topBar #pfToggles{position:fixed;right:5px;top:5px;margin:0;padding:3px;background:#06141bf2;border-radius:8px;z-index:2}}

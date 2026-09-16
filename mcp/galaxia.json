@@ -1,7 +1,7 @@
 {
   "name": "Galaxia Admira · registro de conexiones MCP",
-  "version": "v.08.09.2026.r1.09:27",
-  "updated_at": "2026-09-08T07:27:11Z",
+  "version": "v.15.09.2026.r2.10:25",
+  "updated_at": "2026-09-15T07:09:54Z",
   "description": "Directorio operativo para cargar juntos los elementos de Admira y encadenar sus herramientas sin perder identidad ni trazabilidad.",
   "protocol": "Model Context Protocol · Streamable HTTP",
   "sources": {
@@ -33,7 +33,17 @@
       "endpoint": "https://mcp.admira.store/mcp",
       "health": "https://mcp.admira.store/",
       "auth": "lectura abierta; escritura con clave de flota",
-      "tools": ["quien_soy", "fleet_status", "list_screens", "screen_now", "emission_report", "register_device", "publish_asset", "search_twins", "twin_detail", "catalog_stats", "list_scenes", "scene_status", "xpl_rules", "signage_feed", "help"],
+      "tools": ["quien_soy", "fleet_status", "list_screens", "screen_now", "emission_report", "register_device", "publish_asset", "search_twins", "twin_detail", "catalog_stats", "list_scenes", "scene_status", "xpl_rules", "signage_feed", "help", "galaxy"],
+      "static_catalog": {
+        "url": "https://www.xpaceos.com/mcp/funcionalidades.json",
+        "docs": "https://www.xpaceos.com/help/funcionalidades/",
+        "mimeType": "application/json",
+        "schema_version": "1.0",
+        "id_pattern": "^XP-F[0-9]{2,}$",
+        "number_format": "01.-",
+        "delivery": "static-http",
+        "purpose": "Catálogo de documentación: IDs estables, disponibilidad Good/Better/Best y referencias a herramientas existentes. No registra nuevas herramientas ni recursos MCP."
+      },
       "accepts": ["asset_id", "asset_number"],
       "hands_off": ["twin_id", "screen_id", "circuit_id", "scene_id", "channel_url"]
     },

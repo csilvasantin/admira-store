@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="admiranext-version" content="v.15.09.2026.r2.10:25">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ayuda · XpaceOS — comandos del CLI del gemelo (Admira XP)</title>
 <meta name="description" content="Referencia completa y bilingüe (ES/EN) de TODOS los comandos del CLI del gemelo digital Admira XP / XpaceOS: consulta, equipo, stock, DVR/velocidad, tienda, pantallas, escena en vivo, IA, música y render. · Full bilingual command reference for the XpaceOS digital twin CLI.">
@@ -63,8 +64,9 @@
 <header><div class="wrap">
   <span class="logo">XPACEOS<span class="dot">·</span><span data-i="help">AYUDA</span></span>
   <nav>
-    <a href="https://www.pixeria.com/crear/">▶ <span data-i="opencli">Abrir el CLI</span></a>
+    <a href="/admira-xp/?autostart=xtanco&amp;visual=good">▶ <span data-i="opencli">Abrir el CLI</span></a>
     <a href="https://www.xpaceos.com/admira-xp/">🎮 <span data-i="twin">Gemelo</span></a>
+    <a href="/help/funcionalidades/" data-i="functions">Funciones numeradas</a>
     <a href="/ayuda/">◇ <span data-i="method">Método Xpacios</span></a>
     <a href="/">↗ XpaceOS</a>
     <a href="#" id="langToggle" role="button" aria-label="Switch language">EN</a>
@@ -73,36 +75,42 @@
 
 <div class="hero"><div class="wrap">
   <h1><span data-i="h1a">Comandos del CLI</span> · <span class="grad"><span data-i="h1b">Gemelo Admira XP</span></span></h1>
-  <p class="lede" data-i="lede">Todo el vocabulario del Xtanco. Estos comandos se ejecutan desde el <b>CLI Xtanco</b> de <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> (estando En vivo, sin clave) o en la consola del propio gemelo. Convención: invocar sin argumentos suele hacer <em>toggle</em>; los aliases en mayúsculas/minúsculas valen igual.</p>
+  <p class="lede" data-i="lede">Todo el vocabulario del Xtanco. Abre <b>Experto (⌘)</b> en el gemelo de XpaceOS para acceder a su consola. Los comandos de vista <code>/modo</code> actúan sólo en ese navegador. El <b>CLI Xtanco</b> de <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> conserva sus comandos operativos; no incorpora este selector visual. Convención: invocar sin argumentos suele hacer <em>toggle</em>; la disponibilidad de los aliases depende de la entrada; consulta las advertencias del catálogo.</p>
   <div class="bar">
     <input id="q" type="search" placeholder="Buscar… (velocidad, ladron, restock)" autocomplete="off" spellcheck="false">
     <span class="pill" id="count"></span>
   </div>
+  <div class="tip" data-i="catalogTip">Índice funcional estable: <a href="/help/funcionalidades/">01.- Cartelería Digital · 02.- Hilo Musical…</a>. Consulta allí la cobertura Good/Better/Best y las advertencias de comandos heredados. Los grupos de esta referencia CLI no son los IDs funcionales.</div>
   <div class="tip"><span data-i="tip">💡 Haz clic en cualquier comando para <strong>copiarlo</strong> y pégalo en el CLI. Los que llevan número o texto (<code>/velocidad 8</code>, <code>/reloj 14:30</code>) son ejemplos — cámbialos a tu gusto.</span></div>
   <div class="tip" style="border-left-color:var(--brand);background:linear-gradient(180deg,rgba(120,243,255,.10),rgba(120,243,255,.02))"><span data-i="tipMove">📐 <strong>Doctrina Xpaces:</strong> todos los elementos del gemelo son <strong>movibles y sustituibles siempre</strong>. Layout, mobiliario, pantallas y activos viven en la config — se reubican o se reemplazan sin tocar el motor. Ver <a href="/ayuda/">Método Xpacio</a> y <a href="/mcp/">MCP</a>.</span></div>
 </div></div>
 
 <main><div id="cats"></div></main>
-<footer><span data-i="foot">Referencia generada desde <code>helpSections()</code> del gemelo · todos los comandos son accesibles desde el CLI.</span> · Admira Digital Networks · <a href="https://www.xpaceos.com/">XpaceOS</a></footer>
+<footer><span data-i="foot">Vocabulario heredado de <code>helpSections()</code>. La entrada y disponibilidad de algunos aliases difieren; consulta las advertencias del catálogo funcional.</span> · Admira Digital Networks · <a href="https://www.xpaceos.com/">XpaceOS</a></footer>
 <div id="toast">copiado ✓</div>
 
 <script>
 const UI={
   es:{help:'AYUDA',opencli:'Abrir el CLI',twin:'Gemelo',method:'Método Xpacios',h1a:'Comandos del CLI',h1b:'Gemelo Admira XP',
-    lede:'Todo el vocabulario del Xtanco. Estos comandos se ejecutan desde el <b>CLI Xtanco</b> de <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> (estando En vivo, sin clave) o en la consola del propio gemelo. Convención: invocar sin argumentos suele hacer <em>toggle</em>; los aliases valen igual.',
+    lede:'Todo el vocabulario del Xtanco. Abre <b>Experto (⌘)</b> en el gemelo de XpaceOS para acceder a su consola. Los comandos de vista <code>/modo</code> actúan sólo en ese navegador. El <b>CLI Xtanco</b> de <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> conserva sus comandos operativos; no incorpora este selector visual. Convención: invocar sin argumentos suele hacer <em>toggle</em>; la disponibilidad de los aliases depende de la entrada; consulta las advertencias del catálogo.',
     tip:'💡 Haz clic en cualquier comando para <strong>copiarlo</strong> y pégalo en el CLI. Los que llevan número o texto (<code>/velocidad 8</code>, <code>/reloj 14:30</code>) son ejemplos — cámbialos a tu gusto.',
     tipMove:'📐 <strong>Doctrina Xpaces:</strong> todos los elementos del gemelo son <strong>movibles y sustituibles siempre</strong>. Layout, mobiliario, pantallas y activos viven en la config — se reubican o se reemplazan sin tocar el motor. Ver <a href="/ayuda/">Método Xpacio</a> y <a href="/mcp/">MCP</a>.',
-    foot:'Referencia generada desde <code>helpSections()</code> del gemelo · todos los comandos son accesibles desde el CLI.',
+    functions:'Funciones numeradas',
+    catalogTip:'Índice funcional estable: <a href="/help/funcionalidades/">01.- Cartelería Digital · 02.- Hilo Musical…</a>. Consulta allí la cobertura Good/Better/Best y las advertencias de comandos heredados. Los grupos de esta referencia CLI no son los IDs funcionales.',
+    foot:'Vocabulario heredado de <code>helpSections()</code>. La entrada y disponibilidad de algunos aliases difieren; consulta las advertencias del catálogo funcional.',
     qph:'Buscar… (velocidad, ladron, restock)', cmds:'comandos', clic:'Clic para copiar', toast:'copiado: '},
   en:{help:'HELP',opencli:'Open the CLI',twin:'Twin',method:'Xpacio method',h1a:'CLI commands',h1b:'Admira XP twin',
-    lede:'The twin’s full vocabulary. Run these from the <b>Xtanco CLI</b> at <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> (while Live, no key) or in the twin’s own console. Convention: calling with no args usually toggles; aliases work the same.',
+    lede:'The twin’s full vocabulary. Open <b>Expert (⌘)</b> in the XpaceOS twin to access its console. The <code>/modo</code> view commands affect that browser only. The <b>Xtanco CLI</b> at <a href="https://www.pixeria.com/crear/">pixeria.com/crear</a> keeps its operational commands but does not include this visual selector. Convention: calling with no args usually toggles; alias availability depends on the entry point; check catalog warnings.',
     tip:'💡 Click any command to <strong>copy</strong> it and paste it in the CLI. Ones with a number or text (<code>/velocidad 8</code>, <code>/reloj 14:30</code>) are examples — change them.',
     tipMove:'📐 <strong>Xpaces doctrine:</strong> every element in the twin must be <strong>movable and replaceable at all times</strong>. Layout, furniture, screens and assets live in config — rehome or swap them without touching the engine. See <a href="/ayuda/">Xpacio method</a> and <a href="/mcp/">MCP</a>.',
-    foot:'Reference generated from the twin’s <code>helpSections()</code> · every command is reachable from the CLI.',
+    functions:'Numbered functions',
+    catalogTip:'Stable functional index: <a href="/help/funcionalidades/">01.- Digital Signage · 02.- Background Music…</a>. Check Good/Better/Best coverage and legacy command warnings there. Groups in this CLI reference are not functional IDs.',
+    foot:'Legacy vocabulary from <code>helpSections()</code>. Some aliases differ in entry point and availability; see the functional catalog warnings.',
     qph:'Search… (velocidad, ladron, restock)', cmds:'commands', clic:'Click to copy', toast:'copied: '}
 };
 // Fuente de verdad: helpSections() de game.html (gemelo). Mantener en sync si cambian los comandos.
 const CATS=[
+  {t:'Calidad del Xpacio · vista local',tEn:'Xpacio quality · local view',d:'Avanzado y el selector dentro de las vistas permiten alternar Good 8, Better 16 y Best 32 bits. /modo better abre el 3D con cámara para comparar con Good o explorar de forma independiente. /modo good vuelve al clásico. /modo best abre una vista previa conceptual estática: un resultado ok:true, preview:true confirma la apertura, no un Best operativo. Las funciones Best siguen en preparación. Son nombres artísticos, no profundidad de color. El cambio visual no envía mensajes a Telegram ni modifica pantallas físicas. /render conserva sus estilos clásicos.',dEn:'Advanced and the selector inside each view switch between Good 8, Better 16 and Best 32-bit. /modo better opens 3D with a camera to compare with Good or explore independently. /modo good returns to classic. /modo best opens a static conceptual preview: ok:true, preview:true confirms navigation, not an operational Best twin. Best functions remain in preparation. These are artistic names, not color depth. View changes do not send Telegram messages or modify physical screens. /render keeps its classic styles.',c:['/modo','/modo good','/modo better','/modo best']},
   {t:'Consulta',tEn:'Status & queries',d:'Estado del Xpacio, equipo, stock y turnos.',dEn:'Xpacio status, staff, stock and shifts.',c:['/status','/staff','/stock','/turno']},
   {t:'Turnos (pantalla pared larga)',tEn:'Queue screen (long wall)',d:'Controla el número de turno de la pantalla secundaria. /turno off apaga el número y deja solo la publi. next/previous avanzan o retroceden; un número fija el turno; auto vuelve al modo automático.',dEn:'Controls the turn number on the secondary screen. /turno off hides the number leaving only the ad. next/previous step it; a number sets the turn; auto returns to automatic.',c:['/turno on','/turno off','/turno next','/turno previous','/turno 15','/turno auto']},
   {t:'Equipo y stock',tEn:'Staff & stock',d:'Contratar, formar y reponer producto.',dEn:'Hire, train and restock.',c:['/hire 1','/hire dj','/hire all','/train 1','/train all','/restock 2','/restock all','/restock prensa']},
@@ -120,7 +128,7 @@ const CATS=[
   {t:'Escena en vivo',tEn:'Live scene',d:'Personajes y eventos: DJ, ladrón, guardia, opinador, robot, sponsor, socio, puerta, subasta.',dEn:'Characters and events: DJ, thief, guard, reviewer, robot, sponsor, member, door, auction.',c:['/dj','/ladron','/guardiacivil','/opinador','/robot','/sponsor','/socio','/door open','/door close','/door auto','/subasta','/subasta off']},
   {t:'Notificaciones al personal',tEn:'Staff notifications',d:'Avisos al equipo, dashboards, listado de socios, heatmap y sponsor recurrente.',dEn:'Team alerts, dashboards, members list, heatmap and recurring sponsor.',c:['/personal socio','/personal dashboard','/socios listado','/heatmap','/heatmap reset','/sponsor recurrente 120 10']},
   {t:'Atmósfera',tEn:'Atmosphere',d:'Sonido ambiente y voces.',dEn:'Ambient sound and voices.',c:['/ambiente','/ambiente vol 50','/voces']},
-  {t:'Operativa real',tEn:'Real ops',d:'Devoluciones y pedidos.',dEn:'Returns and orders.',c:['/devolucion','/pedido']},
+  {t:'Pedidos y devoluciones simuladas · XP-F27',tEn:'Simulated orders and returns · XP-F27',d:'Crea escenas de clientes en el juego; no tramita pedidos logísticos ni devuelve cobros.',dEn:'Creates customer scenes in the game; it does not place logistics orders or refund payments.',c:['/devolucion','/pedido']},
   {t:'Integración AdmiraNext',tEn:'AdmiraNext integration',d:'Exportar socios al ecosistema.',dEn:'Export members to the ecosystem.',c:['/socios export']},
   {t:'IA y contenido',tEn:'AI & content',d:'Grok, dibujo IA, Metahuman, Avatar3D, logs e importar mobiliario/vídeo.',dEn:'Grok, AI drawing, Metahuman, Avatar3D, logs and importing furniture/video.',c:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
   {t:'Ajustes rápidos',tEn:'Quick tweaks',d:'Forzar métricas (caja, satisfacción, fama, semana, año…).',dEn:'Force metrics (cash, satisfaction, fame, week, year…).',c:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
@@ -144,7 +152,7 @@ function render(filter){
     const matched=cat.c.filter(c=>!filter||c.toLowerCase().includes(filter)||title.toLowerCase().includes(filter)||desc.toLowerCase().includes(filter));
     if(!matched.length)return; total+=matched.length;
     const sec=document.createElement('section');sec.className='cat';
-    const h=document.createElement('h2');h.innerHTML='<span class="num">'+String(i+1).padStart(2,'0')+'</span>'+title;sec.appendChild(h);
+    const h=document.createElement('h2');h.innerHTML='<span class="num">CLI '+String(i+1).padStart(2,'0')+'</span>'+title;sec.appendChild(h);
     const d=document.createElement('p');d.className='desc';d.textContent=desc;sec.appendChild(d);
     const wrap=document.createElement('div');wrap.className='cmds';
     matched.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='cmd';b.textContent=c;b.title=UI[LANG].clic;b.onclick=()=>copy(c,b);wrap.appendChild(b);});

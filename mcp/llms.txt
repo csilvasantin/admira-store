@@ -5,11 +5,15 @@
 > vivo, audiencia, proof-of-play, alta, publicar), el catálogo de 8.775 gemelos digitales,
 > XpaceScan (3D desde el móvil), el motor de reglas XPL y la ayuda para humanos.
 
-Ayuda para humanos: https://www.xpaceos.com/help/  (misma guía que la tool `help` y el resource xpaceos://help)
+Ayuda para humanos: https://www.xpaceos.com/help/
+La tool `help` y el resource xpaceos://help sirven una guía embebida en el backend;
+no incorporan automáticamente los cambios de las páginas de ayuda.
 
 Sitio / docs: https://www.xpaceos.com/mcp/
 Manifest máquina: https://www.xpaceos.com/mcp/manifest.json
 Registro de la Galaxia Admira: https://www.xpaceos.com/mcp/galaxia.json
+Catálogo funcional numerado (JSON estático): https://www.xpaceos.com/mcp/funcionalidades.json
+Catálogo funcional para humanos: https://www.xpaceos.com/help/funcionalidades/
 Repo: https://github.com/csilvasantin/xpaceos
 
 ## Servidor MCP (cómo conectar)
@@ -26,6 +30,36 @@ Repo: https://github.com/csilvasantin/xpaceos
 - Prueba rápida:
   curl -s https://mcp.admira.store/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 
+## Catálogo funcional numerado · Good / Better / Best
+
+- Fuente de documentación: https://www.xpaceos.com/mcp/funcionalidades.json
+- Vista humana: https://www.xpaceos.com/help/funcionalidades/
+- Contrato JSON schema_version 1.0; registros en features[]. Cada registro conserva
+  un id estable (XP-F01, XP-F02…) y un número humano con formato 01.-, 02.-…
+  Los IDs no dependen de la posición, los filtros, el modo visual ni el nombre traducido.
+- Los campos good, better y best describen el estado por modo. Consulta su evidencia
+  y limitaciones: una función enumerada no implica que esté implementada en los tres.
+- Navegación local: Avanzado y el selector dentro de las vistas ofrecen Good · 8 bits,
+  Better · 16 bits y Best · 32 bits. Better permite comparar con la proyección de Good
+  o explorar en 3D de forma independiente; una cámara alineada no recupera controles.
+- /modo best abre una vista previa conceptual estática. Cuando la apertura tiene éxito,
+  el resultado local incluye ok:true, preview:true y availability:"preview". Ese éxito
+  confirma la navegación, no un gemelo Best operativo. Las 30 áreas Best siguen planned.
+- Los nombres 8/16/32 bits son estilos artísticos; no indican profundidad de color.
+  /modo y sus resultados pertenecen al navegador del gemelo, no a una herramienta MCP.
+- Las referencias mcp apuntan a capacidades existentes. Un acceso de interfaz, un comando
+  de la consola del juego o un piloto Blender no se convierten en herramientas MCP por
+  aparecer en este catálogo.
+- static_catalog en manifest.json y en el elemento xpaceos de galaxia.json enlaza el JSON.
+  Se puede descubrir mediante galaxy({element:"xpaceos"}) o xpaceos://llms.txt; para leer
+  el archivo completo, el cliente necesita acceso HTTP ordinario a la URL publicada.
+- Esto no añade herramientas ni registra xpaceos://funcionalidades. El servidor sigue
+  ofreciendo 16 herramientas y 4 recursos. tools/list y resources/list son la referencia
+  para saber qué se puede invocar realmente en la conexión.
+- La herramienta help y xpaceos://help conservan la guía embebida en el Worker hasta que
+  se actualice ese backend. xpaceos://llms.txt y galaxy leen sus archivos web con caché;
+  sus enlaces pueden tardar en reflejar una publicación reciente.
+
 ## Herramientas
 
 - quien_soy — identidad persona+equipo que firma la conexión; sin clave, lector anónimo.
@@ -41,12 +75,12 @@ Repo: https://github.com/csilvasantin/xpaceos
 - list_scenes / scene_status — escenas de XpaceScan (vídeo 3D subido desde xpaceos.com/scan): estado, progreso, ficheros, visor.
 - xpl_rules — reglas XPL (CUANDO·PARA·ENTONCES) resueltas para una pantalla en cascada global→circuito→pantalla.
 - signage_feed — lo último que ha salido a la red de pantallas.
-- help — la ayuda para humanos por tema (gemelo, escanea, xpl, emite, alta, mcp, método).
+- help — guía embebida del backend por tema (gemelo, escanea, xpl, emite, alta, mcp, método).
 - galaxy — directorio de servidores, hubs, identificadores y flujos de la Galaxia Admira; filtros opcionales element / flow.
 
 ## Resources
 
-- xpaceos://help (text/markdown) — la guía de xpaceos.com/help.
+- xpaceos://help (text/markdown) — guía embebida del backend, sin sincronización automática con la web.
 - xpaceos://llms.txt (text/plain) — este fichero.
 - xpaceos://catalog/stats (application/json) — totales del catálogo.
 - xpaceos://galaxy (application/json) — registro conectable de la Galaxia Admira.

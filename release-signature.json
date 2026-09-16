@@ -1,10 +1,10 @@
 {
-  "version": "v.13.09.2026.r13.15:50",
-  "signature": "Codex · MacBookAir16plata",
-  "machine": "MacBookAir16plata",
-  "agent": "Codex",
-  "deployer": "Codex",
-  "evidence": "Panel Instore/DooH con ancho inicial estable y dos superficies de cámara reservadas; cuerpo desplazable con altura guardada. 4 pruebas del panel aprobadas. Comparativa real de layout: 50 transiciones de señal/resolución mantienen ancho y alto (0px de variación), también con altura guardada496px y cuerpo contenido; baseline oscila471.92px de ancho. UI local y acceso a explicación comprobados.",
-  "day": "13.09.2026",
-  "time": "15:50"
+  "version": "v.15.09.2026.r2.10:25",
+  "signature": "TrinityMBP16 · MacBookPro16",
+  "machine": "MacBookPro16",
+  "agent": "TrinityMBP16",
+  "deployer": "TrinityMBP16",
+  "evidence": "Selector compartido Avanzado/Experto/Better/Best: 01.- Good8, 02.- Better16, 03.- Best32 preview. Cámara mapped derivada de proyección Good, mismo origen lógico y simulación; exploración 3D independiente. Best es concepto estático con encuadre aproximado, no runtime ni paridad operativa. Router cancelable y resultados CLI tras readiness; recuperación gráfica conserva iluminación y renueva canvas. 193 pruebas, revisión cruzada y QA navegador escritorio/móvil. Ayuda y catálogo conservan 30 IDs y Best planned; MCP backend sigue 2.2.0. Misión Yokup DCL-439017bdcf3269d6b417599a.",
+  "day": "15.09.2026",
+  "time": "10:25"
 }

@@ -9314,6 +9314,8 @@ function drawLeaderboard(bx,by,bw){
 // ── INPUT ─────────────────────────────────────────────────────
 let activeTab=0;
 const keys={};
+// Release held game controls when a presentation-only modal takes focus.
+window.__xtancoReleaseInputs=()=>{for(const key of Object.keys(keys))keys[key]=false;};
 const BTNS={}; try{ window.BTNS=BTNS; }catch(_){}  // expuesto: lo usan el modo pared del Condicional y del Metahuman
 let editorSceneActive=false;
 
@@ -26585,7 +26587,7 @@ function loop(){
   cx.save();try{if(codexMapOpen)drawCodexMapOverlay();}catch(e){}cx.restore();
   finalizeFrame();
 }
-window.__xtancoVisualState=()=>({iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:shopFurnitureVisible||editorSceneActive?shopLayout:[],game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&CLIENTS[activeClient]?.id==='xtanco'});
+window.__xtancoVisualState=()=>({palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:shopFurnitureVisible||editorSceneActive?shopLayout:[],game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&CLIENTS[activeClient]?.id==='xtanco'});
 loop();
 
 // ── DIRECT ENTRY URL: ?play=<verticalId> ─────────────────────────
@@ -30138,7 +30140,8 @@ window.xtAPI = (function(){
       {title:'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
       {title:'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
       {title:'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
-      {title:'Estilo visual',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
+      {title:'Vista local (consola / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit en preparación',items:['/modo good','/modo better','/modo best','/mode better','/modo estado']},
+      {title:'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
       {title:'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
     ];
   }
@@ -30659,9 +30662,23 @@ window.xtAPI = (function(){
     }catch(err){ return '❌ Error al reportar (¿servidor del gemelo activo?): '+(err&&err.message||err); }
   }
 
+  async function executeLocalVisualCommand(rawText){
+    const text=String(rawText||'').trim();
+    if(!/^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
+    const language=typeof lang==='undefined'?'es':lang;
+    try{
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=tiers-linked-4');
+      return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,lang:language});
+    }catch(error){
+      return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
+    }
+  }
+
   async function executeTelegramText(rawText){
     const text=String(rawText||'').trim();
     if(!text) return 'Comando vacio';
+    const visual=await executeLocalVisualCommand(text);
+    if(visual)return visual.message;
     // \u00abAdmira crea imagen <descripci\u00f3n>\u00bb \u2192 PixerIA genera y la pantalla del contador
     // muestra progreso e imagen (Carlos, 15-jul-2026). Tambi\u00e9n /creaimagen.
     const _ac = text.match(/^admira[,:]?\s+crea\s+imagen\s*(.*)$/i);
@@ -31790,7 +31807,7 @@ window.xtAPI = (function(){
   // que vive dentro del .tg-pane.send. Asi el usuario ve el feedback sin
   // tener que abrir Telegram ni la pestaña conversation. Auto-clear "fresh"
   // tras 3.5s para que la siguiente respuesta sea evidente.
-  function showLastResponse(text,kind){
+  function showLastResponse(text,kind,origin){
     const el=document.getElementById('telegramLastResponse');
     if(!el) return;
     const clean=String(text||'').replace(/^\s+|\s+$/g,'');
@@ -31802,7 +31819,7 @@ window.xtAPI = (function(){
     const time=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     el.innerHTML='';
     const tag=document.createElement('span'); tag.className='lr-tag';
-    tag.textContent=kind==='err'?'ERROR':'AdmiraXPBot →';
+    tag.textContent=origin==='local-visual'?(lang==='en'?'Local view →':'Vista local →'):(kind==='err'?'ERROR':'AdmiraXPBot →');
     const ts=document.createElement('span'); ts.className='lr-time'; ts.textContent=time;
     const body=document.createElement('div'); body.textContent=clean;
     el.appendChild(tag); el.appendChild(ts); el.appendChild(body);
@@ -31817,6 +31834,14 @@ window.xtAPI = (function(){
   async function sendComposerText(text){
     const clean=String(text||'').trim();
     if(!clean) return;
+    // The visual command belongs to this browser, never to a remote bot.
+    // Intercept before command/session logging and the normal Telegram echo.
+    const visual=clean.startsWith('/')?await executeLocalVisualCommand(clean):null;
+    if(visual){
+      hideHelpPanel();showLastResponse(visual.message,visual.ok?'ok':'err','local-visual');
+      if(composer)composer.value='';
+      renderQuickActionButtons();return;
+    }
     rememberMemory('dialog','Consola local: '+clean);
     appendTelegramLog('out','Juego',clean);
     if(clean.startsWith('/')){
@@ -34891,7 +34916,9 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=1">
 <script type="module" src="scripts/avatar-audience.mjs?v=1"></script>
-<link rel="stylesheet" href="scripts/xtanco-premium.css?v=1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=1"></script>
+<link rel="stylesheet" href="scripts/xtanco-premium.css?v=tiers-linked-4">
+<link rel="stylesheet" href="scripts/life-ui.css?v=tiers-linked-4">
+<link rel="stylesheet" href="scripts/best-preview.css?v=tiers-linked-4">
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=tiers-linked-4"></script>
 </body>
 </html>

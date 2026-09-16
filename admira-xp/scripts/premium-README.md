@@ -1,5 +1,7 @@
 # Xtanco Better / Best renderer
 
+This document describes the legacy `premium-renderer.mjs` API and its internal material-mode names. The public selector now uses **Avanzado → Good · 8 bits / Better · 16 bits / Best · 32 bits**: Better uses the Life view with comparison and exploration cameras; Best opens a static conceptual preview. Internal `mode:'best'` in the example below does not activate or validate the public Best tier. See [life-README.md](./life-README.md) and [best-production.md](./best-production.md).
+
 `premium-renderer.mjs` provides a presentation of the existing Xtanco state. It owns no simulation, traffic counts, media playback, capture permissions, or animation loop.
 
 ```js

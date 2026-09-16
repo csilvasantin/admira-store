@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<meta name="admiranext-version" content="v.08.09.2026.r1.09:27">
+<meta name="admiranext-version" content="v.15.09.2026.r2.10:25">
 <style>
   :root{--bg:#070b12;--panel:#0e1622;--line:#1d2a3a;--txt:#e9f1f7;--mut:#7e95a8;--acc:#34d0c0;--pur:#9b8cff;--good:#3ddc84;--warn:#ffb347}
   *{box-sizing:border-box}
@@ -59,9 +59,10 @@
 <header><div class="bar">
   <a class="logo" href="/">XPACEOS · <span data-i18n="help">AYUDA</span></a>
   <nav>
-    <a href="/#prueba" data-i18n="nav.try">Prueba el gemelo</a>
+    <a href="/admira-xp/?autostart=xtanco&amp;visual=better" data-i18n="nav.try">Prueba el gemelo</a>
     <a href="/scan/" data-i18n="nav.scan">Escanear</a>
     <a href="/help/cli/" data-i18n="nav.cli">Comandos CLI</a>
+    <a href="/help/funcionalidades/" data-i18n="nav.functions">Funciones</a>
     <a href="/mcp/">MCP</a>
     <a href="/ayuda/" data-i18n="nav.method">Método</a>
     <button type="button" id="langToggle" aria-label="Switch language">EN</button>
@@ -70,7 +71,7 @@
 
 <main>
   <h1 data-i18n-html="h1">Cómo usar <span>XpaceOS</span></h1>
-  <p class="lede" data-i18n="lede">XpaceOS convierte cada tienda, escaparate o stand en un medio publicitario inteligente. Esta ayuda es para personas: qué es, qué puedes hacer hoy y por dónde empezar. Los agentes de IA tienen la suya en <a href="/mcp/">/mcp</a> y la misma guía como herramienta <code>help</code>.</p>
+  <p class="lede" data-i18n="lede">XpaceOS convierte cada tienda, escaparate o stand en un medio publicitario inteligente. Esta ayuda es para personas: qué es, qué puedes hacer hoy y por dónde empezar. Los agentes de IA tienen su documentación en /mcp y una guía embebida como herramienta help.</p>
 
   <div class="toc">
     <a href="#que-es"><span class="n">00</span><span data-i18n="toc.0">Qué es XpaceOS</span></a>
@@ -110,12 +111,22 @@
         <li data-i18n="s1.a.2">Busca por nombre, dirección o marca, o filtra por marca y tipo de superficie.</li>
         <li data-i18n="s1.a.3">Toca una tarjeta: su Gemelo Digital se carga ahí mismo con las pantallas y superficies reales de ese punto.</li>
         <li data-i18n="s1.a.4">«Abrir a pantalla completa» para operarlo con todo el espacio.</li>
-      </ol><a class="cta" href="/#prueba" data-i18n="s1.cta">Prueba el gemelo →</a></div>
+      </ol><a class="cta" href="/admira-xp/?autostart=xtanco&amp;visual=better" data-i18n="s1.cta">Prueba el gemelo →</a></div>
       <div class="card"><h3 data-i18n="s1.b.h">Enlaces directos</h3>
         <p data-i18n-html="s1.b.1">Gemelo de un punto concreto: <code>/admira-xp/?loc=&lt;id&gt;</code> (p. ej. <a href="/admira-xp/?loc=mango-001" target="_blank" rel="noopener">?loc=mango-001</a>).</p>
         <p data-i18n-html="s1.b.2" style="margin-top:8px">Portada con ese gemelo ya cargado: <code>/?twin=&lt;id&gt;</code>.</p>
         <p data-i18n-html="s1.b.3" style="margin-top:8px">Dentro del gemelo hay un CLI con todo el vocabulario (velocidad, reloj, stock, pantallas, IA, música…): <a href="/help/cli/">referencia de comandos</a>.</p>
         <div class="tip" data-i18n="s1.tip">El gemelo de referencia es el Xtanco (estanco). Los demás espacios usan el mismo motor con su configuración real: nombre, pantallas y superficies del catálogo.</div>
+      </div>
+      <div class="card"><h3 data-i18n="s1.3d.h">Avanzado → Better · 16 bits</h3>
+        <p data-i18n-html="s1.3d.1"><a href="/admira-xp/?autostart=xtanco&amp;visual=better">Try the twin abre Better</a>: interior detallado, personajes articulados y luz de día, atardecer o noche. Es una representación estilizada del layout actual, no un escaneo fotogramétrico.</p>
+        <p data-i18n-html="s1.3d.2" style="margin-top:8px">Usa <b>Comparar con Good</b> para ver Better con una cámara alineada con la proyección del clásico. El detalle de los modelos sigue siendo distinto. <b>Explorar 3D</b> permite girar y acercar la cámara de forma independiente: arrastra, usa scroll o pellizca y toca un objeto para ver su ficha. Seleccionar no ejecuta operaciones de la tienda.</p>
+        <p data-i18n-html="s1.3d.parity" style="margin-top:8px">Better aún no recupera todos los controles de Good. Consulta el <a href="/help/funcionalidades/">catálogo numerado de funciones</a>: <b>01.- Cartelería Digital</b>, <b>02.- Hilo Musical</b>… Cada ficha distingue controles, representación y conexiones pendientes, con IDs estables compartidos por ayuda y documentación MCP.</p>
+        <p data-i18n-html="s1.3d.3" style="margin-top:8px">Abre <b>Avanzado (▤)</b> y elige <b>Good · 8 bits</b>, <b>Better · 16 bits</b> o <b>Best · 32 bits</b>; el selector también está disponible dentro de las vistas. La consola acepta <code>/modo good</code>, <code>/modo better</code> y <code>/modo best</code>. <b>Volver al gemelo</b> o Escape regresan a Good sin reiniciar la sesión. El cambio de vista es local: no envía órdenes a Telegram ni cambia pantallas físicas.</p>
+      </div>
+      <div class="card" id="best"><h3 data-i18n="s1.best.h">Best · 32 bits: vista previa estática</h3>
+        <p data-i18n-html="s1.best.1"><a href="/admira-xp/?autostart=xtanco&amp;visual=best">Abrir Best</a> muestra una <b>vista previa conceptual estática</b>, con navegación para volver a Good o Better. No representa una tienda operativa ni sigue el estado en vivo. Sus funciones del catálogo continúan en preparación. Good 8, Better 16 y Best 32 bits son nombres artísticos, no profundidad de color ni una garantía de hiperrealismo.</p>
+        <p data-i18n-html="s1.best.2" style="margin-top:8px">El <a href="/xpacios/lab/">laboratorio de producción Blender</a> comienza por un mostrador con caja/TPV editable y exportación GLB. Es un piloto interpretado, no una réplica medida. Para validar cada mueble y el local hacen falta fotos y medidas verificadas. Los modelos web conservarán el estado y las funciones del mismo gemelo.</p>
       </div>
     </div>
   </section>
@@ -249,13 +260,13 @@ ENTONCES showAd(botas-de-agua) · screenTone(calm)</pre>
     </div>
   </section>
 </main>
-<footer>© 2026 ADmiraNeXT · XpaceOS · <a href="/">portada</a> · <a href="/help/cli/">comandos CLI</a> · <a href="/mcp/">MCP</a> · <a href="/ayuda/">método</a> · <span data-i18n="foot.v">esta ayuda es la misma que devuelve la herramienta <code>help</code> del MCP</span></footer>
+<footer>© 2026 ADmiraNeXT · XpaceOS · <a href="/">portada</a> · <a href="/help/cli/">comandos CLI</a> · <a href="/help/funcionalidades/">funciones</a> · <a href="/mcp/">MCP</a> · <a href="/ayuda/">método</a> · <span data-i18n="foot.v">la herramienta help del MCP usa una guía embebida; no se sincroniza automáticamente con esta web</span></footer>
 
 <script>
 const I18N={en:{
- help:'HELP','nav.try':'Try the twin','nav.scan':'Scan','nav.cli':'CLI commands','nav.method':'Method',
+ help:'HELP','nav.try':'Try the twin','nav.scan':'Scan','nav.cli':'CLI commands','nav.functions':'Functions','nav.method':'Method',
  h1:'How to use <span>XpaceOS</span>',
- lede:'XpaceOS turns every store, shop window or booth into an intelligent advertising medium. This help is for people: what it is, what you can do today and where to start. AI agents have theirs at /mcp and the same guide as the help tool.',
+ lede:'XpaceOS turns every store, shop window or booth into an intelligent advertising medium. This help is for people: what it is, what you can do today and where to start. AI agents have documentation at /mcp and an embedded guide through the help tool.',
  'toc.0':'What XpaceOS is','toc.1':'Try the twin','toc.2':'Scan your space','toc.3':'Operate with XPL rules','toc.4':'Broadcast and measure','toc.5':'Register a screen','toc.6':'Connect your agent (MCP)','toc.galaxy':'Connect the Admira Galaxy','toc.8':'Method and support',
  's0.h':'What XpaceOS is','s0.k':'three layers · four products · one shared dataset','s0.a.h':'The three layers',
  's0.a.1':'<b>PixerIA</b> creates the content with AI (audio, music, image, video) from a brief. → <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a>',
@@ -273,6 +284,14 @@ const I18N={en:{
  's1.b.2':'Home page with that twin already loaded: <code>/?twin=&lt;id&gt;</code>.',
  's1.b.3':'Inside the twin there is a CLI with the whole vocabulary (speed, clock, stock, screens, AI, music…): <a href="/help/cli/">command reference</a>.',
  's1.tip':'The reference twin is the Xtanco (tobacco shop). Every other space uses the same engine with its real configuration: name, screens and surfaces from the catalog.',
+ 's1.3d.h':'Advanced → Better · 16-bit',
+ 's1.3d.1':'<a href="/admira-xp/?autostart=xtanco&amp;visual=better">Try the twin opens Better</a>: a detailed interior, articulated characters, and day, sunset or night lighting. This is a stylized representation of the current layout, not a photogrammetric scan.',
+ 's1.3d.2':'Use <b>Compare with Good</b> to view Better with a camera aligned to the classic projection. Model detail still differs. <b>Explore 3D</b> lets you orbit and zoom independently: drag, scroll or pinch, and tap an object to inspect its label. Selection does not execute store operations.',
+ 's1.3d.parity':'Better does not yet expose all Good controls. See the <a href="/help/funcionalidades/">numbered functional catalog</a>: <b>01.- Digital Signage</b>, <b>02.- Background Music</b>… Each entry distinguishes controls, presentation and pending connections, with stable IDs shared by Help and MCP documentation.',
+ 's1.3d.3':'Open <b>Advanced (▤)</b> and choose <b>Good · 8-bit</b>, <b>Better · 16-bit</b> or <b>Best · 32-bit</b>; the selector is also available inside the views. The console accepts <code>/modo good</code>, <code>/modo better</code> and <code>/modo best</code>. <b>Back to twin</b> or Escape return to Good without restarting the session. View changes are local: they do not send Telegram commands or change physical screens.',
+ 's1.best.h':'Best · 32-bit: static preview',
+ 's1.best.1':'<a href="/admira-xp/?autostart=xtanco&amp;visual=best">Open Best</a> shows a <b>static conceptual preview</b>, with navigation back to Good or Better. It is not an operational store and does not follow live state. Its catalog functions remain in preparation. Good 8, Better 16 and Best 32-bit are artistic names, not color depth or a guarantee of hyperrealism.',
+ 's1.best.2':'The <a href="/xpacios/lab/">Blender production lab</a> starts with an editable counter and POS, exported as GLB. This is an interpreted pilot, not a measured replica. Verified photos and dimensions are needed to validate each fixture and the space. Web models will preserve the state and functions of the same twin.',
  's2.h':'Scan your space (XpaceScan)','s2.k':'from the phone to the 3D twin, no cables','s2.a.h':'On the phone',
  's2.a.1':'Open <a href="/scan/">xpaceos.com/scan</a> and allow the camera.','s2.a.2':'Record 60–120 s walking slowly, with lateral and wrapping movement, covering each zone from two angles.',
  's2.a.3':'Tap <b>☁︎ Upload to XpaceOS</b>. The video uploads in chunks with progress.','s2.a.4':'Copy or share the viewer link that appears. That link is your scene.',
@@ -318,7 +337,7 @@ const I18N={en:{
  's7.a.3':'Case study: <a href="/#booth">the Shoptalk Europe 2026 booth</a>, controlled live by the twin.',
  's7.b.h':'Talk to the team','s7.b.1':'The <b>“Book a demo”</b> button on the home page: the form reaches the AdmiraNeXT team on Telegram and we answer.',
  's7.b.2':'Site version and seal: <code>/version.json</code>. Every published change carries its seal and its owner.','s7.cta':'Book a demo →',
- 'foot.v':'this help is the same text the MCP <code>help</code> tool returns'
+ 'foot.v':'the MCP help tool uses an embedded guide; it does not automatically sync with this website'
 }};
 const ES={}; document.querySelectorAll('[data-i18n],[data-i18n-html]').forEach(el=>{const k=el.getAttribute('data-i18n')||el.getAttribute('data-i18n-html'); ES[k]=el.hasAttribute('data-i18n-html')?el.innerHTML:el.textContent;});
 I18N.es=ES;

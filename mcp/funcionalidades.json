@@ -1,0 +1,2205 @@
+{
+  "schema_version": "1.0",
+  "title": "Catálogo funcional del Xpacio · Good / Better / Best",
+  "updated_at": "2026-09-15",
+  "audit": {
+    "basis": "Revisión estática del código del gemelo; inventario MCP contrastado con tools/list y resources/list públicos. No se ejecutaron operaciones físicas, envíos, compras ni generación de pago.",
+    "source_commit": "a7b8d62eacfcbb166d2ddc1e3a6758bec0fdc178",
+    "runtime_verification": "Las funciones del hardware y sus backends no se han validado de extremo a extremo con este inventario.",
+    "scope": "30 áreas funcionales; ejemplos representativos. La referencia CLI conserva el vocabulario completo y algunas discrepancias heredadas se señalan aquí.",
+    "baseline_note": "source_commit y las evidencias por línea conservan la revisión funcional original. view_navigation y los textos de XP-F26 documentan la actualización posterior del selector y las cámaras; no acreditan una nueva validación de los backends ni paridad operativa."
+  },
+  "view_navigation": {
+    "menu": "Avanzado (▤)",
+    "selector_inside_views": true,
+    "labels": { "good": "Good · 8 bits", "better": "Better · 16 bits", "best": "Best · 32 bits" },
+    "style_note": "8/16/32 bits son nombres artísticos, no profundidad de color.",
+    "better_camera": {
+      "comparison": "Cámara mapped alineada con la proyección de Good para comparar la representación; no garantiza siluetas idénticas ni paridad de controles.",
+      "exploration": "Explorar 3D usa una cámara independiente con órbita, desplazamiento y zoom."
+    },
+    "best": {
+      "availability": "preview",
+      "static": true,
+      "operational": false,
+      "command": "/modo best",
+      "success_result": { "ok": true, "preview": true, "availability": "preview" },
+      "scope": "Vista previa conceptual estática con navegación entre vistas; no sigue el estado en vivo ni implementa las 30 áreas Best."
+    },
+    "mcp": "La navegación pertenece al navegador del gemelo; no registra herramientas ni recursos MCP."
+  },
+  "numbering": {
+    "format": "NN.- Nombre",
+    "id_pattern": "XP-FNN",
+    "policy": "El número y el ID se asignan explícitamente; no dependen del orden de pantalla ni de los filtros. Las nuevas funciones se añaden con el siguiente número. No renumerar ni reciclar IDs; conservar referencias al retirar o dividir una función."
+  },
+  "links": {
+    "docs": "https://www.xpaceos.com/help/funcionalidades/",
+    "catalog": "https://www.xpaceos.com/mcp/funcionalidades.json",
+    "cli": "https://www.xpaceos.com/help/cli/",
+    "mcp": "https://www.xpaceos.com/mcp/"
+  },
+  "parity_contract": [
+    "Good, Better y Best deben ser vistas del mismo estado operativo, con los mismos IDs.",
+    "Una malla, vídeo genérico o ficha no demuestra que una función esté operativa.",
+    "No duplicar simulación, reproductores, captura, métricas o datos para completar una vista.",
+    "Una entrada CLI, una API de navegador y una herramienta MCP son interfaces distintas.",
+    "No ejecutar comandos o modificar hardware por consultar este catálogo."
+  ],
+  "better_statuses": {
+    "native": "Control nativo en Better",
+    "partial": "Parcial; faltan controles o datos",
+    "presentation_only": "Sólo representación",
+    "classic_only": "Operativa en Good; sin controles en Better",
+    "outside_view": "Fuera de la vista Better"
+  },
+  "features": [
+    {
+      "id": "XP-F01",
+      "number": "01",
+      "title": "Cartelería Digital",
+      "summary": "Playlists, pantallas, audio de vídeo, canal Admira.tv, Mupi y asignación de contenido por superficie.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico contiene los controles DS y la asignación por pantalla. La emisión real depende del player, la conexión y el destino. Importar, asignar o avanzar puede reflejarse en players conectados; no asumir que sólo cambia el canvas."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Hay vídeo compartido desde __xtoreWindowPlayer.draw(). Las pantallas 3D usan una sola textura: no equivale a recuperar cada pin, playlist, orientación o condición por superficie. No hay controles DS en Better."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/ds on",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/ds next",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/ds audio off",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/admiratv tiktok",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "list_screens",
+            "access": "read",
+            "scope": "Inventario real; no lista la geometría 3D local."
+          },
+          {
+            "server": "xpaceos",
+            "name": "screen_now",
+            "access": "read",
+            "scope": "Consulta emisión de una pantalla conectada."
+          },
+          {
+            "server": "xpaceos",
+            "name": "publish_asset",
+            "access": "write",
+            "scope": "Publica una pieza en un destino real. Requiere identidad y autorización."
+          }
+        ],
+        "gap": "El MCP no conecta todavía selección 3D, screen_id, pin y controles de cada pantalla del gemelo."
+      },
+      "restore": [
+        "Conservar screen_id y fuente individual al cambiar de vista.",
+        "Pausar, avanzar y asignar contenido desde la pantalla seleccionada sin duplicar reproductores.",
+        "Comprobar orientación, audio, XPL y proof-of-play sin presentar la simulación como emisión real."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 3246,
+          "symbol": "dsControl"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 3650,
+          "symbol": "renderDSCanvas"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 76,
+          "symbol": "getPlayer"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 107,
+          "symbol": "screen"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 518,
+          "symbol": "refreshMedia"
+        }
+      ]
+    },
+    {
+      "id": "XP-F02",
+      "number": "02",
+      "title": "Hilo Musical",
+      "summary": "Reproducción musical, selección de canción, playlist, siguiente/anterior y música recibida desde Pixeria.",
+      "good": {
+        "status": "code_present",
+        "detail": "El elemento bgMusic y HILOMUSICAL siguen perteneciendo al juego. La reproducción está sujeta a permisos de audio y disponibilidad de la fuente."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "Better no crea ni destruye el audio del juego, pero tampoco ofrece sus controles o el estado de la canción. El DJ modelado no es un reproductor independiente."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/music on",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/music off",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/music next",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/song 1",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/compose <tipo> <temática>",
+          "entrypoint": "__xtExec",
+          "note": "Generación musical externa con posible coste. /componer en __xtExec abre XPL, no música.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramienta de hilo musical entre las 16 herramientas del MCP XpaceOS."
+      },
+      "restore": [
+        "Mostrar canción, estado y volumen de la fuente existente.",
+        "Controlar reproducción desde Better sin reiniciar la pista ni crear otro audio."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 26853,
+          "symbol": "bgMusic"
+        },
+        {
+          "path": "admira-xp/scripts/hilomusical.js",
+          "line": 30,
+          "symbol": "bgMusicEl"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 256,
+          "symbol": "djBooth"
+        }
+      ]
+    },
+    {
+      "id": "XP-F03",
+      "number": "03",
+      "title": "Megafonía",
+      "summary": "Avisos de voz, TTS, selección de motor y reducción temporal del volumen musical.",
+      "good": {
+        "status": "code_present",
+        "detail": "La consola y MEGAFONIA gestionan texto y audio; la generación TTS puede consumir servicios externos. No se ha lanzado ningún aviso durante esta auditoría."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "El módulo de audio del clásico permanece, pero Better no permite componer, enviar, cancelar ni consultar avisos."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/comunicar texto",
+          "entrypoint": "__xtExec",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/comunicar off",
+          "entrypoint": "__xtExec",
+          "note": "Detiene el comunicado local; no garantiza cancelar un trabajo remoto pendiente.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/comunicar --elevenlabs texto",
+          "entrypoint": "__xtExec",
+          "note": "Genera voz con servicio externo: confirmar destino y coste antes de ejecutar.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP XpaceOS actual no expone la cola de megafonía ni generación de avisos."
+      },
+      "restore": [
+        "Añadir estado de cola y controles explícitos sobre la misma fuente.",
+        "Respetar silencio maestro, ducking y restauración musical; separar vista previa de envío real."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 29747,
+          "symbol": "comunicar"
+        },
+        {
+          "path": "admira-xp/scripts/megafonia.js",
+          "line": 37,
+          "symbol": "duck"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 23,
+          "symbol": "open"
+        }
+      ]
+    },
+    {
+      "id": "XP-F04",
+      "number": "04",
+      "title": "Cinta LED y AdmiraLive",
+      "summary": "Texto desplazable, comunicados y cinta informativa del local.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico dibuja el texto de AdmiraLive y su desplazamiento."
+      },
+      "better": {
+        "status": "presentation_only",
+        "detail": "La cinta de Better muestra un rótulo fijo «XTANCO / ADMIRA»; no representa el mensaje actual ni su desplazamiento."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/AdmiraLive texto",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramienta MCP dedicada al mensaje de la cinta LED local."
+      },
+      "restore": [
+        "Transportar texto y desplazamiento reales al render 3D.",
+        "Editar y previsualizar el mensaje, conservando el mismo estado al volver a Good."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 20895,
+          "symbol": "drawLED"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 29331,
+          "symbol": "setAdmiraLive"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 288,
+          "symbol": "led"
+        }
+      ]
+    },
+    {
+      "id": "XP-F05",
+      "number": "05",
+      "title": "Vídeo, TV e importación multimedia",
+      "summary": "Vídeos, AdmiraTube, medios importados y su uso en pantallas.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico tiene importación y reproducción de medios. URL, formatos, CORS y servicios externos condicionan su uso."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Puede verse la fuente compartida del player, pero no existen biblioteca, importador ni selección de fuente propia por superficie dentro de Better."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/AdmiraTube URL 2 audio",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/import",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/import list",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/importTube https://youtu.be/...",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "signage_feed",
+            "access": "read",
+            "scope": "Consulta publicaciones en la red; no controla un vídeo local."
+          }
+        ],
+        "gap": "Importar o controlar un vídeo local no está cubierto por signage_feed ni por un comando visual MCP."
+      },
+      "restore": [
+        "Ofrecer biblioteca y selección de medios de la sesión.",
+        "Preservar fuente, tiempo, proporción y política de audio al alternar vistas."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30140,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 518,
+          "symbol": "refreshMedia"
+        }
+      ]
+    },
+    {
+      "id": "XP-F06",
+      "number": "06",
+      "title": "Avatares y asistentes digitales",
+      "summary": "MetaHuman, Avatar3D, conversación, micrófono, modelos y audio del asistente.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico tiene un avatar con fuente propia y controles de conversación/modelo; IA, voz y micrófono requieren sus servicios o permisos."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "El tótem está modelado, pero su pantalla usa la textura compartida. No hay chat, micrófono, elección de avatar ni fuente MetaHuman independiente."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/metahuman pregunta",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/avatar3d on",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/avatar3d models",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/avatar3d audio off",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramienta de control del avatar local en el MCP XpaceOS. Otros productos de la galaxia requieren contratos propios."
+      },
+      "restore": [
+        "Conservar el pin y la fuente del avatar, diferenciados de cartelería.",
+        "Recuperar conversación y controles con permisos de micrófono explícitos."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 19410,
+          "symbol": "DS_PIN"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 31337,
+          "symbol": "avatar3d"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 274,
+          "symbol": "metahuman"
+        }
+      ]
+    },
+    {
+      "id": "XP-F07",
+      "number": "07",
+      "title": "Cámara en directo y CCTV",
+      "summary": "Apertura de cámara, LiveCam, vista de captación y mocap.",
+      "good": {
+        "status": "code_present",
+        "detail": "Hay controles para cámara y captura en el clásico. Dependen del dispositivo, permisos y conexión. El código de cámara también puede enviar derivados de audiencia a un servicio remoto: revisar política de datos y configuración, no asumir procesamiento exclusivamente local."
+      },
+      "better": {
+        "status": "outside_view",
+        "detail": "La cámara de Better es una cámara virtual de navegación: no captura vídeo ni sustituye LiveCam/CCTV. No hay panel ni feed de cámara física."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/livecam",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/mocap",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP no inicia cámaras locales ni concede permisos. Consultar screen_now no es abrir una cámara."
+      },
+      "restore": [
+        "Distinguir navegación 3D de captura física en etiquetas y permisos.",
+        "Recuperar el monitor y su estado sin crear otra captura ni activar sensores automáticamente."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 12043,
+          "symbol": "mupiCamOpenGallery"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 27979,
+          "symbol": "renderCameraViews"
+        },
+        {
+          "path": "admira-xp/scripts/life-renderer.mjs",
+          "line": 12,
+          "symbol": "camera"
+        }
+      ]
+    },
+    {
+      "id": "XP-F08",
+      "number": "08",
+      "title": "Aforo, audiencia e impactos",
+      "summary": "Conteos de entrada/salida, audiencia, segmentación, impactos y CPM.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico separa aforo real/exacto/fake, muestra paneles y contiene ajustes de impacto. Sensores y estimaciones no se validaron con personas reales en esta auditoría."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Better muestra clientes de la simulación, no un aforo medido. Faltan paneles de cámara, segmentos, entradas/salidas e impactos. La geometría visible no acredita audiencia real."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/aforo",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Distinguir consulta, simulación y sensor real."
+        },
+        {
+          "text": "/aforo real",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Distinguir consulta, simulación y sensor real."
+        },
+        {
+          "text": "/impactos",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Distinguir consulta, simulación y sensor real."
+        },
+        {
+          "text": "/audienciaIN 8",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Entrada manual de prueba: no debe presentarse como medición real."
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "screen_now",
+            "access": "read",
+            "scope": "Consulta datos reportados por una pantalla conectada; no mide desde el render."
+          },
+          {
+            "server": "xpaceos",
+            "name": "emission_report",
+            "access": "read",
+            "scope": "Consulta proof-of-play del circuito; no equivale al contador de clientes del juego."
+          }
+        ],
+        "gap": "Falta vincular datos y procedencia al panel 3D; no existen herramientas para los ajustes locales del simulador."
+      },
+      "restore": [
+        "Mostrar origen, estado y antigüedad de cada métrica.",
+        "Mantener separadas personas simuladas, aforo medido y estimaciones; no rellenar fallos con datos ficticios."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 27965,
+          "symbol": "realAudience"
+        },
+        {
+          "path": "admira-xp/scripts/life-snapshot.mjs",
+          "line": 117,
+          "symbol": "inside"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 84,
+          "symbol": "life-state"
+        }
+      ]
+    },
+    {
+      "id": "XP-F09",
+      "number": "09",
+      "title": "Anonimización y representación de personas",
+      "summary": "Privacidad de representación, píxeles/personas y sprites de cámara.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico incorpora controles de anonimización y fuentes visuales específicas."
+      },
+      "better": {
+        "status": "outside_view",
+        "detail": "Los personajes procedurales de Better no reproducen los sprites de cámara. Ver personajes estilizados no demuestra que el control de anonimización esté integrado o aplicado a una captura."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/mupicam",
+          "entrypoint": "xtAPI.command / fallback __xtExec",
+          "note": "Cambiar apariencia no garantiza anonimización. Las acciones de humanizar/publicar pueden usar servicios externos.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/mupicam pixel",
+          "entrypoint": "xtAPI.command / fallback __xtExec",
+          "note": "Cambiar apariencia no garantiza anonimización. Las acciones de humanizar/publicar pueden usar servicios externos.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/mupicam normal",
+          "entrypoint": "xtAPI.command / fallback __xtExec",
+          "note": "Cambiar apariencia no garantiza anonimización. Las acciones de humanizar/publicar pueden usar servicios externos.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/mupicam off",
+          "entrypoint": "xtAPI.command / fallback __xtExec",
+          "note": "Cambiar apariencia no garantiza anonimización. Las acciones de humanizar/publicar pueden usar servicios externos.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramienta MCP para esta política visual local ni para modificar permisos de cámara."
+      },
+      "restore": [
+        "Definir qué fuente se representa y qué política se aplica.",
+        "Respetar la elección de anonimización en ambas vistas; nunca revelar una imagen para completar una representación ausente."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 12070,
+          "symbol": "anonimizado"
+        },
+        {
+          "path": "admira-xp/scripts/anonimizado-control.js",
+          "line": 1,
+          "symbol": "anonimizado-control"
+        },
+        {
+          "path": "admira-xp/scripts/life-snapshot.mjs",
+          "line": 46,
+          "symbol": "customSprite"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 371,
+          "symbol": "createActor"
+        }
+      ]
+    },
+    {
+      "id": "XP-F10",
+      "number": "10",
+      "title": "Mobiliario y distribución del espacio",
+      "summary": "Mover, girar, escalar, sustituir, importar y guardar muebles y layout.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico ofrece editor y catálogo de muebles. /layout save puede persistir en backend/repositorio; no es necesariamente sólo local. /layout factory elimina varias copias guardadas de este Xpacio: confirmar y exportar una copia antes de usarlo."
+      },
+      "better": {
+        "status": "presentation_only",
+        "detail": "Better dibuja posiciones, giros y escalas del layout, pero arrastrar mueve la cámara, no el mueble. Seleccionar sólo abre una ficha; para editar hay que volver a Good."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/mobiliario",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/catalogo",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/layout",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/layout save",
+          "entrypoint": "__xtExec",
+          "note": "Puede persistir en backend/repositorio, no sólo en memoria local.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP XpaceOS no edita el layout ni instancia GLB en el navegador."
+      },
+      "restore": [
+        "Mover, girar, escalar y sustituir por ID desde Better con deshacer.",
+        "Conservar footprint, colisiones, navegación y contenido asociado; no duplicar transformaciones."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30143,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 194,
+          "symbol": "furniture"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 479,
+          "symbol": "update"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 16,
+          "symbol": "select"
+        }
+      ]
+    },
+    {
+      "id": "XP-F11",
+      "number": "11",
+      "title": "Iluminación física y ambiente visual",
+      "summary": "Lámparas, Hue y representación de día, atardecer y noche.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico mezcla controles visuales y rutas de integración física. /hue está anunciado en ayuda, pero no se enruta por __xtExec; xtAPI.command contiene la ruta. No se probó hardware."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Los tres modos de luz de Better funcionan como presentación. No cambian el reloj de la simulación, Hue ni lámparas físicas."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/lamp",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/lamp auto",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/hue",
+          "entrypoint": "xtAPI.command",
+          "status": "warning",
+          "note": "La ayuda lo anuncia, pero __xtExec no lo enruta a esta API. Integración física sin prueba de hardware."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramienta MCP XpaceOS para luces físicas o iluminación de Better."
+      },
+      "restore": [
+        "Separar controles de luz visual y luz física.",
+        "Representar el estado real y confirmar cualquier acción de hardware; conservar iluminación visual como control local."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 53,
+          "symbol": "setLighting"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 471,
+          "symbol": "setLighting"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 26826,
+          "symbol": "lamp"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30127,
+          "symbol": "helpSections"
+        }
+      ]
+    },
+    {
+      "id": "XP-F12",
+      "number": "12",
+      "title": "Turnos y colas",
+      "summary": "Número actual, llamada, avance, retroceso y modo automático de turnos.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico mantiene G.turns y dibuja el número actual."
+      },
+      "better": {
+        "status": "presentation_only",
+        "detail": "El quiosco muestra «TU TURNO» y «BIENVENIDO» fijos. No refleja el número actual ni permite emitir o llamar turnos."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/turno",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/turno next",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/turno 15",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/turno auto",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramientas MCP de turnos del gemelo."
+      },
+      "restore": [
+        "Mostrar el mismo número y estado de cola en Good y Better.",
+        "Emitir/llamar/avanzar sin crear una segunda cola ni duplicar eventos."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 24541,
+          "symbol": "G.turns"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 20788,
+          "symbol": "currentTurnNumber"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 268,
+          "symbol": "turnKiosk"
+        }
+      ]
+    },
+    {
+      "id": "XP-F13",
+      "number": "13",
+      "title": "Stock, productos y reposición",
+      "summary": "Inventario, productos, existencias y reposición.",
+      "good": {
+        "status": "code_present",
+        "detail": "El motor del clásico contiene stock y reposición. Las existencias del juego no prueban inventario físico conectado."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "Los estantes y productos son geometría decorativa. Better no recibe el stock detallado ni ofrece controles de reposición o fichas de producto."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/stock",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/restock 2",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/restock all",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/restock prensa",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramientas MCP XpaceOS para stock del juego ni sincronización de ERP."
+      },
+      "restore": [
+        "Representar existencias del estado canónico y distinguir simulación de inventario conectado.",
+        "Consultar/reponer desde la misma entidad sin convertir geometría en una segunda base de datos."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30107,
+          "symbol": "stock"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 31287,
+          "symbol": "restock"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 149,
+          "symbol": "products"
+        }
+      ]
+    },
+    {
+      "id": "XP-F14",
+      "number": "14",
+      "title": "Socios y fidelización",
+      "summary": "Clientes, socios, visitas recurrentes, altas y exportación de socios.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico contiene socios simulados, listado, tarjetas y exportación JSON local. El cliente de fidelización puede además notificar visitas a un servicio externo: no confundir los NPC con clientes reales ni publicar datos personales."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Se mantienen posiciones, nombres y apariencias de actores simulados; faltan altas, fichas operativas, club, diálogo y notificaciones. Bocadillos y emotes no se dibujan."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/socio",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/socios listado",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/personal socio",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/socios export",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/tarjetaFidelidad",
+          "entrypoint": "__xtExec",
+          "note": "Beneficio sobre el siguiente NPC; no acredita una tarjeta o cobro real.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP actual no gestiona los clientes/NPC ni el club del gemelo."
+      },
+      "restore": [
+        "Recuperar ficha y acciones por ID de cliente sin mezclar NPC con personas identificadas.",
+        "Mostrar diálogo/estado de la simulación y proteger datos personales en operaciones externas."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/scripts/life-snapshot.mjs",
+          "line": 93,
+          "symbol": "actors"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 371,
+          "symbol": "createActor"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30136,
+          "symbol": "helpSections"
+        }
+      ]
+    },
+    {
+      "id": "XP-F15",
+      "number": "15",
+      "title": "Equipo, roles y personal",
+      "summary": "Contratación, formación, puestos de trabajo y gestión del equipo.",
+      "good": {
+        "status": "code_present",
+        "detail": "Separar contratación/formación de NPC (/hire, /train) de plantilla digital remota: /nuevoMiembro y /echarMiembro llaman al servicio de empleados, y /report envía un informe. No se verificó autorización externa. Variantes /staff están ocultas por un retorno temprano."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "El personal está representado como actor, pero no hay contratación, formación, asignación de puesto o control de miembro desde Better."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/staff",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/hire 1",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/train 1",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/staff train 1",
+          "entrypoint": "xtAPI.command",
+          "status": "warning",
+          "note": "La ruta de listado /staff retorna antes del bloque gestor; usar rutas directas auditadas y corregir la discrepancia."
+        },
+        {
+          "text": "/nuevoMiembro Laura azafata",
+          "entrypoint": "__xtExec",
+          "note": "Alta de empleado en servicio remoto; exige autorización e identidad del local.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/report Marta",
+          "entrypoint": "__xtExec",
+          "note": "Envía informe a un servicio remoto; verificar destinatario y datos.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP no controla personal de la simulación ni personas reales de una plantilla."
+      },
+      "restore": [
+        "Restituir acciones por ID conservando permisos y separación entre empleado real y actor simulado.",
+        "Resolver y probar los alias /staff antes de publicarlos como capacidades ejecutables."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30121,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 371,
+          "symbol": "createActor"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 16,
+          "symbol": "select"
+        }
+      ]
+    },
+    {
+      "id": "XP-F16",
+      "number": "16",
+      "title": "Caja, ventas y KPI",
+      "summary": "Mostrador, caja, dinero, ventas, satisfacción, fama y nivel de tienda.",
+      "good": {
+        "status": "code_present",
+        "detail": "Los KPI y ajustes rápidos pertenecen a la simulación. Los comandos /money y /set no son movimientos de dinero real."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "Hay mostrador modelado, pero no panel de caja, ventas o KPI en el modal. El snapshot no incorpora el inventario económico completo."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/status",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/money 12000",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Modifica la simulación; no constituye una transacción real."
+        },
+        {
+          "text": "/sat 90",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/upgrade",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramientas MCP para estos KPI locales. fleet_status consulta dispositivos, no la caja de la simulación."
+      },
+      "restore": [
+        "Leer KPI del mismo estado y rotular su procedencia.",
+        "Conservar acciones de caja del juego sin aparentar un TPV físico integrado."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30118,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30141,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-snapshot.mjs",
+          "line": 111,
+          "symbol": "snapshot"
+        }
+      ]
+    },
+    {
+      "id": "XP-F17",
+      "number": "17",
+      "title": "Tiempo, velocidad y DVR",
+      "summary": "Reloj, velocidad de simulación, calendario, grabación y replay.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico ofrece velocidad, reloj y controles DVR. La auditoría no verificó todos los destinos de persistencia de grabaciones."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "El motor sigue avanzando detrás del modal; Better presenta snapshots del juego, pero no ofrece DVR, calendario o velocidad. Sus luces no cambian la hora."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/velocidad 1",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/reloj 14:30",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/dvr",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/envivo",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/calendario",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/time night",
+          "entrypoint": "__xtExec",
+          "note": "Anunciado en ayuda, pero un parser numérico previo captura el alias; usar /reloj o el control de horario.",
+          "status": "warning"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP no expone reloj, replay ni grabaciones de la simulación."
+      },
+      "restore": [
+        "Distinguir tiempo del juego, emisión en vivo y reproducción histórica.",
+        "Recuperar controles sin duplicar el reloj, el bucle o las grabaciones."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 26561,
+          "symbol": "updateGame"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 79,
+          "symbol": "tick"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30123,
+          "symbol": "helpSections"
+        }
+      ]
+    },
+    {
+      "id": "XP-F18",
+      "number": "18",
+      "title": "Reglas XPL y contenido condicional",
+      "summary": "Reglas CUANDO/PARA/ENTONCES, segmentación y selección condicional.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico consume mensajes/reglas XPL y ofrece el control condicional. La lectura de reglas no acredita que una pantalla esté ejecutándolas. El runtime XPL puede ejecutar comandos locales y leer órdenes remotas: una futura herramienta de escritura necesita lista permitida, permisos y confirmación de efectos."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "Better no transporta la resolución XPL por pantalla ni usa renderDSCanvas. La fuente compartida puede mostrar emisión, pero no representa todos los estados condicionales."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/xpl",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/admiratv condicional",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/targetPublicity off",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/condicional on",
+          "entrypoint": "__xtExec (wrapper XPL)",
+          "note": "Activa condiciones que pueden ejecutar comandos; requiere límites de acción.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/componer",
+          "entrypoint": "__xtExec (wrapper XPL)",
+          "note": "Abre el compositor XPL. No es el alias musical de la API síncrona.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "xpl_rules",
+            "access": "read",
+            "scope": "Lee reglas resueltas; no crea, modifica ni garantiza ejecución de reglas."
+          }
+        ],
+        "gap": "Falta editor/control de reglas y trazabilidad por superficie en Better; xpl_rules es sólo lectura."
+      },
+      "restore": [
+        "Visualizar regla aplicada, contexto y origen por screen_id.",
+        "Restituir condiciones sin generar otra evaluación paralela ni inferir ejecución sólo de una imagen."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30721,
+          "symbol": "xpl"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 3686,
+          "symbol": "__dsXplMsg"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 518,
+          "symbol": "refreshMedia"
+        }
+      ]
+    },
+    {
+      "id": "XP-F19",
+      "number": "19",
+      "title": "Creación con IA y Pixeria",
+      "summary": "Imágenes, vídeo, campañas TikTok, catálogo creativo y consultas IA.",
+      "good": {
+        "status": "code_present",
+        "detail": "El clásico ofrece comandos y paneles hacia servicios externos. Generar/publicar puede consumir créditos y exige autorización del usuario."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "No hay compositor, selección de propuesta, progreso de generación ni confirmación de publicación en Better."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/pixeria",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/draw dibujo",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Puede invocar generación externa."
+        },
+        {
+          "text": "/tiktok <titular>",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Desarrollar una propuesta no equivale a autorizar rodaje/publicación."
+        },
+        {
+          "text": "/tiktok ok",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Autoriza rodaje tras revisar la propuesta; puede consumir créditos."
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "publish_asset",
+            "access": "write",
+            "scope": "Publica un activo existente; no lo genera. Requiere autorización."
+          }
+        ],
+        "gap": "La generación no está implementada en este MCP; se federaría con los servicios de creación y sus permisos."
+      },
+      "restore": [
+        "Recuperar vista previa, progreso y confirmación explícita de coste/publicación.",
+        "Conservar asset_id de la propuesta a la pantalla y a su comprobación."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30130,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30140,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 23,
+          "symbol": "open"
+        }
+      ]
+    },
+    {
+      "id": "XP-F20",
+      "number": "20",
+      "title": "Consola, Telegram y Stream Deck",
+      "summary": "CLI, ayuda, automatización de acciones y conexiones de control.",
+      "good": {
+        "status": "code_present",
+        "detail": "La consola usa __xtExec; xtAPI.command es otra entrada con diferente cobertura. Los comandos normales pueden generar mensajes o acciones externas. /modo se intercepta como acción local. Los receptores remotos y reglas XPL pueden activar comandos con efectos físicos o coste. /whoami del juego describe el Xpacio, no autentica al agente."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "El modal deja los paneles debajo sin acceso interactivo. Hay que volver a Good para usar la consola; /modo better permite entrar. No equivale a un control MCP del navegador."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/modo better",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/modo good",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/modo estado",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/sd list",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/streamdeck",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No existe una herramienta MCP de ejecutar CLI local. Documentar un comando no habilita un puente remoto ni otorga permisos."
+      },
+      "restore": [
+        "Proporcionar comandos y resultado dentro de Better con origen y efectos visibles.",
+        "No reenviar órdenes visuales a Telegram; separar lectura, simulación, envío externo y coste."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/scripts/xtanco-visual-command.mjs",
+          "line": 1,
+          "symbol": "executeVisualCommand"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 31834,
+          "symbol": "sendComposerText"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 38,
+          "symbol": "showModal"
+        }
+      ]
+    },
+    {
+      "id": "XP-F21",
+      "number": "21",
+      "title": "Catálogo de Xpacios y gemelos",
+      "summary": "Localización de espacios, ficha, superficies e identidad del gemelo.",
+      "good": {
+        "status": "code_present",
+        "detail": "El catálogo de espacios vive en /xpacios/ y tiene su propio acceso. La búsqueda de gemelos y enlaces ?loc es otra entrada al motor; /xpacio consulta identidad del punto, no abre el catálogo. Conservar twin_id y distinguir estas superficies."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Se representa el layout de la sesión, pero la cabecera dice «Barcelona · Gran de Gràcia / El Xtanco» de forma fija. No debe presentarse esa etiqueta como identidad verificada de cualquier ?loc."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/xpacio",
+          "entrypoint": "__xtExec",
+          "note": "Consulta identidad/configuración del punto; no abre el catálogo de espacios.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "search_twins",
+            "access": "read",
+            "scope": "Busca espacios del catálogo."
+          },
+          {
+            "server": "xpaceos",
+            "name": "twin_detail",
+            "access": "read",
+            "scope": "Lee ficha y superficies de un espacio."
+          },
+          {
+            "server": "xpaceos",
+            "name": "catalog_stats",
+            "access": "read",
+            "scope": "Totales del catálogo, no contadores del juego."
+          }
+        ],
+        "gap": "Falta propagar twin_id, nombre y ubicación de la sesión a todas las etiquetas de Better."
+      },
+      "restore": [
+        "Mostrar nombre, ubicación e IDs reales de la ficha elegida.",
+        "Conservar selección de espacio al cambiar de vista y volver a la ficha."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 30,
+          "symbol": "life-location"
+        },
+        {
+          "path": "admira-xp/scripts/life-snapshot.mjs",
+          "line": 111,
+          "symbol": "snapshot"
+        },
+        {
+          "path": "mcp/manifest.json",
+          "line": 1,
+          "symbol": "tools"
+        }
+      ]
+    },
+    {
+      "id": "XP-F22",
+      "number": "22",
+      "title": "Captura 3D, Blender y producción de assets",
+      "summary": "XpaceScan, escenas capturadas, muebles editables y exportaciones GLB.",
+      "good": {
+        "status": "code_present",
+        "detail": "Son herramientas complementarias; Good no es un editor Blender ni un escáner fotogramétrico. Existe un piloto descargable de mostrador."
+      },
+      "better": {
+        "status": "outside_view",
+        "detail": "Better usa geometría procedural. El piloto GLB aún no sustituye el mostrador y no hay editor/importador Blender en la vista."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "list_scenes",
+            "access": "read",
+            "scope": "Lista escenas XpaceScan existentes."
+          },
+          {
+            "server": "xpaceos",
+            "name": "scene_status",
+            "access": "read",
+            "scope": "Lee estado/artefactos de una escena; no ejecuta Blender."
+          }
+        ],
+        "gap": "No existe herramienta de generación Blender, reconstrucción ni importación GLB en el MCP actual."
+      },
+      "restore": [
+        "Integrar assets por ID conservando comportamiento y fallback.",
+        "Verificar escala, materiales, rendimiento y referencias antes de calificar un local como réplica."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/scripts/best-production.md",
+          "line": 1,
+          "symbol": "Best"
+        },
+        {
+          "path": "admira-xp/tools/xpacios-blender/build_counter.py",
+          "line": 1,
+          "symbol": "CONFIG"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 1,
+          "symbol": "createLifeScene"
+        }
+      ]
+    },
+    {
+      "id": "XP-F23",
+      "number": "23",
+      "title": "Mapas, navegación y zonas",
+      "summary": "Mapa de navegación, heatmap, zonas y posición de miembros.",
+      "good": {
+        "status": "code_present",
+        "detail": "Existen heatmap y operaciones de zonas. /mapa tiene una ruta previa de heatmap: no debe prometerse como alias inequívoco del navegador de Xpacios."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "La cámara en planta permite ver distribución, pero no es el mapa operativo ni un mapa de calor. No hay edición de zonas o rutas."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/heatmap",
+          "entrypoint": "__xtExec",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/map",
+          "entrypoint": "__xtExec",
+          "note": "Abre el mapa de navegación documental.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/mapa",
+          "entrypoint": "__xtExec",
+          "note": "Se resuelve antes como heatmap; no es equivalente a /map.",
+          "status": "warning"
+        },
+        {
+          "text": "/equipo inicio ana 3 4",
+          "entrypoint": "__xtExec",
+          "note": "Referencia funciones de otra clausura; requiere corrección/prueba antes de anunciarse como operativo.",
+          "status": "warning"
+        },
+        {
+          "text": "/red",
+          "entrypoint": "__xtExec",
+          "note": "Anunciado en ayuda, sin handler verificado.",
+          "status": "warning"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramienta MCP para rutas, heatmap ni zonas del juego."
+      },
+      "restore": [
+        "Distinguir planta visual, heatmap y navegación operativa.",
+        "Restituir zonas y rutas con sus IDs y revisar alias ambiguos."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30136,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30146,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 56,
+          "symbol": "preset"
+        }
+      ]
+    },
+    {
+      "id": "XP-F24",
+      "number": "24",
+      "title": "Marketplace y subastas",
+      "summary": "Patrocinio y demostración de subastas dentro del gemelo.",
+      "good": {
+        "status": "code_present",
+        "detail": "El comando /subasta abre un panel externo de Admira.live; abrirlo no ejecuta una compra. El cliente de campañas puede aplicar contenido remoto. Interactuar después con el panel puede requerir autenticación o compromisos comerciales."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "No aparecen el panel, las pujas, las decisiones ni la gestión del patrocinador en Better."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/subasta on",
+          "entrypoint": "__xtExec / xtAPI.command",
+          "note": "Panel y campañas externas; no hay comando de puja/compra segura auditado.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/subasta off",
+          "entrypoint": "__xtExec / xtAPI.command",
+          "note": "Panel y campañas externas; no hay comando de puja/compra segura auditado.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/subasta <espacio>",
+          "entrypoint": "__xtExec / xtAPI.command",
+          "note": "Panel y campañas externas; no hay comando de puja/compra segura auditado.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "El MCP XpaceOS no ofrece herramientas de puja o contratación. Los contratos de otros servidores deben verificarse por separado."
+      },
+      "restore": [
+        "Restituir estado y acciones, rotulando simulación frente a contratación real.",
+        "Exigir autorización y destino inequívoco antes de cualquier compromiso externo."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30135,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 3650,
+          "symbol": "renderDSCanvas"
+        }
+      ]
+    },
+    {
+      "id": "XP-F25",
+      "number": "25",
+      "title": "Atmósfera, puertas y aromatización",
+      "summary": "Audio ambiental, voces, puerta y representación de equipos de aroma.",
+      "good": {
+        "status": "code_present",
+        "detail": "Ambiente y voces son audio del navegador; /door cambia animación, no un actuador físico. /aroma y /ac en xtAPI.command son estados simulados. En cambio /store close puede además guardar, silenciar y apagar Hue/Elgato si están conectados."
+      },
+      "better": {
+        "status": "presentation_only",
+        "detail": "Hay geometría de puerta y difusor, pero no controles ambientales. El difusor se muestra sin enlazar su estado aromaOn; los cambios visuales no prueban actividad real."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/ambiente",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/ambiente vol 50",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/voces",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/door open",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/door auto",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/store close",
+          "entrypoint": "__xtExec",
+          "note": "Operación compuesta: puede guardar, silenciar y apagar hardware conectado.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/tienda close",
+          "entrypoint": "__xtExec",
+          "note": "Alias sombreado por la consulta de identidad; no equivale a /store close.",
+          "status": "warning"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramientas MCP XpaceOS para estos equipos o audio ambiental."
+      },
+      "restore": [
+        "Representar estado de cada elemento y separar acción simulada de física.",
+        "Recuperar controles ambientales respetando mute y la fuente de audio existente."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30135,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30137,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 278,
+          "symbol": "aroma"
+        }
+      ]
+    },
+    {
+      "id": "XP-F26",
+      "number": "26",
+      "title": "Cámara 3D, selección y calidad visual",
+      "summary": "Selector Good/Better/Best, comparación con Good, exploración 3D y selección informativa.",
+      "good": {
+        "status": "code_present",
+        "detail": "Good conserva el juego clásico y los estilos /render. El selector público Good/Better/Best es distinto de los modos del pintor clásico."
+      },
+      "better": {
+        "status": "native",
+        "detail": "Better permite comparar con la proyección de Good mediante una cámara mapped o explorar 3D con órbita, pan y zoom/pellizco independientes. Conserva selección con ficha y retorno mediante Escape. El selector de niveles está dentro de la vista. Seleccionar o abrir la preview Best no ejecuta operaciones de negocio ni recupera su paridad funcional."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/modo good",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/modo better",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/modo best",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Abre una vista previa conceptual estática. Cuando la apertura tiene éxito devuelve ok:true y preview:true; no abre un Best terminado ni habilita sus funciones operativas."
+        },
+        {
+          "text": "/render 16bit",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Cambia el estilo clásico, no el nivel público Better."
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramientas MCP de cámara o selector visual local."
+      },
+      "restore": [
+        "Conservar accesibilidad, foco, selección y cámara al incorporar controles.",
+        "No confundir la iluminación de presentación o una ficha con paridad funcional completa."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 16,
+          "symbol": "select"
+        },
+        {
+          "path": "admira-xp/scripts/life-ui.mjs",
+          "line": 34,
+          "symbol": "life-toolbar"
+        },
+        {
+          "path": "admira-xp/scripts/life-renderer.mjs",
+          "line": 34,
+          "symbol": "camera"
+        },
+        {
+          "path": "admira-xp/scripts/xtanco-visual-tiers.mjs",
+          "line": 8,
+          "symbol": "createVisualTiers"
+        }
+      ]
+    },
+    {
+      "id": "XP-F27",
+      "number": "27",
+      "title": "Pedidos y devoluciones simuladas",
+      "summary": "Escenas de clientes que representan pedidos y devoluciones dentro de la simulación.",
+      "good": {
+        "status": "code_present",
+        "detail": "Aunque la ayuda heredada las agrupa como «Operativa real», /pedido y /devolucion crean escenas de clientes sintéticas. No son un pedido logístico ni una devolución de un cobro."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "Las acciones se inician desde Good. Better no muestra los controles ni todos los bocadillos y estados de estas escenas."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/pedido",
+          "entrypoint": "__xtExec",
+          "note": "Escena simulada: no crea un pedido logístico ni devuelve dinero real.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/devolucion",
+          "entrypoint": "__xtExec",
+          "note": "Escena simulada: no crea un pedido logístico ni devuelve dinero real.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No hay herramientas MCP XpaceOS para pedidos/devoluciones. No se debe sustituir la ausencia de contrato por una orden CLI genérica."
+      },
+      "restore": [
+        "Reproducir las escenas y estados del mismo NPC sin duplicar clientes.",
+        "Rotular su carácter simulado; una integración de ERP o pagos sería otra capacidad con su propio contrato y autorización."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30943,
+          "symbol": "devolucion"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30969,
+          "symbol": "pedido"
+        }
+      ]
+    },
+    {
+      "id": "XP-F28",
+      "number": "28",
+      "title": "Guardado, ayuda y diagnóstico",
+      "summary": "Guardar la sesión, guardar layout, consultar ayuda y diagnosticar el gemelo.",
+      "good": {
+        "status": "code_present",
+        "detail": "Good mantiene las rutas de guardado y diagnóstico. Guardar sesión y guardar layout no son necesariamente la misma operación ni el mismo almacén. El cierre del día y algunos informes pueden publicarse en backend/Telegram según configuración. Revisar información de equipo y contexto antes de exportar diagnóstico."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "El estado permanece en el juego al alternar vistas, pero el modal no dispone de guardado, ayuda de comandos o diagnóstico operativos. El catálogo accesible desde Better es documentación, no un nuevo panel de control."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/save",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/layout save",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/help",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/debug",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        }
+      ],
+      "mcp": {
+        "tools": [
+          {
+            "server": "xpaceos",
+            "name": "help",
+            "access": "read",
+            "scope": "Ayuda embebida en el servidor; no incorpora automáticamente esta página o el nuevo catálogo."
+          }
+        ],
+        "gap": "El catálogo se publica por HTTP y se descubre desde documentación MCP; no es una nueva herramienta o un recurso xpaceos:// adicional."
+      },
+      "restore": [
+        "Recuperar guardado y diagnóstico distinguiendo almacén, estado y errores.",
+        "Mantener los IDs funcionales estables en ayuda, pruebas e implementación."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 30125,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 30146,
+          "symbol": "helpSections"
+        },
+        {
+          "path": "mcp/manifest.json",
+          "line": 1,
+          "symbol": "help"
+        }
+      ]
+    },
+    {
+      "id": "XP-F29",
+      "number": "29",
+      "title": "Personajes, visitas y escenas",
+      "summary": "Población, visitas comerciales, ladrón, guardia civil, opinador, DJ y robot simulado.",
+      "good": {
+        "status": "code_present",
+        "detail": "El juego crea y mueve NPC con estados y escenas. Unitree es aquí un personaje: su dibujo o informe no acredita un robot físico ni lectura real de estantes."
+      },
+      "better": {
+        "status": "partial",
+        "detail": "Better mantiene posiciones y apariencias, pero no todas las escenas, bocadillos, emotes, controles o interacciones de los personajes."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/people store 8",
+          "entrypoint": "__xtExec",
+          "note": "Actúa sobre NPC/escenas de la simulación; no sobre una persona o robot físico.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/visit com",
+          "entrypoint": "__xtExec",
+          "note": "Actúa sobre NPC/escenas de la simulación; no sobre una persona o robot físico.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/opinador happy",
+          "entrypoint": "__xtExec",
+          "note": "Actúa sobre NPC/escenas de la simulación; no sobre una persona o robot físico.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/robot on",
+          "entrypoint": "__xtExec",
+          "note": "Actúa sobre NPC/escenas de la simulación; no sobre una persona o robot físico.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/ladron",
+          "entrypoint": "__xtExec",
+          "note": "Actúa sobre NPC/escenas de la simulación; no sobre una persona o robot físico.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No existe herramienta MCP XpaceOS para estas acciones locales. Cualquier integración externa requiere un contrato y autorización específicos."
+      },
+      "restore": [
+        "Mostrar estados y diálogo del mismo actor por ID.",
+        "Recuperar acciones de escena sin generar personajes o audiencias paralelos."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 29970,
+          "symbol": "people"
+        },
+        {
+          "path": "admira-xp/scripts/life-snapshot.mjs",
+          "line": 93,
+          "symbol": "actors"
+        },
+        {
+          "path": "admira-xp/scripts/life-scene.mjs",
+          "line": 371,
+          "symbol": "createActor"
+        }
+      ]
+    },
+    {
+      "id": "XP-F30",
+      "number": "30",
+      "title": "Promociones, patrocinio y segmentación",
+      "summary": "Promociones del juego, patrocinador y selección publicitaria según contexto.",
+      "good": {
+        "status": "code_present",
+        "detail": "/ad consume dinero de la simulación, no compra una campaña real. /sponsor crea eventos del juego. Las rutas targetPublicity/segmentación pueden además afectar medios externos; no equiparar ambos tipos de acción."
+      },
+      "better": {
+        "status": "classic_only",
+        "detail": "No hay controles de promoción o segmentación dentro de Better. Un contenido que se vea en la fuente compartida no prueba qué criterio lo eligió."
+      },
+      "best": {
+        "status": "planned",
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+      },
+      "commands": [
+        {
+          "text": "/ad 1",
+          "entrypoint": "__xtExec",
+          "note": "Presupuesto promocional de la simulación.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/sponsor recurrente 120 10",
+          "entrypoint": "__xtExec",
+          "note": "Evento recurrente del juego.",
+          "status": "source_verified"
+        },
+        {
+          "text": "/targetPublicity off",
+          "entrypoint": "__xtExec",
+          "note": "Puede alterar selección/emisión de contenido en una conexión externa; verificar destino.",
+          "status": "source_verified"
+        }
+      ],
+      "mcp": {
+        "tools": [],
+        "gap": "No existe herramienta MCP XpaceOS para estas acciones locales. Cualquier integración externa requiere un contrato y autorización específicos."
+      },
+      "restore": [
+        "Separar promoción simulada de segmentación o contratación externa.",
+        "Mostrar criterio, destino y estado antes de activar contenido condicionado."
+      ],
+      "evidence": [
+        {
+          "path": "admira-xp/index.html",
+          "line": 27162,
+          "symbol": "advertise"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 31145,
+          "symbol": "sponsor"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 28233,
+          "symbol": "targetPublicity"
+        }
+      ]
+    }
+  ]
+}

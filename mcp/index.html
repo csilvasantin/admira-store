@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="admiranext-version" content="v.15.09.2026.r2.10:25">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>XpaceOS · MCP — conecta la Galaxia Admira</title>
 <meta name="description" content="Servidor MCP de XpaceOS y directorio operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo en un mismo cliente.">
@@ -88,8 +89,16 @@
     <div class="tool"><b>scene_status</b><span>Manifiesto de una escena: progreso de la reconstrucción, máquina, ficheros publicados, vídeo original.</span></div>
     <div class="tool"><b>xpl_rules</b><span>Reglas XPL (CUANDO · PARA · ENTONCES) resueltas para una pantalla en cascada global → circuito → pantalla.</span></div>
     <div class="tool"><b>signage_feed</b><span>Lo último que ha salido a la red de pantallas: pieza, tipo, destino y hora.</span></div>
-    <div class="tool"><b>help</b><span>La ayuda para humanos de xpaceos.com/help, entera o por tema (gemelo, escanea, xpl, emite, alta, mcp, galaxia, método).</span></div>
+    <div class="tool"><b>help</b><span>Guía para humanos embebida en el backend, entera o por tema (gemelo, escanea, xpl, emite, alta, mcp, galaxia, método).</span></div>
     <div class="tool"><b>galaxy</b><span>Directorio conectable de servidores, hubs, autenticación, identificadores y flujos de la Galaxia Admira. Filtra por elemento o flujo.</span></div>
+  </div>
+
+  <h2 id="funcionalidades">Catálogo funcional numerado</h2>
+  <div class="card">
+    <p style="margin:0 0 10px">Consulta <a href="/help/funcionalidades/">las funcionalidades de Good, Better y Best</a> con numeración estable <code>01.-</code> e identificadores como <code>XP-F01</code>. Cada ficha conserva su estado, los accesos disponibles y sus referencias MCP.</p>
+    <p style="margin:0 0 10px;color:var(--mut)">El <a href="/mcp/funcionalidades.json">catálogo JSON</a> se lee por HTTP y describe disponibilidad y limitaciones por modo. Una función documentada puede seguir pendiente en Better o Best; aparecer en el catálogo no la convierte en una herramienta ejecutable.</p>
+    <p style="margin:0 0 10px;color:var(--mut)">Avanzado y el selector de las vistas ofrecen Good · 8 bits, Better · 16 bits y Best · 32 bits. Better permite comparar con la cámara de Good o explorar 3D; Best abre sólo una vista previa estática. Esa navegación local no cambia el estado operativo de las 30 áreas ni añade acciones MCP.</p>
+    <p style="margin:0;color:var(--mut);font-size:13px">El servidor conserva sus 16 herramientas y 4 recursos MCP. <code>galaxy({element:"xpaceos"})</code> y <code>xpaceos://llms.txt</code> permiten descubrir el enlace del catálogo publicado. La herramienta <code>help</code> y <code>xpaceos://help</code> usan una guía embebida en el backend: no incorporan automáticamente los cambios de esta web.</p>
   </div>
 
   <h2>Conectar la Galaxia Admira</h2>
@@ -152,7 +161,7 @@
 
   <h2>Resources</h2>
   <div class="tools">
-    <div class="tool"><b>xpaceos://help</b><span>La guía para humanos en Markdown (la misma que <a href="/help/">xpaceos.com/help</a>).</span></div>
+    <div class="tool"><b>xpaceos://help</b><span>Guía en Markdown embebida en el backend. La <a href="/help/">ayuda web</a> puede tener novedades aún no incorporadas a ese recurso.</span></div>
     <div class="tool"><b>xpaceos://llms.txt</b><span>Resumen para modelos: endpoint, herramientas, ecosistema y doctrina.</span></div>
     <div class="tool"><b>xpaceos://catalog/stats</b><span>Totales del catálogo de gemelos (JSON).</span></div>
     <div class="tool"><b>xpaceos://galaxy</b><span>Registro de servidores, hubs, identificadores compartidos y flujos de la Galaxia Admira (JSON).</span></div>

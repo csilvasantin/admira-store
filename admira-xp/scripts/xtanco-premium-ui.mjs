@@ -1,30 +1,28 @@
-import {createQualityController} from './xtanco-quality-controller.mjs';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=tiers-linked-4';
+import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=tiers-linked-4';
+import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=tiers-linked-4';
+import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=tiers-linked-4';
 
 const actions=document.querySelector('#telegramDock .tg-actions');
-const controls=document.createElement('div');controls.id='xtanco-visual-quality';
-controls.setAttribute('role','group');controls.setAttribute('aria-label','Acabado visual del Xtanco');
-controls.innerHTML='<button type="button" data-visual-mode="good" aria-pressed="true" title="Good · clásico">Good</button><button type="button" data-visual-mode="better" aria-pressed="false" title="Better · wireframe">Better</button><button type="button" data-visual-mode="best" aria-pressed="false" title="Best · premium">Best</button><span class="quality-status" role="status" hidden></span>';
-actions?.prepend(controls);
-const status=controls.querySelector('.quality-status');
-const worldCanvas=document.createElement('canvas'),operationsCanvas=document.createElement('canvas');
-let lastError='';
-const controller=createQualityController({worldCanvas,operationsCanvas,getState:()=>window.__xtancoVisualState?.(),
-  onChange({mode,busy}){
-    document.body.dataset.xtancoVisual=mode;controls.setAttribute('aria-busy',String(busy));
-    for(const button of controls.querySelectorAll('[data-visual-mode]'))button.setAttribute('aria-pressed',String(button.dataset.visualMode===mode));
-    status.textContent=busy?'Preparando…':lastError;status.hidden=!status.textContent;
-  },
-  onError(error){lastError='3D no disponible · puedes reintentar';console.warn('[Xtanco visual]',error.message);}
+const advanced=document.querySelector('.quad-right');
+const status=document.createElement('div');status.id='xtanco-best-status';
+status.setAttribute('role','status');status.hidden=true;document.body.append(status);
+let storage;try{storage=window.localStorage;}catch{}
+document.body.dataset.xtancoVisual='good'; // retired paint/operation hooks must stay inert
+const tiers=createVisualTiers({openBetter:openLifeView,closeBetter:closeLifeView,subscribeBetter:subscribeLifeView,
+  openBest:openBestView,closeBest:closeBestView,subscribeBest:subscribeBestView,storage,
+  onChange(state){
+    document.body.dataset.xtancoTier=state.mode;updateTierControls(state);
+    status.textContent=state.busy?'Abriendo vista…':state.notice;status.hidden=!status.textContent;
+  }
 });
-async function choose(mode){lastError='';await controller.choose(mode);try{localStorage.setItem('xtanco_visual_quality',controller.mode);}catch{}}
-for(const button of controls.querySelectorAll('[data-visual-mode]'))button.onclick=()=>void choose(button.dataset.visualMode);
-// Keyboard input still belongs to Good; only focused mode buttons consume it.
-for(const type of ['keydown','keyup','keypress'])controls.addEventListener(type,event=>event.stopPropagation());
-worldCanvas.addEventListener('webglcontextlost',event=>{event.preventDefault();controller.contextLost();});
-window.addEventListener('pagehide',()=>controller.suspend());
-window.addEventListener('pageshow',()=>void controller.resume());
-window.__xtancoPremiumView={begin:controller.begin,paint:controller.paint,operationContext:controller.operationContext,
-  open:(mode='best')=>choose(mode),close:()=>choose('good'),get mode(){return controller.mode;}};
-let requested=new URLSearchParams(location.search).get('visual');
-try{requested??=localStorage.getItem('xtanco_visual_quality');}catch{}
-if(requested==='better'||requested==='best')void choose(requested);
+const expertControls=createTierControls({context:'Calidad visual · modo experto',choose:mode=>tiers.choose(mode)});
+expertControls.element.id='xtanco-visual-quality';actions?.prepend(expertControls.element);
+const advancedControls=createTierControls({context:'Calidad visual · modo avanzado',choose:mode=>tiers.choose(mode)});
+advancedControls.element.id='xtanco-advanced-quality';advanced?.prepend(advancedControls.element);
+window.__xtancoPremiumView={
+  begin:()=>false,paint:()=>{},operationContext:()=>null,
+  open:(mode='better')=>tiers.choose(mode),close:()=>tiers.choose('good'),get mode(){return 'good';}
+};
+window.__xtancoVisualTiers=tiers;
+void tiers.choose(requestedTier(location.search,storage));

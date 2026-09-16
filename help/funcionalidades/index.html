@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="admiranext-version" content="v.15.09.2026.r2.10:25">
+  <meta name="description" content="Catálogo de funciones de XpaceOS: qué controles conserva Good, qué muestra Better y qué falta por integrar. Comandos, MCP y evidencias de código.">
+  <title>Funcionalidades · XpaceOS</title>
+  <link rel="icon" href="../../assets/favicon-32.png">
+  <link rel="stylesheet" href="features.css">
+  <script type="module" src="features.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#features-main">Saltar al catálogo</a>
+  <header class="site-header">
+    <a class="brand" href="../../">XPACEOS <span>/ AYUDA</span></a>
+    <nav aria-label="Navegación de ayuda">
+      <a href="../">Ayuda</a><a href="../cli/">Comandos</a><a href="../../mcp/">MCP</a>
+    </nav>
+  </header>
+  <div class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">EL MISMO GEMELO · FUNCIÓN A FUNCIÓN</p>
+      <h1 id="page-title">Qué puedes hacer<br><span>en cada vista.</span></h1>
+      <p class="lede">Consulta los controles disponibles, las funciones que sólo se representan en 3D y lo que falta por recuperar en Better. Avanzado y el selector de cada vista permiten alternar Good · 8 bits, Better · 16 bits y Best · 32 bits.</p>
+      <div class="intro-links">
+        <a class="button primary" href="../../admira-xp/?autostart=xtanco&amp;visual=good">Abrir Good <span aria-hidden="true">↗</span></a>
+        <a class="button" href="../../admira-xp/?autostart=xtanco&amp;visual=better">Abrir Better <span aria-hidden="true">↗</span></a>
+        <a class="button" href="../../admira-xp/?autostart=xtanco&amp;visual=best">Vista previa Best <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="../../mcp/funcionalidades.json">Catálogo JSON <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="audit-note"><span aria-hidden="true">◉</span> Auditoría del código. La presencia de una función o herramienta no confirma que su servicio esté conectado o respondiendo en este momento.</p>
+      <p class="audit-note">Better permite comparar la cámara con Good o explorar en 3D. Best sólo abre una vista previa estática; sus funciones operativas siguen en preparación. Poder cambiar de vista no recupera por sí solo los controles de cada área.</p>
+      <div class="catalog-stats" aria-label="Resumen del catálogo">
+        <div><strong id="total-count">—</strong><span>Funciones auditadas</span></div>
+        <div><strong id="gap-count">—</strong><span>Con huecos en Better</span></div>
+        <div><strong id="native-count">—</strong><span>Nativas en Better</span></div>
+      </div>
+      <div class="catalog-notes">
+        <p id="coverage-note">«Con huecos» incluye integraciones parciales y controles pendientes; no significa que esas funciones estén totalmente ausentes.</p>
+        <p id="numbering-note">Los números y los ID son estables: buscar o filtrar no los cambia.</p>
+      </div>
+    </section>
+
+    <div class="catalog-layout">
+      <aside class="catalog-sidebar" aria-label="Buscar y filtrar funciones">
+        <div class="sidebar-inner">
+          <label class="search-label" for="feature-search">BUSCAR UNA FUNCIÓN</label>
+          <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="feature-search" type="search" placeholder="Música, pantallas, turnos…" autocomplete="off" aria-controls="feature-list feature-nav" disabled></div>
+          <fieldset class="filters" id="feature-filters" disabled>
+            <legend>Mostrar</legend>
+            <label><input type="radio" name="coverage-filter" value="all" checked><span>Todas</span></label>
+            <label><input type="radio" name="coverage-filter" value="gaps"><span>Huecos en Better</span></label>
+            <label><input type="radio" name="coverage-filter" value="native"><span>Nativas en Better</span></label>
+          </fieldset>
+          <details class="feature-index" id="feature-index" open>
+            <summary>Índice de funciones</summary>
+            <nav id="feature-nav" aria-label="Funciones del catálogo"></nav>
+          </details>
+          <p class="catalog-version" id="catalog-version">Leyendo el catálogo compartido…</p>
+          <p class="catalog-source" id="catalog-source">La revisión auditada se indicará al cargar el catálogo.</p>
+        </div>
+      </aside>
+
+      <main id="features-main" tabindex="-1">
+        <div class="results-heading"><h2>Catálogo de funciones</h2><p id="result-count" role="status" aria-live="polite">Cargando…</p></div>
+        <div class="load-state" id="load-state" role="status"><span class="loading-dot" aria-hidden="true"></span><p>Cargando el catálogo de funcionalidades.</p></div>
+        <div class="load-state error-state" id="load-error" role="alert" hidden><h2>No se ha podido cargar el catálogo</h2><p id="load-error-detail">No hay datos disponibles para mostrar los estados de cada vista.</p><div><button type="button" class="button" id="retry-load">Reintentar</button><a href="../../mcp/funcionalidades.json">Abrir el JSON de origen</a></div></div>
+        <noscript><div class="load-state"><p>Esta página necesita JavaScript para leer el catálogo. Puedes consultar el <a href="../../mcp/funcionalidades.json">JSON de funcionalidades</a> directamente.</p></div></noscript>
+        <div id="feature-list"></div>
+        <div class="load-state empty-state" id="empty-state" hidden><h2>No hay coincidencias</h2><p>Prueba otra búsqueda o muestra todas las funciones.</p><button type="button" class="button" id="clear-search">Limpiar búsqueda y filtros</button></div>
+      </main>
+    </div>
+  </div>
+  <footer>Una fuente compartida para personas y agentes. <a href="../../mcp/funcionalidades.json">funcionalidades.json</a> · <a href="../">Volver a la ayuda</a></footer>
+</body>
+</html>
