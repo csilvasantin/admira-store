@@ -65,7 +65,7 @@ test('missing projection is explicitly room-fit and never claims exact Canvas re
 // scene construction are stubbed. There is no browser, media or simulation.
 const rendererSource=fs.readFileSync(new URL('./life-renderer.mjs',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'').replace('export function createLifeRenderer','function createLifeRenderer');
-function harness(){
+function harness(options={}){
   const handlers=new Map(),states=[],calls={media:0,animate:0,disposed:0},canvas={clientWidth:800,clientHeight:500,
     addEventListener:(type,handler)=>handlers.set(type,handler),removeEventListener:type=>handlers.delete(type),
     setPointerCapture(){},getBoundingClientRect:()=>({left:0,top:0,width:800,height:500})};
@@ -73,9 +73,9 @@ function harness(){
     update(value){this.snapshot=value;},animate(){calls.animate++;},refreshMedia(){calls.media++;},setLighting(){},dispose(){calls.disposed++;}};
   model.scene.add(model.world,model.actors);
   const T={...Three,WebGLRenderer:class{constructor(){this.shadowMap={};}setClearColor(){}setPixelRatio(){}setSize(){}render(scene,camera){calls.camera=camera;}dispose(){}forceContextLoss(){}}};
-  const context=vm.createContext({T,createLifeScene:()=>model,mappedCameraFrame,performance:{now:()=>0}});
+  const context=vm.createContext({T,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,performance:{now:()=>0}});
   vm.runInContext(rendererSource,context);
-  const viewer=context.createLifeRenderer({canvas,snapshot:model.snapshot,onCameraChange:state=>states.push(state)});
+  const viewer=context.createLifeRenderer({canvas,snapshot:model.snapshot,onCameraChange:state=>states.push(state),...options});
   return {viewer,states,calls,model,handlers,emit(type,properties={}){handlers.get(type)({button:0,pointerId:1,clientX:100,clientY:100,preventDefault(){},...properties});}};
 }
 
@@ -100,4 +100,15 @@ test('rotation, zoom, wheel, drag, pan and pinch leave mapped mode; a click does
   ]){const h=harness();action(h);assert.equal(h.viewer.cameraState.mode,'free');assert.equal(h.states.at(-1).mode,'free');h.viewer.dispose();}
   const h=harness();h.emit('pointerdown');h.emit('pointermove',{clientX:102});h.emit('pointerup',{clientX:102});
   assert.equal(h.viewer.cameraState.mode,'mapped');assert.equal(h.states.length,1);h.viewer.dispose();
+});
+
+test('renderer reserves human loading for Best and reports actual current asset readiness',()=>{
+  const better=harness(),best=harness({assetQuality:'best'});
+  assert.equal(better.calls.sceneOptions.assetQuality,'better');assert.equal(better.calls.sceneOptions.loadPerson,null);
+  assert.equal(best.calls.sceneOptions.assetQuality,'best');assert.equal(typeof best.calls.sceneOptions.loadPerson,'function');
+  const people=['ready','ready','loading','fallback',undefined].map(status=>{const actor=new Three.Group();actor.userData.personAssetStatus=status;best.model.actors.add(actor);return actor;});
+  assert.equal(best.viewer.bestPeopleCount,2);assert.deepEqual({...best.viewer.bestPeopleStatus},{ready:2,loading:1,fallback:1,total:4});
+  people[0].removeFromParent();people[2].userData.personAssetStatus='ready';
+  assert.equal(best.viewer.bestPeopleCount,2);assert.deepEqual({...best.viewer.bestPeopleStatus},{ready:2,loading:0,fallback:1,total:3});
+  better.viewer.dispose();best.viewer.dispose();
 });

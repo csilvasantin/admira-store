@@ -1,0 +1,12 @@
+/* Each measured contour (or whole cell) keeps the legacy cutout's foot anchor.
+   Its exact ratio prevents neighbouring visitors from leaking into the crop. */
+.best-person-sprite.matrix-visitor-frame{width:auto;aspect-ratio:var(--visitor-cell-aspect,2/3);overflow:hidden}
+.matrix-visitor-atlas,.matrix-visitor-fallback{position:absolute;max-width:none;max-height:none;margin:0;padding:0;border:0;pointer-events:none}
+.matrix-visitor-fallback{object-fit:contain;object-position:center bottom}
+.best-person.is-walking .best-person-sprite{animation-delay:var(--visitor-walk-phase,0s);animation-duration:var(--visitor-walk-duration,.5s)}
+
+/* The shared motion controller samples a collision-safe path each frame. CSS
+   interpolation would cut its corners; a clock-driven walk loop would glide. */
+.best-person.has-safe-motion{transition:none}
+.best-person.has-safe-motion .best-person-sprite,.best-person.has-safe-motion.is-walking .best-person-sprite{animation:none;transform:translateX(-50%) translateY(var(--visitor-bob,0%)) rotate(var(--visitor-sway,0deg))}
+@media(prefers-reduced-motion:reduce){.best-person.has-safe-motion .best-person-sprite{transform:translateX(-50%)}}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1781178696759-bt3qe6",
+  "inventory_number": 30,
+  "name": "Pinball espacial",
+  "quality": "better",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1781178696759-bt3qe6?v=90624",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.024137943983078003,
+      0.0,
+      0.003448307514190674
+    ],
+    "max": [
+      0.5758620500564575,
+      1.2999999523162842,
+      1.003448247909546
+    ]
+  },
+  "files": {
+    "source": "better.blend",
+    "web": "better.glb"
+  },
+  "bytes": 204492
+}

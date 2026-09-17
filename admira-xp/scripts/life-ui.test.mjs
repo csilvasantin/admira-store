@@ -9,7 +9,7 @@ import {createLifeSnapshot} from './life-snapshot.mjs';
 // harness; the fake DOM exercises observable scheduling and event propagation.
 const source=fs.readFileSync(new URL('./life-ui.mjs',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'')
-  .replace("await import('./life-renderer.mjs?v=tiers-linked-4')",'await loadRenderer()')
+  .replace("await import('./life-renderer.mjs?v=customer-motion-1')",'await loadRenderer()')
   .replace(/^export \{.*\};?\s*$/m,'');
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const releaseInputs=html.match(/window\.__xtancoReleaseInputs=.*;/)?.[0];
@@ -33,7 +33,7 @@ function harness({load,search=''}={}){
     append(child){child.parent=this;} prepend(child){child.parent=this;}
     remove(){this.removed=true;this.parent=null;}
     replaceWith(next){const parent=this.parent;for(const [key,value]of parent.children)if(value===this)parent.children.set(key,next);next.parent=parent;this.parent=null;}
-    showModal(){this.open=true;} close(){this.open=false;}
+    show(){this.open=true;} close(){this.open=false;}
     focus(){document.activeElement=this;}
     getBoundingClientRect(){return {width:1000,height:700};}
     emit(type,properties={}){
@@ -104,7 +104,7 @@ test('pagehide releases the real controller resources and publishes a distinct p
   assert.equal(states.at(-1).reason,'','a DOM click event must not be mistaken for a close reason');
 });
 
-test('modal releases held movement keys, keeps local camera actions, and blocks underlying game events',async()=>{
+test('registered surface releases held movement keys, keeps local camera actions, and blocks underlying game events',async()=>{
   const h=harness();await h.open();assert.deepEqual(h.keys,{KeyQ:false,KeyP:false});
   let leaked=0;for(const type of ['click','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend','wheel','keydown','keyup'])h.body.addEventListener(type,()=>leaked++);
   const canvas=h.dialog.querySelector('canvas');
@@ -129,16 +129,17 @@ test('normal close disposes once, removes resize observation and cancels renderi
   assert.ok(h.observers.every(observer=>observer.disconnected));assert.equal(h.dialog,null);assert.equal(h.document.activeElement,h.previous);
 });
 
-test('the functional catalog is a normal documentation link, not a game command',async()=>{
+test('Better contains only the registered scene while the shared HUD, Expert selector and CLI remain outside',async()=>{
   const h=harness();await h.open();
-  assert.match(h.dialog.innerHTML,/<a class="life-functions" href="\/help\/funcionalidades\/" target="_blank" rel="noopener">/);
-  let leaked=0;h.body.addEventListener('click',()=>leaked++);
-  const click=h.dialog.querySelector('.life-functions').emit('click');
-  assert.equal(click.prevented,false,'keep the normal browser link behavior');
-  assert.equal(click.stopped,true,'do not activate a legacy canvas action underneath');
-  assert.equal(leaked,0);assert.equal(h.viewers[0].calls.dispose,0);
-  assert.ok(h.dialog.open,'documentation does not restart or close the twin');
-  h.close();
+  assert.match(h.dialog.className,/visual-tier-surface/);assert.match(h.dialog.innerHTML,/02\.- BETTER · 16 BITS/);
+  assert.doesNotMatch(h.dialog.innerHTML,/data-visual-mode|life-header|life-footer|Salir del comparador/);
+  assert.ok(h.dialog.open);h.close();
+});
+
+test('Better labels the reversible empty presentation without claiming the live people are visible',async()=>{
+  const h=harness();h.setRaw({...h.raw,moving:true,layout:[]});await h.open();h.frame(1100);
+  assert.match(h.dialog.querySelector('.life-state').textContent,/Mudanza activa.*suelo y paredes/);
+  assert.deepEqual(h.viewers[0].calls.updates.at(-1).actors,[]);h.close();
 });
 
 test('game transitions without a representable snapshot close the view instead of showing stale moving actors',async()=>{
@@ -207,7 +208,7 @@ test('mapping controls return to the reference and distinguish free camera explo
   viewer.options.onCameraChange({mode:'mapped'});
   assert.match(h.dialog.querySelector('.life-mapping-state').textContent,/cámara alineada/);
   viewer.options.onCameraChange({mode:'free'});
-  assert.match(h.dialog.querySelector('.life-mapping-state').textContent,/Exploración libre/);
+  assert.match(h.dialog.querySelector('.life-mapping-state').textContent,/exploración libre/);
   assert.equal(h.dialog.querySelectorAll('[data-preset]')[0].attrs['aria-pressed'],'false');h.close();
 });
 

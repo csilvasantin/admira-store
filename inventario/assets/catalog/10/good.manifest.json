@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:floorLamp",
+  "inventory_number": 10,
+  "name": "Lámpara",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.1199999749660492,
+      -2.1098029989730094e-08,
+      0.119999960064888
+    ],
+    "max": [
+      0.8799999952316284,
+      2.065000057220459,
+      0.8865507245063782
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 9152
+}

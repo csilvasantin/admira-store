@@ -18,3 +18,5 @@ El manifiesto generado documenta proporciones, límites de geometría, pivot, pa
 La superficie `screen_tpv_main` tiene una textura estática ADMIRA y el extra `mediaSurface=existing_shared_player`: la futura integración debe reutilizar allí el reproductor existente. No se incluye ningún player, vídeo o simulación.
 
 El `.blend` conserva texto editable, biseles y texturas empaquetadas. La colección STUDIO sólo produce la imagen: cámaras, luces y suelo no se exportan al GLB. Las texturas se generan de forma determinista con NumPy incluido en Blender; no hay assets descargados. El render de estudio y WebGL pueden diferir en iluminación.
+
+Revisión del 15/09/2026: el piloto actualizado se publica en `/inventario/#mostrador` y los GLB se integran en Better/Best editable. El laboratorio original permanece como referencia histórica. `verify_counter.py` valida ahora las dos puertas traseras y la identidad permanente 1, por lo que debe ejecutarse sobre los assets regenerados de `inventario/assets/mostrador`. Instalación verificada: `/Applications/Blender.app`, Blender 5.2.2 LTS mediante Homebrew cask oficial.

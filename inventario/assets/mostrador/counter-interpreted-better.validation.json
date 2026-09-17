@@ -1,0 +1,11 @@
+{
+  "source_opens": true,
+  "source_text_editable": true,
+  "source_textures_packed": true,
+  "glb_reimports": true,
+  "semantic_parts_preserved": true,
+  "single_media_surface": true,
+  "studio_excluded": true,
+  "mesh_objects": 110,
+  "blender_version": "5.2.2 LTS"
+}

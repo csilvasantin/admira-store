@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:magazines",
+  "inventory_number": 6,
+  "name": "Revistero",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.00105305016040802,
+      0.001521036378107965,
+      0.011700483039021492
+    ],
+    "max": [
+      1.998947024345398,
+      1.2999999523162842,
+      1.0122075080871582
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 457608
+}

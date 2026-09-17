@@ -718,6 +718,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <!-- Orbitron: tipografía tecnológica de la cuadrática (misma que admira.live/status) -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="../inventario/store.js?v=inventory-cli-3"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -770,6 +771,7 @@
     <div class="splash-group">
       <div class="splash-group-kicker">Admira · Xperience</div>
       <div class="splash-group-row">
+        <a href="../inventario/" class="splash-link">Inventario · Mobiliario</a>
         <a href="https://www.pixeria.com" target="_blank" rel="noopener" class="splash-link">PixerIA</a>
         <span class="splash-group-sep">·</span>
         <a href="https://www.xpaceos.com" target="_blank" rel="noopener" class="splash-link">XpaceOS</a>
@@ -1350,6 +1352,10 @@
 <script src="assets/js/streamdeck.js"></script>
 <script src="assets/js/session-ping.js" defer></script>
 <script src="assets/js/session-log.js" defer></script>
+<script type="module">
+import {buildCustomerNavigation} from './scripts/customer-navigation.mjs?v=customer-motion-1';
+window.XpaceCustomerNavigation={buildCustomerNavigation};
+</script>
 <script>
 // Direct game.html loads can otherwise keep an old public service worker alive.
 (function clearOldRuntimeFromGamePage(){
@@ -1886,7 +1892,9 @@ function resizeCanvas(){
         // el CONTENIDO (~44px), NUNCA gameplayDockHeight. Así el dock queda compacto y el
         // Xpacio recupera toda la banda inferior (antes el dock se estiraba a la altura
         // arrastrada y tapaba media pantalla). Fallback bajo si aún no tiene altura.
-        if(!dock.style.height||parseInt(dock.style.height,10)>72) dock.style.height='44px';
+        var inventoryResponse=dock.querySelector('#telegramLastResponse');
+        if(inventoryResponse?.dataset.inventory&&!dock.classList.contains('cli-out-hidden'))dock.style.height=(inventoryResponse.dataset.inventory==='list'?Math.min(260,innerHeight*.36):100)+'px';
+        else if(!dock.style.height||parseInt(dock.style.height,10)>72)dock.style.height='44px';
       } else {
         // Dock normal, o con panel /help /signage abierto → altura completa para leerlo.
         dock.style.height=dockRenderH+'px';
@@ -8286,7 +8294,8 @@ function syncFactoryFurniture(layout,options={}){
     if(idx>=0) next[idx]=merged;
     else next.push(cloneLayoutData(def));
   }
-  return next.filter(item=>item&&(CANONICAL_LAYOUT_IDS.has(item.id)||item.custom===true));
+  const valid=next.filter(item=>item&&(CANONICAL_LAYOUT_IDS.has(item.id)||item.custom===true));
+  return window.XpaceInventory?.retained(inventorySpace(),valid)||valid;
 }
 function isClusteredFurnitureLayout(layout){
   const items=(layout||[]).filter(item=>item&&CANONICAL_LAYOUT_IDS.has(item.id)&&!['led','aroma'].includes(item.type)&&Number.isFinite(item.col)&&Number.isFinite(item.row));
@@ -8710,11 +8719,139 @@ function canWalkTo(screenX,screenY,opts={}){
   return true;
 }
 
+// Customers use the same continuous floor collision model as Matrix/Better/
+// Best. The old integer grid remains available for legacy staff behaviours.
+let customerNavigationCache=null,customerNavigationSignature='';
+let customerQueueCache={key:'',slots:[]};
+let customerDoorPass=null;
+const customerRoutes=new WeakMap();
+function customerFloorPoint(x,y){
+  const dx=(x+7-ISO.ox)/(ISO.tileW/2),dy=(y+20-ISO.oy)/(ISO.tileH/2);
+  return {col:(dx+dy)/2,row:(dy-dx)/2};
+}
+function getCustomerNavigation(){
+  const factory=window.XpaceCustomerNavigation?.buildCustomerNavigation;
+  if(!factory)return null;
+  const visible=shopFurnitureVisible?(window.XpaceInventory?.filter(inventorySpace(),shopLayout)||shopLayout):[];
+  const signature=JSON.stringify([ISO.cols,ISO.rows,visible]);
+  if(signature!==customerNavigationSignature||!customerNavigationCache){
+    customerNavigationSignature=signature;
+    customerNavigationCache=factory({cols:ISO.cols,rows:ISO.rows,doorRow:3.35,layout:visible,footprints:FURNITURE_SIZE},{radius:.24,allowOutside:true});
+  }
+  return customerNavigationCache;
+}
+function customerSpaceClear(actor,next){
+  const current=customerFloorPoint(actor.x,actor.y);
+  for(const other of G.custs||[]){
+    if(!other||other===actor||other.st==='gone')continue;
+    const p=customerFloorPoint(other.x,other.y),before=Math.hypot(current.col-p.col,current.row-p.row),after=Math.hypot(next.col-p.col,next.row-p.row);
+    // An overlap at a group spawn may separate, but never deepen. A person
+    // waiting at the till has the same physical space as someone walking.
+    if(after<.47&&after<before-1e-6)return false;
+  }
+  return true;
+}
+function customerDoorAccess(actor){
+  const list=G.custs||[],p=customerFloorPoint(actor.x,actor.y);
+  if(actor.st!=='walk'&&actor.st!=='leave'){actor._waitingDoor=false;return true;}
+  if(actor.st==='walk'&&p.col<ISO.cols-1.5)actor._enteredStore=true;
+  if(customerDoorPass){
+    const owner=customerDoorPass.actor,position=customerFloorPoint(owner.x,owner.y);
+    if(!list.includes(owner)||(customerDoorPass.direction==='in'&&(owner.st!=='walk'||position.col<ISO.cols-1.5))||
+      (customerDoorPass.direction==='out'&&owner.st!=='leave'))customerDoorPass=null;
+  }
+  const entering=actor.st==='walk'&&!actor._enteredStore&&p.col>=ISO.cols-1.5;
+  const exiting=actor.st==='leave'&&p.col>=ISO.cols-2;
+  if(!entering&&!exiting){actor._waitingDoor=false;return true;}
+  if(!customerDoorPass){
+    // The narrow doorway belongs to one passage at a time. Let people finish
+    // leaving before admitting the next visitor; never freeze opposing people
+    // nose-to-nose inside the opening itself.
+    const outgoing=list.filter(c=>c.st==='leave'&&customerFloorPoint(c.x,c.y).col>=ISO.cols-2)
+      .sort((a,b)=>customerFloorPoint(b.x,b.y).col-customerFloorPoint(a.x,a.y).col||(a.num||0)-(b.num||0));
+    const incoming=list.filter(c=>c.st==='walk'&&!c._enteredStore&&customerFloorPoint(c.x,c.y).col>=ISO.cols-1.5)
+      .sort((a,b)=>(a.num||0)-(b.num||0));
+    const owner=outgoing[0]||incoming[0];
+    if(owner)customerDoorPass={actor:owner,direction:outgoing.length?'out':'in'};
+  }
+  actor._waitingDoor=customerDoorPass?.actor!==actor;
+  return !actor._waitingDoor;
+}
+function moveCustomerTo(actor,screenX,screenY,speed){
+  const navigation=getCustomerNavigation();
+  if(!navigation)return 'blocked';
+  if(!customerDoorAccess(actor)){actor.curSpeed=0;return 'waiting';}
+  const current=customerFloorPoint(actor.x,actor.y),requested=customerFloorPoint(screenX,screenY);
+  const target=navigation.resolve(requested);
+  if(!target||!navigation.isWalkable(current)){actor.curSpeed=0;return 'blocked';}
+  const targetKey=navigation.key+'|'+target.col.toFixed(4)+','+target.row.toFixed(4);
+  let journey=customerRoutes.get(actor);
+  if(!journey||journey.key!==targetKey){journey={key:targetKey,path:null,index:0,retry:0,blocked:0};customerRoutes.set(actor,journey);}
+  if(Math.hypot(current.col-target.col,current.row-target.row)<.015){actor.curSpeed*=.5;return 'arrived';}
+  if(!journey.path){
+    if(journey.retry>0){journey.retry--;actor.curSpeed=0;return 'blocked';}
+    journey.path=navigation.route(current,target);journey.index=0;
+    if(!journey.path){journey.retry=30;actor.curSpeed=0;return 'blocked';}
+  }
+  // Intermediate corners must be reached exactly. Skipping the last centimetre
+  // can make the following diagonal clip the inflated furniture corner.
+  while(journey.index<journey.path.length&&Math.hypot(current.col-journey.path[journey.index].col,current.row-journey.path[journey.index].row)<1e-6)journey.index++;
+  const waypoint=journey.path[journey.index];
+  if(!waypoint)return 'arrived';
+  const dx=waypoint.col-current.col,dy=waypoint.row-current.row,d=Math.hypot(dx,dy);
+  // Uniform floor speed, with braking before the final stop. Diagonal screen
+  // directions no longer make someone walk physically faster across the room.
+  const amount=Math.min(d,Math.max(0,speed)/Math.hypot(ISO.tileW/2,ISO.tileH/2)*(journey.index===journey.path.length-1?Math.min(1,.25+d*4):1));
+  if(amount<=0)return 'waiting';
+  const next={col:current.col+dx/d*amount,row:current.row+dy/d*amount};
+  let candidate=next;
+  if(!navigation.segmentClear(current,candidate)||!customerSpaceClear(actor,candidate)){
+    // Give way with a small, collision-tested lateral step, never a push
+    // through a cabinet or another visitor. Keep the route for the next tick.
+    candidate=null;
+    // A common passing side prevents opposite walkers mirroring each other's
+    // sidestep forever. Opposite headings then move to opposite floor sides.
+    for(const sign of [1,-1]){
+      const p={col:current.col-dy*sign/d*amount,row:current.row+dx*sign/d*amount};
+      if(navigation.segmentClear(current,p)&&navigation.segmentClear(p,waypoint)&&customerSpaceClear(actor,p)){candidate=p;break;}
+    }
+    if(!candidate){
+      actor.curSpeed=(actor.curSpeed||0)*.6;
+      if(++journey.blocked>45){journey.path=null;journey.retry=8;journey.blocked=0;}
+      return 'blocked';
+    }
+  }
+  journey.blocked=0;
+  const projected=toIso(candidate.col,candidate.row),oldX=actor.x;
+  actor.x=projected.x-7;actor.y=projected.y-20;
+  if(Math.abs(actor.x-oldX)>.001)actor.dir=actor.x<oldX?-1:1;
+  return 'moving';
+}
+
 // ── A* PATHFINDING ───────────────────────────────────────────
 let walkGrid=null;
 function buildWalkGrid(){
+  // Removal tombstones take precedence over factory/template/remote layouts.
+  shopLayout=window.XpaceInventory?.retained(inventorySpace(),shopLayout)||shopLayout;
   walkGrid=[];
   for(let c=0;c<ISO.cols;c++){walkGrid[c]=[];for(let r=0;r<ISO.rows;r++) walkGrid[c][r]=!isTileBlocked(c,r);}
+}
+// Apply removal/undo deltas across tabs without replacing unrelated editor changes.
+window.addEventListener('storage',event=>{
+  if(event.key!=='xpaceos:inventory-removals:v1:'+inventorySpace())return;
+  try{
+    const before=JSON.parse(event.oldValue||'{"removed":{}}'),after=JSON.parse(event.newValue||'{"removed":{}}');
+    shopLayout=window.XpaceInventory.applyDelta(shopLayout,before,after);
+    buildWalkGrid();window.XpaceInventory.publish(inventorySpace(),shopLayout);
+  }catch(error){console.warn('[Inventory] Cross-tab change unavailable',error);}
+});
+function getHardnessSnapshot(){
+  if(!walkGrid) buildWalkGrid();
+  const blocked=[];
+  for(let c=0;c<ISO.cols;c++) for(let r=0;r<ISO.rows;r++){
+    if(!walkGrid[c]?.[r]) blocked.push(gridKey(c,r));
+  }
+  return {cols:ISO.cols,rows:ISO.rows,blocked};
 }
 function astarPath(sc,sr,ec,er,opts={}){
   if(!walkGrid) buildWalkGrid();
@@ -12796,7 +12933,7 @@ function updateGame(){
   // EMOTES (idea #15): saludos al cruzarse dos clientes (1×/tick, throttle interno).
   try{ tickCustomerGreetings(); }catch(e){}
   for(let i=G.custs.length-1;i>=0;i--){
-    const c=G.custs[i];c.ft++;if(c.ft>10){c.fr=(c.fr+1)%2;c.ft=0;}
+    const c=G.custs[i];c._motionStartX=c.x;c._motionStartY=c.y;
     c.dwellTicks=(c.dwellTicks|0)+1;
     if(!Number.isFinite(c.stayTargetTicks)) c.stayTargetTicks=Math.round((60+Math.random()*240)*60);
     if(c.bTimer>0) c.bTimer--;
@@ -12810,76 +12947,24 @@ function updateGame(){
       // Rain → customers linger longer (took shelter); base browse timer scaled up
       const browseBase=G.weather&&G.weather.type==='rain'?1.7:1.0;
       if(isNearDoorSensor(c.x,c.y,140,96)) G.doorOpen=Math.max(G.doorOpen||0,85);
-      if(c.path&&c.pathIdx<c.path.length){
-        const wp=c.path[c.pathIdx];const wpIso=toIso(wp.col,wp.row);
-        if(!canActorStepToTile(wp.col,wp.row,c)){
-          if((c.dwellTicks|0)%35===0){
-            const curTile=screenToIso(c.x+5,c.y+20);
-            const target=c.path[c.path.length-1]||wp;
-            c.path=astarPath(
-              Math.max(0,Math.min(ISO.cols-1,Math.round(curTile.col))),
-              Math.max(0,Math.min(ISO.rows-1,Math.round(curTile.row))),
-              target.col,
-              target.row,
-              {ignore:c}
-            )||c.path;
-            c.pathIdx=0;
-          }
-          continue;
-        }
-        const wtx=wpIso.x-7,wty=wpIso.y-20;
-        const dx=wtx-c.x,dy=wty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<3){
-          c.pathIdx++;
-          if(c.pathIdx>=c.path.length){
-            if(c.wantsTurn&&!c.ticketPicked&&customerBalks(c)){
-              customerBalk(c); // #14 balking: ve la cola larga y no se pone
-            }else if(c.wantsTurn&&!c.ticketPicked){
-              assignCustomerTurn(c);
-              c.ticketPicked=true;
-              c.bMsg=(lang==='en'?'Turn ':'Turno ')+String(c.queueNumber).padStart(3,'0');c.bTimer=170;
-              const queueTarget=getQueueTarget(0);
-              c.path=astarPath(wp.col,wp.row,queueTarget.col,queueTarget.row,{ignore:c})||[];
-              c.pathIdx=0;
-            }else if(c.wantsTurn){
-              c.st='queue';
-            }else{
-              const browsePersona=c.persona==='curious'?1.4:(c.persona==='impulsive'?0.7:1);
-              c.st='browse';c.timer=Math.round((60+Math.random()*80)*browseBase*browsePersona);
-            }
-          }
-        }
-        else{c.x+=dx/d*wSpd;c.y+=dy/d*wSpd;c.dir=dx<0?-1:1;}
-      } else {
-        const dx=c.tx-c.x,dy=c.ty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<3){
-          if(c.wantsTurn&&!c.ticketPicked&&customerBalks(c)){
-            customerBalk(c); // #14 balking: ve la cola larga y no se pone
-          }else if(c.wantsTurn&&!c.ticketPicked){
-            assignCustomerTurn(c);
-            c.ticketPicked=true;
-            c.bMsg=(lang==='en'?'Turn ':'Turno ')+String(c.queueNumber).padStart(3,'0');c.bTimer=170;
-            const curTile=screenToIso(c.x+5,c.y+20);
-            const queueTarget=getQueueTarget(0);
-            c.path=astarPath(
-              Math.max(0,Math.min(ISO.cols-1,Math.round(curTile.col))),
-              Math.max(0,Math.min(ISO.rows-1,Math.round(curTile.row))),
-              queueTarget.col,
-              queueTarget.row,
-              {ignore:c}
-            )||[];
-            c.pathIdx=0;
-          }else if(c.wantsTurn){
-            c.st='queue';
-          }else{
-            const browsePersona=c.persona==='curious'?1.4:(c.persona==='impulsive'?0.7:1);
-            c.st='browse';c.timer=Math.round((60+Math.random()*80)*browseBase*browsePersona);
-          }
-        }
-        else{
-          const nx=c.x+dx/d*wSpd,ny=c.y+dy/d*wSpd;
-          if(canWalkTo(nx+5,ny+20,{ignore:c})){c.x=nx;c.y=ny;c.dir=dx<0?-1:1;}
-          else{c.st='browse';c.timer=Math.round((30+Math.random()*40)*browseBase*(c.persona==='curious'?1.4:1));}
+      const destination=c.path?.[c.path.length-1];
+      const target=destination?toIso(destination.col,destination.row):{x:c.tx+7,y:c.ty+20};
+      const movement=moveCustomerTo(c,target.x-7,target.y-20,wSpd);
+      if(movement==='arrived'){
+        c.pathIdx=c.path?.length||0;
+        if(c.wantsTurn&&!c.ticketPicked&&customerBalks(c)){
+          customerBalk(c);
+        }else if(c.wantsTurn&&!c.ticketPicked){
+          assignCustomerTurn(c);c.ticketPicked=true;
+          c.bMsg=(lang==='en'?'Turn ':'Turno ')+String(c.queueNumber).padStart(3,'0');c.bTimer=170;
+          // Join the ordered queue as soon as the ticket is picked up. Waiting
+          // visitors then walk to their own place, not all to the first spot.
+          c.st='queue';c.path=null;c.pathIdx=0;
+        }else if(c.wantsTurn){
+          c.st='queue';
+        }else{
+          const browsePersona=c.persona==='curious'?1.4:(c.persona==='impulsive'?0.7:1);
+          c.st='browse';c.timer=Math.round((60+Math.random()*80)*browseBase*browsePersona);
         }
       }
     } else if(c.st==='queue'){
@@ -12897,13 +12982,8 @@ function updateGame(){
       const spot=getQueueTarget(idx);
       const targetIso=toIso(spot.col,spot.row);
       const qtx=targetIso.x-7, qty=targetIso.y-20;
-      const dx=qtx-c.x,dy=qty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d>3){
-        if(canActorStepToTile(spot.col,spot.row,c)){
-          const qSpd=customerMoveSpeed(1.05,c);
-          c.x+=dx/d*qSpd;c.y+=dy/d*qSpd;c.dir=dx<0?-1:1;
-        }
-      }else if(idx===0&&G.turns&&(G.turns.servingId===null||G.turns.servingId===c.id)){
+      const queueMovement=moveCustomerTo(c,qtx,qty,customerMoveSpeed(1.05,c));
+      if(queueMovement==='arrived'&&idx===0&&G.turns&&(G.turns.servingId===null||G.turns.servingId===c.id)){
         G.turns.current=c.queueNumber||0;
         G.turns.servingId=c.id;
         c.st='buy';c._qEnter=0;
@@ -12916,13 +12996,8 @@ function updateGame(){
       const spot=getQueueTarget(0);
       const targetIso=toIso(spot.col,spot.row);
       const btx=targetIso.x-7,bty=targetIso.y-20;
-      const dx=btx-c.x,dy=bty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d>3){
-        if(canActorStepToTile(spot.col,spot.row,c)){
-          const buySpd=customerMoveSpeed(1.1,c);
-          c.x+=dx/d*buySpd;c.y+=dy/d*buySpd;c.dir=dx<0?-1:1;
-        }
-      }else{
+      const checkoutMovement=moveCustomerTo(c,btx,bty,customerMoveSpeed(1.1,c));
+      if(checkoutMovement==='arrived'){
         c.serviceTimer=(c.serviceTimer|0)-1;
         if(c.serviceTimer<=0){
           resolveCustomerCheckout(c);
@@ -12934,44 +13009,22 @@ function updateGame(){
         const arr=T().custBrowse;c.bMsg=arr[Math.floor(Math.random()*arr.length)];c.bTimer=200;c.bShown=true;
       }
       if(c.roamPath&&c.roamIdx<c.roamPath.length){
-        const rp=c.roamPath[c.roamIdx];
-        if(!canActorStepToTile(rp.col,rp.row,c)){
-          c.roamPath=null;
-          c.roamIdx=0;
-          c.roamCooldown=Math.round((45+Math.floor(Math.random()*80))*(c.roamMult||1));
-          continue;
-        }
-        const rpIso=toIso(rp.col,rp.row);
-        const rtx=rpIso.x-7,rty=rpIso.y-20;
-        const dx=rtx-c.x,dy=rty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<3){
-          c.roamIdx++;
-          if(c.roamIdx>=c.roamPath.length){
-            c.roamPath=null;
-            c.roamIdx=0;
-            c.roamCooldown=Math.round((70+Math.floor(Math.random()*120))*(c.roamMult||1));
-            // Indeciso (idea #8): aún no se decide → va pronto a OTRO producto con un 🤔.
-            if(c.indecisive&&(c.deliberations|0)<2){
-              c.deliberations=(c.deliberations|0)+1;
-              c.roamCooldown=Math.min(c.roamCooldown,18+Math.floor(Math.random()*18));
-              if((c.bTimer|0)<=0){ c.bMsg='🤔'; c.bTimer=85; }
-            }
+        const destination=c.roamPath[c.roamPath.length-1],rpIso=toIso(destination.col,destination.row);
+        const roamSpd=customerMoveSpeed(G.weather&&G.weather.type==='sun'?0.7:0.95,c);
+        const roamMovement=moveCustomerTo(c,rpIso.x-7,rpIso.y-20,roamSpd);
+        if(roamMovement==='arrived'){
+          c.roamPath=null;c.roamIdx=0;
+          c.roamCooldown=Math.round((70+Math.floor(Math.random()*120))*(c.roamMult||1));
+          if(c.indecisive&&(c.deliberations|0)<2){
+            c.deliberations=(c.deliberations|0)+1;
+            c.roamCooldown=Math.min(c.roamCooldown,18+Math.floor(Math.random()*18));
+            if((c.bTimer|0)<=0){c.bMsg='🤔';c.bTimer=85;}
           }
-        }else{
-          const roamSpd=customerMoveSpeed(G.weather&&G.weather.type==='sun'?0.7:0.95,c);
-          c.x+=dx/d*roamSpd;c.y+=dy/d*roamSpd;c.dir=dx<0?-1:1;
         }
       }else if((c.roamCooldown=(c.roamCooldown|0)-1)<=0){
-        const curTile=screenToIso(c.x+5,c.y+20);
         const roamTarget=getCustomerRoamAnchor(c);
         if(roamTarget){
-          c.roamPath=astarPath(
-            Math.max(0,Math.min(ISO.cols-1,Math.round(curTile.col))),
-            Math.max(0,Math.min(ISO.rows-1,Math.round(curTile.row))),
-            roamTarget.col,
-            roamTarget.row,
-            {ignore:c}
-          );
+          c.roamPath=[roamTarget];
           c.roamIdx=0;
         }
         c.roamCooldown=Math.round((90+Math.floor(Math.random()*150))*(c.roamMult||1));
@@ -12992,30 +13045,11 @@ function updateGame(){
         resolveCustomerCheckout(c);
       }
     } else if(c.st==='leave'){
-      if(c.leavePath&&c.leaveIdx<c.leavePath.length){
-        const lp=c.leavePath[c.leaveIdx];const lpIso=toIso(lp.col,lp.row);
-        if(!canActorStepToTile(lp.col,lp.row,c)){
-          if((c.dwellTicks|0)%35===0){
-            const curTile=screenToIso(c.x+5,c.y+20);
-            c.leavePath=astarPath(
-              Math.max(0,Math.min(ISO.cols-1,Math.round(curTile.col))),
-              Math.max(0,Math.min(ISO.rows-1,Math.round(curTile.row))),
-              ISO.cols-1,
-              3,
-              {ignore:c}
-            )||c.leavePath;
-            c.leaveIdx=0;
-          }
-          continue;
-        }
-        const ltx=lpIso.x-7,lty=lpIso.y-20;
-        const dx=ltx-c.x,dy=lty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<3){c.leaveIdx++;} else{const leaveSpd=customerMoveSpeed(1.6,c);c.x+=dx/d*leaveSpd;c.y+=dy/d*leaveSpd;c.dir=dx<0?-1:1;}
-        if(d<42&&G.doorOpen<70) G.doorOpen=90;
-      } else {
-        const dx=c.tx-c.x,dy=c.ty-c.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<54&&G.doorOpen<70) G.doorOpen=90;
-        if(d<3){
+      // Both legs use the same swept-body route, including the vestibule.
+      // Failed paths wait/replan; leaving never grants a collision bypass.
+      const leaveMovement=moveCustomerTo(c,c.tx,c.ty,customerMoveSpeed(1.6,c));
+      if(isNearDoorSensor(c.x,c.y,140,96))G.doorOpen=Math.max(G.doorOpen||0,90);
+      if(leaveMovement==='arrived'){
           // Satisfaction tablet vote — customer stops at kiosk before leaving
           if(!c.voted){
             c.voted=true;c.voteTimer=40; // pause 40 frames to "tap" the tablet
@@ -13056,41 +13090,39 @@ function updateGame(){
             G.custOut++;G.custs.splice(i,1);
           }
         }
-        else{
-          const leaveSpd=customerMoveSpeed(1.6,c);
-          const nx=c.x+dx/d*leaveSpd,ny=c.y+dy/d*leaveSpd;
-          if(canWalkTo(nx+5,ny+20,{ignore:c})){c.x=nx;c.y=ny;c.dir=dx<0?-1:1;}
-          else{const fallbackSpd=customerMoveSpeed(0.5,c);c.x+=dx/d*fallbackSpd;c.y+=dy/d*fallbackSpd;c.dir=dx<0?-1:1;}
-        }
-      }
     }
   }
 
   // ── EVITACIÓN LOCAL ENTRE NPCs ───────────────────────────────
-  // Separa clientes que se solapan (steering "separation" tipo boids), para que
-  // no se pisen al cruzarse. Empuje suave, validado contra muebles/paredes con
-  // canWalkTo (si choca, intenta deslizar solo en X o solo en Y). Los que están
-  // en cola/caja se quedan en su sitio (ya tienen su hueco asignado). O(n²) pero
-  // n es pequeño (cap ~7-30). (idea: evitación local NPCs)
+  // Personal space is measured on the floor, not in foreshortened screen
+  // pixels. Gentle separation cannot push a customer into furniture.
   {
-    // R = distancia mínima entre centros (≈ ancho visual del sprite) para que NO
-    // se solapen; antes 15 era menor que el sprite y se pisaban. STR = empuje/frame.
-    const list=G.custs, n=list.length, R=24, R2=R*R, STR=0.62;
+    const list=G.custs,n=list.length,R=.60,STR=.008;
     for(let i=0;i<n;i++){
       const a=list[i];
-      if(!a||a.st==='queue'||a.st==='buy') continue;
+      if(!a||a.st==='queue'||a.st==='buy'||a._waitingDoor) continue;
+      const nav=getCustomerNavigation(),from=customerFloorPoint(a.x,a.y);
+      if(!nav)continue;
       let pX=0,pY=0,cnt=0;
       for(let j=0;j<n;j++){
         if(i===j) continue; const b=list[j]; if(!b) continue;
-        const dx=a.x-b.x, dy=a.y-b.y, d2=dx*dx+dy*dy;
-        if(d2>0&&d2<R2){ const d=Math.sqrt(d2)||1; const f=(R-d)/R; pX+=dx/d*f; pY+=dy/d*f; cnt++; }
+        const other=customerFloorPoint(b.x,b.y),dx=from.col-other.col,dy=from.row-other.row,d=Math.hypot(dx,dy);
+        if(d>0&&d<R){const f=(R-d)/R;pX+=dx/d*f;pY+=dy/d*f;cnt++;}
       }
       if(!cnt) continue;
-      const mx=pX*STR, my=pY*STR;
-      if(canWalkTo(a.x+mx+5,a.y+my+20,{ignore:a})){ a.x+=mx; a.y+=my; }
-      else if(canWalkTo(a.x+mx+5,a.y+20,{ignore:a})){ a.x+=mx; }     // desliza en X
-      else if(canWalkTo(a.x+5,a.y+my+20,{ignore:a})){ a.y+=my; }     // desliza en Y
+      const separationScale=STR/Math.max(1,Math.hypot(pX,pY));
+      const mx=pX*separationScale,my=pY*separationScale;
+      for(const [sx,sy]of [[mx,my],[mx,0],[0,my]]){
+        const next={col:from.col+sx,row:from.row+sy};
+        if(nav.segmentClear(from,next)&&customerSpaceClear(a,next)){const p=toIso(next.col,next.row);a.x=p.x-7;a.y=p.y-20;break;}
+      }
     }
+  }
+
+  for(const c of G.custs){
+    c.isWalking=Number.isFinite(c._motionStartX)&&Math.hypot(c.x-c._motionStartX,c.y-c._motionStartY)>.015;
+    if(c.isWalking){c.ft=(c.ft||0)+1;if(c.ft>10){c.fr=((c.fr||0)+1)%2;c.ft=0;}}
+    else{c.fr=0;c.ft=0;c.curSpeed=(c.curSpeed||0)*.75;}
   }
 
   // ── MEDICIÓN PLV (idea #2): impresiones por superficie, muestreadas ─────
@@ -13428,9 +13460,8 @@ function spawnCust(isVip,isSponsor,force){
   if(!entryTarget) return null;
   tCol=entryTarget.col;tRow=entryTarget.row;
   const tIso=toIso(tCol,tRow);
-  const path=astarPath(ISO.cols-1,3,tCol,tRow);
   const turnTarget=wantsTurn?getTurnKioskTarget():null;
-  const entryPath=wantsTurn&&turnTarget?astarPath(ISO.cols-1,3,turnTarget.col,turnTarget.row):path;
+  const entryPath=[wantsTurn&&turnTarget?turnTarget:entryTarget];
   // Pick an entry dialogue
   let cBMsg='',cBTimer=0;
   if(isSp){
@@ -13605,6 +13636,13 @@ function getDoorThresholdPos(){
 
 function getDoorOutsidePos(){
   const outsideIso=toIso(ISO.cols+0.92,3.18+RIGHT_WALL_FEATURE_ROW_OFFSET);
+  return {x:outsideIso.x-7,y:outsideIso.y-20};
+}
+
+function getCustomerExitPos(){
+  // Finish an outgoing visit beside the admission waiting point, not on it.
+  // Both points remain inside the real exterior doorway/vestibule bounds.
+  const outsideIso=toIso(ISO.cols+1.38,2.7);
   return {x:outsideIso.x-7,y:outsideIso.y-20};
 }
 
@@ -13985,6 +14023,25 @@ function getQueueTarget(index=0){
   const counter=shopLayout.find(item=>item.type==='counter');
   const baseCol=counter?counter.col+1:2;
   const baseRow=counter?counter.row+2:4;
+  const navigation=getCustomerNavigation();
+  if(navigation){
+    const key=navigation.key+'|'+baseCol+','+baseRow;
+    if(customerQueueCache.key!==key)customerQueueCache={key,slots:[]};
+    const slots=customerQueueCache.slots;
+    for(let n=slots.length;n<=Math.min(80,Math.max(0,index));n++){
+      const desired={col:baseCol,row:baseRow+n*.85};
+      let best=null,score=Infinity;
+      for(let col=.25;col<ISO.cols;col+=.5)for(let row=.25;row<ISO.rows;row+=.5){
+        const p={col,row};
+        if(!navigation.isWalkable(p)||slots.some(s=>Math.hypot(s.col-col,s.row-row)<.72))continue;
+        const cost=Math.hypot(col-desired.col,row-desired.row);
+        if(cost<score){best=p;score=cost;}
+      }
+      if(!best)break;
+      slots.push(best);
+    }
+    if(slots.length)return slots[Math.min(index,slots.length-1)];
+  }
   const target={
     col:clampGridCol(baseCol),
     row:clampGridRow(baseRow+Math.min(index,3))
@@ -14008,16 +14065,9 @@ function startCustomerLeave(c){
     const g=G&&Array.isArray(G.custs)?G.custs.find(x=>x&&x.id===c.followId):null;
     if(g && g.st!=='leave'){ c.st='browse'; c.timer=90+Math.floor(Math.random()*90); c.roamPath=null; c.roamIdx=0; return; }
   }
-  const curTile=screenToIso(c.x+5,c.y+20);
-  c.leavePath=astarPath(
-    Math.max(0,Math.min(ISO.cols-1,Math.round(curTile.col))),
-    Math.max(0,Math.min(ISO.rows-1,Math.round(curTile.row))),
-    ISO.cols-1,
-    3,
-    {ignore:c}
-  );
+  c.leavePath=null; // moveCustomerTo owns the actual continuous route.
   c.leaveIdx=0;
-  const dp=getDoorThresholdPos(), outsideDp=getDoorOutsidePos();
+  const dp=getDoorThresholdPos(), outsideDp=getCustomerExitPos();
   c.st='leave';c.tx=dp.x;c.ty=dp.y;c.exitTx=outsideDp.x;c.exitTy=outsideDp.y;c.exitLeg=false;c.roamPath=null;c.roamIdx=0;
   c.queueNumber=0;
   if(G&&G.turns&&G.turns.servingId===c.id) G.turns.servingId=null;
@@ -17962,9 +18012,18 @@ function drawShopOperation(fn,kind='device'){
 }
 
 // ── DRAW SHOP (ISOMETRIC — Kairosoft warm style) ─────────────
+let inventoryPublishedAt=0;
+function inventorySpace(){return CLIENTS[activeClient]?.id||'xtanco';}
+function inventoryPresentationLayout(){
+  const store=window.XpaceInventory,space=inventorySpace();
+  if(store&&Date.now()-inventoryPublishedAt>1000){store.publish(space,shopLayout);inventoryPublishedAt=Date.now();}
+  return store?store.filter(space,shopLayout):shopLayout;
+}
 function drawShop(){
+  const renderLayout=inventoryPresentationLayout();
   const premiumView=window.__xtancoPremiumView;
   const premiumActive=!!premiumView?.begin?.(cx,cv);
+  const mudanzaActive=document.body.classList.contains('xtanco-mudanza');
   // Clip to shop area. Extended down to the full canvas height so passersby
   // walking on the sidewalk past the building footprint (route reaches y≈470,
   // SHOP.h is 466) aren't clipped at the lower edge.
@@ -18028,7 +18087,7 @@ function drawShop(){
   }
 
   // ── SOCIO HEAT MAP — extraído a assets/js/heatmap.js (Fase 1 modularización) ──
-  if(window.drawSocioHeatmap) drawShopOperation(()=>window.drawSocioHeatmap({cx,ISO,tt,G,toIso}),'heatmap');
+  if(!mudanzaActive&&window.drawSocioHeatmap) drawShopOperation(()=>window.drawSocioHeatmap({cx,ISO,tt,G,toIso}),'heatmap');
 
   // ── WEATHER FLOOR EFFECTS ──
   const weatherFloor=G&&G.weather&&G.weather.type;
@@ -18321,14 +18380,14 @@ function drawShop(){
   // En el booth Shoptalk arrancamos sin decoración: el usuario decide
   // qué surfaces colocar (pantallas, audio, Hue, cámara…) desde el
   // Xpace Creator. Skip de todos los elementos de pared hardcoded.
-  if(!isShoptalkBooth()){
+  if(!mudanzaActive&&!isShoptalkBooth()){
     // ── CLOCK on left wall ──
     drawShopOperation(()=>drawWallClock());
     // ── LED on LEFT WALL (top edge) ──
-    const ledItem=shopLayout.find(i=>i.id==='led');
+    const ledItem=renderLayout.find(i=>i.id==='led');
     if(ledItem) drawShopOperation(()=>drawLED(ledItem.sx||1,ledItem.sy||1));
     // ── LED on BACK WALL (top edge, continues from left wall) ──
-    drawShopOperation(()=>drawBackWallLED());
+    if(ledItem)drawShopOperation(()=>drawBackWallLED());
     // ── AIR CONDITIONING on left wall (drawn AFTER LED so it's visible) ──
     drawShopOperation(()=>drawAirConditioning());
     // ── TURN MANAGER between the back-wall displays/windows ──
@@ -18344,17 +18403,17 @@ function drawShop(){
   // ── BLANK XPACE (Creator / Shoptalk): renderizar SOLO los items wall
   // que el usuario haya añadido al layout. LED como banner full-wall si
   // existe; TFT centrado en su item.col + offset vertical item.wallY.
-  if(isShoptalkBooth()){
-    const ledItem=shopLayout.find(i=>i.type==='led');
+  if(!mudanzaActive&&isShoptalkBooth()){
+    const ledItem=renderLayout.find(i=>i.type==='led');
     if(ledItem) drawShopOperation(()=>drawLED(ledItem.sx||1,ledItem.sy||1));
-    const tftItem=shopLayout.find(i=>i.type==='tft');
+    const tftItem=renderLayout.find(i=>i.type==='tft');
     if(tftItem){
       drawShopOperation(()=>drawAltadisTFT(
         typeof tftItem.col==='number'?tftItem.col:7,
         typeof tftItem.wallY==='number'?tftItem.wallY:undefined
       ));
     }
-    const doorItem=shopLayout.find(i=>i.type==='door');
+    const doorItem=renderLayout.find(i=>i.type==='door');
     if(doorItem){
       drawShopOperation(()=>drawCreatorDoor(
         typeof doorItem.col==='number'?doorItem.col:6,
@@ -18366,7 +18425,7 @@ function drawShop(){
   // Perfora el hueco de las pantallas DS de pared (divs detrás del canvas) ANTES
   // de dibujar los muebles → los muebles del canvas las ocluyen (objetos siempre
   // por delante de paredes y contenidos dinámicos).
-  try{ punchDsScreenHoles(); }catch(_){}
+  if(!mudanzaActive)try{ punchDsScreenHoles(); }catch(_){}
 
   // ── FURNITURE & ENTITIES (sorted by screen Y for correct occlusion) ──
   const entities=[];
@@ -18377,8 +18436,8 @@ function drawShop(){
   }
 
   // Furniture from editable layout (skip wall-mounted overlays handled elsewhere)
-  if(shopFurnitureVisible||editorSceneActive){
-    for(const item of shopLayout){
+  if(!mudanzaActive&&(shopFurnitureVisible||editorSceneActive)){
+    for(const item of renderLayout){
       if(item.type==='led'||item.type==='tft') continue;
       if(item.type==='aroma'&&!editorSceneActive) continue;
       const d=item.type==='rug'?-999:item.type==='aroma'?-1200:isoDepth(item.col,item.row+1);
@@ -18386,7 +18445,7 @@ function drawShop(){
     }
   }
 
-  if(!editorSceneActive){
+  if(!mudanzaActive&&!editorSceneActive){
     // Staff — use their actual screen Y position for depth
     for(const s of G.staff){
       if(!s.hired) continue;
@@ -18530,27 +18589,27 @@ function drawShop(){
   }
 
   // Avatar 3D sobre el tótem (vista 2D) cuando está encendido (/avatar3d on).
-  try{ positionTotemAvatar(); }catch(_){}
+  if(!mudanzaActive)try{ positionTotemAvatar(); }catch(_){}
   // Avatar 3D sobre la pantalla TFT de la pared larga (/avatar3d ds on).
-  try{ positionWallAvatar(); }catch(_){}
+  if(!mudanzaActive)try{ positionWallAvatar(); }catch(_){}
 
   // ── ESCAPARATE — right wall rows 0-2, above glass door ──
-  if(!editorSceneActive) drawShopOperation(()=>drawEscaparate());
+  if(!mudanzaActive&&!editorSceneActive) drawShopOperation(()=>drawEscaparate());
 
   // ── AROMA MACHINE — wall overlay above exterior ads so waves stay visible ──
-  if(!editorSceneActive&&shopFurnitureVisible){
-    const aromaItem=shopLayout.find(i=>i.type==='aroma');
+  if(!mudanzaActive&&!editorSceneActive&&shopFurnitureVisible){
+    const aromaItem=renderLayout.find(i=>i.type==='aroma');
     if(aromaItem) drawShopOperation(()=>drawAromatizer(aromaItem.col,aromaItem.row));
   }
 
   // ── GLASS DOOR — drawn LAST, always on top of furniture/characters ──
   // Skip en el booth Shoptalk: un stand de feria no tiene puerta de calle.
-  if(!editorSceneActive && !isShoptalkBooth()) drawGlassDoor();
+  if(!mudanzaActive&&!editorSceneActive && !isShoptalkBooth()) drawGlassDoor();
   // ── DOOR FOREGROUND PEOPLE — characters physically in front of the door
   // (passersby on the sidewalk + customers entering/leaving) re-painted
   // ON TOP of the glass-door frame so the wood jambs don't crop their bodies.
-  if(!editorSceneActive && !isShoptalkBooth()) drawShopOperation(()=>drawDoorForegroundPeople(),'actor');
-  if(!editorSceneActive && !isShoptalkBooth()) drawShopOperation(()=>window.__xtoreRealTraffic?.draw(cx,ISO,W,H),'actor');
+  if(!mudanzaActive&&!editorSceneActive && !isShoptalkBooth()) drawShopOperation(()=>drawDoorForegroundPeople(),'actor');
+  if(!mudanzaActive&&!editorSceneActive && !isShoptalkBooth()) drawShopOperation(()=>window.__xtoreRealTraffic?.draw(cx,ISO,W,H),'actor');
 
   // Compose the replacement world before operational marks and all HUD/editor UI.
   // DS monitors remain DOM behind #c: open their holes before adding the layer,
@@ -18582,7 +18641,7 @@ function drawShop(){
       cx.fillStyle=edgeGrad;
       cx.fillRect(0,SHOP.y,W,H-SHOP.y);
       // Warm glow from floor lamp
-      const lampItem=shopLayout.find(i=>i.type==='floorLamp');
+      const lampItem=renderLayout.find(i=>i.type==='floorLamp');
       if(lampItem){
         const lp=toIso(lampItem.col,lampItem.row);
         const lampRad=cx.createRadialGradient(lp.x,lp.y-20,4,lp.x,lp.y-20,90);
@@ -18591,7 +18650,7 @@ function drawShop(){
         cx.fillStyle=lampRad;cx.fillRect(lp.x-90,lp.y-110,180,130);
       }
       // Warm glow from DJ booth LEDs at night
-      const djItem=shopLayout.find(i=>i.type==='djBooth');
+      const djItem=renderLayout.find(i=>i.type==='djBooth');
       const djHiredNight=G.staff&&G.staff.some(s=>s.hired&&s.role===4);
       if(djItem&&djHiredNight){
         const dp=toIso(djItem.col+0.5,djItem.row);
@@ -20297,7 +20356,7 @@ function positionTotemAvatar(){
   const pin=(typeof DS_PIN==='object'&&DS_PIN)?DS_PIN['metahuman']:null;
   const q=(typeof DS_SURFACE_QUADS==='object'&&DS_SURFACE_QUADS)?DS_SURFACE_QUADS.metahuman:null;
   // Mostrar siempre que haya pin web + quad del tótem (vale en juego Y en demo).
-  const on=pin&&pin.kind==='web'&&pin.src&&q;
+  const on=pin&&pin.kind==='web'&&pin.src&&q&&inventoryPresentationLayout().some(i=>i.type==='metahuman');
   if(!on){ totemSwapSrc(el,null); if(glow) glow.style.display='none'; if(chip) chip.style.display='none'; return; }
   try{
     const canvasRect=cv.getBoundingClientRect();
@@ -23728,6 +23787,7 @@ function drawShopChars(){}
 
 // ── DRAW FLOATS ───────────────────────────────────────────────
 function drawFloats(){
+  if(document.body.classList.contains('xtanco-mudanza')) return;
   for(const f of G.floats){
     cx.globalAlpha=Math.min(1,f.life/18);
     glow(f.col,5);tx(f.txt,f.x,f.y,f.col,9,'center');nog();cx.globalAlpha=1;
@@ -23828,7 +23888,7 @@ function drawHUD(){
   BTNS['codexMapToggle']={x:W-12,y:2,w:10,h:10};
   // Marketplace overlay (sponsor band + physical posters) — drawn last so it
   // sits above the HUD top bar and any iso furniture.
-  try{ drawMarketplaceOverlay(); }catch(e){}
+  if(!document.body.classList.contains('xtanco-mudanza')) try{ drawMarketplaceOverlay(); }catch(e){}
   // Banda inferior del HUD identificando el booth Shoptalk si está activo.
   if(window.XPACE_BOOTH==='shoptalk') drawShoptalkBoothBadge();
 }
@@ -26587,7 +26647,10 @@ function loop(){
   cx.save();try{if(codexMapOpen)drawCodexMapOverlay();}catch(e){}cx.restore();
   finalizeFrame();
 }
-window.__xtancoVisualState=()=>({palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:shopFurnitureVisible||editorSceneActive?shopLayout:[],game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&CLIENTS[activeClient]?.id==='xtanco'});
+window.__xtancoVisualState=()=>{
+  const moving=document.body.classList.contains('xtanco-mudanza');
+  return {palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:moving?[]:(shopFurnitureVisible||editorSceneActive?inventoryPresentationLayout():[]),hardness:getHardnessSnapshot(),game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,moving,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&CLIENTS[activeClient]?.id==='xtanco'};
+};
 loop();
 
 // ── DIRECT ENTRY URL: ?play=<verticalId> ─────────────────────────
@@ -30140,7 +30203,8 @@ window.xtAPI = (function(){
       {title:'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
       {title:'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
       {title:'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
-      {title:'Vista local (consola / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit en preparación',items:['/modo good','/modo better','/modo best','/mode better','/modo estado']},
+      {title:'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
+      {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Avenida Admira',items:['good','better','best','matrix','/mudanza','/modo estado']},
       {title:'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
       {title:'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
     ];
@@ -30664,11 +30728,37 @@ window.xtAPI = (function(){
 
   async function executeLocalVisualCommand(rawText){
     const text=String(rawText||'').trim();
-    if(!/^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
+    if(/^\/?(?:inventario|eliminar|añadir|anadir)(?:@\w+)?(?:\s|$)/i.test(text)){
+      try{
+        const {executeInventoryCommand}=await import('../inventario/command.mjs?v=inventory-cli-3');
+        const space=inventorySpace();
+        const checkSpace=()=>{if(inventorySpace()!==space)throw Error('El Xpacio ha cambiado');};
+        return await executeInventoryCommand(text,{
+          store:window.XpaceInventory,space,
+          getRoom(){checkSpace();return {cols:ISO.cols,rows:ISO.rows,blocked:[...buildDynamicOccupancy(),...Array.from({length:ISO.rows},(_,row)=>(ISO.cols-1)+','+row)]};},
+          getLayout(){checkSpace();return window.XpaceInventory.retained(space,shopLayout);},
+          applyLayout(next){
+            checkSpace();
+            const keys=getLayoutSlotKeys(getLayoutStoragePrefix());
+            const writes=[[keys.current,JSON.stringify(next)],[keys.backup,JSON.stringify(next)],[keys.schema,LAYOUT_SCHEMA_VERSION]];
+            const before=writes.map(([key])=>[key,localStorage.getItem(key)]),old=shopLayout,oldGrid=walkGrid;
+            try{
+              for(const [key,value]of writes)localStorage.setItem(key,value);
+              shopLayout=next;buildWalkGrid();
+            }catch(error){
+              shopLayout=old;walkGrid=oldGrid;
+              for(const [key,value]of before){try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}catch{}}
+              throw error;
+            }
+          }
+        });
+      }catch{return {ok:false,local:true,kind:'inventory',message:'No se pudo cargar el inventario local. Recarga la Xperience y reintenta.'};}
+    }
+    if(!/^(?:good|better|best|matrix)$|^\/mudanza(?:@\w+)?$|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=tiers-linked-4');
-      return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,lang:language});
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=matrix-furniture-1');
+      return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
     }
@@ -31813,17 +31903,19 @@ window.xtAPI = (function(){
     const clean=String(text||'').replace(/^\s+|\s+$/g,'');
     if(!clean){ el.hidden=true; el.textContent=''; return; }
     el.hidden=false;
+    el.dataset.inventory=origin==='local-inventory'?(/^INVENTARIO ·/.test(clean)?'list':'change'):'';
     el.classList.remove('err','fresh');
     if(kind==='err') el.classList.add('err');
     el.classList.add('fresh');
     const time=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     el.innerHTML='';
     const tag=document.createElement('span'); tag.className='lr-tag';
-    tag.textContent=origin==='local-visual'?(lang==='en'?'Local view →':'Vista local →'):(kind==='err'?'ERROR':'AdmiraXPBot →');
+    tag.textContent=origin==='local-inventory'?'Inventario →':origin==='local-visual'?(lang==='en'?'Local view →':'Vista local →'):(kind==='err'?'ERROR':'AdmiraXPBot →');
     const ts=document.createElement('span'); ts.className='lr-time'; ts.textContent=time;
     const body=document.createElement('div'); body.textContent=clean;
     el.appendChild(tag); el.appendChild(ts); el.appendChild(body);
     el.scrollTop=0;
+    window.dispatchEvent(new Event('inventory-cli-response'));
     // Feedback importante: al llegar una respuesta se AUTO-MUESTRA la mitad derecha
     // (aunque estuviera oculta). El usuario la vuelve a ocultar con el botón.
     try{ if(quickActionsHidden) setQuickActionsHidden(false); }catch(e){}
@@ -31836,9 +31928,9 @@ window.xtAPI = (function(){
     if(!clean) return;
     // The visual command belongs to this browser, never to a remote bot.
     // Intercept before command/session logging and the normal Telegram echo.
-    const visual=clean.startsWith('/')?await executeLocalVisualCommand(clean):null;
+    const visual=await executeLocalVisualCommand(clean);
     if(visual){
-      hideHelpPanel();showLastResponse(visual.message,visual.ok?'ok':'err','local-visual');
+      hideHelpPanel();showLastResponse(visual.message,visual.ok?'ok':'err',visual.kind==='inventory'?'local-inventory':'local-visual');
       if(composer)composer.value='';
       renderQuickActionButtons();return;
     }
@@ -34729,6 +34821,14 @@ window.xtAPI = (function(){
     e.addEventListener('click',function(ev){ ev.preventDefault(); ev.stopPropagation(); try{ if(window.__PERCIBE) window.__PERCIBE.toggle(); }catch(_){}} );
     return e;
   }
+  function makeInventory(){
+    var b=document.createElement('button');b.type='button';b.className='tg-quick-btn';b.id='advInventoryCli';
+    b.innerHTML='<strong>Inventario</strong><span>Añadir / eliminar · CLI</span>';b.title='/inventario añadir 43 · /inventario eliminar silla de madera';
+    b.addEventListener('click',function(){
+      document.body.classList.remove('xp-left-hidden');var expert=document.getElementById('pfExpert');expert?.setAttribute('aria-pressed','true');expert?.classList.add('is-active');
+      window.dispatchEvent(new Event('resize'));window.sendComposerText?.('/inventario');document.getElementById('telegramComposer')?.focus();
+    });return b;
+  }
   function mirror(){
     var btns=[].slice.call(src.querySelectorAll('.tg-quick-btn'));
     host.innerHTML='';
@@ -34738,6 +34838,7 @@ window.xtAPI = (function(){
       host.appendChild(c);
     }
     btns.filter(function(b){return b.getAttribute('data-quick-action')!=='pixerai';}).forEach(appendAction);
+    host.appendChild(makeInventory());
     host.appendChild(makePercibe());
     // Pixeria keeps its latest-item import and is always the final advanced action.
     btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
@@ -34761,6 +34862,8 @@ window.xtAPI = (function(){
       if(help && getComputedStyle(help).display!=='none'){ h=Math.ceil(help.getBoundingClientRect().bottom-top)+4; }
       else if(sig && getComputedStyle(sig).display!=='none'){ h=Math.ceil(sig.getBoundingClientRect().bottom-top)+4; }
       else if(ta && ta.getBoundingClientRect().height){ h=Math.ceil(ta.getBoundingClientRect().height)+16; }
+      var response=document.getElementById('telegramLastResponse');
+      if(response?.dataset.inventory&&!dock.classList.contains('cli-out-hidden'))h=Math.max(h,response.dataset.inventory==='list'?Math.min(260,innerHeight*.36):100);
       if(h>28 && Math.abs(dock.getBoundingClientRect().height-h)>2){
         dock.style.height=h+'px';                            // ajusta el dock al contenido real
       }
@@ -34806,6 +34909,7 @@ window.xtAPI = (function(){
     }catch(e){}
   }
   fitPlaceholder();
+  window.addEventListener('inventory-cli-response',function(){requestAnimationFrame(function(){fitDock();syncDockClear();});});
   // Aplicar YA al abrir el experto: en cuanto cambia la clase del dock (compose-start),
   // fitDock corre como microtask (antes del pintado) → no se ve el dock alto un instante.
   try{
@@ -34916,9 +35020,11 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=1">
 <script type="module" src="scripts/avatar-audience.mjs?v=1"></script>
-<link rel="stylesheet" href="scripts/xtanco-premium.css?v=tiers-linked-4">
-<link rel="stylesheet" href="scripts/life-ui.css?v=tiers-linked-4">
-<link rel="stylesheet" href="scripts/best-preview.css?v=tiers-linked-4">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=tiers-linked-4"></script>
+<link rel="stylesheet" href="scripts/xtanco-premium.css?v=inventari-1">
+<link rel="stylesheet" href="scripts/life-ui.css?v=inventari-1">
+<link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
+<link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
+<link rel="stylesheet" href="scripts/visitor-matrix.css?v=customer-motion-1">
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=customer-motion-1"></script>
 </body>
 </html>

@@ -27,6 +27,16 @@ test('immersive view retains layout, canonical navigation anchors and indexed ap
   scene.layout[0].fp[0]=99;customer.color='red';assert.equal(JSON.stringify(input),before);
 });
 
+test('nino and child keep the same child profile and scale without rewriting their source age',()=>{
+  const input=fixture(),snapshot=createLifeSnapshot(),first=snapshot(input).actors.find(a=>a.kind==='customer');
+  input.game.custs[0].look.age='child';
+  const before=JSON.stringify(input),second=snapshot(input).actors.find(a=>a.kind==='customer');
+  assert.equal(first.age,'nino');assert.equal(second.age,'child');
+  assert.equal(first.scale,.72);assert.equal(second.scale,first.scale);
+  assert.equal(second.id,first.id);assert.equal(second.visitorProfileId,first.visitorProfileId);
+  assert.equal(second.visitorStyle.age,'child');assert.equal(JSON.stringify(input),before);
+});
+
 test('live palette overrides defaults and named character uniforms follow the running renderer',()=>{
   const input=fixture(),snapshot=createLifeSnapshot();
   input.palette={shirts:['#010101','#020202','#030303'],skins:['#eeeeee']};
@@ -71,6 +81,13 @@ test('editor and inactive scenes match visibility; unavailable telemetry and inv
   delete input.game.custIn;delete input.game.gameTime;
   const scene=snapshot(input);assert.equal(scene.actors.some(a=>a.kind==='staff'||a.kind==='thief'),false);
   assert.equal(scene.entries,null);assert.equal(scene.time,null);assert.ok(Number.isNaN(input.game.staff[0].x));
+});
+
+test('moving presentation keeps the room geometry but supplies no furniture or actors',()=>{
+  const input=fixture(),snapshot=createLifeSnapshot(),before=JSON.stringify(input);
+  const scene=snapshot({...input,moving:true,layout:[]});
+  assert.deepEqual(scene.layout,[]);assert.deepEqual(scene.actors,[]);
+  assert.equal(scene.cols,14);assert.equal(scene.rows,8);assert.equal(JSON.stringify(input),before);
 });
 
 test('presentation metadata copies existing customer fields without assigning numbers or changing timers',()=>{

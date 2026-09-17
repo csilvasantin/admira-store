@@ -42,7 +42,7 @@ Repo: https://github.com/csilvasantin/xpaceos
 - Navegación local: Avanzado y el selector dentro de las vistas ofrecen Good · 8 bits,
   Better · 16 bits y Best · 32 bits. Better permite comparar con la proyección de Good
   o explorar en 3D de forma independiente; una cámara alineada no recupera controles.
-- /modo best abre una vista previa conceptual estática. Cuando la apertura tiene éxito,
+- /modo best abre un escenario conceptual fijo con las personas del gemelo en vivo. Cuando la apertura tiene éxito,
   el resultado local incluye ok:true, preview:true y availability:"preview". Ese éxito
   confirma la navegación, no un gemelo Best operativo. Las 30 áreas Best siguen planned.
 - Los nombres 8/16/32 bits son estilos artísticos; no indican profundidad de color.

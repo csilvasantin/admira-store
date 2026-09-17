@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:door",
+  "inventory_number": 8,
+  "name": "Puerta",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      1.4901161193847656e-08,
+      -4.529873809389073e-09,
+      -0.035000089555978775
+    ],
+    "max": [
+      1.0,
+      2.4099998474121094,
+      0.08950001001358032
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 49704
+}

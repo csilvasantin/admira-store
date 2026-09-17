@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1781207177854-e19asq",
+  "inventory_number": 29,
+  "name": "Coche Cazafantasmas",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1781207177854-e19asq?v=50293",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.022700002416968346,
+      0.034999996423721313,
+      0.025000005960464478
+    ],
+    "max": [
+      0.5259000062942505,
+      0.7150000333786011,
+      1.002500057220459
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 340464
+}

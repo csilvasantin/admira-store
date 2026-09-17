@@ -2,14 +2,16 @@
 
 Best sustituirá progresivamente los modelos de Better por piezas creadas en Blender a partir del local real. Ambos deben mostrar el mismo snapshot, personas, mobiliario, reproducción e interacciones. Better sigue disponible y aporta la representación de cualquier pieza cuyo modelo Best aún no esté validado.
 
-Estado de navegación: **Avanzado → Best · 32 bits** y el selector dentro de las vistas abren una **vista previa conceptual estática**, con regreso a Good o Better. La preview no sigue el snapshot ni implementa las funciones operativas de Best. Los 30 IDs del catálogo conservan su estado `planned`; el resto de este documento describe la producción futura y el piloto de assets existente.
+Estado de navegación: **Avanzado → Best · 32 bits** abre ahora el **Xtanco 3D en vivo**, también sin `inventory=1`. Mobiliario y visitantes leen el mismo snapshot del gemelo. La cámara permite girar, acercar y seleccionar; los controles **Vista general** y **Detalle** ayudan a inspeccionar el resultado. La placa conceptual y las personas 2D se conservan como archivos históricos, pero ya no son el fondo de Best.
+
+Los nuevos visitantes Best usan modelos humanos Blender con proporciones adultas y movimiento articulado, manteniendo identidad, posición y apariencia del actor de la simulación. Son personajes interpretados, no escaneados ni réplicas de visitantes reales. Durante la carga se conserva el personaje provisional; si falla, la etiqueta de la escena lo indica. El objetivo de realismo visual es progresivo y no acredita todavía fidelidad fotográfica. Los 30 IDs operativos conservan su estado propio en el catálogo.
 
 ## Punto de partida comprobado
 
-- `life-scene.mjs` construye geometría procedural con Three local; todavía no hay un cargador GLB de mobiliario en esta escena.
+- `life-scene.mjs` combina geometría de escena con los cargadores GLB locales de mobiliario y personas. Los 43 modelos del inventario tienen perfiles Blender y se integran por su identidad, conservando el layout.
 - `life-snapshot.mjs` conserva actores y metadatos del juego; el layout contiene `id`, `type`, `label`, `col`, `row`, `sx`, `sy`, `rot`, `flipX`, `fp`, `ph` y, para paredes, `wallY`.
 - Las posiciones y `fp` están en casillas. `ph`, `wallY` y `wallHeight` proceden de la geometría de pantalla convertida a unidades del mundo. **No hay una equivalencia casilla–metro autenticada.**
-- Al comenzar no había fuentes `.blend` ni modelos GLB de este mobiliario en el árbol inspeccionado. Ahora existe el piloto interpretado documentado abajo; aún no se carga dentro del juego.
+- Al comenzar no había fuentes `.blend` ni modelos GLB de este mobiliario en el árbol inspeccionado. El piloto interpretado documentado abajo se amplió a los 43 muebles y ya se carga dentro del juego; las cifras del piloto se conservan como registro histórico.
 - `xpacios/xtanco-barcelona/index.html` y `xpacios/xtanco-valencia/index.html` se describen como «render interpretado del plano». Sus cotas compartidas no acreditan medidas de ninguno de los dos locales; no se usarán como levantamiento.
 - El 14-09-2026 se verificó Blender **5.2.1 LTS** en el MacBookPro16, ejecutando `/Applications/Blender.app/Contents/MacOS/Blender --version`. El trabajo se realiza por CLI en procesos aislados con `--background --factory-startup --python-exit-code 1`; no necesita activar un servidor MCP ni modificar la sesión gráfica del usuario.
 
@@ -17,7 +19,7 @@ Estado de navegación: **Avanzado → Best · 32 bits** y el selector dentro de 
 
 Good **8-bit**, Better **16-bit** y Best **32-bit / hiperrealista** son nombres artísticos de calidad, no profundidades de color, arquitecturas de CPU ni una promesa de fidelidad física. La vista Better actual continúa siendo 3D estilizado. El propósito del pipeline es representar los mismos IDs, medidas verificadas, objetos y funciones con distintos niveles de geometría y materiales; no mantener tres simulaciones divergentes.
 
-En la consola del gemelo de XpaceOS, `/modo good`, `/modo better` y `/modo best` acceden al router público. Los aliases `/modo 8`, `/modo 16` y `/modo 32` apuntan a esos mismos niveles. Una apertura correcta de Best devuelve `ok:true`, `preview:true` y `availability:"preview"`: confirma una vista estática, no un gemelo fotorealista operativo. `/render` conserva sus estilos del motor clásico y no es el selector de niveles nuevos. Better permite comparar una cámara mapped con Good o explorar 3D de forma independiente; alinear cámaras no recupera los controles pendientes.
+En la consola del gemelo de XpaceOS, `/modo good`, `/modo better` y `/modo best` acceden al router público. Los aliases `/modo 8`, `/modo 16` y `/modo 32` apuntan a esos mismos niveles. Una apertura correcta de Best devuelve `ok:true`, `preview:true` y `availability:"preview"`: confirma un frame renderizado del gemelo 3D. El contrato `preview` sigue vigente mientras se desarrollan las capacidades operativas pendientes. `/render` conserva sus estilos del motor clásico y no es el selector de niveles nuevos. Better permite comparar una cámara mapped con Good o explorar 3D de forma independiente; alinear cámaras no recupera los controles pendientes.
 
 Unreal 5.8.0 también está instalado en este equipo y contiene el plugin experimental `ModelContextProtocol`, desactivado por defecto. Se ha inspeccionado su disponibilidad, **no conectado ni activado**. Blender produce fuentes editables y exportaciones; Unreal puede ser otro destino de render. Un MCP es el canal de automatización, no el modelo, su fidelidad ni su publicación en la web.
 
@@ -52,7 +54,7 @@ El pipeline reproducible está en [`../tools/xpacios-blender/`](../tools/xpacios
 | better | 20.966 | 1.346.000 bytes |
 | best | 40.022 | 3.488.148 bytes |
 
-Cada fuente Blender se abrió de nuevo y cada GLB se reimportó: jerarquía semántica, textos editables, texturas empaquetadas, pivot y exclusión del estudio comprobados. El render principal usa EEVEE y es una imagen fija. Los archivos y su ficha están en `/xpacios/lab/`; los perfiles del asset **no sustituyen todavía** los modos públicos del juego. Sus proporciones son de diseño en casillas sin calibración métrica, no medidas reales.
+Cada fuente Blender se abrió de nuevo y cada GLB se reimportó: jerarquía semántica, textos editables, texturas empaquetadas, pivot y exclusión del estudio comprobados. El render principal usa EEVEE y es una imagen fija. Los archivos y su ficha están en `/xpacios/lab/`; los perfiles Better y Best del asset se integraron después en los modos públicos del juego. Sus proporciones son de diseño en casillas sin calibración métrica, no medidas reales.
 
 ## Estructura propuesta para piezas validadas del local
 
@@ -93,7 +95,7 @@ El futuro manifiesto asociará cada `layoutId` validado con un `assetId`, archiv
 | 4 | `djBooth`, `tablet`, `turnKiosk`, `metahuman`, `tft`, `led`, `aroma` | Equipos conectados y superficies vinculadas a funciones existentes. |
 | 5 | `plant`, `floorLamp`, `rug`, `door`; arquitectura | Vegetación, iluminación, textiles y envolvente con referencias del local. |
 
-Los elementos `custom` requieren ficha y correspondencia propias. Los personajes conservan inicialmente su representación y estado Better; producir avatares fotorealistas sería una línea de trabajo independiente, no un efecto automático de importar muebles.
+Los elementos `custom` requieren ficha y correspondencia propias. Better conserva sus personajes estilizados. Best incorpora su propia representación humana Blender, compartiendo el estado del actor y sin inferir identidades de personas reales. La validación de anatomía, vestuario y animación es independiente de la de los muebles.
 
 ## Validación y entrega de cada pieza
 

@@ -1,0 +1,490 @@
+{
+  "version": 1,
+  "native": [
+    {
+      "id": "native:counter",
+      "type": "counter",
+      "name": "Mostrador",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "native:shelves",
+      "type": "shelves",
+      "name": "Estantería",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "native:wineRack",
+      "type": "wineRack",
+      "name": "Botellero",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "native:lottery",
+      "type": "lottery",
+      "name": "Lotería",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "native:vending",
+      "type": "vending",
+      "name": "Vending",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:magazines",
+      "type": "magazines",
+      "name": "Revistero",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "native:manager",
+      "type": "manager",
+      "name": "Escritorio",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "native:door",
+      "type": "door",
+      "name": "Puerta",
+      "category": "Mobiliario",
+      "mount": "wall",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:plant",
+      "type": "plant",
+      "name": "Planta",
+      "category": "Decoración",
+      "mount": "floor",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:floorLamp",
+      "type": "floorLamp",
+      "name": "Lámpara",
+      "category": "Decoración",
+      "mount": "floor",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:rug",
+      "type": "rug",
+      "name": "Alfombra",
+      "category": "Decoración",
+      "mount": "floor",
+      "fp": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "native:led",
+      "type": "led",
+      "name": "LED Banner",
+      "category": "IoT",
+      "mount": "wall",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:tft",
+      "type": "tft",
+      "name": "Pantalla TFT",
+      "category": "IoT",
+      "mount": "wall",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:metahuman",
+      "type": "metahuman",
+      "name": "Mupi Metahuman",
+      "category": "IoT",
+      "mount": "wall",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:tablet",
+      "type": "tablet",
+      "name": "Tablet Satisf.",
+      "category": "IoT",
+      "mount": "wall",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:aroma",
+      "type": "aroma",
+      "name": "Aroma",
+      "category": "IoT",
+      "mount": "wall",
+      "fp": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "native:djBooth",
+      "type": "djBooth",
+      "name": "Mesa DJ · Audio",
+      "category": "IoT",
+      "mount": "floor",
+      "fp": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "native:turnKiosk",
+      "type": "turnKiosk",
+      "name": "Gestor Turnos",
+      "category": "IoT",
+      "mount": "floor",
+      "fp": [
+        1,
+        1
+      ]
+    }
+  ],
+  "layouts": {
+    "xtanco": [
+      {
+        "id": "counter",
+        "type": "counter",
+        "col": 1,
+        "row": 2,
+        "sx": 1,
+        "sy": 1,
+        "label": "Mostrador+Caja+PC"
+      },
+      {
+        "id": "shelves",
+        "type": "shelves",
+        "col": 4,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Estantería"
+      },
+      {
+        "id": "wineRack",
+        "type": "wineRack",
+        "col": 6,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Botellero"
+      },
+      {
+        "id": "lottery",
+        "type": "lottery",
+        "col": 7,
+        "row": 2,
+        "sx": 1,
+        "sy": 1,
+        "label": "Lotería"
+      },
+      {
+        "id": "vending",
+        "type": "vending",
+        "col": 9,
+        "row": 2,
+        "sx": 1,
+        "sy": 1,
+        "label": "Vending"
+      },
+      {
+        "id": "magazines",
+        "type": "magazines",
+        "col": 2,
+        "row": 3,
+        "sx": 1,
+        "sy": 1,
+        "label": "Revistero"
+      },
+      {
+        "id": "manager",
+        "type": "manager",
+        "col": 5,
+        "row": 4,
+        "sx": 1,
+        "sy": 1,
+        "label": "Escritorio"
+      },
+      {
+        "id": "plant1",
+        "type": "plant",
+        "col": 0,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Planta 1"
+      },
+      {
+        "id": "plant3",
+        "type": "plant",
+        "col": 0,
+        "row": 5,
+        "sx": 1,
+        "sy": 1,
+        "label": "Planta 2"
+      },
+      {
+        "id": "floorLamp",
+        "type": "floorLamp",
+        "col": 10,
+        "row": 5,
+        "sx": 1,
+        "sy": 1,
+        "label": "Lámpara pie"
+      },
+      {
+        "id": "led",
+        "type": "led",
+        "col": 0,
+        "row": 0,
+        "sx": 1,
+        "sy": 1,
+        "label": "LED Banner"
+      },
+      {
+        "id": "djBooth",
+        "type": "djBooth",
+        "col": 11,
+        "row": 3,
+        "sx": 1,
+        "sy": 1,
+        "label": "Mesa DJ"
+      },
+      {
+        "id": "tablet",
+        "type": "tablet",
+        "col": 13,
+        "row": 5,
+        "sx": 1,
+        "sy": 1,
+        "label": "Tablet Satisfacción"
+      },
+      {
+        "id": "turnKiosk",
+        "type": "turnKiosk",
+        "col": 12,
+        "row": 6,
+        "sx": 1,
+        "sy": 1,
+        "label": "Gestor Turnos"
+      },
+      {
+        "id": "aroma",
+        "type": "aroma",
+        "col": 13,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Máquina olores"
+      },
+      {
+        "id": "metahuman",
+        "type": "metahuman",
+        "col": 13,
+        "row": 3,
+        "sx": 1,
+        "sy": 1,
+        "label": "Metahuman AI"
+      }
+    ],
+    "supermercado": [
+      {
+        "id": "counter",
+        "type": "counter",
+        "col": 1,
+        "row": 2,
+        "sx": 1,
+        "sy": 1,
+        "label": "Caja+TPV"
+      },
+      {
+        "id": "shelves",
+        "type": "shelves",
+        "col": 3,
+        "row": 1,
+        "sx": 1.1,
+        "sy": 1,
+        "label": "Pasillo Seco"
+      },
+      {
+        "id": "wineRack",
+        "type": "wineRack",
+        "col": 6,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Frescos"
+      },
+      {
+        "id": "lottery",
+        "type": "lottery",
+        "col": 7,
+        "row": 2,
+        "sx": 1,
+        "sy": 1,
+        "label": "Panadería"
+      },
+      {
+        "id": "vending",
+        "type": "vending",
+        "col": 9,
+        "row": 2,
+        "sx": 1,
+        "sy": 1,
+        "label": "Helados y Comida"
+      },
+      {
+        "id": "magazines",
+        "type": "magazines",
+        "col": 2,
+        "row": 3,
+        "sx": 1,
+        "sy": 1,
+        "label": "Impulso"
+      },
+      {
+        "id": "manager",
+        "type": "manager",
+        "col": 5,
+        "row": 4,
+        "sx": 1,
+        "sy": 1,
+        "label": "Oficina"
+      },
+      {
+        "id": "plant1",
+        "type": "plant",
+        "col": 0,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Planta 1"
+      },
+      {
+        "id": "plant3",
+        "type": "plant",
+        "col": 0,
+        "row": 5,
+        "sx": 1,
+        "sy": 1,
+        "label": "Planta 2"
+      },
+      {
+        "id": "floorLamp",
+        "type": "floorLamp",
+        "col": 10,
+        "row": 5,
+        "sx": 1,
+        "sy": 1,
+        "label": "Lámpara pie"
+      },
+      {
+        "id": "led",
+        "type": "led",
+        "col": 0,
+        "row": 0,
+        "sx": 1,
+        "sy": 1,
+        "label": "LED Ofertas"
+      },
+      {
+        "id": "djBooth",
+        "type": "djBooth",
+        "col": 11,
+        "row": 3,
+        "sx": 1,
+        "sy": 1,
+        "label": "Hilo Musical"
+      },
+      {
+        "id": "tablet",
+        "type": "tablet",
+        "col": 13,
+        "row": 5,
+        "sx": 1,
+        "sy": 1,
+        "label": "Tablet Valoración"
+      },
+      {
+        "id": "turnKiosk",
+        "type": "turnKiosk",
+        "col": 12,
+        "row": 6,
+        "sx": 1,
+        "sy": 1,
+        "label": "Gestor Turnos"
+      },
+      {
+        "id": "aroma",
+        "type": "aroma",
+        "col": 13,
+        "row": 1,
+        "sx": 1,
+        "sy": 1,
+        "label": "Aroma Fresco"
+      }
+    ],
+    "shoptalk": [],
+    "creator": []
+  }
+}

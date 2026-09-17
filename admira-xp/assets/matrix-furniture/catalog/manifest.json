@@ -1,0 +1,5577 @@
+{
+  "schemaVersion": 1,
+  "description": "Transparent Blender renders of the 43 interpreted Best catalog models. Original Matrix cut-outs take precedence for original furniture.",
+  "generator": "admira-xp/tools/xpacios-blender/render_matrix_catalog.py",
+  "blenderVersion": "5.2.2 LTS",
+  "projection": {
+    "kind": "orthographic",
+    "azimuthDegrees": 45,
+    "elevationDegrees": 20.487315114722662,
+    "blenderCameraDirection": [
+      0.6623820662498474,
+      -0.6623820662498474,
+      0.3499999940395355
+    ],
+    "anchor": "Layout origin: Three (col, height, row) maps to Blender (col, -row, height).",
+    "rotation": "view.rotation = item.rot; Blender Z and Three Y rotate by -rot*pi/2.",
+    "scale": "Draw scale = targetPixelsPerGridUnit / view.pixelsPerGridUnit."
+  },
+  "render": {
+    "engine": "Cycles CPU",
+    "samples": 8,
+    "size": 384,
+    "alpha": true,
+    "background": "transparent",
+    "floor": false,
+    "shadows": "Self shadows only; no baked floor shadow."
+  },
+  "items": [
+    {
+      "number": 1,
+      "inventoryId": "native:counter",
+      "name": "Mostrador",
+      "footprint": [
+        1,
+        2
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.050000011920928955,
+          0.0,
+          -0.059999942779541016
+        ],
+        "max": [
+          1.0535000562667847,
+          1.659500002861023,
+          2.064499855041504
+        ]
+      },
+      "source": "inventario/assets/mostrador/counter-interpreted-best.blend",
+      "sourceSha256": "99f15be2cd756a6cb51bcb50095e93aea6277c27e5d434dcc4fa2b18b1a76b82",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/01-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            245.664436,
+            244.390057
+          ],
+          "floorCenter": [
+            191.946178,
+            300.888142
+          ],
+          "pixelsPerGridUnit": 151.786411,
+          "projectedBounds": {
+            "min": [
+              -1.4919951620815297,
+              -0.7152384370565414
+            ],
+            "max": [
+              0.7848885433400596,
+              1.4055487215518951
+            ]
+          },
+          "sha256": "2e33dfe5e218ac6e1e74a0a2537956b178152de963d15951b8477efbe3e8c429"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/01-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            352.99379,
+            299.235254
+          ],
+          "floorCenter": [
+            191.570686,
+            280.433853
+          ],
+          "pixelsPerGridUnit": 151.786411,
+          "projectedBounds": {
+            "min": [
+              -2.1991019125400086,
+              -0.22026368509978056
+            ],
+            "max": [
+              0.07778179660687101,
+              1.6332371272146702
+            ]
+          },
+          "sha256": "f55a1adae294156a61b52c900ee427207f9a19701575cd0336d9a35ede928fbc"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/01-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            138.335403,
+            336.80054
+          ],
+          "floorCenter": [
+            192.053673,
+            280.302452
+          ],
+          "pixelsPerGridUnit": 151.786396,
+          "projectedBounds": {
+            "min": [
+              -0.7848884190736314,
+              0.027223600074648857
+            ],
+            "max": [
+              1.4919954390848602,
+              1.8807244524359703
+            ]
+          },
+          "sha256": "c3acbefaf5520de09e66780f1f110b3fb3981c528c6e81c45511731b52b15b08"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/01-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            31.006153,
+            281.955208
+          ],
+          "floorCenter": [
+            192.429268,
+            300.756609
+          ],
+          "pixelsPerGridUnit": 151.786411,
+          "projectedBounds": {
+            "min": [
+              -0.07778163881283007,
+              -0.4677512105554342
+            ],
+            "max": [
+              2.199102062883469,
+              1.6530359983444214
+            ]
+          },
+          "sha256": "70033604e25359c3bc0ce3d1023f5afd75be2bf5afbfcd2a0618d273d0f505c7"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "inventoryId": "native:shelves",
+      "name": "Estantería",
+      "footprint": [
+        1,
+        2
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.02250002697110176,
+          -2.2839198976498665e-08,
+          -0.03499998897314072
+        ],
+        "max": [
+          1.03000009059906,
+          2.2350003719329834,
+          2.0350000858306885
+        ]
+      },
+      "source": "inventario/assets/catalog/02/best.blend",
+      "sourceSha256": "c2658f13d0d16aa403ff030955f99c3093c398b941d96e155299a1d979f4bf02",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/02-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            234.691978,
+            273.428707
+          ],
+          "floorCenter": [
+            192.320183,
+            318.367355
+          ],
+          "pixelsPerGridUnit": 120.751166,
+          "projectedBounds": {
+            "min": [
+              -1.4548721965402347,
+              -0.7566925799216051
+            ],
+            "max": [
+              0.7477653582901453,
+              2.1053916602395475
+            ]
+          },
+          "sha256": "0adc0c4a7d51313cbbd74bdf4147867fb426d9dda7649e955947e776db06f55e"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/02-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            320.075958,
+            333.197239
+          ],
+          "floorCenter": [
+            191.679829,
+            318.367115
+          ],
+          "pixelsPerGridUnit": 120.751166,
+          "projectedBounds": {
+            "min": [
+              -2.1619788408279437,
+              -0.2617178242395539
+            ],
+            "max": [
+              0.04065862832076661,
+              2.6003664094023407
+            ]
+          },
+          "sha256": "d3f49433ea5eb1e4a56670d076454011387c29af2afb5343ed53107eee098b8a"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/02-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            149.307987,
+            363.081867
+          ],
+          "floorCenter": [
+            191.679794,
+            318.143217
+          ],
+          "pixelsPerGridUnit": 120.751166,
+          "projectedBounds": {
+            "min": [
+              -0.747765317559244,
+              -0.014230505123464354
+            ],
+            "max": [
+              1.454872211194111,
+              2.8478536009788513
+            ]
+          },
+          "sha256": "040e79cbea940a32c50d6e329efbba56e43a773e8ef8210f65cc1e6cb50b7ee2"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/02-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            63.924025,
+            303.312962
+          ],
+          "floorCenter": [
+            192.32016,
+            318.143091
+          ],
+          "pixelsPerGridUnit": 120.751166,
+          "projectedBounds": {
+            "min": [
+              -0.04065861552953548,
+              -0.5092053269294183
+            ],
+            "max": [
+              2.1619789094985222,
+              2.3528789514675736
+            ]
+          },
+          "sha256": "60fce0b2133801398d850e96fa913b9fe4d83f0346e01fe824dbc6028b5163b0"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "inventoryId": "native:wineRack",
+      "name": "Botellero",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.04999995231628418,
+          -3.43515473844036e-08,
+          -0.06000000610947609
+        ],
+        "max": [
+          2.049999952316284,
+          1.9800000190734863,
+          1.0600000619888306
+        ]
+      },
+      "source": "inventario/assets/catalog/03/best.blend",
+      "sourceSha256": "b9dbdcf341686af02519a6f079fb90aeaf60145ee9813394c98b30bc3d2c1189",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/03-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            141.711788,
+            262.362968
+          ],
+          "floorCenter": [
+            191.999989,
+            315.165573
+          ],
+          "pixelsPerGridUnit": 142.236488,
+          "projectedBounds": {
+            "min": [
+              -0.7848885109433485,
+              -0.7201882278996301
+            ],
+            "max": [
+              1.4919953159540036,
+              1.7095681573716277
+            ]
+          },
+          "sha256": "2d202092eba813c922640c9ccdb713c8bbfd65ab0c513f8f57a16e113ecf4f5b"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/03-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            341.092484,
+            298.354437
+          ],
+          "floorCenter": [
+            191.999863,
+            315.748564
+          ],
+          "pixelsPerGridUnit": 140.565882,
+          "projectedBounds": {
+            "min": [
+              -2.1991020751902415,
+              -0.4727007686642217
+            ],
+            "max": [
+              0.07778172190478827,
+              1.9859328344464302
+            ]
+          },
+          "sha256": "de3f224bf6a51e88382dbddb428c7ca96ebcd92317f5eb3a179d51277a592bf0"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/03-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            241.697525,
+            367.931108
+          ],
+          "floorCenter": [
+            192.0,
+            315.74869
+          ],
+          "pixelsPerGridUnit": 140.56587,
+          "projectedBounds": {
+            "min": [
+              -1.4919951372296474,
+              0.02227382217373375
+            ],
+            "max": [
+              0.7848885356932094,
+              2.4809075593948364
+            ]
+          },
+          "sha256": "885bbd4e2199a93f9f61072945ed3511e103a300fe9fc3dd3a9c47086fa928b5"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/03-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            41.135413,
+            332.766615
+          ],
+          "floorCenter": [
+            191.999989,
+            315.165762
+          ],
+          "pixelsPerGridUnit": 142.236488,
+          "projectedBounds": {
+            "min": [
+              -0.07778168597907076,
+              -0.22521351226444963
+            ],
+            "max": [
+              2.1991021409182956,
+              2.2045427647621096
+            ]
+          },
+          "sha256": "6cd60e40f8a4cda2188c2bc1b658c588b3773cfa29988b297cdb4671ccdd171d"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "inventoryId": "native:lottery",
+      "name": "Lotería",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.04999995231628418,
+          -3.43515473844036e-08,
+          -0.06000000610947609
+        ],
+        "max": [
+          2.049999952316284,
+          1.390626311302185,
+          1.0600000619888306
+        ]
+      },
+      "source": "inventario/assets/catalog/04/best.blend",
+      "sourceSha256": "62f11652915cdf9e04671d43a9ea98162cb66fca46afd16b00bf446eb12287a4",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/04-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            138.335392,
+            221.249256
+          ],
+          "floorCenter": [
+            191.999989,
+            277.59708
+          ],
+          "pixelsPerGridUnit": 151.786396,
+          "projectedBounds": {
+            "min": [
+              -0.7848884799680604,
+              -0.7201882278996301
+            ],
+            "max": [
+              1.4919953469292935,
+              1.1055870912969112
+            ]
+          },
+          "sha256": "ddbc0a519df7a8df23791914211269f45509879c2dfba07a67772799100a6a5e"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/04-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            352.99379,
+            249.663139
+          ],
+          "floorCenter": [
+            192.0,
+            268.445732
+          ],
+          "pixelsPerGridUnit": 151.786396,
+          "projectedBounds": {
+            "min": [
+              -2.1991020442149534,
+              -0.4727007686642217
+            ],
+            "max": [
+              0.07778175288007816,
+              1.232490599155426
+            ]
+          },
+          "sha256": "8016fd022a9447b58811f349da219e725bda98b0175aecb3dbe90846ba6161e1"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/04-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            245.664597,
+            324.793505
+          ],
+          "floorCenter": [
+            192.000023,
+            268.445675
+          ],
+          "pixelsPerGridUnit": 151.786411,
+          "projectedBounds": {
+            "min": [
+              -1.4919951062543575,
+              0.02227382217373375
+            ],
+            "max": [
+              0.7848885666684993,
+              1.727465346455574
+            ]
+          },
+          "sha256": "317e105018a62b7e99d15bd4b0ae336713f4fb71be9c600c7a9648a3eac47a95"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/04-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            31.00633,
+            296.379719
+          ],
+          "floorCenter": [
+            192.000114,
+            277.597126
+          ],
+          "pixelsPerGridUnit": 151.786396,
+          "projectedBounds": {
+            "min": [
+              -0.07778165500378265,
+              -0.22521351226444963
+            ],
+            "max": [
+              2.1991021718935855,
+              1.600561760365963
+            ]
+          },
+          "sha256": "2376b8256ecd30bec8abefa1906692210b9cd37c2ba04dbce71e8f96df5f8865"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "inventoryId": "native:vending",
+      "name": "Vending",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          -3.774895063202166e-08,
+          -7.851781447243411e-08
+        ],
+        "max": [
+          1.0,
+          2.0799999237060547,
+          1.128999948501587
+        ]
+      },
+      "source": "inventario/assets/catalog/05/best.blend",
+      "sourceSha256": "24ce8fdcf9180013120aec45d8644f6a2d6f17a200fdd910cb1726329996ced9",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/05-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            294.79018
+          ],
+          "floorCenter": [
+            185.549091,
+            332.052967
+          ],
+          "pixelsPerGridUnit": 141.441449,
+          "projectedBounds": {
+            "min": [
+              -0.7071068286895723,
+              -0.4949747119388306
+            ],
+            "max": [
+              0.7071069817483142,
+              1.94843925988779
+            ]
+          },
+          "sha256": "3c1f1c1769321c9e98758453454d0696825f93313eabd25f18f5e4ff8c99542c"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/05-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            292.014221,
+            329.795202
+          ],
+          "floorCenter": [
+            185.549103,
+            327.53738
+          ],
+          "pixelsPerGridUnit": 141.441449,
+          "projectedBounds": {
+            "min": [
+              -1.414213538169858,
+              -0.24748731711498628
+            ],
+            "max": [
+              2.3373681123928236e-07,
+              2.1959266343409842
+            ]
+          },
+          "sha256": "3e610cfbbecaacc62f442ba673ea7adc650b1653c19bf9084f03a66782a1b72a"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/05-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            364.800024
+          ],
+          "floorCenter": [
+            198.450897,
+            327.537237
+          ],
+          "pixelsPerGridUnit": 141.441449,
+          "projectedBounds": {
+            "min": [
+              -0.7071066405089852,
+              -8.55345816397346e-09
+            ],
+            "max": [
+              0.7071069186052306,
+              2.443413943052292
+            ]
+          },
+          "sha256": "46ee9a752fdc0273114b56fdb440035c3c259bb6605724f3341d219a41562890"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/05-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            91.985762,
+            329.795185
+          ],
+          "floorCenter": [
+            198.450874,
+            332.053013
+          ],
+          "pixelsPerGridUnit": 141.441449,
+          "projectedBounds": {
+            "min": [
+              5.552047558501875e-08,
+              -0.24748740681961046
+            ],
+            "max": [
+              1.4142136357081228,
+              2.195926565007017
+            ]
+          },
+          "sha256": "643c8b1bd94ae5954c9d7f6f6553a4ecb67222e70a0b1253d9a67651d5116a49"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "inventoryId": "native:magazines",
+      "name": "Revistero",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          -3.774895063202166e-08,
+          -8.779667126646018e-08
+        ],
+        "max": [
+          2.0,
+          1.2999999523162842,
+          1.0149999856948853
+        ]
+      },
+      "source": "inventario/assets/catalog/06/best.blend",
+      "sourceSha256": "195d59c26993eb92df5576dd0f125a39a81b74dfbd4866d184bf053f99a1aa56",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/06-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            135.546215,
+            225.051567
+          ],
+          "floorCenter": [
+            191.999943,
+            285.531567
+          ],
+          "pixelsPerGridUnit": 162.106863,
+          "projectedBounds": {
+            "min": [
+              -0.717713341097042,
+              -0.7424620930394852
+            ],
+            "max": [
+              1.4142136930188371,
+              1.1502368667450416
+            ]
+          },
+          "sha256": "47e488a2d85d6b7c6874de53706e7a12f8f0bbed041a7afa32759a79c68e7646"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/06-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.799973,
+            265.17104
+          ],
+          "floorCenter": [
+            192.0,
+            284.929836
+          ],
+          "pixelsPerGridUnit": 162.106863,
+          "projectedBounds": {
+            "min": [
+              -2.131926819662258,
+              -0.49497462176708673
+            ],
+            "max": [
+              1.2815643657404507e-07,
+              1.397724365636591
+            ]
+          },
+          "sha256": "7f9c5a5f618598534b5d0f50d6938320b96137eb2b2f8c553ef1e7c04e86bddd"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/06-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            248.453773,
+            345.409882
+          ],
+          "floorCenter": [
+            192.000046,
+            284.929871
+          ],
+          "pixelsPerGridUnit": 162.106879,
+          "projectedBounds": {
+            "min": [
+              -1.4142134307357523,
+              -4.496482253202316e-08
+            ],
+            "max": [
+              0.7177134239039553,
+              1.8926990628242493
+            ]
+          },
+          "sha256": "3c36aadfbb0debcc37d008aeb698e4b59800157346d5968d584408e78c616d44"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/06-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200155,
+            305.290678
+          ],
+          "floorCenter": [
+            192.000137,
+            285.531876
+          ],
+          "pixelsPerGridUnit": 162.106863,
+          "projectedBounds": {
+            "min": [
+              -7.460549608932695e-10,
+              -0.24748737701728785
+            ],
+            "max": [
+              2.131926962371338,
+              1.645211476983489
+            ]
+          },
+          "sha256": "6778babdd09b80f9015a5b2463711abd9232657725026ea3eee9b3df78ea0861"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "inventoryId": "native:manager",
+      "name": "Escritorio",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.02499997615814209,
+          -0.05892135202884674,
+          -0.01999998465180397
+        ],
+        "max": [
+          2.0250000953674316,
+          1.4371371269226074,
+          1.190000057220459
+        ]
+      },
+      "source": "inventario/assets/catalog/07/best.blend",
+      "sourceSha256": "3ba233ba5ff6f366dd948ae3681749522f254cb4cdc913a93a957b7c91093d11",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/07-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            137.777996,
+            224.576019
+          ],
+          "floorCenter": [
+            183.848476,
+            286.160603
+          ],
+          "pixelsPerGridUnit": 156.996401,
+          "projectedBounds": {
+            "min": [
+              -0.7552909156565235,
+              -0.7580074379220605
+            ],
+            "max": [
+              1.4460335176883206,
+              1.1729964781552553
+            ]
+          },
+          "sha256": "5d073226b4417537b5c41ff5c1b63f90bbbc4ecb525e5233a0af40444f80766a"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/07-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            359.839325,
+            264.266499
+          ],
+          "floorCenter": [
+            185.116241,
+            280.278168
+          ],
+          "pixelsPerGridUnit": 155.896365,
+          "projectedBounds": {
+            "min": [
+              -2.185037612370189,
+              -0.4649167759343982
+            ],
+            "max": [
+              0.03181982119362203,
+              1.3920230120420456
+            ]
+          },
+          "sha256": "f89f58da599dcc97db2884c7b80e062dcfbdd13cb494aced0c9eaffc61bd60a8"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/07-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            246.222015,
+            334.862841
+          ],
+          "floorCenter": [
+            200.151535,
+            273.278252
+          ],
+          "pixelsPerGridUnit": 156.996417,
+          "projectedBounds": {
+            "min": [
+              -1.4460330339642837,
+              -0.01755189336836338
+            ],
+            "max": [
+              0.7552911290641262,
+              1.8375002443790436
+            ]
+          },
+          "sha256": "458a667dbf968bde0f40bd1a87f2a8f19e49a1d3ea0bd64abc8b0ad3ff8e6cc2"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/07-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            24.160661,
+            293.943249
+          ],
+          "floorCenter": [
+            198.883736,
+            277.931568
+          ],
+          "pixelsPerGridUnit": 155.896365,
+          "projectedBounds": {
+            "min": [
+              -0.03181971279258278,
+              -0.3106424454599619
+            ],
+            "max": [
+              2.1850375538552442,
+              1.6184736974537373
+            ]
+          },
+          "sha256": "3ae586b470d1ae29bec2a80b7fabc76c70571b2e09fa3547e662b4acdeae83d1"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "inventoryId": "native:door",
+      "name": "Puerta",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          1.4901161193847656e-08,
+          -4.529873809389073e-09,
+          -0.035000089555978775
+        ],
+        "max": [
+          1.0,
+          2.4099998474121094,
+          0.08950001001358032
+        ]
+      },
+      "source": "inventario/assets/catalog/08/best.blend",
+      "sourceSha256": "934bca991b7849f46bdb0c3ce091eaae93da7ceefc9d56ad8926a157600149ba",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/08-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            146.205116,
+            328.188337
+          ],
+          "floorCenter": [
+            191.783066,
+            345.979643
+          ],
+          "pixelsPerGridUnit": 136.344671,
+          "projectedBounds": {
+            "min": [
+              -0.06010419194241178,
+              -0.26852387138057665
+            ],
+            "max": [
+              0.7318557514815751,
+              2.26622876435537
+            ]
+          },
+          "sha256": "4690f7f8406482a7d886df21ca9312548ae6b55b03f74979941d586b452cf3c2"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/08-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            242.61525,
+            329.875511
+          ],
+          "floorCenter": [
+            191.782963,
+            345.827788
+          ],
+          "pixelsPerGridUnit": 136.344671,
+          "projectedBounds": {
+            "min": [
+              -0.7672110013663765,
+              -0.2561493362824163
+            ],
+            "max": [
+              0.02474897000541265,
+              2.2786031167368854
+            ]
+          },
+          "sha256": "24a485b379a5e0a3386a367b22483ac3e20cbd0dac82817c8ba01ffcd8898b19"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/08-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            237.794724,
+            363.619087
+          ],
+          "floorCenter": [
+            192.216774,
+            345.827788
+          ],
+          "pixelsPerGridUnit": 136.344671,
+          "projectedBounds": {
+            "min": [
+              -0.731855379417539,
+              -0.00866203308346103
+            ],
+            "max": [
+              0.06010425106580719,
+              2.526090545579791
+            ]
+          },
+          "sha256": "85aa4f802598e40b3c4139c0fa535582e6a0fcfa1c51b5b2954d6e2e2e829e32"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/08-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            141.384602,
+            361.931952
+          ],
+          "floorCenter": [
+            192.216888,
+            345.979677
+          ],
+          "pixelsPerGridUnit": 136.344671,
+          "projectedBounds": {
+            "min": [
+              -0.02474866261990306,
+              -0.021036466280053068
+            ],
+            "max": [
+              0.7672110307037059,
+              2.5137160755693913
+            ]
+          },
+          "sha256": "2d77d51946e71e7935068ca2062e6ac1962d50f8725c60eea5261b835f95f450"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "inventoryId": "native:plant",
+      "name": "Planta",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.36821141839027405,
+          -2.128134823919936e-08,
+          -0.27447766065597534
+        ],
+        "max": [
+          1.2851053476333618,
+          1.8882250785827637,
+          1.1344398260116577
+        ]
+      },
+      "source": "inventario/assets/catalog/09/best.blend",
+      "sourceSha256": "8a4e27669457db6e2d6ab952df8c9fd28418c30115252e6fede95a9f172c3536",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/09-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            176.406395,
+            295.712568
+          ],
+          "floorCenter": [
+            179.999645,
+            334.963749
+          ],
+          "pixelsPerGridUnit": 178.516095,
+          "projectedBounds": {
+            "min": [
+              -0.805179870987871,
+              -0.3870108226264257
+            ],
+            "max": [
+              0.97988258599392,
+              1.548948973417282
+            ]
+          },
+          "sha256": "0d314fbc87accb44131ef11f0592518232f2807f6c8db5fc4f454e33ddc5c46c"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/09-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            327.012039,
+            340.377325
+          ],
+          "floorCenter": [
+            217.047089,
+            341.610492
+          ],
+          "pixelsPerGridUnit": 175.043884,
+          "projectedBounds": {
+            "min": [
+              -1.5946201436754421,
+              -0.1395234180664282
+            ],
+            "max": [
+              0.05201224349470124,
+              1.8348386734724045
+            ]
+          },
+          "sha256": "eddb2835ea382d08943575491e00a1d474d0eac85a3400777ff7d1102b8fae3c"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/09-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            207.396606,
+            383.829866
+          ],
+          "floorCenter": [
+            203.848755,
+            345.074573
+          ],
+          "pixelsPerGridUnit": 176.260788,
+          "projectedBounds": {
+            "min": [
+              -0.9798823416317362,
+              0.10796388480313013
+            ],
+            "max": [
+              0.8051801255693647,
+              2.0686948746442795
+            ]
+          },
+          "sha256": "90d28b687b3f0cd2555b7a9527aa24ed5f2d9cb26dfe28ced16d98f14f6597be"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/09-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            56.265181,
+            340.246699
+          ],
+          "floorCenter": [
+            166.81889,
+            339.006929
+          ],
+          "pixelsPerGridUnit": 175.981111,
+          "projectedBounds": {
+            "min": [
+              -0.052012047543811946,
+              -0.1395235123062868
+            ],
+            "max": [
+              1.5946202523473545,
+              1.824323631823063
+            ]
+          },
+          "sha256": "a0887071febf77f8a422ec0882e149304c9f368cdd287f89d471ae3e995f8bb3"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "inventoryId": "native:floorLamp",
+      "name": "Lámpara",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.1199999749660492,
+          -2.189439030075846e-08,
+          0.119999960064888
+        ],
+        "max": [
+          0.8799999952316284,
+          2.065000057220459,
+          0.880000114440918
+        ]
+      },
+      "source": "inventario/assets/catalog/10/best.blend",
+      "sourceSha256": "94d78812f4d389997dd9b3795be37264624f6e641fb87582f677eb1b1d0a7eed",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/10-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            303.685862
+          ],
+          "floorCenter": [
+            191.999989,
+            341.236256
+          ],
+          "pixelsPerGridUnit": 151.726512,
+          "projectedBounds": {
+            "min": [
+              -0.5374012190483306,
+              -0.4027915447950363
+            ],
+            "max": [
+              0.53740132554816,
+              1.8749909717589617
+            ]
+          },
+          "sha256": "6b330ac9460edd51fe57e285567a055c73a0ef7f1144810ea7483f3e14b71d03"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/10-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            299.286827,
+            341.236442
+          ],
+          "floorCenter": [
+            191.999989,
+            341.236433
+          ],
+          "pixelsPerGridUnit": 151.726498,
+          "projectedBounds": {
+            "min": [
+              -1.244508025386164,
+              -0.15530412830412388
+            ],
+            "max": [
+              -0.16970539883328684,
+              2.1224786061793566
+            ]
+          },
+          "sha256": "dae83daefad8a747874b513dbd8646b8e811f7a32cb35a631039ca0a4120825e"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/10-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            378.786923
+          ],
+          "floorCenter": [
+            192.0,
+            341.236522
+          ],
+          "pixelsPerGridUnit": 151.726498,
+          "projectedBounds": {
+            "min": [
+              -0.5374010551355619,
+              0.09218317456543446
+            ],
+            "max": [
+              0.5374013553504966,
+              2.36996591091156
+            ]
+          },
+          "sha256": "728828613c11ba8692a7ee1a4eddeb13f84947b7331cc719b66355f0a36bfd22"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/10-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            84.713139,
+            341.236436
+          ],
+          "floorCenter": [
+            191.999989,
+            341.236447
+          ],
+          "pixelsPerGridUnit": 151.726512,
+          "projectedBounds": {
+            "min": [
+              0.16970569159762672,
+              -0.15530424565076828
+            ],
+            "max": [
+              1.2445080648307822,
+              2.122478287667036
+            ]
+          },
+          "sha256": "0ecbddd2c5945d9fe385eeb6f0411a4273179edd88cf83613a665cbf1a89d4d3"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "inventoryId": "native:rug",
+      "name": "Alfombra",
+      "footprint": [
+        2,
+        2
+      ],
+      "bounds_gltf": {
+        "min": [
+          5.960464477539063e-08,
+          -7.30732381271082e-08,
+          -1.8875145890717704e-10
+        ],
+        "max": [
+          2.0,
+          0.04250011965632439,
+          2.0
+        ]
+      },
+      "source": "inventario/assets/catalog/11/best.blend",
+      "sourceSha256": "3de9498714535f9a60c1dd42d5f6459305a5758ffa80f22f7d5764de32d5967c",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/11-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            192.0,
+            133.952454
+          ],
+          "floorCenter": [
+            192.0,
+            194.432465
+          ],
+          "pixelsPerGridUnit": 122.188059,
+          "projectedBounds": {
+            "min": [
+              -1.414213496023007,
+              -0.9899493620017097
+            ],
+            "max": [
+              1.414213541514179,
+              0.039811819988269395
+            ]
+          },
+          "sha256": "e1fe7c6f82780602f8db54e0a58aec034881cad9b08f2673e811a9ffd51593b2"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/11-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.800018,
+            194.43243
+          ],
+          "floorCenter": [
+            192.0,
+            194.432419
+          ],
+          "pixelsPerGridUnit": 122.188059,
+          "projectedBounds": {
+            "min": [
+              -2.828426957130426,
+              -0.49497467007562435
+            ],
+            "max": [
+              -1.3964509104624767e-08,
+              0.5347867692922534
+            ]
+          },
+          "sha256": "8dc27c22591872265c224050fdc9a0fb19c2982a9ad101e613cd8d64431343f1"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/11-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            192.0,
+            254.912453
+          ],
+          "floorCenter": [
+            192.0,
+            194.432442
+          ],
+          "pixelsPerGridUnit": 122.188059,
+          "projectedBounds": {
+            "min": [
+              -1.4142133899235374,
+              -4.083636806484492e-08
+            ],
+            "max": [
+              1.4142136107271501,
+              1.0297614075243473
+            ]
+          },
+          "sha256": "bdbd0d6f8dee0f896671c376d89f9249587ca6739d379aabc98f1bc01938462b"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/11-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.199993,
+            194.432396
+          ],
+          "floorCenter": [
+            192.0,
+            194.432407
+          ],
+          "pixelsPerGridUnit": 122.188059,
+          "projectedBounds": {
+            "min": [
+              4.900425424053094e-08,
+              -0.4949747055568494
+            ],
+            "max": [
+              2.828426960341294,
+              0.5347864449781081
+            ]
+          },
+          "sha256": "0057acab062721957a76c66e51d4ec075d81e9585067adfdf7e204ff181da55a"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "inventoryId": "native:led",
+      "name": "LED Banner",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          -0.14499999582767487,
+          -0.040000010281801224
+        ],
+        "max": [
+          5.5,
+          0.14499999582767487,
+          0.0560000017285347
+        ]
+      },
+      "source": "inventario/assets/catalog/12/best.blend",
+      "sourceSha256": "bb19054d1a92d021451108522eb1069d1972cab579b717b5e905e39ad973d816",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/12-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            21.677456,
+            132.387154
+          ],
+          "floorCenter": [
+            191.504562,
+            192.173492
+          ],
+          "pixelsPerGridUnit": 87.590006,
+          "projectedBounds": {
+            "min": [
+              -0.02828428872161748,
+              -1.506908981129527
+            ],
+            "max": [
+              3.9173714888864124,
+              0.14572819881141186
+            ]
+          },
+          "sha256": "9e791124e1c96b3eb185466b65eb6baba890aebe43f4f7abf7a2152f83a98c2d"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/12-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            362.322533,
+            132.387199
+          ],
+          "floorCenter": [
+            191.504482,
+            191.826668
+          ],
+          "pixelsPerGridUnit": 87.589996,
+          "projectedBounds": {
+            "min": [
+              -3.917371658387121,
+              -1.506908324547112
+            ],
+            "max": [
+              0.02828428748527234,
+              0.14572819738148718
+            ]
+          },
+          "sha256": "ced50c327e8261814e7be023dcf310c6d71e89635ea26e1419e28022e4888804"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/12-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            362.322556,
+            251.613018
+          ],
+          "floorCenter": [
+            192.495461,
+            191.826668
+          ],
+          "pixelsPerGridUnit": 87.590015,
+          "projectedBounds": {
+            "min": [
+              -3.917371133121189,
+              -0.14572819235803514
+            ],
+            "max": [
+              0.028284276293145227,
+              1.5069090938195586
+            ]
+          },
+          "sha256": "b405bd4f8c8dd215598bac4965050d0029acf5d3aee3bd057d8093e1fc70e21b"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/12-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            21.677446,
+            251.612995
+          ],
+          "floorCenter": [
+            192.495506,
+            192.173515
+          ],
+          "pixelsPerGridUnit": 87.590006,
+          "projectedBounds": {
+            "min": [
+              -0.02828427348316967,
+              -0.14572820265475245
+            ],
+            "max": [
+              3.91737152055138,
+              1.5069083720445633
+            ]
+          },
+          "sha256": "eaed7918006a61ab2b87917a0b01e4fbf96734e9ee9da628c72d0693425d81c8"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "inventoryId": "native:tft",
+      "name": "Pantalla TFT",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.09999996423721313,
+          -2.840498208999634,
+          -0.06500004231929779
+        ],
+        "max": [
+          2.055555582046509,
+          0.6499999761581421,
+          0.07900000363588333
+        ]
+      },
+      "source": "inventario/assets/catalog/13/best.blend",
+      "sourceSha256": "bb6ec17bfbea850f663c93e5b5211e4f8fc63a7b75f3b14889cb8364b05a4559",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/13-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            128.040791,
+            78.400017
+          ],
+          "floorCenter": [
+            190.598511,
+            100.610962
+          ],
+          "pixelsPerGridUnit": 91.133088,
+          "projectedBounds": {
+            "min": [
+              -0.0954594857010953,
+              -3.1426572240889072
+            ],
+            "max": [
+              1.4991057596434025,
+              0.6495989300310612
+            ]
+          },
+          "sha256": "cd17fc2dbcd60f1788113c08cee19958d7012bc64a930905ac7dd89694ff7790"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/13-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            255.07917,
+            77.218918
+          ],
+          "floorCenter": [
+            190.575291,
+            99.474312
+          ],
+          "pixelsPerGridUnit": 92.632328,
+          "projectedBounds": {
+            "min": [
+              -1.478246195516359,
+              -3.1045439392328262
+            ],
+            "max": [
+              0.11631912805923506,
+              0.6263350853696465
+            ]
+          },
+          "sha256": "6df2e41802fd36995e46b13d4a942236768e64c5b56fcb667b1ad8d0f83db5c8"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/13-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            257.054855,
+            122.119377
+          ],
+          "floorCenter": [
+            193.425591,
+            99.527962
+          ],
+          "pixelsPerGridUnit": 92.694084,
+          "projectedBounds": {
+            "min": [
+              -1.499105565928307,
+              -2.6180826630443335
+            ],
+            "max": [
+              0.09545942237116023,
+              1.1103105652146041
+            ]
+          },
+          "sha256": "bf661acbe12ca9cf4cdecff14ef4a72466234e25f8c70ef5e65fc5d9855d9195"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/13-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            129.901039,
+            122.573982
+          ],
+          "floorCenter": [
+            193.402565,
+            100.664406
+          ],
+          "pixelsPerGridUnit": 91.192871,
+          "projectedBounds": {
+            "min": [
+              -0.11631905355342909,
+              -2.656195729970932
+            ],
+            "max": [
+              1.4782460874829404,
+              1.133574115112424
+            ]
+          },
+          "sha256": "f4937721ea5582253c78409aeee71fdf9e4f8557f603a090574fab3c6b8cc9a0"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "inventoryId": "native:metahuman",
+      "name": "Mupi Metahuman",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.04500001668930054,
+          -2.8825199604034424,
+          0.19499999284744263
+        ],
+        "max": [
+          0.9549999833106995,
+          1.994999885559082,
+          0.8369999527931213
+        ]
+      },
+      "source": "inventario/assets/catalog/14/best.blend",
+      "sourceSha256": "c15228f8ba0802b4f7d3d4b18dd2f3feb05241e0d57d4e4c1eea1ad4f8896207",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/14-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            192.0,
+            145.391418
+          ],
+          "floorCenter": [
+            191.185341,
+            163.497299
+          ],
+          "pixelsPerGridUnit": 72.00668,
+          "projectedBounds": {
+            "min": [
+              -0.5020458176732046,
+              -3.0470582991838455
+            ],
+            "max": [
+              0.5020458207995508,
+              1.7524965293705463
+            ]
+          },
+          "sha256": "4bfca0e893e96dd8feefb383bf67260c02c92f1aa76eaddb2303c0901e28548b"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/14-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            243.323982,
+            164.365059
+          ],
+          "floorCenter": [
+            191.178829,
+            164.077652
+          ],
+          "pixelsPerGridUnit": 72.58306,
+          "projectedBounds": {
+            "min": [
+              -1.2091525793075544,
+              -2.7614578157663345
+            ],
+            "max": [
+              -0.2050609184830572,
+              1.9999838415533304
+            ]
+          },
+          "sha256": "10ad29130ea865726b88ef8b9e5c8aa94774361120b38dbb8b2ddac2699360f1"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/14-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            192.0,
+            182.359268
+          ],
+          "floorCenter": [
+            192.821342,
+            164.105003
+          ],
+          "pixelsPerGridUnit": 72.596821,
+          "projectedBounds": {
+            "min": [
+              -0.5020457357168215,
+              -2.5130679346621037
+            ],
+            "max": [
+              0.5020458729536195,
+              2.247471198439598
+            ]
+          },
+          "sha256": "4b004deb788ba98bb1fb0479bba5dcfa8c43951c4b7d373a1c191c8aea64dc2c"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/14-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            141.074146,
+            163.239372
+          ],
+          "floorCenter": [
+            192.814957,
+            163.524559
+          ],
+          "pixelsPerGridUnit": 72.020223,
+          "projectedBounds": {
+            "min": [
+              0.20506095141172237,
+              -2.7986683323979378
+            ],
+            "max": [
+              1.2091525898844857,
+              1.9999837949872017
+            ]
+          },
+          "sha256": "33056fcbb35d63affa5d122095a3f84e4f5524a5d9c07dd6e89c451391b1533d"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "inventoryId": "native:tablet",
+      "name": "Tablet Satisf.",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.16999998688697815,
+          -2.2649372155569836e-08,
+          0.19999998807907104
+        ],
+        "max": [
+          0.8300000429153442,
+          1.455733299255371,
+          0.800000011920929
+        ]
+      },
+      "source": "inventario/assets/catalog/15/best.blend",
+      "sourceSha256": "909b618ab637b96d834359a0c9e8371266202e0f0a26991361e52b89fb5f54ed",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/15-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            279.377472
+          ],
+          "floorCenter": [
+            191.999989,
+            332.766649
+          ],
+          "pixelsPerGridUnit": 215.724822,
+          "projectedBounds": {
+            "min": [
+              -0.42426410317420793,
+              -0.39597975576170086
+            ],
+            "max": [
+              0.42426410997366126,
+              1.2060611844062805
+            ]
+          },
+          "sha256": "a467d5dbd5dff63efb0e31c47b5a88169881b194b9eb528cdc7f8c71a7c4caad"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/15-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            345.243141,
+            332.619106
+          ],
+          "floorCenter": [
+            191.999977,
+            332.619089
+          ],
+          "pixelsPerGridUnit": 216.718553,
+          "projectedBounds": {
+            "min": [
+              -1.1313708424568159,
+              -0.14849239101759792
+            ],
+            "max": [
+              -0.28284265911126916,
+              1.446202591061592
+            ]
+          },
+          "sha256": "174c780c77fc6cc78e555778f7cc40113922ab0806674f9654fc119ee7218ce0"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/15-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            386.254415
+          ],
+          "floorCenter": [
+            192.0,
+            332.619312
+          ],
+          "pixelsPerGridUnit": 216.718553,
+          "projectedBounds": {
+            "min": [
+              -0.42426404356956654,
+              0.0989949230278313
+            ],
+            "max": [
+              0.4242641546771484,
+              1.693689949810505
+            ]
+          },
+          "sha256": "848a5e60ea5b3d21a3663e1240d5e8aaed20f2312c574c445d233c8f704819ee"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/15-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            39.459517,
+            332.766844
+          ],
+          "floorCenter": [
+            192.0,
+            332.766855
+          ],
+          "pixelsPerGridUnit": 215.724822,
+          "projectedBounds": {
+            "min": [
+              0.2828426957130415,
+              -0.14849244544156193
+            ],
+            "max": [
+              1.1313709088609176,
+              1.453548476099968
+            ]
+          },
+          "sha256": "d77b650ffc65a09ed2ae4e81424c6b18adeea2e1b8215202b7a691128bfae4be"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "inventoryId": "native:aroma",
+      "name": "Aroma",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.04999998211860657,
+          -0.375,
+          0.004999966826289892
+        ],
+        "max": [
+          0.7100000381469727,
+          0.375,
+          0.2759999930858612
+        ]
+      },
+      "source": "inventario/assets/catalog/16/best.blend",
+      "sourceSha256": "af93744efe2cc36d56847c1ad69d0d8ec1b62fd9cfca6cf16e8032887572e52f",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/16-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            126.149883,
+            144.983299
+          ],
+          "floorCenter": [
+            189.234169,
+            192.968193
+          ],
+          "pixelsPerGridUnit": 372.503798,
+          "projectedBounds": {
+            "min": [
+              -0.14495694862700859,
+              -0.5901064798235893
+            ],
+            "max": [
+              0.4985103282800303,
+              0.3376693422906101
+            ]
+          },
+          "sha256": "e4b62c715443c0d4f48dfdb855ea9dbf4e20a8e9fcd2329c7c1a0873bc5bacd0"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/16-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            326.334137,
+            168.952858
+          ],
+          "floorCenter": [
+            189.234467,
+            191.032356
+          ],
+          "pixelsPerGridUnit": 372.503798,
+          "projectedBounds": {
+            "min": [
+              -0.682358099539055,
+              -0.5257596839219332
+            ],
+            "max": [
+              -0.038890811921806545,
+              0.4020160548388958
+            ]
+          },
+          "sha256": "d1f663fd5d9522b15942567dda24d69adf236f4d224f69284e33b3716975bc49"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/16-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            257.849785,
+            239.017193
+          ],
+          "floorCenter": [
+            194.765511,
+            191.03231
+          ],
+          "pixelsPerGridUnit": 372.503798,
+          "projectedBounds": {
+            "min": [
+              -0.49851024655647436,
+              -0.33766932517755777
+            ],
+            "max": [
+              0.1449569113741056,
+              0.5901064649224281
+            ]
+          },
+          "sha256": "5652c9dd55b10b62727a545564b786e4fc4ae59f1ae0ba9f3213646dbd7e837e"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/16-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            57.665943,
+            215.047886
+          ],
+          "floorCenter": [
+            194.765602,
+            192.968399
+          ],
+          "pixelsPerGridUnit": 372.503798,
+          "projectedBounds": {
+            "min": [
+              0.038890844983757944,
+              -0.4020160688087344
+            ],
+            "max": [
+              0.6823580399344102,
+              0.5257597041781992
+            ]
+          },
+          "sha256": "48e3814e8cdbbc446205be2937dfe5700052037818721194acf8eb7d065a5499"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "inventoryId": "native:djBooth",
+      "name": "Mesa DJ · Audio",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.04999995231628418,
+          -3.43515473844036e-08,
+          -0.23234252631664276
+        ],
+        "max": [
+          2.19720196723938,
+          1.2900002002716064,
+          1.7079118490219116
+        ]
+      },
+      "source": "inventario/assets/catalog/17/best.blend",
+      "sourceSha256": "bba5439e4b881652b428a72d54da1da4933116776caa433c18144b3aba4b6bda",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/17-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            138.335392,
+            229.334438
+          ],
+          "floorCenter": [
+            174.378296,
+            297.379532
+          ],
+          "pixelsPerGridUnit": 151.786396,
+          "projectedBounds": {
+            "min": [
+              -0.7848884761905879,
+              -0.7201882278996301
+            ],
+            "max": [
+              1.491995350706766,
+              1.21211952122394
+            ]
+          },
+          "sha256": "00cad6973c4434c21a44c667eba6866cbacd546aed80c9d4da8a612c11d71882"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/17-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            353.896935,
+            259.348114
+          ],
+          "floorCenter": [
+            174.355854,
+            270.998028
+          ],
+          "pixelsPerGridUnit": 140.174136,
+          "projectedBounds": {
+            "min": [
+              -2.3877230774231233,
+              -0.4727007686642217
+            ],
+            "max": [
+              0.07778175665755072,
+              1.433620840543881
+            ]
+          },
+          "sha256": "0463048d69b8eee1b33cbbb8baee7763075e42ce9e2902c70986f9bef5417463"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/17-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            245.664597,
+            340.057969
+          ],
+          "floorCenter": [
+            209.621681,
+            272.012867
+          ],
+          "pixelsPerGridUnit": 151.786411,
+          "projectedBounds": {
+            "min": [
+              -1.491995102476885,
+              0.02227382217373375
+            ],
+            "max": [
+              0.7848885704459718,
+              1.928595557808876
+            ]
+          },
+          "sha256": "109f7e7ae44822744946d02c39a3d92f3f7d802fb9d407400bfcc6dfafaa850e"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/17-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            30.102954,
+            295.860752
+          ],
+          "floorCenter": [
+            209.64402,
+            284.21085
+          ],
+          "pixelsPerGridUnit": 140.174136,
+          "projectedBounds": {
+            "min": [
+              -0.0777816512263172,
+              -0.22521351226444963
+            ],
+            "max": [
+              2.3877230991058074,
+              1.7070941049605608
+            ]
+          },
+          "sha256": "491be9b945789dfd18628ac5b62f9a07acc537376d6b447b57de1631e92c2bac"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "inventoryId": "native:turnKiosk",
+      "name": "Gestor Turnos",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.16999998688697815,
+          -2.2649372155569836e-08,
+          0.19999998807907104
+        ],
+        "max": [
+          0.8300000429153442,
+          1.455733299255371,
+          0.800000011920929
+        ]
+      },
+      "source": "inventario/assets/catalog/18/best.blend",
+      "sourceSha256": "a65d11ab2f83e69021a5c3312c8ba45153f2545fc1f5e8a36cffccb697f04b9d",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/18-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            279.377472
+          ],
+          "floorCenter": [
+            191.999989,
+            332.766649
+          ],
+          "pixelsPerGridUnit": 215.724822,
+          "projectedBounds": {
+            "min": [
+              -0.42426410317420793,
+              -0.39597975576170086
+            ],
+            "max": [
+              0.42426410997366126,
+              1.2060611844062805
+            ]
+          },
+          "sha256": "7c5b32460f0f9eb6de2d2f34f3348694130812aad62b6691a71239d9e64e742d"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/18-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            345.243141,
+            332.619106
+          ],
+          "floorCenter": [
+            191.999977,
+            332.619089
+          ],
+          "pixelsPerGridUnit": 216.718553,
+          "projectedBounds": {
+            "min": [
+              -1.1313708424568159,
+              -0.14849239101759792
+            ],
+            "max": [
+              -0.28284265911126916,
+              1.446202591061592
+            ]
+          },
+          "sha256": "4b641af0575ecbccd429c46f28a51574ef3220c29b32029c0a496a69894e6155"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/18-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            386.254415
+          ],
+          "floorCenter": [
+            192.0,
+            332.619312
+          ],
+          "pixelsPerGridUnit": 216.718553,
+          "projectedBounds": {
+            "min": [
+              -0.42426404356956654,
+              0.0989949230278313
+            ],
+            "max": [
+              0.4242641546771484,
+              1.693689949810505
+            ]
+          },
+          "sha256": "8f545ba14ef712ea841ffd017769cee01507bf4e39cc6ccb3ac6f9ec4cef35e5"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/18-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            39.459517,
+            332.766844
+          ],
+          "floorCenter": [
+            192.0,
+            332.766855
+          ],
+          "pixelsPerGridUnit": 215.724822,
+          "projectedBounds": {
+            "min": [
+              0.2828426957130415,
+              -0.14849244544156193
+            ],
+            "max": [
+              1.1313709088609176,
+              1.453548476099968
+            ]
+          },
+          "sha256": "6bf6cbc4812efdcd0b44192dd8fb2d80ecccc2444939245d1374d50c346977a1"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "inventoryId": "pixeria:1781386629046-a7rnyw",
+      "name": "Scooter retro",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.10857142508029938,
+          0.01714286021888256,
+          0.01714286021888256
+        ],
+        "max": [
+          0.46571430563926697,
+          0.7971429228782654,
+          0.954285740852356
+        ]
+      },
+      "source": "inventario/assets/catalog/19/best.blend",
+      "sourceSha256": "d10ea47d1ee83faa0a76ce61c0182c72a7a6a8e68cb729b9311accbc524e1fce",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/19-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            245.082802,
+            241.37249
+          ],
+          "floorCenter": [
+            187.453182,
+            319.877306
+          ],
+          "pixelsPerGridUnit": 410.43464,
+          "projectedBounds": {
+            "min": [
+              -0.5010356741113215,
+              -0.3007252309471369
+            ],
+            "max": [
+              0.2423696013509069,
+              0.5413089357316494
+            ]
+          },
+          "sha256": "b41dddf5378cc2a52d88f721a38cb8c25f38ebd2f1edd493f8e5a6eda83f01d7"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/19-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            393.543686,
+            342.517931
+          ],
+          "floorCenter": [
+            191.626442,
+            324.360289
+          ],
+          "pixelsPerGridUnit": 369.478537,
+          "projectedBounds": {
+            "min": [
+              -0.9050966786307844,
+              -0.06030894024297595
+            ],
+            "max": [
+              -0.1858680626171143,
+              0.8750633373856544
+            ]
+          },
+          "sha256": "dffd71a16bd9373f670dae8ebe311b109a26941d265257bb42d2b78264ffc273"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/19-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            144.214485,
+            394.769556
+          ],
+          "floorCenter": [
+            196.093437,
+            324.098511
+          ],
+          "pixelsPerGridUnit": 369.47858,
+          "projectedBounds": {
+            "min": [
+              -0.24236953832518715,
+              0.0811124132014811
+            ],
+            "max": [
+              0.5010357298163264,
+              1.0164846032857895
+            ]
+          },
+          "sha256": "11deffbca0b1f4dd9417435e0c36162daa84d7d64ea8217fe023ec8f2c330672"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/19-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            -31.884968,
+            299.416924
+          ],
+          "floorCenter": [
+            192.414505,
+            319.587313
+          ],
+          "pixelsPerGridUnit": 410.43464,
+          "projectedBounds": {
+            "min": [
+              0.185868079206571,
+              -0.15930396132171154
+            ],
+            "max": [
+              0.9050967492369502,
+              0.6827302053570747
+            ]
+          },
+          "sha256": "945106bac1d6e6719ba1d94b68901322ba1d627d61a0c022df3ddad7265c74f0"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "inventoryId": "pixeria:1781386540390-t84431",
+      "name": "Moto deportiva verde",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.07999996840953827,
+          0.01714286021888256,
+          0.01714286021888256
+        ],
+        "max": [
+          0.4914286136627197,
+          0.6457143425941467,
+          0.954285740852356
+        ]
+      },
+      "source": "inventario/assets/catalog/20/best.blend",
+      "sourceSha256": "a1091e7696a62eb6fde59261731466eac1198f6b5166c03f32dacb44f42ce74a",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/20-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            252.125496,
+            216.68882
+          ],
+          "floorCenter": [
+            186.380459,
+            305.444635
+          ],
+          "pixelsPerGridUnit": 464.8877,
+          "projectedBounds": {
+            "min": [
+              -0.5010357211963381,
+              -0.3007252309471369
+            ],
+            "max": [
+              0.2423696013509069,
+              0.4069357328116894
+            ]
+          },
+          "sha256": "8f2bebf7c999d8a71586a0645ede99d7b95256997e361015e7e2bd501467910a"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/20-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            429.87442,
+            338.501278
+          ],
+          "floorCenter": [
+            192.000069,
+            316.916365
+          ],
+          "pixelsPerGridUnit": 436.080735,
+          "projectedBounds": {
+            "min": [
+              -0.9050967257158007,
+              -0.06030894024297595
+            ],
+            "max": [
+              -0.1858680626171143,
+              0.7322048544883728
+            ]
+          },
+          "sha256": "b29ff089aec49fa7422c38a531473e908fc3971dadca984cfc9f7182590dc497"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/20-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            135.600666,
+            400.172197
+          ],
+          "floorCenter": [
+            197.271835,
+            316.916182
+          ],
+          "pixelsPerGridUnit": 436.080764,
+          "projectedBounds": {
+            "min": [
+              -0.24236953832518715,
+              0.0811124132014811
+            ],
+            "max": [
+              0.5010358157067394,
+              0.873626135289669
+            ]
+          },
+          "sha256": "cfb7b7ff13a1ca264cbb01c205fb8db27b31b2fff8638f9b17c7299adb9029d9"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/20-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            -70.112389,
+            285.473534
+          ],
+          "floorCenter": [
+            191.999931,
+            309.257807
+          ],
+          "pixelsPerGridUnit": 480.514742,
+          "projectedBounds": {
+            "min": [
+              0.185868079206571,
+              -0.15930396132171154
+            ],
+            "max": [
+              0.9050967792480087,
+              0.5483569949865341
+            ]
+          },
+          "sha256": "7f089d0ecb1cbbe38c1e3e128fc3c03a3e59e1d251f89488b29e4f6d8e5f58cd"
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "inventoryId": "pixeria:1781384527973-p1az8j",
+      "name": "Sofá Cazafantasmas",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.0,
+          0.6327965259552002,
+          0.5027778148651123
+        ]
+      },
+      "source": "inventario/assets/catalog/21/best.blend",
+      "sourceSha256": "396a20c045cdbc5180a4f36245b7faab873d60cc5313264196cc77dac7d63471",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/21-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            134.825798,
+            225.382977
+          ],
+          "floorCenter": [
+            191.99992,
+            285.862976
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -0.35551758278523593,
+              -0.35198206454515457
+            ],
+            "max": [
+              0.707106786713144,
+              0.5572676425799727
+            ]
+          },
+          "sha256": "42da19d13b93f460be53f82c1f2d34d52f7b5a05409670217709470e88025338"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/21-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.799973,
+            251.733913
+          ],
+          "floorCenter": [
+            191.999966,
+            271.744846
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -1.0626243518701664,
+              -0.22823830507695675
+            ],
+            "max": [
+              4.281944132600302e-09,
+              0.5955663602799177
+            ]
+          },
+          "sha256": "be65513a5abd3702fbe21406d29d41fd9f453cab68ab399d735d7a0411d33c3d"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/21-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            249.174179,
+            332.224926
+          ],
+          "floorCenter": [
+            192.000069,
+            271.744915
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -0.7071067129056949,
+              0.019249017350375652
+            ],
+            "max": [
+              0.3555176646602405,
+              0.8430537767708302
+            ]
+          },
+          "sha256": "a862fa7dbd7dfe01b666de96fdd0f48f1293fa5b9476c52b7a9bc51b632deb79"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/21-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200316,
+            305.874006
+          ],
+          "floorCenter": [
+            192.00032,
+            285.863079
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              2.0891528507149815e-09,
+              -0.10449469741433859
+            ],
+            "max": [
+              1.062624401397045,
+              0.8047549780458212
+            ]
+          },
+          "sha256": "d6a8d096e8934fa6de870636719278d167fb6f2ab06117d4693e878de1f9005e"
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "inventoryId": "pixeria:1781369869967-74ooz1",
+      "name": "Sofá modular verde Matrix",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.0,
+          0.6327965259552002,
+          0.5027778148651123
+        ]
+      },
+      "source": "inventario/assets/catalog/22/best.blend",
+      "sourceSha256": "2c5d8267fcc0f27e031ab4dcc81b5c1b5ba3a1314cb842b2d706b5f86c934983",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/22-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            134.825878,
+            225.355122
+          ],
+          "floorCenter": [
+            192.0,
+            285.835133
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -0.35551758278523593,
+              -0.35198206454515457
+            ],
+            "max": [
+              0.707106786713144,
+              0.5570957800373435
+            ]
+          },
+          "sha256": "d5452f6ee4d67d2295b6bc6e0f456c68e6f33f7254e2bd2299e4d50b0d952fd1"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/22-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.799927,
+            251.705727
+          ],
+          "floorCenter": [
+            191.999931,
+            271.71666
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -1.0626243518701664,
+              -0.22823830507695675
+            ],
+            "max": [
+              4.281944132600302e-09,
+              0.595394492149353
+            ]
+          },
+          "sha256": "9e685ca5dd23b3656715504283e3afd812533617e26726cfed823ff0ec5a798d"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/22-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            249.174179,
+            332.196848
+          ],
+          "floorCenter": [
+            192.000069,
+            271.716843
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -0.7071067129056949,
+              0.019249017350375652
+            ],
+            "max": [
+              0.3555176646602405,
+              0.8428819105029106
+            ]
+          },
+          "sha256": "5066c37986b1618b8df401954cd0196f77349fc009f8399cc068b2c6db81fb84"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/22-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200065,
+            305.846266
+          ],
+          "floorCenter": [
+            192.000069,
+            285.835339
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              2.0891528507149815e-09,
+              -0.10449469741433859
+            ],
+            "max": [
+              1.062624401397045,
+              0.8045831080526114
+            ]
+          },
+          "sha256": "a20c0f7950ac26466d64edca3f0b3d8d75b8e84af9195daa3e18af71ddffd14e"
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "inventoryId": "pixeria:1781365079386-0wxn09",
+      "name": "Moto custom",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.08571429550647736,
+          0.01714286021888256,
+          0.01714286021888256
+        ],
+        "max": [
+          0.485714316368103,
+          0.631428599357605,
+          0.954285740852356
+        ]
+      },
+      "source": "inventario/assets/catalog/23/best.blend",
+      "sourceSha256": "098aedb61db2a25d3cc5979e0ac17742e83ed2ae44617f57bffe2ae5e402dc9c",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/23-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            250.845612,
+            216.553471
+          ],
+          "floorCenter": [
+            185.46183,
+            304.821562
+          ],
+          "pixelsPerGridUnit": 462.333139,
+          "projectedBounds": {
+            "min": [
+              -0.5010356741113215,
+              -0.3007252309471369
+            ],
+            "max": [
+              0.2464772707805416,
+              0.4069357328116894
+            ]
+          },
+          "sha256": "90d118ebe8f6ba4a0cef8ce37e4e3e7eb6c901665ee022553995fcb59a3f829e"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/23-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            423.707291,
+            338.501135
+          ],
+          "floorCenter": [
+            185.832928,
+            316.916222
+          ],
+          "pixelsPerGridUnit": 436.080735,
+          "projectedBounds": {
+            "min": [
+              -0.9050966786307844,
+              -0.06030894024297595
+            ],
+            "max": [
+              -0.15758376354124337,
+              0.7322048544883728
+            ]
+          },
+          "sha256": "79453c10cd700042ee32ddb810645033bc0df6f57ec1ca9f138ffda9f41b4b63"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/23-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            136.496166,
+            400.172197
+          ],
+          "floorCenter": [
+            198.167313,
+            316.916182
+          ],
+          "pixelsPerGridUnit": 436.080764,
+          "projectedBounds": {
+            "min": [
+              -0.2464771436059543,
+              0.0811124132014811
+            ],
+            "max": [
+              0.5010357298163264,
+              0.873626135289669
+            ]
+          },
+          "sha256": "230066ca67ff6334b643fac366efd7db3ae07c2a8a3f4b27856af1839222e3bd"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/23-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            -53.656282,
+            281.936543
+          ],
+          "floorCenter": [
+            198.538284,
+            304.820881
+          ],
+          "pixelsPerGridUnit": 462.333139,
+          "projectedBounds": {
+            "min": [
+              0.1575838273858956,
+              -0.15930396132171154
+            ],
+            "max": [
+              0.9050967492369502,
+              0.5483569949865341
+            ]
+          },
+          "sha256": "82a6bc767e3da761f62736760d444e3a1c8d9998e7fd4451a8220b48ba868f94"
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "inventoryId": "pixeria:1781300861729-doljbb",
+      "name": "Televisor de piedra",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          0.013636380434036255
+        ],
+        "max": [
+          1.0,
+          1.172727346420288,
+          0.6136363744735718
+        ]
+      },
+      "source": "inventario/assets/catalog/24/best.blend",
+      "sourceSha256": "59da172cca9f4bd902d432dc8bd71e99e8acfd01c9ceabd0c88c33edd0bcc743",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/24-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            153.367344,
+            280.426517
+          ],
+          "floorCenter": [
+            185.046146,
+            328.833281
+          ],
+          "pixelsPerGridUnit": 240.393423,
+          "projectedBounds": {
+            "min": [
+              -0.376052301833262,
+              -0.3509821146726608
+            ],
+            "max": [
+              0.6974644804326076,
+              1.0866612035315484
+            ]
+          },
+          "sha256": "502399547314b241a6c64a7e8eead5efc20ce738fdc25d1fa6529fa20a34a5f0"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/24-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            326.828133,
+            312.877888
+          ],
+          "floorCenter": [
+            188.523102,
+            323.965462
+          ],
+          "pixelsPerGridUnit": 240.393441,
+          "projectedBounds": {
+            "min": [
+              -1.112086089377602,
+              -0.21598892658948898
+            ],
+            "max": [
+              -0.009642303179723477,
+              1.2216543434276586
+            ]
+          },
+          "sha256": "93ec8a1e8d29e9b18e6028f659841b4ce80c2d3eede3d357b00c3c29294aeef1"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/24-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            230.632896,
+            372.372126
+          ],
+          "floorCenter": [
+            198.954117,
+            323.965364
+          ],
+          "pixelsPerGridUnit": 240.393423,
+          "projectedBounds": {
+            "min": [
+              -0.6974643142675117,
+              0.031498391181230545
+            ],
+            "max": [
+              0.37605246192140385,
+              1.4691417068243027
+            ]
+          },
+          "sha256": "9a01bb31bcbe6ad8d64eb5d9f0aabcd922f88afc6370079639dd5d390609745b"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/24-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            57.172096,
+            339.920846
+          ],
+          "floorCenter": [
+            195.477127,
+            328.833275
+          ],
+          "pixelsPerGridUnit": 240.393441,
+          "projectedBounds": {
+            "min": [
+              0.00964240112276138,
+              -0.10349475219845772
+            ],
+            "max": [
+              1.1120861935038988,
+              1.3341485073324293
+            ]
+          },
+          "sha256": "c6ecc82deb1a2662d120e9d122a8275f9d828a1c31bd81ab9fe52b0195a501a1"
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "inventoryId": "pixeria:1781300808727-o0lspi",
+      "name": "Sofá futurista rojo",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          2.0,
+          1.2655930519104004,
+          1.027777910232544
+        ]
+      },
+      "source": "inventario/assets/catalog/25/best.blend",
+      "sourceSha256": "888ea0cd816bdbd9a03d30bc3c3d4870017172cc346b61d970cdd54bfb3a16e2",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/25-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            135.250259,
+            225.32127
+          ],
+          "floorCenter": [
+            191.043617,
+            286.136032
+          ],
+          "pixelsPerGridUnit": 162.316221,
+          "projectedBounds": {
+            "min": [
+              -0.7149635641920558,
+              -0.7039641290903091
+            ],
+            "max": [
+              1.414213573426288,
+              1.1145352851599455
+            ]
+          },
+          "sha256": "18a086951539d75e9a871980210cc0e761a52b111a3e0d82313500fe1869cd81"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/25-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.800087,
+            251.623432
+          ],
+          "floorCenter": [
+            191.043606,
+            271.151093
+          ],
+          "pixelsPerGridUnit": 162.316238,
+          "projectedBounds": {
+            "min": [
+              -2.1291770679029813,
+              -0.4564766101539135
+            ],
+            "max": [
+              8.563888265200603e-09,
+              1.1911327205598354
+            ]
+          },
+          "sha256": "9264ba99e112c53e3dcf54d9c3b92433f08f7b1294d8e888f156d5116c947727"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/25-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            248.749763,
+            331.96578
+          ],
+          "floorCenter": [
+            192.956406,
+            271.151012
+          ],
+          "pixelsPerGridUnit": 162.316238,
+          "projectedBounds": {
+            "min": [
+              -1.4142134258113899,
+              0.038498034700751305
+            ],
+            "max": [
+              0.7149636352562077,
+              1.6861075535416603
+            ]
+          },
+          "sha256": "c63e06d0e2279879c174ef21425ef88da98f6e0192ca3b44351656239b61601e"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/25-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200088,
+            305.663784
+          ],
+          "floorCenter": [
+            192.956543,
+            286.136135
+          ],
+          "pixelsPerGridUnit": 162.316221,
+          "projectedBounds": {
+            "min": [
+              4.178305701429963e-09,
+              -0.20898939482867718
+            ],
+            "max": [
+              2.129177133379198,
+              1.6095099560916424
+            ]
+          },
+          "sha256": "b71c05fb7f4b50ea8e93db19deea05658b75bb9300b06ce49bafdf5237cced16"
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "inventoryId": "pixeria:1781280054492-50hn4b",
+      "name": "Sofá dragón",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.08800006657838821,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.1781749725341797,
+          1.477274775505066,
+          0.9320000410079956
+        ]
+      },
+      "source": "inventario/assets/catalog/26/best.blend",
+      "sourceSha256": "fd81cbfe4cb3f474ab4fe1d774751801f0b99f9964bfc52ec7f8ba50d10b3da8",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/26-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            186.031746,
+            284.994553
+          ],
+          "floorCenter": [
+            196.820549,
+            333.269491
+          ],
+          "pixelsPerGridUnit": 192.921208,
+          "projectedBounds": {
+            "min": [
+              -0.6735172886733833,
+              -0.41366948932409286
+            ],
+            "max": [
+              0.7353911286213322,
+              1.377735398709774
+            ]
+          },
+          "sha256": "7bbd53c2fd23239b19de3bb2df0cb1ef96f1875712156d717086f107f85b4674"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/26-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            341.437019,
+            318.189566
+          ],
+          "floorCenter": [
+            189.80476,
+            322.340801
+          ],
+          "pixelsPerGridUnit": 212.088841,
+          "projectedBounds": {
+            "min": [
+              -1.4318196696770773,
+              -0.21976871602237225
+            ],
+            "max": [
+              0.022627546559003564,
+              1.4097370924428105
+            ]
+          },
+          "sha256": "f1799f23188eec26ffc2ecd283ada756983c104647729ddc1eac8db4011deb13"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/26-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            199.458572,
+            371.482965
+          ],
+          "floorCenter": [
+            185.976093,
+            311.154945
+          ],
+          "pixelsPerGridUnit": 241.088939,
+          "projectedBounds": {
+            "min": [
+              -0.7353910156320254,
+              0.02771858125925064
+            ],
+            "max": [
+              0.6735173668379959,
+              1.4612144753336906
+            ]
+          },
+          "sha256": "6942ca65da4c328548635678878869490776f76ba23e80513696b96835782b20"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/26-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            39.368076,
+            328.801311
+          ],
+          "floorCenter": [
+            194.242355,
+            324.561316
+          ],
+          "pixelsPerGridUnit": 216.623487,
+          "projectedBounds": {
+            "min": [
+              -0.022627386244876924,
+              -0.16618217341601849
+            ],
+            "max": [
+              1.4318196320724423,
+              1.4292127471417189
+            ]
+          },
+          "sha256": "77e42b8245bdee34e3b27046ee1172986ff9dfd1eebf3cc8a19b524107494763"
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "inventoryId": "pixeria:1781265988962-wl7zsk",
+      "name": "Sofá bárbaro",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.03888888657093048,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.4277777671813965,
+          1.2655930519104004,
+          1.0055556297302246
+        ]
+      },
+      "source": "inventario/assets/catalog/27/best.blend",
+      "sourceSha256": "f162167cac34ad0116c2e626c2c3b447008e903e303b45be9fae6b2dacf502a5",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/27-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            163.66563,
+            251.102978
+          ],
+          "floorCenter": [
+            191.201878,
+            311.303621
+          ],
+          "pixelsPerGridUnit": 203.176424,
+          "projectedBounds": {
+            "min": [
+              -0.7110351655704719,
+              -0.5527218133211136
+            ],
+            "max": [
+              0.9899495587118636,
+              1.1345079001039267
+            ]
+          },
+          "sha256": "9b841d2f808d16fbc5743b40f4904c914ffc8709c4a88d0853354eb6233eaac5"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/27-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            363.203751,
+            284.066494
+          ],
+          "floorCenter": [
+            191.201923,
+            293.70417
+          ],
+          "pixelsPerGridUnit": 203.176424,
+          "projectedBounds": {
+            "min": [
+              -1.693127963326667,
+              -0.305234357714653
+            ],
+            "max": [
+              0.007856818697668189,
+              1.2115039825439453
+            ]
+          },
+          "sha256": "feb1357ddfdb2700f4c669c342344a8ef994ac612c85e66df5e381fb6eeaf73a"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/27-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            220.334358,
+            353.904954
+          ],
+          "floorCenter": [
+            192.798111,
+            293.704302
+          ],
+          "pixelsPerGridUnit": 203.176424,
+          "projectedBounds": {
+            "min": [
+              -0.989949381819506,
+              0.038498034700751305
+            ],
+            "max": [
+              0.711035329320481,
+              1.5552365183830261
+            ]
+          },
+          "sha256": "38782bb2ba82d99435aac8a6e592d1f8230b3bbe330d5f266fee6966aa8ce936"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/27-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            20.796196,
+            320.941109
+          ],
+          "floorCenter": [
+            192.798019,
+            311.303438
+          ],
+          "pixelsPerGridUnit": 203.176424,
+          "projectedBounds": {
+            "min": [
+              -0.007856729349632552,
+              -0.20898939482867718
+            ],
+            "max": [
+              1.6931280623804241,
+              1.4782402785494924
+            ]
+          },
+          "sha256": "731405a5a797a1b54879c6ed7b585d302a10c203fe35d971c2d7743e2eb541be"
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "inventoryId": "pixeria:1781207308932-hobd6c",
+      "name": "Cactus",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.009999945759773254,
+          0.0,
+          0.2634965479373932
+        ],
+        "max": [
+          0.9900000095367432,
+          1.96999990940094,
+          0.7366626858711243
+        ]
+      },
+      "source": "inventario/assets/catalog/28/best.blend",
+      "sourceSha256": "9078d3be7314c2ca6a3fae4659e37782e479e5f99eaf0a958224e9cc93ad8360",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/28-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            306.75511
+          ],
+          "floorCenter": [
+            191.990421,
+            348.820015
+          ],
+          "pixelsPerGridUnit": 169.954338,
+          "projectedBounds": {
+            "min": [
+              -0.4384061445602967,
+              -0.34153254330158234
+            ],
+            "max": [
+              0.4384062396755368,
+              1.6919547393918037
+            ]
+          },
+          "sha256": "62733eb2fff93ad2fc798bd79332aae4a5f0c26fc084eb29336d60e572987ce9"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/28-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            312.175873,
+            348.816665
+          ],
+          "floorCenter": [
+            191.990433,
+            348.813312
+          ],
+          "pixelsPerGridUnit": 169.954338,
+          "projectedBounds": {
+            "min": [
+              -1.1455129772882664,
+              -0.09404513239860535
+            ],
+            "max": [
+              -0.26870045179651925,
+              1.939442165195942
+            ]
+          },
+          "sha256": "e59b12b6f0ae5ea37ba9e1d5949dd24f2430f1d4de64a3e77e84f4e4d9e2c5d2"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/28-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            390.878316
+          ],
+          "floorCenter": [
+            192.009567,
+            348.813412
+          ],
+          "pixelsPerGridUnit": 169.954338,
+          "projectedBounds": {
+            "min": [
+              -0.43840608899404643,
+              0.1534421667456627
+            ],
+            "max": [
+              0.4384063503503626,
+              2.1869294494390488
+            ]
+          },
+          "sha256": "596dbdc35b62f61561f8a30a468a0af9d483302614b049501cb7276c2250b7b2"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/28-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            71.824116,
+            348.816642
+          ],
+          "floorCenter": [
+            192.009544,
+            348.819995
+          ],
+          "pixelsPerGridUnit": 169.954338,
+          "projectedBounds": {
+            "min": [
+              0.2687006259216176,
+              -0.0940452367067337
+            ],
+            "max": [
+              1.145513068365112,
+              1.9394420310854912
+            ]
+          },
+          "sha256": "bb2fd95eae5691d2692291b0908739901031c83d242c2c9f64d4931fa8c2639e"
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "inventoryId": "pixeria:1781207177854-e19asq",
+      "name": "Coche Cazafantasmas",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.022700002416968346,
+          0.034999996423721313,
+          0.025000005960464478
+        ],
+        "max": [
+          0.5259000062942505,
+          0.7150000333786011,
+          1.002500057220459
+        ]
+      },
+      "source": "inventario/assets/catalog/29/best.blend",
+      "sourceSha256": "2db3b9d9aa3db5c74a678e9ff71d6fdf21f63c2b3b5895adb2f63d5b8a91958b",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/29-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            252.012497,
+            231.546192
+          ],
+          "floorCenter": [
+            188.767101,
+            296.172186
+          ],
+          "pixelsPerGridUnit": 341.188285,
+          "projectedBounds": {
+            "min": [
+              -0.6823580164028886,
+              -0.32668913900852203
+            ],
+            "max": [
+              0.3305724404001431,
+              0.5584992310032248
+            ]
+          },
+          "sha256": "ba212e0094e3c2caa697dfad00a73008eaf6f4368f1979ca6c2608de3a6747ae"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/29-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            372.640457,
+            308.581295
+          ],
+          "floorCenter": [
+            187.99474,
+            286.445389
+          ],
+          "pixelsPerGridUnit": 341.188285,
+          "projectedBounds": {
+            "min": [
+              -1.0359113646237734,
+              -0.08291406743228436
+            ],
+            "max": [
+              -0.02298094600496725,
+              0.7662961967289448
+            ]
+          },
+          "sha256": "9d5474e428c9c6b1f37197d637c7b3c0162681bf1d5c854f473d4942fbd473f1"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/29-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            131.98748,
+            350.801345
+          ],
+          "floorCenter": [
+            195.23291,
+            286.175354
+          ],
+          "pixelsPerGridUnit": 341.188285,
+          "projectedBounds": {
+            "min": [
+              -0.33057236753461794,
+              0.04082956723868847
+            ],
+            "max": [
+              0.6823581227342057,
+              0.890039823949337
+            ]
+          },
+          "sha256": "901a9dc3b2300a16145b927d6389da0894c65cc724e20d0043bebd235cb5e1c0"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/29-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            11.35892,
+            273.765999
+          ],
+          "floorCenter": [
+            196.004631,
+            295.901894
+          ],
+          "pixelsPerGridUnit": 341.188285,
+          "projectedBounds": {
+            "min": [
+              0.022980962730219545,
+              -0.202945523429662
+            ],
+            "max": [
+              1.0359114397557843,
+              0.68224286288023
+            ]
+          },
+          "sha256": "0ecff3137b953c9a960b6912cf0742297edc6a5b508f64897addaa5f43c1c019"
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "inventoryId": "pixeria:1781178696759-bt3qe6",
+      "name": "Pinball espacial",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.024137943983078003,
+          0.0,
+          0.003448307514190674
+        ],
+        "max": [
+          0.5758620500564575,
+          1.2999999523162842,
+          1.003448247909546
+        ]
+      },
+      "source": "inventario/assets/catalog/30/best.blend",
+      "sourceSha256": "8b00d9b79b5621623a7b0787f780e989317c19993df699c5588a82933c73fdea",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/30-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            226.123558,
+            286.049686
+          ],
+          "floorCenter": [
+            190.933651,
+            328.224243
+          ],
+          "pixelsPerGridUnit": 218.668924,
+          "projectedBounds": {
+            "min": [
+              -0.7095450508839178,
+              -0.3601367771625519
+            ],
+            "max": [
+              0.39744286188560096,
+              1.2203347315080464
+            ]
+          },
+          "sha256": "1b96670b6c8fc3b304b5446c953aacb1b151b6783cde79fdb010f29b9a500440"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/30-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            329.044235,
+            336.534699
+          ],
+          "floorCenter": [
+            190.77634,
+            322.401993
+          ],
+          "pixelsPerGridUnit": 250.914572,
+          "projectedBounds": {
+            "min": [
+              -1.099672948146491,
+              -0.11264939233660698
+            ],
+            "max": [
+              0.007315006532543578,
+              1.2647117795422673
+            ]
+          },
+          "sha256": "5541401e210d0fab5618c750e2ac18a13824e64a63092cff407cd1f3a21fdc52"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/30-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            152.844452,
+            370.796159
+          ],
+          "floorCenter": [
+            193.223579,
+            322.402393
+          ],
+          "pixelsPerGridUnit": 250.914572,
+          "projectedBounds": {
+            "min": [
+              -0.3974427049772302,
+              0.023895328864455223
+            ],
+            "max": [
+              0.7095451789364731,
+              1.4012565463781357
+            ]
+          },
+          "sha256": "f8101dd303c6e4c3669eea10378485ab943921d0bc3dac493505ac507ffcebeb"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/30-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            72.567673,
+            315.90774
+          ],
+          "floorCenter": [
+            193.066406,
+            328.224203
+          ],
+          "pixelsPerGridUnit": 218.668909,
+          "projectedBounds": {
+            "min": [
+              -0.007314858937398583,
+              -0.22359210345894098
+            ],
+            "max": [
+              1.099673054019327,
+              1.3568794569000602
+            ]
+          },
+          "sha256": "8df5e36b232145a0aa887f905f3850eebb01b7d8856391850c0095f95b4d0f45"
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "inventoryId": "pixeria:1781178336434-kta58v",
+      "name": "Sofá murciélago",
+      "footprint": [
+        2,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          2.0,
+          1.2655930519104004,
+          1.0055556297302246
+        ]
+      },
+      "source": "inventario/assets/catalog/31/best.blend",
+      "sourceSha256": "7760ec3e6e25e470687e0576a6bebbebdf78548d6c9409368e54e0cde36d0173",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/31-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            134.825798,
+            225.382977
+          ],
+          "floorCenter": [
+            191.99992,
+            285.862976
+          ],
+          "pixelsPerGridUnit": 162.616259,
+          "projectedBounds": {
+            "min": [
+              -0.7110351655704719,
+              -0.7039641290903091
+            ],
+            "max": [
+              1.414213573426288,
+              1.1145352851599455
+            ]
+          },
+          "sha256": "d6bd4a2a569888539133c7133dd2e19f54dda9629508393308597b012878626f"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/31-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.80011,
+            251.733685
+          ],
+          "floorCenter": [
+            192.000092,
+            271.744617
+          ],
+          "pixelsPerGridUnit": 162.616259,
+          "projectedBounds": {
+            "min": [
+              -2.1252487037403327,
+              -0.4564766101539135
+            ],
+            "max": [
+              8.563888265200603e-09,
+              1.1911327205598354
+            ]
+          },
+          "sha256": "b276bd757ff91cf963c3aba2b1b23b8de943fd3e9483325f5e367fc8b98841c3"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/31-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            249.174179,
+            332.224646
+          ],
+          "floorCenter": [
+            192.000046,
+            271.74464
+          ],
+          "pixelsPerGridUnit": 162.616259,
+          "projectedBounds": {
+            "min": [
+              -1.4142134258113899,
+              0.038498034700751305
+            ],
+            "max": [
+              0.711035329320481,
+              1.6861075535416603
+            ]
+          },
+          "sha256": "58817fb796f7e09d29300f126db4bce0032b64e2cf623df19ecd9930cda155f0"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/31-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200065,
+            305.873892
+          ],
+          "floorCenter": [
+            192.000069,
+            285.862965
+          ],
+          "pixelsPerGridUnit": 162.616259,
+          "projectedBounds": {
+            "min": [
+              4.178305701429963e-09,
+              -0.20898939482867718
+            ],
+            "max": [
+              2.12524880279409,
+              1.6095099560916424
+            ]
+          },
+          "sha256": "86853be9dd58b85e45a5cb80f3d419c3346d39a48a49507d7727c605fdf94b1d"
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "inventoryId": "pixeria:1780741287437-6f0w3j",
+      "name": "Cuadro familia ogro",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          0.06666667014360428
+        ],
+        "max": [
+          1.0,
+          1.4166666269302368,
+          0.26249998807907104
+        ]
+      },
+      "source": "inventario/assets/catalog/32/best.blend",
+      "sourceSha256": "f74fcadfdd2b001209acf192a7182b9d76a9061f5a6663384892e9e8234743c0",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/32-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            141.496674,
+            298.267267
+          ],
+          "floorCenter": [
+            192.000069,
+            333.290285
+          ],
+          "pixelsPerGridUnit": 212.936939,
+          "projectedBounds": {
+            "min": [
+              -0.18561552464962006,
+              -0.3124528229236603
+            ],
+            "max": [
+              0.6599664231025599,
+              1.3105628564953804
+            ]
+          },
+          "sha256": "65bada039459a6276043a18ecf4d1775ef1ea5f176e520920a796e00cf8786f7"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/32-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            292.065834,
+            315.614233
+          ],
+          "floorCenter": [
+            192.000069,
+            333.290411
+          ],
+          "pixelsPerGridUnit": 212.936953,
+          "projectedBounds": {
+            "min": [
+              -0.8927223235368729,
+              -0.23098813369870186
+            ],
+            "max": [
+              -0.047140347527801274,
+              1.3920274551081315
+            ]
+          },
+          "sha256": "216beb443c19b0175ad48e593d17f798864d16e68497044b111cd7bee108fcee"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/32-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            242.503326,
+            368.313628
+          ],
+          "floorCenter": [
+            191.999943,
+            333.290617
+          ],
+          "pixelsPerGridUnit": 212.936939,
+          "projectedBounds": {
+            "min": [
+              -0.6599662527441978,
+              0.01649915535149704
+            ],
+            "max": [
+              0.18561565661504886,
+              1.6395148560404778
+            ]
+          },
+          "sha256": "3e498230254d80a9c5ad33284b5daa340a1d9a07d18f8cf155af828b0f6a1bef"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/32-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            91.934172,
+            350.966969
+          ],
+          "floorCenter": [
+            191.999931,
+            333.290789
+          ],
+          "pixelsPerGridUnit": 212.936953,
+          "projectedBounds": {
+            "min": [
+              0.047140453432405666,
+              -0.0649654429294213
+            ],
+            "max": [
+              0.8927224156641387,
+              1.5580501519143581
+            ]
+          },
+          "sha256": "1a435c469932f85802309b73284187f11bd9279267840bf8ba2cc165e61cd446"
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "inventoryId": "pixeria:1780698610571-wusjra",
+      "name": "Mesa sándwich",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.038461506366729736,
+          0.0,
+          -0.038461536169052124
+        ],
+        "max": [
+          0.9615384936332703,
+          0.7384614944458008,
+          0.807692289352417
+        ]
+      },
+      "source": "inventario/assets/catalog/33/best.blend",
+      "sourceSha256": "a74a02aafb54100519fabb34a66798e6480de46058830354dc5b5cfc5e22f14e",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/33-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            177.600357,
+            228.488422
+          ],
+          "floorCenter": [
+            192.000366,
+            283.928421
+          ],
+          "pixelsPerGridUnit": 264.7408,
+          "projectedBounds": {
+            "min": [
+              -0.5983210243356005,
+              -0.39217229187488556
+            ],
+            "max": [
+              0.7071068231988775,
+              0.6678233712445945
+            ]
+          },
+          "sha256": "2462954cc865e67a768c1ffe356225084bb6c8172b5f5ad814a8f4403b90dc13"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/33-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            350.400261,
+            278.888443
+          ],
+          "floorCenter": [
+            192.000275,
+            283.928421
+          ],
+          "pixelsPerGridUnit": 264.740778,
+          "projectedBounds": {
+            "min": [
+              -1.2510350532901064,
+              -0.2017973382025957
+            ],
+            "max": [
+              0.054392855711661525,
+              0.8581983135081828
+            ]
+          },
+          "sha256": "38496bb718726d34444b1f02f77c9a42eca4ba3bcc18bc9a3691822ee7d9d81e"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/33-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            206.399872,
+            340.015832
+          ],
+          "floorCenter": [
+            191.999874,
+            284.575825
+          ],
+          "pixelsPerGridUnit": 264.7408,
+          "projectedBounds": {
+            "min": [
+              -0.7071066815477387,
+              0.026652485132217407
+            ],
+            "max": [
+              0.5983211603988039,
+              1.0915408432483673
+            ]
+          },
+          "sha256": "2521f7fa40c9c12c8f33820f6962d21b9932dece737cd747366755d4c475f718"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/33-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            33.599948,
+            288.968107
+          ],
+          "floorCenter": [
+            191.999954,
+            283.928112
+          ],
+          "pixelsPerGridUnit": 264.740778,
+          "projectedBounds": {
+            "min": [
+              -0.054392766214586885,
+              -0.16372244525700808
+            ],
+            "max": [
+              1.251035142787181,
+              0.8962731845676899
+            ]
+          },
+          "sha256": "c3cf40b7a2ccf6a70352c2d7f280a4184949236bd9c5e862c121cd8189944137"
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "inventoryId": "pixeria:1780694382755-54z33j",
+      "name": "Sofá familia amarilla",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.0,
+          0.6327965259552002,
+          0.5027778148651123
+        ]
+      },
+      "source": "inventario/assets/catalog/34/best.blend",
+      "sourceSha256": "2a4841b2cff3a66170dc11362336014df70c9771bd0d0ab3df11ca56cf7e1bc6",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/34-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            134.825798,
+            225.382977
+          ],
+          "floorCenter": [
+            191.99992,
+            285.862976
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -0.35551758278523593,
+              -0.35198206454515457
+            ],
+            "max": [
+              0.707106786713144,
+              0.5572676425799727
+            ]
+          },
+          "sha256": "fa515801a2894ac2891c0d9be544df77f7aecb68a3d9eba636c07ee161c99677"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/34-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.799973,
+            251.733913
+          ],
+          "floorCenter": [
+            191.999966,
+            271.744846
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -1.0626243518701664,
+              -0.22823830507695675
+            ],
+            "max": [
+              4.281944132600302e-09,
+              0.5955663602799177
+            ]
+          },
+          "sha256": "3d413ab1486b8e643795931fef9381bae544b6d70ad55bf05ed0247cdfc7c13c"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/34-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            249.174179,
+            332.224926
+          ],
+          "floorCenter": [
+            192.000069,
+            271.744915
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              -0.7071067129056949,
+              0.019249017350375652
+            ],
+            "max": [
+              0.3555176646602405,
+              0.8430537767708302
+            ]
+          },
+          "sha256": "6716452751efb83a21fd947a2883b827cd4799f681a9d85542f4f64c63845216"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/34-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200316,
+            305.874006
+          ],
+          "floorCenter": [
+            192.00032,
+            285.863079
+          ],
+          "pixelsPerGridUnit": 325.232518,
+          "projectedBounds": {
+            "min": [
+              2.0891528507149815e-09,
+              -0.10449469741433859
+            ],
+            "max": [
+              1.062624401397045,
+              0.8047549780458212
+            ]
+          },
+          "sha256": "f836e67c814118a6108b652930266de87dcea5f75d25ada13b05a425bf0d8bab"
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "inventoryId": "pixeria:1780694281587-fbjkci",
+      "name": "Sofá amarillo",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.0,
+          0.9112269878387451,
+          0.7239999771118164
+        ]
+      },
+      "source": "inventario/assets/catalog/35/best.blend",
+      "sourceSha256": "bb0e26192088da56b81036f1d3b21602d63bce82fe558376a986d55f799444c9",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/35-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            164.335899,
+            249.233356
+          ],
+          "floorCenter": [
+            191.999943,
+            309.713356
+          ],
+          "pixelsPerGridUnit": 283.498961,
+          "projectedBounds": {
+            "min": [
+              -0.5119452882163245,
+              -0.3979596942663193
+            ],
+            "max": [
+              0.7071067944695546,
+              0.8017229670658708
+            ]
+          },
+          "sha256": "3d6ab9d460262c9d1f05cff6974251867963c815f906d202a927482d45c2bf04"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/35-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.800041,
+            282.309448
+          ],
+          "floorCenter": [
+            192.000046,
+            291.991848
+          ],
+          "pixelsPerGridUnit": 283.498986,
+          "projectedBounds": {
+            "min": [
+              -1.21905199769661,
+              -0.21976871602237225
+            ],
+            "max": [
+              2.9711830773493375e-08,
+              0.85687305778265
+            ]
+          },
+          "sha256": "dd92828749feaf19c6301f0d8e2b88028dc999ca9d74dc76ce90d87da7e0a135"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/35-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            219.664009,
+            352.471644
+          ],
+          "floorCenter": [
+            191.999989,
+            291.991648
+          ],
+          "pixelsPerGridUnit": 283.498961,
+          "projectedBounds": {
+            "min": [
+              -0.7071067110589317,
+              0.02771858125925064
+            ],
+            "max": [
+              0.5119454059055961,
+              1.104360457509756
+            ]
+          },
+          "sha256": "1f9003e0e68848b1c832ec0854c7c2a1f34bd615afcc36f756b3b102892da4f6"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/35-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200255,
+            319.395842
+          ],
+          "floorCenter": [
+            192.000252,
+            309.713442
+          ],
+          "pixelsPerGridUnit": 283.498961,
+          "projectedBounds": {
+            "min": [
+              4.863454305947812e-09,
+              -0.15047234389930964
+            ],
+            "max": [
+              1.2190521286199605,
+              1.0492102904245257
+            ]
+          },
+          "sha256": "1a09b225a4bd0b706f3157b42ed266258b354d4841bd0fc537d62912cedf86cc"
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "inventoryId": "pixeria:1780693925175-12hdur",
+      "name": "Mesa casco espacial",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.038461506366729736,
+          0.0,
+          -0.038461536169052124
+        ],
+        "max": [
+          0.9615384936332703,
+          0.642307698726654,
+          0.807692289352417
+        ]
+      },
+      "source": "inventario/assets/catalog/36/best.blend",
+      "sourceSha256": "1f9789e398d30fc779501f2d4c1d3ef261cd74f597ca37b93aab6d4093bf41e4",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/36-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            177.600174,
+            222.252972
+          ],
+          "floorCenter": [
+            192.000183,
+            277.692982
+          ],
+          "pixelsPerGridUnit": 264.7408,
+          "projectedBounds": {
+            "min": [
+              -0.5983210243356005,
+              -0.39217229187488556
+            ],
+            "max": [
+              0.7071068231988775,
+              0.6207190109416842
+            ]
+          },
+          "sha256": "8c9aba99a3a0ba97b306023772625e87c140864e72401210337272a79030871e"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/36-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            350.400261,
+            272.653175
+          ],
+          "floorCenter": [
+            192.000275,
+            277.693165
+          ],
+          "pixelsPerGridUnit": 264.740778,
+          "projectedBounds": {
+            "min": [
+              -1.2510350532901064,
+              -0.2017973382025957
+            ],
+            "max": [
+              0.054392855711661525,
+              0.8110939599573612
+            ]
+          },
+          "sha256": "519515b4be68846e22450660c33d2500ed1b6593672a4f502f025a5e06e47e71"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/36-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            206.400101,
+            333.132883
+          ],
+          "floorCenter": [
+            192.000114,
+            277.692879
+          ],
+          "pixelsPerGridUnit": 264.7408,
+          "projectedBounds": {
+            "min": [
+              -0.7071066815477387,
+              0.026652485132217407
+            ],
+            "max": [
+              0.5983211603988039,
+              1.0395438075065613
+            ]
+          },
+          "sha256": "11cd47cf0255f05de7ef21059e410ccc613d30deb0b21445815480b3d7a1d4d3"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/36-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            33.600185,
+            282.7332
+          ],
+          "floorCenter": [
+            192.000183,
+            277.693211
+          ],
+          "pixelsPerGridUnit": 264.740778,
+          "projectedBounds": {
+            "min": [
+              -0.054392766214586885,
+              -0.16372244525700808
+            ],
+            "max": [
+              1.251035142787181,
+              0.8491688538342714
+            ]
+          },
+          "sha256": "d6a519826b4652b1385eacdd51645ca8a5554b5b3e31f6c1fad03a90a2662b7a"
+        }
+      ]
+    },
+    {
+      "number": 37,
+      "inventoryId": "pixeria:1780693814681-lvdbyl",
+      "name": "Mesa ogro",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.038461506366729736,
+          0.0,
+          -0.038461536169052124
+        ],
+        "max": [
+          0.9615384936332703,
+          0.642307698726654,
+          0.8946153521537781
+        ]
+      },
+      "source": "inventario/assets/catalog/37/best.blend",
+      "sourceSha256": "b965de8a78813648822fd637f9f647cbc9d7d4d5fe603f348a1ec5cf61095015",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/37-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            177.600174,
+            222.252972
+          ],
+          "floorCenter": [
+            183.864189,
+            280.540569
+          ],
+          "pixelsPerGridUnit": 264.7408,
+          "projectedBounds": {
+            "min": [
+              -0.5983210243356005,
+              -0.39217229187488556
+            ],
+            "max": [
+              0.7071068231988775,
+              0.6207190109416842
+            ]
+          },
+          "sha256": "1321f64f95effefefa3ddc94df24e9bc6f019bc7d71e074bf594fe8f2a5a56dd"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/37-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            350.400261,
+            272.653175
+          ],
+          "floorCenter": [
+            183.864281,
+            274.845566
+          ],
+          "pixelsPerGridUnit": 264.740778,
+          "projectedBounds": {
+            "min": [
+              -1.2510350532901064,
+              -0.2017973382025957
+            ],
+            "max": [
+              0.054392855711661525,
+              0.8110939599573612
+            ]
+          },
+          "sha256": "1723a8bffe7b7093db6b358e3703d94e8fc3dfeff13f63f69f1d688bf4c39bdd"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/37-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            206.400101,
+            333.132883
+          ],
+          "floorCenter": [
+            200.136108,
+            274.845268
+          ],
+          "pixelsPerGridUnit": 264.7408,
+          "projectedBounds": {
+            "min": [
+              -0.7071066815477387,
+              0.026652485132217407
+            ],
+            "max": [
+              0.5983211603988039,
+              1.0395438075065613
+            ]
+          },
+          "sha256": "6a0fdfb07c93335adb99c62b61412ce4c81e41b36d5d5aebe1a3e938ca5e2527"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/37-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            33.600185,
+            282.7332
+          ],
+          "floorCenter": [
+            200.1362,
+            280.540798
+          ],
+          "pixelsPerGridUnit": 264.740778,
+          "projectedBounds": {
+            "min": [
+              -0.054392766214586885,
+              -0.16372244525700808
+            ],
+            "max": [
+              1.251035142787181,
+              0.8491688538342714
+            ]
+          },
+          "sha256": "ec2acab1cbbe8e484e2346585a5d8e02bd841f716b6ae58b59af785405a58874"
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "inventoryId": "pixeria:1780693457852-nzidln",
+      "name": "Sillón gorila",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.04545454680919647,
+          0.022727280855178833
+        ],
+        "max": [
+          1.0,
+          1.3545454740524292,
+          0.8863636255264282
+        ]
+      },
+      "source": "inventario/assets/catalog/38/best.blend",
+      "sourceSha256": "5f317d83ffd1f5f87f2d9af55647569057a7a4f21cebefadae3df1346b7427b5",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/38-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            184.901722,
+            271.102146
+          ],
+          "floorCenter": [
+            191.999954,
+            323.274124
+          ],
+          "pixelsPerGridUnit": 220.845027,
+          "projectedBounds": {
+            "min": [
+              -0.6267537440291591,
+              -0.4242716282606125
+            ],
+            "max": [
+              0.6910361863539727,
+              1.140626683831215
+            ]
+          },
+          "sha256": "a5ed5b2cf6ad71b589d00ef372048b389725d20c38fdcad0ab8008d63eb59611"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/38-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            343.67942,
+            320.016821
+          ],
+          "floorCenter": [
+            191.99976,
+            322.544804
+          ],
+          "pixelsPerGridUnit": 224.72207,
+          "projectedBounds": {
+            "min": [
+              -1.3338604535094447,
+              -0.19928304618224502
+            ],
+            "max": [
+              -0.01607058059237243,
+              1.3386166393756866
+            ]
+          },
+          "sha256": "0ae7e8dbfc96da321087e2f113c9282a44e39e8c3a44b25acdea89f04467b3f9"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/38-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            199.22287,
+            375.63283
+          ],
+          "floorCenter": [
+            192.000046,
+            322.544952
+          ],
+          "pixelsPerGridUnit": 224.72207,
+          "projectedBounds": {
+            "min": [
+              -0.6910360998592324,
+              0.04820424375328658
+            ],
+            "max": [
+              0.6267538261370653,
+              1.586103931069374
+            ]
+          },
+          "sha256": "3114c3f9025f0b1e81a8c677f9455288b8ebe690255afefe874ce89005e097a0"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/38-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            42.937463,
+            325.75811
+          ],
+          "floorCenter": [
+            192.000252,
+            323.273746
+          ],
+          "pixelsPerGridUnit": 220.845027,
+          "projectedBounds": {
+            "min": [
+              0.016070616987505337,
+              -0.17678430803900902
+            ],
+            "max": [
+              1.3338605474547656,
+              1.3881139792501926
+            ]
+          },
+          "sha256": "8d40d27dd2c1d5186f2e8f58e9e3e4a4da54fc0c0fd071a0f9df1bd53bbbd102"
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "inventoryId": "pixeria:1780693369205-u2sayc",
+      "name": "Sofá verde",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.0,
+          0.9112269878387451,
+          0.7239999771118164
+        ]
+      },
+      "source": "inventario/assets/catalog/39/best.blend",
+      "sourceSha256": "c72225e47f4c8ddfc8f9df90a40f04d34d063156a0cc41c93b8e51bec5ea4cdb",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/39-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            164.335899,
+            249.233356
+          ],
+          "floorCenter": [
+            191.999943,
+            309.713356
+          ],
+          "pixelsPerGridUnit": 283.498961,
+          "projectedBounds": {
+            "min": [
+              -0.5119452882163245,
+              -0.3979596942663193
+            ],
+            "max": [
+              0.7071067944695546,
+              0.8017229670658708
+            ]
+          },
+          "sha256": "af8d88fcf87878c5abef534663d59d30599b1657cb371e9b972d0abf8f2ec921"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/39-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            364.800041,
+            282.309448
+          ],
+          "floorCenter": [
+            192.000046,
+            291.991848
+          ],
+          "pixelsPerGridUnit": 283.498986,
+          "projectedBounds": {
+            "min": [
+              -1.21905199769661,
+              -0.21976871602237225
+            ],
+            "max": [
+              2.9711830773493375e-08,
+              0.85687305778265
+            ]
+          },
+          "sha256": "b7701cf6e6230866fc45d579049f55828600d86483cfab7f8d6bb17080883a97"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/39-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            219.664009,
+            352.471644
+          ],
+          "floorCenter": [
+            191.999989,
+            291.991648
+          ],
+          "pixelsPerGridUnit": 283.498961,
+          "projectedBounds": {
+            "min": [
+              -0.7071067110589317,
+              0.02771858125925064
+            ],
+            "max": [
+              0.5119454059055961,
+              1.104360457509756
+            ]
+          },
+          "sha256": "a0f992a76071a6c827ad7bc1535bca2e411091fe6413c42d38a3a7d5fd6b12a3"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/39-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            19.200255,
+            319.395842
+          ],
+          "floorCenter": [
+            192.000252,
+            309.713442
+          ],
+          "pixelsPerGridUnit": 283.498961,
+          "projectedBounds": {
+            "min": [
+              4.863454305947812e-09,
+              -0.15047234389930964
+            ],
+            "max": [
+              1.2190521286199605,
+              1.0492102904245257
+            ]
+          },
+          "sha256": "7d7aa872bb64a3b3a5f22a4be78170582f5388ec33a6cdacf32a0a322d325869"
+        }
+      ]
+    },
+    {
+      "number": 40,
+      "inventoryId": "pixeria:1780692514916-dbhayg",
+      "name": "Chanclas azules",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.04166659712791443,
+          0.0,
+          0.04999998211860657
+        ],
+        "max": [
+          0.8083333373069763,
+          0.2527996599674225,
+          0.9833334684371948
+        ]
+      },
+      "source": "inventario/assets/catalog/40/best.blend",
+      "sourceSha256": "d6ab5fea182ccde95d03ee5773ce8a27f4a0cb32bab97ef0c715bc9e047d552c",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/40-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            210.635033,
+            139.586105
+          ],
+          "floorCenter": [
+            191.999714,
+            206.588448
+          ],
+          "pixelsPerGridUnit": 287.50127,
+          "projectedBounds": {
+            "min": [
+              -0.6658590063452721,
+              -0.4434148669242859
+            ],
+            "max": [
+              0.5362226486094936,
+              0.07879489473998547
+            ]
+          },
+          "sha256": "e1dbc1ad420a92afa21128884d6d458162375ddd4b858e3d83564496a0df6710"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/40-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            383.435211,
+            218.051285
+          ],
+          "floorCenter": [
+            191.999931,
+            211.528908
+          ],
+          "pixelsPerGridUnit": 287.50127,
+          "projectedBounds": {
+            "min": [
+              -1.2668997049331665,
+              -0.18767787888646126
+            ],
+            "max": [
+              -0.0648180388025299,
+              0.36890001595020294
+            ]
+          },
+          "sha256": "53f7a87f7d3708cb98b273fb03347f0c1baaa755ff614581e8bb05e566bed5ab"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/40-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            173.364647,
+            278.530907
+          ],
+          "floorCenter": [
+            191.999966,
+            211.528564
+          ],
+          "pixelsPerGridUnit": 287.50127,
+          "projectedBounds": {
+            "min": [
+              -0.5362225882709026,
+              0.022686314769089222
+            ],
+            "max": [
+              0.6658590741344437,
+              0.5792641937732697
+            ]
+          },
+          "sha256": "4dac018048947bb299ad1cf18ec23e6d884a9156036e28d9ca169ba719419552"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/40-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            0.565039,
+            200.065727
+          ],
+          "floorCenter": [
+            192.000298,
+            206.588093
+          ],
+          "pixelsPerGridUnit": 287.50127,
+          "projectedBounds": {
+            "min": [
+              0.06481805816292763,
+              -0.23305068258196115
+            ],
+            "max": [
+              1.2668997131176933,
+              0.2891590939834714
+            ]
+          },
+          "sha256": "41652c93bbd30f6f1c05bc98661cb55f30dbcdb44f5beb0d1fff106c86c745ed"
+        }
+      ]
+    },
+    {
+      "number": 41,
+      "inventoryId": "pixeria:1780692329479-72iyd6",
+      "name": "Máquina arcade",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.016666710376739502,
+          0.0,
+          -0.0
+        ],
+        "max": [
+          1.0166666507720947,
+          2.1777780055999756,
+          1.0166667699813843
+        ]
+      },
+      "source": "inventario/assets/catalog/41/best.blend",
+      "sourceSha256": "ffae5b53e426b18d96d0a13216f891582ac80e971e37418169d0fff1927d6661",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/41-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            192.813034,
+            299.540257
+          ],
+          "floorCenter": [
+            191.999977,
+            333.972467
+          ],
+          "pixelsPerGridUnit": 137.977334,
+          "projectedBounds": {
+            "min": [
+              -0.7188918926411105,
+              -0.47297585010528564
+            ],
+            "max": [
+              0.7071069243810797,
+              2.0317833037115633
+            ]
+          },
+          "sha256": "f60fc960d250de60a6311a0c4d6da58e325a211f6e2bd8ae30c6ad44a5ac7d41"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/41-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            292.586494,
+            330.66184
+          ],
+          "floorCenter": [
+            192.00016,
+            330.37088
+          ],
+          "pixelsPerGridUnit": 141.074934,
+          "projectedBounds": {
+            "min": [
+              -1.4259986021213962,
+              -0.24198758136481047
+            ],
+            "max": [
+              1.5403202269226313e-07,
+              2.207774360664189
+            ]
+          },
+          "sha256": "49dcfdc277da57d40cd8428513bcc90db79e6422fb1a8af476ca5ff578510e80"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/41-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.168701,
+            365.575852
+          ],
+          "floorCenter": [
+            192.0,
+            330.37064
+          ],
+          "pixelsPerGridUnit": 141.074934,
+          "projectedBounds": {
+            "min": [
+              -0.7071066100307206,
+              0.005499709309565226
+            ],
+            "max": [
+              0.7188921343849941,
+              2.455261692404747
+            ]
+          },
+          "sha256": "fa6432fc21d6839424501865765c8dcc8070697f14d7a743163d88cae047b1b3"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/41-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            93.62225,
+            333.687899
+          ],
+          "floorCenter": [
+            192.0,
+            333.972467
+          ],
+          "pixelsPerGridUnit": 137.977334,
+          "projectedBounds": {
+            "min": [
+              9.400580991414387e-08,
+              -0.22548852992094548
+            ],
+            "max": [
+              1.4259988396870398,
+              2.2792706228792667
+            ]
+          },
+          "sha256": "e493a1ac888f924989bd7ac7cf25b369465b632ba2b3eeffe087b8b11ed1f14b"
+        }
+      ]
+    },
+    {
+      "number": 42,
+      "inventoryId": "pixeria:1780691893193-90pnk1",
+      "name": "Caballo de madera",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          0.04374999925494194,
+          0.0,
+          -0.025345364585518837
+        ],
+        "max": [
+          0.518750011920929,
+          1.1142027378082275,
+          0.9375
+        ]
+      },
+      "source": "inventario/assets/catalog/42/best.blend",
+      "sourceSha256": "40e64b63b2a8bc91de343ceb89b6ab90b4265c6cd4ed0c297a5f2a7d7ccff21d",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/42-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            220.469467,
+            273.96254
+          ],
+          "floorCenter": [
+            183.429474,
+            328.637701
+          ],
+          "pixelsPerGridUnit": 299.624047,
+          "projectedBounds": {
+            "min": [
+              -0.5259106190996476,
+              -0.3031720221042633
+            ],
+            "max": [
+              0.33587573972179463,
+              0.8502734377980232
+            ]
+          },
+          "sha256": "934bcce3703d235e350f3078a8ece597b1f0316fc037f415cba9d888d8c3aaa7"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/42-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            325.55468,
+            333.222284
+          ],
+          "floorCenter": [
+            185.503475,
+            321.599653
+          ],
+          "pixelsPerGridUnit": 268.621947,
+          "projectedBounds": {
+            "min": [
+              -0.93249702771476,
+              -0.11755645927041769
+            ],
+            "max": [
+              -0.06187181416318843,
+              1.1690100207924843
+            ]
+          },
+          "sha256": "6c26d0dc0c842f17a978fce018e212214c9771b23507c95a49f5be94ee75c2de"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/42-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            166.537479,
+            370.603513
+          ],
+          "floorCenter": [
+            199.665298,
+            321.703176
+          ],
+          "pixelsPerGridUnit": 267.977594,
+          "projectedBounds": {
+            "min": [
+              -0.335875678807497,
+              0.02165514323860407
+            ],
+            "max": [
+              0.5259107875154001,
+              1.3113151788711548
+            ]
+          },
+          "sha256": "9bfd948dbb484a0a8744538cb01e14ecac3164918a06bb68e94651320b1218de"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/42-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            43.430011,
+            315.805166
+          ],
+          "floorCenter": [
+            199.226898,
+            328.734501
+          ],
+          "pixelsPerGridUnit": 298.822602,
+          "projectedBounds": {
+            "min": [
+              0.06187184154987335,
+              -0.16396043077111244
+            ],
+            "max": [
+              0.9324971812293512,
+              0.9925785958766937
+            ]
+          },
+          "sha256": "835f9615d179bc9e6111cfda1605cf17ffa7cdf26a83017e5efedd54cf806ae2"
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "inventoryId": "pixeria:1780691765844-ex3huq",
+      "name": "Silla de madera",
+      "footprint": [
+        1,
+        1
+      ],
+      "bounds_gltf": {
+        "min": [
+          -0.03125,
+          0.0,
+          -0.03125
+        ],
+        "max": [
+          1.03125,
+          1.96875,
+          1.03125
+        ]
+      },
+      "source": "inventario/assets/catalog/43/best.blend",
+      "sourceSha256": "52190410758397e96c45f054dddab7c48ed54bc20a498993e1c485ebbeeb2001",
+      "views": [
+        {
+          "rotation": 0,
+          "url": "assets/matrix-furniture/catalog/43-r0.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            296.488884
+          ],
+          "floorCenter": [
+            191.999989,
+            333.919641
+          ],
+          "pixelsPerGridUnit": 151.243101,
+          "projectedBounds": {
+            "min": [
+              -0.7513008936507504,
+              -0.45166444778442383
+            ],
+            "max": [
+              0.751301048527182,
+              1.8333984282799065
+            ]
+          },
+          "sha256": "690a00c17c1e352c33e6772c5f35d0b219e776f23d979adb681f76b6ccfb48c7"
+        },
+        {
+          "rotation": 1,
+          "url": "assets/matrix-furniture/catalog/43-r1.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            309.438492,
+            330.889858
+          ],
+          "floorCenter": [
+            191.999989,
+            330.889847
+          ],
+          "pixelsPerGridUnit": 166.083129,
+          "projectedBounds": {
+            "min": [
+              -1.4584076869500677,
+              -0.2041770238429308
+            ],
+            "max": [
+              0.04419427571696133,
+              1.8767087212763727
+            ]
+          },
+          "sha256": "578646457e5c69fb70a6a306b220910a9da2a33a76c0c53f66fd73bbdd63391b"
+        },
+        {
+          "rotation": 2,
+          "url": "assets/matrix-furniture/catalog/43-r2.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            191.999989,
+            371.993248
+          ],
+          "floorCenter": [
+            192.0,
+            330.889778
+          ],
+          "pixelsPerGridUnit": 166.083112,
+          "projectedBounds": {
+            "min": [
+              -0.7513008191449444,
+              0.04331028647720814
+            ],
+            "max": [
+              0.7513011006812462,
+              2.124196134507656
+            ]
+          },
+          "sha256": "75d0c30dba6837c824ca6a158386afd11f4e44136a8bfd398175b6c9352663eb"
+        },
+        {
+          "rotation": 3,
+          "url": "assets/matrix-furniture/catalog/43-r3.png",
+          "width": 384,
+          "height": 384,
+          "anchor": [
+            85.054945,
+            333.919888
+          ],
+          "floorCenter": [
+            191.999966,
+            333.919893
+          ],
+          "pixelsPerGridUnit": 151.243101,
+          "projectedBounds": {
+            "min": [
+              -0.04419410221407816,
+              -0.2041771337389946
+            ],
+            "max": [
+              1.4584078418264994,
+              2.080885739531368
+            ]
+          },
+          "sha256": "aa029dcd9f0a12f93aebc99066bfbd3c8571e2369ed2a7729dd22227d34b6a04"
+        }
+      ]
+    }
+  ]
+}

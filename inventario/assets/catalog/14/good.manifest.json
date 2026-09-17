@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:metahuman",
+  "inventory_number": 14,
+  "name": "Mupi Metahuman",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.05564755201339722,
+      0.0016380547313019633,
+      0.20213735103607178
+    ],
+    "max": [
+      0.9443524479866028,
+      1.9745237827301025,
+      0.8299999833106995
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 221500
+}

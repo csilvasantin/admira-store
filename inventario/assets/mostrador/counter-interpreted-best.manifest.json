@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "asset_id": "xtanco.counter.interpreted.v1",
+  "quality": "best",
+  "status": "interpreted_pilot_ready_for_review",
+  "blender_version": "5.2.2 LTS",
+  "reference": {
+    "source": "admira-xp/scripts/life-scene.mjs + current procedural Xtanco style",
+    "photos_used": [],
+    "real_measurements_used": [],
+    "measured": false
+  },
+  "units": {
+    "authoring": "uncalibrated_grid_units",
+    "meters_per_grid_unit": null,
+    "gltf_note": "glTF coordinates are conventionally meters; these authored values are NOT calibrated to a physical store."
+  },
+  "config": {
+    "width": 1.0,
+    "depth": 2.0,
+    "counter_height": 1.0,
+    "reference": "interpreted-procedural-xtanco",
+    "measured": false,
+    "meters_per_grid_unit": null,
+    "layout_type": "counter",
+    "layout_id_example": "counter"
+  },
+  "detail_profile": {
+    "bevel_segments": 4,
+    "texture_size": 512,
+    "cylinder_segments": 32
+  },
+  "coordinates": {
+    "blender": "X=column, -Y=row, Z=height",
+    "gltf": "X=column, Y=height, Z=row",
+    "pivot_gltf": [
+      0,
+      0,
+      0
+    ],
+    "footprint_grid": [
+      1,
+      2
+    ],
+    "bounds_gltf": {
+      "min": [
+        -0.050000011920928955,
+        0.0,
+        -0.059999942779541016
+      ],
+      "max": [
+        1.0535000562667847,
+        1.659500002861023,
+        2.064499855041504
+      ]
+    },
+    "placement": "Parent under furniture:<layoutId>; apply live col/row, rot, sx/sy and flipX once. No additional Y-up rotation."
+  },
+  "semantic_parts": [
+    "counter_cabinet",
+    "counter_worktop",
+    "cash_drawer",
+    "pos_terminal",
+    "payment_terminal",
+    "receipt_printer",
+    "counter_signage",
+    "checkout_accessories"
+  ],
+  "media_surfaces": [
+    "screen_tpv_main"
+  ],
+  "behavior": "No simulation, collision, navigation, media owner or interaction code is included.",
+  "files": {
+    "source": "counter-interpreted-best.blend",
+    "web": "counter-interpreted-best.glb",
+    "preview": "counter-interpreted-best.png"
+  },
+  "counts": {
+    "mesh_objects": 110,
+    "evaluated_triangles": 42494,
+    "glb_bytes": 3619528
+  },
+  "export": {
+    "format": "GLB",
+    "compression": "none",
+    "images": "embedded",
+    "studio_cameras_lights_exported": false,
+    "source_editable": true
+  },
+  "limitations": [
+    "Interpretation only; no authenticated store measurements or product photos.",
+    "Profiles good/better/best are asset detail labels, not literal 8/16/32-bit color modes.",
+    "Connected to editable Better/Best; design pending user review.",
+    "PBR export and studio preview do not guarantee identical lighting in WebGL."
+  ],
+  "inventory_id": "native:counter",
+  "inventory_number": 1
+}

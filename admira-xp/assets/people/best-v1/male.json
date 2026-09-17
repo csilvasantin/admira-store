@@ -1,0 +1,29 @@
+{
+  "profile": "male",
+  "source": "MakeHuman CC0 + original Blender clothing/rig adaptation",
+  "license": "CC0-1.0",
+  "height": 1.7,
+  "bones": 20,
+  "triangles": 38716,
+  "parts": [
+    "clothes",
+    "shoe_upper",
+    "hair",
+    "eyes",
+    "brows",
+    "skin"
+  ],
+  "sources": [
+    "system/clothes/male_casualsuit01/male_casualsuit01.mhclo",
+    "system/clothes/shoes02/shoes02.mhclo",
+    "system/hair/short02/short02.mhclo",
+    "system/eyes/low-poly/low-poly.mhclo",
+    "system/eyebrows/eyebrow001/eyebrow001.mhclo"
+  ],
+  "animations": [
+    "Idle",
+    "Walk"
+  ],
+  "author": "XpaceOS",
+  "measured": false
+}

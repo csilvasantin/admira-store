@@ -1,5 +1,7 @@
 import * as T from './premium-three.mjs';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
+import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
+import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
 
 // Keep the live game's appearance and selection metadata while reusing the
 // existing numeric boundary checks. The legacy normalizer alone drops these.
@@ -17,8 +19,9 @@ function normalizeLifeSnapshot(raw={}){
 
 // A presentation of Xtanco's live snapshot. This module owns neither a clock,
 // simulation, media player nor animation loop. All dimensions are grid units.
-export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas')}={}){
+export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
   let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',lighting='day',disposed=false,lastAnimationTime=null;
+  let customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
   const scene=new T.Scene(),world=new T.Group(),actors=new T.Group();
   world.name='life:world';actors.name='life:actors';scene.add(world,actors);
   const geometry=new Set(),materials=new Set(),textures=new Set(),actorMap=new Map();
@@ -298,14 +301,28 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         for(const x of [.07,w-.07])box(root,x,1.19,.025,.10,2.38,.12,palette.oak);box(root,w/2,2.36,.025,w,.10,.12,palette.oak);
         const leaf=group(root,.08,0,.025);leaf.name=`door:${item.id}`;doors.push(leaf);
         box(leaf,(w-.16)/2,1.18,0,w-.16,2.25,.045,palette.glass);box(leaf,w-.28,1.06,.047,.035,.3,.035,palette.brass);
-        return root;
+        break;
       }
       default:{
         cabinet(root,w,d,Math.max(.3,item.ph),{finish:palette.oak});
         if(item.label)label(root,item.label,w/2,item.ph*.65,d+.029,w*.83,.17,{bg:'#bb8b59',fg:'#284a42',font:37});
       }
     }
-    batch(root);return root;
+    if(item.type!=='door')batch(root);
+    const loader=loadFurniture?()=>loadFurniture(item):item.type==='counter'?loadCounter:null;
+    if(loader){
+      root.userData.assetStatus='loading';
+      Promise.resolve().then(loader).then(asset=>{
+        if(disposed||root.parent!==world)return;
+        if(!asset){root.userData.assetStatus='unregistered';return;}
+        const retiredDoors=new Set();root.traverse(o=>{if(doors.includes(o))retiredDoors.add(o);});
+        for(let i=doors.length-1;i>=0;i--)if(retiredDoors.has(doors[i]))doors.splice(i,1);
+        asset.traverse(o=>{if(o.userData.doorHinge){o.rotation.y=-snapshot.doorOpen*Math.PI*.48;doors.push(o);}});
+        asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='existing_shared_player')o.material=mediaMaterial;});
+        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);root.userData.assetStatus='ready';root.userData.assetSource='Blender';
+      }).catch(()=>{if(!disposed&&root.parent===world)root.userData.assetStatus='fallback';});
+    }
+    return root;
   }
 
   function architecture(){
@@ -347,34 +364,47 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       box(architectureRoot,x,cy-windowHeight/2-.08,.14,windowWidth+.30,.085,.35,palette.stone);
       box(architectureRoot,x-.40,cy+.23,.103,.21,.47,.004,palette.cream);box(architectureRoot,x+.30,cy+.23,.103,.10,.47,.004,palette.cream);
     }
-    const screenHeight=Math.min(1.62,h*.52),screenY=Math.min(h*.61,h-screenHeight/2-.4);
-    screen(architectureRoot,.092,screenY,r*.27,1.06,screenHeight,Math.PI/2);
-    screen(architectureRoot,.092,screenY,r*.70,1.06,screenHeight,Math.PI/2);
-    if(c>8)art(architectureRoot,c*.84,h*.58,.11,1.1,1.42,0,1);
-    // Small pools of light accent the retail fixtures, with cables kept at the
-    // back of the cutaway so the orthographic view remains unobstructed.
-    for(const x of [c*.18,c*.48,c*.79])fixture(architectureRoot,x,h-.51,1.45,{size:.34});
+    if(!snapshot.moving){
+      const screenHeight=Math.min(1.62,h*.52),screenY=Math.min(h*.61,h-screenHeight/2-.4);
+      screen(architectureRoot,.092,screenY,r*.27,1.06,screenHeight,Math.PI/2);
+      screen(architectureRoot,.092,screenY,r*.70,1.06,screenHeight,Math.PI/2);
+      if(c>8)art(architectureRoot,c*.84,h*.58,.11,1.1,1.42,0,1);
+      // Small pools of light accent the retail fixtures, with cables kept at the
+      // back of the cutaway so the orthographic view remains unobstructed.
+      for(const x of [c*.18,c*.48,c*.79])fixture(architectureRoot,x,h-.51,1.45,{size:.34});
+    }
     // A paved edge accommodates the actual passerby actors from the snapshot.
     box(architectureRoot,c+1.05,-.22,r/2,1.45,.22,r+.7,palette.pavement);
     for(let z=.1;z<r+.2;z+=.8)box(architectureRoot,c+1.05,-.105,z,1.41,.008,.016,palette.cream);
     box(architectureRoot,c+1.80,-.16,r/2,.055,.1,r+.7,palette.stone);
     for(const z of [.3,r-.3]){cylinder(architectureRoot,c+1.63,.18,z,.047,.58,palette.teal);cylinder(architectureRoot,c+1.63,.48,z,.054,.024,palette.brass);}
     // A single open shopfront detail signals the entrance without hiding people.
-    const entrance=group(world,c+.08,0,2.06);entrance.name='life:entrance';
-    for(const z of [0,1.18])box(entrance,0,1.12,z,.07,2.24,.07,palette.brass);
-    box(entrance,0,2.27,.59,.10,.12,1.3,palette.teal);
-    const door=group(entrance,0,0,1.14);door.name='architectural:door';doors.push(door);
-    box(door,0,1.10,-.54,.03,2.13,1.05,palette.glass);box(door,.037,1.01,-.92,.038,.32,.038,palette.brass);
+    if(!snapshot.moving){
+      const entrance=group(world,c+.08,0,2.06);entrance.name='life:entrance';
+      for(const z of [0,1.18])box(entrance,0,1.12,z,.07,2.24,.07,palette.brass);
+      box(entrance,0,2.27,.59,.10,.12,1.3,palette.teal);
+      const door=group(entrance,0,0,1.14);door.name='architectural:door';doors.push(door);
+      box(door,0,1.10,-.54,.03,2.13,1.05,palette.glass);box(door,.037,1.01,-.92,.038,.32,.038,palette.brass);
+    }
     batch(architectureRoot);
   }
 
   function createActor(actor){
+    // The shared profile changes only presentation. Keep the source actor on the
+    // selectable root so snapshots, routing and counters retain their identity.
+    const sourceActor=actor,style=['customer','passerby'].includes(actor.kind)&&!actor.robot&&actor.visitorProfileId?actor.visitorStyle:null;
+    if(style)actor={...actor,...style.palette,accessory:0,
+      gender:actor.gender||(['m','male','f','female'].includes(style.gender)?style.gender:null),
+      age:actor.age||(['adult','adulto','senior','child','nino'].includes(style.age)?style.age:null)};
     const root=group(actors),resources=new Set(),seed=colorSeed(actor.id),cloth=material(actor.color,{roughness:.94},resources),skin=material(actor.skin,{roughness:.82},resources);
     const hair=material(actor.hair||['#3c3028','#69432c','#b17e47','#272e30'][seed%4],{roughness:.92},resources);
     const trousers=material(actor.pants||['#344651','#625649','#66746b','#333d3d'][seed%4],{roughness:.92},resources);
     const shoes=actor.shoes?material(actor.shoes,{roughness:.75},resources):palette.cream;
-    root.name=`actor:${actor.id}`;root.userData={actorId:actor.id,actor,kind:actor.kind,selectable:true,resources,legs:[],arms:[],seed};
+    root.name=`actor:${actor.id}`;root.userData={actorId:actor.id,actor:sourceActor,kind:actor.kind,selectable:true,resources,legs:[],arms:[],seed,visitorProfileId:style?actor.visitorProfileId:null};
     const body=group(root);root.userData.body=body;
+    const dimension=(value,min,max)=>Number.isFinite(value)?Math.max(min,Math.min(max,value)):1;
+    if(style)body.scale.set(dimension(style.width,.87,1.16),dimension(style.height,.94,1.07),Math.sqrt(dimension(style.width,.87,1.16)));
+    const outfit=style?.outfit||'shirt',accessory=style?.accessory;
     // Hip and shoulder pivots make a real alternating gait, including the knees
     // and elbows. Nothing here advances the actor's simulation coordinates.
     for(const side of [-1,1]){
@@ -383,8 +413,9 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       const knee=group(hip,0,-.31,0);hip.userData.knee=knee;mesh(knee,capsuleGeometry,trousers,0,-.135,0,.113,.16,.12);
       box(knee,0,-.313,.054,.15,.095,.27,shoes);box(knee,0,-.356,.055,.151,.028,.268,palette.darkWood);
       const shoulder=group(body,side*.242,1.14,0);root.userData.arms.push(shoulder);shoulder.rotation.z=-side*.075;
+      shoulder.userData.restPosition=shoulder.position.clone();
       mesh(shoulder,capsuleGeometry,cloth,0,-.096,0,.142,.105,.155);
-      const elbow=group(shoulder,0,-.204,0);shoulder.userData.elbow=elbow;mesh(elbow,capsuleGeometry,skin,0,-.085,0,.095,.092,.105);
+      const elbow=group(shoulder,0,-.204,0);shoulder.userData.elbow=elbow;mesh(elbow,capsuleGeometry,['jacket','knit'].includes(outfit)?cloth:skin,0,-.085,0,.095,.092,.105);
       ellipsoid(elbow,0,-.195,.008,.059,.075,.050,skin);
     }
     box(body,0,.95,0,.41,.48,.265,cloth);ellipsoid(body,0,.745,0,.192,.107,.129,trousers);
@@ -398,23 +429,46 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       const brow=box(head,side*.061,.063,.145,.047,.012,.01,hair);brow.rotation.z=side*.07;
     }
     ellipsoid(head,0,-.022,.167,.027,.038,.033,skin);box(head,0,-.080,.147,.064,.009,.012,palette.terracotta);
-    mesh(head,hairGeometry,hair,0,.034,-.018,.184,.211,.17);
-    const fringe=ellipsoid(head,-.044,.132,.103,.136,.067,.055,hair);fringe.rotation.z=.18;
-    if(actor.gender==='f'||actor.gender==='female'||seed%3===0){ellipsoid(head,0,.02,-.15,.15,.165,.065,hair);ellipsoid(head,.025,.155,-.16,.091,.09,.078,hair);}
-    if(actor.hat||(actor.accessory===2&&!actor.isDJ)){
+    const hairstyle=style?.hairstyle||((actor.gender==='f'||actor.gender==='female'||seed%3===0)?'long':'short');
+    head.userData.hairstyle=hairstyle;
+    if(hairstyle!=='bald'){
+      mesh(head,hairGeometry,hair,0,.034,-.018,hairstyle==='curly'?.208:.184,hairstyle==='curly'?.235:.211,.17);
+      const fringe=ellipsoid(head,-.044,.132,.103,.136,.067,.055,hair);fringe.rotation.z=.18;
+      if(hairstyle==='bob'||hairstyle==='long'){
+        for(const side of [-1,1])ellipsoid(head,side*.142,hairstyle==='long'?-.075:.005,-.055,.067,hairstyle==='long'?.235:.154,.126,hair);
+        ellipsoid(head,0,hairstyle==='long'?-.075:.015,-.15,.151,hairstyle==='long'?.215:.14,.066,hair);
+      }
+      if(hairstyle==='curly')for(let i=0;i<12;i++){
+        const angle=i*Math.PI*2/12;ellipsoid(head,Math.cos(angle)*.17,.09+Math.sin(i*2.4)*.06,Math.sin(angle)*.14-.016,.060,.072,.060,hair);
+      }
+    }
+    if(actor.hat||accessory==='cap'||(actor.accessory===2&&!actor.isDJ)){
       const hat=material(actor.hatColor||(actor.accessory===2?'#cc3333':'#384f4a'),{roughness:.85},resources);
       if(actor.hat==='top-hat'){cylinder(head,0,.27,0,.155,.26,hat);cylinder(head,0,.156,0,.235,.025,hat);cylinder(head,0,.192,0,.158,.047,palette.coral);}
       else if(actor.hat==='beanie')ellipsoid(head,0,.15,-.014,.202,.119,.184,hat);
       else if(actor.hat==='tricorn'){box(head,0,.192,0,.40,.12,.27,hat);box(head,0,.145,0,.45,.032,.31,hat);}
       else{ellipsoid(head,0,.185,-.015,.20,.095,.176,hat);box(head,0,.175,.12,.29,.033,.22,hat);if(actor.hat==='hardhat')box(head,0,.254,0,.038,.035,.24,hat);}
     }
-    if(actor.accessory===1||actor.accessory==='glasses'||actor.accessory==='gafas'){
+    if(accessory==='glasses'||actor.accessory===1||actor.accessory==='glasses'||actor.accessory==='gafas'){
       for(const side of [-1,1]){box(head,side*.062,.025,.168,.091,.07,.012,palette.black);box(head,side*.062,.025,.176,.068,.047,.009,palette.glass);}
       box(head,0,.029,.177,.043,.013,.015,palette.black);
     }
     // Collar, seams and a pocket remain visible at the store's normal zoom.
-    for(const side of [-1,1]){const collar=box(body,side*.067,1.177,.13,.08,.048,.025,actor.kind==='staff'?palette.paper:cloth);collar.rotation.z=side*.35;}
-    box(body,-.112,1.019,.139,.081,.082,.011,actor.kind==='staff'?palette.teal:cloth);box(body,-.112,1.06,.145,.082,.011,.008,palette.paper);
+    if(outfit==='shirt'||outfit==='jacket'){
+      for(const side of [-1,1]){const collar=box(body,side*.067,1.177,.13,.08,.048,.025,actor.kind==='staff'?palette.paper:cloth);collar.rotation.z=side*.35;}
+      box(body,-.112,1.019,.139,.081,.082,.011,actor.kind==='staff'?palette.teal:cloth);box(body,-.112,1.06,.145,.082,.011,.008,palette.paper);
+      if(style&&outfit==='shirt')for(let i=0;i<4;i++)ellipsoid(body,0,.90+i*.075,.142,.009,.009,.006,palette.paper);
+    }
+    if(style&&outfit==='jacket'){
+      box(body,0,1.019,.14,.112,.335,.015,palette.paper);
+      for(const side of [-1,1])box(body,side*.076,1.076,.15,.039,.213,.020,cloth).rotation.z=side*.20;
+      box(body,0,.748,0,.439,.071,.292,cloth);
+    }
+    if(style&&outfit==='knit'){
+      cylinder(body,0,1.205,0,.089,.059,cloth);
+      for(const y of [.79,.87,.95])box(body,0,y,.139,.385,.015,.008,palette.cream);
+    }
+    body.userData.outfit=outfit;body.userData.accessory=accessory||'legacy';
     if(actor.kind==='staff'){
       box(body,0,.891,.142,.32,.39,.027,palette.teal);box(body,0,1.056,.144,.19,.17,.026,palette.teal);
       for(const x of [-.098,.098])box(body,x,1.13,.135,.028,.21,.022,palette.sage);
@@ -424,11 +478,15 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       box(body,.26,.66,-.025,.17,.30,.23,palette.terracotta);box(body,.25,.90,-.005,.024,.65,.03,palette.darkWood).rotation.z=-.14;
     }
     if(actor.skirt)mesh(body,coneGeometry,trousers,0,.66,0,.29,.37,.21);
-    if(actor.isDJ||actor.accessory===3){
+    if(accessory==='backpack'){
+      box(body,0,1.01,-.19,.31,.38,.17,trousers);box(body,0,.96,-.287,.23,.14,.035,cloth);
+      for(const side of [-1,1])box(body,side*.13,1.055,.143,.027,.315,.023,trousers);
+    }
+    if(accessory==='headphones'||actor.isDJ||actor.accessory===3){
       for(const side of [-1,1])ellipsoid(head,side*.195,.02,0,.033,.07,.059,palette.black);
       box(head,0,.233,-.022,.35,.031,.08,palette.black);
     }
-    if(actor.accessory===4){box(body,0,1.205,.12,.23,.067,.057,palette.coral);box(body,.07,1.10,.15,.065,.18,.035,palette.coral).rotation.z=.15;}
+    if(accessory==='scarf'||actor.accessory===4){box(body,0,1.205,.12,.23,.067,.057,palette.coral);box(body,.07,1.10,.15,.065,.18,.035,palette.coral).rotation.z=.15;}
     if(actor.robot){
       // The live Unitree remains the same actor; a visor, joint shells and chest
       // panel distinguish its physical representation from human visitors.
@@ -437,29 +495,92 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       for(const side of [-1,1])ellipsoid(body,side*.242,1.14,0,.097,.10,.10,palette.steel);
     }
     batch(head);
-    actorMap.set(actor.id,root);return root;
+    actorMap.set(actor.id,root);
+    if(assetQuality==='best'&&typeof loadPerson==='function'&&!actor.robot){
+      root.userData.personAssetStatus='loading';
+      // The async asset owns only its visual resources. The stable selectable
+      // actor root continues to follow the one live game snapshot and clock.
+      const isCurrent=()=>!disposed&&actorMap.get(actor.id)===root&&root.parent===actors;
+      Promise.resolve().then(()=>isCurrent()?loadPerson(actor):null).then(asset=>{
+        if(!asset){if(isCurrent())root.userData.personAssetStatus='fallback';return;}
+        if(!isCurrent()){asset.dispose?.();return;}
+        if(!asset.scene?.isObject3D||typeof asset.animate!=='function'||typeof asset.dispose!=='function'){
+          asset.dispose?.();root.userData.personAssetStatus='fallback';return;
+        }
+        const fallback=root.userData.body;
+        fallback.traverse(o=>{if(o.isInstancedMesh)o.dispose();});fallback.removeFromParent();release(root.userData.resources);
+        root.userData.body=null;root.userData.head=null;root.userData.legs=[];root.userData.arms=[];
+        root.add(asset.scene);root.userData.personAsset=asset;root.userData.personAssetStatus='ready';
+      }).catch(()=>{if(isCurrent())root.userData.personAssetStatus='fallback';});
+    }
+    return root;
+  }
+  function removeActor(root){
+    const asset=root.userData.personAsset;
+    if(asset){root.userData.personAsset=null;asset.scene.removeFromParent();asset.dispose();}
+    root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});release(root.userData.resources);root.removeFromParent();
+  }
+  const armBounds=new T.Box3(),armWorld=new T.Vector3(),armShifted=new T.Vector3();
+  function keepArmsClear(root){
+    const {actor,arms,body}=root.userData;
+    if(!body||actor.kind!=='customer'||!arms.length)return;
+    // A visitor gently brings the offending arm towards their body when a
+    // cabinet is close. Keep the original anatomy and free-space arm swing;
+    // only adjust the shoulder pose, never the customer's floor coordinates.
+    for(const arm of arms)arm.position.copy(arm.userData.restPosition);
+    const reach=.8*root.scale.x;
+    const furniture=customerNavigation.obstacles.filter(box=>root.position.x>=box.minCol-reach&&root.position.x<=box.maxCol+reach&&root.position.z>=box.minRow-reach&&root.position.z<=box.maxRow+reach);
+    if(!furniture.length)return;
+    root.updateWorldMatrix(true,true);
+    const margin=.018,limit=.25;
+    const intersects=(bounds,box,dx=0,dz=0)=>bounds.max.x+dx>box.minCol-margin&&bounds.min.x+dx<box.maxCol+margin&&bounds.max.z+dz>box.minRow-margin&&bounds.min.z+dz<box.maxRow+margin;
+    for(const arm of arms){
+      armBounds.setFromObject(arm);
+      const nearby=furniture.filter(box=>intersects(armBounds,box));
+      if(!nearby.length)continue;
+      const candidates=[];
+      for(const box of nearby){
+        const left=box.minCol-margin-armBounds.max.x,right=box.maxCol+margin-armBounds.min.x;
+        const back=box.minRow-margin-armBounds.max.z,front=box.maxRow+margin-armBounds.min.z;
+        candidates.push([left,0],[right,0],[0,back],[0,front],[left,back],[left,front],[right,back],[right,front]);
+      }
+      candidates.sort((a,b)=>Math.hypot(...a)-Math.hypot(...b));
+      const centerX=(armBounds.min.x+armBounds.max.x)/2-root.position.x,centerZ=(armBounds.min.z+armBounds.max.z)/2-root.position.z;
+      const distanceFromBody=Math.hypot(centerX,centerZ);
+      const shift=candidates.find(([dx,dz])=>Math.hypot(dx,dz)<=limit&&Math.hypot(centerX+dx,centerZ+dz)<=distanceFromBody+.015&&!furniture.some(box=>intersects(armBounds,box,dx,dz)));
+      if(!shift)continue;
+      arm.getWorldPosition(armWorld);armShifted.copy(armWorld);armShifted.x+=shift[0];armShifted.z+=shift[1];
+      body.worldToLocal(armShifted);arm.position.copy(armShifted);arm.updateWorldMatrix(false,true);
+    }
   }
   function updateActors(){
     const ids=new Set(snapshot.actors.map(a=>a.id));
-    const remove=root=>{root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});release(root.userData.resources);root.removeFromParent();};
-    for(const [id,root]of actorMap)if(!ids.has(id)){remove(root);actorMap.delete(id);}
+    for(const [id,root]of actorMap)if(!ids.has(id)){removeActor(root);actorMap.delete(id);}
     for(const actor of snapshot.actors){
       let root=actorMap.get(actor.id);
-      const appearance=a=>JSON.stringify([a.color,a.skin,a.kind,a.hair,a.pants,a.shoes,a.gender,a.hat,a.hatColor,a.accessory,a.skirt,a.isDJ,a.bag,a.robot]);
+      const appearance=a=>JSON.stringify([a.color,a.skin,a.kind,a.hair,a.pants,a.shoes,a.gender,a.age,a.hat,a.hatColor,a.accessory,a.skirt,a.isDJ,a.bag,a.robot,a.visitorProfileId,a.visitorStyle]);
       if(root&&appearance(root.userData.actor)!==appearance(actor)){
-        remove(root);actorMap.delete(actor.id);root=null;
+        removeActor(root);actorMap.delete(actor.id);root=null;
       }
       const fresh=!root;root=root||createActor(actor);
       const target=new T.Vector3(actor.col,0,actor.row);
-      if(fresh||root.position.distanceTo(target)>3){
+      const customer=actor.kind==='customer'&&!actor.outside&&actor.col>=0&&actor.row>=0&&actor.row<=snapshot.rows&&actor.col<=snapshot.cols+1.5;
+      if(customer){
+        const track=root.userData.customerMotion ||= createCustomerMotion(actor,{navigation:customerNavigation,time:lastAnimationTime??0});
+        const pose=track.update(actor,{navigation:customerNavigation,time:lastAnimationTime??0});
+        root.visible=!!pose;root.userData.motion=null;
+        if(pose){root.position.set(pose.col,0,pose.row);root.rotation.y=pose.heading;}
+      }else if(fresh||root.position.distanceTo(target)>3){
+        root.userData.customerMotion=null;root.visible=true;
         root.position.copy(target);root.rotation.y=actor.heading;root.userData.motion=null;
       }else{
+        root.userData.customerMotion=null;root.visible=true;
         const previous=root.userData.motion;
         if(!previous||!previous.target.equals(target)||previous.targetHeading!==actor.heading){
           root.userData.motion={from:root.position.clone(),target,fromHeading:root.rotation.y,targetHeading:actor.heading,start:lastAnimationTime};
         }
       }
-      root.scale.setScalar(actor.scale);root.userData.actor=actor;
+      root.scale.setScalar(actor.scale);root.userData.actor=actor;keepArmsClear(root);
     }
   }
 
@@ -481,11 +602,12 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     snapshot=normalizeLifeSnapshot(raw);
     // The Canvas2D projection is deliberately absent from this signature. Orbit,
     // resize and editor zoom must never skew or rebuild genuine 3D furniture.
-    const next=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.wallHeight,snapshot.layout]);
+    const next=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.wallHeight,snapshot.moving,snapshot.layout]);
     if(next!==signature){
+      customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
       release(worldResources);world.traverse(o=>{if(o.isInstancedMesh)o.dispose();});world.clear();fixtureLights.length=0;doors.length=0;
-      architecture();for(const item of snapshot.layout)furniture(item);signature=next;
-      ground.position.set(snapshot.cols/2,-.565,snapshot.rows/2);ground.scale.set(500,500,1);
+      if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);signature=next;
+      ground.visible=!inventory;ground.position.set(snapshot.cols/2,-.565,snapshot.rows/2);ground.scale.set(500,500,1);
       sun.target.position.set(snapshot.cols/2,0,snapshot.rows/2);
       const extent=Math.max(snapshot.cols,snapshot.rows)*.82+3;Object.assign(sun.shadow.camera,{left:-extent,right:extent,top:extent,bottom:-extent,near:.1,far:70});sun.shadow.camera.updateProjectionMatrix();
       setLighting(lighting);
@@ -498,7 +620,14 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     const time=Number.isFinite(timeMs)?timeMs:0;
     lastAnimationTime=time;
     for(const root of actorMap.values()){
-      const {actor,body,head,legs,arms,seed}=root.userData,phase=time*.0085+(seed%100)*.11;
+      const {actor,body,head,legs,arms,seed,customerMotion}=root.userData;
+      const customerPose=customerMotion?.advance(time);
+      if(customerMotion){
+        root.visible=!!customerPose;
+        if(!customerPose)continue;
+        root.position.set(customerPose.col,0,customerPose.row);root.rotation.y=customerPose.heading;
+      }
+      const phase=customerPose?customerPose.phase*Math.PI*2:time*.0085+(seed%100)*.11;
       // Smooth only the displayed pose between incoming snapshots. The source
       // positions, heading, clock, routes and counters are never advanced here.
       const motion=root.userData.motion;
@@ -509,10 +638,13 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         const turn=Math.atan2(Math.sin(motion.targetHeading-motion.fromHeading),Math.cos(motion.targetHeading-motion.fromHeading));
         root.rotation.y=motion.fromHeading+turn*t;
       }
-      const walk=actor.walking?1:0;body.position.y=walk?Math.abs(Math.sin(phase))*.024:Math.sin(time*.0017+seed)*.006;
+      const walking=customerPose?customerPose.walking:actor.walking;
+      if(root.userData.personAsset){root.userData.personAsset.animate(time,customerPose?{...actor,walking}:actor,{position:root.position,heading:root.rotation.y});continue;}
+      const walk=walking?1:0;body.position.y=walk?Math.abs(Math.sin(phase))*.018:Math.sin(time*.0017+seed)*.006;
       body.rotation.z=walk?Math.sin(phase)*.016:0;head.rotation.y=walk?0:Math.sin(time*.0007+seed)*.075;
       legs.forEach((leg,i)=>{const stride=Math.sin(phase+i*Math.PI);leg.rotation.x=stride*.40*walk;leg.userData.knee.rotation.x=Math.max(0,-stride)*.48*walk;});
       arms.forEach((arm,i)=>{arm.rotation.x=-Math.sin(phase+i*Math.PI)*.33*walk;arm.userData.elbow.rotation.x=-.13-Math.max(0,Math.sin(phase+i*Math.PI))*.14*walk;});
+      keepArmsClear(root);
     }
   }
   function refreshMedia(player){
@@ -527,8 +659,8 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   }
   function dispose(){
     if(disposed)return;disposed=true;
+    for(const root of actorMap.values())removeActor(root);
     scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});
-    for(const root of actorMap.values())release(root.userData.resources);
     release(worldResources);release(sharedResources);sun.shadow.dispose();scene.clear();actorMap.clear();fixtureLights.length=0;doors.length=0;
   }
   update(snapshot);refreshMedia(null);

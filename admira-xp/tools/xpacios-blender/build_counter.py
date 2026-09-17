@@ -76,6 +76,9 @@ def empty(name, parent=None, part=None):
 
 ROOT = empty('asset_counter_interpreted')
 ROOT['assetId'] = ASSET_ID
+ROOT['inventoryId'] = 'native:counter'
+ROOT['inventoryNumber'] = 1
+ROOT['revision'] = 'blender-pilot-2'
 ROOT['referenceStatus'] = 'interpreted_not_measured'
 ROOT['layoutType'] = 'counter'
 ROOT['layoutIdExample'] = 'counter'
@@ -291,6 +294,11 @@ cube('worktop_shadow_seam', (.5, 1, .942), (1.025, 2.05, .035), 'walnut', 'count
 cube('solid_terrazzo_worktop', (.5, 1, .995), (1.10, 2.12, .085), 'stone', 'counter_worktop', .02)
 cube('rear_service_drawer', (.5, -.007, .70), (.83, .032, .25), 'oak', 'counter_cabinet', .009)
 cube('rear_service_handle', (.5, -.037, .75), (.22, .045, .018), 'brass', 'counter_cabinet', .005)
+# Full rear elevation: separate service doors, toe kick and reachable hardware.
+for i, x in enumerate([.276, .724]):
+    cube(f'rear_service_door_{i}', (x, -.018, .342), (.435, .03, .42), 'teal', 'counter_cabinet', .009)
+    cube(f'rear_door_handle_{i}', (x + (.16 if i == 0 else -.16), -.046, .43), (.018, .025, .13), 'brass', 'counter_cabinet', .004)
+    cylinder(f'rear_hinge_{i}', (x + (-.18 if i == 0 else .18), -.039, .27), .014, .065, 'steel', 'counter_cabinet')
 cube('brand_nameplate', (.5, 2.052, .745), (.60, .016, .18), 'teal', 'counter_signage', .012)
 text('editable_brand_lettering', 'XTANCO', (.5, 2.063, .762), .072, 'brass', 'counter_signage')
 text('editable_brand_subline', 'ADMIRA', (.5, 2.063, .705), .026, 'paper', 'counter_signage')
@@ -438,7 +446,8 @@ gltf_min = [minimum[0], minimum[2], -maximum[1]]
 gltf_max = [maximum[0], maximum[2], -minimum[1]]
 manifest = {
     'schema_version': 1, 'asset_id': ASSET_ID, 'quality': ARGS.quality,
-    'status': 'interpreted_pilot_not_validated_best', 'blender_version': bpy.app.version_string,
+    'inventory_id': 'native:counter', 'inventory_number': 1,
+    'status': 'interpreted_pilot_ready_for_review', 'blender_version': bpy.app.version_string,
     'reference': {'source': 'admira-xp/scripts/life-scene.mjs + current procedural Xtanco style',
                   'photos_used': [], 'real_measurements_used': [], 'measured': False},
     'units': {'authoring': 'uncalibrated_grid_units', 'meters_per_grid_unit': None,
@@ -458,7 +467,7 @@ manifest = {
                'studio_cameras_lights_exported': False, 'source_editable': True},
     'limitations': ['Interpretation only; no authenticated store measurements or product photos.',
                    'Profiles good/better/best are asset detail labels, not literal 8/16/32-bit color modes.',
-                   'Best is not enabled or certified by this asset.',
+                   'Connected to editable Better/Best; design pending user review.',
                    'PBR export and studio preview do not guarantee identical lighting in WebGL.'],
 }
 (OUTPUT / f'{STEM}.manifest.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')

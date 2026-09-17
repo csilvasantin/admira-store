@@ -10,10 +10,11 @@ test('both views receive the running layout and stable actor identities without 
  const snapshot=createSceneSnapshot(),staff={...at(3,2),hired:true,dir:1},customer={...at(6,4,'customer'),st:'walk'};
  const game={staff:[staff,{...at(8,1),hired:false}],custs:[customer],passersby:[],custIn:7,doorAnim:.4};
  const layout=[{id:'desk',type:'manager',col:5,row:4,sx:1.2,rot:1}];
- const raw={active:true,iso,layout,game,footprints:{manager:[2,1]}},before=JSON.stringify(raw);
+ const raw={active:true,iso,layout,game,footprints:{manager:[2,1]},hardness:{cols:14,rows:8,blocked:['5,4','5,4','bad']}},before=JSON.stringify(raw);
  const a=snapshot(raw);assert.equal(JSON.stringify(raw),before);
  assert.deepEqual(a.actors.map(v=>[v.col,v.row]),[[3,2],[6,4]]);assert.equal(a.entries,7);assert.equal(a.inside,1);
  assert.deepEqual(a.layout[0].fp,[2,1]);assert.equal(a.layout[0].rot,1);
+ assert.deepEqual(a.hardness,{cols:14,rows:8,blocked:['5,4']});
  customer.x+=40;const b=snapshot(raw);assert.equal(a.actors[1].id,b.actors[1].id);assert.equal(b.actors[1].col,6.5);
  b.layout[0].fp[0]=99;assert.deepEqual(raw.footprints.manager,[2,1]);
  assert.equal(snapshot({...raw,active:false}),null);

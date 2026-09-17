@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1780691893193-90pnk1",
+  "inventory_number": 42,
+  "name": "Caballo de madera",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1780691893193-90pnk1?v=56051",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.04374999925494194,
+      0.0,
+      -0.025345364585518837
+    ],
+    "max": [
+      0.518750011920929,
+      1.1142027378082275,
+      0.9375
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 144784
+}

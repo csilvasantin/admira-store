@@ -1,0 +1,13 @@
+Use case: photorealistic-natural.
+Asset type: transparent full-body human sprite atlas for Matrix Avenida Admira, an isometric indoor shop simulation.
+Primary request: Create exactly SIX distinct entirely fictional, fully dressed people, one complete person per cell, for a transparent 3 columns × 2 rows atlas. Output a 1536 × 1024 PNG with genuine transparent alpha background.
+Composition: six equal invisible 512 × 512 cells in reading order. Place each person's foot midpoint at x=256 within their own cell and y=486 within their own cell. Head near y=50 within the cell; full body and shoes entirely inside that cell, with generous transparent horizontal margins. Do not let bodies or limbs cross cell boundaries. All figures stand casually in a restrained walking stance, with their back and right side visible, facing diagonally toward the upper right. Same camera for all: distant orthographic lens seen from approximately 20 degrees above eye level, gentle rear three-quarter view. Fine photographic cutouts, realistic human anatomy, fabrics, hair and facial profiles, restrained warm indoor lighting. No cartoon style, no pixel art, no toy proportions. Children have natural child proportions and must be visibly distinct from adults.
+Background: true transparent alpha everywhere outside each figure, including between limbs, NO floor, NO cast shadows, NO environment. No colored background, no checkerboard image, no labels, no cell borders, no letters, no numbers, no logos or watermarks.
+Casting, in reading order from top left through bottom right:
+1. Older light-skinned man, gray short hair, glasses, aubergine cardigan, gray trousers and dark shoes, slightly broad build.
+2. Older brown-skinned woman, gray bob haircut, sand-colored coat, blue trousers and comfortable brown shoes, medium build.
+3. Older dark-skinned bald man, teal blue long-sleeved shirt, beige trousers and dark shoes, tall slim build.
+4. Older light-skinned woman, short white hair, turquoise jacket, gray trousers and dark shoes, short sturdy build.
+5. Brown-skinned boy, short dark hair, olive green hoodie, denim jeans and sneakers, natural school-age child proportions.
+6. Light-skinned girl, dark bob haircut, yellow sweatshirt, blue trousers and sneakers, natural school-age child proportions.
+Make all six individuals obviously different in silhouette, clothing colors and hairstyle. Preserve the exact order and 3×2 layout.

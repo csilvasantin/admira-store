@@ -1,0 +1,7 @@
+Use case: precise-object-edit.
+Asset type: final clean background plate for the XpaceOS Best digital twin.
+Primary request: remove ONLY the remaining dark rear door/window opening visible in the exterior stone facade directly behind and just above the long cream rear wall of the shop, near the upper centre-right of the image. It is the small horizontal black/brown rectangular opening partly hidden by the top edge of the cream wall. Replace that opening and its frame with continuous matching Barcelona beige stone blocks, mortar lines, warm reflected light and natural facade texture.
+Invariants: preserve the exact 1672x941 image dimensions, pixel framing, camera, crop, perspective, every wall and floor edge, all furniture, lamps, windows, artwork, exterior balconies, street paving, warm evening lighting, and the street plaque text exactly as two lines “AVENIDA” and “ADMIRA”. Keep the interior completely empty of people. The previously removed lower-right foreground door frame must remain absent.
+Avoid: changing any other opening, adding a door, moving the shop wall, changing the plaque, adding people, changing furniture, altering the camera, reframing, cropping or redesigning the scene. Seamless photorealistic retouch only.
+
+Delivery framing: after the generative edit, the approved output was centre-cropped mechanically to 1504x940 (exact 8:5) so Good, Better and Best share Good's native viewport ratio. No scene element was rescaled or perspective-warped.

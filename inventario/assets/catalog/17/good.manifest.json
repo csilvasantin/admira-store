@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:djBooth",
+  "inventory_number": 17,
+  "name": "Mesa DJ · Audio",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.02542877197265625,
+      0.002106066793203354,
+      -0.21932612359523773
+    ],
+    "max": [
+      2.172276735305786,
+      1.2855539321899414,
+      1.6901097297668457
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 289204
+}

@@ -1,17 +1,16 @@
-import {createLifeSnapshot} from './life-snapshot.mjs';
-import {createTierControls} from './visual-tier-controls.mjs?v=tiers-linked-4';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=visitors-24';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const listeners=new Set();
 const announce=(busy=false,error='',reason='')=>{for(const listener of listeners)listener({open:!!dialog,busy,error,reason,requestId});};
 function subscribeLifeView(listener){listeners.add(listener);return ()=>listeners.delete(listener);}
 const snapshot=createLifeSnapshot();
-let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,controls,requestId,removeAbort;
+let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort;
 const names={counter:'Mostrador',shelves:'Estantería',wineRack:'Bodega',lottery:'Lotería',vending:'Vending',magazines:'Prensa',manager:'Puesto de gestión',plant:'Vegetación',floorLamp:'Iluminación',rug:'Alfombra',djBooth:'DJ booth',tablet:'Tablet',turnKiosk:'Gestor de turnos',aroma:'Aromatización',metahuman:'Asistente digital',tft:'Pantalla digital',led:'Superficie LED',custom:'Mobiliario'};
 const roles={staff:'Equipo',customer:'Cliente del gemelo',passerby:'Transeúnte simulado',saca:'Logística',thief:'Personaje del juego',guardiaCivil:'Personaje del juego',opinador:'Visitante',unitreeBot:'Robot'};
 function close(reason=''){
   generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
-  removeAbort?.();removeAbort=null;controls?.dispose();controls=null;
+  removeAbort?.();removeAbort=null;
   viewer?.dispose();viewer=null;dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
 }
@@ -24,27 +23,21 @@ function select(data){
 }
 async function open(options={}){
   if(dialog||options.signal?.aborted)return;const ticket=++generation;lastFocus=document.activeElement;requestId=options.requestId;
-  dialog=document.createElement('dialog');dialog.className='life-dialog';dialog.setAttribute('aria-labelledby','life-title');
-  dialog.innerHTML=`<header class="life-header">
-    <div class="life-brand"><span class="life-mark" aria-hidden="true">X</span><div><span class="life-eyebrow">XPACEOS · BETTER · DIGITAL TWIN</span><h1 id="life-title">Un espacio. Mil posibilidades.</h1></div></div>
-    <div class="life-header-actions"><a class="life-functions" href="/help/funcionalidades/" target="_blank" rel="noopener">Funciones <span aria-hidden="true">↗</span></a><button type="button" class="life-close" aria-label="Volver al gemelo">Volver al gemelo <span aria-hidden="true">↗</span></button></div>
-  </header><div class="life-navigation"><div class="life-tier-slot"></div><span class="life-mapping-state">Comparar con Good · cámara alineada</span></div>
-  <div class="life-stage"><canvas class="life-canvas" tabindex="0" aria-label="Gemelo 3D interactivo. Arrastra para girar, usa las flechas para rotar y más o menos para acercar."></canvas>
+  dialog=document.createElement('dialog');dialog.className='life-dialog visual-tier-surface';dialog.setAttribute('aria-label','Better · gemelo 3D del Xtanco');
+  dialog.innerHTML=`<div class="life-stage"><canvas class="life-canvas" tabindex="0" aria-label="Gemelo 3D interactivo. Arrastra para girar, usa las flechas para rotar y más o menos para acercar."></canvas>
+    <p class="visual-surface-badge">02.- BETTER · 16 BITS <span class="life-mapping-state">· cámara alineada</span></p>
     <div class="life-location"><span class="life-eyebrow">BARCELONA · GRAN DE GRÀCIA</span><h2>El Xtanco<span>en otra dimensión.</span></h2><p><i aria-hidden="true"></i><span class="life-state">Conectando con el gemelo…</span></p></div>
     <div class="life-loading" role="status"><span class="life-spinner"></span><h2>Abriendo tu espacio</h2><p>Preparando la escena 3D del gemelo…</p><button type="button" class="life-retry" hidden>Reintentar</button></div>
     <aside class="life-selection" hidden><span class="life-eyebrow life-selection-kind"></span><h2></h2><p></p><button type="button" class="life-selection-close" aria-label="Cerrar detalle">×</button></aside>
     <div class="life-toolbar"><div class="life-lights" role="group" aria-label="Iluminación de la escena"><button type="button" data-light="day" aria-pressed="true">☀ <span>Día</span></button><button type="button" data-light="sunset" aria-pressed="false">◒ <span>Atardecer</span></button><button type="button" data-light="night" aria-pressed="false">☾ <span>Noche</span></button></div>
     <div class="life-camera" role="group" aria-label="Cámara"><button type="button" data-preset="mapped" aria-pressed="true">Comparar con Good</button><button type="button" data-preset="home" aria-pressed="false">Explorar 3D</button><button type="button" data-preset="floor" aria-pressed="false">Planta</button><button type="button" data-preset="detail" aria-pressed="false">Detalle</button><span class="life-divider"></span><button type="button" data-zoom="out" aria-label="Alejar">−</button><button type="button" data-zoom="in" aria-label="Acercar">+</button></div></div>
     <div class="life-compass" aria-hidden="true"><span>N</span><b>↟</b></div>
-  </div><footer class="life-footer"><span><b>Arrastra</b> para girar · <b>Scroll / pellizca</b> para acercar · <b>Toca</b> para explorar</span><span class="life-footnote">Mismo gemelo · nueva perspectiva</span></footer>`;
-  controls=createTierControls({context:'Cambiar calidad desde Better',choose:mode=>window.__xtancoVisualTiers?.choose(mode)});
-  dialog.querySelector('.life-tier-slot').append(controls.element);
-  document.body.append(dialog);dialog.showModal();window.__xtancoReleaseInputs?.();document.body.classList.add('xtanco-life-open');
+  </div>`;
+  window.__xtancoSyncVisualSurface?.();document.body.append(dialog);dialog.show();dialog.getBoundingClientRect();dialog.classList.add('is-visible');
+  window.__xtancoReleaseInputs?.();document.body.classList.add('xtanco-life-open');
   const abort=()=>{if(ticket===generation)close('switch');};
   options.signal?.addEventListener('abort',abort,{once:true});removeAbort=()=>options.signal?.removeEventListener('abort',abort);
-  announce(true);
-  dialog.querySelector('.life-close').onclick=close;dialog.querySelector('.life-selection-close').onclick=()=>viewer?.clearSelection();
-  dialog.addEventListener('cancel',e=>{e.preventDefault();close();});
+  announce(true);dialog.querySelector('.life-selection-close').onclick=()=>viewer?.clearSelection();
   // Some legacy controls hit-test document clicks by coordinates, not target.
   // Keep modal interactions local without suppressing canvas/button handlers.
   for(const event of ['click','dblclick','pointerdown','pointerup','pointermove','mousedown','mouseup','mousemove','touchstart','touchmove','touchend','wheel','contextmenu'])dialog.addEventListener(event,e=>e.stopPropagation());
@@ -95,11 +88,11 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=tiers-linked-4');if(ticket!==generation)return;
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=customer-motion-1');if(ticket!==generation)return;
       viewer=createLifeRenderer({canvas,snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,onSelect:select,onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
-        dialog.querySelector('.life-mapping-state').textContent=mapped?'Comparar con Good · cámara alineada':'Exploración libre · pulsa Comparar con Good para alinear';
+        dialog.querySelector('.life-mapping-state').textContent=mapped?'· cámara alineada':'· exploración libre';
         for(const button of dialog.querySelectorAll('[data-preset]'))button.setAttribute('aria-pressed',String(mapped&&button.dataset.preset==='mapped'));
       }});
       if(dialog.dataset.light)viewer.setLighting(dialog.dataset.light);
@@ -110,7 +103,9 @@ async function open(options={}){
         try{
           if(!document.hidden){
             if(now-lastSnapshot>=100){const next=snapshot(window.__xtancoVisualState?.());if(!next){close();return;}viewer.update(next);current=next;lastSnapshot=now;}
-            if(now-lastStatus>=1000){const count=current.inside??0;dialog.querySelector('.life-state').textContent=`Gemelo conectado · ${count} ${count===1?'cliente':'clientes'} en la simulación`;lastStatus=now;}
+            if(now-lastStatus>=1000){const count=current.inside??0;dialog.querySelector('.life-state').textContent=current.moving
+              ? 'Mudanza activa · solo suelo y paredes'
+              : `Gemelo conectado · ${count} ${count===1?'cliente':'clientes'} en la simulación`;lastStatus=now;}
             viewer.render(now);
           }
           frame=requestAnimationFrame(tick);

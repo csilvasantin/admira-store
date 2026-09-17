@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:tft",
+  "inventory_number": 13,
+  "name": "Pantalla TFT",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.0747787356376648,
+      -0.634789228439331,
+      -0.06409052759408951
+    ],
+    "max": [
+      2.030334234237671,
+      0.634789228439331,
+      0.07900000363588333
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 162644
+}

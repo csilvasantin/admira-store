@@ -1,0 +1,10 @@
+PRECISE OBJECT-REMOVAL AND TEXT-REPLACEMENT EDIT of the supplied image. Keep the exact same 1672x941 isometric camera, crop, architecture, Barcelona stone facade, warm evening lighting, retail furniture, materials, windows, artwork, floorboards, street, and all object positions. Keep the interior completely EMPTY of people.
+
+Make ONLY these two edits:
+1. REMOVE THE ENTIRE freestanding dark green/black glass door frame at the lower-right edge of the shop, including both vertical posts, top bar, glass panels, hinges, handles, threshold and every remnant. Do not replace it with another door. Reconstruct the space naturally as an uninterrupted cream wall with white baseboard where wall exists, continuous wooden floor inside, and continuous stone curb/pavement outside, all matching the existing perspective and lighting.
+2. On the white Barcelona ceramic street plaque mounted high on the exterior stone facade at upper right, replace all existing words with exactly two centered lines of legible black uppercase text:
+AVENIDA
+ADMIRA
+The first line must read AVENIDA and the second line must read ADMIRA. No accents, no other words, no tiny subtitle.
+
+Do not move, redesign, add or remove any other object. No people, silhouettes, mannequins, ghosts, letters elsewhere, extra doors, duplicated furniture, or changes to perspective. Photorealistic premium architectural visualization, seamless retouching.

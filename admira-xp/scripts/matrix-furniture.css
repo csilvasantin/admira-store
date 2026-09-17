@@ -1,0 +1,18 @@
+/* Both layer wrappers deliberately have no z-index, transform, filter or opacity.
+   Their individual pieces and visitors share the scene's depth ordering. */
+.matrix-dialog .matrix-reference-clean{opacity:1}
+.matrix-furniture-layer{position:absolute;inset:0;overflow:visible;pointer-events:none}
+.matrix-furniture-item{position:absolute;display:block;overflow:visible;pointer-events:auto;border:0;padding:0;margin:0;background:transparent;line-height:0;cursor:pointer}
+.matrix-furniture-item>svg,.matrix-furniture-item>img{display:block;width:100%;height:100%;overflow:visible}
+.matrix-furniture-item:focus-visible{outline:2px solid #e1d295;outline-offset:3px;border-radius:4px}
+.matrix-furniture-status,.matrix-furniture-selection{position:absolute;z-index:2050;left:12px;bottom:12px;max-width:calc(100% - 24px);margin:0;padding:6px 9px;border:1px solid #a4c0ae66;border-radius:6px;background:#0b171be6;color:#e1ebdf;font:10px/1.4 system-ui,sans-serif;letter-spacing:.025em;pointer-events:none;backdrop-filter:blur(8px)}
+.matrix-furniture-selection{bottom:47px;border-color:#e1d29577;color:#eadeb3;overflow-wrap:anywhere}
+.matrix-dialog .best-stage figcaption{bottom:12px;left:auto;right:12px;transform:none;max-width:calc(100% - 24px);font-size:9px;letter-spacing:.045em}
+/* Mudanza hides scene contents but retains the single clean room backdrop. */
+body.xtanco-mudanza .matrix-dialog .matrix-furniture-layer,body.xtanco-mudanza .matrix-dialog .matrix-furniture-selection{visibility:hidden}
+@media(max-width:700px){
+  .matrix-furniture-status,.matrix-furniture-selection{left:7px;max-width:calc(100% - 14px);font-size:8px;padding:5px 7px}
+  .matrix-dialog .best-stage figcaption{right:7px;bottom:45px;font-size:8px;padding:5px 8px}
+  .matrix-furniture-selection{bottom:74px}
+  .matrix-dialog .visual-surface-badge{max-width:48%;text-align:right}
+}

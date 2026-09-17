@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1781386629046-a7rnyw",
+  "inventory_number": 19,
+  "name": "Scooter retro",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1781386629046-a7rnyw?v=45088",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.10857142508029938,
+      0.01714286021888256,
+      0.02469414286315441
+    ],
+    "max": [
+      0.46417608857154846,
+      0.7971429228782654,
+      0.9467344880104065
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 84720
+}

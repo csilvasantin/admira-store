@@ -7,6 +7,12 @@
 #xtanco-advanced-quality{display:flex;flex-direction:column;margin:0 0 12px;padding:3px;min-width:0}
 #xtanco-advanced-quality button{width:100%;padding:10px 2px;white-space:normal;text-align:center;font-size:9px;letter-spacing:-.02em}
 #xtanco-advanced-quality button small{font-size:8px;line-height:1.3}
+#telegramDock #xtanco-visual-quality{gap:1px;padding:1px}
+#telegramDock #xtanco-visual-quality button{padding:3px 7px;font-size:9px;gap:1px}
+#telegramDock #xtanco-visual-quality button small{font-size:7px;line-height:1}
+#telegramDock.compose-start .tg-pane.send:not(.help-open):not(.signage-open) .tg-cli-row{flex:1 1 68%;min-width:0}
+#telegramDock.compose-start .tg-pane.send:not(.help-open):not(.signage-open) #telegramLastResponse{flex:1 1 32%;min-width:0}
 #xtanco-best-status{position:fixed;right:24px;bottom:70px;width:min(280px,calc(100vw - 32px));padding:12px 14px;border:1px solid #617065;border-radius:9px;background:#102128;color:#e2d4b8;box-shadow:0 8px 28px #0008;font:11px/1.5 system-ui,sans-serif;white-space:normal;text-align:left;z-index:250}
 #xtanco-best-status[hidden]{display:none}
+body.xtanco-mudanza :is(#totemAvatar,#totemAvatarGlow,#wallAvatar,#totemDebugChip){display:none!important}
 @media(max-width:680px){#telegramDock .visual-tier-controls button{padding:5px 6px}#topBar #pfToggles{position:fixed;right:5px;top:5px;margin:0;padding:3px;background:#06141bf2;border-radius:8px;z-index:2}}

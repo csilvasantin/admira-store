@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:rug",
+  "inventory_number": 11,
+  "name": "Alfombra",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    2
+  ],
+  "bounds_gltf": {
+    "min": [
+      5.960464477539063e-08,
+      -7.30732381271082e-08,
+      -1.8875145890717704e-10
+    ],
+    "max": [
+      2.0,
+      0.04250011965632439,
+      2.0
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 105536
+}

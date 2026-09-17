@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:lottery",
+  "inventory_number": 4,
+  "name": "Lotería",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.04999995231628418,
+      -3.43515473844036e-08,
+      -0.06000000610947609
+    ],
+    "max": [
+      2.049999952316284,
+      1.390626311302185,
+      1.0600000619888306
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 461976
+}

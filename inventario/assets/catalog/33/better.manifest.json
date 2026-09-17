@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1780698610571-wusjra",
+  "inventory_number": 33,
+  "name": "Mesa sándwich",
+  "quality": "better",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1780698610571-wusjra?v=94489",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.038461506366729736,
+      0.0,
+      -0.038461536169052124
+    ],
+    "max": [
+      0.9615384936332703,
+      0.7384614944458008,
+      0.807692289352417
+    ]
+  },
+  "files": {
+    "source": "better.blend",
+    "web": "better.glb"
+  },
+  "bytes": 168856
+}

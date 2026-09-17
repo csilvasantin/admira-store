@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:tablet",
+  "inventory_number": 15,
+  "name": "Tablet Satisf.",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.16999998688697815,
+      -2.2649372155569836e-08,
+      0.19999998807907104
+    ],
+    "max": [
+      0.8300000429153442,
+      1.455733299255371,
+      0.800000011920929
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 111904
+}

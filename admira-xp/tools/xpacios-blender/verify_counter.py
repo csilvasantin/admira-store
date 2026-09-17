@@ -23,6 +23,8 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=str(output / f'{stem}.glb'))
 root = bpy.data.objects.get('asset_counter_interpreted')
 assert root is not None and root.get('referenceStatus') == 'interpreted_not_measured'
+assert root.get('inventoryNumber') == 1 and root.get('inventoryId') == 'native:counter'
+assert all(bpy.data.objects.get('rear_service_door_'+str(i)) is not None for i in range(2))
 assert bpy.data.objects.get('screen_tpv_main').get('mediaSurface') == 'existing_shared_player'
 assert all(bpy.data.objects.get(part) is not None for part in manifest['semantic_parts'])
 assert not any(obj.type in {'CAMERA', 'LIGHT'} for obj in bpy.data.objects)

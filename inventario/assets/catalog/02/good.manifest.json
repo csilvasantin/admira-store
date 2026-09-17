@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:shelves",
+  "inventory_number": 2,
+  "name": "Estantería",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    2
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.010272907093167305,
+      0.0014040470123291016,
+      -0.01077977567911148
+    ],
+    "max": [
+      1.0230000019073486,
+      2.2334792613983154,
+      2.010779857635498
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 847652
+}

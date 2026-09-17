@@ -33,14 +33,16 @@ function harness(){
   return {created,Element,create:options=>context.createTierControls(options),update:state=>context.updateTierControls(state)};
 }
 
-test('all control groups share explicit numbered labels and identify Best as a static preview',()=>{
+test('all control groups share explicit numbered labels and identify Best as a live preview',()=>{
   const h=harness(),group=h.create({context:'Modo avanzado'}).element;
   assert.equal(group.attrs.role,'group');assert.equal(group.attrs['aria-label'],'Modo avanzado');
-  assert.deepEqual(group.children.map(button=>button.dataset.visualMode),['good','better','best']);
-  for(const [index,name]of ['Good','Better','Best'].entries())assert.match(group.children[index].textContent,new RegExp(`0${index+1}\\.- ${name}`));
-  const best=group.children[2];assert.match(best.textContent,/32 bits.*preview/);assert.match(best.attrs.title,/estático, no operativo/);
+  assert.deepEqual(group.children.map(button=>button.dataset.visualMode),['good','better','best','matrix']);
+  for(const [index,name]of ['Good','Better','Best','Matrix'].entries())assert.match(group.children[index].textContent,new RegExp(`0${index+1}\\.- ${name}`));
+  const best=group.children[2];assert.match(best.textContent,/32 bits.*3D en vivo/);assert.match(best.attrs.title,/tienda y personas en 3D en vivo/);
+  assert.match(group.children[3].textContent,/Matrix.*Avenida Admira/);
+  assert.match(group.children[3].attrs.title,/mobiliario editable y visitantes en vivo.*cámara fija/);
   assert.notEqual(best.attrs['aria-disabled'],'true');assert.equal(group.attrs['aria-busy'],'false');
-  assert.deepEqual(group.children.map(button=>button.attrs['aria-pressed']),['true','false','false']);
+  assert.deepEqual(group.children.map(button=>button.attrs['aria-pressed']),['true','false','false','false']);
   assert.deepEqual(h.created,['div']);
 });
 
@@ -49,11 +51,11 @@ test('new groups inherit current state and every mounted group updates without e
   h.update({mode:'best',busy:true,availability:'preview'});const second=h.create({context:'Best'});
   for(const item of [first,second]){
     assert.equal(item.element.attrs['aria-busy'],'true');
-    assert.deepEqual(item.element.children.map(button=>button.attrs['aria-pressed']),['false','false','true']);
+    assert.deepEqual(item.element.children.map(button=>button.attrs['aria-pressed']),['false','false','true','false']);
   }
   assert.deepEqual(choices,[],'rendering control state must not activate a view');
   h.update({mode:'better',busy:false});
-  for(const item of [first,second])assert.deepEqual(item.element.children.map(button=>button.attrs['aria-pressed']),['false','true','false']);
+  for(const item of [first,second])assert.deepEqual(item.element.children.map(button=>button.attrs['aria-pressed']),['false','true','false','false']);
 });
 
 test('control input stays local and forwards only the exact selected tier to its callback',()=>{
@@ -62,9 +64,9 @@ test('control input stays local and forwards only the exact selected tier to its
   const events=['click','keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'];
   for(const type of events)parent.addEventListener(type,()=>leaked++);
   for(const button of group.children)assert.equal(button.emit('click').stopped,true);
-  assert.deepEqual(choices,['good','better','best']);assert.equal(leaked,0);
+  assert.deepEqual(choices,['good','better','best','matrix']);assert.equal(leaked,0);
   for(const type of events.filter(type=>type!=='click'))assert.equal(group.emit(type,{key:'q'}).stopped,true);
-  assert.equal(leaked,0);assert.deepEqual(choices,['good','better','best']);
+  assert.equal(leaked,0);assert.deepEqual(choices,['good','better','best','matrix']);
   assert.doesNotThrow(()=>h.create().element.children[2].emit('click'),'a missing optional callback is harmless');
 });
 

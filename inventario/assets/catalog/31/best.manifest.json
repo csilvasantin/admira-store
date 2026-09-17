@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1781178336434-kta58v",
+  "inventory_number": 31,
+  "name": "Sofá murciélago",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1781178336434-kta58v?v=53467",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.0,
+      0.0,
+      -0.0
+    ],
+    "max": [
+      2.0,
+      1.2655930519104004,
+      1.0055556297302246
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 394580
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:aroma",
+  "inventory_number": 16,
+  "name": "Aroma",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.05772235989570618,
+      -0.36622458696365356,
+      0.007925109937787056
+    ],
+    "max": [
+      0.702277660369873,
+      0.36622458696365356,
+      0.2758185863494873
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 36220
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1781280054492-50hn4b",
+  "inventory_number": 26,
+  "name": "Sofá dragón",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1781280054492-50hn4b?v=102834",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.08800000697374344,
+      0.0,
+      -0.0
+    ],
+    "max": [
+      1.1781749725341797,
+      1.477274775505066,
+      0.9319999814033508
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 346468
+}

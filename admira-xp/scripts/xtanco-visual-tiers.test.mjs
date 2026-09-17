@@ -22,16 +22,17 @@ function lifeFixture(){
 }
 
 function routerFixture(options={}){
-  const life=lifeFixture(),best=lifeFixture(),storage=memoryStorage(),changes=[],bestRequests=[];
-  const tiers=createVisualTiers({openBetter:life.openLifeView,closeBetter:life.closeLifeView,subscribeBetter:life.subscribeLifeView,storage,
+  const good=lifeFixture(),life=lifeFixture(),best=lifeFixture(),matrix=lifeFixture(),storage=memoryStorage(),changes=[],bestRequests=[];
+  const tiers=createVisualTiers({openGood:good.openLifeView,closeGood:good.closeLifeView,subscribeGood:good.subscribeLifeView,openBetter:life.openLifeView,closeBetter:life.closeLifeView,subscribeBetter:life.subscribeLifeView,storage,
     openBest:best.openLifeView,closeBest:best.closeLifeView,subscribeBest:best.subscribeLifeView,
+    openMatrix:matrix.openLifeView,closeMatrix:matrix.closeLifeView,subscribeMatrix:matrix.subscribeLifeView,
     onChange:state=>changes.push({...state}),onBestRequested:()=>bestRequests.push(true),...options});
-  return {life,best,storage,changes,bestRequests,tiers};
+  return {good,life,best,matrix,storage,changes,bestRequests,tiers};
 }
 
 test('explicit visual links override preferences and the former Life URL aliases Better',()=>{
-  const matrix=[['good','good'],['better','better'],['life','better'],['best','best'],['','good'],['wireframe','good'],['hybridBest','good'],['BEST','good']];
-  for(const stored of [undefined,'good','better','best','life'])for(const [input,expected]of matrix){
+  const matrix=[['good','good'],['better','better'],['life','better'],['best','best'],['matrix','matrix'],['','good'],['wireframe','good'],['hybridBest','good'],['BEST','good']];
+  for(const stored of [undefined,'good','better','best','matrix','life'])for(const [input,expected]of matrix){
     const storage=memoryStorage({[TIER_STORAGE_KEY]:stored,xtanco_visual_quality:'best'});
     assert.equal(requestedTier(`?from=portada&visual=${input}`,storage),expected,`${input} with stored ${stored}`);
     assert.deepEqual(storage.reads,[],'an explicit URL must not depend on storage access');
@@ -44,7 +45,7 @@ test('versioned Better and Best preferences reopen their own view; former hybrid
     const storage=memoryStorage({xtanco_visual_quality:legacy});
     assert.equal(requestedTier('',storage),'good');assert.deepEqual(storage.reads,[TIER_STORAGE_KEY]);
   }
-  for(const [stored,expected]of [['good','good'],['better','better'],['best','best'],['life','good'],['unknown','good']]){
+  for(const [stored,expected]of [['good','good'],['better','better'],['best','best'],['matrix','matrix'],['life','good'],['unknown','good']]){
     assert.equal(requestedTier('',memoryStorage({[TIER_STORAGE_KEY]:stored})),expected);
   }
   assert.equal(requestedTier(),'good');
@@ -65,11 +66,17 @@ test('choosing an already open Better view is idempotent and cannot leave the se
   assert.equal(f.life.calls.open,1);assert.equal(f.tiers.mode,'better');assert.equal(f.changes.at(-1).busy,false);
 });
 
-test('Best opens only its injected static preview, persists Best and never opens the graphics view',async()=>{
+test('switching to Good removes only the visual surface and keeps the permanent application chrome',async()=>{
+  const f=routerFixture();await f.tiers.choose('best');await f.tiers.choose('good');
+  assert.equal(f.best.calls.close,1);assert.equal(f.good.calls.open,0);assert.equal(f.tiers.mode,'good');
+  await f.tiers.choose('better');assert.equal(f.good.calls.close,0);assert.equal(f.life.calls.open,1);
+});
+
+test('Best opens only its injected live-people preview, persists Best and never opens the graphics view',async()=>{
   const f=routerFixture(),result=await f.tiers.choose('best');
   assert.equal(f.life.calls.open,0);assert.equal(f.best.calls.open,1);assert.equal(f.tiers.mode,'best');assert.equal(f.bestRequests.length,1);
   assert.equal(result.ok,true);assert.equal(result.availability,'preview');assert.equal(result.preview,true);
-  assert.equal(f.changes.at(-1).busy,false);assert.match(f.changes.at(-1).notice,/Best.*previa estática.*no es.*interactivo/);
+  assert.equal(f.changes.at(-1).busy,false);assert.match(f.changes.at(-1).notice,/Best.*personas en 3D en vivo.*funciones operativas completas/);
   assert.equal(f.storage.values.get(TIER_STORAGE_KEY),'best');
   await f.tiers.choose('best');assert.equal(f.best.calls.open,1,'already open is idempotent');
   await f.tiers.choose('better');assert.equal(f.best.calls.close,1);assert.equal(f.tiers.availability,'interactive');
@@ -79,9 +86,9 @@ test('Best opens only its injected static preview, persists Best and never opens
 });
 
 test('pagehide preserves either view preference but deliberate closes save Good',async()=>{
-  for(const tier of ['better','best']){
+  for(const tier of ['better','best','matrix']){
     const f=routerFixture();await f.tiers.choose(tier);
-    (tier==='better'?f.life:f.best).emit({open:false,busy:false,error:'',reason:'pagehide'});
+    (tier==='better'?f.life:tier==='best'?f.best:f.matrix).emit({open:false,busy:false,error:'',reason:'pagehide'});
     assert.equal(f.storage.values.get(TIER_STORAGE_KEY),tier);assert.equal(f.tiers.mode,'good');
     await f.tiers.choose(tier);await f.tiers.choose('good');
     assert.equal(f.tiers.mode,'good');assert.equal(f.storage.values.get(TIER_STORAGE_KEY),'good');
@@ -200,7 +207,7 @@ test('same-request retries await fresh readiness and can still cancel immediatel
 const selectorSource=fs.readFileSync(new URL('./xtanco-premium-ui.mjs',import.meta.url),'utf8');
 const controlsSource=fs.readFileSync(new URL('./visual-tier-controls.mjs',import.meta.url),'utf8');
 function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false}={}){
-  const created=[],queries=[],life=lifeFixture(),best=lifeFixture(),windowEvents={};
+  const created=[],queries=[],good=lifeFixture(),life=lifeFixture(),best=lifeFixture(),matrix=lifeFixture(),windowEvents={};
   class Element {
     constructor(tag){this.tag=tag;this.dataset={};this.attrs={};this.children=[];this.listeners={};this.hidden=false;this.textContent='';
       const classes=new Set();this.classList={add:value=>classes.add(value),remove:value=>classes.delete(value),contains:value=>classes.has(value)};}
@@ -232,11 +239,13 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     }};
   const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);}};Object.defineProperty(window,'localStorage',{get(){if(storageBlocked)throw Error('denied');return storage;}});
   const context=vm.createContext({document,window,location:{search},createVisualTiers,requestedTier,...life,
-    openBestView:best.openLifeView,closeBestView:best.closeLifeView,subscribeBestView:best.subscribeLifeView});
+    openGoodView:good.openLifeView,closeGoodView:good.closeLifeView,subscribeGoodView:good.subscribeLifeView,
+    openBestView:best.openLifeView,closeBestView:best.closeLifeView,subscribeBestView:best.subscribeLifeView,
+    openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
   vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
   const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the expert actions');
-  return {body,actions,advanced,controls,advancedControls:advanced.children[0],document,window,storage,life,best,created,queries,
+  return {body,actions,advanced,controls,advancedControls:advanced.children[0],document,window,storage,good,life,best,matrix,created,queries,
     get status(){return document.getElementById('xtanco-best-status');},
     pagehide(){for(const fn of windowEvents.pagehide||[])fn({persisted:false});},
     button:(tier,group=controls)=>group.querySelectorAll('[data-visual-mode]').find(node=>node.dataset.visualMode===tier)};
@@ -244,33 +253,43 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
 
 test('Advanced and Expert offer the same enabled Best preview and synchronize their pressed state',()=>{
   const h=selectorHarness({search:'?visual=best'});
-  assert.deepEqual(h.queries,['#telegramDock .tg-actions','.quad-right']);assert.equal(h.controls.parent,h.actions);
+  assert.deepEqual(h.queries,['#telegramDock .tg-actions','.quad-right','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
   assert.equal(h.advancedControls.parent,h.advanced);
   assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/experto/);
   assert.match(h.advancedControls.attrs['aria-label'],/avanzado/);
   for(const group of [h.controls,h.advancedControls]){
     assert.notEqual(h.button('best',group).attrs['aria-disabled'],'true');assert.equal(h.button('best',group).attrs['aria-pressed'],'true');
-    assert.match(h.button('best',group).attrs.title,/concepto estático, no operativo/);
+    assert.match(h.button('best',group).attrs.title,/tienda y personas en 3D en vivo/);
   }
-  assert.equal(h.status.hidden,false);assert.match(h.status.textContent,/previa estática.*no es.*interactivo/);
+  assert.equal(h.status.hidden,true,'a successful Best surface must not cover the shared interface');
   assert.equal(h.best.calls.open,1);assert.equal(h.life.calls.open,0);assert.ok(h.created.every(tag=>tag==='div'),'selector creates no GPU canvas');
 });
 
-test('the Best status escapes dock clipping and disappears when returning to Good',async()=>{
+test('the floating status stays silent on success and is reserved for loading or errors',async()=>{
   const h=selectorHarness({search:'?visual=best'}),status=h.status;
   assert.equal(status.parent,h.body,'the explanation must live outside the overflow-clipped expert dock');
   assert.equal(h.controls.querySelector('.quality-status'),null,'reparenting must remove the old nested node');
-  assert.equal(status.attrs.role,'status');assert.equal(status.hidden,false);
+  assert.equal(status.attrs.role,'status');assert.equal(status.hidden,true);
   assert.equal(h.body.children.filter(node=>node.id==='xtanco-best-status').length,1);
   await h.window.__xtancoVisualTiers.choose('good');assert.equal(status.hidden,true);
-  h.button('best').click();assert.equal(status.hidden,false);assert.equal(h.status,status);
+  h.button('best').click();assert.equal(status.hidden,true);assert.equal(h.status,status);
+});
+
+test('/mudanza toggles an independent presentation class without changing quality or persistence',()=>{
+  const h=selectorHarness({search:'?visual=best'}),writes=h.storage.writes.length;
+  assert.equal(h.window.__xtancoMudanza.active,false);assert.equal(h.body.dataset.xtancoMudanza,'furnished');
+  assert.equal(h.window.__xtancoMudanza.toggle(),true);assert.equal(h.window.__xtancoMudanza.active,true);
+  assert.equal(h.body.classList.contains('xtanco-mudanza'),true);assert.equal(h.body.dataset.xtancoMudanza,'empty');
+  assert.equal(h.body.dataset.xtancoTier,'best');assert.equal(h.storage.writes.length,writes);
+  assert.equal(h.window.__xtancoMudanza.toggle(),false);assert.equal(h.body.classList.contains('xtanco-mudanza'),false);
+  assert.equal(h.body.dataset.xtancoMudanza,'furnished');assert.equal(h.body.dataset.xtancoTier,'best');
 });
 
 test('public Better preserves the legacy Good renderer facade and exterior traffic styling',async()=>{
   const h=selectorHarness({search:'?visual=life'}),facade=h.window.__xtancoPremiumView;
   assert.equal(h.body.dataset.xtancoTier,'better');assert.equal(h.button('better').attrs['aria-pressed'],'true');
   assert.equal(h.controls.attrs['aria-busy'],'false');
-  for(const tier of ['good','better','best']){
+  for(const tier of ['good','better','best','matrix']){
     await facade.open(tier);
     assert.equal(h.body.dataset.xtancoVisual,'good');assert.equal(facade.mode,'good');
     assert.equal(facade.begin(),false);assert.equal(facade.operationContext('device'),null);assert.equal(facade.paint(),undefined);
@@ -297,8 +316,40 @@ test('selector boots safely with denied storage or stale legacy Best and never i
     const h=selectorHarness(options);assert.equal(h.body.dataset.xtancoTier,'good');assert.equal(h.life.calls.open,0);
   }
   const imports=[...selectorSource.matchAll(/^import .* from ['"]([^'"]+)['"]/gm)].map(match=>match[1]);
-  assert.deepEqual(imports,['./life-ui.mjs?v=tiers-linked-4','./best-preview-ui.mjs?v=tiers-linked-4','./xtanco-visual-tiers.mjs?v=tiers-linked-4','./visual-tier-controls.mjs?v=tiers-linked-4']);
+  assert.deepEqual(imports,['./matrix-preview-ui.mjs?v=customer-motion-1','./life-ui.mjs?v=customer-motion-1','./best-preview-ui.mjs?v=customer-motion-1','./xtanco-visual-tiers.mjs?v=matrix-furniture-1','./visual-tier-controls.mjs?v=matrix-furniture-1']);
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert.equal([...html.matchAll(/<script\b[^>]*src="scripts\/xtanco-premium-ui\.mjs[^\"]*"/g)].length,1);
   assert.doesNotMatch(html,/<script\b[^>]*src="scripts\/life-ui\.mjs/);
+});
+
+
+test('quality links restore Matrix or Best without prior storage, with visual taking precedence',()=>{
+  for(const tier of ['good','better','best','matrix'])assert.equal(requestedTier(`?play=xtanco&quality=${tier}`,memoryStorage()),tier);
+  assert.equal(requestedTier('?visual=matrix&quality=best'), 'matrix');
+  assert.equal(requestedTier('?visual=unknown&quality=matrix'), 'good');
+});
+
+test('Matrix is an independent preview and can switch to live Best and back without stale events',async()=>{
+  const f=routerFixture();
+  const result=await f.tiers.choose('matrix');
+  assert.equal(result.ok,true);assert.equal(result.preview,true);assert.equal(result.availability,'preview');
+  assert.match(result.notice,/Matrix.*Avenida Admira.*mobiliario editable.*inventario compartido.*cámara fija/);
+  assert.equal(f.best.calls.open,0);assert.equal(f.life.calls.open,0);assert.equal(f.matrix.calls.open,1);
+  assert.equal(f.storage.values.get(TIER_STORAGE_KEY),'matrix');
+  const old=f.matrix.requests[0];
+  await f.tiers.choose('best');assert.equal(f.matrix.calls.close,1);assert.equal(old.signal.aborted,true);
+  await f.tiers.choose('matrix');assert.equal(f.best.calls.close,1);
+  f.matrix.emit({open:false,busy:false,error:'late failure',requestId:old.requestId});
+  assert.equal(f.tiers.mode,'matrix');assert.equal(f.tiers.error,'');
+  f.tiers.dispose();assert.equal(f.matrix.listeners.size,0);assert.equal(f.matrix.calls.close,2);
+});
+
+test('Matrix is accessible from both public selectors and reports missing initialization honestly',async()=>{
+  const h=selectorHarness({search:'?quality=matrix'});
+  for(const group of [h.controls,h.advancedControls])assert.equal(h.button('matrix',group).attrs['aria-pressed'],'true');
+  assert.equal(h.body.dataset.xtancoTier,'matrix');assert.equal(h.matrix.calls.open,1);
+  h.button('best').click();assert.equal(h.best.calls.open,1);assert.equal(h.matrix.calls.close,1);
+  h.button('matrix',h.advancedControls).click();assert.equal(h.matrix.calls.open,2);
+  const result=await routerFixture({openMatrix:undefined}).tiers.choose('matrix');
+  assert.equal(result.ok,false);assert.equal(result.mode,'good');assert.match(result.error,/Matrix no disponible/);
 });

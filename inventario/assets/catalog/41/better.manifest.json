@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1780692329479-72iyd6",
+  "inventory_number": 41,
+  "name": "Máquina arcade",
+  "quality": "better",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1780692329479-72iyd6?v=69593",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.016666710376739502,
+      0.0,
+      -0.0
+    ],
+    "max": [
+      1.0166666507720947,
+      2.1777780055999756,
+      1.0166667699813843
+    ]
+  },
+  "files": {
+    "source": "better.blend",
+    "web": "better.glb"
+  },
+  "bytes": 99152
+}

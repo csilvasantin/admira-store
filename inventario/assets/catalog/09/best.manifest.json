@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:plant",
+  "inventory_number": 9,
+  "name": "Planta",
+  "quality": "best",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.36821141839027405,
+      -2.128134823919936e-08,
+      -0.27447766065597534
+    ],
+    "max": [
+      1.2851053476333618,
+      1.8882250785827637,
+      1.1344398260116577
+    ]
+  },
+  "files": {
+    "source": "best.blend",
+    "web": "best.glb"
+  },
+  "bytes": 287572
+}

@@ -1,0 +1,8 @@
+Use case: precise-object-edit
+Asset type: XpaceOS Best live-preview background plate for El Xtanco, Barcelona
+Primary request: Improve only the rear/background wall treatment so it matches the richer approved Best concept. Replace the flat dark-grey void behind the cutaway rear walls with a believable warm Barcelona stone facade, including subtle masonry joints, aged texture and architectural depth. Add one traditional enamel/stone street plaque on that exterior facade with the exact, clearly legible Catalan text: "CARRER GRAN DE GRÀCIA". Keep the plaque naturally integrated in the upper-right rear facade, visible at website scale. Preserve the interior dark-green feature wall and refine its panel mouldings and brass trim without moving anything.
+Style/medium: premium photorealistic architectural visualization, same warm evening lighting and materials as the source
+Composition/framing: preserve the source image pixel-for-pixel in camera angle, crop, perspective, cutaway footprint and 16:9 composition
+Text (verbatim): "CARRER GRAN DE GRÀCIA"
+Constraints: edit only the rear/background wall surfaces; keep every floor edge, doorway, window, lamp, counter, shelf, product, screen, desk, DJ console, plant, artwork and bollard in exactly the same position and scale; keep all floor areas empty for the live people overlay; no humans or human silhouettes; do not alter the floor geometry or camera; no UI, no caption, no logo, no watermark
+Avoid: misspelled text, extra signs, new furniture, moved objects, new rooms, people, mannequins, flat grey empty background

@@ -1,0 +1,9 @@
+Use case: background-extraction
+Asset type: transparent live character sprites for the XpaceOS Best photorealistic retail twin
+Reference: `best-xtanco-mapped-20260915.png` supplied camera angle, warm lighting, realism and shopper scale.
+
+Male: exactly one full-body adult male customer, natural walking pose, slightly elevated rear three-quarter angle, rust overshirt, dark trousers and neutral trainers. Anatomically correct proportions; genuine transparent alpha; no floor, shadow, object, text, logo or watermark.
+
+Female: exactly one full-body adult female customer, natural walking pose, slightly elevated rear three-quarter angle, denim jacket, dark straight trousers, neutral trainers and a small shoulder bag. Anatomically correct proportions; genuine transparent alpha; no floor, shadow, object, text, logo or watermark.
+
+Both outputs required a focused second pass to replace a generated checkerboard with real alpha while preserving the person.

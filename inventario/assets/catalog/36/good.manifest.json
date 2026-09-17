@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1780693925175-12hdur",
+  "inventory_number": 36,
+  "name": "Mesa casco espacial",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1780693925175-12hdur?v=63683",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.038461506366729736,
+      0.0,
+      -0.038461536169052124
+    ],
+    "max": [
+      0.9615384936332703,
+      0.642307698726654,
+      0.807692289352417
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 25260
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "pixeria:1780693814681-lvdbyl",
+  "inventory_number": 37,
+  "name": "Mesa ogro",
+  "quality": "better",
+  "blender_version": "5.2.2 LTS",
+  "reference": "https://api.admira.store/stock/asset/1780693814681-lvdbyl?v=65249",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.038461506366729736,
+      0.0,
+      -0.038461536169052124
+    ],
+    "max": [
+      0.9615384936332703,
+      0.642307698726654,
+      0.8946153521537781
+    ]
+  },
+  "files": {
+    "source": "better.blend",
+    "web": "better.glb"
+  },
+  "bytes": 114448
+}

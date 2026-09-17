@@ -20,11 +20,13 @@
     },
     "best": {
       "availability": "preview",
-      "static": true,
+      "static": false,
+      "background_static": true,
+      "people_live": true,
       "operational": false,
       "command": "/modo best",
       "success_result": { "ok": true, "preview": true, "availability": "preview" },
-      "scope": "Vista previa conceptual estática con navegación entre vistas; no sigue el estado en vivo ni implementa las 30 áreas Best."
+      "scope": "Escenario conceptual fijo con personas proyectadas desde el estado vivo; la cámara, el mobiliario y las 30 áreas Best no son interactivos."
     },
     "mcp": "La navegación pertenece al navegador del gemelo; no registra herramientas ni recursos MCP."
   },
@@ -69,7 +71,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -168,7 +170,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -243,7 +245,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -306,7 +308,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -357,7 +359,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -428,7 +430,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -497,7 +499,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -554,7 +556,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -636,7 +638,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -710,7 +712,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -784,7 +786,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -852,7 +854,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -921,7 +923,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -990,7 +992,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1065,7 +1067,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1146,7 +1148,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1215,7 +1217,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1296,7 +1298,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1378,7 +1380,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1454,7 +1456,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1529,7 +1531,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1599,7 +1601,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [],
       "mcp": {
@@ -1656,7 +1658,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1731,7 +1733,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1789,7 +1791,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1876,7 +1878,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -1895,7 +1897,7 @@
           "text": "/modo best",
           "entrypoint": "__xtExec",
           "status": "source_verified",
-          "note": "Abre una vista previa conceptual estática. Cuando la apertura tiene éxito devuelve ok:true y preview:true; no abre un Best terminado ni habilita sus funciones operativas."
+          "note": "Abre un escenario conceptual fijo con personas del gemelo en vivo. Cuando la apertura tiene éxito devuelve ok:true y preview:true; no abre un Best terminado ni habilita sus funciones operativas."
         },
         {
           "text": "/render 16bit",
@@ -1950,7 +1952,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -2002,7 +2004,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -2078,7 +2080,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {
@@ -2153,7 +2155,7 @@
       },
       "best": {
         "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre sólo una vista previa conceptual estática; no reproduce esta función ni el estado en vivo."
+        "detail": "Esta función operativa de Best sigue en preparación. El selector abre un escenario conceptual fijo con personas del gemelo en vivo; no reproduce esta función ni hace interactivos la cámara o el mobiliario."
       },
       "commands": [
         {

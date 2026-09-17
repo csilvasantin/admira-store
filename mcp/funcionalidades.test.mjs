@@ -112,10 +112,12 @@ test('la navegación Best confirma sólo una preview y conserva el baseline func
   assert.equal(navigation.selector_inside_views, true);
   assert.deepEqual(Object.keys(navigation.labels).sort(), ['best', 'better', 'good']);
   assert.equal(navigation.best.availability, 'preview');
-  assert.equal(navigation.best.static, true);
+  assert.equal(navigation.best.static, false);
+  assert.equal(navigation.best.background_static, true);
+  assert.equal(navigation.best.people_live, true);
   assert.equal(navigation.best.operational, false);
   assert.deepEqual(navigation.best.success_result, {ok:true, preview:true, availability:'preview'});
-  assert.match(navigation.best.scope, /no sigue el estado en vivo/);
+  assert.match(navigation.best.scope, /personas proyectadas desde el estado vivo/);
   assert.match(navigation.better_camera.comparison, /mapped.*Good/);
   assert.match(navigation.better_camera.exploration, /independiente/);
   assert.equal(catalog.audit.source_commit, 'a7b8d62eacfcbb166d2ddc1e3a6758bec0fdc178');
@@ -123,7 +125,7 @@ test('la navegación Best confirma sólo una preview y conserva el baseline func
   assert.match(command('XP-F26', '/modo best').note, /ok:true.*preview:true/);
   for (const item of catalog.features) {
     assert.equal(item.best.status, 'planned', item.id);
-    assert.match(item.best.detail, /vista previa conceptual estática/, item.id);
+    assert.match(item.best.detail, /escenario conceptual fijo con personas del gemelo en vivo/, item.id);
   }
 });
 
@@ -133,7 +135,7 @@ test('ayuda humana y texto MCP distinguen navegación disponible de funciones Be
   ].map(path => readFile(new URL(path, repo), 'utf8')));
   for (const document of [help, cli, page, llms]) {
     assert.match(document, /Avanzado/);
-    assert.match(document, /estática/);
+    assert.match(document, /conceptual|concept scene/i);
     assert.match(document, /preparación|planned/);
     assert.doesNotMatch(document, /Avanzado \(⌘\)|Advanced \(⌘\)|Experto \(▤\)|Expert \(▤\)/);
   }

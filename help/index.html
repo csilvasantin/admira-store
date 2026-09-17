@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<meta name="admiranext-version" content="v.15.09.2026.r2.10:25">
+<meta name="admiranext-version" content="v.15.09.2026.r4.12:07">
 <style>
   :root{--bg:#070b12;--panel:#0e1622;--line:#1d2a3a;--txt:#e9f1f7;--mut:#7e95a8;--acc:#34d0c0;--pur:#9b8cff;--good:#3ddc84;--warn:#ffb347}
   *{box-sizing:border-box}
@@ -124,8 +124,8 @@
         <p data-i18n-html="s1.3d.parity" style="margin-top:8px">Better aún no recupera todos los controles de Good. Consulta el <a href="/help/funcionalidades/">catálogo numerado de funciones</a>: <b>01.- Cartelería Digital</b>, <b>02.- Hilo Musical</b>… Cada ficha distingue controles, representación y conexiones pendientes, con IDs estables compartidos por ayuda y documentación MCP.</p>
         <p data-i18n-html="s1.3d.3" style="margin-top:8px">Abre <b>Avanzado (▤)</b> y elige <b>Good · 8 bits</b>, <b>Better · 16 bits</b> o <b>Best · 32 bits</b>; el selector también está disponible dentro de las vistas. La consola acepta <code>/modo good</code>, <code>/modo better</code> y <code>/modo best</code>. <b>Volver al gemelo</b> o Escape regresan a Good sin reiniciar la sesión. El cambio de vista es local: no envía órdenes a Telegram ni cambia pantallas físicas.</p>
       </div>
-      <div class="card" id="best"><h3 data-i18n="s1.best.h">Best · 32 bits: vista previa estática</h3>
-        <p data-i18n-html="s1.best.1"><a href="/admira-xp/?autostart=xtanco&amp;visual=best">Abrir Best</a> muestra una <b>vista previa conceptual estática</b>, con navegación para volver a Good o Better. No representa una tienda operativa ni sigue el estado en vivo. Sus funciones del catálogo continúan en preparación. Good 8, Better 16 y Best 32 bits son nombres artísticos, no profundidad de color ni una garantía de hiperrealismo.</p>
+      <div class="card" id="best"><h3 data-i18n="s1.best.h">Best · 32 bits: personas en vivo</h3>
+        <p data-i18n-html="s1.best.1"><a href="/admira-xp/?autostart=xtanco&amp;visual=best">Abrir Best</a> muestra un <b>escenario conceptual con las personas del gemelo en vivo</b>, con navegación para volver a Good o Better. El fondo, la cámara y el mobiliario todavía no son interactivos; sus funciones del catálogo continúan en preparación. Good 8, Better 16 y Best 32 bits son nombres artísticos, no profundidad de color ni una garantía de hiperrealismo.</p>
         <p data-i18n-html="s1.best.2" style="margin-top:8px">El <a href="/xpacios/lab/">laboratorio de producción Blender</a> comienza por un mostrador con caja/TPV editable y exportación GLB. Es un piloto interpretado, no una réplica medida. Para validar cada mueble y el local hacen falta fotos y medidas verificadas. Los modelos web conservarán el estado y las funciones del mismo gemelo.</p>
       </div>
     </div>
@@ -289,8 +289,8 @@ const I18N={en:{
  's1.3d.2':'Use <b>Compare with Good</b> to view Better with a camera aligned to the classic projection. Model detail still differs. <b>Explore 3D</b> lets you orbit and zoom independently: drag, scroll or pinch, and tap an object to inspect its label. Selection does not execute store operations.',
  's1.3d.parity':'Better does not yet expose all Good controls. See the <a href="/help/funcionalidades/">numbered functional catalog</a>: <b>01.- Digital Signage</b>, <b>02.- Background Music</b>… Each entry distinguishes controls, presentation and pending connections, with stable IDs shared by Help and MCP documentation.',
  's1.3d.3':'Open <b>Advanced (▤)</b> and choose <b>Good · 8-bit</b>, <b>Better · 16-bit</b> or <b>Best · 32-bit</b>; the selector is also available inside the views. The console accepts <code>/modo good</code>, <code>/modo better</code> and <code>/modo best</code>. <b>Back to twin</b> or Escape return to Good without restarting the session. View changes are local: they do not send Telegram commands or change physical screens.',
- 's1.best.h':'Best · 32-bit: static preview',
- 's1.best.1':'<a href="/admira-xp/?autostart=xtanco&amp;visual=best">Open Best</a> shows a <b>static conceptual preview</b>, with navigation back to Good or Better. It is not an operational store and does not follow live state. Its catalog functions remain in preparation. Good 8, Better 16 and Best 32-bit are artistic names, not color depth or a guarantee of hyperrealism.',
+ 's1.best.h':'Best · 32-bit: live people',
+ 's1.best.1':'<a href="/admira-xp/?autostart=xtanco&amp;visual=best">Open Best</a> shows a <b>concept scene with people from the live twin</b>, with navigation back to Good or Better. The background, camera and furniture are not interactive yet; its catalog functions remain in preparation. Good 8, Better 16 and Best 32-bit are artistic names, not color depth or a guarantee of hyperrealism.',
  's1.best.2':'The <a href="/xpacios/lab/">Blender production lab</a> starts with an editable counter and POS, exported as GLB. This is an interpreted pilot, not a measured replica. Verified photos and dimensions are needed to validate each fixture and the space. Web models will preserve the state and functions of the same twin.',
  's2.h':'Scan your space (XpaceScan)','s2.k':'from the phone to the 3D twin, no cables','s2.a.h':'On the phone',
  's2.a.1':'Open <a href="/scan/">xpaceos.com/scan</a> and allow the camera.','s2.a.2':'Record 60–120 s walking slowly, with lateral and wrapping movement, covering each zone from two angles.',

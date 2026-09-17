@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:manager",
+  "inventory_number": 7,
+  "name": "Escritorio",
+  "quality": "better",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    2,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      -0.02499997615814209,
+      -0.05892135202884674,
+      -0.01999998465180397
+    ],
+    "max": [
+      2.0250000953674316,
+      1.4371371269226074,
+      1.213235855102539
+    ]
+  },
+  "files": {
+    "source": "better.blend",
+    "web": "better.glb"
+  },
+  "bytes": 153092
+}

@@ -22,8 +22,8 @@ test('advanced mirror places Pixeria after the eye and forwards the exact existi
  const output=[],clicks=[];
  const source=actions('es').map((action,index)=>({index,getAttribute:()=>action.customAction||'',click:()=>clicks.push(index),cloneNode(){return {index,addEventListener(_type,fn){this.click=fn;}};}}));
  const host={set innerHTML(_){output.length=0;},appendChild:item=>output.push(item)};
- const context=vm.createContext({src:{querySelectorAll:()=>source},host,makePercibe:()=>({eye:true})});vm.runInContext(mirrorSource,context);context.mirror();
- assert.equal(output.at(-2).eye,true);assert.equal(output.at(-1).index,source.length-1);
+ const context=vm.createContext({src:{querySelectorAll:()=>source},host,makeInventory:()=>({inventory:true}),makePercibe:()=>({eye:true})});vm.runInContext(mirrorSource,context);context.mirror();
+ assert.equal(output.at(-3).inventory,true);assert.equal(output.at(-2).eye,true);assert.equal(output.at(-1).index,source.length-1);
  output[4].click({preventDefault(){},stopPropagation(){}});assert.deepEqual(clicks,[4]);
  output.at(-1).click({preventDefault(){},stopPropagation(){}});assert.deepEqual(clicks,[4,source.length-1]);
 });

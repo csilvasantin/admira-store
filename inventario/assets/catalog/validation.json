@@ -1,0 +1,299 @@
+{
+  "blender": "5.2.2 LTS",
+  "models": [
+    {
+      "number": 2,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 11,
+      "web_meshes": 12
+    },
+    {
+      "number": 3,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 9,
+      "web_meshes": 10
+    },
+    {
+      "number": 4,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 12,
+      "web_meshes": 14
+    },
+    {
+      "number": 5,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 9,
+      "web_meshes": 10
+    },
+    {
+      "number": 6,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 9,
+      "web_meshes": 10
+    },
+    {
+      "number": 7,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 9,
+      "web_meshes": 10
+    },
+    {
+      "number": 8,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 3,
+      "web_meshes": 3
+    },
+    {
+      "number": 9,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 6,
+      "web_meshes": 6
+    },
+    {
+      "number": 10,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 3,
+      "web_meshes": 3
+    },
+    {
+      "number": 11,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 3,
+      "web_meshes": 3
+    },
+    {
+      "number": 12,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 2,
+      "web_meshes": 3
+    },
+    {
+      "number": 13,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 4,
+      "web_meshes": 5
+    },
+    {
+      "number": 14,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 6,
+      "web_meshes": 8
+    },
+    {
+      "number": 15,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 5,
+      "web_meshes": 7
+    },
+    {
+      "number": 16,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 3,
+      "web_meshes": 3
+    },
+    {
+      "number": 17,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 10,
+      "web_meshes": 11
+    },
+    {
+      "number": 18,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 5,
+      "web_meshes": 7
+    },
+    {
+      "number": 19,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 30,
+      "web_meshes": 7
+    },
+    {
+      "number": 20,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 30,
+      "web_meshes": 6
+    },
+    {
+      "number": 21,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 27,
+      "web_meshes": 4
+    },
+    {
+      "number": 22,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 18,
+      "web_meshes": 3
+    },
+    {
+      "number": 23,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 29,
+      "web_meshes": 6
+    },
+    {
+      "number": 24,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 13,
+      "web_meshes": 5
+    },
+    {
+      "number": 25,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 23,
+      "web_meshes": 4
+    },
+    {
+      "number": 26,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 55,
+      "web_meshes": 3
+    },
+    {
+      "number": 27,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 41,
+      "web_meshes": 4
+    },
+    {
+      "number": 28,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 32,
+      "web_meshes": 2
+    },
+    {
+      "number": 29,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 51,
+      "web_meshes": 6
+    },
+    {
+      "number": 30,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 21,
+      "web_meshes": 7
+    },
+    {
+      "number": 31,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 31,
+      "web_meshes": 3
+    },
+    {
+      "number": 32,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 6,
+      "web_meshes": 3
+    },
+    {
+      "number": 33,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 32,
+      "web_meshes": 5
+    },
+    {
+      "number": 34,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 43,
+      "web_meshes": 4
+    },
+    {
+      "number": 35,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 13,
+      "web_meshes": 3
+    },
+    {
+      "number": 36,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 10,
+      "web_meshes": 3
+    },
+    {
+      "number": 37,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 13,
+      "web_meshes": 3
+    },
+    {
+      "number": 38,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 14,
+      "web_meshes": 4
+    },
+    {
+      "number": 39,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 13,
+      "web_meshes": 2
+    },
+    {
+      "number": 40,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 10,
+      "web_meshes": 2
+    },
+    {
+      "number": 41,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 13,
+      "web_meshes": 6
+    },
+    {
+      "number": 42,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 13,
+      "web_meshes": 3
+    },
+    {
+      "number": 43,
+      "source_opened": true,
+      "glb_reimported": true,
+      "source_meshes": 10,
+      "web_meshes": 1
+    }
+  ]
+}

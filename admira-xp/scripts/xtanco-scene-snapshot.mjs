@@ -2,7 +2,7 @@
 export function createSceneSnapshot(){
   const ids=new WeakMap();let sequence=0;
   const identity=(actor,kind)=>{if(!ids.has(actor))ids.set(actor,`${kind}-${++sequence}`);return ids.get(actor);};
-  return function snapshot({iso,projection,layout=[],game,active=false,editor=false,footprints={},wallHelpers={}}={}){
+  return function snapshot({iso,projection,layout=[],hardness={},game,active=false,editor=false,footprints={},wallHelpers={}}={}){
     if(!active||!game||!iso)return null;
     const elevation=Math.asin(iso.tileH/iso.tileW);
     const pixelsPerHeightUnit=iso.tileW/Math.SQRT2*Math.cos(elevation);
@@ -35,11 +35,13 @@ export function createSceneSnapshot(){
     for(const kind of ['saca','thief','guardiaCivil','opinador','unitreeBot']){
       const value=game[kind];if(value&&value.phase!=='idle')actors.push(actor(value,kind));
     }
+    const blocked=Array.isArray(hardness.blocked)?[...new Set(hardness.blocked.filter(value=>typeof value==='string'&&/^\d+,\d+$/.test(value)))]:[];
     return {cols:iso.cols,rows:iso.rows,elevation,editor,
       projection:projection?{...projection}:undefined,
+      hardness:{cols:iso.cols,rows:iso.rows,blocked},
       wallHeight:iso.wallH/pixelsPerHeightUnit,
       layout:layout.map(v=>({id:v.id,type:v.type,col:v.col,row:v.row,sx:v.sx||1,sy:v.sy||1,
-        rot:v.rot||0,flipX:!!v.flipX,label:v.label||'',fp:[...(v.fp||footprints[v.type]||[1,1])],...dimensions(v)})),
+        rot:v.rot||0,flipX:!!v.flipX,img:typeof v.img==='string'?v.img:'',label:v.label||'',fp:[...(v.fp||footprints[v.type]||[1,1])],...dimensions(v)})),
       actors:actors.filter(Boolean),doorOpen:game.doorAnim??0,time:game.gameTime??12,
       inside:(game.custs||[]).length,entries:game.custIn||0};
   };

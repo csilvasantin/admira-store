@@ -62,7 +62,8 @@ test('world composition precedes game, pause and editor overlays without a secon
  assert.doesNotMatch(final,/__xtancoPremiumView|\.frame\(/);
  const editor=html.slice(html.indexOf('function drawEditor(){'),html.indexOf('// ── STAFF MODE overlays'));
  assert.ok(editor.indexOf('drawShop();')<editor.indexOf('// Grid overlay'));
- assert.match(html,/editor:state===S\.EDITOR,active:!!G&&\(state===S\.GAME\|\|state===S\.PAUSE\|\|state===S\.EDITOR\)/);
+ assert.match(html,/editor:state===S\.EDITOR,moving,active:!!G&&\(state===S\.GAME\|\|state===S\.PAUSE\|\|state===S\.EDITOR\)/);
+ assert.match(shop,/const mudanzaActive=document\.body\.classList\.contains\('xtanco-mudanza'\)/);
 });
 
 test('live devices and actors are routed through one shared operational pass',()=>{

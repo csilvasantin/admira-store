@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "inventory_id": "native:vending",
+  "inventory_number": 5,
+  "name": "Vending",
+  "quality": "good",
+  "blender_version": "5.2.2 LTS",
+  "reference": "admira-xp/scripts/life-scene.mjs",
+  "measured": false,
+  "source_editable": true,
+  "full_volume": true,
+  "footprint": [
+    1,
+    1
+  ],
+  "bounds_gltf": {
+    "min": [
+      0.011700570583343506,
+      0.02433713525533676,
+      0.011700494214892387
+    ],
+    "max": [
+      0.9882994294166565,
+      2.0556628704071045,
+      1.1414552927017212
+    ]
+  },
+  "files": {
+    "source": "good.blend",
+    "web": "good.glb"
+  },
+  "bytes": 159380
+}

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "assetLicense": "CC0-1.0",
+  "upstreamRevision": "a8bc2d54ff0ac92e78ff71431b1023eda42bf482",
+  "licenseEvidence": [
+    "https://static.makehumancommunity.org/about/license.html",
+    "https://github.com/makehumancommunity/makehuman/blob/master/LICENSE.md",
+    "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html"
+  ],
+  "files": [
+    {
+      "path": "base.obj",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/3dobjs/base.obj",
+      "bytes": 1749303,
+      "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c"
+    },
+    {
+      "path": "default.mhskel",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/rigs/default.mhskel",
+      "bytes": 117790,
+      "sha256": "99f179bce0aa850b45d4191a1d0d234c5851f881c057439470ded3bddf729a24"
+    },
+    {
+      "path": "default_weights.mhw",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/rigs/default_weights.mhw",
+      "bytes": 897521,
+      "sha256": "0f3641d651ae3d00ad6b4ccee43142edb109d3bd909d27d9e4139ef1beed8625"
+    },
+    {
+      "path": "LICENSE.md",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/LICENSE.md",
+      "bytes": 3598,
+      "sha256": "edd99571ca62698f78c943fd4fffb159a413c315fa0d4819d3cec5cadaf8b4f1"
+    },
+    {
+      "path": "makehuman_system_assets_cc0.zip",
+      "url": "https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "bytes": 280737770,
+      "sha256": "b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107"
+    },
+    {
+      "path": "targets/caucasian-male-young.target",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/targets/macrodetails/caucasian-male-young.target",
+      "bytes": 396479,
+      "sha256": "70e228ba7164737dae664454394536fc5935fa48d333c1a97d77e2dc6eacc5f5"
+    },
+    {
+      "path": "targets/caucasian-female-child.target",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/targets/macrodetails/caucasian-female-child.target",
+      "bytes": 446405,
+      "sha256": "17fc408839c0a407bf4efd96d9af7eebcdf20d74698659f3597b0647ed6b147e"
+    },
+    {
+      "path": "targets/caucasian-male-child.target",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/targets/macrodetails/caucasian-male-child.target",
+      "bytes": 441028,
+      "sha256": "401b9b0349c88dc7aacb81e71f67daf747fecde0f7fd7f3f6e10fb2ce5586d1e"
+    },
+    {
+      "path": "targets/caucasian-female-young.target",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/targets/macrodetails/caucasian-female-young.target",
+      "bytes": 420559,
+      "sha256": "118379f6e8ba9266247fdb8788a20e1df40a239f97ced0b9905bcbcc74f6e820"
+    }
+  ],
+  "extractPrefixes": [
+    "clothes/male_casualsuit01/",
+    "clothes/female_casualsuit01/",
+    "clothes/shoes02/",
+    "hair/short02/",
+    "hair/ponytail01/",
+    "eyebrows/eyebrow001/",
+    "eyes/low-poly/",
+    "eyes/materials/",
+    "skins/young_caucasian_male/",
+    "skins/young_caucasian_female/"
+  ]
+}
