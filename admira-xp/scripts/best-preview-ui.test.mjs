@@ -25,7 +25,7 @@ function harness({modalFailure=false,immediate=false}={}){
  document={body,activeElement:previous,createElement(tag){created.push(tag);return new Element(tag);}};
  window.__xtancoReleaseInputs=()=>releases++;
  function mountInventoryBest(container,onReady){const layer={container,onReady,disposed:false};layers.push(layer);if(immediate)onReady();return()=>{layer.disposed=true;};}
- const context=vm.createContext({document,window,mountInventoryBest});
+ const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),document,window,mountInventoryBest});
  vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.audit={openBestView,closeBestView,subscribeBestView,get dialog(){return dialog;}};',context);
  return {body,window,document,previous,created,layers,get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
 }

@@ -1,8 +1,8 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=customer-motion-1';
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=customer-motion-1';
-import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=customer-motion-1';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=walk-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=tier-hud-1';
+import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=tier-hud-1';
 import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=matrix-furniture-1';
-import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=matrix-furniture-1';
+import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=tier-hud-1';
 
 const actions=document.querySelector('#telegramDock .tg-actions');
 const advanced=document.querySelector('.quad-right');

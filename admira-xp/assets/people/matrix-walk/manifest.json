@@ -1,0 +1,109 @@
+{
+ "frameW": 192,
+ "frameH": 288,
+ "walkFrames": 8,
+ "cols": 9,
+ "rows": [
+  "front",
+  "back"
+ ],
+ "elevationDeg": 30,
+ "profiles": {
+  "a1": {
+   "label": "Marcos · azul marino",
+   "sheet": "a1.webp"
+  },
+  "a2": {
+   "label": "Nadia · coral",
+   "sheet": "a2.webp"
+  },
+  "a3": {
+   "label": "Samuel · crema",
+   "sheet": "a3.webp"
+  },
+  "a4": {
+   "label": "Elena · verde bosque",
+   "sheet": "a4.webp"
+  },
+  "a5": {
+   "label": "David · vaquero",
+   "sheet": "a5.webp"
+  },
+  "a6": {
+   "label": "Maya · ciruela",
+   "sheet": "a6.webp"
+  },
+  "b1": {
+   "label": "Omar · rojo",
+   "sheet": "b1.webp"
+  },
+  "b2": {
+   "label": "Amina · turquesa",
+   "sheet": "b2.webp"
+  },
+  "b3": {
+   "label": "Bruno · carbón",
+   "sheet": "b3.webp"
+  },
+  "b4": {
+   "label": "Irene · arena",
+   "sheet": "b4.webp"
+  },
+  "b5": {
+   "label": "Luis · azul",
+   "sheet": "b5.webp"
+  },
+  "b6": {
+   "label": "Sara · mostaza",
+   "sheet": "b6.webp"
+  },
+  "c1": {
+   "label": "Joaquín · berenjena",
+   "sheet": "c1.webp"
+  },
+  "c2": {
+   "label": "Carmen · abrigo arena",
+   "sheet": "c2.webp"
+  },
+  "c3": {
+   "label": "Gabriel · petróleo",
+   "sheet": "c3.webp"
+  },
+  "c4": {
+   "label": "Rosa · turquesa",
+   "sheet": "c4.webp"
+  },
+  "c5": {
+   "label": "Leo · oliva",
+   "sheet": "c5.webp"
+  },
+  "c6": {
+   "label": "Alba · amarillo",
+   "sheet": "c6.webp"
+  },
+  "d1": {
+   "label": "Noah · naranja",
+   "sheet": "d1.webp"
+  },
+  "d2": {
+   "label": "Luna · malva",
+   "sheet": "d2.webp"
+  },
+  "d3": {
+   "label": "Álex · camiseta marina",
+   "sheet": "d3.webp"
+  },
+  "d4": {
+   "label": "Zoe · ocre",
+   "sheet": "d4.webp"
+  },
+  "d5": {
+   "label": "Andrés · polo verde",
+   "sheet": "d5.webp"
+  },
+  "d6": {
+   "label": "Clara · mostaza y denim",
+   "sheet": "d6.webp"
+  }
+ }
+}

@@ -1,17 +1,18 @@
 import {createLifeSnapshot} from './life-snapshot.mjs?v=visitors-24';
+import {mountTierHud} from './tier-hud.mjs?v=tier-hud-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const listeners=new Set();
 const announce=(busy=false,error='',reason='')=>{for(const listener of listeners)listener({open:!!dialog,busy,error,reason,requestId});};
 function subscribeLifeView(listener){listeners.add(listener);return ()=>listeners.delete(listener);}
 const snapshot=createLifeSnapshot();
-let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort;
+let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort,hud;
 const names={counter:'Mostrador',shelves:'Estantería',wineRack:'Bodega',lottery:'Lotería',vending:'Vending',magazines:'Prensa',manager:'Puesto de gestión',plant:'Vegetación',floorLamp:'Iluminación',rug:'Alfombra',djBooth:'DJ booth',tablet:'Tablet',turnKiosk:'Gestor de turnos',aroma:'Aromatización',metahuman:'Asistente digital',tft:'Pantalla digital',led:'Superficie LED',custom:'Mobiliario'};
 const roles={staff:'Equipo',customer:'Cliente del gemelo',passerby:'Transeúnte simulado',saca:'Logística',thief:'Personaje del juego',guardiaCivil:'Personaje del juego',opinador:'Visitante',unitreeBot:'Robot'};
 function close(reason=''){
   generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
-  viewer?.dispose();viewer=null;dialog?.close();dialog?.remove();dialog=null;
+  viewer?.dispose();viewer=null;hud?.dispose();hud=null;dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
 }
 function select(data){
@@ -33,6 +34,7 @@ async function open(options={}){
     <div class="life-camera" role="group" aria-label="Cámara"><button type="button" data-preset="mapped" aria-pressed="true">Comparar con Good</button><button type="button" data-preset="home" aria-pressed="false">Explorar 3D</button><button type="button" data-preset="floor" aria-pressed="false">Planta</button><button type="button" data-preset="detail" aria-pressed="false">Detalle</button><span class="life-divider"></span><button type="button" data-zoom="out" aria-label="Alejar">−</button><button type="button" data-zoom="in" aria-label="Acercar">+</button></div></div>
     <div class="life-compass" aria-hidden="true"><span>N</span><b>↟</b></div>
   </div>`;
+  hud=mountTierHud(dialog,{mode:'better',stage:dialog.querySelector('.life-stage')});
   window.__xtancoSyncVisualSurface?.();document.body.append(dialog);dialog.show();dialog.getBoundingClientRect();dialog.classList.add('is-visible');
   window.__xtancoReleaseInputs?.();document.body.classList.add('xtanco-life-open');
   const abort=()=>{if(ticket===generation)close('switch');};
@@ -103,9 +105,9 @@ async function open(options={}){
         try{
           if(!document.hidden){
             if(now-lastSnapshot>=100){const next=snapshot(window.__xtancoVisualState?.());if(!next){close();return;}viewer.update(next);current=next;lastSnapshot=now;}
-            if(now-lastStatus>=1000){const count=current.inside??0;dialog.querySelector('.life-state').textContent=current.moving
+            if(now-lastStatus>=1000){const count=current.inside??0;const status=current.moving
               ? 'Mudanza activa · solo suelo y paredes'
-              : `Gemelo conectado · ${count} ${count===1?'cliente':'clientes'} en la simulación`;lastStatus=now;}
+              : `Gemelo conectado · ${count} ${count===1?'cliente':'clientes'} en la simulación`;dialog.querySelector('.life-state').textContent=status;hud?.setStatus(status);lastStatus=now;}
             viewer.render(now);
           }
           frame=requestAnimationFrame(tick);

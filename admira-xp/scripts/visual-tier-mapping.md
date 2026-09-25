@@ -7,9 +7,13 @@ Actualización: misión #208. Matrix permite editar el mobiliario de Avenida Adm
 | 01.- Good · 8 bits | Experto ⌘ / selector / CLI `good` | Canvas clásico; dueño de simulación, layout y controles. |
 | 02.- Better · 16 bits | Mismos accesos / CLI `better` | Mismo snapshot de entidades. Cámara `mapped` por defecto; `Explorar 3D` no altera Good. |
 | 03.- Best · 32 bits | Mismos accesos / CLI `best` | Tienda 3D en vivo, mobiliario Blender y personajes humanos con animación. |
-| 04.- Matrix · Avenida Admira | Mismos accesos / CLI `matrix` / `visual=matrix` | Composición 2.5D por capas y cámara fija, con mobiliario editable de los 43 modelos del inventario compartido y visitantes del mismo snapshot vivo. CLI añadir/eliminar/deshacer. |
+| 04.- Matrix · 64 bits · Avenida Admira | Mismos accesos / CLI `matrix` / `visual=matrix` | Composición 2.5D por capas y cámara fija, con mobiliario editable de los 43 modelos del inventario compartido y visitantes del mismo snapshot vivo. CLI añadir/eliminar/deshacer. |
 
 Los números anteriores pertenecen a los **niveles visuales**, no renumeran las funciones estables XP-F01–XP-F30. 8/16/32 son etiquetas artísticas, no profundidad de color ni una promesa de paridad.
+
+## 01b.- HUD común 16 · 32 · 64 bits (24-sep-2026)
+
+Better, Best y Matrix comparten `tier-hud.mjs` + `tier-hud.css`: placa de modo y bits arriba a la izquierda, estado en vivo con reloj, selección arriba a la derecha, herramientas abajo al centro, pistas abajo a la derecha, marco con esquinas y estética fósforo/cian. Todo va bajo `dialog[data-tier-hud]`: Good (8 bits) no cambia. El HUD eleva su fila inferior lo que el escenario quede oculto bajo el dock (`--hud-safe-bottom`). Solo presenta; no gobierna simulación, cámara ni inventario.
 
 ## 02.- Registro geométrico Good → Better
 

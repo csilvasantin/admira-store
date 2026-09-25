@@ -4,7 +4,7 @@
 
 | Vista | Representación |
 | --- | --- |
-| Matrix | Recortes fotográficos transparentes, con tamaño y apoyo de los pies normalizados. |
+| Matrix | Hojas de caminata horneadas (8 fotogramas + reposo, de frente y de espaldas) desde el cuerpo GLB de Best con la variante de cada perfil; los recortes fotográficos quedan como reserva. Ver [`../matrix-walk`](../matrix-walk/manifest.json) y `tools/walk-sprites/`. |
 | Better | Cuerpos articulados de estilo 16 bits con el peinado, accesorios, colores y proporciones del perfil. |
 | Best | Cuatro cuerpos GLB animados existentes con variantes de peinado, accesorios, materiales y proporciones. No son 24 anatomías modeladas por separado. |
 

@@ -1,0 +1,97 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Matrix walk-sprite baker</title>
+<!-- Offline tool (24-sep-2026). Renders each visitor profile's Best GLB body
+     (CC0 MakeHuman) with its Walk clip from Matrix's elevated 3/4 view into one
+     sheet per profile: 9 columns (8 walk frames + 1 idle) x 2 rows (front-right,
+     back-right; the runtime mirrors them for the left-hand directions).
+     Driven by bake.py over CDP; results come back as window.__bake. -->
+<body style="margin:0;background:#888">
+<script type="module">
+import * as T from '../../scripts/premium-three.mjs';
+import {GLTFLoader} from '../../scripts/vendor/GLTFLoader.mjs';
+import {createPersonPresentation,personProfile,personAssetURL} from '../../scripts/best-person-asset.mjs';
+import {VISITOR_PROFILES} from '../../scripts/visitor-profiles.mjs';
+
+const FRAME_W=192,FRAME_H=288,WALK_FRAMES=8,COLS=WALK_FRAMES+1,ELEVATION=30*Math.PI/180;
+const FACINGS=[{name:'front',yaw:Math.PI/4},{name:'back',yaw:Math.PI*3/4}];
+const renderer=new T.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(1);renderer.setSize(FRAME_W,FRAME_H);renderer.setClearColor(0x000000,0);
+renderer.outputColorSpace=T.SRGBColorSpace;
+const scene=new T.Scene();
+scene.add(new T.HemisphereLight(0xfff4e6,0x6b4a33,1.5));
+const key=new T.DirectionalLight(0xffe2c0,2.2);key.position.set(-2,4,3);scene.add(key);
+const rim=new T.DirectionalLight(0xcfe6ff,.6);rim.position.set(2,3,-3);scene.add(rim);
+const camera=new T.OrthographicCamera(-1,1,1,-1,.1,50);
+const gltfs=new Map();
+async function body(profile){
+  if(!gltfs.has(profile))gltfs.set(profile,new GLTFLoader().loadAsync(personAssetURL(profile)));
+  return gltfs.get(profile);
+}
+function frameCamera(height){
+  // Feet on a fixed baseline; the whole standing body fills the frame height
+  // (same normalization as the photographic cutouts: age scale is applied by
+  // the runtime, not baked in).
+  const pad=.06*height,h=height+pad*2,w=h*FRAME_W/FRAME_H;
+  camera.left=-w/2;camera.right=w/2;camera.top=h/2;camera.bottom=-h/2;camera.updateProjectionMatrix();
+  const center=new T.Vector3(0,height/2,0),dir=new T.Vector3(0,Math.sin(ELEVATION),Math.cos(ELEVATION));
+  camera.position.copy(center).addScaledVector(dir,10);camera.lookAt(center);
+}
+// The rig's clips keep the MakeHuman A-pose abduction. For sprites only, bring
+// each upper arm down beside the body in world space, keeping the clip's
+// forward/back swing, so the silhouette reads as a natural walk.
+const _a=new T.Vector3(),_b=new T.Vector3(),_q=new T.Quaternion(),_pq=new T.Quaternion(),_wq=new T.Quaternion();
+function hang(root,bone,child,bend){
+  if(!bone||!child||!bone.parent)return;
+  bone.getWorldPosition(_a);child.getWorldPosition(_b);
+  const dir=_b.clone().sub(_a).normalize(),body=new T.Vector3();root.getWorldDirection(body);
+  const target=new T.Vector3(0,-1,0).addScaledVector(body,dir.dot(body)*.9+bend).normalize();
+  _q.setFromUnitVectors(dir,target);
+  bone.getWorldQuaternion(_wq);bone.parent.getWorldQuaternion(_pq);
+  bone.quaternion.copy(_pq.invert().multiply(_q.multiply(_wq)));
+  root.updateMatrixWorld(true);
+}
+function relaxArms(root){
+  root.updateMatrixWorld(true);
+  for(const side of ['L','R']){
+    const get=n=>root.getObjectByName(n+side);
+    hang(root,get('upperarm01'),get('lowerarm01'),0);
+    hang(root,get('lowerarm01'),get('wrist'),.25);
+  }
+}
+async function bakeProfile(p){
+  const actor={id:'bake-'+p.id,kind:'customer',walking:true,visitorProfileId:p.id,visitorStyle:p.style,gender:p.style.gender,age:p.style.age};
+  const gltf=await body(personProfile(actor));
+  const sheet=document.createElement('canvas');sheet.width=FRAME_W*COLS;sheet.height=FRAME_H*FACINGS.length;
+  const ctx=sheet.getContext('2d');
+  // Standing height from the idle pose, measured once per profile.
+  const idleActor={...actor,walking:false};
+  const probe=createPersonPresentation(gltf,idleActor);scene.add(probe.scene);probe.scene.updateMatrixWorld(true);
+  const box=new T.Box3().setFromObject(probe.scene,true);const height=box.max.y-Math.min(0,box.min.y);
+  scene.remove(probe.scene);probe.dispose();
+  frameCamera(height);
+  for(let row=0;row<FACINGS.length;row++){
+    for(let col=0;col<COLS;col++){
+      const idle=col===WALK_FRAMES;
+      const person=createPersonPresentation(gltf,idle?idleActor:actor);
+      person.scene.rotation.y=FACINGS[row].yaw;scene.add(person.scene);
+      if(!idle){
+        // Advance the distance-driven gait to exactly col/8 of a stride from
+        // the profile's own start phase (≤ .36 per step, .72 per full stride).
+        person.animate(0,actor,{position:{x:0,z:0}});
+        let travelled=0;const target=col/WALK_FRAMES*.72;
+        while(travelled<target-1e-9){const step=Math.min(.36,target-travelled);travelled+=step;person.animate(0,actor,{position:{x:travelled,z:0}});}
+      }else person.animate(0,idleActor);
+      relaxArms(person.scene);
+      renderer.render(scene,camera);
+      ctx.drawImage(renderer.domElement,col*FRAME_W,row*FRAME_H);
+      scene.remove(person.scene);person.dispose();
+    }
+  }
+  return {id:p.id,label:p.label,png:sheet.toDataURL('image/png'),webp:sheet.toDataURL('image/webp',.86)};
+}
+window.__bakeOne=async id=>bakeProfile(VISITOR_PROFILES.find(p=>p.id===id));
+window.__bakeIds=VISITOR_PROFILES.map(p=>p.id);
+window.__bakeMeta={frameW:FRAME_W,frameH:FRAME_H,walkFrames:WALK_FRAMES,cols:COLS,rows:FACINGS.map(f=>f.name),elevationDeg:30};
+window.__bakeReady=true;
+</script>

@@ -44,7 +44,7 @@ function harness({cached=false,broken=false,showFailure=false,peopleFailure=fals
     const layer={container,onReady,onSelect,zones:[],count:43,disposed:false,dispose(){this.disposed=true;}};
     furnitureLayers.push(layer);if(!furniturePending)onReady();return layer;
   };
-  const context=vm.createContext({document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
+  const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
   vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.audit={openMatrixView,closeMatrixView,subscribeMatrixView,get dialog(){return dialog;}};',context);
   return {body,window,document,previous,layers,furnitureLayers,get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openMatrixView(options),close:reason=>context.audit.closeMatrixView(reason),subscribe:fn=>context.audit.subscribeMatrixView(fn)};
 }
@@ -52,7 +52,7 @@ function harness({cached=false,broken=false,showFailure=false,peopleFailure=fals
 test('Matrix uses only the empty Avenida Admira room so removed furniture cannot remain in the backdrop',()=>{
   const h=harness();h.open({requestId:8});
   assert.equal(h.dialog.className,'matrix-dialog best-dialog visual-tier-surface');
-  assert.match(h.dialog.innerHTML,/04\.- MATRIX · MOBILIARIO EDITABLE/);
+  assert.match(h.dialog.innerHTML,/04\.- MATRIX · 64 BITS · MOBILIARIO EDITABLE/);
   assert.match(h.dialog.innerHTML,/Inventario compartido · \/inventario/);
   const file='best-xtanco-avenida-admira-mudanza-20260915.png';
   assert.ok(h.dialog.innerHTML.includes(file));assert.ok(fs.existsSync(new URL(`../assets/${file}`,import.meta.url)));

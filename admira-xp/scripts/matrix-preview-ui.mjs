@@ -1,18 +1,19 @@
-import {createBestPeopleLayer} from './best-live-people.mjs?v=customer-motion-1';
+import {createBestPeopleLayer} from './best-live-people.mjs?v=walk-1';
 import {mountMatrixFurniture} from './matrix-furniture.mjs?v=customer-motion-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
+import {mountTierHud} from './tier-hud.mjs?v=tier-hud-1';
 
 // Matrix keeps the Avenida Admira room as its backdrop. Furniture and visitors
 // are separate, depth-sorted layers driven by the shared Xtanco inventory.
 const listeners=new Set();
-let dialog,people,furniture,lastFocus,requestId,removeAbort,busy=false,viewError='';
+let dialog,people,furniture,lastFocus,requestId,removeAbort,hud,busy=false,viewError='';
 const announce=(reason='')=>{for(const fn of listeners)fn({open:!!dialog,busy,error:viewError,reason,requestId});};
 export function subscribeMatrixView(fn){listeners.add(fn);return ()=>listeners.delete(fn);}
 
 export function closeMatrixView(reason=''){
   if(!dialog)return;
   const current=dialog;dialog=null;
-  removeAbort?.();removeAbort=null;people?.dispose();people=null;furniture?.dispose();furniture=null;
+  removeAbort?.();removeAbort=null;people?.dispose();people=null;furniture?.dispose();furniture=null;hud?.dispose();hud=null;
   const image=current.querySelector('.matrix-reference-clean');image.onload=null;image.onerror=null;
   current.close();current.remove();busy=false;viewError='';lastFocus?.focus?.();
   announce(typeof reason==='string'?reason:'');
@@ -28,12 +29,13 @@ export function openMatrixView(options={}){
     <div class="best-live-scene">
       <img class="best-reference matrix-reference-clean" src="assets/best-xtanco-avenida-admira-mudanza-20260915.png" alt="La sala de Xtanco en Avenida Admira, con suelo y paredes. Los muebles se muestran en capas independientes.">
     </div>
-    <p class="visual-surface-badge">04.- MATRIX · MOBILIARIO EDITABLE</p>
+    <p class="visual-surface-badge">04.- MATRIX · 64 BITS · MOBILIARIO EDITABLE</p>
     <figcaption>Inventario compartido · /inventario</figcaption>
     <p class="matrix-furniture-selection" role="status" hidden></p>
     <p class="best-image-error" role="alert" hidden>No se ha podido cargar Matrix. Puedes cambiar de vista desde el menú avanzado o el CLI.</p>
   </figure>`;
   const current=dialog,image=current.querySelector('.matrix-reference-clean');
+  hud=mountTierHud(current,{mode:'matrix',stage:current.querySelector('.best-stage')});
   let started=false,furnitureReady=false,failed=false;
   const showError=message=>{
     if(dialog!==current)return;
@@ -63,7 +65,7 @@ export function openMatrixView(options={}){
         }
       });
     }catch{showError('No se pudo cargar el mobiliario de Matrix. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
-    try{people=createBestPeopleLayer({container,projectFloor:projectMatrixFloor});}
+    try{people=createBestPeopleLayer({container,projectFloor:projectMatrixFloor,walkSprites:true});}
     catch{showError('No se pudieron cargar los visitantes de Matrix. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
     finish();
   };
