@@ -1,5 +1,5 @@
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=customer-motion-1';
+import {createLifeScene} from './life-scene.mjs?v=px-1';
 import {mappedCameraFrame} from './life-camera.mjs';
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));

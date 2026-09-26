@@ -91,6 +91,13 @@ async function bakeProfile(p){
   return {id:p.id,label:p.label,png:sheet.toDataURL('image/png'),webp:sheet.toDataURL('image/webp',.86)};
 }
 window.__bakeOne=async id=>bakeProfile(VISITOR_PROFILES.find(p=>p.id===id));
+// Neutral base bodies for Pixeria personas: plain grey clothes the image model
+// repaints; also the mould used to cut the result in the browser.
+const NEUTRAL={skin:'#c9a283',hair:'#3b3028',color:'#b8b8b8',pants:'#7d7d7d',shoes:'#3a3a3a'};
+window.__bakeBody=async body=>{
+  const female=body.includes('female'),child=body.startsWith('child');
+  return bakeProfile({id:'base-'+body,label:'Base '+body,style:{gender:female?'f':'m',age:child?'child':'adult',hairstyle:female?'long':'short',outfit:'tshirt',accessory:'none',height:1,width:1,palette:NEUTRAL}});
+};
 window.__bakeIds=VISITOR_PROFILES.map(p=>p.id);
 window.__bakeMeta={frameW:FRAME_W,frameH:FRAME_H,walkFrames:WALK_FRAMES,cols:COLS,rows:FACINGS.map(f=>f.name),elevationDeg:30};
 window.__bakeReady=true;

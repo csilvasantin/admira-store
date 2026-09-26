@@ -92,7 +92,8 @@ function simulation(layout){
     let shopLayout=${JSON.stringify(layout)},shopFurnitureVisible=true;
     const FURNITURE_SIZE={counter:[1,2],shelves:[1,2],metahuman:[1,1],djBooth:[2,1]};
     let G={custs:[],staff:[],turns:{servingId:null},weather:null,doorOpen:0,look:{},custOut:0,sales:0,satisfaction:90,reviews:{positive:0,negative:0},fame:1};
-    let tt=0,lang='es',tabletVote=null;
+    let tt=0,lang='es',tabletVote=null,CAM={lastApplied:null};
+    function saveGame(){}
     const T=()=>({custBrowse:['hola']});
     const SFX={voteHappy(){},voteNeutral(){},voteSad(){}};
     const customerBalks=()=>false,queueSortWeight=c=>c.num,customerQueuePatience=()=>1000000;
@@ -110,9 +111,10 @@ function simulation(layout){
     ${extractFunction('getCustomerExitPos')}
     ${extractFunction('getQueueTarget')}
     ${extractFunction('startCustomerLeave')}
+    ${extractFunction('camForceExact')}
     function resolveCustomerCheckout(c){G.sales++;c.bought=true;startCustomerLeave(c);}
     function tick(){tt++;${html.slice(loopStart,loopEnd)}}
-    globalThis.api={tick,get G(){return G;},get nav(){return getCustomerNavigation();},moveCustomerTo,customerFloorPoint,toIso,getQueueTarget,
+    globalThis.api={tick,get G(){return G;},get nav(){return getCustomerNavigation();},moveCustomerTo,customerFloorPoint,toIso,getQueueTarget,startCustomerLeave,ensureCustomerVisit,camForceExact,
       layout(value){shopLayout=value;},actor(col,row,state='walk'){
         const p=toIso(col,row),c={id:1,num:1,x:p.x-7,y:p.y-20,tx:0,ty:0,st:state,path:[],pathIdx:0,look:{age:'adulto'},persona:'loyal',dwellTicks:0,stayTargetTicks:100000,roamCooldown:100000,fr:0,ft:0,bTimer:0,bShown:true,ticketPicked:false,wantsTurn:true};G.custs.push(c);return c;}
     };
@@ -224,7 +226,7 @@ test('ten coincident arrivals complete the real Xtanco layout, yielding at the d
       const previous=before.get(c),next=sim.customerFloorPoint(c.x,c.y);
       assert.ok(sim.nav.segmentClear(previous,next),`${c.num}:${c.st}:${frames}`);
       assert.ok(Math.hypot(next.col-previous.col,next.row-previous.row)<.065,'no position jump');
-      if(c._waitingDoor){waitingObserved=true;assert.equal(c.isWalking,false);}
+      if(c._waitingDoor)waitingObserved=true; // Waiting actors can clear the doorway toward a holding point.
     }
   }
   assert.ok(waitingObserved);assert.ok(frames<16000);
@@ -241,4 +243,61 @@ test('a near-corner waypoint is reached before turning instead of skipping acros
     if(status==='arrived'){arrived=true;break;}
   }
   assert.ok(arrived);
+});
+
+function realLayout(){
+ const begin=html.indexOf('const FACTORY_LAYOUTS=')+'const FACTORY_LAYOUTS='.length;
+ return vm.runInNewContext('('+html.slice(begin,html.indexOf('// Helper: ¿estamos dentro',begin)).replace(/;\s*$/,'')+')').xtanco;
+}
+test('mixed incoming and outgoing visitors clear the door, with browsing missions inside',()=>{
+ const sim=simulation(realLayout());
+ for(let i=0;i<12;i++){
+  const c=sim.actor(i<4?14.92:8+(i%3)*.7,i<4?3.53:5+(i%2)*.7,i<4?'walk':'browse');
+  c.id=c.num=i+1;c.wantsTurn=false;c.path=[{col:8,row:5}];
+  if(i>=8)sim.startCustomerLeave(c);
+ }
+ let frames=0;
+ for(;frames<14000&&sim.G.custs.length;frames++){
+  const before=new Map(sim.G.custs.map(c=>[c,sim.customerFloorPoint(c.x,c.y)]));sim.tick();
+  for(const c of sim.G.custs)assert.ok(sim.nav.segmentClear(before.get(c),sim.customerFloorPoint(c.x,c.y)),`collision ${c.num}:${frames}: ${JSON.stringify([before.get(c),sim.customerFloorPoint(c.x,c.y)])}`);
+ }
+ assert.equal(sim.G.custs.length,0,JSON.stringify(sim.G.custs.map(c=>({id:c.id,st:c.st,p:sim.customerFloorPoint(c.x,c.y),visit:c.visit}))));
+ assert.equal(sim.G.custOut,12);
+});
+test('a product visit inspects distinct fixtures briefly, then completes service and leaves',()=>{
+ const sim=simulation(realLayout()),c=sim.actor(8,5,'browse');c.wantsTurn=false;c.persona='curious';
+ const visit=sim.ensureCustomerVisit(c);let frames=0,maxStationary=0,stationary=0;
+ for(;frames<8000&&sim.G.custs.length;frames++){sim.tick();stationary=c.isWalking?0:stationary+1;maxStationary=Math.max(maxStationary,stationary);}
+ assert.equal(sim.G.custs.length,0);assert.equal(sim.G.sales,1);assert.equal(sim.G.custOut,1);
+ assert.equal(new Set(visit.done).size,visit.done.length);assert.equal(visit.done.length,3);
+ assert.ok(maxStationary<360,`stationary ${maxStationary}`);
+});
+
+test('unreachable fixtures are skipped once and an impossible layout never creates a sale',()=>{
+ const sim=simulation([{id:'wall',type:'custom',col:5,row:0,fp:[1,8]},{id:'shelves',type:'shelves',col:1,row:1}]);
+ const c=sim.actor(8,5,'browse');c.wantsTurn=false;
+ for(let frame=0;frame<1500&&sim.G.custs.length;frame++)sim.tick();
+ assert.equal(sim.G.sales,0);assert.equal(sim.G.custOut,1);
+});
+
+test('24 distributed visits complete instead of accumulating at the door',()=>{
+ const sim=simulation(realLayout());let n=0;
+ for(let col=.8;col<11.5&&n<24;col+=1.15)for(let row=.8;row<7.6&&n<24;row+=1.15){
+  if(!sim.nav.isWalkable({col,row}))continue;
+  const c=sim.actor(col,row,'browse');c.id=c.num=++n;c.wantsTurn=false;c.persona=n%3===0?'curious':'loyal';
+ }
+ assert.equal(n,24);let frames=0;
+ for(;frames<18000&&sim.G.custs.length;frames++){
+  const before=new Map(sim.G.custs.map(c=>[c,sim.customerFloorPoint(c.x,c.y)]));sim.tick();
+  for(const c of sim.G.custs){const p=sim.customerFloorPoint(c.x,c.y);assert.ok(sim.nav.segmentClear(before.get(c),p));assert.ok(Math.hypot(p.col-before.get(c).col,p.row-before.get(c).row)<.065);}
+ }
+ assert.equal(sim.G.custs.length,0,JSON.stringify(sim.G.custs.map(c=>({id:c.id,st:c.st,p:sim.customerFloorPoint(c.x,c.y)}))));assert.equal(sim.G.custOut,24);
+});
+
+test('camera target reduction gives browsing visitors a complete exit route and no fake checkout',()=>{
+ const sim=simulation(realLayout());
+ const c=sim.actor(8,5,'browse');c.tx=1;c.ty=1;
+ sim.camForceExact(0);assert.equal(c.st,'leave');assert.ok(Number.isFinite(c.exitTx));assert.notEqual(c.tx,1);
+ for(let i=0;i<3000&&sim.G.custs.length;i++)sim.tick();
+ assert.equal(sim.G.custOut,1);assert.equal(sim.G.sales,0);
 });

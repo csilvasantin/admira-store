@@ -20,6 +20,12 @@ for _ in range(120):
     time.sleep(.5)
     if ev("window.__bakeReady===true"):break
 else:raise SystemExit("bake.html no arrancó")
+BODIES=[a for a in sys.argv[1:] if a.startswith("body:")]
+if BODIES:
+    for b in BODIES:
+        body=b[5:];r=ev(f"window.__bakeBody({json.dumps(body)})")
+        open(os.path.join(OUT,f"base-{body}.webp"),"wb").write(base64.b64decode(r["webp"].split(",",1)[1]));print("base",body,flush=True)
+    raise SystemExit(0)
 ids=sys.argv[1:] or ev("window.__bakeIds")
 meta=ev("window.__bakeMeta");manifest={**meta,"profiles":{}}
 for pid in ids:

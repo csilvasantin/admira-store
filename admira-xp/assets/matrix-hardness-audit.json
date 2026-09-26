@@ -1,0 +1,329 @@
+{
+ "measured": "2026-09-24",
+ "method": "lowest 14% of drawn silhouette projected to floor (inverse projectMatrixFloor) vs navigation box (radius 0)",
+ "clearance": 0.24,
+ "pieces": [
+  {
+   "label": "1. Mostrador+Caja+PC",
+   "type": "counter",
+   "photo": true,
+   "box": [
+    1,
+    6,
+    2,
+    8
+   ],
+   "visual": [
+    1.07,
+    7.64,
+    2.14,
+    7.99
+   ],
+   "overhang": {
+    "minCol": -0.07,
+    "maxCol": 0.14,
+    "minRow": -1.64,
+    "maxRow": -0.01
+   }
+  },
+  {
+   "label": "2. Estantería",
+   "type": "shelves",
+   "photo": true,
+   "box": [
+    2,
+    0,
+    3,
+    2
+   ],
+   "visual": [
+    2.18,
+    1.28,
+    2.77,
+    1.99
+   ],
+   "overhang": {
+    "minCol": -0.18,
+    "maxCol": -0.23,
+    "minRow": -1.28,
+    "maxRow": -0.01
+   }
+  },
+  {
+   "label": "3. Botellero",
+   "type": "wineRack",
+   "photo": true,
+   "box": [
+    3,
+    0,
+    5,
+    1
+   ],
+   "visual": [
+    3.58,
+    0.25,
+    4.46,
+    0.89
+   ],
+   "overhang": {
+    "minCol": -0.58,
+    "maxCol": -0.54,
+    "minRow": -0.25,
+    "maxRow": -0.11
+   }
+  },
+  {
+   "label": "4. Lotería",
+   "type": "lottery",
+   "photo": true,
+   "box": [
+    5,
+    0,
+    7,
+    1
+   ],
+   "visual": [
+    6.46,
+    0.69,
+    6.75,
+    1
+   ],
+   "overhang": {
+    "minCol": -1.46,
+    "maxCol": -0.25,
+    "minRow": -0.69,
+    "maxRow": 0
+   }
+  },
+  {
+   "label": "5. Vending",
+   "type": "vending",
+   "photo": true,
+   "box": [
+    7,
+    0,
+    8,
+    1
+   ],
+   "visual": [
+    7.12,
+    0.17,
+    7.99,
+    0.94
+   ],
+   "overhang": {
+    "minCol": -0.12,
+    "maxCol": -0.01,
+    "minRow": -0.17,
+    "maxRow": -0.06
+   }
+  },
+  {
+   "label": "6. Revistero",
+   "type": "magazines",
+   "photo": true,
+   "box": [
+    3,
+    7,
+    5,
+    8
+   ],
+   "visual": [
+    4.83,
+    7.16,
+    4.99,
+    7.89
+   ],
+   "overhang": {
+    "minCol": -1.83,
+    "maxCol": -0.01,
+    "minRow": -0.16,
+    "maxRow": -0.11
+   }
+  },
+  {
+   "label": "7. Escritorio",
+   "type": "manager",
+   "photo": true,
+   "box": [
+    5,
+    7,
+    7,
+    8
+   ],
+   "visual": [
+    5.6,
+    7.31,
+    6.33,
+    7.95
+   ],
+   "overhang": {
+    "minCol": -0.6,
+    "maxCol": -0.67,
+    "minRow": -0.31,
+    "maxRow": -0.05
+   }
+  },
+  {
+   "label": "9. Planta 1",
+   "type": "plant",
+   "photo": true,
+   "box": [
+    0,
+    1,
+    1,
+    2
+   ],
+   "visual": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "overhang": {
+    "minCol": null,
+    "maxCol": null,
+    "minRow": null,
+    "maxRow": null
+   }
+  },
+  {
+   "label": "9. Planta 2",
+   "type": "plant",
+   "photo": true,
+   "box": [
+    0,
+    5,
+    1,
+    6
+   ],
+   "visual": [
+    0.41,
+    5.3,
+    0.77,
+    5.7
+   ],
+   "overhang": {
+    "minCol": -0.41,
+    "maxCol": -0.23,
+    "minRow": -0.3,
+    "maxRow": -0.3
+   }
+  },
+  {
+   "label": "10. Lámpara pie",
+   "type": "floorLamp",
+   "photo": true,
+   "box": [
+    0,
+    3,
+    1,
+    4
+   ],
+   "visual": [
+    0.48,
+    3.45,
+    1.04,
+    4.05
+   ],
+   "overhang": {
+    "minCol": -0.48,
+    "maxCol": 0.04,
+    "minRow": -0.45,
+    "maxRow": 0.05
+   }
+  },
+  {
+   "label": "17. Mesa DJ",
+   "type": "djBooth",
+   "photo": true,
+   "box": [
+    7,
+    6,
+    9,
+    7
+   ],
+   "visual": [
+    8.82,
+    7.16,
+    8.82,
+    7.16
+   ],
+   "overhang": {
+    "minCol": -1.82,
+    "maxCol": -0.18,
+    "minRow": -1.16,
+    "maxRow": 0.16
+   }
+  },
+  {
+   "label": "15. Tablet Satisfacción",
+   "type": "tablet",
+   "photo": false,
+   "box": [
+    13,
+    7,
+    14,
+    8
+   ],
+   "visual": [
+    13.56,
+    7.43,
+    13.75,
+    7.63
+   ],
+   "overhang": {
+    "minCol": -0.56,
+    "maxCol": -0.25,
+    "minRow": -0.43,
+    "maxRow": -0.37
+   }
+  },
+  {
+   "label": "18. Gestor Turnos",
+   "type": "turnKiosk",
+   "photo": true,
+   "box": [
+    12,
+    6,
+    13,
+    7
+   ],
+   "visual": [
+    12.16,
+    6.13,
+    13.05,
+    6.92
+   ],
+   "overhang": {
+    "minCol": -0.16,
+    "maxCol": 0.05,
+    "minRow": -0.13,
+    "maxRow": -0.08
+   }
+  },
+  {
+   "label": "14. Metahuman AI",
+   "type": "metahuman",
+   "photo": true,
+   "box": [
+    5,
+    3,
+    6,
+    4
+   ],
+   "visual": [
+    5,
+    2.99,
+    6,
+    3.8
+   ],
+   "overhang": {
+    "minCol": 0,
+    "maxCol": 0,
+    "minRow": 0.01,
+    "maxRow": -0.2
+   }
+  }
+ ]
+}

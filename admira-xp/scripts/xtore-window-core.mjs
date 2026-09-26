@@ -95,3 +95,11 @@ export class MirrorSession{
     this.seq=d.seq;return d;
   }
 }
+
+// Reconnect to the same analyzer after a reload loses window.opener. Production
+// never accepts a loopback origin; a local twin may preserve its local peer.
+export function analyzerOriginFor(own,requested,override){
+  const local=/^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(own);
+  if(local&&allowedOrigin(override,own))return override;
+  return allowedOrigin(requested,own)?requested:'https://admira.tv';
+}

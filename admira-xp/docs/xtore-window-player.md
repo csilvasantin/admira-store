@@ -86,3 +86,20 @@ por defecto y el refresco conserva canvases, foco y apertura del detalle.
 Experto → Better / Best abre una ventana 3D movible y redimensionable con cruz. Better presenta la misma geometría como wireframe; Best añade materiales y luz. El selector no cambia XTANCO_MODELS ni la partida. Snapshot de mobiliario y actores del juego; mismo player para las texturas de pantalla y contador exterior de Puerta Cam. Entrada directa `?autostart=xtanco&virtualPlayer=xtore-virtual-zapatillas&visual=best`. Arrastrar escena gira cámara; rueda acerca; Reencuadrar restaura.
 
 DooH dispone estadísticas antes de los previos: original a la izquierda, modificado con recuadros de seguimiento a la derecha. Requiere analizador actualizado para recibir los recuadros; una captura ya abierta sigue ejecutando su versión hasta recargarla y compartir de nuevo.
+
+## Audiencia de sesión (24/09/2026)
+
+En el gemelo enlazado, modo Real usa `audience.counts.person` de `admira.audience-session.v1`. Total de pasos, no aforo ni enter-exit. Objetivo visual hasta 80; conserva total sin capar y muestra Sesión/Virtuales. Ajuste progresivo por transacciones en curso. Latido 4 s; sin datos, objetivo cero sin fuente alternativa. Modo Juego restaura simulación. Contrato y Help: https://admira.tv/mcp/xtore-audience-session.md · https://admira.tv/help/#xtore-audiencia. La recepción automática de sesiones en Pixeria sigue pendiente.
+
+## Demo de pantallas desde la cámara (#248)
+
+Clic en cámara de esquina = toggle local de demo, sin recargar ni perder enlace. Alternativa Player y cámara → Activar demo zapatillas. DS1 player, DS2 vídeo original, TFT estadísticas y gestor de turnos solo recuadros/categorías sobre fondo neutro. Esa última vista no recibe ni dibuja píxeles del stream. TTL y origen exacto del enlace siguen vigentes. Si desconecta, muestra sin señal; otro clic restaura las pantallas del juego. Tras recarga está apagado. Help: https://admira.tv/help/#xtore-demo-pantallas.
+
+## Barra de pasos de sesión
+
+En el Xtanco enlazado, la antigua etiqueta Real audience se llama Pasos de sesión / Session passages. Personas, Coches, Motos y Bicis vienen del mismo snapshot de audiencia. No son presencia instantánea ni aforo físico. Sin snapshot reciente se muestran guiones, sin tomar valores del aforo Hikvision. En otras tiendas, el indicador físico original sigue disponible y las columnas de vehículos permanecen ocultas.
+
+Los ID de trayectoria visibles en Puerta Cam no son contadores: se comparten entre categorías y pueden corresponder a trayectorias que todavía no han confirmado un paso. El total de personas del HUD debe coincidir con los pasos del analizador de la misma sesión y momento.
+
+Help: https://admira.tv/help/#xtore-audiencia
+Guía animada: https://admira.tv/apps/video/xtore-id-pasos.mp4

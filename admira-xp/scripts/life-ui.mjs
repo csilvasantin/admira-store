@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=visitors-24';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=px-1';
 import {mountTierHud} from './tier-hud.mjs?v=tier-hud-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
@@ -90,7 +90,7 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=customer-motion-1');if(ticket!==generation)return;
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=px-1');if(ticket!==generation)return;
       viewer=createLifeRenderer({canvas,snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,onSelect:select,onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';

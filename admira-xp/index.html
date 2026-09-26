@@ -814,7 +814,7 @@
   <div class="sep"></div>
   <div class="stat"><span class="stat-label" id="bbTrafficLabel">Tráfico</span><span class="stat-val" id="bbCli">0/0</span></div>
   <div class="sep"></div>
-  <div class="stat" id="bbCamBox" title="Aforo real (cámara Hikvision)"><span class="stat-label">👁 Aforo real</span><span class="stat-val"><span id="bbCamDot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#cc4444;margin-right:4px;vertical-align:middle"></span><span id="bbCamVal">—</span></span></div>
+  <div class="stat" id="bbCamBox" title="Aforo real (cámara Hikvision)"><span class="stat-label" id="bbCamLabel">👁 Aforo real</span><span class="audience-values"><span class="audience-metric"><span class="audience-kind" id="bbPersonLabel" hidden>Personas</span><span class="stat-val"><span id="bbCamDot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#cc4444;margin-right:4px;vertical-align:middle"></span><span id="bbCamVal">—</span></span></span><span class="audience-metric" id="bbCarMetric" hidden><span class="audience-kind" id="bbCarLabel">Coches</span><span class="stat-val" id="bbCarVal">—</span></span><span class="audience-metric" id="bbMotoMetric" hidden><span class="audience-kind" id="bbMotoLabel">Motos</span><span class="stat-val" id="bbMotoVal">—</span></span><span class="audience-metric" id="bbBikeMetric" hidden><span class="audience-kind" id="bbBikeLabel">Bicis</span><span class="stat-val" id="bbBikeVal">—</span></span></span></div>
   <div class="sep"></div>
   <span id="bbStatus" style="color:#88cc88;font-size:10px">Idle</span>
   <span id="xpTopNotify" aria-live="polite"></span>
@@ -938,7 +938,7 @@
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head" data-acc-head>🔢 Contador</button>
     <div class="qm-acc-body">
-      <button type="button" data-xp-do="aforoReal" title="Aforo objetivo por cámara Hikvision (ambiente)">📷 Aforo real (cámara)</button>
+      <button type="button" data-xp-do="aforoReal" title="Xtore enlazado: pasos de sesión; otras tiendas: cámara de aforo">📷 Aforo real (cámara)</button>
       <button type="button" data-xp-do="aforoExact" title="Espejo 1:1 estricto: la tienda = exactamente la cámara">🎯 Aforo exacto (1:1)</button>
       <button type="button" data-xp-do="aforoFake" title="Clientes en modo aleatorio del juego">🎲 Aforo del juego</button>
       <button type="button" data-xp-do="aforoStatus" title="Ver el estado actual del aforo">ℹ Estado</button>
@@ -1340,7 +1340,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20260924-1133"></script>
+<script src="xtanco-version.js?v=20260924-1339"></script>
 <script src="xtanco-runtime-config.js?r=24"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -2478,8 +2478,14 @@ function dsPinSurface(surfaceId,name){
 // por tag, Fase 2). Igual que dsPinSurface pero sin depender de VIDEO_FILES: usa
 // la URL directa del asset. Los pines remotos NO se persisten (los redirige el
 // poller cada ciclo desde /signage/feed). Expuesto para signageFeedScript.
+function dsMediaUrlPlayable(url){
+  // Un blob: solo existe en la pestaña que lo creó. En el feed de la Xtore
+  // llega como URL muerta y deja la pantalla en negro. FLT-100904.
+  return /^https?:\/\//i.test(String(url||''));
+}
 function dsPinSurfaceFromUrl(surfaceId,kind,url,name){
   if(!dsSurfaceById(surfaceId)||!url) return false;
+  if(!dsMediaUrlPlayable(url)) return false;
   if(kind!=='image'&&kind!=='video') return false;
   const m=dsEnsureSurfaceMedia(surfaceId);
   m.ready=false; m.kind=kind; m.name=name||url;
@@ -3590,7 +3596,7 @@ function parseAdmiraTubeArg(arg){
 }
 
 function syncAdmiraTubeFrames(){
-  const active=G&&G.admiraTube&&G.admiraTube.active&&G.admiraTube.videoId;
+  const active=!window.__xtoreWindowPlayer?.demoActive?.()&&G&&G.admiraTube&&G.admiraTube.active&&G.admiraTube.videoId;
   const screens=active?Math.max(1,Math.min(2,Number(G.admiraTube.screens)||2)):0;
   DS_DISPLAYS.forEach((display,idx)=>{
     const frame=display.frameEl;
@@ -3649,6 +3655,7 @@ const DS_MSGS=[
 ];
 
 function renderDSCanvas(ctx,w,h,frame,displayIdx){
+  if(window.__xtoreWindowPlayer?.drawScreen?.(ctx,w,h,displayIdx===0?'player':'street'))return;
   if(displayIdx===0&&window.__xtoreWindowPlayer){window.__xtoreWindowPlayer.draw(ctx,w,h);return;}
   const display=DS_DISPLAYS[displayIdx];
   // Xtanco Club celebration takes over every screen for a few seconds.
@@ -3794,7 +3801,8 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
 }
 
 function updateDSCanvases(){
-  if(!videoPlaying) return;
+  const demo=window.__xtoreWindowPlayer?.demoActive?.();
+  if(!videoPlaying&&!demo) return;
   dsFrame++;
   checkDSConditions();
   // Imported images don't auto-end like videos — advance after their duration
@@ -3802,7 +3810,7 @@ function updateDSCanvases(){
     nextDSVideo();
   }
   DS_DISPLAYS.forEach((display,idx)=>{
-    if(display.paused&&display.canvasEl&&display.canvasEl.style.display!=='none') return;
+    if(!demo&&display.paused&&display.canvasEl&&display.canvasEl.style.display!=='none') return;
     renderDSCanvas(display.ctx,160,90,dsFrame,idx);
   });
 }
@@ -3866,7 +3874,7 @@ function punchDsScreenHoles(){
 
 function updateVideoPosition(){
   const tubeActive=G&&G.admiraTube&&G.admiraTube.active;
-  if((!videoPlaying&&!tubeActive)||!G||state!==S.GAME){
+  if((!videoPlaying&&!tubeActive&&!window.__xtoreWindowPlayer?.demoActive?.())||!G||state!==S.GAME){
     videoEl.style.display='none';videoEl2.style.display='none';
     syncAdmiraTubeFrames();
     try{ positionGenVideoOverlay(); }catch(_){}
@@ -3887,6 +3895,8 @@ function updateVideoPosition(){
   syncAdmiraTubeFrames();
   try{ positionGenVideoOverlay(); }catch(_){}
 }
+
+window.addEventListener('xtore-demo',()=>{updateVideoPosition();updateDSCanvases();});
 
 function isDigitalSignageVisible(display){
   const el=display&&display.monitorEl;
@@ -4407,7 +4417,7 @@ function ensureGenVideoLabel(idx){
 // Clona la posición/escorzo de cada pantalla para que el rótulo quede ENCIMA.
 // Se llama por frame desde updateVideoPosition.
 function positionGenVideoOverlay(){
-  if(!GENVIDEO.on||!GENVIDEO.gender){
+  if(window.__xtoreWindowPlayer?.demoActive?.()||!GENVIDEO.on||!GENVIDEO.gender){
     ['genvideoLabel0','genvideoLabel1'].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display='none'; });
     return;
   }
@@ -5237,8 +5247,8 @@ function updateHtmlBar(){
   pe.style.color=profit>=0?'#66ee66':'#ee6666';
   document.getElementById('bbSat').textContent=(G.satisfaction|0)+'%';
   const trafficLabel=document.getElementById('bbTrafficLabel');
-  if(trafficLabel) trafficLabel.textContent=lang==='en'?'Pass/In':'Pasan/Entran';
-  document.getElementById('bbCli').textContent=exteriorPersonPassagesForDisplay()+'/'+(G.customersToday||0);
+  if(trafficLabel) trafficLabel.textContent=manualAudienceTarget()!==null?(lang==='en'?'Session/Manual':'Sesión/Manual'):xtoreSessionMode()?(lang==='en'?'Session/Virtual':'Sesión/Virtuales'):(lang==='en'?'Pass/In':'Pasan/Entran');
+  document.getElementById('bbCli').textContent=xtoreSessionMode()?(xtoreSessionAudience()?.counts.person??'—')+'/'+G.custs.length:exteriorPersonPassagesForDisplay()+'/'+(G.customersToday||0);
   const se=document.getElementById('bbStatus');
   se.textContent=trimHudLabel(ops.focus.label+' · '+ops.focus.detail,38);
   se.style.color=ops.focus.color;
@@ -5406,9 +5416,76 @@ const CAM={
   mode:['fake','real','exacto'].includes(OCC_CONFIG.mode)?OCC_CONFIG.mode:(OCC_CONFIG.drive===false?'fake':'real'),
   connected:false, occupancy:0, enter:0, leave:0, peak:0, lastApplied:null,
 };
+// Manual demo population is separate from measured camera passages.
+const MAX_RESET_AUDIENCE=100;
+function manualAudienceTarget(){
+  const n=G&&G.manualAudienceTarget;
+  return Number.isInteger(n)&&n>=0&&n<=MAX_RESET_AUDIENCE?n:null;
+}
+function applyManualAudience(){
+  const n=manualAudienceTarget();
+  if(n===null||state!==S.GAME||!Array.isArray(G.custs)||G.storeClosed)return;
+  G.peopleOverride=n;G.customerCapAdjustTimer=0;
+  // Reset is immediate, including visitors waiting or buying; no fake checkout.
+  const removed=G.custs.splice(n);
+  for(const c of removed){
+    if(G.turns?.servingId===c.id)G.turns.servingId=null;
+    if(c.fanCustomerId)try{window.LoyaltyBridge?.clearFromScene(c.fanCustomerId);}catch(e){}
+  }
+  const ids=new Set(G.custs.map(c=>c.id));
+  for(const c of G.custs)if(c.followId!=null&&!ids.has(c.followId))c.followId=null;
+  for(let attempt=0;G.custs.length<n&&attempt<MAX_RESET_AUDIENCE*3;attempt++){
+    const profile=window.__xtancoAvatarAudience?.missing(G.custs,G.manualAudienceProfiles);
+    const c=spawnCust(false,false,true,true,false,profile);if(!c)continue;
+    // Populate walkable destinations immediately instead of stacking 100 at the door.
+    c.x=c.tx;c.y=c.ty;c.st='browse';c.path=null;c.pathIdx=0;c.wantsTurn=false;
+    c.timer=180;c.bTimer=0;c.bMsg='';
+  }
+}
+function resetAudienceCommand(argument){
+  const arg=String(argument||'').trim().toLowerCase();
+  if(!G||!Array.isArray(G.custs)||state!==S.GAME)return {ok:false,message:'Entra en la tienda antes de usar /resetaudiencia.'};
+  if(!arg)return {ok:true,message:'Uso: /resetaudiencia <0–100> · /resetaudiencia auto. Visitantes actuales: '+G.custs.length+'. Modo: '+(manualAudienceTarget()===null?'automático':'manual '+manualAudienceTarget())};
+  if(arg==='auto'){
+    G.manualAudienceTarget=null;G.manualAudienceProfiles=null;G.peopleOverride=null;CAM.lastApplied=null;
+    camApplyToStore();saveGame();updateHtmlBar();
+    return {ok:true,message:'Audiencia virtual automática restaurada. '+camBrainLine(),data:{manualAudienceTarget:null,count:G.custs.length}};
+  }
+  if(!/^\d+$/.test(arg)||!Number.isSafeInteger(Number(arg))||Number(arg)>MAX_RESET_AUDIENCE)return {ok:false,message:'Usa un entero de 0 a 100: /resetaudiencia 0, /resetaudiencia 100 o /resetaudiencia auto.'};
+  if(G.storeClosed)return {ok:false,message:'La tienda está cerrada. Ábrela con /store open antes de fijar la audiencia.'};
+  const n=Number(arg);G.manualAudienceProfiles=null;G.manualAudienceTarget=n;
+  applyManualAudience();saveGame();updateHtmlBar();
+  return {ok:true,message:'Audiencia virtual manual: '+G.custs.length+'/'+n+' visitantes. Cámara y conteos reales siguen activos. Volver: /resetaudiencia auto.',data:{manualAudienceTarget:n,count:G.custs.length}};
+}
+function adjustAvatarAudience(kind,key,delta){
+  const api=window.__xtancoAvatarAudience,profile=api?.categoryProfile(kind,key);
+  if(!profile||![-1,1].includes(delta)||!G||state!==S.GAME||G.storeClosed||!Array.isArray(G.custs))return false;
+  if(delta>0&&G.custs.length>=MAX_RESET_AUDIENCE)return false;
+  const index=delta<0?G.custs.findIndex(c=>api.matches(c,kind,key)):-1;
+  if(delta<0&&index<0)return false;
+  const previous={target:G.manualAudienceTarget,override:G.peopleOverride};
+  G.manualAudienceTarget=G.custs.length+delta;G.peopleOverride=G.manualAudienceTarget;
+  if(delta>0){
+    const c=spawnCust(false,false,true,true,false,profile);
+    if(!c){G.manualAudienceTarget=previous.target;G.peopleOverride=previous.override;return false;}
+    c.x=c.tx;c.y=c.ty;c.st='browse';c.path=null;c.pathIdx=0;c.wantsTurn=false;c.timer=180;c.bTimer=0;c.bMsg='';
+  }else{
+    const [removed]=G.custs.splice(index,1);
+    if(G.turns?.servingId===removed.id)G.turns.servingId=null;
+    if(removed.fanCustomerId)try{window.LoyaltyBridge?.clearFromScene(removed.fanCustomerId);}catch(e){}
+    for(const c of G.custs){if(c.followId===removed.id)c.followId=null;if(c.id===removed.followId)c.hasKid=false;}
+  }
+  G.manualAudienceProfiles=G.custs.map(api.profile);G.customerCapAdjustTimer=0;
+  saveGame();updateHtmlBar();return true;
+}
 function camModeLabel(){ return CAM.mode==='exacto'?'EXACTO':(CAM.mode==='real'?'REAL':'FAKE'); }
 // Resumen para el "cerebro" de la tienda (contexto IA) y diagnósticos.
+function xtoreSessionMode(){return CAM.mode==='real'&&new URLSearchParams(location.search).get('virtualPlayer')==='xtore-virtual-zapatillas';}
+function xtoreSessionAudience(){return window.__xtoreWindowPlayer?.audience?.()||null;}
 function camBrainLine(){
+  if(manualAudienceTarget()!==null)return 'MANUAL · '+manualAudienceTarget()+' visitantes virtuales · cámara y conteos reales independientes';
+  if(xtoreSessionMode()){const a=xtoreSessionAudience();return a?'REAL · '+a.counts.person+' pasos de esta sesión · visitantes virtuales (no aforo físico)':'REAL · esperando audiencia de sesión Xtore';}
+
   const en=typeof lang!=='undefined'&&lang==='en';
   if(CAM.mode==='fake') return en?'FAKE (simulated customers; camera ignored)':'FAKE (clientes aleatorios del juego; cámara ignorada)';
   return camModeLabel()+' · '+(en?'Hikvision camera ':'cámara Hikvision ')+(CAM.connected
@@ -5419,6 +5496,25 @@ function updateCamHud(){
   const val=document.getElementById('bbCamVal'); if(!val) return;
   const dot=document.getElementById('bbCamDot');
   const box=document.getElementById('bbCamBox');
+  const linked=xtoreSessionMode(),english=typeof lang!=='undefined'&&lang==='en';
+  document.getElementById('topBar')?.classList.toggle('xtore-session-hud',linked);
+  const label=document.getElementById('bbCamLabel');
+  if(label)label.textContent=linked?(english?'👁 Session passages':'👁 Pasos de sesión'):(english?'👁 Real audience':'👁 Aforo real');
+  const personLabel=document.getElementById('bbPersonLabel');
+  if(personLabel){personLabel.hidden=!linked;personLabel.textContent=english?'People':'Personas';}
+  const a=linked?xtoreSessionAudience():null;
+  for(const [name,key,es,en] of [['Car','car','Coches','Cars'],['Moto','motorcycle','Motos','Motorbikes'],['Bike','bicycle','Bicis','Bikes']]){
+    const metric=document.getElementById('bb'+name+'Metric'),number=document.getElementById('bb'+name+'Val'),kind=document.getElementById('bb'+name+'Label');
+    if(metric)metric.hidden=!linked;
+    if(number)number.textContent=a?a.counts[key]:'—';
+    if(kind)kind.textContent=english?en:es;
+  }
+  if(linked){
+    val.textContent=a?a.counts.person:'—';
+    if(dot)dot.style.background=a?'#33dd66':'#cc4444';
+    if(box)box.title=a?'REAL · '+a.counts.person+' pasos de sesión; hasta '+MAX_PEOPLE_OVERRIDE+' visitantes virtuales. Entran: '+a.directions.enter+' · Salen: '+a.directions.exit+'. No es aforo físico.':'REAL · esperando analizador Xtore; sin sustituirlo por datos simulados.';
+    return;
+  }
   val.textContent=CAM.connected?CAM.occupancy:'—';
   if(dot) dot.style.background=CAM.connected?'#33dd66':'#cc4444';
   const en=typeof lang!=='undefined'&&lang==='en';
@@ -5430,6 +5526,14 @@ function updateCamHud(){
     :(en?'Occupancy: camera offline  (/aforo real | /aforo exacto | /aforo fake)':'Aforo: cámara sin conexión  (/aforo real | /aforo exacto | /aforo fake)');
 }
 function camApplyToStore(){
+  if(manualAudienceTarget()!==null){applyManualAudience();return;}
+  if(xtoreSessionMode()){
+    if(typeof state==='undefined'||state!==S.GAME||typeof G==='undefined'||!G||!Array.isArray(G.custs))return;
+    const a=xtoreSessionAudience();
+    // Missing/stale data cannot activate the independent occupancy source or random births.
+    const n=a?Math.min(MAX_PEOPLE_OVERRIDE,a.counts.person):0;
+    camForceExact(n);return;
+  }
   if(CAM.mode==='fake'||!CAM.connected) return;
   if(typeof state==='undefined'||state!==S.GAME) return;
   if(typeof G==='undefined'||!G||!Array.isArray(G.custs)) return;
@@ -5452,7 +5556,7 @@ function camForceExact(n){
     const exit=(G.custs||[]).filter(c=>c&&c.st!=='queue'&&c.st!=='buy'&&c.st!=='leave')
       .sort((a,b)=>(b.dwellTicks||0)-(a.dwellTicks||0)).slice(0,cur-n);
     for(const t of exit){
-      try{ if(typeof startCustomerLeave==='function'&&t.st==='walk') startCustomerLeave(t); else t.st='leave'; }catch(e){}
+      try{ startCustomerLeave(t); }catch(e){}
     }
   }
   if(n!==CAM.lastApplied){ CAM.lastApplied=n; try{ if(typeof saveGame==='function') saveGame(); }catch(e){} }
@@ -5474,6 +5578,8 @@ async function camPoll(){
   camApplyToStore();
 }
 if(CAM.enabled&&CAM.url){ camPoll(); setInterval(camPoll,CAM.pollMs); }
+window.addEventListener('xtore-statistics',()=>{if(xtoreSessionMode()){camApplyToStore();updateCamHud();}});
+setInterval(()=>{if(xtoreSessionMode()||manualAudienceTarget()!==null){camApplyToStore();updateCamHud();}},1000);
 
 // ── LOOK & FEEL — ajustes visuales conmutables (CLI + metahuman) ──
 // Persisten en localStorage. Cada toggle se controla por comando (/camiseta on|off)
@@ -5681,6 +5787,8 @@ function getCustomerFlowProfile(hour){
   return {cap:5,spawnMult:0.82,label:'cierre'};
 }
 function getCurrentCustomerCap(){
+  if(manualAudienceTarget()!==null)return manualAudienceTarget();
+  if(xtoreSessionMode())return Math.min(MAX_PEOPLE_OVERRIDE,xtoreSessionAudience()?.counts.person||0);
   // Override manual via /people store <N>: bypassea el cap horario y el ceiling
   // MAX_CUSTOMERS_IN_STORE (hasta 30 por seguridad). Para reactivar el cap
   // automatico segun hora: /people store auto.
@@ -8235,9 +8343,11 @@ function customerSpeedMult(c){
 function customerMoveSpeed(speed,c){
   const target=speed*CUSTOMER_MOVE_SPEED_SCALE*customerSpeedMult(c);
   if(!c) return target;
+  const atDoor=customerFloorPoint(c.x,c.y).col>ISO.cols-2.5;
+  if(atDoor)c.pauseTimer=0;
   if(c.pauseTimer>0){ c.pauseTimer--; c.curSpeed=(c.curSpeed||0)*0.6; return c.curSpeed<0.02?0:c.curSpeed; }
   const a=c.look&&c.look.age;
-  if((c.st==='walk'||c.st==='browse') && Math.random()<(a==='senior'?0.010:a==='nino'?0.014:0.004)){
+  if(!atDoor&&(c.st==='walk'||c.st==='browse') && Math.random()<(a==='senior'?0.010:a==='nino'?0.014:0.004)){
     c.pauseTimer = a==='nino' ? 8+Math.floor(Math.random()*14) : 16+Math.floor(Math.random()*26);
     c.curSpeed=(c.curSpeed||0)*0.5;
     return c.curSpeed;
@@ -8777,6 +8887,16 @@ function customerDoorAccess(actor){
   actor._waitingDoor=customerDoorPass?.actor!==actor;
   return !actor._waitingDoor;
 }
+function customerAvoidanceRoute(actor,current,target,navigation){
+  const layout=navigation.obstacles.map(b=>({id:b.id,type:'custom',col:b.minCol,row:b.minRow,fp:[b.maxCol-b.minCol,b.maxRow-b.minRow]}));
+  for(const other of G.custs||[]){
+    if(other===actor)continue;const p=customerFloorPoint(other.x,other.y);
+    if((Math.abs(p.col-current.col)<.48&&Math.abs(p.row-current.row)<.48)||(Math.abs(p.col-target.col)<.48&&Math.abs(p.row-target.row)<.48))continue;
+    layout.push({id:'visitor-'+other.id,type:'custom',col:p.col-.235,row:p.row-.235,fp:[.47,.47]});
+  }
+  const nav=window.XpaceCustomerNavigation.buildCustomerNavigation({cols:ISO.cols,rows:ISO.rows,doorRow:3.35,layout},{radius:.24,allowOutside:true});
+  return nav.route(current,target);
+}
 function moveCustomerTo(actor,screenX,screenY,speed){
   const navigation=getCustomerNavigation();
   if(!navigation)return 'blocked';
@@ -8817,15 +8937,85 @@ function moveCustomerTo(actor,screenX,screenY,speed){
     }
     if(!candidate){
       actor.curSpeed=(actor.curSpeed||0)*.6;
-      if(++journey.blocked>45){journey.path=null;journey.retry=8;journey.blocked=0;}
+      if(++journey.blocked>45){journey.path=customerAvoidanceRoute(actor,current,target,navigation);journey.index=0;journey.retry=8;journey.blocked=0;}
       return 'blocked';
     }
   }
-  journey.blocked=0;
+  if(Math.hypot(candidate.col-waypoint.col,candidate.row-waypoint.row)>=d-.001){
+    if(++journey.blocked>45){journey.path=customerAvoidanceRoute(actor,current,target,navigation);journey.index=0;journey.blocked=0;}
+  }else journey.blocked=0;
   const projected=toIso(candidate.col,candidate.row),oldX=actor.x;
   actor.x=projected.x-7;actor.y=projected.y-20;
   if(Math.abs(actor.x-oldX)>.001)actor.dir=actor.x<oldX?-1:1;
   return 'moving';
+}
+
+// Each visit is finite: inspect one to three different fixtures, then service/exit.
+// Targets are reserved in floor space and never occupy the entrance apron.
+function ensureCustomerVisit(c){
+  if(c.visit?.version===1)return c.visit;
+  const wanted=String(typeof prodName==='function'?prodName(c.wantsProdIdx):'').toLowerCase();
+  const preferred=/prensa|press|revista/.test(wanted)?'magazines':/loter|lott/.test(wanted)?'lottery':/vino|wine/.test(wanted)?'wineRack':/bebida|drink/.test(wanted)?'vending':'shelves';
+  const fixtures=shopLayout.filter(it=>['shelves','wineRack','magazines','vending','lottery','counter'].includes(it.type));
+  const ordered=fixtures.filter(it=>it.type===preferred).concat(fixtures.filter(it=>it.type!==preferred));
+  const count=c.persona==='curious'?3:c.persona==='impatient'||c.persona==='loyal'?1:2;
+  c.visit={version:1,goal:c.followId!=null&&c.look?.age==='nino'?'accompany':c.persona==='curious'?'compare':'find',limit:count,stops:ordered.slice(0,count+2).map(it=>({id:it.id,label:it.label||it.type})),index:0,target:null,wait:0,travel:0,total:0,done:[]};
+  return c.visit;
+}
+function customerVisitTarget(c,stop){
+  const nav=getCustomerNavigation(),box=nav?.obstacles.find(it=>it.id===String(stop.id));
+  if(!nav||!box)return null;
+  const current=customerFloorPoint(c.x,c.y),candidates=[];
+  for(let col=box.minCol-.65;col<=box.maxCol+.66;col+=.55){
+    candidates.push({col,row:box.minRow-.65},{col,row:box.maxRow+.65});
+  }
+  for(let row=box.minRow-.65;row<=box.maxRow+.66;row+=.55){
+    candidates.push({col:box.minCol-.65,row},{col:box.maxCol+.65,row});
+  }
+  const available=candidates.filter(p=>p.col<ISO.cols-2.5&&nav.isWalkable(p)&&!(G.custs||[]).some(o=>{
+    if(o===c)return false;const t=o.visit?.target||customerFloorPoint(o.x,o.y);
+    return Math.hypot(p.col-t.col,p.row-t.row)<.6;
+  }));
+  available.sort((a,b)=>Math.hypot(a.col-current.col,a.row-current.row)-Math.hypot(b.col-current.col,b.row-current.row));
+  return available.find(p=>nav.route(current,p))||null;
+}
+function finishCustomerVisit(c){
+  const v=ensureCustomerVisit(c);v.target=null;v.phase='finished';
+  if(v.goal==='accompany'){
+    const guardian=G.custs.find(o=>o.id===c.followId);
+    if(guardian&&guardian.st!=='leave')return;
+    c.followId=null;startCustomerLeave(c);return;
+  }
+  if(!v.done.length){startCustomerLeave(c);return;}
+  // Service is a real visit stage: do not book a purchase while circling shelves.
+  c.wantsTurn=true;c.ticketPicked=true;assignCustomerTurn(c);c.st='queue';c._qEnter=0;
+  c.bMsg=lang==='en'?'Ready for service':'Listo para atención';c.bTimer=100;
+}
+function tickCustomerVisit(c){
+  const v=ensureCustomerVisit(c);v.total++;
+  if(v.goal==='accompany'){
+    const guardian=G.custs.find(o=>o.id===c.followId);
+    if(!guardian||guardian.st==='leave'){c.followId=null;startCustomerLeave(c);return;}
+    const p=customerFloorPoint(guardian.x,guardian.y),here=customerFloorPoint(c.x,c.y);
+    if(Math.hypot(p.col-here.col,p.row-here.row)>.85){const q=toIso(p.col-.55,p.row+.4);moveCustomerTo(c,q.x-7,q.y-20,customerMoveSpeed(1.2,c));}
+    return;
+  }
+  if(v.done.length>=v.limit||v.index>=v.stops.length||v.total>5400){finishCustomerVisit(c);return;}
+  const stop=v.stops[v.index];
+  if(!v.target){
+    v.target=customerVisitTarget(c,stop);v.travel=0;v.wait=0;
+    if(!v.target){v.index++;return;}
+    v.phase='going';c.bMsg=(lang==='en'?'Looking for ':'Voy a ')+stop.label;c.bTimer=100;
+  }
+  const p=toIso(v.target.col,v.target.row);
+  const result=moveCustomerTo(c,p.x-7,p.y-20,customerMoveSpeed(1.3,c));
+  if(result==='arrived'){
+    v.phase='looking';
+    if(++v.wait>=120+((c.num||0)%3)*60){v.done.push(stop.id);v.index++;v.target=null;}
+  }else if(++v.travel>900){
+    // A blocked product is skipped once, never selected again in a circle.
+    v.index++;v.target=null;
+  }
 }
 
 // ── A* PATHFINDING ───────────────────────────────────────────
@@ -10424,6 +10614,7 @@ function doAction(id){
   }
   if(id==='turnScreenClick'){ try{ openTurnFull(); }catch(_){} return; }
   if(id==='camCPMClick'){
+    if(window.__xtoreWindowPlayer){const active=window.__xtoreWindowPlayer.toggleDemo();showEv(active?'Demo zapatillas · player, calle, estadísticas y recuadros':'Demo desactivada · pantallas restauradas','#70e5be');return;}
     // Cámara de seguridad → dashboard CPM/audiencia en la TFT de la pared
     // larga (toggle). El canal cede prioridad al CCTV si hay ladrón.
     G.tftCPM=!G.tftCPM;
@@ -13004,46 +13195,7 @@ function updateGame(){
         }
       }
     } else if(c.st==='browse'){
-      // Browse dialogue: show once, 25% chance
-      if(!c.bShown&&c.bTimer<=0&&Math.random()<0.005){
-        const arr=T().custBrowse;c.bMsg=arr[Math.floor(Math.random()*arr.length)];c.bTimer=200;c.bShown=true;
-      }
-      if(c.roamPath&&c.roamIdx<c.roamPath.length){
-        const destination=c.roamPath[c.roamPath.length-1],rpIso=toIso(destination.col,destination.row);
-        const roamSpd=customerMoveSpeed(G.weather&&G.weather.type==='sun'?0.7:0.95,c);
-        const roamMovement=moveCustomerTo(c,rpIso.x-7,rpIso.y-20,roamSpd);
-        if(roamMovement==='arrived'){
-          c.roamPath=null;c.roamIdx=0;
-          c.roamCooldown=Math.round((70+Math.floor(Math.random()*120))*(c.roamMult||1));
-          if(c.indecisive&&(c.deliberations|0)<2){
-            c.deliberations=(c.deliberations|0)+1;
-            c.roamCooldown=Math.min(c.roamCooldown,18+Math.floor(Math.random()*18));
-            if((c.bTimer|0)<=0){c.bMsg='🤔';c.bTimer=85;}
-          }
-        }
-      }else if((c.roamCooldown=(c.roamCooldown|0)-1)<=0){
-        const roamTarget=getCustomerRoamAnchor(c);
-        if(roamTarget){
-          c.roamPath=[roamTarget];
-          c.roamIdx=0;
-        }
-        c.roamCooldown=Math.round((90+Math.floor(Math.random()*150))*(c.roamMult||1));
-      }
-      c.timer--;if(c.timer<=0){
-        // REGLA: un niño acompañado NO se va mientras su adulto siga en la tienda
-        // (no salir solo). Sigue deambulando hasta que el acompañante se vaya.
-        if(c.followId!=null && c.look && c.look.age==='nino'){
-          const g=G.custs.find(x=>x&&x.id===c.followId);
-          if(g && g.st!=='leave'){ c.timer=90+Math.floor(Math.random()*90); continue; }
-        }
-        const stayRemaining=(c.stayTargetTicks|0)-(c.dwellTicks|0);
-        if(stayRemaining>0){
-          const browseChunk=Math.round((45+Math.random()*120)*(G.weather&&G.weather.type==='rain'?1.25:1)*(c.persona==='curious'?1.35:(c.persona==='impulsive'?0.72:1)));
-          c.timer=Math.max(30,Math.min(stayRemaining,browseChunk));
-          continue;
-        }
-        resolveCustomerCheckout(c);
-      }
+      tickCustomerVisit(c);
     } else if(c.st==='leave'){
       // Both legs use the same swept-body route, including the vestibule.
       // Failed paths wait/replan; leaving never grants a collision bypass.
@@ -13052,7 +13204,7 @@ function updateGame(){
       if(leaveMovement==='arrived'){
           // Satisfaction tablet vote — customer stops at kiosk before leaving
           if(!c.voted){
-            c.voted=true;c.voteTimer=40; // pause 40 frames to "tap" the tablet
+            c.voted=true;c.voteTimer=2; // A passing vote must not occupy the doorway.
             const djOn=G.staff&&G.staff.some(s=>s.hired&&s.role===4);
             let voteRoll=Math.random();
             if(djOn) voteRoll-=0.15;
@@ -13067,7 +13219,7 @@ function updateGame(){
           if(c.voteTimer>0){
             c.voteTimer--;
             // At the moment of "tap" (halfway through pause)
-            if(c.voteTimer===20){
+            if(c.voteTimer===1){
               const face=c.voteFace;
               tabletVote={face,timer:80};
               if(G.reviews){
@@ -13101,6 +13253,8 @@ function updateGame(){
     for(let i=0;i<n;i++){
       const a=list[i];
       if(!a||a.st==='queue'||a.st==='buy'||a._waitingDoor) continue;
+      // Do not undo the last centimetre of a route with a repulsion step.
+      if(Math.hypot(a.x-a._motionStartX,a.y-a._motionStartY)>1e-6)continue;
       const nav=getCustomerNavigation(),from=customerFloorPoint(a.x,a.y);
       if(!nav)continue;
       let pX=0,pY=0,cnt=0;
@@ -13114,7 +13268,7 @@ function updateGame(){
       const mx=pX*separationScale,my=pY*separationScale;
       for(const [sx,sy]of [[mx,my],[mx,0],[0,my]]){
         const next={col:from.col+sx,row:from.row+sy};
-        if(nav.segmentClear(from,next)&&customerSpaceClear(a,next)){const p=toIso(next.col,next.row);a.x=p.x-7;a.y=p.y-20;break;}
+        if(nav.segmentClear(from,next)&&nav.segmentClear(customerFloorPoint(a._motionStartX,a._motionStartY),next)&&customerSpaceClear(a,next)){const p=toIso(next.col,next.row);a.x=p.x-7;a.y=p.y-20;break;}
       }
     }
   }
@@ -13417,7 +13571,10 @@ function nextCustNum(){
   if(G&&Array.isArray(G.custs)) for(const c of G.custs){ if(c&&c.num) used.add(c.num); }
   let n=1; while(used.has(n)) n++; return n;
 }
-function spawnCust(isVip,isSponsor,force){
+function spawnCust(isVip,isSponsor,force,synthetic=false,withGroup=false,audienceProfile=null){
+  audienceProfile=synthetic&&window.__xtancoAvatarAudience?.validProfile(audienceProfile)?audienceProfile:null;
+  // Profile composition is replenished by the manual reconciler, not random arrivals.
+  if(!synthetic&&Number.isInteger(G?.manualAudienceTarget)&&Array.isArray(G.manualAudienceProfiles))return null;
   // 'force' (true) salta el limite del SPAWNER PASIVO (ej: cap horario que limita
   // a 7), usado por /sponsor /socio /devolucion etc. del CLI para invocar al
   // instante. Pero NO salta el override manual /people store <N> — ese cap es
@@ -13426,7 +13583,9 @@ function spawnCust(isVip,isSponsor,force){
   // Esto incluye los spawns automaticos hourly del wantToJoin (linea ~7833) y
   // del sponsor recurrente (linea ~7921), que tambien usan force=true.
   if(G && Number.isFinite(G.peopleOverride) && G.custs.length>=G.peopleOverride) return null;
+  if(xtoreSessionMode()&&G.custs.length>=getCurrentCustomerCap())return null;
   if(!force && G.custs.length>=getCurrentCustomerCap()) return null;
+  if(!synthetic&&!withGroup&&(G.custs||[]).some(c=>c.st==='walk'&&!c._enteredStore&&customerFloorPoint(c.x,c.y).col>ISO.cols-1.5))return null;
   const ci=Math.floor(Math.random()*6);
   const isSp=!!isSponsor;
   const isV=!!isVip||isSp; // sponsor implies VIP-tier perks
@@ -13448,16 +13607,18 @@ function spawnCust(isVip,isSponsor,force){
     tRow=1+Math.random()*4|0;
     attempts++;
   }while(!isGridWalkable(tCol,tRow)&&attempts<20);
-  let entryTarget=findNearestWalkableTile(tCol,tRow,{from:{col:ISO.cols-1,row:3}});
+  let entryTarget=findNearestWalkableTile(tCol,tRow,{from:{col:ISO.cols-1,row:3},avoidPeople:!synthetic});
   if(!entryTarget){
     // Reintento robusto barriendo el grid antes de rendirse
     for(let r=1;r<=4&&!entryTarget;r++){
       for(let c=2;c<=8&&!entryTarget;c++){
-        entryTarget=findNearestWalkableTile(c,r,{from:{col:ISO.cols-1,row:3}});
+        entryTarget=findNearestWalkableTile(c,r,{from:{col:ISO.cols-1,row:3},avoidPeople:!synthetic});
       }
     }
   }
   if(!entryTarget) return null;
+  // Legacy integer tiles can touch furniture edges; use the body's clearance.
+  entryTarget=getCustomerNavigation()?.resolve(entryTarget)||entryTarget;
   tCol=entryTarget.col;tRow=entryTarget.row;
   const tIso=toIso(tCol,tRow);
   const turnTarget=wantsTurn?getTurnKioskTarget():null;
@@ -13482,12 +13643,13 @@ function spawnCust(isVip,isSponsor,force){
     cLook={shirt:1+Math.floor(Math.random()*5),hair:Math.floor(Math.random()*6),skin:Math.floor(Math.random()*6),pants:0,shoes:0,accessory:0};
   }
   // Género marcado también en clientes (falda en ellas).
-  if(cLook.gender!=='m'&&cLook.gender!=='f') cLook.gender=Math.random()<0.5?'f':'m';
+  if(audienceProfile)cLook={...cLook,...audienceProfile};
+  if(!audienceProfile&&cLook.gender!=='m'&&cLook.gender!=='f') cLook.gender=Math.random()<0.5?'f':'m';
   cLook.skirt=(cLook.gender==='f');
   if(!cLook.age) cLook.age=ageBucketForHour(G&&G.gameTime);
   // REGLA: ningún niño entra solo. Si saldría 'nino' pero NO hay un adulto/senior
   // en la sala que pueda acompañarlo, se sube a 'adulto' (no lone kids).
-  if(cLook.age==='nino' && !(G.custs||[]).some(x=>x&&x.look&&(x.look.age==='adulto'||x.look.age==='senior')&&x.st!=='leave')){
+  if(!audienceProfile&&cLook.age==='nino' && !(G.custs||[]).some(x=>x&&x.look&&(x.look.age==='adulto'||x.look.age==='senior')&&x.st!=='leave')){
     cLook.age='adulto';
   }
   // PRODUCTO DESEADO con SESGO POR EDAD (idea #6): seniors→prensa/lotería/tabaco
@@ -13529,7 +13691,7 @@ function spawnCust(isVip,isSponsor,force){
     roamPath:null,roamIdx:0,roamCooldown:45+Math.floor(Math.random()*60),
     curSpeed:0,roamMult:(cLook.age==='nino'?0.5:1),followId:null,hasKid:false,
     indecisive:indecisive,deliberations:0,
-    wantsTurn:wantsTurn,queueNumber:0,serviceTimer:0,ticketPicked:false,
+    wantsTurn:false,queueNumber:0,serviceTimer:0,ticketPicked:false,
     bTimer:cBTimer,bMsg:cBMsg,bShown:false,
     wantsProdIdx:wantsProdIdx,bought:false,loyaltyFree:false,dwellTicks:0,
     stayTargetTicks:stayTargetTicks,
@@ -13538,6 +13700,7 @@ function spawnCust(isVip,isSponsor,force){
   });
   const newCust=G.custs[G.custs.length-1];
   newCust.num=nextCustNum();
+  newCust.path=[entryTarget]; // First clear the entrance, then follow a product mission.
   // KPIs por perfil (idea #12): cuenta la visita por franja de edad y por persona.
   if(G.metrics){
     const _a=cLook.age||'adulto';
@@ -13558,7 +13721,7 @@ function spawnCust(isVip,isSponsor,force){
     const orphan=G.custs.find(x=>x&&x.id!==newCust.id&&x.look&&x.look.age==='nino'&&x.followId==null&&x.st!=='leave');
     if(orphan){ orphan.followId=newCust.id; newCust.hasKid=true; orphan.roamCooldown=20+Math.floor(Math.random()*25); }
   }
-  if(G.loyaltyCard&&G.loyaltyCard.pending){
+  if(!synthetic&&G.loyaltyCard&&G.loyaltyCard.pending){
     newCust.loyaltyFree=true;
     G.loyaltyCard.pending=false;
     G.loyaltyCard.targetId=newCust.id;
@@ -13568,7 +13731,7 @@ function spawnCust(isVip,isSponsor,force){
   // entering customer (name, emoji, stamp count above their head; free purchase if
   // they completed 5 stamps on a previous visit).
   try{
-    if(window.LoyaltyBridge){
+    if(!synthetic&&window.LoyaltyBridge){
       const fan=window.LoyaltyBridge.takePendingFan();
       if(fan){
         newCust.fanCustomerId=fan.id;
@@ -13619,7 +13782,7 @@ function spawnGroup(size){
   if(!leader) return 0;
   const members=[];
   for(let k=1;k<size;k++){
-    const m=spawnCust(false,false,true);
+    const m=spawnCust(false,false,true,false,true);
     if(!m) break;
     members.push(m);
   }
@@ -14033,7 +14196,7 @@ function getQueueTarget(index=0){
       let best=null,score=Infinity;
       for(let col=.25;col<ISO.cols;col+=.5)for(let row=.25;row<ISO.rows;row+=.5){
         const p={col,row};
-        if(!navigation.isWalkable(p)||slots.some(s=>Math.hypot(s.col-col,s.row-row)<.72))continue;
+        if(col>ISO.cols-3||!navigation.isWalkable(p)||slots.some(s=>Math.hypot(s.col-col,s.row-row)<.72))continue;
         const cost=Math.hypot(col-desired.col,row-desired.row);
         if(cost<score){best=p;score=cost;}
       }
@@ -17010,6 +17173,7 @@ const HELP_PAGES={
     '  xtAPI.command("/pantallateve")  → momento «LA PANTALLA TE VE»: audiencia (real o simulada) → creativo se adapta en vivo · demo-proof · →/espacio siguiente · L cámara real · off',
     '  xtAPI.command("/targetPublicity aforo|genero")  → publicidad segmentada (genero=sexo+edad por LiveCam on-device) · off para parar',
     '  xtAPI.command("/generovideo")  → las 2 pantallas siguen el sexo de la cámara: 👨→Money For Nothing · 👩→Take On Me · off para parar',
+    '  xtAPI.command("/resetaudiencia 0|100|auto") → fija visitantes virtuales (0–100); auto devuelve control a la cámara/juego',
     '  xtAPI.command("/aforo real")  → la cámara Hikvision (ieu.ai) marca el objetivo de clientes (ambiente)',
     '  xtAPI.command("/aforo exacto")  → espejo ESTRICTO 1:1: la tienda = exactamente lo que dice la cámara; cada entrada/salida entra/sale',
     '  xtAPI.command("/aforo fake")  → clientes en modo aleatorio del juego · /aforo = estado actual',
@@ -20497,7 +20661,7 @@ function positionWallAvatar(){
   const el=document.getElementById('wallAvatar'); if(!el) return;
   const q=window.__tftQuad;
   const fresh=!!q && (typeof tt==='undefined' || (typeof window.__tftQuadFrame==='number' && (tt-window.__tftQuadFrame)<=2));
-  if(!(avatar3dWall && fresh)){ if(el.style.display!=='none'){ el.style.display='none'; el.src='about:blank'; } return; }
+  if(window.__xtoreWindowPlayer?.demoActive?.()||!(avatar3dWall && fresh)){ if(el.style.display!=='none'){ el.style.display='none'; el.src='about:blank'; } return; }
   try{
     // La pantalla de la pared larga es un PARALELOGRAMO inclinado (perspectiva de
     // la pared), no un rectángulo. Mapeamos el iframe al paralelogramo con un
@@ -21292,7 +21456,9 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
   const cX=vW/2, cY=vH/2;
   const sH=vH;
 
-  if(LIVE_CAM.active||LIVE_CAM.requesting){
+  if(window.__xtoreWindowPlayer?.drawScreen?.(cx,vW,vH,'statistics')){
+    // Demo owns this surface ahead of simulated campaigns and camera effects.
+  } else if(LIVE_CAM.active||LIVE_CAM.requesting){
     drawLiveCamScreen(vW,vH);
   } else if(G&&G.thief&&G.thief.phase!=='idle'){
     drawSecurityCCTV(vW,vH);
@@ -21734,6 +21900,7 @@ function drawTurnManager(){
   cx.lineTo(br.x,br.y);cx.lineTo(bl.x,bl.y);
   cx.closePath();cx.clip();
   cx.setTransform(ax,ay,bx,by,tl.x,tl.y);
+  if(window.__xtoreWindowPlayer?.drawScreen?.(cx,vW,vH,'anonymous')){cx.restore();cx.restore();return;}
   cx.fillStyle='#031316';cx.fillRect(0,0,vW,vH);
   cx.globalAlpha=0.18;
   cx.strokeStyle='#1e6a72';cx.lineWidth=1;
@@ -24399,6 +24566,7 @@ function fmtHireSince(since){
 }
 
 function customerStateLabel(c){
+  if(c?.st==='browse'&&c.visit){const v=c.visit,stop=v.stops[v.index];return v.goal==='accompany'?(lang==='en'?'Accompanying':'Acompañando'):stop?((v.phase==='looking'?(lang==='en'?'Looking: ':'Mirando: '):(lang==='en'?'Going to: ':'Va a: '))+stop.label):(lang==='en'?'To service':'A atención');}
   const map=lang==='es'
     ? {walk:'entra',browse:'mira',queue:'cola',buy:'atencion',leave:'sale',tablet:'vota'}
     : {walk:'enters',browse:'browses',queue:'queue',buy:'checkout',leave:'leaves',tablet:'votes'};
@@ -26564,7 +26732,7 @@ function loop(){
   try{updateMobileSkipButton();}catch(e){}
   try{updateEraVerticalDock();}catch(e){}
   try{syncHomeMusic();}catch(e){}
-  try{if(videoPlaying){updateVideoPosition();updateDSCanvases();}}catch(e){}
+  try{if(videoPlaying||window.__xtoreWindowPlayer?.demoActive?.()){updateVideoPosition();updateDSCanvases();}}catch(e){}
   try{updateLiveMocap();}catch(e){}
 
   // No auto-start from selection screens:
@@ -27524,6 +27692,8 @@ window.xtAPI = (function(){
         return api.visit(type);
       }
 
+      if(cmd==='resetaudiencia')return resetAudienceCommand(arg);
+
       // /people store <N> → fija el numero de CLIENTES (G.custs) en la tienda hasta
       // nueva orden. NO afecta al staff (G.staff) — el personal se queda siempre.
       //   N=0    → todos los clientes salen (gracefully: respeta queue/buy/leave).
@@ -27535,14 +27705,14 @@ window.xtAPI = (function(){
         const arg2=parts.slice(1).join(' ').trim();
         if(sub==='store'||sub==='tienda'){
           if(['off','auto','reset','default','none','clear','quita','quitar'].includes(arg2.toLowerCase())){
-            G.peopleOverride=null;
+            G.manualAudienceTarget=null;G.peopleOverride=null;
             G.customerCapAdjustTimer=0;
             saveGame();
             return {ok:true,message:'Override de clientes desactivado · cap automatico segun hora ('+getCurrentCustomerCap()+')',data:{peopleOverride:null,cap:getCurrentCustomerCap()}};
           }
           const n=parseInt(arg2,10);
           if(!Number.isFinite(n)||n<0||n>MAX_PEOPLE_OVERRIDE) return {ok:false,message:'Uso: /people store <N> (0-'+MAX_PEOPLE_OVERRIDE+', solo clientes; staff no se toca) | /people store auto'};
-          G.peopleOverride=n;
+          G.manualAudienceTarget=null;G.peopleOverride=n;
           G.customerCapAdjustTimer=0;
           const current=(G.custs||[]).length;
           let spawned=0, leaving=0;
@@ -27605,18 +27775,22 @@ window.xtAPI = (function(){
         if(typeof CAM==='undefined') return {ok:false,message:'Módulo de aforo no disponible'};
         const sub=(parts[0]||'').toLowerCase();
         if(['exacto','exact','estricto','strict','espejo','mirror','1:1'].includes(sub)){
+          G.manualAudienceTarget=null; G.peopleOverride=null;
           CAM.mode='exacto'; CAM.lastApplied=null;
           try{ if(typeof camApplyToStore==='function') camApplyToStore(); }catch(e){}
           try{ if(typeof updateCamHud==='function') updateCamHud(); }catch(e){}
           return {ok:true,message:'Aforo EXACTO · la tienda es estrictamente lo que dice la cámara Hikvision: entran/salen exactamente sus personas ('+(CAM.connected?CAM.occupancy+' dentro':'cámara sin señal — esperando datos de ieu.ai')+')',data:{mode:'exacto',connected:CAM.connected,occupancy:CAM.occupancy}};
         }
         if(['real','hikvision','on','si','sí','start','conectar'].includes(sub)){
+          G.manualAudienceTarget=null; G.peopleOverride=null;
           CAM.mode='real'; CAM.lastApplied=null;
           try{ if(typeof camApplyToStore==='function') camApplyToStore(); }catch(e){}
           try{ if(typeof updateCamHud==='function') updateCamHud(); }catch(e){}
+          if(xtoreSessionMode())return {ok:true,message:camBrainLine(),data:{mode:'real',source:'xtore-session',audience:xtoreSessionAudience()}};
           return {ok:true,message:'Aforo REAL · la cámara Hikvision marca el objetivo de clientes ('+(CAM.connected?CAM.occupancy+' dentro':'cámara sin señal — esperando datos de ieu.ai')+')',data:{mode:'real',connected:CAM.connected,occupancy:CAM.occupancy}};
         }
         if(['fake','falso','auto','aleatorio','random','juego','off','no','stop','desconectar'].includes(sub)){
+          G.manualAudienceTarget=null; G.peopleOverride=null;
           CAM.mode='fake'; CAM.lastApplied=null;
           try{ if(window.xtAPI&&typeof window.xtAPI.command==='function') window.xtAPI.command('/people store auto'); }catch(e){}
           try{ if(typeof updateCamHud==='function') updateCamHud(); }catch(e){}
@@ -28016,9 +28190,11 @@ window.xtAPI = (function(){
           }
         }
         h.style.display='flex';
-        let segment='instore',prevIn=-1;
+        let segment='instore',prevIn=-1,avatarControlNotice='';
         const render=()=>{
-          const body=document.getElementById('impBody'); if(!body) return;
+          const body=document.getElementById('impBody'); if(!body||body.querySelector('[data-avatar-adjust]:active')) return;
+          const focused=document.activeElement?.dataset;
+          const focusKey=focused?.avatarAdjust?{...focused}:null;
           for(const button of h.querySelectorAll('[data-impact-mode]')){
             const selected=button.dataset.impactMode===segment;
             button.setAttribute('aria-pressed',String(selected));
@@ -28029,7 +28205,7 @@ window.xtAPI = (function(){
             if(!body.querySelector('#dooh-view')){
               const labels=en?{person:'People passing',car:'Cars',motorcycle:'Motorcycles',bicycle:'Bicycles',scooter:'Scooters'}:{person:'Personas que han pasado',car:'Coches',motorcycle:'Motos',bicycle:'Bicis',scooter:'Patinetes'};
               const views=[['original',en?'With people · original':'Con personas · original'],['clean',en?'Without people · tracking':'Sin personas · seguimiento']];
-              body.innerHTML='<section id="dooh-view"><style>#dooh-view [hidden]{display:none!important}</style><div style="color:#8ed2ff;margin-bottom:8px">EXTERIOR · Puerta Cam</div>'+
+              body.innerHTML='<section id="dooh-view"><style>#dooh-view [hidden]{display:none!important}</style><div id="dooh-history"></div><div style="color:#8ed2ff;margin-bottom:8px">EXTERIOR · Puerta Cam · '+(en?'THIS SESSION':'ESTA SESIÓN')+'</div>'+
                 '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+Object.entries(labels).map(([key,label])=>'<div data-dooh-category="'+key+'" style="'+(key==='person'?'grid-column:1 / -1;':'')+'padding:10px;border:1px solid #346071;border-radius:8px;background:#07171ecc"><div style="color:#bce5fa">'+label+'</div><strong data-dooh-value="'+key+'" style="display:block;font-size:26px;line-height:1.4">—</strong><span style="font-size:9px;opacity:.7">'+(key==='scooter'?(en?'Manual observation':'Observación manual'):(en?'Detected passages':'Pasos detectados'))+'</span></div>').join('')+'</div>'+
                 '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:12px;margin-bottom:10px">'+views.map(([kind,label])=>'<figure style="margin:0;min-width:0"><figcaption style="font-size:10px;color:#bce5fa;margin-bottom:4px">'+label+'</figcaption><div class="dooh-camera-frame" style="position:relative;aspect-ratio:4/3;overflow:hidden;background:#071117;border-radius:6px"><canvas data-xtore-camera-view="'+kind+'" width="1" height="1" hidden style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:none"></canvas><p data-xtore-camera-empty="'+kind+'" style="position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:10px;text-align:center">'+(en?'Waiting for camera':'Esperando cámara')+'</p></div></figure>').join('')+'</div>'+
                 '<details id="dooh-explanation" style="margin-top:10px;font-size:10px;opacity:.8"><summary style="cursor:pointer;color:#8ed2ff">'+(en?'Camera and counting details':'Detalles de cámara y conteo')+'</summary><p id="dooh-source-status" role="status"></p><p>'+(en?'Source: shoe Xtore camera · AdmiraXperience. Same cumulative people counter as the analyzer; tracking IDs (#90…) are not passage totals. Scooters are added manually. The right image uses a temporary background to hide detected people; undetected people may remain visible.':'Fuente: cámara de la Xtore de zapatillas · AdmiraXperience. Mismo acumulado de personas que en el analizador; los identificadores de seguimiento (#90…) no son el total de pasos. Los patinetes se añaden manualmente. La vista derecha usa fondo temporal para ocultar personas detectadas; pueden quedar visibles personas no detectadas.')+'</p></details></section>';
@@ -28040,13 +28216,14 @@ window.xtAPI = (function(){
             }
             body.querySelector('#dooh-source-status').textContent=counts?(en?'Counters synchronized with Xtore · this session':'Contadores sincronizados con Xtore · esta sesión'):(en?'No current counter connection':'Sin conexión reciente con los contadores');
             window.__xtoreWindowPlayer?.renderCameraViews?.(body);
+            window.__xtoreDoohHistory?.render(body.querySelector('#dooh-history'),en);
             return;
           }
           const entran=(typeof G!=='undefined'&&G)?(G.custIn|0):0;
           const dentro=(typeof G!=='undefined'&&G&&Array.isArray(G.custs))?G.custs.length:0;
           const flashIn=dentro!==prevIn&&prevIn>=0;prevIn=dentro;
           const marcador='<div style="background:rgba(0,0,0,.35);border:1px solid rgba(158,255,160,.35);border-radius:8px;padding:10px;text-align:center"><div style="color:#9effa0">'+(en?'🏪 IN STORE NOW':'🏪 EN TIENDA AHORA')+'</div><strong style="display:block;font-size:26px;color:'+(flashIn?'#fff':'#ffe6a8')+'">'+dentro.toLocaleString(en?'en':'es')+'</strong><div style="font-size:9px;opacity:.65">'+entran+(en?' entered today · simulation':' entran hoy · simulación')+'</div></div>';
-          const avatarAudience=window.__xtancoAvatarAudience?.render?.((typeof G!=='undefined'&&G)?G.custs:[],en)||'';
+          const avatarAudience=window.__xtancoAvatarAudience?.render?.((typeof G!=='undefined'&&G)?G.custs:[],en,true)||'';
           // Franjas horarias de Instore: solo entradas del modelo interior.
           // por hora del día → el anunciante ve CUÁNDO hay audiencia. ⭐ = prime.
           let franjas='';
@@ -28085,7 +28262,7 @@ window.xtAPI = (function(){
           }
           const t=impactsTotals('in');
           const dyn=(typeof impactsDyn==='function')?impactsDyn('in'):{cpmDyn:IMPACTS.cpm,demandMult:1,qualityMult:1,revenueDyn:t.revenue,isPrime:false};
-          body.innerHTML=marcador+avatarAudience+'<div style="margin:8px 0;font-size:9px;opacity:.7">'+(en?'TWIN MODEL · estimates below are separate from Puerta Cam':'MODELO DEL GEMELO · estimaciones separadas de Puerta Cam')+'</div>'+franjas+rows+
+          body.innerHTML=marcador+avatarAudience+(avatarControlNotice?'<p role="status" style="color:#ffe6a8">'+avatarControlNotice+'</p>':'')+'<div style="margin:8px 0;font-size:9px;opacity:.7">'+(en?'TWIN MODEL · estimates below are separate from Puerta Cam':'MODELO DEL GEMELO · estimaciones separadas de Puerta Cam')+'</div>'+franjas+rows+
             '<div style="border-top:1px dashed #8a6a2f;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between"><span>'+(en?'TOTAL impacts':'TOTAL impactos')+'</span><b>'+Math.round(t.imp).toLocaleString(en?'en':'es')+'</b></div>'+
             '<div style="display:flex;justify-content:space-between;color:#9ad8ff"><span>'+(en?'👁 Attention (views)':'👁 Atención (miran)')+'</span><b>'+Math.round(t.look).toLocaleString(en?'en':'es')+' · '+Math.round(t.att*100)+'%</b></div>'+
             '<div style="display:flex;justify-content:space-between"><span>CPM ref</span><b>'+IMPACTS.cpm.toFixed(2)+' €</b></div>'+
@@ -28095,6 +28272,15 @@ window.xtAPI = (function(){
             '<div style="display:flex;justify-content:space-between;font-size:9.5px;opacity:.75" title="'+(en?'RTB demand (occupancy+prime) × quality (attention)':'demanda RTB (ocupación+prime) × calidad (atención)')+'"><span>↳ '+(en?'demand':'demanda')+' ×'+dyn.demandMult.toFixed(2)+' · '+(en?'quality':'calidad')+' ×'+dyn.qualityMult.toFixed(2)+'</span></div>'+
             '<div style="display:flex;justify-content:space-between;color:#c9a8ff"><span>'+(en?'Dynamic revenue':'Ingreso dinámico')+'</span><b>'+dyn.revenueDyn.toFixed(2)+' €</b></div>'+
             '<div style="margin-top:5px;font-size:9.5px;opacity:.6">'+(en?'📷 measured · ~ estimated · 👁 views≠passes · ⚡ CPM by demand×quality':'📷 medido · ~ estimado · 👁 miran≠pasan · ⚡ CPM por demanda×calidad')+'<br>/cpm cpm &lt;n&gt; · /cpm reset · /cpm off</div>';
+          if(focusKey)body.querySelector('[data-avatar-kind="'+focusKey.avatarKind+'"][data-avatar-key="'+focusKey.avatarKey+'"][data-avatar-adjust="'+focusKey.avatarAdjust+'"]')?.focus();
+        };
+        const controlsBody=document.getElementById('impBody');
+        controlsBody.onclick=e=>{
+          if(segment!=='instore')return;
+          const button=e.target.closest?.('[data-avatar-adjust],[data-avatar-auto]');if(!button||button.disabled)return;
+          const changed=button.hasAttribute('data-avatar-auto')?resetAudienceCommand('auto').ok:adjustAvatarAudience(button.dataset.avatarKind,button.dataset.avatarKey,Number(button.dataset.avatarAdjust));
+          avatarControlNotice=changed?'':(en?'Could not change audience: check that the store is open and has free space.':'No se pudo cambiar la audiencia: comprueba que la tienda está abierta y tiene espacio libre.');
+          render();
         };
         h._render=render;
         for(const button of h.querySelectorAll('[data-impact-mode]'))button.onclick=()=>{segment=button.dataset.impactMode;render();};
@@ -29252,6 +29438,10 @@ window.xtAPI = (function(){
   }
   function renderTurnFull(){
     const body=document.getElementById('turnFullBody'); if(!body) return;
+    if(window.__xtoreWindowPlayer?.demoActive?.()){
+      let canvas=body.querySelector('canvas');if(!canvas){body.replaceChildren();canvas=document.createElement('canvas');canvas.width=960;canvas.height=540;canvas.style.cssText='width:min(90vw,960px);height:auto';body.append(canvas);}
+      window.__xtoreWindowPlayer.drawScreen(canvas.getContext('2d'),960,540,'anonymous');return;
+    }
     const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
     const AC=window.ADMIRA_CREA||window.ADMIRA_CREA_LAST;
     let html;
@@ -30187,7 +30377,7 @@ window.xtAPI = (function(){
       {title:'Equipo del punto (gemelo)',items:['/nuevoMiembro Laura azafata','/nuevoMiembro Pedro cajero','/echarMiembro Laura','/report Marta']},
       {title:'DVR del Xpacio (grabar/velocidad/replay)',items:['/velocidad 1','/velocidad 2','/velocidad 4','/velocidad 8','/dvr','/envivo','/calendario']},
       {title:'Personal (panel /staff)',items:['/staff','/staff bonus 0 100','/staff eotm 0','/staff eotm ana','/staff train 1','/staff hire 2','/staff fire 1']},
-      {title:'Tienda',items:['/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
+      {title:'Tienda',items:['/resetaudiencia 0','/resetaudiencia 100','/resetaudiencia auto','/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
       {title:'Look & feel',items:['/camiseta on','/camiseta off','/camiseta']},
       {title:'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
       {title:'Pantalla y directo',items:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
@@ -31614,7 +31804,7 @@ window.xtAPI = (function(){
       // (CLI in-game) y aun no esta mapeado en este dispatcher de Telegram,
       // delegamos. Cubre /store, /people, /gente, /clientes, /personas y futuros
       // comandos sin necesidad de duplicar la logica.
-      if(['store','xtore','xtanco','tienda','people','gente','personas','clientes','staff','personal','subasta','subastar','auction','targetpublicity','targetpubliticy','targetpub','generovideo','genvideo','camgenero','sexovideo','videogenero','aforo','occupancy','camara','cámara','mupicam','fotos','viandantes','carrete','camaramupi','camiseta','camisetas','dorsal','dorsales','impactos','impacts','impresiones','cpm','audienciain','audin','publicoin','entran','audienciaout','audout','publicoout','pasan','avatar3ddetalle','metahumandetalle','mhdetalle','detalleavatar'].includes(cmd)){
+      if(['resetaudiencia','store','xtore','xtanco','tienda','people','gente','personas','clientes','staff','personal','subasta','subastar','auction','targetpublicity','targetpubliticy','targetpub','generovideo','genvideo','camgenero','sexovideo','videogenero','aforo','occupancy','camara','cámara','mupicam','fotos','viandantes','carrete','camaramupi','camiseta','camisetas','dorsal','dorsales','impactos','impacts','impresiones','cpm','audienciain','audin','publicoin','entran','audienciaout','audout','publicoout','pasan','avatar3ddetalle','metahumandetalle','mhdetalle','detalleavatar'].includes(cmd)){
         try{
           const res=api.command('/'+cmd+(arg?' '+arg:''));
           return res && res.message ? res.message : 'OK';
@@ -33103,6 +33293,9 @@ window.xtAPI = (function(){
       if(sep>=0){ nm=raw.slice(0,sep)||(lang==='en'?'Anonymous':'Anónimo'); try{ segData=JSON.parse(raw.slice(sep+2)); }catch(_){ segData=null; } }
       c.fanName=nm;
       c.npcSegment=segData;                   // {sex, age, desc} → ficha de cliente
+      // Persona realista de Pixeria (Anonimizador): el paquete para 16/32/64 bits
+      // lo fabrica el worker (/twin/persona) y lo pintan Better, Best y Matrix.
+      c.pixeriaPersonaId=entry&&entry.persona&&entry.id?String(entry.id):null;
       // Ack al worker EN CUANTO se crea el NPC (antes de los FX, para que un error
       // visual no impida confirmar a Pixeria que el NPC YA está en la tienda).
       if(entry&&entry.id){ try{ fetch(PIXER_WORKER+'/twin/spawn/ack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:entry.id,screen:screenId})}); }catch(_){} }
@@ -33664,8 +33857,6 @@ window.xtAPI = (function(){
     {sel:'.stat-label', idx:1, en:'Profit', es:'Beneficio'},
     {sel:'.stat-label', idx:2, en:'Sat', es:'Sat'},
     {sel:'.stat-label', idx:3, en:'Pass/In', es:'Pasan/Entran'},
-    {sel:'.stat-label', idx:4, en:'👁 Real audience', es:'👁 Aforo real'},
-    {sel:'#bbCamBox', attr:'title', en:'Live audience (Hikvision camera)', es:'Aforo real (cámara Hikvision)'},
     {sel:'#bbStatus', en:'Idle', es:'En espera'},
     {sel:'#btnQuit', en:'⏻ Quit', es:'⏻ Salir'},
     {sel:'#btnQuit', attr:'title', en:'Close audio and video, back to main menu', es:'Cerrar audios y videos, volver al menú principal'},
@@ -33700,7 +33891,7 @@ window.xtAPI = (function(){
     {sel:'[data-xp-do="avatarHide"]', en:'✕ Hide', es:'✕ Ocultar'},
     {sel:'[data-xp-do="avatarHide"]', attr:'title', en:'Hide presenter panel', es:'Ocultar el panel del presentador'},
     {sel:'[data-xp-do="aforoReal"]', en:'📷 Live occupancy (camera)', es:'📷 Aforo real (cámara)'},
-    {sel:'[data-xp-do="aforoReal"]', attr:'title', en:'Target occupancy from the Hikvision camera', es:'Aforo objetivo por cámara Hikvision (ambiente)'},
+    {sel:'[data-xp-do="aforoReal"]', attr:'title', en:'Target occupancy from the Hikvision camera', es:'Xtore enlazado: pasos de sesión; otras tiendas: cámara de aforo'},
     {sel:'[data-xp-do="aforoExact"]', en:'🎯 Exact occupancy (1:1)', es:'🎯 Aforo exacto (1:1)'},
     {sel:'[data-xp-do="aforoExact"]', attr:'title', en:'Strict 1:1 mirror: store occupancy equals camera occupancy', es:'Espejo 1:1 estricto: la tienda = exactamente la cámara'},
     {sel:'[data-xp-do="aforoFake"]', en:'🎲 Simulated occupancy', es:'🎲 Aforo del juego'},
@@ -34326,6 +34517,13 @@ window.xtAPI = (function(){
   #topBar .sep{height:18px;opacity:.5}
   /* Aforo real: punto de estado un pelín mayor */
   #topBar #bbCamDot{width:7px;height:7px}
+  #topBar .audience-values{display:flex;gap:12px}
+  #topBar .audience-metric{display:flex;flex-direction:column;gap:2px;min-width:30px}
+  #topBar .audience-kind{font-size:8px;color:var(--xp-muted);white-space:nowrap}
+  #topBar .audience-metric[hidden],#topBar .audience-kind[hidden]{display:none}
+  #topBar.xtore-session-hud{min-height:54px;height:auto;padding-top:5px;padding-bottom:5px;flex-wrap:wrap}
+  #topBar.xtore-session-hud #bbCamLabel{letter-spacing:.04em}
+
   /* Competencia: cajas legibles (6→8px) con acento de color de marca arriba y tamaño consistente */
   #topBar .comp-box{padding:3px 8px;min-width:52px;border-top-width:3px;border-radius:8px;gap:1px}
   #topBar .comp-name{font-size:8px;letter-spacing:.06em;color:#a8c6cf}
@@ -34582,6 +34780,7 @@ window.xtAPI = (function(){
         if(lastId[s.id]===it.id) return;           // ya aplicado
         var kind=it.kind==='video'?'video':(it.kind==='image'?'image':null);
         if(!kind||!it.url) return;                 // texto/audio: fuera de alcance de esta fase
+        if(!/^https?:\/\//i.test(String(it.url))) return; // blob: y about: no se pueden reproducir aquí
         if(window.__dsPinSurfaceFromUrl && window.__dsPinSurfaceFromUrl(s.id,kind,it.url,it.title||it.id)){
           lastId[s.id]=it.id;
           try{ if(typeof window.showEv==='function') window.showEv('📺 '+s.tag+' ← '+(it.title||'contenido')+' (admira.studio)','#7dffb5'); }catch(e){}
@@ -35015,17 +35214,17 @@ window.xtAPI = (function(){
 })();
 </script>
 <script>if(new URLSearchParams(location.search).get("virtualPlayer")==="xtore-virtual-zapatillas"){try{for(const l of ["es","en"]){if(typeof LANGS!=="undefined"&&LANGS[l])LANGS[l].ledMsgs=["ADMIRA · XTORE ZAPATILLAS","PLAYER VIRTUAL · INTERIOR + ESCAPARATE","PUERTA CAM · PROGRAMACIÓN CONDICIONAL"];}}catch(_){}}</script>
-<link rel="stylesheet" href="scripts/xtore-window.css?v=background-2">
-<script type="module" src="scripts/xtore-window.mjs?v=real-traffic-1"></script>
+<link rel="stylesheet" href="scripts/xtore-window.css?v=normal-tabs-1">
+<script type="module" src="scripts/xtore-window.mjs?v=normal-tabs-1"></script>
 <script type="module" src="scripts/real-traffic.mjs?v=1"></script>
-<link rel="stylesheet" href="scripts/avatar-audience.css?v=1">
-<script type="module" src="scripts/avatar-audience.mjs?v=1"></script>
+<link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
+<script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=inventari-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=inventari-1">
 <link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
 <link rel="stylesheet" href="scripts/tier-hud.css?v=gait-1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=walk-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=px-1"></script>
 </body>
 </html>

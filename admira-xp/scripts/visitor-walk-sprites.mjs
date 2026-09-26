@@ -6,7 +6,7 @@
 export const WALK_SHEET=Object.freeze({frameW:192,frameH:288,walkFrames:8,cols:9,rows:2,pad:.06});
 const IDS=new Set(["a1", "a2", "a3", "a4", "a5", "a6", "b1", "b2", "b3", "b4", "b5", "b6", "c1", "c2", "c3", "c4", "c5", "c6", "d1", "d2", "d3", "d4", "d5", "d6"]);
 export function walkSheetURL(profileId){
-  return IDS.has(profileId)?`assets/people/matrix-walk/${profileId}.webp?v=walk-1`:null;
+  return IDS.has(profileId)?`assets/people/matrix-walk/${profileId}.webp?v=walk-2`:null;
 }
 export function walkFrame(phase,walking){
   if(!walking||!Number.isFinite(phase))return WALK_SHEET.walkFrames;

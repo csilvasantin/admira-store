@@ -1,8 +1,9 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=visitors-24';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=px-1';
 import {visitorProfileById} from './visitor-profiles.mjs?v=visitors-24';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
 import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
 import {walkSheetURL,walkFrame,walkBackgroundPosition} from './visitor-walk-sprites.mjs?v=walk-1';
+import {pixeriaWalkSheet} from './pixeria-personas.mjs?v=px-1';
 
 const clamp=(value,min=0,max=1)=>Math.max(min,Math.min(max,value));
 const DEFAULT_COLS=14,DEFAULT_ROWS=8;
@@ -107,9 +108,31 @@ function cropFor(sprite){
   const [x,y,width,height]=crop;
   return x>=0&&y>=0&&width>0&&height>0&&x+width<=sprite.atlasWidth&&y+height<=sprite.atlasHeight?crop:null;
 }
+// Isometric paint order against standing furniture. Only pieces whose drawn
+// rectangle overlaps the visitor's matter. Along the view both +col and +row
+// come towards the camera: a visitor is in front of a floor box when past its
+// max col or max row, behind it when before its min col or min row; on a
+// diagonal corner the larger separation decides. Feet-y order is kept inside
+// the interval the overlapping pieces allow.
+export function visitorDepth(pose,point,scale,occluders=[]){
+  let z=10+Math.round(point.y*1000),lo=-Infinity,hi=Infinity;
+  const h=.255*scale,w=.1*Math.abs(scale);
+  const rect={x0:point.x-w/2,x1:point.x+w/2,y0:point.y-h*.96,y1:point.y+h*.04};
+  for(const o of occluders){
+    const b=o?.box,r=o?.rect;if(!b||!r||!Number.isFinite(o.z))continue;
+    if(rect.x1<r.x0||rect.x0>r.x1||rect.y1<r.y0||rect.y0>r.y1)continue;
+    const frontBy=Math.max(pose.col-b.maxCol,pose.row-b.maxRow),behindBy=Math.max(b.minCol-pose.col,b.minRow-pose.row);
+    if(frontBy<-1e-6&&behindBy<-1e-6)continue; // inside the box: navigation's problem, not paint order
+    if(frontBy>=behindBy)lo=Math.max(lo,o.z);else hi=Math.min(hi,o.z);
+  }
+  if(z<=lo)z=lo+1;
+  if(z>=hi)z=hi-1;
+  if(z<=lo)z=lo+1;
+  return z;
+}
 // Navigation is expressed in the same logical room as the simulation. Image
 // dimensions and load completion never change where a customer can walk.
-export function createBestPeopleLayer({container,getState=()=>window.__xtancoVisualState?.(),projectFloor=projectBestFloor,requestFrame=requestAnimationFrame,cancelFrame=cancelAnimationFrame,now=()=>performance.now(),walkSprites=false}={}){
+export function createBestPeopleLayer({container,getState=()=>window.__xtancoVisualState?.(),projectFloor=projectBestFloor,requestFrame=requestAnimationFrame,cancelFrame=cancelAnimationFrame,now=()=>performance.now(),walkSprites=false,getOccluders=()=>[]}={}){
   if(!container)throw new Error('Best people layer requires a container');
   const snapshot=createLifeSnapshot(),people=new Map(),motions=new Map(),actorsById=new Map(),appearances=new Map();
   // Screen-space facing per visitor (walk sheets are drawn facing right, front or back).
@@ -138,8 +161,8 @@ export function createBestPeopleLayer({container,getState=()=>window.__xtancoVis
   }
   // Matrix opt-in: a baked multi-frame walk sheet of the same profile. If the
   // sheet cannot load, that profile falls back to its cutout and leg rig.
-  function updateWalkAppearance(node,actor,profile){
-    const url=walkSheetURL(profile.id),signature=`walk:${profile.id}:${url}`;
+  function updateWalkAppearance(node,actor,profile,sheet=null){
+    const url=sheet||walkSheetURL(profile.id),signature=`walk:${profile.id}:${url}`;
     if(appearances.get(actor.id)?.signature===signature)return true;
     cleanupAppearance(actor.id);
     const image=document.createElement('img');image.alt='';image.decoding='async';
@@ -159,6 +182,12 @@ export function createBestPeopleLayer({container,getState=()=>window.__xtancoVis
   }
   function updateAppearance(node,actor){
     const profile=profileFor(actor),sprite=profile?.sprite,crop=cropFor(sprite);
+    // Pixeria persona: its own processed sheet once ready; the cutout meanwhile.
+    const pxId=typeof actor.pixeriaPersonaId==='string'?actor.pixeriaPersonaId:null;
+    if(walkSprites&&pxId&&!walkFailed.has('px:'+pxId)){
+      const sheet=pixeriaWalkSheet(pxId);
+      if(sheet&&updateWalkAppearance(node,actor,{id:'px:'+pxId,label:actor.label||'Pixeria'},sheet))return;
+    }
     if(walkSprites&&profile&&walkSheetURL(profile.id)&&!walkFailed.has(profile.id)&&updateWalkAppearance(node,actor,profile))return;
     const legacy=spriteFor(actor),signature=profile
       ?`${profile.id}:${sprite.atlas}:${sprite.column}:${sprite.row}:${sprite.columns}:${sprite.rows}:${crop?.join(',')||''}:${sprite.atlasWidth||''}:${sprite.atlasHeight||''}:${legacy}`:`legacy:${legacy}`;
@@ -244,6 +273,7 @@ export function createBestPeopleLayer({container,getState=()=>window.__xtancoVis
   }
   function render(time){
     if(!scene||disposed)return;
+    let occluders=[];try{occluders=getOccluders?.()||[];}catch{}
     for(const [id,node] of people){
       const actor=actorsById.get(id),pose=motions.get(id)?.advance(time);
       node.hidden=!pose;if(!pose)continue;
@@ -254,7 +284,7 @@ export function createBestPeopleLayer({container,getState=()=>window.__xtancoVis
       // Visibility-graph corners can have a subpixel clearance. Decimal
       // formatting must not move a safe foot back onto an obstacle boundary.
       node.style.left=`${point.x*100}%`;node.style.top=`${point.y*100}%`;
-      node.style.zIndex=String(10+Math.round(point.y*1000));
+      node.style.zIndex=String(visitorDepth(pose,point,scale,occluders));
       node.style.setProperty('--person-scale',scale.toFixed(3));
       const appearance=appearances.get(id);
       let mirror=Math.cos(pose.heading||0)<0;

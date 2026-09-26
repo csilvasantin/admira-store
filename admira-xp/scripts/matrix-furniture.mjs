@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=visitors-24';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=px-1';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
 import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
@@ -74,7 +74,7 @@ export function planMatrixFurniture(scene,catalog){
     const anchor=anchorFor(item,photo,scene),s=scale(item);
     const common={id:String(item.id),number:record.number,label:item.label||record.name||`Mueble ${record.number}`,anchor,
       flip:!!item.flipX!==!!photo?.mirrorX,sx:s.x,sy:s.y,wall:!!photo?.wall||['led','tft','aroma'].includes(item.type),item};
-    const footprint=footprints.get(String(item.id));
+    const footprint=footprints.get(String(item.id));common.footprint=footprint||null;
     common.floorZone=footprint?[[footprint.minCol,footprint.minRow],[footprint.maxCol,footprint.minRow],
       [footprint.maxCol,footprint.maxRow],[footprint.minCol,footprint.maxRow]].map(([col,row])=>{
         const point=projectMatrixFloor(col,row,scene.cols,scene.rows);return [point.x,point.y];
@@ -116,6 +116,14 @@ export function planMatrixFurniture(scene,catalog){
   return placements;
 }
 
+// Floor box, paint depth and on-screen rectangle (stage fractions, after the
+// CSS scale about its origin) of a standing piece: what visitors sort against.
+export function placementOccluder(p){
+  const sx=Math.abs(p.sx??1),sy=Math.abs(p.sy??1),ox=p.left+p.origin[0]*p.width,oy=p.top+p.origin[1]*p.height;
+  const x0=ox-(ox-p.left)*sx,x1=ox+(p.left+p.width-ox)*sx,y0=oy-(oy-p.top)*sy,y1=oy+(p.top+p.height-oy)*sy;
+  const depthY=finite(p.depthY,p.anchor.y);
+  return {id:p.id,box:p.footprint,z:10+Math.round(depthY*1000),rect:{x0:Math.min(x0,x1),x1:Math.max(x0,x1),y0,y1}};
+}
 export function placementZone(p){
   if(p.unsupported||p.wall)return null;
   // The projected inventory footprint owns collisions; sprite pixel dimensions
@@ -143,7 +151,7 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
   if(!container)throw Error('Falta el contenedor Matrix');
   const snapshot=createLifeSnapshot(),nodes=new Map(),prefix=`matrix-furniture-${++sequence}`,layer=document.createElement('div'),status=document.createElement('p');
   layer.className='matrix-furniture-layer';status.className='matrix-furniture-status';status.setAttribute('role','status');status.textContent='Preparando el mobiliario de Matrix…';container.append(layer,status);
-  let catalog,disposed=false,frame=0,last=-Infinity,reported=false,selected=null,zones=[],count=0;
+  let catalog,disposed=false,frame=0,last=-Infinity,reported=false,selected=null,zones=[],count=0,occluders=[];
   const decorators=[];
   function report(error=''){if(disposed||reported)return;reported=true;onReady(error);}
   function select(p){selected=p.id;onSelect({id:p.id,number:p.number,label:p.label});}
@@ -151,6 +159,7 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
     const entries=[...nodes.values()],failed=entries.filter(n=>n.failed).length,loading=entries.filter(n=>!n.loaded&&!n.failed).length;
     count=entries.filter(n=>n.loaded).length;
     zones=entries.filter(n=>n.loaded&&!n.failed).map(n=>placementZone(n.current)).filter(Boolean);
+    occluders=entries.filter(n=>n.loaded&&!n.failed&&n.current&&!n.current.wall&&n.current.footprint).map(n=>placementOccluder(n.current));
     status.textContent=`MATRIX · ${count} muebles visibles · inventario compartido${loading?` · ${loading} cargando`:''}${failed?` · ${failed} sin representación`:''}`;
     if(!loading)report(failed?'No se han podido cargar todos los muebles de Matrix.':'');
   }
@@ -189,5 +198,5 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
   }
   function tick(now){if(disposed)return;if(!document.hidden&&now-last>=100){last=now;update();}frame=requestFrame(tick);}
   Promise.resolve().then(load).then(value=>{if(disposed)return;catalog=value;update();frame=requestFrame(tick);},()=>{if(disposed)return;status.textContent='No se ha podido cargar el mobiliario Matrix. Cambia de vista y reintenta.';report('No se ha podido cargar el mobiliario Matrix.');});
-  return {update,get count(){return count;},get zones(){return zones;},dispose(){if(disposed)return;disposed=true;cancelFrame(frame);for(const e of nodes.values()){const img=e.node?.querySelector('img');if(img){img.onload=null;img.onerror=null;}}nodes.clear();zones=[];count=0;if(selected!==null){selected=null;onSelect(null);}layer.remove();status.remove();}};
+  return {update,get count(){return count;},get zones(){return zones;},get occluders(){return occluders;},dispose(){if(disposed)return;disposed=true;cancelFrame(frame);for(const e of nodes.values()){const img=e.node?.querySelector('img');if(img){img.onload=null;img.onerror=null;}}nodes.clear();zones=[];count=0;if(selected!==null){selected=null;onSelect(null);}layer.remove();status.remove();}};
 }

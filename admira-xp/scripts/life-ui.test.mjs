@@ -9,7 +9,7 @@ import {createLifeSnapshot} from './life-snapshot.mjs';
 // harness; the fake DOM exercises observable scheduling and event propagation.
 const source=fs.readFileSync(new URL('./life-ui.mjs',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'')
-  .replace("await import('./life-renderer.mjs?v=customer-motion-1')",'await loadRenderer()')
+  .replace("await import('./life-renderer.mjs?v=px-1')",'await loadRenderer()')
   .replace(/^export \{.*\};?\s*$/m,'');
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const releaseInputs=html.match(/window\.__xtancoReleaseInputs=.*;/)?.[0];

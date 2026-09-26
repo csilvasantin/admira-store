@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="admiranext-version" content="v.25.09.2026.r2.08:37">
+<title>Mobiliario para Xpacios · XpaceOS</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #07080c; color: #f4f1ea; font: 16px/1.4 system-ui, sans-serif; }
+  header, main { width: min(920px, calc(100% - 32px)); margin: 0 auto; }
+  header { padding: 28px 0 8px; }
+  a { color: #9be7ff; }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  p { color: #c8c2b4; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  button { background: #141820; color: #f4f1ea; border: 1px solid #3a4254; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  button[aria-pressed="true"] { border-color: #9be7ff; color: #9be7ff; }
+  canvas { width: 100%; height: auto; background: #000; border-radius: 12px; }
+  #names, #status { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">XpaceOS</a>
+  <h1>Mobiliario para Xpacios</h1>
+  <p>Cada mueble es un solo registro: nombre de saga, silueta y color fijos. La época solo cambia la skin. La planta es el objeto testigo y no se quita. La misma escala 8/16/32/64 vale para los gemelos de vehículos.</p>
+</header>
+<main>
+  <div class="row">
+    <button type="button" data-bits="8">8 bits · 80</button>
+    <button type="button" data-bits="16">16 bits · 90</button>
+    <button type="button" data-bits="32" aria-pressed="true">32 bits · Actual</button>
+    <button type="button" data-bits="64">64 bits · Matrix</button>
+  </div>
+  <p id="status"></p>
+  <canvas id="room" width="860" height="460"></canvas>
+  <p id="names"></p>
+</main>
+<script type="module" src="./stage.mjs"></script>
+</body>
+</html>

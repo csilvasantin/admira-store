@@ -67,7 +67,7 @@ test('The three visible passage labels read the authoritative cumulative source 
   measured=0;assert.equal(context.exteriorPersonPassagesForDisplay(),0);measured=null;assert.equal(context.exteriorPersonPassagesForDisplay(),'—');
   measured=NaN;assert.equal(context.exteriorPersonPassagesForDisplay(),'—');assert.equal(context.G.passersbyToday,27);assert.equal(context.G.customersToday,8);
   delete context.window.__xtoreWindowPlayer;assert.equal(context.exteriorPersonPassagesForDisplay(),27);
-  assert.ok(html.includes("document.getElementById('bbCli').textContent=exteriorPersonPassagesForDisplay()"));
+  assert.ok(html.includes(":exteriorPersonPassagesForDisplay()+'/'+(G.customersToday||0)"));
   assert.ok(html.includes("tx('↔'+exteriorPersonPassagesForDisplay()"));
   assert.ok(html.includes("${lang==='es'?'PASAN':'PASS'}: ${exteriorPersonPassagesForDisplay()}"));
 });

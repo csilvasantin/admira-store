@@ -41,3 +41,13 @@ test('missing avatar list yields an empty simulation; displayed counts have the 
   assert.match(markup,/data-avatar-age="unknown">1</);assert.match(markup,/Franja de edad asignada/);
   assert.match(avatarAudienceMarkup([],true),/SIMULATION/);
 });
+
+
+test('interactive cards expose left minus and right plus, disable zero/100 and label synthetic scope',()=>{
+ const empty=avatarAudienceMarkup([],false,true);
+ assert.equal((empty.match(/data-avatar-adjust="-1"/g)||[]).length,7);assert.equal((empty.match(/data-avatar-adjust="1"/g)||[]).length,7);
+ assert.match(empty,/data-avatar-adjust="-1"[^>]+disabled/);assert.match(empty,/Volver a audiencia automática/);assert.match(empty,/El otro atributo empieza Sin dato/);
+ const full=avatarAudienceMarkup(Array.from({length:100},()=>({look:{gender:'m',age:'adulto'}})),true,true);
+ assert.equal((full.match(/data-avatar-adjust="1"[^>]+disabled/g)||[]).length,7);
+ assert.doesNotMatch(avatarAudienceMarkup([],false,false),/data-avatar-adjust/);
+});

@@ -1,10 +1,10 @@
 {
-  "version": "v.15.09.2026.r19.21:10",
-  "signature": "OraculoMacMini · MacMini",
+  "version": "v.25.09.2026.r2.08:37",
+  "signature": "SmithMacMini · MacMini",
   "machine": "MacMini",
-  "agent": "OraculoMacMini",
-  "deployer": "OraculoMacMini",
-  "evidence": "Clientes del Xtanco con rutas continuas alrededor de muebles, prioridad de salida, cola ordenada y movimiento compartido Matrix/Better/Best. 326 pruebas pasan, incluido ciclo de 10 compras y 10 salidas. Misión DCL-f148d38193c01721ee69b785 (#224).",
-  "day": "15.09.2026",
-  "time": "21:10"
+  "agent": "SmithMacMini",
+  "deployer": "SmithMacMini",
+  "evidence": "FLT-100960: categoría Mobiliario para Xpacios, cuatro skins 8/16/32/64, planta testigo.",
+  "day": "25.09.2026",
+  "time": "08:37"
 }

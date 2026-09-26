@@ -1,5 +1,6 @@
 import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=inventari-1';
 import {visitorProfilesForGame} from './visitor-profiles.mjs?v=visitors-24';
+import {pixeriaPersonaStyle} from './pixeria-personas.mjs?v=px-1';
 
 // Read-only presentation adapter for the immersive view. The game continues to
 // own navigation, appearance, media, time and counters. These defaults mirror P
@@ -93,10 +94,14 @@ export function createLifeSnapshot(){
       motion.set(value,{col,row,heading,direction});
       const isPlayer=kind==='staff'&&value===list(game.staff)[0];
       const profile=(kind==='customer'||kind==='passerby')?visitorProfiles.get(value):null;
+      // A Pixeria persona (Anonimizador) overrides the roster profile once its style card exists.
+      const pixeriaPersonaId=kind==='customer'&&typeof value.pixeriaPersonaId==='string'?value.pixeriaPersonaId:null;
+      const pixeriaStyle=pixeriaPersonaId?pixeriaPersonaStyle(pixeriaPersonaId):null;
       return {
         id:identities.get(value),sourceId:typeof value.id==='string'||finite(value.id)?value.id:null,
         kind,col,row,heading,walking,...appearance(value,kind,palette,isPlayer),
-        ...(profile?{visitorProfileId:profile.id,visitorStyle:profile.style}:{}),
+        ...(pixeriaStyle?{visitorProfileId:'px:'+pixeriaPersonaId,visitorStyle:pixeriaStyle}:profile?{visitorProfileId:profile.id,visitorStyle:profile.style}:{}),
+        ...(pixeriaPersonaId?{pixeriaPersonaId}:{}),
         label:text(value.name)||SPECIAL_NAMES[kind]||'',role:finite(value.role)?value.role:null,isPlayer,
         number:Number.isSafeInteger(value.num)?value.num:null,
         bubble:value.bTimer>0?text(value.bMsg):'',emote:value.emoteTimer>0?text(value.emote):'',
