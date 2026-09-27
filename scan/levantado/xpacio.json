@@ -1,0 +1,359 @@
+{
+  "schema": "xpaceos.xpacio.v1",
+  "id": "xpacio-starwars",
+  "source": {
+    "scene": "scan/scenes/xpacio-starwars-hd",
+    "points": 58408,
+    "cameras": 301,
+    "video": null,
+    "note": "No hay vídeo de la tienda de zapatillas de Santa Rosa 19. Este levantamiento usa el Xpacio Star Wars ya escaneado."
+  },
+  "calibration": {
+    "verticalAxis": "y",
+    "floorY": -1.16,
+    "ceilingY": 1.188,
+    "assumedClearHeightM": 2.7,
+    "metersPerUnit": 1.1499,
+    "metersPerCell": 0.5,
+    "mirrorX": true,
+    "formula": "metros = (techo - suelo en unidades COLMAP) llevados a 2,70 m de altura libre; 1 casilla = 0,50 m; el eje X se espeja para alinear la puerta"
+  },
+  "plan": {
+    "widthM": 13.5,
+    "depthM": 7.0,
+    "cols": 27,
+    "rows": 14,
+    "floor": true,
+    "walls": [
+      "norte",
+      "sur",
+      "este",
+      "oeste"
+    ],
+    "doors": [
+      {
+        "wall": "este",
+        "fromCell": 2,
+        "toCell": 4,
+        "note": "La trayectoria arranca en el oeste de COLMAP. Se espeja X para que ese arranque coincida con la puerta de la fachada de Xtanco."
+      }
+    ]
+  },
+  "xtanco": {
+    "cols": 27,
+    "rows": 14,
+    "wallHeight": 2.7,
+    "doorOpen": 0.85,
+    "elevation": 0.46,
+    "layout": [
+      {
+        "id": "starwars-planta-23-5",
+        "type": "plant",
+        "number": 9,
+        "col": 23,
+        "row": 5,
+        "rot": 0,
+        "fp": [
+          1,
+          1
+        ],
+        "label": "9"
+      },
+      {
+        "id": "starwars-mostrador-13-7",
+        "type": "counter",
+        "number": 1,
+        "col": 13,
+        "row": 7,
+        "rot": 0,
+        "fp": [
+          1,
+          2
+        ],
+        "label": "1"
+      },
+      {
+        "id": "starwars-silla-15-7",
+        "type": "custom",
+        "number": 43,
+        "col": 15,
+        "row": 7,
+        "rot": 1,
+        "fp": [
+          1,
+          1
+        ],
+        "label": "43"
+      },
+      {
+        "id": "starwars-pantalla-13-0",
+        "type": "tft",
+        "number": 13,
+        "col": 13,
+        "row": 0,
+        "rot": 0,
+        "fp": [
+          1,
+          1
+        ],
+        "label": "13"
+      },
+      {
+        "id": "starwars-expositor-2-2",
+        "type": "shelves",
+        "number": 2,
+        "col": 2,
+        "row": 2,
+        "rot": 0,
+        "fp": [
+          1,
+          2
+        ],
+        "label": "2"
+      }
+    ]
+  },
+  "furniture": [
+    {
+      "identificador": "starwars-planta-23-5",
+      "numero": 9,
+      "tipo": "planta",
+      "nombre": "Planta",
+      "ubicacion": {
+        "xpacio": "xpacio-starwars",
+        "zona": "sala",
+        "casilla": [
+          23,
+          5
+        ],
+        "orientacion": 0
+      },
+      "huella": [
+        1,
+        1
+      ],
+      "aspecto": {
+        "8": "/mobiliario/skins/8/09-r0.png",
+        "16": "/mobiliario/skins/16/09-r0.png",
+        "32": "/admira-xp/assets/matrix-furniture/catalog/09-r0.png",
+        "64": "/mobiliario/skins/64/09-r0.png"
+      },
+      "estado": "en_marcha",
+      "mantenimiento": {
+        "ultima": "2026-09-25",
+        "proxima": "2026-12-25",
+        "responsable": "SmithMacMini"
+      },
+      "incidencias": [],
+      "conexion": "xpacio:starwars:planta",
+      "papel": "Testigo junto a la entrada. Es la planta 9.",
+      "pantalla": null,
+      "compra": {
+        "ejemplo": true,
+        "fecha": "2026-03-01",
+        "proveedor": "Ejemplo Suministros",
+        "factura": "PED-EJEMPLO-100",
+        "serie": "SER-EJEMPLO-9",
+        "fin": "2027-09-25"
+      },
+      "garantia": "en_garantia",
+      "reparable": true,
+      "xtancoType": "plant"
+    },
+    {
+      "identificador": "starwars-mostrador-13-7",
+      "numero": 1,
+      "tipo": "mostrador",
+      "nombre": "Mostrador",
+      "ubicacion": {
+        "xpacio": "xpacio-starwars",
+        "zona": "sala",
+        "casilla": [
+          13,
+          7
+        ],
+        "orientacion": 0
+      },
+      "huella": [
+        1,
+        2
+      ],
+      "aspecto": {
+        "8": "/mobiliario/skins/8/01-r0.png",
+        "16": "/mobiliario/skins/16/01-r0.png",
+        "32": "/admira-xp/assets/matrix-furniture/catalog/01-r0.png",
+        "64": "/mobiliario/skins/64/01-r0.png"
+      },
+      "estado": "en_marcha",
+      "mantenimiento": {
+        "ultima": "2026-09-25",
+        "proxima": "2026-12-25",
+        "responsable": "SmithMacMini"
+      },
+      "incidencias": [],
+      "conexion": "xpacio:starwars:mostrador",
+      "papel": "Atiende. Mismo número que la barra de Alsea.",
+      "pantalla": null,
+      "compra": {
+        "ejemplo": true,
+        "fecha": "2026-03-01",
+        "proveedor": "Ejemplo Suministros",
+        "factura": "PED-EJEMPLO-100",
+        "serie": "SER-EJEMPLO-1",
+        "fin": "2027-09-25"
+      },
+      "garantia": "en_garantia",
+      "reparable": true,
+      "xtancoType": "counter"
+    },
+    {
+      "identificador": "starwars-silla-15-7",
+      "numero": 43,
+      "tipo": "silla",
+      "nombre": "Silla",
+      "ubicacion": {
+        "xpacio": "xpacio-starwars",
+        "zona": "sala",
+        "casilla": [
+          15,
+          7
+        ],
+        "orientacion": 1
+      },
+      "huella": [
+        1,
+        1
+      ],
+      "aspecto": {
+        "8": "/mobiliario/skins/8/43-r0.png",
+        "16": "/mobiliario/skins/16/43-r0.png",
+        "32": "/admira-xp/assets/matrix-furniture/catalog/43-r0.png",
+        "64": "/mobiliario/skins/64/43-r0.png"
+      },
+      "estado": "en_marcha",
+      "mantenimiento": {
+        "ultima": "2026-09-25",
+        "proxima": "2026-12-25",
+        "responsable": "SmithMacMini"
+      },
+      "incidencias": [],
+      "conexion": "xpacio:starwars:silla",
+      "papel": "Asiento. Es la silla 43.",
+      "pantalla": null,
+      "compra": {
+        "ejemplo": true,
+        "fecha": "2026-03-01",
+        "proveedor": "Ejemplo Suministros",
+        "factura": "PED-EJEMPLO-100",
+        "serie": "SER-EJEMPLO-43",
+        "fin": "2027-09-25"
+      },
+      "garantia": "en_garantia",
+      "reparable": true,
+      "xtancoType": "custom"
+    },
+    {
+      "identificador": "starwars-pantalla-13-0",
+      "numero": 13,
+      "tipo": "pantalla",
+      "nombre": "Pantalla",
+      "ubicacion": {
+        "xpacio": "xpacio-starwars",
+        "zona": "sala",
+        "casilla": [
+          13,
+          0
+        ],
+        "orientacion": 0
+      },
+      "huella": [
+        1,
+        1
+      ],
+      "aspecto": {
+        "8": "/mobiliario/skins/8/13-r0.png",
+        "16": "/mobiliario/skins/16/13-r0.png",
+        "32": "/admira-xp/assets/matrix-furniture/catalog/13-r0.png",
+        "64": "/mobiliario/skins/64/13-r0.png"
+      },
+      "estado": "en_marcha",
+      "mantenimiento": {
+        "ultima": "2026-09-25",
+        "proxima": "2026-12-25",
+        "responsable": "SmithMacMini"
+      },
+      "incidencias": [],
+      "conexion": "xpacio:starwars:pantalla",
+      "papel": "Pantalla de la sala.",
+      "pantalla": {
+        "campana": "Ejemplo",
+        "circuito": "Star Wars"
+      },
+      "compra": {
+        "ejemplo": true,
+        "fecha": "2026-03-01",
+        "proveedor": "Ejemplo Suministros",
+        "factura": "PED-EJEMPLO-100",
+        "serie": "SER-EJEMPLO-13",
+        "fin": "2027-09-25"
+      },
+      "garantia": "en_garantia",
+      "reparable": true,
+      "xtancoType": "tft"
+    },
+    {
+      "identificador": "starwars-expositor-2-2",
+      "numero": 2,
+      "tipo": "expositor",
+      "nombre": "Estantería",
+      "ubicacion": {
+        "xpacio": "xpacio-starwars",
+        "zona": "sala",
+        "casilla": [
+          2,
+          2
+        ],
+        "orientacion": 0
+      },
+      "huella": [
+        1,
+        2
+      ],
+      "aspecto": {
+        "8": "/mobiliario/skins/8/02-r0.png",
+        "16": "/mobiliario/skins/16/02-r0.png",
+        "32": "/admira-xp/assets/matrix-furniture/catalog/02-r0.png",
+        "64": "/mobiliario/skins/64/02-r0.png"
+      },
+      "estado": "en_marcha",
+      "mantenimiento": {
+        "ultima": "2026-09-25",
+        "proxima": "2026-12-25",
+        "responsable": "SmithMacMini"
+      },
+      "incidencias": [],
+      "conexion": "xpacio:starwars:expositor",
+      "papel": "Expositor contra el fondo. Es la estantería 2.",
+      "pantalla": null,
+      "compra": {
+        "ejemplo": true,
+        "fecha": "2026-03-01",
+        "proveedor": "Ejemplo Suministros",
+        "factura": "PED-EJEMPLO-100",
+        "serie": "SER-EJEMPLO-2",
+        "fin": "2027-09-25"
+      },
+      "garantia": "en_garantia",
+      "reparable": true,
+      "xtancoType": "shelves"
+    }
+  ],
+  "planInput": {
+    "accepts": [
+      "image/*",
+      "application/pdf"
+    ],
+    "applied": false,
+    "href": "/scan/planos/"
+  }
+}

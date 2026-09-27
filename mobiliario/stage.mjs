@@ -1,117 +1,118 @@
-import { applyEpoch, epochByBits, sweepOrder } from '../eras/epoch.mjs';
-import { FURNITURE } from './catalog.mjs';
+import { applyEpoch, definePiece, epochByBits, sweepOrder } from '../eras/epoch.mjs';
+import { KIT, skinUrl } from './catalog.mjs';
+import { eraStatus } from './room-state.mjs';
 
-export const pieces = FURNITURE;
+export const pieces = KIT.map((item) => ({
+  ...definePiece({
+    id: item.id,
+    saga: item.saga,
+    silhouette: item.silhouette,
+    color: item.color,
+    witness: !!item.witness,
+    x: item.x,
+    y: 300,
+    fn: item.fn,
+  }),
+  number: item.number,
+  title: item.title,
+  type: item.type,
+  location: item.location,
+  state: item.state,
+  maintenance: item.maintenance,
+}));
+
 const epochOf = new Map(pieces.map((piece) => [piece.id, 32]));
+const images = new Map();
+let rotation = 0;
 let tick = 0;
 let sweeping = false;
+let wanted = null;
 
 const canvas = document.querySelector('#room');
 const ctx = canvas.getContext('2d');
 const names = document.querySelector('#names');
 const status = document.querySelector('#status');
+const inventory = document.querySelector('#inventory');
 
 function viewOf(piece) {
-  return applyEpoch(piece, epochOf.get(piece.id));
+  return { ...piece, ...applyEpoch(piece, epochOf.get(piece.id)) };
 }
 
-function roomBits() {
-  const values = [...epochOf.values()];
-  return values.every((value) => value === values[0]) ? values[0] : 32;
+function keyOf(piece) {
+  return `${piece.number}-${epochOf.get(piece.id)}-${rotation}`;
+}
+
+function loadSkin(piece) {
+  const key = keyOf(piece);
+  if (images.has(key)) return images.get(key);
+  const spec = skinUrl(piece.number, epochOf.get(piece.id), rotation);
+  const img = new Image();
+  const record = { img, ready: false, fallback: spec.fallback };
+  img.onload = () => { record.ready = true; };
+  img.src = spec.url;
+  images.set(key, record);
+  return record;
 }
 
 function paintSky() {
-  const bits = roomBits();
+  const state = eraStatus(pieces.map((piece) => epochOf.get(piece.id)));
+  const bits = state.mixed ? 0 : state.bits;
   const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
   if (bits === 8) { sky.addColorStop(0, '#1b1464'); sky.addColorStop(1, '#3b1d8a'); }
   else if (bits === 16) { sky.addColorStop(0, '#123a5f'); sky.addColorStop(1, '#0c1b2a'); }
-  else if (bits === 32) { sky.addColorStop(0, '#d7dde6'); sky.addColorStop(1, '#8d97a3'); }
-  else { sky.addColorStop(0, '#010a08'); sky.addColorStop(1, '#02140f'); }
+  else if (bits === 64) { sky.addColorStop(0, '#010a08'); sky.addColorStop(1, '#02140f'); }
+  else { sky.addColorStop(0, '#d7dde6'); sky.addColorStop(1, '#8d97a3'); }
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = bits === 64 ? '#06281c' : bits === 32 ? '#6d5844' : '#222';
-  ctx.fillRect(0, 310, canvas.width, 140);
-}
-
-function pixel(x, y, w, h, color, bits) {
-  ctx.fillStyle = color;
-  if (bits === 8) {
-    const s = 8;
-    ctx.fillRect(Math.round(x / s) * s, Math.round(y / s) * s, Math.ceil(w / s) * s, Math.ceil(h / s) * s);
-  } else ctx.fillRect(x, y, w, h);
-}
-
-function drawShape(view) {
-  const bits = view.bits;
-  const bounce = bits === 8 ? Math.round(Math.sin(tick / 8) * 4) : 0;
-  const x = view.x;
-  const y = view.y + bounce;
-  const c = view.color;
-  if (bits === 16) {
-    ctx.fillStyle = 'rgba(0,0,0,.35)';
-    ctx.beginPath();
-    ctx.ellipse(x + 40, 340, 36, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  if (view.silhouette === 'plant') {
-    pixel(x + 34, y + 20, 12, 46, bits === 64 ? '#14ff6a' : '#6b4a2b', bits);
-    pixel(x + 8, y - 10, 64, 40, c, bits);
-    pixel(x + 20, y - 36, 40, 30, bits === 8 ? '#7CFF4A' : c, bits);
-  } else if (view.silhouette === 'chair') {
-    pixel(x + 18, y - 70, 44, 54, c, bits);
-    pixel(x + 10, y - 8, 60, 14, c, bits);
-    pixel(x + 16, y + 6, 10, 40, '#222', bits);
-    pixel(x + 54, y + 6, 10, 40, '#222', bits);
-  } else if (view.silhouette === 'table') {
-    pixel(x + 4, y - 18, 92, 16, c, bits);
-    pixel(x + 14, y - 2, 10, 42, '#333', bits);
-    pixel(x + 76, y - 2, 10, 42, '#333', bits);
-  } else if (view.silhouette === 'sofa') {
-    pixel(x + 4, y - 28, 100, 36, c, bits);
-    pixel(x + 4, y - 58, 16, 36, c, bits);
-    pixel(x + 88, y - 58, 16, 36, c, bits);
-    pixel(x + 16, y + 8, 12, 22, '#222', bits);
-    pixel(x + 76, y + 8, 12, 22, '#222', bits);
-  } else if (view.silhouette === 'lamp') {
-    pixel(x + 36, y - 10, 8, 50, '#555', bits);
-    pixel(x + 16, y - 48, 48, 40, c, bits);
-  } else if (view.silhouette === 'screen') {
-    pixel(x + 8, y - 62, 78, 52, '#111', bits);
-    pixel(x + 14, y - 56, 66, 40, c, bits);
-    pixel(x + 40, y - 8, 12, 28, '#333', bits);
-  }
-  if (bits === 16) {
-    ctx.fillStyle = 'rgba(255,255,255,.28)';
-    ctx.fillRect(x + 16, y - 60, 18, 6);
-  }
-  if (bits === 64) {
-    ctx.fillStyle = 'rgba(40,255,120,.18)';
-    for (let i = 0; i < 6; i++) ctx.fillRect(x + 8, y - 80 + i * 14 + (tick % 14), 70, 2);
-  }
-  ctx.fillStyle = bits === 64 ? '#b6ffc8' : bits === 8 ? '#ffe14a' : '#f4f1ea';
-  ctx.font = bits === 8 ? '12px monospace' : '13px sans-serif';
-  ctx.fillText(view.name, x, 390);
+  ctx.fillStyle = bits === 64 ? '#06281c' : bits === 8 ? '#241848' : '#6d5844';
+  ctx.fillRect(0, 340, canvas.width, 160);
 }
 
 function frame() {
   paintSky();
-  for (const piece of pieces) drawShape(viewOf(piece));
+  for (const piece of pieces) {
+    const view = viewOf(piece);
+    const skin = loadSkin(piece);
+    const bounce = view.bits === 8 ? Math.round(Math.sin(tick / 8) * 3) : 0;
+    const size = 150;
+    const x = piece.x - size / 2;
+    const y = 210 - size + bounce;
+    ctx.imageSmoothingEnabled = view.bits > 16;
+    if (skin.ready) ctx.drawImage(skin.img, x, y, size, size);
+    ctx.fillStyle = view.bits === 64 ? '#b6ffc8' : '#f4f1ea';
+    ctx.font = '13px sans-serif';
+    ctx.fillText(`${piece.number} ${piece.title}`, piece.x - 54, 430);
+  }
   tick += 1;
   requestAnimationFrame(frame);
 }
 
 function renderNames() {
-  names.textContent = pieces.map((piece) => viewOf(piece).name).join(' · ');
-  const current = roomBits();
-  status.textContent = epochByBits(current).label + ' · ' + epochByBits(current).sound;
+  const state = eraStatus(pieces.map((piece) => epochOf.get(piece.id)));
+  names.textContent = pieces.map((piece) => `${piece.number} ${viewOf(piece).name}`).join(' · ');
+  if (state.mixed) {
+    status.textContent = 'Mezcla · el barrido no ha terminado. Cada mueble muestra su propia época.';
+  } else {
+    const epoch = epochByBits(state.bits);
+    const facing = rotation === 0 ? 'frente' : `giro ${rotation}`;
+    const sixty = state.bits === 64 ? ' · 64 bits solo en el frente; los otros giros siguen en el Best' : '';
+    status.textContent = `${epoch.label} · ${epoch.sound} · ${facing}${sixty}`;
+  }
   document.querySelectorAll('[data-bits]').forEach((button) => {
-    button.setAttribute('aria-pressed', String(Number(button.dataset.bits) === current));
+    button.setAttribute('aria-pressed', String(!state.mixed && Number(button.dataset.bits) === state.bits));
   });
+  if (inventory) {
+    inventory.textContent = pieces.map((piece) => (
+      `#${piece.number} ${piece.type} · ${piece.location} · ${piece.state} · ${piece.maintenance}`
+    )).join('\n');
+  }
 }
 
 let audio;
 function tone(kind) {
-  audio = audio || new AudioContext();
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  audio = audio || new Ctx();
   audio.resume();
   const now = audio.currentTime;
   const osc = audio.createOscillator();
@@ -130,20 +131,36 @@ function tone(kind) {
 }
 
 export async function sweepTo(nextBits) {
+  wanted = epochByBits(nextBits).bits;
   if (sweeping) return;
   sweeping = true;
-  const target = epochByBits(nextBits);
-  for (const piece of sweepOrder(pieces)) {
-    epochOf.set(piece.id, target.bits);
-    tone(target.sound);
-    renderNames();
-    await new Promise((resolve) => setTimeout(resolve, 460));
+  while (wanted != null) {
+    const target = wanted;
+    wanted = null;
+    const epoch = epochByBits(target);
+    for (const piece of sweepOrder(pieces)) {
+      if (wanted != null) break;
+      epochOf.set(piece.id, target);
+      tone(epoch.sound);
+      renderNames();
+      await new Promise((resolve) => setTimeout(resolve, 460));
+    }
   }
   sweeping = false;
+  renderNames();
 }
 
 document.querySelectorAll('[data-bits]').forEach((button) => {
   button.addEventListener('click', () => sweepTo(Number(button.dataset.bits)));
+});
+document.querySelectorAll('[data-rot]').forEach((button) => {
+  button.addEventListener('click', () => {
+    rotation = Number(button.dataset.rot);
+    document.querySelectorAll('[data-rot]').forEach((other) => {
+      other.setAttribute('aria-pressed', String(other === button));
+    });
+    renderNames();
+  });
 });
 renderNames();
 requestAnimationFrame(frame);

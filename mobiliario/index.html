@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="admiranext-version" content="v.25.09.2026.r2.08:37">
+<meta name="admiranext-version" content="v.25.09.2026.r5.16:08">
 <title>Mobiliario para Xpacios · XpaceOS</title>
 <style>
   :root { color-scheme: dark; }
@@ -22,9 +22,9 @@
 </head>
 <body>
 <header>
-  <a href="/">XpaceOS</a>
+  <a href="/">XpaceOS</a> · <a href="/mobiliario/salas/">Salas Alsea y Xtanco</a>
   <h1>Mobiliario para Xpacios</h1>
-  <p>Cada mueble es un solo registro: nombre de saga, silueta y color fijos. La época solo cambia la skin. La planta es el objeto testigo y no se quita. La misma escala 8/16/32/64 vale para los gemelos de vehículos.</p>
+  <p>Los seis muebles salen del registro que ya existe (números 9, 43, 37, 39, 10 y 13). La época cambia el acabado, no la silueta. La planta es el testigo. Un clic durante el barrido cambia el destino; mientras dura, el rótulo dice mezcla.</p>
 </header>
 <main>
   <div class="row">
@@ -33,9 +33,25 @@
     <button type="button" data-bits="32" aria-pressed="true">32 bits · Actual</button>
     <button type="button" data-bits="64">64 bits · Matrix</button>
   </div>
+  <div class="row">
+    <button type="button" data-rot="0" aria-pressed="true">Frente</button>
+    <button type="button" data-rot="1">Giro 1</button>
+    <button type="button" data-rot="2">Giro 2</button>
+    <button type="button" data-rot="3">Giro 3</button>
+  </div>
   <p id="status"></p>
   <canvas id="room" width="860" height="460"></canvas>
   <p id="names"></p>
+  <h2>Inventario</h2>
+  <pre id="inventory"></pre>
+  <h2>A/B · el Best de ahora al lado de cada época</h2>
+  <p>8 y 16 salen del mismo render, reducidos a pixel (96 px y 16 colores; 160 px tramado y 256 colores). 32 es el Best de Blender, 384 px, cuatro giros. 64 es el frente hiperrealista; los otros tres giros de 64 siguen siendo el Best y el rótulo lo dice.</p>
+  <img alt="Planta 9, Best junto a 8, 16, 32 y 64" src="./ab/09.png" width="900">
+  <img alt="Silla 43, Best junto a 8, 16, 32 y 64" src="./ab/43.png" width="900">
+  <img alt="Mesa 37, Best junto a 8, 16, 32 y 64" src="./ab/37.png" width="900">
+  <img alt="Sofá 39, Best junto a 8, 16, 32 y 64" src="./ab/39.png" width="900">
+  <img alt="Lámpara 10, Best junto a 8, 16, 32 y 64" src="./ab/10.png" width="900">
+  <img alt="Pantalla 13, Best junto a 8, 16, 32 y 64" src="./ab/13.png" width="900">
 </main>
 <script type="module" src="./stage.mjs"></script>
 </body>

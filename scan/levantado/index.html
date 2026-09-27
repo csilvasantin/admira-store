@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="admiranext-version" content="v.25.09.2026.r6.16:30">
+<title>Xpacio levantado · Star Wars · XpaceOS</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #07080c; color: #f4f1ea; font: 16px/1.45 system-ui, sans-serif; }
+  header, main { width: min(1100px, calc(100% - 28px)); margin: 0 auto; }
+  header { padding: 28px 0 8px; }
+  a { color: #9be7ff; }
+  h1 { font-size: 28px; margin: 8px 0; }
+  h2 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: #c8c2b4; }
+  .warn { border: 1px solid #e0b15a; color: #ffe2a8; background: #2a2112; border-radius: 10px; padding: 12px 14px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  figure { margin: 0; background: #10141c; border-radius: 12px; overflow: hidden; }
+  img, canvas { width: 100%; height: auto; display: block; background: #000; }
+  figcaption { padding: 8px 10px 10px; color: #c8c2b4; font-size: 13px; }
+  #tresd { width: 100%; height: 520px; border-radius: 12px; background: #000; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #2a3140; }
+  button, .ghost { background: #141820; color: #f4f1ea; border: 1px solid #3a4254; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+  #ficha { white-space: pre-wrap; background: #10141c; border-radius: 12px; padding: 12px 14px; min-height: 4em; }
+  .measures { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/scan/">XpaceScan</a> · <a href="/scan/planos/">Entrada de planos</a> · <a href="/mobiliario/">Mobiliario</a> · <a href="/admira-xp/">Xtanco</a>
+  <h1>Xpacio levantado</h1>
+  <p class="warn">No hay vídeo grabado de la tienda de zapatillas de Santa Rosa 19. Esta sala es el Xpacio Star Wars que ya estaba escaneado. Carlos puede grabar la tienda con XpaceScan cuando quiera repetir el mismo camino.</p>
+</header>
+<main>
+  <p class="measures" id="measures">Leyendo el plano…</p>
+  <h2>Del recorrido al 3D</h2>
+  <div class="steps">
+    <figure><img src="01-recorrido.png" alt="Recorrido de las 301 cámaras sobre la nube"><figcaption>1 · Recorrido. No hay mp4.</figcaption></figure>
+    <figure><img src="02-nube.png" alt="Nube de puntos cenital"><figcaption>2 · Nube COLMAP</figcaption></figure>
+    <figure><img src="03-plano.png" alt="Plano en metros con puerta y muebles"><figcaption>3 · Plano en metros</figcaption></figure>
+    <figure><img src="04-isometrico.png" alt="Isométrico con muebles del registro"><figcaption>4 · Isométrico</figcaption></figure>
+    <figure><img src="05-tresd.png" alt="Vista 3D con muebles del registro"><figcaption>5 · 3D con muebles</figcaption></figure>
+  </div>
+  <h2>La misma sala en el motor de Xtanco</h2>
+  <p>El bloque <code>xtanco</code> de <a href="xpacio.json">xpacio.json</a> entra en el visor 3D de la Sneaker Xtore: columnas, filas, altura de pared y layout. Una casilla mide 0,50 m. La altura libre de 2,70 m es el clavo que pasa las unidades de COLMAP a metros; no es una cinta métrica.</p>
+  <canvas id="tresd" width="980" height="520"></canvas>
+  <h2>Muebles del registro</h2>
+  <table>
+    <thead><tr><th>Número</th><th>Pieza</th><th>Casilla</th><th>Ficha</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <h2>Ficha</h2>
+  <pre id="ficha">Elige una pieza.</pre>
+</main>
+<script type="module">
+import { createPremiumRenderer } from '/admira-xp/scripts/premium-renderer.mjs';
+import { FIELDS, ficha } from './xpacio.mjs';
+
+const doc = await fetch('xpacio.json').then((response) => response.json());
+const measures = document.querySelector('#measures');
+measures.textContent = `${doc.plan.widthM} m × ${doc.plan.depthM} m · ${doc.plan.cols} × ${doc.plan.rows} casillas · ${doc.calibration.metersPerCell} m por casilla · altura libre ${doc.calibration.assumedClearHeightM} m`;
+const body = document.querySelector('#rows');
+const card = document.querySelector('#ficha');
+function show(item) {
+  const full = ficha(item);
+  const lines = FIELDS.map((field) => `${field}: ${JSON.stringify(full[field])}`);
+  card.textContent = lines.join('\n');
+}
+for (const item of doc.furniture) {
+  const row = document.createElement('tr');
+  const cell = item.ubicacion.casilla.join(',');
+  row.innerHTML = `<td>${item.numero}</td><td>${item.nombre}</td><td>${cell}</td><td></td>`;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = 'Ver ficha';
+  button.addEventListener('click', () => show(item));
+  row.lastElementChild.append(button);
+  body.append(row);
+}
+show(doc.furniture[0]);
+const canvas = document.querySelector('#tresd');
+const renderer = createPremiumRenderer({ canvas, snapshot: doc.xtanco, mode: 'best' });
+renderer.resize(canvas.clientWidth || 980, 520, 1);
+const frame = () => { renderer.render(); requestAnimationFrame(frame); };
+frame();
+</script>
+</body>
+</html>
