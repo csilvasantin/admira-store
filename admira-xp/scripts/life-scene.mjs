@@ -2,6 +2,7 @@ import * as T from './premium-three.mjs';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
 import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
+import {createLifeExterior} from './life-exterior.mjs?v=exterior-1';
 
 // Keep the live game's appearance and selection metadata while reusing the
 // existing numeric boundary checks. The legacy normalizer alone drops these.
@@ -86,6 +87,8 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
 
   const groundMaterial=material('#e1e8de',{roughness:1});
   const ground=new T.Mesh(planeGeometry,groundMaterial);ground.name='life:ground';ground.rotation.x=-Math.PI/2;ground.position.y=-.565;ground.receiveShadow=true;scene.add(ground);
+  // Grass, street, rain and city around the shop (Good's exterior), rebuilt when the room size changes.
+  let exterior=null,exteriorKey='';
 
   function mesh(parent,g,m,x,y,z,sx=1,sy=1,sz=1){
     const object=new T.Mesh(g,m);object.position.set(x,y,z);object.scale.set(sx,sy,sz);object.castShadow=true;object.receiveShadow=true;parent.add(object);return object;
@@ -592,7 +595,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   function setLighting(value='day'){
     if(disposed)return;lighting=['day','sunset','night'].includes(value)?value:'day';
     const settings={day:{bg:'#dce4db',sky:'#ecf4ff',ground:'#87745a',hemi:2,sun:'#ffe6c2',power:3.15,fill:.72,rim:.7,glow:.62},sunset:{bg:'#d9c6b8',sky:'#f6ddcd',ground:'#815e5f',hemi:1.3,sun:'#ffb77a',power:3.1,fill:.45,rim:1.0,glow:1.0},night:{bg:'#182e39',sky:'#afcbdc',ground:'#304344',hemi:.8,sun:'#b4cffa',power:.55,fill:.3,rim:.48,glow:1.7}}[lighting];
-    scene.background=new T.Color(settings.bg);groundMaterial.color.set(settings.bg);hemisphere.color.set(settings.sky);hemisphere.groundColor.set(settings.ground);hemisphere.intensity=settings.hemi;
+    exterior?.setLighting(lighting);scene.background=exterior?.sky||new T.Color(settings.bg);groundMaterial.color.set(settings.bg);hemisphere.color.set(settings.sky);hemisphere.groundColor.set(settings.ground);hemisphere.intensity=settings.hemi;
     sun.color.set(settings.sun);sun.intensity=settings.power;fill.intensity=settings.fill;rim.intensity=settings.rim;palette.light.emissiveIntensity=settings.glow;palette.led.emissiveIntensity=lighting==='night'?1.6:.85;
     for(const light of fixtureLights)light.intensity=lighting==='night'?light.userData.nightIntensity:lighting==='sunset'?1.15:light.userData.dayIntensity;
     const c=snapshot.cols;sun.position.set(lighting==='sunset'?c+8:c*.3,lighting==='sunset'?7:13,lighting==='sunset'?snapshot.rows+7:snapshot.rows+4);
@@ -608,10 +611,13 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       release(worldResources);world.traverse(o=>{if(o.isInstancedMesh)o.dispose();});world.clear();fixtureLights.length=0;doors.length=0;
       if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);signature=next;
       ground.visible=!inventory;ground.position.set(snapshot.cols/2,-.565,snapshot.rows/2);ground.scale.set(500,500,1);
+      const key=inventory?'':snapshot.cols+'x'+snapshot.rows+'x'+snapshot.wallHeight;
+      if(key!==exteriorKey){exterior?.dispose();exterior=null;exteriorKey=key;if(key){exterior=createLifeExterior({cols:snapshot.cols,rows:snapshot.rows,wallHeight:snapshot.wallHeight,quality:assetQuality,canvasFactory});scene.add(exterior.root);}}
       sun.target.position.set(snapshot.cols/2,0,snapshot.rows/2);
       const extent=Math.max(snapshot.cols,snapshot.rows)*.82+3;Object.assign(sun.shadow.camera,{left:-extent,right:extent,top:extent,bottom:-extent,near:.1,far:70});sun.shadow.camera.updateProjectionMatrix();
       setLighting(lighting);
     }
+    if(exterior&&exterior.weather!==(snapshot.weather==='rain'?'rain':'clear')){exterior.setWeather(snapshot.weather);setLighting(lighting);}
     for(const door of doors)door.rotation.y=-snapshot.doorOpen*Math.PI*.48;
     updateActors();return snapshot;
   }
@@ -619,6 +625,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     if(disposed)return;
     const time=Number.isFinite(timeMs)?timeMs:0;
     lastAnimationTime=time;
+    exterior?.animate(time);
     for(const root of actorMap.values()){
       const {actor,body,head,legs,arms,seed,customerMotion}=root.userData;
       const customerPose=customerMotion?.advance(time);
@@ -660,6 +667,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   function dispose(){
     if(disposed)return;disposed=true;
     for(const root of actorMap.values())removeActor(root);
+    exterior?.dispose();exterior=null;
     scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});
     release(worldResources);release(sharedResources);sun.shadow.dispose();scene.clear();actorMap.clear();fixtureLights.length=0;doors.length=0;
   }

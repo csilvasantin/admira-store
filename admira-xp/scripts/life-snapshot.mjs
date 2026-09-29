@@ -1,6 +1,6 @@
 import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=inventari-1';
 import {visitorProfilesForGame} from './visitor-profiles.mjs?v=visitors-24';
-import {pixeriaPersonaStyle} from './pixeria-personas.mjs?v=px-1';
+import {pixeriaPersonaStyle} from './pixeria-personas.mjs?v=px-2';
 
 // Read-only presentation adapter for the immersive view. The game continues to
 // own navigation, appearance, media, time and counters. These defaults mirror P
@@ -125,7 +125,9 @@ export function createLifeSnapshot(){
       // audience or invented camera traffic. Unknown input stays unknown.
       source:'xtanco-running-game',inside:list(game.custs).length,
       entries:finite(game.custIn)?game.custIn:null,
-      time:finite(game.gameTime)?game.gameTime:null
+      time:finite(game.gameTime)?game.gameTime:null,
+      // Good's weather event ("Rain! They take shelter inside"), so every tier rains together.
+      weather:game.weather?.type==='rain'?'rain':'clear'
     };
   };
 }

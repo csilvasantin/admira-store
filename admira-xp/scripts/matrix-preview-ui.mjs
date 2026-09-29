@@ -1,19 +1,20 @@
-import {createBestPeopleLayer} from './best-live-people.mjs?v=px-1';
-import {mountMatrixFurniture} from './matrix-furniture.mjs?v=px-1';
+import {createBestPeopleLayer} from './best-live-people.mjs?v=px-2';
+import {mountMatrixFurniture} from './matrix-furniture.mjs?v=px-2';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountTierHud} from './tier-hud.mjs?v=tier-hud-1';
+import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
 
 // Matrix keeps the Avenida Admira room as its backdrop. Furniture and visitors
 // are separate, depth-sorted layers driven by the shared Xtanco inventory.
 const listeners=new Set();
-let dialog,people,furniture,lastFocus,requestId,removeAbort,hud,busy=false,viewError='';
+let dialog,people,furniture,exterior,lastFocus,requestId,removeAbort,hud,busy=false,viewError='';
 const announce=(reason='')=>{for(const fn of listeners)fn({open:!!dialog,busy,error:viewError,reason,requestId});};
 export function subscribeMatrixView(fn){listeners.add(fn);return ()=>listeners.delete(fn);}
 
 export function closeMatrixView(reason=''){
   if(!dialog)return;
   const current=dialog;dialog=null;
-  removeAbort?.();removeAbort=null;people?.dispose();people=null;furniture?.dispose();furniture=null;hud?.dispose();hud=null;
+  removeAbort?.();removeAbort=null;people?.dispose();people=null;furniture?.dispose();furniture=null;exterior?.dispose();exterior=null;hud?.dispose();hud=null;
   const image=current.querySelector('.matrix-reference-clean');image.onload=null;image.onerror=null;
   current.close();current.remove();busy=false;viewError='';lastFocus?.focus?.();
   announce(typeof reason==='string'?reason:'');
@@ -50,6 +51,8 @@ export function openMatrixView(options={}){
     if(dialog!==current||started)return;
     started=true;
     const container=current.querySelector('.best-live-scene');
+    // Street, grass, city and rain outside the room: presentation only, never blocks Matrix.
+    try{exterior=mountMatrixExterior(container);}catch{exterior=null;}
     try{
       furniture=mountMatrixFurniture(container,{
         onReady(error=''){

@@ -1,10 +1,10 @@
 {
-  "version": "v.25.09.2026.r9.19:08",
-  "signature": "SmithMacMini · MacMini",
-  "machine": "MacMini",
-  "agent": "SmithMacMini",
-  "deployer": "SmithMacMini",
-  "evidence": "Reponer añade local y pantalla solo si la ficha ya los tiene. Volver a r8 es el commit 39c23d3.",
-  "day": "25.09.2026",
-  "time": "19:08"
+  "version": "v.27.09.2026.r3.14:46",
+  "signature": "NeoGrokBotBox \u00b7 GrokBotBox",
+  "machine": "GrokBotBox",
+  "agent": "NeoGrokBotBox",
+  "deployer": "NeoGrokBotBox",
+  "evidence": "Encargo #4487 \u00b7 FLT-101117: exterior (c\u00e9sped, calle, lluvia, ciudad) en 16, 32 y 64 bits y embudo pasa\u203amira\u203aentra\u203acompra (DEMO) en la cabecera de los 4 niveles. Volver atr\u00e1s: 54d5a5d.",
+  "day": "27.09.2026",
+  "time": "14:46"
 }

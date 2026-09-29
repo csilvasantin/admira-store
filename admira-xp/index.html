@@ -816,6 +816,8 @@
   <div class="sep"></div>
   <div class="stat" id="bbCamBox" title="Aforo real (cámara Hikvision)"><span class="stat-label" id="bbCamLabel">👁 Aforo real</span><span class="audience-values"><span class="audience-metric"><span class="audience-kind" id="bbPersonLabel" hidden>Personas</span><span class="stat-val"><span id="bbCamDot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#cc4444;margin-right:4px;vertical-align:middle"></span><span id="bbCamVal">—</span></span></span><span class="audience-metric" id="bbCarMetric" hidden><span class="audience-kind" id="bbCarLabel">Coches</span><span class="stat-val" id="bbCarVal">—</span></span><span class="audience-metric" id="bbMotoMetric" hidden><span class="audience-kind" id="bbMotoLabel">Motos</span><span class="stat-val" id="bbMotoVal">—</span></span><span class="audience-metric" id="bbBikeMetric" hidden><span class="audience-kind" id="bbBikeLabel">Bicis</span><span class="stat-val" id="bbBikeVal">—</span></span></span></div>
   <div class="sep"></div>
+  <div class="stat" id="bbFunnel" data-source="demo" title="Embudo exterior → tienda"><span class="stat-label" id="bbFunnelLabel">Embudo <b class="funnel-tag" id="bbFunnelTag">DEMO</b></span><span class="funnel-steps"><span class="funnel-step"><span class="funnel-kind" data-es="Pasa" data-en="Pass">Pasa</span><span class="stat-val" id="bbFunPass">—</span></span><i class="funnel-arrow" aria-hidden="true">›</i><span class="funnel-step"><span class="funnel-kind" data-es="Mira" data-en="Look">Mira</span><span class="stat-val" id="bbFunLook">—</span></span><i class="funnel-arrow" aria-hidden="true">›</i><span class="funnel-step"><span class="funnel-kind" data-es="Entra" data-en="Enter">Entra</span><span class="stat-val" id="bbFunEnter">—</span></span><i class="funnel-arrow" aria-hidden="true">›</i><span class="funnel-step"><span class="funnel-kind" data-es="Compra" data-en="Buy">Compra</span><span class="stat-val" id="bbFunBuy">—</span></span></span></div>
+  <div class="sep"></div>
   <span id="bbStatus" style="color:#88cc88;font-size:10px">Idle</span>
   <span id="xpTopNotify" aria-live="polite"></span>
   <div class="sep"></div>
@@ -5248,6 +5250,7 @@ function updateHtmlBar(){
   document.getElementById('bbSat').textContent=(G.satisfaction|0)+'%';
   const trafficLabel=document.getElementById('bbTrafficLabel');
   if(trafficLabel) trafficLabel.textContent=manualAudienceTarget()!==null?(lang==='en'?'Session/Manual':'Sesión/Manual'):xtoreSessionMode()?(lang==='en'?'Session/Virtual':'Sesión/Virtuales'):(lang==='en'?'Pass/In':'Pasan/Entran');
+  try{updateFunnelHud();}catch(e){}
   document.getElementById('bbCli').textContent=xtoreSessionMode()?(xtoreSessionAudience()?.counts.person??'—')+'/'+G.custs.length:exteriorPersonPassagesForDisplay()+'/'+(G.customersToday||0);
   const se=document.getElementById('bbStatus');
   se.textContent=trimHudLabel(ops.focus.label+' · '+ops.focus.detail,38);
@@ -5477,6 +5480,35 @@ function adjustAvatarAudience(kind,key,delta){
   }
   G.manualAudienceProfiles=G.custs.map(api.profile);G.customerCapAdjustTimer=0;
   saveGame();updateHtmlBar();return true;
+}
+// ── EMBUDO EXTERIOR: pasa › mira › entra › compra (cabecera común a 8/16/32/64 bits) ──
+// Fuente real: si el puente de videoanalítica (#4475) publica window.__xtancoFunnelSource()
+// con {pass,look,enter,buy} enteros, esas cifras se muestran como reales. Hoy ese puente
+// NO está desplegado, así que lo que no venga medido sale del simulador y va marcado DEMO.
+function funnelSnapshot(){
+  const n=v=>Number.isSafeInteger(v)&&v>=0?v:null;
+  let va=null;try{va=typeof window.__xtancoFunnelSource==='function'?window.__xtancoFunnelSource():null;}catch(_){va=null;}
+  const entries=G?(G.customersToday|0):0;
+  const sim={pass:(G?(G.passersbyToday|0):0)+entries,look:(G?(G.lookersToday|0):0)+entries,enter:entries,buy:G?(G.buyersToday|0):0};
+  const out={};
+  for(const k of ['pass','look','enter','buy']){const real=va?n(va[k]):null;out[k]=real!==null?{value:real,real:true}:{value:sim[k],real:false};}
+  out.allReal=['pass','look','enter','buy'].every(k=>out[k].real);
+  return out;
+}
+function updateFunnelHud(){
+  const box=document.getElementById('bbFunnel');if(!box||!G)return;
+  const en=typeof lang!=='undefined'&&lang==='en',f=funnelSnapshot();
+  const ids={pass:'bbFunPass',look:'bbFunLook',enter:'bbFunEnter',buy:'bbFunBuy'};
+  for(const k in ids){const el=document.getElementById(ids[k]);if(!el)continue;el.textContent=f[k].value;el.parentElement.classList.toggle('is-demo',!f[k].real);}
+  box.dataset.source=f.allReal?'real':'demo';
+  const label=document.getElementById('bbFunnelLabel'),tag=document.getElementById('bbFunnelTag');
+  if(label&&label.firstChild)label.firstChild.nodeValue=en?'Street funnel ':'Embudo ';
+  if(tag)tag.textContent=f.allReal?(en?'LIVE':'REAL'):'DEMO';
+  box.querySelectorAll('.funnel-kind').forEach(k=>{k.textContent=en?k.dataset.en:k.dataset.es;});
+  box.title=f.allReal
+    ?(en?'Street funnel from video analytics: pass › look › enter › buy.':'Embudo de videoanalítica: pasa › mira › entra › compra.')
+    :(en?'DEMO — simulator figures, not measured. Real video-analytics bridge (#4475) is not deployed yet. Pass = passers-by + entries · Look = storefront/DOOH glances + entries · Enter = customers today · Buy = customers who bought.'
+        :'DEMO — cifras del simulador, no medidas. El puente real de videoanalítica (#4475) aún no está desplegado. Pasa = viandantes + entradas · Mira = miradas al escaparate/DOOH + entradas · Entra = clientes del día · Compra = clientes que compran.');
 }
 function camModeLabel(){ return CAM.mode==='exacto'?'EXACTO':(CAM.mode==='real'?'REAL':'FAKE'); }
 // Resumen para el "cerebro" de la tienda (contexto IA) y diagnósticos.
@@ -11116,7 +11148,7 @@ function advanceYear(){
   }
   G.yearsCompleted++;
   G.year++;G.week=1;G.weekTimer=0;G.yearRevenue=0;G.weekRevenue=0;G.weekExpenses=0;
-  G.customersToday=0;G.custIn=0;G.custOut=0;G.passersbyToday=0;G.passersby=[];scheduleNextPasserby();G.yearEndAnim=0;G.yearRating=null;
+  G.customersToday=0;G.custIn=0;G.custOut=0;G.passersbyToday=0;G.lookersToday=0;G.buyersToday=0;G.passersby=[];scheduleNextPasserby();G.yearEndAnim=0;G.yearRating=null;
   // Satisfaction decay on year transition
   G.satisfaction=Math.max(20,G.satisfaction-5);
   state=S.GAME;
@@ -11148,7 +11180,7 @@ function endWeek(){
     }
   }
   updateBars();
-  G.weekRevenue=0;G.weekExpenses=0;G.customersToday=0;G.custIn=0;G.custOut=0;G.passersbyToday=0;G.passersby=[];G.dayProductSales={};G.extAdImpacts={};scheduleNextPasserby();
+  G.weekRevenue=0;G.weekExpenses=0;G.customersToday=0;G.custIn=0;G.custOut=0;G.passersbyToday=0;G.lookersToday=0;G.buyersToday=0;G.passersby=[];G.dayProductSales={};G.extAdImpacts={};scheduleNextPasserby();
   // Reset day for next week
   G.gameTime=shopTimeSettings.openHour;
   G.dayEnded=false;
@@ -13930,6 +13962,9 @@ function updatePassersby(){
       p.y+=dy/d*spd;
       p.dir=dx<0?-1:1;
     }
+    // Embudo DEMO: cada viandante decide UNA vez si mira el escaparate/DOOH.
+    // Es simulación (más probable con publi exterior activa), nunca un dato medido.
+    if(p.age===60&&!p._glance){p._glance=true;if(Math.random()<(G.exteriorAd&&G.exteriorAd.until>tt?0.55:0.35))G.lookersToday=(G.lookersToday|0)+1;}
     // Cámara del MUPI: una sola foto cuando el viandante pasa por delante de la
     // tienda (línea de la puerta), en su punto MÁS CERCANO y dentro del encuadre.
     // Los viandantes andan en diagonal por la acera; la lente está sobre el mupi
@@ -14320,6 +14355,7 @@ function resolveCustomerCheckout(c){
       });
     }
     G.satisfaction=Math.min(100,G.satisfaction+0.5);
+    if(!c.bought)G.buyersToday=(G.buyersToday|0)+1;
     c.bought=true;
     c.loyaltyFree=false;
     if(G.metrics){
@@ -14350,6 +14386,7 @@ function resolveCustomerCheckout(c){
         addFloat(c.x+7,c.y-28,'€'+rev,P.neonB);SFX.cashRegister();
         addFloat(nearStaff.x+7,nearStaff.y-36,'🤝',P.neon1);
         G.satisfaction=Math.min(100,G.satisfaction+0.2);
+        if(!c.bought)G.buyersToday=(G.buyersToday|0)+1;
         c.bought=true;
         if(G.metrics){
           G.metrics.servedCustomers=(G.metrics.servedCustomers||0)+1;
@@ -34523,6 +34560,24 @@ window.xtAPI = (function(){
   #topBar .audience-metric[hidden],#topBar .audience-kind[hidden]{display:none}
   #topBar.xtore-session-hud{min-height:54px;height:auto;padding-top:5px;padding-bottom:5px;flex-wrap:wrap}
   #topBar.xtore-session-hud #bbCamLabel{letter-spacing:.04em}
+  /* Embudo exterior (DOOH) → tienda (retail media): pasa › mira › entra › compra.
+     El sello DEMO se ve siempre que alguna cifra salga del simulador. */
+  #topBar .funnel-steps{display:flex;align-items:flex-end;gap:5px}
+  #topBar .funnel-step{display:flex;flex-direction:column;gap:2px;min-width:28px}
+  #topBar .funnel-kind{font-size:8px;color:var(--xp-muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+  #topBar .funnel-arrow{font-style:normal;color:#4fd3c4;font-size:13px;line-height:1;padding-bottom:1px;opacity:.8}
+  #topBar .funnel-tag{display:inline-block;margin-left:4px;padding:0 4px;border-radius:3px;background:#ffb020;color:#1a1204;font-size:7px;letter-spacing:.08em;vertical-align:1px}
+  #topBar #bbFunnel[data-source="real"] .funnel-tag{background:#33dd66}
+  #topBar .funnel-step.is-demo .stat-val{color:#ffd27a}
+  @media (max-width:900px){#topBar .funnel-kind{letter-spacing:0}#topBar .funnel-arrow{display:none}}
+  /* Móvil: la barra ya no cabe; el embudo baja a una píldora fija bajo ella, por encima
+     de las superficies 16/32/64 (z-index 8), para que se vea en los cuatro niveles. */
+  @media (max-width:700px){
+    #topBar #bbFunnel{position:fixed;top:calc(var(--xtanco-surface-y,46px) + var(--xtanco-surface-h,240px) + 8px);left:50%;white-space:nowrap;transform:translateX(-50%);z-index:12;flex-direction:row;align-items:center;gap:6px;padding:3px 8px;background:#07131bee;border:1px solid #2f5d59;border-radius:8px;box-shadow:0 4px 14px #0008;pointer-events:auto}
+    #topBar #bbFunnel .stat-val{font-size:11px}
+    #topBar #bbFunnel .stat-label{white-space:nowrap}
+    #topBar #bbFunnel .funnel-arrow{display:inline}
+  }
 
   /* Competencia: cajas legibles (6→8px) con acento de color de marca arriba y tamaño consistente */
   #topBar .comp-box{padding:3px 8px;min-width:52px;border-top-width:3px;border-radius:8px;gap:1px}
@@ -35225,6 +35280,6 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
 <link rel="stylesheet" href="scripts/tier-hud.css?v=gait-1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=px-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=px-2"></script>
 </body>
 </html>
