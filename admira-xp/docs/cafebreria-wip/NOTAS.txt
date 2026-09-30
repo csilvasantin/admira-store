@@ -1,0 +1,27 @@
+Cafebrería WIP (subNeo · NeoMBP14 · 28-09-2026) — misión DCL-2b926d822b3fc7afb5b0f7cf, tarea a.
+
+HECHO (admira-xp/index.html, verificado en local con Chrome headless):
+- Vertical 'cafeteria' (CLIENTS[5], nombre visible CAFEBRERÍA), FACTORY_LAYOUTS.cafeteria, textos ES/EN,
+  ?autostart=cafeteria (y cafebreria), netVerticalFor() reconoce cafe/café/coffee/cafebrer por kind o id.
+- ?loc=... : si viene ?autostart=<vertical> manda sobre el tipo del punto; si el punto no existe en el API
+  (cafebreria-barcelona aún no existe) el gemelo abre igual con 'CAFEBRERÍA · Passeig de Gràcia 103, Barcelona'.
+- Dibujo Good propio: barra de café (espresso, TPV, vitrina bollería, pizarras menú colgadas), recogida
+  «PEDIDO LISTO» con nombre, café en grano, nevera bebidas frías, Grab & Go, mesa comunal, 4 mesas redondas
+  (cafeTable), librería (bookcase), sofá lounge (sofa), revistero = NOVEDADES. Escaparate/pósters,
+  logo de puerta y marca del césped → CAFEBRERÍA. Oculta cuotas de tabacaleras (comp-box), promo rival
+  genérica, bocadillo «¿Un café?», etiquetas de rol vía staffLbl() (cajero → BARISTA). Ambiente cafetera
+  + hilo musical lounge (careless.mp3). Mudanza remota desactivada en la Cafebrería (pisaba el layout).
+- Better/Best/Matrix: __xtancoVisualState.active ahora acepta 'cafeteria' (antes solo xtanco → Better
+  fallaba a los 30 s «El 3D no está disponible»). Better renderiza (better.png); los tipos nuevos salen como
+  armarios genéricos. Best y Matrix NO revisados (capturas *-sin-revisar.png).
+
+FALTA:
+1. Revisar Best/Matrix con la Cafebrería; si no convencen, caer a Good (envolver tiers.choose en
+   scripts/xtanco-premium-ui.mjs cuando window.__xtancoVisualState().vertical==='cafeteria').
+   Opcional: casos cafeTable/bookcase/sofa y rótulos de cafetería en scripts/life-scene.mjs.
+2. /xpacios/cafebreria/ (URL de contrato 2) SIN EMPEZAR: copiar xpacios/xtanco-valencia/ y cargar el GLB de
+   Trinity https://api.admira.store/stock/asset/1790364696893-14ykfy (sin luces: añadir iluminación);
+   renders iso/frontal/entrada/cenital en el encargo. Añadir al índice xpacios/index.html.
+3. Sello: meta admiranext-version de /index.html + release-signature.json (último del día r1.14:54 → r2),
+   etiqueta rollback-pre-cafebreria-20260928 en el HEAD previo, push a main, verificar en producción.
+Verificación: python3 shot.py "<url>" out.png 20 1440 900 "<js>" (puerto CDP propio; usa &lang=es).

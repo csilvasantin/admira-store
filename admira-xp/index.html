@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>Admira XP // The Xpace OS — Xtanco</title>
+  <title>XpaceOS.com the Operative System of Retailers</title>
   <script>/* Entrada directa al Xtanco: cortina desde el primer paint — sin flash del arcade (misma
      condicion que el autostart por defecto; safety de 6s para no quedarse nunca en negro). */
   (function(){try{var q=new URLSearchParams(location.search);var as=(q.get('autostart')||'').toLowerCase();
@@ -17,6 +17,7 @@
   body::after{content:'';position:fixed;inset:0;z-index:99999;background:#05080d;pointer-events:none;opacity:0;transition:opacity .45s ease}
   html.adm-direct body::after{opacity:1;content:'· CARGANDO GEMELO ·';color:#3df08a;display:flex;align-items:center;justify-content:center;font:600 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.22em}
   html[lang="en"].adm-direct body::after{content:'· LOADING DIGITAL TWIN ·'}
+  body.vertical-cafeteria .comp-box{display:none!important}
   </style>
 <link rel="canonical" href="https://www.xpaceos.com/admira-xp/">
 <meta name="description" content="El gemelo digital jugable de XpaceOS: opera un espacio de retail físico en vivo —signage, audiencia y monetización— desde un único panel. Corriendo sobre Lenovo edge + Nvidia GPU.">
@@ -5350,7 +5351,8 @@ function drawMobileControls(){
   if(G.saca&&G.saca.phase!=='idle'){
     const saBadgeRow=(G.holiday&&G.holiday.active?1:0)+(G.weather&&G.weather.type?1:0)+(G.supplierDeal&&G.supplierDeal.active?1:0)+(G.escaparate&&G.escaparate.boost>0?1:0);
     const say=30+saBadgeRow*16;
-    const saLabel=G.saca.phase==='unloading'?(lang==='en'?'🚚 unloading':'🚚 descargando'):G.saca.phase==='outgoing'?(lang==='en'?'🚚 leaving':'🚚 saliendo'):(lang==='en'?'🚚 Delivery!':'🚚 La Saca!');
+    const cafeDelivery=isCafeteriaClient();
+    const saLabel=G.saca.phase==='unloading'?(lang==='en'?'🚚 restocking':'🚚 reponiendo'):G.saca.phase==='outgoing'?(lang==='en'?'🚚 leaving':'🚚 saliendo'):(cafeDelivery?(lang==='en'?'🚚 Coffee delivery':'🚚 Reposición de café'):(lang==='en'?'🚚 Delivery!':'🚚 La Saca!'));
     r(2,say,82,14,'#1a1000');rx(2,say,82,14,'#ffcc00',1);
     tx(saLabel,4,say+11,'#ffee66',6);
   }
@@ -6571,6 +6573,8 @@ const CLIENTS=[
   {id:'supermercado', available:true, accent:'#7ae35a', bg:'#10220f', models:[], quickModels:XTANCO_MODELS},
   {id:'shoptalk', available:true, accent:'#76B900', bg:'#0a1a08', models:[], quickModels:XTANCO_MODELS, event:true},
   {id:'creator', available:true, accent:'#ffd866', bg:'#1f1a0a', models:[], quickModels:XTANCO_MODELS, creator:true},
+  // Cafebrería: cafetería + librería de demo, neutra (sin marca). Mismo motor Xtanco.
+  {id:'cafeteria', available:true, accent:'#5fae83', bg:'#12201a', models:[], quickModels:XTANCO_MODELS},
 ];
 let activeClient=0;
 let activeModel=0;
@@ -6599,6 +6603,10 @@ function getClientLaunchLabel(client,index){
 function isSupermarketClient(clientIndex){
   const idx=Number.isInteger(clientIndex)?clientIndex:activeClient;
   return (CLIENTS[idx]||{}).id==='supermercado';
+}
+function isCafeteriaClient(clientIndex){
+  const idx=Number.isInteger(clientIndex)?clientIndex:activeClient;
+  return (CLIENTS[idx]||{}).id==='cafeteria';
 }
 // ── Registry de socios — histórico persistente con origen ──────────────────
 // Se llama cada vez que un cliente se convierte en socio del Xtanco Club, sin
@@ -6645,6 +6653,11 @@ function getAdmiraXSell(c){
 }
 
 function getProductLabelsForClient(clientIndex){
+  if(isCafeteriaClient(clientIndex)){
+    return lang==='es'
+      ? ['Café','Bebidas frías','Bollería','Libros','Snacks','Grab & Go','Café en grano','Tazas']
+      : ['Coffee','Cold drinks','Pastries','Books','Snacks','Grab & Go','Coffee beans','Mugs'];
+  }
   if(isSupermarketClient(clientIndex)){
     return lang==='es'
       ? ['Fruta','Bebidas','Congelados','Pan','Snacks','Comida','Premium','Limpieza']
@@ -6660,6 +6673,7 @@ function getLayoutStoragePrefix(){
   return id==='xtanco' ? 'xtanco' : 'xtanco_'+id;
 }
 function getCurrentVenueBrand(){
+  if(isCafeteriaClient()) return 'CAFEBRERÍA';
   return isSupermarketClient() ? 'SUPER' : 'XTANCO';
 }
 
@@ -6678,16 +6692,17 @@ const LANGS={
     clientLocked:'PRÓXIMAMENTE',
     clientStateLive:'LIVE',
     clientStatePipeline:'PIPELINE',
-    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05'],
-    clientTracks:['ESTANCOS','LOTERIAS','SUPERMERCADO','EVENTOS','CREATOR'],
-    clientNames:['XTANCO / ESTANCOS','ADMIRA LOTERÍAS','ADMIRA SUPERMERCADO','STAND SHOPTALK EU 2026','XPACE CREATOR'],
-    clientBadges:['Disponible ahora','En producción','Disponible ahora','9-11 jun · Fira Barcelona','Define tu Xpacio'],
+    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05','XP-06'],
+    clientTracks:['ESTANCOS','LOTERIAS','SUPERMERCADO','EVENTOS','CREATOR','CAFETERÍA'],
+    clientNames:['XTANCO / ESTANCOS','ADMIRA LOTERÍAS','ADMIRA SUPERMERCADO','STAND SHOPTALK EU 2026','XPACE CREATOR','CAFEBRERÍA'],
+    clientBadges:['Disponible ahora','En producción','Disponible ahora','9-11 jun · Fira Barcelona','Define tu Xpacio','Disponible ahora'],
     clientBlurbs:[
       'Gestión de estancos, staff, stock, signage y operaciones de tienda.\n4 layouts jugables hoy.',
       'Sorteos, campañas, estacionalidad y operativa de terminal.\nPróximo simulador en esta colección.',
       'Pasillos, frescos, congelados y punto de impulso.\nMismo motor XP con layout de supermercado.',
       'Stand Lenovo × Nvidia controlado por el Gemelo Digital.\nPantallas, audio multi-zona, Hue, aroma y lead scan QR.',
       'Crea un Xpacio nuevo desde cero — booth, oficina, sala…\nLienzo en blanco + editor de surfaces (signage, audio, Hue).',
+      'Barra de café, bollería, recogida y rincón de libros.\nMismo motor XP con layout de cafetería.',
     ],
     tut:[
       {title:'BIENVENIDO A XTANCO',lines:['Gestiona tu estanco durante 5 años.','Alcanza el objetivo de ventas cada año','para avanzar y construir tu negocio.','¡Contrata personal, repón stock y fideliza clientes!']},
@@ -6762,16 +6777,17 @@ const LANGS={
     clientLocked:'COMING SOON',
     clientStateLive:'LIVE',
     clientStatePipeline:'PIPELINE',
-    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05'],
-    clientTracks:['TOBACCO','LOTTERY','SUPERMARKET','EVENTS','CREATOR'],
-    clientNames:['XTANCO / TOBACCO','ADMIRA LOTTERY','ADMIRA SUPERMARKET','SHOPTALK EU 2026 BOOTH','XPACE CREATOR'],
-    clientBadges:['Available now','In production','Available now','Jun 9-11 · Fira Barcelona','Define your Xpace'],
+    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05','XP-06'],
+    clientTracks:['TOBACCO','LOTTERY','SUPERMARKET','EVENTS','CREATOR','COFFEE SHOP'],
+    clientNames:['XTANCO / TOBACCO','ADMIRA LOTTERY','ADMIRA SUPERMARKET','SHOPTALK EU 2026 BOOTH','XPACE CREATOR','CAFEBRERÍA'],
+    clientBadges:['Available now','In production','Available now','Jun 9-11 · Fira Barcelona','Define your Xpace','Available now'],
     clientBlurbs:[
       'Tobacco shop operations, staff, stock, signage and store gameplay.\n4 playable layouts today.',
       'Draw campaigns, seasonality and terminal operations.\nNext simulator in this collection.',
       'Aisles, frozen products, impulse zones and checkout flow.\nSame XP engine with supermarket layout.',
       'Lenovo × Nvidia booth fully controlled by the Digital Twin.\nScreens, multi-zone audio, Hue, aroma and lead-scan QR.',
       'Build a new Xpace from scratch — booth, office, room…\nBlank canvas + surfaces editor (signage, audio, Hue).',
+      'Coffee bar, pastries, pick-up and a book corner.\nSame XP engine with coffee-shop layout.',
     ],
     tut:[
       {title:'WELCOME TO XTANCO',lines:['Manage your shop for 5 years.','Reach the annual sales target','to progress and grow your business.','Hire staff, restock and keep customers happy!']},
@@ -7282,6 +7298,31 @@ const FACTORY_LAYOUTS={
   {id:'tablet',type:'tablet',col:13,row:5,sx:1,sy:1,label:'Tablet Valoración'},
   {id:'turnKiosk',type:'turnKiosk',col:12,row:6,sx:1,sy:1,label:'Gestor Turnos'},
   {id:'aroma',type:'aroma',col:13,row:1,sx:1,sy:1,label:'Aroma Fresco'},
+  ],
+  // Cafebrería (café + librería), Passeig de Gràcia 103 · Barcelona. Demo neutra.
+  // Reutiliza los muebles del Xtanco re-etiquetados + mesas, librería y sofá.
+  cafeteria:[
+  {id:'counter',type:'counter',col:1,row:2,sx:1,sy:1,label:'Barra de café + Caja'},
+  {id:'lottery',type:'lottery',col:2,row:0,sx:1,sy:1,label:'Recogida · Pedido listo'},
+  {id:'shelves',type:'shelves',col:5,row:0,sx:1,sy:1,label:'Café en grano'},
+  {id:'wineRack',type:'wineRack',col:8,row:0,sx:1,sy:1,label:'Nevera bebidas frías'},
+  {id:'vending',type:'vending',col:10,row:0,sx:1,sy:1,label:'Nevera Grab & Go'},
+  {id:'manager',type:'manager',col:9,row:5,sx:1,sy:1,label:'Mesa comunal'},
+  {id:'cafeTable1',type:'cafeTable',col:5,row:3,sx:1,sy:1,label:'Mesa 1',fp:[1,1]},
+  {id:'cafeTable2',type:'cafeTable',col:5,row:5,sx:1,sy:1,label:'Mesa 2',fp:[1,1]},
+  {id:'cafeTable3',type:'cafeTable',col:7,row:6,sx:1,sy:1,label:'Mesa 3',fp:[1,1]},
+  {id:'cafeTable4',type:'cafeTable',col:10,row:3,sx:1,sy:1,label:'Mesa 4',fp:[1,1]},
+  {id:'bookcase',type:'bookcase',col:0,row:5,sx:1,sy:1,label:'Rincón de libros',fp:[1,2]},
+  {id:'magazines',type:'magazines',col:2,row:5,sx:1,sy:1,label:'Libros · novedades'},
+  {id:'sofa',type:'sofa',col:2,row:7,sx:1,sy:1,label:'Sofá lectura',fp:[2,1]},
+  {id:'plant1',type:'plant',col:0,row:1,sx:1,sy:1,label:'Planta 1'},
+  {id:'plant3',type:'plant',col:0,row:7,sx:1,sy:1,label:'Planta 2'},
+  {id:'floorLamp',type:'floorLamp',col:0,row:4,sx:1,sy:1,label:'Lámpara lectura'},
+  {id:'led',type:'led',col:0,row:0,sx:1,sy:1,label:'LED Menú'},
+  {id:'tablet',type:'tablet',col:13,row:5,sx:1,sy:1,label:'Tablet Valoración'},
+  {id:'turnKiosk',type:'turnKiosk',col:12,row:6,sx:1,sy:1,label:'Pantalla pedidos'},
+  {id:'aroma',type:'aroma',col:13,row:1,sx:1,sy:1,label:'Aroma café'},
+  {id:'metahuman',type:'metahuman',col:13,row:3,sx:1,sy:1,label:'Asistente IA'},
   ],
   // El stand de feria empieza VACIO — sin muebles, sin puerta, sin
   // ventanas a la calle. Es el lienzo en blanco del Xpace Creator;
@@ -8324,7 +8365,7 @@ let shopStaffPos=null;     // saved staff positions (null = use DEFAULT_STAFF_PO
 let shopStaffZones=null;   // saved staff influence zones (null = use home-based defaults)
 
 const LAYOUT_SCHEMA_VERSION='20260426-public-canonical-1';
-const CANONICAL_LAYOUT_IDS=new Set(DEFAULT_LAYOUT.map(item=>item.id));
+const CANONICAL_LAYOUT_IDS=new Set(Object.values(FACTORY_LAYOUTS).flat().map(item=>item.id));
 const PINNED_LAYOUT_IDS=new Set(['aroma']);
 
 // Default staff home positions (used when no custom positions saved)
@@ -8742,7 +8783,7 @@ const FURNITURE_SIZE={
   counter:[1,2], shelves:[1,2], wineRack:[2,1], lottery:[2,1],
   vending:[1,1], magazines:[2,1], manager:[2,1], plant:[1,1],
   floorLamp:[1,1], rug:[2,2], djBooth:[2,1], tablet:[1,1], turnKiosk:[1,1], aroma:[1,1],
-  metahuman:[1,1],
+  metahuman:[1,1], cafeTable:[1,1], bookcase:[1,2], sofa:[2,1],
 };
 
 function gridKey(col,row){return Math.round(col)+','+Math.round(row);}
@@ -9271,6 +9312,10 @@ function initGame(){
   try{ window.XPACE_BOOTH=getActiveClient().id; }catch(e){}
   DEFAULT_LAYOUT=JSON.parse(JSON.stringify(FACTORY_LAYOUTS[getActiveClient().id]||FACTORY_LAYOUTS.xtanco));
   loadLayout();
+  try{
+    document.body.dataset.xpaceVertical=getActiveClient().id;
+    document.body.classList.toggle('vertical-cafeteria',isCafeteriaClient());
+  }catch(e){}
   const models=getActiveModels();
   const M=models[activeModel] || models[0];
   if(!M) return;
@@ -9402,6 +9447,13 @@ function initGame(){
   assignMission('start');
   buildWalkGrid();
   loadNPCCustoms();
+  // Cafebrería: ambiente de cafetería (cafetera + rumor) e hilo musical lounge.
+  if(isCafeteriaClient()){
+    try{ G.ambient.enabled=true; }catch(e){}
+    try{ G.nowPlaying='Lounge · hilo musical'; }catch(e){}
+    try{ if(!(window.STORE_CFG&&window.STORE_CFG.music)){ bgMusic.src='music/careless.mp3'; bgMusic.load(); } }catch(e){}
+    try{ if(!G.admiraLiveMsg) G.admiraLiveMsg='CAFEBRERÍA · Passeig de Gràcia 103, Barcelona'; }catch(e){}
+  }
   // Xpacio del punto activo (layouts/<loc>.xml) o, si no existe, default.xml.
   try{
     const _ll=window.__loadStoreLayoutFromRepo||window.__loadDefaultXMLLayoutFromRepo;
@@ -10455,7 +10507,7 @@ function doAction(id){
       }
       // Door opens for arrival
       G.doorOpen=60;SFX.hireFanfare();
-      showEv(T().events[5],P.neon1);addFloat(s.x,s.y-40,'+'+T().staffLabel[s.role],P.neon1);
+      showEv(T().events[5],P.neon1);addFloat(s.x,s.y-40,'+'+staffLbl(s.role),P.neon1);
       // DJ hired → pause all other music, play DJ Novah + switch DS to DJ video
       if(s.role===4){
         G.nowPlaying='Hard Techno - DJ Novah';
@@ -11443,7 +11495,7 @@ function checkRandomEvents(){
     G.comp.promoBrand=bi;G.comp.promoTimer=CFG.COMP_PROMO_DURATION;
     // Boost that competitor's share
     G.comp.shares[bi]=Math.min(45,G.comp.shares[bi]+8);
-    const msg=T().compPromoMsg.replace('{brand}',CFG.COMP_NAMES[bi]);
+    const msg=T().compPromoMsg.replace('{brand}',isCafeteriaClient()?(lang==='en'?'the café across the street':'la cafetería de enfrente'):CFG.COMP_NAMES[bi]);
     showEv(msg,P.red);SFX.inspectionAlarm();
     addFloat(W/2,H/2-40,lang==='en'?'RIVAL PROMO':'PROMO RIVAL',P.red);
   }
@@ -12800,7 +12852,7 @@ function updateGame(){
         saca.x=startX; saca.y=startY;
         saca.boxes=6; saca.aFrame=0; saca.aTimer=0;
         G.doorOpen=9999;
-        showEv('🚚 '+(lang==='es'?'¡Llega La Saca!':'Delivery arriving!'),'#cc7700');
+        showEv('🚚 '+(isCafeteriaClient()?(lang==='es'?'Llega reposición de café':'Coffee delivery arriving'):(lang==='es'?'¡Llega La Saca!':'Delivery arriving!')),'#cc7700');
         SFX.restockThud();
       }
     } else if(saca.phase==='incoming'){
@@ -12831,7 +12883,7 @@ function updateGame(){
         // Replenish products
         for(const p of G.prods) p.stock=Math.min((p.stock||0)+8,20);
         G.satisfaction=Math.min(100,G.satisfaction+2);
-        showEv('🚚 '+(lang==='es'?'¡La Saca! Tabaco repuesto':'La Saca! Stock replenished'),'#cc8800');
+        showEv('🚚 '+(isCafeteriaClient()?(lang==='es'?'Café y despensa repuestos':'Coffee and pantry restocked'):(lang==='es'?'¡La Saca! Tabaco repuesto':'La Saca! Stock replenished')),'#cc8800');
         SFX.restockThud();
       }
     } else if(saca.phase==='outgoing'){
@@ -17727,7 +17779,7 @@ function openNetworkView(){
       .catch(()=>{ netLoading=false; });
   }
 }
-function netVerticalFor(kind){ const k=String(kind||'').toLowerCase(); return (k.includes('supermercado')||k.includes('super'))?'supermercado':'xtanco'; }
+function netVerticalFor(kind,id){ const k=(String(kind||'')+' '+String(id||'')).toLowerCase(); if(/cafe|café|coffee|cafebrer/.test(k)) return 'cafeteria'; return (k.includes('supermercado')||k.includes('super'))?'supermercado':'xtanco'; }
 function enterStoreFromNetwork(){
   const list=window.STORE_LIST||[]; const l=list[netSel]; if(!l) return;
   const surfaces=Array.isArray(l.surfaces)?l.surfaces:[];
@@ -17737,7 +17789,7 @@ function enterStoreFromNetwork(){
   window.STORE_CFG_READY=true;
   try{ window.dispatchEvent(new CustomEvent('storecfg',{detail:window.STORE_CFG})); }catch(e){}
   try{ history.replaceState(null,'',location.pathname+'?loc='+encodeURIComponent(l.id)+(location.hash||'')); }catch(e){}
-  try{ autoEnterVertical(netVerticalFor(l.kind)); }catch(e){}
+  try{ autoEnterVertical(netVerticalFor(l.kind,l.id)); }catch(e){}
 }
 function _netPos(l, mx, my, mw, mh, b){
   const c=l.coords||[0,0], pad=0.14;
@@ -18170,10 +18222,11 @@ function drawCityBg(){
   cx.font='bold 28px monospace';
   cx.textAlign='center';
   cx.fillStyle='#3a6a28';
-  cx.fillText('X T A N C O',0,0);
+  const _cafeG=isCafeteriaClient();
+  cx.fillText(_cafeG?'C A F E B R E R Í A':'X T A N C O',0,0);
   cx.globalAlpha=0.2;
   cx.font='bold 10px monospace';
-  cx.fillText('SIMULADOR DE ESTANCO DIGITAL',0,16);
+  cx.fillText(_cafeG?'CAFÉ + LIBRERÍA · GEMELO DIGITAL':'SIMULADOR DE ESTANCO DIGITAL',0,16);
   cx.globalAlpha=1;
   cx.restore();
 }
@@ -18735,6 +18788,9 @@ function drawShop(){
       case 'turnKiosk': drawShopOperation(()=>drawScaled(e,drawIsoTurnKiosk)); break;
       case 'aroma': drawShopOperation(()=>drawAromatizer(e.col,e.row,typeof e.wallY==='number'?e.wallY:undefined)); break;
       case 'metahuman': drawShopOperation(()=>drawScaled(e,drawIsoMetahuman)); break;
+      case 'cafeTable': drawScaled(e,drawCafeTable); break;
+      case 'bookcase': drawScaled(e,drawCafeBookcase); break;
+      case 'sofa': drawScaled(e,drawCafeSofa); break;
       case 'custom': drawShopOperation(()=>drawCustomFurni(e)); break;
       case 'staff': drawShopOperation(()=>drawIsoStaff(e.data),'actor'); break;
       case 'cust': drawShopOperation(()=>drawIsoCust(e.data),'actor'); break;
@@ -18877,7 +18933,7 @@ function drawXtancoLogo(x,y){
   grd.addColorStop(0,'#88ddee');grd.addColorStop(0.5,'#4a99aa');grd.addColorStop(1,'#2a6677');
   cx.fillStyle=grd;cx.fill();cx.strokeStyle='#1a445588';cx.lineWidth=0.6;cx.stroke();
   cx.fillStyle='#1a4455';cx.font='bold 5px monospace';cx.textAlign='left';
-  cx.fillText('XTANCO',x-3,y+2);
+  cx.fillText(isCafeteriaClient()?'CAFEBRERÍA':'XTANCO',x-3,y+2);
   cx.textAlign='left';
 }
 
@@ -19070,7 +19126,20 @@ function drawEscaparate(){
   cx.setTransform(ax,ay,bx,by,iTL.x,iTL.y);
 
   // ── PRODUCT POSTERS ──
-  const posters=lang==='en'?[
+  const _cafe=isCafeteriaClient();
+  const posters=_cafe?(lang==='en'?[
+    {label:'COFFEE',   icon:'☕', bg:'#1d4a33', hi:'#f3d27a', sub:'Freshly brewed'},
+    {label:'PASTRIES', icon:'🥐', bg:'#6b4426', hi:'#ffe2a8', sub:'Baked this morning'},
+    {label:'BOOKS',    icon:'📚', bg:'#2e5a7a', hi:'#cfe8ff', sub:'Read with your coffee'},
+    {label:'GRAB & GO',icon:'🥪', bg:'#2e7d55', hi:'#e9f2ea', sub:'Ready in 1 minute'},
+    {label:'OFFER',    icon:'⭐', bg:'#b85000', hi:'#ffeebb', sub:'Coffee + croissant'},
+  ]:[
+    {label:'CAFÉ',     icon:'☕', bg:'#1d4a33', hi:'#f3d27a', sub:'Recién hecho'},
+    {label:'BOLLERÍA', icon:'🥐', bg:'#6b4426', hi:'#ffe2a8', sub:'Horneada esta mañana'},
+    {label:'LIBROS',   icon:'📚', bg:'#2e5a7a', hi:'#cfe8ff', sub:'Lee con tu café'},
+    {label:'GRAB & GO',icon:'🥪', bg:'#2e7d55', hi:'#e9f2ea', sub:'Listo en 1 minuto'},
+    {label:'OFERTA',   icon:'⭐', bg:'#b85000', hi:'#ffeebb', sub:'Café + croissant'},
+  ]):lang==='en'?[
     {label:'LOTTERY', icon:'🎫', bg:'#c41e3a', hi:'#ffdd00', sub:'Play and Win!'},
     {label:'VAPES',   icon:'💨', bg:'#1a2a6c', hi:'#88ccff', sub:'Next Generation'},
     {label:'TOBACCO', icon:'🚬', bg:'#5a3a18', hi:'#c8a060', sub:'Premium Selection'},
@@ -19108,7 +19177,7 @@ function drawEscaparate(){
   cx.fillStyle='#ffffff';
   cx.font='bold 8px monospace';
   cx.textAlign='center';
-  cx.fillText('X T A N C O',vW/2-slideOut*vW,14);
+  cx.fillText(_cafe?'C A F E B R E R Í A':'X T A N C O',vW/2-slideOut*vW,14);
 
   // Main icon (large emoji)
   cx.font='28px serif';
@@ -19141,7 +19210,7 @@ function drawEscaparate(){
     cx.fillRect(vW*(1-slideOut),0,vW,20);
     cx.fillStyle='#ffffff'; cx.font='bold 8px monospace';
     cx.textAlign='center';
-    cx.fillText('X T A N C O', vW/2+vW*(1-slideOut), 14);
+    cx.fillText(_cafe?'C A F E B R E R Í A':'X T A N C O', vW/2+vW*(1-slideOut), 14);
   }
 
   // Bottom bar: interactivity hint or boost message
@@ -21084,8 +21153,15 @@ function getTabletPos(){
 // Both segments share a single offset so text flows seamlessly.
 let ledUnifiedOffset=0;
 
+function activeLedMessages(){
+  if(isCafeteriaClient()) return lang==='en'
+    ? ['★ CAFEBRERÍA ★','COFFEE · BOOKS · SLOW MOMENTS','YOUR CAFÉ AND BOOKSHOP','ADMIRA · DIGITAL SPACES']
+    : ['★ CAFEBRERÍA ★','CAFÉ · LIBROS · TIEMPO PARA TI','TU CAFÉ Y LIBRERÍA','ADMIRA · ESPACIOS DIGITALES'];
+  return T().ledMsgs;
+}
+
 function _getLedParams(){
-  const msgs=T().ledMsgs;
+  const msgs=activeLedMessages();
   const comunicado=(G&&G.comunicadoMsg)
     ? `  📢  COMUNICADO: ${G.comunicadoMsg.toUpperCase()}  📢  `
     : '';
@@ -22286,7 +22362,210 @@ function drawWallClock(){
 
 /* 🍞 estética canvas #5 (mostrador+caja+monitor · rediseño Fable) — revertir con tag canvas-claridad-3-loteria-shop.
    Claves: caja 26×22 LCD 8px; monitor 34×26 etiqueta 8px/línea 7px/alerta 7-9px; placa rol 7px. Fix precedencia moneyTxt. */
+// ── CAFEBRERÍA (vertical 'cafeteria') ────────────────────────────────────
+// Cafetería + librería de demo, neutra (sin marca real): paleta verde/madera.
+// Reutiliza el motor Xtanco: los mismos tipos de mueble se dibujan como
+// barra de café, recogida, café en grano, neveras y mesa comunal; y suma
+// tres tipos propios (cafeTable, bookcase, sofa) que solo usa este vertical.
+const CAFE={wood:'#a8743f',woodHi:'#c99a63',woodLo:'#6b4426',woodDk:'#4a2e1a',green:'#2e7d55',greenDk:'#1d4a33',greenLo:'#163d2b',greenHi:'#5fae83',cream:'#f1e6cf',chalk:'#e9f2ea',kraft:'#b98a55',glass:'#bfe6ee'};
+function cafeLerp(a,b,t){ return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t}; }
+// Cuadrilátero sobre una cara vertical del bloque: de A a B, entre y0 y y1 px de altura.
+function cafeFace(A,B,y0,y1,color){
+  cx.beginPath();cx.moveTo(A.x,A.y-y1);cx.lineTo(B.x,B.y-y1);cx.lineTo(B.x,B.y-y0);cx.lineTo(A.x,A.y-y0);cx.closePath();
+  cx.fillStyle=color;cx.fill();
+}
+function cafePlate(text,x,y,bg,fg,border){
+  const w=Math.ceil(String(text).length*0.6*7)+8;
+  r(x-(w>>1),y-8,w,11,bg||'#14171c');rx(x-(w>>1),y-8,w,11,border||'#d9a83f',1);
+  tx(text,x,y,fg||'#ffd977',7,'center');
+}
+function cafeCup(x,y,sleeve){
+  r(x-2,y-6,5,6,'#fbfaf5');r(x-2,y-7,5,1,'#e0ddd2');r(x-2,y-4,5,2,sleeve||CAFE.green);
+}
+function cafeSteam(x,y,seed){
+  cx.save();cx.globalAlpha=0.35+0.2*Math.sin(tt*0.08+seed);
+  for(let i=0;i<3;i++){ const k=(tt*0.4+seed*9+i*7)%18; r(x+Math.round(Math.sin((tt+i*20)*0.07)*2),y-k,2,2,'#ffffff'); }
+  cx.restore();
+}
+function drawCafeBar(col,row){
+  // Barra de café 1×2 (huella del mostrador): madera clara, frente verde.
+  drawIsoBlock(col,row,1,2,18,CAFE.woodHi,CAFE.woodLo,CAFE.wood,null);
+  const A=toIso(col+1,row), B=toIso(col+1,row+2);           // cara hacia la sala
+  cafeFace(A,B,3,15,CAFE.green);
+  cafeFace(A,B,13,15,CAFE.greenHi);
+  // Menú en tiza en el frente de la barra
+  const mid=cafeLerp(A,B,0.5);
+  tx('CAFÉ · LIBROS',mid.x+1,mid.y-5,CAFE.chalk,6,'center');
+  const H=18;
+  // Máquina de espresso (acero) al fondo de la barra
+  const e=toIso(col+0.5,row+0.45);
+  r(e.x-12,e.y-H-18,24,18,'#b9bec6');r(e.x-12,e.y-H-18,24,3,'#e6e9ee');rx(e.x-12,e.y-H-18,24,18,'#6d737c',1);
+  r(e.x-9,e.y-H-13,18,3,CAFE.greenDk);r(e.x-7,e.y-H-12,2,1,'#7dff9c');r(e.x+5,e.y-H-12,2,1,'#ff9f5a');
+  r(e.x-8,e.y-H-8,4,4,'#2d2f33');r(e.x+4,e.y-H-8,4,4,'#2d2f33');       // grupos
+  cafeCup(e.x-6,e.y-H+1,CAFE.woodDk);cafeCup(e.x+6,e.y-H+1,CAFE.woodDk);
+  cafeSteam(e.x-5,e.y-H-20,1);cafeSteam(e.x+5,e.y-H-20,4);
+  // Caja (TPV) con el dinero del juego
+  const t=toIso(col+0.55,row+1.05);
+  r(t.x-9,t.y-H-14,18,12,'#22262b');r(t.x-8,t.y-H-13,16,8,'#14351c');
+  const money=(G&&G.money|0)>9999?'€'+((G.money/1000)|0)+'K':'€'+((G&&G.money)|0);
+  tx(money,t.x,t.y-H-7,'#55cc55',6,'center');r(t.x-3,t.y-H-2,6,2,'#3a3f46');
+  // Vitrina de bollería (cristal + croissants y muffins)
+  const v=toIso(col+0.5,row+1.55);
+  r(v.x-13,v.y-H-13,26,13,'#d9f0f2');r(v.x-13,v.y-H-13,26,2,'#ffffff');rx(v.x-13,v.y-H-13,26,13,'#7fa7ad',1);
+  r(v.x-12,v.y-H-7,24,1,'#9fc3c8');
+  for(let i=0;i<3;i++){ cx.fillStyle='#d99a3d';cx.beginPath();cx.ellipse(v.x-8+i*8,v.y-H-9,3,1.6,0,0,Math.PI*2);cx.fill(); }
+  for(let i=0;i<3;i++){ r(v.x-9+i*8,v.y-H-5,4,3,i===1?'#6b3a22':'#c98b4a');r(v.x-9+i*8,v.y-H-6,4,1,'#f3e2c0'); }
+  // Pizarras del menú colgadas sobre la barra (tríptico, sin marca)
+  const m=toIso(col+0.5,row+1);
+  const boards=lang==='en'?[['COFFEE','ESPRESSO 1.6','LATTE 2.4'],['SWEETS','CROISSANT 1.8','MUFFIN 2.2'],['BOOKS','NEW READS','TO GO']]
+                          :[['CAFÉ','ESPRESSO 1,6','LATTE 2,4'],['DULCE','CROISSANT 1,8','MUFFIN 2,2'],['LIBROS','NOVEDADES','PARA LLEVAR']];
+  const by=m.y-H-72;
+  for(let i=0;i<3;i++){
+    const bx=m.x-44+i*30;
+    r(bx+13,by-8,1,8,'#555');
+    r(bx,by,28,22,CAFE.greenLo);rx(bx,by,28,22,CAFE.wood,1);
+    tx(boards[i][0],bx+14,by+7,'#f3d27a',6,'center');
+    tx(boards[i][1],bx+14,by+14,CAFE.chalk,4,'center');
+    tx(boards[i][2],bx+14,by+20,CAFE.chalk,4,'center');
+  }
+  cafePlate(staffLbl(0),m.x,m.y-H-26);
+}
+function drawCafePickup(col,row){
+  // Zona de recogida 2×1 (huella de la lotería): «pedido listo» con nombre.
+  drawIsoBlock(col,row,2,1,20,CAFE.woodHi,CAFE.green,CAFE.wood,null);
+  const A=toIso(col,row+1), B=toIso(col+2,row+1);
+  cafeFace(A,B,15,18,CAFE.greenHi);
+  const p=toIso(col+1,row+0.5);
+  for(let i=0;i<4;i++) cafeCup(p.x-12+i*8,p.y-19,i%2?CAFE.green:CAFE.kraft);
+  r(p.x+16,p.y-28,7,9,CAFE.kraft);r(p.x+16,p.y-28,7,2,'#9c7040');           // bolsa de papel
+  // Pantalla de pedidos sobre mástil
+  r(p.x-1,p.y-52,2,30,'#3a3f46');
+  r(p.x-22,p.y-72,44,22,'#0f1a14');rx(p.x-22,p.y-72,44,22,CAFE.greenHi,1);
+  const names=['LUCÍA','MARC','ANA','JORDI','SARA','DAVID'];
+  const k=Math.floor(tt/240)%names.length;
+  tx(lang==='en'?'ORDER READY':'PEDIDO LISTO',p.x,p.y-64,'#7dffb0',5,'center');
+  if(Math.floor(tt/20)%6) tx(names[k]+' · '+(20+k*7),p.x,p.y-55,'#ffffff',6,'center');
+  cafePlate(lang==='en'?'PICK-UP':'RECOGIDA',p.x,p.y+10,'#14171c','#bff5d4',CAFE.greenHi);
+}
+function drawCafeBeans(col,row){
+  // Estantería 1×2: café en grano, tazas y merchandising neutro.
+  drawIsoBlock(col,row,1,2,54,CAFE.woodHi,CAFE.woodLo,CAFE.wood,null);
+  const A=toIso(col+1,row), B=toIso(col+1,row+2);
+  cafeFace(A,B,4,50,'#5a3a20');
+  for(let tier=0;tier<3;tier++){
+    const y=8+tier*15;
+    cafeFace(A,B,y-2,y,CAFE.woodHi);
+    for(let j=0;j<5;j++){
+      const q=cafeLerp(A,B,0.12+j*0.19);
+      if(tier===2){ r(q.x-2,q.y-y-6,5,6,j%2?'#fbfaf5':CAFE.green);r(q.x+3,q.y-y-4,1,2,'#fbfaf5'); }
+      else { r(q.x-2,q.y-y-10,5,10,tier?CAFE.kraft:CAFE.woodDk);r(q.x-2,q.y-y-7,5,3,tier?CAFE.greenDk:'#d9b56a'); }
+    }
+  }
+  const p=toIso(col+0.5,row+1);
+  cafePlate(lang==='en'?'COFFEE BEANS':'CAFÉ EN GRANO',p.x,p.y-60,'#14171c','#f3d27a',CAFE.wood);
+}
+function drawCafeFridge(col,row){
+  // Nevera 2×1 de bebidas frías, puerta de cristal iluminada.
+  drawIsoBlock(col,row,2,1,52,'#dfe6ea','#aab6bd','#c5cfd5',null);
+  const A=toIso(col,row+1), B=toIso(col+2,row+1);
+  cafeFace(A,B,4,48,'#e9f7fb');
+  cafeFace(A,B,44,48,CAFE.green);
+  const colors=['#ff9f45','#e9543b','#9bd35a','#f5e7b8','#6fc3e0','#c46bd8'];
+  for(let tier=0;tier<3;tier++){
+    const y=8+tier*12;
+    cafeFace(A,B,y-1,y,'#9fb4bd');
+    for(let j=0;j<7;j++){ const q=cafeLerp(A,B,0.08+j*0.13); r(q.x-1,q.y-y-8,3,8,colors[(j+tier)%colors.length]);r(q.x-1,q.y-y-9,3,1,'#ffffff'); }
+  }
+  const mid=cafeLerp(A,B,0.5);
+  cafePlate(lang==='en'?'COLD DRINKS':'BEBIDAS FRÍAS',mid.x,mid.y-58,'#14171c','#bfefff','#6fc3e0');
+}
+function drawCafeGrabGo(col,row){
+  // Vitrina refrigerada abierta 1×1: sándwiches, ensaladas y yogures.
+  drawIsoBlock(col,row,1,1,46,CAFE.greenHi,CAFE.greenDk,CAFE.green,null);
+  const A=toIso(col,row+1), B=toIso(col+1,row+1);
+  cafeFace(A,B,6,40,'#eef8f1');
+  for(let tier=0;tier<3;tier++){
+    const y=9+tier*11;
+    cafeFace(A,B,y-1,y,'#8fb8a0');
+    for(let j=0;j<3;j++){
+      const q=cafeLerp(A,B,0.2+j*0.3);
+      if(tier===0){ r(q.x-2,q.y-y-5,5,5,'#fbfaf5');r(q.x-2,q.y-y-5,5,2,'#e98fa0'); }
+      else if(tier===1){ r(q.x-3,q.y-y-5,6,5,'#8cc86a');r(q.x-3,q.y-y-6,6,1,'#e9f2ea'); }
+      else { cx.fillStyle='#f2d59a';cx.beginPath();cx.moveTo(q.x-3,q.y-y);cx.lineTo(q.x+3,q.y-y);cx.lineTo(q.x,q.y-y-6);cx.closePath();cx.fill(); }
+    }
+  }
+  const p=toIso(col+0.5,row+0.5);
+  tx('GRAB & GO',p.x,p.y-50,'#ffffff',6,'center');
+}
+function cafeRaised(dy,fn){ cx.save();cx.translate(0,-dy);fn();cx.restore(); }
+function cafeStool(c,rw,color){
+  const q=toIso(c,rw);
+  r(q.x-1,q.y-10,2,10,'#2b2b2b');
+  cx.fillStyle=color||CAFE.green;cx.beginPath();cx.ellipse(q.x,q.y-11,5,2.6,0,0,Math.PI*2);cx.fill();
+  cx.fillStyle=CAFE.greenHi;cx.beginPath();cx.ellipse(q.x,q.y-12,4,1.8,0,0,Math.PI*2);cx.fill();
+}
+function drawCafeCommunal(col,row){
+  // Mesa comunal 2×1 (huella del escritorio): madera, portátiles y tazas.
+  cafeStool(col+0.5,row+0.05);cafeStool(col+1.5,row+0.05);
+  for(const [c,rw] of [[col+0.1,row+0.15],[col+1.9,row+0.15],[col+0.1,row+0.85],[col+1.9,row+0.85]]){ const q=toIso(c,rw); r(q.x-1,q.y-14,2,14,CAFE.woodDk); }
+  cafeRaised(14,()=>drawIsoBlock(col,row,2,1,3,CAFE.woodHi,CAFE.woodLo,CAFE.wood,null));
+  const p=toIso(col+1,row+0.5);
+  r(p.x-16,p.y-24,12,7,'#b5b9bf');r(p.x-15,p.y-29,10,6,'#2a3a4a');r(p.x-14,p.y-28,8,4,'#5fa0d0');   // portátil
+  cafeCup(p.x+2,p.y-17,CAFE.green);cafeCup(p.x+10,p.y-15,CAFE.kraft);
+  r(p.x-4,p.y-19,6,3,'#8a2e2e');r(p.x-4,p.y-20,6,1,'#f1e6cf');                                     // libro
+  cafeStool(col+0.5,row+0.95);cafeStool(col+1.5,row+0.95);
+}
+function drawCafeTable(col,row){
+  // Mesa redonda de café 1×1 con dos sillas.
+  const chair=(c,rw,back)=>{ const q=toIso(c,rw); r(q.x-4,q.y-9,8,3,CAFE.green);r(q.x-4,q.y-6,1,6,CAFE.woodDk);r(q.x+3,q.y-6,1,6,CAFE.woodDk); if(back) r(q.x+(back>0?3:-4),q.y-19,2,10,CAFE.greenDk); };
+  chair(col+0.5,row+0.12,-1);
+  const p=toIso(col+0.5,row+0.5);
+  cx.fillStyle='rgba(0,0,0,0.18)';cx.beginPath();cx.ellipse(p.x,p.y,7,3,0,0,Math.PI*2);cx.fill();
+  r(p.x-1,p.y-15,3,15,'#2b2b2b');r(p.x-4,p.y-1,9,2,'#2b2b2b');
+  cx.fillStyle=CAFE.woodLo;cx.beginPath();cx.ellipse(p.x,p.y-15,11,5.5,0,0,Math.PI*2);cx.fill();
+  cx.fillStyle=CAFE.woodHi;cx.beginPath();cx.ellipse(p.x,p.y-16,11,5.5,0,0,Math.PI*2);cx.fill();
+  cafeCup(p.x-3,p.y-16,CAFE.green);
+  if((col+row)%2===0){ r(p.x+2,p.y-19,5,3,'#2e5a7a');r(p.x+2,p.y-20,5,1,'#f1e6cf'); }
+  else { cx.fillStyle='#d99a3d';cx.beginPath();cx.ellipse(p.x+4,p.y-17,2.5,1.4,0,0,Math.PI*2);cx.fill(); }
+  chair(col+0.88,row+0.8,1);
+}
+function drawCafeBookcase(col,row){
+  // Librería alta 1×2 contra la pared: el rincón de libros de la Cafebrería.
+  drawIsoBlock(col,row,1,2,62,CAFE.woodHi,CAFE.woodLo,CAFE.woodDk,null);
+  const A=toIso(col+1,row), B=toIso(col+1,row+2);
+  cafeFace(A,B,3,58,'#3a2414');
+  const spines=['#7a3b2e','#2e5a7a','#3a6e3a','#c98b4a','#5a2e5a','#d9c7a0','#8a5a2e','#2e6e6e','#b8423a','#e6d27a'];
+  for(let tier=0;tier<4;tier++){
+    const y=5+tier*13;
+    cafeFace(A,B,y-2,y,CAFE.woodHi);
+    for(let j=0;j<11;j++){
+      if((j+tier*3)%7===6) continue;
+      const q=cafeLerp(A,B,0.05+j*0.085), h=8+((j*5+tier*3)%4);
+      r(q.x-1,q.y-y-h,2,h,spines[(j*3+tier)%spines.length]);
+    }
+  }
+  const p=toIso(col+0.5,row+1);
+  cafePlate(lang==='en'?'BOOKS':'LIBROS',p.x,p.y-68,'#14171c','#f3d27a',CAFE.wood);
+}
+function drawCafeSofa(col,row){
+  // Sofá lounge 2×1 (terciopelo verde) para el rincón de lectura.
+  drawIsoBlock(col,row,2,0.32,24,CAFE.greenHi,CAFE.greenDk,CAFE.green,null);
+  drawIsoBlock(col,row,2,1,10,CAFE.green,CAFE.greenDk,CAFE.greenLo,null);
+  drawIsoBlock(col,row,0.28,1,16,CAFE.greenHi,CAFE.greenDk,CAFE.green,null);
+  drawIsoBlock(col+1.72,row,0.28,1,16,CAFE.greenHi,CAFE.greenDk,CAFE.green,null);
+  const c1=toIso(col+0.65,row+0.6), c2=toIso(col+1.35,row+0.6);
+  r(c1.x-5,c1.y-15,10,5,'#f1e6cf');r(c2.x-5,c2.y-15,10,5,'#e7c98f');
+}
+function staffLbl(i){
+  if(isCafeteriaClient()){
+    const es=['BARISTA','REPOSICIÓN','SALA','ENCARGADO/A','DJ'], en=['BARISTA','STOCKER','FLOOR','MANAGER','DJ'];
+    return (lang==='en'?en:es)[i]||T().staffLabel[i];
+  }
+  return T().staffLabel[i];
+}
+
 function drawIsoCounter(col,row){
+  if(isCafeteriaClient()) return drawCafeBar(col,row);
   // ── PACK: Counter + Cash Register + Monitor (rediseño legible) ──
   // MEDIDAS CLAVE (para revertir):
   //  · Caja registradora: 26px ancho × 22px alto (antes 16×10) — LCD dinero a 8px (antes 5px)
@@ -22371,7 +22650,7 @@ function drawIsoCounter(col,row){
   r(mo.x+8,mo.y-17,3,3,monitorAlert.active?'#cc2222':'#44cc44'); // LED power (conservado)
 
   // ── Placa de rol: texto 7px sobre placa oscura con borde dorado ──
-  const lbl=T().staffLabel[0];
+  const lbl=staffLbl(0);
   const lw=Math.ceil(lbl.length*0.6*7)+8;       // ancho placa = texto + 8px margen
   r(p.x-(lw>>1),p.y-35,lw,11,'#14171c');
   rx(p.x-(lw>>1),p.y-35,lw,11,'#d9a83f',1);
@@ -22423,6 +22702,7 @@ function drawIsoMonitor(col,row){
 }
 
 function drawIsoShelves(col,row){
+  if(isCafeteriaClient()) return drawCafeBeans(col,row);
   // Wooden shelf unit: 1 wide, 2 deep, 55px tall. Carcass via the iso block,
   // then a detailed front elevation: recessed back panel, side posts with
   // wood shading, shelf boards with thickness + per-cubby ambient occlusion,
@@ -22480,12 +22760,13 @@ function drawIsoShelves(col,row){
     r(left+1,by+1,inW+2,2,woodMid);
     r(left+1,by+3,inW+2,1,woodLo);
   }
-  tx(T().staffLabel[1],p.x,top-9,'#5a4a30',6,'center');
+  tx(staffLbl(1),p.x,top-9,'#5a4a30',6,'center');
 }
 
 /* 🍞 estética canvas #3 (mostrador LOTERÍAS · rediseño Fable) — revertir con tag canvas-claridad-2-turnokiosk.
    Claves: pantalla 44×20 dígitos 12px; cartel 50×12 "LOTERIAS" 7px; rol movido bajo la mesa. */
 function drawIsoLottery(col,row){
+  if(isCafeteriaClient()) return drawCafePickup(col,row);
   // ===== Mostrador de LOTERÍAS — madera + oro, monitor LED verde =====
   // Huella: 2×1, alto 22 (SIN cambios). Monitor crece hacia arriba.
   // Medidas clave: carcasa monitor 50×26 | pantalla 44×20 | dígitos 12px
@@ -22532,12 +22813,13 @@ function drawIsoLottery(col,row){
   r(p.x-1,p.y-71,2,1,'#f5e8aa');
 
   // --- Etiqueta de rol (7px) DEBAJO de la mesa: no choca con el rótulo ---
-  tx(T().staffLabel[2],p.x,p.y+9,'#d8bd58',7,'center');
+  tx(staffLbl(2),p.x,p.y+9,'#d8bd58',7,'center');
 }
 
 /* 🍞 estética canvas #6 (mesa MANAGER/OFFICE · rediseño Fable) — revertir con tag canvas-claridad-4-mostrador.
    Claves: pantalla portátil 30×23; OFFICE 5→8px, año/semana 5→7px; placa rol dorada encima; misma huella. */
 function drawIsoManager(col,row){
+  if(isCafeteriaClient()) return drawCafeCommunal(col,row);
   // Manager desk: green/wood (misma huella 2x1, alto 20)
   drawIsoBlock(col,row,2,1,20,P.deskT,P.desk,'#5a7a4a',null);
   const p=toIso(col+1,row+0.5); // ancla portátil (NO mover)
@@ -22573,7 +22855,7 @@ function drawIsoManager(col,row){
   r(p.x-1,p.y-28,2,2,'#d9a83f');
 
   // --- Placa del rol: encima de todo, sin solapar (texto 7px, ancho dinamico) ---
-  const lbl=T().staffLabel[3];
+  const lbl=staffLbl(3);
   const pw=Math.max(40,(lbl.length*4.2+8)|0);     // placa: ancho = chars*4.2 + 8 de margen
   r(p.x-1,p.y-55,2,3,'#d9a83f');                   // poste dorado placa->tapa
   r(p.x-(pw>>1),p.y-66,pw,11,'#1c2b18');           // placa oscura 11 de alto (y-66..y-55)
@@ -22713,6 +22995,7 @@ function drawIsoPlant(col,row){
 }
 
 function drawIsoVending(col,row){
+  if(isCafeteriaClient()) return drawCafeGrabGo(col,row);
   if(isSupermarketClient()){
     drawIsoBlock(col,row,1,1,44,'#d7fff2','#7dc8b4','#9ce1cf',null);
     const p=toIso(col+0.5,row+0.5);
@@ -22886,6 +23169,7 @@ function drawIsoRug(col,row){
 
 // ── WINE RACK (botellero de vinos) ───────────────────────────
 function drawIsoWineRack(col,row){
+  if(isCafeteriaClient()) return drawCafeFridge(col,row);
   // Wooden rack: 2 wide, 1 deep, 48px tall
   drawIsoBlock(col,row,2,1,48,P.furnitureLight,P.furnitureDark,P.furniture,null);
   const p=toIso(col+1,row+0.5);
@@ -23124,7 +23408,7 @@ function drawIsoMagazineRack(col,row,bw,bd){
   r(ctr.x-17,sy,34,9,'#f0e8d0');
   r(ctr.x-17,sy,34,2,'#fffaf0');
   rx(ctr.x-17,sy,34,9,'#8d8577',1);
-  tx(lang==='en'?'PRESS':'PRENSA',ctr.x,sy+7,'#3a3a5a',6,'center');
+  tx(isCafeteriaClient()?(lang==='en'?'NEW READS':'NOVEDADES'):(lang==='en'?'PRESS':'PRENSA'),ctr.x,sy+7,'#3a3a5a',6,'center');
 }
 
 // ── DRAW STAFF (ISOMETRIC) ───────────────────────────────────
@@ -23252,7 +23536,7 @@ function drawIsoStaff(s){
     s.clickBubble--;
     const isFiring=s.fireBubble;
     const msg1=s.name;
-    const msg2=isFiring?'Bye bye!! 👋':'I love Altadis!!';
+    const msg2=isFiring?'Bye bye!! 👋':(isCafeteriaClient()?(lang==='en'?'Coffee? ☕':'¿Un café? ☕'):'I love Altadis!!');
     const borderCol=isFiring?'#cc3333':'#4466cc';
     const bw2=Math.max(msg1.length,msg2.length)*5+14;
     const bh2=22,bx3=s.x+7-bw2/2,by3=s.y-38;
@@ -25317,7 +25601,7 @@ function tabStaff(py){
     tx(roleIcons[s.role%roleIcons.length],UI.x+8,ry+14,'#fff',10);
     tx(s.hired?s.name:T().noStaff,ix,ry+12,s.hired?'#fff':P.gray,8);
     // Role label
-    tx(T().staffLabel[s.role],ix,ry+23,s.hired?rb:'#666',7);
+    tx(staffLbl(s.role),ix,ry+23,s.hired?rb:'#666',7);
     if(s.hired){
       // Level stars
       for(let l=0;l<s.level;l++){tx('★',ix+l*9,ry+35,'#ddaa22',7);}
@@ -26854,7 +27138,7 @@ function loop(){
 }
 window.__xtancoVisualState=()=>{
   const moving=document.body.classList.contains('xtanco-mudanza');
-  return {palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:moving?[]:(shopFurnitureVisible||editorSceneActive?inventoryPresentationLayout():[]),hardness:getHardnessSnapshot(),game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,moving,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&CLIENTS[activeClient]?.id==='xtanco'};
+  return {palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:moving?[]:(shopFurnitureVisible||editorSceneActive?inventoryPresentationLayout():[]),hardness:getHardnessSnapshot(),game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,moving,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&['xtanco','cafeteria'].includes(CLIENTS[activeClient]?.id),vertical:CLIENTS[activeClient]?.id||'xtanco'};
 };
 loop();
 
@@ -26932,9 +27216,10 @@ try {
     // y esperamos a STORE_CFG para decorar con nombre/dirección.
     const enterForLoc=()=>{
       _dismissSplash();
-      let vertical='xtanco';
-      const k=((window.STORE_CFG&&window.STORE_CFG.kind)||'').toLowerCase();
-      if(k.includes('supermercado')||k.includes('super')) vertical='supermercado';
+      // ?autostart=<vertical> manda sobre el tipo del punto (p.ej. la Cafebrería
+      // abre su vertical aunque el punto aún no exista en el API).
+      const asV=String(_sp.get('autostart')||'').toLowerCase().replace('cafebreria','cafeteria');
+      let vertical=CLIENTS.some(c=>c&&c.id===asV&&c.available!==false)?asV:netVerticalFor(window.STORE_CFG&&window.STORE_CFG.kind,locParam);
       try{ autoEnterVertical(vertical); }catch(e){ console.warn('autoEnter loc failed:',e); }
     };
     let _t=0;
@@ -33223,6 +33508,7 @@ window.xtAPI = (function(){
   }
   async function pollMudanza(){
     try{
+      if(typeof isCafeteriaClient==='function'&&isCafeteriaClient()) return;
       const r=await fetch(PIXER_WORKER+'/layout/pending?screen='+encodeURIComponent(screenId)+'&ts='+Date.now(),{cache:'no-store'});
       if(!r.ok) return;
       const d=await r.json(); const p=d&&d.pending;
@@ -33833,7 +34119,7 @@ window.xtAPI = (function(){
       // propia (view/distro/present/preview) siguen intactos.
       if(!_as && !_qs.get('play') && _qs.get('arcade')!=='1' && !_qs.get('view') && !_qs.get('distro') && !_qs.get('present') && !_qs.get('preview')){ _as='xtanco'; }
     if(_as){
-      const _cmap={xtanco:0,loterias:1,supermercado:2,shoptalk:3,creator:4};
+      const _cmap={xtanco:0,loterias:1,supermercado:2,shoptalk:3,creator:4,cafeteria:5,cafebreria:5};
       const _ci=Object.prototype.hasOwnProperty.call(_cmap,_as)?_cmap[_as]:0;
       const _ed=(_qs.get('editor')==='1'||_qs.get('editor')==='true');
       chooseJugar();   // oculta el splash
@@ -33863,7 +34149,7 @@ window.xtAPI = (function(){
    setLanguage() llama a applyHtmlLang(); el selector del splash llama a setLanguage(). */
 (function(){
   var I18N = [
-    {sel:'title', en:'Admira XP // XpaceOS — NVIDIA Digital Twin', es:'Admira XP // XpaceOS — Gemelo Digital NVIDIA'},
+    {sel:'title', en:'XpaceOS.com the Operative System of Retailers', es:'XpaceOS.com the Operative System of Retailers'},
     {sel:'#saveTplModal .save-tpl-head h2', en:'⭐ Save as template', es:'⭐ Guardar como plantilla'},
     {sel:'#saveTplCloseBtn', attr:'title', en:'Cancel', es:'Cancelar'},
     {sel:'#saveTplModal .save-tpl-row label', idx:0, en:'Name', es:'Nombre'},
@@ -35059,12 +35345,21 @@ window.xtAPI = (function(){
   /* El ojo "La pantalla te ve" ya NO flota sobre el Xpacio: ahora vive en el panel
      Avanzado (▤). Ocultamos el FAB flotante (!important gana al display:flex inline). */
   #percibeFab{display:none !important}
+  /* Better: Día/Atardecer/Noche y cámara viven bajo Pixeria, no sobre la escena. */
+  #advSceneControls{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+  #advSceneControls:empty{display:none}
+  #advSceneControls .life-toolbar{position:static;left:auto;right:auto;bottom:auto;transform:none;display:flex;flex-direction:column;align-items:stretch;gap:4px;max-width:none;width:100%;pointer-events:auto}
+  #advSceneControls .life-lights,#advSceneControls .life-camera{display:flex;flex-direction:column;align-items:stretch;gap:4px;width:100%;padding:0;margin:0;border:0;background:transparent;box-shadow:none;border-radius:0;backdrop-filter:none}
+  #advSceneControls .life-divider{display:none}
+  #advSceneControls .tg-quick-btn[aria-pressed=true]{border-color:#6ce6a2 !important;background:#123427 !important;color:#f0fff4 !important}
+  #advSceneControls .tg-quick-btn[aria-pressed=true] span{color:#a7e6be !important}
 </style>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
   var panel=document.querySelector('.quad-right'); if(!panel) return;   // panel Avanzado (derecha)
   var host=document.createElement('div'); host.id='advQuickIcons'; panel.appendChild(host);
+  var scene=document.createElement('div'); scene.id='advSceneControls';
   // Botón del ojo "La pantalla te ve" — vive en el panel Avanzado (▤), ya NO flota
   // sobre el Xpacio (el #percibeFab queda oculto por CSS). Toggle del overlay.
   function makePercibe(){
@@ -35084,6 +35379,7 @@ window.xtAPI = (function(){
     });return b;
   }
   function mirror(){
+    if(scene.parentNode) scene.remove();
     var btns=[].slice.call(src.querySelectorAll('.tg-quick-btn'));
     host.innerHTML='';
     function appendAction(b){
@@ -35094,8 +35390,9 @@ window.xtAPI = (function(){
     btns.filter(function(b){return b.getAttribute('data-quick-action')!=='pixerai';}).forEach(appendAction);
     host.appendChild(makeInventory());
     host.appendChild(makePercibe());
-    // Pixeria keeps its latest-item import and is always the final advanced action.
+    // Pixeria keeps its latest-item import. Scene bars (Better) sit under it.
     btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
+    host.appendChild(scene);
   }
   try{ var mo=new MutationObserver(mirror); mo.observe(src,{childList:true,subtree:true,characterData:true}); }catch(e){}
   mirror();
@@ -35274,12 +35571,12 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/xtanco-premium.css?v=inventari-1">
-<link rel="stylesheet" href="scripts/life-ui.css?v=inventari-1">
+<link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
+<link rel="stylesheet" href="scripts/life-ui.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
 <link rel="stylesheet" href="scripts/tier-hud.css?v=gait-1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=px-2"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=cafeteria-tier-2"></script>
 </body>
 </html>

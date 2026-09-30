@@ -9,10 +9,14 @@ const snapshot=createLifeSnapshot();
 let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort,hud;
 const names={counter:'Mostrador',shelves:'Estantería',wineRack:'Bodega',lottery:'Lotería',vending:'Vending',magazines:'Prensa',manager:'Puesto de gestión',plant:'Vegetación',floorLamp:'Iluminación',rug:'Alfombra',djBooth:'DJ booth',tablet:'Tablet',turnKiosk:'Gestor de turnos',aroma:'Aromatización',metahuman:'Asistente digital',tft:'Pantalla digital',led:'Superficie LED',custom:'Mobiliario'};
 const roles={staff:'Equipo',customer:'Cliente del gemelo',passerby:'Transeúnte simulado',saca:'Logística',thief:'Personaje del juego',guardiaCivil:'Personaje del juego',opinador:'Visitante',unitreeBot:'Robot'};
+function sceneSlot(){return typeof document.getElementById==='function'?document.getElementById('advSceneControls'):null;}
+function clearSceneToolbar(){sceneSlot()?.replaceChildren();}
+function parkSceneToolbar(toolbar){const slot=sceneSlot();if(slot&&toolbar)slot.replaceChildren(toolbar);}
+function pressGroup(buttons,button){for(const other of buttons){const on=other===button;other.setAttribute('aria-pressed',String(on));if(on)other.classList.add('is-active');else other.classList.remove('is-active');}}
 function close(reason=''){
   generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
-  viewer?.dispose();viewer=null;hud?.dispose();hud=null;dialog?.close();dialog?.remove();dialog=null;
+  viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
 }
 function select(data){
@@ -30,13 +34,12 @@ async function open(options={}){
     <div class="life-location"><span class="life-eyebrow">BARCELONA · GRAN DE GRÀCIA</span><h2>El Xtanco<span>en otra dimensión.</span></h2><p><i aria-hidden="true"></i><span class="life-state">Conectando con el gemelo…</span></p></div>
     <div class="life-loading" role="status"><span class="life-spinner"></span><h2>Abriendo tu espacio</h2><p>Preparando la escena 3D del gemelo…</p><button type="button" class="life-retry" hidden>Reintentar</button></div>
     <aside class="life-selection" hidden><span class="life-eyebrow life-selection-kind"></span><h2></h2><p></p><button type="button" class="life-selection-close" aria-label="Cerrar detalle">×</button></aside>
-    <div class="life-toolbar"><div class="life-lights" role="group" aria-label="Iluminación de la escena"><button type="button" data-light="day" aria-pressed="true">☀ <span>Día</span></button><button type="button" data-light="sunset" aria-pressed="false">◒ <span>Atardecer</span></button><button type="button" data-light="night" aria-pressed="false">☾ <span>Noche</span></button></div>
-    <div class="life-camera" role="group" aria-label="Cámara"><button type="button" data-preset="mapped" aria-pressed="true">Comparar con Good</button><button type="button" data-preset="home" aria-pressed="false">Explorar 3D</button><button type="button" data-preset="floor" aria-pressed="false">Planta</button><button type="button" data-preset="detail" aria-pressed="false">Detalle</button><span class="life-divider"></span><button type="button" data-zoom="out" aria-label="Alejar">−</button><button type="button" data-zoom="in" aria-label="Acercar">+</button></div></div>
+    <div class="life-toolbar"><div class="life-lights" role="group" aria-label="Iluminación de la escena"><button type="button" class="tg-quick-btn" data-light="day" aria-pressed="true"><strong>☀ Día</strong><span>iluminación</span></button><button type="button" class="tg-quick-btn" data-light="sunset" aria-pressed="false"><strong>◒ Atardecer</strong><span>luz cálida</span></button><button type="button" class="tg-quick-btn" data-light="night" aria-pressed="false"><strong>☾ Noche</strong><span>luz nocturna</span></button></div>
+    <div class="life-camera" role="group" aria-label="Cámara"><button type="button" class="tg-quick-btn" data-preset="mapped" aria-pressed="true"><strong>Comparar con Good</strong><span>cámara alineada</span></button><button type="button" class="tg-quick-btn" data-preset="home" aria-pressed="false"><strong>Explorar 3D</strong><span>cámara libre</span></button><button type="button" class="tg-quick-btn" data-preset="floor" aria-pressed="false"><strong>Planta</strong><span>vista cenital</span></button><button type="button" class="tg-quick-btn" data-preset="detail" aria-pressed="false"><strong>Detalle</strong><span>primer plano</span></button><button type="button" class="tg-quick-btn" data-zoom="out" aria-label="Alejar"><strong>−</strong><span>alejar</span></button><button type="button" class="tg-quick-btn" data-zoom="in" aria-label="Acercar"><strong>+</strong><span>acercar</span></button></div></div>
     <div class="life-compass" aria-hidden="true"><span>N</span><b>↟</b></div>
   </div>`;
   hud=mountTierHud(dialog,{mode:'better',stage:dialog.querySelector('.life-stage')});
-  window.__xtancoSyncVisualSurface?.();document.body.append(dialog);dialog.show();dialog.getBoundingClientRect();dialog.classList.add('is-visible');
-  window.__xtancoReleaseInputs?.();document.body.classList.add('xtanco-life-open');
+  window.__xtancoSyncVisualSurface?.();
   const abort=()=>{if(ticket===generation)close('switch');};
   options.signal?.addEventListener('abort',abort,{once:true});removeAbort=()=>options.signal?.removeEventListener('abort',abort);
   announce(true);dialog.querySelector('.life-selection-close').onclick=()=>viewer?.clearSelection();
@@ -51,14 +54,21 @@ async function open(options={}){
     if(e.key==='+'||e.key==='='||e.key==='-'){e.preventDefault();viewer?.zoomBy(e.key==='-'?.88:1.14);}
     if(e.key==='Home'){e.preventDefault();viewer?.preset('mapped');}
   });
-  for(const button of dialog.querySelectorAll('[data-light]'))button.onclick=()=>{
-    viewer?.setLighting(button.dataset.light);dialog.dataset.light=button.dataset.light;
-    for(const other of dialog.querySelectorAll('[data-light]'))other.setAttribute('aria-pressed',String(other===button));
+  const lightButtons=[...dialog.querySelectorAll('[data-light]')];
+  const presetButtons=[...dialog.querySelectorAll('[data-preset]')];
+  const zoomButtons=[...dialog.querySelectorAll('[data-zoom]')];
+  for(const button of lightButtons)button.onclick=event=>{
+    event?.stopPropagation?.();viewer?.setLighting(button.dataset.light);dialog.dataset.light=button.dataset.light;pressGroup(lightButtons,button);
   };
-  for(const button of dialog.querySelectorAll('[data-preset]'))button.onclick=()=>{
-    viewer?.preset(button.dataset.preset);dialog.dataset.camera=button.dataset.preset;for(const other of dialog.querySelectorAll('[data-preset]'))other.setAttribute('aria-pressed',String(other===button));
+  for(const button of presetButtons)button.onclick=event=>{
+    event?.stopPropagation?.();viewer?.preset(button.dataset.preset);dialog.dataset.camera=button.dataset.preset;pressGroup(presetButtons,button);
   };
-  for(const button of dialog.querySelectorAll('[data-zoom]'))button.onclick=()=>viewer?.zoomBy(button.dataset.zoom==='in'?1.2:1/1.2);
+  for(const button of zoomButtons)button.onclick=event=>{event?.stopPropagation?.();viewer?.zoomBy(button.dataset.zoom==='in'?1.2:1/1.2);};
+  pressGroup(lightButtons,lightButtons.find(button=>button.dataset.light==='day')||lightButtons[0]);
+  pressGroup(presetButtons,presetButtons.find(button=>button.dataset.preset==='mapped')||presetButtons[0]);
+  parkSceneToolbar(dialog.querySelector('.life-toolbar'));
+  document.body.append(dialog);dialog.show();dialog.getBoundingClientRect();dialog.classList.add('is-visible');
+  window.__xtancoReleaseInputs?.();document.body.classList.add('xtanco-life-open');
   const loading=dialog.querySelector('.life-loading');let canvas=dialog.querySelector('canvas');
   function observeContext(surface){
     surface.addEventListener('webglcontextlost',e=>{
@@ -95,7 +105,7 @@ async function open(options={}){
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
         dialog.querySelector('.life-mapping-state').textContent=mapped?'· cámara alineada':'· exploración libre';
-        for(const button of dialog.querySelectorAll('[data-preset]'))button.setAttribute('aria-pressed',String(mapped&&button.dataset.preset==='mapped'));
+        for(const button of presetButtons){const on=mapped&&button.dataset.preset==='mapped';button.setAttribute('aria-pressed',String(on));if(on)button.classList.add('is-active');else button.classList.remove('is-active');}
       }});
       if(dialog.dataset.light)viewer.setLighting(dialog.dataset.light);
       resizeObserver=new ResizeObserver(()=>{if(viewer&&dialog){const rect=dialog.querySelector('.life-stage').getBoundingClientRect();viewer.resize(rect.width,rect.height);}});resizeObserver.observe(dialog.querySelector('.life-stage'));

@@ -206,11 +206,12 @@ test('same-request retries await fresh readiness and can still cancel immediatel
 
 const selectorSource=fs.readFileSync(new URL('./xtanco-premium-ui.mjs',import.meta.url),'utf8');
 const controlsSource=fs.readFileSync(new URL('./visual-tier-controls.mjs',import.meta.url),'utf8');
-function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false}={}){
-  const created=[],queries=[],good=lifeFixture(),life=lifeFixture(),best=lifeFixture(),matrix=lifeFixture(),windowEvents={};
+function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false,vertical='xtanco'}={}){
+  const created=[],queries=[],observers=[],good=lifeFixture(),life=lifeFixture(),best=lifeFixture(),matrix=lifeFixture(),windowEvents={};
+  const notify=(node,attribute)=>{for(const observer of observers)if(observer.node===node&&observer.options.attributes&&observer.options.attributeFilter.includes(attribute))observer.callback();};
   class Element {
     constructor(tag){this.tag=tag;this.dataset={};this.attrs={};this.children=[];this.listeners={};this.hidden=false;this.textContent='';
-      const classes=new Set();this.classList={add:value=>classes.add(value),remove:value=>classes.delete(value),contains:value=>classes.has(value)};}
+      const classes=new Set();this.classList={add:value=>{classes.add(value);notify(this,'class');},remove:value=>{classes.delete(value);notify(this,'class');},contains:value=>classes.has(value)};}
     setAttribute(key,value){this.attrs[key]=String(value);}
     set innerHTML(value){
       this.markup=value;this.children=[];
@@ -237,30 +238,30 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
       const find=node=>(node.id||node.attrs.id)===id?node:node.children.map(find).find(Boolean);
       return find(body)??null;
     }};
-  const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);}};Object.defineProperty(window,'localStorage',{get(){if(storageBlocked)throw Error('denied');return storage;}});
-  const context=vm.createContext({document,window,location:{search},createVisualTiers,requestedTier,...life,
+  class MutationObserver {constructor(callback){this.callback=callback;}observe(node,options){this.node=node;this.options=options;observers.push(this);}}
+  const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},MutationObserver,__xtancoVisualState:()=>({vertical})};Object.defineProperty(window,'localStorage',{get(){if(storageBlocked)throw Error('denied');return storage;}});
+  document.documentElement={lang:'es'};
+  const context=vm.createContext({document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,...life,
     openGoodView:good.openLifeView,closeGoodView:good.closeLifeView,subscribeGoodView:good.subscribeLifeView,
     openBestView:best.openLifeView,closeBestView:best.closeLifeView,subscribeBestView:best.subscribeLifeView,
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
   vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
   const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the expert actions');
-  return {body,actions,advanced,controls,advancedControls:advanced.children[0],document,window,storage,good,life,best,matrix,created,queries,
+  return {body,actions,advanced,controls,document,window,storage,good,life,best,matrix,created,queries,
     get status(){return document.getElementById('xtanco-best-status');},
     pagehide(){for(const fn of windowEvents.pagehide||[])fn({persisted:false});},
-    button:(tier,group=controls)=>group.querySelectorAll('[data-visual-mode]').find(node=>node.dataset.visualMode===tier)};
+    button:(tier,group=controls)=>group.querySelectorAll('[data-visual-mode]').find(node=>node.dataset.visualMode===tier),
+    setVertical(next){vertical=next;body.dataset.xpaceVertical=next;notify(body,'data-xpace-vertical');if(next==='cafeteria')body.classList.add('vertical-cafeteria');else body.classList.remove('vertical-cafeteria');}};
 }
 
-test('Advanced and Expert offer the same enabled Best preview and synchronize their pressed state',()=>{
+test('Expert keeps the version selector and Advanced no longer repeats it',()=>{
   const h=selectorHarness({search:'?visual=best'});
-  assert.deepEqual(h.queries,['#telegramDock .tg-actions','.quad-right','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
-  assert.equal(h.advancedControls.parent,h.advanced);
+  assert.deepEqual(h.queries,['#telegramDock .tg-actions','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
+  assert.equal(h.advanced.children.length,0,'the side panel must not host a second Good/Better/Best/Matrix selector');
   assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/experto/);
-  assert.match(h.advancedControls.attrs['aria-label'],/avanzado/);
-  for(const group of [h.controls,h.advancedControls]){
-    assert.notEqual(h.button('best',group).attrs['aria-disabled'],'true');assert.equal(h.button('best',group).attrs['aria-pressed'],'true');
-    assert.match(h.button('best',group).attrs.title,/tienda y personas en 3D en vivo/);
-  }
+  assert.notEqual(h.button('best').attrs['aria-disabled'],'true');assert.equal(h.button('best').attrs['aria-pressed'],'true');
+  assert.match(h.button('best').attrs.title,/tienda y personas en 3D en vivo/);
   assert.equal(h.status.hidden,true,'a successful Best surface must not cover the shared interface');
   assert.equal(h.best.calls.open,1);assert.equal(h.life.calls.open,0);assert.ok(h.created.every(tag=>tag==='div'),'selector creates no GPU canvas');
 });
@@ -273,6 +274,24 @@ test('the floating status stays silent on success and is reserved for loading or
   assert.equal(h.body.children.filter(node=>node.id==='xtanco-best-status').length,1);
   await h.window.__xtancoVisualTiers.choose('good');assert.equal(status.hidden,true);
   h.button('best').click();assert.equal(status.hidden,true);assert.equal(h.status,status);
+});
+
+test('Cafebrería stays in verified Good and disables the unreviewed visual tiers',async()=>{
+  const h=selectorHarness({search:'?quality=best',vertical:'cafeteria'});
+  assert.equal(h.body.dataset.xtancoTier,'good');assert.equal(h.best.calls.open,0);
+  for(const tier of ['better','best','matrix']){
+    assert.equal(h.button(tier).disabled,true);assert.equal(h.button(tier).attrs['aria-disabled'],'true');
+  }
+  assert.match(h.status.textContent,/Vista básica de Cafebrería/);assert.equal(h.status.hidden,false);
+  await h.window.__xtancoVisualTiers.choose('matrix');assert.equal(h.matrix.calls.open,0);assert.equal(h.body.dataset.xtancoTier,'good');
+});
+
+test('Cafebrería reacts when the async client selection enters and leaves its vertical',async()=>{
+  const h=selectorHarness({search:'?autostart=cafeteria'});
+  assert.equal(h.button('best').disabled,true,'the direct URL blocks persisted quality before the client resolves');
+  h.setVertical('xtanco');assert.equal(h.button('best').disabled,false);
+  await h.window.__xtancoVisualTiers.choose('best');assert.equal(h.best.calls.open,1);
+  h.setVertical('cafeteria');assert.equal(h.button('best').disabled,true);assert.equal(h.body.dataset.xtancoTier,'good');
 });
 
 test('/mudanza toggles an independent presentation class without changing quality or persistence',()=>{
@@ -299,16 +318,16 @@ test('public Better preserves the legacy Good renderer facade and exterior traff
   await facade.close();assert.equal(h.body.dataset.xtancoTier,'good');
 });
 
-test('Expert and Advanced buttons consume game input and update together when Better closes',()=>{
+test('Expert buttons consume game input and update when Better closes',()=>{
   const h=selectorHarness();assert.equal(h.button('better').click().stopped,true);
   assert.equal(h.body.dataset.xtancoTier,'better');assert.equal(h.button('better').attrs['aria-pressed'],'true');
-  assert.equal(h.button('better',h.advancedControls).attrs['aria-pressed'],'true');
-  for(const group of [h.controls,h.advancedControls])for(const type of ['keydown','keyup','keypress']){
+  assert.equal(h.advanced.children.length,0);
+  for(const type of ['keydown','keyup','keypress']){
     const event={stopped:false,stopPropagation(){this.stopped=true;}};
-    for(const handler of group.listeners[type]||[])handler(event);assert.equal(event.stopped,true);
+    for(const handler of h.controls.listeners[type]||[])handler(event);assert.equal(event.stopped,true);
   }
   h.life.closeLifeView();assert.equal(h.button('good').attrs['aria-pressed'],'true');assert.equal(h.button('better').attrs['aria-pressed'],'false');
-  h.button('best',h.advancedControls).click();assert.equal(h.button('best').attrs['aria-pressed'],'true');assert.equal(h.best.calls.open,1);
+  h.button('best').click();assert.equal(h.button('best').attrs['aria-pressed'],'true');assert.equal(h.best.calls.open,1);
 });
 
 test('selector boots safely with denied storage or stale legacy Best and never imports the retired controller',()=>{
@@ -316,7 +335,7 @@ test('selector boots safely with denied storage or stale legacy Best and never i
     const h=selectorHarness(options);assert.equal(h.body.dataset.xtancoTier,'good');assert.equal(h.life.calls.open,0);
   }
   const imports=[...selectorSource.matchAll(/^import .* from ['"]([^'"]+)['"]/gm)].map(match=>match[1]);
-  assert.deepEqual(imports,['./matrix-preview-ui.mjs?v=px-2','./life-ui.mjs?v=px-2','./best-preview-ui.mjs?v=px-2','./xtanco-visual-tiers.mjs?v=matrix-furniture-1','./visual-tier-controls.mjs?v=tier-hud-1']);
+  assert.deepEqual(imports,['./matrix-preview-ui.mjs?v=px-2','./life-ui.mjs?v=panel-scene-1','./best-preview-ui.mjs?v=px-2','./xtanco-visual-tiers.mjs?v=matrix-furniture-1','./visual-tier-controls.mjs?v=tier-hud-1']);
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert.equal([...html.matchAll(/<script\b[^>]*src="scripts\/xtanco-premium-ui\.mjs[^\"]*"/g)].length,1);
   assert.doesNotMatch(html,/<script\b[^>]*src="scripts\/life-ui\.mjs/);
@@ -344,12 +363,13 @@ test('Matrix is an independent preview and can switch to live Best and back with
   f.tiers.dispose();assert.equal(f.matrix.listeners.size,0);assert.equal(f.matrix.calls.close,2);
 });
 
-test('Matrix is accessible from both public selectors and reports missing initialization honestly',async()=>{
+test('Matrix stays on the expert selector and reports missing initialization honestly',async()=>{
   const h=selectorHarness({search:'?quality=matrix'});
-  for(const group of [h.controls,h.advancedControls])assert.equal(h.button('matrix',group).attrs['aria-pressed'],'true');
+  assert.equal(h.button('matrix').attrs['aria-pressed'],'true');
+  assert.equal(h.advanced.children.length,0);
   assert.equal(h.body.dataset.xtancoTier,'matrix');assert.equal(h.matrix.calls.open,1);
   h.button('best').click();assert.equal(h.best.calls.open,1);assert.equal(h.matrix.calls.close,1);
-  h.button('matrix',h.advancedControls).click();assert.equal(h.matrix.calls.open,2);
+  h.button('matrix').click();assert.equal(h.matrix.calls.open,2);
   const result=await routerFixture({openMatrix:undefined}).tiers.choose('matrix');
   assert.equal(result.ok,false);assert.equal(result.mode,'good');assert.match(result.error,/Matrix no disponible/);
 });

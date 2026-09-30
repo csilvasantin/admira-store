@@ -4,9 +4,6 @@
 .visual-tier-controls button[aria-pressed=true],#telegramDock .visual-tier-controls button[aria-pressed=true],.quad-right .visual-tier-controls button[aria-pressed=true]{background:#245266;color:#ecfcff;box-shadow:inset 0 0 0 1px #72b9cb}
 .visual-tier-controls [data-visual-mode=best]{border:1px dashed #61766e!important}
 .visual-tier-controls button:focus-visible{outline:2px solid #c6f3f6;outline-offset:2px}
-#xtanco-advanced-quality{display:flex;flex-direction:column;margin:0 0 12px;padding:3px;min-width:0}
-#xtanco-advanced-quality button{width:100%;padding:10px 2px;white-space:normal;text-align:center;font-size:9px;letter-spacing:-.02em}
-#xtanco-advanced-quality button small{font-size:8px;line-height:1.3}
 #telegramDock #xtanco-visual-quality{gap:1px;padding:1px}
 #telegramDock #xtanco-visual-quality button{padding:3px 7px;font-size:9px;gap:1px}
 #telegramDock #xtanco-visual-quality button small{font-size:7px;line-height:1}
