@@ -1,0 +1,19 @@
+#expertQuickIcons .expert-category.is-selected{border-color:#8ae6ff;box-shadow:inset 3px 0 #8ae6ff;background:linear-gradient(135deg,#143443,#081b28)}
+#expertCategoryDetail{flex:1 0 auto;min-width:0;max-width:100%;font:11px/1.5 monospace;color:#d5edf4;overflow-wrap:anywhere}
+#expertCategoryDetail [data-detail-category][hidden]{display:none!important}
+#expertCategoryDetail label{display:flex;flex-direction:column;gap:4px;margin:8px 0}
+#expertCategoryDetail input{box-sizing:border-box;width:100%;min-width:0;padding:6px;background:#05121c;border:1px solid #345360;color:#d5edf4;border-radius:3px;font:inherit}
+#expertCategoryDetail .expert-detail-actions{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}
+#expertCategoryDetail button{white-space:normal;max-width:100%;font:inherit}
+#expertCategoryDetail .expert-detail-response{white-space:pre-wrap;font-size:10px}
+#telegramDock #expertCategoryDetail .expert-docked-panel{position:relative!important;inset:auto!important;transform:none!important;width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;margin:6px 0!important;box-sizing:border-box;z-index:auto!important;overflow:auto;box-shadow:none!important;border-radius:3px}
+#expertCategoryDetail .xp-pan-grip{display:none!important}
+#telegramDock #expertCategoryDetail #telegramSignagePanel{padding:6px!important}
+#telegramDock #expertCategoryDetail .tg-signage-surfaces{grid-template-columns:repeat(auto-fit,minmax(min(155px,100%),1fr))!important}
+#telegramDock #expertCategoryDetail .tg-signage-list{display:flex!important;flex-direction:column}
+#telegramDock #expertCategoryDetail #dvrPanel{flex-wrap:wrap}
+#telegramDock #expertCategoryDetail #dvrPanel .dvr-scrub{width:100%;min-width:0}
+#telegramDock #expertCategoryDetail .distribuit-panel{display:block;max-height:none!important}
+#telegramDock #expertCategoryDetail .distribuit-panel p{white-space:normal}
+body.expert-signage-docked #telegramDock.compose-start .send.signage-open #telegramComposer{display:block!important}
+body.expert-signage-docked #telegramDock.compose-start .send.signage-open .expert-workspace{flex:1 1 auto;min-height:0}

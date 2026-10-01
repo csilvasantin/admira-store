@@ -13,9 +13,12 @@
     perception:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     pixerai:'<path d="M4 4h16v16H4zM4 16l5-5 4 4 3-3 4 4"/><circle cx="15" cy="8" r="1"/>'
   };
-  function decorate(button,{en=false}={}){
+  function keyFor(button){
     const command=(button.dataset.quickCommand||'').replace(/^\//,'').split(/\s/)[0].toLowerCase();
-    const key=button.id==='advInventoryCli'?'inventory':button.id==='advPercibeBtn'?'perception':button.dataset.quickAction||({envivo:'dvr',impactos:'impactos'})[command]||command;
+    return button.id==='advInventoryCli'?'inventory':button.id==='advPercibeBtn'?'perception':button.dataset.quickAction||({envivo:'dvr',impactos:'impactos'})[command]||command;
+  }
+  function decorate(button,{en=false}={}){
+    const key=keyFor(button);
     const oldLabel=button.querySelector('strong')?.textContent||'';
     const label=key==='perception'?(en?'Perception':'Percepción'):key==='anonymizer'?'Anonymizer':oldLabel.replace(/^[^\p{L}\p{N}]+/u,'').trim();
     const status=button.querySelector('span')?.textContent||'';
@@ -32,5 +35,5 @@
     button.title=button.title||label+(status?' — '+status:'');
     button.removeAttribute('id');return button;
   }
-  window.XpaceExpertCategories={decorate};
+  window.XpaceExpertCategories={decorate,keyFor};
 })();

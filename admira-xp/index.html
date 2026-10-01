@@ -1246,7 +1246,7 @@
              escribe /help en el compositor, y la ayuda completa vive en
              xpaceos.com/help. El panel se cierra con su propia ✕. -->
         <button type="button" id="telegramHideBtn" title="Mostrar/ocultar Local view">Hide</button>
-      </div></div>
+      </div><div id="expertCategoryDetail" aria-live="polite" hidden></div></div>
     <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
     <div class="expert-view-pane"><span class="expert-section-label" id="expertPreviewLabel">PREVIOS</span><div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div></div>
     </div>
@@ -32619,6 +32619,7 @@ window.xtAPI = (function(){
 
   // Exponer al global para que el modo Demo (fuera del IIFE) pueda invocar
   window.sendComposerText = sendComposerText;
+  window.XpaceExpertActions = {setAdmiraLive};
   // Pinta la respuesta del bot en el panel inline (#telegramLastResponse)
   // que vive dentro del .tg-pane.send. Asi el usuario ve el feedback sin
   // tener que abrir Telegram ni la pestaña conversation. Auto-clear "fresh"
@@ -35578,7 +35579,9 @@ window.xtAPI = (function(){
 </style>
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
 <link rel="stylesheet" href="scripts/expert-categories.css?v=console-1">
-<script src="scripts/expert-categories.js?v=console-1"></script>
+<script src="scripts/expert-categories.js?v=console-2"></script>
+<link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
+<script src="scripts/expert-category-detail.js?v=detail-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -35621,11 +35624,14 @@ window.xtAPI = (function(){
     host.appendChild(scene);
     var categories=document.getElementById('expertQuickIcons');
     var focused=categories?.contains(document.activeElement)?document.activeElement.dataset.categoryId:null;
-    if(categories){categories.replaceChildren();host.querySelectorAll('button').forEach(function(original){
+    if(categories){var keep=new Set();host.querySelectorAll('button').forEach(function(original){
       if(original.closest('#advSceneControls'))return;
-      var copy=original.cloneNode(true);window.XpaceExpertCategories.decorate(copy,{en:typeof lang!=='undefined'&&lang==='en'});
-      copy.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();original.click();});categories.appendChild(copy);
-    });if(focused){[...categories.children].find(function(b){return b.dataset.categoryId===focused;})?.focus({preventScroll:true});}}
+      var fresh=original.cloneNode(true);window.XpaceExpertCategories.decorate(fresh,{en:typeof lang!=='undefined'&&lang==='en'});
+      var key=fresh.dataset.categoryId;keep.add(key);
+      var copy=[...categories.children].find(function(b){return b.dataset.categoryId===key;});
+      if(!copy){copy=fresh;copy.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();window.XpaceExpertDetail.select(e.currentTarget);});categories.appendChild(copy);}
+      else{var selected=copy.classList.contains('is-selected');copy.className=fresh.className;copy.classList.toggle('is-selected',selected);copy.title=fresh.title;copy.setAttribute('aria-label',fresh.getAttribute('aria-label'));if(fresh.hasAttribute('aria-pressed'))copy.setAttribute('aria-pressed',fresh.getAttribute('aria-pressed'));else copy.removeAttribute('aria-pressed');if(copy.innerHTML!==fresh.innerHTML)copy.replaceChildren(...fresh.childNodes);}
+    });[...categories.children].forEach(function(b){if(!keep.has(b.dataset.categoryId))b.remove();});if(focused){[...categories.children].find(function(b){return b.dataset.categoryId===focused;})?.focus({preventScroll:true});}}
   }
   try{ var mo=new MutationObserver(mirror); mo.observe(src,{childList:true,subtree:true,characterData:true}); }catch(e){}
   mirror();
@@ -35713,6 +35719,7 @@ window.xtAPI = (function(){
     el.appendChild(rz);
 
     function toAbs(){
+      if(el.closest('#expertCategoryDetail'))return;
       var b=el.getBoundingClientRect();
       el.style.transform='none'; el.style.right='auto'; el.style.bottom='auto';
       el.style.left=Math.round(b.left)+'px'; el.style.top=Math.round(b.top)+'px';
@@ -35723,6 +35730,7 @@ window.xtAPI = (function(){
       save();
     }
     el.__panRestore=function(){
+      if(el.closest('#expertCategoryDetail'))return;
       var g=GEOM[key]; if(!g) return;
       el.style.transform='none'; el.style.right='auto'; el.style.bottom='auto';
       if(g.l!=null) el.style.left=clamp(g.l,0,window.innerWidth-40)+'px';
