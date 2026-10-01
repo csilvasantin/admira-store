@@ -233,7 +233,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   }
   const body=new Element('body'),actions=new Element('expert-actions'),advanced=new Element('advanced-actions');body.dataset.xtancoVisual='better';
   body.append(actions);body.append(advanced);
-  const document={body,querySelector(selector){queries.push(selector);return selector==='#telegramDock .expert-view-pane'?actions:selector==='.quad-right'?advanced:null;},
+  const document={body,querySelector(selector){queries.push(selector);return selector==='#visualQualityOptions'?actions:selector==='.quad-right'?advanced:null;},
     createElement(tag){created.push(tag);return new Element(tag);},getElementById(id){
       const find=node=>(node.id||node.attrs.id)===id?node:node.children.map(find).find(Boolean);
       return find(body)??null;
@@ -247,7 +247,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
   vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
-  const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the third expert pane');
+  const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in Options');
   return {body,actions,advanced,controls,document,window,storage,good,life,best,matrix,created,queries,
     get status(){return document.getElementById('xtanco-best-status');},
     pagehide(){for(const fn of windowEvents.pagehide||[])fn({persisted:false});},
@@ -255,11 +255,11 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     setVertical(next){vertical=next;body.dataset.xpaceVertical=next;notify(body,'data-xpace-vertical');if(next==='cafeteria')body.classList.add('vertical-cafeteria');else body.classList.remove('vertical-cafeteria');}};
 }
 
-test('Expert keeps the version selector and Advanced no longer repeats it',()=>{
+test('Options owns the quality selector and Advanced does not duplicate it',()=>{
   const h=selectorHarness({search:'?visual=best'});
-  assert.deepEqual(h.queries,['#telegramDock .expert-view-pane','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
+  assert.deepEqual(h.queries,['#visualQualityOptions','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
   assert.equal(h.advanced.children.length,0,'the side panel must not host a second Good/Better/Best/Matrix selector');
-  assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/experto/);
+  assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/Opciones/);
   assert.notEqual(h.button('best').attrs['aria-disabled'],'true');assert.equal(h.button('best').attrs['aria-pressed'],'true');
   assert.match(h.button('best').attrs.title,/Avenida Admira.*mobiliario editable/);
   assert.equal(h.status.hidden,true,'a successful Best surface must not cover the shared interface');
@@ -319,7 +319,7 @@ test('public Better preserves the legacy Good renderer facade and exterior traff
   await facade.close();assert.equal(h.body.dataset.xtancoTier,'good');
 });
 
-test('Expert buttons consume game input and update when Better closes',()=>{
+test('Options buttons consume game input and update when Better closes',()=>{
   const h=selectorHarness();assert.equal(h.button('better').click().stopped,true);
   assert.equal(h.body.dataset.xtancoTier,'better');assert.equal(h.button('better').attrs['aria-pressed'],'true');
   assert.equal(h.advanced.children.length,0);
@@ -364,7 +364,7 @@ test('Matrix is an independent preview and can switch to live Best and back with
   f.tiers.dispose();assert.equal(f.matrix.listeners.size,0);assert.equal(f.matrix.calls.close,2);
 });
 
-test('Matrix stays on the expert selector and reports missing initialization honestly',async()=>{
+test('Matrix stays on the Options selector and reports missing initialization honestly',async()=>{
   const h=selectorHarness({search:'?quality=matrix'});
   assert.equal(h.button('matrix').attrs['aria-pressed'],'true');
   assert.equal(h.advanced.children.length,0);

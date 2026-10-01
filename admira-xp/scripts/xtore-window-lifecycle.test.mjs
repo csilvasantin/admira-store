@@ -22,7 +22,7 @@ function fixture(t,{own='https://www.xpaceos.com',analyzer='https://admira.tv',h
     getContext(){return {drawImage(){}};}
   }
   function node(id){if(!nodes.has(id)){const value=new Element();value.id=id;}return nodes.get(id);}
-  const document={body:node('body'),getElementById:node,createElement:()=>new Element(),addEventListener(){},querySelectorAll:()=>[]};
+  const document={documentElement:{lang:'es'},body:node('body'),querySelector:selector=>node(selector),getElementById:node,createElement:()=>new Element(),addEventListener(){},querySelectorAll:()=>[]};
   let focused=0;const peer={closed:false,focus:()=>focused++,postMessage:(data,origin)=>sent.push({data,origin})};
   const session='00000000-0000-0000-0000-000000000001';
   const location={origin:own,search:`?virtualPlayer=${core.SCREEN}&twinOrigin=${encodeURIComponent(analyzer)}&twinSession=${session}`};

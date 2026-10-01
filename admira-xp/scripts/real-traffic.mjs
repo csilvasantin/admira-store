@@ -91,7 +91,7 @@ export function installRealTraffic({window:win=window,document:doc=document}={})
   const projection=createTrafficProjection(),status=doc.createElement('span');status.id='xtore-real-traffic-status';status.setAttribute('role','status');
   status.title='Trayectorias de Puerta Cam · posiciones proyectadas en la calle. Sprites sintéticos; sin identidad, edad ni género. Patinetes: trayectoria existente confirmada por un operador, nunca animación desde el contador manual.';
   status.style.cssText='font:10px/1.3 monospace;color:#8edeb0;max-width:210px;white-space:normal;padding:0 5px';
-  doc.querySelector('#telegramDock .tg-actions')?.append(status);
+  doc.querySelector('#advancedStreamControls')?.append(status);
   let previous='';
   function paintStatus(count,manualScooters=0){const enabled=!!win.__xtoreWindowPlayer;status.hidden=!enabled;const text=projection.status==='live'?`Puerta Cam · ${count} trayectorias${manualScooters?' · patinete confirmado manualmente':''}`:projection.status==='disconnected'?'Puerta Cam · desconectada':projection.status==='waiting'?'Puerta Cam · esperando trayectorias':'Puerta Cam · sin datos recientes';if(text!==previous){status.textContent=text;previous=text;}}
   const api={enabled:()=>!!win.__xtoreWindowPlayer,draw(ctx,iso,width,height){

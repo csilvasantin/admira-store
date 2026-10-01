@@ -4,7 +4,7 @@ import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mj
 import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=entry-1';
 import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=starbucks-room-1';
 
-const viewPane=document.querySelector('#telegramDock .expert-view-pane');
+const qualityOptions=document.querySelector('#visualQualityOptions');
 const status=document.createElement('div');status.id='xtanco-best-status';
 status.setAttribute('role','status');status.hidden=true;document.body.append(status);
 let storage;try{storage=window.localStorage;}catch{}
@@ -104,8 +104,8 @@ tiers.choose=mode=>{
     return transition.finished.catch(()=>{}).then(()=>outcome).finally(()=>{transitionActive=false;});
   }catch{transitionActive=false;return chooseDirect(mode);}
 };
-const expertControls=createTierControls({context:'Calidad visual · modo experto',choose:mode=>tiers.choose(mode)});
-expertControls.element.id='xtanco-visual-quality';viewPane?.prepend(expertControls.element);
+const expertControls=createTierControls({context:document.documentElement.lang==='en'?'Xpace quality · Options':'Calidad del Xpacio · Opciones',choose:mode=>tiers.choose(mode)});
+expertControls.element.id='xtanco-visual-quality';qualityOptions?.append(expertControls.element);
 function syncCafeteriaTierControls(){
   const unavailable=isCafeteria();
   for(const button of expertControls.element.querySelectorAll('[data-visual-mode]')){

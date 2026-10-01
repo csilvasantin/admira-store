@@ -8,10 +8,10 @@ window.__xtoreDoohHistory={render:(root,en)=>renderDoohHistory(root,{en,getSnaps
 const qs=new URLSearchParams(location.search);
 const enabled=qs.get('virtualPlayer')===SCREEN;
 const dock=document.getElementById('telegramDock'),expert=document.getElementById('pfExpert');
-const entry=document.createElement('button');entry.type='button';entry.id='xtore-window-entry';entry.textContent='Player y cámara';
-const actions=dock.querySelector('.expert-primary-actions');actions.append(entry);
+const entry=document.createElement('button');entry.type='button';entry.id='xtore-window-entry';entry.textContent=document.documentElement.lang==='en'?'Player and camera':'Player y cámara';
+const actions=document.querySelector('.quad-right .expert-primary-actions');actions.append(entry);
 const grip=document.createElement('span');grip.id='xtore-expert-grip';grip.textContent='⠿ CONTROL XTORE';grip.setAttribute('aria-label','Control Xtore');dock.querySelector('.tg-cli-row').prepend(grip);
-const closeDock=document.createElement('button');closeDock.type='button';closeDock.textContent='×';closeDock.setAttribute('aria-label','Cerrar modo experto');actions.append(closeDock);
+const closeDock=document.createElement('button');closeDock.type='button';closeDock.id='xtore-expert-close';closeDock.textContent='×';closeDock.setAttribute('aria-label',document.documentElement.lang==='en'?'Close Expert mode':'Cerrar modo experto');actions.append(closeDock);
 // Expert is a bottom-anchored workspace; only the separate player window moves.
 closeDock.addEventListener('click',()=>{if(!document.body.classList.contains('xp-left-hidden'))expert.click();});
 if(!enabled){entry.onclick=()=>{location.href='?autostart=xtanco&virtualPlayer='+SCREEN;};}else{

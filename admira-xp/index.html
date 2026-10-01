@@ -923,6 +923,7 @@
 </style>
 <nav class="quad-menu quad-left is-collapsed" aria-label="Opciones">
   <div class="qm-title">Opciones</div>
+  <section class="expert-menu-group" aria-labelledby="visualQualityLabel"><h2 id="visualQualityLabel">Calidad del Xpacio</h2><div id="visualQualityOptions"></div></section>
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head" data-acc-head>📢 Megafonía</button>
     <div class="qm-acc-body">
@@ -974,6 +975,14 @@
 </nav>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
   <div class="qm-title">Opciones Avanzadas</div>
+  <section id="advancedStreamControls" class="expert-menu-group" aria-labelledby="streamControlsLabel"><h2 id="streamControlsLabel">Player y cámara</h2><div class="tg-actions expert-primary-actions">
+        <button type="button" class="primary" id="telegramSendBtn">Send</button>
+        <!-- El botón /help se quitó de la barra (2-ago-2026, Carlos: «eliminar
+             /help para tener más espacio»). El comando SIGUE existiendo: se
+             escribe /help en el compositor, y la ayuda completa vive en
+             xpaceos.com/help. El panel se cierra con su propia ✕. -->
+        <button type="button" id="telegramHideBtn" title="Mostrar/ocultar Local view">Hide</button>
+      </div></section>
   <span class="qm-head">Equipo · Clientes</span>
   <span class="qm-hint" style="display:block;padding:8px 6px;line-height:1.5">El panel de <b>EQUIPO / CLIENTES</b> y sus actores (Ladrón, Guardia Civil, Opinador, Unitree, Sponsor…) aparece abajo al abrir Avanzado ▾</span>
 </nav>
@@ -1239,14 +1248,7 @@
       <section class="expert-category-panel" aria-labelledby="expertCategoriesLabel"><span class="expert-section-label" id="expertCategoriesLabel">CATEGORÍAS</span><div id="expertQuickIcons"></div></section>
     </div>
     <div class="expert-divider" data-expert-divider="0" role="separator" aria-orientation="vertical" tabindex="0"></div>
-      <div class="tg-actions expert-controls-pane" aria-label="Controles"><span class="expert-section-label" id="expertControlsLabel">CONTROLES</span><div class="tg-actions expert-primary-actions">
-        <button type="button" class="primary" id="telegramSendBtn">Send</button>
-        <!-- El botón /help se quitó de la barra (2-ago-2026, Carlos: «eliminar
-             /help para tener más espacio»). El comando SIGUE existiendo: se
-             escribe /help en el compositor, y la ayuda completa vive en
-             xpaceos.com/help. El panel se cierra con su propia ✕. -->
-        <button type="button" id="telegramHideBtn" title="Mostrar/ocultar Local view">Hide</button>
-      </div><div id="expertCategoryDetail" aria-live="polite" hidden></div></div>
+      <div class="tg-actions expert-controls-pane" aria-label="Opciones de categoría"><span class="expert-section-label" id="expertControlsLabel">OPCIONES DE CATEGORÍA</span><div id="expertCategoryDetail" aria-live="polite" hidden></div></div>
     <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
     <div class="expert-view-pane"><span class="expert-section-label" id="expertPreviewLabel">PREVIOS</span><div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div></div>
     </div>
@@ -34392,7 +34394,12 @@ window.xtAPI = (function(){
     {sel:'#splashContactBtn', en:'Contact', es:'Contacto'},
     {sel:'#pfOptions', attr:'aria-label', en:'Options', es:'Opciones'},
     {sel:'#pfOptions', attr:'title', en:'Options', es:'Opciones'},
-    {sel:'#expertControlsLabel', en:'CONTROLS', es:'CONTROLES'},
+    {sel:'#expertControlsLabel', en:'CATEGORY OPTIONS', es:'OPCIONES DE CATEGORÍA'},
+    {sel:'#visualQualityLabel', en:'Xpace quality', es:'Calidad del Xpacio'},
+    {sel:'#streamControlsLabel', en:'Player and camera', es:'Player y cámara'},
+    {sel:'#xtore-window-entry', en:'Player and camera', es:'Player y cámara'},
+    {sel:'#xtore-expert-close', attr:'aria-label', en:'Close Expert mode', es:'Cerrar modo experto'},
+    {sel:'#xtanco-visual-quality', attr:'aria-label', en:'Xpace quality · Options', es:'Calidad del Xpacio · Opciones'},
     {sel:'#expertCategoriesLabel', en:'CATEGORIES', es:'CATEGORÍAS'},
     {sel:'#expertPreviewLabel', en:'PREVIEWS', es:'PREVIOS'},
     {sel:'#pfToggles', attr:'aria-label', en:'Modes: advanced, expert', es:'Modos: avanzado, experto'},
@@ -35509,8 +35516,8 @@ window.xtAPI = (function(){
   try{ window.__dlProgress={prog:prog,set:set,start:start,done:done}; }catch(e){}
 })();
 </script>
-<!-- Expert: CLI and category cards in the left pane, execution controls in the
-     middle, previews on the right. Advanced keeps its independent side launcher.
+<!-- Expert: CLI and category cards on the left, selected category options in the
+     middle, previews on the right. Quality lives in Options; general controls in Advanced.
      Category cards forward to the original hidden #telegramQuickActions buttons. -->
 <style id="quickLaunchStyle">
   /* Los botones fuente se ocultan; sus tarjetas viven debajo del CLI. */
@@ -35530,7 +35537,6 @@ window.xtAPI = (function(){
   #telegramDock.compose-start .tg-cli-row{display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:0;padding:6px;gap:3px;overflow:hidden}
   #telegramDock.compose-start .tg-cli-row::before{content:'CONTROL XTORE';color:var(--xp-cyan,#78f3ff);font:bold 9px/1.2 monospace;letter-spacing:.1em;flex:0 0 auto}
   #telegramDock.compose-start .tg-cli-row #telegramComposer{width:100%;height:100%!important;max-height:none!important;min-height:0;flex:1;padding:4px;box-sizing:border-box;overflow:auto}
-  #telegramDock.compose-start #xtanco-visual-quality{flex-wrap:wrap;max-width:100%;box-sizing:border-box}
   #telegramDock.compose-start .expert-workspace>.tg-actions{display:flex!important;align-content:flex-start;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;gap:5px;padding:6px 2px;min-width:0;min-height:0;margin:0;overflow:auto}
   #telegramDock.compose-start .expert-workspace #telegramLastResponse{display:block!important;min-width:0;min-height:0;max-height:none;margin:0;border:0;padding:6px;overflow:auto;align-self:stretch;overflow-wrap:anywhere}
   #telegramDock.compose-start #telegramLastResponse:empty::before{content:"LOCAL VIEW";color:#78f3ff;font:10px monospace;letter-spacing:.08em}
@@ -35538,9 +35544,15 @@ window.xtAPI = (function(){
   .expert-divider::before{content:'';position:absolute;top:5px;bottom:5px;left:5px;width:2px;background:rgba(120,243,255,.3);border-radius:2px}
   .expert-divider:hover::before,.expert-divider:focus-visible::before,.expert-divider.is-dragging::before{background:#78f3ff}
   #telegramDock .expert-view-pane{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:0;padding:6px;overflow:auto;scrollbar-width:none}
-  #telegramDock .expert-primary-actions{flex:0 0 auto;min-height:0;padding:0;border:0;background:transparent;gap:5px;align-items:center}
+  .expert-menu-group{flex:0 0 auto;min-width:0;border-top:1px solid #365c68;padding:8px 3px}
+  .expert-menu-group h2{margin:0 0 7px;font:bold 9px/1.3 monospace;color:var(--xp-cyan,#78f3ff);letter-spacing:.06em;overflow-wrap:anywhere}
+  #visualQualityOptions .visual-tier-controls{display:flex;flex-direction:column;width:100%;box-sizing:border-box;border:0;padding:0;background:transparent;border-radius:0}
+  .quad-left #visualQualityOptions button{align-items:flex-start;text-align:left;white-space:normal;padding:7px 5px;width:100%;font-size:10px;overflow-wrap:anywhere}
+  .quad-left #visualQualityOptions small{white-space:normal;font-size:8px}
+  .quad-right .expert-primary-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(75px,100%),1fr));padding:0;border:0;background:transparent;gap:5px}
+  .quad-right .expert-primary-actions button,.quad-right #xtore-window-entry{justify-content:center;min-width:0;white-space:normal;padding:7px 4px;font:10px/1.3 monospace;overflow-wrap:anywhere}
   #telegramDock .expert-view-pane::-webkit-scrollbar{display:none}
-  #telegramDock .expert-view-pane>.visual-tier-controls,#telegramDock .expert-view-pane>.tier-hud{flex:0 0 auto}
+  #telegramDock .expert-view-pane>.tier-hud{flex:0 0 auto}
   #telegramDock.compose-start .expert-view-pane #telegramLastResponse{flex:1 0 auto;overflow:visible;padding:4px 0}
   #telegramDock.compose-start.cli-out-hidden #telegramLastResponse{display:none!important}
   #telegramDock.compose-start .help-open .expert-workspace,#telegramDock.compose-start .signage-open .expert-workspace{flex:0 0 90px}
@@ -35776,8 +35788,8 @@ window.xtAPI = (function(){
 </script>
 <script>if(new URLSearchParams(location.search).get("virtualPlayer")==="xtore-virtual-zapatillas"){try{for(const l of ["es","en"]){if(typeof LANGS!=="undefined"&&LANGS[l])LANGS[l].ledMsgs=["ADMIRA · XTORE ZAPATILLAS","PLAYER VIRTUAL · INTERIOR + ESCAPARATE","PUERTA CAM · PROGRAMACIÓN CONDICIONAL"];}}catch(_){}}</script>
 <link rel="stylesheet" href="scripts/xtore-window.css?v=bottom-workspace-2">
-<script type="module" src="scripts/xtore-window.mjs?v=bottom-workspace-2"></script>
-<script type="module" src="scripts/real-traffic.mjs?v=1"></script>
+<script type="module" src="scripts/xtore-window.mjs?v=advanced-controls-1"></script>
+<script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
 <link rel="stylesheet" href="scripts/matrix-panorama.css?v=closed-resume-1">
@@ -35788,7 +35800,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
 <link rel="stylesheet" href="scripts/tier-hud.css?v=expert-hud-1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=distribuir-3"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=options-quality-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=1"></script>
