@@ -1,6 +1,6 @@
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
-import {mountIncidentPanel} from './starbucks-incidents.mjs?v=closed-resume-1';
+import {mountIncidentPanel} from './starbucks-incidents.mjs?v=incident-detail-1';
 import {createSincroIA} from './sincro-ia.mjs?v=devices-2';
 import {mountDeviceEditor} from './device-editor.mjs?v=loop-1';
 import {createDevicePlayback} from './device-playback.mjs?v=loop-1';

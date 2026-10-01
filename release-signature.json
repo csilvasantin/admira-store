@@ -1,10 +1,10 @@
 {
-  "version": "v.01.10.2026.r8.08:31",
-  "signature": "OraculoMacMini · MacMini",
-  "machine": "MacMini",
-  "agent": "OraculoMacMini",
-  "deployer": "OraculoMacMini",
-  "evidence": "Yokup Hoy #112 DCL-113efeb7f6c3dbdc97c8ad8b: central AdmiraNext commercial projects and venues, origin-bound read access, permission and expiry checks; common backoffice/Xpace clients; ES/EN help and MCP 2.12.13.",
+  "version": "v.01.10.2026.r9.12:01",
+  "signature": "MerovingioGrokBotBox · GrokBotBox",
+  "machine": "GrokBotBox",
+  "agent": "MerovingioGrokBotBox",
+  "deployer": "MerovingioGrokBotBox",
+  "evidence": "Matrix Starbucks: pulsar la pantalla averiada abre la ficha de SU incidencia en Yokup (https://www.yokup.com/ticket?id=INC-…, la activa más reciente del equipo) en vez del listado genérico; sin ticket válido sigue en /incidencias. Ayuda ES/EN, MCP y docs. Retorno: tag retorno/pre-incidencia-detalle-20261001.",
   "day": "01.10.2026",
-  "time": "08:31"
+  "time": "12:01"
 }

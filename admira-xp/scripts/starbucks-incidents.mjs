@@ -10,6 +10,10 @@ export async function sendIncident(args,fetcher=fetch){const payload=incidentPay
 export const YOKUP_STATUS_URL='https://api.yokup.com/incident/status',STATUS_POLL_MS=15000,CLOSED_VISIBLE_MS=10*60000;
 export function equipoFromResource(resource){const m=/^demo:([^:]+):(pantalla-[1-6]|tpv)(?::|$)/.exec(String(resource||''));return m&&m[1]===STARBUCKS_STORE?m[2]:null;}
 export async function fetchIncidentStatus(ids=[],fetcher=fetch){const q=new URLSearchParams({prefix:'demo:'+STARBUCKS_STORE+':'});if(ids.length)q.set('ids',ids.slice(-20).join(','));const response=await fetcher(YOKUP_STATUS_URL+'?'+q,{cache:'no-store'});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw Error(data.error||'Yokup HTTP '+response.status);return data;}
+// Detalle en Yokup (Carlos, 01-10-2026): pulsar la pantalla averiada abre la FICHA de su incidencia
+// (www.yokup.com/ticket?id=INC-…), no el listado genérico. Sin id válido se queda en /incidencias.
+export const YOKUP_INCIDENTS_URL='https://www.yokup.com/incidencias',YOKUP_TICKET_URL='https://www.yokup.com/ticket?id=';
+export function incidentDetailUrl(id){const v=String(id||'').trim();return /^[A-Z]{3}-[A-Z0-9]{4,10}$/.test(v)?YOKUP_TICKET_URL+encodeURIComponent(v):YOKUP_INCIDENTS_URL;}
 // Por equipo: la incidencia activa más reciente; si no hay, la última cerrada hace menos de 10 min.
 export function pickIncidentPerDevice(incidents,now=Date.now()){const out=new Map();for(const inc of incidents||[]){const equipo=equipoFromResource(inc.resource);if(!equipo||inc.stage==='cancelada')continue;const closed=inc.stage==='cerrada';if(closed&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS)continue;const prev=out.get(equipo);const rank=i=>(i.stage==='cerrada'?0:1)*1e15+(i.created_at||0);if(!prev||rank(inc)>rank(prev))out.set(equipo,inc);}return out;}
 const clock=ms=>{const s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0');};
@@ -31,7 +35,7 @@ export function mountIncidentPanel({root,lang='es',devices,onPower,nodeFor=()=>n
  function setPower(id,value){value?off.add(id):off.delete(id);localStorage.setItem('xpaceos.starbucks.off.v1',JSON.stringify([...off]));onPower(id,value);refresh();}
  select.addEventListener('change',()=>{target=select.value;refresh();},opts);
  panel.addEventListener('click',async e=>{const action=e.target.closest('[data-incident]')?.dataset.incident;if(action==='close'){panel.hidden=true;return;}if(busy||!['power','send'].includes(action))return;const d=devices.find(d=>d.id===target);busy=true;for(const b of panel.querySelectorAll('button'))b.disabled=true;result.textContent=t('Enviando…','Sending…');
-  try{const demo=action==='power',resolve=demo&&off.has(d.id);const data=await sendIncident({equipo:d.equipo,problema:problem.value,gravedad:severity.value,demo,resolve,uuid:manualId});if(demo)setPower(d.id,!resolve);else{manualId=crypto.randomUUID();problem.value='';}track(data.id||data.resolved);poll();const a=document.createElement('a');a.href='https://www.yokup.com/incidencias';a.target='_blank';a.rel='noopener';a.textContent=(data.id||data.resolved||t('Resuelta','Resolved'))+' · Yokup';result.replaceChildren(a);
+  try{const demo=action==='power',resolve=demo&&off.has(d.id);const data=await sendIncident({equipo:d.equipo,problema:problem.value,gravedad:severity.value,demo,resolve,uuid:manualId});if(demo)setPower(d.id,!resolve);else{manualId=crypto.randomUUID();problem.value='';}track(data.id||data.resolved);poll();const a=document.createElement('a');a.href=incidentDetailUrl(data.id);a.target='_blank';a.rel='noopener';a.textContent=(data.id||data.resolved||t('Resuelta','Resolved'))+' · Yokup';result.replaceChildren(a);
   }catch(error){result.textContent=t('No enviado: ','Not sent: ')+error.message;}finally{busy=false;for(const b of panel.querySelectorAll('button'))b.disabled=false;refresh();}
  },opts);refresh();
  function track(id){if(!id)return;tracked.set(id,Date.now());while(tracked.size>20)tracked.delete(tracked.keys().next().value);try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}}
@@ -56,9 +60,9 @@ export function mountIncidentPanel({root,lang='es',devices,onPower,nodeFor=()=>n
   }
   const closed=inc.stage==='cerrada';
   if(closed){chip.removeAttribute('href');chip.setAttribute('role','button');chip.tabIndex=0;}
-  else{chip.href='https://www.yokup.com/incidencias';chip.removeAttribute('role');chip.removeAttribute('tabindex');}
+  else{chip.href=incidentDetailUrl(inc.id);chip.removeAttribute('role');chip.removeAttribute('tabindex');}
   const model=chipModel(inc,now,lang);chip.dataset.tone=model.tone;chip.dataset.stage=inc.stage;
-  chip.title=(inc.subject||inc.id)+(closed?' · '+t('Pulsa para volver a emitir','Click to resume playback'):'');
+  chip.title=(inc.subject||inc.id)+(closed?' · '+t('Pulsa para volver a emitir','Click to resume playback'):' · '+t('Abrir la ficha en Yokup','Open the ticket in Yokup'));
   chip.replaceChildren(...model.lines.map((line,i)=>{const el=document.createElement(i?'span':'strong');el.textContent=line;return el;}));
  }}
  async function poll(){clearTimeout(pollTimer);if(abort.signal.aborted)return;try{const data=await fetchIncidentStatus([...tracked.keys()],fetcher);statusData=data.incidents||[];const now=Date.now();for(const inc of statusData)if(inc.stage==='cerrada'&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS&&tracked.delete(inc.id))try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}paint();}catch{}pollTimer=setTimeout(poll,document.hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);}
