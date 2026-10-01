@@ -1,0 +1,44 @@
+name: Cloudflare Pages (perímetro)
+
+# admira.store pasa de GitHub Pages a Cloudflare Pages para ponerle un
+# perímetro de seguridad en servidor (functions/_perimetro.js, que llega con el
+# espejo de xpaceos · Carlos, 1-oct-2026, misión DCL-bdd079ab114d86b789f6ca65).
+# El espejo empuja con GITHUB_TOKEN y ese push no dispara otros flujos, por eso
+# además de `push` escuchamos el final del flujo del espejo.
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["Espejo XpaceOS publicado en castellano"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Construir y publicar
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -f functions/_perimetro.js || { echo "✗ falta el perímetro: el espejo aún no lo ha traído de xpaceos"; exit 1; }
+          sha="$(git rev-parse HEAD)"
+          mkdir -p _site
+          git archive HEAD | tar -x -C _site
+          rm -rf _site/.github _site/tests
+          if [ -f version.json ]; then cp version.json _site/version.json; fi
+          npx --yes wrangler@4 pages deploy _site --project-name admira-store --branch main --commit-hash "$sha"
