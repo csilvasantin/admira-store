@@ -27,3 +27,5 @@
 
 #topBar #xpTopNotify{flex:1 1 0;min-width:0;max-width:32vw;box-sizing:border-box}
 .quad-menu .qm-acc-head{flex-direction:row!important;justify-content:flex-start!important}
+
+.project-session-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}.project-session-actions #projectConnect{grid-column:1/-1}.project-session-actions button{font:inherit;padding:8px;border:1px solid #337680;border-radius:6px;color:#a4efe3;background:#0b2530;cursor:pointer}.project-session-actions button:disabled{opacity:.5}.project-session-actions [hidden]{display:none}#projectVenueSelector{width:100%;margin-top:4px}

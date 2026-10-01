@@ -928,8 +928,10 @@
     <h2 id="projectSelectorLabel">Proyecto y local</h2>
     <label for="projectSelector" id="projectFieldLabel">Proyecto</label>
     <select id="projectSelector" aria-describedby="projectSelectionStatus"></select>
+    <label for="projectVenueSelector" id="projectVenueFieldLabel">Elegir local</label><select id="projectVenueSelector"></select>
+    <div class="project-session-actions"><button type="button" id="projectConnect">Conectar con AdmiraNext</button><button type="button" id="projectRefresh">Actualizar</button><button type="button" id="projectDisconnect" hidden>Desconectar</button><button type="button" id="projectDemos" hidden>Ver demos públicas</button></div>
     <div class="project-venue"><span id="projectVenueLabel">Local</span><strong id="projectVenueName"></strong><small id="projectSelectionStatus" role="status"></small></div>
-    <a href="https://www.admira.app/backoffice" target="_blank" rel="noopener" id="projectBackofficeLink">Gestionar proyectos en admira.app ↗</a>
+    <a href="https://www.admiranext.com/xpace/manage" target="_blank" rel="noopener" id="projectBackofficeLink">Gestionar proyectos en admira.app ↗</a>
   </section>
   <section class="expert-menu-group" aria-labelledby="visualQualityLabel"><h2 id="visualQualityLabel">Calidad del Xpacio</h2><div id="visualQualityOptions"></div></section>
   <div class="qm-acc" data-acc>
@@ -35594,8 +35596,8 @@ window.xtAPI = (function(){
 <script src="scripts/expert-categories.js?v=console-3"></script>
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
 <script src="scripts/expert-category-detail.js?v=detail-1"></script>
-<link rel="stylesheet" href="scripts/side-console.css?v=projects-1">
-<script type="module" src="scripts/project-selector.mjs?v=projects-2"></script>
+<link rel="stylesheet" href="scripts/side-console.css?v=central-1">
+<script type="module" src="scripts/project-selector.mjs?v=central-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
