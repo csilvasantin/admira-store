@@ -1236,18 +1236,19 @@
     <div class="expert-workspace">
     <div class="tg-cli-row">
       <textarea id="telegramComposer" placeholder="/sincro on"></textarea>
+      <section class="expert-category-panel" aria-labelledby="expertCategoriesLabel"><span class="expert-section-label" id="expertCategoriesLabel">CATEGORÍAS</span><div id="expertQuickIcons"></div></section>
     </div>
     <div class="expert-divider" data-expert-divider="0" role="separator" aria-orientation="vertical" tabindex="0"></div>
-      <div class="tg-actions" aria-label="Controles"><span class="expert-section-label" id="expertControlsLabel">CONTROLES</span><div id="expertQuickIcons"></div></div>
-    <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
-    <div class="expert-view-pane"><span class="expert-section-label" id="expertPreviewLabel">PREVIOS</span><div class="tg-actions expert-primary-actions">
+      <div class="tg-actions expert-controls-pane" aria-label="Controles"><span class="expert-section-label" id="expertControlsLabel">CONTROLES</span><div class="tg-actions expert-primary-actions">
         <button type="button" class="primary" id="telegramSendBtn">Send</button>
         <!-- El botón /help se quitó de la barra (2-ago-2026, Carlos: «eliminar
              /help para tener más espacio»). El comando SIGUE existiendo: se
              escribe /help en el compositor, y la ayuda completa vive en
              xpaceos.com/help. El panel se cierra con su propia ✕. -->
         <button type="button" id="telegramHideBtn" title="Mostrar/ocultar Local view">Hide</button>
-      </div><div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div></div>
+      </div></div>
+    <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
+    <div class="expert-view-pane"><span class="expert-section-label" id="expertPreviewLabel">PREVIOS</span><div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div></div>
     </div>
     <div class="tg-quick-actions" id="telegramQuickActions" aria-label="Acciones rápidas de escena"></div>
   </div>
@@ -34391,6 +34392,7 @@ window.xtAPI = (function(){
     {sel:'#pfOptions', attr:'aria-label', en:'Options', es:'Opciones'},
     {sel:'#pfOptions', attr:'title', en:'Options', es:'Opciones'},
     {sel:'#expertControlsLabel', en:'CONTROLS', es:'CONTROLES'},
+    {sel:'#expertCategoriesLabel', en:'CATEGORIES', es:'CATEGORÍAS'},
     {sel:'#expertPreviewLabel', en:'PREVIEWS', es:'PREVIOS'},
     {sel:'#pfToggles', attr:'aria-label', en:'Modes: advanced, expert', es:'Modos: avanzado, experto'},
     {sel:'[data-quad-toggle="right"]', attr:'aria-label', en:'Open advanced menu', es:'Desplegar menú avanzado'},
@@ -35506,15 +35508,11 @@ window.xtAPI = (function(){
   try{ window.__dlProgress={prog:prog,set:set,start:start,done:done}; }catch(e){}
 })();
 </script>
-<!-- ════════ Lanzadera lateral en modo experto v1 (2026-07-18) ════════
-     Modo EXPERTO (⌘): el dock inferior queda SOLO para el CLI (tiles ocultos).
-     Modo AVANZADO (▤): los iconos (Signage/…/Audiencia) se espejan en el panel
-     derecho .quad-right, empezando bajo la barra superior, en lugar del texto
-     EQUIPO CARBONO. Los originales siguen en #telegramQuickActions (ocultos) → el
-     render y el click no cambian; cada icono reenvía el click al original.
-     Bloque autocontenido y reversible. -->
+<!-- Expert: CLI and category cards in the left pane, execution controls in the
+     middle, previews on the right. Advanced keeps its independent side launcher.
+     Category cards forward to the original hidden #telegramQuickActions buttons. -->
 <style id="quickLaunchStyle">
-  /* Modo EXPERTO (⌘) = solo CLI: los tiles no se muestran en el dock inferior. */
+  /* Los botones fuente se ocultan; sus tarjetas viven debajo del CLI. */
   #telegramDock .tg-quick-actions{display:none !important}
   /* CLI aún más limpio: fuera la barra superior del dock (título + versión "SITE v…");
      el rótulo "CONTROL XTORE" pasa al inicio de la propia caja de texto. */
@@ -35579,6 +35577,8 @@ window.xtAPI = (function(){
   #advSceneControls .tg-quick-btn[aria-pressed=true] span{color:#a7e6be !important}
 </style>
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
+<link rel="stylesheet" href="scripts/expert-categories.css?v=console-1">
+<script src="scripts/expert-categories.js?v=console-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -35597,7 +35597,8 @@ window.xtAPI = (function(){
   }
   function makeInventory(){
     var b=document.createElement('button');b.type='button';b.className='tg-quick-btn';b.id='advInventoryCli';
-    b.innerHTML='<strong>Inventario</strong><span>Añadir / eliminar · CLI</span>';b.title='/inventario añadir 43 · /inventario eliminar silla de madera';
+    var en=typeof lang!=='undefined'&&lang==='en';
+    b.innerHTML='<strong>'+(en?'Inventory':'Inventario')+'</strong><span>'+(en?'Add / remove · CLI':'Añadir / eliminar · CLI')+'</span>';b.title='/inventario añadir 43 · /inventario eliminar silla de madera';
     b.addEventListener('click',function(){
       document.body.classList.remove('xp-left-hidden');var expert=document.getElementById('pfExpert');expert?.setAttribute('aria-pressed','true');expert?.classList.add('is-active');
       window.dispatchEvent(new Event('resize'));window.sendComposerText?.('/inventario');document.getElementById('telegramComposer')?.focus();
@@ -35618,12 +35619,13 @@ window.xtAPI = (function(){
     // Pixeria keeps its latest-item import. Scene bars (Better) sit under it.
     btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
     host.appendChild(scene);
-    var center=document.getElementById('expertQuickIcons');
-    if(center){center.replaceChildren();host.querySelectorAll('button').forEach(function(original){
+    var categories=document.getElementById('expertQuickIcons');
+    var focused=categories?.contains(document.activeElement)?document.activeElement.dataset.categoryId:null;
+    if(categories){categories.replaceChildren();host.querySelectorAll('button').forEach(function(original){
       if(original.closest('#advSceneControls'))return;
-      var copy=original.cloneNode(true);copy.removeAttribute('id');
-      copy.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();original.click();});center.appendChild(copy);
-    });}
+      var copy=original.cloneNode(true);window.XpaceExpertCategories.decorate(copy,{en:typeof lang!=='undefined'&&lang==='en'});
+      copy.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();original.click();});categories.appendChild(copy);
+    });if(focused){[...categories.children].find(function(b){return b.dataset.categoryId===focused;})?.focus({preventScroll:true});}}
   }
   try{ var mo=new MutationObserver(mirror); mo.observe(src,{childList:true,subtree:true,characterData:true}); }catch(e){}
   mirror();

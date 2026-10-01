@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.01.10.2026.r1.05:19",
+  "version": "v.01.10.2026.r2.05:59",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.8",
+    "version": "2.12.9",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -263,12 +263,14 @@
     }
   },
   "expert_layout": {
-    "es": "Experto queda anclado al borde inferior, de extremo a extremo y sin margen exterior. Arrastra su tirador superior hacia arriba para ganar altura o hacia abajo para reducirla; el borde inferior no se mueve. Las posiciones flotantes antiguas se ignoran. Hay tres bloques: izquierda CLI, centro controles y accesos operativos, derecha vistas y previos con Local view. Los dos separadores verticales ajustan el ancho de bloques contiguos; usa las flechas o doble clic/Inicio para restablecer. La altura y los anchos se guardan en este navegador. Opciones y Avanzadas conservan sus barras laterales independientes.",
-    "en": "Expert is anchored to the bottom edge, spans the available width and has no outer margin. Drag its top handle upward to gain height or downward to reduce it; the bottom edge stays fixed. Old floating positions are ignored. Three panes hold the CLI on the left, operational controls and shortcuts in the middle, and views and previews with Local view on the right. The two vertical dividers resize adjacent panes; use arrow keys or double-click/Home to reset. Height and widths are saved in this browser. Options and Advanced keep their independent side rails.",
+    "es": "Experto queda anclado al borde inferior, de extremo a extremo y sin margen exterior. Arrastra su tirador superior hacia arriba para ganar altura o hacia abajo para reducirla; el borde inferior no se mueve. Las posiciones flotantes antiguas se ignoran. Hay tres bloques: izquierda CLI con las categorías debajo de la entrada, centro controles de ejecución, derecha vistas y previos con Local view. Los dos separadores verticales ajustan el ancho de bloques contiguos; usa las flechas o doble clic/Inicio para restablecer. La altura y los anchos se guardan en este navegador. Opciones y Avanzadas conservan sus barras laterales independientes.",
+    "en": "Expert is anchored to the bottom edge, spans the available width and has no outer margin. Drag its top handle upward to gain height or downward to reduce it; the bottom edge stays fixed. Old floating positions are ignored. Three panes hold the CLI with categories below its input on the left, execution controls in the middle, and views and previews with Local view on the right. The two vertical dividers resize adjacent panes; use arrow keys or double-click/Home to reset. Height and widths are saved in this browser. Options and Advanced keep their independent side rails.",
     "tutorial": "https://www.xpaceos.com/help/#expert-layout",
     "help_topic": "expert",
     "bottom_anchored": true,
-    "upward_resize": true
+    "upward_resize": true,
+    "categories_under_cli": true,
+    "categories_guide": "https://www.xpaceos.com/admira-xp/docs/expert-categories.md"
   },
   "visual_tiers": {
     "good": "Classic twin",

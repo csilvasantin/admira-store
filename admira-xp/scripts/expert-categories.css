@@ -1,0 +1,24 @@
+/* Category console: below the CLI, inside the first resizable Expert pane. */
+#telegramDock.compose-start .tg-cli-row{gap:2px}
+#telegramDock.compose-start .tg-cli-row #telegramComposer{flex:0 0 auto;height:clamp(28px,25%,120px)!important;max-height:none!important;min-height:28px;padding:4px 8px;border:1px solid #25434e;border-radius:3px;background:#050d13;color:#e5f8ff;font:12px/1.4 monospace}
+#telegramDock.compose-start .tg-cli-row #telegramComposer:focus{border-color:#71d8eb;outline:1px solid #71d8eb;outline-offset:-1px;box-shadow:inset 3px 0 #71d8eb}
+.expert-category-panel{display:flex;flex-direction:column;gap:2px;min-height:0;flex:1;overflow:hidden}
+#expertCategoriesLabel{display:flex;align-items:center;gap:7px;font-size:9px;color:#80abb9;letter-spacing:.13em}
+#expertCategoriesLabel::before{content:'';width:4px;height:4px;background:#71d8eb;box-shadow:0 0 6px #71d8eb}
+#expertCategoriesLabel::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,#294653,transparent)}
+#expertQuickIcons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(126px,100%),1fr));gap:5px;align-content:start;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#355867 transparent;padding:1px 2px 3px 1px}
+#expertQuickIcons .expert-category{position:relative;display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;justify-content:start;gap:7px;min-width:0;min-height:36px;padding:4px 7px;border:1px solid #264955;border-radius:3px;background:linear-gradient(135deg,#10232e,#09151f);color:#d9f6ff;box-shadow:inset 0 1px rgba(149,229,255,.05);text-align:left;overflow:hidden;overflow-wrap:normal;cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s}
+#expertQuickIcons .expert-category::after{content:'';position:absolute;right:4px;top:4px;width:5px;height:5px;border-top:1px solid #416978;border-right:1px solid #416978}
+#expertQuickIcons .expert-category-icon{display:grid;place-items:center;width:24px;height:26px;color:#79cddd;background:transparent}
+#expertQuickIcons .expert-category-icon svg{width:22px;height:22px;display:block}
+#expertQuickIcons .expert-category-text{display:flex;flex-direction:column;min-width:0;gap:3px}
+#expertQuickIcons .expert-category strong{font:600 10px/1.15 monospace!important;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit}
+#expertQuickIcons .expert-category-status{font:9px/1.25 monospace!important;letter-spacing:0;color:#91aeba;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#expertQuickIcons .expert-category:hover,#expertQuickIcons .expert-category:focus-visible{background:linear-gradient(135deg,#15394a,#0b202d);border-color:#76d7e8;box-shadow:inset 2px 0 #76d7e8,0 0 8px rgba(90,203,231,.1);outline:none}
+#expertQuickIcons .expert-category.is-active{background:linear-gradient(135deg,#12322d,#0a1e20);border-color:#3b917a;box-shadow:inset 2px 0 #66d8ac}
+#expertQuickIcons .expert-category.is-active .expert-category-icon{color:#8ee8bf}
+#expertQuickIcons .expert-category.is-alert{border-color:#cf9861;box-shadow:inset 2px 0 #cf9861}
+#telegramDock.compose-start .expert-workspace>.expert-controls-pane{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:7px;padding:6px;overflow:auto}
+#telegramDock .expert-controls-pane .expert-primary-actions{display:flex;flex-wrap:wrap}
+#telegramDock .expert-controls-pane .expert-primary-actions>button{border-radius:3px}
+@media(prefers-reduced-motion:reduce){#expertQuickIcons .expert-category{transition:none}}
