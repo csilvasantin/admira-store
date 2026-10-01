@@ -36,6 +36,11 @@ jobs:
         run: |
           set -euo pipefail
           test -f functions/_perimetro.js || { echo "✗ falta el perímetro: el espejo aún no lo ha traído de xpaceos"; exit 1; }
+          # Sin la dirección de vuelta registrada en Google, el login muere en
+          # «redirect_uri_mismatch» (nos pasó dos veces). Se comprueba antes de publicar.
+          if [ -f scripts/google-redirects.sh ]; then
+            bash scripts/google-redirects.sh https://www.admira.store/auth/callback https://admira-store.pages.dev/auth/callback
+          fi
           sha="$(git rev-parse HEAD)"
           mkdir -p _site
           git archive HEAD | tar -x -C _site
