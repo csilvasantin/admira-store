@@ -10,3 +10,5 @@ test('unlinked projects are explicit and cannot navigate to a fake twin',()=>{as
 test('adapters use exactly the backoffice project and circuit IDs',async()=>{const {projects}=JSON.parse(await readFile(new URL('./project-catalog.json',import.meta.url)));for(const [id,a] of Object.entries(ADAPTERS))assert.equal(projects.find(p=>p.id===id).circuit,a.circuit);assert.equal(projects.length,20);});
 
 test('a project label cannot impersonate a linked Starbucks venue',()=>{assert.equal(projectContext(base+'&project=starbucks').unavailable,'starbucks');assert.equal(projectContext(base+'&project=starbucks&loc=unknown').id,'');assert.equal(projectContext(base+'&project=cafebreria','xtanco').id,'estancos');});
+
+test('current UI quality wins over a stale share-link value',()=>{assert.equal(new URL(projectUrl(base,'starbucks','matrix')).searchParams.get('quality'),'matrix');assert.equal(new URL(projectUrl(base,'estancos','matrix')).searchParams.get('quality'),'better');});

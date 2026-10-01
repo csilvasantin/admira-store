@@ -1,11 +1,14 @@
-import {ADAPTERS,projectContext,projectUrl} from './project-context.mjs';
+import {ADAPTERS,projectContext,projectUrl} from './project-context.mjs?v=projects-2';
 const select=document.getElementById('projectSelector'),chip=document.getElementById('projectContextChip');
+const chosenQuality=()=>document.querySelector('#visualQualityOptions [aria-pressed="true"]')?.dataset.visualMode;
 let projects=Object.entries(ADAPTERS).map(([id,a])=>({id,label:a.label,circuit:a.circuit})),last='';
-const english=()=>document.documentElement.lang==='en'||new URL(location.href).searchParams.get('lang')==='en';
+const english=()=>document.documentElement.lang==='en';
 const text=(en,es)=>english()?en:es;
 function refresh(){
   const context=projectContext(location.href,window.__xtancoVisualState?.()?.vertical);
-  const stamp=JSON.stringify([context,english(),projects]);if(stamp===last)return;last=stamp;
+  const controls=document.querySelector('#visualQualityOptions .visual-tier-controls');
+  const quality=window.__xtancoVisualTiers && controls?.getAttribute('aria-busy')==='false'?chosenQuality():null;
+  const stamp=JSON.stringify([context,english(),projects,quality]);if(stamp===last)return;last=stamp;
   document.getElementById('projectSelectorLabel').textContent=text('Project and venue','Proyecto y local');
   document.getElementById('projectFieldLabel').textContent=text('Project','Proyecto');
   document.getElementById('projectVenueLabel').textContent=text('Venue','Local');
@@ -27,9 +30,9 @@ function refresh(){
   document.getElementById('projectSelectionStatus').textContent=context.unavailable?text('This project has no associated twin here. Open the backoffice.','Este proyecto no tiene un gemelo asociado aquí. Abre el backoffice.'):context.linked?text('Linked venue · '+context.loc,'Local vinculado · '+context.loc):text('Demo · no real venue linked','Demo · sin local real vinculado');
   const link=document.getElementById('projectBackofficeLink');link.textContent=text('Manage projects in admira.app ↗','Gestionar proyectos en admira.app ↗');
   // Keep canonical IDs visible in shareable links without migrating saved layouts.
-  if(context.id){const url=new URL(location.href);url.searchParams.set('project',context.id);url.searchParams.set('circuit',context.circuit);if(url.href!==location.href)history.replaceState(history.state,'',url);}
+  if(context.id){const url=new URL(location.href);url.searchParams.set('project',context.id);url.searchParams.set('circuit',context.circuit);if(quality){url.searchParams.delete('visual');url.searchParams.set('quality',quality);}if(url.href!==location.href)history.replaceState(history.state,'',url);}
 }
-select.addEventListener('change',()=>{if(ADAPTERS[select.value])location.assign(projectUrl(location.href,select.value));});
+select.addEventListener('change',()=>{if(ADAPTERS[select.value])location.assign(projectUrl(location.href,select.value,chosenQuality()));});
 chip.addEventListener('click',()=>{if(document.getElementById('pfOptions').getAttribute('aria-expanded')!=='true')document.getElementById('pfOptions').click();select.focus({preventScroll:true});});
 window.addEventListener('xpaceos:project-change',refresh);window.addEventListener('resize',refresh);
 new MutationObserver(refresh).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});

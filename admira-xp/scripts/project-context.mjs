@@ -14,10 +14,10 @@ export function projectContext(href,vertical){
   const id=scene==='cafeteria'?'cafebreria':scene==='xtanco'?'estancos':scene?'':requested||'estancos';
   return id?{id,...ADAPTERS[id]}:{id:''};
 }
-export function projectUrl(href,id){
+export function projectUrl(href,id,currentQuality){
   const adapter=ADAPTERS[id];if(!adapter)throw new RangeError('No linked rendering adapter for this project');
   const url=new URL(href),p=url.searchParams;
-  const requested=p.get('quality')||p.get('visual')||'better';
+  const requested=currentQuality||p.get('visual')||p.get('quality')||'better';
   // Matrix opens the Starbucks venue. Best has no Cafebrería adapter yet.
   const quality=id==='starbucks'?requested:requested==='matrix'||(id==='cafebreria'&&requested==='best')?'better':requested;
   for(const key of ['loc','quality','visual','play','from','virtualPlayer','twinOrigin','twinSession','analyzerOrigin'])p.delete(key);
