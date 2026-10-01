@@ -2,12 +2,12 @@
 const root=document.body;
 const es=()=>document.documentElement.lang!=='en';
 const saved={};
-const limits=side=>({min:side==='left'?60:72,max:Math.max(120,Math.min(560,innerWidth-32))});
+const limits=side=>({min:side==='left'?156:152,max:Math.max(120,Math.min(560,innerWidth-32))});
 const clamp=(side,width)=>{const {min,max}=limits(side);return Math.round(Math.max(min,Math.min(max,width)));};
 for(const side of ['left','right']){
   try{const width=Number(localStorage.getItem('xpace_side_width_'+side));if(width>0)saved[side]=width;}catch{}
 }
-window.__xpSidePanelWidth=(side,automatic)=>saved[side]>0?clamp(side,saved[side]):automatic;
+window.__xpSidePanelWidth=(side,automatic)=>clamp(side,saved[side]>0?saved[side]:Math.max(192,automatic));
 for(const side of ['left','right']){
   const panel=document.querySelector('.quad-'+side);if(!panel)continue;
   const handle=document.createElement('div');handle.className='quad-resize quad-resize-'+side;handle.tabIndex=0;

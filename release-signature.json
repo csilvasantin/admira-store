@@ -1,10 +1,10 @@
 {
-  "version": "v.01.10.2026.r4.07:06",
+  "version": "v.01.10.2026.r5.07:32",
   "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
   "agent": "OraculoMacMini",
   "deployer": "OraculoMacMini",
-  "evidence": "Yokup Hoy #100 DCL-fac5062c957e7d65fb395e71: quality selector in Options; general controls in Advanced; selected category only in central Expert pane; original actions retained; ES/EN help and MCP 2.12.11.",
+  "evidence": "Yokup Hoy #103 DCL-6be09f7100e91e3ee3829958: canonical project/circuit/venue selector; explicit demo/linked state; technological side menus; ES/EN docs and MCP 2.12.12.",
   "day": "01.10.2026",
-  "time": "07:06"
+  "time": "07:32"
 }

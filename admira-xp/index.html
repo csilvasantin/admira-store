@@ -825,6 +825,7 @@
 </nav>
 <div id="topBar">
   <button type="button" class="quad-icon" id="pfOptions" data-quad-toggle="left" aria-label="Opciones" aria-expanded="false" title="Opciones">☰</button>
+  <button type="button" id="projectContextChip" class="project-context-chip" aria-label="Proyecto y local">Xpacio</button>
   <span id="bbClock" style="display:none;color:#ffdd66;font-size:12px;font-weight:bold">09:00</span>
   <span id="bbDate" style="display:none;color:#b0a888;font-size:9px">22/03/2026</span>
   <div class="sep"></div>
@@ -923,6 +924,13 @@
 </style>
 <nav class="quad-menu quad-left is-collapsed" aria-label="Opciones">
   <div class="qm-title">Opciones</div>
+  <section id="projectContextPanel" class="expert-menu-group" aria-labelledby="projectSelectorLabel">
+    <h2 id="projectSelectorLabel">Proyecto y local</h2>
+    <label for="projectSelector" id="projectFieldLabel">Proyecto</label>
+    <select id="projectSelector" aria-describedby="projectSelectionStatus"></select>
+    <div class="project-venue"><span id="projectVenueLabel">Local</span><strong id="projectVenueName"></strong><small id="projectSelectionStatus" role="status"></small></div>
+    <a href="https://www.admira.app/backoffice" target="_blank" rel="noopener" id="projectBackofficeLink">Gestionar proyectos en admira.app ↗</a>
+  </section>
   <section class="expert-menu-group" aria-labelledby="visualQualityLabel"><h2 id="visualQualityLabel">Calidad del Xpacio</h2><div id="visualQualityOptions"></div></section>
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head" data-acc-head>📢 Megafonía</button>
@@ -27252,8 +27260,10 @@ window.__xtancoEnterStarbucks=()=>{
   if(isStarbucksVenue())return;
   const url=new URL(location.href);url.searchParams.set('loc','alsea-sbux-021');
   url.searchParams.delete('play');url.searchParams.delete('autostart');
+  url.searchParams.set('project','starbucks');url.searchParams.set('circuit','alsea_starbucks');
   history.replaceState(history.state,'',url);
   autoEnterVertical('cafeteria');
+  window.dispatchEvent(new Event('xpaceos:project-change'));
 };
 window.__xtancoVisualState=()=>{
   const moving=document.body.classList.contains('xtanco-mudanza');
@@ -35567,16 +35577,6 @@ window.xtAPI = (function(){
   /* El panel Avanzado cubre la franja negra → padding compacto */
   .quad-right{padding:10px 3px !important}
   #advQuickIcons{display:flex;flex-direction:column;gap:4px;margin-top:2px}
-  /* Ítems del Avanzado con la MISMA tipografía y colores que Opciones, alineados a la
-     DERECHA (Orbitron, fondo transparente, acento cian al hover). */
-  #advQuickIcons .tg-quick-btn{width:100%;min-height:0;flex:0 0 auto;padding:7px 7px;gap:1px;
-    align-items:flex-end;justify-content:center;text-align:right;overflow:visible;
-    background:transparent !important;border:1px solid transparent !important;border-radius:7px;
-    color:var(--xp-ink) !important;font-family:'Orbitron','Press Start 2P',monospace}
-  #advQuickIcons .tg-quick-btn:hover{border-color:var(--xp-cyan) !important;color:var(--xp-cyan) !important;background:rgba(120,243,255,.1) !important}
-  #advQuickIcons .tg-quick-btn strong{font-size:9px !important;font-weight:800;text-align:right;line-height:1.15;white-space:normal;overflow-wrap:break-word;word-break:normal;max-width:100%;letter-spacing:0}
-  #advQuickIcons .tg-quick-btn span{font-size:8px !important;text-align:right;line-height:1.15;white-space:normal;overflow-wrap:break-word;max-width:100%;color:#9fc4cf}
-  #advQuickIcons .tg-quick-btn:hover span{color:var(--xp-cyan)}
   /* El ojo "La pantalla te ve" ya NO flota sobre el Xpacio: ahora vive en el panel
      Avanzado (▤). Ocultamos el FAB flotante (!important gana al display:flex inline). */
   #percibeFab{display:none !important}
@@ -35590,10 +35590,12 @@ window.xtAPI = (function(){
   #advSceneControls .tg-quick-btn[aria-pressed=true] span{color:#a7e6be !important}
 </style>
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
-<link rel="stylesheet" href="scripts/expert-categories.css?v=console-1">
-<script src="scripts/expert-categories.js?v=console-2"></script>
+<link rel="stylesheet" href="scripts/expert-categories.css?v=console-3">
+<script src="scripts/expert-categories.js?v=console-3"></script>
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
 <script src="scripts/expert-category-detail.js?v=detail-1"></script>
+<link rel="stylesheet" href="scripts/side-console.css?v=projects-1">
+<script type="module" src="scripts/project-selector.mjs?v=projects-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -35633,6 +35635,7 @@ window.xtAPI = (function(){
     host.appendChild(makePercibe());
     // Pixeria keeps its latest-item import. Scene bars (Better) sit under it.
     btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
+    host.querySelectorAll('button').forEach(function(button){window.XpaceExpertCategories.decorate(button,{en:typeof lang!=='undefined'&&lang==='en',preserveId:true});});
     host.appendChild(scene);
     var categories=document.getElementById('expertQuickIcons');
     var focused=categories?.contains(document.activeElement)?document.activeElement.dataset.categoryId:null;
@@ -35803,6 +35806,6 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/xtanco-premium-ui.mjs?v=options-quality-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
-<script type="module" src="scripts/side-panel-resize.mjs?v=1"></script>
+<script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>
 </body>
 </html>

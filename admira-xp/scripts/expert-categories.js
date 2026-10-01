@@ -17,11 +17,11 @@
     const command=(button.dataset.quickCommand||'').replace(/^\//,'').split(/\s/)[0].toLowerCase();
     return button.id==='advInventoryCli'?'inventory':button.id==='advPercibeBtn'?'perception':button.dataset.quickAction||({envivo:'dvr',impactos:'impactos'})[command]||command;
   }
-  function decorate(button,{en=false}={}){
+  function decorate(button,{en=false,preserveId=false}={}){
     const key=keyFor(button);
     const oldLabel=button.querySelector('strong')?.textContent||'';
     const label=key==='perception'?(en?'Perception':'Percepción'):key==='anonymizer'?'Anonymizer':oldLabel.replace(/^[^\p{L}\p{N}]+/u,'').trim();
-    const status=button.querySelector('span')?.textContent||'';
+    const status=(button.querySelector('.expert-category-status')||button.querySelector('span'))?.textContent||'';
     const icon=document.createElement('span');icon.className='expert-category-icon';icon.setAttribute('aria-hidden','true');
     icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">'+(paths[key]||paths.signage)+'</svg>';
     const text=document.createElement('span');text.className='expert-category-text';
@@ -33,7 +33,7 @@
     // Toggle state is inherited; do not invent a pressed state for launch actions.
     if(button.classList.contains('is-active'))button.setAttribute('aria-pressed','true');
     button.title=button.title||label+(status?' — '+status:'');
-    button.removeAttribute('id');return button;
+    if(!preserveId)button.removeAttribute('id');return button;
   }
   window.XpaceExpertCategories={decorate,keyFor};
 })();

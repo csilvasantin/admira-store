@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.01.10.2026.r4.07:06",
+  "version": "v.01.10.2026.r5.07:32",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.11",
+    "version": "2.12.12",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -620,5 +620,33 @@
     ],
     "scope": "local browser simulator; no new remote MCP tools",
     "guide": "https://www.xpaceos.com/admira-xp/docs/expert-weather.md"
+  },
+  "project_selection": {
+    "catalog_source": "https://www.admira.app/expert-commands.js?v=20261001-shell-2",
+    "catalog_snapshot": "https://www.xpaceos.com/admira-xp/scripts/project-catalog.json",
+    "catalog_update": "node admira-xp/scripts/sync-project-catalog.mjs",
+    "project_parameter": "project",
+    "circuit_parameter": "circuit",
+    "venue_parameter": "loc",
+    "supported": {
+      "estancos": {
+        "circuit": "estancos",
+        "vertical": "xtanco",
+        "venue": "demo"
+      },
+      "cafebreria": {
+        "circuit": "cafebreria",
+        "vertical": "cafeteria",
+        "venue": "demo"
+      },
+      "starbucks": {
+        "circuit": "alsea_starbucks",
+        "vertical": "cafeteria",
+        "loc": "alsea-sbux-021"
+      }
+    },
+    "pending": "Central registry API and authenticated project/venue association management; no backoffice storage/auth shared across domains. Unlinked clients are disabled, not fake twins.",
+    "es": "Opciones → Proyecto y local permite cambiar entre Xtanco (proyecto estancos), Cafebrería (cafebreria) y Starbucks (starbucks / alsea_starbucks). La cabecera muestra el proyecto actual. Starbucks abre Paseo de Gracia 103, ID alsea-sbux-021; Xtanco y Cafebrería se identifican como demostraciones sin local real vinculado. Los otros 17 proyectos del catálogo de admira.app aparecen sin gemelo vinculado y no abren escenas inventadas. Calidad se elige aparte; salir de Matrix cambia a Better para no volver a Starbucks. El cambio conserva dominio e idioma y elimina el contexto de player/cámara del local anterior. Opciones y Avanzado comparten tarjetas, iconos de línea y foco de teclado con Experto; conservan sus acciones y resize con un ancho mínimo legible.",
+    "en": "Options → Project and venue switches between Xtanco (estancos project), Cafebrería (cafebreria) and Starbucks (starbucks / alsea_starbucks). The header shows the current project. Starbucks opens Paseo de Gracia 103, stable ID alsea-sbux-021; Xtanco and Cafebrería are identified as demos without a linked real venue. The other 17 admira.app projects appear without linked twins and do not open invented scenes. Quality is separate; leaving Matrix falls back to Better to avoid reopening Starbucks. Switching preserves host and language and clears the previous venue’s player/camera context. Options and Advanced share Expert’s cards, line icons and keyboard focus, retain original actions and resize with readable minimum widths."
   }
 }

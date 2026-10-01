@@ -1,0 +1,29 @@
+/* One console language across Expert, Options and Advanced. Existing actions/IDs stay intact. */
+.quad-menu{background:linear-gradient(145deg,#0b1d27ee,#060e16f5)!important;border-color:#315766!important;border-radius:3px!important;box-shadow:inset 0 1px #76d7e812,0 8px 28px #0005;scrollbar-width:thin;scrollbar-color:#355867 transparent}
+.quad-menu .qm-title,.quad-right .qm-title{text-align:left!important;font:700 10px/1.3 monospace!important;letter-spacing:.12em!important;color:#83dfed!important;padding:4px 6px 10px!important;border-bottom:1px solid #284957;margin-bottom:6px}
+.quad-menu .expert-menu-group{padding:9px 5px;border-top:0;border-bottom:1px solid #284957}
+.quad-menu .expert-menu-group h2{color:#91b9c7;font:700 9px/1.3 monospace;letter-spacing:.1em;text-transform:uppercase}
+.quad-menu button,.quad-menu select,.quad-menu input{font-family:monospace!important;border-radius:3px!important}
+.quad-menu .qm-acc{margin:6px 3px}
+.quad-menu .qm-acc-head{position:relative;display:flex;align-items:center;min-height:36px;padding:8px 10px!important;background:linear-gradient(135deg,#10232e,#09151f)!important;border:1px solid #264955!important;color:#d9f6ff!important;font:600 11px/1.3 monospace!important;text-align:left!important;letter-spacing:.03em}
+.quad-menu .qm-acc-head::before{content:'';width:4px;height:14px;flex:none;margin-right:8px;border-left:2px solid #79cddd;border-top:1px solid #79cddd;border-bottom:1px solid #79cddd}
+.quad-menu .qm-acc-body{padding:6px 4px!important;border-left:1px solid #315766;background:#07141c99}
+.quad-menu .qm-acc-head:hover,.quad-menu button:focus-visible{outline:1px solid #76d7e8!important;outline-offset:-1px;background-color:#15394a!important}
+#advQuickIcons{display:grid;grid-template-columns:1fr;gap:5px;margin:8px 5px;min-width:0}
+#advQuickIcons .expert-category{width:100%;flex:none}
+#advSceneControls{grid-column:1/-1}
+#advSceneControls button,.quad-right .expert-primary-actions button,.quad-left #visualQualityOptions button{background:linear-gradient(135deg,#10232e,#09151f);border:1px solid #264955;color:#d9f6ff;font-family:monospace!important;text-align:left;border-radius:3px!important;min-height:34px}
+.quad-left #visualQualityOptions button[aria-pressed=true]{border-color:#3b917a;background:linear-gradient(135deg,#12322d,#0a1e20);box-shadow:inset 2px 0 #66d8ac}
+#projectContextPanel label,.project-venue>span{display:block;margin:5px 0;color:#91b9c7;font:10px/1.3 monospace}
+#projectSelector{width:100%;min-width:0;padding:8px 5px;border:1px solid #416978;background:#09151f;color:#d9f6ff;font:11px/1.3 monospace}
+#projectSelector:focus-visible{outline:2px solid #76d7e8;outline-offset:1px}
+.project-venue{margin-top:8px;border-left:2px solid #66d8ac;padding:2px 8px;background:#0a2028}
+.project-venue strong{display:block;font:600 11px/1.5 monospace;color:#d9f6ff;overflow-wrap:anywhere}
+.project-venue small{display:block;font:9px/1.5 monospace;color:#8cbdab;padding:4px 0;overflow-wrap:anywhere}
+#projectBackofficeLink{display:block;padding:9px 0 2px;color:#79cddd;font:10px/1.4 monospace;text-decoration:none}
+#projectBackofficeLink:hover{text-decoration:underline}
+#topBar .project-context-chip{background:#10232e;border:1px solid #315766;border-radius:3px;color:#b7ecea;padding:4px 7px;font:600 10px/1.3 monospace;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:none}
+@media(max-width:650px){#topBar .project-context-chip{max-width:62px;font-size:9px;padding:3px}}
+
+#topBar #xpTopNotify{flex:1 1 0;min-width:0;max-width:32vw;box-sizing:border-box}
+.quad-menu .qm-acc-head{flex-direction:row!important;justify-content:flex-start!important}
