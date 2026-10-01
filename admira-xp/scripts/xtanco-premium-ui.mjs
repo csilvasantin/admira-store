@@ -49,9 +49,6 @@ function setMudanza(next){
 }
 setMudanza(false);
 window.__xtancoMudanza={toggle:()=>setMudanza(!mudanzaActive),set:setMudanza,get active(){return mudanzaActive;}};
-function ensureExpertDock(){
-  try{if(document.body.classList.contains('xp-left-hidden'))document.getElementById('pfExpert')?.click();}catch{}
-}
 
 const tiers=createVisualTiers({openBetter:openLifeView,closeBetter:closeLifeView,subscribeBetter:subscribeLifeView,
   openBest:openBestView,closeBest:closeBestView,subscribeBest:subscribeBestView,
@@ -88,7 +85,6 @@ function fuseWithoutNative(mode){
 }
 tiers.choose=mode=>{
   if(mode==='matrix')window.__xtancoEnterStarbucks?.();
-  ensureExpertDock();
   syncVisualSurface();
   if(window.__xpaceMatrixEntry&&document.documentElement.classList.contains('matrix-boot'))return chooseDirect(mode);
   if(mode===tiers.mode)return chooseDirect(mode); // Same-view commands must not clone media for a transition.
@@ -127,5 +123,4 @@ window.__xtancoPremiumView={
   open:(mode='better')=>tiers.choose(mode),close:()=>tiers.choose('good'),get mode(){return 'good';}
 };
 window.__xtancoVisualTiers=tiers;
-ensureExpertDock();
 void tiers.choose(requestedTier(location.search,storage));
