@@ -63,7 +63,7 @@ test('an independently calibrated room supplies its own walkable floor, obstacle
 const iso={cols:14,rows:8,tileW:80,tileH:28,wallH:165,ox:270,oy:185};
 const at=(col,row)=>({x:iso.ox+(col-row)*iso.tileW/2-7,y:iso.oy+(col+row)*iso.tileH/2-20});
 function fixture(){
-  return {active:true,iso,layout:[],footprints:{},realTrafficActive:false,game:{
+  return {active:true,iso,layout:[],footprints:{},realTrafficActive:false,game:{peopleVisibility:{staff:true,customers:true},
     staff:[{...at(3,2),hired:true,name:'Player',shirt:0,hair:3,role:3,dir:1,look:{skin:0,pants:2,shoes:1}}],
     custs:[{...at(6,4),id:12,dir:-1,st:'browse',look:{shirt:2,hair:1,skin:4,pants:3,shoes:2}}],
     passersby:[{...at(15,4),outside:true,dir:1,look:{shirt:4,hair:5,skin:1}}],custIn:1,gameTime:14,doorAnim:0

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "starbucks-alsea-paseo-de-gracia",
+  "title": "Starbucks Alsea · Paseo de Gracia · hiloMusical",
+  "playback": {
+    "order": "sequential",
+    "repeat": "all",
+    "screenMuted": true,
+    "audioOwner": "XpaceOS speaker",
+    "crossDeviceSync": false
+  },
+  "localState": {
+    "api": "window.XpaceStarbucksMusic",
+    "event": "xpaceos:starbucks-music",
+    "scope": "local-page",
+    "schemaVersion": 1,
+    "physicalMugVerified": false
+  },
+  "tracks": [
+    {
+      "id": "1790706121644-y5mqrq",
+      "stockId": "1790706121644-y5mqrq",
+      "stockNumber": 1308,
+      "title": "Bad Times Deep House",
+      "url": "https://stock.admira.store/stock/1790706121644-y5mqrq/asset.mp4?v=35775129",
+      "duration": 400.962177,
+      "mimeType": "video/mp4"
+    },
+    {
+      "id": "1790707278998-rc0d3i",
+      "stockId": "1790707278998-rc0d3i",
+      "stockNumber": 1309,
+      "title": "Nyla Stone – Ahora Soy Mi Prioridad",
+      "url": "https://stock.admira.store/stock/1790707278998-rc0d3i/asset.mp4?v=10085139",
+      "duration": 192.679002,
+      "mimeType": "video/mp4"
+    }
+  ]
+}

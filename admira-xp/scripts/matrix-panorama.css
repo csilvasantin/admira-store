@@ -1,0 +1,147 @@
+dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!important;height:calc(100dvh - 38px)!important}
+.matrix-capture-stage{position:relative;width:100%;height:100%;overflow:hidden;background:#081717}
+.matrix-panorama{position:absolute;inset:0;touch-action:none;outline-offset:-3px;cursor:grab}
+.matrix-panorama.is-mapping{cursor:crosshair}.matrix-panorama canvas{display:block;width:100%;height:100%}
+.matrix-player-layer,.matrix-markers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}.matrix-markers circle{fill:#78f3ff;stroke:#03151b;stroke-width:2}
+.matrix-mapped-player{position:absolute;left:0;top:0;transform-origin:0 0;background:#000;border:4px solid #000;box-sizing:border-box;box-shadow:0 0 0 12px #000;pointer-events:none;overflow:hidden;backface-visibility:hidden}
+.matrix-player-label{position:absolute;left:0;bottom:0;max-width:100%;font:22px/1.4 monospace;padding:8px 12px;background:#032d2ded;color:white;border:0;pointer-events:auto;cursor:pointer;text-align:left;overflow-wrap:anywhere}
+.matrix-player-media{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:fill;pointer-events:none}
+.matrix-map-toolbar{position:absolute;z-index:5;top:100px;left:16px;right:16px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;pointer-events:none}
+.matrix-map-toolbar>*{pointer-events:auto}.matrix-map-toolbar button,.matrix-map-toolbar a,.matrix-map-panel button,.matrix-import{background:#082c2cf2;border:1px solid #528a83;border-radius:5px;color:#dcfffa;padding:7px 10px;font:12px/1.4 system-ui;cursor:pointer;text-decoration:none}
+.matrix-map-status{background:#082c2ce8;color:#dcfffa;padding:5px 8px;font:11px/1.4 system-ui;max-width:100%}
+.matrix-map-panel{position:absolute;z-index:6;right:16px;top:145px;width:300px;max-width:calc(100% - 32px);max-height:calc(100% - 155px - var(--hud-safe-bottom,120px));overflow:auto;background:#081d20f5;border:1px solid #528a83;border-radius:9px;padding:12px;color:#dcfffa;font:12px/1.5 system-ui}
+.matrix-map-panel header{display:flex;justify-content:space-between;align-items:center}.matrix-map-panel label{display:grid;gap:3px;margin:9px 0}.matrix-map-panel input,.matrix-map-panel select{min-width:0;width:100%;background:#0c3032;color:#effffb;border:1px solid #528a83;border-radius:4px;padding:6px;font:12px system-ui}.matrix-map-panel footer{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;align-items:center}.matrix-map-panel .matrix-import{display:block;margin:0}.matrix-import input{display:none}.matrix-map-note{font-size:11px;color:#a3c8c2}.matrix-map-form button{margin:3px 0}
+@media(max-width:650px){.matrix-map-toolbar{top:100px;left:8px;right:8px}.matrix-map-toolbar>*{font-size:10px}.matrix-map-panel{top:170px;right:8px;max-height:calc(100% - 180px - var(--hud-safe-bottom,110px));width:270px}}
+
+/* Mapping actions share the Expert controls pane with the quality selector. */
+#telegramDock .matrix-map-toolbar{position:static;flex:0 0 100%;gap:5px;pointer-events:auto}
+#telegramDock .matrix-map-toolbar button,#telegramDock .matrix-map-toolbar a{font:10px/1.3 monospace;padding:3px 7px}
+#telegramDock .matrix-map-status{flex:0 0 100%;padding:0;background:none;font:9px/1.4 monospace;overflow-wrap:anywhere}
+.matrix-map-panel{top:16px;max-height:calc(100% - 32px - var(--hud-safe-bottom,120px))}
+
+.matrix-speaker{position:absolute;z-index:3;width:36px;height:36px;transform:translate(-50%,-50%);display:grid;place-items:center;border:1px solid #96dfd5aa;border-radius:50%;background:#062a2bad;color:#d5fff9;font:22px/1 system-ui;cursor:pointer;touch-action:manipulation}
+.matrix-speaker[hidden]{display:none}.matrix-speaker:hover,.matrix-speaker:focus-visible{background:#12615e;border-color:#b6fff3;outline:2px solid #78f3ff;outline-offset:3px}.matrix-speaker[aria-pressed="true"]{color:#032b28;background:#9dffcf}
+#telegramDock .matrix-music-status{flex:0 0 100%;color:#9dffcf;font:9px/1.4 monospace;overflow-wrap:anywhere}
+.matrix-mapped-player.has-preview{border:4px solid #000;background:#000}
+.matrix-mapped-player.has-preview .matrix-player-label{display:none}
+.matrix-capture-stage:has(.matrix-map-panel:not([hidden])) .matrix-player-label{display:block}
+.matrix-mapped-player .matrix-player-media{object-fit:contain}
+.matrix-screen-status,.matrix-tpv-status{font:11px/1.4 system-ui;color:#a8dbc9;max-width:100%;overflow-wrap:anywhere}
+
+#telegramDock .matrix-screen-layout{display:flex;align-items:center;gap:5px;font:10px/1.3 monospace;max-width:100%;min-width:0;color:#dcfffa}
+#telegramDock .matrix-screen-layout select{min-width:0;max-width:100%;background:#082c2c;border:1px solid #528a83;border-radius:5px;color:#dcfffa;padding:3px;font:inherit}
+
+.matrix-exit-next{position:absolute;z-index:4;width:30px;height:26px;transform:translate(-50%,-50%);display:grid;place-items:center;padding:0;border:1px solid #a6efbc88;border-radius:3px;background:#063a20a6;color:#effff4;font:19px/1 system-ui;cursor:pointer;touch-action:manipulation}
+.matrix-exit-next[hidden]{display:none}.matrix-exit-next:hover,.matrix-exit-next:focus-visible{outline:2px solid #9dffcf;outline-offset:2px;background:#126b3d}.matrix-exit-next:disabled{opacity:.45;cursor:default}
+
+.matrix-screen-numbers{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}.matrix-screen-numbers[hidden],.matrix-screen-number[hidden]{display:none}
+.matrix-screen-number{position:absolute;transform:translate(-50%,-100%);border:1px solid #c4ffe1;border-radius:5px;padding:5px 8px;background:#032b23f2;color:#fff;font:700 14px/1.25 monospace;white-space:nowrap;box-shadow:0 2px 6px #0009}
+[data-screen-numbers][aria-pressed="true"]{background:#9dffcf!important;color:#032b28!important}
+@media(max-width:650px){.matrix-screen-number{font-size:10px;padding:3px 4px}}
+
+.matrix-screen-number{display:grid;justify-items:center;gap:2px;font-size:10px}.matrix-screen-number strong{font-size:20px;line-height:1}.matrix-screen-number small{font:inherit}
+
+@media(max-width:650px){.matrix-screen-number{padding:3px 5px;gap:0}.matrix-screen-number strong{font-size:14px}.matrix-screen-number small{display:none}}
+
+#telegramDock .matrix-remote-status{font:9px/1.4 monospace;color:#a8dbc9;overflow-wrap:anywhere}
+
+.matrix-announcement{position:absolute;z-index:4;width:40px;height:46px;padding:0;transform:translate(-50%,-50%);border:0;border-radius:5px;background:transparent;cursor:pointer;touch-action:manipulation}
+.matrix-announcement::before{content:"";position:absolute;inset:0;border:1px solid #e8e3d344;border-radius:5px;background:#1515150d;opacity:0;transition:opacity .2s,border-color .25s,background .25s,box-shadow .25s}
+.matrix-announcement[hidden]{display:none}.matrix-announcement:focus-visible{outline:2px solid #fff3cf;outline-offset:4px}
+.matrix-announcement:hover::before,.matrix-announcement:focus-visible::before{opacity:1;border-color:#eee2bfbb;background:#eee2bf12;animation:announcement-hover 1.8s ease-in-out infinite}
+.matrix-announcement[aria-pressed="true"]::before{border-color:#ead291dd;background:#c8a64a22;box-shadow:0 0 12px #e2c27644}
+@keyframes announcement-hover{0%,100%{box-shadow:0 0 0 0 #f5e2aa12;opacity:.65}50%{box-shadow:0 0 12px 2px #f5e2aa33;opacity:1}}
+@media(prefers-reduced-motion:reduce){.matrix-announcement::before{animation:none!important;transition:none}}
+#telegramDock .matrix-announcement-status{font:10px/1.4 monospace;color:#ffde9e;overflow-wrap:anywhere}
+/* Keep wheel/touch/keyboard access and resizing; remove visible scrollbar chrome. */
+#telegramDock,#telegramDock *,#characterDock,#characterDock *{scrollbar-width:none!important}
+#telegramDock::-webkit-scrollbar,#telegramDock *::-webkit-scrollbar,#characterDock::-webkit-scrollbar,#characterDock *::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+
+/* Layout is the only surface that intercepts clicks on a mapped screen. */
+.device-layout-active .matrix-mapped-player[data-device-id]{pointer-events:auto;cursor:pointer}
+.device-layout-active .matrix-mapped-player[data-device-id] .matrix-player-media{pointer-events:none}
+.matrix-screen-number{pointer-events:auto;cursor:pointer;max-width:180px}.matrix-screen-number small{max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.device-layout-active .matrix-mapped-player.device-selected{outline:8px solid #ffd45f;outline-offset:-8px}
+.matrix-screen-number.device-selected{background:#ffd45f;color:#071a1a;border-color:#ffd45f}
+.matrix-device-editor{position:absolute;z-index:7;top:12px;right:12px;width:340px;max-width:calc(100% - 48px);max-height:calc(100% - var(--hud-safe-bottom,120px) - 48px);overflow:auto;scrollbar-width:none;padding:14px;background:#071c20f5;border:1px solid #7dad9f;border-radius:9px;color:#e6fff4;font:12px/1.4 system-ui}
+.matrix-device-editor[hidden]{display:none}.matrix-device-editor header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.matrix-device-editor label{display:grid;gap:4px;margin:9px 0}.matrix-device-editor .device-multiple{display:flex;align-items:center}
+.matrix-device-editor input,.matrix-device-editor select{box-sizing:border-box;min-width:0;max-width:100%;padding:7px;background:#102c30;border:1px solid #528a83;color:#f1fff9;border-radius:4px}
+.matrix-device-editor button{padding:6px 9px;border:1px solid #62998c;border-radius:4px;background:#123a3b;color:#edfff6;cursor:pointer}.matrix-device-editor button:disabled{opacity:.4;cursor:default}
+.device-tracks{padding-left:20px}.device-tracks li{margin:10px 0}.device-tracks input{display:block;width:100%;margin-bottom:5px}.device-tracks button{margin-right:5px}
+.device-save-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.device-notice{color:#ffdf86}.device-shared,.matrix-device-editor small{color:#a5c6bb;overflow-wrap:anywhere}
+@media(max-width:650px){.matrix-device-editor{top:8px;right:8px;width:290px;padding:10px;max-height:calc(100% - var(--hud-safe-bottom,120px) - 32px)}}
+.matrix-mapped-player[data-device-id="starbucks-wall-06"]{pointer-events:auto;cursor:pointer}
+.matrix-mapped-player.device-off .matrix-player-media{visibility:hidden}.matrix-mapped-player.device-off{background:#000}
+.matrix-incident-editor textarea{box-sizing:border-box;width:100%;background:#102c30;border:1px solid #528a83;color:#fff;border-radius:4px;padding:7px;resize:vertical}
+.matrix-incident-editor a{color:#9dffcf}.matrix-incident-editor{z-index:8}
+
+.pixeria-results{display:grid;gap:5px;margin:6px 0}.device-tracks .pixeria-results button{text-align:left;white-space:normal;overflow-wrap:anywhere;width:100%}.pixeria-status,.pixeria-hint{color:#afd8cb;font-size:11px}.pixeria-status:empty,.pixeria-results:empty{display:none}.device-tracks .pixeria-find{margin-top:4px}
+
+/* Number, silent preview and editable content remain readable in narrow panels. */
+.device-tracks li{position:relative;padding-left:52px;min-height:76px}
+.device-preview{position:absolute;left:0;top:0;width:44px;height:64px;object-fit:contain;background:#020b0d;border:1px solid #52736b;border-radius:4px;pointer-events:none}
+.device-preview[hidden]{display:none}.device-track-play:focus-visible{outline:2px solid #86ffe6;outline-offset:2px}
+
+.matrix-device-editor .device-preview-handle{position:absolute;left:0;top:0;width:44px;height:64px;padding:0;margin:0;border:0;border-radius:4px;background:#020b0d;cursor:grab;touch-action:none}
+.device-preview-handle .device-preview{box-sizing:border-box;position:static;display:block;width:100%;height:100%}
+.device-preview-handle:focus-visible{outline:2px solid #86ffe6;outline-offset:3px}
+.device-preview-handle:active{cursor:grabbing}.device-tracks .is-reordering{outline:1px dashed #86ffe6;outline-offset:4px;opacity:.7}
+
+.device-preview-handle .device-preview[hidden]{display:none}
+
+.device-reference{overflow-wrap:anywhere;color:#8affdc;font-family:monospace;user-select:all}
+
+.device-tracks input[type="hidden"]{display:none!important}
+.device-layout-active .matrix-mapped-player.device-drop-target{outline:12px solid #86ffe6;outline-offset:-12px}
+.matrix-screen-number.device-drop-target{background:#86ffe6;color:#071a1a;border-color:#fff}
+.device-drag-ghost{position:fixed;z-index:10000;width:52px;height:76px;border:2px solid #86ffe6;border-radius:6px;background:#06191d;pointer-events:none;box-shadow:0 5px 20px #0009;overflow:hidden}
+.device-drag-ghost video{width:100%;height:100%;object-fit:contain;pointer-events:none}
+
+/* Keep the schedule, rather than metadata, in the foreground. */
+.matrix-playlist-editor{box-sizing:border-box;display:flex;flex-direction:column;gap:6px;width:410px;padding:10px;height:calc(100% - var(--playlist-bottom-inset,var(--hud-safe-bottom,120px)) - 24px);max-height:calc(100% - var(--playlist-bottom-inset,var(--hud-safe-bottom,120px)) - 24px);max-width:calc(100% - 24px);overflow:hidden}
+.matrix-playlist-editor>header,.matrix-playlist-editor>footer,.matrix-playlist-editor>.device-playlist-bar,.matrix-playlist-editor>.device-id-bar{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.matrix-playlist-editor>header button{padding:3px 9px}.matrix-playlist-editor>header strong{font-size:13px}
+.matrix-playlist-editor p{margin:0}.matrix-playlist-editor .device-selection{color:#b5cfc5;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;flex-shrink:0;font-size:11px}
+.matrix-playlist-editor .device-playlists{flex:1;width:0;padding:5px;font-size:12px}
+.matrix-playlist-editor button{font-size:11px;padding:5px 7px;white-space:nowrap}
+.matrix-playlist-editor .device-id-bar{font-size:10px}.matrix-playlist-editor .device-reference{flex:1;min-width:0;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.matrix-playlist-editor .device-details{flex-shrink:0;max-height:160px;overflow:auto;scrollbar-width:none;font-size:11px;color:#b7d1c8}
+.matrix-playlist-editor summary{cursor:pointer;color:#9dd8c7}.matrix-playlist-editor .device-details label{margin:6px 0}.matrix-playlist-editor .device-save-actions{margin:6px 0;gap:4px}
+.matrix-playlist-editor .device-now-playing{flex-shrink:0;font-size:11px;color:#9dffcd;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;min-height:16px}
+.matrix-playlist-editor .device-tracks{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;margin:0;padding:2px 2px 2px 23px;scroll-padding:2px}
+.matrix-playlist-editor .device-tracks li{box-sizing:border-box;display:grid;grid-template-columns:repeat(4,28px) minmax(48px,1fr);column-gap:4px;row-gap:3px;position:relative;min-height:70px;margin:0 0 5px;padding:4px 5px 12px 57px;border:1px solid #31544c;border-radius:7px;background:#10292b;counter-increment:capsule;transition:background .16s,border-color .16s}
+.matrix-playlist-editor .device-tracks{counter-reset:capsule}.matrix-playlist-editor .device-tracks li::before{content:counter(capsule) '.';position:absolute;left:-22px;top:9px;width:18px;text-align:right;color:#adcbc1}
+.matrix-playlist-editor .device-tracks input:not([type=hidden]){grid-column:1/-1;margin:0;padding:4px 6px;height:25px;font-size:12px;background:#09232899}
+.matrix-playlist-editor .device-tracks button{margin:0;padding:3px;min-height:24px}.matrix-playlist-editor .device-tracks .pixeria-find{margin:0;font-size:0}.matrix-playlist-editor .pixeria-find::after{content:'Pixeria';font-size:10px}
+.matrix-playlist-editor .device-preview-handle{left:5px;top:5px;width:44px;height:60px;padding:0}
+.matrix-playlist-editor .pixeria-status,.matrix-playlist-editor .pixeria-results{grid-column:1/-1;margin:0}.matrix-playlist-editor .pixeria-results button{white-space:normal}
+.matrix-playlist-editor .device-playing-badge{position:absolute;right:7px;bottom:1px;font-size:9px;font-weight:700;color:#bdffe0;line-height:12px}
+.matrix-playlist-editor .device-tracks li.is-playing{background:#176448;border-color:#7dffc0;box-shadow:inset 3px 0 #89ffd0}.matrix-playlist-editor .device-tracks li.is-playing input{border-color:#66bc94;background:#0c432f;color:#fff}.matrix-playlist-editor .is-playing .device-track-play{background:#adffd3;color:#063d29;border-color:#adffd3}
+.matrix-playlist-editor>footer{justify-content:space-between}.matrix-playlist-editor .device-notice{flex-shrink:0;max-height:30px;overflow:auto;font-size:10px}.matrix-playlist-editor .device-notice:empty{display:none}
+@media(max-width:650px){.matrix-playlist-editor{top:6px;right:6px;max-width:calc(100% - 12px);height:calc(100% - var(--playlist-bottom-inset,var(--hud-safe-bottom,120px)) - 12px);max-height:calc(100% - var(--playlist-bottom-inset,var(--hud-safe-bottom,120px)) - 12px);padding:8px;gap:5px;width:380px}}
+@media(prefers-reduced-motion:reduce){.matrix-playlist-editor .device-tracks li{transition:none}}
+/* The floating mobile funnel must not cover playlist controls. */
+@media(max-width:700px){body:has(.matrix-playlist-editor:not([hidden])) #topBar #bbFunnel{visibility:hidden}}
+
+.matrix-playlist-editor .device-loop-label{display:flex;align-items:center;gap:6px;color:#c0ffdf}.matrix-playlist-editor .device-loop-help{font-size:10px;margin-bottom:7px;color:#9dbfb1}
+.matrix-incident-chip{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:6% 5%;box-sizing:border-box;container-type:size;font:600 34px/1.18 system-ui,sans-serif;color:#fff;text-decoration:none;background:#5c0a0ef2;border:6px solid #ff5a5f;pointer-events:auto;cursor:pointer;overflow:hidden}
+.matrix-incident-chip strong{font:800 min(16cqw,20cqh)/1.05 ui-monospace,monospace;white-space:nowrap;letter-spacing:-.02em}.matrix-incident-chip span:nth-of-type(1){font-weight:800}.matrix-incident-chip span{overflow-wrap:anywhere;font-size:min(12cqw,6.5cqh);line-height:1.12}
+.matrix-incident-chip[data-tone=warn]{background:#5a3a00f2;border-color:#ffb020}.matrix-incident-chip[data-tone=ok]{background:#0a4d2cf2;border-color:#3ddc84}
+.matrix-incident-chip[data-tone=alert]{animation:matrix-incident-pulse 1.6s ease-in-out infinite}@keyframes matrix-incident-pulse{50%{border-color:#ffd0d1}}
+@media (prefers-reduced-motion:reduce){.matrix-incident-chip[data-tone=alert]{animation:none}}
+
+.matrix-announcement-line{flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding-top:6px;margin-top:2px;border-top:1px solid #528a8355;pointer-events:auto}
+.matrix-announcement-line>b{font:600 11px/1 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#9dffcf;margin-right:2px}
+.matrix-announcement-quality{display:inline-flex;border:1px solid #528a83;border-radius:6px;overflow:hidden}
+.matrix-announcement-quality button{border:0!important;border-radius:0!important;margin:0!important}
+.matrix-announcement-quality button+button{border-left:1px solid #528a83!important}
+.matrix-announcement-quality button.active{background:#1f6b56!important;color:#eafff4!important;box-shadow:inset 0 0 0 1px #9dffcf}
+.matrix-announcement-line .matrix-announcement-status{font:12px/1.3 ui-monospace,monospace;color:#b9d8cf;min-width:0}
+.matrix-announcement-line .matrix-announcement-status[data-playing=true]{color:#9dffcf;font-weight:600}
+
+/* Keep the current title between Listen/Mute and Next track, including long titles. */
+.matrix-music-controls{display:flex;align-items:center;gap:5px;flex:1 1 450px;max-width:700px;min-width:0}
+.matrix-music-controls button{flex:none}
+.matrix-current-track{flex:1;min-width:0;color:#9dffcf;font:12px/1.4 system-ui;overflow-wrap:anywhere}
+#telegramDock .matrix-current-track{font:10px/1.4 monospace}

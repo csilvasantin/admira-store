@@ -7,11 +7,34 @@
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
   <title>XpaceOS.com the Operative System of Retailers</title>
+  <script>
+  // Resolve the Starbucks entry before the first paint; never reveal the arcade on a timer.
+  (function(){
+    var q=new URLSearchParams(location.search),visual=q.get('visual')??q.get('quality');
+    var saved='';try{saved=localStorage.getItem('xtanco_visual_tier_v2')||'';}catch(e){}
+    var matrix=visual==='matrix'||(visual===null&&((q.get('loc')||'').trim().toLowerCase()==='alsea-sbux-021'||saved==='matrix'));
+    if(!matrix)return;
+    window.__xpaceMatrixEntry=true;document.documentElement.classList.add('matrix-entry','matrix-boot');
+    var ready=false,failed=false,timer;
+    function fail(){if(ready)return;failed=true;var box=document.getElementById('matrixEntryStatus');if(!box)return;box.hidden=false;box.replaceChildren();var es=document.documentElement.lang==='es',text=document.createElement('p'),retry=document.createElement('button');text.textContent=es?'No se pudo abrir Starbucks. Vuelve a intentarlo.':'Could not open Starbucks. Please try again.';retry.textContent=es?'Reintentar Matrix':'Retry Matrix';retry.onclick=function(){location.reload();};box.append(text,retry);}
+    window.__xpaceMatrixBoot={ready:function(){ready=true;clearTimeout(timer);document.documentElement.classList.remove('matrix-boot','adm-direct');document.getElementById('matrixEntryStatus')?.remove();},fail:fail};
+    document.addEventListener('DOMContentLoaded',function(){if(ready)return;var box=document.createElement('section');box.id='matrixEntryStatus';box.hidden=true;box.setAttribute('role','alert');document.body.append(box);if(failed)fail();timer=setTimeout(fail,25000);},{once:true});
+  })();
+  </script>
+  <style>
+  html.matrix-entry,html.matrix-entry body{background:#05080d}
+  html.matrix-entry body::after{display:none!important}
+  html.matrix-boot body *{visibility:hidden!important}
+  html.matrix-boot #matrixEntryStatus,html.matrix-boot #matrixEntryStatus *{visibility:visible!important}
+  #matrixEntryStatus{position:fixed;inset:0;z-index:100000;background:#05080d;color:#ccebe6;align-content:center;text-align:center;font:15px/1.6 system-ui;padding:24px}
+  #matrixEntryStatus[hidden]{display:none}
+  #matrixEntryStatus button{margin-top:14px;padding:10px 20px;border:1px solid #7dcabb;border-radius:8px;background:#12342f;color:#e8fff8;cursor:pointer}
+  </style>
   <script>/* Entrada directa al Xtanco: cortina desde el primer paint — sin flash del arcade (misma
      condicion que el autostart por defecto; safety de 6s para no quedarse nunca en negro). */
   (function(){try{var q=new URLSearchParams(location.search);var as=(q.get('autostart')||'').toLowerCase();
   var direct=as?(as!=='0'&&as!=='off'):(q.get('arcade')!=='1'&&!q.get('view')&&!q.get('distro')&&!q.get('present')&&!q.get('preview'));
-  if(direct){document.documentElement.classList.add('adm-direct');
+  if(direct&&!window.__xpaceMatrixEntry){document.documentElement.classList.add('adm-direct');
   setTimeout(function(){document.documentElement.classList.remove('adm-direct');},6000);}}catch(e){}})();</script>
   <style>
   body::after{content:'';position:fixed;inset:0;z-index:99999;background:#05080d;pointer-events:none;opacity:0;transition:opacity .45s ease}
@@ -1006,8 +1029,8 @@
     var vw=window.innerWidth;
     var left=document.querySelector('.quad-left');
     var right=document.querySelector('.quad-right');
-    if(left){ var lw=rect?Math.round(rect.left):0; left.style.width=Math.max(60,lw)+'px'; }  /* Opciones: SOLO la banda negra (letterbox); antes 176 → se salía */
-    if(right){ var rw=rect?Math.round(vw-rect.right):0; right.style.width=Math.max(72,rw)+'px'; }  /* Avanzado: solo la franja negra derecha (no 220) */
+    if(left){ var lw=rect?Math.round(rect.left):0; left.style.width=(window.__xpSidePanelWidth?window.__xpSidePanelWidth('left',Math.max(60,lw)):Math.max(60,lw))+'px'; }  /* Opciones: SOLO la banda negra (letterbox); antes 176 → se salía */
+    if(right){ var rw=rect?Math.round(vw-rect.right):0; right.style.width=(window.__xpSidePanelWidth?window.__xpSidePanelWidth('right',Math.max(72,rw)):Math.max(72,rw))+'px'; }  /* Avanzado: solo la franja negra derecha (no 220) */
     // versión al fondo del panel Opciones (se lee al abrir: XTANCO_APP ya está cargado)
     var ver=document.getElementById('quadOptVersion');
     if(ver && !ver.textContent){ try{ ver.textContent='❔ '+((window.XTANCO_APP&&window.XTANCO_APP.version)||''); }catch(e){} }
@@ -1031,7 +1054,7 @@
       var cv=document.getElementById('c'); if(!cv) return;
       var lw=Math.round(cv.getBoundingClientRect().left);
       var lp=document.querySelector('.quad-left');
-      if(lp && Math.abs(parseInt(lp.style.width||'0',10)-Math.max(60,lw))>2) sizeSideColumns();
+      if(lp && Math.abs(parseInt(lp.style.width||'0',10)-(window.__xpSidePanelWidth?window.__xpSidePanelWidth('left',Math.max(60,lw)):Math.max(60,lw)))>2) sizeSideColumns();
     }catch(e){}
   }, 800);
   var saveOpt = document.querySelector('[data-xp-opt="save"]');
@@ -1210,18 +1233,22 @@
     <div class="tg-head"><span>Xtore control from Telegram / WhatsApp</span><a class="tg-site-link" id="dockSiteLink" href="https://csilvasantin.github.io/omnipublicity/" target="_blank" rel="noopener" title="Abrir OmniPublicity — modulo programatico del Xpace OS">↗ SITE <span class="tg-site-ver" id="dockSiteVer">v—</span></a><span class="tg-status" id="telegramSendStatus" style="display:none">AdmiraXPBot</span></div>
     <div id="telegramHelpPanel" aria-label="Comandos disponibles"></div>
     <div id="telegramSignagePanel" aria-label="Playlist Digital Signage"></div>
+    <div class="expert-workspace">
     <div class="tg-cli-row">
-      <textarea id="telegramComposer" placeholder="Write to @AdmiraXPBot... Enter sends, Shift+Enter newline"></textarea>
-      <div class="tg-actions">
+      <textarea id="telegramComposer" placeholder="/sincro on"></textarea>
+    </div>
+    <div class="expert-divider" data-expert-divider="0" role="separator" aria-orientation="vertical" tabindex="0"></div>
+      <div class="tg-actions" aria-label="Controles"><span class="expert-section-label" id="expertControlsLabel">CONTROLES</span><div id="expertQuickIcons"></div></div>
+    <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
+    <div class="expert-view-pane"><span class="expert-section-label" id="expertPreviewLabel">PREVIOS</span><div class="tg-actions expert-primary-actions">
         <button type="button" class="primary" id="telegramSendBtn">Send</button>
         <!-- El botón /help se quitó de la barra (2-ago-2026, Carlos: «eliminar
              /help para tener más espacio»). El comando SIGUE existiendo: se
              escribe /help en el compositor, y la ayuda completa vive en
              xpaceos.com/help. El panel se cierra con su propia ✕. -->
-        <button type="button" id="telegramHideBtn" title="Mostrar/ocultar la respuesta del CLI (mitad derecha)">Hide</button>
-      </div>
+        <button type="button" id="telegramHideBtn" title="Mostrar/ocultar Local view">Hide</button>
+      </div><div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div></div>
     </div>
-    <div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div>
     <div class="tg-quick-actions" id="telegramQuickActions" aria-label="Acciones rápidas de escena"></div>
   </div>
   <div class="tg-pane conversation">
@@ -1348,9 +1375,11 @@
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
-<script src="assets/js/sfx.js"></script>
-<script src="assets/js/ambient.js"></script>
+<script src="scripts/weather-command.js?v=quiet-rain-1"></script>
+<script src="assets/js/sfx.js?v=quiet-rain-1"></script>
+<script src="assets/js/ambient.js?v=quiet-rain-1"></script>
 <script src="assets/js/sky.js"></script>
+<script src="scripts/starbucks-room.js?v=distribuir-3"></script>
 <script src="assets/js/heatmap.js"></script>
 <script src="assets/js/streamdeck.js"></script>
 <script src="assets/js/session-ping.js" defer></script>
@@ -1569,9 +1598,9 @@ let clientColumnWidths=(()=>{
   return CLIENT_COL_DEFAULTS.slice();
 })();
 let teamColumnWidths=TEAM_COL_DEFAULTS.slice();
-bootVideoEl.src=PRELOAD_VIDEO_SRC;
+if(!window.__xpaceMatrixEntry)bootVideoEl.src=PRELOAD_VIDEO_SRC;
 bootVideoEl.loop=false;
-bootVideoEl.preload='auto';
+bootVideoEl.preload=window.__xpaceMatrixEntry?'none':'auto';
 bootVideoEl.setAttribute('playsinline','');
 bootVideoEl.setAttribute('webkit-playsinline','');
 
@@ -1888,20 +1917,7 @@ function resizeCanvas(){
     if(!composeStart) dock.style.display='';
     dock.style.left=dockLeft+'px';
     if(inGameplay&&!telegramDockHidden){
-      var sendPane=dock.querySelector('.tg-pane.send');
-      var panelOpen=sendPane&&(sendPane.classList.contains('help-open')||sendPane.classList.contains('signage-open'));
-      if(composeStart&&!panelOpen){
-        // Modo experto (fila input|output SIN panel): la altura la decide fitDock según
-        // el CONTENIDO (~44px), NUNCA gameplayDockHeight. Así el dock queda compacto y el
-        // Xpacio recupera toda la banda inferior (antes el dock se estiraba a la altura
-        // arrastrada y tapaba media pantalla). Fallback bajo si aún no tiene altura.
-        var inventoryResponse=dock.querySelector('#telegramLastResponse');
-        if(inventoryResponse?.dataset.inventory&&!dock.classList.contains('cli-out-hidden'))dock.style.height=(inventoryResponse.dataset.inventory==='list'?Math.min(260,innerHeight*.36):100)+'px';
-        else if(!dock.style.height||parseInt(dock.style.height,10)>72)dock.style.height='44px';
-      } else {
-        // Dock normal, o con panel /help /signage abierto → altura completa para leerlo.
-        dock.style.height=dockRenderH+'px';
-      }
+      dock.style.height=dockRenderH+'px';
     }
     dock.style.top='auto';
     dock.style.bottom='0px';
@@ -1995,12 +2011,24 @@ function setupDockResizers(){
     document.removeEventListener('pointercancel',end);
   };
   handles.forEach(handle=>{
+    handle.removeAttribute('aria-hidden');
+    handle.setAttribute('role','separator');
+    handle.setAttribute('aria-orientation','horizontal');
+    handle.tabIndex=0;
+    handle.setAttribute('aria-label','Altura del panel / Panel height');
+    handle.addEventListener('keydown',e=>{
+      if(!['ArrowUp','ArrowDown'].includes(e.key))return;
+      e.preventDefault();e.stopPropagation();
+      gameplayDockHeight=clampGameplayDockHeight(gameplayDockHeight+(e.key==='ArrowUp'?20:-20));
+      resizeCanvas();
+      try{localStorage.setItem(DOCK_HEIGHT_KEY,String(gameplayDockHeight));}catch(_){}
+    });
     handle.addEventListener('pointerdown',e=>{
-      if(!isGameplayUiState(state)) return;
+      if(e.button!==0||!isGameplayUiState(state)) return;
       e.preventDefault();
       e.stopPropagation();
       handle.classList.add('is-dragging');
-      drag={y:e.clientY,h:gameplayDockHeight};
+      drag={y:e.clientY,h:handle.parentElement.getBoundingClientRect().height};
       try{handle.setPointerCapture(e.pointerId);}catch(err){}
       document.addEventListener('pointermove',move,{passive:false});
       document.addEventListener('pointerup',end,{passive:false});
@@ -5421,6 +5449,35 @@ const CAM={
   mode:['fake','real','exacto'].includes(OCC_CONFIG.mode)?OCC_CONFIG.mode:(OCC_CONFIG.drive===false?'fake':'real'),
   connected:false, occupancy:0, enter:0, leave:0, peak:0, lastApplied:null,
 };
+// Visibility is presentation only: preserve roster, visitors, sales and camera counts.
+function peopleGroupVisible(group){
+  return !!G&&G.peopleVisibility?.[group]===true;
+}
+function executePeopleVisibilityCommand(raw){
+  const match=String(raw||'').trim().match(/^\/?(gente|people|personal|staff|clientes|customers)(?:@\w+)?\s+(on|off)(.*)$/i);
+  if(!match)return null;
+  const en=typeof lang!=='undefined'&&lang==='en';
+  if(match[3].trim())return {ok:false,local:true,message:(en?'Usage: /':'Uso: /')+match[1].toLowerCase()+' on | off'};
+  if(!G)return {ok:false,local:true,message:en?'Open an Xpace to show or hide its people.':'Abre un Xpacio para mostrar u ocultar sus personas.'};
+  const aliases={people:'gente',staff:'personal',customers:'clientes'};
+  const name=match[1].toLowerCase(),group=aliases[name]||name,on=match[2].toLowerCase()==='on';
+  const next={staff:peopleGroupVisible('staff'),customers:peopleGroupVisible('customers')};
+  if(group==='gente'||group==='personal')next.staff=on;
+  if(group==='gente'||group==='clientes')next.customers=on;
+  G.peopleVisibility=next;
+  // Drop stale click targets immediately, even while the canvas awaits its next frame.
+  if(typeof BTNS!=='undefined')for(const key of Object.keys(BTNS)){
+    if((!next.staff&&key.startsWith('staffClick'))||(!next.customers&&key.startsWith('custClick')))delete BTNS[key];
+  }
+  if(typeof npcEdOpen!=='undefined'&&npcEdOpen&&
+      ((npcEdKind==='staff'&&!next.staff)||(npcEdKind==='customer'&&!next.customers)))closeNPCEditor();
+  saveGame();
+  const label=group==='gente'?(en?'Staff and customers':'Personal y clientes'):
+    group==='personal'?(en?'Staff':'Personal'):(en?'Customers':'Clientes');
+  return {ok:true,local:true,message:label+' '+(on?'ON':'OFF')+' · '+
+    (en?(on?'visible':'hidden'):(on?'visibles':'ocultos')),data:{...next}};
+}
+
 // Manual demo population is separate from measured camera passages.
 const MAX_RESET_AUDIENCE=100;
 function manualAudienceTarget(){
@@ -5652,6 +5709,21 @@ function tryLookAndFeelIntent(text){
   }
   return {handled:false};
 }
+// PUENTE LOCAL (Elgato, Hue, Telegram y guardado de layout en localhost:9124/9126).
+// Desde la web pública cada sondeo a localhost hace que Chrome pida «acceder a otras
+// aplicaciones y servicios de este dispositivo» (Local Network Access): el popup salía en
+// el Matrix del Starbucks en cuanto la simulación llegaba a la noche y encendía la lámpara.
+// Sólo se usa si la página se sirve en local o si el equipo del estudio lo activa con
+// ?local=1 (se recuerda en ese navegador; ?local=0 lo apaga). Carlos, 30-sep-2026.
+var LOCAL_BRIDGE=(()=>{
+  try{
+    if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return true;
+    const q=new URLSearchParams(location.search).get('local');
+    if(q==='1') localStorage.setItem('xpaceos.localBridge','1');
+    if(q==='0') localStorage.removeItem('xpaceos.localBridge');
+    return localStorage.getItem('xpaceos.localBridge')==='1';
+  }catch(e){return false;}
+})();
 const ELGATO={
   ip:typeof ELGATO_CONFIG.directIp==='string'?ELGATO_CONFIG.directIp:'',
   port:Number(ELGATO_CONFIG.directPort)||9123,
@@ -5860,10 +5932,11 @@ async function elgatoFetch(path,opts){
   const isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
   const urls=isLocal
     ? [location.origin+path]  // same origin — no CORS issues
-    : [
+    : LOCAL_BRIDGE ? [
         `http://localhost:${ELGATO.proxyPort}${path}`,
         `http://127.0.0.1:${ELGATO.proxyPort}${path}`,
-      ];
+      ] : [];
+  if(!urls.length) throw new Error('Puente local desactivado (?local=1 en el equipo del estudio)');
   for(const url of urls){
     try{
       const res=await fetch(url,{...opts,signal:AbortSignal.timeout(2000)});
@@ -6239,7 +6312,7 @@ async function hueSend(lightId,stateObj){
   const urls=[];
   if(isLocal) urls.push(`${location.origin}/hue/lights/${lightId}/state`);
   if(!isHTTPS&&HUE.bridgeIP&&HUE.apiKey) urls.push(`http://${HUE.bridgeIP}/api/${HUE.apiKey}/lights/${lightId}/state`);
-  if(!isLocal) urls.push(`http://localhost:${ELGATO.proxyPort}/hue/lights/${lightId}/state`);
+  if(!isLocal&&LOCAL_BRIDGE) urls.push(`http://localhost:${ELGATO.proxyPort}/hue/lights/${lightId}/state`);
 
   for(const url of urls){
     try{
@@ -6668,11 +6741,14 @@ function getProductLabelsForClient(clientIndex){
 function getProductLabel(index,clientIndex){
   return getProductLabelsForClient(clientIndex)[index] || (lang==='es'?'Producto':'Product')+' '+index;
 }
+function isStarbucksVenue(){return !!window.XpaceStarbucks?.active();}
 function getLayoutStoragePrefix(){
+  if(isStarbucksVenue())return "starbucks_pg103_v1";
   const id=(getActiveClient()||CLIENTS[0]).id||'xtanco';
   return id==='xtanco' ? 'xtanco' : 'xtanco_'+id;
 }
 function getCurrentVenueBrand(){
+  if(isStarbucksVenue()) return 'STARBUCKS';
   if(isCafeteriaClient()) return 'CAFEBRERÍA';
   return isSupermarketClient() ? 'SUPER' : 'XTANCO';
 }
@@ -6708,6 +6784,10 @@ const LANGS={
       {title:'BIENVENIDO A XTANCO',lines:['Gestiona tu estanco durante 5 años.','Alcanza el objetivo de ventas cada año','para avanzar y construir tu negocio.','¡Contrata personal, repón stock y fideliza clientes!']},
       {title:'GESTIÓN DE PERSONAL',lines:['Contrata empleados en la pestaña PERSONAL.','Cada empleado genera ventas automáticamente.','Fórmalos para subir su nivel (máx. 5)','y aumentar su productividad y salario.']},
       {title:'EVENTOS ESPECIALES',lines:['⚡ HORA PUNTA: ventas x2.4 durante un tiempo.','🔍 INSPECCIÓN: mantén stock y personal o penalización.','📦 Repón stock regularmente (pestaña STOCK).','👁 Vigila la barra de OBJETIVO del año en el HUD.']},
+      {"title": "BEST Y MATRIX", "lines": ["Best: Avenida Admira, muebles y personas.", "Matrix: captura 360° del Starbucks Alsea.", "Abrir incidencia: informa de un problema.", "Asignar contenidos: elige pantalla y playlist.", "Guardar mapa no publica en players reales."]},
+      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Inicio: gente OFF. on muestra, off oculta.", "/gente = /people: ambos grupos.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
+      {"title": "AJUSTA EL MODO EXPERTO", "lines": ["Arrastra arriba para cambiar la altura.", "Separa comandos, calidad y Local view.", "Arrastra los dos separadores verticales.", "Las medidas se guardan en el navegador.", "Doble clic en separador: anchos iniciales."]},
+      {"title": "PRUEBA LOS GRUPOS", "lines": ["/gente off: oculta ambos grupos.", "/personal on: muestra solo trabajadores.", "/clientes on: vuelve a mostrar clientes.", "/gente on: muestra ambos grupos.", "No borra personas ni cambia el aforo."]},
     ],
     tutNext:'SIGUIENTE →',tutStart:'¡EMPEZAR!',
     tabs:['VENTAS','PERSONAL','CON','LOCAL'],
@@ -6793,6 +6873,10 @@ const LANGS={
       {title:'WELCOME TO XTANCO',lines:['Manage your shop for 5 years.','Reach the annual sales target','to progress and grow your business.','Hire staff, restock and keep customers happy!']},
       {title:'STAFF MANAGEMENT',lines:['Hire employees in the STAFF tab.','Each employee generates sales automatically.','Train them to raise their level (max 5)','and increase their productivity and salary.']},
       {title:'SPECIAL EVENTS',lines:['⚡ RUSH HOUR: sales x2.4 for a period.','🔍 INSPECTION: keep stock & staff or get fined.','📦 Restock products regularly (STOCK tab).','👁 Watch the OBJECTIVE bar in the HUD.']},
+      {"title": "BEST AND MATRIX", "lines": ["Best: Avenida Admira, furniture and people.", "Matrix: Starbucks Alsea 360° capture.", "Open incident: report a device problem.", "Assign content: select a screen and playlist.", "Saving a map does not publish to devices."]},
+      {"title": "PEOPLE · EXPERT MODE", "lines": ["Default: people OFF. on shows, off hides.", "/people = /gente: both groups.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
+      {"title": "RESIZE EXPERT MODE", "lines": ["Drag the top handle to change height.", "Split commands, quality and Local view.", "Drag the two vertical dividers.", "Sizes are saved in this browser.", "Double-click a divider to reset widths."]},
+      {"title": "TRY THE GROUPS", "lines": ["/people off: hide both groups.", "/staff on: show workers only.", "/customers on: show customers again.", "/people on: show both groups.", "People and audience counts are preserved."]},
     ],
     tutNext:'NEXT →',tutStart:'LET\'S GO!',
     tabs:['SALES','STAFF','CON','STORE'],
@@ -8334,7 +8418,7 @@ function resetXpaceCreatorConfig(){
   applyXpaceCreatorGrid();
   saveXpaceCreatorConfig();
 }
-let DEFAULT_LAYOUT=JSON.parse(JSON.stringify(FACTORY_LAYOUTS.xtanco));
+let DEFAULT_LAYOUT=JSON.parse(JSON.stringify(isStarbucksVenue()?window.XpaceStarbucks.layout():FACTORY_LAYOUTS.xtanco));
 let shopLayout=JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
 let shopFurnitureVisible=true;
 let edSelIdx=-1;       // selected furniture index in editor
@@ -8365,7 +8449,7 @@ let shopStaffPos=null;     // saved staff positions (null = use DEFAULT_STAFF_PO
 let shopStaffZones=null;   // saved staff influence zones (null = use home-based defaults)
 
 const LAYOUT_SCHEMA_VERSION='20260426-public-canonical-1';
-const CANONICAL_LAYOUT_IDS=new Set(Object.values(FACTORY_LAYOUTS).flat().map(item=>item.id));
+const CANONICAL_LAYOUT_IDS=new Set([...Object.values(FACTORY_LAYOUTS).flat(),...window.XpaceStarbucks.layout()].map(item=>item.id));
 const PINNED_LAYOUT_IDS=new Set(['aroma']);
 
 // Default staff home positions (used when no custom positions saved)
@@ -8537,11 +8621,11 @@ function loadLayout(){
       if(Array.isArray(saved)&&saved.length>0){
         // Basic sanity: ensure col/row/sx/sy are valid numbers
         // (14 cols × 8 rows grid — hardcoded to avoid ISO reference)
-        const MAX_COL=13, MAX_ROW=7;
+        const MAX_COL=14, MAX_ROW=8; // rotated/mirrored furniture may anchor on the floor edge
         const clean=saved.map(it=>({
           ...it,
-          col: (typeof it.col==='number'&&isFinite(it.col)) ? Math.max(0,Math.min(MAX_COL,Math.round(it.col))) : 0,
-          row: (typeof it.row==='number'&&isFinite(it.row)) ? Math.max(0,Math.min(MAX_ROW,Math.round(it.row))) : 0,
+          col: (typeof it.col==='number'&&isFinite(it.col)) ? Math.max(0,Math.min(MAX_COL,it.col)) : 0,
+          row: (typeof it.row==='number'&&isFinite(it.row)) ? Math.max(0,Math.min(MAX_ROW,it.row)) : 0,
           sx:  (typeof it.sx==='number'&&it.sx>0) ? it.sx : 1,
           sy:  (typeof it.sy==='number'&&it.sy>0) ? it.sy : 1,
         }));
@@ -8789,12 +8873,14 @@ const FURNITURE_SIZE={
 function gridKey(col,row){return Math.round(col)+','+Math.round(row);}
 function isGridInside(col,row){return col>=0&&col<ISO.cols&&row>=0&&row<ISO.rows;}
 function getFurnitureFootprint(item){
-  const base=(item.type==='custom'&&Array.isArray(item.fp)&&item.fp.length===2)?item.fp:(FURNITURE_SIZE[item.type]||[1,1]);
-  const rot=((item.rot||0)%4+4)%4;
-  let w=Math.max(1,Math.ceil(base[0]*Math.max(0.2,item.sx||1)));
-  let d=Math.max(1,Math.ceil(base[1]*Math.max(0.2,item.sy||1)));
-  if(rot%2===1){const tmp=w;w=d;d=tmp;}
-  return {col:Math.round(item.col),row:Math.round(item.row),w,d};
+  const base=Array.isArray(item.fp)&&item.fp.length===2?item.fp:(FURNITURE_SIZE[item.type]||[1,1]);
+  const scale=Math.max(.1,Math.abs(item.sx??1)),flip=item.flipX?-1:1,angle=-(item.rot||0)*Math.PI/2,cos=Math.cos(angle),sin=Math.sin(angle);
+  const points=[[0,0],[base[0],0],[base[0],base[1]],[0,base[1]]].map(([x,z])=>{
+    x*=scale*flip;z*=scale;return [item.col+cos*x+sin*z,item.row-sin*x+cos*z];
+  });
+  const xs=points.map(p=>p[0]),zs=points.map(p=>p[1]);
+  const col=Math.floor(Math.min(...xs)+1e-7),row=Math.floor(Math.min(...zs)+1e-7);
+  return {col,row,w:Math.ceil(Math.max(...xs)-1e-7)-col,d:Math.ceil(Math.max(...zs)-1e-7)-row};
 }
 
 // Check if a tile is blocked by furniture
@@ -9310,7 +9396,7 @@ function initGame(){
   // Sincroniza XPACE_BOOTH con el cliente activo para que el HUD muestre
   // el badge correcto (Shoptalk, Xtanco, …).
   try{ window.XPACE_BOOTH=getActiveClient().id; }catch(e){}
-  DEFAULT_LAYOUT=JSON.parse(JSON.stringify(FACTORY_LAYOUTS[getActiveClient().id]||FACTORY_LAYOUTS.xtanco));
+  DEFAULT_LAYOUT=JSON.parse(JSON.stringify(isStarbucksVenue()?window.XpaceStarbucks.layout():(FACTORY_LAYOUTS[getActiveClient().id]||FACTORY_LAYOUTS.xtanco)));
   loadLayout();
   try{
     document.body.dataset.xpaceVertical=getActiveClient().id;
@@ -9501,8 +9587,7 @@ function quickStartXtanco(clientIdx,toEditor){
   tran={active:false,from:null,to:null,timer:0,dur:30};
   state=toEditor?S.EDITOR:S.GAME;
   if(toEditor){ edSelIdx=-1; edStaffSelIdx=-1; edMode='furniture'; }
-  try{ startVideo(); }catch(_){}
-  try{ startMusic(); }catch(_){}
+  if(!window.__xpaceMatrixEntry||!document.documentElement.classList.contains('matrix-boot')){try{ startVideo(); }catch(_){}try{ startMusic(); }catch(_){}}
 }
 if(mobileSkipBtn){
   ['keydown','keyup','keypress','mousedown','mouseup','click','touchstart','touchend','wheel'].forEach(ev=>{
@@ -9534,7 +9619,7 @@ const DEMO_SCRIPT=[
   '/socios listado',
   '/ladron on',
   '/weather rain',
-  '/comunicar La lluvia activa el ambiente sonoro automaticamente',
+  '/comunicar La lluvia es silenciosa; usa /tiempo lluvia sonora para escucharla',
   '/ladron off',
   '/devolucion',
   '/pedido',
@@ -17135,6 +17220,8 @@ function drawEraClientMiniMap(originX,originY,w,h){
 // ── HELP / MANUAL SCREEN ─────────────────────────────────────
 const HELP_PAGES={
   es:[
+  {"title": "PANEL EXPERTO AJUSTABLE", "lines": ["Arrastra el tirador superior: altura.", "Dos separadores: comandos, calidad, Local view.", "Las medidas se guardan en este navegador.", "Flechas: ajustar. Doble clic: anchos iniciales.", "Ocultar/Mostrar controla Local view."]},
+  {"title": "PERSONAS VISIBLES · EXPERTO", "lines": ["Inicio: /gente OFF. Actívalo en Experto (⌘).", "/gente on|off = /people on|off", "/personal on|off = /staff on|off", "/clientes on|off = /customers on|off", "on muestra; off oculta. Acepta ON/OFF.", "/gente off → /personal on: solo personal.", "/gente on: vuelven ambos grupos.", "Visibilidad local; conserva personas y aforo."]},
   { title:'ADMIRA XP // THE XPACE OS — XTANCO', lines:[
     '','Bienvenido a Admira XP // The Xpace OS,',
     'la plataforma viva de experiencias operativas.','',
@@ -17262,6 +17349,7 @@ const HELP_PAGES={
     '  xtAPI.command("/pantallateve")  → momento «LA PANTALLA TE VE»: audiencia (real o simulada) → creativo se adapta en vivo · demo-proof · →/espacio siguiente · L cámara real · off',
     '  xtAPI.command("/targetPublicity aforo|genero")  → publicidad segmentada (genero=sexo+edad por LiveCam on-device) · off para parar',
     '  xtAPI.command("/generovideo")  → las 2 pantallas siguen el sexo de la cámara: 👨→Money For Nothing · 👩→Take On Me · off para parar',
+    '  xtAPI.command("/gente on|off"), /personal on|off, /clientes on|off → visibilidad de ambos grupos o de cada uno',
     '  xtAPI.command("/resetaudiencia 0|100|auto") → fija visitantes virtuales (0–100); auto devuelve control a la cámara/juego',
     '  xtAPI.command("/aforo real")  → la cámara Hikvision (ieu.ai) marca el objetivo de clientes (ambiente)',
     '  xtAPI.command("/aforo exacto")  → espejo ESTRICTO 1:1: la tienda = exactamente lo que dice la cámara; cada entrada/salida entra/sale',
@@ -17270,6 +17358,8 @@ const HELP_PAGES={
   ]},
   ],
   en:[
+  {"title":"RESIZABLE EXPERT PANEL","lines":["Drag the top handle to change height.","Drag the dividers between commands, quality","and Local view to distribute the width.","Sizes are saved in this browser.","Arrow keys resize; double-click resets widths."]},
+  {"title": "PEOPLE VISIBILITY · EXPERT", "lines": ["Default: /people OFF. Enable in Expert (⌘).", "/people on|off = /gente on|off", "/staff on|off = /personal on|off", "/customers on|off = /clientes on|off", "on shows; off hides. ON/OFF also works.", "/people off → /staff on: workers only.", "/people on: both groups are visible again.", "Local visibility; keeps people and counts."]},
   { title:'ADMIRA XP // THE XPACE OS — XTANCO', lines:[
     '','Welcome to Admira XP // The Xpace OS,',
     'the living platform for operational experiences.','',
@@ -18267,7 +18357,7 @@ function drawShopOperation(fn,kind='device'){
 
 // ── DRAW SHOP (ISOMETRIC — Kairosoft warm style) ─────────────
 let inventoryPublishedAt=0;
-function inventorySpace(){return CLIENTS[activeClient]?.id||'xtanco';}
+function inventorySpace(){return isStarbucksVenue()?'starbucks_pg103':CLIENTS[activeClient]?.id||'xtanco';}
 function inventoryPresentationLayout(){
   const store=window.XpaceInventory,space=inventorySpace();
   if(store&&Date.now()-inventoryPublishedAt>1000){store.publish(space,shopLayout);inventoryPublishedAt=Date.now();}
@@ -18275,6 +18365,17 @@ function inventoryPresentationLayout(){
 }
 function drawShop(){
   const renderLayout=inventoryPresentationLayout();
+  if(isStarbucksVenue()){
+    const actors=[];
+    if(!editorSceneActive && !document.body.classList.contains('xtanco-mudanza')){
+      for(const s of G.staff||[])if(s.hired&&!s.hidden&&G.peopleVisibility?.staff!==false)actors.push({depth:(s.y+27-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoStaff(s)});
+      for(const c of G.custs||[])if(G.peopleVisibility?.customers!==false)actors.push({depth:(c.y+20-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoCust(c)});
+    }
+    cx.save();cx.beginPath();cx.rect(SHOP.x,SHOP.y,SHOP.w,Math.max(SHOP.h,H-SHOP.y));cx.clip();
+    window.XpaceStarbucks.draw(cx,ISO,toIso,shopFurnitureVisible?renderLayout:[],actors,document.body.classList.contains('xtanco-mudanza'));
+    if(shopFurnitureVisible)for(const item of renderLayout)if(item.source==='PixerIA')drawCustomFurni(item);
+    cx.restore();return;
+  }
   const premiumView=window.__xtancoPremiumView;
   const premiumActive=!!premiumView?.begin?.(cx,cv);
   const mudanzaActive=document.body.classList.contains('xtanco-mudanza');
@@ -23223,7 +23324,7 @@ const PIXERIA_STOCK_BASE='https://api.admira.store';
 let IMPORT_CATALOG=[];                          // último /stock/list?type=furni
 async function fetchPixeriaCatalog(typeFilter){
   const t=typeFilter||'furni';
-  const r=await fetch(PIXERIA_STOCK_BASE+'/stock/list?type='+encodeURIComponent(t)+'&limit=60',{cache:'no-store'});
+  const r=await fetch(PIXERIA_STOCK_BASE+'/stock/list?type='+encodeURIComponent(t)+'&limit=60',{cache:'no-store',signal:AbortSignal.timeout(30000)});
   if(!r.ok) throw new Error('HTTP '+r.status);
   const data=await r.json();
   return Array.isArray(data.items)?data.items:[];
@@ -23245,16 +23346,19 @@ function getCustomFurniImage(url){
 }
 function customFurniFootprint(e){
   const fp=Array.isArray(e.fp)&&e.fp.length===2?e.fp:[1,1];
-  let w=fp[0]*(e.sx||1), d=fp[1]*(e.sy||1);
+  let w=fp[0]*(e.sx||1), d=fp[1]*(e.sx||1);
   if((((e.rot||0)%2)+2)%2===1){ const t=w; w=d; d=t; }
   return [Math.max(0.4,w), Math.max(0.4,d)];
 }
 function drawCustomFurni(e){
   const [fw,fd]=customFurniFootprint(e);
+  const fp=e.fp||[1,1],angle=(e.rot||0)*Math.PI/2,c=Math.cos(angle),s=Math.sin(angle),scale=e.sx||1,flip=e.flipX?-1:1;
+  const corners=[[0,0],[fp[0],0],[fp[0],fp[1]],[0,fp[1]]].map(([x,z])=>[e.col+scale*(c*x*flip-s*z),e.row+scale*(s*x*flip+c*z)]);
+  const originCol=Math.min(...corners.map(p=>p[0])),originRow=Math.min(...corners.map(p=>p[1]));
   // Sombra de contacto a la huella (igual que el resto del mobiliario).
-  drawFurnitureContactShadow(e.col,e.row,fw,fd);
+  drawFurnitureContactShadow(originCol,originRow,fw,fd);
   // Ancla: centro de la huella en el suelo; la base del sprite se apoya ahí.
-  const p=toIso(e.col+fw/2,e.row+fd/2);
+  const p=toIso(originCol+fw/2,originRow+fd/2);
   const rec=getCustomFurniImage(e.img);
   let topY=p.y-Math.max(12,(e.ph||46));   // por defecto (placeholder)
   if(rec&&rec.loaded&&rec.img.naturalWidth>0){
@@ -23465,6 +23569,7 @@ function drawNovahMocap(s){
 }
 
 function drawIsoStaff(s){
+  if(!peopleGroupVisible('staff'))return;
   // Auto-curación: si la posición se corrompió a NaN (p.ej. un destino indefinido en la
   // navegación), recolócala en su tile de casa. Sin esto el NaN es permanente y tumba
   // todo el render de la tienda (chibi→createRadialGradient lanza → drawShop aborta).
@@ -23748,6 +23853,7 @@ function drawSponsorScrooge(x,y,dir,frame,tick){
 }
 
 function drawIsoCust(c){
+  if(!peopleGroupVisible('customers')&&!(G.passersby||[]).includes(c))return;
   // Auto-curación: una posición NaN en un cliente también rompe el dibujado; lo mandamos
   // a la puerta a salir limpio en vez de tumbar la escena.
   if(c&&(!isFinite(c.x)||!isFinite(c.y))){ try{ const _d=toIso(ISO.cols-1,3); c.x=_d.x-7; c.y=_d.y-20; }catch(_){ c.x=0; c.y=0; } c.path=null; c.pathIdx=0; c.st='leave'; }
@@ -24970,7 +25076,7 @@ function syncDockLanguage(){
   if(tgHeads[0]) tgHeads[0].textContent=isEs?'Control Xtore desde Telegram / WhatsApp':'Xtore control from Telegram / WhatsApp';
   if(tgHeads[1]) tgHeads[1].textContent=isEs?'Conversacion':'Conversation';
   const composer=document.getElementById('telegramComposer');
-  if(composer) composer.placeholder=isEs?'Escribe para @AdmiraXPBot... Enter envia, Shift+Enter salto':'Write to @AdmiraXPBot... Enter sends, Shift+Enter newline';
+  if(composer){if(window.XpaceExpertComposer)window.XpaceExpertComposer.refresh();else composer.placeholder='/sincro on';}
   const sendBtn=document.getElementById('telegramSendBtn');
   const hideBtn=document.getElementById('telegramHideBtn');
   if(sendBtn) sendBtn.textContent=isEs?'Enviar':'Send';
@@ -27036,6 +27142,7 @@ function drawDemoCountdown(){
 function loop(){
   requestAnimationFrame(loop);
   tt++;
+  if(window.__xpaceMatrixEntry&&![S.GAME,S.PAUSE,S.EDITOR].includes(state)&&document.documentElement.classList.contains('matrix-boot'))return;
   // Modo Demo — ejecutar siguiente comando de la secuencia ciclica
   try{ if(typeof tickDemoMode==='function') tickDemoMode(); }catch(e){}
   resetSpeechOverlay();
@@ -27118,6 +27225,7 @@ function loop(){
     else { REC._slowAcc+=spd; if(REC._slowAcc>=1){ REC._slowAcc-=1; try{updateGame();}catch(e){} } }
     try{ recSnapshot(); }catch(e){}
   }
+  if(document.body.dataset.xtancoTier==='matrix'&&document.querySelector('.matrix-panorama-dialog[open]'))return;
   r(0,0,W,H,P.bg);
   // Each render wrapped in save/restore to prevent clip leaks on crash
   cx.save();try{drawCityBg();}catch(e){}cx.restore();
@@ -27136,10 +27244,94 @@ function loop(){
   cx.save();try{if(codexMapOpen)drawCodexMapOverlay();}catch(e){}cx.restore();
   finalizeFrame();
 }
+// Matrix represents this concrete venue even when opened from the generic entry.
+window.__xtancoEnterStarbucks=()=>{
+  if(isStarbucksVenue())return;
+  const url=new URL(location.href);url.searchParams.set('loc','alsea-sbux-021');
+  url.searchParams.delete('play');url.searchParams.delete('autostart');
+  history.replaceState(history.state,'',url);
+  autoEnterVertical('cafeteria');
+};
 window.__xtancoVisualState=()=>{
   const moving=document.body.classList.contains('xtanco-mudanza');
-  return {palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:moving?[]:(shopFurnitureVisible||editorSceneActive?inventoryPresentationLayout():[]),hardness:getHardnessSnapshot(),game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,moving,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&['xtanco','cafeteria'].includes(CLIENTS[activeClient]?.id),vertical:CLIENTS[activeClient]?.id||'xtanco'};
+  return {venue:isStarbucksVenue()?'alsea-sbux-021':null,palette:P,realTrafficActive:xtoreRealExteriorActive(),iso:ISO,projection:{width:W,height:H,ox:ISO.ox,oy:ISO.oy,tileW:ISO.tileW,tileH:ISO.tileH},layout:moving?[]:(shopFurnitureVisible||editorSceneActive?inventoryPresentationLayout():[]),hardness:getHardnessSnapshot(),game:G,footprints:FURNITURE_SIZE,wallHelpers:{isWallMountedType,getWallItemHeightPx,getWallItemFootprintCols,getWallItemRenderPoly},editor:state===S.EDITOR,moving,active:!!G&&(state===S.GAME||state===S.PAUSE||state===S.EDITOR)&&['xtanco','cafeteria'].includes(CLIENTS[activeClient]?.id),vertical:CLIENTS[activeClient]?.id||'xtanco'};
 };
+// Distribuit edits the same saved layout as Good, Better and the inventory.
+window.__xtancoFurnitureEditor={
+  read(){
+    const source=window.__xtancoVisualState(),roomId=getLayoutStoragePrefix();
+    const store=window.XpaceInventory,space=inventorySpace();
+    const layout=(store?.retained(space,shopLayout)||shopLayout).map(item=>({...cloneLayoutData(item),mount:getItemMount(item.type),inventoryHidden:store?.visible(space,item.id)===false,nativeFixed:item.id==='sb-pillar',locked:!!item.locked||item.id==='sb-pillar'}));
+    const owned=new Set();
+    for(const item of shopLayout){if(['rug','led','tft','aroma'].includes(item.type))continue;const fp=getFurnitureFootprint(item);for(let c=fp.col;c<fp.col+fp.w;c++)for(let r=fp.row;r<fp.row+fp.d;r++)owned.add(c+','+r);}
+    return {roomId,active:source.active&&!source.moving,cols:ISO.cols,rows:ISO.rows,layout,footprints:FURNITURE_SIZE,hardness:{fixed:source.hardness.blocked.filter(cell=>!owned.has(cell))}};
+  },
+  begin(){
+    const scene=this.read();if(!scene.active)throw Error('room');
+    const token={roomId:scene.roomId,game:G,previous:state};if(state===S.GAME)state=S.PAUSE;return token;
+  },
+  end(token){if(token&&G===token.game&&getLayoutStoragePrefix()===token.roomId&&token.previous===S.GAME&&state===S.PAUSE)state=S.GAME;},
+  async commit({roomId,id,from,col,row,rot,sx,sy,path,signal}){
+    const {validateFurniturePath,furniturePose,sameFurniturePose}=await import('./scripts/distribuit.mjs?v=distribuir-3');
+    if(signal?.aborted)throw Error('cancelled');
+    const scene=this.read(),item=scene.layout.find(value=>String(value.id)===String(id));
+    if(!scene.active||scene.roomId!==roomId)throw Error('room');
+    if(!item||!from||!sameFurniturePose(item,from))throw Error('changed');
+    const result=validateFurniturePath(scene,id,path);
+    const requested=furniturePose({...item,col,row,...(rot===undefined?{}:{rot}),...(sx===undefined?{}:{sx}),...(sy===undefined?{}:{sy})});
+    if(!result.ok||!sameFurniturePose(result.position,requested))throw Error(result.reason||'invalid');
+    const store=window.XpaceInventory,space=inventorySpace();
+    const next=(store?.retained(space,shopLayout)||shopLayout).map(value=>String(value.id)===String(id)?{...value,...result.position}:value);
+    const ledger=store?cloneLayoutData(store.removals(space)):null;
+    if(ledger?.added?.[id])ledger.added[id]=cloneLayoutData(next.find(value=>String(value.id)===String(id)));
+    this.save(next,ledger);
+    return {ok:true,...result.position};
+  },
+  save(next,ledger=null,visibility=null){
+    const roomId=getLayoutStoragePrefix(),space=inventorySpace(),store=window.XpaceInventory;
+    const keys=getLayoutSlotKeys(roomId),writes=[[keys.current,JSON.stringify(next)],[keys.backup,JSON.stringify(next)],[keys.schema,LAYOUT_SCHEMA_VERSION]];
+    const before=writes.map(([key])=>[key,localStorage.getItem(key)]),old=shopLayout,oldGrid=walkGrid;
+    const oldLedger=ledger?cloneLayoutData(store.removals(space)):null,oldVisibility=visibility?cloneLayoutData(store.read(space)):null;
+    try{
+      if(ledger)store.writeRemovals(space,ledger);if(visibility)store.writeVisibility(space,visibility);
+      for(const [key,value]of writes)localStorage.setItem(key,value);shopLayout=next;buildWalkGrid();
+    }catch(error){
+      shopLayout=old;walkGrid=oldGrid;
+      try{if(oldLedger)store.writeRemovals(space,oldLedger);if(oldVisibility)store.writeVisibility(space,oldVisibility);}catch{}
+      for(const [key,value]of before){try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}catch{}}throw error;
+    }
+    try{store?.publish(space,shopLayout);store?.notify(space);}catch(error){console.warn('[Distribuir inventory]',error);}
+  },
+  async mutate(request){
+    const {planFurnitureObjectChange}=await import('./scripts/distribuit-objects.mjs?v=distribuir-3');
+    if(request.signal?.aborted)throw Error('cancelled');
+    const scene=this.read(),store=window.XpaceInventory,space=inventorySpace();
+    if(!scene.active||scene.roomId!==request.roomId)throw Error('room');
+    if(!store)throw Error('inventory');
+    const change=planFurnitureObjectChange({scene,layout:store.retained(space,shopLayout),ledger:store.removals(space),visibility:store.read(space)},request);
+    this.save(change.layout,change.ledger,change.visibility);return change.receipt;
+  },
+  catalogItems:new Map(),
+  async catalog({roomId}){
+    const {pixeriaFurnitureAsset}=await import('./scripts/pixeria-furniture.mjs?v=distribuir-3');
+    const scene=this.read();if(!scene.active||scene.roomId!==roomId)throw Error('room');
+    const values=await fetchPixeriaCatalog('furni'),current=this.read();
+    if(!current.active||current.roomId!==roomId)throw Error('room');
+    const assets=values.map(pixeriaFurnitureAsset).filter(Boolean);
+    this.catalogItems=new Map(assets.map(item=>[item.assetId,item]));return assets;
+  },
+  async importItem({roomId,assetId,signal}){
+    const {checkPixeriaFurniture}=await import('./scripts/pixeria-furniture.mjs?v=distribuir-3');
+    const scene=this.read();if(!scene.active||scene.roomId!==roomId)throw Error('room');
+    const asset=this.catalogItems.get(assetId);if(!asset)throw Error('asset');
+    if(signal?.aborted)throw Error('cancelled');
+    await checkPixeriaFurniture(asset);
+    if(signal?.aborted)throw Error('cancelled');
+    const item={id:'pixeria_'+crypto.randomUUID(),type:'custom',custom:true,source:'PixerIA',sourceAssetId:asset.assetId,label:asset.label,fp:[...asset.fp],img:asset.img,modelUrl:asset.modelUrl,ph:asset.ph,col:0,row:0,rot:0,sx:1,sy:1,locked:false};
+    return this.mutate({signal,roomId,action:'add',item});
+  }
+};
+
 loop();
 
 // ── DIRECT ENTRY URL: ?play=<verticalId> ─────────────────────────
@@ -27151,6 +27343,7 @@ loop();
 //  ?play=creator      → Xpace Creator (EDITOR)
 //  ?play=loterias     → Loterias (pending — muestra el catálogo con loterias preseleccionado)
 function autoEnterVertical(id){
+  if(isStarbucksVenue())id='cafeteria';
   if(!id) return false;
   const idx=CLIENTS.findIndex(c=>c && c.id===id);
   if(idx<0) return false;
@@ -27209,7 +27402,7 @@ try {
   } else if(playParam){
     // Pequeño delay para que initGame encuentre todo listo
     setTimeout(()=>{ _dismissSplash(); try{ autoEnterVertical(playParam); }catch(e){ console.warn('autoEnterVertical failed:',e); } }, 50);
-  } else if(locParam){
+  } else if(locParam&&!window.__xpaceMatrixEntry){
     // ?loc=<id> = punto de admira.app: entra DIRECTO a su tienda (twin del
     // punto). Cualquier id dado de alta en el mapa abre su gemelo — no hay
     // tiendas hardcodeadas. Mapeamos el tipo de punto al vertical más adecuado
@@ -27396,6 +27589,7 @@ window.xtAPI = (function(){
       saca: !!(G&&G.saca&&G.saca.phase!=='idle'),
       holiday: !!(G&&G.holiday&&G.holiday.active),
       rain: !!(G&&G.weather&&G.weather.type==='rain'),
+      rainSound: !!(G&&G.weather&&G.weather.type==='rain'&&G.weather.sonora===true),
       sun: !!(G&&G.weather&&G.weather.type==='sun'),
       rivalPromo: !!(G&&G.comp&&G.comp.promoTimer>0),
       robot: !!(G&&G.unitreeBot&&G.unitreeBot.phase!=='idle'),
@@ -27486,15 +27680,17 @@ window.xtAPI = (function(){
     return Math.max(120,Math.floor(framesPerDay/dayHours*2));
   }
 
-  function setRainState(on){
+  function setRainState(on,sonora=false){
     if(on){
-      G.weather={type:'rain',timer:twoHourTimer()};
+      G.weather={type:'rain',timer:twoHourTimer(),sonora:sonora===true};
       showEv('🌧 '+(lang==='es'?'¡Tormenta activada!':'Storm activated!'),'#6688aa');
       try{hueAll({on:true,bri:254,xy:[0.18,0.18],alert:'lselect'});}catch(e){}
     } else if(G.weather&&G.weather.type==='rain'){
       G.weather={type:null,timer:0};
       showEv('🌤 '+(lang==='es'?'Tiempo normal':'Normal weather'),'#aaaaaa');
     }
+    if(!on||!sonora)SFX.stopWeather?.();
+    try{window.AMBIENT?.update();}catch(_){}
     return !!on;
   }
 
@@ -27786,11 +27982,24 @@ window.xtAPI = (function(){
 
     command: function(input){
       const raw=String(input||'').trim();
+      const visibility=executePeopleVisibilityCommand(raw);
+      if(visibility)return visibility;
       if(!raw) return {ok:false,message:'Indica un comando. Ejemplo: /music, /ladron on, /sol off'};
       const normalized=raw.startsWith('/')?raw.slice(1):raw;
       const parts=normalized.split(/\s+/).filter(Boolean);
       const cmd=(parts.shift()||'').toLowerCase();
       const arg=parts.join(' ');
+      const weather=window.XpaceWeatherCommand.parse(raw,G&&G.weather);
+      if(weather){
+        if(!weather.ok)return {ok:false,message:weather.error};
+        if(!G)return noGame();
+        if(weather.type==='rain')setRainState(true,weather.sonora);
+        else if(weather.type==='sun'){SFX.stopWeather?.();setSunState(true);}
+        else {G.weather={type:null,timer:0,sonora:false};SFX.stopWeather?.();window.AMBIENT?.update();}
+        window.AMBIENT?.update();
+        const en=lang==='en';
+        return {ok:true,message:weather.type==='rain'?(en?'Rain · '+(weather.sonora?'audible':'silent'):'Lluvia · '+(weather.sonora?'sonora':'sin sonido')):weather.type==='sun'?(en?'Sunny weather':'Tiempo soleado'):(en?'Normal weather':'Tiempo normal'),data:{type:weather.type,sonora:weather.sonora}};
+      }
       // Echo del comando en el bocadillo del Store Manager — TRADUCIDO al
       // idioma actual y sin barras: "/store close" → "Tienda cerrada" (es) o
       // "Store closed" (en). Saltamos comandos diagnosticos (/audio probe etc.)
@@ -29211,7 +29420,7 @@ window.xtAPI = (function(){
 
   function telegramCandidates(){
     const seen=new Set();
-    return [TELEGRAM.activeBaseUrl,workerTelegramBaseUrl(),localTelegramBaseUrl()]
+    return [TELEGRAM.activeBaseUrl,workerTelegramBaseUrl(),LOCAL_BRIDGE?localTelegramBaseUrl():'']
       .filter(Boolean)
       .filter(base=>{
         if(seen.has(base)) return false;
@@ -29531,7 +29740,7 @@ window.xtAPI = (function(){
   refreshTelegramDiagnostics();
 
   function telegramUrl(path){
-    const base=TELEGRAM.activeBaseUrl||workerTelegramBaseUrl()||localTelegramBaseUrl();
+    const base=TELEGRAM.activeBaseUrl||workerTelegramBaseUrl()||(LOCAL_BRIDGE?localTelegramBaseUrl():'');
     return base+path;
   }
 
@@ -30073,7 +30282,7 @@ window.xtAPI = (function(){
     if(typeof location!=='undefined'&&/^(localhost|127\.0\.0\.1)/.test(location.hostname)){
       proxyBases.push(location.origin);
     }
-    proxyBases.push('http://localhost:9124','http://127.0.0.1:9124');
+    if(LOCAL_BRIDGE) proxyBases.push('http://localhost:9124','http://127.0.0.1:9124');
     let savedVia=null,lastErr=null;
     for(const base of proxyBases){
       try{
@@ -30220,6 +30429,8 @@ window.xtAPI = (function(){
     return id?('layouts/'+id+'.xml'):null;
   }
   async function loadStoreLayoutFromRepo(opts){
+    // Starbucks owns a versioned local seed; never import the tobacco default.
+    if(isStarbucksVenue())return false;
     const silent=!!(opts&&opts.silent);
     const perLoc=storeLayoutPath();
     if(perLoc){
@@ -30260,13 +30471,9 @@ window.xtAPI = (function(){
     // Endpoints en orden: local (MBP) primero, después Tailscale Funnel
     // (público vía macbook-pro-16.tail48b61c.ts.net/admira/...) para que el
     // móvil u otros dispositivos también puedan empujar.
-    proxyBases.push(
-      'http://localhost:9126',
-      'http://127.0.0.1:9126',
-      'https://macbook-pro-16.tail48b61c.ts.net/admira',
-      'http://localhost:9124',
-      'http://127.0.0.1:9124'
-    );
+    if(LOCAL_BRIDGE) proxyBases.push('http://localhost:9126','http://127.0.0.1:9126');
+    proxyBases.push('https://macbook-pro-16.tail48b61c.ts.net/admira');
+    if(LOCAL_BRIDGE) proxyBases.push('http://localhost:9124','http://127.0.0.1:9124');
     let savedVia=null,lastErr=null,gitInfo=null;
     for(const base of proxyBases){
       try{
@@ -30693,6 +30900,7 @@ window.xtAPI = (function(){
   function helpSections(){
     // Orden actual = orden alfabético/legado. Pendiente: reordenar por uso real.
     return [
+      {title:typeof lang!=='undefined'&&lang==='en'?'People visibility · ES / EN':'Personas visibles · ES / EN',items:['/gente on','/gente off','/people on','/people off','/personal on','/personal off','/staff on','/staff off','/clientes on','/clientes off','/customers on','/customers off']},
       {title:'Consulta',items:['/status','/staff','/stock','/turno']},
       {title:'Turnos (pantalla pared larga)',items:['/turno on','/turno off','/turno next','/turno previous','/turno 15','/turno auto']},
       {title:'Equipo y stock',items:['/hire 1','/hire dj','/hire all','/train 1','/train all','/restock 2','/restock all','/restock prensa']},
@@ -30701,7 +30909,7 @@ window.xtAPI = (function(){
       {title:'Personal (panel /staff)',items:['/staff','/staff bonus 0 100','/staff eotm 0','/staff eotm ana','/staff train 1','/staff hire 2','/staff fire 1']},
       {title:'Tienda',items:['/resetaudiencia 0','/resetaudiencia 100','/resetaudiencia auto','/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
       {title:'Look & feel',items:['/camiseta on','/camiseta off','/camiseta']},
-      {title:'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
+      {title:'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/tiempo lluvia','/tiempo lluvia sonora','/weather rain audible','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
       {title:'Pantalla y directo',items:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
       {title:'Digital Signage (vídeos)',items:['/ds on','/ds off','/ds next','/ds previous','/ds audio on','/ds audio off','/info','/info on','/info off']},
       {title:'Mupi del Xtanco (tótem vertical)',items:['/admiratv','/admiratv on','/admiratv off','/admiratv tiktok','/admiratv all','/admiratv condicional (player condicionado por audiencia · también ?totem=condicional en la URL · chip de debug con ?debugchip=1)']},
@@ -30714,9 +30922,10 @@ window.xtAPI = (function(){
       {title:'Integración AdmiraNext',items:['/socios export']},
       {title:'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
       {title:'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
-      {title:'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
+      {title:'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
+      {title:'Distribuir / Distribute · editor de muebles · Better 16 bits',items:['/cli distribuir','/cli distribute','/distribuir off']},
       {title:'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
-      {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Avenida Admira',items:['good','better','best','matrix','/mudanza','/modo estado']},
+      {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Starbucks Alsea',items:['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']},
       {title:'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
       {title:'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
     ];
@@ -30729,6 +30938,7 @@ window.xtAPI = (function(){
     // única forma de cerrarlo y la ayuda se quedaba abierta para siempre.
     helpPanel.innerHTML='<div class="tg-help-top"><strong>Comandos de control</strong>'
       +'<button type="button" class="tg-help-close" data-help-close title="Cerrar la ayuda">✕</button></div>'
+      +'<p class="tg-help-layout">'+(lang==='en'?'Drag the top handle for height and the two dividers to resize commands, quality and Local view. Sizes are saved. Double-click a divider to reset widths.':'Arrastra el tirador superior para la altura y los dos separadores para repartir comandos, calidad y Local view. Se guardan las medidas. Doble clic en un separador restablece los anchos.')+'</p>'
       +'<div class="tg-help-grid">'
       +sections.map((section,si)=>'<div class="tg-help-section"><h4>'+(si+1)+'. '+section.title+'</h4>'
         +section.items.map((cmd,ci)=>'<button type="button" class="tg-help-cmd" data-help-cmd="'+cmd.replace(/"/g,'&quot;')+'"><span class="tg-help-num">'+(si+1)+'.'+(ci+1)+'</span> '+cmd+'</button>').join('')
@@ -31240,9 +31450,18 @@ window.xtAPI = (function(){
 
   async function executeLocalVisualCommand(rawText){
     const text=String(rawText||'').trim();
+    if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
+      try{
+        const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=distribuir-3');
+        return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
+      }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
+    }
+    const visibility=executePeopleVisibilityCommand(text);
+    if(visibility)return visibility;
     if(/^\/?(?:inventario|eliminar|añadir|anadir)(?:@\w+)?(?:\s|$)/i.test(text)){
       try{
-        const {executeInventoryCommand}=await import('../inventario/command.mjs?v=inventory-cli-3');
+        const {executeInventoryCommand}=await import('../inventario/command.mjs?v=inventory-cli-4');
         const space=inventorySpace();
         const checkSpace=()=>{if(inventorySpace()!==space)throw Error('El Xpacio ha cambiado');};
         return await executeInventoryCommand(text,{
@@ -31266,10 +31485,10 @@ window.xtAPI = (function(){
         });
       }catch{return {ok:false,local:true,kind:'inventory',message:'No se pudo cargar el inventario local. Recarga la Xperience y reintenta.'};}
     }
-    if(!/^(?:good|better|best|matrix)$|^\/mudanza(?:@\w+)?$|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
+    if(!/^(?:good|better|best|matrix)$|^\/(?:sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=matrix-furniture-1');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=aviso-1');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -31897,13 +32116,7 @@ window.xtAPI = (function(){
         const map={com:'Com',tec:'Tec',del:'Del',gc:'GC'};
         return api.visit(map[arg.toLowerCase()]||arg).message;
       }
-      if(cmd==='weather'){
-        const err=needsGame();if(err)return err;
-        const map={normal:'weather_0',rain:'weather_1',lluvia:'weather_1',storm:'weather_1',sun:'weather_2',sol:'weather_2'};
-        const id=map[arg.toLowerCase()]||'weather_0';
-        doAction(id);
-        return 'Tiempo actualizado: '+(arg||'normal');
-      }
+      if(['tiempo','weather','lluvia','rain'].includes(cmd))return api.command('/'+cmd+(arg?' '+arg:'')).message;
       if(cmd==='time'||cmd==='hora'){
         const err=needsGame();if(err)return err;
         const map={am:'time_am',morning:'time_am',mañana:'time_am',pm:'time_pm',tarde:'time_pm',night:'time_night',noche:'time_night'};
@@ -33647,9 +33860,9 @@ window.xtAPI = (function(){
       const r=await fetch(PIXER_WORKER+'/twin/spawn/pending?since='+__npcSeen+'&screen='+encodeURIComponent(screenId)+'&ts='+Date.now(),{cache:'no-store'});
       if(!r.ok) return;
       const d=await r.json(); const list=(d&&d.pending)||[];
-      // Ventana de 60s con SOLAPE (no avanzar a d.now seco): así no se salta ningún
-      // envío entre polls y, si la tienda estaba llena, se reintenta hasta que entre.
-      if(d&&d.now) __npcSeen=Math.max(0,d.now-60000);
+      // Mantener los cinco minutos de recepción también después del primer poll:
+      // KV puede propagar tarde una entrada. Los IDs confirmados ya se deduplican.
+      if(d&&d.now) __npcSeen=Math.max(0,d.now-5*60*1000);
       for(const e of list){ if(e&&e.img&&e.id&&!__npcDone.has(e.id)){ if(spawnCustomNpc(e)) __npcMarkDone(e.id); } }
     }catch(_){}
   }
@@ -34114,6 +34327,7 @@ window.xtAPI = (function(){
   try{
     const _qs=new URLSearchParams(location.search);
     let _as=(_qs.get('autostart')||'').toLowerCase();
+    if(isStarbucksVenue())_as='cafeteria';
       // Directo al Xtanco por defecto (Carlos, 13-jul-2026): fuera XPACE INVADERS del camino
       // de entrada. El arcade queda como easter egg con ?arcade=1; los modos con entrada
       // propia (view/distro/present/preview) siguen intactos.
@@ -34122,8 +34336,13 @@ window.xtAPI = (function(){
       const _cmap={xtanco:0,loterias:1,supermercado:2,shoptalk:3,creator:4,cafeteria:5,cafebreria:5};
       const _ci=Object.prototype.hasOwnProperty.call(_cmap,_as)?_cmap[_as]:0;
       const _ed=(_qs.get('editor')==='1'||_qs.get('editor')==='true');
-      chooseJugar();   // oculta el splash
-      setTimeout(()=>{ try{ quickStartXtanco(_ci,_ed); setTimeout(function(){try{document.documentElement.classList.remove('adm-direct');}catch(e){}},1200); }catch(e){ console.warn('autostart failed',e); } }, 200);
+      if(window.__xpaceMatrixEntry){
+        hideSplash();document.body.classList.remove('entering-twin');
+        try{quickStartXtanco(_ci,false);}catch(e){window.__xpaceMatrixBoot?.fail();}
+      }else{
+        chooseJugar();
+        setTimeout(()=>{ try{ quickStartXtanco(_ci,_ed); setTimeout(function(){try{document.documentElement.classList.remove('adm-direct');}catch(e){}},1200); }catch(e){ console.warn('autostart failed',e); } }, 200);
+      }
     }
   }catch(e){}
   splash.addEventListener('click', (e)=>{
@@ -34171,6 +34390,8 @@ window.xtAPI = (function(){
     {sel:'#splashContactBtn', en:'Contact', es:'Contacto'},
     {sel:'#pfOptions', attr:'aria-label', en:'Options', es:'Opciones'},
     {sel:'#pfOptions', attr:'title', en:'Options', es:'Opciones'},
+    {sel:'#expertControlsLabel', en:'CONTROLS', es:'CONTROLES'},
+    {sel:'#expertPreviewLabel', en:'PREVIEWS', es:'PREVIOS'},
     {sel:'#pfToggles', attr:'aria-label', en:'Modes: advanced, expert', es:'Modos: avanzado, experto'},
     {sel:'[data-quad-toggle="right"]', attr:'aria-label', en:'Open advanced menu', es:'Desplegar menú avanzado'},
     {sel:'[data-quad-toggle="right"]', attr:'title', en:'Advanced menu', es:'Menú avanzado'},
@@ -34278,7 +34499,7 @@ window.xtAPI = (function(){
     {sel:'#characterDockActions', attr:'aria-label', en:'Contextual actions for the active tab', es:'Acciones contextuales del tab activo'},
     {sel:'#telegramHelpPanel', attr:'aria-label', en:'Available commands', es:'Comandos disponibles'},
     {sel:'#telegramQuickActions', attr:'aria-label', en:'Quick scene actions', es:'Acciones rápidas de escena'},
-    {sel:'#telegramHideBtn', attr:'title', en:'Show/hide the CLI response (right half)', es:'Mostrar/ocultar la respuesta del CLI (mitad derecha)'},
+    {sel:'#telegramHideBtn', attr:'title', en:'Show/hide Local view', es:'Mostrar/ocultar Local view'},
     {sel:'#dockSiteLink', attr:'title', en:'Open OmniPublicity — XpaceOS programmatic module', es:'Abrir OmniPublicity — modulo programatico del Xpace OS'},
     {sel:'#demoOverlay', en:'▶ DEMO MODE · no human intervention', es:'▶ MODO DEMO · sin intervención humana'}
   ];
@@ -35298,30 +35519,33 @@ window.xtAPI = (function(){
   /* CLI aún más limpio: fuera la barra superior del dock (título + versión "SITE v…");
      el rótulo "CONTROL XTORE" pasa al inicio de la propia caja de texto. */
   #telegramDock.compose-start .tg-pane.send .tg-head{display:none !important}
-  /* Alinear rótulo e input por la BASELINE del texto (evita que "/info" salga por
-     encima del rótulo cuando el textarea crece al escribir). */
-  #telegramDock.compose-start .tg-cli-row{align-items:baseline}
-  #telegramDock.compose-start .tg-cli-row::before{
-    content:'CONTROL XTORE';
-    align-self:baseline;flex:0 0 auto;white-space:nowrap;
-    color:var(--xp-cyan,#78f3ff);font:bold 10px/1.35 monospace;letter-spacing:.12em;
-    padding-right:9px;margin-right:2px;border-right:1px solid rgba(120,243,255,.28)}
-  #telegramDock.compose-start .tg-cli-row .tg-actions{align-self:center}
-  /* Experto: el textarea NUNCA crece al escribir (ni con .typing) → dock estable como
-     al desplegarlo. Los botones tampoco se ocultan. */
-  #telegramDock.compose-start .tg-cli-row #telegramComposer{height:28px !important;max-height:28px !important}
-  #telegramDock.compose-start .tg-pane.send.typing .tg-cli-row .tg-actions{display:flex !important}
-  /* Una sola fila: INPUT (mitad izquierda) | OUTPUT (mitad derecha) → dock aún más
-     estrecho. El input baja a la izquierda y la respuesta va a la otra mitad. */
-  #telegramDock.compose-start .tg-pane.send:not(.help-open):not(.signage-open){flex-direction:row;align-items:stretch;gap:0}
-  #telegramDock.compose-start .tg-pane.send:not(.help-open):not(.signage-open) .tg-cli-row{flex:1 1 50%;min-width:0}
-  #telegramDock.compose-start .tg-pane.send:not(.help-open):not(.signage-open) #telegramLastResponse{display:block !important;flex:1 1 50%;min-width:0;
-    max-height:none;margin:0;border:0;border-left:1px solid rgba(120,243,255,.22);
-    padding:6px 12px;overflow:auto;align-self:stretch}
-  /* Feedback del CLI oculto (botón Ocultar/Mostrar): la mitad derecha desaparece y el
-     input ocupa todo el ancho → máximo espacio para escribir. Oculto por defecto. */
-  #telegramDock.compose-start.cli-out-hidden .tg-pane.send:not(.help-open):not(.signage-open) #telegramLastResponse{display:none !important}
-  #telegramDock.compose-start.cli-out-hidden .tg-pane.send:not(.help-open):not(.signage-open) .tg-cli-row{flex:1 1 100% !important}
+  .expert-workspace{display:flex;flex-direction:column;min-height:0;flex:1}
+  .expert-divider{display:none}
+  .expert-section-label{order:-2;flex:0 0 auto;width:100%;font:bold 9px/1.2 monospace;letter-spacing:.08em;color:#78f3ff}
+  #expertQuickIcons{display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:4px;width:100%}
+  #expertQuickIcons .tg-quick-btn{min-width:0;min-height:28px;padding:4px;overflow-wrap:anywhere}
+  #expertQuickIcons .tg-quick-btn strong{font-size:9px}
+  #expertQuickIcons .tg-quick-btn span{font-size:8px}
+  #telegramDock.compose-start .tg-pane.send{flex-direction:column;gap:0}
+  #telegramDock.compose-start .expert-workspace{display:grid;grid-template-columns:minmax(0,var(--expert-input,32fr)) 12px minmax(0,var(--expert-controls,38fr)) 12px minmax(0,var(--expert-output,30fr));overflow:hidden;min-width:0}
+  #telegramDock.compose-start .tg-cli-row{display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:0;padding:6px;gap:3px;overflow:hidden}
+  #telegramDock.compose-start .tg-cli-row::before{content:'CONTROL XTORE';color:var(--xp-cyan,#78f3ff);font:bold 9px/1.2 monospace;letter-spacing:.1em;flex:0 0 auto}
+  #telegramDock.compose-start .tg-cli-row #telegramComposer{width:100%;height:100%!important;max-height:none!important;min-height:0;flex:1;padding:4px;box-sizing:border-box;overflow:auto}
+  #telegramDock.compose-start #xtanco-visual-quality{flex-wrap:wrap;max-width:100%;box-sizing:border-box}
+  #telegramDock.compose-start .expert-workspace>.tg-actions{display:flex!important;align-content:flex-start;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;gap:5px;padding:6px 2px;min-width:0;min-height:0;margin:0;overflow:auto}
+  #telegramDock.compose-start .expert-workspace #telegramLastResponse{display:block!important;min-width:0;min-height:0;max-height:none;margin:0;border:0;padding:6px;overflow:auto;align-self:stretch;overflow-wrap:anywhere}
+  #telegramDock.compose-start #telegramLastResponse:empty::before{content:"LOCAL VIEW";color:#78f3ff;font:10px monospace;letter-spacing:.08em}
+  #telegramDock.compose-start .expert-divider{display:block;position:relative;cursor:col-resize;touch-action:none;min-height:0;outline-offset:-2px}
+  .expert-divider::before{content:'';position:absolute;top:5px;bottom:5px;left:5px;width:2px;background:rgba(120,243,255,.3);border-radius:2px}
+  .expert-divider:hover::before,.expert-divider:focus-visible::before,.expert-divider.is-dragging::before{background:#78f3ff}
+  #telegramDock .expert-view-pane{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:0;padding:6px;overflow:auto;scrollbar-width:none}
+  #telegramDock .expert-primary-actions{flex:0 0 auto;min-height:0;padding:0;border:0;background:transparent;gap:5px;align-items:center}
+  #telegramDock .expert-view-pane::-webkit-scrollbar{display:none}
+  #telegramDock .expert-view-pane>.visual-tier-controls,#telegramDock .expert-view-pane>.tier-hud{flex:0 0 auto}
+  #telegramDock.compose-start .expert-view-pane #telegramLastResponse{flex:1 0 auto;overflow:visible;padding:4px 0}
+  #telegramDock.compose-start.cli-out-hidden #telegramLastResponse{display:none!important}
+  #telegramDock.compose-start .help-open .expert-workspace,#telegramDock.compose-start .signage-open .expert-workspace{flex:0 0 90px}
+  #telegramDock.compose-start .dock-resize-handle{z-index:10}
   /* Modo AVANZADO (▤) = los iconos ocupan el panel derecho, en lugar del texto
      EQUIPO CARBONO. Reusa la posición del panel .quad-right (derecha, bajo la barra,
      ancho = margen, con su animación de despliegue). */
@@ -35354,6 +35578,7 @@ window.xtAPI = (function(){
   #advSceneControls .tg-quick-btn[aria-pressed=true]{border-color:#6ce6a2 !important;background:#123427 !important;color:#f0fff4 !important}
   #advSceneControls .tg-quick-btn[aria-pressed=true] span{color:#a7e6be !important}
 </style>
+<script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -35393,6 +35618,12 @@ window.xtAPI = (function(){
     // Pixeria keeps its latest-item import. Scene bars (Better) sit under it.
     btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
     host.appendChild(scene);
+    var center=document.getElementById('expertQuickIcons');
+    if(center){center.replaceChildren();host.querySelectorAll('button').forEach(function(original){
+      if(original.closest('#advSceneControls'))return;
+      var copy=original.cloneNode(true);copy.removeAttribute('id');
+      copy.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();original.click();});center.appendChild(copy);
+    });}
   }
   try{ var mo=new MutationObserver(mirror); mo.observe(src,{childList:true,subtree:true,characterData:true}); }catch(e){}
   mirror();
@@ -35400,25 +35631,7 @@ window.xtAPI = (function(){
   // su contenido (header + caja + respuesta), eliminando el espacio negro sobrante
   // entre la caja de escritura y el resultado.
   function fitDock(){
-    try{
-      var dock=document.getElementById('telegramDock');
-      if(!dock || !dock.classList.contains('compose-start')) return;
-      var top=dock.getBoundingClientRect().top, h=0;
-      var help=document.getElementById('telegramHelpPanel');
-      var sig=document.getElementById('telegramSignagePanel');
-      var ta=document.getElementById('telegramComposer');
-      // Con help/signage abiertos, el dock se ajusta a ese panel; si no, a la fila
-      // input|output → su altura la marca el textarea (que NO se estira), y el output
-      // (mitad derecha) se estira a juego.
-      if(help && getComputedStyle(help).display!=='none'){ h=Math.ceil(help.getBoundingClientRect().bottom-top)+4; }
-      else if(sig && getComputedStyle(sig).display!=='none'){ h=Math.ceil(sig.getBoundingClientRect().bottom-top)+4; }
-      else if(ta && ta.getBoundingClientRect().height){ h=Math.ceil(ta.getBoundingClientRect().height)+16; }
-      var response=document.getElementById('telegramLastResponse');
-      if(response?.dataset.inventory&&!dock.classList.contains('cli-out-hidden'))h=Math.max(h,response.dataset.inventory==='list'?Math.min(260,innerHeight*.36):100);
-      if(h>28 && Math.abs(dock.getBoundingClientRect().height-h)>2){
-        dock.style.height=h+'px';                            // ajusta el dock al contenido real
-      }
-    }catch(e){}
+    // resizeCanvas owns the persisted height; never overwrite a user's resize.
   }
   // Los paneles laterales (Opciones ☰ / Avanzado ▤) llegan a bottom:0 y taparían el
   // dock inferior del modo experto. Publicamos la altura del dock VISIBLE en la var
@@ -35440,24 +35653,10 @@ window.xtAPI = (function(){
   // ancho) y el hint largo se recorta feo. En modo experto usamos una pista corta;
   // fuera del experto se respeta el placeholder original (localizado ES/EN).
   function fitPlaceholder(){
-    try{
-      var dock=document.getElementById('telegramDock');
-      var ta=document.getElementById('telegramComposer');
-      if(!dock||!ta) return;
-      if(dock.classList.contains('compose-start')){
-        if(!ta.hasAttribute('data-ph-orig')){
-          ta.setAttribute('data-ph-orig', ta.placeholder||'');
-        }
-        // Idioma robusto: el botón Enviar/Send lo fija la MISMA función de i18n que el
-        // placeholder original, así que es la señal fiable (window.lang es de módulo y
-        // documentElement.lang no rastrea el idioma del juego).
-        var sb=document.getElementById('telegramSendBtn');
-        var isEs=sb? /enviar/i.test(sb.textContent||'') : (typeof window.lang!=='undefined'? window.lang : (document.documentElement.lang||'es'))!=='en';
-        ta.placeholder=isEs?'Comando…':'Command…';
-      }else if(ta.hasAttribute('data-ph-orig')){
-        ta.placeholder=ta.getAttribute('data-ph-orig');
-      }
-    }catch(e){}
+    var ta=document.getElementById('telegramComposer');
+    if(!ta)return;
+    if(window.XpaceExpertComposer)window.XpaceExpertComposer.refresh();
+    else ta.placeholder='/sincro on';
   }
   fitPlaceholder();
   window.addEventListener('inventory-cli-response',function(){requestAnimationFrame(function(){fitDock();syncDockClear();});});
@@ -35566,17 +35765,22 @@ window.xtAPI = (function(){
 })();
 </script>
 <script>if(new URLSearchParams(location.search).get("virtualPlayer")==="xtore-virtual-zapatillas"){try{for(const l of ["es","en"]){if(typeof LANGS!=="undefined"&&LANGS[l])LANGS[l].ledMsgs=["ADMIRA · XTORE ZAPATILLAS","PLAYER VIRTUAL · INTERIOR + ESCAPARATE","PUERTA CAM · PROGRAMACIÓN CONDICIONAL"];}}catch(_){}}</script>
-<link rel="stylesheet" href="scripts/xtore-window.css?v=normal-tabs-1">
-<script type="module" src="scripts/xtore-window.mjs?v=normal-tabs-1"></script>
+<link rel="stylesheet" href="scripts/xtore-window.css?v=bottom-workspace-2">
+<script type="module" src="scripts/xtore-window.mjs?v=bottom-workspace-2"></script>
 <script type="module" src="scripts/real-traffic.mjs?v=1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=closed-resume-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=panel-scene-1">
+<link rel="stylesheet" href="scripts/distribuit.css?v=distribuir-3">
 <link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
-<link rel="stylesheet" href="scripts/tier-hud.css?v=gait-1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=cafeteria-tier-2"></script>
+<link rel="stylesheet" href="scripts/tier-hud.css?v=expert-hud-1">
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=distribuir-3"></script>
+<script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
+<link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
+<script type="module" src="scripts/side-panel-resize.mjs?v=1"></script>
 </body>
 </html>

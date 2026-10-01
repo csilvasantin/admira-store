@@ -2,9 +2,9 @@
 
 Entrada: `/admira-xp/?autostart=xtanco&virtualPlayer=xtore-virtual-zapatillas`.
 El acceso está en **⌘ Experto → Player y cámara**. Los controles no flotan al
-entrar ni cuando se oculta Experto. El panel de player/cámara y la barra Control
-Xtore se arrastran por su título y tienen cruz de cierre. Las posiciones se
-recuerdan y se ajustan al tamaño de pantalla. Cerrar una herramienta u ocultar
+entrar ni cuando se oculta Experto. El panel de player/cámara se arrastra por su título y recuerda su posición.
+La barra Control Xtore permanece anclada abajo y se redimensiona desde arriba.
+Ambos tienen cruz de cierre. Cerrar una herramienta u ocultar
 Experto no desconecta el player ni la cámara; «Desconectar» sí lo hace.
 Toda nueva ventana flotante debe ser movible y disponer de cierre visible.
 

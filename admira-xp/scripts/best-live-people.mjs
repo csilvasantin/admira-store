@@ -1,9 +1,9 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=px-2';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=anon-demo-v1';
 import {visitorProfileById} from './visitor-profiles.mjs?v=visitors-24';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
 import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
 import {walkSheetURL,walkFrame,walkBackgroundPosition} from './visitor-walk-sprites.mjs?v=walk-1';
-import {pixeriaWalkSheet} from './pixeria-personas.mjs?v=px-2';
+import {pixeriaWalkSheet} from './pixeria-personas.mjs?v=anon-demo-v1';
 
 const clamp=(value,min=0,max=1)=>Math.max(min,Math.min(max,value));
 const DEFAULT_COLS=14,DEFAULT_ROWS=8;

@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {completionFor,nextSyncCommand} from './expert-composer.mjs';
+test('prefix chooses opposite sync state, including total',()=>{assert.equal(completionFor('/sin','individual'),'/sincro on');for(const mode of ['groups','total'])assert.equal(completionFor('/SIN',mode),'/sincro off');assert.equal(nextSyncCommand('groups'),'/sincro off');});
+test('explicit arguments, longer commands and ordinary text are preserved',()=>{for(const s of ['/sincro off','/sincro on','/sincrototal','hello /sin','/s'])assert.equal(completionFor(s,'individual'),null);});

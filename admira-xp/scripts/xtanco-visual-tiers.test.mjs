@@ -76,7 +76,7 @@ test('Best opens only its injected live-people preview, persists Best and never 
   const f=routerFixture(),result=await f.tiers.choose('best');
   assert.equal(f.life.calls.open,0);assert.equal(f.best.calls.open,1);assert.equal(f.tiers.mode,'best');assert.equal(f.bestRequests.length,1);
   assert.equal(result.ok,true);assert.equal(result.availability,'preview');assert.equal(result.preview,true);
-  assert.equal(f.changes.at(-1).busy,false);assert.match(f.changes.at(-1).notice,/Best.*personas en 3D en vivo.*funciones operativas completas/);
+  assert.equal(f.changes.at(-1).busy,false);assert.match(f.changes.at(-1).notice,/Best.*Avenida Admira.*mobiliario editable/);
   assert.equal(f.storage.values.get(TIER_STORAGE_KEY),'best');
   await f.tiers.choose('best');assert.equal(f.best.calls.open,1,'already open is idempotent');
   await f.tiers.choose('better');assert.equal(f.best.calls.close,1);assert.equal(f.tiers.availability,'interactive');
@@ -233,7 +233,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   }
   const body=new Element('body'),actions=new Element('expert-actions'),advanced=new Element('advanced-actions');body.dataset.xtancoVisual='better';
   body.append(actions);body.append(advanced);
-  const document={body,querySelector(selector){queries.push(selector);return selector==='#telegramDock .tg-actions'?actions:selector==='.quad-right'?advanced:null;},
+  const document={body,querySelector(selector){queries.push(selector);return selector==='#telegramDock .expert-view-pane'?actions:selector==='.quad-right'?advanced:null;},
     createElement(tag){created.push(tag);return new Element(tag);},getElementById(id){
       const find=node=>(node.id||node.attrs.id)===id?node:node.children.map(find).find(Boolean);
       return find(body)??null;
@@ -247,7 +247,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
   vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
-  const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the expert actions');
+  const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the third expert pane');
   return {body,actions,advanced,controls,document,window,storage,good,life,best,matrix,created,queries,
     get status(){return document.getElementById('xtanco-best-status');},
     pagehide(){for(const fn of windowEvents.pagehide||[])fn({persisted:false});},
@@ -257,11 +257,11 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
 
 test('Expert keeps the version selector and Advanced no longer repeats it',()=>{
   const h=selectorHarness({search:'?visual=best'});
-  assert.deepEqual(h.queries,['#telegramDock .tg-actions','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
+  assert.deepEqual(h.queries,['#telegramDock .expert-view-pane','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
   assert.equal(h.advanced.children.length,0,'the side panel must not host a second Good/Better/Best/Matrix selector');
   assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/experto/);
   assert.notEqual(h.button('best').attrs['aria-disabled'],'true');assert.equal(h.button('best').attrs['aria-pressed'],'true');
-  assert.match(h.button('best').attrs.title,/tienda y personas en 3D en vivo/);
+  assert.match(h.button('best').attrs.title,/Avenida Admira.*mobiliario editable/);
   assert.equal(h.status.hidden,true,'a successful Best surface must not cover the shared interface');
   assert.equal(h.best.calls.open,1);assert.equal(h.life.calls.open,0);assert.ok(h.created.every(tag=>tag==='div'),'selector creates no GPU canvas');
 });
@@ -276,14 +276,15 @@ test('the floating status stays silent on success and is reserved for loading or
   h.button('best').click();assert.equal(status.hidden,true);assert.equal(h.status,status);
 });
 
-test('Cafebrería stays in verified Good and disables the unreviewed visual tiers',async()=>{
+test('Cafebrería enables Better and retains the Best guard',async()=>{
   const h=selectorHarness({search:'?quality=best',vertical:'cafeteria'});
   assert.equal(h.body.dataset.xtancoTier,'good');assert.equal(h.best.calls.open,0);
-  for(const tier of ['better','best','matrix']){
+  for(const tier of ['best']){
     assert.equal(h.button(tier).disabled,true);assert.equal(h.button(tier).attrs['aria-disabled'],'true');
   }
-  assert.match(h.status.textContent,/Vista básica de Cafebrería/);assert.equal(h.status.hidden,false);
-  await h.window.__xtancoVisualTiers.choose('matrix');assert.equal(h.matrix.calls.open,0);assert.equal(h.body.dataset.xtancoTier,'good');
+  assert.equal(h.button('better').disabled,false);await h.window.__xtancoVisualTiers.choose('better');assert.equal(h.life.calls.open,1);
+  assert.equal(h.status.textContent,'');assert.equal(h.status.hidden,true);
+  assert.equal(h.button('matrix').disabled,false);await h.window.__xtancoVisualTiers.choose('matrix');assert.equal(h.matrix.calls.open,1);assert.equal(h.body.dataset.xtancoTier,'matrix');
 });
 
 test('Cafebrería reacts when the async client selection enters and leaves its vertical',async()=>{
@@ -334,8 +335,8 @@ test('selector boots safely with denied storage or stale legacy Best and never i
   for(const options of [{storageBlocked:true},{storage:memoryStorage({xtanco_visual_quality:'best'})}]){
     const h=selectorHarness(options);assert.equal(h.body.dataset.xtancoTier,'good');assert.equal(h.life.calls.open,0);
   }
-  const imports=[...selectorSource.matchAll(/^import .* from ['"]([^'"]+)['"]/gm)].map(match=>match[1]);
-  assert.deepEqual(imports,['./matrix-preview-ui.mjs?v=px-2','./life-ui.mjs?v=panel-scene-1','./best-preview-ui.mjs?v=px-2','./xtanco-visual-tiers.mjs?v=matrix-furniture-1','./visual-tier-controls.mjs?v=tier-hud-1']);
+  const imports=[...selectorSource.matchAll(/^import .* from ['"]([^'"]+)['"]/gm)].map(match=>match[1].split('?')[0]);
+  assert.deepEqual(imports,['./matrix-preview-ui.mjs','./life-ui.mjs','./best-preview-ui.mjs','./xtanco-visual-tiers.mjs','./visual-tier-controls.mjs']);
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert.equal([...html.matchAll(/<script\b[^>]*src="scripts\/xtanco-premium-ui\.mjs[^\"]*"/g)].length,1);
   assert.doesNotMatch(html,/<script\b[^>]*src="scripts\/life-ui\.mjs/);
@@ -352,7 +353,7 @@ test('Matrix is an independent preview and can switch to live Best and back with
   const f=routerFixture();
   const result=await f.tiers.choose('matrix');
   assert.equal(result.ok,true);assert.equal(result.preview,true);assert.equal(result.availability,'preview');
-  assert.match(result.notice,/Matrix.*Avenida Admira.*mobiliario editable.*inventario compartido.*cámara fija/);
+  assert.match(result.notice,/Matrix.*Starbucks Alsea.*360°.*mapeo local/);
   assert.equal(f.best.calls.open,0);assert.equal(f.life.calls.open,0);assert.equal(f.matrix.calls.open,1);
   assert.equal(f.storage.values.get(TIER_STORAGE_KEY),'matrix');
   const old=f.matrix.requests[0];
@@ -372,4 +373,7 @@ test('Matrix stays on the expert selector and reports missing initialization hon
   h.button('matrix').click();assert.equal(h.matrix.calls.open,2);
   const result=await routerFixture({openMatrix:undefined}).tiers.choose('matrix');
   assert.equal(result.ok,false);assert.equal(result.mode,'good');assert.match(result.error,/Matrix no disponible/);
+});
+test('Starbucks Paseo de Gracia defaults to Matrix before saved preferences and keeps explicit view choices',()=>{
+ const storage={getItem:()=> 'better'};assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'matrix');assert.equal(requestedTier('?loc=alsea-sbux-021&visual=good',storage),'good');assert.equal(requestedTier('?loc=another',storage),'better');assert.equal(requestedTier('?loc=ALSEA-SBUX-021',storage),'matrix');
 });

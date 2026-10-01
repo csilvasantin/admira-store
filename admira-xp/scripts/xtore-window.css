@@ -1,5 +1,7 @@
 .xp-window-moved{left:var(--xp-window-left)!important;top:var(--xp-window-top)!important;right:auto!important;bottom:auto!important}
-#telegramDock.xp-window-moved{max-width:calc(100vw - 16px)!important}
+#telegramDock{top:auto!important;bottom:0!important;padding:0!important;box-sizing:border-box}
+#telegramDock .tg-pane.send{border-radius:0;box-sizing:border-box}
+#telegramDock .expert-workspace{grid-template-rows:minmax(0,1fr)}
 #telegramDock.compose-start .tg-cli-row::before{display:none!important}
 #xtore-expert-grip{flex:none;align-self:center;color:#78f3ff;font:bold 10px monospace;letter-spacing:.06em;padding:0 8px;white-space:nowrap;user-select:none}
 #xtore-window-entry{white-space:nowrap}

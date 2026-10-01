@@ -7,7 +7,7 @@ const at=(col,row,projection=iso)=>({x:projection.ox+(col-row)*projection.tileW/
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} != ${b}`);
 function fixture(){
   return {active:true,iso,layout:[{id:'counter',type:'counter',col:1,row:2}],footprints:{counter:[1,2]},
-    game:{staff:[{...at(3,2),hired:true,name:'Player',shirt:0,hair:3,role:3,dir:1,
+    game:{peopleVisibility:{staff:true,customers:true},staff:[{...at(3,2),hired:true,name:'Player',shirt:0,hair:3,role:3,dir:1,
       look:{skin:0,pants:2,shoes:1}}],custs:[{...at(6,4),id:12,dir:-1,st:'browse',num:8,
       look:{shirt:2,hair:1,skin:4,pants:3,shoes:2,age:'nino',gender:'f',accessory:1}}],
     passersby:[{...at(15,4),outside:true,dir:1,look:{shirt:4,hair:5,skin:1,age:'senior'}}],
@@ -96,4 +96,25 @@ test('presentation metadata copies existing customer fields without assigning nu
   const before=JSON.stringify(customer),actor=snapshot(input).actors.find(a=>a.kind==='customer');
   assert.equal(actor.number,null);assert.equal(actor.bubble,'Hola');assert.equal(actor.emote,'👋');assert.equal(actor.clubMember,true);assert.equal(actor.bag,true);
   assert.equal(JSON.stringify(customer),before);
+});
+
+
+test('people visibility hides each group across tiers without mutating actors or measured counts',()=>{
+ const input=fixture(),snapshot=createLifeSnapshot(),initial=snapshot(input);
+ for(const [staff,customers] of [[false,false],[true,false],[false,true],[true,true]]){
+  input.game.peopleVisibility={staff,customers};
+  const before=JSON.stringify(input.game),scene=snapshot(input);
+  assert.equal(scene.actors.some(a=>a.kind==='staff'),staff);
+  assert.equal(scene.actors.some(a=>a.kind==='customer'),customers);
+  assert.ok(scene.actors.some(a=>a.kind==='passerby'));
+  assert.equal(scene.inside,initial.inside);assert.equal(scene.entries,initial.entries);
+  assert.equal(JSON.stringify(input.game),before);
+  if(customers)assert.equal(scene.actors.find(a=>a.kind==='customer').id,initial.actors.find(a=>a.kind==='customer').id);
+ }
+});
+
+
+test('stores without an explicit visibility preference start with staff and customers hidden',()=>{
+ const input=fixture();delete input.game.peopleVisibility;const before=JSON.stringify(input);
+ const scene=createLifeSnapshot()(input);assert.equal(scene.actors.some(a=>['staff','customer'].includes(a.kind)),false);assert.equal(scene.inside,1);assert.equal(scene.entries,17);assert.equal(JSON.stringify(input),before);
 });

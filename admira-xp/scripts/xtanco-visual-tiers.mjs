@@ -3,6 +3,7 @@ export function requestedTier(search='',storage){
   const params=new URLSearchParams(search);
   const requested=params.get('visual')??params.get('quality');
   if(requested!==null)return requested==='life'?'better':['good','better','best','matrix'].includes(requested)?requested:'good';
+  if((params.get('loc')||'').trim().toLowerCase()==='alsea-sbux-021')return 'matrix';
   try{const saved=storage?.getItem(TIER_STORAGE_KEY);return ['better','best','matrix'].includes(saved)?saved:'good';}catch{return 'good';}
 }
 
@@ -13,8 +14,8 @@ export function requestedTier(search='',storage){
  */
 export function createVisualTiers({openBetter,closeBetter,subscribeBetter,openBest,closeBest,subscribeBest,openMatrix,closeMatrix,subscribeMatrix,storage,onChange=()=>{},onBestRequested=()=>{}}){
   const views={better:{open:openBetter,close:closeBetter},best:{open:openBest,close:closeBest},matrix:{open:openMatrix,close:closeMatrix}};
-  const previewNotice='Best · tienda y personas en 3D en vivo; funciones operativas completas en preparación.';
-  const tierNotice=tier=>tier==='best'?previewNotice:tier==='matrix'?'Matrix · Avenida Admira · mobiliario editable e inventario compartido · cámara fija.':'';
+  const previewNotice='Best · Avenida Admira · mobiliario editable y visitantes en vivo.';
+  const tierNotice=tier=>tier==='best'?previewNotice:tier==='matrix'?'Matrix · Starbucks Alsea · captura 360° y mapeo local de players.':'';
   const isPreview=tier=>tier==='best'||tier==='matrix';
   const tierLabel=tier=>({good:'Good',better:'Better',best:'Best',matrix:'Matrix'})[tier];
   let mode='good',busy=false,notice='',error='',active=null,sequence=0,disposed=false;

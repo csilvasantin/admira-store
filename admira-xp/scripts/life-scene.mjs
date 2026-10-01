@@ -1,6 +1,7 @@
 import * as T from './premium-three.mjs';
+import './starbucks-room.js?v=starbucks-room-1';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
-import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
+import {buildCustomerNavigation} from './customer-navigation.mjs?v=distribuir-3';
 import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
 import {createLifeExterior} from './life-exterior.mjs?v=exterior-1';
 
@@ -21,7 +22,7 @@ function normalizeLifeSnapshot(raw={}){
 // A presentation of Xtanco's live snapshot. This module owns neither a clock,
 // simulation, media player nor animation loop. All dimensions are grid units.
 export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
-  let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',lighting='day',disposed=false,lastAnimationTime=null;
+  let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',poseSignature='',lighting='day',disposed=false,lastAnimationTime=null;
   let customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
   const scene=new T.Scene(),world=new T.Group(),actors=new T.Group();
   world.name='life:world';actors.name='life:actors';scene.add(world,actors);
@@ -296,6 +297,22 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         const width=Math.min(5.5,snapshot.cols-item.col-.18);box(root,width/2,0,0,width,.29,.08,palette.teal);
         label(root,'XTANCO  /  ADMIRA',width/2,0,.049,width-.15,.22,{bg:'#214f4c',fg:'#f7e8b6',font:38});break;
       }
+      case 'cafeTable':{
+        box(root,w/2,.75,d/2,w*.74,.08,d*.68,palette.oak);
+        for(const x of [.2,.8])for(const z of [.25,.75])box(root,w*x,.36,d*z,.06,.7,.06,palette.black);
+        // Seats remain inside the declared floor footprint.
+        for(const x of [.14,.86]){box(root,w*x,.42,d*.5,w*.20,.07,d*.32,palette.teal);box(root,w*x,.65,d*.34,w*.20,.46,.05,palette.teal);}
+        cylinder(root,w*.48,.86,d*.50,.06,.14,palette.paper);box(root,w*.62,.81,d*.52,w*.16,.025,d*.15,palette.paper);break;
+      }
+      case 'bookcase':{
+        shelf(root,w,d);
+        for(let tier=0;tier<3;tier++)for(let i=0;i<6;i++)box(root,w*(.13+i*.14),.45+tier*.42,d*.88,w*.09,.29,d*.11,[palette.coral,palette.teal,palette.mustard,palette.blue][(i+tier)%4]);break;
+      }
+      case 'sofa':{
+        box(root,w/2,.30,d/2,w*.94,.50,d*.9,palette.teal);box(root,w/2,.76,d*.13,w*.94,.72,d*.2,palette.teal);
+        for(const x of [.08,.92])box(root,w*x,.58,d/2,w*.15,.60,d*.9,palette.teal);
+        for(const x of [.3,.7])box(root,w*x,.59,d*.55,w*.34,.12,d*.6,palette.sage);break;
+      }
       case 'rug':{
         box(root,w/2,.012,d/2,w,.024,d,palette.sage);box(root,w/2,.027,d/2,w-.13,.009,d-.13,palette.cream);box(root,w/2,.034,d/2,w-.22,.008,d-.22,palette.teal);
         for(let i=0;i<8;i++)box(root,w/2,.04,d*.22+i*d*.08,w*.61,.005,.022,palette.sage);break;
@@ -305,6 +322,11 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         const leaf=group(root,.08,0,.025);leaf.name=`door:${item.id}`;doors.push(leaf);
         box(leaf,(w-.16)/2,1.18,0,w-.16,2.25,.045,palette.glass);box(leaf,w-.28,1.06,.047,.035,.3,.035,palette.brass);
         break;
+      }
+      case 'custom':{
+        const h=item.source==='PixerIA'?1:Math.min(2,Math.max(.3,item.ph));
+        box(root,w/2,h/2,d/2,w,h,d,palette.cream);
+        if(item.label)label(root,item.label,w/2,h*.7,d+.029,w*.83,.17,{font:32});break;
       }
       default:{
         cabinet(root,w,d,Math.max(.3,item.ph),{finish:palette.oak});
@@ -316,18 +338,47 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     if(loader){
       root.userData.assetStatus='loading';
       Promise.resolve().then(loader).then(asset=>{
-        if(disposed||root.parent!==world)return;
+        if(disposed||root.parent!==world){if(asset?.userData.pixeria)asset.traverse(o=>{if(o.isMesh){o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material]){for(const v of Object.values(m))if(v?.isTexture)v.dispose();m.dispose();}}});return;}
         if(!asset){root.userData.assetStatus='unregistered';return;}
         const retiredDoors=new Set();root.traverse(o=>{if(doors.includes(o))retiredDoors.add(o);});
         for(let i=doors.length-1;i>=0;i--)if(retiredDoors.has(doors[i]))doors.splice(i,1);
         asset.traverse(o=>{if(o.userData.doorHinge){o.rotation.y=-snapshot.doorOpen*Math.PI*.48;doors.push(o);}});
         asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='existing_shared_player')o.material=mediaMaterial;});
-        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);root.userData.assetStatus='ready';root.userData.assetSource='Blender';
+        if(asset.userData.pixeria)asset.traverse(o=>{if(o.isMesh){own(o.geometry,worldResources);for(const m of Array.isArray(o.material)?o.material:[o.material]){own(m,worldResources);for(const v of Object.values(m))if(v?.isTexture)own(v,worldResources);}}});
+        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);root.userData.assetStatus='ready';root.userData.assetSource=item.source==='PixerIA'?'PixerIA':'Blender';
       }).catch(()=>{if(!disposed&&root.parent===world)root.userData.assetStatus='fallback';});
     }
     return root;
   }
 
+  function starbucksRoom(){
+    const colors=new Map();
+    const finish=part=>{
+      const key=part.color+(part.glass?'glass':'');if(colors.has(key))return colors.get(key);
+      const detailed=assetQuality==='best';
+      const m=material(part.color,{roughness:part.glass?.12:detailed?.62:.9,
+        ...(part.glass?{transparent:true,opacity:.19,depthWrite:false}:{}),
+        ...(detailed&&['#ad855b','#745640'].includes(part.color)?{map:woodMap}:{}),
+        ...(part.color==='#ffe2a0'?{emissive:part.color,emissiveIntensity:.7}:{} )},worldResources);
+      colors.set(key,m);return m;
+    };
+    for(const fixture of globalThis.XpaceStarbucks.build(snapshot.layout.filter(i=>i.source!=='PixerIA'),{quality:assetQuality,moving:snapshot.moving})){
+      const root=group(world);root.name='starbucks:'+fixture.id;
+      if(fixture.item){
+        const item=fixture.item;root.userData={item,layoutId:fixture.id,selectable:true};
+        root.position.set(item.col,0,item.row);root.rotation.y=-(item.rot??0)*Math.PI/2;
+        root.scale.set((item.flipX?-1:1)*(item.sx??1),item.sy??1,item.sx??1);
+      }
+      for(const part of fixture.parts){
+        const {y,w,h,d}=part,x=part.x-(fixture.item?.col||0),z=part.z-(fixture.item?.row||0);
+        if(part.round&&assetQuality==='best')mesh(root,cylinderGeometry,finish(part),x+w/2,y+h/2,z+d/2,w/2,h,d/2);
+        else box(root,x+w/2,y+h/2,z+d/2,w,h,d,finish(part),assetQuality==='best'&&Math.max(w,h,d)<2.5);
+        if(part.text)label(root,part.text,x+w/2,y+h/2,z+d+.006,w*.96,h*.96,{bg:part.color,fg:'#f5eed9',font:40});
+      }
+      batch(root);
+    }
+    for(const item of snapshot.layout)if(item.source==='PixerIA')furniture(item);
+  }
   function architecture(){
     const {cols:c,rows:r,wallHeight:h}=snapshot;
     const architectureRoot=group(world);architectureRoot.name='life:architecture';
@@ -605,17 +656,25 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     snapshot=normalizeLifeSnapshot(raw);
     // The Canvas2D projection is deliberately absent from this signature. Orbit,
     // resize and editor zoom must never skew or rebuild genuine 3D furniture.
-    const next=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.wallHeight,snapshot.moving,snapshot.layout]);
+    const poses=JSON.stringify(snapshot.layout.map(item=>[item.id,item.col,item.row]));
+    const next=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.wallHeight,snapshot.venue,snapshot.moving,snapshot.layout.map(({col,row,...shape})=>shape)]);
+    if(poses!==poseSignature){customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});poseSignature=poses;}
     if(next!==signature){
       customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
       release(worldResources);world.traverse(o=>{if(o.isInstancedMesh)o.dispose();});world.clear();fixtureLights.length=0;doors.length=0;
-      if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);signature=next;
+      if(snapshot.venue==='alsea-sbux-021')starbucksRoom();
+      else {if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);}
+      signature=next;
       ground.visible=!inventory;ground.position.set(snapshot.cols/2,-.565,snapshot.rows/2);ground.scale.set(500,500,1);
       const key=inventory?'':snapshot.cols+'x'+snapshot.rows+'x'+snapshot.wallHeight;
       if(key!==exteriorKey){exterior?.dispose();exterior=null;exteriorKey=key;if(key){exterior=createLifeExterior({cols:snapshot.cols,rows:snapshot.rows,wallHeight:snapshot.wallHeight,quality:assetQuality,canvasFactory});scene.add(exterior.root);}}
       sun.target.position.set(snapshot.cols/2,0,snapshot.rows/2);
       const extent=Math.max(snapshot.cols,snapshot.rows)*.82+3;Object.assign(sun.shadow.camera,{left:-extent,right:extent,top:extent,bottom:-extent,near:.1,far:70});sun.shadow.camera.updateProjectionMatrix();
       setLighting(lighting);
+    }
+    else {
+      const items=new Map(snapshot.layout.map(item=>[String(item.id),item]));
+      for(const root of world.children){const item=items.get(String(root.userData.item?.id));if(!item)continue;const base=root.userData.baseOrigin;root.position.x=item.col-(base?.col||0);root.position.z=item.row-(base?.row||0);root.userData.item=item;}
     }
     if(exterior&&exterior.weather!==(snapshot.weather==='rain'?'rain':'clear')){exterior.setWeather(snapshot.weather);setLighting(lighting);}
     for(const door of doors)door.rotation.y=-snapshot.doorOpen*Math.PI*.48;

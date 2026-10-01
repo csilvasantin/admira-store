@@ -1,11 +1,17 @@
 {
-  "version": "v.08.09.2026.r2.10:27",
-  "deployedAt": "2026-09-08T08:27:09Z",
-  "deployer": "TrinityMBP16",
-  "machine": "MacBookPro16",
-  "signature": "TrinityMBP16 · MacBookPro16",
-  "git": "8e4650a641b2ad2e3e3ed0ad1aaf227902114440",
-  "gitShort": "8e4650a",
-  "gitFull": "8e4650a641b2ad2e3e3ed0ad1aaf227902114440",
-  "dirty": false
+  "version": "v.01.10.2026.r1.05:19",
+  "signature": "OraculoMacMini · MacMini",
+  "machine": "MacMini",
+  "agent": "OraculoMacMini",
+  "deployer": "OraculoMacMini",
+  "evidence": "Yokup Hoy #15 DCL-c246b1bc416da6503c7a5187: three resizable Expert panes anchored at the bottom, upward resize, silent rain by default, explicit audible attribute, ES/EN and MCP help.",
+  "day": "01.10.2026",
+  "time": "05:19",
+  "deployedAt": "2026-10-01T03:30:45.247733+00:00",
+  "git": "08a6108199374cf45f4586f3096e559b90642d9f",
+  "gitFull": "08a6108199374cf45f4586f3096e559b90642d9f",
+  "gitShort": "08a6108",
+  "dirty": false,
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }

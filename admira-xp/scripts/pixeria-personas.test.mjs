@@ -31,3 +31,30 @@ test('a Pixeria persona flows from the Good customer to every tier', () => {
   const registry=readFileSync(new URL('./pixeria-personas.mjs',import.meta.url),'utf8');
   assert.match(registry,/LOCAL_WORKER=\/\^http:\\\/\\\/\(127\\\.0\\\.0\\\.1\|localhost\):\\d\+\$\//,'only local workers may override the production one');
 });
+
+
+test('a prepared demo loads its style without triggering generation', async () => {
+  const oldFetch=globalThis.fetch,calls=[];
+  globalThis.fetch=async (url)=>{calls.push(url);return new Response(JSON.stringify({demo:'visitor-green-v1',ready:true,body:'male',style:{gender:'m',age:'adult',outfit:'jacket',palette:{color:'#193d30'}}}));};
+  try{
+    const {pixeriaPersonaStyle,pixeriaPersonaState}=await import('./pixeria-personas.mjs?demo-test');
+    assert.equal(pixeriaPersonaStyle('npc_demo1234'),null);
+    await new Promise(r=>setTimeout(r,20));
+    assert.equal(pixeriaPersonaState('npc_demo1234'),'ready');
+    assert.equal(pixeriaPersonaStyle('npc_demo1234').palette.color,'#193d30');
+    assert.equal(calls.length,1);assert.ok(!calls[0].includes('/build'));
+  }finally{globalThis.fetch=oldFetch;}
+});
+
+
+test('late queue visibility retains the same five-minute receive window after startup',async()=>{
+  const {runInNewContext}=await import('node:vm');
+  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  const body=html.slice(html.indexOf('  async function pollNpcQueue(){'),html.indexOf('  async function pollFeed(){'));
+  const now=1000000,entry={id:'npc_late1234',img:'data:image/png;base64,AA==',ts:now-120000};let calls=0,spawned=0;
+  const ctx={state:'game',S:{GAME:'game'},PIXER_WORKER:'https://api.admira.store',screenId:'test',__npcSeen:now-300000,__npcDone:new Set(),Date,encodeURIComponent,Math,
+    fetch:async url=>({ok:true,json:async()=>({now,pending:++calls>1&&Number(new URL(url).searchParams.get('since'))<entry.ts?[entry]:[]})}),
+    spawnCustomNpc:()=>{spawned++;return true},__npcMarkDone:id=>ctx.__npcDone.add(id)};
+  runInNewContext(body+';globalThis.poll=pollNpcQueue;',ctx);
+  await ctx.poll();await ctx.poll();await ctx.poll();assert.equal(spawned,1);
+});

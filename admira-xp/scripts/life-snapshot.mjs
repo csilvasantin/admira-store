@@ -1,6 +1,6 @@
-import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=inventari-1';
+import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=distribuir-3';
 import {visitorProfilesForGame} from './visitor-profiles.mjs?v=visitors-24';
-import {pixeriaPersonaStyle} from './pixeria-personas.mjs?v=px-2';
+import {pixeriaPersonaStyle} from './pixeria-personas.mjs?v=anon-demo-v1';
 
 // Read-only presentation adapter for the immersive view. The game continues to
 // own navigation, appearance, media, time and counters. These defaults mirror P
@@ -112,8 +112,8 @@ export function createLifeSnapshot(){
     }
     const actors=[];
     if(!editor&&!input.moving){
-      for(const value of list(game.staff))if(value?.hired)actors.push(actor(value,'staff'));
-      for(const value of list(game.custs))actors.push(actor(value,'customer'));
+      for(const value of list(game.staff))if(value?.hired&&game.peopleVisibility?.staff===true)actors.push(actor(value,'staff'));
+      for(const value of list(game.custs))if(game.peopleVisibility?.customers===true)actors.push(actor(value,'customer'));
       if(!realTrafficActive)for(const value of list(game.passersby))actors.push(actor(value,'passerby'));
       for(const kind of Object.keys(SPECIAL_NAMES)){
         const value=game[kind];if(value&&value.phase!=='idle')actors.push(actor(value,kind));

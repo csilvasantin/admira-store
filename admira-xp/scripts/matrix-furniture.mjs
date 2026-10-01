@@ -1,6 +1,6 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=px-2';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=anon-demo-v1';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
-import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43';
+import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43-objects-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_ARCHITECTURE_DETAILS,photoPieceFor} from './matrix-photo-pieces.mjs?v=customer-motion-1';
 
@@ -148,9 +148,9 @@ function applyPlacement(node,p){
 }
 
 export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisualState?.(),requestFrame=requestAnimationFrame,cancelFrame=cancelAnimationFrame,onReady=()=>{},onSelect=()=>{},load=loadAssets}={}){
-  if(!container)throw Error('Falta el contenedor Matrix');
+  if(!container)throw Error('Falta el contenedor Best');
   const snapshot=createLifeSnapshot(),nodes=new Map(),prefix=`matrix-furniture-${++sequence}`,layer=document.createElement('div'),status=document.createElement('p');
-  layer.className='matrix-furniture-layer';status.className='matrix-furniture-status';status.setAttribute('role','status');status.textContent='Preparando el mobiliario de Matrix…';container.append(layer,status);
+  layer.className='matrix-furniture-layer';status.className='matrix-furniture-status';status.setAttribute('role','status');status.textContent='Preparando el mobiliario de Best…';container.append(layer,status);
   let catalog,disposed=false,frame=0,last=-Infinity,reported=false,selected=null,zones=[],count=0,occluders=[];
   const decorators=[];
   function report(error=''){if(disposed||reported)return;reported=true;onReady(error);}
@@ -160,8 +160,8 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
     count=entries.filter(n=>n.loaded).length;
     zones=entries.filter(n=>n.loaded&&!n.failed).map(n=>placementZone(n.current)).filter(Boolean);
     occluders=entries.filter(n=>n.loaded&&!n.failed&&n.current&&!n.current.wall&&n.current.footprint).map(n=>placementOccluder(n.current));
-    status.textContent=`MATRIX · ${count} muebles visibles · inventario compartido${loading?` · ${loading} cargando`:''}${failed?` · ${failed} sin representación`:''}`;
-    if(!loading)report(failed?'No se han podido cargar todos los muebles de Matrix.':'');
+    status.textContent=`BEST · ${count} muebles visibles · inventario compartido${loading?` · ${loading} cargando`:''}${failed?` · ${failed} sin representación`:''}`;
+    if(!loading)report(failed?'No se han podido cargar todos los muebles de Best.':'');
   }
   function update(){
     if(disposed||!catalog)return;
@@ -197,6 +197,6 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
     updateStatus();
   }
   function tick(now){if(disposed)return;if(!document.hidden&&now-last>=100){last=now;update();}frame=requestFrame(tick);}
-  Promise.resolve().then(load).then(value=>{if(disposed)return;catalog=value;update();frame=requestFrame(tick);},()=>{if(disposed)return;status.textContent='No se ha podido cargar el mobiliario Matrix. Cambia de vista y reintenta.';report('No se ha podido cargar el mobiliario Matrix.');});
+  Promise.resolve().then(load).then(value=>{if(disposed)return;catalog=value;update();frame=requestFrame(tick);},()=>{if(disposed)return;status.textContent='No se ha podido cargar el mobiliario Best. Cambia de vista y reintenta.';report('No se ha podido cargar el mobiliario Best.');});
   return {update,get count(){return count;},get zones(){return zones;},get occluders(){return occluders;},dispose(){if(disposed)return;disposed=true;cancelFrame(frame);for(const e of nodes.values()){const img=e.node?.querySelector('img');if(img){img.onload=null;img.onerror=null;}}nodes.clear();zones=[];count=0;if(selected!==null){selected=null;onSelect(null);}layer.remove();status.remove();}};
 }

@@ -55,6 +55,7 @@ async function drive(p){
     const {status,body}=await api(`/twin/persona?id=${p.id}`);
     if(status===404){p.state='none';emit(p.id);return;}
     if(body.style&&!p.style){p.style=normalizePersonaStyle(body.style);p.body=body.body;emit(p.id);}
+    if(body.demo&&body.ready&&p.style){p.state='ready';emit(p.id);return;}
     if(body.ready&&body.walk?.front&&body.walk?.back){
       p.sheet=await buildSheet(body.body,body.walk.front,body.walk.back);p.state='ready';emit(p.id);return;
     }

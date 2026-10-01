@@ -49,19 +49,19 @@ test('commands use the actual public router; Better opens once and Best opens a 
   answer=await executeVisualCommand('/modo good',f);assert.equal(answer.mode,'good');assert.match(answer.message,/Good.*8-bit/);
   answer=await executeVisualCommand('/modo best',f);assert.equal(answer.ok,true);assert.equal(answer.mode,'best');assert.equal(answer.requested,'best');
   assert.equal(answer.preview,true);assert.equal(answer.availability,'preview');
-  assert.match(answer.message,/32-bit.*tienda y personas en 3D en vivo.*mismo Xtanco.*CLI experto/);assert.equal(f.calls.open,1);assert.equal(f.calls.best,1);
+  assert.match(answer.message,/32-bit.*Avenida Admira.*mobiliario editable.*CLI experto/);assert.equal(f.calls.open,1);assert.equal(f.calls.best,1);
 });
 
-test('Matrix opens Avenida Admira through the public router and describes editable furniture with a fixed camera',async()=>{
+test('Matrix opens the Alsea capture through the public router and describes local mapping',async()=>{
   const f=publicRouter();
   let answer=await executeVisualCommand('matrix',f);
   assert.equal(answer.ok,true);assert.equal(answer.local,true);assert.equal(answer.mode,'matrix');assert.equal(answer.requested,'matrix');
   assert.equal(answer.preview,true);assert.equal(answer.availability,'preview');
-  assert.match(answer.message,/Matrix.*Avenida Admira.*cámara fija, mobiliario editable y visitantes en vivo.*mismo Xtanco/);
+  assert.match(answer.message,/Matrix.*Starbucks Alsea.*panorama 360°.*Recalibrar mapa/);
   answer=await executeVisualCommand('/mode matrix',{...f,lang:'en'});
-  assert.match(answer.message,/fixed camera, editable furniture and live visitors/);assert.equal(f.calls.matrix,1);
-  assert.match(answer.message,/43 shared models/);
-  for(const command of ['/inventario añadir 1','/inventario eliminar 1','/inventario deshacer'])assert.ok(answer.message.includes(command));
+  assert.match(answer.message,/360° panorama/);assert.equal(f.calls.matrix,1);
+  assert.match(answer.message,/Real player connections are not verified/);
+  assert.match(answer.message,/four corners/);
   await executeVisualCommand('best',f);assert.equal(f.router.mode,'best');assert.equal(f.calls.best,1);
 });
 
@@ -86,9 +86,9 @@ test('help, invalid mode and current-mode queries do not open or close any view'
   await executeVisualCommand('/modo better',f);answer=await executeVisualCommand('/mode status',{...f,lang:'en'});
   assert.equal(answer.mode,'better');assert.match(answer.message,/Current.*Better.*16-bit/);assert.equal(f.calls.open,1);
   await executeVisualCommand('/modo best',f);answer=await executeVisualCommand('/mode status',{...f,lang:'en'});
-  assert.equal(answer.mode,'best');assert.equal(answer.preview,true);assert.equal(answer.availability,'preview');assert.match(answer.message,/live 3D store and people/);
+  assert.equal(answer.mode,'best');assert.equal(answer.preview,true);assert.equal(answer.availability,'preview');assert.match(answer.message,/Avenida Admira.*editable furniture/);
   await executeVisualCommand('/modo matrix',f);answer=await executeVisualCommand('/modo estado',f);
-  assert.equal(answer.mode,'matrix');assert.equal(answer.preview,true);assert.equal(answer.availability,'preview');assert.match(answer.message,/Avenida Admira.*cámara fija, mobiliario editable y visitantes en vivo/);
+  assert.equal(answer.mode,'matrix');assert.equal(answer.preview,true);assert.equal(answer.availability,'preview');assert.match(answer.message,/Starbucks Alsea.*captura 360°.*mapeo local/);
 });
 
 test('Matrix cannot report success when its preview is unavailable, failed or cancelled',async()=>{
@@ -144,7 +144,7 @@ function consoleHarness({failLoad=false,lang='es'}={}){
   let moving=false;
   const composer={value:'pending'},window={__xtancoVisualTiers:f.router,__xtancoMudanza:{toggle(){moving=!moving;return moving;}},xtAPI:{},AdmiraXP_SessionLog:{logCommand:input=>sessionCommands.push(input)}};
   let renders=0,helpClosed=0;
-  const context=vm.createContext({window,lang,composer,renderMode:'8bit',
+  const context=vm.createContext({window,lang,composer,renderMode:'8bit',G:{staff:[{hired:true}],custs:[{id:1}]},BTNS:{staffClick0:{},custClick0:{},furniture:{}},saveGame(){},
     async loadVisualCommand(){loads.push(true);if(failLoad)throw Error('offline');return {executeVisualCommand};},
     rememberMemory:(...args)=>memory.push(args),appendTelegramLog:(...args)=>logs.push(args),showLastResponse:(...args)=>responses.push(args),
     hideHelpPanel:()=>helpClosed++,renderQuickActionButtons:()=>renders++,
@@ -152,7 +152,7 @@ function consoleHarness({failLoad=false,lang='es'}={}){
     fetch(){throw Error('visual commands must never issue a network request');},
     formatStatus:()=> 'legacy status',setRenderMode:mode=>{context.renderMode=mode;},commandHelp:()=> 'legacy help'
   });
-  vm.runInContext(helperSource+dispatcherSource+composerSource,context);
+  vm.runInContext(section('function peopleGroupVisible(group){','const MAX_RESET_AUDIENCE=')+helperSource+dispatcherSource+composerSource,context);
   const exported=html.match(/window\.__xtExec=executeTelegramText;/)?.[0];assert.ok(exported);vm.runInContext(exported,context);
   return {...f,context,composer,sent,memory,logs,sessionCommands,responses,loads,
     get renders(){return renders;},get helpClosed(){return helpClosed;},get moving(){return moving;},send:input=>context.sendComposerText(input),exec:input=>window.__xtExec(input)};
@@ -197,8 +197,8 @@ test('visual feedback is labelled local while all existing bot and error labels 
 
 test('__xtExec runs the same visual command without remote output or command logging',async()=>{
   const h=consoleHarness();let answer=await h.exec('better');assert.match(answer,/Better.*16-bit/);assert.equal(h.router.mode,'better');
-  answer=await h.exec('best');assert.match(answer,/tienda y personas en 3D en vivo.*mismo Xtanco/);assert.equal(h.router.mode,'best');
-  answer=await h.exec('matrix');assert.match(answer,/Avenida Admira.*cámara fija, mobiliario editable y visitantes en vivo/);assert.equal(h.router.mode,'matrix');
+  answer=await h.exec('best');assert.match(answer,/Avenida Admira.*mobiliario editable.*visitantes en vivo/);assert.equal(h.router.mode,'best');
+  answer=await h.exec('matrix');assert.match(answer,/Starbucks Alsea.*panorama 360°.*Recalibrar mapa/);assert.equal(h.router.mode,'matrix');
   answer=await h.exec('/modo desconocido');assert.match(answer,/Estilos visuales locales/);
   answer=await h.exec('/mudanza');assert.match(answer,/ACTIVADA/);assert.equal(h.moving,true);
   answer=await h.exec('/mudanza');assert.match(answer,/DESACTIVADA/);assert.equal(h.moving,false);
@@ -217,7 +217,71 @@ test('embedded help lists local visual commands separately from all existing leg
   const context=vm.createContext({});vm.runInContext(section('  function helpSections(){','  function showHelpPanel(){'),context);
   const sections=context.helpSections(),visual=sections.find(section=>section.items.includes('better'));
   assert.ok(visual);assert.match(visual.title,/CLI experto.*__xtExec/);assert.match(visual.title,/Best.*32-bit/);
-  assert.deepEqual(Array.from(visual.items),['good','better','best','matrix','/mudanza','/modo estado']);
+  assert.deepEqual(Array.from(visual.items),['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']);
   const legacy=sections.find(section=>section.items.includes('/render 8bit'));
   assert.notEqual(visual,legacy);assert.deepEqual(Array.from(legacy.items),['/render 8bit','/render 16bit','/render habbo','/render real']);
+});
+
+
+test('expert composer and __xtExec keep people controls local and independently reversible',async()=>{
+ const h=consoleHarness();
+ for(const [command,expected] of [
+  ['/gente OFF',{staff:false,customers:false}],
+  ['/personal ON',{staff:true,customers:false}],
+  ['/clientes On',{staff:true,customers:true}],
+  ['/personal off',{staff:false,customers:true}],
+  ['/gente on',{staff:true,customers:true}]
+ ]){
+  await h.send(command);
+  assert.deepEqual({...h.context.G.peopleVisibility},expected);
+  assert.equal(h.responses.at(-1)[2],'local-visual');
+ }
+ assert.match(await h.exec('/CLIENTES@AdmiraXPBot OFF'),/Clientes OFF/);
+ assert.deepEqual({...h.context.G.peopleVisibility},{staff:true,customers:false});
+ assert.deepEqual(h.sent,[]);assert.deepEqual(h.memory,[]);assert.deepEqual(h.sessionCommands,[]);
+ assert.equal(h.context.G.staff.length,1);assert.equal(h.context.G.custs.length,1);
+ assert.deepEqual(Object.keys(h.context.BTNS),['furniture']);
+ const before=JSON.stringify(h.context.G);
+ assert.match(await h.exec('/gente off extra'),/Uso:/);assert.equal(JSON.stringify(h.context.G),before);
+});
+
+test('English people aliases share Spanish state, localized replies and local routing',async()=>{
+ for(const lang of ['es','en']){
+  const h=consoleHarness({lang});
+  for(const [command,staff,customers] of [['/PEOPLE off',false,false],['/STAFF@AdmiraXPBot ON',true,false],['/customers on',true,true],['/personal off',false,true]]){
+   await h.send(command);assert.deepEqual({...h.context.G.peopleVisibility},{staff,customers});
+  }
+  assert.match(await h.exec('/customers OFF'),lang==='en'?/Customers OFF/:/Clientes OFF/);
+  assert.match(await h.exec('/people off extra'),lang==='en'?/Usage:/:/Uso:/);
+  for(const cmd of ['/clientes 10','/personal dashboard','/people store 3'])assert.equal(h.context.executePeopleVisibilityCommand(cmd),null);
+  assert.deepEqual(h.sent,[]);assert.deepEqual(h.memory,[]);assert.deepEqual(h.sessionCommands,[]);
+ }
+});
+
+test('new games default to nobody visible and staff can be enabled independently',async()=>{
+ const h=consoleHarness({lang:'en'});assert.equal(h.context.peopleGroupVisible('staff'),false);assert.equal(h.context.peopleGroupVisible('customers'),false);
+ await h.send('/staff ON');assert.deepEqual({...h.context.G.peopleVisibility},{staff:true,customers:false});
+});
+
+test('sync commands stay local in the Expert composer, open Matrix and preserve aliases',async()=>{
+ const h=consoleHarness();
+ for(const input of ['/SINCRO','/sync on','/sincrototal','/synctotal','/sincro off']){
+  await h.send(input);assert.equal(h.router?.mode||h.context.window.__xtancoVisualTiers.mode,'matrix');
+ }
+ assert.equal(h.sent.length,0);assert.equal(h.sessionCommands.length,0);
+ assert.match(await h.exec('/sincrototal extra'),/Uso:/);
+ assert.match(await h.exec('/sync nonsense'),/Uso:/);
+ const f=publicRouter();const total=await executeVisualCommand('/synctotal',{...f,lang:'en'});assert.equal(total.screenLayout,'total');assert.match(total.message,/one video across screens 1–6/);
+ const individual=await executeVisualCommand('/sync off',f);assert.equal(individual.screenLayout,'individual');
+ assert.equal((await executeVisualCommand('/sincro',{router:{choose:async()=>({cancelled:true}),mode:'better'}})).ok,false);
+});
+
+test('layout composer toggles screen numbers locally and never reaches furniture reset',async()=>{
+ const h=consoleHarness();
+ assert.match(await h.exec('/layout on'),/Números de pantalla ON/);
+ assert.match(await h.exec('/layoiut'),/Números de pantalla OFF/);
+ await h.send('/layout');assert.equal(h.sent.length,0);assert.equal(h.sessionCommands.length,0);
+ assert.match(await h.exec('/layout typo'),/Uso:/);
+ assert.equal(parseVisualCommand('/layout save'),null);assert.equal(parseVisualCommand('/layout factory'),null);
+ const f=publicRouter();assert.match((await executeVisualCommand('/layout off',{...f,lang:'en'})).message,/Screen numbers OFF/);
 });

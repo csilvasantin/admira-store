@@ -1,8 +1,8 @@
-name: Espejo xpaceos a −1 día
+name: Espejo XpaceOS publicado en castellano
 
-# DEC-0508: admira.store es el gemelo en castellano. Se sincroniza cada noche
-# con el xpaceos.com de AYER, no con el HEAD de hoy, para no copiar un
-# experimento a media mañana. El sello y el castellano los pone sello-y-verja.py.
+# admira.store y XpaceOS comparten funcionalidad. Sincronizar únicamente el
+# último commit que completó correctamente el despliegue de Pages; nunca una
+# edición sin publicar. El sello y el castellano los pone sello-y-verja.py.
 
 on:
   schedule:
@@ -28,16 +28,19 @@ jobs:
           repository: csilvasantin/xpaceos
           path: xpaceos
           fetch-depth: 0
-      - name: Espejar commit de hace 24 h y hornear castellano
+      - name: Espejar la última versión publicada y hornear castellano
         working-directory: store
         env:
-          SYNC_BEFORE: "24 hours ago"
+          GH_TOKEN: ${{ github.token }}
           GIT_AUTHOR_NAME: SmithMacMini
           GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: SmithMacMini
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
           set -euo pipefail
+          SYNC_SHA="$(gh api 'repos/csilvasantin/xpaceos/actions/workflows/pages.yml/runs?status=success&branch=main&per_page=1' --jq '.workflow_runs[0].head_sha')"
+          test -n "$SYNC_SHA" && test "$SYNC_SHA" != null
+          export SYNC_SHA
           bash ./sync-desde-xpaceos.sh ../xpaceos
           git add -A
           if git diff --cached --quiet; then
@@ -45,5 +48,5 @@ jobs:
             exit 0
           fi
           SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' index.html | head -1)"
-          git commit -m "espejo xpaceos −1d · ${SELLO} · sync automático DEC-0508"
+          git commit -m "espejo xpaceos publicado · ${SELLO} · origen ${SYNC_SHA:0:7}"
           git push origin HEAD:main

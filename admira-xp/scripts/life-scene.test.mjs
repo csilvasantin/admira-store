@@ -253,3 +253,35 @@ test('removing the nearby furniture restores the original Better shoulder positi
   for(const arm of root.userData.arms)assert.deepEqual(arm.position.toArray(),arm.userData.restPosition.toArray());
   model.dispose();
 });
+
+
+test('Distribuit changes poses without rebuilding furniture or reloading assets',async()=>{
+  let loads=0;const model=createLifeScene(input,{canvasFactory,loadFurniture:()=>{loads++;return null;}});
+  await Promise.resolve();const roots=[...model.world.children],resources={...model.resources};
+  for(let i=0;i<30;i++)model.update({...input,layout:input.layout.map(item=>item.id==='counter'?{...item,col:1+i*.25}:item)});
+  assert.deepEqual(model.world.children,roots);assert.deepEqual(model.resources,resources);assert.equal(loads,input.layout.length);
+  assert.equal(model.scene.getObjectByName('furniture:counter').position.x,8.25);model.dispose();
+});
+test('Cafebrería furniture has explicit tables, books and seating in Better',()=>{
+  const layout=[{id:'table',type:'cafeTable',col:2,row:2,fp:[1,1]},{id:'books',type:'bookcase',col:0,row:5,fp:[1,2]},{id:'sofa',type:'sofa',col:2,row:7,fp:[2,1]}];
+  const model=createLifeScene({...input,layout,actors:[]},{canvasFactory});
+  for(const item of layout){const root=model.scene.getObjectByName('furniture:'+item.id);assert.ok(root.children.length>1);const bounds=new Box3().setFromObject(root);assert.ok(bounds.max.y>.6);}
+  model.dispose();
+});
+test('Starbucks keeps absolute fixture geometry while moving its layout anchor',()=>{
+  const original={...input,venue:'alsea-sbux-021',layout:globalThis.XpaceStarbucks.layout(),actors:[]};
+  const model=createLifeScene(original,{canvasFactory}),root=model.world.children.find(o=>o.userData.item?.id==='sb-table-a'),before=new Box3().setFromObject(root);
+  model.update({...original,layout:original.layout.map(i=>i.id==='sb-table-a'?{...i,col:i.col+1,row:i.row+.5}:i)});
+  const after=new Box3().setFromObject(root);assert.equal(model.world.children.includes(root),true);assert.ok(Math.abs(after.min.x-before.min.x-1)<1e-6);assert.ok(Math.abs(after.min.z-before.min.z-.5)<1e-6);model.dispose();
+});
+
+test('Starbucks renders saved rotation, mirror and proportional scale at the same origin as Good',()=>{
+ const fixture=globalThis.XpaceStarbucks.layout().find(i=>i.id==='sb-table-a'),pose={...fixture,col:5,row:3,rot:1,sx:1.5,sy:1.8,flipX:true};
+ const raw=globalThis.XpaceStarbucks.build([pose],{quality:'better'}).find(g=>g.id===pose.id),model=createLifeScene({...input,venue:'alsea-sbux-021',layout:[pose],actors:[]},{canvasFactory});
+ const root=model.world.children.find(o=>o.userData.item?.id===pose.id),actual=new Box3().setFromObject(root);
+ assert.equal(root.rotation.y,-Math.PI/2);assert.deepEqual(root.scale.toArray(),[-1.5,1.8,1.5]);
+ const parts=raw.parts.map(part=>globalThis.XpaceStarbucks.transformPart(part,pose));
+ const bounds={minX:Math.min(...parts.map(p=>p.x)),maxX:Math.max(...parts.map(p=>p.x+p.w)),minZ:Math.min(...parts.map(p=>p.z)),maxZ:Math.max(...parts.map(p=>p.z+p.d)),maxY:Math.max(...parts.map(p=>p.y+p.h))};
+ assert.ok(Math.abs(actual.min.x-bounds.minX)<1e-6);assert.ok(Math.abs(actual.max.x-bounds.maxX)<1e-6);
+ assert.ok(Math.abs(actual.min.z-bounds.minZ)<1e-6);assert.ok(Math.abs(actual.max.z-bounds.maxZ)<1e-6);assert.ok(Math.abs(actual.max.y-bounds.maxY)<1e-6);model.dispose();
+});

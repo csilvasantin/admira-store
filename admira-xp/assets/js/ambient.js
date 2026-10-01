@@ -32,7 +32,7 @@
     const src = a.createBufferSource(); src.buffer = buf; src.loop = true;
     const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 2200; f.Q.value = 0.6;
     const g = a.createGain(); g.gain.value = 0;
-    src.connect(f); f.connect(g); g.connect(master);
+    src.connect(f); f.connect(g); g.connect(a.destination);
     src.start();
     return { src, gain: g, fade: 0.2 };
   }
@@ -92,10 +92,12 @@
     const G = window.G;
     const on = audible();
     const vol = on ? (G.ambient.volume || 0.25) : 0;
-    const isRain = on && G.weather && G.weather.type === 'rain';
+    const isRain = G?.weather?.type === 'rain' && G.weather.sonora === true && (G.sfxVolume ?? 0.7)>0 && !document.hidden && (typeof window.ambientActive!=='function'||window.ambientActive());
+    const rainVol=isRain?Math.max(0,Math.min(1,G.sfxVolume ?? 0.7))*0.25:0;
     master.gain.setTargetAtTime(vol, ac.currentTime, 0.4);
     nodes[0].gain.gain.setTargetAtTime(vol * 0.7, ac.currentTime, 0.4);
-    nodes[1].gain.gain.setTargetAtTime(isRain ? vol * 0.9 : 0, ac.currentTime, 0.4);
+    nodes[1].gain.gain.cancelScheduledValues(ac.currentTime);
+    nodes[1].gain.gain.setValueAtTime(rainVol * 0.9, ac.currentTime);
   }
 
   window.AMBIENT = {

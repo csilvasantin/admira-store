@@ -76,8 +76,8 @@ test('real composer and __xtExec intercept inventory before network, bot, memory
    hideHelpPanel(){},showLastResponse:(...v)=>responses.push(v),renderQuickActionButtons(){},
    rememberMemory:forbidden,appendTelegramLog:forbidden,telegramSend:forbidden,fetch:forbidden
   });
-  const helper=section('  async function executeLocalVisualCommand(rawText){','  async function executeTelegramText(rawText){').replace("import('../inventario/command.mjs?v=inventory-cli-3')",'loadInventoryCommand()');
-  vm.runInContext(helper+section('  async function executeTelegramText(rawText){','  // === Stream Deck (Corsair Galleon 100 SD) bridge')+section('  async function sendComposerText(text){','  function bindDockButton(button,handler){')+'window.__xtExec=executeTelegramText;',context);
+  const helper=section('  async function executeLocalVisualCommand(rawText){','  async function executeTelegramText(rawText){').replace("import('../inventario/command.mjs?v=inventory-cli-4')",'loadInventoryCommand()');
+  vm.runInContext(section('function peopleGroupVisible(group){','const MAX_RESET_AUDIENCE=')+helper+section('  async function executeTelegramText(rawText){','  // === Stream Deck (Corsair Galleon 100 SD) bridge')+section('  async function sendComposerText(text){','  function bindDockButton(button,handler){')+'window.__xtExec=executeTelegramText;',context);
   await context.sendComposerText('/inventario');assert.equal(responses[0][2],'local-inventory');
   const answer=await context.window.__xtExec('eliminar el 1');assert.match(answer,failure?/No se pudo cargar/:/Retirado: 1\. Mostrador/);
   const addition=await context.window.__xtExec('/inventario añadir silla de madera');assert.match(addition,failure?/No se pudo cargar/:/Añadido: 43\. Silla de madera/);

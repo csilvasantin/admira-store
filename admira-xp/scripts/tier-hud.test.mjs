@@ -16,12 +16,14 @@ test('16 · 32 · 64 bits: Better, Best y Matrix comparten placa; Good no tiene 
   assert.equal(dialog.dataset.tierHud,undefined);hud.dispose();
 });
 
-test('el HUD se monta en el escenario, publica estado y se libera al cerrar', () => {
+test('el HUD vive en Experto, deja libre el escenario y se libera al cerrar', () => {
   const dialog=new El('dialog'),stage=new El('stage');
+  const dock=new El('controls');document.querySelector=()=>dock;
   const hud=mountTierHud(dialog,{mode:'matrix',stage});
   assert.equal(dialog.dataset.tierHud,'matrix');
-  const layer=stage.children[0];assert.equal(layer.className,'tier-hud');assert.equal(layer.attrs['aria-hidden'],'true');
-  assert.match(layer.innerHTML,/MATRIX/);assert.match(layer.innerHTML,/64<small>BITS/);
+  assert.equal(stage.children.length,0);
+  const layer=dock.children[0];assert.equal(layer.className,'tier-hud');assert.equal(layer.attrs['aria-hidden'],undefined);
+  assert.match(layer.innerHTML,/MATRIX/);assert.match(layer.innerHTML,/64 BITS/);
   hud.setStatus('Gemelo conectado · 3 clientes');
   assert.equal(layer.querySelector('.tier-hud-status').textContent,'GEMELO CONECTADO · 3 CLIENTES');
   hud.dispose();assert.equal(layer.removed,true);assert.equal(dialog.dataset.tierHud,undefined);

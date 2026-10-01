@@ -23,8 +23,8 @@ AQUI="$(pwd)"
 
 echo "→ Actualizando el origen ($ORIGEN)…"
 git -C "$ORIGEN" fetch -q origin
-# SYNC_BEFORE / SYNC_SHA: el gemelo va a −1 día (DEC-0508). Así admira.store no
-# copia el experimento de hoy en xpaceos.com; copia lo que ya llevó un día vivo.
+# La automatización fija SYNC_SHA al último despliegue Pages completado.
+# SYNC_BEFORE se conserva sólo para reconstrucciones históricas explícitas.
 if [ -n "${SYNC_SHA:-}" ]; then
   git -C "$ORIGEN" checkout -q "$SYNC_SHA"
 elif [ -n "${SYNC_BEFORE:-}" ]; then
@@ -34,7 +34,8 @@ elif [ -n "${SYNC_BEFORE:-}" ]; then
 else
   git -C "$ORIGEN" pull -q --ff-only || { echo "✗ El clon de xpaceos ha divergido: resuélvelo antes de espejar." >&2; exit 1; }
 fi
-ORIGEN_SHA="$(git -C "$ORIGEN" rev-parse --short HEAD)"
+ORIGEN_FULL_SHA="$(git -C "$ORIGEN" rev-parse HEAD)"
+ORIGEN_SHA="${ORIGEN_FULL_SHA:0:7}"
 echo "  origen en $ORIGEN_SHA${SYNC_BEFORE:+ (antes de $SYNC_BEFORE)}"
 
 # El espejo se construye desde el commit, no desde el working tree del clon.
@@ -68,8 +69,22 @@ rsync -a --delete \
 # sello-y-verja.py sobre el index.html recién espejado.
 
 # Sello canónico (norma 07) + reposición de la verja, en un solo paso.
-SELLO="v.$(date +%d.%m.%Y).r1.$(date +%H:%M)"
+SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' "$ORIGEN_LIMPIO/index.html" | head -1)"
+[ -n "$SELLO" ] || { echo "✗ El origen publicado no declara versión" >&2; exit 1; }
 SELLO="$SELLO" ORIGEN_SHA="$ORIGEN_SHA" python3 "$AQUI/sello-y-verja.py"
+
+# El repo original genera version.json al desplegar; git archive no incluye ese
+# archivo generado. Firmar el espejo con la misma release y el commit fuente.
+ORIGEN_FULL_SHA="$ORIGEN_FULL_SHA" SELLO="$SELLO" python3 - <<'PYVERSION'
+import json,os
+from datetime import datetime,timezone
+from pathlib import Path
+signature=json.loads(Path('release-signature.json').read_text())
+version=os.environ['SELLO']; source=os.environ['ORIGEN_FULL_SHA']
+assert signature['version']==version
+out={**signature,'deployedAt':datetime.now(timezone.utc).isoformat(),'git':source,'gitFull':source,'gitShort':source[:7],'dirty':False,'mirrorOf':'https://www.xpaceos.com/','locale':'es'}
+Path('version.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+PYVERSION
 
 echo "→ Listo. Revisa con:  git status --short | head"
 echo "   y publica con:     ./deploy.sh"

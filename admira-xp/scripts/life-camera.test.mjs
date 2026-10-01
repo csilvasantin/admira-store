@@ -47,7 +47,7 @@ test('viewport changes contain the same Good rectangle without changing registra
 
 test('the live snapshot preserves Good projection and maps actor anchors without changing game state',()=>{
   const iso={...projection,cols:14,rows:8,wallH:165},col=5.2,row=3.4;
-  const input={active:true,iso,projection,game:{staff:[{hired:true,x:iso.ox+(col-row)*iso.tileW/2-7,y:iso.oy+(col+row)*iso.tileH/2-20}],custs:[]}};
+  const input={active:true,iso,projection,game:{peopleVisibility:{staff:true,customers:true},staff:[{hired:true,x:iso.ox+(col-row)*iso.tileW/2-7,y:iso.oy+(col+row)*iso.tileH/2-20}],custs:[]}};
   const before=JSON.stringify(input),s=createLifeSnapshot()(input),camera=cameraFrom(mappedCameraFrame(s,800,500)),actor=s.actors[0];
   const actual=screen(camera,[actor.col,0,actor.row],800,500);
   near(actual.x,input.game.staff[0].x+7);near(actual.y,input.game.staff[0].y+20);assert.equal(JSON.stringify(input),before);

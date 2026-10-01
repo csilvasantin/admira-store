@@ -1,4 +1,4 @@
-import {loadCatalog,instancesFor} from './model.mjs?v=catalog-43';
+import {loadCatalog,instancesFor} from './model.mjs?v=catalog-43-objects-1';
 import {findPlacement} from './placement.mjs?v=inventory-cli-3';
 export function parseInventoryCommand(raw){
  const text=String(raw||'').trim();

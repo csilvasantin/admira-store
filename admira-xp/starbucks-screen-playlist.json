@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "starbucks-alsea-paseo-de-gracia-wall",
+  "store": "starbucks-alsea-paseo-de-gracia",
+  "muted": true,
+  "repeat": "all",
+  "display": {
+    "default": "individual",
+    "order": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "numbering": "from street entrance; wall view left to right: 6,5,4,3,2,1",
+    "screenNumbersById": {
+      "starbucks-wall-01": 6,
+      "starbucks-wall-02": 5,
+      "starbucks-wall-03": 4,
+      "starbucks-wall-04": 3,
+      "starbucks-wall-05": 2,
+      "starbucks-wall-06": 1
+    },
+    "spatialOrder": [
+      6,
+      5,
+      4,
+      3,
+      2,
+      1
+    ],
+    "groups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        4
+      ],
+      [
+        5,
+        6
+      ]
+    ],
+    "total": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "fit": "cover for spans; contain for individual screens",
+    "storageKey": "xpaceos.starbucks.wall-display.v1"
+  },
+  "tracks": [
+    {
+      "id": "1790708669463-h7bbpf",
+      "stockId": "1790708669463-h7bbpf",
+      "stockNumber": 1310,
+      "title": "Starbucks® Frappuccino® · short 9:16",
+      "url": "https://stock.admira.store/stock/1790708669463-h7bbpf/asset.mp4?v=2515252",
+      "duration": 6.06,
+      "mimeType": "video/mp4"
+    },
+    {
+      "id": "1790708815665-wmnvht",
+      "stockId": "1790708815665-wmnvht",
+      "stockNumber": 1312,
+      "title": "Starbucks · Iced Horchata Oatmilk Shaken Espresso · short 9:16",
+      "url": "https://stock.admira.store/stock/1790708815665-wmnvht/asset.mp4?v=4741384",
+      "duration": 8.033991,
+      "mimeType": "video/mp4"
+    },
+    {
+      "id": "1790709310590-fwdp29",
+      "stockId": "1790709310590-fwdp29",
+      "stockNumber": 1314,
+      "title": "Starbucks · Your Drink Your Story – El Salvador · short 9:16",
+      "url": "https://stock.admira.store/stock/1790709310590-fwdp29/asset.mp4?v=8049996",
+      "duration": 15.58,
+      "mimeType": "video/mp4"
+    },
+    {
+      "id": "1790708944451-w4c36z",
+      "stockId": "1790708944451-w4c36z",
+      "stockNumber": 1313,
+      "title": "Starbucks · La Navidad de Jaime Lorente · short 9:16",
+      "url": "https://stock.admira.store/stock/1790708944451-w4c36z/asset.mp4?v=12419574",
+      "duration": 23.381995,
+      "mimeType": "video/mp4",
+      "condition": "/navidad"
+    }
+  ]
+}

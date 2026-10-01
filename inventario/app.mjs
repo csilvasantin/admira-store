@@ -12,7 +12,7 @@ function inspectAsset(asset){
  });return stageQueue;
 }
 window.addEventListener('pagehide',()=>disposePilot?.());
-import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=catalog-43';
+import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=catalog-43-objects-1';
 const $=s=>document.querySelector(s),store=window.XpaceInventory,tiers=['good','better','best'];
 let data,stock,registry,assets=[],category='Todas',selected=null,angle=0,space='xtanco',renderRevision=0;
 const cache=new Map();

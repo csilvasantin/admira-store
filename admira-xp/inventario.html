@@ -546,7 +546,7 @@ function openDrawer(id){
       <button class="btn" id="dgemelo">Gemelo →</button></div>`;
   $('#scrim').classList.add('show'); d.classList.add('show'); d.setAttribute('aria-hidden','false');
   $('#dclose').onclick=closeDrawer;
-  $('#dgemelo').onclick=()=>window.open('index.html?focus='+encodeURIComponent(it.twinType||''),'_blank','noopener');
+  $('#dgemelo').onclick=()=>window.open('index.html'+encodeURIComponent(it.twinType||''),'_blank','noopener');
   $('#dcopy').onclick=()=>{ navigator.clipboard?.writeText(deepLink(id)); $('#dcopy').textContent='✓ copiado'; setTimeout(()=>$('#dcopy').textContent='📋 Copiar enlace',1200); };
   d.querySelectorAll('[data-dep]').forEach(a=>a.onclick=e=>{e.preventDefault(); openDrawer(a.dataset.dep);});
   if(editMode&&$('#dsave')) $('#dsave').onclick=()=>saveItem(id);

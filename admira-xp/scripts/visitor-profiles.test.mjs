@@ -53,7 +53,7 @@ test('explicit simulation age or gender changes are respected without assigning 
 test('different scene adapters share a live game profile while preserving source palettes and counters',()=>{
   const iso={cols:14,rows:8,tileW:80,tileH:28,wallH:165,ox:270,oy:185};
   const person={...visitor(42,'f'),x:383,y:305,look:{gender:'f',age:'adult',shirt:2,skin:4}};
-  const game={custs:[person],passersby:[],staff:[],custIn:19,gameTime:12},input={active:true,iso,game,layout:[]};
+  const game={peopleVisibility:{staff:true,customers:true},custs:[person],passersby:[],staff:[],custIn:19,gameTime:12},input={active:true,iso,game,layout:[]};
   const before=JSON.stringify(input),matrix=createLifeSnapshot(),better=createLifeSnapshot(),best=createLifeSnapshot();
   const views=[matrix(input),better(input),best(input)],actors=views.map(v=>v.actors[0]);
   assert.equal(new Set(actors.map(a=>a.visitorProfileId)).size,1);
@@ -66,7 +66,7 @@ test('different scene adapters share a live game profile while preserving source
 
 test('staff uniforms and special visitors never receive a crowd costume',()=>{
   const iso={cols:14,rows:8,tileW:80,tileH:28,wallH:165,ox:270,oy:185},point={x:380,y:300};
-  const game={custs:[],passersby:[],staff:[{...point,hired:true}],guardiaCivil:{...point,phase:'patrolling'},unitreeBot:{...point,phase:'active'}};
+  const game={peopleVisibility:{staff:true,customers:true},custs:[],passersby:[],staff:[{...point,hired:true}],guardiaCivil:{...point,phase:'patrolling'},unitreeBot:{...point,phase:'active'}};
   const actors=createLifeSnapshot()({active:true,iso,game}).actors;
   assert.equal(actors.length,3);assert.ok(actors.every(a=>!a.visitorProfileId&&!a.visitorStyle));
   assert.equal(actors.find(a=>a.kind==='guardiaCivil').color,'#315f33');

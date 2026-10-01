@@ -1,6 +1,6 @@
 import {GLTFLoader} from './vendor/GLTFLoader.mjs';
 import {cloneCounter,counterURL} from './counter-asset.mjs';
-import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43';
+import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43-objects-1';
 const cache=new Map();let registryPromise;
 export const inventoryIdFor=assetForInstance;
 export function furnitureURL(number,tier='best',extension='glb'){
@@ -14,6 +14,7 @@ export async function cloneFurniture(number,tier='best'){
  const root=(await cache.get(key)).clone(true);root.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});return root;
 }
 export async function loadFurniture(item,tier='best'){
+ if(item.source==='PixerIA')return import('./pixeria-furniture.mjs?v=distribuir-3').then(m=>m.loadPixeriaFurniture(item));
  registryPromise ||= fetch(new URL('../../inventario/registry.json',import.meta.url)).then(r=>{if(!r.ok)throw Error('Catálogo no disponible');return r.json();}).catch(e=>{registryPromise=null;throw e;});
  const registry=await registryPromise,number=registry.numbers[assetForInstance(item)];
  if(!number)return null;

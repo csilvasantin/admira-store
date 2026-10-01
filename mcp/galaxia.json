@@ -23,8 +23,18 @@
       "endpoint": "https://mcp-pixeria.admira.store/mcp",
       "health": "https://mcp-pixeria.admira.store/",
       "auth": "lectura abierta",
-      "tools": ["search_stock", "stock_stats", "get_asset"],
-      "hands_off": ["asset_id", "asset_number", "title", "tags", "media_url"]
+      "tools": [
+        "search_stock",
+        "stock_stats",
+        "get_asset"
+      ],
+      "hands_off": [
+        "asset_id",
+        "asset_number",
+        "title",
+        "tags",
+        "media_url"
+      ]
     },
     {
       "id": "xpaceos",
@@ -33,7 +43,40 @@
       "endpoint": "https://mcp.admira.store/mcp",
       "health": "https://mcp.admira.store/",
       "auth": "lectura abierta; escritura con clave de flota",
-      "tools": ["quien_soy", "fleet_status", "list_screens", "screen_now", "emission_report", "register_device", "publish_asset", "search_twins", "twin_detail", "catalog_stats", "list_scenes", "scene_status", "xpl_rules", "signage_feed", "help", "galaxy"],
+      "tools": [
+        "quien_soy",
+        "fleet_status",
+        "list_screens",
+        "screen_now",
+        "emission_report",
+        "register_device",
+        "publish_asset",
+        "search_twins",
+        "twin_detail",
+        "catalog_stats",
+        "list_scenes",
+        "scene_status",
+        "xpl_rules",
+        "signage_feed",
+        "help",
+        "galaxy",
+        "matrix_state",
+        "matrix_playlist_update",
+        "matrix_configure",
+        "matrix_music_next",
+        "matrix_announcement",
+        "matrix_device_layout",
+        "playlist_list",
+        "playlist_add",
+        "playlist_remove",
+        "playlist_reorder",
+        "hotspot_bind",
+        "sincro_set",
+        "screen_unplug",
+        "screen_plug",
+        "incident_open",
+        "pixeria_search"
+      ],
       "static_catalog": {
         "url": "https://www.xpaceos.com/mcp/funcionalidades.json",
         "docs": "https://www.xpaceos.com/help/funcionalidades/",
@@ -44,8 +87,17 @@
         "delivery": "static-http",
         "purpose": "Catálogo de documentación: IDs estables, disponibilidad Good/Better/Best y referencias a herramientas existentes. No registra nuevas herramientas ni recursos MCP."
       },
-      "accepts": ["asset_id", "asset_number"],
-      "hands_off": ["twin_id", "screen_id", "circuit_id", "scene_id", "channel_url"]
+      "accepts": [
+        "asset_id",
+        "asset_number"
+      ],
+      "hands_off": [
+        "twin_id",
+        "screen_id",
+        "circuit_id",
+        "scene_id",
+        "channel_url"
+      ]
     },
     {
       "id": "admira-tv",
@@ -54,9 +106,31 @@
       "endpoint": "https://mcp-tv.admira.store/mcp",
       "health": "https://mcp-tv.admira.store/",
       "auth": "lectura abierta; escritura con clave de flota; circuitos externos con clave cx_",
-      "tools": ["quien_soy", "on_air", "airtime_report", "channel_url", "player_info", "circuit_info", "circuits", "circuit_register", "circuit_screens", "request_airtime", "offer_airtime", "airtime_decide", "airtime_status"],
-      "accepts": ["asset_id", "screen_id", "circuit_id"],
-      "hands_off": ["airtime_id", "proof_of_play", "audience_summary"]
+      "tools": [
+        "quien_soy",
+        "on_air",
+        "airtime_report",
+        "channel_url",
+        "player_info",
+        "circuit_info",
+        "circuits",
+        "circuit_register",
+        "circuit_screens",
+        "request_airtime",
+        "offer_airtime",
+        "airtime_decide",
+        "airtime_status"
+      ],
+      "accepts": [
+        "asset_id",
+        "screen_id",
+        "circuit_id"
+      ],
+      "hands_off": [
+        "airtime_id",
+        "proof_of_play",
+        "audience_summary"
+      ]
     },
     {
       "id": "yokup",
@@ -65,9 +139,31 @@
       "endpoint": "https://yokup.com/mcp",
       "health": "https://api.yokup.com/projects",
       "auth": "credencial individual o clave de flota; permisos por proyecto",
-      "tools": ["yokup_whoami", "yokup_projects", "yokup_contacts", "yokup_missions", "yokup_mission", "yokup_inbox", "yokup_send_message", "yokup_delivery", "yokup_claim", "yokup_task_update", "yokup_activity"],
-      "accepts": ["project_id", "mission_id", "proof_url", "persona_machine"],
-      "hands_off": ["mission_id", "task_code", "delivery_receipt", "report"]
+      "tools": [
+        "yokup_whoami",
+        "yokup_projects",
+        "yokup_contacts",
+        "yokup_missions",
+        "yokup_mission",
+        "yokup_inbox",
+        "yokup_send_message",
+        "yokup_delivery",
+        "yokup_claim",
+        "yokup_task_update",
+        "yokup_activity"
+      ],
+      "accepts": [
+        "project_id",
+        "mission_id",
+        "proof_url",
+        "persona_machine"
+      ],
+      "hands_off": [
+        "mission_id",
+        "task_code",
+        "delivery_receipt",
+        "report"
+      ]
     },
     {
       "id": "admira-live",
@@ -76,9 +172,28 @@
       "endpoint": "https://mcp.admira.live/mcp",
       "health": "https://mcp.admira.live/salud",
       "auth": "clave de flota o clave de consejero",
-      "capabilities": ["consejo", "flota", "AgoraMatrix", "Yokup", "Telegram humano"],
-      "accepts": ["persona_machine", "project_id", "mission_id"],
-      "hands_off": ["decision", "assignment", "message_receipt"]
+      "capabilities": [
+        "consejo",
+        "flota",
+        "AgoraMatrix",
+        "Yokup",
+        "Telegram humano"
+      ],
+      "tools": [
+        "agora_decir",
+        "agente_encargar",
+        "encargo_estado"
+      ],
+      "accepts": [
+        "persona_machine",
+        "project_id",
+        "mission_id"
+      ],
+      "hands_off": [
+        "decision",
+        "assignment",
+        "message_receipt"
+      ]
     },
     {
       "id": "council-readonly",
@@ -87,8 +202,15 @@
       "endpoint": "https://council-mcp.admira.store/mcp",
       "health": "https://council-mcp.admira.store/",
       "auth": "lectura abierta",
-      "tools": ["list_consejeros", "ask_consejero", "ask_council"],
-      "hands_off": ["answer", "councillor"]
+      "tools": [
+        "list_consejeros",
+        "ask_consejero",
+        "ask_council"
+      ],
+      "hands_off": [
+        "answer",
+        "councillor"
+      ]
     },
     {
       "id": "admiranext-presentations",
@@ -97,17 +219,56 @@
       "endpoint": "https://www.admiranext.com/mcp",
       "docs": "https://www.admiranext.com/mcp/generador",
       "auth": "token individual anmcp_ emitido desde /usuarios",
-      "capabilities": ["presentaciones", "decks", "versiones", "URLs de audiencia"],
-      "hands_off": ["presentation_id", "deck_id", "audience_url"]
+      "capabilities": [
+        "presentaciones",
+        "decks",
+        "versiones",
+        "URLs de audiencia"
+      ],
+      "hands_off": [
+        "presentation_id",
+        "deck_id",
+        "audience_url"
+      ]
     }
   ],
   "hubs": [
-    {"id": "ainimation", "name": "AInimation Studio", "url": "https://www.ainimation.studio/mcp/", "role": "autoría y generación de animación"},
-    {"id": "digitalavatar", "name": "DigitalAvatar.ai", "url": "https://www.digitalavatar.ai/mcp/", "role": "humanos digitales y conversación"},
-    {"id": "clearchannel", "name": "ClearChannel.tv", "url": "https://www.clearchannel.tv/mcp/", "role": "audiencia × emisión en producción"},
-    {"id": "admira-app", "name": "Admira.app", "url": "https://www.admira.app/mcp/", "role": "audiencia × emisión en preproducción"},
-    {"id": "digital-signage-ai", "name": "DigitalSignage.ai", "url": "https://www.digitalsignage.ai/mcp/", "role": "edición white-label internacional"},
-    {"id": "academy", "name": "Admira Academy", "url": "https://admira.academy/help/", "role": "formación"}
+    {
+      "id": "ainimation",
+      "name": "AInimation Studio",
+      "url": "https://www.ainimation.studio/mcp/",
+      "role": "autoría y generación de animación"
+    },
+    {
+      "id": "digitalavatar",
+      "name": "DigitalAvatar.ai",
+      "url": "https://www.digitalavatar.ai/mcp/",
+      "role": "humanos digitales y conversación"
+    },
+    {
+      "id": "clearchannel",
+      "name": "ClearChannel.tv",
+      "url": "https://www.clearchannel.tv/mcp/",
+      "role": "audiencia × emisión en producción"
+    },
+    {
+      "id": "admira-app",
+      "name": "Admira.app",
+      "url": "https://www.admira.app/mcp/",
+      "role": "audiencia × emisión en preproducción"
+    },
+    {
+      "id": "digital-signage-ai",
+      "name": "DigitalSignage.ai",
+      "url": "https://www.digitalsignage.ai/mcp/",
+      "role": "edición white-label internacional"
+    },
+    {
+      "id": "academy",
+      "name": "Admira Academy",
+      "url": "https://admira.academy/help/",
+      "role": "formación"
+    }
   ],
   "shared_identifiers": {
     "asset_id": "pieza creativa estable desde Pixeria hasta el proof-of-play",
@@ -122,24 +283,63 @@
   "flows": [
     {
       "id": "create-operate-broadcast-prove",
-      "steps": ["pixeria.search_stock → asset_id", "xpaceos.publish_asset(asset_id, screen_id)", "xpaceos.screen_now(screen_id)", "admira-tv.on_air(screen_id)", "admira-tv.airtime_report(circuit_id)", "yokup.yokup_task_update(mission_id, proof_url)"]
+      "steps": [
+        "pixeria.search_stock → asset_id",
+        "xpaceos.publish_asset(asset_id, screen_id)",
+        "xpaceos.screen_now(screen_id)",
+        "admira-tv.on_air(screen_id)",
+        "admira-tv.airtime_report(circuit_id)",
+        "yokup.yokup_task_update(mission_id, proof_url)"
+      ]
     },
     {
       "id": "scan-operate",
-      "steps": ["XpaceScan → scene_id", "xpaceos.scene_status(scene_id)", "xpaceos.twin_detail(twin_id)", "xpaceos.xpl_rules(screen_id)"]
+      "steps": [
+        "XpaceScan → scene_id",
+        "xpaceos.scene_status(scene_id)",
+        "xpaceos.twin_detail(twin_id)",
+        "xpaceos.xpl_rules(screen_id)"
+      ]
     },
     {
       "id": "coordinate",
-      "steps": ["yokup.yokup_whoami", "yokup.yokup_mission(project_id, mission_id)", "admira-live.consejo_preguntar", "yokup.yokup_task_update"]
+      "steps": [
+        "yokup.yokup_whoami",
+        "yokup.yokup_mission(project_id, mission_id)",
+        "admira-live.consejo_preguntar",
+        "yokup.yokup_task_update"
+      ]
     }
   ],
   "client_config_example": {
     "mcpServers": {
-      "pixeria": {"url": "https://mcp-pixeria.admira.store/mcp"},
-      "xpaceos": {"url": "https://mcp.admira.store/mcp", "headers": {"Authorization": "Bearer <clave de flota>"}},
-      "admiratv": {"url": "https://mcp-tv.admira.store/mcp", "headers": {"Authorization": "Bearer <clave de flota>"}},
-      "yokup": {"url": "https://yokup.com/mcp", "headers": {"Authorization": "Bearer <credencial individual o clave de flota>"}},
-      "admiralive": {"url": "https://mcp.admira.live/mcp", "headers": {"Authorization": "Bearer <clave de flota o consejero>"}}
+      "pixeria": {
+        "url": "https://mcp-pixeria.admira.store/mcp"
+      },
+      "xpaceos": {
+        "url": "https://mcp.admira.store/mcp",
+        "headers": {
+          "Authorization": "Bearer <clave de flota>"
+        }
+      },
+      "admiratv": {
+        "url": "https://mcp-tv.admira.store/mcp",
+        "headers": {
+          "Authorization": "Bearer <clave de flota>"
+        }
+      },
+      "yokup": {
+        "url": "https://yokup.com/mcp",
+        "headers": {
+          "Authorization": "Bearer <credencial individual o clave de flota>"
+        }
+      },
+      "admiralive": {
+        "url": "https://mcp.admira.live/mcp",
+        "headers": {
+          "Authorization": "Bearer <clave de flota o consejero>"
+        }
+      }
     }
   }
 }

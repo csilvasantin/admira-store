@@ -1,36 +1,47 @@
-// Shared HUD for the upper visual tiers (Better 16 · Best 32 · Matrix 64 bits).
-// Good (8 bits) keeps its own chrome untouched: this only decorates dialogs that
-// call mountTierHud, and every rule in tier-hud.css is scoped to [data-tier-hud].
-// The HUD never owns simulation, camera or inventory; it re-presents the status
-// and selection that each surface already publishes, in one place and one style.
+// View metadata belongs to the third Expert pane; the scene stays clear.
 export const TIER_HUD={
-  better:{index:'02',name:'BETTER',bits:16,caption:'Gemelo 3D · cámara alineada con Good'},
-  best:{index:'03',name:'BEST',bits:32,caption:'Tienda y personas en 3D en vivo'},
-  matrix:{index:'04',name:'MATRIX',bits:64,caption:'Avenida Admira · mobiliario editable'}
+  better:{index:'02',name:'BETTER',bits:16,caption:'Gemelo 3D · cámara alineada con Good',captionEn:'3D twin · camera aligned with Good'},
+  best:{index:'03',name:'BEST',bits:32,caption:'Avenida Admira · mobiliario editable',captionEn:'Avenida Admira · editable furniture'},
+  matrix:{index:'04',name:'MATRIX',bits:64,caption:'Starbucks Alsea · captura 360° y players',captionEn:'Starbucks Alsea · 360° capture and players'}
 };
 export function tierPlate(mode){
   const tier=TIER_HUD[mode];
   return tier?`${tier.index} · ${tier.name} · ${tier.bits} BITS`:'';
 }
 export function mountTierHud(dialog,{mode,stage}={}){
-  const tier=TIER_HUD[mode];
+  const base=TIER_HUD[mode];
+  const tier=globalThis.XpaceStarbucks?.active()&&mode!=='matrix'?{...base,caption:'Starbucks · Paseo de Gracia 103 · reconstrucción desde Matrix',captionEn:'Starbucks · Paseo de Gracia 103 · reconstruction from Matrix'}:base;
   if(!dialog||!tier)return {setStatus(){},dispose(){}};
-  const host=stage||dialog.querySelector('.best-stage,.life-stage')||dialog;
+  const scene=stage||dialog.querySelector('.best-stage,.life-stage')||dialog;
+  const host=document.querySelector?.('#telegramDock .expert-view-pane');
   dialog.dataset.tierHud=mode;
+  const en=document.documentElement?.lang==='en';
   const hud=document.createElement('div');
-  hud.className='tier-hud';hud.setAttribute('aria-hidden','true');
-  hud.innerHTML=`<i class="tier-hud-corner tl"></i><i class="tier-hud-corner tr"></i><i class="tier-hud-corner bl"></i><i class="tier-hud-corner br"></i>
-    <div class="tier-hud-plate"><b>${tier.index}</b><span class="tier-hud-name">${tier.name}</span><span class="tier-hud-bits">${tier.bits}<small>BITS</small></span></div>
-    <p class="tier-hud-caption">${tier.caption}</p>
-    <p class="tier-hud-live"><i></i><span class="tier-hud-status">EN VIVO</span><time class="tier-hud-clock"></time></p>
-    <div class="tier-hud-scan"></div>`;
-  host.append(hud);
+  hud.className='tier-hud';hud.dataset.mode=mode;
+  hud.setAttribute('aria-label',en?'View status':'Estado de la vista');
+  hud.innerHTML=`<div class="tier-hud-heading"><b>${tierPlate(mode)}</b><time class="tier-hud-clock"></time></div>
+    <p class="tier-hud-caption">${en?tier.captionEn:tier.caption}</p>
+    <p class="tier-hud-status">${en?'LIVE':'EN VIVO'}</p>
+    <details class="tier-hud-details" hidden><summary>${en?'Scene details':'Detalles de la escena'}</summary><div class="tier-hud-extra"></div></details>`;
+  // Keep scene metadata in Expert even when Expert is hidden; never fall back
+  // to covering the scene. The tier selector stays first in the third pane.
+  const selector=host?.querySelector('.visual-tier-controls');
+  if(selector?.insertAdjacentElement)selector.insertAdjacentElement('afterend',hud);
+  else host?.append(hud);
+  const syncDetails=()=>{
+    const lines=[...scene.querySelectorAll?.('.matrix-furniture-status,.best-people-status,.best-stage figcaption')||[]]
+      .filter(node=>!node.hidden).map(node=>node.textContent.trim()).filter(Boolean);
+    hud.querySelector('.tier-hud-extra').textContent=lines.join(' · ');
+    hud.querySelector('.tier-hud-details').hidden=!lines.length;
+  };
+  syncDetails();
+  const observer=typeof MutationObserver==='function'?new MutationObserver(syncDetails):null;
+  observer?.observe(scene,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden']});
   const clock=hud.querySelector('.tier-hud-clock');
-  // Good's canvas can run under the bottom dock and past the viewport; lift the
-  // HUD's bottom row by exactly the hidden strip so tools are never covered.
+  // Keep contextual selection/editor panels above the dock's hidden strip.
   const safeBottom=()=>{
     try{
-      const rect=host.getBoundingClientRect?.();if(!rect)return;
+      const rect=scene.getBoundingClientRect?.();if(!rect)return;
       const dock=document.getElementById?.('telegramDock')?.getBoundingClientRect?.();
       const visible=Math.min(window.innerHeight||rect.bottom,dock&&dock.height?dock.top:Infinity);
       dialog.style?.setProperty?.('--hud-safe-bottom',Math.max(0,Math.round(rect.bottom-visible))+'px');
@@ -39,7 +50,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
   const tick=()=>{const now=new Date();clock.textContent=[now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');safeBottom();};
   tick();const timer=setInterval(tick,1000);
   return {
-    setStatus(text){hud.querySelector('.tier-hud-status').textContent=String(text||'EN VIVO').toUpperCase();},
-    dispose(){clearInterval(timer);hud.remove();delete dialog.dataset.tierHud;dialog.style?.removeProperty?.('--hud-safe-bottom');}
+    setStatus(text){hud.querySelector('.tier-hud-status').textContent=String(text||(en?'LIVE':'EN VIVO')).toUpperCase();},
+    dispose(){clearInterval(timer);observer?.disconnect();hud.remove();delete dialog.dataset.tierHud;dialog.style?.removeProperty?.('--hud-safe-bottom');}
   };
 }

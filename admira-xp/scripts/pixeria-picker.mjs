@@ -1,0 +1,17 @@
+export const PIXERIA_SEARCH_URL='https://mcp.admira.store/pixeria/search';
+export async function searchPixeriaVideos(query,{signal,fetcher=fetch}={}){
+ const q=String(query||'').trim();if(!q||q.length>200)throw Error('Escribe un título, hashtag o número / Enter a title, hashtag or number');
+ const response=await fetcher(PIXERIA_SEARCH_URL+'?query='+encodeURIComponent(q)+'&limit=20',{signal,cache:'no-store'});const data=await response.json();if(!response.ok||!Array.isArray(data.items))throw Error(data.error||'Pixeria no disponible / Pixeria unavailable');
+ for(const item of data.items){let u;try{u=new URL(item.url);}catch{throw Error('URL de vídeo inválida / Invalid video URL');}if(u.protocol!=='https:'||u.username||u.password||item.type!=='video'||!item.id||typeof item.title!=='string')throw Error('Vídeo inválido / Invalid video');}
+ return data;
+}
+export function mountPixeriaPicker({row,title,url,signal,lang='es',onPick,onInput=()=>{}}){
+ const t=(es,en)=>lang==='en'?en:es,button=document.createElement('button'),status=document.createElement('p'),results=document.createElement('div');let sequence=0,request,lastQuery;
+ button.type='button';button.className='pixeria-find';button.textContent=t('Buscar en Pixeria','Search Pixeria');status.className='pixeria-status';status.setAttribute('role','status');results.className='pixeria-results';row.append(button,status,results);
+ async function choose(item){try{await onPick(item);status.textContent=t('Contenido asignado','Content assigned');results.replaceChildren();}catch(error){status.textContent=error.message;}}
+ async function search(){const ticket=++sequence,q=title.value.trim();lastQuery=q;request?.abort();request=new AbortController();const combined=AbortSignal.any([signal,request.signal,AbortSignal.timeout(15000)]);status.textContent=t('Buscando en Pixeria…','Searching Pixeria…');results.replaceChildren();button.disabled=true;
+  try{const data=await searchPixeriaVideos(q,{signal:combined});if(ticket!==sequence||!row.isConnected||title.value.trim()!==q)return;const exact=data.items.filter(item=>item.exact);if(data.total===1||exact.length===1){await choose(exact[0]||data.items[0]);return;}status.textContent=data.total?t('Elige un vídeo · ','Choose a video · ')+data.total+t(' coincidencias',' matches'):t('No hay vídeos publicados con esa búsqueda','No published videos match this search');for(const item of data.items){const b=document.createElement('button');b.type='button';b.textContent=(item.num?'#'+item.num+' · ':'')+item.title;b.addEventListener('click',()=>choose(item),{signal});results.append(b);}if(data.total>data.items.length)status.textContent+=t(' · Acota el título para ver otros resultados',' · Refine the title to see other results');
+  }catch(error){if(ticket===sequence&&row.isConnected&&!signal.aborted&&error.name!=='AbortError')status.textContent=t('No añadido: ','Not added: ')+error.message;}finally{if(ticket===sequence)button.disabled=false;}
+ }
+ button.addEventListener('click',search,{signal});title.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();e.stopPropagation();void search();}},{signal});title.addEventListener('input',()=>{url.value='';onInput();},{signal});title.addEventListener('change',()=>{if(!url.value&&title.value.trim()&&title.value.trim()!==lastQuery)void search();},{signal});signal.addEventListener('abort',()=>request?.abort(),{once:true});
+}

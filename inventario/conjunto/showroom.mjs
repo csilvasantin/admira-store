@@ -1,5 +1,5 @@
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import {loadCatalog} from '../model.mjs?v=catalog-43';
+import {loadCatalog} from '../model.mjs?v=catalog-43-objects-1';
 import {cloneFurniture,furnitureURL} from '../../admira-xp/scripts/furniture-asset.mjs';
 const $=s=>document.querySelector(s),canvas=$('#scene'),status=$('#progress');
 let renderer,disposed=false,revision=0,angle=.7,elevation=.8,distance=36,drag=null,objects=[],assets=[],selected=null;

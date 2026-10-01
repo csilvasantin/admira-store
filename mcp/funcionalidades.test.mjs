@@ -110,7 +110,7 @@ test('la navegación Best confirma sólo una preview y conserva el baseline func
   const navigation = catalog.view_navigation;
   assert.equal(navigation.menu, 'Avanzado (▤)');
   assert.equal(navigation.selector_inside_views, true);
-  assert.deepEqual(Object.keys(navigation.labels).sort(), ['best', 'better', 'good']);
+  assert.deepEqual(Object.keys(navigation.labels).sort(), ['best', 'better', 'good', 'matrix']);
   assert.equal(navigation.best.availability, 'preview');
   assert.equal(navigation.best.static, false);
   assert.equal(navigation.best.background_static, true);
@@ -125,7 +125,7 @@ test('la navegación Best confirma sólo una preview y conserva el baseline func
   assert.match(command('XP-F26', '/modo best').note, /ok:true.*preview:true/);
   for (const item of catalog.features) {
     assert.equal(item.best.status, 'planned', item.id);
-    assert.match(item.best.detail, /escenario conceptual fijo con personas del gemelo en vivo/, item.id);
+    assert.match(item.best.detail, /Avenida Admira con inventario editable, cámara fija y personas del gemelo en vivo/, item.id);
   }
 });
 
@@ -134,8 +134,8 @@ test('ayuda humana y texto MCP distinguen navegación disponible de funciones Be
     'help/index.html', 'help/cli/index.html', 'help/funcionalidades/index.html', 'mcp/llms.txt',
   ].map(path => readFile(new URL(path, repo), 'utf8')));
   for (const document of [help, cli, page, llms]) {
-    assert.match(document, /Avanzado/);
-    assert.match(document, /conceptual|concept scene/i);
+    assert.match(document, /Good/);
+    assert.match(document, /Avenida Admira/i);
     assert.match(document, /preparación|planned/);
     assert.doesNotMatch(document, /Avanzado \(⌘\)|Advanced \(⌘\)|Experto \(▤\)|Expert \(▤\)/);
   }
@@ -185,7 +185,7 @@ test('cada herramienta referenciada existe en el manifest y respeta su clasifica
   const declaration = manifest.auth.escritura.match(/\(([^)]+)\)/);
   assert.ok(declaration, 'El manifest debe declarar las herramientas de escritura');
   const writes = new Set(declaration[1].split(',').map(name => name.trim()));
-  assert.deepEqual([...writes].sort(), ['publish_asset', 'register_device']);
+  assert.deepEqual([...writes].sort(), ["hotspot_bind", "incident_open", "matrix_announcement", "matrix_configure", "matrix_device_layout", "matrix_music_next", "matrix_playlist_update", "playlist_add", "playlist_remove", "playlist_reorder", "publish_asset", "register_device", "screen_plug", "screen_unplug", "sincro_set"]);
   assert.match(manifest.auth.escritura, /Authorization: Bearer/);
   for (const item of catalog.features) {
     assert.ok(Array.isArray(item.mcp.tools), item.id);

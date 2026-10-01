@@ -1,8 +1,7 @@
+import {FLOOR_FOOTPRINTS as DEFAULT_FOOTPRINTS,furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs';
 // One floor-space collision contract for the simulation and its three views.
 // Furniture rotates around its layout origin, exactly as life-scene does.
 const EPS=1e-7,STEP=.5,CORNER_CLEARANCE=1e-5;
-const DEFAULT_FOOTPRINTS={counter:[1,2],shelves:[1,2],wineRack:[2,1],lottery:[2,1],vending:[1,1],magazines:[2,1],manager:[2,1],plant:[1,1],floorLamp:[1,1],rug:[2,2],djBooth:[2,1],tablet:[1,1],turnKiosk:[1,1],aroma:[1,1],metahuman:[1,1]};
-const NON_SOLID=new Set(['rug','led','tft','aroma','door']);
 const finite=(value,fallback)=>Number.isFinite(Number(value))?Number(value):fallback;
 const point=value=>({col:Number(value?.col),row:Number(value?.row)});
 const valid=p=>Number.isFinite(p.col)&&Number.isFinite(p.row);
@@ -34,17 +33,8 @@ export function buildCustomerNavigation(scene={}, {radius=.24,allowOutside=false
   const footprints={...DEFAULT_FOOTPRINTS,...scene.footprints};
   const obstacles=[];
   for(const item of Array.isArray(scene.layout)?scene.layout:[]){
-    if(!item||NON_SOLID.has(item.type)||item.mount==='wall'||item.hidden===true)continue;
-    const fp=Array.isArray(item.fp)?item.fp:footprints[item.type]||[1,1];
-    const width=Math.max(.1,finite(fp[0],1)),depth=Math.max(.1,finite(fp[1],1));
-    const scale=Math.max(.1,Math.abs(finite(item.sx,1))),flip=item.flipX?-1:1;
-    const angle=-finite(item.rot,0)*Math.PI/2,cos=Math.cos(angle),sin=Math.sin(angle);
-    // THREE's rotation about Y: x'=cos*x+sin*z, z'=-sin*x+cos*z.
-    const corners=[[0,0],[width,0],[width,depth],[0,depth]].map(([x,z])=>{
-      x*=scale*flip;z*=scale;
-      return {col:finite(item.col,0)+cos*x+sin*z,row:finite(item.row,0)-sin*x+cos*z};
-    });
-    obstacles.push({id:String(item.id??item.type),minCol:Math.min(...corners.map(p=>p.col)),maxCol:Math.max(...corners.map(p=>p.col)),minRow:Math.min(...corners.map(p=>p.row)),maxRow:Math.max(...corners.map(p=>p.row))});
+    if(!isSolidFurniture(item))continue;
+    obstacles.push(furnitureBounds(item,footprints));
   }
   const key=JSON.stringify([cols,rows,radius,allowOutside,doorRow,obstacles]);
   function inBounds(p){

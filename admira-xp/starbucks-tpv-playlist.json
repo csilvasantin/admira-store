@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "starbucks-alsea-paseo-de-gracia-tpv",
+  "store": "starbucks-alsea-paseo-de-gracia",
+  "purpose": "local-advertising",
+  "muted": true,
+  "repeat": "all",
+  "tracks": [
+    {
+      "id": "1790710633879-5wuvdf",
+      "stockId": "1790710633879-5wuvdf",
+      "stockNumber": 1315,
+      "title": "Starbucks · TPV 1 · Súbele el brillo a tus días",
+      "url": "https://stock.admira.store/stock/1790710633879-5wuvdf/asset.mp4?v=32900599",
+      "duration": 15.069002,
+      "mimeType": "video/mp4"
+    },
+    {
+      "id": "1790710711001-ilz8qc",
+      "stockId": "1790710711001-ilz8qc",
+      "stockNumber": 1317,
+      "title": "Starbucks · TPV 2 · BCH ",
+      "url": "https://stock.admira.store/stock/1790710711001-ilz8qc/asset.mp4?v=9055179",
+      "duration": 15.069002,
+      "mimeType": "video/mp4"
+    }
+  ]
+}

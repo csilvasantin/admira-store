@@ -8,6 +8,8 @@
 
 (function(){
   let ac = null;
+  const weatherNodes=new Set();
+  const weatherAudible=()=>window.G?.weather?.type==='rain'&&window.G.weather.sonora===true;
   function vol(){
     var G = (typeof window !== 'undefined') ? window.G : null;
     return (G && G.sfxVolume !== undefined) ? G.sfxVolume : 0.7;
@@ -19,7 +21,7 @@
     }
     return ac;
   }
-  function tone(freq, dur, type, gain, delay){
+  function tone(freq, dur, type, gain, delay, weather=false){
     // Defensa: si vol es 0 (master mute o sfxToggle off) NO crear el
     // oscillator. Antes el setValueAtTime(0)+exponentialRampToValueAtTime(0.001)
     // dejaba un click residual a -60dB que podia oirse en bucles como
@@ -34,6 +36,7 @@
     g.gain.setValueAtTime(gain * vol(), a.currentTime + delay);
     g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + delay + dur);
     o.connect(g); g.connect(a.destination);
+    if(weather){weatherNodes.add(o);o.onended=()=>{weatherNodes.delete(o);o.disconnect();g.disconnect();};}
     o.start(a.currentTime + delay); o.stop(a.currentTime + delay + dur);
   }
 
@@ -50,8 +53,9 @@
     levelUp(){tone(784,0.08);tone(988,0.08,'sine',0.1,0.1);tone(1175,0.12,'sine',0.12,0.2);},
     eventChime(){tone(880,0.08,'sine',0.08);tone(1100,0.1,'sine',0.1,0.1);},
     marioCoin(){tone(988,0.08,'square',0.10);tone(1319,0.18,'square',0.12,0.08);},
-    thunder(){tone(60,0.4,'sawtooth',0.2);tone(40,0.6,'sawtooth',0.15,0.15);tone(80,0.3,'triangle',0.1,0.4);tone(30,0.5,'sawtooth',0.08,0.6);},
-    rainLoop(){tone(200,0.05,'triangle',0.02);tone(350,0.04,'triangle',0.015,0.03);tone(150,0.06,'triangle',0.01,0.06);},
+    stopWeather(){for(const o of weatherNodes){try{o.stop();}catch{}}weatherNodes.clear();},
+    thunder(){if(!weatherAudible())return;tone(60,0.4,'sawtooth',0.2,0,true);tone(40,0.6,'sawtooth',0.15,0.15,true);tone(80,0.3,'triangle',0.1,0.4,true);tone(30,0.5,'sawtooth',0.08,0.6,true);},
+    rainLoop(){if(!weatherAudible())return;tone(200,0.05,'triangle',0.02,0,true);tone(350,0.04,'triangle',0.015,0.03,true);tone(150,0.06,'triangle',0.01,0.06,true);},
     voteHappy(){tone(659,0.08,'sine',0.1);tone(784,0.08,'sine',0.1,0.09);tone(1047,0.15,'sine',0.12,0.18);},
     voteNeutral(){tone(440,0.12,'triangle',0.08);tone(440,0.08,'triangle',0.05,0.14);},
     voteSad(){tone(400,0.12,'sine',0.1);tone(300,0.15,'sine',0.1,0.13);tone(220,0.2,'sine',0.08,0.28);},

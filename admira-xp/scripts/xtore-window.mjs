@@ -9,11 +9,11 @@ const qs=new URLSearchParams(location.search);
 const enabled=qs.get('virtualPlayer')===SCREEN;
 const dock=document.getElementById('telegramDock'),expert=document.getElementById('pfExpert');
 const entry=document.createElement('button');entry.type='button';entry.id='xtore-window-entry';entry.textContent='Player y cámara';
-const actions=dock.querySelector('.tg-cli-row .tg-actions');actions.append(entry);
-const grip=document.createElement('span');grip.id='xtore-expert-grip';grip.textContent='⠿ CONTROL XTORE';grip.setAttribute('aria-label','Mover Control Xtore');dock.querySelector('.tg-cli-row').prepend(grip);
+const actions=dock.querySelector('.expert-primary-actions');actions.append(entry);
+const grip=document.createElement('span');grip.id='xtore-expert-grip';grip.textContent='⠿ CONTROL XTORE';grip.setAttribute('aria-label','Control Xtore');dock.querySelector('.tg-cli-row').prepend(grip);
 const closeDock=document.createElement('button');closeDock.type='button';closeDock.textContent='×';closeDock.setAttribute('aria-label','Cerrar modo experto');actions.append(closeDock);
-const dockWindow=movableWindow(dock,grip,{key:'xtore-expert-position',closeButton:closeDock,onClose:()=>{if(!document.body.classList.contains('xp-left-hidden'))expert.click();}});
-expert.addEventListener('click',()=>{if(!document.body.classList.contains('xp-left-hidden'))dockWindow.restore();});
+// Expert is a bottom-anchored workspace; only the separate player window moves.
+closeDock.addEventListener('click',()=>{if(!document.body.classList.contains('xp-left-hidden'))expert.click();});
 if(!enabled){entry.onclick=()=>{location.href='?autostart=xtanco&virtualPlayer='+SCREEN;};}else{
   document.title='Xtore · zapatillas — Player virtual · XpaceOS';
   const panel=document.createElement('section');panel.id='xtore-window-panel';panel.setAttribute('aria-label','Player virtual de zapatillas');

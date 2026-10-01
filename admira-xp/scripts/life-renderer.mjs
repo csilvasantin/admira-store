@@ -1,5 +1,6 @@
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=px-2';
+import {createLifeScene} from './life-scene.mjs?v=distribuir-3';
+import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs';
 import {mappedCameraFrame} from './life-camera.mjs';
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -11,12 +12,12 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
   let model;
   try{model=createLifeScene(snapshot,{
     assetQuality,
-    loadFurniture:item=>import('./furniture-asset.mjs').then(m=>m.loadFurniture(item,assetQuality)),
+    loadFurniture:item=>import('./furniture-asset.mjs?v=distribuir-3').then(m=>m.loadFurniture(item,assetQuality)),
     loadPerson:assetQuality==='best'?actor=>import('./best-person-asset.mjs?v=visitors-24').then(m=>m.loadBestPerson(actor)):null
   });}catch(error){renderer.dispose();renderer.forceContextLoss();throw error;}
   const camera=new T.OrthographicCamera(-15,15,10,-10,.1,200);
   const target=new T.Vector3(),raycaster=new T.Raycaster(),pointers=new Map();
-  let width=1,height=1,lastMedia=-Infinity,disposed=false,gesture=null,selected=null;
+  let width=1,height=1,lastMedia=-Infinity,disposed=false,gesture=null,selected=null,selectedId=null,editor=null,drag=null;
   const initial=mappedCameraFrame(model.snapshot);
   const current={zoom:1,angle:initial.angle,elevation:initial.elevation,panX:0,panY:0};let desired={...current},mode='mapped',framing='mapped';
   const cameraState=()=>Object.freeze({mode,registration:framing==='mapped'?mappedCameraFrame(model.snapshot,width,height).registration:'room-fit',...desired});
@@ -44,7 +45,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
     camera.left=centerX-horizontal/2;camera.right=centerX+horizontal/2;camera.top=centerY+vertical/2;camera.bottom=centerY-vertical/2;camera.updateProjectionMatrix();
   }
   function resize(w,h,dpr=globalThis.devicePixelRatio||1){if(disposed)return;width=Math.max(1,w);height=Math.max(1,h);renderer.setPixelRatio(clamp(dpr,1,1.75));renderer.setSize(width,height,false);frameCamera();}
-  function update(next){if(disposed)return;model.update(next);if(mode==='mapped'){const mapped=mappedCameraFrame(model.snapshot);desired.angle=current.angle=mapped.angle;desired.elevation=current.elevation=mapped.elevation;}}
+  function update(next){if(disposed)return;model.update(next);if(selectedId)selectItem(selectedId);if(mode==='mapped'){const mapped=mappedCameraFrame(model.snapshot);desired.angle=current.angle=mapped.angle;desired.elevation=current.elevation=mapped.elevation;}}
   function selectAt(x,y){
     const bounds=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((x-bounds.left)/bounds.width*2-1,-(y-bounds.top)/bounds.height*2+1),camera);
     model.scene.updateMatrixWorld(true);selected=null;
@@ -52,24 +53,31 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
       for(let node=hit.object;node;node=node.parent){if(node.userData.item||node.userData.actor){selected=node;break;}}
       if(selected)break;
     }
-    halo.visible=!!selected;onSelect(selected?.userData||null);
+    selectedId=selected?.userData.item?.id??null;halo.visible=!!selected;onSelect(selected?.userData||null);
   }
   function render(now=performance.now()){
     if(disposed)return;
     for(const key of Object.keys(current))current[key]+=(desired[key]-current[key])*.16;
     frameCamera();model.animate(now);
     if(now-lastMedia>125){model.refreshMedia(getPlayer());lastMedia=now;}
-    if(selected){if(!selected.parent){selected=null;halo.visible=false;onSelect(null);}else{const p=selected.getWorldPosition(new T.Vector3());halo.position.set(p.x,.04,p.z);}}
+    if(selected){if(!selected.parent){selected=null;halo.visible=false;}else{const item=selected.userData.item,p=item?new T.Vector3(item.col,0,item.row):selected.getWorldPosition(new T.Vector3());halo.position.set(p.x,.04,p.z);}}
     renderer.render(model.scene,camera);
   }
   const pinchDistance=()=>{const [a,b]=[...pointers.values()];return a&&b?Math.hypot(a.x-b.x,a.y-b.y):0;};
   const handlers={
     pointerdown(event){
       if(event.button!==0&&event.button!==2)return;
+      if(editor&&event.button===0&&!event.shiftKey){
+        if(drag)return;
+        selectAt(event.clientX,event.clientY);const point=floorPoint(event.clientX,event.clientY),item=selected?.userData.item;
+        if(point&&item){drag={pointer:event.pointerId,point,col:item.col,row:item.row};canvas.setPointerCapture?.(event.pointerId);canvas.focus();}
+        return;
+      }
       pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});canvas.setPointerCapture?.(event.pointerId);
       gesture={x:event.clientX,y:event.clientY,...desired,pinch:pinchDistance(),moved:false,pan:event.shiftKey||event.button===2};
     },
     pointermove(event){
+      if(drag&&event.pointerId===drag.pointer){const point=floorPoint(event.clientX,event.clientY);if(point)editor?.onPreview?.({col:Math.round((drag.col+point.x-drag.point.x)*4)/4,row:Math.round((drag.row+point.z-drag.point.z)*4)/4});return;}
       if(!pointers.has(event.pointerId)||!gesture)return;pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
       const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;if(Math.hypot(dx,dy)>5)gesture.moved=true;
       if(!gesture.moved&&pointers.size===1)return;
@@ -79,10 +87,11 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
       else{desired.angle=clamp(gesture.angle-dx*.005,.10,Math.PI/2-.10);desired.elevation=clamp(gesture.elevation+dy*.003,.32,1.16);}
     },
     pointerup(event){
+      if(drag&&event.pointerId===drag.pointer){drag=null;editor?.onCommit?.();return;}
       if(gesture&&!gesture.moved&&pointers.size===1)selectAt(event.clientX,event.clientY);pointers.delete(event.pointerId);
       const remaining=[...pointers.values()][0];gesture=remaining?{...remaining,...desired,pinch:0,moved:true,pan:false}:null;
     },
-    pointercancel(event){pointers.delete(event.pointerId);gesture=null;},
+    pointercancel(event){if(drag?.pointer===event.pointerId){drag=null;editor?.onCancel?.();}pointers.delete(event.pointerId);gesture=null;},
     wheel(event){event.preventDefault();desired.zoom=clamp(desired.zoom*Math.exp(-event.deltaY*.001),.7,3.2);changeMode('free');},
     contextmenu(event){event.preventDefault();}
   };
@@ -95,15 +104,28 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
   }
   function rotate(direction){desired.angle=clamp(desired.angle+direction*.18,.10,Math.PI/2-.10);changeMode('free');}
   function zoomBy(factor){desired.zoom=clamp(desired.zoom*factor,.7,3.2);changeMode('free');}
-  function clearSelection(){selected=null;halo.visible=false;onSelect(null);}
+  function clearSelection(){selected=null;selectedId=null;halo.visible=false;onSelect(null);}
   function setLighting(mode){model.setLighting(mode);renderer.setClearColor(mode==='night'?'#202d3d':mode==='sunset'?'#e9d9c4':'#e7e8dc');}
+  const overlay=new T.Group();overlay.name='distribuit:hardness';model.scene.add(overlay);
+  function selectItem(id){selectedId=id??null;selected=null;model.world.traverse(node=>{if(node.userData.item&&String(node.userData.item.id)===String(id))selected=node;});halo.visible=!!selected;}
+  function floorPoint(x,y){const bounds=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((x-bounds.left)/bounds.width*2-1,-(y-bounds.top)/bounds.height*2+1),camera);return raycaster.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());}
+  function setEditor(value){editor=value;drag=null;gesture=null;pointers.clear();}
+  function clearOverlay(){for(const child of [...overlay.children]){child.geometry.dispose();child.material.dispose();overlay.remove(child);}}
+  function setEditorOverlay(value){
+    clearOverlay();if(!value)return;
+    const {scene,selectedId,showMap,candidate,valid}=value;
+    function outline(b,color){const g=new T.BufferGeometry().setFromPoints([new T.Vector3(b.minCol,.075,b.minRow),new T.Vector3(b.maxCol,.075,b.minRow),new T.Vector3(b.maxCol,.075,b.maxRow),new T.Vector3(b.minCol,.075,b.maxRow),new T.Vector3(b.minCol,.075,b.minRow)]);const m=new T.LineBasicMaterial({color,transparent:true,opacity:.8,depthTest:false});const line=new T.Line(g,m);line.renderOrder=15;overlay.add(line);}
+    if(showMap){outline({minCol:0,minRow:0,maxCol:scene.cols,maxRow:scene.rows},'#86e3bd');for(const item of scene.layout)if(isSolidFurniture(item)&&String(item.id)!==String(selectedId))outline(furnitureBounds(item,scene.footprints),'#ea9e77');for(const cell of scene.hardness?.fixed||[]){const [col,row]=cell.split(',').map(Number);outline({minCol:col,maxCol:col+1,minRow:row,maxRow:row+1},'#ea9e77');}}
+    const item=scene.layout.find(i=>String(i.id)===String(selectedId));
+    if(item){const b=furnitureBounds({...item,...candidate},scene.footprints);outline(b,valid===false?'#ff6457':'#70f2b4');const g=new T.PlaneGeometry(b.maxCol-b.minCol,b.maxRow-b.minRow),m=new T.MeshBasicMaterial({color:valid===false?'#ff6457':'#70f2b4',transparent:true,opacity:.2,depthTest:false,depthWrite:false,side:T.DoubleSide}),mesh=new T.Mesh(g,m);mesh.rotation.x=-Math.PI/2;mesh.position.set((b.minCol+b.maxCol)/2,.07,(b.minRow+b.maxRow)/2);mesh.renderOrder=14;overlay.add(mesh);}
+  }
   function peopleStatus(){
     const result={ready:0,loading:0,fallback:0,total:0};
     for(const actor of model.actors.children){const status=actor.userData.personAssetStatus;if(status&&Object.hasOwn(result,status)){result[status]++;result.total++;}}
     return result;
   }
-  function dispose(){if(disposed)return;disposed=true;for(const [event,handler]of Object.entries(handlers))canvas.removeEventListener(event,handler);pointers.clear();haloGeometry.dispose();haloMaterial.dispose();halo.removeFromParent();model.dispose();renderer.dispose();renderer.forceContextLoss();}
+  function dispose(){if(disposed)return;disposed=true;for(const [event,handler]of Object.entries(handlers))canvas.removeEventListener(event,handler);pointers.clear();clearOverlay();overlay.removeFromParent();haloGeometry.dispose();haloMaterial.dispose();halo.removeFromParent();model.dispose();renderer.dispose();renderer.forceContextLoss();}
   resize(canvas.clientWidth||1000,canvas.clientHeight||700);
   onCameraChange(cameraState());
-  return {resize,update,render,preset,rotate,zoomBy,setLighting,clearSelection,dispose,get bestPeopleCount(){return peopleStatus().ready;},get bestPeopleStatus(){return peopleStatus();},get blenderAssets(){return model.world.children.filter(o=>o.userData.assetStatus==='ready').length;},get blenderCounters(){return model.world.children.filter(o=>o.userData.type==='counter'&&o.userData.assetStatus==='ready').length;},get snapshot(){return model.snapshot;},get cameraState(){return cameraState();}};
+  return {setEditor,setEditorOverlay,selectItem,resize,update,render,preset,rotate,zoomBy,setLighting,clearSelection,dispose,get bestPeopleCount(){return peopleStatus().ready;},get bestPeopleStatus(){return peopleStatus();},get blenderAssets(){return model.world.children.filter(o=>o.userData.assetStatus==='ready').length;},get blenderCounters(){return model.world.children.filter(o=>o.userData.type==='counter'&&o.userData.assetStatus==='ready').length;},get snapshot(){return model.snapshot;},get cameraState(){return cameraState();}};
 }

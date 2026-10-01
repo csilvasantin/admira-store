@@ -1,10 +1,10 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=px-2';
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=panel-scene-1';
-import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=px-2';
-import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=matrix-furniture-1';
-import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=tier-hud-1';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=closed-resume-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=distribuir-3';
+import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=distribuir-3';
+import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=entry-1';
+import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=starbucks-room-1';
 
-const actions=document.querySelector('#telegramDock .tg-actions');
+const viewPane=document.querySelector('#telegramDock .expert-view-pane');
 const status=document.createElement('div');status.id='xtanco-best-status';
 status.setAttribute('role','status');status.hidden=true;document.body.append(status);
 let storage;try{storage=window.localStorage;}catch{}
@@ -13,6 +13,7 @@ function requestedCafeteria(){
   try{return ['cafeteria','cafebreria'].includes((new URLSearchParams(location.search).get('autostart')||'').trim().toLowerCase());}catch{return false;}
 }
 function isCafeteria(){
+  if(globalThis.XpaceStarbucks?.active())return false;
   const body=document.body;
   if(body?.classList.contains('vertical-cafeteria'))return true;
   if(body?.dataset?.xpaceVertical)return body.dataset.xpaceVertical==='cafeteria';
@@ -22,9 +23,6 @@ function isCafeteria(){
     if(state?.active)return false;
   }catch{}
   return requestedCafeteria();
-}
-function cafeteriaTierNotice(){
-  return document.documentElement.lang==='en'?'Cafebrería basic view':'Vista básica de Cafebrería';
 }
 function syncVisualSurface(){
   const canvas=document.getElementById('c');if(!canvas)return;
@@ -60,7 +58,7 @@ const tiers=createVisualTiers({openBetter:openLifeView,closeBetter:closeLifeView
   openMatrix:openMatrixView,closeMatrix:closeMatrixView,subscribeMatrix:subscribeMatrixView,storage,
   onChange(state){
     syncVisualSurface();document.body.dataset.xtancoTier=state.mode;updateTierControls(state);
-    status.textContent=state.error||(isCafeteria()?cafeteriaTierNotice():(state.busy?'Fusionando vista…':''));status.hidden=!status.textContent;
+    status.textContent=state.error||(state.busy?'Fusionando vista…':'');status.hidden=!status.textContent;
   }
 });
 const chooseDirect=tiers.choose.bind(tiers);let transitionActive=false;
@@ -89,9 +87,12 @@ function fuseWithoutNative(mode){
   return outcome;
 }
 tiers.choose=mode=>{
+  if(mode==='matrix')window.__xtancoEnterStarbucks?.();
   ensureExpertDock();
   syncVisualSurface();
-  if(mode!=='good'&&isCafeteria()){
+  if(window.__xpaceMatrixEntry&&document.documentElement.classList.contains('matrix-boot'))return chooseDirect(mode);
+  if(mode===tiers.mode)return chooseDirect(mode); // Same-view commands must not clone media for a transition.
+  if(mode==='best'&&isCafeteria()){
     syncCafeteriaTierControls();
     return chooseDirect('good');
   }
@@ -99,20 +100,21 @@ tiers.choose=mode=>{
   let outcome;transitionActive=true;
   try{
     const transition=document.startViewTransition(()=>{outcome=chooseDirect(mode);return outcome;});
+    transition.ready?.catch(()=>{}); // Resize may cancel the visual transition while the view itself remains valid.
     return transition.finished.catch(()=>{}).then(()=>outcome).finally(()=>{transitionActive=false;});
   }catch{transitionActive=false;return chooseDirect(mode);}
 };
 const expertControls=createTierControls({context:'Calidad visual · modo experto',choose:mode=>tiers.choose(mode)});
-expertControls.element.id='xtanco-visual-quality';actions?.prepend(expertControls.element);
+expertControls.element.id='xtanco-visual-quality';viewPane?.prepend(expertControls.element);
 function syncCafeteriaTierControls(){
   const unavailable=isCafeteria();
   for(const button of expertControls.element.querySelectorAll('[data-visual-mode]')){
-    const blocked=unavailable&&button.dataset.visualMode!=='good';
+    const blocked=unavailable&&button.dataset.visualMode==='best';
     button.disabled=blocked;
     button.setAttribute('aria-disabled',String(blocked));
   }
-  if(unavailable&&tiers.mode!=='good')void tiers.choose('good');
-  status.textContent=tiers.error||(unavailable?cafeteriaTierNotice():(tiers.busy?'Fusionando vista…':''));status.hidden=!status.textContent;
+  if(unavailable&&tiers.mode==='best')void tiers.choose('good');
+  status.textContent=tiers.error||(tiers.busy?'Fusionando vista…':'');status.hidden=!status.textContent;
 }
 syncCafeteriaTierControls();
 try{
