@@ -150,7 +150,7 @@ function applyPlacement(node,p){
 export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisualState?.(),requestFrame=requestAnimationFrame,cancelFrame=cancelAnimationFrame,onReady=()=>{},onSelect=()=>{},load=loadAssets}={}){
   if(!container)throw Error('Falta el contenedor Best');
   const snapshot=createLifeSnapshot(),nodes=new Map(),prefix=`matrix-furniture-${++sequence}`,layer=document.createElement('div'),status=document.createElement('p');
-  layer.className='matrix-furniture-layer';status.className='matrix-furniture-status';status.setAttribute('role','status');status.textContent='Preparando el mobiliario de Best…';container.append(layer,status);
+  layer.className='matrix-furniture-layer';status.className='matrix-furniture-status';status.setAttribute('role','status');status.style.display='none';status.textContent='Preparando el mobiliario de Best…';container.append(layer,status);
   let catalog,disposed=false,frame=0,last=-Infinity,reported=false,selected=null,zones=[],count=0,occluders=[];
   const decorators=[];
   function report(error=''){if(disposed||reported)return;reported=true;onReady(error);}

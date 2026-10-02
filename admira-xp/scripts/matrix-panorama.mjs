@@ -1,8 +1,8 @@
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
-import {mountIncidentPanel} from './starbucks-incidents.mjs?v=incident-detail-1';
+import {mountIncidentPanel} from './starbucks-incidents.mjs?v=floating-panels-1';
 import {createSincroIA} from './sincro-ia.mjs?v=devices-2';
-import {mountDeviceEditor} from './device-editor.mjs?v=loop-1';
+import {mountDeviceEditor} from './device-editor.mjs?v=floating-panels-1';
 import {createDevicePlayback} from './device-playback.mjs?v=loop-1';
 import {DEVICE_IDS,assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=loop-1';
 import {createAnnouncement,ANNOUNCEMENT_SPEAKER,CLOSING_ANNOUNCEMENT,ANNOUNCEMENT_QUALITIES} from './starbucks-announcement.mjs?v=eleven-1';
@@ -12,6 +12,7 @@ import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenS
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
 import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=devices-2';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=wall-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
 
 export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}={}){
  const en=lang==='en',t=(es,english)=>en?english:es;
@@ -41,6 +42,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  </section>`;
  const surface=root.querySelector('.matrix-panorama'),layer=root.querySelector('.matrix-player-layer'),markers=root.querySelector('.matrix-markers'),panel=root.querySelector('.matrix-map-panel'),status=root.querySelector('.matrix-map-status'),list=root.querySelector('.matrix-map-list'),form=root.querySelector('form');
  const controls=new AbortController(),options={signal:controls.signal},previews=new Map(),nodes=new Map();
+ const mappingWindow=attachFloatingPanel(panel,{label:t('Mapeo de players','Player mapping'),handle:panel.querySelector('header'),closeButton:panel.querySelector('[data-map="close"]'),bounds:surface,key:'xpaceos.window.matrix-map.v1',menu:'matrix-map',onOpen:()=>{if(disposed)return;incidents?.close();cancel();panel.hidden=false;}});
  const numberLayer=root.querySelector('.matrix-screen-numbers'),numberButton=root.querySelector('[data-screen-numbers]'),numberNodes=new Map();
  const numberLabel=n=>n+' · '+(screenGroup(n)?t('Grupo ','Group ')+screenGroup(n):t('Sola','Standalone'));
  const playerName=p=>screenNumber(p.id)?numberLabel(screenNumber(p.id)):p.name;
@@ -78,7 +80,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function updateDeviceLabels(){for(const [id,badge] of numberNodes){const pid=assignedPlaylist(deviceEditor.config,id);badge.querySelector('small').textContent=deviceEditor.config.playlists[pid]?.title||(pid==='tpv'?t('Publicidad local','Local advertising'):screenGroup(screenNumber(id))?t('Grupo ','Group ')+screenGroup(screenNumber(id)):t('Sola','Standalone'));}}
  async function previewDevices(ids,track){if(demoMode==='ia')await setDemoMode('linear');for(const id of ids){const p=model.players.find(p=>p.id===id);if(p&&nodes.has(id)&&!previews.get(id)?.dataset[id===tpvId?'tpvVideo':'wallVideo'])mediaFor(p,id===tpvId?'tpvVideo':'wallVideo');}updateRuntime();const result=await runtime.preview(ids,track);applyScreenLayout();return result;}
  async function reloadDevices(ids){if(demoMode==='ia')await setDemoMode('linear');updateRuntime();const result=await runtime.reload(ids);applyScreenLayout();return result;}
- deviceEditor=mountDeviceEditor({root,surface,lang,getPlayback:ids=>runtime.nowPlaying(ids),nameFor:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),catalog,onPlay:async(pid,track)=>{if(demoMode==='ia')await setDemoMode('linear');ensurePlaylistMedia(pid);updateRuntime();const result=await runtime.jump(pid,track);applyScreenLayout();return result;},onPreview:previewDevices,onReload:reloadDevices,onChange:()=>{updateRuntime();updateDeviceLabels();}});deviceEditor.enable(getScreenNumbersVisible());
+ deviceEditor=mountDeviceEditor({root,surface,lang,onOpen:()=>setScreenNumbersVisible(true),getPlayback:ids=>runtime.nowPlaying(ids),nameFor:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),catalog,onPlay:async(pid,track)=>{if(demoMode==='ia')await setDemoMode('linear');ensurePlaylistMedia(pid);updateRuntime();const result=await runtime.jump(pid,track);applyScreenLayout();return result;},onPreview:previewDevices,onReload:reloadDevices,onChange:()=>{updateRuntime();updateDeviceLabels();}});deviceEditor.enable(getScreenNumbersVisible());
  const controller=ids=>({play(){if(demoMode==='ia'&&ids.length>1)void iaPlayback?.play();runtime.setPlaying(ids,true);},pause(){if(demoMode==='ia'&&ids.length>1)iaPlayback?.pause();runtime.setPlaying(ids,false);},state:()=>demoMode==='ia'&&ids.length>1?iaPlayback?.state()||{playing:false}:runtime.state(ids),replaceTracks(){updateRuntime();}});
  function stopWall(){runtime.setPlaying([...wallIds],false);wallPlayback=null;}
  function stopTPV(){runtime.setPlaying([tpvId],false);tpvPlayback=null;}
@@ -88,7 +90,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function startTPV(){const p=model.players.find(p=>p.id===tpvId);if(!p||p.type!=='video'||p.url!==STARBUCKS_TPV_MAPPING.players[0].url)return;if(!previews.get(p.id)?.dataset.tpvVideo)mediaFor(p,'tpvVideo');updateRuntime();tpvPlayback=controller([tpvId]);tpvPlayback.play();}
  function selectDevice(id,event){if(incidents?.visible){event.preventDefault?.();event.stopPropagation?.();incidents.select(id);}else {panel.hidden=true;cancel();deviceEditor.select(id,event);}}
  function applyPower(id,value){nodes.get(id)?.classList.toggle('device-off',value);updateRuntime();if(!value)runtime.setPlaying([id],true);}
- incidents=mountIncidentPanel({root,lang,devices:DEVICE_IDS.map(id=>({id,name:playerName(model.players.find(p=>p.id===id)||{id,name:id}),equipo:id===tpvId?'tpv':'pantalla-'+screenNumber(id)})),onPower:applyPower,nodeFor:id=>nodes.get(id)});
+ incidents=mountIncidentPanel({root,surface,lang,devices:DEVICE_IDS.map(id=>({id,name:playerName(model.players.find(p=>p.id===id)||{id,name:id}),equipo:id===tpvId?'tpv':'pantalla-'+screenNumber(id)})),onPower:applyPower,nodeFor:id=>nodes.get(id)});
  async function setDemoMode(mode){if(!['linear','christmas','ia'].includes(mode))throw Error('Invalid demo mode');if(mode==='ia'&&(iaTracks.length!==6||new Set(iaTracks.map(t=>t.screen)).size!==6))throw Error('Sincro IA requires six screens');iaPlayback?.dispose();iaPlayback=null;demoMode=mode;updateRuntime();if(mode==='ia'){const entries=iaTracks.map(track=>({video:previews.get('starbucks-wall-0'+(7-track.screen)),url:track.url})).filter(x=>x.video);iaPlayback=createSincroIA({entries,onState:state=>{screenButton.setAttribute('aria-pressed',String(state.playing));screenButton.textContent=state.playing?t('Pausar pantallas','Pause screens'):t('Reproducir pantallas','Play screens');screenStatus.textContent=state.error?t('Sincro IA: error de vídeo','AI sync: video error'):t('Sincro IA · seis piezas · reloj común','AI sync · six clips · shared clock');}});await iaPlayback.play(true);}applyScreenLayout();deviceEditor.refresh();return mode;}
  window.XpaceStarbucksDemo={setMode:setDemoMode,get mode(){return demoMode;}};
  const speaker=root.querySelector('.matrix-speaker'),musicStatus=root.querySelector('.matrix-music-status'),musicButtons=[...root.querySelectorAll('[data-music-toggle]')];
@@ -182,7 +184,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  for(const type of ['click','keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'])toolbar.addEventListener(type,e=>e.stopPropagation(),options);
  document.querySelector('#telegramDock .tg-actions')?.append(toolbar);
  let stopRemote=()=>{};
- const dispose=()=>{if(disposed)return;disposed=true;delete window.XpaceStarbucksDemo;iaPlayback?.dispose();incidents.dispose();deviceEditor.dispose();runtime.dispose();announcement.dispose();announcementAudio.remove();stopRemote();stopWall();stopTPV();controls.abort();clearInterval(musicPoll);unsubscribeMusic();unsubscribeLayout();unsubscribeNumbers();music.mute();cancelAnimationFrame(frame);observer?.disconnect();for(const id of previews.keys())destroyPreview(id);geometry?.dispose();material?.dispose();texture?.dispose();renderer?.dispose();toolbar.remove();root.replaceChildren();};
+ const dispose=()=>{if(disposed)return;disposed=true;mappingWindow.dispose();delete window.XpaceStarbucksDemo;iaPlayback?.dispose();incidents.dispose();deviceEditor.dispose();runtime.dispose();announcement.dispose();announcementAudio.remove();stopRemote();stopWall();stopTPV();controls.abort();clearInterval(musicPoll);unsubscribeMusic();unsubscribeLayout();unsubscribeNumbers();music.mute();cancelAnimationFrame(frame);observer?.disconnect();for(const id of previews.keys())destroyPreview(id);geometry?.dispose();material?.dispose();texture?.dispose();renderer?.dispose();toolbar.remove();root.replaceChildren();};
  let observer;
  signal?.addEventListener('abort',dispose,{once:true});
  try{

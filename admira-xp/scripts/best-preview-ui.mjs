@@ -1,16 +1,17 @@
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=shelf-products-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=floating-panels-1';
 import {createBestPeopleLayer} from './best-live-people.mjs?v=anon-demo-v1';
-import {mountMatrixFurniture} from './matrix-furniture.mjs?v=anon-demo-v1';
+import {mountMatrixFurniture} from './matrix-furniture.mjs?v=floating-panels-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
-import {mountTierHud} from './tier-hud.mjs?v=starbucks-room-1';
+import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
 
 // Best keeps the Avenida Admira room as its backdrop. Furniture and visitors
 // are separate, depth-sorted layers driven by the shared Xtanco inventory.
 const listeners=new Set();
 let starbucksDelegate=false;
 subscribeLifeView(state=>{if(starbucksDelegate)for(const listener of listeners)listener(state);});
-let dialog,people,furniture,exterior,lastFocus,requestId,removeAbort,hud,busy=false,viewError='';
+let dialog,people,furniture,exterior,lastFocus,requestId,removeAbort,hud,errorWindow,busy=false,viewError='';
 const announce=(reason='')=>{for(const fn of listeners)fn({open:!!dialog,busy,error:viewError,reason,requestId});};
 export function subscribeBestView(fn){listeners.add(fn);return ()=>listeners.delete(fn);}
 
@@ -18,7 +19,7 @@ export function closeBestView(reason=''){
   if(starbucksDelegate){closeLifeView(reason);starbucksDelegate=false;return;}
   if(!dialog)return;
   const current=dialog;dialog=null;
-  removeAbort?.();removeAbort=null;people?.dispose();people=null;furniture?.dispose();furniture=null;exterior?.dispose();exterior=null;hud?.dispose();hud=null;
+  removeAbort?.();removeAbort=null;errorWindow?.dispose();errorWindow=null;people?.dispose();people=null;furniture?.dispose();furniture=null;exterior?.dispose();exterior=null;hud?.dispose();hud=null;
   const image=current.querySelector('.matrix-reference-clean');image.onload=null;image.onerror=null;
   current.close();current.remove();busy=false;viewError='';lastFocus?.focus?.();
   announce(typeof reason==='string'?reason:'');
@@ -35,18 +36,20 @@ export function openBestView(options={}){
     <div class="best-live-scene">
       <img class="best-reference matrix-reference-clean" src="assets/best-xtanco-avenida-admira-mudanza-20260915.png" alt="La sala de Xtanco en Avenida Admira, con suelo y paredes. Los muebles se muestran en capas independientes.">
     </div>
-    <p class="visual-surface-badge">03.- BEST · 32 BITS · MOBILIARIO EDITABLE</p>
-    <figcaption>Inventario compartido · /inventario</figcaption>
-    <p class="matrix-furniture-selection" role="status" hidden></p>
-    <p class="best-image-error" role="alert" hidden>No se ha podido cargar Best. Puedes cambiar de vista desde el menú avanzado o el CLI.</p>
+    <p class="visual-surface-badge" style="display:none">03.- BEST · 32 BITS · MOBILIARIO EDITABLE</p>
+    <figcaption style="display:none">Inventario compartido · /inventario</figcaption>
+    <p class="matrix-furniture-selection" role="status" style="display:none" hidden></p>
+    <section class="best-image-error" role="alert" hidden><p class="best-image-error-message">No se ha podido cargar Best. Puedes cambiar de vista desde el menú avanzado o el CLI.</p></section>
   </figure>`;
   const current=dialog,image=current.querySelector('.matrix-reference-clean');
+  const errorPanel=current.querySelector('.best-image-error');
+  errorWindow=attachFloatingPanel(errorPanel,{label:document.documentElement?.lang==='en'?'Best loading error':'Error al cargar Best',bounds:current.querySelector('.best-stage'),key:'xpaceos.window.best-error.v1',menu:'best-error',onOpen:()=>{if(dialog===current&&viewError)errorPanel.hidden=false;}});
   hud=mountTierHud(current,{mode:'best',stage:current.querySelector('.best-stage')});
   let started=false,furnitureReady=false,failed=false;
   const showError=message=>{
     if(dialog!==current)return;
-    failed=true;busy=false;viewError=message;current.querySelector('.best-image-error').textContent=message;
-    current.querySelector('.best-image-error').hidden=false;announce();
+    failed=true;busy=false;viewError=message;current.querySelector('.best-image-error-message').textContent=message;
+    errorWindow.open();announce();
   };
   const finish=()=>{
     if(dialog!==current||failed||!furnitureReady||!people||!busy)return;
@@ -73,7 +76,7 @@ export function openBestView(options={}){
         }
       });
     }catch{showError('No se pudo cargar el mobiliario de Best. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
-    try{people=createBestPeopleLayer({container,projectFloor:projectMatrixFloor,walkSprites:true,getOccluders:()=>furniture?.occluders||[]});}
+    try{people=createBestPeopleLayer({container,projectFloor:projectMatrixFloor,walkSprites:true,getOccluders:()=>furniture?.occluders||[]});container.querySelector('.best-people-status')?.style?.setProperty('display','none');}
     catch{showError('No se pudieron cargar los visitantes de Best. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
     finish();
   };

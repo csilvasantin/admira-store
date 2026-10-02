@@ -2,7 +2,7 @@ import {DoohHistoryState,renderDoohHistory} from './dooh-history.mjs';
 import {drawAnonymous,drawStatistics,drawStreet} from './xtore-demo.mjs?v=1';
 import {AudienceSessionState} from './audience-session.mjs?v=session-audience-1';
 import {SCREEN,TTL,allowedOrigin,analyzerOriginFor,playbackState,targetTime,MirrorSession,exteriorPassages,exteriorStatistics,PassageState,acceptsCameraFrame,TrafficState} from './xtore-window-core.mjs?v=normal-tabs-1';
-import {movableWindow} from './floating-window.mjs';
+import {movableWindow} from './floating-window.mjs?v=floating-panels-1';
 import {createExteriorProgram} from './exterior-program.mjs';
 window.__xtoreDoohHistory={render:(root,en)=>renderDoohHistory(root,{en,getSnapshot:()=>window.__xtoreWindowPlayer?.history?.(),request:()=>window.__xtoreWindowPlayer?.requestHistory?.()})};
 const qs=new URLSearchParams(location.search);

@@ -202,6 +202,7 @@
   }
   function positionDock() {
     if (!panel) return;
+    if (panel.classList.contains('xp-window-moved')) return;
     var cv = document.getElementById('c');
     var vw = window.innerWidth, vh = window.innerHeight;
     var top = 8, height = vh - 16, leftStrip = vw * 0.22, rightStrip = vw * 0.22;

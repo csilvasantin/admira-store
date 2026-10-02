@@ -2981,5 +2981,182 @@
       ],
       "form": "preserves the local selected item and draft"
     }
+  },
+  "floating_panels": {
+    "status": "implemented",
+    "scope": "floating_interfaces_over_xpacio",
+    "revision": "floating-panels-20261002-1",
+    "views": [
+      "good",
+      "better",
+      "best",
+      "matrix"
+    ],
+    "shared_controller": "https://www.xpaceos.com/admira-xp/scripts/floating-panels.mjs",
+    "shared_movement": "https://www.xpaceos.com/admira-xp/scripts/floating-window.mjs",
+    "shared_styles": "https://www.xpaceos.com/admira-xp/scripts/floating-panels.css",
+    "api": {
+      "attach": "attachFloatingPanel",
+      "register": "registerFloatingPanel",
+      "menu": "mountFloatingPanelMenu",
+      "lifecycle": [
+        "open",
+        "close",
+        "restore",
+        "clamp",
+        "dispose"
+      ]
+    },
+    "opt_in": {
+      "class": "xp-floating-panel",
+      "handle_class": "xp-floating-handle",
+      "automatic_scanning": false
+    },
+    "close": {
+      "control": "button",
+      "accessible_name": {
+        "es": "Cerrar ventana",
+        "en": "Close window"
+      },
+      "delegates_to_tool_callback": true,
+      "generated_control": "button[type=button]",
+      "existing_non_button": {
+        "role": "button",
+        "tabindex": 0,
+        "keyboard": [
+          "Enter",
+          "Space"
+        ],
+        "authored_handler": "preserved"
+      }
+    },
+    "movement": {
+      "pointer": "dedicated header or handle",
+      "keyboard": [
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown"
+      ],
+      "step_px": 20,
+      "shift_step_px": 5,
+      "bounds": "visible Xpacio area; excludes the fixed shell and dock"
+    },
+    "position_storage": {
+      "scope": "same browser and origin",
+      "key": "stable per feature, supplied by owner",
+      "value": "{x,y} in viewport coordinates",
+      "preserve_legacy_key": "xtanco_panels_geom_v1",
+      "restoration": "clamped to current visible bounds"
+    },
+    "reopen": {
+      "menu": {
+        "es": "Avanzado → Ventanas",
+        "en": "Advanced → Windows"
+      },
+      "usual_tool_entry": true,
+      "closed_launcher_included": "Seleccionar componentes / Select components",
+      "list": "registered, live tools available in the current view",
+      "selection_card": "select the scene object again"
+    },
+    "audited_families": {
+      "life": [
+        ".life-selection",
+        ".life-shelf-products",
+        ".distribuit-panel",
+        ".life-loading"
+      ],
+      "matrix": [
+        ".matrix-map-panel",
+        ".matrix-playlist-editor",
+        ".matrix-incident-editor"
+      ],
+      "classic": [
+        "#xtore-window-panel",
+        "#dvrPanel",
+        "#metahumanPanel",
+        "#robotGrokPanel",
+        "#mupiCamPanel",
+        "#xcalPanel",
+        "#admiraSubastaPanel",
+        "#impactsHud",
+        "#custCardWin",
+        "#pixerFeedOverlay",
+        "#tiktokPanel",
+        "#targetPubHud",
+        "#composeOverlay",
+        "#screenInfoPop"
+      ],
+      "other_tools": [
+        "#xpl-signage",
+        "#xpl-ext-signage",
+        "#xpl-composer",
+        "#circuito-nav",
+        "#xpaceTemplateModal .xpace-tpl-dialog",
+        "#saveTplModal .save-tpl-dialog",
+        "#tpCard",
+        "#percibeOverlay .pcb-window",
+        "#turnFullCard",
+        "#dayEndOverlay > div"
+      ],
+      "status_metadata": [
+        "#xtanco-best-status",
+        "#xpl-chip"
+      ]
+    },
+    "exclusions": [
+      "fixed shell bars and docks",
+      "canvas",
+      "geometry",
+      "scene-attached controls",
+      "decoration",
+      "panels already parked in Expert"
+    ],
+    "metadata": "read in Expert when parked there; no duplicate floating status UI",
+    "canvas_npc_editor": "existing draggable title bar and close action preserved; outside the DOM controller",
+    "close_invariants": [
+      "furniture and product identities",
+      "saved associations",
+      "layout and ITIL records",
+      "CLI history",
+      "existing screen schedule controls"
+    ],
+    "product_preview_exception": "closing component selection stops the temporary ds1 preview and restores current schedule; saved bindings retained",
+    "voice_camera_playback": "existing tool controls retain their own actions",
+    "shell": "top bar, Options, Advanced and bottom Expert retain their structure",
+    "white_label": [
+      "/marca",
+      "/brand"
+    ],
+    "future_panels": "opt in with stable id, ES/EN name, handle, close callback, reopening entry and disposal",
+    "new_remote_tools": false,
+    "new_cli_commands": false,
+    "physical_publication": false,
+    "matrix_write": false,
+    "docs": "https://www.xpaceos.com/admira-xp/docs/floating-panels.md",
+    "tutorial": "https://www.xpaceos.com/help/#floating-panels",
+    "cli_help": "https://www.xpaceos.com/help/cli/#floating-panels",
+    "es": "Las interfaces flotantes sobre el Xpacio tienen × con nombre accesible y un tirador. Arrastra el tirador o enfócalo con Tab y usa las flechas (20 px; Mayús, 5 px). La posición se recuerda en este navegador y origen y se ajusta al área visible. Avanzado → Ventanas recupera las herramientas registradas que siguen disponibles en la vista actual, incluido el lanzador Seleccionar componentes. La ficha En este espacio vuelve a abrirse al seleccionar el objeto. Cerrar conserva muebles, productos, asociaciones, fichas ITIL e historial CLI. Cerrar la selección de componentes detiene su vista previa temporal en ds1 y recupera la programación vigente. Los controles de voz, cámara y reproducción mantienen sus acciones propias. La barra superior, Opciones, Avanzado y el dock Experto conservan su estructura. Los estados ya aparcados en Experto se leen allí sin tarjetas flotantes duplicadas; las pantallas, números y elementos del Xpacio siguen anclados a la escena. El editor NPC dibujado en canvas conserva su barra arrastrable y cierre existentes. Contrato local de UI, sin nuevas herramientas MCP ni comandos CLI. Los cierres existentes conservan sus manejadores; los span/div reciben role=button, Tab y Enter/Espacio. Cerrar y mover una ventana no envía órdenes a equipos físicos.",
+    "en": "Floating interfaces over the Xpacio have an × button with an accessible name and a movement handle. Drag the handle, or focus it with Tab and use the arrow keys (20 px; Shift, 5 px). The position is remembered in this browser and origin and adjusted to the visible area. Advanced → Windows restores registered tools that remain available in the current view, including the Select components launcher. Select the object again to reopen In this space. Closing retains furniture, products, associations, ITIL records and CLI history. Closing component selection stops its temporary ds1 preview and restores the current schedule. Voice, camera and playback controls retain their own actions. The top bar, Options, Advanced and Expert dock retain their structure. Status already parked in Expert is read there without duplicate floating cards; screens, numbers and Xpacio elements stay attached to the scene. The NPC editor drawn in the canvas retains its existing draggable title bar and close action. Local UI contract, with no new MCP tools or CLI commands. Existing close controls retain their handlers; span/div controls gain role=button, Tab and Enter/Space. Closing and moving a window sends no commands to physical devices.",
+    "pending": [],
+    "classic_adapter": "https://www.xpaceos.com/admira-xp/scripts/xp-floating-runtime.mjs",
+    "classic_adapter_contract": {
+      "registration_prefix": "classic:",
+      "position_key_prefix": "xpaceos:floating-panel-position:v1:",
+      "menu_host": "#advFloatingWindows",
+      "menu_parent": ".quad-right",
+      "scan": "declared Classic/XPL/modal selector allowlist only; MutationObserver coalescing, no interval",
+      "parking": "suspend decoration in Expert; restore on return to scene",
+      "destroyed_panels": "unregister; never recreate removed tools",
+      "snapshot_fields": [
+        "hidden",
+        "inline display",
+        "aria-hidden",
+        "show/visible/on/tp-on classes"
+      ],
+      "snapshot_owner": "modal visibility wrapper as well as inner panel",
+      "reopening": "real tool opener when available; UI-only snapshot fallback for connected DOM",
+      "xpl_fallback": "restore UI visibility only; no rule activation or setOn call"
+    }
   }
 }

@@ -21,3 +21,7 @@
 @media(prefers-reduced-motion:reduce){.life-dialog button{transition:none}.life-spinner{animation-duration:2s}}
 @media(max-width:760px){.life-navigation{flex-direction:column;gap:7px;padding:8px 12px}.life-mapping-state{font-size:9px}.life-camera{flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px)}.life-toolbar button{padding:8px}.life-camera [data-preset]{font-size:10px}.life-location{top:16px}.life-header-actions{gap:10px}.life-functions{font-size:10px}}
 .life-dialog.visual-tier-surface{background:transparent}.life-dialog.visual-tier-surface .life-stage{background:#e7e8dc}.life-dialog.visual-tier-surface .life-mapping-state{position:static;color:inherit}
+.life-stage .life-loading{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 32px));height:auto;max-height:calc(100% - 16px);overflow:auto;box-sizing:border-box;border-radius:14px;box-shadow:0 14px 40px #0003;padding:16px}
+.life-loading .xp-floating-header{align-self:stretch;text-align:left}
+.life-selection .xp-floating-header{margin:-12px -12px 12px;padding-right:28px}
+.life-shelf-products .xp-floating-header{background:#102b30;color:#dff8ff}

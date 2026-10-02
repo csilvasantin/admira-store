@@ -29,7 +29,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
   if(selector?.insertAdjacentElement)selector.insertAdjacentElement('afterend',hud);
   else host?.append(hud);
   const syncDetails=()=>{
-    const lines=[...scene.querySelectorAll?.('.matrix-furniture-status,.best-people-status,.best-stage figcaption')||[]]
+    const lines=[...scene.querySelectorAll?.('.matrix-furniture-status,.matrix-furniture-selection,.best-people-status,.best-stage figcaption')||[]]
       .filter(node=>!node.hidden).map(node=>node.textContent.trim()).filter(Boolean);
     hud.querySelector('.tier-hud-extra').textContent=lines.join(' · ');
     hud.querySelector('.tier-hud-details').hidden=!lines.length;

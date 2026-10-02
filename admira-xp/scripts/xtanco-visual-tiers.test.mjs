@@ -210,7 +210,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   const created=[],queries=[],observers=[],good=lifeFixture(),life=lifeFixture(),best=lifeFixture(),matrix=lifeFixture(),windowEvents={};
   const notify=(node,attribute)=>{for(const observer of observers)if(observer.node===node&&observer.options.attributes&&observer.options.attributeFilter.includes(attribute))observer.callback();};
   class Element {
-    constructor(tag){this.tag=tag;this.dataset={};this.attrs={};this.children=[];this.listeners={};this.hidden=false;this.textContent='';
+    constructor(tag){this.tag=tag;this.dataset={};this.style={};this.attrs={};this.children=[];this.listeners={};this.hidden=false;this.textContent='';
       const classes=new Set();this.classList={add:value=>{classes.add(value);notify(this,'class');},remove:value=>{classes.delete(value);notify(this,'class');},contains:value=>classes.has(value)};}
     setAttribute(key,value){this.attrs[key]=String(value);}
     set innerHTML(value){
@@ -231,9 +231,9 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     addEventListener(type,listener){(this.listeners[type]??=[]).push(listener);}
     click(){const event={stopPropagation(){this.stopped=true;}};this.onclick?.(event);return event;}
   }
-  const body=new Element('body'),actions=new Element('expert-actions'),advanced=new Element('advanced-actions');body.dataset.xtancoVisual='better';
-  body.append(actions);body.append(advanced);
-  const document={body,querySelector(selector){queries.push(selector);return selector==='#visualQualityOptions'?actions:selector==='.quad-right'?advanced:null;},
+  const body=new Element('body'),actions=new Element('expert-actions'),advanced=new Element('advanced-actions'),expertPane=new Element('expert-view-pane');body.dataset.xtancoVisual='better';
+  body.append(actions);body.append(advanced);body.append(expertPane);
+  const document={body,querySelector(selector){queries.push(selector);return selector==='#visualQualityOptions'?actions:selector==='.quad-right'?advanced:selector==='#telegramDock .expert-view-pane'?expertPane:null;},
     createElement(tag){created.push(tag);return new Element(tag);},getElementById(id){
       const find=node=>(node.id||node.attrs.id)===id?node:node.children.map(find).find(Boolean);
       return find(body)??null;
@@ -248,7 +248,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
   const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in Options');
-  return {body,actions,advanced,controls,document,window,storage,good,life,best,matrix,created,queries,
+  return {body,actions,advanced,expertPane,controls,document,window,storage,good,life,best,matrix,created,queries,
     get status(){return document.getElementById('xtanco-best-status');},
     pagehide(){for(const fn of windowEvents.pagehide||[])fn({persisted:false});},
     button:(tier,group=controls)=>group.querySelectorAll('[data-visual-mode]').find(node=>node.dataset.visualMode===tier),
@@ -257,7 +257,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
 
 test('Options owns the quality selector and Advanced does not duplicate it',()=>{
   const h=selectorHarness({search:'?visual=best'});
-  assert.deepEqual(h.queries,['#visualQualityOptions','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
+  assert.deepEqual(h.queries,['#visualQualityOptions','#telegramDock .expert-view-pane','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
   assert.equal(h.advanced.children.length,0,'the side panel must not host a second Good/Better/Best/Matrix selector');
   assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/Opciones/);
   assert.notEqual(h.button('best').attrs['aria-disabled'],'true');assert.equal(h.button('best').attrs['aria-pressed'],'true');
@@ -266,12 +266,12 @@ test('Options owns the quality selector and Advanced does not duplicate it',()=>
   assert.equal(h.best.calls.open,1);assert.equal(h.life.calls.open,0);assert.ok(h.created.every(tag=>tag==='div'),'selector creates no GPU canvas');
 });
 
-test('the floating status stays silent on success and is reserved for loading or errors',async()=>{
+test('tier status lives in Expert and stays silent on success',async()=>{
   const h=selectorHarness({search:'?visual=best'}),status=h.status;
-  assert.equal(status.parent,h.body,'the explanation must live outside the overflow-clipped expert dock');
+  assert.equal(status.parent,h.expertPane,'duplicated tier status must not cover the scene');
   assert.equal(h.controls.querySelector('.quality-status'),null,'reparenting must remove the old nested node');
   assert.equal(status.attrs.role,'status');assert.equal(status.hidden,true);
-  assert.equal(h.body.children.filter(node=>node.id==='xtanco-best-status').length,1);
+  assert.equal(h.expertPane.children.filter(node=>node.id==='xtanco-best-status').length,1);
   await h.window.__xtancoVisualTiers.choose('good');assert.equal(status.hidden,true);
   h.button('best').click();assert.equal(status.hidden,true);assert.equal(h.status,status);
 });

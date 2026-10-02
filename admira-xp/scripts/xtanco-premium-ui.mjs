@@ -1,12 +1,16 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=incident-detail-1';
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=shelf-products-1';
-import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=shelf-products-1';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=floating-panels-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=floating-panels-1';
+import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=floating-panels-1';
 import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=entry-1';
 import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=starbucks-room-1';
 
 const qualityOptions=document.querySelector('#visualQualityOptions');
 const status=document.createElement('div');status.id='xtanco-best-status';
-status.setAttribute('role','status');status.hidden=true;document.body.append(status);
+status.setAttribute('role','status');status.hidden=true;
+// The scene's own loading/error cards carry close controls; duplicate tier
+// status belongs beside the quality selector in Expert.
+status.style.cssText='position:static;inset:auto;width:auto;max-width:none;transform:none';
+(document.querySelector('#telegramDock .expert-view-pane')||document.body).append(status);
 let storage;try{storage=window.localStorage;}catch{}
 document.body.dataset.xtancoVisual='good'; // retired paint/operation hooks must stay inert
 function requestedCafeteria(){

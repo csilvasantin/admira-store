@@ -1,6 +1,7 @@
 import {createDistribuitController} from './distribuit-controller.mjs?v=distribuir-3';
 import {furniturePose,SCALE_LIMITS} from './distribuit.mjs?v=distribuir-3';
 import {isWallFurniture} from './furniture-geometry.mjs';
+import {attachFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
 
 export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
   const en=document.documentElement.lang==='en',t=(es,english)=>en?english:es;
@@ -18,7 +19,10 @@ export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
     <p class="distribuit-status" role="status" aria-live="polite"></p>`;
   const canvas=dialog.querySelector('canvas'),previousLabel=canvas.getAttribute('aria-label');
   canvas.setAttribute('aria-label',t('Editor de muebles: arrastra para mover; flechas para desplazar; Escape para cancelar.','Furniture editor: drag or arrow keys to move; Escape to cancel.'));
-  dialog.querySelector('.life-stage').append(host);dialog.classList.add('distribuit-open');
+  const stage=dialog.querySelector('.life-stage');stage.append(host);dialog.classList.add('distribuit-open');
+  // Life owns reopening: closing this editor also disposes its controller.
+  const floating=attachFloatingPanel(host,{label:t('Distribuir','Distribute'),handle:host.querySelector('header'),closeButton:host.querySelector('[data-action="close"]'),bounds:stage,key:'xpaceos.window.distribuir.v1'});
+  floating.restore();
   const scale=host.querySelector('#distribuit-scale'),rotation=host.querySelector('[data-rotation]');
   const select=host.querySelector('select'),col=host.querySelector('[data-axis="col"]'),row=host.querySelector('[data-axis="row"]'),map=host.querySelector('[type="checkbox"]');
   const lock=host.querySelector('[data-action="lock"]'),remove=host.querySelector('[data-action="remove"]'),catalogPanel=host.querySelector('.distribuit-catalog'),catalogSelect=host.querySelector('[data-catalog]'),poster=host.querySelector('[data-poster]'),add=host.querySelector('[data-action="add"]');
@@ -49,7 +53,7 @@ export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
     viewer.setEditorOverlay({scene,selectedId:state.selectedId,showMap:map.checked,candidate:state.draft?.candidate,valid:state.draft?.result.ok});
     if(controller)viewer.update(controller.decorate(viewer.snapshot));
   };
-  try{controller=createDistribuitController({bridge,onChange:refresh});}catch(error){canvas.setAttribute('aria-label',previousLabel);host.remove();dialog.classList.remove('distribuit-open');throw error;}
+  try{controller=createDistribuitController({bridge,onChange:refresh});}catch(error){floating.dispose();canvas.setAttribute('aria-label',previousLabel);host.remove();dialog.classList.remove('distribuit-open');throw error;}
   try{
   const pick=id=>{controller.select(id);viewer.selectItem(id);};
   const step=(dc,dr)=>{const item=controller.selected;if(item)void controller.move({col:item.col+dc,row:item.row+dr});};
@@ -93,6 +97,6 @@ export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
     if(moves[event.key]){event.preventDefault();step(...moves[event.key]);return true;}return false;
   }
   return {select:data=>controller.select(data?.item?.id??null),decorateSnapshot:scene=>controller.decorate(scene),keydown,
-    dispose(){canvas.setAttribute('aria-label',previousLabel);viewer.setEditor(null);viewer.setEditorOverlay(null);controller.dispose();host.remove();dialog.classList.remove('distribuit-open');}};
-  }catch(error){viewer.setEditor(null);viewer.setEditorOverlay(null);controller.dispose();canvas.setAttribute('aria-label',previousLabel);host.remove();dialog.classList.remove('distribuit-open');throw error;}
+    dispose(){floating.dispose();canvas.setAttribute('aria-label',previousLabel);viewer.setEditor(null);viewer.setEditorOverlay(null);controller.dispose();host.remove();dialog.classList.remove('distribuit-open');}};
+  }catch(error){floating.dispose();viewer.setEditor(null);viewer.setEditorOverlay(null);controller.dispose();canvas.setAttribute('aria-label',previousLabel);host.remove();dialog.classList.remove('distribuit-open');throw error;}
 }

@@ -230,6 +230,7 @@
   function dragify(node) {
     var sx, sy, ox, oy, drag = false;
     node.addEventListener('mousedown', function (e) {
+      if(e.target.closest('.xp-floating-header,button,a,input')) return;
       drag = true; sx = e.clientX; sy = e.clientY;
       var r = node.getBoundingClientRect(); ox = r.left; oy = r.top;
       node.style.cursor = 'grabbing'; e.preventDefault();

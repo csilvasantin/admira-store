@@ -1,7 +1,8 @@
 import {createLifeSnapshot} from './life-snapshot.mjs?v=distribuir-3';
-import {mountTierHud} from './tier-hud.mjs?v=starbucks-room-1';
+import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
+import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const listeners=new Set();
@@ -9,6 +10,7 @@ const announce=(busy=false,error='',reason='')=>{for(const listener of listeners
 function subscribeLifeView(listener){listeners.add(listener);return ()=>listeners.delete(listener);}
 const snapshot=createLifeSnapshot();
 let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort,hud,furnitureEditor,shelfPanel,shelfParts,shelfHost,partInstanceId;
+let shelfWindow,selectionWindow;const floatingWindows=[],windowEntries=[];
 const names={counter:'Mostrador',shelves:'Estantería',wineRack:'Bodega',lottery:'Lotería',vending:'Vending',magazines:'Prensa',manager:'Puesto de gestión',plant:'Vegetación',floorLamp:'Iluminación',rug:'Alfombra',djBooth:'DJ booth',tablet:'Tablet',turnKiosk:'Gestor de turnos',aroma:'Aromatización',metahuman:'Asistente digital',tft:'Pantalla digital',led:'Superficie LED',custom:'Mobiliario'};
 const roles={staff:'Equipo',customer:'Cliente del gemelo',passerby:'Transeúnte simulado',saca:'Logística',thief:'Personaje del juego',guardiaCivil:'Personaje del juego',opinador:'Visitante',unitreeBot:'Robot'};
 function sceneSlot(){return typeof document.getElementById==='function'?document.getElementById('advSceneControls'):null;}
@@ -18,7 +20,7 @@ function pressGroup(buttons,button){for(const other of buttons){const on=other==
 function close(reason=''){
   generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
-  closeLifeEditor();closeShelfPanel();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
+  closeLifeEditor();closeShelfPanel();for(const window of floatingWindows.splice(0))window.dispose();selectionWindow=null;for(const unregister of windowEntries.splice(0))unregister();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
 }
 function select(data){
@@ -33,20 +35,31 @@ function select(data){
   panel.querySelector('h2').textContent=value.label||value.name||(data.item?names[value.type]||'Elemento del espacio':roles[value.kind]||'Personaje');
   panel.querySelector('.life-selection-kind').textContent=data.item?'EN ESTE ESPACIO':roles[value.kind]||'PERSONAJE';
   panel.querySelector('p').textContent=data.item?'Elemento del layout actual. Para editarlo, vuelve a los controles del gemelo.':'Posición y movimiento sincronizados con la simulación del gemelo.';
+  selectionWindow?.restore();
 }
-function closeShelfPanel(){const panel=shelfPanel,hadPanel=!!(panel||shelfHost);shelfPanel=null;panel?.dispose();shelfParts=null;shelfHost?.remove();shelfHost=null;partInstanceId=null;viewer?.setPartMode(false);if(hadPanel)window.__shelfScreenPreview?.stop();}
-async function openShelfPanel(ticket,currentViewer){
-  if(shelfHost||!dialog)return;const currentDialog=dialog,host=document.createElement('div');host.className='life-shelf-products';shelfHost=host;currentDialog.querySelector('.life-stage').append(host);
+function closeShelfPanel(){
+  const panel=shelfPanel,host=shelfHost,floating=shelfWindow,hadPanel=!!(panel||host);
+  // Invalidate this mount before dispose invokes its selection callback.
+  shelfPanel=null;shelfHost=null;shelfWindow=null;shelfParts=null;partInstanceId=null;
+  panel?.dispose();floating?.dispose();host?.remove();
+  if(hadPanel){viewer?.setPartMode(false);viewer?.selectPart(null,null);window.__shelfScreenPreview?.stop();}
+}
+async function openShelfPanel(ticket,currentViewer,activate=false){
+  if(!dialog||viewer!==currentViewer||ticket!==generation)return;
+  if(shelfHost){if(activate&&shelfPanel){shelfPanel.open();shelfWindow?.restore();currentViewer.setPartMode(!furnitureEditor);}return;}
+  const currentDialog=dialog,host=document.createElement('div');host.className='life-shelf-products';host.dataset.state='loading';shelfHost=host;currentDialog.querySelector('.life-stage').append(host);
+  shelfWindow=attachFloatingPanel(host,{label:document.documentElement?.lang==='en'?'Shelf components':'Componentes de la estantería',bounds:currentDialog.querySelector('.life-stage'),key:'xp-floating-life-shelf-v1',onClose:closeShelfPanel});
+  const status=document.createElement('p');status.setAttribute('role','status');status.textContent=document.documentElement?.lang==='en'?'Loading components…':'Cargando componentes…';host.append(status);shelfWindow.restore();
   try{
-    const doc=await loadShelfParts();if(ticket!==generation||dialog!==currentDialog||viewer!==currentViewer)return;shelfParts=doc;
-    shelfPanel=mountShelfProductPanel(host,doc,{autoOpen:new URLSearchParams(location.search).get('select')==='products',onSelect(part){
-      if(viewer!==currentViewer)return;currentViewer.setPartMode(!!shelfPanel?.enabled()&&!furnitureEditor);
+    const doc=await loadShelfParts();if(ticket!==generation||dialog!==currentDialog||viewer!==currentViewer||shelfHost!==host)return;shelfParts=doc;
+    shelfPanel=mountShelfProductPanel(host,doc,{autoOpen:activate||new URLSearchParams(location.search).get('select')==='products',onSelect(part){
+      if(viewer!==currentViewer||shelfHost!==host)return;currentViewer.setPartMode(!!shelfPanel?.enabled()&&!furnitureEditor);
       if(!part){currentViewer.selectPart(null,null);return;}
       const items=currentViewer.snapshot.layout,old=items.find(item=>item.id===partInstanceId&&item.type==='shelves'&&item.id!=='sb-mugs');
       partInstanceId=old?.id||items.find(item=>item.type==='shelves'&&item.id!=='sb-mugs'&&item.source!=='PixerIA')?.id||'shelves';currentViewer.selectPart(partInstanceId,part.numeric_id);
-    },onClose(){currentViewer.setPartMode(false);currentViewer.selectPart(null,null);}});
-    host.addEventListener('click',()=>currentViewer.setPartMode(!!shelfPanel?.enabled()&&!furnitureEditor));host.hidden=!!furnitureEditor;currentViewer.setPartMode(shelfPanel.enabled()&&!furnitureEditor);
-  }catch{if(ticket===generation&&dialog===currentDialog){host.textContent=document.documentElement?.lang==='en'?'Components could not be loaded. Close and reopen Best to retry.':'No se pudieron cargar los componentes. Cierra y vuelve a abrir Best para reintentar.';host.setAttribute('role','status');}}
+    },onClose(){if(viewer!==currentViewer||shelfHost!==host)return;currentViewer.setPartMode(false);currentViewer.selectPart(null,null);}});
+    status.remove();host.dataset.state='ready';host.addEventListener('click',()=>{if(viewer===currentViewer&&shelfHost===host)currentViewer.setPartMode(!!shelfPanel?.enabled()&&!furnitureEditor);});host.hidden=!!furnitureEditor;currentViewer.setPartMode(shelfPanel.enabled()&&!furnitureEditor);shelfWindow.restore();
+  }catch{if(ticket===generation&&dialog===currentDialog&&viewer===currentViewer&&shelfHost===host){host.dataset.state='error';status.textContent=document.documentElement?.lang==='en'?'Components could not be loaded. Reopen Shelf components from Advanced → Windows to retry.':'No se pudieron cargar los componentes. Reabre Componentes de la estantería en Avanzado → Ventanas para reintentar.';}}
 }
 async function open(options={}){
   if(dialog||options.signal?.aborted)return;const ticket=++generation;lastFocus=document.activeElement;requestId=options.requestId;
@@ -101,6 +114,13 @@ async function open(options={}){
   pressGroup(presetButtons,presetButtons.find(button=>button.dataset.preset==='mapped')||presetButtons[0]);
   parkSceneToolbar(dialog.querySelector('.life-toolbar'));
   document.body.append(dialog);dialog.show();dialog.getBoundingClientRect();dialog.classList.add('is-visible');
+  const stage=dialog.querySelector('.life-stage'),en=document.documentElement?.lang==='en';
+  // Location and quality are already presented in the fixed shell/Expert HUD.
+  for(const copy of dialog.querySelectorAll('.life-location,.visual-surface-badge'))copy.style.display='none';
+  selectionWindow=attachFloatingPanel(dialog.querySelector('.life-selection'),{label:en?'Selected element':'Elemento seleccionado',closeButton:dialog.querySelector('.life-selection-close'),bounds:stage,key:'xp-floating-life-selection-v1'});floatingWindows.push(selectionWindow);
+  const loadingWindow=attachFloatingPanel(dialog.querySelector('.life-loading'),{label:en?'Opening space':'Abrir espacio',onClose:close,bounds:stage,key:'xp-floating-life-loading-v1'});floatingWindows.push(loadingWindow);loadingWindow.restore();
+  windowEntries.push(registerFloatingPanel('life-distribute',{label:en?'Distribute furniture':'Distribuir muebles',open:()=>{if(ticket===generation)void openLifeEditor();}}));
+  if(best&&!venue&&!cafe)windowEntries.push(registerFloatingPanel('life-shelf-components',{label:en?'Shelf components':'Componentes de la estantería',open:()=>{if(ticket===generation&&viewer&&!furnitureEditor){if(shelfHost?.dataset.state==='error')closeShelfPanel();void openShelfPanel(ticket,viewer,true);}}}));
   window.__xtancoReleaseInputs?.();document.body.classList.add('xtanco-life-open');
   const loading=dialog.querySelector('.life-loading');let canvas=dialog.querySelector('canvas');
   function observeContext(surface){
@@ -113,7 +133,7 @@ async function open(options={}){
     cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
     closeLifeEditor();closeShelfPanel();select(null);
     viewer?.dispose();viewer=null;loading.hidden=false;loading.classList.add('life-error');loading.querySelector('h2').textContent='El 3D no está disponible';loading.querySelector('p').textContent=message;
-    const retry=loading.querySelector('button');retry.hidden=false;retry.onclick=()=>{
+    const retry=loading.querySelector('.life-retry');retry.hidden=false;retry.onclick=()=>{
       if(ticket!==generation||options.signal?.aborted)return;
       // dispose() explicitly loses the old GPU context. A new surface avoids
       // reusing that lost context and isolates its queued contextlost events.
@@ -134,7 +154,7 @@ async function open(options={}){
     }
     try{
       const {createLifeRenderer}=await import('./life-renderer.mjs?v=shelf-products-1');if(ticket!==generation)return;
-      viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,onSelect:select,onCameraChange:state=>{
+      viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
         dialog.querySelector('.life-mapping-state').textContent=mapped?'· cámara alineada':'· exploración libre';
@@ -166,7 +186,7 @@ async function openLifeEditor(){
   if(!dialog||!viewer||!window.__xtancoFurnitureEditor)return false;
   if(furnitureEditor)return true;
   const ticket=generation;
-  const {mountDistribuit}=await import('./distribuit-ui.mjs?v=distribuir-3');
+  const {mountDistribuit}=await import('./distribuit-ui.mjs?v=floating-panels-1');
   if(ticket!==generation||!viewer)return false;
   if(furnitureEditor)return true;
   try{furnitureEditor=mountDistribuit({dialog,viewer,bridge:window.__xtancoFurnitureEditor,onClose:closeLifeEditor});viewer.setPartMode(false);if(shelfHost)shelfHost.hidden=true;window.__shelfScreenPreview?.stop();dialog.querySelector('.life-selection').hidden=true;return true;}catch(error){console.warn('[Distribuit]',error);return false;}

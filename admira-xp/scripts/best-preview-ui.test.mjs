@@ -7,7 +7,7 @@ import {projectMatrixFloor,MATRIX_FLOOR_POLYGON} from './matrix-floor.mjs';
 const source=fs.readFileSync(new URL('./best-preview-ui.mjs',import.meta.url),'utf8');
 function harness({cached=false,broken=false,showFailure=false,peopleFailure=false,furnitureFailure=false,furniturePending=false,search='',vertical='xtanco',starbucks=false}={}){
   let document,releases=0;
-  const layers=[],furnitureLayers=[];
+  const layers=[],furnitureLayers=[],floating=[];
   class Element{
     constructor(tag){this.tag=tag;this.children=[];this.queries=new Map();this.listeners={};this.attrs={};const classes=new Set();this.classList={add:name=>classes.add(name),contains:name=>classes.has(name)};}
     setAttribute(name,value){this.attrs[name]=String(value);}
@@ -45,9 +45,10 @@ function harness({cached=false,broken=false,showFailure=false,peopleFailure=fals
     furnitureLayers.push(layer);if(!furniturePending)onReady();return layer;
   };
   const lifeCalls=[];let lifeListener;
-  const context=vm.createContext({XpaceStarbucks:{active:()=>starbucks},URLSearchParams,location:{search},subscribeLifeView:fn=>{lifeListener=fn;return()=>{};},openLifeView:options=>{lifeCalls.push({action:'open',options});},closeLifeView:reason=>lifeCalls.push({action:'close',reason}),mountTierHud:()=>({setStatus(){},dispose(){}}),document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
+  const attachFloatingPanel=(panel,options)=>{const tool={panel,options,disposed:false,open(){if(!this.disposed)options.onOpen?.();},close(){if(!this.disposed)panel.hidden=true;},dispose(){this.disposed=true;}};floating.push(tool);return tool;};
+  const context=vm.createContext({XpaceStarbucks:{active:()=>starbucks},URLSearchParams,location:{search},subscribeLifeView:fn=>{lifeListener=fn;return()=>{};},openLifeView:options=>{lifeCalls.push({action:'open',options});},closeLifeView:reason=>lifeCalls.push({action:'close',reason}),mountTierHud:()=>({setStatus(){},dispose(){}}),attachFloatingPanel,document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
   vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.audit={openBestView,closeBestView,subscribeBestView,get dialog(){return dialog;}};',context);
-  return {body,window,document,previous,layers,furnitureLayers,lifeCalls,lifeState:state=>lifeListener(state),get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
+  return {body,window,document,previous,layers,furnitureLayers,floating,lifeCalls,lifeState:state=>lifeListener(state),get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
 }
 
 test('component deep link delegates Xtanco Best to the live scene and forwards its lifecycle',()=>{
@@ -138,6 +139,18 @@ test('furniture failure reports an explicit error, never a successful ready scen
   h.close();assert.equal(h.layers[0].disposed,true);assert.equal(h.furnitureLayers[0].disposed,true);
   const sync=harness({cached:true,furnitureFailure:true}),syncStates=[];sync.subscribe(s=>syncStates.push({...s}));sync.open();
   assert.equal(syncStates.at(-1).busy,false);assert.match(syncStates.at(-1).error,/mobiliario de Best/);assert.equal(sync.layers.length,0);
+});
+
+test('the loading error is dismissible and reopenable within Best and is disposed with the scene',()=>{
+  const h=harness({cached:true,broken:true});h.open();
+  const tool=h.floating[0],dialog=h.dialog;
+  assert.equal(tool.panel,dialog.querySelector('.best-image-error'));
+  assert.equal(tool.options.bounds,dialog.querySelector('.best-stage'));
+  assert.equal(tool.options.menu,'best-error');assert.equal(tool.panel.hidden,false);
+  assert.match(dialog.querySelector('.best-image-error-message').textContent,/Avenida Admira/);
+  tool.close();assert.equal(tool.panel.hidden,true);assert.equal(h.dialog,dialog);
+  tool.open();assert.equal(tool.panel.hidden,false);h.close();assert.equal(tool.disposed,true);
+  tool.open();assert.equal(h.dialog,null);
 });
 
 test('late furniture callbacks cannot change the next view and pending furniture is disposed on abort',()=>{

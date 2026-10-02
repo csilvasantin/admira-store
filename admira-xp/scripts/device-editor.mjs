@@ -2,8 +2,9 @@ import {createSharedPlaylists,playlistReference} from './shared-playlists.mjs?v=
 import {mountPlaylistReorder} from './playlist-reorder.mjs?v=drop-1';
 import {mountPixeriaPicker} from './pixeria-picker.mjs?v=drop-1';
 import {DEVICE_IDS,emptyDeviceLayout,validateDeviceLayout,changeDeviceLayout,assignedPlaylist} from './device-layout.mjs?v=loop-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
 export const DEVICE_STORAGE='xpaceos.starbucks.device-layout.v1';
-export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChange,onPlay,onPreview,onReload,getPlayback=()=>[]}){
+export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChange,onPlay,onPreview,onReload,onOpen=()=>{},getPlayback=()=>[]}){
  const t=(es,en)=>lang==='en'?en:es,selected=new Set();let config=emptyDeviceLayout(),seen=0,enabled=false,multiple=false,savedDraft='',draftRevision;const shared=createSharedPlaylists();let busy=false,disposed=false,pollTimer;const activeShared=new Set();
  try{const saved=JSON.parse(localStorage.getItem(DEVICE_STORAGE));if(saved){config=validateDeviceLayout(saved.config);seen=Number(saved.remoteRevision)||0;}}catch{}
  const panel=document.createElement('section');panel.className='matrix-device-editor matrix-playlist-editor';panel.hidden=true;panel.setAttribute('aria-label',t('Playlist del dispositivo','Device playlist'));
@@ -14,6 +15,13 @@ export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChan
  <details class="device-details"><summary>${t('Ajustes e información','Settings and information')}</summary><label class="device-loop-label"><input type="checkbox" class="device-loop" checked> ${t('Reproducir en bucle','Loop playlist')}</label><p class="device-loop-help">${t('Activado: del último al primero. Desactivado: se detiene al final. Se guarda al cambiarlo.','On: last to first. Off: stops at the end. Saves when changed.')}</p><label class="device-multiple"><input type="checkbox"> ${t('Selección múltiple (Ctrl / Cmd + clic)','Multiple selection (Ctrl / Cmd + click)')}</label><label>${t('Nombre de playlist','Playlist name')}<input class="device-title" maxlength="100"></label><p class="device-shared"></p><p class="pixeria-hint">${t('Título, #hashtag o #1329: Enter busca en Pixeria; elegir guarda y reproduce. Arrastra la miniatura para ordenar o probar en una pantalla. Recargar restaura la programación guardada.','Title, #hashtag or #1329: Enter searches Pixeria; choosing saves and plays. Drag the thumbnail to reorder or preview on a screen. Reload restores the saved schedule.')}</p><div class="device-save-actions"><button type="button" data-device="delete">${t('Eliminar playlist','Delete playlist')}</button><button type="button" data-device="group">${t('Unir seleccionados','Group selected')}</button><button type="button" data-device="split">${t('Separar seleccionados','Ungroup selected')}</button><button type="button" data-device="reset">${t('Restaurar playlist original','Restore original playlist')}</button></div><small>${t('Guardar publica por ID. MCP playlist_add añade al final. La asignación se conserva en este navegador.','Save publishes by ID. MCP playlist_add appends content. Assignments stay in this browser.')}</small></details>
  <p class="device-now-playing" role="status"></p><ol class="device-tracks" tabindex="0" aria-label="${t('Contenidos de la playlist','Playlist contents')}"></ol><footer><button type="button" data-device="add">+ ${t('Añadir vídeo','Add video')}</button><button type="button" data-device="save">${t('Guardar playlist','Save playlist')}</button></footer><p class="device-notice" role="status"></p>`;
  root.append(panel);const controls=new AbortController(),opts={signal:controls.signal},select=panel.querySelector('select'),loop=panel.querySelector('.device-loop'),title=panel.querySelector('.device-title'),tracks=panel.querySelector('ol'),notice=panel.querySelector('.device-notice');
+ const floating=attachFloatingPanel(panel,{label:t('Dispositivos · Playlist','Devices · Playlist'),handle:panel.querySelector('header'),closeButton:panel.querySelector('[data-device="close"]'),bounds:surface,key:'xpaceos.window.matrix-playlist.v1',menu:'matrix-playlist',onOpen:openPanel});
+ function openPanel(){
+  if(disposed)return;
+  const first=!selected.size;if(first)selected.add(DEVICE_IDS[0]);
+  onOpen();enabled=true;surface.classList.add('device-layout-active');panel.hidden=false;
+  if(first)render();else playbackChanged();
+ }
  const dock=document.getElementById('telegramDock');function sizePanel(){const d=dock?.getBoundingClientRect(),r=root.getBoundingClientRect();panel.style.setProperty('--playlist-bottom-inset',Math.max(0,d?.height&&getComputedStyle(dock).visibility!=='hidden'?r.bottom-d.top:0)+'px');}const resize=new ResizeObserver(sizePanel);resize.observe(root);if(dock)resize.observe(dock);window.addEventListener('resize',sizePanel,opts);sizePanel();
  for(const event of ['pointerdown','pointerup','click','keydown','wheel'])panel.addEventListener(event,e=>e.stopPropagation(),opts);
  const dropTargets=id=>selected.size>1&&selected.has(id)?[...selected]:[id];
@@ -78,10 +86,11 @@ export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChan
   get config(){return config;},
   reload:reloadOriginal,
   playbackChanged,
-  select(id,event={}){if(!enabled||!DEVICE_IDS.includes(id))return;event.preventDefault?.();event.stopPropagation?.();if(event.ctrlKey||event.metaKey||multiple){if(selected.has(id))selected.delete(id);else selected.add(id);}else{selected.clear();selected.add(id);}panel.hidden=!selected.size;notice.textContent='';render();},
+  select(id,event={}){if(!enabled||!DEVICE_IDS.includes(id))return;event.preventDefault?.();event.stopPropagation?.();if(event.ctrlKey||event.metaKey||multiple){if(selected.has(id))selected.delete(id);else selected.add(id);}else{selected.clear();selected.add(id);}panel.hidden=!selected.size;notice.textContent='';render();if(!panel.hidden)floating.restore();},
   enable(value){enabled=value;surface.classList.toggle('device-layout-active',value);if(!value){panel.hidden=true;selected.clear();highlight();}},
   refresh(){if(!panel.hidden&&!busy&&JSON.stringify(draft())===savedDraft)render();},
   remote(state){const revision=state.deviceLayoutRevision||0;if(revision<=seen)return;const next=validateDeviceLayout(state.deviceLayout||emptyDeviceLayout());for(const [id,p]of Object.entries(config.playlists))if(shared.known(id)){next.playlists[id]=p;for(const [device,pid]of Object.entries(config.assignments))if(pid===id)next.assignments[device]=id;}seen=revision;commit(next);notice.textContent=t('Configuración compartida recibida por MCP','Shared configuration received through MCP');},
-  dispose(){disposed=true;resize.disconnect();clearTimeout(pollTimer);controls.abort();panel.remove();}
+  open(){floating.open();},
+  dispose(){disposed=true;floating.dispose();resize.disconnect();clearTimeout(pollTimer);controls.abort();panel.remove();}
  };
 }

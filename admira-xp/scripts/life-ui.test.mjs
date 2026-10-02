@@ -19,7 +19,7 @@ function harness({load,loadParts,search=''}={}){
   let document;
   class Element {
     constructor(name){
-      this.name=name;this.hidden=false;this.dataset={};this.attrs={};this.children=new Map();this.listeners={};this.firstChild={textContent:''};
+      this.name=name;this.hidden=false;this.dataset={};this.attrs={};this.style={};this.children=new Map();this.appended=[];this.listeners={};this.firstChild={textContent:''};
       const classes=new Set();this.classList={add:name=>classes.add(name),remove:name=>classes.delete(name),contains:name=>classes.has(name)};
     }
     querySelector(key){if(!this.children.has(key)){const child=new Element(key);child.parent=this;this.children.set(key,child);}return this.children.get(key);}
@@ -30,8 +30,8 @@ function harness({load,loadParts,search=''}={}){
     addEventListener(type,fn){(this.listeners[type]??=[]).push(fn);}
     setAttribute(key,value){this.attrs[key]=value;}
     removeAttribute(key){delete this.attrs[key];}
-    append(child){child.parent=this;} prepend(child){child.parent=this;}
-    remove(){this.removed=true;this.parent=null;}
+    append(child){child.parent=this;this.appended.push(child);} prepend(child){child.parent=this;this.appended.unshift(child);}
+    remove(){this.removed=true;if(this.parent)this.parent.appended=this.parent.appended.filter(child=>child!==this);this.parent=null;}
     replaceWith(next){const parent=this.parent;for(const [key,value]of parent.children)if(value===this)parent.children.set(key,next);next.parent=parent;this.parent=null;}
     show(){this.open=true;} close(){this.open=false;}
     focus(){document.activeElement=this;}
@@ -51,7 +51,15 @@ function harness({load,loadParts,search=''}={}){
   let raw={active:true,vertical:'xtanco',iso:{cols:14,rows:8,ox:270,oy:185,tileW:80,tileH:28,wallH:165},
     game:{staff:[],custs:[{x:343,y:249,dir:1,st:'walk'}],gameTime:14,custIn:3}};
   window.__xtancoVisualState=()=>raw;
-  const keys={KeyQ:true,KeyP:true},frames=new Map(),timers=new Map(),viewers=[],observers=[],panels=[];
+  const keys={KeyQ:true,KeyP:true},frames=new Map(),timers=new Map(),viewers=[],observers=[],panels=[],floating=[],registry=new Map();let previewStops=0;
+  window.__shelfScreenPreview={stop(){previewStops++;}};
+  const attachFloatingPanel=(panel,options)=>{
+    const header=new Element('floating-header');if(!options.handle)panel.prepend(header);
+    const closeButton=options.closeButton||new Element('floating-close');if(!options.closeButton)header.append(closeButton);
+    const entry={panel,options,header,closeButton,disposed:false,restores:0,restore(){if(!this.disposed)this.restores++;},close(){if(this.disposed)return;if(options.onClose)options.onClose();else closeButton.emit('click');},dispose(){this.disposed=true;}};
+    if(!options.closeButton)closeButton.onclick=()=>{if(!entry.disposed)options.onClose?.();};floating.push(entry);return entry;
+  };
+  const registerFloatingPanel=(id,entry)=>{registry.set(id,entry);return ()=>{if(registry.get(id)===entry)registry.delete(id);};};
   const part={id:'product-0-0',numeric_id:23,kind:'product',product_reference:'A02-01'},partsDoc={parts:[part]};
   const mountShelfProductPanel=(host,doc,options)=>{let enabled=!!options.autoOpen;const panel={host,doc,options,disposed:false,selections:[],enabled:()=>enabled,open(){enabled=true;host.emit('click');},select(part){if(!enabled)return;this.selections.push(part);options.onSelect(part);},close(){enabled=false;options.onSelect(null);options.onClose();host.emit('click');},dispose(){this.disposed=true;options.onSelect(null);}};panels.push(panel);return panel;};
   let clock=0,sequence=0,loads=0;
@@ -62,7 +70,7 @@ function harness({load,loadParts,search=''}={}){
       clearSelection(){calls.clearSelection++;options.onSelect(null);},setPartMode:value=>calls.partMode.push(value),selectPart:(id,num)=>calls.parts.push({id,num}),get snapshot(){return calls.updates.at(-1)||options.snapshot;}};
     viewers.push(viewer);return viewer;
   };
-  const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),loadShelfParts:()=>loadParts?loadParts(partsDoc):Promise.resolve(partsDoc),mountShelfProductPanel,document,window,keys,createLifeSnapshot,createTierControls:()=>({element:new Element('tiers'),dispose(){}}),performance:{now:()=>clock},URLSearchParams,location:{search},
+  const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),loadShelfParts:()=>loadParts?loadParts(partsDoc):Promise.resolve(partsDoc),mountShelfProductPanel,attachFloatingPanel,registerFloatingPanel,document,window,keys,createLifeSnapshot,createTierControls:()=>({element:new Element('tiers'),dispose(){}}),performance:{now:()=>clock},URLSearchParams,location:{search},
     console:{warn(){}},loadRenderer:()=>{loads++;return load?load({createLifeRenderer},loads):Promise.resolve({createLifeRenderer});},
     requestAnimationFrame:fn=>{const id=++sequence;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),
     setTimeout:(fn,delay)=>{const id=++sequence;timers.set(id,{fn,at:clock+delay});return id;},clearTimeout:id=>timers.delete(id),
@@ -71,7 +79,7 @@ function harness({load,loadParts,search=''}={}){
   assert.ok(releaseInputs,'the shared game must expose its explicit held-input release hook');
   vm.runInContext(releaseInputs,context);
   vm.runInContext(source+';globalThis.audit={open,close,subscribeLifeView,dialog:()=>dialog};',context);
-  return {context,document,window,body,previous,keys,frames,timers,viewers,observers,created,panels,part,
+  return {context,document,window,body,previous,keys,frames,timers,viewers,observers,created,panels,part,floating,registry,get previewStops(){return previewStops;},
     get dialog(){return context.audit.dialog();},subscribe:listener=>context.audit.subscribeLifeView(listener),
     setRaw:value=>{raw=value;},get raw(){return raw;},
     async open(options){await context.audit.open(options);await flush();},close:()=>context.audit.close(),
@@ -102,7 +110,7 @@ test('pagehide releases the real controller resources and publishes a distinct p
   h.window.emit('pagehide',{persisted:true});
   assert.equal(h.dialog,null);assert.equal(h.viewers[0].calls.dispose,1);assert.equal(h.frames.size,0);assert.equal(h.timers.size,0);
   assert.ok(h.observers.every(observer=>observer.disconnected));assert.equal(states.at(-1).open,false);assert.equal(states.at(-1).reason,'pagehide');
-  await h.open();h.dialog.querySelector('.life-close').emit('click');
+  await h.open();h.floating.find(value=>value.panel===h.dialog.querySelector('.life-loading')&&!value.disposed).closeButton.emit('click');
   assert.equal(states.at(-1).reason,'','a DOM click event must not be mistaken for a close reason');
 });
 
@@ -154,6 +162,45 @@ test('product deep link auto-opens selection only in Xtanco Best; stale parts ca
   let resolveParts;const stale=harness({loadParts:doc=>new Promise(resolve=>{resolveParts=()=>resolve(doc);})});await stale.open({tier:'best'});stale.close();resolveParts();await flush();assert.equal(stale.panels.length,0);
 });
 
+test('the shelf window X removes the whole tool and its registered opener remounts actual component selection',async()=>{
+  const h=harness();await h.open({tier:'best'});await flush();
+  const first=h.panels[0],viewer=h.viewers[0],floating=h.floating.find(value=>value.panel===first.host),opener=h.registry.get('life-shelf-components');
+  first.open();viewer.options.onSelect({item:{id:'shelves'},partNumericId:23});assert.equal(viewer.calls.parts.at(-1).num,23);
+  const stops=h.previewStops;floating.closeButton.emit('click');
+  assert.equal(first.disposed,true);assert.equal(first.host.removed,true);assert.equal(floating.disposed,true);assert.equal(viewer.calls.partMode.at(-1),false);assert.deepEqual(viewer.calls.parts.at(-1),{id:null,num:null});assert.equal(h.previewStops,stops+1);
+  const counts={mode:viewer.calls.partMode.length,parts:viewer.calls.parts.length};
+  first.options.onSelect(h.part);first.options.onClose();first.host.emit('click');
+  assert.equal(viewer.calls.partMode.length,counts.mode);assert.equal(viewer.calls.parts.length,counts.parts);
+  assert.equal(h.registry.get('life-shelf-components'),opener);opener.open();await flush();
+  assert.equal(h.panels.length,2);const second=h.panels[1];assert.notEqual(second.host,first.host);assert.equal(second.enabled(),true);assert.equal(viewer.calls.partMode.at(-1),true);
+  viewer.options.onSelect({item:{id:'shelves'},partNumericId:23});assert.equal(second.selections.at(-1),h.part);h.close();assert.equal(second.disposed,true);
+});
+
+test('the registered shelf opener expands a collapsed live launcher rather than creating a second tool',async()=>{
+  const h=harness();await h.open({tier:'best'});await flush();const panel=h.panels[0];panel.open();panel.close();assert.equal(panel.enabled(),false);
+  h.registry.get('life-shelf-components').open();await flush();assert.equal(panel.enabled(),true);assert.equal(h.panels.length,1);assert.equal(h.viewers[0].calls.partMode.at(-1),true);h.close();
+});
+
+test('a loading or failed components window retains its movable header and X; late loading cannot recreate a closed tool',async()=>{
+  let finish;const pending=harness({loadParts:doc=>new Promise(resolve=>{finish=()=>resolve(doc);})});await pending.open({tier:'best'});
+  const floating=pending.floating.find(value=>value.options.key==='xp-floating-life-shelf-v1');assert.ok(floating);assert.equal(floating.panel.dataset.state,'loading');assert.ok(floating.restores);
+  floating.closeButton.emit('click');assert.equal(floating.disposed,true);assert.equal(floating.panel.removed,true);finish();await flush();assert.equal(pending.panels.length,0);pending.close();
+  let attempts=0;const failed=harness({loadParts:doc=>++attempts===1?Promise.reject(new Error('parts unavailable')):Promise.resolve(doc)});await failed.open({tier:'best'});await flush();
+  const errorWindow=failed.floating.find(value=>value.options.key==='xp-floating-life-shelf-v1');assert.equal(errorWindow.panel.dataset.state,'error');assert.equal(errorWindow.header.parent,errorWindow.panel);assert.match(errorWindow.panel.appended.find(value=>value.attrs.role==='status').textContent,/Avanzado.*Ventanas/);
+  failed.registry.get('life-shelf-components').open();await flush();assert.equal(errorWindow.disposed,true);assert.equal(errorWindow.panel.removed,true);assert.equal(failed.panels.length,1);assert.equal(failed.panels[0].enabled(),true);failed.close();
+});
+
+test('closing the scene disposes every floating window, unregisters its openers and rejects stale shelf and renderer callbacks',async()=>{
+  const h=harness({search:'?select=products'});await h.open({tier:'best'});await flush();
+  const oldViewer=h.viewers[0],oldPanel=h.panels[0],entries=[...h.registry.values()];assert.equal(h.registry.size,2);
+  h.close();assert.equal(h.registry.size,0);assert.ok(h.floating.every(value=>value.disposed));assert.equal(oldPanel.disposed,true);
+  const calls={parts:oldViewer.calls.parts.length,mode:oldViewer.calls.partMode.length};
+  oldPanel.options.onSelect(h.part);oldPanel.options.onClose();oldViewer.options.onSelect({actor:{label:'Stale'}});for(const entry of entries)entry.open();await flush();
+  assert.equal(h.dialog,null);assert.equal(h.panels.length,1);assert.equal(h.viewers.length,1);assert.equal(oldViewer.calls.parts.length,calls.parts);assert.equal(oldViewer.calls.partMode.length,calls.mode);
+  await h.open();const fresh=h.viewers[1];fresh.options.onSelect(null);assert.equal(h.dialog.querySelector('.life-selection').hidden,true);
+  oldViewer.options.onSelect({actor:{label:'Stale'}});for(const entry of entries)entry.open();await flush();assert.equal(h.panels.length,1);assert.equal(h.dialog.querySelector('.life-selection').hidden,true);h.close();
+});
+
 test('Better labels the reversible empty presentation without claiming the live people are visible',async()=>{
   const h=harness();h.setRaw({...h.raw,moving:true,layout:[]});await h.open();h.frame(1100);
   assert.match(h.dialog.querySelector('.life-state').textContent,/Mudanza activa.*suelo y paredes/);
@@ -170,8 +217,8 @@ test('game transitions without a representable snapshot close the view instead o
 test('failed module load exposes retry and the retry creates only one active viewer',async()=>{
   const h=harness({load:(module,attempt)=>attempt===1?Promise.reject(new Error('network unavailable')):Promise.resolve(module)});
   await h.open();assert.equal(h.viewers.length,0);assert.equal(h.frames.size,0);
-  const loading=h.dialog.querySelector('.life-loading');assert.equal(loading.hidden,false);assert.equal(loading.querySelector('button').hidden,false);
-  loading.querySelector('button').emit('click');await flush();
+  const loading=h.dialog.querySelector('.life-loading');assert.equal(loading.hidden,false);assert.equal(loading.querySelector('.life-retry').hidden,false);
+  loading.querySelector('.life-retry').emit('click');await flush();
   assert.equal(h.viewers.length,1);assert.equal(h.frames.size,1);assert.equal(h.dialog.querySelector('.life-loading').hidden,true);h.close();
 });
 
@@ -185,7 +232,7 @@ test('closing selection clears the renderer halo and context loss offers recover
   viewer.options.onSelect({actor:{kind:'customer',label:'Ada'}});assert.equal(dialog.querySelector('.life-selection').hidden,false);
   dialog.querySelector('.life-selection-close').emit('click');assert.equal(viewer.calls.clearSelection,1);assert.equal(dialog.querySelector('.life-selection').hidden,true);
   const event=dialog.querySelector('canvas').emit('webglcontextlost');assert.equal(event.prevented,true);assert.equal(viewer.calls.dispose,1);
-  assert.equal(h.frames.size,0);assert.equal(dialog.querySelector('.life-loading').querySelector('button').hidden,false);h.close();assert.equal(viewer.calls.dispose,1);
+  assert.equal(h.frames.size,0);assert.equal(dialog.querySelector('.life-loading').querySelector('.life-retry').hidden,false);h.close();assert.equal(viewer.calls.dispose,1);
 });
 
 test('a scene-construction failure releases the newly allocated WebGL renderer before retry',()=>{
@@ -213,7 +260,7 @@ test('retry keeps the same dialog and router request instead of opening an unown
   const h=harness({load:(module,attempt)=>attempt===1?Promise.reject(new Error('network')):Promise.resolve(module)});
   const states=[],controller=new AbortController();h.subscribe(state=>states.push(state));
   await h.open({signal:controller.signal,requestId:17});const original=h.dialog;
-  original.querySelector('.life-loading').querySelector('button').emit('click');await flush();
+  original.querySelector('.life-loading').querySelector('.life-retry').emit('click');await flush();
   assert.equal(h.dialog,original);assert.equal(h.viewers.length,1);
   assert.ok(states.every(state=>state.requestId===17&&state.open));
   controller.abort();assert.equal(h.dialog,null);assert.equal(h.viewers[0].calls.dispose,1);
@@ -236,7 +283,7 @@ test('WebGL recovery uses a fresh canvas and ignores queued context loss from th
   h.viewers[0].options.onSelect({actor:{kind:'customer',label:'Ada'}});
   oldCanvas.emit('webglcontextlost');assert.equal(h.viewers[0].calls.dispose,1);
   assert.equal(h.dialog.querySelector('.life-selection').hidden,true);
-  h.dialog.querySelector('.life-loading').querySelector('button').emit('click');await flush();
+  h.dialog.querySelector('.life-loading').querySelector('.life-retry').emit('click');await flush();
   const current=h.viewers[1];assert.notEqual(current.options.canvas,oldCanvas);
   assert.deepEqual(current.calls.lights,['night']);
   oldCanvas.emit('webglcontextlost');assert.equal(current.calls.dispose,0);assert.equal(h.frames.size,1);

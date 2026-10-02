@@ -1398,7 +1398,7 @@
 })();
 </script>
 <script src="xtanco-version.js?v=20260924-1339"></script>
-<script src="xtanco-runtime-config.js?r=26"></script>
+<script src="xtanco-runtime-config.js?r=27"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
@@ -5030,6 +5030,8 @@ function closeUnitreeDetailOverlay(opts){
   }
   hideRobotGrokPanel();
 }
+window.__closeUnitreeDetail=()=>closeUnitreeDetailOverlay({stopVoice:true});
+window.__openUnitreeDetail=()=>{if(G?.unitreeBot&&G.unitreeBot.phase!=='idle')doAction('specialClick_unitree');};
 function setRobotGrokUiStatus(text,isError){
   const els=robotGrokEls();
   if(els.status) els.status.textContent=text||'Grok listo';
@@ -5051,6 +5053,7 @@ function syncRobotGrokPanel(){
   const show=isUnitreeDetailOpen();
   els.panel.classList.toggle('show',show);
   if(!show) return;
+  if(els.panel.classList.contains('xp-window-moved')){updateRobotVoiceButtons();return;}
   const bounds=getNPCEditorBounds();
   const rect=cv.getBoundingClientRect();
   const sx=rect.width/W;
@@ -20474,7 +20477,8 @@ function setAdmiraTvCommand(arg){
 // (grok-imagine-video, 9:16) → polling → POST /stock/publish.
 // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
 const PIXER_API='https://api.admira.store';
-const TIKTOK={ on:false, t0:0, phase:'', log:[], asset:null, tick:0, watch:0, sim:false, done:false, estMs:150000, run:0, pend:null, auto:false };
+const TIKTOK={ on:false, t0:0, phase:'', log:[], asset:null, tick:0, watch:0, sim:false, done:false, estMs:150000, run:0, pend:null, auto:false, panelClosed:false };
+window.__openTikTokPanel=()=>{TIKTOK.panelClosed=false;tiktokRender();};
 function tiktokEl(){
   let p=document.getElementById('tiktokPanel');
   if(!p){
@@ -20493,7 +20497,7 @@ function tiktokEl(){
       +'<div id="ttLog" style="max-height:132px;overflow:auto;line-height:1.5;color:#b9b0dd"></div>'
       +'</div>';
     document.body.appendChild(p);
-    p.querySelector('#ttClose').onclick=()=>{ p.style.display='none'; };
+    p.querySelector('#ttClose').onclick=()=>{ TIKTOK.panelClosed=true;p.style.display='none'; };
   }
   return p;
 }
@@ -20501,7 +20505,7 @@ function tiktokRender(){
   // Ojo: el panel también se queda VISIBLE cuando hay una idea esperando el OK
   // (TIKTOK.pend) — si no, la pregunta «¿rodamos?» se escondía sola.
   const p=tiktokEl(); if(!TIKTOK.on && !TIKTOK.done && !TIKTOK.pend){ p.style.display='none'; return; }
-  p.style.display='block';
+  p.style.display=TIKTOK.panelClosed?'none':'block';
   const secs=Math.max(0,Math.round((Date.now()-TIKTOK.t0)/1000));
   const mm=Math.floor(secs/60), ss=String(secs%60).padStart(2,'0');
   const clk=p.querySelector('#ttClock'); if(clk) clk.textContent=mm+':'+ss+(TIKTOK.sim?'  · SIMULACIÓN':'');
@@ -20603,6 +20607,7 @@ async function tiktokFinishWatch(runId){
   return false;
 }
 async function runTiktokCampaign(titular,sim){
+  TIKTOK.panelClosed=false;
   const runId=++TIKTOK.run;   // testigo de esta tirada (corta vigilantes viejos)
   TIKTOK.on=true; TIKTOK.done=false; TIKTOK.sim=!!sim; TIKTOK.t0=Date.now(); TIKTOK.log=[]; TIKTOK.asset=null;
   clearInterval(TIKTOK.tick); TIKTOK.tick=setInterval(tiktokRender,1000);
@@ -20662,6 +20667,7 @@ async function runTiktokCampaign(titular,sim){
 // La parte que CUESTA: rodar en Grok Imagine y publicar. Vive aparte para poder
 // dispararla desde el OK (/tiktok ok) sin repetir el desarrollo de la idea.
 async function tiktokShoot(p){
+  TIKTOK.panelClosed=false;
   const {runId,prompt,titulo,camp,tit}=p;
   TIKTOK.on=true; TIKTOK.done=false; TIKTOK.pend=null;
   clearInterval(TIKTOK.tick); TIKTOK.tick=setInterval(tiktokRender,1000);
@@ -29994,7 +30000,7 @@ window.xtAPI = (function(){
       ov=document.createElement('div'); ov.id='turnFullOv';
       ov.style.cssText='position:fixed;inset:0;z-index:2147482600;background:#031316f2;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;backdrop-filter:blur(4px)';
       ov.innerHTML='<button id="turnFullX" style="position:absolute;top:14px;right:18px;z-index:2;font:700 15px ui-monospace,monospace;background:#0b2a30;color:#8defff;border:1px solid #1e6a72;border-radius:10px;padding:8px 16px;cursor:pointer">'+(lang==='en'?'\u2715 Back to Xtanco':'\u2715 Volver al Xtanco')+'</button>'+
-        '<div id="turnFullBody" style="max-width:92vw;max-height:86vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center"></div>';
+        '<section id="turnFullCard" style="position:relative;max-width:92vw;max-height:86vh;overflow:auto;background:#031316;border:1px solid #1e6a72;border-radius:12px"><div id="turnFullBody" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center"></div></section>';
       document.body.appendChild(ov);
       ov.querySelector('#turnFullX').onclick=()=>{ ov.style.display='none'; };
       ov.addEventListener('click',e=>{ if(e.target===ov) ov.style.display='none'; });
@@ -31489,7 +31495,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=shelf-products-1');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=floating-panels-1');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -34836,6 +34842,8 @@ window.xtAPI = (function(){
     color:var(--xp-ink,#dff8ff);font-family:"JetBrains Mono",ui-monospace,monospace;
     -webkit-font-smoothing:antialiased;overflow:hidden}
   #percibeOverlay.on{display:flex;animation:pcbFade .35s ease}
+  #percibeOverlay{background:transparent;pointer-events:none;align-items:center;justify-content:center}
+  .pcb-window{position:relative;display:flex;flex-direction:column;max-height:calc(100vh - 24px);width:min(1180px,calc(100vw - 24px));overflow:auto;pointer-events:auto;background:radial-gradient(1200px 700px at 30% 0%,#0a1a24 0%,#05070c 62%,#03050a 100%);border:1px solid #1f6b78;border-radius:14px}
   @keyframes pcbFade{from{opacity:0}to{opacity:1}}
   .pcb-scan{position:absolute;left:0;right:0;height:3px;top:0;pointer-events:none;
     background:linear-gradient(90deg,transparent,var(--xp-cyan,#78f3ff),transparent);
@@ -35039,6 +35047,9 @@ window.xtAPI = (function(){
         '<span class="src">'+(en?'area data':'dato de zona')+' <b>ADcelerate</b> (telco) × '+(en?'in-store camera = <b>real audience</b>':'cámara del punto = <b>audiencia real</b>')+'</span>'+
         '<span class="cpm" id="pcbCpm">clearchannel.tv · proof-of-play · CPM €—</span>'+
       '</div>';
+    const card=document.createElement('section');card.className='pcb-window';
+    while(root.firstChild)card.appendChild(root.firstChild);
+    root.appendChild(card);
     document.body.appendChild(root);
     els.scan=root.querySelector('#pcbScan'); els.badge=root.querySelector('#pcbBadge');
     els.people=root.querySelector('#pcbPeople'); els.dots=root.querySelector('#pcbDots');
@@ -35806,7 +35817,7 @@ window.xtAPI = (function(){
   function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
   // Paneles flotantes objetivo (estáticos y creados dinámicamente).
   var TARGETS=['dvrPanel','metahumanPanel','robotGrokPanel','mupiCamPanel','xcalPanel',
-               'admiraSubastaPanel','impactsHud','npcEditor','custCard'];
+               'admiraSubastaPanel','impactsHud','custCardWin'];
   function isVisible(el){ var cs=getComputedStyle(el); return cs.display!=='none' && cs.visibility!=='hidden' && el.getBoundingClientRect().width>1; }
 
   function attach(el){
@@ -35815,12 +35826,9 @@ window.xtAPI = (function(){
     var key=el.id;
     // Si el panel YA tiene una cabecera arrastrable propia (cursor:move), no añadimos el
     // grip de mover (evita solaparlo con el título); solo el de redimensionar.
-    var ownHeader=el.querySelector('[style*="cursor:move"],[style*="cursor: move"]');
     var mv=null;
-    if(!ownHeader){
-      mv=document.createElement('div'); mv.className='xp-pan-grip xp-pan-move'; mv.title='Arrastra para mover'; mv.textContent='✥';
-      el.appendChild(mv);
-    }
+    // Shared accessible floating headers now own movement; retain legacy size
+    // restoration and resize grips without installing a second drag handler.
     var rz=document.createElement('div'); rz.className='xp-pan-grip xp-pan-rez'; rz.title='Arrastra para redimensionar'; rz.textContent='◢';
     el.appendChild(rz);
 
@@ -35882,13 +35890,15 @@ window.xtAPI = (function(){
 </script>
 <script>if(new URLSearchParams(location.search).get("virtualPlayer")==="xtore-virtual-zapatillas"){try{for(const l of ["es","en"]){if(typeof LANGS!=="undefined"&&LANGS[l])LANGS[l].ledMsgs=["ADMIRA · XTORE ZAPATILLAS","PLAYER VIRTUAL · INTERIOR + ESCAPARATE","PUERTA CAM · PROGRAMACIÓN CONDICIONAL"];}}catch(_){}}</script>
 <link rel="stylesheet" href="scripts/xtore-window.css?v=bottom-workspace-2">
+<link rel="stylesheet" href="scripts/floating-panels.css?v=floating-panels-1">
+<script type="module" src="scripts/xp-floating-runtime.mjs?v=floating-panels-1"></script>
 <script type="module" src="scripts/xtore-window.mjs?v=advanced-controls-1"></script>
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
 <link rel="stylesheet" href="scripts/matrix-panorama.css?v=closed-resume-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
-<link rel="stylesheet" href="scripts/life-ui.css?v=panel-scene-1">
+<link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
 <link rel="stylesheet" href="scripts/distribuit.css?v=distribuir-3">
 <link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
@@ -35901,7 +35911,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=shelf-products-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=floating-panels-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>
