@@ -4,8 +4,9 @@
   "inventory_number": 2,
   "name": "Estantería",
   "quality": "best",
+  "revision": "shelves-best-20261002-1",
   "blender_version": "5.2.2 LTS",
-  "reference": "admira-xp/scripts/life-scene.mjs",
+  "reference": "admira-xp/scripts/life-scene.mjs · shelf silhouette and palette",
   "measured": false,
   "source_editable": true,
   "full_volume": true,
@@ -13,21 +14,45 @@
     1,
     2
   ],
+  "front_gltf": "+X",
+  "shelf_levels": 5,
+  "display_products": 45,
+  "source_meshes": 604,
+  "web_meshes": 14,
   "bounds_gltf": {
     "min": [
-      -0.02250002697110176,
-      -2.2839198976498665e-08,
-      -0.03499998897314072
+      -0.02249997854232788,
+      0.0,
+      -0.03250002861022949
     ],
     "max": [
-      1.0230000019073486,
-      2.2350003719329834,
-      2.0350000858306885
+      1.0260000228881836,
+      2.2350001335144043,
+      2.0325000286102295
     ]
   },
+  "detail": [
+    "baked oak colour/normal/roughness",
+    "recessed back and rear joinery",
+    "levelling feet",
+    "shelf supports and pin-hole ladders",
+    "brass label rails",
+    "folded cartons and sealed pouches",
+    "turned bottles and cap bands",
+    "printed label atlas"
+  ],
   "files": {
     "source": "best.blend",
-    "web": "best.glb"
+    "web": "best.glb",
+    "preview": "best-preview.png"
   },
-  "bytes": 1862816
+  "bytes": 7632388,
+  "preserved_profiles_sha256": {
+    "good.glb": "8ce6d5d5c5b75920669e3e385eb43c34e8049bb4765373ed6d1e56a95f0ec78e",
+    "good.manifest.json": "83db82b05009487da8d5db371b38ba85b77ea781ef0a99511709ac7ac5b72c3c",
+    "good.blend": "f10338614422b376abb3037d6a9341f88e40b60e58e8f56f646847f31ea04829",
+    "better.blend": "df126f16075d0c140470826dfab8f2da901718c0deb23bf3f6b5392fe0e74b50",
+    "better.glb": "133e6440a9d7acb93258bf7f65694a28762f9f80cfb91e8fdaa153e96caca9a9",
+    "better.manifest.json": "1b104d7bcb0e6a41c420310c84a52b8d57ae30954d76ca741a71e289647f03a8"
+  }
 }

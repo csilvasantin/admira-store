@@ -206,6 +206,8 @@ for a in assets:
  if n<args.min_number or (args.only and n!=args.only):continue
  folder=OUT/f'{n:02}';folder.mkdir(exist_ok=True)
  for quality in ('good','better','best'):
+  if n==2 and quality=='best':
+   print('Best #2 uses build_shelves_best.py; preserving detailed master',flush=True);continue
   bpy.ops.wm.read_factory_settings(use_empty=True);mats={};root=bpy.data.objects.new('inventory_'+str(n),None);bpy.context.collection.objects.link(root)
   root['inventoryId']=a['id'];root['inventoryNumber']=n;root['quality']=quality;root['units']='uncalibrated_grid_units';root['referenceStatus']='interpreted_not_measured'
   fp=native(a) if n<=18 else custom(n)

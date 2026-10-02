@@ -1,8 +1,8 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
 import {createSurfaceBinding} from '../admira-xp/scripts/surface-materials.mjs?v=surfaces-1';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=water-rack-50';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=shelves-best-1';
 
-export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{controlsHost=host,onReady=()=>{}}={}){
+export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{controlsHost=host,onReady=()=>{},quality='best'}={}){
  const canvas=host.querySelector('canvas'),status=host.querySelector('[data-status]');
  const en=document.documentElement.lang==='en',t=(es,enText)=>en?enText:es;
  const homeZoom=asset.number===50?1.12:1;
@@ -31,7 +31,7 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
    scene.environment=environment.texture;owned.add(environment);pmrem.dispose();panelResources.forEach(r=>r.dispose());room.clear();
   }
   const floor=new T.Mesh(new T.PlaneGeometry(200,200),new T.MeshStandardMaterial({color:'#edf0e7',roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.012;floor.receiveShadow=true;scene.add(floor);owned.add(floor.geometry);owned.add(floor.material);
-  object=await cloneFurniture(asset.number,'best');if(disposed)return;
+  object=await cloneFurniture(asset.number,quality);if(disposed)return;
   binding=createSurfaceBinding(object);const materials=new Map();object.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.set(m,m);});scene.add(object);
   const camera=new T.PerspectiveCamera(36,1,.01,100),bounds=new T.Box3().setFromObject(object),center=bounds.getCenter(new T.Vector3()),span=bounds.getSize(new T.Vector3()),extent=Math.max(span.x,span.y,span.z,.2);
   function draw(){
@@ -40,10 +40,10 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
    const distance=extent*(camera.aspect<1?3.1:2.5)/zoom;
    camera.position.copy(center).add(new T.Vector3(Math.sin(angle)*Math.cos(elevation)*distance,Math.sin(elevation)*distance,Math.cos(angle)*Math.cos(elevation)*distance));camera.lookAt(center);renderer.render(scene,camera);
   }
-  const setView=(a,e,label)=>{angle=a;elevation=e;zoom=homeZoom;status.textContent=asset.number+'. '+asset.name+' · '+label+t(' · modelo 3D completo',' · complete 3D model');draw();};
-  for(const button of controlsHost.querySelectorAll('button[data-view]'))on(button,'click',()=>{const name=button.dataset.view;setView(...({front:[0,.25,'frontal'],back:[Math.PI,.25,'parte posterior'],side:[Math.PI/2,.25,'lateral'],home:[Math.PI/4,.38,'perspectiva']}[name]));});
+  const setView=(a,e,label)=>{angle=a;elevation=e;zoom=homeZoom;status.textContent=asset.number+'. '+asset.name+' · '+label+' · '+quality.toUpperCase()+t(' · modelo 3D completo',' · complete 3D model');draw();};
+  for(const button of controlsHost.querySelectorAll('button[data-view]'))on(button,'click',()=>{const name=button.dataset.view;setView(...({front:[asset.number===2?Math.PI/2:0,.25,'frontal'],back:[asset.number===2?-Math.PI/2:Math.PI,.25,'parte posterior'],side:[asset.number===2?0:Math.PI/2,.25,'lateral'],home:[Math.PI/4,.38,'perspectiva']}[name]));});
   for(const button of controlsHost.querySelectorAll('button[data-zoom]'))on(button,'click',()=>{zoom=Math.max(.7,Math.min(2,zoom+(button.dataset.zoom==='in'?.15:-.15)));draw();});
-  const api={binding,draw,onPick:null,view:name=>{const values={home:[Math.PI/4,.38,'perspectiva'],front:[0,.25,'frontal'],top:[0,1.35,'planta']};if(values[name])setView(...values[name]);},zoom:delta=>{zoom=Math.max(.7,Math.min(2,zoom+delta));draw();}};let press=null;
+  const api={binding,draw,onPick:null,view:name=>{const values={home:[Math.PI/4,.38,'perspectiva'],front:[asset.number===2?Math.PI/2:0,.25,'frontal'],top:[0,1.35,'planta']};if(values[name])setView(...values[name]);},zoom:delta=>{zoom=Math.max(.7,Math.min(2,zoom+delta));draw();}};let press=null;
   on(canvas,'pointerdown',e=>{press={x:e.clientX,y:e.clientY};});
   on(canvas,'pointerup',e=>{if(!press||Math.hypot(e.clientX-press.x,e.clientY-press.y)>5)return;const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);scene.updateMatrixWorld(true);const hit=ray.intersectObject(object,true)[0];if(hit)api.onPick?.(binding.keyFor(hit.object,hit.face?.materialIndex||0));});
   on(canvas,'pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
@@ -53,7 +53,7 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
   const wire=controlsHost.querySelector('[data-wire]');for(const m of materials.values())m.wireframe=wire.checked;on(wire,'change',()=>{for(const m of materials.values())m.wireframe=wire.checked;draw();});
   on(canvas,'webglcontextlost',e=>{e.preventDefault();status.textContent=t('Se ha interrumpido la vista 3D. Recarga para recuperarla.','The 3D view was interrupted. Reload to recover it.');});
   const observer=new ResizeObserver(draw);observer.observe(canvas);events.push(()=>observer.disconnect());
-  status.textContent=asset.number+'. '+asset.name+t(' · modelo 3D completo · arrastra para girar',' · complete 3D model · drag to orbit');draw();
+  status.textContent=asset.number+'. '+asset.name+' · '+quality.toUpperCase()+t(' · modelo 3D completo · arrastra para girar',' · complete 3D model · drag to orbit');draw();
   editorDispose=await onReady(api);
   return ()=>{disposed=true;editorDispose?.();binding?.dispose();events.forEach(off=>off());owned.forEach(r=>r.dispose());key.shadow.dispose();scene.clear();renderer.dispose();renderer.forceContextLoss();};
  }catch(error){editorDispose?.();binding?.dispose();renderer?.dispose();status.textContent=t('No se pudo abrir la vista 3D. Recarga para reintentar; el archivo GLB sigue disponible para descargar.','The 3D view could not open. Reload to retry; the GLB file is still available to download.');return ()=>{disposed=true;events.forEach(off=>off());owned.forEach(r=>r.dispose());};}

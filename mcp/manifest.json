@@ -760,7 +760,8 @@
   },
   "documentation_contracts": {
     "itil_3d_record": "https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md",
-    "surface_editor": "https://www.xpaceos.com/admira-xp/docs/surface-editor.md"
+    "surface_editor": "https://www.xpaceos.com/admira-xp/docs/surface-editor.md",
+    "shelf_best": "https://www.xpaceos.com/admira-xp/docs/shelf-best.md"
   },
   "surface_editor": {
     "es": "Inventario → Starbucks PG103 → selecciona una unidad → Editar, en la esquina del modelo. Elige una superficie en la lista o tocando el modelo; cambia el color, importa PNG/JPG/WebP (hasta 20 MB, optimizados a 1024 px) o usa Cuadros, Rayas o Terrazo. Ajusta repetición, rotación, rugosidad y metalizado; compara con el original y usa Deshacer/Rehacer. Aplicar al Xpacio guarda una versión por local + instancia + CI y actualiza sus superficies en Better/Best, también en otra pestaña del mismo navegador y dominio. Histórico permite recuperar un acabado y aplicarlo como nueva versión. Exportar copia JSON conserva imágenes e histórico; importar recupera el acabado actual como una nueva versión, sin reemplazar el histórico local. Guardado local, sin sincronización entre usuarios ni escritura en el histórico patrimonial de Yokup. Good, Matrix y los archivos GLB/Blender originales conservan su vista. El botellero no está colocado en la escena de referencia; editarlo no añade una ubicación. /marca y el shell Experto se conservan; /avatarDigital continúa a cargo de Woz.",
@@ -782,5 +783,58 @@
     "url": "https://www.xpaceos.com/inventario/",
     "category_id": "itil",
     "action": "open_new_tab"
+  },
+  "shelf_best": {
+    "status": "implemented",
+    "scope": "catalog_viewer_pilot",
+    "catalog_number": 2,
+    "inventory_id": "native:shelves",
+    "footprint": [
+      1,
+      2
+    ],
+    "viewer": "https://www.xpaceos.com/inventario/?asset=2&quality=best",
+    "quality_parameter": "quality",
+    "profiles": [
+      "good",
+      "better",
+      "best"
+    ],
+    "selector": "Good / Better / Best in the catalogue model viewer",
+    "downloads": "GLB and Blender follow the selected profile",
+    "assets": {
+      "glb": "https://www.xpaceos.com/inventario/assets/catalog/02/best.glb",
+      "blend": "https://www.xpaceos.com/inventario/assets/catalog/02/best.blend",
+      "preview": "https://www.xpaceos.com/inventario/assets/catalog/02/best-preview.png"
+    },
+    "details": [
+      "separate shelves and hardware",
+      "detailed edges",
+      "PBR wood colour, normal and roughness maps",
+      "45 representative visual containers"
+    ],
+    "preserved": [
+      "Good assets",
+      "Better assets",
+      "catalog number",
+      "native:shelves inventory ID",
+      "ITIL master records",
+      "user identities and preferences",
+      "CLI history",
+      "Expert shell and registry",
+      "/marca and /brand"
+    ],
+    "itil_master": "Yokup",
+    "stock_count": false,
+    "new_cli_commands": false,
+    "new_remote_tools": false,
+    "docs": "https://www.xpaceos.com/admira-xp/docs/shelf-best.md",
+    "tutorial": "https://www.xpaceos.com/help/#shelf-best",
+    "es": "La estantería #2 (native:shelves) estrena el piloto Best del catálogo: baldas y herrajes separados, cantos trabajados, veta de madera con mapas PBR de color, normal y rugosidad, y 45 envases representativos con más detalle. En el visor, el selector Good / Better / Best permite comparar los perfiles; Descargar GLB y Blender sigue el perfil elegido. Good y Better conservan sus modelos anteriores. Los envases son contenido visual; la selección de calidad conserva los IDs y las fichas ITIL, preferencias e historial CLI.",
+    "en": "Shelf #2 (native:shelves) introduces the catalogue Best pilot: separate shelves and hardware, detailed edges, wood grain with PBR colour, normal and roughness maps, and 45 representative containers with more detail. In the viewer, the Good / Better / Best selector compares profiles; GLB and Blender downloads follow the selected profile. Good and Better retain their previous models. Containers are visual content; quality selection preserves IDs, ITIL records, preferences and CLI history.",
+    "pending": [
+      "public viewer and selected-profile download verification",
+      "public MCP help verification"
+    ]
   }
 }

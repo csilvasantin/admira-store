@@ -1,5 +1,5 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=water-rack-50';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=shelves-best-1';
 let renderer,queue=Promise.resolve();
 export function preview(asset,tier,angle=0){const task=queue.then(()=>render(asset,tier,angle));queue=task.catch(()=>{});return task;}
 async function render(asset,tier,angle){

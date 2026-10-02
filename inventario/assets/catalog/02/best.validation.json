@@ -1,0 +1,619 @@
+{
+  "schema_version": 1,
+  "blender_version": "5.2.2 LTS",
+  "asset_dir": "inventario/assets/catalog/02",
+  "identity": "native:shelves",
+  "number": 2,
+  "checks": [
+    {
+      "check": "manifest preserves identity, profile and unmeasured status",
+      "passed": true,
+      "evidence": {
+        "inventory_id": "native:shelves",
+        "inventory_number": 2,
+        "quality": "best",
+        "measured": false,
+        "footprint": [
+          1,
+          2
+        ],
+        "front_gltf": "+X",
+        "revision": "shelves-best-20261002-1"
+      }
+    },
+    {
+      "check": "preservation manifest covers six Good/Better resources",
+      "passed": true,
+      "evidence": [
+        "better.blend",
+        "better.glb",
+        "better.manifest.json",
+        "good.blend",
+        "good.glb",
+        "good.manifest.json"
+      ]
+    },
+    {
+      "check": "Good and Better hashes remain unchanged",
+      "passed": true,
+      "evidence": {
+        "good.glb": "8ce6d5d5c5b75920669e3e385eb43c34e8049bb4765373ed6d1e56a95f0ec78e",
+        "good.manifest.json": "83db82b05009487da8d5db371b38ba85b77ea781ef0a99511709ac7ac5b72c3c",
+        "good.blend": "f10338614422b376abb3037d6a9341f88e40b60e58e8f56f646847f31ea04829",
+        "better.blend": "df126f16075d0c140470826dfab8f2da901718c0deb23bf3f6b5392fe0e74b50",
+        "better.glb": "133e6440a9d7acb93258bf7f65694a28762f9f80cfb91e8fdaa153e96caca9a9",
+        "better.manifest.json": "1b104d7bcb0e6a41c420310c84a52b8d57ae30954d76ca741a71e289647f03a8"
+      }
+    },
+    {
+      "check": "editable source has one permanent inventory root",
+      "passed": true
+    },
+    {
+      "check": "editable source excludes studio and cameras/lights",
+      "passed": true
+    },
+    {
+      "check": "source retains more than 100 independently editable meshes",
+      "passed": true,
+      "evidence": 604
+    },
+    {
+      "check": "source retains exactly five shelf levels",
+      "passed": true,
+      "evidence": {
+        "components": [
+          "shelf-0",
+          "shelf-1",
+          "shelf-2",
+          "shelf-3",
+          "shelf-4"
+        ],
+        "grid_heights": [
+          0.14000000059604645,
+          0.550000011920929,
+          0.9599999785423279,
+          1.3700000047683716,
+          1.7799999713897705
+        ]
+      }
+    },
+    {
+      "check": "source retains 45 separate editable display-product groups",
+      "passed": true,
+      "evidence": [
+        "product-0-0",
+        "product-0-1",
+        "product-0-2",
+        "product-0-3",
+        "product-0-4",
+        "product-0-5",
+        "product-0-6",
+        "product-0-7",
+        "product-0-8",
+        "product-1-0",
+        "product-1-1",
+        "product-1-2",
+        "product-1-3",
+        "product-1-4",
+        "product-1-5",
+        "product-1-6",
+        "product-1-7",
+        "product-1-8",
+        "product-2-0",
+        "product-2-1",
+        "product-2-2",
+        "product-2-3",
+        "product-2-4",
+        "product-2-5",
+        "product-2-6",
+        "product-2-7",
+        "product-2-8",
+        "product-3-0",
+        "product-3-1",
+        "product-3-2",
+        "product-3-3",
+        "product-3-4",
+        "product-3-5",
+        "product-3-6",
+        "product-3-7",
+        "product-3-8",
+        "product-4-0",
+        "product-4-1",
+        "product-4-2",
+        "product-4-3",
+        "product-4-4",
+        "product-4-5",
+        "product-4-6",
+        "product-4-7",
+        "product-4-8"
+      ]
+    },
+    {
+      "check": "header lettering remains editable and faces +X",
+      "passed": true,
+      "evidence": [
+        "SELECCIÓN"
+      ]
+    },
+    {
+      "check": "source uses four packed colour, normal, roughness and label maps",
+      "passed": true,
+      "evidence": [
+        {
+          "name": "oak-colour",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true,
+          "colorspace": "sRGB"
+        },
+        {
+          "name": "oak-roughness",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true,
+          "colorspace": "Non-Color"
+        },
+        {
+          "name": "oak-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true,
+          "colorspace": "Non-Color"
+        },
+        {
+          "name": "selection-label-atlas",
+          "size": [
+            512,
+            768
+          ],
+          "packed": true,
+          "colorspace": "sRGB"
+        }
+      ]
+    },
+    {
+      "check": "normal and roughness use non-colour data",
+      "passed": true
+    },
+    {
+      "check": "all textured meshes retain finite UV coordinates",
+      "passed": true
+    },
+    {
+      "check": "source finite bounds",
+      "passed": true,
+      "evidence": {
+        "blender_min": [
+          -0.02249997854232788,
+          -2.0325000286102295,
+          0.0
+        ],
+        "blender_max": [
+          1.0260000228881836,
+          0.03250002861022949,
+          2.2350001335144043
+        ],
+        "gltf_min": [
+          -0.02249997854232788,
+          0.0,
+          -0.03250002861022949
+        ],
+        "gltf_max": [
+          1.0260000228881836,
+          2.2350001335144043,
+          2.0325000286102295
+        ]
+      }
+    },
+    {
+      "check": "source preserves 1x2 logical footprint with small trim overhang",
+      "passed": true,
+      "evidence": {
+        "blender_min": [
+          -0.02249997854232788,
+          -2.0325000286102295,
+          0.0
+        ],
+        "blender_max": [
+          1.0260000228881836,
+          0.03250002861022949,
+          2.2350001335144043
+        ],
+        "gltf_min": [
+          -0.02249997854232788,
+          0.0,
+          -0.03250002861022949
+        ],
+        "gltf_max": [
+          1.0260000228881836,
+          2.2350001335144043,
+          2.0325000286102295
+        ]
+      }
+    },
+    {
+      "check": "source preserves approximately 2.235 grid-unit height",
+      "passed": true,
+      "evidence": {
+        "blender_min": [
+          -0.02249997854232788,
+          -2.0325000286102295,
+          0.0
+        ],
+        "blender_max": [
+          1.0260000228881836,
+          0.03250002861022949,
+          2.2350001335144043
+        ],
+        "gltf_min": [
+          -0.02249997854232788,
+          0.0,
+          -0.03250002861022949
+        ],
+        "gltf_max": [
+          1.0260000228881836,
+          2.2350001335144043,
+          2.0325000286102295
+        ]
+      }
+    },
+    {
+      "check": "product and rail label faces point outward toward +X",
+      "passed": true,
+      "evidence": {
+        "label_faces": 90,
+        "minimum_normal_x": 1.0
+      }
+    },
+    {
+      "check": "six lathed bottle bodies have outward-facing side normals",
+      "passed": true,
+      "evidence": [
+        {
+          "name": "Bottle · shoulder and punt",
+          "side_faces": 256,
+          "minimum_outward_dot": 0.014400689862668514
+        },
+        {
+          "name": "Bottle · shoulder and punt.001",
+          "side_faces": 256,
+          "minimum_outward_dot": 0.014400689862668514
+        },
+        {
+          "name": "Bottle · shoulder and punt.002",
+          "side_faces": 256,
+          "minimum_outward_dot": 0.01440071314573288
+        },
+        {
+          "name": "Bottle · shoulder and punt.003",
+          "side_faces": 256,
+          "minimum_outward_dot": 0.014400539919734001
+        },
+        {
+          "name": "Bottle · shoulder and punt.004",
+          "side_faces": 256,
+          "minimum_outward_dot": 0.014400539919734001
+        },
+        {
+          "name": "Bottle · shoulder and punt.005",
+          "side_faces": 256,
+          "minimum_outward_dot": 0.01440056343562901
+        }
+      ]
+    },
+    {
+      "check": "four levelling feet are below, rather than buried within, the plinth",
+      "passed": true,
+      "evidence": {
+        "plinth_bottom": 0.04800000414252281,
+        "feet_bounds": {
+          "blender_min": [
+            0.0949999988079071,
+            -1.90500009059906,
+            0.00299999862909317
+          ],
+          "blender_max": [
+            0.9050000309944153,
+            -0.0949999988079071,
+            0.04699999839067459
+          ],
+          "gltf_min": [
+            0.0949999988079071,
+            0.00299999862909317,
+            0.0949999988079071
+          ],
+          "gltf_max": [
+            0.9050000309944153,
+            0.04699999839067459,
+            1.90500009059906
+          ]
+        }
+      }
+    },
+    {
+      "check": "GLB binary length and version are valid",
+      "passed": true,
+      "evidence": 7632388
+    },
+    {
+      "check": "GLB root identity and revision match the source contract",
+      "passed": true
+    },
+    {
+      "check": "GLB excludes cameras and punctual lights",
+      "passed": true
+    },
+    {
+      "check": "GLB embeds at least four map images without external URIs",
+      "passed": true,
+      "evidence": [
+        {
+          "bufferView": 8,
+          "mimeType": "image/png",
+          "name": "selection-label-atlas"
+        },
+        {
+          "bufferView": 40,
+          "mimeType": "image/png",
+          "name": "oak-normal"
+        },
+        {
+          "bufferView": 41,
+          "mimeType": "image/png",
+          "name": "oak-colour"
+        },
+        {
+          "bufferView": 42,
+          "mimeType": "image/png",
+          "name": "oak-roughness"
+        }
+      ]
+    },
+    {
+      "check": "GLB oak material carries base colour, normal and roughness maps",
+      "passed": true,
+      "evidence": [
+        {
+          "doubleSided": true,
+          "name": "Oak · grain and satin finish",
+          "normalTexture": {
+            "index": 1,
+            "scale": 0.2199999988079071
+          },
+          "pbrMetallicRoughness": {
+            "baseColorTexture": {
+              "index": 2
+            },
+            "metallicFactor": 0,
+            "metallicRoughnessTexture": {
+              "index": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "check": "GLB geometry has finite accessor bounds",
+      "passed": true
+    },
+    {
+      "check": "web geometry stays grouped by finish",
+      "passed": true,
+      "evidence": {
+        "bytes": 7632388,
+        "mesh_count": 14,
+        "triangles": 68504,
+        "sha256": "d9b26f381900c8c9288a5af1b353622158660c623b5f3e44934cec017132cb6f",
+        "reimport_bounds": {
+          "blender_min": [
+            -0.02249997854232788,
+            -2.0325000286102295,
+            0.0
+          ],
+          "blender_max": [
+            1.0260000228881836,
+            0.03250002861022949,
+            2.2350001335144043
+          ],
+          "gltf_min": [
+            -0.02249997854232788,
+            0.0,
+            -0.03250002861022949
+          ],
+          "gltf_max": [
+            1.0260000228881836,
+            2.2350001335144043,
+            2.0325000286102295
+          ]
+        }
+      }
+    },
+    {
+      "check": "GLB successfully reimports with permanent root",
+      "passed": true
+    },
+    {
+      "check": "reimport contains usable mesh faces without studio",
+      "passed": true
+    },
+    {
+      "check": "GLB reimport finite bounds",
+      "passed": true,
+      "evidence": {
+        "blender_min": [
+          -0.02249997854232788,
+          -2.0325000286102295,
+          0.0
+        ],
+        "blender_max": [
+          1.0260000228881836,
+          0.03250002861022949,
+          2.2350001335144043
+        ],
+        "gltf_min": [
+          -0.02249997854232788,
+          0.0,
+          -0.03250002861022949
+        ],
+        "gltf_max": [
+          1.0260000228881836,
+          2.2350001335144043,
+          2.0325000286102295
+        ]
+      }
+    },
+    {
+      "check": "GLB reimport preserves 1x2 logical footprint with small trim overhang",
+      "passed": true,
+      "evidence": {
+        "blender_min": [
+          -0.02249997854232788,
+          -2.0325000286102295,
+          0.0
+        ],
+        "blender_max": [
+          1.0260000228881836,
+          0.03250002861022949,
+          2.2350001335144043
+        ],
+        "gltf_min": [
+          -0.02249997854232788,
+          0.0,
+          -0.03250002861022949
+        ],
+        "gltf_max": [
+          1.0260000228881836,
+          2.2350001335144043,
+          2.0325000286102295
+        ]
+      }
+    },
+    {
+      "check": "GLB reimport preserves approximately 2.235 grid-unit height",
+      "passed": true,
+      "evidence": {
+        "blender_min": [
+          -0.02249997854232788,
+          -2.0325000286102295,
+          0.0
+        ],
+        "blender_max": [
+          1.0260000228881836,
+          0.03250002861022949,
+          2.2350001335144043
+        ],
+        "gltf_min": [
+          -0.02249997854232788,
+          0.0,
+          -0.03250002861022949
+        ],
+        "gltf_max": [
+          1.0260000228881836,
+          2.2350001335144043,
+          2.0325000286102295
+        ]
+      }
+    }
+  ],
+  "source": {
+    "meshes": 604,
+    "images": [
+      {
+        "name": "oak-colour",
+        "size": [
+          1024,
+          1024
+        ],
+        "packed": true,
+        "colorspace": "sRGB"
+      },
+      {
+        "name": "oak-roughness",
+        "size": [
+          1024,
+          1024
+        ],
+        "packed": true,
+        "colorspace": "Non-Color"
+      },
+      {
+        "name": "oak-normal",
+        "size": [
+          1024,
+          1024
+        ],
+        "packed": true,
+        "colorspace": "Non-Color"
+      },
+      {
+        "name": "selection-label-atlas",
+        "size": [
+          512,
+          768
+        ],
+        "packed": true,
+        "colorspace": "sRGB"
+      }
+    ],
+    "bounds": {
+      "blender_min": [
+        -0.02249997854232788,
+        -2.0325000286102295,
+        0.0
+      ],
+      "blender_max": [
+        1.0260000228881836,
+        0.03250002861022949,
+        2.2350001335144043
+      ],
+      "gltf_min": [
+        -0.02249997854232788,
+        0.0,
+        -0.03250002861022949
+      ],
+      "gltf_max": [
+        1.0260000228881836,
+        2.2350001335144043,
+        2.0325000286102295
+      ]
+    }
+  },
+  "glb": {
+    "bytes": 7632388,
+    "mesh_count": 14,
+    "triangles": 68504,
+    "sha256": "d9b26f381900c8c9288a5af1b353622158660c623b5f3e44934cec017132cb6f",
+    "reimport_bounds": {
+      "blender_min": [
+        -0.02249997854232788,
+        -2.0325000286102295,
+        0.0
+      ],
+      "blender_max": [
+        1.0260000228881836,
+        0.03250002861022949,
+        2.2350001335144043
+      ],
+      "gltf_min": [
+        -0.02249997854232788,
+        0.0,
+        -0.03250002861022949
+      ],
+      "gltf_max": [
+        1.0260000228881836,
+        2.2350001335144043,
+        2.0325000286102295
+      ]
+    }
+  },
+  "revision": "shelves-best-20261002-1",
+  "passed": true,
+  "failed_checks": []
+}

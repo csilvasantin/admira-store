@@ -5,7 +5,10 @@ const cache=new Map();let registryPromise;
 export const inventoryIdFor=assetForInstance;
 export function furnitureURL(number,tier='best',extension='glb'){
  if(!Number.isSafeInteger(number)||number<1||number>50||!['good','better','best'].includes(tier)||!['glb','blend'].includes(extension))throw Error('Pieza o perfil no válido');
- return number===1?counterURL(tier,extension):new URL(`../../inventario/assets/catalog/${String(number).padStart(2,'0')}/${tier}.${extension}`,import.meta.url).href;
+ if(number===1)return counterURL(tier,extension);
+ const url=new URL(`../../inventario/assets/catalog/${String(number).padStart(2,'0')}/${tier}.${extension}`,import.meta.url);
+ if(number===2&&tier==='best')url.searchParams.set('v','shelves-best-20261002-1');
+ return url.href;
 }
 export async function cloneFurniture(number,tier='best'){
  const url=furnitureURL(number,tier);if(number===1)return cloneCounter(tier);

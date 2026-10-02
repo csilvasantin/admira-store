@@ -1,15 +1,18 @@
-import {preview} from './viewer.mjs?v=catalog-43';
-import {mountCounterStage} from './counter-stage.mjs?v=inventory-frame-1';
-import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=water-rack-50';
+import {preview} from './viewer.mjs?v=shelves-best-1';
+import {mountCounterStage} from './counter-stage.mjs?v=shelves-best-1';
+import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=shelves-best-1';
 import {referenceLabel,referencePhotoURL} from './starbucks/reference-model.mjs?v=photo-references-1';
 let disposePilot,stageQueue=Promise.resolve();
 function inspectAsset(asset){
+ const qualitySelect=document.querySelector('#model-quality'),quality=qualitySelect.value;
+ const current=new URL(location.href);current.searchParams.set('asset',asset.number);current.searchParams.set('quality',quality);history.replaceState(null,'',current);
+ document.querySelector('#quality-note').textContent=asset.number===2&&quality==='best'?'Best · madera con veta y relieve, herrajes, envases y etiquetas detallados.':'Perfil '+quality.toUpperCase()+' · modelo 3D completo';
  const select=document.querySelector('#model-select');select.value=String(asset.number);
- stageQueue=stageQueue.then(async()=>{select.disabled=true;disposePilot?.();disposePilot=null;const oldCanvas=document.querySelector('#mostrador canvas');oldCanvas.replaceWith(oldCanvas.cloneNode(false));
+ stageQueue=stageQueue.then(async()=>{select.disabled=true;qualitySelect.disabled=true;disposePilot?.();disposePilot=null;const oldCanvas=document.querySelector('#mostrador canvas');oldCanvas.replaceWith(oldCanvas.cloneNode(false));
   document.querySelector('[data-status]').textContent='Cargando '+asset.name+'…';
-  document.querySelector('[data-blend]').href=furnitureURL(asset.number,'best','blend');
-  document.querySelector('[data-glb]').href=furnitureURL(asset.number,'best');
-  disposePilot=await mountCounterStage(document.querySelector('#mostrador'),asset,{controlsHost:document});select.disabled=false;
+  document.querySelector('[data-blend]').href=furnitureURL(asset.number,quality,'blend');
+  document.querySelector('[data-glb]').href=furnitureURL(asset.number,quality);
+  disposePilot=await mountCounterStage(document.querySelector('#mostrador'),asset,{controlsHost:document,quality});select.disabled=false;qualitySelect.disabled=false;
  });return stageQueue;
 }
 window.addEventListener('pagehide',()=>disposePilot?.());
@@ -58,7 +61,7 @@ store.subscribe(s=>{if(s===space){render();showInstances();}});window.addEventLi
 function merge(items){assets=numberedCatalog(data.native,[...stock.items,...items],registry);render();}
 $('#refresh').onclick=async()=>{const button=$('#refresh');button.disabled=true;$('#sync').textContent='Consultando Pixeria…';try{const r=await fetch(STOCK_URL,{signal:AbortSignal.timeout(20000),cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();if(!Array.isArray(d.items))throw Error();merge(d.items);$('#sync').textContent=assets.length+' piezas numeradas · metadatos actualizados desde Pixeria'+(d.total>d.items.length?' · el servicio ha limitado la respuesta':'')+'.';}catch{$('#sync').textContent='Pixeria no responde. Conservamos el catálogo cargado; puedes volver a intentarlo.';}finally{button.disabled=false;}};
 try{
- const [catalog,photos]=await Promise.all([loadCatalog(),fetch('./starbucks/manifest.json').then(r=>r.ok?r.json():null).catch(()=>null)]);({data,stock,registry}=catalog);for(const unit of photos?.units||[]){if(unit.asset_number>=44&&unit.asset_number<=50&&unit.photo&&unit.reference_id&&!realPhotos.has(unit.asset_number)){try{referencePhotoURL(unit,new URL('./starbucks/',location.href));realPhotos.set(unit.asset_number,unit);}catch{}}}merge(stock.items);const selector=$('#model-select');selector.replaceChildren(...assets.map(a=>{const o=el('option',a.number+'. '+a.name);o.value=a.number;return o;}));selector.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));inspectAsset(assets[0]);$('#sync').textContent=assets.length+' piezas con identificadores permanentes · catálogo Pixeria del '+new Date(stock.fetchedAt).toLocaleDateString('es-ES')+'.';
+ const [catalog,photos]=await Promise.all([loadCatalog(),fetch('./starbucks/manifest.json').then(r=>r.ok?r.json():null).catch(()=>null)]);({data,stock,registry}=catalog);for(const unit of photos?.units||[]){if(unit.asset_number>=44&&unit.asset_number<=50&&unit.photo&&unit.reference_id&&!realPhotos.has(unit.asset_number)){try{referencePhotoURL(unit,new URL('./starbucks/',location.href));realPhotos.set(unit.asset_number,unit);}catch{}}}merge(stock.items);const selector=$('#model-select');selector.replaceChildren(...assets.map(a=>{const o=el('option',a.number+'. '+a.name);o.value=a.number;return o;}));selector.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));const params=new URLSearchParams(location.search);const qualitySelect=$('#model-quality');qualitySelect.value=tiers.includes(params.get('quality'))?params.get('quality'):'best';qualitySelect.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));inspectAsset(assets.find(a=>a.number===Number(params.get('asset')))||assets[0]);$('#sync').textContent=assets.length+' piezas con identificadores permanentes · catálogo Pixeria del '+new Date(stock.fetchedAt).toLocaleDateString('es-ES')+'.';
  imageFor(data.native.find(x=>x.type==='counter'),'best').then(src=>{$('#hero-img').src=src;}).catch(()=>{$('#hero-img').alt='Mostrador: vista no disponible';});
 }catch(e){$('#catalog').textContent=e.message;$('#sync').textContent='Recarga la página para volver a intentarlo.';}
 window.addEventListener('pagehide',()=>observer.disconnect());

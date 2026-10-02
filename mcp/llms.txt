@@ -566,3 +566,16 @@ Verified animated tutorial: https://api.yokup.com/media/fleet/48dc7b828ce966f7.m
 ITIL inventory link
 ES: ITIL está debajo de Percepción, a la derecha de Pixeria: abre en otra pestaña https://www.xpaceos.com/inventario/, con catálogo de muebles detallados, modelos 3D y editor. Yokup conserva el inventario maestro ITIL. Inventario mantiene sus acciones locales de añadir/eliminar.
 EN: ITIL sits below Perception, to the right of Pixeria: it opens https://www.xpaceos.com/inventario/ in a new tab, with detailed furniture, 3D models and the editor. Yokup remains the master ITIL inventory. Inventory keeps its local add/remove actions.
+
+## Estantería Best · piloto / Best shelf · pilot
+
+ES: La estantería #2 (native:shelves) estrena el piloto Best del catálogo: baldas y herrajes separados, cantos trabajados, veta de madera con mapas PBR de color, normal y rugosidad, y 45 envases representativos con más detalle. En el visor, el selector Good / Better / Best permite comparar los perfiles; Descargar GLB y Blender sigue el perfil elegido. Good y Better conservan sus modelos anteriores. Los envases son contenido visual; la selección de calidad conserva los IDs y las fichas ITIL, preferencias e historial CLI.
+
+EN: Shelf #2 (native:shelves) introduces the catalogue Best pilot: separate shelves and hardware, detailed edges, wood grain with PBR colour, normal and roughness maps, and 45 representative containers with more detail. In the viewer, the Good / Better / Best selector compares profiles; GLB and Blender downloads follow the selected profile. Good and Better retain their previous models. Containers are visual content; quality selection preserves IDs, ITIL records, preferences and CLI history.
+
+Catalogue ID: 2 · inventory ID: native:shelves · footprint: 1×2 · 45 representative visual containers, not stock.
+Viewer: https://www.xpaceos.com/inventario/?asset=2&quality=best
+Assets: https://www.xpaceos.com/inventario/assets/catalog/02/best.glb · https://www.xpaceos.com/inventario/assets/catalog/02/best.blend · https://www.xpaceos.com/inventario/assets/catalog/02/best-preview.png
+Contract: https://www.xpaceos.com/admira-xp/docs/shelf-best.md
+Tutorial ES/EN: https://www.xpaceos.com/help/#shelf-best
+Status: implemented. Blender reimport, profile downloads and WebGL comparison validated. No new remote MCP tool or CLI command. Catalogue viewer selection does not alter /modo best or /distribute in the twin.
