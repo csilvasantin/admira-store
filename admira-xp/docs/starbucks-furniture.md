@@ -10,7 +10,7 @@ EN: Carlos confirmed the list on 1 October 2026. Yokup is the ITIL master for `a
 
 [Manifest](https://www.xpaceos.com/inventario/starbucks/manifest.json): `itil_code` ↔ `instance_id` ↔ `asset_number` ↔ `model3d`/`master`. Catálogo permanente 44–50: barra, mostrador, vitrina, estantería, mesa, silla y botellero. Las dos mesas comparten asset 48; las cuatro sillas comparten asset 49. / Permanent catalog numbers 44–50: preparation counter, checkout counter, case, shelves, table, chair and water rack. Two tables share asset 48; four chairs share asset 49.
 
-Los modelos 44–49 conservan sus 18 GLB y sus 18 maestros Blender construidos desde las piezas de `scripts/starbucks-room.js`, con sillas separadas y geometría propia por tipo. Good/Better/Best son estilos, no precisión métrica; unidades de escena sin calibrar. El visor no modifica el local ni publica cambios de distribución. La escena actual mantiene sus sillas agrupadas en las mesas; la galería ofrece los modelos independientes. / Models 44–49 retain their 18 GLBs and 18 Blender masters derived from shared scene parts, separating chairs and retaining type-specific geometry. Good/Better/Best are styles, not measured accuracy. Viewer actions do not edit the venue or publish layouts. The current scene still groups chairs under tables; the gallery provides independent models.
+Los modelos 44–49 conservan sus 18 GLB y sus 18 maestros Blender construidos desde las piezas de `scripts/starbucks-room.js`, con sillas separadas y geometría propia por tipo. Good/Better/Best son estilos, no precisión métrica; unidades de escena sin calibrar. El visor permite editar acabados por unidad; no publica cambios de distribución. La escena actual mantiene sus sillas agrupadas en las mesas; la galería ofrece los modelos independientes. / Models 44–49 retain their 18 GLBs and 18 Blender masters derived from shared scene parts, separating chairs and retaining type-specific geometry. Good/Better/Best are styles, not measured accuracy. The viewer edits finishes per unit without publishing layout changes. The current scene still groups chairs under tables; the gallery provides independent models.
 
 ## Botellero Solán de Cabras / Solán de Cabras water rack
 
@@ -55,3 +55,6 @@ En Inventario → Starbucks PG103, selecciona una unidad: «Ficha ITIL y 3D» re
 In Inventory → Starbucks PG103 select a unit: “ITIL and 3D record” shows code, instance, shared model, photo-observed zone and pending measurements. Open visual-link history and the Yokup master record with its existing permissions. In Expert: /record PDG103-MES-02; /marca and /marca off retain appearance changes. Woz’s /avatarDigital is pending publication. Candidates are not registered automatically; this record does not establish real telemetry.
 
 [Contrato / Contract](https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md)
+
+
+Editor de superficies / Surface editor: [guía y límites](surface-editor.md).

@@ -141,6 +141,15 @@
     if (!m) return null;
     return {raw, slash: !!m[1], verb: m[2].toLowerCase(), args: (m[3] || '').trim()};
   }
+  // Interruptor del avatar (FLT-101350). /cli ayudante|helper es el avatar;
+  // cualquier otro /cli sigue siendo verbo del gemelo.
+  function isAvatarCommand(text) {
+    const parsed = parseCommand(text);
+    if (!parsed) return false;
+    if (parsed.verb === 'avatardigital' || parsed.verb === 'digitalavatar') return true;
+    if (parsed.verb !== 'cli') return false;
+    return /^(ayudante|helper)(?:\s|$)/i.test(parsed.args);
+  }
   const isTwinVerb = verb => TWIN_VERBS.includes(String(verb || '').toLowerCase());
   // Orden canónica para el gemelo: las vistas van sin barra; el resto con barra.
   function twinCommand(parsed) {
@@ -284,7 +293,7 @@
 
   const api = {PANELS_KEY, HISTORY_KEY, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY,
-    esc, normalizeConfig, markup, parseCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
+    esc, normalizeConfig, markup, parseCommand, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -329,9 +338,40 @@
   if (script && script.dataset.marca === 'barra') html.setAttribute('data-mb-alcance', 'barra');
   if (wantsBrand(root.location && root.location.search, session)) cargarMarca();
 
+  // Avatar digital: no se descarga en una visita normal. Solo si el sitio lo dejó
+  // encendido, o cuando el CLI llama a shared.avatar (FLT-101350).
+  function avatarKey() {
+    try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
+  }
+  function avatarStoredOn() {
+    try { return !!(local && local.getItem(avatarKey()) === '1'); } catch (_) { return false; }
+  }
+  let avatarPromise = null;
+  function cargarAvatar() {
+    if (root.AvatarDigital) return Promise.resolve(root.AvatarDigital);
+    if (!avatarPromise) {
+      avatarPromise = new Promise(resolve => {
+        const s = doc.createElement('script');
+        let src = '/assets/avatar-digital.js';
+        try { src = new URL('avatar-digital.js', script.src).pathname; } catch (_) {}
+        s.src = src + (VERSION ? '?v=' + encodeURIComponent(VERSION) : '');
+        s.async = true;
+        s.setAttribute('data-xpace-avatar', '');
+        s.onload = () => resolve(root.AvatarDigital || null);
+        s.onerror = () => { s.remove(); avatarPromise = null; resolve(null); };
+        (doc.head || doc.documentElement).append(s);
+      });
+    }
+    return avatarPromise;
+  }
+  Object.assign(shared, {
+    avatar: (text) => cargarAvatar().then(A => (A ? A.handle(text) : T('Avatar digital no disponible', 'Digital avatar unavailable'))),
+  });
+
   // El gemelo trae la barra en línea: no se duplica nada (solo queda el API y la marca).
   if (doc.getElementById('topBar') && !doc.querySelector('[data-xpace-shell]')) {
     root.XpaceShell = Object.assign(shared, {inline: true});
+    if (avatarStoredOn()) cargarAvatar();
     return;
   }
   if (root.XpaceShell) return;
@@ -585,6 +625,24 @@
     if (root.ResizeObserver) new ResizeObserver(layout).observe(parts.expert);
     new MutationObserver(translate).observe(html, {attributes: true, attributeFilter: ['lang']});
     wireCli();
+    registerVerb({
+      id: 'avatardigital',
+      aliases: ['digitalavatar'],
+      es: 'Muestra u oculta el avatar digital. Sin argumento alterna; on/off lo fija.',
+      en: 'Show or hide the digital avatar. No argument toggles; on/off pins it.',
+      run: (args) => shared.avatar('/avatardigital' + (args ? ' ' + args : '')),
+    });
+    registerVerb({
+      id: 'cli',
+      es: 'Interruptor del avatar: /cli ayudante [on|off]. El resto de /cli sigue al gemelo.',
+      en: 'Avatar switch: /cli helper [on|off]. Any other /cli still goes to the twin.',
+      run(args) {
+        const first = String(args || '').trim().split(/\s+/)[0].toLowerCase();
+        if (first === 'ayudante' || first === 'helper') return shared.avatar('/cli ' + String(args || '').trim());
+        handoff('/cli' + (args ? ' ' + args : ''));
+      },
+    });
+    if (avatarStoredOn()) cargarAvatar();
     log(T('XpaceOS · consola lista. Escribe /help.', 'XpaceOS · console ready. Type /help.'));
 
     Object.assign(shared, {

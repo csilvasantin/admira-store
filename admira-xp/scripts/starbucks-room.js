@@ -91,9 +91,10 @@
         for(const zz of [z,z+1.5,z+3])box(x+.85,0,zz,.06,2.34,.04,C.steel);
       }else if(item.id==='sb-pillar')box(x,0,z,.72,3.3,.72,C.cream);
       else if(item.type==='cafeTable'){
-        box(x+.4,0,z+.4,.67,.06,.67,C.black,{round:true});box(x+.68,.05,z+.68,.1,.68,.1,C.black);
-        box(x+.12,.74,z+.12,1.25,.085,1.25,C.wood,{round:true});cup(x+.70,.83,z+.5);
-        for(const zz of [z-.12,z+1.48]){box(x+.47,.37,zz,.6,.07,.48,C.wood);box(x+.47,.42,zz+.39,.6,.47,.065,C.wood);for(const xx of [x+.52,x+1])box(xx,0,zz+.08,.05,.39,.27,C.black);}
+        box(x+.4,0,z+.4,.67,.06,.67,C.black,{round:true,appearanceInstance:item.id});box(x+.68,.05,z+.68,.1,.68,.1,C.black,{appearanceInstance:item.id});
+        box(x+.12,.74,z+.12,1.25,.085,1.25,C.wood,{round:true,appearanceInstance:item.id});cup(x+.70,.83,z+.5);
+        [z-.12,z+1.48].forEach((zz,index)=>{const appearanceInstance='sb-chair-'+((item.id==='sb-table-b'?3:1)+index);
+          box(x+.47,.37,zz,.6,.07,.48,C.wood,{appearanceInstance});box(x+.47,.42,zz+.39,.6,.47,.065,C.wood,{appearanceInstance});for(const xx of [x+.52,x+1])box(xx,0,zz+.08,.05,.39,.27,C.black,{appearanceInstance});});
       }
     }
     return groups;

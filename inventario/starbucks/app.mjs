@@ -1,5 +1,6 @@
+import {mountSurfaceEditor} from '../surface-editor.mjs?v=surfaces-1';
 import {recordFor, recordURL, recordFields} from './ci-record.mjs?v=ci-record-1';
-import {mountCounterStage} from '../counter-stage.mjs?v=inventory-frame-1';
+import {mountCounterStage} from '../counter-stage.mjs?v=surfaces-1';
 import {indexReferences, referenceLabel, referencePhotoURL, selectReference, selectionURL, nameFor} from './reference-model.mjs?v=photo-references-1';
 
 const params = new URLSearchParams(location.search), language = params.get('lang') === 'en' ? 'en' : 'es', en = language === 'en';
@@ -133,7 +134,7 @@ function select(reference) {
     if (currentRevision !== revision || !show3d) return;
     const canvas = $('#model-panel canvas'); canvas.replaceWith(canvas.cloneNode(false));
     $('#model-status').textContent = copy.loading;
-    dispose = await mountCounterStage($('#model-panel'), {number:unit.asset_number, name:nameFor(reference, unit, language)}, {controlsHost:document});
+    dispose = await mountCounterStage($('#model-panel'), {number:unit.asset_number, name:nameFor(reference, unit, language)}, {controlsHost:document,onReady:api=>mountSurfaceEditor($('#model-panel'),api,{venue:manifest.location_id,instance:unit.instance_id,code:unit.itil_code},{en})});
     if (currentRevision !== revision) { dispose?.(); dispose = null; }
   }).catch(error => { if (currentRevision === revision) $('#model-status').textContent = (en ? 'Model unavailable: ' : 'Modelo no disponible: ') + error.message; });
 }

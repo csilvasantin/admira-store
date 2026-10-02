@@ -1,5 +1,7 @@
+import {createSurfaceBinding,connectAppearance} from './surface-materials.mjs?v=surfaces-1';
+import {appearanceIdentity} from '../../inventario/starbucks/surface-identities.mjs';
 import * as T from './premium-three.mjs';
-import './starbucks-room.js?v=starbucks-room-1';
+import './starbucks-room.js?v=surfaces-1';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=distribuir-3';
 import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
@@ -27,7 +29,9 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   const scene=new T.Scene(),world=new T.Group(),actors=new T.Group();
   world.name='life:world';actors.name='life:actors';scene.add(world,actors);
   const geometry=new Set(),materials=new Set(),textures=new Set(),actorMap=new Map();
-  const worldResources=new Set(),fixtureLights=[],doors=[];
+  const worldResources=new Set(),fixtureLights=[],doors=[],surfaceConnections=[];
+  const disconnectSurfaces=()=>{surfaceConnections.splice(0).forEach(stop=>stop());};
+  function bindSurfaces(root,instance){const identity=appearanceIdentity(snapshot.venue,instance);if(!identity)return;const binding=createSurfaceBinding(root);surfaceConnections.push(connectAppearance(binding,identity,()=>{root.userData.appearanceStatus='applied';},()=>{root.userData.appearanceStatus='unavailable';}));}
   const sharedResources=new Set();
   const own=(resource,scope=sharedResources)=>{scope.add(resource);if(resource.isBufferGeometry)geometry.add(resource);else if(resource.isMaterial)materials.add(resource);else if(resource.isTexture)textures.add(resource);return resource;};
   const release=scope=>{for(const resource of scope){resource.dispose();geometry.delete(resource);materials.delete(resource);textures.delete(resource);}scope.clear();};
@@ -345,7 +349,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         asset.traverse(o=>{if(o.userData.doorHinge){o.rotation.y=-snapshot.doorOpen*Math.PI*.48;doors.push(o);}});
         asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='existing_shared_player')o.material=mediaMaterial;});
         if(asset.userData.pixeria)asset.traverse(o=>{if(o.isMesh){own(o.geometry,worldResources);for(const m of Array.isArray(o.material)?o.material:[o.material]){own(m,worldResources);for(const v of Object.values(m))if(v?.isTexture)own(v,worldResources);}}});
-        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);root.userData.assetStatus='ready';root.userData.assetSource=item.source==='PixerIA'?'PixerIA':'Blender';
+        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);bindSurfaces(asset,item.id);root.userData.assetStatus='ready';root.userData.assetSource=item.source==='PixerIA'?'PixerIA':'Blender';
       }).catch(()=>{if(!disposed&&root.parent===world)root.userData.assetStatus='fallback';});
     }
     return root;
@@ -356,7 +360,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     const finish=part=>{
       const key=part.color+(part.glass?'glass':'');if(colors.has(key))return colors.get(key);
       const detailed=assetQuality==='best';
-      const m=material(part.color,{roughness:part.glass?.12:detailed?.62:.9,
+      const m=material(part.color,{name:part.color,roughness:part.glass?.12:detailed?.62:.9,
         ...(part.glass?{transparent:true,opacity:.19,depthWrite:false}:{}),
         ...(detailed&&['#ad855b','#745640'].includes(part.color)?{map:woodMap}:{}),
         ...(part.color==='#ffe2a0'?{emissive:part.color,emissiveIntensity:.7}:{} )},worldResources);
@@ -369,12 +373,17 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         root.position.set(item.col,0,item.row);root.rotation.y=-(item.rot??0)*Math.PI/2;
         root.scale.set((item.flipX?-1:1)*(item.sx??1),item.sy??1,item.sx??1);
       }
+      const editableGroups=new Map();
       for(const part of fixture.parts){
         const {y,w,h,d}=part,x=part.x-(fixture.item?.col||0),z=part.z-(fixture.item?.row||0);
-        if(part.round&&assetQuality==='best')mesh(root,cylinderGeometry,finish(part),x+w/2,y+h/2,z+d/2,w/2,h,d/2);
-        else box(root,x+w/2,y+h/2,z+d/2,w,h,d,finish(part),assetQuality==='best'&&Math.max(w,h,d)<2.5);
+        const instance=fixture.item?.type==='cafeTable'?part.appearanceInstance:fixture.id;
+        const identity=appearanceIdentity(snapshot.venue,instance);let parent=root;
+        if(identity){if(!editableGroups.has(instance)){const g=group(root);g.name='appearance:'+instance;editableGroups.set(instance,g);}parent=editableGroups.get(instance);}
+        if(part.round&&assetQuality==='best')mesh(parent,cylinderGeometry,finish(part),x+w/2,y+h/2,z+d/2,w/2,h,d/2);
+        else box(parent,x+w/2,y+h/2,z+d/2,w,h,d,finish(part),assetQuality==='best'&&Math.max(w,h,d)<2.5);
         if(part.text)label(root,part.text,x+w/2,y+h/2,z+d+.006,w*.96,h*.96,{bg:part.color,fg:'#f5eed9',font:40});
       }
+      for(const [instance,g]of editableGroups){bindSurfaces(g,instance);batch(g);}
       batch(root);
     }
     for(const item of snapshot.layout)if(item.source==='PixerIA')furniture(item);
@@ -661,7 +670,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     if(poses!==poseSignature){customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});poseSignature=poses;}
     if(next!==signature){
       customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
-      release(worldResources);world.traverse(o=>{if(o.isInstancedMesh)o.dispose();});world.clear();fixtureLights.length=0;doors.length=0;
+      disconnectSurfaces();release(worldResources);world.traverse(o=>{if(o.isInstancedMesh)o.dispose();});world.clear();fixtureLights.length=0;doors.length=0;
       if(snapshot.venue==='alsea-sbux-021')starbucksRoom();
       else {if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);}
       signature=next;
@@ -724,7 +733,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     mediaTexture.needsUpdate=true;
   }
   function dispose(){
-    if(disposed)return;disposed=true;
+    if(disposed)return;disposed=true;disconnectSurfaces();
     for(const root of actorMap.values())removeActor(root);
     exterior?.dispose();exterior=null;
     scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});

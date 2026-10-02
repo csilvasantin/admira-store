@@ -47,7 +47,9 @@ export const SITES = {
 // Rutas que usan OTROS sin login (Carlos, 1-oct-2026): el gemelo va incrustado
 // en clearchannel.tv, admira.tv y los decks; los Xpacios y el MCP los abren
 // players, decks y agentes. Cerrarlas rompería esos iframes y enlaces.
-export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp'];
+// /avatar-ask es solo el proxy del cerebro (FLT-101350): sin esto el POST, al no
+// llevar extensión, se trataría como documento y el perímetro lo mandaría al login.
+export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask'];
 
 export function siteForHost(hostname) {
   const host = String(hostname || '').toLowerCase();

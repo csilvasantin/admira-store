@@ -1406,7 +1406,7 @@
 <script src="assets/js/sfx.js?v=quiet-rain-1"></script>
 <script src="assets/js/ambient.js?v=quiet-rain-1"></script>
 <script src="assets/js/sky.js"></script>
-<script src="scripts/starbucks-room.js?v=distribuir-3"></script>
+<script src="scripts/starbucks-room.js?v=surfaces-1"></script>
 <script src="assets/js/heatmap.js"></script>
 <script src="assets/js/streamdeck.js"></script>
 <script src="assets/js/session-ping.js" defer></script>
@@ -31488,7 +31488,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=distribuir-3');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=surfaces-1');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -32723,6 +32723,18 @@ window.xtAPI = (function(){
   async function sendComposerText(text){
     const clean=String(text||'').trim();
     if(!clean) return;
+    // Avatar digital (FLT-101350): interruptor local. No sale a Telegram.
+    if(window.XpaceShell&&typeof window.XpaceShell.isAvatarCommand==='function'&&window.XpaceShell.isAvatarCommand(clean)){
+      hideHelpPanel();
+      appendTelegramLog('out','Experto',clean);
+      let line='';
+      try{ line=await window.XpaceShell.avatar(clean); }
+      catch(e){ line='Error: '+(e&&e.message||e); }
+      appendTelegramLog('bot','XpaceOS',line||'');
+      showLastResponse(line||'','ok','local-visual');
+      if(composer)composer.value='';
+      renderQuickActionButtons();return;
+    }
     // The visual command belongs to this browser, never to a remote bot.
     // Intercept before command/session logging and the normal Telegram echo.
     // /marca viste este navegador (marca blanca, FLT-101337): nunca va a Telegram.
@@ -35873,7 +35885,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
 <link rel="stylesheet" href="scripts/tier-hud.css?v=expert-hud-1">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=collapsed-entry-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=surfaces-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

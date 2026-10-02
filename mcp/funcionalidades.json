@@ -2736,5 +2736,19 @@
     "new_remote_tools": false,
     "master": "Yokup",
     "history": "Visual link events; lifecycle audit remains in Yokup"
+  },
+  "surface_editor": {
+    "es": "Inventario → Starbucks PG103 → selecciona una unidad → Editar, en la esquina del modelo. Elige una superficie en la lista o tocando el modelo; cambia el color, importa PNG/JPG/WebP (hasta 20 MB, optimizados a 1024 px) o usa Cuadros, Rayas o Terrazo. Ajusta repetición, rotación, rugosidad y metalizado; compara con el original y usa Deshacer/Rehacer. Aplicar al Xpacio guarda una versión por local + instancia + CI y actualiza sus superficies en Better/Best, también en otra pestaña del mismo navegador y dominio. Histórico permite recuperar un acabado y aplicarlo como nueva versión. Exportar copia JSON conserva imágenes e histórico; importar recupera el acabado actual como una nueva versión, sin reemplazar el histórico local. Guardado local, sin sincronización entre usuarios ni escritura en el histórico patrimonial de Yokup. Good, Matrix y los archivos GLB/Blender originales conservan su vista. El botellero no está colocado en la escena de referencia; editarlo no añade una ubicación. /marca y el shell Experto se conservan; /avatarDigital continúa a cargo de Woz.",
+    "en": "Inventory → Starbucks PG103 → select a unit → Edit in the model corner. Choose a surface from the list or by clicking the model; change its colour, import PNG/JPG/WebP (up to 20 MB, optimized to 1024 px), or use Checks, Stripes or Terrazzo. Adjust repeat, rotation, roughness and metalness; compare the original and use Undo/Redo. Apply to Xpacio saves a version keyed by venue + instance + CI and updates its surfaces in Better/Best, including another tab in the same browser and domain. History restores a finish to apply as a new version. Export JSON backup retains images and history; importing restores the current finish as a new version without replacing local history. Local storage, with no multiuser sync or writes to Yokup lifecycle history. Good, Matrix and original GLB/Blender files retain their view. The water rack is not placed in the reference scene; editing does not add a location. /marca and the Expert shell remain available; /avatarDigital remains Woz’s integration.",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/surface-editor.md",
+    "tutorial": "https://api.yokup.com/media/fleet/48dc7b828ce966f7.mp4",
+    "schema": 1,
+    "storage": "IndexedDB xpace-surfaces-v1; immutable image IDs; append-only saved history",
+    "scope": "same-origin browser; venue/instance/itil_code; no multiuser synchronization",
+    "renderers": [
+      "better",
+      "best"
+    ],
+    "new_remote_tools": false
   }
 }
