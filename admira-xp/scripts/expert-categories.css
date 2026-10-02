@@ -22,3 +22,6 @@
 #telegramDock .expert-controls-pane .expert-primary-actions{display:flex;flex-wrap:wrap}
 #telegramDock .expert-controls-pane .expert-primary-actions>button{border-radius:3px}
 @media(prefers-reduced-motion:reduce){:is(#expertQuickIcons,#advQuickIcons) .expert-category{transition:none}}
+
+/* Keep the paired Expert categories and ITIL directly below Perception. */
+#expertQuickIcons{grid-template-columns:repeat(2,minmax(0,1fr))}
