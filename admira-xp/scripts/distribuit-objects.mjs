@@ -1,5 +1,5 @@
-import {validateFurnitureMove,furniturePose} from './distribuit.mjs?v=distribuir-3';
-import {isWallFurniture} from './furniture-geometry.mjs';
+import {validateFurnitureMove,furniturePose} from './distribuit.mjs?v=imported-space-1';
+import {isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 
 const copy=value=>value==null?null:structuredClone(value);
 const canonical=value=>JSON.stringify(value&&typeof value==='object'?Array.isArray(value)?value.map(v=>JSON.parse(canonical(v))):Object.fromEntries(Object.keys(value).sort().map(k=>[k,JSON.parse(canonical(value[k]))])):value??null);

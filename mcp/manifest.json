@@ -1237,5 +1237,28 @@
       "new_mcp_tools": false,
       "pending": []
     }
+  },
+  "cafebreria_editor": {
+    "revision": "cafebreria-editor-20261003-1",
+    "state": "implemented",
+    "es": "Cafebrería usa el shell común: Opciones a la izquierda, Avanzado a la derecha y Experto/CLI abajo, con /marca e historial conservados. Opciones → Inventario ITIL lista 96 fichas: 83 piezas 3D y 13 pendientes sin geometría ni medidas confirmadas. Selecciona una ficha para enfocar su objeto; Editar en 3D abre el mismo Distribuir que los demás Xpacios. Arrastra el mueble o usa las flechas (¼ m), columna/fila, giro de 90°, escala 25–300%, bloqueo, eliminación y Deshacer. Mayús + arrastre mueve la cámara. Los elementos de arquitectura permanecen fijos. Fabricante, modelo, garantía, nombre y ubicación son editables; JSON/CSV exportan fichas y distribución. Los cambios se guardan en este navegador y dominio. Restaurar distribución recupera el original. Cargar desde PixerIA importa un objeto compatible y permite deshacer el alta. Las ventanas tienen tirador y X. /inventario [id], /distribuir, /distribuir off, /layout y /layout factory actúan en esta Cafebrería; /libreria abre sus contenidos. En otros Xpacios, /inventario añadir 51 mantiene la importación de la librería. Este listado describe la escena visual; no confirma existencias físicas ni crea patrimonio en Yokup.",
+    "en": "Cafebrería uses the shared shell: Options on the left, Advanced on the right and Expert/CLI below, preserving /brand and command history. Options → ITIL inventory lists 96 records: 83 3D pieces and 13 pending records without geometry or confirmed dimensions. Select a record to frame its object; Edit in 3D opens the same Distribute editor as other Xpacios. Drag furniture or use arrow keys (¼ m), column/row, 90° rotation, 25–300% scaling, lock, delete and Undo. Shift + drag pans the camera. Architectural elements remain fixed. Manufacturer, model, warranty, name and location are editable; JSON/CSV export records and layout. Changes are saved in this browser and domain. Restore layout recovers the original. Load from PixerIA imports a compatible object and supports undoing the addition. Windows have handles and X controls. /inventory [id], /distribute, /distribute off, /layout and /layout factory act on this Cafebrería; /bookcase opens its contents. In other Xpacios, /inventario añadir 51 still imports the bookcase. This inventory describes the visual scene; it does not confirm physical stock or create Yokup lifecycle assets.",
+    "inventory_url": "https://www.xpaceos.com/inventario/cafebreria/",
+    "roster": "https://www.xpaceos.com/inventario/cafebreria/scene.inventory.json",
+    "records": 96,
+    "modelled": 83,
+    "pending_geometry": 13,
+    "identity": "cafebreria:<source id>",
+    "shared_editor": "admira-xp/scripts/distribuit-ui.mjs",
+    "shared_adapter": "admira-xp/scripts/imported-space.mjs",
+    "storage": "xpaceos:imported-space:v1:cafebreria",
+    "scope": "visual_scene_inventory_not_verified_physical_stock",
+    "architecture_fixed": true,
+    "physical_cmdb_writes": false,
+    "new_mcp_tools": false,
+    "help": "https://www.xpaceos.com/help/#cafebreria-editor",
+    "pending": [
+      "13 source records have no geometry or confirmed dimensions"
+    ]
   }
 }

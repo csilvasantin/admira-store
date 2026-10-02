@@ -1,6 +1,6 @@
-import {createDistribuitController} from './distribuit-controller.mjs?v=distribuir-3';
-import {furniturePose,SCALE_LIMITS} from './distribuit.mjs?v=distribuir-3';
-import {isWallFurniture} from './furniture-geometry.mjs';
+import {createDistribuitController} from './distribuit-controller.mjs?v=imported-space-1';
+import {furniturePose,SCALE_LIMITS} from './distribuit.mjs?v=imported-space-1';
+import {isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
 
 export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
@@ -19,7 +19,7 @@ export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
     <p class="distribuit-status" role="status" aria-live="polite"></p>`;
   const canvas=dialog.querySelector('canvas'),previousLabel=canvas.getAttribute('aria-label');
   canvas.setAttribute('aria-label',t('Editor de muebles: arrastra para mover; flechas para desplazar; Escape para cancelar.','Furniture editor: drag or arrow keys to move; Escape to cancel.'));
-  const stage=dialog.querySelector('.life-stage');stage.append(host);dialog.classList.add('distribuit-open');
+  const stage=dialog.matches?.('.life-stage')?dialog:dialog.querySelector('.life-stage');stage.append(host);dialog.classList.add('distribuit-open');
   // Life owns reopening: closing this editor also disposes its controller.
   const floating=attachFloatingPanel(host,{label:t('Distribuir','Distribute'),handle:host.querySelector('header'),closeButton:host.querySelector('[data-action="close"]'),bounds:stage,key:'xpaceos.window.distribuir.v1'});
   floating.restore();

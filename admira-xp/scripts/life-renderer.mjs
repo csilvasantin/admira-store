@@ -3,7 +3,7 @@ import * as T from './premium-three.mjs';
 import {createLifeScene} from './life-scene.mjs?v=shelf-products-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
 import {inventoryIdFor} from './furniture-asset.mjs?v=cafebreria-1';
-import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs';
+import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));

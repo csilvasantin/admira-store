@@ -3,7 +3,7 @@
 export const FLOOR_FOOTPRINTS=Object.freeze({counter:[1,2],shelves:[1,2],wineRack:[2,1],lottery:[2,1],vending:[1,1],magazines:[2,1],manager:[2,1],plant:[1,1],floorLamp:[1,1],rug:[2,2],djBooth:[2,1],tablet:[1,1],turnKiosk:[1,1],aroma:[1,1],metahuman:[1,1],cafeTable:[1,1],bookcase:[1,2],sofa:[2,1]});
 const WALL_TYPES=new Set(['led','tft','aroma','door']);
 export const isWallFurniture=item=>item?.mount==='wall'||WALL_TYPES.has(item?.type);
-export const isSolidFurniture=item=>item&&item.hidden!==true&&!isWallFurniture(item)&&item.type!=='rug';
+export const isSolidFurniture=item=>item&&item.hidden!==true&&item.solid!==false&&!isWallFurniture(item)&&item.type!=='rug';
 const number=(value,fallback)=>Number.isFinite(Number(value))?Number(value):fallback;
 export function furnitureBounds(item,footprints={}){
   const fp=Array.isArray(item?.fp)?item.fp:footprints[item?.type]||FLOOR_FOOTPRINTS[item?.type]||[1,1];

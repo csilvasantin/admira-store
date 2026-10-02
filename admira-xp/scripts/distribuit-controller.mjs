@@ -1,5 +1,5 @@
-import {validateFurnitureMove,furniturePose,sameFurniturePose} from './distribuit.mjs?v=distribuir-3';
-import {isWallFurniture} from './furniture-geometry.mjs';
+import {validateFurnitureMove,furniturePose,sameFurniturePose} from './distribuit.mjs?v=imported-space-1';
+import {isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 
 // Preview is private to Better. Only a validated, completed gesture is saved.
 export function createDistribuitController({bridge,onChange=()=>{}}={}){

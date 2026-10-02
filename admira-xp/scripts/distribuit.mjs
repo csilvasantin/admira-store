@@ -1,4 +1,4 @@
-import {furnitureBounds,isSolidFurniture,isWallFurniture} from './furniture-geometry.mjs';
+import {furnitureBounds,isSolidFurniture,isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 const EPS=1e-7;
 export const SCALE_LIMITS=Object.freeze({min:.25,max:3});
 export const furniturePose=item=>({col:item.col,row:item.row,rot:item.rot??0,sx:item.sx??1,sy:item.sy??1});

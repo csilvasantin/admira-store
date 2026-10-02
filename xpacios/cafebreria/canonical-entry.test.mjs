@@ -2,12 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-test('Cafebrería canonical entry opens its verified Good scene',()=>{
+test('Cafebrería canonical entry retains the original scene and common XpaceOS editor',()=>{
   const html=fs.readFileSync(new URL('./index.html',import.meta.url),'utf8');
-  const target='/admira-xp/?autostart=cafeteria&loc=cafebreria-barcelona';
   assert.match(html,/canonical" href="https:\/\/www\.xpaceos\.com\/xpacios\/cafebreria\//);
-  assert.ok(html.includes(`url=${target.replace(/&/g,'&amp;')}`));
-  assert.ok(html.includes(`location.replace('${target}')`));
+  assert.match(html,/xpace-shell\.js/);
+  assert.match(html,/cafe-edit/);
+  assert.match(html,/cafe-inventory/);
+  const runtime=fs.readFileSync(new URL('./cafe.mjs',import.meta.url),'utf8');
+  assert.match(runtime,/scene\.glb/);
+  assert.match(runtime,/mountDistribuit/);
+  assert.match(runtime,/surroundings:true/);
 });
 
 test('Cafebrería replaces only the fallback LED identity',()=>{
