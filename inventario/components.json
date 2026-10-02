@@ -1,0 +1,5282 @@
+{
+  "schema_version": 1,
+  "revision": "components-20261002-1",
+  "assets": [
+    {
+      "id": "native:counter",
+      "number": 1,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/mostrador/counter-interpreted-best.blend",
+        "admira-xp/tools/xpacios-blender/build_counter.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "cabinet",
+          "label": {
+            "es": "Mueble y encimera",
+            "en": "Cabinet and worktop"
+          },
+          "components": [
+            {
+              "id": "plinth",
+              "label": {
+                "es": "Zócalo",
+                "en": "Plinth"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo del mueble",
+                "en": "Cabinet body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "teal-panels",
+              "label": {
+                "es": "Paneles lacados frontal y lateral",
+                "en": "Front and side lacquered panels"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "oak-flutes",
+              "label": {
+                "es": "Listones de roble",
+                "en": "Oak flutes"
+              },
+              "quantity": 28
+            },
+            {
+              "id": "brass-inlays",
+              "label": {
+                "es": "Molduras de latón",
+                "en": "Brass inlays"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Encimera de terrazo",
+                "en": "Terrazzo worktop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "shadow-seam",
+              "label": {
+                "es": "Junta bajo encimera",
+                "en": "Worktop shadow seam"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "service-drawer",
+              "label": {
+                "es": "Frente de cajón de servicio",
+                "en": "Service drawer front"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "service-doors",
+              "label": {
+                "es": "Puertas de servicio",
+                "en": "Service doors"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "handles",
+              "label": {
+                "es": "Tiradores",
+                "en": "Handles"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "hinges",
+              "label": {
+                "es": "Bisagras representadas",
+                "en": "Represented hinges"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": {
+            "es": "Equipamiento de caja",
+            "en": "Checkout equipment"
+          },
+          "components": [
+            {
+              "id": "cash-drawer",
+              "label": {
+                "es": "Cajón portamonedas",
+                "en": "Cash drawer"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "shell",
+                  "label": {
+                    "es": "Carcasa",
+                    "en": "Shell"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "front",
+                  "label": {
+                    "es": "Frontal",
+                    "en": "Front"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "slot",
+                  "label": {
+                    "es": "Ranura",
+                    "en": "Slot"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "lock",
+                  "label": {
+                    "es": "Cerradura",
+                    "en": "Lock"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "pos-terminal",
+              "label": {
+                "es": "Terminal TPV",
+                "en": "POS terminal"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "base",
+                  "label": {
+                    "es": "Base",
+                    "en": "Base"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "pedestal",
+                  "label": {
+                    "es": "Pedestal",
+                    "en": "Pedestal"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "hinge",
+                  "label": {
+                    "es": "Articulación",
+                    "en": "Hinge"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "bezel",
+                  "label": {
+                    "es": "Marco de pantalla",
+                    "en": "Display bezel"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "display",
+                  "label": {
+                    "es": "Pantalla principal",
+                    "en": "Main display"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "status-led",
+                  "label": {
+                    "es": "Indicador luminoso",
+                    "en": "Status light"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "keyboard",
+              "label": {
+                "es": "Teclado",
+                "en": "Keyboard"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Carcasa",
+                    "en": "Housing"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "keys",
+                  "label": {
+                    "es": "Teclas representadas",
+                    "en": "Represented keys"
+                  },
+                  "quantity": 30
+                },
+                {
+                  "id": "spacebar",
+                  "label": {
+                    "es": "Barra espaciadora",
+                    "en": "Spacebar"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "payment-terminal",
+              "label": {
+                "es": "Terminal de pago",
+                "en": "Payment terminal"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Carcasa",
+                    "en": "Housing"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "screen",
+                  "label": {
+                    "es": "Pantalla",
+                    "en": "Display"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "keys",
+                  "label": {
+                    "es": "Teclas",
+                    "en": "Keys"
+                  },
+                  "quantity": 9
+                },
+                {
+                  "id": "accept-key",
+                  "label": {
+                    "es": "Tecla de aceptación",
+                    "en": "Accept key"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "receipt-printer",
+              "label": {
+                "es": "Impresora de recibos",
+                "en": "Receipt printer"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo",
+                    "en": "Body"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "lid",
+                  "label": {
+                    "es": "Tapa",
+                    "en": "Lid"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "slot",
+                  "label": {
+                    "es": "Salida de papel",
+                    "en": "Paper outlet"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "paper",
+                  "label": {
+                    "es": "Recibo representativo",
+                    "en": "Representative receipt"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "packing-mat",
+              "label": {
+                "es": "Alfombrilla de preparación",
+                "en": "Packing mat"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "signage",
+          "label": {
+            "es": "Identificación",
+            "en": "Identification"
+          },
+          "components": [
+            {
+              "id": "nameplate",
+              "label": {
+                "es": "Placa de marca",
+                "en": "Brand plate"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "lettering",
+              "label": {
+                "es": "Rótulos editables XTANCO y ADMIRA",
+                "en": "Editable XTANCO and ADMIRA lettering"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:shelves",
+      "number": 2,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/02/best.blend",
+        "admira-xp/tools/xpacios-blender/build_shelves_best.py",
+        "inventario/assets/catalog/02/best.manifest.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "structure",
+          "label": {
+            "es": "Estructura",
+            "en": "Structure"
+          },
+          "components": [
+            {
+              "id": "plinth",
+              "label": {
+                "es": "Zócalo de nogal",
+                "en": "Walnut plinth"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "levelling-feet",
+              "label": {
+                "es": "Pies niveladores",
+                "en": "Levelling feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "back-panel",
+              "label": {
+                "es": "Panel posterior lacado",
+                "en": "Lacquered back panel"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "side-panels",
+              "label": {
+                "es": "Paneles laterales de roble",
+                "en": "Oak side panels"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "side-inlays",
+              "label": {
+                "es": "Incrustaciones laterales lacadas",
+                "en": "Lacquered side inlays"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "side-uprights",
+              "label": {
+                "es": "Montantes del marco lateral",
+                "en": "Side frame uprights"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "side-cross-rails",
+              "label": {
+                "es": "Travesaños del marco lateral",
+                "en": "Side frame cross rails"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "side-insets",
+              "label": {
+                "es": "Paneles elevados del marco lateral",
+                "en": "Raised side frame panels"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "crown",
+              "label": {
+                "es": "Coronación",
+                "en": "Crown"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "oak-undercut",
+                  "label": {
+                    "es": "Base de roble",
+                    "en": "Oak undercut"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "teal-cap",
+                  "label": {
+                    "es": "Tapa lacada redondeada",
+                    "en": "Rounded lacquered cap"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "brass-reveal",
+                  "label": {
+                    "es": "Perfil de latón",
+                    "en": "Brass reveal"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "shelves",
+              "label": {
+                "es": "Baldas de roble",
+                "en": "Oak shelves"
+              },
+              "quantity": 5
+            },
+            {
+              "id": "rear-stiles",
+              "label": {
+                "es": "Montantes posteriores",
+                "en": "Rear stiles"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "rear-cross-rails",
+              "label": {
+                "es": "Travesaños posteriores",
+                "en": "Rear cross rails"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "fittings",
+          "label": {
+            "es": "Herrajes y rotulación",
+            "en": "Fittings and signage"
+          },
+          "components": [
+            {
+              "id": "support-pins",
+              "label": {
+                "es": "Soportes de balda",
+                "en": "Shelf support pins"
+              },
+              "quantity": 20
+            },
+            {
+              "id": "pin-holes",
+              "label": {
+                "es": "Taladros de regulación",
+                "en": "Shelf adjustment holes"
+              },
+              "quantity": 248,
+              "note": {
+                "es": "Son perforaciones representadas en el modelo, no piezas independientes.",
+                "en": "These are modeled holes, not separate parts."
+              }
+            },
+            {
+              "id": "back-screws",
+              "label": {
+                "es": "Tornillos posteriores",
+                "en": "Back fixing screws"
+              },
+              "quantity": 6
+            },
+            {
+              "id": "label-rails",
+              "label": {
+                "es": "Portaetiquetas de latón",
+                "en": "Brass label rails"
+              },
+              "quantity": 5,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "brass-nose",
+                  "label": {
+                    "es": "Perfil de latón",
+                    "en": "Brass profile"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "label-recess",
+                  "label": {
+                    "es": "Canal para etiquetas",
+                    "en": "Label recess"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "shelf-cards",
+              "label": {
+                "es": "Tarjetas de identificación",
+                "en": "Identification cards"
+              },
+              "quantity": 45,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            },
+            {
+              "id": "header-lettering",
+              "label": {
+                "es": "Rótulo editable SELECCIÓN",
+                "en": "Editable SELECCIÓN lettering"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "display-products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "bottles",
+              "label": {
+                "es": "Botellas ámbar",
+                "en": "Amber bottles"
+              },
+              "quantity": 6,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo de vidrio",
+                    "en": "Glass body"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "cap",
+                  "label": {
+                    "es": "Tapón",
+                    "en": "Cap"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "cap-bands",
+                  "label": {
+                    "es": "Anillos de detalle del tapón",
+                    "en": "Cap detail bands"
+                  },
+                  "quantity": 3
+                },
+                {
+                  "id": "label",
+                  "label": {
+                    "es": "Etiqueta frontal",
+                    "en": "Front label"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "pouches",
+              "label": {
+                "es": "Bolsas selladas",
+                "en": "Sealed pouches"
+              },
+              "quantity": 15,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo",
+                    "en": "Body"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "shoulder",
+                  "label": {
+                    "es": "Hombro plegado",
+                    "en": "Folded shoulder"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "top-seal",
+                  "label": {
+                    "es": "Sello superior",
+                    "en": "Top seal"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "gusset",
+                  "label": {
+                    "es": "Fuelle inferior",
+                    "en": "Lower gusset"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "seams",
+                  "label": {
+                    "es": "Costuras laterales",
+                    "en": "Edge seams"
+                  },
+                  "quantity": 2
+                },
+                {
+                  "id": "label",
+                  "label": {
+                    "es": "Etiqueta impresa",
+                    "en": "Printed label"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "cartons",
+              "label": {
+                "es": "Cajas plegadas",
+                "en": "Folded cartons"
+              },
+              "quantity": 24,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo",
+                    "en": "Body"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "lid-lip",
+                  "label": {
+                    "es": "Solapa de tapa",
+                    "en": "Lid lip"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "back-seam",
+                  "label": {
+                    "es": "Unión posterior",
+                    "en": "Back seam"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "label",
+                  "label": {
+                    "es": "Etiqueta impresa",
+                    "en": "Printed label"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:wineRack",
+      "number": 3,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/03/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "rack",
+          "label": {
+            "es": "Botellero",
+            "en": "Wine rack"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo del mueble",
+                "en": "Cabinet body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "plinth",
+              "label": {
+                "es": "Zócalo",
+                "en": "Plinth"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Tapa de la base",
+                "en": "Base top"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "brass-trim",
+              "label": {
+                "es": "Perfil de latón",
+                "en": "Brass trim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "sides",
+              "label": {
+                "es": "Laterales lacados",
+                "en": "Lacquered sides"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "shelves",
+              "label": {
+                "es": "Baldas de roble",
+                "en": "Oak shelves"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "sign",
+              "label": {
+                "es": "Rótulo BODEGA",
+                "en": "BODEGA sign"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "bottles",
+              "label": {
+                "es": "Botellas",
+                "en": "Bottles"
+              },
+              "quantity": 18,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo y hombro",
+                    "en": "Body and shoulder"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "neck",
+                  "label": {
+                    "es": "Cuello",
+                    "en": "Neck"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "cap",
+                  "label": {
+                    "es": "Tapón",
+                    "en": "Cap"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "label",
+                  "label": {
+                    "es": "Etiqueta",
+                    "en": "Label"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:lottery",
+      "number": 4,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/04/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "structure",
+          "label": {
+            "es": "Mueble expositor",
+            "en": "Display cabinet"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo",
+                "en": "Body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "plinth",
+              "label": {
+                "es": "Zócalo",
+                "en": "Plinth"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Encimera",
+                "en": "Worktop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "brass-trim",
+              "label": {
+                "es": "Perfil de latón",
+                "en": "Brass trim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "flutes",
+              "label": {
+                "es": "Listones frontales",
+                "en": "Front flutes"
+              },
+              "quantity": 18
+            },
+            {
+              "id": "display-panel",
+              "label": {
+                "es": "Panel inclinado",
+                "en": "Tilted display panel"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "signs",
+              "label": {
+                "es": "Rótulos LOTERÍAS e ILUSIÓN CADA DÍA",
+                "en": "LOTERÍAS and ILUSIÓN CADA DÍA signs"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Material representativo",
+            "en": "Representative material"
+          },
+          "components": [
+            {
+              "id": "tickets",
+              "label": {
+                "es": "Billetes de lotería",
+                "en": "Lottery tickets"
+              },
+              "quantity": 5,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:vending",
+      "number": 5,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/05/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "machine",
+          "label": {
+            "es": "Máquina",
+            "en": "Machine"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Carcasa",
+                "en": "Housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "display-window",
+              "label": {
+                "es": "Panel de exposición",
+                "en": "Display window"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "shelf-rails",
+              "label": {
+                "es": "Guías de producto",
+                "en": "Product rails"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "control-panel",
+              "label": {
+                "es": "Panel de control",
+                "en": "Control panel"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "control-display",
+              "label": {
+                "es": "Pantalla de control",
+                "en": "Control display"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "outlet",
+              "label": {
+                "es": "Hueco de recogida",
+                "en": "Collection opening"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "sign",
+              "label": {
+                "es": "Rótulo PAUSA",
+                "en": "PAUSA sign"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "cans",
+              "label": {
+                "es": "Latas con etiqueta",
+                "en": "Labeled cans"
+              },
+              "quantity": 12,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:magazines",
+      "number": 6,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/06/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "stand",
+          "label": {
+            "es": "Revistero",
+            "en": "Magazine rack"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base",
+                "en": "Base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "uprights",
+              "label": {
+                "es": "Montantes de latón",
+                "en": "Brass uprights"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "shelves",
+              "label": {
+                "es": "Bandejas de roble",
+                "en": "Oak trays"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "retaining-rails",
+              "label": {
+                "es": "Perfiles de retención",
+                "en": "Retaining rails"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "sign",
+              "label": {
+                "es": "Rótulo PRENSA · CULTURA",
+                "en": "PRENSA · CULTURA sign"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "magazines",
+              "label": {
+                "es": "Revistas con portada",
+                "en": "Magazines with covers"
+              },
+              "quantity": 15,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:manager",
+      "number": 7,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/07/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "desk",
+          "label": {
+            "es": "Escritorio",
+            "en": "Desk"
+          },
+          "components": [
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "top",
+              "label": {
+                "es": "Tablero de roble",
+                "en": "Oak top"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "drawer",
+              "label": {
+                "es": "Cajonera",
+                "en": "Drawer unit"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "drawer-handle",
+              "label": {
+                "es": "Tirador",
+                "en": "Handle"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "equipment",
+          "label": {
+            "es": "Equipamiento y accesorios",
+            "en": "Equipment and accessories"
+          },
+          "components": [
+            {
+              "id": "terminal",
+              "label": {
+                "es": "Terminal con pantalla",
+                "en": "Display terminal"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "base",
+                  "label": {
+                    "es": "Base",
+                    "en": "Base"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "pedestal",
+                  "label": {
+                    "es": "Pedestal",
+                    "en": "Pedestal"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "housing",
+                  "label": {
+                    "es": "Carcasa",
+                    "en": "Housing"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "display",
+                  "label": {
+                    "es": "Superficie de pantalla",
+                    "en": "Display surface"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "keyboard",
+              "label": {
+                "es": "Teclado representativo",
+                "en": "Representative keyboard"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "papers",
+              "label": {
+                "es": "Documentos",
+                "en": "Papers"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "coffee-cup",
+              "label": {
+                "es": "Taza con café",
+                "en": "Coffee cup"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "chair",
+          "label": {
+            "es": "Silla de trabajo integrada",
+            "en": "Integrated task chair"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base circular",
+                "en": "Circular base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "pedestal",
+              "label": {
+                "es": "Columna",
+                "en": "Pedestal"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "seat",
+              "label": {
+                "es": "Asiento",
+                "en": "Seat"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "backrest",
+              "label": {
+                "es": "Respaldo",
+                "en": "Backrest"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:door",
+      "number": 8,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/08/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "door",
+          "label": {
+            "es": "Puerta",
+            "en": "Door"
+          },
+          "components": [
+            {
+              "id": "jambs",
+              "label": {
+                "es": "Jambas de roble",
+                "en": "Oak jambs"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "lintel",
+              "label": {
+                "es": "Dintel de roble",
+                "en": "Oak lintel"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "leaf",
+              "label": {
+                "es": "Hoja de vidrio",
+                "en": "Glass leaf"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "handle",
+              "label": {
+                "es": "Tirador de latón",
+                "en": "Brass handle"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:plant",
+      "number": 9,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/09/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "plant",
+          "label": {
+            "es": "Planta decorativa",
+            "en": "Decorative plant"
+          },
+          "components": [
+            {
+              "id": "pot",
+              "label": {
+                "es": "Maceta",
+                "en": "Pot"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rim",
+              "label": {
+                "es": "Borde de maceta",
+                "en": "Pot rim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "soil",
+              "label": {
+                "es": "Superficie de tierra",
+                "en": "Soil surface"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "stems",
+              "label": {
+                "es": "Tallos",
+                "en": "Stems"
+              },
+              "quantity": 11
+            },
+            {
+              "id": "leaves",
+              "label": {
+                "es": "Hojas",
+                "en": "Leaves"
+              },
+              "quantity": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:floorLamp",
+      "number": 10,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/10/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "lamp",
+          "label": {
+            "es": "Lámpara",
+            "en": "Lamp"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base de piedra",
+                "en": "Stone base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "pole",
+              "label": {
+                "es": "Mástil de latón",
+                "en": "Brass pole"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "shade",
+              "label": {
+                "es": "Pantalla cónica",
+                "en": "Cone shade"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "diffuser",
+              "label": {
+                "es": "Difusor luminoso",
+                "en": "Light diffuser"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:rug",
+      "number": 11,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/11/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "rug",
+          "label": {
+            "es": "Alfombra",
+            "en": "Rug"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo textil",
+                "en": "Textile body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "borders",
+              "label": {
+                "es": "Capas decorativas del borde",
+                "en": "Decorative border layers"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "Capas visuales del diseño; no un despiece de fabricación textil.",
+                "en": "Visual design layers; not a textile manufacturing breakdown."
+              }
+            },
+            {
+              "id": "stripes",
+              "label": {
+                "es": "Franjas decorativas",
+                "en": "Decorative stripes"
+              },
+              "quantity": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:led",
+      "number": 12,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/12/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sign",
+          "label": {
+            "es": "Rótulo LED",
+            "en": "LED sign"
+          },
+          "components": [
+            {
+              "id": "housing",
+              "label": {
+                "es": "Carcasa",
+                "en": "Housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "display",
+              "label": {
+                "es": "Frontal de texto",
+                "en": "Text display face"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:tft",
+      "number": 13,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/13/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "display",
+          "label": {
+            "es": "Pantalla TFT",
+            "en": "TFT display"
+          },
+          "components": [
+            {
+              "id": "housing",
+              "label": {
+                "es": "Carcasa de pantalla",
+                "en": "Display housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rear-trim",
+              "label": {
+                "es": "Placa posterior y marco",
+                "en": "Rear plate and trim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "display",
+              "label": {
+                "es": "Superficie de pantalla compartida",
+                "en": "Shared display surface"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "status-led",
+              "label": {
+                "es": "Indicador luminoso",
+                "en": "Status light"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:metahuman",
+      "number": 14,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/14/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "assistant",
+          "label": {
+            "es": "Asistente digital",
+            "en": "Digital assistant"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base de piedra",
+                "en": "Stone base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "support",
+              "label": {
+                "es": "Soporte de latón",
+                "en": "Brass support"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "housing",
+              "label": {
+                "es": "Carcasa de pantalla",
+                "en": "Display housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rear-trim",
+              "label": {
+                "es": "Placa posterior y marco",
+                "en": "Rear plate and trim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "display",
+              "label": {
+                "es": "Superficie de pantalla compartida",
+                "en": "Shared display surface"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "status-led",
+              "label": {
+                "es": "Indicador luminoso",
+                "en": "Status light"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "sign",
+              "label": {
+                "es": "Rótulo ASISTENTE",
+                "en": "ASISTENTE sign"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:tablet",
+      "number": 15,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/15/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "kiosk",
+          "label": {
+            "es": "Terminal de pie",
+            "en": "Floor terminal"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base de piedra",
+                "en": "Stone base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "support",
+              "label": {
+                "es": "Soporte de latón",
+                "en": "Brass support"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "housing",
+              "label": {
+                "es": "Carcasa inclinada",
+                "en": "Tilted housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "screen-panels",
+              "label": {
+                "es": "Paneles de pantalla ¿QUÉ TAL?",
+                "en": "¿QUÉ TAL? display panels"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:aroma",
+      "number": 16,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/16/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "diffuser",
+          "label": {
+            "es": "Difusor de aroma",
+            "en": "Aroma diffuser"
+          },
+          "components": [
+            {
+              "id": "housing",
+              "label": {
+                "es": "Carcasa mural",
+                "en": "Wall housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "grille",
+              "label": {
+                "es": "Lamas de ventilación",
+                "en": "Ventilation slats"
+              },
+              "quantity": 5
+            },
+            {
+              "id": "status-led",
+              "label": {
+                "es": "Indicador luminoso",
+                "en": "Status light"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:djBooth",
+      "number": 17,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/17/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "furniture",
+          "label": {
+            "es": "Mueble DJ",
+            "en": "DJ cabinet"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo",
+                "en": "Body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "plinth",
+              "label": {
+                "es": "Zócalo",
+                "en": "Plinth"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Encimera",
+                "en": "Worktop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "trim",
+              "label": {
+                "es": "Perfil de latón",
+                "en": "Brass trim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "flutes",
+              "label": {
+                "es": "Listones frontales",
+                "en": "Front flutes"
+              },
+              "quantity": 18
+            },
+            {
+              "id": "deck",
+              "label": {
+                "es": "Bandeja de equipo",
+                "en": "Equipment deck"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "sign",
+              "label": {
+                "es": "Rótulo XTANCO SESSIONS",
+                "en": "XTANCO SESSIONS sign"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "equipment",
+          "label": {
+            "es": "Equipo de sonido",
+            "en": "Sound equipment"
+          },
+          "components": [
+            {
+              "id": "turntables",
+              "label": {
+                "es": "Platos",
+                "en": "Turntables"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "platter",
+                  "label": {
+                    "es": "Plato metálico",
+                    "en": "Metal platter"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "record",
+                  "label": {
+                    "es": "Disco con etiqueta central",
+                    "en": "Record with center label"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "tonearm",
+                  "label": {
+                    "es": "Brazo",
+                    "en": "Tonearm"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "faders",
+              "label": {
+                "es": "Canales de control",
+                "en": "Control channels"
+              },
+              "quantity": 4,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "fader",
+                  "label": {
+                    "es": "Fader",
+                    "en": "Fader"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "knob",
+                  "label": {
+                    "es": "Mando",
+                    "en": "Knob"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "speakers",
+              "label": {
+                "es": "Altavoces",
+                "en": "Speakers"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "cabinet",
+                  "label": {
+                    "es": "Caja",
+                    "en": "Cabinet"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "driver",
+                  "label": {
+                    "es": "Cono",
+                    "en": "Driver"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:turnKiosk",
+      "number": 18,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/18/best.blend",
+        "admira-xp/scripts/life-scene.mjs"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "kiosk",
+          "label": {
+            "es": "Terminal de pie",
+            "en": "Floor terminal"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base de piedra",
+                "en": "Stone base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "support",
+              "label": {
+                "es": "Soporte de latón",
+                "en": "Brass support"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "housing",
+              "label": {
+                "es": "Carcasa inclinada",
+                "en": "Tilted housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "screen-panels",
+              "label": {
+                "es": "Paneles de pantalla TU TURNO",
+                "en": "TU TURNO display panels"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781386629046-a7rnyw",
+      "number": 19,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/19/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "vehicle",
+          "label": {
+            "es": "Vehículo representado",
+            "en": "Represented vehicle"
+          },
+          "components": [
+            {
+              "id": "frame",
+              "label": {
+                "es": "Chasis",
+                "en": "Frame"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "fork",
+              "label": {
+                "es": "Horquilla",
+                "en": "Fork"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "handlebar",
+              "label": {
+                "es": "Manillar",
+                "en": "Handlebar"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "saddle",
+              "label": {
+                "es": "Asiento",
+                "en": "Saddle"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "tank",
+              "label": {
+                "es": "Depósito",
+                "en": "Tank"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "engine",
+              "label": {
+                "es": "Motor representado",
+                "en": "Represented engine"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "exhaust",
+              "label": {
+                "es": "Escape",
+                "en": "Exhaust"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "headlight",
+              "label": {
+                "es": "Faro",
+                "en": "Headlight"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "tail-light",
+              "label": {
+                "es": "Luz trasera",
+                "en": "Rear light"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "apron",
+              "label": {
+                "es": "Escudo delantero",
+                "en": "Front apron"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "footboard",
+              "label": {
+                "es": "Plataforma para pies",
+                "en": "Footboard"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "windshield",
+              "label": {
+                "es": "Parabrisas",
+                "en": "Windshield"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "running-gear",
+          "label": {
+            "es": "Ruedas",
+            "en": "Wheels"
+          },
+          "components": [
+            {
+              "id": "wheels",
+              "label": {
+                "es": "Ruedas",
+                "en": "Wheels"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "tyre",
+                  "label": {
+                    "es": "Neumático",
+                    "en": "Tyre"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "rim",
+                  "label": {
+                    "es": "Llanta",
+                    "en": "Rim"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "hub",
+                  "label": {
+                    "es": "Buje",
+                    "en": "Hub"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "spokes",
+                  "label": {
+                    "es": "Radios representados",
+                    "en": "Represented spokes"
+                  },
+                  "quantity": 6
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781386540390-t84431",
+      "number": 20,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/20/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "vehicle",
+          "label": {
+            "es": "Vehículo representado",
+            "en": "Represented vehicle"
+          },
+          "components": [
+            {
+              "id": "frame",
+              "label": {
+                "es": "Chasis",
+                "en": "Frame"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "fork",
+              "label": {
+                "es": "Horquilla",
+                "en": "Fork"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "handlebar",
+              "label": {
+                "es": "Manillar",
+                "en": "Handlebar"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "saddle",
+              "label": {
+                "es": "Asiento",
+                "en": "Saddle"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "tank",
+              "label": {
+                "es": "Depósito",
+                "en": "Tank"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "engine",
+              "label": {
+                "es": "Motor representado",
+                "en": "Represented engine"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "exhaust",
+              "label": {
+                "es": "Escape",
+                "en": "Exhaust"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "headlight",
+              "label": {
+                "es": "Faro",
+                "en": "Headlight"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "tail-light",
+              "label": {
+                "es": "Luz trasera",
+                "en": "Rear light"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "fairings",
+              "label": {
+                "es": "Carenados laterales",
+                "en": "Side fairings"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "windshield",
+              "label": {
+                "es": "Parabrisas",
+                "en": "Windshield"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "running-gear",
+          "label": {
+            "es": "Ruedas",
+            "en": "Wheels"
+          },
+          "components": [
+            {
+              "id": "wheels",
+              "label": {
+                "es": "Ruedas",
+                "en": "Wheels"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "tyre",
+                  "label": {
+                    "es": "Neumático",
+                    "en": "Tyre"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "rim",
+                  "label": {
+                    "es": "Llanta",
+                    "en": "Rim"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "hub",
+                  "label": {
+                    "es": "Buje",
+                    "en": "Hub"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "spokes",
+                  "label": {
+                    "es": "Radios representados",
+                    "en": "Represented spokes"
+                  },
+                  "quantity": 6
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781384527973-p1az8j",
+      "number": 21,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/21/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "decorative-cushions",
+              "label": {
+                "es": "Cojines decorativos",
+                "en": "Decorative cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "ghost-motifs",
+              "label": {
+                "es": "Motivos de fantasma",
+                "en": "Ghost motifs"
+              },
+              "quantity": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781369869967-74ooz1",
+      "number": 22,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/22/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "green-edges",
+              "label": {
+                "es": "Perfiles verdes",
+                "en": "Green edge strips"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781365079386-0wxn09",
+      "number": 23,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/23/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "vehicle",
+          "label": {
+            "es": "Vehículo representado",
+            "en": "Represented vehicle"
+          },
+          "components": [
+            {
+              "id": "frame",
+              "label": {
+                "es": "Chasis",
+                "en": "Frame"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "fork",
+              "label": {
+                "es": "Horquilla",
+                "en": "Fork"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "handlebar",
+              "label": {
+                "es": "Manillar",
+                "en": "Handlebar"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "saddle",
+              "label": {
+                "es": "Asiento",
+                "en": "Saddle"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "tank",
+              "label": {
+                "es": "Depósito",
+                "en": "Tank"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "engine",
+              "label": {
+                "es": "Motor representado",
+                "en": "Represented engine"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "exhaust",
+              "label": {
+                "es": "Escape",
+                "en": "Exhaust"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "headlight",
+              "label": {
+                "es": "Faro",
+                "en": "Headlight"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "tail-light",
+              "label": {
+                "es": "Luz trasera",
+                "en": "Rear light"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "saddle-bags",
+              "label": {
+                "es": "Alforjas",
+                "en": "Saddle bags"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "running-gear",
+          "label": {
+            "es": "Ruedas",
+            "en": "Wheels"
+          },
+          "components": [
+            {
+              "id": "wheels",
+              "label": {
+                "es": "Ruedas",
+                "en": "Wheels"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "tyre",
+                  "label": {
+                    "es": "Neumático",
+                    "en": "Tyre"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "rim",
+                  "label": {
+                    "es": "Llanta",
+                    "en": "Rim"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "hub",
+                  "label": {
+                    "es": "Buje",
+                    "en": "Hub"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "spokes",
+                  "label": {
+                    "es": "Radios representados",
+                    "en": "Represented spokes"
+                  },
+                  "quantity": 6
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781300861729-doljbb",
+      "number": 24,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/24/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "television",
+          "label": {
+            "es": "Televisor interpretado",
+            "en": "Interpreted television"
+          },
+          "components": [
+            {
+              "id": "cabinet",
+              "label": {
+                "es": "Carcasa de piedra",
+                "en": "Stone housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "bezel",
+              "label": {
+                "es": "Marco CRT",
+                "en": "CRT bezel"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "screen",
+              "label": {
+                "es": "Pantalla curva",
+                "en": "Curved screen"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "dials",
+              "label": {
+                "es": "Mandos de sintonía",
+                "en": "Tuning dials"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "joints",
+              "label": {
+                "es": "Juntas decorativas de piedra",
+                "en": "Decorative stone joints"
+              },
+              "quantity": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781300808727-o0lspi",
+      "number": 25,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/25/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "armoured-rails",
+              "label": {
+                "es": "Perfiles metálicos",
+                "en": "Armoured rails"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "light-rails",
+              "label": {
+                "es": "Tiras luminosas",
+                "en": "Light rails"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781280054492-50hn4b",
+      "number": 26,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/26/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "neck",
+              "label": {
+                "es": "Cuello de dragón",
+                "en": "Dragon neck"
+              },
+              "quantity": 1,
+              "note": {
+                "es": "Forma compuesta por seis tramos modelados.",
+                "en": "Shape built from six modeled segments."
+              }
+            },
+            {
+              "id": "head",
+              "label": {
+                "es": "Cabeza de dragón",
+                "en": "Dragon head"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "muzzle",
+              "label": {
+                "es": "Hocico",
+                "en": "Muzzle"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "eyes",
+              "label": {
+                "es": "Ojos ámbar",
+                "en": "Amber eyes"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "horns",
+              "label": {
+                "es": "Cuernos",
+                "en": "Horns"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "back-spikes",
+              "label": {
+                "es": "Espinas dorsales",
+                "en": "Back spikes"
+              },
+              "quantity": 10
+            },
+            {
+              "id": "tail",
+              "label": {
+                "es": "Cola curva",
+                "en": "Curved tail"
+              },
+              "quantity": 1,
+              "note": {
+                "es": "Forma compuesta por doce tramos modelados.",
+                "en": "Shape built from twelve modeled segments."
+              }
+            },
+            {
+              "id": "paws",
+              "label": {
+                "es": "Patas de dragón",
+                "en": "Dragon paws"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "claws",
+              "label": {
+                "es": "Garras",
+                "en": "Claws"
+              },
+              "quantity": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781265988962-wl7zsk",
+      "number": 27,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/27/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "timber-posts",
+              "label": {
+                "es": "Postes de madera",
+                "en": "Timber posts"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "iron-straps",
+              "label": {
+                "es": "Abrazaderas de hierro",
+                "en": "Iron straps"
+              },
+              "quantity": 6
+            },
+            {
+              "id": "fur",
+              "label": {
+                "es": "Borde de piel representado",
+                "en": "Represented fur edge"
+              },
+              "quantity": 1,
+              "note": {
+                "es": "Veinte mechones de detalle geométrico.",
+                "en": "Twenty geometric detail tufts."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781207308932-hobd6c",
+      "number": 28,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/28/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "cactus",
+          "label": {
+            "es": "Cactus decorativo",
+            "en": "Decorative cactus"
+          },
+          "components": [
+            {
+              "id": "trunk",
+              "label": {
+                "es": "Tronco con ápice redondeado",
+                "en": "Trunk with rounded tip"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "branches",
+              "label": {
+                "es": "Brazos con ápice redondeado",
+                "en": "Arms with rounded tips"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "spines",
+              "label": {
+                "es": "Espinas representadas",
+                "en": "Represented spines"
+              },
+              "quantity": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781207177854-e19asq",
+      "number": 29,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/29/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "body",
+          "label": {
+            "es": "Carrocería",
+            "en": "Bodywork"
+          },
+          "components": [
+            {
+              "id": "chassis",
+              "label": {
+                "es": "Chasis",
+                "en": "Chassis"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "body",
+              "label": {
+                "es": "Carrocería blanca",
+                "en": "White body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "cabin",
+              "label": {
+                "es": "Cabina",
+                "en": "Cabin"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "side-windows",
+              "label": {
+                "es": "Paneles de ventanillas laterales",
+                "en": "Side window panels"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "windscreen",
+              "label": {
+                "es": "Parabrisas",
+                "en": "Windscreen"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rear-window",
+              "label": {
+                "es": "Luneta trasera",
+                "en": "Rear window"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "stripes",
+              "label": {
+                "es": "Franjas rojas laterales",
+                "en": "Red side stripes"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "equipment",
+          "label": {
+            "es": "Ruedas y equipo",
+            "en": "Wheels and equipment"
+          },
+          "components": [
+            {
+              "id": "wheels",
+              "label": {
+                "es": "Ruedas",
+                "en": "Wheels"
+              },
+              "quantity": 4,
+              "note": {
+                "es": "Subcomponentes por unidad.",
+                "en": "Subcomponents per unit."
+              },
+              "components": [
+                {
+                  "id": "tyre",
+                  "label": {
+                    "es": "Neumático",
+                    "en": "Tyre"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "rim",
+                  "label": {
+                    "es": "Llanta",
+                    "en": "Rim"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "hub",
+                  "label": {
+                    "es": "Buje",
+                    "en": "Hub"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "spokes",
+                  "label": {
+                    "es": "Radios representados",
+                    "en": "Represented spokes"
+                  },
+                  "quantity": 6
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "headlights",
+              "label": {
+                "es": "Faros",
+                "en": "Headlights"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "roof-beacons",
+              "label": {
+                "es": "Balizas de techo",
+                "en": "Roof beacons"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "roof-rack",
+              "label": {
+                "es": "Baca",
+                "en": "Roof rack"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "equipment-box",
+              "label": {
+                "es": "Equipo de techo",
+                "en": "Roof equipment"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781178696759-bt3qe6",
+      "number": 30,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/30/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "pinball",
+          "label": {
+            "es": "Pinball",
+            "en": "Pinball"
+          },
+          "components": [
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "cabinet",
+              "label": {
+                "es": "Mueble",
+                "en": "Cabinet"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "playfield",
+              "label": {
+                "es": "Tablero de juego",
+                "en": "Playfield"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "bumpers",
+              "label": {
+                "es": "Bumpers",
+                "en": "Bumpers"
+              },
+              "quantity": 12
+            },
+            {
+              "id": "backbox",
+              "label": {
+                "es": "Cabezal",
+                "en": "Backbox"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "backglass",
+              "label": {
+                "es": "Panel gráfico",
+                "en": "Backglass"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "planet",
+              "label": {
+                "es": "Motivo de planeta",
+                "en": "Planet motif"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1781178336434-kta58v",
+      "number": 31,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/31/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "decorative-cushions",
+              "label": {
+                "es": "Cojines decorativos",
+                "en": "Decorative cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "wing-emblems",
+              "label": {
+                "es": "Motivos de alas",
+                "en": "Wing emblems"
+              },
+              "quantity": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780741287437-6f0w3j",
+      "number": 32,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/32/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "picture",
+          "label": {
+            "es": "Cuadro",
+            "en": "Picture"
+          },
+          "components": [
+            {
+              "id": "back",
+              "label": {
+                "es": "Trasera sólida",
+                "en": "Solid back"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "vertical-frame",
+              "label": {
+                "es": "Laterales del marco",
+                "en": "Vertical frame pieces"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "horizontal-frame",
+              "label": {
+                "es": "Travesaños del marco",
+                "en": "Horizontal frame pieces"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "illustration",
+              "label": {
+                "es": "Lámina con ilustración original de Pixeria",
+                "en": "Canvas with original Pixeria illustration"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780698610571-wusjra",
+      "number": 33,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/33/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "table",
+          "label": {
+            "es": "Mesa y decoración",
+            "en": "Table and decoration"
+          },
+          "components": [
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "top",
+              "label": {
+                "es": "Tablero",
+                "en": "Tabletop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "sandwich-layers",
+              "label": {
+                "es": "Capas de sándwich",
+                "en": "Sandwich layers"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "cucumber-slices",
+              "label": {
+                "es": "Rodajas de pepino",
+                "en": "Cucumber slices"
+              },
+              "quantity": 12
+            },
+            {
+              "id": "tomatoes",
+              "label": {
+                "es": "Rodajas de tomate",
+                "en": "Tomato slices"
+              },
+              "quantity": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780694382755-54z33j",
+      "number": 34,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/34/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "decoration",
+          "label": {
+            "es": "Elementos decorativos",
+            "en": "Decorative elements"
+          },
+          "components": [
+            {
+              "id": "decorative-cushions",
+              "label": {
+                "es": "Cojines decorativos",
+                "en": "Decorative cushions"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "faces",
+              "label": {
+                "es": "Caras decorativas",
+                "en": "Decorative faces"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "eyes",
+              "label": {
+                "es": "Ojos",
+                "en": "Eyes"
+              },
+              "quantity": 8
+            },
+            {
+              "id": "pupils",
+              "label": {
+                "es": "Pupilas",
+                "en": "Pupils"
+              },
+              "quantity": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780694281587-fbjkci",
+      "number": 35,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/35/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780693925175-12hdur",
+      "number": 36,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/36/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "table",
+          "label": {
+            "es": "Mesa y decoración",
+            "en": "Table and decoration"
+          },
+          "components": [
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "top",
+              "label": {
+                "es": "Tablero",
+                "en": "Tabletop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "helmet-dome",
+              "label": {
+                "es": "Cúpula del casco",
+                "en": "Helmet dome"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "visor",
+              "label": {
+                "es": "Visor",
+                "en": "Visor"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "mask",
+              "label": {
+                "es": "Máscara",
+                "en": "Mask"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "cheek-armour",
+              "label": {
+                "es": "Protecciones laterales",
+                "en": "Cheek armour"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780693814681-lvdbyl",
+      "number": 37,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/37/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "table",
+          "label": {
+            "es": "Mesa y decoración",
+            "en": "Table and decoration"
+          },
+          "components": [
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "top",
+              "label": {
+                "es": "Tablero",
+                "en": "Tabletop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "face",
+              "label": {
+                "es": "Cara de ogro",
+                "en": "Ogre face"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "ears",
+              "label": {
+                "es": "Orejas",
+                "en": "Ears"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "eyes",
+              "label": {
+                "es": "Ojos",
+                "en": "Eyes"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "pupils",
+              "label": {
+                "es": "Pupilas",
+                "en": "Pupils"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "smile",
+              "label": {
+                "es": "Sonrisa",
+                "en": "Smile"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780693457852-nzidln",
+      "number": 38,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/38/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "chair",
+          "label": {
+            "es": "Sillón",
+            "en": "Armchair"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base",
+                "en": "Base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "seat",
+              "label": {
+                "es": "Asiento",
+                "en": "Seat"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "backrest",
+              "label": {
+                "es": "Respaldo",
+                "en": "Backrest"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "gorilla",
+          "label": {
+            "es": "Escultura de gorila",
+            "en": "Gorilla sculpture"
+          },
+          "components": [
+            {
+              "id": "chest",
+              "label": {
+                "es": "Torso",
+                "en": "Chest"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "head",
+              "label": {
+                "es": "Cabeza",
+                "en": "Head"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "muzzle",
+              "label": {
+                "es": "Hocico",
+                "en": "Muzzle"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "eyes",
+              "label": {
+                "es": "Ojos",
+                "en": "Eyes"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "arms",
+              "label": {
+                "es": "Brazos",
+                "en": "Arms"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "hands",
+              "label": {
+                "es": "Manos",
+                "en": "Hands"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780693369205-u2sayc",
+      "number": 39,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/39/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "sofa",
+          "label": {
+            "es": "Sofá",
+            "en": "Sofa"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base tapizada",
+                "en": "Upholstered base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat-cushions",
+              "label": {
+                "es": "Cojines de asiento",
+                "en": "Seat cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "back-cushions",
+              "label": {
+                "es": "Cojines de respaldo",
+                "en": "Back cushions"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "piping",
+              "label": {
+                "es": "Ribetes de tapicería",
+                "en": "Upholstery piping"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "armrests",
+              "label": {
+                "es": "Reposabrazos",
+                "en": "Armrests"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780692514916-dbhayg",
+      "number": 40,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/40/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "footwear",
+          "label": {
+            "es": "Par de chanclas",
+            "en": "Pair of flip-flops"
+          },
+          "components": [
+            {
+              "id": "soles",
+              "label": {
+                "es": "Suelas",
+                "en": "Soles"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "straps",
+              "label": {
+                "es": "Ramales de las tiras",
+                "en": "Strap branches"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "white-stripes",
+              "label": {
+                "es": "Franjas blancas",
+                "en": "White stripes"
+              },
+              "quantity": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780692329479-72iyd6",
+      "number": 41,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/41/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "cabinet",
+          "label": {
+            "es": "Mueble arcade",
+            "en": "Arcade cabinet"
+          },
+          "components": [
+            {
+              "id": "lower-cabinet",
+              "label": {
+                "es": "Mueble inferior",
+                "en": "Lower cabinet"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "upper-housing",
+              "label": {
+                "es": "Carcasa superior",
+                "en": "Upper housing"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "monitor-surround",
+              "label": {
+                "es": "Marco de monitor",
+                "en": "Monitor surround"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "screen",
+              "label": {
+                "es": "Pantalla de juego",
+                "en": "Game screen"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "marquee",
+              "label": {
+                "es": "Marquesina",
+                "en": "Marquee"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "control-deck",
+              "label": {
+                "es": "Panel de mandos",
+                "en": "Control deck"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "coin-door",
+              "label": {
+                "es": "Puerta de monedas",
+                "en": "Coin door"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "controls",
+          "label": {
+            "es": "Controles",
+            "en": "Controls"
+          },
+          "components": [
+            {
+              "id": "joysticks",
+              "label": {
+                "es": "Joysticks con bola",
+                "en": "Joysticks with ball"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "buttons",
+              "label": {
+                "es": "Botones",
+                "en": "Buttons"
+              },
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780691893193-90pnk1",
+      "number": 42,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/42/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "horse",
+          "label": {
+            "es": "Caballo decorativo",
+            "en": "Decorative horse"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo",
+                "en": "Body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "neck",
+              "label": {
+                "es": "Cuello",
+                "en": "Neck"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "head",
+              "label": {
+                "es": "Cabeza",
+                "en": "Head"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "muzzle",
+              "label": {
+                "es": "Hocico",
+                "en": "Muzzle"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "ears",
+              "label": {
+                "es": "Orejas",
+                "en": "Ears"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "eyes",
+              "label": {
+                "es": "Ojos",
+                "en": "Eyes"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "tail",
+              "label": {
+                "es": "Cola",
+                "en": "Tail"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pixeria:1780691765844-ex3huq",
+      "number": 43,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/43/best.blend",
+        "admira-xp/tools/xpacios-blender/build_catalog.py"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "chair",
+          "label": {
+            "es": "Silla",
+            "en": "Chair"
+          },
+          "components": [
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "seat",
+              "label": {
+                "es": "Asiento",
+                "en": "Seat"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "back-uprights",
+              "label": {
+                "es": "Montantes del respaldo",
+                "en": "Back uprights"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "back-slats",
+              "label": {
+                "es": "Lamas del respaldo",
+                "en": "Back slats"
+              },
+              "quantity": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksBackbar",
+      "number": 44,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/44/best.blend",
+        "admira-xp/tools/xpacios-blender/build_starbucks.py",
+        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "cabinet",
+          "label": {
+            "es": "Mueble de preparación",
+            "en": "Preparation cabinet"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo de madera",
+                "en": "Wood body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Encimera gris",
+                "en": "Gray worktop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "fronts",
+              "label": {
+                "es": "Frentes de armario",
+                "en": "Cabinet fronts"
+              },
+              "quantity": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksCounter",
+      "number": 45,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/45/best.blend",
+        "admira-xp/tools/xpacios-blender/build_starbucks.py",
+        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "counter",
+          "label": {
+            "es": "Mostrador",
+            "en": "Counter"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo de madera",
+                "en": "Wood body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "flutes",
+              "label": {
+                "es": "Listones frontales",
+                "en": "Front flutes"
+              },
+              "quantity": 40
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Encimera",
+                "en": "Worktop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "front-rail",
+              "label": {
+                "es": "Perfil horizontal frontal",
+                "en": "Horizontal front rail"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksDisplay",
+      "number": 46,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/46/best.blend",
+        "admira-xp/tools/xpacios-blender/build_starbucks.py",
+        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "cabinet",
+          "label": {
+            "es": "Mueble base",
+            "en": "Base cabinet"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Cuerpo de madera",
+                "en": "Wood body"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "flutes",
+              "label": {
+                "es": "Listones frontales",
+                "en": "Front flutes"
+              },
+              "quantity": 60
+            },
+            {
+              "id": "worktop",
+              "label": {
+                "es": "Encimera",
+                "en": "Worktop"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "front-rail",
+              "label": {
+                "es": "Perfil horizontal frontal",
+                "en": "Horizontal front rail"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "display-case",
+          "label": {
+            "es": "Vitrina",
+            "en": "Display case"
+          },
+          "components": [
+            {
+              "id": "shelves",
+              "label": {
+                "es": "Baldas metálicas",
+                "en": "Metal shelves"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "lights",
+              "label": {
+                "es": "Tiras de iluminación",
+                "en": "Light strips"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "uprights",
+              "label": {
+                "es": "Montantes de vitrina",
+                "en": "Case uprights"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "front-glass",
+              "label": {
+                "es": "Vidrio frontal",
+                "en": "Front glass"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "top-glass",
+              "label": {
+                "es": "Vidrio superior",
+                "en": "Top glass"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "top-rails",
+              "label": {
+                "es": "Perfiles superiores",
+                "en": "Top rails"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Exposición representativa",
+            "en": "Representative display"
+          },
+          "components": [
+            {
+              "id": "trays",
+              "label": {
+                "es": "Bandejas de producto",
+                "en": "Product trays"
+              },
+              "quantity": 36,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            },
+            {
+              "id": "pastries",
+              "label": {
+                "es": "Piezas de pastelería con detalle superior",
+                "en": "Pastry pieces with top detail"
+              },
+              "quantity": 36,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksShelves",
+      "number": 47,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/47/best.blend",
+        "admira-xp/tools/xpacios-blender/build_starbucks.py",
+        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "shelves",
+          "label": {
+            "es": "Mueble expositor",
+            "en": "Display furniture"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Mueble inferior",
+                "en": "Lower cabinet"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "back",
+              "label": {
+                "es": "Panel posterior",
+                "en": "Back panel"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "shelves",
+              "label": {
+                "es": "Baldas",
+                "en": "Shelves"
+              },
+              "quantity": 6
+            },
+            {
+              "id": "uprights",
+              "label": {
+                "es": "Montantes metálicos",
+                "en": "Metal uprights"
+              },
+              "quantity": 3
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "cup-containers",
+              "label": {
+                "es": "Recipientes cilíndricos con tapa",
+                "en": "Cylindrical containers with lids"
+              },
+              "quantity": 50,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo del recipiente",
+                    "en": "Container body"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "lid",
+                  "label": {
+                    "es": "Tapa",
+                    "en": "Lid"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "coffee-packs",
+              "label": {
+                "es": "Paquetes de café representados",
+                "en": "Represented coffee packs"
+              },
+              "quantity": 10,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksTable",
+      "number": 48,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/48/best.blend",
+        "admira-xp/tools/xpacios-blender/build_starbucks.py",
+        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "table",
+          "label": {
+            "es": "Mesa",
+            "en": "Table"
+          },
+          "components": [
+            {
+              "id": "base",
+              "label": {
+                "es": "Base circular",
+                "en": "Circular base"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "pedestal",
+              "label": {
+                "es": "Pedestal central",
+                "en": "Center pedestal"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "top",
+              "label": {
+                "es": "Tablero redondo de madera",
+                "en": "Round wood top"
+              },
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksChair",
+      "number": 49,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/49/best.blend",
+        "admira-xp/tools/xpacios-blender/build_starbucks.py",
+        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "chair",
+          "label": {
+            "es": "Silla",
+            "en": "Chair"
+          },
+          "components": [
+            {
+              "id": "seat",
+              "label": {
+                "es": "Asiento de madera",
+                "en": "Wood seat"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "backrest",
+              "label": {
+                "es": "Respaldo de madera",
+                "en": "Wood backrest"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "side-supports",
+              "label": {
+                "es": "Soportes laterales",
+                "en": "Side supports"
+              },
+              "quantity": 2,
+              "note": {
+                "es": "El modelo representa dos soportes laterales sólidos; no define cuatro patas separadas.",
+                "en": "The model represents two solid side supports; it does not define four separate legs."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksWaterRack",
+      "number": 50,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/50/best.blend",
+        "admira-xp/tools/xpacios-blender/build_water_rack.py",
+        "inventario/assets/catalog/50/best.manifest.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
+        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+      },
+      "groups": [
+        {
+          "id": "rack",
+          "label": {
+            "es": "Estructura del botellero",
+            "en": "Rack structure"
+          },
+          "components": [
+            {
+              "id": "basket-rings",
+              "label": {
+                "es": "Aros de cesta",
+                "en": "Basket rings"
+              },
+              "quantity": 3
+            },
+            {
+              "id": "basket-uprights",
+              "label": {
+                "es": "Varillas verticales de cesta",
+                "en": "Basket upright wires"
+              },
+              "quantity": 56
+            },
+            {
+              "id": "basket-floor",
+              "label": {
+                "es": "Varillas del fondo",
+                "en": "Basket floor wires"
+              },
+              "quantity": 34
+            },
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas metálicas",
+                "en": "Metal legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies de goma",
+                "en": "Rubber feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "lower-frame",
+              "label": {
+                "es": "Varillas del marco inferior",
+                "en": "Lower frame rods"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "diagonal-braces",
+              "label": {
+                "es": "Tirantes diagonales",
+                "en": "Diagonal braces"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "sign",
+              "label": {
+                "es": "Rótulo AGUA MINERAL",
+                "en": "AGUA MINERAL sign"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "board",
+                  "label": {
+                    "es": "Placa",
+                    "en": "Board"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "print",
+                  "label": {
+                    "es": "Cara impresa",
+                    "en": "Printed face"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "bottles",
+              "label": {
+                "es": "Botellas Solán de Cabras",
+                "en": "Solán de Cabras bottles"
+              },
+              "quantity": 19,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "body",
+                  "label": {
+                    "es": "Cuerpo PET azul",
+                    "en": "Blue PET body"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "tamper-band",
+                  "label": {
+                    "es": "Precinto blanco",
+                    "en": "White tamper band"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "printed-collar",
+                  "label": {
+                    "es": "Collar impreso",
+                    "en": "Printed collar"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "cap",
+                  "label": {
+                    "es": "Tapón blanco",
+                    "en": "White cap"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "cap-ribs",
+                  "label": {
+                    "es": "Estrías del tapón",
+                    "en": "Cap grip ribs"
+                  },
+                  "quantity": 36
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

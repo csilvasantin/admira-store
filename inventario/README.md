@@ -56,6 +56,18 @@ Diseño interpretado, pendiente de valoración humana; las proporciones de casil
 
 Verificado: importación GLB y apertura `.blend` en Blender para los tres perfiles; materiales empaquetados, 110 objetos de malla, geometría posterior y exclusión de cámaras/luces de estudio. QA navegador: parte posterior, malla, Best con modelo Blender, CLI eliminar 1 (17→16) y deshacer (16→17). Misión DCL-fe628ccda18b44ba84ba5717 · #169.
 
+## Desglose de componentes / Component breakdown
+
+ES: En cada ficha del catálogo, Desglose está junto a Ver pieza. Abre los componentes del modelo Best, agrupados por función, con sus cantidades, subcomponentes cuando existen y enlaces a la fuente. El selector ES/EN traduce el desglose. Las cantidades describen el modelo de diseño; no son stock confirmado ni crean fichas ITIL.
+
+EN: On each catalogue card, Desglose (Breakdown) sits beside Ver pieza (View item). It opens the Best model components grouped by function, with quantities, subcomponents where available and source links. The ES/EN selector translates the breakdown. Quantities describe the design model; they are not confirmed stock and do not create ITIL records.
+
+ES: Abre /inventario desde el CLI o ITIL en Experto, busca la pieza y pulsa Desglose. Cambia ES/EN para leer los componentes y despliega las filas con subcomponentes. El enlace ?asset=2&quality=best&view=breakdown abre directamente la estantería #2; añade &lang=en para inglés. Ver pieza mantiene el visor 360 y sus descargas.
+
+EN: Open /inventory from the CLI or ITIL in Expert, find the item and click Desglose (Breakdown). Switch ES/EN to read components and expand rows with subcomponents. The ?asset=2&quality=best&view=breakdown link opens shelf #2 directly; add &lang=en for English. View item retains the 360 viewer and its downloads.
+
+[Desglose de la estantería / Shelf breakdown](https://www.xpaceos.com/inventario/?asset=2&quality=best&view=breakdown#catalog) · [Contrato ES/EN / ES/EN contract](../admira-xp/docs/inventory-breakdown.md). `components.json` conserva las 50 identidades y números del registro; revisión `components-20261002-1`, esquema 1. La lectura es independiente de la visibilidad de los ejemplares. / Reading is independent of instance visibility.
+
 ## Piloto Best · Estantería 2 / Best pilot · Shelving 2
 
 ES: La Estantería 2 (`native:shelves`) tiene un modelo Best propio, generado por `admira-xp/tools/xpacios-blender/build_shelves_best.py`. Good y Better conservan sus archivos anteriores, comprobados mediante hashes antes y después de generar Best. El piloto mantiene cinco niveles, huella lógica `1 × 2`, altura aproximada de `2,235` unidades de casilla y el frontal largo orientado hacia `+X` en Three. No cambia el número permanente, las instancias, las colisiones ni la distribución personal. La Estantería Starbucks 47 es otro modelo y conserva su representación.

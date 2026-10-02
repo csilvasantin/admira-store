@@ -11,9 +11,9 @@ Las 43 identidades de `inventario/registry.json` tienen GLB y fuente Blender en 
 
 ## Estantería 2 · Best específico / Shelving 2 · dedicated Best
 
-ES: `build_shelves_best.py` genera únicamente los recursos Best del directorio `inventario/assets/catalog/02/`; no reemplaza Good ni Better. Guardar y comprobar los hashes de `good.glb`, `good.blend`, `good.manifest.json`, `better.glb`, `better.blend` y `better.manifest.json` antes y después. Una regeneración general con `build_catalog.py --only 2` produce el antiguo Best procedural: ejecutar después el generador específico para recuperar el piloto detallado.
+ES: `build_shelves_best.py` genera únicamente los recursos Best del directorio `inventario/assets/catalog/02/`; no reemplaza Good ni Better. Guardar y comprobar los hashes de `good.glb`, `good.blend`, `good.manifest.json`, `better.glb`, `better.blend` y `better.manifest.json` antes y después. Una regeneración general con `build_catalog.py --only 2` omite Best para conservar el maestro detallado; usar el generador específico para regenerarlo.
 
-EN: `build_shelves_best.py` generates only Best resources in `inventario/assets/catalog/02/`; it does not replace Good or Better. Save and check hashes of `good.glb`, `good.blend`, `good.manifest.json`, `better.glb`, `better.blend` and `better.manifest.json` before and after. A general regeneration with `build_catalog.py --only 2` produces the old procedural Best: run the dedicated generator afterwards to restore the detailed pilot.
+EN: `build_shelves_best.py` generates only Best resources in `inventario/assets/catalog/02/`; it does not replace Good or Better. Save and check hashes of `good.glb`, `good.blend`, `good.manifest.json`, `better.glb`, `better.blend` and `better.manifest.json` before and after. A general regeneration with `build_catalog.py --only 2` skips Best to preserve the detailed master; use the dedicated generator to rebuild it.
 
 Desde la raíz del repositorio / From the repository root:
 
@@ -40,3 +40,11 @@ EN: Compare directly at `/inventario/?asset=2&quality=best`, using the 360 viewe
 ES: Verificado: maestro editable reabierto, GLB reimportado, cuatro mapas internos, normales exteriores y límites conservados; seis hashes Good/Better intactos. 28 pruebas de catálogo, inventario, colocación y editor correctas. Visor WebGL compara Better/Best y descarga el perfil elegido. Los productos son relleno de diseño; no representan stock medido. Solo #2 incorpora este piloto.
 
 EN: Verified: editable master reopened, GLB reimported, four embedded maps, outward normals and preserved bounds; all six Good/Better hashes unchanged. 28 catalog, inventory, placement and editor tests pass. WebGL viewer compares Better/Best and downloads the selected profile. Products are design filling, not measured stock. Only #2 includes this pilot.
+
+## Desglose de componentes / Component breakdown
+
+ES: Cada ficha del catálogo ofrece **Desglose** junto a **Ver pieza**. `inventario/components.json` describe los componentes del modelo Best con IDs y números permanentes, etiquetas ES/EN, cantidades, subcomponentes y rutas de procedencia. Las cantidades principales corresponden a un activo; las de los subcomponentes, a una unidad de su padre. Actualizar este contrato al cambiar la composición del modelo. Son cantidades del diseño representado, no stock ni datos de una ficha ITIL.
+
+EN: Each catalogue card provides **Desglose (Breakdown)** beside **Ver pieza (View item)**. `inventario/components.json` describes Best model components with permanent IDs and numbers, ES/EN labels, quantities, subcomponents and provenance paths. Top-level quantities apply to one asset; subcomponent quantities apply to one parent unit. Update this contract when changing model composition. These are represented design quantities, not stock or ITIL record data.
+
+[Guía y contrato ES/EN / ES/EN guide and contract](../../docs/inventory-breakdown.md).
