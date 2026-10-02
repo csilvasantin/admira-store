@@ -1,17 +1,11 @@
 {
   "version": "v.02.10.2026.r3.12:30",
-  "signature": "TrinityMBP14 · MacBookProNegro14",
-  "machine": "MacBookProNegro14",
-  "agent": "TrinityMBP14",
-  "deployer": "TrinityMBP14",
-  "evidence": "Yokup Hoy #84 DCL-571ac5fe7ae1283ae74593f5: editor 3D de acabados por CI/instancia con histórico local; minitutorial oficial verificado.",
-  "day": "02.10.2026",
-  "time": "12:30",
-  "deployedAt": "2026-10-02T12:18:06.982714+00:00",
-  "git": "2f8b490dbd055bb56cd2a27114e106bddae947c2",
-  "gitFull": "2f8b490dbd055bb56cd2a27114e106bddae947c2",
-  "gitShort": "2f8b490",
-  "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "deployedAt": "2026-10-02T12:18:50Z",
+  "deployer": "SmithMacMini",
+  "machine": "MacMini",
+  "signature": "SmithMacMini · MacMini",
+  "git": "288e7f6f77db0ac83392aaa46f625ce5801ef77f",
+  "gitShort": "288e7f6",
+  "gitFull": "288e7f6f77db0ac83392aaa46f625ce5801ef77f",
+  "dirty": false
 }

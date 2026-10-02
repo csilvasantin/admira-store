@@ -1,10 +1,6 @@
 {
   "version": "v.02.10.2026.r3.12:30",
-  "signature": "TrinityMBP14 · MacBookProNegro14",
-  "machine": "MacBookProNegro14",
-  "agent": "TrinityMBP14",
-  "deployer": "TrinityMBP14",
-  "evidence": "Yokup Hoy #84 DCL-571ac5fe7ae1283ae74593f5: editor 3D de acabados por CI/instancia con histórico local; minitutorial oficial verificado.",
-  "day": "02.10.2026",
-  "time": "12:30"
+  "deployer": "SmithMacMini",
+  "machine": "MacMini",
+  "signature": "SmithMacMini · MacMini"
 }
