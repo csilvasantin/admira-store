@@ -30,3 +30,13 @@ ES: 113 pruebas de inventario, importación/deshacer, cámara, editor, selecció
 EN: 113 relevant inventory, import/undo, camera, editor, selection and window tests passed; four actual MCP help tests passed. All three Blender files were reopened and their GLBs reimported: 32 meshes per profile. Original scene and all six published GLB/Blender downloads match their hashes. Public café and catalogue were checked on both domains; bilingual XpaceOS and MCP help are public. Admira.store /help/ and /help/cli/ retain their existing authentication; MCP `/help` and `help` expose the new section. Capsule selection, stop and close were checked publicly; importing into Xtanco and undoing the addition were checked in a local browser.
 
 ES: Cinco fallos heredados de `mcp/funcionalidades.test.mjs` se reproducen contra el HEAD anterior; pertenecen al contrato general y no fueron introducidos por esta recuperación. EN: Five pre-existing failures in the general functional catalogue tests were reproduced against the preceding HEAD; this recovery does not introduce them.
+
+## Contexto de calle / Street context · 2026-10-03
+
+ES: La Cafebrería está asentada en una calle de XpaceOS: aceras, calzada con marcas viales, edificios y zona verde del mismo entorno del Xtanco. Opciones → Ver cafetería devuelve la vista del local y su barrio; Explorar librería acerca la cámara al mueble. Avanzado → Luz de día, Atardecer o Noche ajusta también el exterior. Las ventanas conservan su tirador y X. La pieza ITIL 51 sigue siendo un mueble independiente para importar en otros proyectos.
+
+EN: Cafebrería sits on a XpaceOS street: sidewalks, a road with lane markings, buildings and green space from the same Xtanco surroundings. Options → View café returns to the café and its neighbourhood; Explore bookcase brings the camera closer to the furniture. Advanced → Daylight, Sunset or Night adjusts the exterior too. Floating windows retain their handles and X controls. ITIL piece 51 remains independent furniture for importing into other projects.
+
+Shared source: `admira-xp/scripts/life-exterior.mjs`, the existing Xtanco street. `createLifeScene` accepts `surroundings:true` alongside `inventory:true` for imported rooms, with `exteriorY:0.44` aligning the café foundation and sidewalk. Other scenes and isolated catalogue previews retain their existing defaults. The exterior owns its animation, lighting and disposal through the shared scene lifecycle; it introduces no furniture IDs, physical stock or new MCP tool. Original scene and all piece 51 download hashes remain unchanged.
+
+Validation: 37 scene, exterior, camera and reusable-library tests passed; local WebGL composition reviewed.

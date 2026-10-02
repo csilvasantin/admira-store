@@ -1,7 +1,7 @@
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {GLTFLoader} from '../../admira-xp/scripts/vendor/GLTFLoader.mjs';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=cafebreria-1';
-import {createLifeScene} from '../../admira-xp/scripts/life-scene.mjs?v=cafebreria-1';
+import {createLifeScene} from '../../admira-xp/scripts/life-scene.mjs?v=cafebreria-street-1';
 import {buildShelf,mountCapsulas} from '../../inventario/cafebreria/capsulas.mjs?v=cafebreria-1';
 import {attachFloatingPanel,mountFloatingPanelMenu} from '../../admira-xp/scripts/floating-panels.mjs?v=floating-panels-1';
 const en=new URLSearchParams(location.search).get('lang')==='en';document.documentElement.lang=en?'en':'es';
@@ -9,7 +9,7 @@ const abort=new AbortController(),{signal}=abort,host=document.querySelector('#c
 if(en){
  document.title='Cafebrería · Coffee, books and music · XpaceOS';
  canvas.setAttribute('aria-label','3D Cafebrería: drag to orbit, scroll to zoom');
- status.textContent='Recovering Cafebrería…';
+ status.textContent='Entering Cafebrería…';
  welcome.querySelector('.eyebrow').textContent='COFFEE · BOOKS · MUSIC';
  welcome.querySelector('h1').textContent='A pause with stories.';
  welcome.querySelector('h1 + p').textContent='Walnut, coffee and a bookcase to explore.';
@@ -27,7 +27,7 @@ try{
  const nodes=new Map();root.traverse(n=>{const i=gltf.parser.associations.get(n)?.nodes;if(i!==undefined)nodes.set(i,n);if(n.isMesh){n.castShadow=true;n.receiveShadow=true;}});
  const row=manifest.items.find(r=>r.runtime?.builder==='estanteria-libros'),mat=name=>{let found;root.traverse(n=>{for(const m of [n.material].flat())if(m?.name===name)found=m;});return found;},shelf=buildShelf(row,{nogal:mat('MAT_nogal'),laton:mat('MAT_laton')}),anchor=nodes.get(manifest.items.find(r=>r.id===row.runtime.junto).node),anchorBox=new T.Box3().setFromObject(anchor);shelf.position.set((anchorBox.min.x+anchorBox.max.x)/2,anchorBox.min.y+row.runtime.alturaSuelo,anchorBox.min.z+.012);root.attach(shelf);shelf.userData.item={id:row.id,type:'cafebreriaLibrary'};
  const entries=[{...row,object:shelf},...manifest.items.filter(r=>r.contenido).map(r=>({...r,object:nodes.get(r.node)}))];
- capsules=mountCapsulas({scene:root,entries,signal});viewer=createLifeRenderer({canvas,snapshot:{cols:size.x,rows:size.z,wallHeight:size.y,layout:[],actors:[],moving:true},stockCamera:true,sceneFactory:(snapshot,options)=>{const s=createLifeScene(snapshot,{...options,inventory:true});s.world.add(root);return s;},onSelect:data=>{if(data?.item?.id===row.id)explore();}});viewer.preset('home');capsules.setViewer(viewer);capsules.attachUI({stage:host,canvas,on});
+ capsules=mountCapsulas({scene:root,entries,signal});viewer=createLifeRenderer({canvas,snapshot:{cols:size.x,rows:size.z,wallHeight:size.y,layout:[],actors:[],moving:true},stockCamera:true,sceneFactory:(snapshot,options)=>{const s=createLifeScene(snapshot,{...options,inventory:true,surroundings:true,exteriorY:.44});s.world.add(root);return s;},onSelect:data=>{if(data?.item?.id===row.id)explore();}});viewer.preset('home');capsules.setViewer(viewer);capsules.attachUI({stage:host,canvas,on});
  function explore(){welcome.hidden=true;capsules.enterDetail();bookList.hidden=false;bookWindow.restore();}
  const welcomeWindow=attachFloatingPanel(welcome,{label:'Cafebrería',onClose:()=>welcome.hidden=true,onOpen:()=>welcome.hidden=false,bounds:host,key:'cafebreria-welcome',menu:true});floats.push(welcomeWindow);
  const bookWindow=attachFloatingPanel(bookList,{label:en?'Books · shelf contents':'Libros · contenido de la librería',onClose:()=>bookList.hidden=true,onOpen:explore,bounds:host,key:'cafebreria-books',menu:true});floats.push(bookWindow);

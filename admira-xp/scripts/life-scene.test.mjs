@@ -301,3 +301,19 @@ test('Starbucks renders saved rotation, mirror and proportional scale at the sam
  assert.ok(Math.abs(actual.min.x-bounds.minX)<1e-6);assert.ok(Math.abs(actual.max.x-bounds.maxX)<1e-6);
  assert.ok(Math.abs(actual.min.z-bounds.minZ)<1e-6);assert.ok(Math.abs(actual.max.z-bounds.maxZ)<1e-6);assert.ok(Math.abs(actual.max.y-bounds.maxY)<1e-6);model.dispose();
 });
+
+
+test('imported café can opt into the shared street without duplicate architecture or catalogue pollution',()=>{
+ const empty={cols:11,rows:8,wallHeight:3.25,moving:true,layout:[],actors:[]};
+ const isolated=createLifeScene(empty,{canvasFactory,inventory:true});
+ assert.equal(isolated.scene.getObjectByName('life:exterior'),undefined);isolated.dispose();
+ const model=createLifeScene(empty,{canvasFactory,inventory:true,surroundings:true,exteriorY:.44});
+ const exterior=model.scene.getObjectByName('life:exterior');assert.ok(exterior);assert.equal(exterior.position.y,.44);
+ assert.equal(model.world.children.length,0);assert.equal(model.scene.getObjectByName('life:architecture'),undefined);
+ const grass=exterior.getObjectByName('life:exterior:grass');model.scene.updateMatrixWorld(true);assert.ok(Math.abs(grass.getWorldPosition(grass.position.clone()).y+.03)<1e-6);
+ const buildings=[];exterior.traverse(n=>{if(n.name==='life:exterior:building')buildings.push(n);});assert.ok(buildings.length>20);assert.ok(buildings.every(n=>n.position.x<0||n.position.z<0));
+ const ownedGeometry=buildings[0].geometry;let disposed=0;ownedGeometry.addEventListener('dispose',()=>disposed++);
+ model.setLighting('night');assert.ok(buildings[0].material.emissiveIntensity>.1);
+ model.setLighting('day');model.update({...empty,cols:12});assert.equal(disposed,1);assert.equal(exterior.parent,null);
+ assert.equal(model.scene.getObjectByName('life:exterior').position.y,.44);model.dispose();model.dispose();assert.equal(model.scene.children.length,0);
+});

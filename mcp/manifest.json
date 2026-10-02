@@ -1220,6 +1220,22 @@
       "geometry_hashes": "original scene and all six GLB/Blender files match library.package.json",
       "ui": "original café and ITIL capsule selection, close and stop; local target-project import and undo",
       "baseline_failures": "five pre-existing mcp/funcionalidades.test.mjs failures reproduced against preceding HEAD"
+    },
+    "street_context": {
+      "state": "implemented",
+      "es": "La Cafebrería está asentada en una calle de XpaceOS: aceras, calzada con marcas viales, edificios y zona verde del mismo entorno del Xtanco. Opciones → Ver cafetería devuelve la vista del local y su barrio; Explorar librería acerca la cámara al mueble. Avanzado → Luz de día, Atardecer o Noche ajusta también el exterior. Las ventanas conservan su tirador y X. La pieza ITIL 51 sigue siendo un mueble independiente para importar en otros proyectos.",
+      "en": "Cafebrería sits on a XpaceOS street: sidewalks, a road with lane markings, buildings and green space from the same Xtanco surroundings. Options → View café returns to the café and its neighbourhood; Explore bookcase brings the camera closer to the furniture. Advanced → Daylight, Sunset or Night adjusts the exterior too. Floating windows retain their handles and X controls. ITIL piece 51 remains independent furniture for importing into other projects.",
+      "module": "https://www.xpaceos.com/admira-xp/scripts/life-exterior.mjs",
+      "options": {
+        "surroundings": true,
+        "inventory": true,
+        "exteriorY": 0.44
+      },
+      "help": "https://www.xpaceos.com/help/#cafebreria-street",
+      "local_tests": 37,
+      "new_inventory_entries": false,
+      "new_mcp_tools": false,
+      "pending": []
     }
   }
 }

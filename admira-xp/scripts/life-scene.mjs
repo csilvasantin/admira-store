@@ -23,7 +23,7 @@ function normalizeLifeSnapshot(raw={}){
 
 // A presentation of Xtanco's live snapshot. This module owns neither a clock,
 // simulation, media player nor animation loop. All dimensions are grid units.
-export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
+export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,surroundings=false,exteriorY=0,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
   let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',poseSignature='',lighting='day',disposed=false,lastAnimationTime=null;
   let customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
   const scene=new T.Scene(),world=new T.Group(),actors=new T.Group();
@@ -683,8 +683,8 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       else {if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);}
       signature=next;
       ground.visible=!inventory;ground.position.set(snapshot.cols/2,-.565,snapshot.rows/2);ground.scale.set(500,500,1);
-      const key=inventory?'':snapshot.cols+'x'+snapshot.rows+'x'+snapshot.wallHeight;
-      if(key!==exteriorKey){exterior?.dispose();exterior=null;exteriorKey=key;if(key){exterior=createLifeExterior({cols:snapshot.cols,rows:snapshot.rows,wallHeight:snapshot.wallHeight,quality:assetQuality,canvasFactory});scene.add(exterior.root);}}
+      const key=inventory&&!surroundings?'':snapshot.cols+'x'+snapshot.rows+'x'+snapshot.wallHeight;
+      if(key!==exteriorKey){exterior?.dispose();exterior=null;exteriorKey=key;if(key){exterior=createLifeExterior({cols:snapshot.cols,rows:snapshot.rows,wallHeight:snapshot.wallHeight,quality:assetQuality,canvasFactory});exterior.root.position.y=exteriorY;scene.add(exterior.root);}}
       sun.target.position.set(snapshot.cols/2,0,snapshot.rows/2);
       const extent=Math.max(snapshot.cols,snapshot.rows)*.82+3;Object.assign(sun.shadow.camera,{left:-extent,right:extent,top:extent,bottom:-extent,near:.1,far:70});sun.shadow.camera.updateProjectionMatrix();
       setLighting(lighting);
