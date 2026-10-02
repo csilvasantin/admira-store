@@ -1536,7 +1536,7 @@
     },
     {
       "id": "glb-node:794",
-      "nombre": "Cube",
+      "nombre": "Cubo auxiliar del archivo original",
       "tipo": "component",
       "categoria": "Desglose",
       "cantidad": 1,
@@ -1547,7 +1547,12 @@
       "modelo": "",
       "garantia": "",
       "origen": "nodo-glb",
-      "estado": "modelo-visual"
+      "estado": "modelo-visual",
+      "presentationExcluded": true,
+      "presentationReason": {
+        "es": "Cubo de construcción ajeno al mobiliario; se conserva el ID y el archivo original, excluido de la escena.",
+        "en": "Construction cube unrelated to furniture; its ID and original file are retained, excluded from the scene."
+      }
     },
     {
       "id": "glb-node:795",

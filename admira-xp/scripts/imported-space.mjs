@@ -16,15 +16,15 @@ export function bindImportedObjects(root,entries){
     const group=new T.Group();group.name='itil:'+entry.id;
     root.add(group);group.position.copy(root.worldToLocal(box.min.clone()));
     group.updateMatrixWorld(true);group.attach(entry.object);
-    const structural=entry.categoria==='Arquitectura';
-    const item={id:entry.id,type:'custom',source:'Cafebrería',label:entry.nombre,col:box.min.x,row:box.min.z,rot:0,sx:1,sy:1,fp:[Math.max(.1,size.x),Math.max(.1,size.z)],locked:structural,nativeFixed:structural,solid:box.min.y-floorY<.2&&!structural&&entry.categoria!=='Desglose',inventoryId:'cafebreria:'+entry.id};
+    const structural=entry.categoria==='Arquitectura',presentationExcluded=entry.presentationExcluded===true;
+    const item={id:entry.id,type:'custom',source:'Cafebrería',label:entry.nombre,col:box.min.x,row:box.min.z,rot:0,sx:1,sy:1,fp:[Math.max(.1,size.x),Math.max(.1,size.z)],locked:structural||presentationExcluded,nativeFixed:structural||presentationExcluded,presentationExcluded,solid:box.min.y-floorY<.2&&!structural&&!presentationExcluded&&entry.categoria!=='Desglose',inventoryId:'cafebreria:'+entry.id};
     group.userData.item=item;
     bindings.set(entry.id,{group,entry,baseY:box.min.y});layout.push(item);
   }
   function apply(next){
     const byId=new Map(next.map(i=>[i.id,i]));
     for(const [id,{group,baseY}] of bindings){
-      const item=byId.get(id);group.visible=!!item&&item.hidden!==true;
+      const item=byId.get(id);group.visible=!!item&&item.hidden!==true&&item.presentationExcluded!==true;
       if(!item)continue;
       group.userData.item=item;
       group.position.copy(root.worldToLocal(new T.Vector3(item.col,baseY,item.row)));

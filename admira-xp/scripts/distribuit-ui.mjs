@@ -32,7 +32,7 @@ export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
   const refresh=state=>{
     lastState=state;
     const scene=bridge.read(),item=scene.layout.find(i=>String(i.id)===state.selectedId),position=state.draft?.position||item;
-    const options=scene.layout.map(i=>({id:String(i.id),label:(i.label||i.type)+' · '+i.id+(isWallFurniture(i)||i.locked?' 🔒':'')+(i.inventoryHidden?' · '+t('oculto','hidden'):'')}));
+    const options=scene.layout.filter(i=>!i.presentationExcluded).map(i=>({id:String(i.id),label:(i.label||i.type)+' · '+i.id+(isWallFurniture(i)||i.locked?' 🔒':'')+(i.inventoryHidden?' · '+t('oculto','hidden'):'')}));
     const signature=JSON.stringify(options);
     if(select.dataset.items!==signature){select.replaceChildren(new Option(t('Seleccionar…','Select…'),''),...options.map(i=>new Option(i.label,i.id)));select.dataset.items=signature;}
     select.value=state.selectedId||'';

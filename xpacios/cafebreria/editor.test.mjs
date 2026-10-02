@@ -1,3 +1,5 @@
+import {groundCafe} from './grounding.mjs';
+import {createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs';
 import fs from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,8 +8,9 @@ import {GLTFLoader} from '../../admira-xp/scripts/vendor/GLTFLoader.mjs';
 import {bindImportedObjects} from '../../admira-xp/scripts/imported-space.mjs';
 import {validateFurnitureMove} from '../../admira-xp/scripts/distribuit.mjs';
 const file=fs.readFileSync(new URL('../../inventario/cafebreria/scene.glb',import.meta.url)),length=file.readUInt32LE(12),json=JSON.parse(file.subarray(20,20+length).toString());delete json.textures;delete json.images;delete json.materials;for(const m of json.meshes)for(const p of m.primitives)delete p.material;
-let chunk=Buffer.from(JSON.stringify(json));chunk=Buffer.concat([chunk,Buffer.alloc((4-chunk.length%4)%4,32)]);const bin=file.subarray(20+length),head=Buffer.alloc(20);head.writeUInt32LE(0x46546c67);head.writeUInt32LE(2,4);head.writeUInt32LE(head.length+chunk.length+bin.length,8);head.writeUInt32LE(chunk.length,12);head.writeUInt32LE(0x4e4f534a,16);const packed=Buffer.concat([head,chunk,bin]);const gltf=await new GLTFLoader().parseAsync(packed.buffer.slice(packed.byteOffset,packed.byteOffset+packed.byteLength),'');const root=gltf.scene,box=new T.Box3().setFromObject(root),size=box.getSize(new T.Vector3());root.position.sub(box.min);root.updateMatrixWorld(true);
+let chunk=Buffer.from(JSON.stringify(json));chunk=Buffer.concat([chunk,Buffer.alloc((4-chunk.length%4)%4,32)]);const bin=file.subarray(20+length),head=Buffer.alloc(20);head.writeUInt32LE(0x46546c67);head.writeUInt32LE(2,4);head.writeUInt32LE(head.length+chunk.length+bin.length,8);head.writeUInt32LE(chunk.length,12);head.writeUInt32LE(0x4e4f534a,16);const packed=Buffer.concat([head,chunk,bin]);const gltf=await new GLTFLoader().parseAsync(packed.buffer.slice(packed.byteOffset,packed.byteOffset+packed.byteLength),'');const root=gltf.scene,box=new T.Box3().setFromObject(root),size=box.getSize(new T.Vector3());
 const nodes=new Map();root.traverse(n=>{const index=gltf.parser.associations.get(n)?.nodes;if(index!==undefined)nodes.set(index,n);});const manifest=JSON.parse(fs.readFileSync(new URL('../../inventario/cafebreria/scene.inventory.json',import.meta.url)));
+const grounding=groundCafe(root,nodes,manifest);
 const bound=bindImportedObjects(root,manifest.items.map(r=>({...r,object:nodes.get(r.node)}))),scene={layout:bound.layout,cols:size.x,rows:size.z,hardness:{fixed:[]}};
 test('every original GLB scene root has a stable ITIL record and pending source records remain honest',()=>{
  const records=manifest.items.filter(r=>Number.isInteger(r.node));
@@ -25,4 +28,25 @@ test('real chair moves into free space, avoids the adjacent table and architectu
  const before=new T.Box3().setFromObject(nodes.get(396));
  bound.apply(scene.layout.map(i=>i.id===chair.id?{...i,col:i.col-.25}:i));const after=new T.Box3().setFromObject(nodes.get(396));assert.ok(Math.abs(after.min.x-before.min.x+.25)<1e-6);
  bound.apply(scene.layout);assert.ok(new T.Box3().setFromObject(nodes.get(396)).equals(before));
+});
+
+test('actual café floor sits 2.5 cm above the sidewalk, keeps saved X/Z and excludes the construction cube',()=>{
+ const floor=new T.Box3().setFromObject(nodes.get(645));
+ assert.ok(Math.abs(floor.max.y-.025)<1e-6);
+ assert.ok(floor.min.y<-.03,'floor slab intersects the shared ground rather than floating');
+ assert.equal(grounding.street.cols,11);assert.equal(grounding.street.rows,7.5);
+ assert.equal(floor.min.x,1);assert.equal(floor.min.z,1);
+ const storage={getItem:()=>JSON.stringify({version:1,layout:scene.layout.map(i=>({...i,presentationExcluded:false,hidden:false}))}),setItem(){}};
+ const bridge=createImportedBridge({roomId:'cafebreria',cols:size.x,rows:size.z,layout:bound.layout,storage});
+ const chair=bridge.read().layout.find(i=>i.id==='silla-1');
+ assert.ok(Math.abs(chair.col-3.4499999042600393)<1e-6);
+ assert.ok(Math.abs(chair.row-5.224999815225601)<1e-6);
+ bound.apply(bridge.read().layout);
+ assert.equal(bound.bindings.get('glb-node:794').group.visible,false,'old saved layouts cannot resurrect the white cube');
+ bridge.restore();bound.apply(bridge.read().layout);
+ assert.equal(bound.bindings.get('glb-node:794').group.visible,false);
+ assert.ok(Math.abs(new T.Box3().setFromObject(nodes.get(396)).min.y-.025)<1e-6);
+ const exterior=new T.Group();exterior.name='life:exterior';const streetScene=new T.Scene();streetScene.add(exterior);
+ grounding.placeStreet(streetScene);
+ assert.equal(exterior.position.x,floor.min.x);assert.equal(exterior.position.z,floor.min.z);
 });

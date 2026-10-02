@@ -1,7 +1,8 @@
+import {groundCafe} from './grounding.mjs?v=cafe-grounding-1';
 import {loadPixeriaFurniture} from '../../admira-xp/scripts/pixeria-furniture.mjs';
-import {bindImportedObjects,createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs?v=cafe-editor-6';
-import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs?v=cafe-editor-2';
-import {mountCafeInventory} from './inventory-panel.mjs?v=cafe-editor-6';
+import {bindImportedObjects,createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs?v=cafe-grounding-1';
+import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs?v=cafe-grounding-1';
+import {mountCafeInventory} from './inventory-panel.mjs?v=cafe-grounding-1';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {GLTFLoader} from '../../admira-xp/scripts/vendor/GLTFLoader.mjs';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=cafe-editor-1';
@@ -27,8 +28,9 @@ const release=node=>{const resources=new Set();node?.traverse(n=>{if(n.geometry)
 on(window,'pagehide',()=>{editor?.dispose();inventory?.dispose();bridge?.dispose();abort.abort();cancelAnimationFrame(raf);observer?.disconnect();menus?.dispose();floats.forEach(f=>f.dispose());viewer?.dispose();release(root);});
 try{
  const [r,m]=await Promise.all([fetch('/inventario/cafebreria/scene.glb',{signal}),fetch('/inventario/cafebreria/scene.inventory.json',{signal})]);if(!r.ok||!m.ok)throw Error('Escena no disponible');const bytes=await r.arrayBuffer(),manifest=await m.json(),hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');if(!manifest.glbSha256.includes(hash))throw Error('La escena no coincide con su inventario');
- const gltf=await new GLTFLoader().parseAsync(bytes,location.origin+'/inventario/cafebreria/scene.glb');root=gltf.scene;root.updateMatrixWorld(true);const box=new T.Box3().setFromObject(root),size=box.getSize(new T.Vector3());root.position.sub(box.min);root.updateMatrixWorld(true);
+ const gltf=await new GLTFLoader().parseAsync(bytes,location.origin+'/inventario/cafebreria/scene.glb');root=gltf.scene;
  const nodes=new Map();root.traverse(n=>{const i=gltf.parser.associations.get(n)?.nodes;if(i!==undefined)nodes.set(i,n);if(n.isMesh){n.castShadow=true;n.receiveShadow=true;}});
+ const grounding=groundCafe(root,nodes,manifest),{size}=grounding;
  const row=manifest.items.find(r=>r.runtime?.builder==='estanteria-libros'),mat=name=>{let found;root.traverse(n=>{for(const m of [n.material].flat())if(m?.name===name)found=m;});return found;},shelf=buildShelf(row,{nogal:mat('MAT_nogal'),laton:mat('MAT_laton')}),anchor=nodes.get(manifest.items.find(r=>r.id===row.runtime.junto).node),anchorBox=new T.Box3().setFromObject(anchor);shelf.position.set((anchorBox.min.x+anchorBox.max.x)/2,anchorBox.min.y+row.runtime.alturaSuelo,anchorBox.min.z+.012);root.attach(shelf);
  const entries=[{...row,object:shelf},...manifest.items.filter(r=>r.contenido).map(r=>({...r,object:nodes.get(r.node)}))];
  const allEntries=manifest.items.map(entry=>({...entry,object:entry.id===row.id?shelf:nodes.get(entry.node)}));
@@ -36,7 +38,7 @@ try{
  bridge=createImportedBridge({roomId:'cafebreria',cols:size.x,rows:size.z,layout:bound.layout,onImport:(item,model)=>bound.add(item,model),onSave:next=>{bound.apply(next.layout);inventory?.refresh();}});
  for(const item of bridge.read().layout.filter(i=>i.source==='PixerIA')){try{bound.add(item,await loadPixeriaFurniture(item));}catch{status.textContent=(en?'An imported object could not load: ':'No se pudo cargar un objeto importado: ')+item.label;}}
  bound.apply(bridge.read().layout);
- capsules=mountCapsulas({scene:root,entries,signal,isEditing:()=>!!editor});viewer=createLifeRenderer({canvas,snapshot:{...bridge.read(),wallHeight:size.y,actors:[],moving:true},stockCamera:true,sceneFactory:(snapshot,options)=>{const s=createLifeScene({...snapshot,layout:[]},{...options,inventory:true,surroundings:true,exteriorY:.44});s.world.add(root);const update=s.update;let current=snapshot;s.update=next=>{current=next;update({...next,layout:[]});if(root.parent!==s.world)s.world.add(root);bound.apply(next.layout);};Object.defineProperty(s,'snapshot',{get:()=>({...current,layout:bridge.read().layout}),configurable:true});return s;},onSelect:data=>{if(editor){editor.select(data);return;}if(data?.item){inventory.open(data.item.id);}}});viewer.preset('home');capsules.setViewer(viewer);capsules.attachUI({stage:host,canvas,on});
+ capsules=mountCapsulas({scene:root,entries,signal,isEditing:()=>!!editor});viewer=createLifeRenderer({canvas,snapshot:{...bridge.read(),wallHeight:size.y,actors:[],moving:true},stockCamera:true,sceneFactory:(snapshot,options)=>{const s=createLifeScene({...snapshot,...grounding.street,layout:[]},{...options,inventory:true,surroundings:true,exteriorY:.44});grounding.placeStreet(s.scene);s.world.add(root);const update=s.update;let current=snapshot;s.update=next=>{current=next;update({...next,...grounding.street,layout:[]});grounding.placeStreet(s.scene);if(root.parent!==s.world)s.world.add(root);bound.apply(next.layout);};Object.defineProperty(s,'snapshot',{get:()=>({...current,layout:bridge.read().layout}),configurable:true});return s;},onSelect:data=>{if(editor){editor.select(data);return;}if(data?.item){inventory.open(data.item.id);}}});viewer.preset('home');capsules.setViewer(viewer);capsules.attachUI({stage:host,canvas,on});
  function explore(){closeEditor();welcome.hidden=true;capsules.enterDetail();bookList.hidden=false;bookWindow.restore();}
  const welcomeWindow=attachFloatingPanel(welcome,{label:'Cafebrería',onClose:()=>welcome.hidden=true,onOpen:()=>welcome.hidden=false,bounds:host,key:'cafebreria-welcome',menu:true});floats.push(welcomeWindow);
  const bookWindow=attachFloatingPanel(bookList,{label:en?'Books · shelf contents':'Libros · contenido de la librería',onClose:()=>bookList.hidden=true,onOpen:explore,bounds:host,key:'cafebreria-books',menu:true});floats.push(bookWindow);

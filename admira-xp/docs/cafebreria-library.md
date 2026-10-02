@@ -37,6 +37,12 @@ ES: La Cafebrería está asentada en una calle de XpaceOS: aceras, calzada con m
 
 EN: Cafebrería sits on a XpaceOS street: sidewalks, a road with lane markings, buildings and green space from the same Xtanco surroundings. Options → View café returns to the café and its neighbourhood; Explore bookcase brings the camera closer to the furniture. Advanced → Daylight, Sunset or Night adjusts the exterior too. Floating windows retain their handles and X controls. ITIL piece 51 remains independent furniture for importing into other projects.
 
-Shared source: `admira-xp/scripts/life-exterior.mjs`, the existing Xtanco street. `createLifeScene` accepts `surroundings:true` alongside `inventory:true` for imported rooms, with `exteriorY:0.44` aligning the café foundation and sidewalk. Other scenes and isolated catalogue previews retain their existing defaults. The exterior owns its animation, lighting and disposal through the shared scene lifecycle; it introduces no furniture IDs, physical stock or new MCP tool. Original scene and all piece 51 download hashes remain unchanged.
+Shared source: `admira-xp/scripts/life-exterior.mjs`, the existing Xtanco street. `createLifeScene` accepts `surroundings:true` alongside `inventory:true` for imported rooms, with exteriorY:0.44 placing sidewalks at Y=0. Café grounding uses the actual floor top at Y=0.025, not the complete source bounding box (which includes a stray construction cube). The street footprint follows the floor dimensions and origin. Other scenes and isolated catalogue previews retain their existing defaults. The exterior owns its animation, lighting and disposal through the shared scene lifecycle; it introduces no furniture IDs, physical stock or new MCP tool. Original scene and all piece 51 download hashes remain unchanged.
 
 Validation: 37 scene, exterior, camera and reusable-library tests passed; local WebGL composition reviewed.
+
+## Corrección del apoyo / Grounding correction · 2026-10-03
+
+ES: El suelo real define el apoyo: acabado a 2,5 cm sobre la acera y losa en contacto con el terreno. La calle se ajusta a los 11 × 7,5 m del suelo. El cubo auxiliar original (glb-node:794), que elevaba el local y atravesaba la fachada junto a la nevera, queda excluido de la vista; su ID y su registro ITIL se conservan. Las coordenadas X/Z y distribuciones guardadas se mantienen.
+
+EN: The actual floor defines the support: its finish sits 2.5 cm above the sidewalk and the slab contacts the ground. The street matches the 11 × 7.5 m floor. The original auxiliary cube (glb-node:794), which lifted the café and intersected the façade beside the fridge, is excluded from the view; its ID and ITIL record are retained. X/Z coordinates and saved layouts are preserved.
