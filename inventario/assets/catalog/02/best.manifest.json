@@ -4,7 +4,7 @@
   "inventory_number": 2,
   "name": "Estantería",
   "quality": "best",
-  "revision": "shelves-labels-20261002-2",
+  "revision": "shelves-parts-20261002-3",
   "blender_version": "5.2.2 LTS",
   "reference": "admira-xp/scripts/life-scene.mjs · shelf silhouette and palette",
   "measured": false,
@@ -19,6 +19,13 @@
   "display_products": 45,
   "source_meshes": 604,
   "web_meshes": 14,
+  "selection": {
+    "parts": "best.parts.json",
+    "attribute": "_XP_PART",
+    "semantic_parts": 67,
+    "selectable_products": 45,
+    "reference_status": "illustrative_not_stock_sku"
+  },
   "bounds_gltf": {
     "min": [
       -0.02249997854232788,
@@ -68,7 +75,7 @@
     "web": "best.glb",
     "preview": "best-preview.png"
   },
-  "bytes": 8358320,
+  "bytes": 8774364,
   "preserved_profiles_sha256": {
     "good.glb": "8ce6d5d5c5b75920669e3e385eb43c34e8049bb4765373ed6d1e56a95f0ec78e",
     "good.manifest.json": "83db82b05009487da8d5db371b38ba85b77ea781ef0a99511709ac7ac5b72c3c",
@@ -76,9 +83,5 @@
     "better.blend": "df126f16075d0c140470826dfab8f2da901718c0deb23bf3f6b5392fe0e74b50",
     "better.glb": "133e6440a9d7acb93258bf7f65694a28762f9f80cfb91e8fdaa153e96caca9a9",
     "better.manifest.json": "1b104d7bcb0e6a41c420310c84a52b8d57ae30954d76ca741a71e289647f03a8"
-  },
-  "preview_note": {
-    "es": "Mismo atlas y geometría; render previo al ajuste menor de reflectancia del papel. GLB y Blender finales: papel mate, rugosidad 0.90 y especular 0.16.",
-    "en": "Same atlas and geometry; rendered before the minor paper reflectance adjustment. Final GLB and Blender: matte paper, roughness 0.90 and specular 0.16."
   }
 }

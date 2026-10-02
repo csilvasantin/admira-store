@@ -1,12 +1,14 @@
 import {createLifeSnapshot} from './life-snapshot.mjs?v=distribuir-3';
 import {mountTierHud} from './tier-hud.mjs?v=starbucks-room-1';
+import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
+import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const listeners=new Set();
 const announce=(busy=false,error='',reason='')=>{for(const listener of listeners)listener({open:!!dialog,busy,error,reason,requestId});};
 function subscribeLifeView(listener){listeners.add(listener);return ()=>listeners.delete(listener);}
 const snapshot=createLifeSnapshot();
-let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort,hud,furnitureEditor;
+let dialog,viewer,frame=0,pending=0,generation=0,resizeObserver,lastFocus,requestId,removeAbort,hud,furnitureEditor,shelfPanel,shelfParts,shelfHost,partInstanceId;
 const names={counter:'Mostrador',shelves:'Estantería',wineRack:'Bodega',lottery:'Lotería',vending:'Vending',magazines:'Prensa',manager:'Puesto de gestión',plant:'Vegetación',floorLamp:'Iluminación',rug:'Alfombra',djBooth:'DJ booth',tablet:'Tablet',turnKiosk:'Gestor de turnos',aroma:'Aromatización',metahuman:'Asistente digital',tft:'Pantalla digital',led:'Superficie LED',custom:'Mobiliario'};
 const roles={staff:'Equipo',customer:'Cliente del gemelo',passerby:'Transeúnte simulado',saca:'Logística',thief:'Personaje del juego',guardiaCivil:'Personaje del juego',opinador:'Visitante',unitreeBot:'Robot'};
 function sceneSlot(){return typeof document.getElementById==='function'?document.getElementById('advSceneControls'):null;}
@@ -16,15 +18,35 @@ function pressGroup(buttons,button){for(const other of buttons){const on=other==
 function close(reason=''){
   generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
-  closeLifeEditor();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
+  closeLifeEditor();closeShelfPanel();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
 }
 function select(data){
-  if(!dialog)return;if(furnitureEditor){dialog.querySelector('.life-selection').hidden=true;furnitureEditor.select(data);return;}const panel=dialog.querySelector('.life-selection');panel.hidden=!data;if(!data)return;
+  if(!dialog)return;if(furnitureEditor){dialog.querySelector('.life-selection').hidden=true;furnitureEditor.select(data);return;}
+  if(shelfPanel?.enabled()){
+    const part=shelfParts?.parts.find(value=>value.numeric_id===data?.partNumericId);
+    if(part){partInstanceId=data.layoutId||data.item?.id;shelfPanel.select(part);dialog.querySelector('.life-selection').hidden=true;return;}
+    shelfPanel.select(null);window.__shelfScreenPreview?.stop();
+  }
+  const panel=dialog.querySelector('.life-selection');panel.hidden=!data;if(!data)return;
   const value=data.item||data.actor;
   panel.querySelector('h2').textContent=value.label||value.name||(data.item?names[value.type]||'Elemento del espacio':roles[value.kind]||'Personaje');
   panel.querySelector('.life-selection-kind').textContent=data.item?'EN ESTE ESPACIO':roles[value.kind]||'PERSONAJE';
   panel.querySelector('p').textContent=data.item?'Elemento del layout actual. Para editarlo, vuelve a los controles del gemelo.':'Posición y movimiento sincronizados con la simulación del gemelo.';
+}
+function closeShelfPanel(){const panel=shelfPanel,hadPanel=!!(panel||shelfHost);shelfPanel=null;panel?.dispose();shelfParts=null;shelfHost?.remove();shelfHost=null;partInstanceId=null;viewer?.setPartMode(false);if(hadPanel)window.__shelfScreenPreview?.stop();}
+async function openShelfPanel(ticket,currentViewer){
+  if(shelfHost||!dialog)return;const currentDialog=dialog,host=document.createElement('div');host.className='life-shelf-products';shelfHost=host;currentDialog.querySelector('.life-stage').append(host);
+  try{
+    const doc=await loadShelfParts();if(ticket!==generation||dialog!==currentDialog||viewer!==currentViewer)return;shelfParts=doc;
+    shelfPanel=mountShelfProductPanel(host,doc,{autoOpen:new URLSearchParams(location.search).get('select')==='products',onSelect(part){
+      if(viewer!==currentViewer)return;currentViewer.setPartMode(!!shelfPanel?.enabled()&&!furnitureEditor);
+      if(!part){currentViewer.selectPart(null,null);return;}
+      const items=currentViewer.snapshot.layout,old=items.find(item=>item.id===partInstanceId&&item.type==='shelves'&&item.id!=='sb-mugs');
+      partInstanceId=old?.id||items.find(item=>item.type==='shelves'&&item.id!=='sb-mugs'&&item.source!=='PixerIA')?.id||'shelves';currentViewer.selectPart(partInstanceId,part.numeric_id);
+    },onClose(){currentViewer.setPartMode(false);currentViewer.selectPart(null,null);}});
+    host.addEventListener('click',()=>currentViewer.setPartMode(!!shelfPanel?.enabled()&&!furnitureEditor));host.hidden=!!furnitureEditor;currentViewer.setPartMode(shelfPanel.enabled()&&!furnitureEditor);
+  }catch{if(ticket===generation&&dialog===currentDialog){host.textContent=document.documentElement?.lang==='en'?'Components could not be loaded. Close and reopen Best to retry.':'No se pudieron cargar los componentes. Cierra y vuelve a abrir Best para reintentar.';host.setAttribute('role','status');}}
 }
 async function open(options={}){
   if(dialog||options.signal?.aborted)return;const ticket=++generation;lastFocus=document.activeElement;requestId=options.requestId;
@@ -39,6 +61,7 @@ async function open(options={}){
     <div class="life-compass" aria-hidden="true"><span>N</span><b>↟</b></div>
   </div>`;
   const venue=globalThis.XpaceStarbucks?.active(),best=options.tier==='best';
+  if(best&&!venue){dialog.setAttribute('aria-label','Best · gemelo 3D del Xtanco');dialog.querySelector('.visual-surface-badge').firstChild.textContent='03.- BEST · 32 BITS ';}
   if(venue){dialog.setAttribute('aria-label',(best?'Best':'Better')+' · Starbucks Paseo de Gracia 103');
     dialog.dataset.venue='alsea-sbux-021';dialog.dataset.quality=best?'best':'better';
     dialog.querySelector('.life-eyebrow').textContent='BARCELONA · PASSEIG DE GRÀCIA 103';
@@ -88,7 +111,7 @@ async function open(options={}){
   }
   function fail(message){
     cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
-    closeLifeEditor();select(null);
+    closeLifeEditor();closeShelfPanel();select(null);
     viewer?.dispose();viewer=null;loading.hidden=false;loading.classList.add('life-error');loading.querySelector('h2').textContent='El 3D no está disponible';loading.querySelector('p').textContent=message;
     const retry=loading.querySelector('button');retry.hidden=false;retry.onclick=()=>{
       if(ticket!==generation||options.signal?.aborted)return;
@@ -104,19 +127,20 @@ async function open(options={}){
   observeContext(canvas);
   let started=performance.now();
   async function connect(){
-    if(ticket!==generation)return;const input=snapshot(window.__xtancoVisualState?.());
+    if(ticket!==generation)return;const sourceState=window.__xtancoVisualState?.(),input=snapshot(sourceState);
     if(!input){
       if(performance.now()-started>30000){fail('Abre El Xtanco y elige Avanzado → Better. Tus controles habituales siguen disponibles.');return;}
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=surfaces-1');if(ticket!==generation)return;
-      viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,onSelect:select,onCameraChange:state=>{
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=shelf-products-1');if(ticket!==generation)return;
+      viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,onSelect:select,onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
         dialog.querySelector('.life-mapping-state').textContent=mapped?'· cámara alineada':'· exploración libre';
         for(const button of presetButtons){const on=mapped&&button.dataset.preset==='mapped';button.setAttribute('aria-pressed',String(on));if(on)button.classList.add('is-active');else button.classList.remove('is-active');}
       }});
+      if(best&&!venue&&!cafe&&sourceState?.vertical==='xtanco')void openShelfPanel(ticket,viewer);
       if(dialog.dataset.light)viewer.setLighting(dialog.dataset.light);
       resizeObserver=new ResizeObserver(()=>{if(viewer&&dialog){const rect=dialog.querySelector('.life-stage').getBoundingClientRect();viewer.resize(rect.width,rect.height);}});resizeObserver.observe(dialog.querySelector('.life-stage'));
       loading.hidden=true;announce();canvas.focus();let lastSnapshot=0,lastStatus=0,current=input;
@@ -145,8 +169,8 @@ async function openLifeEditor(){
   const {mountDistribuit}=await import('./distribuit-ui.mjs?v=distribuir-3');
   if(ticket!==generation||!viewer)return false;
   if(furnitureEditor)return true;
-  try{furnitureEditor=mountDistribuit({dialog,viewer,bridge:window.__xtancoFurnitureEditor,onClose:closeLifeEditor});dialog.querySelector('.life-selection').hidden=true;return true;}catch(error){console.warn('[Distribuit]',error);return false;}
+  try{furnitureEditor=mountDistribuit({dialog,viewer,bridge:window.__xtancoFurnitureEditor,onClose:closeLifeEditor});viewer.setPartMode(false);if(shelfHost)shelfHost.hidden=true;window.__shelfScreenPreview?.stop();dialog.querySelector('.life-selection').hidden=true;return true;}catch(error){console.warn('[Distribuit]',error);return false;}
 }
-function closeLifeEditor(){furnitureEditor?.dispose();furnitureEditor=null;}
+function closeLifeEditor(){furnitureEditor?.dispose();furnitureEditor=null;if(shelfHost)shelfHost.hidden=false;viewer?.setPartMode(!!shelfPanel?.enabled());}
 window.addEventListener('pagehide',()=>close('pagehide'));
 export {open as openLifeView,close as closeLifeView,openLifeEditor,closeLifeEditor,subscribeLifeView};

@@ -59,6 +59,10 @@ def check_bounds(label, values):
 
 try:
     manifest = json.loads((folder / 'best.manifest.json').read_text())
+    parts_document = json.loads((folder / 'best.parts.json').read_text())
+    semantic_parts = parts_document.get('parts', [])
+    semantic_by_id = {entry['id']: entry for entry in semantic_parts}
+    semantic_by_number = {entry['numeric_id']: entry for entry in semantic_parts}
     report['revision'] = manifest.get('revision')
     check('manifest preserves identity, profile and unmeasured status',
           manifest.get('inventory_id') == 'native:shelves'
@@ -69,6 +73,32 @@ try:
           and manifest.get('front_gltf') == '+X',
           {k: manifest.get(k) for k in ['inventory_id', 'inventory_number',
            'quality', 'measured', 'footprint', 'front_gltf', 'revision']})
+    check('semantic manifest preserves stable inventory identity and discrete part IDs',
+          parts_document.get('schema_version') == 1
+          and parts_document.get('inventory_id') == 'native:shelves'
+          and parts_document.get('inventory_number') == 2
+          and parts_document.get('revision') == manifest.get('revision')
+          and parts_document.get('attribute') == '_XP_PART'
+          and len(semantic_parts) == len(semantic_by_id) == len(semantic_by_number) == 67
+          and all(isinstance(entry['numeric_id'], int) and entry['numeric_id'] > 0
+                  and entry.get('label', {}).get('es') and entry.get('label', {}).get('en')
+                  for entry in semantic_parts),
+          {'parts': len(semantic_parts), 'revision': parts_document.get('revision')})
+    semantic_products = [entry for entry in semantic_parts if entry.get('kind') == 'product']
+    package_counts = {kind: sum(entry.get('package_kind') == kind for entry in semantic_products)
+                      for kind in ['bottle', 'pouch', 'carton']}
+    check('semantic manifest records 45 original slots and six illustrative references',
+          len(semantic_products) == 45
+          and package_counts == {'bottle': 6, 'pouch': 15, 'carton': 24}
+          and {entry['id'] for entry in semantic_products} == {
+              'product-%d-%d' % (level, slot) for level in range(5) for slot in range(9)}
+          and {entry['product_reference'] for entry in semantic_products} == {
+              'A02-%02d' % i for i in range(1, 7)}
+          and all(entry['numeric_id'] == 1+entry['shelf_index']*9+entry['slot_index']
+                  and entry['product_id'] == entry['id'] and entry.get('product_name')
+                  for entry in semantic_products)
+          and parts_document.get('product_reference_status') == 'illustrative_not_stock_sku',
+          {'products': len(semantic_products), 'package_counts': package_counts})
     hashes = manifest.get('preserved_profiles_sha256', {})
     expected_files = {tier + '.' + ext for tier in ['good', 'better']
                       for ext in ['glb', 'blend', 'manifest.json']}
@@ -94,6 +124,13 @@ try:
     report['source']['meshes'] = len(meshes)
     check('source retains more than 100 independently editable meshes',
           len(meshes) > 100, len(meshes))
+    check('source meshes retain one uniform stable selection ID per semantic part',
+          all(o.get('partId') in semantic_by_id
+              and o.get('partNumericId') == semantic_by_id[o['partId']]['numeric_id']
+              and o.data.attributes.get('_XP_PART') is not None
+              and all(entry.value == o['partNumericId']
+                      for entry in o.data.attributes['_XP_PART'].data)
+              for o in meshes))
     shelves = [o for o in meshes if re.fullmatch(r'shelf-[0-4]',
                                                str(o.get('componentId', '')))]
     shelf_ids = [o.get('componentId') for o in shelves]
@@ -108,6 +145,11 @@ try:
     check('source retains 45 separate editable display-product groups',
           len(products) == 45 and all(o.children for o in products),
           [o.name for o in products])
+    check('each editable product group preserves its selection identity and artwork reference',
+          all(o.get('partId') == o.name
+              and o.get('partNumericId') == semantic_by_id[o.name]['numeric_id']
+              and o.get('productReference') == semantic_by_id[o.name]['product_reference']
+              for o in products))
     fonts = [o for o in objects if o.type == 'FONT']
     check('header lettering remains editable and faces +X',
           any(o.data.body == 'SELECCIÓN'
@@ -170,6 +212,13 @@ try:
           len(front_labels) == 90 and min(label_normals) > .99,
           {'label_faces': len(front_labels), 'minimum_normal_x':
            min(label_normals) if label_normals else None})
+    check('all 90 printed labels and rail cards select their owning product',
+          len(front_labels) == 90 and all(
+              o.get('productId') in semantic_by_id
+              and semantic_by_id[o['productId']]['kind'] == 'product'
+              and o.get('partId') == o['productId']
+              and o.get('partNumericId') == semantic_by_id[o['productId']]['numeric_id']
+              for o in front_labels))
     expected_formats = {'Carton printed label': 'carton', 'Pouch printed label': 'pouch',
                         'Bottle front label': 'bottle', 'Shelf card': 'card'}
     aspect_checks = []
@@ -240,6 +289,12 @@ try:
           and node['extras'].get('quality') == 'best'
           and node['extras'].get('revision') == manifest.get('revision')
           for node in gltf.get('nodes', [])))
+    check('merged GLB nodes never claim a single constituent component or product',
+          all(not ({'componentId', 'partId', 'partNumericId', 'productId',
+                    'productReference', 'printedReference', 'printedTitle', 'labelRegion'}
+                   & set(node.get('extras', {})))
+              and node.get('extras', {}).get('partAttribute') == '_XP_PART'
+              for node in gltf.get('nodes', []) if 'mesh' in node))
     check('GLB excludes cameras and punctual lights',
           not gltf.get('cameras')
           and 'KHR_lights_punctual' not in gltf.get('extensions', {})
@@ -280,13 +335,52 @@ try:
                     for mesh in gltf.get('meshes', []) for primitive in mesh['primitives'])
     report['glb'].update({'bytes': len(binary), 'mesh_count': len(gltf.get('meshes', [])),
                           'triangles': triangles, 'sha256': hashlib.sha256(binary).hexdigest()})
+    def accessor_values(index):
+        accessor = gltf['accessors'][index]
+        view = gltf['bufferViews'][accessor['bufferView']]
+        fmt = {5121: 'B', 5123: 'H', 5125: 'I', 5126: 'f'}[accessor['componentType']]
+        start = 20+json_length+8+view.get('byteOffset', 0)+accessor.get('byteOffset', 0)
+        stride = view.get('byteStride', struct.calcsize('<'+fmt))
+        return [struct.unpack_from('<'+fmt, binary, start+i*stride)[0]
+                for i in range(accessor['count'])]
+    all_selection_ids, printed_triangle_ids = set(), []
+    valid_attributes, uniform_triangles = True, True
+    for mesh in gltf.get('meshes', []):
+        for primitive in mesh['primitives']:
+            attribute_index = primitive['attributes'].get('_XP_PART')
+            if attribute_index is None:
+                valid_attributes = False
+                continue
+            accessor = gltf['accessors'][attribute_index]
+            values = accessor_values(attribute_index)
+            valid_attributes &= (accessor['type'] == 'SCALAR' and accessor['componentType'] == 5126
+                                 and accessor['count'] == gltf['accessors'][
+                                     primitive['attributes']['POSITION']]['count']
+                                 and all(math.isfinite(value) and int(value) == value
+                                         and int(value) in semantic_by_number for value in values))
+            all_selection_ids.update(int(value) for value in values)
+            indices = accessor_values(primitive['indices'])
+            for i in range(0, len(indices), 3):
+                ids = [values[index] for index in indices[i:i+3]]
+                uniform_triangles &= len(set(ids)) == 1
+                if gltf['materials'][primitive['material']]['name'].startswith('Printed paper'):
+                    printed_triangle_ids.append(int(ids[0]))
+    check('every GLB vertex carries a discrete semantic ID covering all 67 parts',
+          valid_attributes and all_selection_ids == set(semantic_by_number),
+          {'ids': sorted(all_selection_ids), 'parts': len(all_selection_ids)})
+    check('all exported triangle vertices agree on their clickable semantic ID',
+          uniform_triangles, {'triangles': triangles})
+    check('each product has exactly two printed quads with its own selection ID',
+          len(printed_triangle_ids) == 180
+          and all(printed_triangle_ids.count(i) == 4 for i in range(1, 46)),
+          {'printed_triangles': len(printed_triangle_ids), 'products': 45})
     check('GLB geometry has finite accessor bounds', all(
           accessor.get('count', 0) >= 3 and all(math.isfinite(v)
           for v in accessor.get('min', []) + accessor.get('max', []))
           for mesh in gltf.get('meshes', []) for primitive in mesh['primitives']
           for accessor in [gltf['accessors'][primitive['attributes']['POSITION']]]))
     check('web geometry stays grouped by finish',
-          1 <= len(gltf.get('meshes', [])) <= 20, report['glb'])
+          len(gltf.get('meshes', [])) == 14, report['glb'])
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(folder / 'best.glb'))

@@ -32,14 +32,30 @@ test('Life preserves raw grid transforms, live metadata and source immutability'
   assert.equal(JSON.stringify(raw),original);model.dispose();
 });
 
-test('Screens share one portrait canvas and exactly one external player draw',()=>{
+test('Only Xtanco ds1 owns an isolated portrait texture; the base player still draws exactly once',()=>{
   const model=createLifeScene(input,{canvasFactory});
   const screens=meshes(model).filter(o=>o.material.map?.image?.width===512&&o.material.map?.image?.height===768);
-  assert.ok(screens.length>=4);assert.equal(new Set(screens.map(o=>o.material.map)).size,1);
-  let draws=0;model.refreshMedia({draw(ctx,width,height){draws++;assert.equal(width,512);assert.equal(height,768);}});
-  assert.equal(draws,1);const uuids=meshes(model).map(o=>o.uuid);
+  const ds1=screens.find(o=>o.userData.surfaceId==='ds1'),ds2=screens.find(o=>o.userData.surfaceId==='ds2');
+  assert.ok(screens.length>=4);assert.ok(ds1);assert.ok(ds2);assert.notEqual(ds1.material.map,ds2.material.map);
+  assert.equal(new Set(screens.filter(o=>o!==ds1).map(o=>o.material.map)).size,1);
+  let draws=0,previewDraws=0;model.refreshMedia({draw(ctx,width,height){draws++;assert.equal(width,512);assert.equal(height,768);}},(ctx,width,height,id)=>{previewDraws++;assert.equal(id,'ds1');assert.equal(width,512);assert.equal(height,768);return true;});
+  assert.equal(draws,1);assert.equal(previewDraws,1);const uuids=meshes(model).map(o=>o.uuid);
   for(const mode of ['sunset','night','day'])model.setLighting(mode);
   assert.deepEqual(meshes(model).map(o=>o.uuid),uuids);model.dispose();
+});
+
+test('Stopping ds1 priority restores the latest base frame, and Starbucks never requests Xtanco priority',()=>{
+  const recordCanvas=()=>{const canvas={width:0,height:0},context=new Proxy({canvas,drawImage(image){canvas.frame=image.frame;}},{get:(target,key)=>target[key]??(()=>{}),set:(target,key,value)=>(target[key]=value,true)});canvas.getContext=()=>context;return canvas;};
+  const model=createLifeScene(input,{canvasFactory:recordCanvas}),screens=meshes(model).filter(o=>o.userData.liveMedia),ds1=screens.find(o=>o.userData.surfaceId==='ds1'),ds2=screens.find(o=>o.userData.surfaceId==='ds2');
+  let frame='base-1',draws=0;const player={draw(ctx){draws++;ctx.canvas.frame=frame;}};
+  model.refreshMedia(player,ctx=>{ctx.canvas.frame='selected-product';return true;});
+  assert.equal(ds1.material.map.image.frame,'selected-product');assert.equal(ds2.material.map.image.frame,'base-1');
+  frame='base-feed-update';model.refreshMedia(player,()=>false);
+  assert.equal(ds1.material.map.image.frame,'base-feed-update');assert.equal(ds2.material.map.image.frame,'base-feed-update');assert.equal(draws,2);
+  model.update({...input,venue:'alsea-sbux-021',layout:globalThis.XpaceStarbucks.layout(),actors:[]});let previewDraws=0;
+  model.refreshMedia(player,()=>{previewDraws++;return true;});assert.equal(previewDraws,0);assert.equal(draws,3);model.dispose();
+  const starbucks=createLifeScene({...input,venue:'alsea-sbux-021',layout:[],actors:[]},{canvasFactory:recordCanvas});
+  assert.equal(meshes(starbucks).some(o=>o.userData.surfaceId==='ds1'),false);starbucks.refreshMedia(player,()=>{previewDraws++;return true;});assert.equal(previewDraws,0);starbucks.dispose();
 });
 
 test('moving mode rebuilds Better with architecture only and restores the exact live contents',()=>{

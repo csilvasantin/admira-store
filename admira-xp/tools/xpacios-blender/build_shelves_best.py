@@ -22,6 +22,8 @@ p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--output', required=True)
 p.add_argument('--resolution', type=int, default=1000)
 p.add_argument('--skip-render', action='store_true')
+p.add_argument('--reuse-textures', action='store_true',
+               help='Reuse the existing four packed maps without rewriting artwork')
 p.add_argument('--label-python', default=shutil.which('python3'),
                help='Python 3 with Pillow for original high-definition typography')
 args = p.parse_args(sys.argv[sys.argv.index('--') + 1:])
@@ -40,7 +42,9 @@ asset.objects.link(root)
 root['inventoryId'] = 'native:shelves'
 root['inventoryNumber'] = 2
 root['quality'] = 'best'
-root['revision'] = 'shelves-labels-20261002-2'
+root['revision'] = 'shelves-parts-20261002-3'
+root['partAttribute'] = '_XP_PART'
+root['partsManifest'] = 'best.parts.json'
 root['units'] = 'uncalibrated_grid_units'
 root['referenceStatus'] = 'interpreted_not_measured'
 scene['description'] = 'Best shelf design interpretation. Physical measurements not provided.'
@@ -52,6 +56,13 @@ def colour(value):
 
 
 def image(name, pixels, noncolour=False):
+    if args.reuse_textures:
+        im = bpy.data.images.load(str(textures / (name + '.png')), check_existing=False)
+        im.name = name
+        if noncolour:
+            im.colorspace_settings.name = 'Non-Color'
+        im.pack()
+        return im
     height, width = pixels.shape[:2]
     im = bpy.data.images.new(name, width, height, alpha=True)
     if noncolour:
@@ -89,10 +100,11 @@ oak_rough = image('oak-roughness', rgba_array(np.repeat(rough[..., None], 3, axi
 
 # One portable atlas with real type, individual package formats and wide rail cards.
 # Pillow executes in the system Python; no fonts or external textures ship with GLB.
-if not args.label_python:
+if not args.label_python and not args.reuse_textures:
     raise RuntimeError('A Python 3 executable with Pillow is required for label artwork')
-subprocess.run([args.label_python, str(Path(__file__).with_name('build_shelves_labels.py')),
-                '--output', str(textures)], check=True)
+if not args.reuse_textures:
+    subprocess.run([args.label_python, str(Path(__file__).with_name('build_shelves_labels.py')),
+                    '--output', str(textures)], check=True)
 label_layout = json.loads((textures/'selection-label-atlas.layout.json').read_text())
 labels = bpy.data.images.load(str(textures/'selection-label-atlas.png'), check_existing=False)
 labels.name = 'selection-label-atlas'
@@ -144,6 +156,55 @@ def xyz(u, y, v):
     return (v, u-2, y)
 
 
+# Persistent semantic IDs are independent of material batches and printed artwork.
+# Product IDs use existing shelf/slot identities; structural IDs are explicit constants.
+parts = {}
+for component, numeric_id, kind, es, en in [
+    ('plinth', 101, 'structure', 'Zócalo de nogal', 'Walnut plinth'),
+    ('levelling-feet', 102, 'hardware', 'Pies regulables', 'Levelling feet'),
+    ('back-panel', 103, 'structure', 'Panel posterior', 'Back panel'),
+    ('side-panels', 104, 'structure', 'Paneles laterales de roble', 'Oak side panels'),
+    ('side-inlays', 105, 'structure', 'Incrustaciones laterales', 'Side inlays'),
+    ('side-joinery', 106, 'structure', 'Marcos y paneles laterales', 'Side frames and inset panels'),
+    ('crown', 107, 'structure', 'Remate superior', 'Crown'),
+    ('header-lettering', 108, 'label', 'Rótulo SELECCIÓN', 'SELECCIÓN header'),
+    ('support-pins', 109, 'hardware', 'Soportes de las baldas', 'Shelf support pins'),
+    ('pin-hole-ladders', 110, 'hardware', 'Orificios de regulación', 'Adjustment pin holes'),
+    ('back-fixings', 111, 'hardware', 'Fijaciones posteriores', 'Back fixings'),
+    ('rear-joinery', 112, 'structure', 'Uniones posteriores de roble', 'Rear oak joinery'),
+]:
+    parts[component] = {'id': component, 'numeric_id': numeric_id, 'kind': kind,
+                        'label': {'es': es, 'en': en}}
+for level in range(5):
+    parts['shelf-%d' % level] = {
+        'id': 'shelf-%d' % level, 'numeric_id': 201+level, 'kind': 'shelf',
+        'shelf_index': level, 'label': {'es': 'Balda %d' % (level+1),
+                                       'en': 'Shelf %d' % (level+1)}}
+    parts['shelf-rail-%d' % level] = {
+        'id': 'shelf-rail-%d' % level, 'numeric_id': 211+level, 'kind': 'hardware',
+        'shelf_index': level, 'label': {'es': 'Carril de etiquetas · balda %d' % (level+1),
+                                       'en': 'Label rail · shelf %d' % (level+1)}}
+
+
+def semantic(o, part_id):
+    entry = parts[part_id]
+    o['partId'] = part_id
+    o['partNumericId'] = entry['numeric_id']
+    if entry['kind'] == 'product':
+        o['productId'] = part_id
+        o['productReference'] = entry['product_reference']
+    return o
+
+
+def selection_attribute(o):
+    # Uniform ID on every vertex of the semantic source part; joining never welds parts.
+    attribute = o.data.attributes.get('_XP_PART')
+    if attribute is None:
+        attribute = o.data.attributes.new('_XP_PART', 'FLOAT', 'POINT')
+    attribute.data.foreach_set('value', np.full(len(o.data.vertices),
+                               o['partNumericId'], dtype=np.float32))
+
+
 def part(o, name, finish, component):
     o.name = name
     for c in list(o.users_collection):
@@ -151,6 +212,7 @@ def part(o, name, finish, component):
     asset.objects.link(o)
     o.parent = root
     o['componentId'] = component
+    semantic(o, component)
     o.data.materials.append(finish)
     return o
 
@@ -191,13 +253,14 @@ def rod(name, a, b, radius, finish, component, segments=20):
     return o
 
 
-def decal(name, u, y, v, width, height, tile, component, label_format='carton'):
+def decal(name, u, y, v, width, height, tile, component, label_format='carton', owner_product=None):
     # Quad facing +X; each package and rail card uses its correctly proportioned region.
     verts = [xyz(u-width/2,y-height/2,v), xyz(u+width/2,y-height/2,v),
              xyz(u+width/2,y+height/2,v), xyz(u-width/2,y+height/2,v)]
     mesh = bpy.data.meshes.new(name); mesh.from_pydata(verts, [], [(0,1,2,3)]); mesh.update()
     o = bpy.data.objects.new(name, mesh); asset.objects.link(o); o.parent = root
     o.data.materials.append(labelmat); o['componentId'] = component
+    semantic(o, owner_product or component)
     region_id = '%s-%d' % (label_format, tile)
     region = label_layout['regions'][region_id]
     o['labelRegion'] = region_id
@@ -242,6 +305,7 @@ header = bpy.data.objects.new('Header · SELECCIÓN', curve); asset.objects.link
 header.parent = root; header.location = xyz(1,2.172,1.024)
 header.rotation_euler = (math.pi/2,0,math.pi/2)
 curve.materials.append(brass); header['componentId'] = 'header-lettering'
+semantic(header, 'header-lettering')
 
 for level in range(5):
     y = .14+level*.41
@@ -258,9 +322,26 @@ for level in range(5):
         base_y = y+.034
         tile = (j+level)%6
         component = 'product-%d-%d'%(level,j)
+        package_kind = ('bottle' if level in (0,3) and j%3 == 0
+                        else 'pouch' if (j+level)%3 == 1 else 'carton')
+        product_region = label_layout['regions']['%s-%d' % (package_kind, tile)]
+        product_numeric_id = 1+9*level+j
+        parts[component] = {
+            'id': component, 'numeric_id': product_numeric_id, 'kind': 'product',
+            'product_id': component, 'product_reference': product_region['reference'],
+            'product_name': product_region['title'], 'shelf_index': level,
+            'slot_index': j, 'package_kind': package_kind,
+            'label': {'es': '%s · balda %d · posición %d' % (product_region['title'], level+1, j+1),
+                      'en': '%s · shelf %d · slot %d' % (product_region['title'], level+1, j+1)},
+            'labels': [{'id': component+':package-label', 'numeric_id': product_numeric_id,
+                        'kind': 'label', 'product_id': component, 'role': 'package'},
+                       {'id': component+':rail-card', 'numeric_id': product_numeric_id,
+                        'kind': 'label', 'product_id': component, 'role': 'rail'}],
+        }
         group = bpy.data.objects.new(component, None); asset.objects.link(group); group.parent = root
+        semantic(group, component)
         objects_before = set(asset.objects)
-        if level in (0,3) and j%3==0:
+        if package_kind == 'bottle':
             # Turned bottle silhouette: punt, shoulder, neck, lip and cap.
             profile = [(0,.031),(.009,.048),(.022,.055),(.17,.055),(.20,.052),
                        (.23,.037),(.244,.023),(.285,.023),(.289,.029)]
@@ -274,12 +355,13 @@ for level in range(5):
             mesh = bpy.data.meshes.new(component); mesh.from_pydata(vertices,[],faces); mesh.update()
             o = bpy.data.objects.new('Bottle · shoulder and punt',mesh); asset.objects.link(o)
             o.parent = root; o.data.materials.append(glass); o['componentId']=component
+            semantic(o, component)
             for f in mesh.polygons:f.use_smooth=len(f.vertices)==4
             rod('Bottle cap',(u,base_y+.282,v),(u,base_y+.307,v),.029,brass,component,32)
             for h in (.288,.296,.302):
                 rod('Cap knurled band',(u,base_y+h-.001,v),(u,base_y+h+.001,v),.030,walnut,component,32)
             decal('Bottle front label',u,base_y+.122,v+.056,.078,.096,tile,component,'bottle')
-        elif (j+level)%3==1:
+        elif package_kind == 'pouch':
             # Pouch: folded shoulders and heat seal above the convex packet.
             finish=paper[tile]
             box('Pouch · filled body',u,base_y+.137,v,.157,.256,.103,finish,component,.018)
@@ -299,7 +381,7 @@ for level in range(5):
             if o != group:
                 world=o.matrix_world.copy();o.parent=group;o.matrix_world=world
         # Small independent price/identification cards in the brass rail.
-        decal('Shelf card',u,y-.019,1.005,.070,.019,tile,'shelf-labels','card')
+        decal('Shelf card',u,y-.019,1.005,.070,.019,tile,'shelf-labels','card',component)
 
 # Pin-hole ladder and visible cabinet joinery, including the back face.
 for u in (.075,1.925):
@@ -321,6 +403,32 @@ points=[o.matrix_world@Vector(v) for o in asset.objects if o.type=='MESH' for v 
 lo=[min(p[i] for p in points) for i in range(3)]
 hi=[max(p[i] for p in points) for i in range(3)]
 source_meshes=sum(o.type=='MESH' for o in asset.objects)
+for o in asset.objects:
+    if o.type == 'MESH':
+        selection_attribute(o)
+for entry in parts.values():
+    objects = [o for o in asset.objects if o.type in ['MESH', 'FONT']
+               and o.get('partId') == entry['id']]
+    corners = [o.matrix_world @ Vector(v) for o in objects for v in o.bound_box]
+    minimum = [min(v[i] for v in corners) for i in range(3)]
+    maximum = [max(v[i] for v in corners) for i in range(3)]
+    entry['source_object_count'] = len(objects)
+    entry['bounds_gltf'] = {'min': [minimum[0], minimum[2], -maximum[1]],
+                             'max': [maximum[0], maximum[2], -minimum[1]]}
+parts_manifest = {
+    'schema_version': 1, 'inventory_id': 'native:shelves', 'inventory_number': 2,
+    'number': 2, 'quality': 'best', 'revision': root['revision'],
+    'attribute': '_XP_PART', 'attribute_type': 'FLOAT_SCALAR',
+    'product_reference_status': 'illustrative_not_stock_sku',
+    'notes': {
+        'es': '45 envases representativos y seis referencias gráficas A02. Las referencias no son SKU reales ni cantidades de stock verificadas. Cada etiqueta y cartela selecciona el envase al que pertenece. Los índices de balda y posición empiezan en cero; balda 0 es la inferior.',
+        'en': '45 representative packages and six A02 artwork references. References are not real SKUs or verified stock quantities. Each printed label and rail card selects its owning package. Shelf and slot indices start at zero; shelf 0 is the bottom level.',
+    },
+    'profile_mapping': {'best': 'exact_5_by_9', 'good': 'pending_legacy_5_by_11',
+                         'better': 'pending_legacy_5_by_11'},
+    'parts': sorted(parts.values(), key=lambda entry: entry['numeric_id']),
+}
+(out/'best.parts.json').write_text(json.dumps(parts_manifest, ensure_ascii=False, indent=2)+'\n')
 bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'best.blend'),compress=True)
 
@@ -338,18 +446,27 @@ for group in groups.values():
         bpy.context.view_layer.objects.active=o
         for mod in list(o.modifiers):
             bpy.ops.object.modifier_apply(modifier=mod.name)
+        # Reset after evaluation so generated bevel vertices retain the exact discrete ID.
+        selection_attribute(o)
         world=o.matrix_world.copy();o.parent=root;o.matrix_world=world
     bpy.ops.object.select_all(action='DESELECT')
     for o in group:o.select_set(True)
     bpy.context.view_layer.objects.active=group[0]
     if len(group)>1:bpy.ops.object.join()
+    merged = bpy.context.view_layer.objects.active
+    for key in list(merged.keys()):
+        del merged[key]
+    merged.name = merged.data.name = 'Finish · '+merged.data.materials[0].name
+    merged['partAttribute'] = '_XP_PART'
+    merged['partsManifest'] = 'best.parts.json'
 for o in list(asset.objects):
     if o.type=='EMPTY' and o!=root:bpy.data.objects.remove(o,do_unlink=True)
 bpy.ops.object.select_all(action='DESELECT')
 for o in asset.objects:o.select_set(True)
 bpy.context.view_layer.objects.active=root
 bpy.ops.export_scene.gltf(filepath=str(out/'best.glb'),export_format='GLB',use_selection=True,
-    export_apply=True,export_yup=True,export_extras=True,export_cameras=False,export_lights=False)
+    export_apply=True,export_yup=True,export_extras=True,export_attributes=True,
+    export_cameras=False,export_lights=False)
 manifest={
     'schema_version':1,'inventory_id':'native:shelves','inventory_number':2,'name':'Estantería',
     'quality':'best','revision':root['revision'],'blender_version':bpy.app.version_string,
@@ -357,6 +474,8 @@ manifest={
     'measured':False,'source_editable':True,'full_volume':True,'footprint':[1,2],
     'front_gltf':'+X','shelf_levels':5,'display_products':45,
     'source_meshes':source_meshes,'web_meshes':sum(o.type=='MESH' for o in asset.objects),
+    'selection':{'parts':'best.parts.json','attribute':'_XP_PART','semantic_parts':len(parts),
+                 'selectable_products':45,'reference_status':'illustrative_not_stock_sku'},
     'bounds_gltf':{'min':[lo[0],lo[2],-hi[1]],'max':[hi[0],hi[2],-lo[1]]},
     'detail':['baked oak colour/normal/roughness','recessed back and rear joinery',
               'levelling feet','shelf supports and pin-hole ladders','brass label rails',

@@ -5,6 +5,8 @@ import vm from 'node:vm';
 import * as Three from './premium-three.mjs';
 import {mappedCameraFrame} from './life-camera.mjs';
 import {createLifeSnapshot} from './life-snapshot.mjs';
+import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs';
+import {assetForInstance as inventoryIdFor} from '../../inventario/model.mjs';
 
 const near=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
 const projection={width:800,height:500,ox:270,oy:185,tileW:80,tileH:28};
@@ -73,7 +75,7 @@ function harness(options={}){
     update(value){this.snapshot=value;},animate(){calls.animate++;},refreshMedia(){calls.media++;},setLighting(){},dispose(){calls.disposed++;}};
   model.scene.add(model.world,model.actors);
   const T={...Three,WebGLRenderer:class{constructor(){this.shadowMap={};}setClearColor(){}setPixelRatio(){}setSize(){}render(scene,camera){calls.camera=camera;}dispose(){}forceContextLoss(){}}};
-  const context=vm.createContext({T,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,performance:{now:()=>0}});
+  const context=vm.createContext({T,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,numericPartForHit,createPartHighlight,inventoryIdFor,performance:{now:()=>0}});
   vm.runInContext(rendererSource,context);
   const viewer=context.createLifeRenderer({canvas,snapshot:model.snapshot,onCameraChange:state=>states.push(state),...options});
   return {viewer,states,calls,model,handlers,emit(type,properties={}){handlers.get(type)({button:0,pointerId:1,clientX:100,clientY:100,preventDefault(){},...properties});}};
@@ -111,4 +113,18 @@ test('renderer reserves human loading for Best and reports actual current asset 
   people[0].removeFromParent();people[2].userData.personAssetStatus='ready';
   assert.equal(best.viewer.bestPeopleCount,2);assert.deepEqual({...best.viewer.bestPeopleStatus},{ready:2,loading:0,fallback:1,total:3});
   better.viewer.dispose();best.viewer.dispose();
+});
+
+test('Best raycast selects the exact numeric shelf part and preserves its highlight while the camera and layout update',()=>{
+  const selections=[],h=harness({assetQuality:'best',onSelect:data=>selections.push(data)}),item={id:'native-shelf-instance',type:'shelves',col:4,row:2};
+  const root=new Three.Group();root.position.set(item.col,0,item.row);root.userData.item=item;root.userData.layoutId=item.id;
+  const geometry=new Three.BoxGeometry(1,1,1);geometry.setAttribute('_xp_part',new Three.Float32BufferAttribute(new Float32Array(geometry.getAttribute('position').count).fill(23),1));
+  const mesh=new Three.Mesh(geometry,new Three.MeshBasicMaterial());mesh.position.set(.5,.5,.5);root.add(mesh);h.model.world.add(root);h.model.snapshot.layout=[item];h.viewer.setPartMode(true);h.viewer.render(0);
+  const point=screen(h.calls.camera,[4.5,.5,2.5],800,500);h.emit('pointerdown',{clientX:point.x,clientY:point.y});h.emit('pointerup',{clientX:point.x,clientY:point.y});
+  assert.equal(selections.at(-1).partNumericId,23);assert.equal(selections.at(-1).layoutId,item.id);assert.equal(selections.at(-1).item,item);
+  const highlights=()=>{const result=[];h.model.scene.traverse(node=>{if(node.isMesh&&node.material.opacity===.55)result.push(node);});return result;};
+  const highlighted=highlights()[0];assert.ok(highlighted);assert.equal(highlighted.geometry.getAttribute('position').count,geometry.index.count);
+  h.viewer.preset('detail');root.position.x+=2;h.viewer.update({...h.model.snapshot,layout:[{...item,col:6}]});h.viewer.render(200);assert.equal(highlights()[0],highlighted);near(highlighted.matrix.elements[12],6.5);
+  h.viewer.setEditor({});assert.equal(highlights().length,0);h.viewer.setPartMode(true);h.viewer.selectPart(item.id,23);assert.equal(highlights().length,0);
+  h.viewer.setEditor(null);h.viewer.setPartMode(true);h.viewer.selectPart(item.id,23);assert.equal(highlights().length,1);h.viewer.setPartMode(false);assert.equal(highlights().length,0);h.viewer.dispose();geometry.dispose();mesh.material.dispose();
 });

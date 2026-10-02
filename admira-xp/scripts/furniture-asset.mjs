@@ -7,7 +7,7 @@ export function furnitureURL(number,tier='best',extension='glb'){
  if(!Number.isSafeInteger(number)||number<1||number>50||!['good','better','best'].includes(tier)||!['glb','blend'].includes(extension))throw Error('Pieza o perfil no válido');
  if(number===1)return counterURL(tier,extension);
  const url=new URL(`../../inventario/assets/catalog/${String(number).padStart(2,'0')}/${tier}.${extension}`,import.meta.url);
- if(number===2&&tier==='best')url.searchParams.set('v','shelves-labels-20261002-2');
+ if(number===2&&tier==='best')url.searchParams.set('v','shelves-parts-20261002-3');
  return url.href;
 }
 export async function cloneFurniture(number,tier='best'){

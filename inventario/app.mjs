@@ -1,10 +1,12 @@
-import {preview} from './viewer.mjs?v=shelf-finishes-2';
-import {mountCounterStage} from './counter-stage.mjs?v=shelf-finishes-2';
-import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=shelf-finishes-2';
-import {stageCamera} from './stage-camera.mjs?v=shelf-finishes-2';
-import {pixelPreview} from './finish-rendering.mjs?v=shelf-finishes-2';
+import {preview} from './viewer.mjs?v=shelf-products-1';
+import {mountCounterStage} from './counter-stage.mjs?v=shelf-products-1';
+import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=shelf-products-1';
+import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
+import {pixelPreview} from './finish-rendering.mjs?v=shelf-products-1';
 import {referenceLabel,referencePhotoURL} from './starbucks/reference-model.mjs?v=photo-references-1';
 import {loadComponents,componentsFor,componentLabel,breakdownURL} from './breakdown-model.mjs?v=components-20261002-1';
+import {loadShelfParts} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-products-1';
+import {mountShelfProductPanel} from './shelf-product-panel.mjs?v=shelf-products-1';
 let disposePilot,stageQueue=Promise.resolve(),inspectionRevision=0,activeCamera,activeAssetNumber;
 function inspectAsset(asset){
  const qualitySelect=document.querySelector('#model-quality'),quality=qualitySelect.value,revision=++inspectionRevision;
@@ -16,11 +18,12 @@ function inspectAsset(asset){
   document.querySelector('[data-status]').textContent='Cargando '+asset.name+'…';
   const singleDownloads=document.querySelector('#single-downloads');singleDownloads.hidden=compare;if(!compare){document.querySelector('[data-blend]').href=furnitureURL(asset.number,quality,'blend');document.querySelector('[data-glb]').href=furnitureURL(asset.number,quality);}
   const profileDownloads=document.querySelector('#profile-downloads');profileDownloads.hidden=!compare;profileDownloads.replaceChildren();
+  document.querySelector('#shelf-products')?.remove();const productsHost=document.createElement('div');productsHost.id='shelf-products';productsHost.className='shelf-products';host.after(productsHost);
   const stages=profiles.map((tier,i)=>{const panel=document.createElement('section');panel.className='model-stage';panel.dataset.quality=tier;const title=document.createElement('h3');title.textContent=tier[0].toUpperCase()+tier.slice(1);title.hidden=!compare;const canvas=document.createElement('canvas');canvas.tabIndex=0;canvas.setAttribute('aria-label',asset.name+' '+title.textContent+': arrastra o usa las flechas para girar');const status=document.createElement('p');status.dataset.status='';status.setAttribute('role','status');panel.append(title,canvas,status);host.append(panel);
    if(compare){const downloads=document.createElement('div'),label=document.createElement('b');label.textContent=title.textContent;downloads.append(label);for(const extension of ['glb','blend']){const link=document.createElement('a');link.href=furnitureURL(asset.number,tier,extension);link.download='';link.textContent=extension==='glb'?'GLB ↓':'Blender ↓';link.setAttribute('aria-label','Descargar '+title.textContent+' '+(extension==='glb'?'GLB':'Blender'));downloads.append(link);}profileDownloads.append(downloads);}
    return {panel,tier,i};
   });
-  try{for(const {panel,tier,i} of stages){disposers.push(await mountCounterStage(panel,asset,{controlsHost:i===0?document:document.createDocumentFragment(),quality:tier,cameraState:camera}));if(revision!==inspectionRevision)break;}disposePilot=()=>disposers.forEach(dispose=>dispose?.());document.querySelector('#mostrador > [data-status]').textContent=compare?'Good · Better · Best · vistas sincronizadas':asset.number+'. '+asset.name+' · '+quality.toUpperCase();}finally{select.disabled=false;qualitySelect.disabled=false;}
+  try{for(const {panel,tier,i} of stages){disposers.push(await mountCounterStage(panel,asset,{controlsHost:i===0?document:document.createDocumentFragment(),quality:tier,cameraState:camera,onReady:async api=>{if(asset.number!==2||tier!=='best')return;try{const doc=await loadShelfParts(),parts=mountShelfProductPanel(productsHost,doc,{autoOpen:new URLSearchParams(location.search).get('select')==='products',onSelect:part=>api.setPartSelection(part?.numeric_id)});api.onPartPick=id=>{const part=doc.parts.find(p=>p.numeric_id===id);if(part)parts.select(part);};return()=>parts.dispose();}catch{productsHost.textContent='No se pudo cargar la selección de componentes. Recarga para reintentar.';}}}));if(revision!==inspectionRevision)break;}disposePilot=()=>disposers.forEach(dispose=>dispose?.());document.querySelector('#mostrador > [data-status]').textContent=compare?'Good · Better · Best · vistas sincronizadas':asset.number+'. '+asset.name+' · '+quality.toUpperCase();}finally{select.disabled=false;qualitySelect.disabled=false;}
  });return stageQueue;
 }
 window.addEventListener('pagehide',()=>{disposePilot?.();for(const dispose of pixelPreviews.values())dispose();pixelPreviews.clear();});

@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import {projectMatrixFloor,MATRIX_FLOOR_POLYGON} from './matrix-floor.mjs';
 
 const source=fs.readFileSync(new URL('./best-preview-ui.mjs',import.meta.url),'utf8');
-function harness({cached=false,broken=false,showFailure=false,peopleFailure=false,furnitureFailure=false,furniturePending=false}={}){
+function harness({cached=false,broken=false,showFailure=false,peopleFailure=false,furnitureFailure=false,furniturePending=false,search='',vertical='xtanco',starbucks=false}={}){
   let document,releases=0;
   const layers=[],furnitureLayers=[];
   class Element{
@@ -34,7 +34,7 @@ function harness({cached=false,broken=false,showFailure=false,peopleFailure=fals
   }
   const body=new Element('body'),previous=new Element('previous'),window=new Element('window');body.parent=window;
   document={body,activeElement:previous,createElement:tag=>new Element(tag)};
-  window.__xtancoReleaseInputs=()=>releases++;
+  window.__xtancoReleaseInputs=()=>releases++;window.__xtancoVisualState=()=>({vertical});
   const createBestPeopleLayer=({container,getFurnitureZones,projectFloor,floorPolygon})=>{
     if(peopleFailure)throw Error('people failure');
     const layer={container,getFurnitureZones,projectFloor,floorPolygon,disposed:false,dispose(){this.disposed=true;}};layers.push(layer);return layer;
@@ -44,10 +44,17 @@ function harness({cached=false,broken=false,showFailure=false,peopleFailure=fals
     const layer={container,onReady,onSelect,zones:[],count:43,disposed:false,dispose(){this.disposed=true;}};
     furnitureLayers.push(layer);if(!furniturePending)onReady();return layer;
   };
-  const context=vm.createContext({subscribeLifeView:()=>()=>{},openLifeView:()=>{},closeLifeView:()=>{},mountTierHud:()=>({setStatus(){},dispose(){}}),document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
+  const lifeCalls=[];let lifeListener;
+  const context=vm.createContext({XpaceStarbucks:{active:()=>starbucks},URLSearchParams,location:{search},subscribeLifeView:fn=>{lifeListener=fn;return()=>{};},openLifeView:options=>{lifeCalls.push({action:'open',options});},closeLifeView:reason=>lifeCalls.push({action:'close',reason}),mountTierHud:()=>({setStatus(){},dispose(){}}),document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
   vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.audit={openBestView,closeBestView,subscribeBestView,get dialog(){return dialog;}};',context);
-  return {body,window,document,previous,layers,furnitureLayers,get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
+  return {body,window,document,previous,layers,furnitureLayers,lifeCalls,lifeState:state=>lifeListener(state),get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
 }
+
+test('component deep link delegates Xtanco Best to the live scene and forwards its lifecycle',()=>{
+  const h=harness({search:'?visual=best&select=products'}),states=[];h.subscribe(state=>states.push(state));h.open({requestId:31});assert.equal(h.dialog,undefined);assert.equal(h.lifeCalls[0].options.tier,'best');assert.equal(h.lifeCalls[0].options.requestId,31);
+  h.lifeState({open:true,busy:false,requestId:31});assert.equal(states.at(-1).requestId,31);h.close('switch');assert.deepEqual(h.lifeCalls[1],{action:'close',reason:'switch'});
+  const cafe=harness({search:'?select=products',vertical:'cafeteria'});cafe.open();assert.equal(cafe.lifeCalls.length,0);assert.ok(cafe.dialog);cafe.close();
+});
 
 test('Best uses only the empty Avenida Admira room so removed furniture cannot remain in the backdrop',()=>{
   const h=harness();h.open({requestId:8});

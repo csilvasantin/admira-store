@@ -1,4 +1,4 @@
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=surfaces-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=shelf-products-1';
 import {createBestPeopleLayer} from './best-live-people.mjs?v=anon-demo-v1';
 import {mountMatrixFurniture} from './matrix-furniture.mjs?v=anon-demo-v1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
@@ -25,7 +25,7 @@ export function closeBestView(reason=''){
 }
 
 export function openBestView(options={}){
-  if(globalThis.XpaceStarbucks?.active()){starbucksDelegate=true;return openLifeView({...options,tier:'best'});}
+  if(globalThis.XpaceStarbucks?.active()||(new URLSearchParams(location.search).get('select')==='products'&&window.__xtancoVisualState?.()?.vertical==='xtanco')){starbucksDelegate=true;return openLifeView({...options,tier:'best'});}
   if(dialog||options.signal?.aborted)return;
   requestId=options.requestId;lastFocus=document.activeElement;busy=true;viewError='';
   dialog=document.createElement('dialog');

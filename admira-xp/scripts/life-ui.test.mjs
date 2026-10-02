@@ -4,22 +4,22 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {createLifeSnapshot} from './life-snapshot.mjs';
 
-// Execute the actual UI controller with its sole renderer import injected. No
+// Execute the actual UI controller with renderer and panel adapters injected. No
 // WebGL/browser, external media, game loop or source files are changed by this
 // harness; the fake DOM exercises observable scheduling and event propagation.
 const source=fs.readFileSync(new URL('./life-ui.mjs',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'')
-  .replace("await import('./life-renderer.mjs?v=distribuir-3')",'await loadRenderer()')
+  .replace(/await import\('\.\/life-renderer\.mjs\?v=[^']+'\)/,'await loadRenderer()')
   .replace(/^export \{.*\};?\s*$/m,'');
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const releaseInputs=html.match(/window\.__xtancoReleaseInputs=.*;/)?.[0];
 const flush=async()=>{for(let i=0;i<5;i++)await Promise.resolve();};
 
-function harness({load,search=''}={}){
+function harness({load,loadParts,search=''}={}){
   let document;
   class Element {
     constructor(name){
-      this.name=name;this.hidden=false;this.dataset={};this.attrs={};this.children=new Map();this.listeners={};
+      this.name=name;this.hidden=false;this.dataset={};this.attrs={};this.children=new Map();this.listeners={};this.firstChild={textContent:''};
       const classes=new Set();this.classList={add:name=>classes.add(name),remove:name=>classes.delete(name),contains:name=>classes.has(name)};
     }
     querySelector(key){if(!this.children.has(key)){const child=new Element(key);child.parent=this;this.children.set(key,child);}return this.children.get(key);}
@@ -46,21 +46,23 @@ function harness({load,search=''}={}){
     }
   }
   const body=new Element('body'),actions=new Element('actions'),previous=new Element('previous'),created=[];actions.parent=body;
-  document={body,activeElement:previous,hidden:false,createElement:name=>{created.push(name);return new Element(name);},querySelector:()=>actions};
+  document={body,activeElement:previous,hidden:false,documentElement:{lang:'es'},createElement:name=>{created.push(name);return new Element(name);},querySelector:()=>actions};
   const window=new Element('window');body.parent=window;
-  let raw={active:true,iso:{cols:14,rows:8,ox:270,oy:185,tileW:80,tileH:28,wallH:165},
+  let raw={active:true,vertical:'xtanco',iso:{cols:14,rows:8,ox:270,oy:185,tileW:80,tileH:28,wallH:165},
     game:{staff:[],custs:[{x:343,y:249,dir:1,st:'walk'}],gameTime:14,custIn:3}};
   window.__xtancoVisualState=()=>raw;
-  const keys={KeyQ:true,KeyP:true},frames=new Map(),timers=new Map(),viewers=[],observers=[];
+  const keys={KeyQ:true,KeyP:true},frames=new Map(),timers=new Map(),viewers=[],observers=[],panels=[];
+  const part={id:'product-0-0',numeric_id:23,kind:'product',product_reference:'A02-01'},partsDoc={parts:[part]};
+  const mountShelfProductPanel=(host,doc,options)=>{let enabled=!!options.autoOpen;const panel={host,doc,options,disposed:false,selections:[],enabled:()=>enabled,open(){enabled=true;host.emit('click');},select(part){if(!enabled)return;this.selections.push(part);options.onSelect(part);},close(){enabled=false;options.onSelect(null);options.onClose();host.emit('click');},dispose(){this.disposed=true;options.onSelect(null);}};panels.push(panel);return panel;};
   let clock=0,sequence=0,loads=0;
   const createLifeRenderer=options=>{
-    const calls={render:0,dispose:0,updates:[],rotations:[],zooms:[],lights:[],presets:[],clearSelection:0};
+    const calls={render:0,dispose:0,updates:[],rotations:[],zooms:[],lights:[],presets:[],clearSelection:0,partMode:[],parts:[]};
     const viewer={calls,options,resize(){},update:value=>calls.updates.push(value),render:()=>calls.render++,dispose:()=>calls.dispose++,
       rotate:value=>calls.rotations.push(value),zoomBy:value=>calls.zooms.push(value),setLighting:value=>calls.lights.push(value),preset:value=>calls.presets.push(value),
-      clearSelection(){calls.clearSelection++;options.onSelect(null);}};
+      clearSelection(){calls.clearSelection++;options.onSelect(null);},setPartMode:value=>calls.partMode.push(value),selectPart:(id,num)=>calls.parts.push({id,num}),get snapshot(){return calls.updates.at(-1)||options.snapshot;}};
     viewers.push(viewer);return viewer;
   };
-  const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),document,window,keys,createLifeSnapshot,createTierControls:()=>({element:new Element('tiers'),dispose(){}}),performance:{now:()=>clock},URLSearchParams,location:{search},
+  const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),loadShelfParts:()=>loadParts?loadParts(partsDoc):Promise.resolve(partsDoc),mountShelfProductPanel,document,window,keys,createLifeSnapshot,createTierControls:()=>({element:new Element('tiers'),dispose(){}}),performance:{now:()=>clock},URLSearchParams,location:{search},
     console:{warn(){}},loadRenderer:()=>{loads++;return load?load({createLifeRenderer},loads):Promise.resolve({createLifeRenderer});},
     requestAnimationFrame:fn=>{const id=++sequence;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),
     setTimeout:(fn,delay)=>{const id=++sequence;timers.set(id,{fn,at:clock+delay});return id;},clearTimeout:id=>timers.delete(id),
@@ -69,7 +71,7 @@ function harness({load,search=''}={}){
   assert.ok(releaseInputs,'the shared game must expose its explicit held-input release hook');
   vm.runInContext(releaseInputs,context);
   vm.runInContext(source+';globalThis.audit={open,close,subscribeLifeView,dialog:()=>dialog};',context);
-  return {context,document,window,body,previous,keys,frames,timers,viewers,observers,created,
+  return {context,document,window,body,previous,keys,frames,timers,viewers,observers,created,panels,part,
     get dialog(){return context.audit.dialog();},subscribe:listener=>context.audit.subscribeLifeView(listener),
     setRaw:value=>{raw=value;},get raw(){return raw;},
     async open(options){await context.audit.open(options);await flush();},close:()=>context.audit.close(),
@@ -134,6 +136,22 @@ test('Better contains only the registered scene while the shared HUD, Expert sel
   assert.match(h.dialog.className,/visual-tier-surface/);assert.match(h.dialog.innerHTML,/02\.- BETTER · 16 BITS/);
   assert.doesNotMatch(h.dialog.innerHTML,/data-visual-mode|life-header|life-footer|Salir del comparador/);
   assert.ok(h.dialog.open);h.close();
+});
+
+test('Xtanco Best mounts closed component selection and uses numeric parts from a specific shelf instance',async()=>{
+  const h=harness();h.setRaw({...h.raw,layout:[{id:'shelf-A',type:'shelves',col:4,row:1},{id:'shelf-B',type:'shelves',col:6,row:1}]});await h.open({tier:'best'});await flush();
+  assert.equal(h.panels.length,1);const panel=h.panels[0],viewer=h.viewers[0];assert.equal(panel.enabled(),false);assert.equal(viewer.calls.partMode.at(-1),false);
+  panel.open();assert.equal(viewer.calls.partMode.at(-1),true);viewer.options.onSelect({item:viewer.snapshot.layout[1],layoutId:'shelf-B',partNumericId:23});
+  assert.equal(panel.selections.at(-1),h.part);assert.deepEqual(viewer.calls.parts.at(-1),{id:'shelf-B',num:23});assert.equal(h.dialog.querySelector('.life-selection').hidden,true);
+  viewer.options.onSelect(null);assert.equal(panel.selections.at(-1),null);assert.deepEqual(viewer.calls.parts.at(-1),{id:null,num:null});
+  panel.close();assert.equal(viewer.calls.partMode.at(-1),false);h.close();assert.equal(panel.disposed,true);
+});
+
+test('product deep link auto-opens selection only in Xtanco Best; stale parts cannot mount after close',async()=>{
+  const linked=harness({search:'?visual=best&select=products'});await linked.open({tier:'best'});await flush();assert.equal(linked.panels[0].enabled(),true);linked.close();
+  const better=harness({search:'?select=products'});await better.open();assert.equal(better.panels.length,0);better.close();
+  const cafe=harness({search:'?select=products'});cafe.setRaw({...cafe.raw,vertical:'cafeteria'});await cafe.open({tier:'best'});assert.equal(cafe.panels.length,0);cafe.close();
+  let resolveParts;const stale=harness({loadParts:doc=>new Promise(resolve=>{resolveParts=()=>resolve(doc);})});await stale.open({tier:'best'});stale.close();resolveParts();await flush();assert.equal(stale.panels.length,0);
 });
 
 test('Better labels the reversible empty presentation without claiming the live people are visible',async()=>{

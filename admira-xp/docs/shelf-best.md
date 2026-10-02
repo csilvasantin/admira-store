@@ -45,3 +45,11 @@ El PNG de previo usa el mismo atlas y geometría y fue renderizado antes del aju
 Se conserva el shell, su registro extensible, `/marca` y `/brand`. `/avatarDigital` mantiene su integración y estado independientes. Yokup sigue siendo maestro ITIL. / The shell, its extensible registry, `/marca` and `/brand` are retained. `/avatarDigital` keeps its independent integration and status. Yokup remains the ITIL master.
 
 Implementado: comparación Todos, Good pixel art nítido y detalle de etiquetas Best de la estantería #2. Pendiente: valoración humana y medidas calibradas. / Implemented: All comparison, crisp Good pixel art and Best label detail for shelf #2. Pending: human assessment and calibrated measurements.
+
+## Seleccionar productos y asociar contenido / Select products and associate content
+
+ES: En Best, **Seleccionar componentes** destaca uno de los 45 envases o su cartela y abre su ficha. La lista ofrece acceso por teclado. Una asociación local por referencia ilustrativa permite elegir contenido HTTPS o Pixeria para `ds1` del Xtanco y comprobarlo mediante vista previa temporal. En Todos, la selección corresponde a Best. Se conserva el atlas `shelves-labels-20261002-2`; el mapa nuevo `best.parts.json` usa revisión `shelves-parts-20261002-3` y `_XP_PART` dentro de las 14 mallas web.
+
+EN: In Best, **Seleccionar componentes (Select components)** highlights one of the 45 containers or its shelf card and opens its record. The list provides keyboard access. A local association by illustrative reference selects HTTPS or Pixeria content for Xtanco `ds1` and checks it through temporary preview. In All, selection applies to Best. The `shelves-labels-20261002-2` atlas is retained; new `best.parts.json` mapping uses revision `shelves-parts-20261002-3` and `_XP_PART` within the 14 web meshes.
+
+[Guía y contrato ES/EN / ES/EN guide and contract](shelf-product-content.md) · [Seleccionar productos / Select products](https://www.xpaceos.com/inventario/?asset=2&quality=best&select=products#mostrador).

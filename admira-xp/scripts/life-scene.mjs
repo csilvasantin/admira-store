@@ -113,15 +113,22 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     return surface(p,map,x,y,z,w,h,rotation,map?null:palette.teal);
   }
 
-  // All physical screens reference this one canvas and only the supplied draw()
-  // method. Canvas textures for wood and print are static, never media players.
+  // Existing screens share the supplied player. Xtanco ds1 may draw a transient
+  // priority surface into its own texture without changing the base player.
   const mediaCanvas=canvasFactory();let mediaContext=null,mediaTexture=null;
   if(mediaCanvas){mediaCanvas.width=512;mediaCanvas.height=768;mediaContext=mediaCanvas.getContext('2d');if(mediaContext){mediaTexture=own(new T.CanvasTexture(mediaCanvas));mediaTexture.colorSpace=T.SRGBColorSpace;mediaTexture.minFilter=T.LinearFilter;}}
   const mediaMaterial=mediaTexture?basic({map:mediaTexture,side:T.DoubleSide},sharedResources):palette.black;
-  function screen(p,x,y,z,w,h,rotation=0){
+  let ds1Media;
+  function ds1Material(){
+    if(ds1Media)return ds1Media.material;const canvas=canvasFactory(),context=canvas?.getContext('2d');
+    if(!context)return mediaMaterial;canvas.width=512;canvas.height=768;
+    const map=own(new T.CanvasTexture(canvas));map.colorSpace=T.SRGBColorSpace;map.minFilter=T.LinearFilter;
+    ds1Media={context,map,material:basic({map,side:T.DoubleSide},sharedResources)};return ds1Media.material;
+  }
+  function screen(p,x,y,z,w,h,rotation=0,surfaceId=null){
     const root=group(p,x,y,z);root.rotation.y=rotation;
     box(root,0,0,0,w+.14,h+.14,.13,palette.black);box(root,0,0,-.047,w+.2,h+.2,.035,palette.brass);
-    surface(root,null,0,0,.071,w,h,0,mediaMaterial).userData.liveMedia=true;
+    const display=surface(root,null,0,0,.071,w,h,0,surfaceId==='ds1'?ds1Material():mediaMaterial);display.userData.liveMedia=true;if(surfaceId)display.userData.surfaceId=surfaceId;
     cylinder(root,w*.36,-h/2-.042,.073,.013,.012,palette.led).rotation.x=Math.PI/2;
     return root;
   }
@@ -429,8 +436,8 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     }
     if(!snapshot.moving){
       const screenHeight=Math.min(1.62,h*.52),screenY=Math.min(h*.61,h-screenHeight/2-.4);
-      screen(architectureRoot,.092,screenY,r*.27,1.06,screenHeight,Math.PI/2);
-      screen(architectureRoot,.092,screenY,r*.70,1.06,screenHeight,Math.PI/2);
+      screen(architectureRoot,.092,screenY,r*.27,1.06,screenHeight,Math.PI/2,'ds1');
+      screen(architectureRoot,.092,screenY,r*.70,1.06,screenHeight,Math.PI/2,'ds2');
       if(c>8)art(architectureRoot,c*.84,h*.58,.11,1.1,1.42,0,1);
       // Small pools of light accent the retail fixtures, with cables kept at the
       // back of the cutaway so the orthographic view remains unobstructed.
@@ -722,7 +729,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       keepArmsClear(root);
     }
   }
-  function refreshMedia(player){
+  function refreshMedia(player,drawSurface){
     if(disposed||!mediaContext)return;
     const c=mediaContext,w=512,h=768;c.clearRect(0,0,w,h);
     if(player&&typeof player.draw==='function')player.draw(c,w,h);
@@ -731,6 +738,11 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       c.fillStyle='#f5eedb';c.textAlign='center';c.font='600 57px sans-serif';c.fillText('ADMIRA',256,438);c.font='22px sans-serif';c.fillText('UN ESPACIO CON VIDA',256,489);c.fillStyle='#a5c2ae';c.fillRect(99,555,314,2);
     }
     mediaTexture.needsUpdate=true;
+    if(ds1Media&&snapshot.venue!=='alsea-sbux-021'){
+      const target=ds1Media.context;target.clearRect(0,0,w,h);
+      if(!drawSurface?.(target,w,h,'ds1'))target.drawImage(mediaCanvas,0,0,w,h);
+      ds1Media.map.needsUpdate=true;
+    }
   }
   function dispose(){
     if(disposed)return;disposed=true;disconnectSurfaces();

@@ -1,23 +1,38 @@
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=surfaces-1';
+import {createLifeScene} from './life-scene.mjs?v=shelf-products-1';
+import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
+import {inventoryIdFor} from './furniture-asset.mjs?v=shelf-products-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs';
 import {mappedCameraFrame} from './life-camera.mjs';
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 /** Presentation only: no simulation, media owner or autonomous animation loop. */
-export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=()=>{},onCameraChange=()=>{},assetQuality='better'}={}){
+export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfacePreview=()=>null,onSelect=()=>{},onCameraChange=()=>{},assetQuality='better'}={}){
   const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
   renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
   renderer.setClearColor('#e7e8dc');renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
   let model;
   try{model=createLifeScene(snapshot,{
     assetQuality,
-    loadFurniture:item=>import('./furniture-asset.mjs?v=distribuir-3').then(m=>m.loadFurniture(item,assetQuality)),
+    loadFurniture:item=>import('./furniture-asset.mjs?v=shelf-products-1').then(m=>m.loadFurniture(item,assetQuality)),
     loadPerson:assetQuality==='best'?actor=>import('./best-person-asset.mjs?v=visitors-24').then(m=>m.loadBestPerson(actor)):null
   });}catch(error){renderer.dispose();renderer.forceContextLoss();throw error;}
   const camera=new T.OrthographicCamera(-15,15,10,-10,.1,200);
   const target=new T.Vector3(),raycaster=new T.Raycaster(),pointers=new Map();
   let width=1,height=1,lastMedia=-Infinity,disposed=false,gesture=null,selected=null,selectedId=null,editor=null,drag=null;
+  let partMode=false,partNumericId=null,partHighlight=null,partRoot=null,partAsset=null;
+  const nativeShelf=node=>assetQuality==='best'&&model.snapshot.venue!=='alsea-sbux-021'&&node?.userData.item?.type==='shelves'&&node.userData.item.id!=='sb-mugs'&&inventoryIdFor(node.userData.item)==='native:shelves';
+  function clearPart(){partHighlight?.dispose();partHighlight=null;partRoot=null;partAsset=null;partNumericId=null;}
+  function refreshPart(){
+    if(!partNumericId||!selected?.parent||!nativeShelf(selected)){if(partNumericId)clearPart();return;}
+    const asset=selected.children[0];if(partRoot!==selected||partAsset!==asset){partHighlight?.dispose();partHighlight=createPartHighlight(selected,model.scene);partRoot=selected;partAsset=asset;partHighlight.select(partNumericId);}else if(partHighlight.selected()!==partNumericId)partHighlight.select(partNumericId);
+    partHighlight.update();halo.visible=false;
+  }
+  function setPartMode(value){partMode=!!value&&assetQuality==='best'&&!editor&&model.snapshot.venue!=='alsea-sbux-021';if(!partMode)clearPart();}
+  function selectPart(instanceId,numericId){
+    if(!partMode||editor||!Number.isSafeInteger(numericId)||numericId<1){clearPart();return;}
+    selectItem(instanceId);if(!nativeShelf(selected)){clearPart();return;}partNumericId=numericId;refreshPart();
+  }
   const initial=mappedCameraFrame(model.snapshot);
   const current={zoom:1,angle:initial.angle,elevation:initial.elevation,panX:0,panY:0};let desired={...current},mode='mapped',framing='mapped';
   const cameraState=()=>Object.freeze({mode,registration:framing==='mapped'?mappedCameraFrame(model.snapshot,width,height).registration:'room-fit',...desired});
@@ -45,23 +60,27 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
     camera.left=centerX-horizontal/2;camera.right=centerX+horizontal/2;camera.top=centerY+vertical/2;camera.bottom=centerY-vertical/2;camera.updateProjectionMatrix();
   }
   function resize(w,h,dpr=globalThis.devicePixelRatio||1){if(disposed)return;width=Math.max(1,w);height=Math.max(1,h);renderer.setPixelRatio(clamp(dpr,1,1.75));renderer.setSize(width,height,false);frameCamera();}
-  function update(next){if(disposed)return;model.update(next);if(selectedId)selectItem(selectedId);if(mode==='mapped'){const mapped=mappedCameraFrame(model.snapshot);desired.angle=current.angle=mapped.angle;desired.elevation=current.elevation=mapped.elevation;}}
+  function update(next){if(disposed)return;model.update(next);if(selectedId)selectItem(selectedId);refreshPart();if(mode==='mapped'){const mapped=mappedCameraFrame(model.snapshot);desired.angle=current.angle=mapped.angle;desired.elevation=current.elevation=mapped.elevation;}}
   function selectAt(x,y){
     const bounds=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((x-bounds.left)/bounds.width*2-1,-(y-bounds.top)/bounds.height*2+1),camera);
-    model.scene.updateMatrixWorld(true);selected=null;
+    model.scene.updateMatrixWorld(true);selected=null;let selectedHit;
     for(const hit of raycaster.intersectObjects([model.world,model.actors],true)){
       for(let node=hit.object;node;node=node.parent){if(node.userData.item||node.userData.actor){selected=node;break;}}
-      if(selected)break;
+      if(selected){selectedHit=hit;break;}
     }
-    selectedId=selected?.userData.item?.id??null;halo.visible=!!selected;onSelect(selected?.userData||null);
+    selectedId=selected?.userData.item?.id??null;halo.visible=!!selected;
+    if(partMode&&!editor&&nativeShelf(selected)){
+      const numericId=numericPartForHit(selectedHit);if(numericId){selectPart(selectedId,numericId);onSelect({item:selected.userData.item,layoutId:selectedId,partNumericId:numericId});return;}
+    }
+    clearPart();onSelect(selected?.userData||null);
   }
   function render(now=performance.now()){
     if(disposed)return;
     for(const key of Object.keys(current))current[key]+=(desired[key]-current[key])*.16;
     frameCamera();model.animate(now);
-    if(now-lastMedia>125){model.refreshMedia(getPlayer());lastMedia=now;}
+    if(now-lastMedia>125){model.refreshMedia(getPlayer(),getSurfacePreview());lastMedia=now;}
     if(selected){if(!selected.parent){selected=null;halo.visible=false;}else{const item=selected.userData.item,p=item?new T.Vector3(item.col,0,item.row):selected.getWorldPosition(new T.Vector3());halo.position.set(p.x,.04,p.z);}}
-    renderer.render(model.scene,camera);
+    refreshPart();renderer.render(model.scene,camera);
   }
   const pinchDistance=()=>{const [a,b]=[...pointers.values()];return a&&b?Math.hypot(a.x-b.x,a.y-b.y):0;};
   const handlers={
@@ -104,12 +123,12 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
   }
   function rotate(direction){desired.angle=clamp(desired.angle+direction*.18,.10,Math.PI/2-.10);changeMode('free');}
   function zoomBy(factor){desired.zoom=clamp(desired.zoom*factor,.7,3.2);changeMode('free');}
-  function clearSelection(){selected=null;selectedId=null;halo.visible=false;onSelect(null);}
+  function clearSelection(){selected=null;selectedId=null;halo.visible=false;clearPart();onSelect(null);}
   function setLighting(mode){model.setLighting(mode);renderer.setClearColor(mode==='night'?'#202d3d':mode==='sunset'?'#e9d9c4':'#e7e8dc');}
   const overlay=new T.Group();overlay.name='distribuit:hardness';model.scene.add(overlay);
   function selectItem(id){selectedId=id??null;selected=null;model.world.traverse(node=>{if(node.userData.item&&String(node.userData.item.id)===String(id))selected=node;});halo.visible=!!selected;}
   function floorPoint(x,y){const bounds=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((x-bounds.left)/bounds.width*2-1,-(y-bounds.top)/bounds.height*2+1),camera);return raycaster.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());}
-  function setEditor(value){editor=value;drag=null;gesture=null;pointers.clear();}
+  function setEditor(value){editor=value;if(editor)setPartMode(false);drag=null;gesture=null;pointers.clear();}
   function clearOverlay(){for(const child of [...overlay.children]){child.geometry.dispose();child.material.dispose();overlay.remove(child);}}
   function setEditorOverlay(value){
     clearOverlay();if(!value)return;
@@ -124,8 +143,8 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,onSelect=
     for(const actor of model.actors.children){const status=actor.userData.personAssetStatus;if(status&&Object.hasOwn(result,status)){result[status]++;result.total++;}}
     return result;
   }
-  function dispose(){if(disposed)return;disposed=true;for(const [event,handler]of Object.entries(handlers))canvas.removeEventListener(event,handler);pointers.clear();clearOverlay();overlay.removeFromParent();haloGeometry.dispose();haloMaterial.dispose();halo.removeFromParent();model.dispose();renderer.dispose();renderer.forceContextLoss();}
+  function dispose(){if(disposed)return;disposed=true;for(const [event,handler]of Object.entries(handlers))canvas.removeEventListener(event,handler);pointers.clear();clearPart();clearOverlay();overlay.removeFromParent();haloGeometry.dispose();haloMaterial.dispose();halo.removeFromParent();model.dispose();renderer.dispose();renderer.forceContextLoss();}
   resize(canvas.clientWidth||1000,canvas.clientHeight||700);
   onCameraChange(cameraState());
-  return {setEditor,setEditorOverlay,selectItem,resize,update,render,preset,rotate,zoomBy,setLighting,clearSelection,dispose,get bestPeopleCount(){return peopleStatus().ready;},get bestPeopleStatus(){return peopleStatus();},get blenderAssets(){return model.world.children.filter(o=>o.userData.assetStatus==='ready').length;},get blenderCounters(){return model.world.children.filter(o=>o.userData.type==='counter'&&o.userData.assetStatus==='ready').length;},get snapshot(){return model.snapshot;},get cameraState(){return cameraState();}};
+  return {setEditor,setEditorOverlay,setPartMode,selectPart,selectItem,resize,update,render,preset,rotate,zoomBy,setLighting,clearSelection,dispose,get bestPeopleCount(){return peopleStatus().ready;},get bestPeopleStatus(){return peopleStatus();},get blenderAssets(){return model.world.children.filter(o=>o.userData.assetStatus==='ready').length;},get blenderCounters(){return model.world.children.filter(o=>o.userData.type==='counter'&&o.userData.assetStatus==='ready').length;},get snapshot(){return model.snapshot;},get cameraState(){return cameraState();}};
 }
