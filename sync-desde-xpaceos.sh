@@ -59,6 +59,9 @@ rsync -a --delete \
   --exclude 'sync-desde-xpaceos.sh' \
   --exclude 'sello-y-verja.py' \
   --exclude '.gitignore' \
+  --exclude 'functions/_live-presence.js' \
+  --exclude 'install-live-presence.py' \
+  --exclude 'docs/live-analytics.md' \
   --exclude 'tests/' \
   "$ORIGEN_LIMPIO"/ ./
 
@@ -72,6 +75,8 @@ rsync -a --delete \
 SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' "$ORIGEN_LIMPIO/index.html" | head -1)"
 [ -n "$SELLO" ] || { echo "✗ El origen publicado no declara versión" >&2; exit 1; }
 SELLO="$SELLO" ORIGEN_SHA="$ORIGEN_SHA" python3 "$AQUI/sello-y-verja.py"
+
+python3 install-live-presence.py
 
 # El repo original genera version.json al desplegar; git archive no incluye ese
 # archivo generado. Firmar el espejo con la misma release y el commit fuente.

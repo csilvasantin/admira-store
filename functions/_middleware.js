@@ -2,4 +2,5 @@
 // AdmiraNeXT). La lógica vive en _perimetro.js; ver allí el porqué.
 import {perimetro} from './_perimetro.js';
 
-export const onRequest = (context) => perimetro(context);
+import {withPresence} from "./_live-presence.js";
+export const onRequest = async (context) => withPresence(await perimetro(context));
