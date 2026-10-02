@@ -2750,5 +2750,12 @@
       "best"
     ],
     "new_remote_tools": false
+  },
+  "itil_inventory_link": {
+    "es": "ITIL está debajo de Percepción, a la derecha de Pixeria: abre en otra pestaña https://www.xpaceos.com/inventario/, con catálogo de muebles detallados, modelos 3D y editor. Yokup conserva el inventario maestro ITIL. Inventario mantiene sus acciones locales de añadir/eliminar.",
+    "en": "ITIL sits below Perception, to the right of Pixeria: it opens https://www.xpaceos.com/inventario/ in a new tab, with detailed furniture, 3D models and the editor. Yokup remains the master ITIL inventory. Inventory keeps its local add/remove actions.",
+    "url": "https://www.xpaceos.com/inventario/",
+    "category_id": "itil",
+    "action": "open_new_tab"
   }
 }

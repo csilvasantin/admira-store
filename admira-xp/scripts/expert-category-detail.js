@@ -95,6 +95,7 @@
   function dockPanels(){document.querySelectorAll(panelSelectors).forEach(dockPanel);}
   function select(button){
     const key=button.dataset.categoryId;if(!key)return;
+    if(key==='itil'){launch(key);return;}
     selected=key;heading.textContent=label(key);heading.parentElement.setAttribute('aria-label',label(key));host.hidden=false;
     section(key);for(const [id,s]of sections)s.hidden=id!==key;
     syncSelection();dockPanels();

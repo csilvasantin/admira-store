@@ -11,6 +11,7 @@
     impactos:'<path d="M4 4v16h17M8 16v-4M13 16V7M18 16v-7M7 8l5-4 7 2"/>',
     inventory:'<path d="m4 7 8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10M8 5l8 4"/>',
     perception:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    itil:'<rect x="5" y="4" width="14" height="17" rx="1"/><path d="M9 3h6v3H9zM8 10h1M12 10h4M8 14h1M12 14h4M8 18h1M12 18h4"/>',
     pixerai:'<path d="M4 4h16v16H4zM4 16l5-5 4 4 3-3 4 4"/><circle cx="15" cy="8" r="1"/>'
   };
   function keyFor(button){

@@ -29,3 +29,9 @@ Opciones → Proyecto y local permite cambiar entre Xtanco (proyecto estancos), 
 Options → Project and venue switches between Xtanco (estancos project), Cafebrería (cafebreria) and Starbucks (starbucks / alsea_starbucks). The header shows the current project. Starbucks opens Paseo de Gracia 103, stable ID alsea-sbux-021; Xtanco and Cafebrería are identified as demos without a linked real venue. The other 17 admira.app projects appear without linked twins and do not open invented scenes. Quality is separate; leaving Matrix falls back to Better to avoid reopening Starbucks. Switching preserves host and language and clears the previous venue’s player/camera context. Options and Advanced share Expert’s cards, line icons and keyboard focus, retain original actions and resize with readable minimum widths.
 
 [Proyecto y local / Project and venue](project-selection.md)
+
+## ITIL · 2 octubre 2026
+
+ES: ITIL está debajo de Percepción, a la derecha de Pixeria: abre en otra pestaña https://www.xpaceos.com/inventario/, con catálogo de muebles detallados, modelos 3D y editor. Yokup conserva el inventario maestro ITIL. Inventario mantiene sus acciones locales de añadir/eliminar.
+
+EN: ITIL sits below Perception, to the right of Pixeria: it opens https://www.xpaceos.com/inventario/ in a new tab, with detailed furniture, 3D models and the editor. Yokup remains the master ITIL inventory. Inventory keeps its local add/remove actions.

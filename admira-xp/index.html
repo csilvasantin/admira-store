@@ -35672,7 +35672,7 @@ window.xtAPI = (function(){
 </style>
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
 <link rel="stylesheet" href="scripts/expert-categories.css?v=console-3">
-<script src="scripts/expert-categories.js?v=console-3"></script>
+<script src="scripts/expert-categories.js?v=itil-1"></script>
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
 <script src="scripts/expert-category-detail.js?v=detail-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=central-2">
@@ -35702,6 +35702,13 @@ window.xtAPI = (function(){
       window.dispatchEvent(new Event('resize'));window.sendComposerText?.('/inventario');document.getElementById('telegramComposer')?.focus();
     });return b;
   }
+  function makeItil(){
+    var b=document.createElement('button');b.type='button';b.className='tg-quick-btn';b.dataset.quickAction='itil';
+    var en=typeof lang!=='undefined'&&lang==='en';
+    b.innerHTML='<strong>ITIL</strong><span>'+(en?'Catalog · 3D editor':'Catálogo · Editor 3D')+'</span>';
+    b.title=en?'Open ITIL inventory, detailed furniture and 3D editor':'Abrir inventario ITIL, muebles detallados y editor 3D';
+    b.addEventListener('click',function(){window.open('https://www.xpaceos.com/inventario/','_blank','noopener,noreferrer');});return b;
+  }
   function mirror(){
     if(scene.parentNode) scene.remove();
     var btns=[].slice.call(src.querySelectorAll('.tg-quick-btn'));
@@ -35716,6 +35723,7 @@ window.xtAPI = (function(){
     host.appendChild(makePercibe());
     // Pixeria keeps its latest-item import. Scene bars (Better) sit under it.
     btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
+    host.appendChild(makeItil());
     host.querySelectorAll('button').forEach(function(button){window.XpaceExpertCategories.decorate(button,{en:typeof lang!=='undefined'&&lang==='en',preserveId:true});});
     host.appendChild(scene);
     var categories=document.getElementById('expertQuickIcons');
