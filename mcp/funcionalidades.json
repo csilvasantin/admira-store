@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "title": "Catálogo funcional del Xpacio · Good / Better / Best",
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-02",
   "audit": {
     "basis": "Revisión estática del código del gemelo; inventario MCP contrastado con tools/list y resources/list públicos. No se ejecutaron operaciones físicas, envíos, compras ni generación de pago.",
     "source_commit": "a7b8d62eacfcbb166d2ddc1e3a6758bec0fdc178",
@@ -148,12 +148,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 3246,
+          "line": 3249,
           "symbol": "dsControl"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 3650,
+          "line": 3653,
           "symbol": "renderDSCanvas"
         },
         {
@@ -233,7 +233,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 26853,
+          "line": 26856,
           "symbol": "bgMusic"
         },
         {
@@ -296,7 +296,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 29747,
+          "line": 29755,
           "symbol": "comunicar"
         },
         {
@@ -347,12 +347,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 20895,
+          "line": 20898,
           "symbol": "drawLED"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 29331,
+          "line": 29339,
           "symbol": "setAdmiraLive"
         },
         {
@@ -423,7 +423,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30140,
+          "line": 30148,
           "symbol": "helpSections"
         },
         {
@@ -487,12 +487,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 19410,
+          "line": 19413,
           "symbol": "DS_PIN"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 31337,
+          "line": 31346,
           "symbol": "avatar3d"
         },
         {
@@ -544,12 +544,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 12043,
+          "line": 12046,
           "symbol": "mupiCamOpenGallery"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 27979,
+          "line": 27982,
           "symbol": "renderCameraViews"
         },
         {
@@ -626,7 +626,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 27965,
+          "line": 27968,
           "symbol": "realAudience"
         },
         {
@@ -695,7 +695,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 12070,
+          "line": 12073,
           "symbol": "anonimizado"
         },
         {
@@ -787,7 +787,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30143,
+          "line": 30151,
           "symbol": "helpSections"
         },
         {
@@ -875,12 +875,12 @@
         },
         {
           "path": "admira-xp/index.html",
-          "line": 26826,
+          "line": 26829,
           "symbol": "lamp"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30127,
+          "line": 30135,
           "symbol": "helpSections"
         }
       ]
@@ -939,12 +939,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 24541,
+          "line": 24544,
           "symbol": "G.turns"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 20788,
+          "line": 20791,
           "symbol": "currentTurnNumber"
         },
         {
@@ -1008,12 +1008,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30107,
+          "line": 30115,
           "symbol": "stock"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 31287,
+          "line": 31296,
           "symbol": "restock"
         },
         {
@@ -1093,7 +1093,7 @@
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30136,
+          "line": 30144,
           "symbol": "helpSections"
         }
       ]
@@ -1164,7 +1164,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30121,
+          "line": 30129,
           "symbol": "helpSections"
         },
         {
@@ -1233,12 +1233,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30118,
+          "line": 30126,
           "symbol": "helpSections"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30141,
+          "line": 30149,
           "symbol": "helpSections"
         },
         {
@@ -1314,7 +1314,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 26561,
+          "line": 26564,
           "symbol": "updateGame"
         },
         {
@@ -1324,7 +1324,7 @@
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30123,
+          "line": 30131,
           "symbol": "helpSections"
         }
       ]
@@ -1396,12 +1396,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30721,
+          "line": 30729,
           "symbol": "xpl"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 3686,
+          "line": 3689,
           "symbol": "__dsXplMsg"
         },
         {
@@ -1472,12 +1472,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30130,
+          "line": 30138,
           "symbol": "helpSections"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30140,
+          "line": 30148,
           "symbol": "helpSections"
         },
         {
@@ -1534,6 +1534,24 @@
           "entrypoint": "__xtExec",
           "status": "source_verified",
           "note": "Ruta inspeccionada en código; no ejecutada sobre un equipo real."
+        },
+        {
+          "text": "/marca starbucks",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Marca blanca del catálogo admiranext.com/marcablanca (plataforma store). En la consola local del gemelo y en ⌘ Experto de cualquier página con shell se aplica en ese navegador tras comprobar el catálogo; por __xtExec (Telegram, MCP, /twin/cmd) solo devuelve el enlace https://www.xpaceos.com/admira-xp/?marca=starbucks y no cambia ninguna pantalla. Alias /brand. Starbucks es una propuesta automática, no la marca oficial."
+        },
+        {
+          "text": "/marca off",
+          "entrypoint": "__xtExec",
+          "status": "source_verified",
+          "note": "Vuelve a Admira sin recargar en el navegador local (también «Volver a Admira» en Opciones o ?marca=admira). Por __xtExec devuelve el enlace ?marca=admira."
+        },
+        {
+          "text": "/marca",
+          "entrypoint": "xtAPI.command",
+          "status": "source_verified",
+          "note": "xtAPI.command no aplica la marca: responde {ok, message, data:{url, applied:false}} con el enlace que la abre."
         }
       ],
       "mcp": {
@@ -1552,13 +1570,33 @@
         },
         {
           "path": "admira-xp/index.html",
-          "line": 31834,
+          "line": 31851,
           "symbol": "sendComposerText"
         },
         {
           "path": "admira-xp/scripts/life-ui.mjs",
           "line": 38,
           "symbol": "showModal"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 31542,
+          "symbol": "executeTelegramText /marca (respuesta sin navegador)"
+        },
+        {
+          "path": "admira-xp/index.html",
+          "line": 28010,
+          "symbol": "xtAPI.command /marca"
+        },
+        {
+          "path": "assets/xpace-shell.js",
+          "line": 206,
+          "symbol": "runMarca"
+        },
+        {
+          "path": "assets/xpace-shell.js",
+          "line": 253,
+          "symbol": "remoteMarca"
         }
       ]
     },
@@ -1749,12 +1787,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30136,
+          "line": 30144,
           "symbol": "helpSections"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30146,
+          "line": 30154,
           "symbol": "helpSections"
         },
         {
@@ -1812,12 +1850,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30135,
+          "line": 30143,
           "symbol": "helpSections"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 3650,
+          "line": 3653,
           "symbol": "renderDSCanvas"
         }
       ]
@@ -1894,12 +1932,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30135,
+          "line": 30143,
           "symbol": "helpSections"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30137,
+          "line": 30145,
           "symbol": "helpSections"
         },
         {
@@ -2025,12 +2063,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30943,
+          "line": 30951,
           "symbol": "devolucion"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30969,
+          "line": 30978,
           "symbol": "pedido"
         }
       ]
@@ -2096,12 +2134,12 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 30125,
+          "line": 30133,
           "symbol": "helpSections"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 30146,
+          "line": 30154,
           "symbol": "helpSections"
         },
         {
@@ -2171,7 +2209,7 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 29970,
+          "line": 29978,
           "symbol": "people"
         },
         {
@@ -2234,17 +2272,17 @@
       "evidence": [
         {
           "path": "admira-xp/index.html",
-          "line": 27162,
+          "line": 27165,
           "symbol": "advertise"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 31145,
+          "line": 31154,
           "symbol": "sponsor"
         },
         {
           "path": "admira-xp/index.html",
-          "line": 28233,
+          "line": 28241,
           "symbol": "targetPublicity"
         }
       ]
@@ -2650,5 +2688,53 @@
     "pending": "Other venue associations must be explicitly registered by an admin; legacy map/catalog publication and its existing login are not migrated; existing MCP/hardware permissions unchanged",
     "es": "Opciones → Proyecto y local → Conectar con AdmiraNext usa la identidad central y muestra sólo los proyectos comerciales y locales autorizados. El catálogo y las asociaciones viven en D1 de AdmiraNext; admira.app y XpaceOS son clientes. Sin conexión hay tres demos públicas claramente identificadas. Un proyecto autorizado sin local asociado no abre un gemelo inventado. Si hay varios locales, elige uno antes de abrirlo. Gestión central: https://www.admiranext.com/xpace/manage; permisos: https://www.admiranext.com/usuarios. El acceso de lectura dura 10 minutos en esta pestaña; al caducar o revocarse pide reconectar. Calidad, idioma y distribución siguen siendo locales. No concede escritura MCP ni control de dispositivos físicos.",
     "en": "Options → Project and venue → Connect with AdmiraNext uses central identity and shows only permitted commercial projects and venues. The registry and associations live in AdmiraNext D1; admira.app and XpaceOS are clients. Without a connection, three clearly identified public demos are available. A permitted project with no associated venue never opens an invented twin. Choose a venue first when several are available. Central management: https://www.admiranext.com/xpace/manage; permissions: https://www.admiranext.com/usuarios. Read access lasts 10 minutes in this tab; expiry or revocation requires reconnection. Quality, language and layout remain local. It grants no MCP writes or physical device control."
+  },
+  "inventory_frame": {
+    "version": "1",
+    "pages": [
+      "https://www.xpaceos.com/inventario/",
+      "https://www.xpaceos.com/inventario/conjunto/",
+      "https://www.xpaceos.com/inventario/starbucks/",
+      "https://www.yokup.com/retailer#itil",
+      "https://www.yokup.com/equipo-inventario?code=PDG103-BOT-01"
+    ],
+    "layout": {
+      "top": "one horizontal bar visible by default; other menus collapsed",
+      "left": "Options",
+      "right": "Advanced",
+      "bottom": "Expert/navigation CLI"
+    },
+    "commands": [
+      "/inventario",
+      "/inventory",
+      "/starbucks",
+      "/referencias",
+      "/references",
+      "/ref PG103-001",
+      "/equipo PDG103-BOT-01",
+      "/equipment PDG103-BOT-01",
+      "/xpaceos",
+      "/yokup",
+      "/ayuda",
+      "/help"
+    ],
+    "master": "Yokup ITIL",
+    "shared_key": "itil_code",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/inventory-frame.md",
+    "es": "En las páginas del inventario, /inventario sin argumentos abre el catálogo; /inventario con argumentos conserva la ejecución en el gemelo de XpaceOS. Desde Yokup se indica abrir el gemelo. Navegación: /inventario, /starbucks, /referencias, /ref PG103-001, /equipo PDG103-BOT-01, /xpaceos, /yokup y /ayuda. La unidad seleccionada conserva su código ITIL al abrir Yokup o volver a XpaceOS. Los candidatos enlazan el portal sin inventar fichas ITIL. Añadir, eliminar o mover muebles se realiza en la Xperience; las fichas patrimoniales se editan en Yokup con sus permisos existentes.",
+    "en": "On inventory pages, /inventario without arguments opens the catalogue; arguments retain execution in the XpaceOS twin. From Yokup it prompts opening the twin. Navigation: /inventory, /starbucks, /references, /ref PG103-001, /equipment PDG103-BOT-01, /xpaceos, /yokup and /help. A selected unit retains its ITIL code when opening Yokup or returning to XpaceOS. Candidates link to the portal without inventing ITIL records. Add, remove or move furniture in the Xperience; edit lifecycle records in Yokup with existing permissions.",
+    "new_remote_tools": false
+  },
+  "itil_3d_record": {
+    "es": "En Inventario → Starbucks PG103, selecciona una unidad: «Ficha ITIL y 3D» reúne código, instancia, modelo compartido, zona observada y medidas pendientes. Abre el histórico del vínculo visual y la ficha maestra de Yokup con sus permisos. En Experto: /ficha PDG103-MES-02; /marca y /marca off conservan el cambio de aspecto. /avatarDigital de Woz sigue pendiente de publicación. Los candidatos no se dan de alta y la ficha no acredita telemetría real.",
+    "en": "In Inventory → Starbucks PG103 select a unit: “ITIL and 3D record” shows code, instance, shared model, photo-observed zone and pending measurements. Open visual-link history and the Yokup master record with its existing permissions. In Expert: /record PDG103-MES-02; /marca and /marca off retain appearance changes. Woz’s /avatarDigital is pending publication. Candidates are not registered automatically; this record does not establish real telemetry.",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md",
+    "commands": [
+      "/ficha PDG103-MES-02",
+      "/record PDG103-MES-02"
+    ],
+    "new_remote_tools": false,
+    "master": "Yokup",
+    "history": "Visual link events; lifecycle audit remains in Yokup"
   }
 }

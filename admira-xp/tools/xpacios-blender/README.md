@@ -20,3 +20,14 @@ La superficie `screen_tpv_main` tiene una textura estática ADMIRA y el extra `m
 El `.blend` conserva texto editable, biseles y texturas empaquetadas. La colección STUDIO sólo produce la imagen: cámaras, luces y suelo no se exportan al GLB. Las texturas se generan de forma determinista con NumPy incluido en Blender; no hay assets descargados. El render de estudio y WebGL pueden diferir en iluminación.
 
 Revisión del 15/09/2026: el piloto actualizado se publica en `/inventario/#mostrador` y los GLB se integran en Better/Best editable. El laboratorio original permanece como referencia histórica. `verify_counter.py` valida ahora las dos puertas traseras y la identidad permanente 1, por lo que debe ejecutarse sobre los assets regenerados de `inventario/assets/mostrador`. Instalación verificada: `/Applications/Blender.app`, Blender 5.2.2 LTS mediante Homebrew cask oficial.
+
+## Starbucks PG103: botellero y botellas / water rack and bottles
+
+```sh
+python3 admira-xp/tools/xpacios-blender/water_rack_textures.py inventario/assets/catalog/50/textures
+/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python-exit-code 1 --python admira-xp/tools/xpacios-blender/build_water_rack.py -- /absolute/path/to/xpaceos
+```
+
+Asset50 interpreta la foto y la panorámica de PG103: cesta de varilla negra, soporte fino, cartel AGUA MINERAL y19 botellas PET azules editables. Las proporciones nominales no son medidas de campo y las19 unidades no son stock medido. La impresión del cuello es una recreación aproximada. Los mapas PBR deterministas quedan empaquetados; cada perfil produce GLB y Blender, más botella individual y preview Cycles. La escena de estudio sólo interviene en el render.
+
+Asset50 interprets the PG103 photo/panorama: black wire basket and slender stand, AGUA MINERAL sign,19 editable blue PET bottles. Nominal proportions are not field measurements;19 is visual filling, not verified stock. Neck printing is an approximation. Packed deterministic PBR maps are shared by the three GLB/Blender profiles, standalone bottle and Cycles preview. Studio geometry is added only after model export.

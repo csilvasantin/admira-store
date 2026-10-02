@@ -15,3 +15,7 @@ Pantallas Starbucks: fuente `admira-xp/scripts/starbucks-screens.mjs`; regenerar
 TPV Starbucks / POS: fuente `admira-xp/scripts/starbucks-tpv.mjs`; regenerar sus JSON con `node admira-xp/scripts/export-starbucks-tpv.mjs`. Playlist de publicidad local independiente de pared e hilo musical / Local advertising playlist independent of wall and speaker music. Guía / Guide: `admira-xp/docs/starbucks-tpv.md`.
 
 Matrix MCP: estado compartido en `https://mcp.admira.store/matrix/starbucks`, editable sólo mediante herramientas MCP autenticadas con revisión. Los JSON del sitio son semillas, no el estado vivo tras una edición MCP. Source: xpaceos-mcp/src/matrix-state.mjs; guide `admira-xp/docs/matrix-mcp.md`. Shared state is authoritative after a channel is managed; static JSON remains bootstrap.
+
+## Compatibilidad acumulada (Carlos, 2-oct-2026)
+
+Cada mejora debe conservar el histórico y las funciones ya entregadas en las soluciones: identidades, datos, preferencias e historial CLI. La marca blanca /marca (/brand) y el cambio de look and feel deben seguir disponibles en Experto. Mantener el shell y su registro extensible; /avatarDigital es la integración del consejero Woz (FLT-101350), no sustituirla ni anunciarla publicada antes de verificar su entrega. Documentar y comprobar regresiones al ampliar el inventario.

@@ -15,7 +15,7 @@
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100%}
   a{color:var(--brand);text-decoration:none} a:hover{text-decoration:underline}
   button,select,input{font-family:inherit}
-  header{padding:13px 22px;background:linear-gradient(to bottom,rgba(2,8,13,.95),rgba(2,8,13,.6));border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+  header{padding:13px 22px;background:linear-gradient(to bottom,rgba(2,8,13,.95),rgba(2,8,13,.6));border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:var(--xs-bar-h,0px);z-index:20;backdrop-filter:blur(8px)}
   .logo{font-family:monospace;font-size:13px;letter-spacing:.16em;color:var(--accent);font-weight:bold;white-space:nowrap}
   .logo .dot{color:var(--brand)}
   .logo .sub{color:var(--mut);margin-left:10px;font-weight:normal;letter-spacing:.1em;font-size:11px}
@@ -62,16 +62,18 @@
   .foot{color:var(--mut);font-size:12px;margin-top:14px;text-align:center;font-family:monospace}
   @media(max-width:760px){.bl-grid{grid-template-columns:1fr}}
 </style>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-inventory-1">
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-section="/ control del circuito" data-section-en="/ circuit control"></script>
 </head>
 <body>
 <header>
-  <div class="logo">XPACE<span class="dot">·</span>OS <span class="sub">CONTROL DEL CIRCUITO</span></div>
   <div class="sel"><label>Circuito</label><select id="circuitSel"></select></div>
   <div class="sel"><label>Día</label><input type="date" id="dateInp"></div>
   <div class="grow"></div>
-  <a class="btn ghost" href="https://admira.tv/cms" target="_blank" rel="noopener">🛠 CMS</a>
-  <a class="btn ghost" href="https://admira.tv/canal.html" target="_blank" rel="noopener">📺 Canal</a>
-  <a class="btn ghost" href="/">← XpaceOS</a>
+  <div data-shell-slots hidden>
+    <a href="https://admira.tv/cms" target="_blank" rel="noopener" data-shell-slot="options">🛠 CMS ↗</a>
+    <a href="https://admira.tv/canal.html" target="_blank" rel="noopener" data-shell-slot="options">📺 Canal ↗</a>
+  </div>
 </header>
 
 <div class="wrap">

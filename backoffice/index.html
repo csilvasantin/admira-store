@@ -24,7 +24,7 @@
 
   /* ── Gate ── */
   .gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;
-    background:radial-gradient(ellipse at 30% 0%,rgba(120,243,255,.10),transparent 55%),var(--bg);z-index:1000}
+    background:radial-gradient(ellipse at 30% 0%,rgba(120,243,255,.10),transparent 55%),var(--bg);z-index:9100}
   .gate-card{width:min(420px,94vw);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 30px;box-shadow:0 30px 90px rgba(0,0,0,.5)}
   .gate-logo{font-size:13px;letter-spacing:.18em;color:var(--accent);font-weight:bold;text-align:center}
   .gate-logo .dot{color:var(--brand)}
@@ -48,7 +48,7 @@
   .btn.xs{padding:3px 8px;font-size:11px}
 
   /* ── Header ── */
-  header{padding:13px 22px;background:linear-gradient(to bottom,rgba(2,8,13,.96),rgba(2,8,13,.7));border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:sticky;top:0;z-index:40;backdrop-filter:blur(8px)}
+  header{padding:13px 22px;background:linear-gradient(to bottom,rgba(2,8,13,.96),rgba(2,8,13,.7));border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:sticky;top:var(--xs-bar-h,0px);z-index:40;backdrop-filter:blur(8px)}
   .logo{font-family:ui-monospace,monospace;font-size:13px;letter-spacing:.16em;color:var(--accent);font-weight:bold;white-space:nowrap}
   .logo .dot{color:var(--brand)}
   .logo .sub{color:var(--mut);margin-left:9px;font-weight:normal;letter-spacing:.1em;font-size:11px}
@@ -134,9 +134,9 @@
   .pager{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:16px;color:var(--mut);font-size:13px}
 
   /* ── Drawer ── */
-  .drawer-bg{position:fixed;inset:0;background:rgba(2,8,13,.6);backdrop-filter:blur(4px);z-index:60;display:none}
+  .drawer-bg{position:fixed;inset:0;background:rgba(2,8,13,.6);backdrop-filter:blur(4px);z-index:9100;display:none}
   .drawer-bg.open{display:block}
-  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--card);border-left:1px solid var(--line);z-index:61;transform:translateX(100%);transition:transform .22s ease;overflow-y:auto;display:flex;flex-direction:column}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--card);border-left:1px solid var(--line);z-index:9110;transform:translateX(100%);transition:transform .22s ease;overflow-y:auto;display:flex;flex-direction:column}
   .drawer.open{transform:none}
   .drawer-head{padding:20px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
   .drawer-head .top{display:flex;align-items:flex-start;gap:14px}
@@ -184,7 +184,7 @@
   .chart-x{display:flex;justify-content:space-between;font-family:ui-monospace,monospace;font-size:10px;color:var(--mut);margin-top:4px}
 
   /* ── Toast ── */
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-size:13px;z-index:200;opacity:0;transition:.25s;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:90vw}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-size:13px;z-index:9200;opacity:0;transition:.25s;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:90vw}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   #toast.err{border-color:var(--danger);color:#ffb3ba}
   #toast.ok{border-color:var(--good)}
@@ -193,6 +193,8 @@
   .foot{color:var(--mut);font-size:11px;text-align:center;margin-top:30px;font-family:ui-monospace,monospace;letter-spacing:.06em}
   @media(max-width:560px){.dstats{grid-template-columns:1fr 1fr}.wrap{padding:16px 14px 60px}}
 </style>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-inventory-1">
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-section="/ club backoffice" data-section-en="/ club backoffice"></script>
 </head>
 <body>
 
@@ -219,10 +221,9 @@
       <button class="tab" data-view="rewards" data-i18n="tab.rewards">Recompensas</button>
       <button class="tab" data-view="settings" data-i18n="tab.settings">Ajustes</button>
     </div>
-    <div class="hdr-right">
-      <button class="lang-toggle" id="langToggle">EN</button>
-      <a class="btn ghost sm" href="/">← XpaceOS</a>
-      <button class="btn ghost sm" id="lockBtn" data-i18n="lock">Salir</button>
+    <div class="hdr-right" data-shell-slots>
+      <button class="lang-toggle" id="langToggle" data-shell-slot="options">EN</button>
+      <button class="btn ghost sm" id="lockBtn" data-i18n="lock" data-shell-slot="advanced">Salir</button>
     </div>
   </header>
 

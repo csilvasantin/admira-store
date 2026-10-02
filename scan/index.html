@@ -26,7 +26,7 @@
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html,body{margin:0; height:100%; background:var(--bg); color:var(--txt);
   font:15px/1.45 -apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif; overflow:hidden}
-#frame{display:grid; height:100dvh;
+#frame{display:grid; height:calc(100dvh - var(--xs-bar-h,0px) - var(--xs-bottom,0px));
   grid-template-rows:48px 1fr auto; grid-template-columns:1fr}
 /* barra superior = principal */
 #bar-top{display:flex; align-items:center; gap:10px; padding:0 12px;
@@ -69,7 +69,8 @@ input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
   border-radius:8px; padding:8px 10px; width:130px; font-size:14px}
 #experto{display:none; margin-top:10px; border-top:1px dashed var(--line); padding-top:8px;
   font:11px/1.5 ui-monospace,Menlo,monospace; color:var(--dim); max-height:120px; overflow:auto}
-#frame.show-experto #experto{display:block}
+#frame.show-experto #experto,.xs-expert #experto{display:block}
+.xs-expert #experto{margin:0;padding:6px 8px;border:1px dashed var(--line);border-radius:8px;max-height:none}
 .row{display:flex; gap:10px; align-items:center; justify-content:center; margin-bottom:10px; flex-wrap:wrap}
 #up-bar{display:none; height:6px; background:#03120a; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin:0 0 10px}
 #up-bar i{display:block; height:100%; width:0; background:var(--acc); transition:width .25s}
@@ -82,13 +83,15 @@ input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
 #escena-panel .acts a.primary{background:var(--acc); color:#03170c; border:none; font-weight:700}
 #escena-panel .estado{color:var(--dim); margin-top:8px}
 </style>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-inventory-1">
+<script>window.XPACE_SHELL={options:[{href:'/scan/',es:'XpaceScan · capturar',en:'XpaceScan · capture'},{href:'/scan/ops.html',es:'Sala de máquinas',en:'Engine room'},{href:'/scan/visor.html',es:'Visor 3D',en:'3D viewer'},{href:'/scan/levantado/',es:'Xpacio levantado',en:'Surveyed Xpacio'},{href:'/scan/planos/',es:'Entrada de planos',en:'Floor plans'}]};</script>
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-section="/ XpaceScan" data-section-en="/ XpaceScan"></script>
 </head>
 <body>
 <div id="frame">
   <div id="bar-top">
-    <span class="logo">XPACESCAN</span>
     <span class="pill" id="estado"><span id="rec-dot"></span><span id="estado-txt">listo</span></span>
-    <div id="pf-toggles">
+    <div id="pf-toggles" data-shell-slots hidden>
       <button id="tg-experto" title="modo experto">⌥</button>
     </div>
     <span class="ver">v26.09.05.2 · <a href="levantado/">xpacio levantado</a></span>
@@ -135,7 +138,7 @@ input#scene{background:#03120a; border:1px solid var(--line); color:var(--txt);
         <button id="escena-share">Compartir enlace</button>
       </div>
     </div>
-    <div id="experto">EXPERTO · log<br></div>
+    <div id="experto" data-shell-slot="expert">EXPERTO · log<br></div>
   </div>
 </div>
 

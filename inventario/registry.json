@@ -43,7 +43,14 @@
     "pixeria:1780692514916-dbhayg": 40,
     "pixeria:1780692329479-72iyd6": 41,
     "pixeria:1780691893193-90pnk1": 42,
-    "pixeria:1780691765844-ex3huq": 43
+    "pixeria:1780691765844-ex3huq": 43,
+    "native:starbucksBackbar": 44,
+    "native:starbucksCounter": 45,
+    "native:starbucksDisplay": 46,
+    "native:starbucksShelves": 47,
+    "native:starbucksTable": 48,
+    "native:starbucksChair": 49,
+    "native:starbucksWaterRack": 50
   },
   "labels": {
     "pixeria:1781386629046-a7rnyw": "Scooter retro",
@@ -70,6 +77,13 @@
     "pixeria:1780692514916-dbhayg": "Chanclas azules",
     "pixeria:1780692329479-72iyd6": "Máquina arcade",
     "pixeria:1780691893193-90pnk1": "Caballo de madera",
-    "pixeria:1780691765844-ex3huq": "Silla de madera"
+    "pixeria:1780691765844-ex3huq": "Silla de madera",
+    "native:starbucksBackbar": "Barra de preparación Starbucks",
+    "native:starbucksCounter": "Mostrador de caja Starbucks",
+    "native:starbucksDisplay": "Vitrina Starbucks",
+    "native:starbucksShelves": "Estantería de tazas y café Starbucks",
+    "native:starbucksTable": "Mesa redonda Starbucks",
+    "native:starbucksChair": "Silla Starbucks",
+    "native:starbucksWaterRack": "Botellero Solán de Cabras Starbucks"
   }
 }

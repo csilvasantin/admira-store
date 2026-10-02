@@ -55,3 +55,15 @@ El GLB se cuelga del nodo lógico existente, aplicando posición, orientación y
 Diseño interpretado, pendiente de valoración humana; las proporciones de casilla todavía no están calibradas con medidas de un mueble real. 8/16/32 son estilos, no profundidades de color ni niveles de precisión geométrica.
 
 Verificado: importación GLB y apertura `.blend` en Blender para los tres perfiles; materiales empaquetados, 110 objetos de malla, geometría posterior y exclusión de cámaras/luces de estudio. QA navegador: parte posterior, malla, Best con modelo Blender, CLI eliminar 1 (17→16) y deshacer (16→17). Misión DCL-fe628ccda18b44ba84ba5717 · #169.
+
+## Marco cuadrático / Quadratic frame
+
+Marco cuadrático Admira: por defecto solo se ve la barra horizontal superior. Opciones a la izquierda, Avanzados a la derecha y Experto/CLI abajo empiezan replegados; las vistas del inventario están dentro de Opciones. ☰ y ◨ muestran u ocultan paneles; ⌘ abre el CLI y Escape los cierra. En móvil se usan los mismos botones. Opciones reúne vistas, búsqueda y filtros; Avanzados reúne cámara, malla, descargas, ayuda y conexiones.
+
+Admira quadratic frame: only the horizontal top bar is visible by default. Options on the left, Advanced on the right and Expert/CLI at the bottom start collapsed; inventory views live inside Options. ☰ and ◨ toggle panels; ⌘ opens the CLI and Escape closes them. Mobile uses the same buttons. Options contains views, search and filters; Advanced contains camera, wireframe, downloads, help and connections.
+
+En las páginas del inventario, /inventario sin argumentos abre el catálogo; /inventario con argumentos conserva la ejecución en el gemelo de XpaceOS. Desde Yokup se indica abrir el gemelo. Navegación: /inventario, /starbucks, /referencias, /ref PG103-001, /equipo PDG103-BOT-01, /xpaceos, /yokup y /ayuda. La unidad seleccionada conserva su código ITIL al abrir Yokup o volver a XpaceOS. Los candidatos enlazan el portal sin inventar fichas ITIL. Añadir, eliminar o mover muebles se realiza en la Xperience; las fichas patrimoniales se editan en Yokup con sus permisos existentes.
+
+On inventory pages, /inventario without arguments opens the catalogue; arguments retain execution in the XpaceOS twin. From Yokup it prompts opening the twin. Navigation: /inventory, /starbucks, /references, /ref PG103-001, /equipment PDG103-BOT-01, /xpaceos, /yokup and /help. A selected unit retains its ITIL code when opening Yokup or returning to XpaceOS. Candidates link to the portal without inventing ITIL records. Add, remove or move furniture in the Xperience; edit lifecycle records in Yokup with existing permissions.
+
+Contrato: https://www.xpaceos.com/admira-xp/docs/inventory-frame.md · Misión DCL-1be5b59b234e7be48381c4ee.

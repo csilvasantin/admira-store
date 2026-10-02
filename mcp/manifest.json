@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.01.10.2026.r9.12:01",
+  "version": "v.02.10.2026.r2.11:23",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.13",
+    "version": "2.12.19",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -646,9 +646,119 @@
     "es": "Opciones → Proyecto y local → Conectar con AdmiraNext usa la identidad central y muestra sólo los proyectos comerciales y locales autorizados. El catálogo y las asociaciones viven en D1 de AdmiraNext; admira.app y XpaceOS son clientes. Sin conexión hay tres demos públicas claramente identificadas. Un proyecto autorizado sin local asociado no abre un gemelo inventado. Si hay varios locales, elige uno antes de abrirlo. Gestión central: https://www.admiranext.com/xpace/manage; permisos: https://www.admiranext.com/usuarios. El acceso de lectura dura 10 minutos en esta pestaña; al caducar o revocarse pide reconectar. Calidad, idioma y distribución siguen siendo locales. No concede escritura MCP ni control de dispositivos físicos.",
     "en": "Options → Project and venue → Connect with AdmiraNext uses central identity and shows only permitted commercial projects and venues. The registry and associations live in AdmiraNext D1; admira.app and XpaceOS are clients. Without a connection, three clearly identified public demos are available. A permitted project with no associated venue never opens an invented twin. Choose a venue first when several are available. Central management: https://www.admiranext.com/xpace/manage; permissions: https://www.admiranext.com/usuarios. Read access lasts 10 minutes in this tab; expiry or revocation requires reconnection. Quality, language and layout remain local. It grants no MCP writes or physical device control."
   },
+  "starbucksFurniture": {
+    "manifest": "https://www.xpaceos.com/inventario/starbucks/manifest.json",
+    "viewer": "https://www.xpaceos.com/inventario/starbucks/",
+    "unitCount": 11,
+    "modelCount": 7,
+    "catalogNumbers": [
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50
+    ],
+    "geometry": "interpretive; field dimensions pending",
+    "authority": "Yokup ITIL",
+    "waterRack": {
+      "itil_code": "PDG103-BOT-01",
+      "instance_id": "sb-water-rack",
+      "asset_number": 50,
+      "viewer": "https://www.xpaceos.com/inventario/starbucks/?item=PDG103-BOT-01",
+      "visualBottleCount": 19,
+      "stockCount": null,
+      "materials": "blue PET, white caps, black metal; embedded PBR textures",
+      "geometry": "photo/360 interpretation; nominal dimensions, no field measurement",
+      "bottleModel": "https://www.xpaceos.com/inventario/assets/catalog/50/bottle.glb",
+      "bottleMaster": "https://www.xpaceos.com/inventario/assets/catalog/50/bottle.blend"
+    },
+    "photoReferences": {
+      "manifest": "https://www.xpaceos.com/inventario/starbucks/references.json",
+      "viewer": "https://www.xpaceos.com/inventario/starbucks/?view=references",
+      "count": 60,
+      "registeredRange": [
+        1,
+        11
+      ],
+      "candidateRange": [
+        12,
+        39
+      ],
+      "productRange": [
+        40,
+        60
+      ],
+      "idPattern": "PG103-NNN",
+      "catalogNumberDistinct": true,
+      "basis": "real panorama crops; type/context references when unit identity is unverified",
+      "autoRegistration": false,
+      "yokup": "ITIL cards and equipment sheets map registered references by exact venue and code; public fetch without credentials"
+    }
+  },
+  "common_shell": {
+    "guide": "https://www.xpaceos.com/admira-xp/docs/shell-cuadratico.md",
+    "assets": [
+      "https://www.xpaceos.com/assets/xpace-shell.js",
+      "https://www.xpaceos.com/assets/xpace-shell.css"
+    ],
+    "pending_key": "sessionStorage xpaceos_expert_pending_v1 · {cmd, at, from} · 2 min · never in the URL",
+    "es": "Todas las páginas de xpaceos.com (= admira.store) llevan la barra de 4 bandas del gemelo: ☰ Opciones, ▤ Avanzado y ⌘ Experto. Fuera del gemelo, ⌘ Experto ofrece /help, /limpiar, /gemelo [orden] y /marca; los verbos del gemelo viajan por sessionStorage y el gemelo los ejecuta una vez al abrirse. No es una herramienta MCP.",
+    "en": "Every xpaceos.com (= admira.store) page carries the twin's four-band bar: ☰ Options, ▤ Advanced and ⌘ Expert. Outside the twin, ⌘ Expert offers /help, /limpiar, /gemelo [command] and /marca; twin verbs travel through sessionStorage and the twin runs them once on load. Not an MCP tool."
+  },
+  "white_label": {
+    "guide": "https://www.xpaceos.com/admira-xp/docs/marca-blanca.md",
+    "catalog": "https://www.admiranext.com/marcablanca/api/marcas",
+    "platform": "store",
+    "activate": "?marca=<id> on any page with the shell or the twin (e.g. https://www.xpaceos.com/admira-xp/?marca=starbucks), or /marca <id> (alias /brand) in ⌘ Expert",
+    "deactivate": "/marca off, ?marca=admira or «Volver a Admira» in ☰ Options",
+    "remote": "__xtExec (Telegram, MCP, /twin/cmd) and xtAPI.command answer with the ?marca= link; they never restyle a screen",
+    "es": "Marca blanca del catálogo único de admiranext.com/marcablanca, plataforma store. Sin marca no se carga nada ni se contacta admiranext.com; con marca se comprueba el catálogo antes de cargar el cargador común y las hojas. La barra muestra el logo del cliente │ powered by XpaceOS; Opciones, Avanzado, Experto y la interfaz del gemelo toman la marca con textos AA; la escena 3D, los modelos y las texturas no se recolorean. No es una herramienta MCP.",
+    "en": "White label from the single admiranext.com/marcablanca catalogue, platform store. Without a brand nothing is loaded and admiranext.com is never contacted; with one, the catalogue is checked before the common loader and sheets load. The bar shows the client logo │ powered by XpaceOS; Options, Advanced, Expert and the twin's interface take the brand with AA texts; the 3D scene, models and textures are never recoloured. Not an MCP tool."
+  },
+  "inventory_frame": {
+    "version": "1",
+    "pages": [
+      "https://www.xpaceos.com/inventario/",
+      "https://www.xpaceos.com/inventario/conjunto/",
+      "https://www.xpaceos.com/inventario/starbucks/",
+      "https://www.yokup.com/retailer#itil",
+      "https://www.yokup.com/equipo-inventario?code=PDG103-BOT-01"
+    ],
+    "layout": {
+      "top": "one horizontal bar visible by default; other menus collapsed",
+      "left": "Options",
+      "right": "Advanced",
+      "bottom": "Expert/navigation CLI"
+    },
+    "commands": [
+      "/inventario",
+      "/inventory",
+      "/starbucks",
+      "/referencias",
+      "/references",
+      "/ref PG103-001",
+      "/equipo PDG103-BOT-01",
+      "/equipment PDG103-BOT-01",
+      "/xpaceos",
+      "/yokup",
+      "/ayuda",
+      "/help"
+    ],
+    "master": "Yokup ITIL",
+    "shared_key": "itil_code",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/inventory-frame.md",
+    "es": "En las páginas del inventario, /inventario sin argumentos abre el catálogo; /inventario con argumentos conserva la ejecución en el gemelo de XpaceOS. Desde Yokup se indica abrir el gemelo. Navegación: /inventario, /starbucks, /referencias, /ref PG103-001, /equipo PDG103-BOT-01, /xpaceos, /yokup y /ayuda. La unidad seleccionada conserva su código ITIL al abrir Yokup o volver a XpaceOS. Los candidatos enlazan el portal sin inventar fichas ITIL. Añadir, eliminar o mover muebles se realiza en la Xperience; las fichas patrimoniales se editan en Yokup con sus permisos existentes.",
+    "en": "On inventory pages, /inventario without arguments opens the catalogue; arguments retain execution in the XpaceOS twin. From Yokup it prompts opening the twin. Navigation: /inventory, /starbucks, /references, /ref PG103-001, /equipment PDG103-BOT-01, /xpaceos, /yokup and /help. A selected unit retains its ITIL code when opening Yokup or returning to XpaceOS. Candidates link to the portal without inventing ITIL records. Add, remove or move furniture in the Xperience; edit lifecycle records in Yokup with existing permissions.",
+    "new_remote_tools": false
+  },
   "expert_entry": {
     "es": "Al entrar en el gemelo, Opciones, Avanzados y Experto empiezan replegados: solo se ve la barra superior. La carga de Better, Best o Matrix no abre Experto. El botón ⌘ permite abrirlo y cerrarlo.",
     "en": "On twin entry, Options, Advanced and Expert start collapsed: only the top bar is visible. Loading Better, Best or Matrix does not open Expert. The ⌘ button opens and closes it.",
     "help": "/help/#expert-entry"
+  },
+  "documentation_contracts": {
+    "itil_3d_record": "https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md"
   }
 }

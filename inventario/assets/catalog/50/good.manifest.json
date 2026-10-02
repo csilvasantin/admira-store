@@ -1,0 +1,15 @@
+{
+  "number": 50,
+  "id": "native:starbucksWaterRack",
+  "name": "Botellero Solán de Cabras Starbucks",
+  "tier": "good",
+  "geometry_basis": "interpretive_photo_and_panorama",
+  "measured": false,
+  "nominal_units": "metres_for_proportions_only",
+  "visual_bottle_count": 19,
+  "stock_quantity_verified": false,
+  "bottles_individually_editable": true,
+  "texture_basis": "deterministic_PBR_maps_and_interpreted_print",
+  "reference_visible_caps": 13,
+  "mesh_count": 169
+}

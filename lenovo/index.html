@@ -253,6 +253,8 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
     .hw{grid-template-columns:1fr}
   }
 </style>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-inventory-1">
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-section="/ Lenovo · Shoptalk" data-section-en="/ Lenovo · Shoptalk"></script>
 </head>
 <body id="top">
 
@@ -263,12 +265,12 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 
 <!-- barra superior Admira · Xperience eliminada (a petición) -->
 
-<header>
+<header data-shell-replace>
   <div class="wrap">
     <a class="brand-logo" href="#top" aria-label="XpaceOS">
       <img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS">
     </a>
-    <nav>
+    <nav data-shell-nav>
       <a href="#booth" data-i18n="nav.booth">Shoptalk booth</a>
       <a href="#plataforma" data-i18n="nav.platform">Platform</a>
       <a href="#capas" data-i18n="nav.layers">3 layers</a>
@@ -280,7 +282,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
       <span class="language-switcher" aria-label="Language selection">
         <button type="button" class="lang-toggle" id="lang-toggle" data-lang-target="es" aria-label="Switch to Spanish">ESP</button>
       </span>
-      <a class="nav-contact" href="#contact" data-admira-contact data-i18n="contact">Contact</a>
+      <a class="nav-contact" href="#contact" data-admira-contact data-i18n="contact" data-shell-slot="options">Contact</a>
     </nav>
   </div>
 </header>

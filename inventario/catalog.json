@@ -198,6 +198,83 @@
         1,
         1
       ]
+    },
+    {
+      "id": "native:starbucksBackbar",
+      "type": "starbucksBackbar",
+      "name": "Barra de preparación Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        10,
+        1
+      ]
+    },
+    {
+      "id": "native:starbucksCounter",
+      "type": "starbucksCounter",
+      "name": "Mostrador de caja Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        4.0600000000000005,
+        1.17
+      ]
+    },
+    {
+      "id": "native:starbucksDisplay",
+      "type": "starbucksDisplay",
+      "name": "Vitrina Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        6.0600000000000005,
+        1.17
+      ]
+    },
+    {
+      "id": "native:starbucksShelves",
+      "type": "starbucksShelves",
+      "name": "Estantería de tazas y café Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        0.93,
+        3.04
+      ]
+    },
+    {
+      "id": "native:starbucksTable",
+      "type": "starbucksTable",
+      "name": "Mesa redonda Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        1.37,
+        1.37
+      ]
+    },
+    {
+      "id": "native:starbucksChair",
+      "type": "starbucksChair",
+      "name": "Silla Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        0.6,
+        0.48
+      ]
+    },
+    {
+      "id": "native:starbucksWaterRack",
+      "type": "starbucksWaterRack",
+      "name": "Botellero Solán de Cabras Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        0.44,
+        0.46
+      ]
     }
   ],
   "layouts": {

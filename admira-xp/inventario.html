@@ -8,7 +8,8 @@
 <link rel="icon" href="favicon.ico">
 <script src="qrcode.min.js"></script>
 <style>
-  :root{
+  /* Con marca blanca, la CMDB conserva su paleta (data-marca="barra"): solo la barra y los paneles. */
+  :root,:root[data-mb-alcance="barra"][data-mb-marca]{
     --bg:#05080f; --bg2:#0a1320; --panel:rgba(10,19,32,.92);
     --cyan:#78f3ff; --cyan-dim:rgba(120,243,255,.55); --line:rgba(120,243,255,.18);
     --ink:#dff8ff; --ink-dim:#8fb3c4; --muted:#5f7b8b;
@@ -25,7 +26,7 @@
   .wrap{max-width:1180px; margin:0 auto; padding:0 18px}
 
   header.top{ border-bottom:1px solid var(--line); background:linear-gradient(180deg,rgba(8,16,28,.95),rgba(5,8,15,.6));
-    backdrop-filter:blur(6px); position:sticky; top:0; z-index:20; }
+    backdrop-filter:blur(6px); position:sticky; top:var(--xs-bar-h,0px); z-index:20; }
   .top .wrap{display:flex; align-items:center; gap:14px; padding:12px 18px; flex-wrap:wrap}
   .brand{display:flex; flex-direction:column; line-height:1.1}
   .brand b{font-size:16px; letter-spacing:.5px; color:#fff}
@@ -111,16 +112,16 @@
 
   table.cmdb{width:100%; border-collapse:collapse; font-size:12px}
   table.cmdb th,table.cmdb td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap}
-  table.cmdb th{color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:.6px; cursor:pointer; user-select:none; position:sticky; top:56px; background:#070d18}
+  table.cmdb th{color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:.6px; cursor:pointer; user-select:none; position:sticky; top:calc(var(--xs-bar-h,0px) + 56px); background:#070d18}
   table.cmdb th .arr{color:var(--cyan)}
   table.cmdb tbody tr{cursor:pointer} table.cmdb tbody tr:hover{background:rgba(120,243,255,.06)}
   table.cmdb td.nm{color:#fff}
   .gdot{display:inline-block; width:8px;height:8px;border-radius:50%; margin-right:6px; vertical-align:middle}
   .dotrow{display:inline-flex; align-items:center; gap:5px}
 
-  .scrim{position:fixed; inset:0; background:rgba(2,5,10,.6); backdrop-filter:blur(2px); z-index:40; opacity:0; pointer-events:none; transition:opacity .18s}
+  .scrim{position:fixed; inset:0; background:rgba(2,5,10,.6); backdrop-filter:blur(2px); z-index:9100; opacity:0; pointer-events:none; transition:opacity .18s}
   .scrim.show{opacity:1; pointer-events:auto}
-  .drawer{position:fixed; top:0; right:0; height:100%; width:min(440px,94vw); background:linear-gradient(180deg,#0b1422,#070d18); border-left:1px solid var(--cyan-dim); z-index:41; transform:translateX(100%); transition:transform .22s ease; overflow-y:auto; padding:20px}
+  .drawer{position:fixed; top:0; right:0; height:100%; width:min(440px,94vw); background:linear-gradient(180deg,#0b1422,#070d18); border-left:1px solid var(--cyan-dim); z-index:9110; transform:translateX(100%); transition:transform .22s ease; overflow-y:auto; padding:20px}
   .drawer.show{transform:translateX(0)}
   .drawer h3{margin:0 0 2px; color:#fff; font-size:17px}
   .drawer .dclose{position:absolute; top:14px; right:16px; background:none; border:0; color:var(--ink-dim); font-size:22px; cursor:pointer}
@@ -141,7 +142,7 @@
   .acc.dwr .acc-body{padding:2px 12px 10px}
 
   /* modal genérico (alta xpacio / añadir elemento / mapa) */
-  .modal{position:fixed; inset:0; z-index:42; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(2,5,10,.66); backdrop-filter:blur(2px)}
+  .modal{position:fixed; inset:0; z-index:9120; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(2,5,10,.66); backdrop-filter:blur(2px)}
   .modal.show{display:flex}
   .modal-card{background:linear-gradient(180deg,#0b1422,#070d18); border:1px solid var(--cyan-dim); border-radius:14px; width:min(620px,96vw); max-height:92vh; overflow:auto; padding:20px; position:relative}
   .modal-card.wide{width:min(960px,96vw)}
@@ -162,12 +163,14 @@
   .empty{color:var(--muted); padding:24px; text-align:center}
   @media(max-width:560px){ .field{grid-template-columns:1fr} }
 </style>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-inventory-1">
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-section="/ CMDB" data-section-en="/ CMDB" data-marca="barra"></script>
 </head>
 <body>
 <header class="top">
   <div class="wrap">
     <div class="brand"><b>ADMIRA · CMDB</b><small>Inventario ITIL de Xpacios</small></div>
-    <nav class="crumbs">
+    <nav class="crumbs" data-shell-nav data-shell-replace>
       <a href="https://www.admira.com">admira.com</a>
       <a href="https://www.admira.studio">studio</a>
       <a href="index.html">gemelo</a>

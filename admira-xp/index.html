@@ -12,6 +12,17 @@
   (function(){
     var q=new URLSearchParams(location.search),visual=q.get('visual')??q.get('quality');
     var saved='';try{saved=localStorage.getItem('xtanco_visual_tier_v2')||'';}catch(e){}
+    // Estancos Altadis BCN (FLT-101352): escena cafetería rotulada como el estanco,
+    // nunca Matrix (Matrix = Starbucks Pg. de Gràcia aunque el nivel venga guardado).
+    var altadisLoc=(q.get('loc')||'').trim().toLowerCase();
+    if(/^altadis-bcn-\d+$/.test(altadisLoc)){
+      var tier=(visual==='good'||visual==='better')?visual:(saved==='good'||saved==='better')?saved:'good';
+      if(q.get('autostart')!=='cafeteria'||!q.get('project')||visual!==tier){
+        q.set('autostart','cafeteria');if(!q.get('project'))q.set('project','estancos');q.delete('visual');q.set('quality',tier);
+        try{history.replaceState(history.state,'',location.pathname+'?'+q.toString()+location.hash);}catch(e){}
+      }
+      return;
+    }
     var matrix=visual==='matrix'||(visual===null&&((q.get('loc')||'').trim().toLowerCase()==='alsea-sbux-021'||saved==='matrix'));
     if(!matrix)return;
     window.__xpaceMatrixEntry=true;document.documentElement.classList.add('matrix-entry','matrix-boot');
@@ -743,6 +754,9 @@
 <!-- Orbitron: tipografía tecnológica de la cuadrática (misma que admira.live/status) -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
+<!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
+     marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1384,7 +1398,7 @@
 })();
 </script>
 <script src="xtanco-version.js?v=20260924-1339"></script>
-<script src="xtanco-runtime-config.js?r=24"></script>
+<script src="xtanco-runtime-config.js?r=26"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
@@ -28004,6 +28018,11 @@ window.xtAPI = (function(){
       const parts=normalized.split(/\s+/).filter(Boolean);
       const cmd=(parts.shift()||'').toLowerCase();
       const arg=parts.join(' ');
+      if(['marca','brand','marcablanca'].includes(cmd)){
+        const XS=window.XpaceShell;
+        const r=XS&&typeof XS.remoteMarca==='function'?XS.remoteMarca(arg,typeof lang!=='undefined'&&lang==='en'):{ok:true,url:'https://www.xpaceos.com/admira-xp/?marca=starbucks',message:'Marca blanca: abre https://www.xpaceos.com/admira-xp/?marca=<id>.'};
+        return {ok:r.ok,message:r.message,data:{url:r.url||null,applied:false}};
+      }
       const weather=window.XpaceWeatherCommand.parse(raw,G&&G.weather);
       if(weather){
         if(!weather.ok)return {ok:false,message:weather.error};
@@ -30943,6 +30962,7 @@ window.xtAPI = (function(){
       {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Starbucks Alsea',items:['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']},
       {title:'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
       {title:'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
+      {title:'Marca blanca · White label (admiranext.com/marcablanca)',items:['/marca','/marca starbucks','/marca off','/marca starbucks.es','/brand lumbre']},
     ];
   }
 
@@ -31527,6 +31547,14 @@ window.xtAPI = (function(){
 
     try{
       if(cmd==='start'||cmd==='help') return commandHelp();
+      // /marca <id|off|web> (FLT-101337). Aquí llega de Telegram, el MCP o /twin/cmd: no hay
+      // un navegador que vestir, así que responde con el enlace que abre la marca. En la
+      // consola local la aplica sendComposerText (XpaceShell.marca) antes de llegar aquí.
+      if(['marca','brand','marcablanca'].includes(cmd)){
+        const XS=window.XpaceShell;
+        if(XS&&typeof XS.remoteMarca==='function') return XS.remoteMarca(arg,typeof lang!=='undefined'&&lang==='en').message;
+        return 'Marca blanca: abre https://www.xpaceos.com/admira-xp/?marca=<id> (p. ej. ?marca=starbucks). /marca off → ?marca=admira.';
+      }
       // /present [next|prev|close|auto|stop|<n>] — popup-presentación del gemelo
       // (controlable por Telegram, StreamDeck y remote.html). Solo explica.
       if(['present','presentacion','presentación','explainer','presenta'].includes(cmd)){
@@ -32664,11 +32692,50 @@ window.xtAPI = (function(){
     showLastResponse._t=setTimeout(()=>{ try{ el.classList.remove('fresh'); }catch(e){} },3500);
   }
 
+  // Shell común (FLT-101337): fuera del gemelo, un verbo del gemelo escrito en ⌘ Experto
+  // se guarda en sessionStorage (xpaceos_expert_pending_v1, caduca a los 2 min, nunca en
+  // la URL) y se abre esta página. Aquí se ejecuta una sola vez, con el Xpacio en marcha,
+  // como si se hubiera escrito en la consola (sin reenviarla a Telegram).
+  (function runShellPending(){
+    let raw=null;
+    try{ raw=sessionStorage.getItem('xpaceos_expert_pending_v1'); if(raw) sessionStorage.removeItem('xpaceos_expert_pending_v1'); }catch(_){}
+    if(!raw) return;
+    let cmd='';
+    try{ const d=JSON.parse(raw); const age=Date.now()-Number(d&&d.at); if(d&&typeof d.cmd==='string'&&age>=0&&age<=120000) cmd=d.cmd.trim().slice(0,500); }catch(_){}
+    if(!cmd) return;
+    const t0=Date.now();
+    const ready=()=>typeof state!=='undefined'&&typeof S!=='undefined'&&(state===S.GAME||state===S.EDITOR);
+    const go=async()=>{
+      try{ if(document.body.classList.contains('xp-left-hidden')){ const b=document.getElementById('pfExpert'); if(b) b.click(); } }catch(_){}
+      try{
+        const visual=await executeLocalVisualCommand(cmd);
+        if(visual){ showLastResponse(visual.message,visual.ok?'ok':'err','local-visual'); return; }
+        appendTelegramLog('out','Experto',cmd);
+        const answer=await executeTelegramText(cmd);
+        appendTelegramLog('bot','AdmiraXPBot',answer);
+        showLastResponse(answer,'ok');
+      }catch(e){ const m='Error: '+(e&&e.message||e); appendTelegramLog('err','Error',m); showLastResponse(m,'err'); }
+    };
+    const wait=()=>{ if(ready()||Date.now()-t0>30000){ setTimeout(go,900); return; } setTimeout(wait,300); };
+    wait();
+  })();
+
   async function sendComposerText(text){
     const clean=String(text||'').trim();
     if(!clean) return;
     // The visual command belongs to this browser, never to a remote bot.
     // Intercept before command/session logging and the normal Telegram echo.
+    // /marca viste este navegador (marca blanca, FLT-101337): nunca va a Telegram.
+    if(/^\/?(?:marca|brand|marcablanca)(?:@\w+)?(?:\s|$)/i.test(clean)&&window.XpaceShell&&typeof window.XpaceShell.marca==='function'){
+      hideHelpPanel();
+      appendTelegramLog('out','Experto',clean);
+      const lines=[];
+      try{ await window.XpaceShell.marca(clean.replace(/^\/?\S+\s*/,''),t=>{ lines.push(t); appendTelegramLog('bot','XpaceOS',t); }); }
+      catch(e){ lines.push('Error: '+(e&&e.message||e)); }
+      showLastResponse(lines.join('\n'),'ok','local-visual');
+      if(composer)composer.value='';
+      renderQuickActionButtons();return;
+    }
     const visual=await executeLocalVisualCommand(clean);
     if(visual){
       hideHelpPanel();showLastResponse(visual.message,visual.ok?'ok':'err',visual.kind==='inventory'?'local-inventory':'local-visual');
@@ -35662,6 +35729,7 @@ window.xtAPI = (function(){
   // dock inferior del modo experto. Publicamos la altura del dock VISIBLE en la var
   // --xp-dock-clear para que ambos paneles paren justo encima (sin pisarlo).
   function syncDockClear(){
+    window.XpaceSidePanelBounds?.();
     try{
       var dock=document.getElementById('telegramDock');
       // OJO: #telegramDock es position:fixed → offsetParent es null aunque sea visible.
@@ -35809,5 +35877,6 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>
+<script type="module" src="scripts/side-panel-bounds.mjs?v=2"></script>
 </body>
 </html>

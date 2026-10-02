@@ -6,7 +6,7 @@ import {furnitureURL,inventoryIdFor} from '../admira-xp/scripts/furniture-asset.
 import {createLifeScene} from '../admira-xp/scripts/life-scene.mjs';
 const registry=JSON.parse(fs.readFileSync(new URL('./registry.json',import.meta.url)));
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
-test('all 43 immutable inventory IDs have three usable GLBs and editable sources',()=>{
+test('all 50 immutable inventory IDs have three usable GLBs and editable sources',()=>{
  for(const [id,n] of Object.entries(registry.numbers))for(const tier of ['good','better','best']){
   const b=fs.readFileSync(new URL(furnitureURL(n,tier)));assert.equal(b.toString('ascii',0,4),'glTF');assert.equal(b.length,b.readUInt32LE(8));
   const gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)));
@@ -15,7 +15,26 @@ test('all 43 immutable inventory IDs have three usable GLBs and editable sources
   for(const m of gltf.meshes)for(const p of m.primitives){const a=gltf.accessors[p.attributes.POSITION];assert.ok(a.count>=3);assert.ok([...a.min,...a.max].every(Number.isFinite));}
   assert.ok(fs.statSync(new URL(furnitureURL(n,tier,'blend'))).size>1000);
  }
- assert.throws(()=>furnitureURL(44));assert.throws(()=>furnitureURL(2,'../best'));
+ assert.throws(()=>furnitureURL(51));assert.throws(()=>furnitureURL(2,'../best'));
+});
+test('water rack keeps editable visual bottle identities and self-contained PBR textures',()=>{
+ const manifest=JSON.parse(fs.readFileSync(new URL('./starbucks/manifest.json',import.meta.url)));
+ const unit=manifest.units.find(u=>u.itil_code==='PDG103-BOT-01');
+ assert.equal(unit.instance_id,'sb-water-rack');assert.equal(unit.asset_number,50);
+ assert.equal(manifest.units.length,11);assert.equal(new Set(manifest.units.map(u=>u.asset_number)).size,7);
+ assert.equal(unit.visual_filling.bottle_count,19);assert.equal(unit.stock_quantity,undefined);
+ for(const tier of ['good','better','best']){
+  const b=fs.readFileSync(new URL(furnitureURL(50,tier))),gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)));
+  const bottles=gltf.nodes.filter(node=>node.name?.startsWith('Solán de Cabras bottle ')&&node.children?.length);
+  assert.equal(bottles.length,19);assert.equal(new Set(bottles.map(node=>node.extras?.bottle_instance)).size,19);
+  assert.ok(bottles.every(node=>node.extras.stock_quantity_verified===false));
+  assert.ok(gltf.images.length);assert.ok(gltf.images.every(image=>Number.isSafeInteger(image.bufferView)&&!image.uri&&['image/png','image/jpeg'].includes(image.mimeType)));
+  assert.ok(gltf.materials.some(material=>material.pbrMetallicRoughness?.baseColorTexture));
+  assert.ok(gltf.materials.some(material=>material.pbrMetallicRoughness?.metallicRoughnessTexture));
+ }
+ const bottle=fs.readFileSync(new URL('./assets/catalog/50/bottle.glb',import.meta.url));
+ assert.equal(bottle.toString('ascii',0,4),'glTF');
+ assert.ok(fs.statSync(new URL('./assets/catalog/50/bottle.blend',import.meta.url)).size>1000);
 });
 test('Pixeria identity resolves from the stock asset, independent of arbitrary instance ID',()=>{
  assert.equal(inventoryIdFor({id:'instance-928',type:'custom',img:'https://api.admira.store/stock/asset/1780691765844-ex3huq?v=22'}),'pixeria:1780691765844-ex3huq');

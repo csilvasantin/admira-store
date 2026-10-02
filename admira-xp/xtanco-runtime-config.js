@@ -79,10 +79,10 @@
   // Captura la etiqueta de equipo (?device=) ANTES de que el gemelo limpie la URL,
   // para que el registro de gemelos del backoffice muestre el nombre del equipo.
   try { var dp = new URLSearchParams(location.search).get('device'); if (dp) localStorage.setItem('xpl_device', dp); } catch (e) {}
-  const V = '?v=24';
+  const V = '?v=26';
   // xpl-stock.js (resolver del Stock real) va ANTES del adapter: showContent lo usa.
   // megafonia.js + hilomusical.js: enlace pixeria→gemelo (audio); autónomos, no tocan el juego.
-  ['scripts/xpl-runtime.js', 'scripts/xpl-stock.js', 'scripts/xpl-gemelo.js', 'scripts/xpl-composer.js', 'scripts/megafonia.js', 'scripts/hilomusical.js', 'scripts/canalkiosk-door.js', 'scripts/anonimizado-control.js'].forEach((src) => {
+  ['scripts/xpl-runtime.js', 'scripts/xpl-stock.js', 'scripts/xpl-gemelo.js', 'scripts/xpl-composer.js', 'scripts/megafonia.js', 'scripts/hilomusical.js', 'scripts/canalkiosk-door.js', 'scripts/anonimizado-control.js', 'scripts/circuito-nav.js'].forEach((src) => {
     const s = document.createElement('script');
     s.src = src + V; s.async = false; // async=false → ejecuta en orden de inserción
     document.head.appendChild(s);

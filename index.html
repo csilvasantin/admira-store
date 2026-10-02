@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.01.10.2026.r9.12:01"/>
-  <!-- Espejo de www.xpaceos.com (6db0980), sincronizado con
+  <meta name="admiranext-version" content="v.02.10.2026.r2.11:23"/>
+  <!-- Espejo de www.xpaceos.com (bc7096a), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
@@ -442,6 +442,8 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   ]
 }
 </script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-inventory-1">
+<script defer src="/assets/xpace-shell.js?v=20261001-inventory-1" data-section="" data-section-en=""></script>
 </head>
 <body id="top">
 <a class="skip-link" href="#main-content" data-i18n="skip">Saltar al contenido</a>
@@ -453,13 +455,13 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 
 <!-- barra superior Admira · Xperience eliminada (a petición) -->
 
-<header>
+<header data-shell-replace>
   <div class="wrap">
     <a class="brand-logo" href="#top" aria-label="XpaceOS">
       <img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS">
     </a>
     <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav"><span class="bars" aria-hidden="true"></span></button>
-    <nav id="primary-nav">
+    <nav id="primary-nav" data-shell-nav>
       <a class="nav-link" href="#booth" data-i18n="nav.booth">Caso de éxito</a>
       <a class="nav-link" href="#plataforma" data-i18n="nav.platform">Plataforma</a>
       <a class="nav-link" href="#capas" data-i18n="nav.layers">3 capas</a>
@@ -472,7 +474,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
       <span class="language-switcher" aria-label="Language selection">
         <button type="button" class="lang-toggle" id="lang-toggle" data-lang-target="es" aria-label="Switch to Spanish">ESP</button>
       </span>
-      <a class="nav-contact" href="#contact" data-admira-contact data-i18n="contact">Contacto</a>
+      <a class="nav-contact" href="#contact" data-admira-contact data-i18n="contact" data-shell-slot="options">Contacto</a>
     </nav>
   </div>
   <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>

@@ -1,0 +1,1936 @@
+{
+  "schema": "xpaceos.starbucks.references/1",
+  "location_id": "alsea-sbux-021",
+  "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+  "source_kind": "Matrix panorama photograph",
+  "source_resolution": [
+    8192,
+    4096
+  ],
+  "basis": "Fotografías reales recortadas del panorama Matrix. Los números identifican referencias visuales; no sustituyen los códigos ITIL ni los números de catálogo. Las cantidades visibles no son stock. Las mesas y sillas usan una referencia fotográfica compartida de tipología.",
+  "basis_en": "Real photographs cropped from the Matrix panorama. Numbers identify visual references and do not replace ITIL codes or catalog numbers. Visible quantities are not stock. Tables and chairs use a shared photograph of their visible type.",
+  "items": [
+    {
+      "reference_number": 1,
+      "reference_id": "PG103-001",
+      "key": "sb-backbar",
+      "itil_code": "PDG103-BAR-01",
+      "asset_number": 44,
+      "name": "Barra de preparación Starbucks",
+      "name_en": "Starbucks preparation counter",
+      "status": "registered",
+      "photo": "./photos/sb-backbar.webp",
+      "photo_scope": "context",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-coffee-wrap.png",
+        "box": [
+          1490,
+          385,
+          2580,
+          635
+        ]
+      },
+      "photo_pixels": [
+        700,
+        161
+      ],
+      "basis": "Recorte real de Matrix; contrabarra parcialmente oculta por equipos y mostrador.",
+      "basis_en": "Real Matrix crop; back counter partly obscured by equipment and checkout counter.",
+      "confidence": "alta en identificación visual",
+      "confidence_en": "high visual identification",
+      "visible_quantity": 1,
+      "zone": "Zona de servicio",
+      "zone_en": "Service area"
+    },
+    {
+      "reference_number": 2,
+      "reference_id": "PG103-002",
+      "key": "sb-pos",
+      "itil_code": "PDG103-MOS-01",
+      "asset_number": 45,
+      "name": "Mostrador de caja Starbucks",
+      "name_en": "Starbucks checkout counter",
+      "status": "registered",
+      "photo": "./photos/sb-pos.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          6320,
+          2140,
+          7480,
+          3100
+        ]
+      },
+      "photo_pixels": [
+        700,
+        579
+      ],
+      "basis": "Recorte real del panorama Matrix; las zonas ocultas y las medidas no están verificadas.",
+      "basis_en": "Real Matrix panorama crop; hidden areas and dimensions are not verified.",
+      "confidence": "alta en identificación visual",
+      "confidence_en": "high visual identification",
+      "visible_quantity": 1,
+      "zone": "Zona de servicio",
+      "zone_en": "Service area"
+    },
+    {
+      "reference_number": 3,
+      "reference_id": "PG103-003",
+      "key": "sb-pastry",
+      "itil_code": "PDG103-VIT-01",
+      "asset_number": 46,
+      "name": "Vitrina Starbucks",
+      "name_en": "Starbucks display case",
+      "status": "registered",
+      "photo": "./photos/sb-pastry.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          7370,
+          2090,
+          8192,
+          3230
+        ]
+      },
+      "photo_pixels": [
+        505,
+        700
+      ],
+      "basis": "Recorte real del panorama Matrix; las zonas ocultas y las medidas no están verificadas.",
+      "basis_en": "Real Matrix panorama crop; hidden areas and dimensions are not verified.",
+      "confidence": "alta en identificación visual",
+      "confidence_en": "high visual identification",
+      "visible_quantity": 1,
+      "zone": "Zona de servicio",
+      "zone_en": "Service area"
+    },
+    {
+      "reference_number": 4,
+      "reference_id": "PG103-004",
+      "key": "sb-mugs",
+      "itil_code": "PDG103-EST-01",
+      "asset_number": 47,
+      "name": "Estantería de tazas y café Starbucks",
+      "name_en": "Starbucks mugs and coffee shelving",
+      "status": "registered",
+      "photo": "./photos/sb-mugs.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-overview.png",
+        "box": [
+          0,
+          0,
+          1980,
+          1970
+        ]
+      },
+      "photo_pixels": [
+        700,
+        696
+      ],
+      "basis": "Recorte real del panorama Matrix; las zonas ocultas y las medidas no están verificadas.",
+      "basis_en": "Real Matrix panorama crop; hidden areas and dimensions are not verified.",
+      "confidence": "alta en identificación visual",
+      "confidence_en": "high visual identification",
+      "visible_quantity": 1,
+      "zone": "Zona de servicio",
+      "zone_en": "Service area"
+    },
+    {
+      "reference_number": 5,
+      "reference_id": "PG103-005",
+      "key": "sb-table-a",
+      "itil_code": "PDG103-MES-01",
+      "asset_number": 48,
+      "name": "Mesa redonda Starbucks 1",
+      "name_en": "Starbucks round table 1",
+      "status": "registered",
+      "photo": "./photos/sb-table-a.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          2640,
+          2200,
+          3020,
+          2690
+        ]
+      },
+      "photo_pixels": [
+        380,
+        490
+      ],
+      "basis": "Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "tipología visible; unidad sin localizar",
+      "confidence_en": "visible type; particular unit not located",
+      "visible_quantity": null,
+      "zone": "Zona de clientes",
+      "zone_en": "Customer area",
+      "confirmed_quantity": 1
+    },
+    {
+      "reference_number": 6,
+      "reference_id": "PG103-006",
+      "key": "sb-table-b",
+      "itil_code": "PDG103-MES-02",
+      "asset_number": 48,
+      "name": "Mesa redonda Starbucks 2",
+      "name_en": "Starbucks round table 2",
+      "status": "registered",
+      "photo": "./photos/sb-table-b.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          2640,
+          2200,
+          3020,
+          2690
+        ]
+      },
+      "photo_pixels": [
+        380,
+        490
+      ],
+      "basis": "Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "tipología visible; unidad sin localizar",
+      "confidence_en": "visible type; particular unit not located",
+      "visible_quantity": null,
+      "zone": "Zona de clientes",
+      "zone_en": "Customer area",
+      "confirmed_quantity": 1
+    },
+    {
+      "reference_number": 7,
+      "reference_id": "PG103-007",
+      "key": "sb-chair-1",
+      "itil_code": "PDG103-SIL-01",
+      "asset_number": 49,
+      "name": "Silla Starbucks 1",
+      "name_en": "Starbucks chair 1",
+      "status": "registered",
+      "photo": "./photos/sb-chair-1.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          2630,
+          2210,
+          2970,
+          2660
+        ]
+      },
+      "photo_pixels": [
+        340,
+        450
+      ],
+      "basis": "Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "tipología visible; unidad sin localizar",
+      "confidence_en": "visible type; particular unit not located",
+      "visible_quantity": null,
+      "zone": "Zona de clientes",
+      "zone_en": "Customer area",
+      "confirmed_quantity": 1
+    },
+    {
+      "reference_number": 8,
+      "reference_id": "PG103-008",
+      "key": "sb-chair-2",
+      "itil_code": "PDG103-SIL-02",
+      "asset_number": 49,
+      "name": "Silla Starbucks 2",
+      "name_en": "Starbucks chair 2",
+      "status": "registered",
+      "photo": "./photos/sb-chair-2.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          2630,
+          2210,
+          2970,
+          2660
+        ]
+      },
+      "photo_pixels": [
+        340,
+        450
+      ],
+      "basis": "Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "tipología visible; unidad sin localizar",
+      "confidence_en": "visible type; particular unit not located",
+      "visible_quantity": null,
+      "zone": "Zona de clientes",
+      "zone_en": "Customer area",
+      "confirmed_quantity": 1
+    },
+    {
+      "reference_number": 9,
+      "reference_id": "PG103-009",
+      "key": "sb-chair-3",
+      "itil_code": "PDG103-SIL-03",
+      "asset_number": 49,
+      "name": "Silla Starbucks 3",
+      "name_en": "Starbucks chair 3",
+      "status": "registered",
+      "photo": "./photos/sb-chair-3.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          2630,
+          2210,
+          2970,
+          2660
+        ]
+      },
+      "photo_pixels": [
+        340,
+        450
+      ],
+      "basis": "Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "tipología visible; unidad sin localizar",
+      "confidence_en": "visible type; particular unit not located",
+      "visible_quantity": null,
+      "zone": "Zona de clientes",
+      "zone_en": "Customer area",
+      "confirmed_quantity": 1
+    },
+    {
+      "reference_number": 10,
+      "reference_id": "PG103-010",
+      "key": "sb-chair-4",
+      "itil_code": "PDG103-SIL-04",
+      "asset_number": 49,
+      "name": "Silla Starbucks 4",
+      "name_en": "Starbucks chair 4",
+      "status": "registered",
+      "photo": "./photos/sb-chair-4.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          2630,
+          2210,
+          2970,
+          2660
+        ]
+      },
+      "photo_pixels": [
+        340,
+        450
+      ],
+      "basis": "Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "tipología visible; unidad sin localizar",
+      "confidence_en": "visible type; particular unit not located",
+      "visible_quantity": null,
+      "zone": "Zona de clientes",
+      "zone_en": "Customer area",
+      "confirmed_quantity": 1
+    },
+    {
+      "reference_number": 11,
+      "reference_id": "PG103-011",
+      "key": "sb-water-rack",
+      "itil_code": "PDG103-BOT-01",
+      "asset_number": 50,
+      "name": "Botellero Solán de Cabras Starbucks",
+      "name_en": "Starbucks Solán de Cabras water rack",
+      "status": "registered",
+      "photo": "./photos/sb-water-rack.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "panorama",
+        "box": [
+          1100,
+          2320,
+          1620,
+          3110
+        ]
+      },
+      "photo_pixels": [
+        461,
+        700
+      ],
+      "basis": "Recorte real del panorama Matrix; las zonas ocultas y las medidas no están verificadas.",
+      "basis_en": "Real Matrix panorama crop; hidden areas and dimensions are not verified.",
+      "confidence": "alta en identificación visual",
+      "confidence_en": "high visual identification",
+      "visible_quantity": 1,
+      "zone": "Acceso y vitrina",
+      "zone_en": "Entrance and display"
+    },
+    {
+      "reference_number": 12,
+      "reference_id": "PG103-012",
+      "key": "N01",
+      "name": "Cesto bajo de vasos reutilizables",
+      "name_en": "Low basket of reusable cups",
+      "status": "candidate",
+      "photo": "./photos/N01.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "baskets.png",
+        "box": [
+          15,
+          540,
+          780,
+          1140
+        ]
+      },
+      "photo_pixels": [
+        700,
+        549
+      ],
+      "basis": "Cesta circular negra ancha, varillas verticales, patas finas y crucetas. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Wide circular black basket with vertical rods, thin legs and cross braces. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Columna",
+      "zone_en": "Pillar"
+    },
+    {
+      "reference_number": 13,
+      "reference_id": "PG103-013",
+      "key": "N02",
+      "name": "Cesto alto de productos en bolsa",
+      "name_en": "Tall basket of bagged products",
+      "status": "candidate",
+      "photo": "./photos/N02.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "baskets.png",
+        "box": [
+          395,
+          275,
+          860,
+          785
+        ]
+      },
+      "photo_pixels": [
+        465,
+        510
+      ],
+      "basis": "Cesta negra de menor diámetro sobre soporte alto; bolsas de producto. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Smaller black basket on a tall stand, containing product bags. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Columna",
+      "zone_en": "Pillar"
+    },
+    {
+      "reference_number": 14,
+      "reference_id": "PG103-014",
+      "key": "N03",
+      "name": "Cartel BE GREEN",
+      "name_en": "BE GREEN sign",
+      "status": "candidate",
+      "photo": "./photos/N03.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "baskets.png",
+        "box": [
+          155,
+          215,
+          430,
+          635
+        ]
+      },
+      "photo_pixels": [
+        275,
+        420
+      ],
+      "basis": "Panel rectangular blanco/verde apoyado contra el pilar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "White-and-green rectangular sign leaning against the pillar. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Columna",
+      "zone_en": "Pillar"
+    },
+    {
+      "reference_number": 15,
+      "reference_id": "PG103-015",
+      "key": "N04",
+      "name": "Banqueta tapizada",
+      "name_en": "Upholstered banquette",
+      "status": "candidate",
+      "photo": "./photos/N04.webp",
+      "photo_scope": "context",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-planter-banquette-detail.png",
+        "box": [
+          265,
+          155,
+          645,
+          375
+        ]
+      },
+      "photo_pixels": [
+        380,
+        220
+      ],
+      "basis": "Asiento corrido marrón/caramelo bajo escalera y junto al ventanal. Fotografía de contexto; el elemento aparece parcialmente oculto.",
+      "basis_en": "Continuous brown/caramel seat under the staircase beside the window. Context photo; the element is partly obscured.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Entrada elevada",
+      "zone_en": "Raised entrance"
+    },
+    {
+      "reference_number": 16,
+      "reference_id": "PG103-016",
+      "key": "N05",
+      "name": "Planta y macetero rectangular",
+      "name_en": "Plant and rectangular planter",
+      "status": "candidate",
+      "photo": "./photos/N05.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-planter-banquette-detail.png",
+        "box": [
+          125,
+          115,
+          305,
+          325
+        ]
+      },
+      "photo_pixels": [
+        180,
+        210
+      ],
+      "basis": "Macetero rectangular claro, follaje vertical; especie sin identificar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Light rectangular planter with upright foliage; species unidentified. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Entrada elevada",
+      "zone_en": "Raised entrance"
+    },
+    {
+      "reference_number": 17,
+      "reference_id": "PG103-017",
+      "key": "N06",
+      "name": "Mueble auxiliar con encimera blanca",
+      "name_en": "Side cabinet with white countertop",
+      "status": "candidate",
+      "photo": "./photos/N06.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "auxiliary-cabinet.png",
+        "box": [
+          70,
+          115,
+          350,
+          530
+        ]
+      },
+      "photo_pixels": [
+        280,
+        415
+      ],
+      "basis": "Frente de madera clara y tres elementos circulares negros; probable separación de residuos. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Light wood front and three black circular countertop features; waste sorting is possible but unconfirmed. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta en forma, media en función",
+      "confidence_en": "high for shape, medium for function",
+      "visible_quantity": 1,
+      "zone": "Junto a puerta accesible",
+      "zone_en": "Beside the accessible door"
+    },
+    {
+      "reference_number": 18,
+      "reference_id": "PG103-018",
+      "key": "N07",
+      "name": "Horno de sobremesa",
+      "name_en": "Countertop oven",
+      "status": "candidate",
+      "photo": "./photos/N07.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-oven-detail.png",
+        "box": [
+          145,
+          5,
+          390,
+          260
+        ]
+      },
+      "photo_pixels": [
+        245,
+        255
+      ],
+      "basis": "Acero, puerta curva, mando circular y panel de control negro. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Steel body, curved door, round dial and black controls. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 19,
+      "reference_id": "PG103-019",
+      "key": "N08",
+      "name": "Dispensadores inclinados de vasos",
+      "name_en": "Angled cup dispensers",
+      "status": "candidate",
+      "photo": "./photos/N08.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-checkout-accessories.png",
+        "box": [
+          85,
+          0,
+          355,
+          205
+        ]
+      },
+      "photo_pixels": [
+        270,
+        205
+      ],
+      "basis": "Carcasas negras con ranuras alargadas y vasos blancos. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Black housings with elongated slots and white cups. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 2,
+      "zone": "Barra",
+      "zone_en": "Counter"
+    },
+    {
+      "reference_number": 20,
+      "reference_id": "PG103-020",
+      "key": "N09",
+      "name": "Dispensador mural de papel",
+      "name_en": "Wall-mounted paper dispenser",
+      "status": "candidate",
+      "photo": "./photos/N09.webp",
+      "photo_scope": "context",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-preparation.png",
+        "box": [
+          510,
+          145,
+          575,
+          260
+        ]
+      },
+      "photo_pixels": [
+        65,
+        115
+      ],
+      "basis": "Caja blanca horizontal redondeada. Fotografía de contexto; el elemento aparece parcialmente oculto.",
+      "basis_en": "Rounded horizontal white box, partly hidden behind a staff member. Context photo; the element is partly obscured.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 21,
+      "reference_id": "PG103-021",
+      "key": "N10",
+      "name": "Organizador de consumibles",
+      "name_en": "Consumables organizer",
+      "status": "candidate",
+      "photo": "./photos/N10.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-counter-left-detail.png",
+        "box": [
+          0,
+          230,
+          275,
+          385
+        ]
+      },
+      "photo_pixels": [
+        275,
+        155
+      ],
+      "basis": "Módulo negro bajo con compartimentos, vasos y paquetes planos. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Low black compartment organizer containing cups and flat packets. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 22,
+      "reference_id": "PG103-022",
+      "key": "N11",
+      "name": "Botellas con dosificador",
+      "name_en": "Pump bottles",
+      "status": "candidate",
+      "photo": "./photos/N11.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-preparation.png",
+        "box": [
+          740,
+          175,
+          815,
+          315
+        ]
+      },
+      "photo_pixels": [
+        75,
+        140
+      ],
+      "basis": "Transparentes con bombas blancas; contenido sin determinar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Clear bottles with white pumps; contents undetermined. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 23,
+      "reference_id": "PG103-023",
+      "key": "N12",
+      "name": "Recipientes de alimentos con tapa",
+      "name_en": "Lidded food containers",
+      "status": "candidate",
+      "photo": "./photos/N12.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-oven-detail.png",
+        "box": [
+          350,
+          0,
+          520,
+          265
+        ]
+      },
+      "photo_pixels": [
+        170,
+        265
+      ],
+      "basis": "Cajas rectangulares translúcidas apiladas; cantidades solapadas. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Stacked translucent rectangular containers; overlaps prevent a reliable count. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": "grupo",
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 24,
+      "reference_id": "PG103-024",
+      "key": "N13",
+      "name": "Cestas de sobremesa junto al TPV",
+      "name_en": "Countertop baskets beside the POS",
+      "status": "candidate",
+      "photo": "./photos/N13.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-checkout-accessories.png",
+        "box": [
+          490,
+          270,
+          870,
+          450
+        ]
+      },
+      "photo_pixels": [
+        380,
+        180
+      ],
+      "basis": "Alambre negro rectangular con paquetes verdes/marrones. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Rectangular black wire baskets with green and brown packets. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 2,
+      "zone": "Caja",
+      "zone_en": "Checkout"
+    },
+    {
+      "reference_number": 25,
+      "reference_id": "PG103-025",
+      "key": "N14",
+      "name": "Organizador escalonado de paquetes",
+      "name_en": "Tiered packet organizer",
+      "status": "candidate",
+      "photo": "./photos/N14.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-checkout-accessories.png",
+        "box": [
+          145,
+          105,
+          320,
+          290
+        ]
+      },
+      "photo_pixels": [
+        175,
+        185
+      ],
+      "basis": "Expositor negro inclinado con sobres de colores. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Sloped black display holding colorful packets. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Caja",
+      "zone_en": "Checkout"
+    },
+    {
+      "reference_number": 26,
+      "reference_id": "PG103-026",
+      "key": "N15",
+      "name": "Recipiente de varillas enfundadas",
+      "name_en": "Holder of wrapped sticks",
+      "status": "candidate",
+      "photo": "./photos/N15.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-checkout-accessories.png",
+        "box": [
+          240,
+          115,
+          415,
+          295
+        ]
+      },
+      "photo_pixels": [
+        175,
+        180
+      ],
+      "basis": "Negro, lleno de elementos beige en abanico; pajitas/agitadores sin distinguir. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Black holder filled with fanned-out beige sleeves; straws or stirrers cannot be distinguished. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta en forma, media en contenido",
+      "confidence_en": "high for shape, medium for contents",
+      "visible_quantity": 1,
+      "zone": "Caja",
+      "zone_en": "Checkout"
+    },
+    {
+      "reference_number": 27,
+      "reference_id": "PG103-027",
+      "key": "N16",
+      "name": "Peluche pequeño",
+      "name_en": "Small plush toy",
+      "status": "candidate",
+      "photo": "./photos/N16.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-checkout-accessories.png",
+        "box": [
+          395,
+          50,
+          520,
+          240
+        ]
+      },
+      "photo_pixels": [
+        125,
+        190
+      ],
+      "basis": "Beige/naranja, orejas redondas; personaje sin identificar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Small beige/orange plush with round ears; character unidentified. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Caja",
+      "zone_en": "Checkout"
+    },
+    {
+      "reference_number": 28,
+      "reference_id": "PG103-028",
+      "key": "N17",
+      "name": "Carteles promocionales de sobremesa",
+      "name_en": "Countertop promotional signs",
+      "status": "candidate",
+      "photo": "./photos/N17.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-accessories-right.png",
+        "box": [
+          185,
+          15,
+          550,
+          265
+        ]
+      },
+      "photo_pixels": [
+        365,
+        250
+      ],
+      "basis": "Uno vertical plegado y otro horizontal con marco/apoyo triangular. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "One folded vertical sign and one horizontal framed sign on a triangular support. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 2,
+      "zone": "Sobre vitrina",
+      "zone_en": "Above the display case"
+    },
+    {
+      "reference_number": 29,
+      "reference_id": "PG103-029",
+      "key": "N18",
+      "name": "Expositor cilíndrico de paquetes",
+      "name_en": "Cylindrical packet display",
+      "status": "candidate",
+      "photo": "./photos/N18.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-accessories-right.png",
+        "box": [
+          325,
+          10,
+          430,
+          260
+        ]
+      },
+      "photo_pixels": [
+        105,
+        250
+      ],
+      "basis": "Rejilla/aros metálicos con bolsas de producto. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Metal hoops or mesh holding product bags. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "media-alta",
+      "confidence_en": "medium-high",
+      "visible_quantity": 1,
+      "zone": "Sobre vitrina",
+      "zone_en": "Above the display case"
+    },
+    {
+      "reference_number": 30,
+      "reference_id": "PG103-030",
+      "key": "N19",
+      "name": "Equipos verticales metálicos",
+      "name_en": "Tall metal equipment",
+      "status": "candidate",
+      "photo": "./photos/N19.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-brewing-detail.png",
+        "box": [
+          40,
+          65,
+          230,
+          245
+        ]
+      },
+      "photo_pixels": [
+        190,
+        180
+      ],
+      "basis": "Cuerpos altos reflectantes; posible dispensador de bebida, función pendiente. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Tall reflective metal bodies; possible drinks equipment, function unconfirmed. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta en forma, media en función",
+      "confidence_en": "high for shape, medium for function",
+      "visible_quantity": 2,
+      "zone": "Barra",
+      "zone_en": "Counter"
+    },
+    {
+      "reference_number": 31,
+      "reference_id": "PG103-031",
+      "key": "N20",
+      "name": "Bloque negro de preparación",
+      "name_en": "Black preparation equipment",
+      "status": "candidate",
+      "photo": "./photos/N20.webp",
+      "photo_scope": "context",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-machine-detail.png",
+        "box": [
+          40,
+          10,
+          330,
+          245
+        ]
+      },
+      "photo_pixels": [
+        290,
+        235
+      ],
+      "basis": "Compatible con cafetera profesional, parcialmente oculto. Fotografía de contexto; el elemento aparece parcialmente oculto.",
+      "basis_en": "Partly obscured equipment compatible with a professional coffee machine. Context photo; the element is partly obscured.",
+      "confidence": "media",
+      "confidence_en": "medium",
+      "visible_quantity": "grupo",
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 32,
+      "reference_id": "PG103-032",
+      "key": "N21",
+      "name": "Jarras translúcidas con asa",
+      "name_en": "Translucent handled pitchers",
+      "status": "candidate",
+      "photo": "./photos/N21.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "service-machine-detail.png",
+        "box": [
+          60,
+          5,
+          240,
+          125
+        ]
+      },
+      "photo_pixels": [
+        180,
+        120
+      ],
+      "basis": "Jarras altas sobre equipo negro; cantidad no fiable. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Tall handled pitchers above black equipment; reliable quantity unavailable. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta en forma",
+      "confidence_en": "high for shape",
+      "visible_quantity": "grupo",
+      "zone": "Contrabarra",
+      "zone_en": "Back counter"
+    },
+    {
+      "reference_number": 33,
+      "reference_id": "PG103-033",
+      "key": "N22",
+      "name": "Plataforma y rampa de accesibilidad",
+      "name_en": "Accessible platform and ramp",
+      "status": "candidate",
+      "photo": "./photos/N22.webp",
+      "photo_scope": "context",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-wall-floor-seating.png",
+        "box": [
+          205,
+          300,
+          555,
+          890
+        ]
+      },
+      "photo_pixels": [
+        350,
+        590
+      ],
+      "basis": "Superficies metálicas, barandilla y guía vertical; mecanismo no confirmado. Fotografía de contexto; el elemento aparece parcialmente oculto.",
+      "basis_en": "Metal surfaces, railing and vertical guide; mechanism unconfirmed. Context photo; the element is partly obscured.",
+      "confidence": "alta en geometría, media en mecanismo",
+      "confidence_en": "high for geometry, medium for mechanism",
+      "visible_quantity": 1,
+      "zone": "Escalones de entrada",
+      "zone_en": "Entrance steps"
+    },
+    {
+      "reference_number": 34,
+      "reference_id": "PG103-034",
+      "key": "N23",
+      "name": "Caballete amarillo de precaución",
+      "name_en": "Yellow caution floor sign",
+      "status": "candidate",
+      "photo": "./photos/N23.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-wet-floor-sign.png",
+        "box": [
+          0,
+          0,
+          140,
+          340
+        ]
+      },
+      "photo_pixels": [
+        140,
+        340
+      ],
+      "basis": "Plástico amarillo plegable; texto ilegible. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Foldable yellow plastic caution sign; text unreadable. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Entrada",
+      "zone_en": "Entrance"
+    },
+    {
+      "reference_number": 35,
+      "reference_id": "PG103-035",
+      "key": "N24",
+      "name": "Extintores",
+      "name_en": "Fire extinguishers",
+      "status": "candidate",
+      "photo": "./photos/N24.webp",
+      "photo_scope": "type",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-fire-extinguisher-upper.png",
+        "box": [
+          110,
+          115,
+          215,
+          260
+        ]
+      },
+      "photo_pixels": [
+        105,
+        145
+      ],
+      "basis": "Cilindros rojos; el inferior está parcialmente tapado. Foto compartida de la tipología visible; no identifica esta unidad concreta ni prueba su posición.",
+      "basis_en": "Red cylinders; the lower example is partly obscured. Shared photo of the visible type; it does not identify this particular unit or prove its position.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Entrada y desembarco superior",
+      "zone_en": "Entrance and upper landing"
+    },
+    {
+      "reference_number": 36,
+      "reference_id": "PG103-036",
+      "key": "N25",
+      "name": "Láminas y marcos",
+      "name_en": "Framed prints",
+      "status": "candidate",
+      "photo": "./photos/N25.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-wall-floor-seating.png",
+        "box": [
+          505,
+          135,
+          670,
+          420
+        ]
+      },
+      "photo_pixels": [
+        165,
+        285
+      ],
+      "basis": "Paneles claros en marcos oscuros; contenido no leído. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Light-colored prints in dark frames; contents unread. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": "grupo",
+      "zone": "Paredes",
+      "zone_en": "Walls"
+    },
+    {
+      "reference_number": 37,
+      "reference_id": "PG103-037",
+      "key": "N26",
+      "name": "Puerta y ventanal acristalados",
+      "name_en": "Glazed door and window",
+      "status": "candidate",
+      "photo": "./photos/N26.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "entrance-door-safety.png",
+        "box": [
+          215,
+          145,
+          545,
+          655
+        ]
+      },
+      "photo_pixels": [
+        330,
+        510
+      ],
+      "basis": "Perfilería negra y vidrio; conjunto arquitectónico. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "Black frame and glass; an architectural assembly. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Acceso elevado",
+      "zone_en": "Raised access"
+    },
+    {
+      "reference_number": 38,
+      "reference_id": "PG103-038",
+      "key": "N27",
+      "name": "Puerta con ojo de buey",
+      "name_en": "Porthole service door",
+      "status": "candidate",
+      "photo": "./photos/N27.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "self-service.png",
+        "box": [
+          680,
+          175,
+          950,
+          750
+        ]
+      },
+      "photo_pixels": [
+        270,
+        575
+      ],
+      "basis": "Blanca, ventana circular y protección metálica inferior. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "White door with circular window and lower metal protection. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta en geometría",
+      "confidence_en": "high for geometry",
+      "visible_quantity": 1,
+      "zone": "Servicio",
+      "zone_en": "Service area"
+    },
+    {
+      "reference_number": 39,
+      "reference_id": "PG103-039",
+      "key": "N28",
+      "name": "Puerta con símbolo de accesibilidad",
+      "name_en": "Door with accessibility symbol",
+      "status": "candidate",
+      "photo": "./photos/N28.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "self-service.png",
+        "box": [
+          125,
+          160,
+          415,
+          775
+        ]
+      },
+      "photo_pixels": [
+        290,
+        615
+      ],
+      "basis": "Blanca con tirador metálico y pictograma. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "basis_en": "White door with metal handle and accessibility pictogram. Real Matrix crop; identification and quantities are limited to visible examples.",
+      "confidence": "alta",
+      "confidence_en": "high",
+      "visible_quantity": 1,
+      "zone": "Servicio",
+      "zone_en": "Service area"
+    },
+    {
+      "reference_number": 40,
+      "reference_id": "PG103-040",
+      "key": "P01",
+      "name": "Recipiente alto rosado transparente",
+      "name_en": "Tall pink transparent container",
+      "status": "product_reference",
+      "photo": "./photos/P01.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-upper.png",
+        "box": [
+          620,
+          385,
+          835,
+          695
+        ]
+      },
+      "photo_pixels": [
+        215,
+        310
+      ],
+      "basis": "Cilindro, tapa fucsia y gráfica baja; botella/vaso ambiguo. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Cylindrical body, pink lid and graphics near the base; bottle or cup uncertain. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 10
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 41,
+      "reference_id": "PG103-041",
+      "key": "P02",
+      "name": "Taza souvenir ilustrada",
+      "name_en": "Illustrated souvenir mug",
+      "status": "product_reference",
+      "photo": "./photos/P02.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-upper.png",
+        "box": [
+          325,
+          435,
+          640,
+          690
+        ]
+      },
+      "photo_pixels": [
+        315,
+        255
+      ],
+      "basis": "Blanca con asa e interior verde, caja abierta verde; dos gráficas. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "White handled mugs with green interiors in open green boxes; two graphic designs. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": 4,
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 42,
+      "reference_id": "PG103-042",
+      "key": "P03",
+      "name": "Taza naranja tipo calabaza",
+      "name_en": "Orange pumpkin-style mug",
+      "status": "product_reference",
+      "photo": "./photos/P03.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-orange-mugs.png",
+        "box": [
+          0,
+          0,
+          390,
+          170
+        ]
+      },
+      "photo_pixels": [
+        390,
+        170
+      ],
+      "basis": "Baja, cuerpo lobulado y asa lateral. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Low lobed orange body with side handle. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": 5,
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 43,
+      "reference_id": "PG103-043",
+      "key": "P04",
+      "name": "Vaso verde facetado con pajita",
+      "name_en": "Faceted green tumbler with straw",
+      "status": "product_reference",
+      "photo": "./photos/P04.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-middle.png",
+        "box": [
+          410,
+          65,
+          540,
+          360
+        ]
+      },
+      "photo_pixels": [
+        130,
+        295
+      ],
+      "basis": "Alto cónico, tapa y pajita verdes. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tall tapered cup with green lid and straw. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 4
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 44,
+      "reference_id": "PG103-044",
+      "key": "P05",
+      "name": "Recipiente verde estriado",
+      "name_en": "Ribbed green container",
+      "status": "product_reference",
+      "photo": "./photos/P05.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-middle.png",
+        "box": [
+          510,
+          85,
+          655,
+          355
+        ]
+      },
+      "photo_pixels": [
+        145,
+        270
+      ],
+      "basis": "Alto con estrías verticales y tapa. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tall lidded container with vertical ribs. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 45,
+      "reference_id": "PG103-045",
+      "key": "P06",
+      "name": "Recipiente verde liso con tapa abatible",
+      "name_en": "Smooth green container with flip lid",
+      "status": "product_reference",
+      "photo": "./photos/P06.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-middle.png",
+        "box": [
+          595,
+          145,
+          730,
+          365
+        ]
+      },
+      "photo_pixels": [
+        135,
+        220
+      ],
+      "basis": "Brillo metalizado y cierre superior; material sin verificar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Metallic-looking shine and top closure; material unverified. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 46,
+      "reference_id": "PG103-046",
+      "key": "P07",
+      "name": "Recipiente verde con borde dorado",
+      "name_en": "Green container with gold rim",
+      "status": "product_reference",
+      "photo": "./photos/P07.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-middle.png",
+        "box": [
+          1460,
+          100,
+          1650,
+          360
+        ]
+      },
+      "photo_pixels": [
+        190,
+        260
+      ],
+      "basis": "Cuerpo liso de apariencia metalizada. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Smooth body with a metallic appearance and gold-colored rim. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 47,
+      "reference_id": "PG103-047",
+      "key": "P08",
+      "name": "Taza verde con escamas",
+      "name_en": "Green scaled mug",
+      "status": "product_reference",
+      "photo": "./photos/P08.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-middle.png",
+        "box": [
+          1280,
+          140,
+          1480,
+          380
+        ]
+      },
+      "photo_pixels": [
+        200,
+        240
+      ],
+      "basis": "Cuerpo abombado y relieve de escamas. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Bulging body with raised scales. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": 2,
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 48,
+      "reference_id": "PG103-048",
+      "key": "P09",
+      "name": "Taza blanca clásica con sirena",
+      "name_en": "Classic white siren mug",
+      "status": "product_reference",
+      "photo": "./photos/P09.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-white-mugs.png",
+        "box": [
+          85,
+          5,
+          280,
+          210
+        ]
+      },
+      "photo_pixels": [
+        195,
+        205
+      ],
+      "basis": "Asa e interior verde. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Handled white mug with green interior. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 49,
+      "reference_id": "PG103-049",
+      "key": "P10",
+      "name": "Taza blanca pequeña",
+      "name_en": "Small white mug",
+      "status": "product_reference",
+      "photo": "./photos/P10.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          270,
+          55,
+          485,
+          240
+        ]
+      },
+      "photo_pixels": [
+        215,
+        185
+      ],
+      "basis": "Tipo espresso; algunas con texto vertical. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Espresso-sized mugs; some have vertical text. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 4
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 50,
+      "reference_id": "PG103-050",
+      "key": "P11",
+      "name": "Vaso negro con banda verde",
+      "name_en": "Black cup with green band",
+      "status": "product_reference",
+      "photo": "./photos/P11.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          520,
+          50,
+          625,
+          320
+        ]
+      },
+      "photo_pixels": [
+        105,
+        270
+      ],
+      "basis": "Alto estrecho, tapa negra y banda de agarre. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tall narrow body, black lid and green grip band. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 4
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 51,
+      "reference_id": "PG103-051",
+      "key": "P12",
+      "name": "Vaso negro con tapa verde",
+      "name_en": "Black cup with green lid",
+      "status": "product_reference",
+      "photo": "./photos/P12.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          620,
+          100,
+          735,
+          325
+        ]
+      },
+      "photo_pixels": [
+        115,
+        225
+      ],
+      "basis": "Cónico y logo blanco. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tapered black body with white logo and green lid. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 4
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 52,
+      "reference_id": "PG103-052",
+      "key": "P13",
+      "name": "Vaso transparente con pajita",
+      "name_en": "Transparent tumbler with straw",
+      "status": "product_reference",
+      "photo": "./photos/P13.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          920,
+          70,
+          1080,
+          345
+        ]
+      },
+      "photo_pixels": [
+        160,
+        275
+      ],
+      "basis": "Tapa transparente y pajita verde; vidrio/plástico sin verificar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Clear lid and green straw; glass or plastic unverified. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 4
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 53,
+      "reference_id": "PG103-053",
+      "key": "P14",
+      "name": "Vaso blanco-negro moteado",
+      "name_en": "Black-and-white speckled tumbler",
+      "status": "product_reference",
+      "photo": "./photos/P14.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          1130,
+          120,
+          1260,
+          355
+        ]
+      },
+      "photo_pixels": [
+        130,
+        235
+      ],
+      "basis": "Alto cónico, tapa y pajita negras, texto STARBUCKS. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tall tapered speckled body, black lid and straw, STARBUCKS lettering. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 6
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 54,
+      "reference_id": "PG103-054",
+      "key": "P15",
+      "name": "Taza negra lisa",
+      "name_en": "Plain black mug",
+      "status": "product_reference",
+      "photo": "./photos/P15.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          1250,
+          55,
+          1425,
+          345
+        ]
+      },
+      "photo_pixels": [
+        175,
+        290
+      ],
+      "basis": "Una alta y otra baja, con asa. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tall and low handled black mugs. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 55,
+      "reference_id": "PG103-055",
+      "key": "P16",
+      "name": "Taza blanca redondeada con líneas grises",
+      "name_en": "Rounded white mug with grey lines",
+      "status": "product_reference",
+      "photo": "./photos/P16.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-white-textured-mugs.png",
+        "box": [
+          100,
+          70,
+          245,
+          260
+        ]
+      },
+      "photo_pixels": [
+        145,
+        190
+      ],
+      "basis": "Baja abombada con asa redonda; apiladas. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Stacked low rounded mugs with circular handles and grey lines. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 56,
+      "reference_id": "PG103-056",
+      "key": "P17",
+      "name": "Taza blanca con relieve y asa angular",
+      "name_en": "Textured white mug with angular handle",
+      "status": "product_reference",
+      "photo": "./photos/P17.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-white-textured-mugs.png",
+        "box": [
+          480,
+          40,
+          650,
+          235
+        ]
+      },
+      "photo_pixels": [
+        170,
+        195
+      ],
+      "basis": "Baja con textura diagonal y asa rectangular. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Low mug with diagonal texture and rectangular handle. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 57,
+      "reference_id": "PG103-057",
+      "key": "P18",
+      "name": "Vaso abierto blanco-verde con ondas",
+      "name_en": "Open white-and-green wave-pattern cup",
+      "status": "product_reference",
+      "photo": "./photos/P18.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-lower.png",
+        "box": [
+          715,
+          110,
+          835,
+          320
+        ]
+      },
+      "photo_pixels": [
+        120,
+        210
+      ],
+      "basis": "Cónico con gráfica marmoleada; sin tapa visible. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tapered cup with marbled wave graphics; no lid visible. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": {
+        "minimum": 2
+      },
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 58,
+      "reference_id": "PG103-058",
+      "key": "P19",
+      "name": "Vaso reutilizable blanco/translúcido con tapa blanca",
+      "name_en": "White/translucent reusable cup with white lid",
+      "status": "product_reference",
+      "photo": "./photos/P19.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "baskets.png",
+        "box": [
+          100,
+          610,
+          690,
+          925
+        ]
+      },
+      "photo_pixels": [
+        590,
+        315
+      ],
+      "basis": "Cuerpo cónico, sirena verde y tapa blanca; apariencia de plástico. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Tapered body, green siren and white lid; looks like plastic. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": "grupo",
+      "zone": "Columna",
+      "zone_en": "Pillar"
+    },
+    {
+      "reference_number": 59,
+      "reference_id": "PG103-059",
+      "key": "P20",
+      "name": "Paquetes de café del expositor",
+      "name_en": "Coffee packets on display",
+      "status": "product_reference",
+      "photo": "./photos/P20.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "merch-upper.png",
+        "box": [
+          95,
+          130,
+          825,
+          385
+        ]
+      },
+      "photo_pixels": [
+        700,
+        245
+      ],
+      "basis": "Bolsas rectangulares flexibles impresas; formatos y SKUs sin fijar. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Printed flexible rectangular coffee bags; sizes and SKUs not confirmed. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": "grupo",
+      "zone": "Estantería de tazas y café",
+      "zone_en": "Mugs and coffee shelving"
+    },
+    {
+      "reference_number": 60,
+      "reference_id": "PG103-060",
+      "key": "P21",
+      "name": "Productos en bolsas del cesto alto",
+      "name_en": "Bagged products in the tall basket",
+      "status": "product_reference",
+      "photo": "./photos/P21.webp",
+      "photo_scope": "element",
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "source_crop": {
+        "file": "baskets.png",
+        "box": [
+          430,
+          300,
+          830,
+          520
+        ]
+      },
+      "photo_pixels": [
+        400,
+        220
+      ],
+      "basis": "Bolsas de producto, claras o impresas, con relleno visible; marcas y contenidos no confirmados. Recorte real de Matrix; identificación y cantidad limitadas a lo visible. Referencia de producto; no representa un SKU confirmado ni existencias registradas.",
+      "basis_en": "Clear or printed product bags; brands and contents not confirmed. Real Matrix crop; identification and quantities are limited to visible examples. Product reference; it is not a confirmed SKU or registered stock quantity.",
+      "confidence": "variante visual; SKU y material sin confirmar",
+      "confidence_en": "visual variant; SKU and material not confirmed",
+      "visible_quantity": "grupo",
+      "zone": "Columna",
+      "zone_en": "Pillar"
+    }
+  ]
+}
