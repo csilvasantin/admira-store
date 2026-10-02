@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "blender_version": "5.2.2 LTS",
-  "asset_dir": "inventario/assets/catalog/02",
+  "asset_dir": "/Users/csilvasantin/Documents/ChatGPT/admira.store/inventario/assets/catalog/02",
   "identity": "native:shelves",
   "number": 2,
   "checks": [
@@ -18,7 +18,7 @@
           2
         ],
         "front_gltf": "+X",
-        "revision": "shelves-best-20261002-1"
+        "revision": "shelves-labels-20261002-2"
       }
     },
     {
@@ -170,13 +170,80 @@
         {
           "name": "selection-label-atlas",
           "size": [
-            512,
-            768
+            4096,
+            3072
           ],
           "packed": true,
           "colorspace": "sRGB"
         }
       ]
+    },
+    {
+      "check": "Best labels use a packed 4096x3072 typographic atlas",
+      "passed": true,
+      "evidence": {
+        "image": "best-textures/selection-label-atlas.png",
+        "layout": "best-textures/selection-label-atlas.layout.json",
+        "size": [
+          4096,
+          3072
+        ],
+        "product_designs": 18,
+        "rail_designs": 6,
+        "status": "original_illustrative_model_labels_not_stock",
+        "fonts": [
+          {
+            "name": "Arial.ttf",
+            "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+          },
+          {
+            "name": "Arial Bold.ttf",
+            "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+          }
+        ]
+      }
+    },
+    {
+      "check": "atlas keeps 18 package-format designs and six dedicated rail-card designs",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          "bottle-0",
+          "bottle-1",
+          "bottle-2",
+          "bottle-3",
+          "bottle-4",
+          "bottle-5",
+          "card-0",
+          "card-1",
+          "card-2",
+          "card-3",
+          "card-4",
+          "card-5",
+          "carton-0",
+          "carton-1",
+          "carton-2",
+          "carton-3",
+          "carton-4",
+          "carton-5",
+          "pouch-0",
+          "pouch-1",
+          "pouch-2",
+          "pouch-3",
+          "pouch-4",
+          "pouch-5"
+        ],
+        "fonts": [
+          {
+            "name": "Arial.ttf",
+            "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+          },
+          {
+            "name": "Arial Bold.ttf",
+            "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+          }
+        ]
+      }
     },
     {
       "check": "normal and roughness use non-colour data",
@@ -273,6 +340,20 @@
       }
     },
     {
+      "check": "all 90 printed faces use their package or rail artwork without stretched type",
+      "passed": true,
+      "evidence": {
+        "label_faces": 90,
+        "maximum_relative_distortion": 0.00795350845566456,
+        "formats": {
+          "carton": 24,
+          "pouch": 15,
+          "bottle": 6,
+          "card": 45
+        }
+      }
+    },
+    {
       "check": "six lathed bottle bodies have outward-facing side normals",
       "passed": true,
       "evidence": [
@@ -340,7 +421,7 @@
     {
       "check": "GLB binary length and version are valid",
       "passed": true,
-      "evidence": 7632388
+      "evidence": 8358320
     },
     {
       "check": "GLB root identity and revision match the source contract",
@@ -377,6 +458,37 @@
       ]
     },
     {
+      "check": "printed paper keeps matte roughness and low specular reflection",
+      "passed": true,
+      "evidence": [
+        {
+          "doubleSided": true,
+          "extensions": {
+            "KHR_materials_specular": {
+              "specularFactor": 0.1599999964237213
+            }
+          },
+          "name": "Printed paper · selection labels",
+          "pbrMetallicRoughness": {
+            "baseColorTexture": {
+              "index": 0
+            },
+            "metallicFactor": 0,
+            "roughnessFactor": 0.8999999761581421
+          }
+        }
+      ]
+    },
+    {
+      "check": "GLB embeds the full-resolution label PNG without resampling",
+      "passed": true,
+      "evidence": {
+        "image": "selection-label-atlas",
+        "bytes": 739794,
+        "sha256": "d867792b8006807c3cc5eca0f01bec55d05349a08768d0a647b1ffc55d005162"
+      }
+    },
+    {
       "check": "GLB oak material carries base colour, normal and roughness maps",
       "passed": true,
       "evidence": [
@@ -407,10 +519,10 @@
       "check": "web geometry stays grouped by finish",
       "passed": true,
       "evidence": {
-        "bytes": 7632388,
+        "bytes": 8358320,
         "mesh_count": 14,
         "triangles": 68504,
-        "sha256": "d9b26f381900c8c9288a5af1b353622158660c623b5f3e44934cec017132cb6f",
+        "sha256": "ad10659c2ff3efc2afacba5c65590a08363122523698428a6113853dfbd4c397",
         "reimport_bounds": {
           "blender_min": [
             -0.02249997854232788,
@@ -555,8 +667,8 @@
       {
         "name": "selection-label-atlas",
         "size": [
-          512,
-          768
+          4096,
+          3072
         ],
         "packed": true,
         "colorspace": "sRGB"
@@ -586,10 +698,10 @@
     }
   },
   "glb": {
-    "bytes": 7632388,
+    "bytes": 8358320,
     "mesh_count": 14,
     "triangles": 68504,
-    "sha256": "d9b26f381900c8c9288a5af1b353622158660c623b5f3e44934cec017132cb6f",
+    "sha256": "ad10659c2ff3efc2afacba5c65590a08363122523698428a6113853dfbd4c397",
     "reimport_bounds": {
       "blender_min": [
         -0.02249997854232788,
@@ -613,7 +725,7 @@
       ]
     }
   },
-  "revision": "shelves-best-20261002-1",
+  "revision": "shelves-labels-20261002-2",
   "passed": true,
   "failed_checks": []
 }

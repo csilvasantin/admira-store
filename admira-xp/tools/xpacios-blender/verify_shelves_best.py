@@ -125,6 +125,26 @@ try:
           len(used_images) == 4 and all(image.packed_file
                                       for image in used_images.values()),
           image_report)
+    layout = json.loads((folder / 'best-textures' / 'selection-label-atlas.layout.json').read_text())
+    label_contract = manifest.get('label_artwork', {})
+    check('Best labels use a packed 4096x3072 typographic atlas',
+          'selection-label-atlas' in used_images
+          and list(used_images['selection-label-atlas'].size) == [4096, 3072]
+          and layout.get('size') == [4096, 3072]
+          and label_contract.get('size') == [4096, 3072]
+          and label_contract.get('status') == 'original_illustrative_model_labels_not_stock',
+          label_contract)
+    regions = layout.get('regions', {})
+    expected_regions = {kind+'-'+str(i) for kind in ['carton', 'pouch', 'bottle', 'card']
+                        for i in range(6)}
+    check('atlas keeps 18 package-format designs and six dedicated rail-card designs',
+          set(regions) == expected_regions and len(layout.get('fonts', [])) == 2
+          and all(re.fullmatch(r'[0-9a-f]{64}', font.get('sha256', ''))
+                  for font in layout.get('fonts', []))
+          and all(region.get('title') and region.get('reference')
+                  and len(region.get('pixels', [])) == 4
+                  for region in regions.values()),
+          {'regions': sorted(regions), 'fonts': layout.get('fonts', [])})
     check('normal and roughness use non-colour data',
           all(used_images[name].colorspace_settings.name == 'Non-Color'
               for name in ['oak-normal', 'oak-roughness']
@@ -150,6 +170,34 @@ try:
           len(front_labels) == 90 and min(label_normals) > .99,
           {'label_faces': len(front_labels), 'minimum_normal_x':
            min(label_normals) if label_normals else None})
+    expected_formats = {'Carton printed label': 'carton', 'Pouch printed label': 'pouch',
+                        'Bottle front label': 'bottle', 'Shelf card': 'card'}
+    aspect_checks = []
+    for label in front_labels:
+        coords = [label.matrix_world @ vertex.co for vertex in label.data.vertices]
+        physical_aspect = ((max(v.y for v in coords)-min(v.y for v in coords)) /
+                           (max(v.z for v in coords)-min(v.z for v in coords)))
+        uv = [entry.uv for entry in label.data.uv_layers.active.data]
+        artwork_aspect = ((max(v.x for v in uv)-min(v.x for v in uv))*4096 /
+                          ((max(v.y for v in uv)-min(v.y for v in uv))*3072))
+        expected_format = next(kind for prefix, kind in expected_formats.items()
+                               if label.name.startswith(prefix))
+        region_id = label.get('labelRegion', '')
+        region = regions.get(region_id, {})
+        aspect_checks.append({'name': label.name, 'region': region_id,
+                              'relative_distortion': abs(artwork_aspect/physical_aspect-1)})
+        check_pass = (region_id.startswith(expected_format+'-') and region
+                      and label.get('printedTitle') == region.get('title')
+                      and label.get('printedReference') == region.get('reference'))
+        if not check_pass:
+            aspect_checks[-1]['contract_failure'] = True
+    check('all 90 printed faces use their package or rail artwork without stretched type',
+          len(aspect_checks) == 90 and all(result['relative_distortion'] < .012
+          and not result.get('contract_failure') for result in aspect_checks),
+          {'label_faces': len(aspect_checks), 'maximum_relative_distortion':
+           max(result['relative_distortion'] for result in aspect_checks),
+           'formats': {kind: sum(label.get('labelRegion', '').startswith(kind+'-')
+                       for label in front_labels) for kind in expected_formats.values()}})
     bottles = [o for o in meshes if o.name.startswith('Bottle · shoulder and punt')]
     bottle_results = []
     for bottle in bottles:
@@ -202,6 +250,25 @@ try:
           len(embedded_images) >= 4 and all(isinstance(image.get('bufferView'), int)
           and not image.get('uri') and image.get('mimeType') in ['image/png', 'image/jpeg']
           for image in embedded_images), embedded_images)
+    print_materials = [m for m in gltf.get('materials', [])
+                       if m.get('name', '').startswith('Printed paper')]
+    check('printed paper keeps matte roughness and low specular reflection',
+          len(print_materials) == 1
+          and print_materials[0].get('pbrMetallicRoughness', {}).get('roughnessFactor', 0) >= .88
+          and print_materials[0].get('extensions', {}).get('KHR_materials_specular', {}).get(
+              'specularFactor', 1) <= .20, print_materials)
+    printed_texture = print_materials[0]['pbrMetallicRoughness']['baseColorTexture']['index']
+    printed_image = gltf['images'][gltf['textures'][printed_texture]['source']]
+    view = gltf['bufferViews'][printed_image['bufferView']]
+    offset = 20+json_length+8+view.get('byteOffset', 0)
+    embedded_atlas = binary[offset:offset+view['byteLength']]
+    check('GLB embeds the full-resolution label PNG without resampling',
+          embedded_atlas[:8] == b'\x89PNG\r\n\x1a\n'
+          and struct.unpack_from('>II', embedded_atlas, 16) == (4096, 3072)
+          and hashlib.sha256(embedded_atlas).digest() == hashlib.sha256(
+              (folder / 'best-textures' / 'selection-label-atlas.png').read_bytes()).digest(),
+          {'image': printed_image['name'], 'bytes': len(embedded_atlas),
+           'sha256': hashlib.sha256(embedded_atlas).hexdigest()})
     oak_materials = [m for m in gltf.get('materials', [])
                      if m.get('name', '').startswith('Oak')]
     check('GLB oak material carries base colour, normal and roughness maps',

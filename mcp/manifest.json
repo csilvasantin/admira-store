@@ -762,7 +762,8 @@
     "itil_3d_record": "https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md",
     "surface_editor": "https://www.xpaceos.com/admira-xp/docs/surface-editor.md",
     "shelf_best": "https://www.xpaceos.com/admira-xp/docs/shelf-best.md",
-    "inventory_breakdown": "https://www.xpaceos.com/admira-xp/docs/inventory-breakdown.md"
+    "inventory_breakdown": "https://www.xpaceos.com/admira-xp/docs/inventory-breakdown.md",
+    "inventory_finish_compare": "https://www.xpaceos.com/admira-xp/docs/inventory-finishes.md"
   },
   "surface_editor": {
     "es": "Inventario → Starbucks PG103 → selecciona una unidad → Editar, en la esquina del modelo. Elige una superficie en la lista o tocando el modelo; cambia el color, importa PNG/JPG/WebP (hasta 20 MB, optimizados a 1024 px) o usa Cuadros, Rayas o Terrazo. Ajusta repetición, rotación, rugosidad y metalizado; compara con el original y usa Deshacer/Rehacer. Aplicar al Xpacio guarda una versión por local + instancia + CI y actualiza sus superficies en Better/Best, también en otra pestaña del mismo navegador y dominio. Histórico permite recuperar un acabado y aplicarlo como nueva versión. Exportar copia JSON conserva imágenes e histórico; importar recupera el acabado actual como una nueva versión, sin reemplazar el histórico local. Guardado local, sin sincronización entre usuarios ni escritura en el histórico patrimonial de Yokup. Good, Matrix y los archivos GLB/Blender originales conservan su vista. El botellero no está colocado en la escena de referencia; editarlo no añade una ubicación. /marca y el shell Experto se conservan; /avatarDigital continúa a cargo de Woz.",
@@ -794,24 +795,26 @@
       1,
       2
     ],
-    "viewer": "https://www.xpaceos.com/inventario/?asset=2&quality=best",
+    "viewer": "https://www.xpaceos.com/inventario/?asset=2&quality=all#mostrador",
     "quality_parameter": "quality",
     "profiles": [
       "good",
       "better",
       "best"
     ],
-    "selector": "Good / Better / Best in the catalogue model viewer",
-    "downloads": "GLB and Blender follow the selected profile",
+    "selector": "Acabado / Finish: Good, Better, Best, Todos / All",
+    "downloads": "Individual views: GLB and Blender follow the selected profile. All: downloads are available per profile.",
     "assets": {
       "glb": "https://www.xpaceos.com/inventario/assets/catalog/02/best.glb",
       "blend": "https://www.xpaceos.com/inventario/assets/catalog/02/best.blend",
       "preview": "https://www.xpaceos.com/inventario/assets/catalog/02/best-preview.png"
     },
     "details": [
-      "separate shelves and hardware",
+      "crisp pixel-art Good display",
+      "separate Best shelves and hardware",
       "detailed edges",
       "PBR wood colour, normal and roughness maps",
+      "high-definition product labels and shelf cards",
       "45 representative visual containers"
     ],
     "preserved": [
@@ -831,9 +834,35 @@
     "new_remote_tools": false,
     "docs": "https://www.xpaceos.com/admira-xp/docs/shelf-best.md",
     "tutorial": "https://www.xpaceos.com/help/#shelf-best",
-    "es": "La estantería #2 (native:shelves) estrena el piloto Best del catálogo: baldas y herrajes separados, cantos trabajados, veta de madera con mapas PBR de color, normal y rugosidad, y 45 envases representativos con más detalle. En el visor, el selector Good / Better / Best permite comparar los perfiles; Descargar GLB y Blender sigue el perfil elegido. Good y Better conservan sus modelos anteriores. Los envases son contenido visual; la selección de calidad conserva los IDs y las fichas ITIL, preferencias e historial CLI.",
-    "en": "Shelf #2 (native:shelves) introduces the catalogue Best pilot: separate shelves and hardware, detailed edges, wood grain with PBR colour, normal and roughness maps, and 45 representative containers with more detail. In the viewer, the Good / Better / Best selector compares profiles; GLB and Blender downloads follow the selected profile. Good and Better retain their previous models. Containers are visual content; quality selection preserves IDs, ITIL records, preferences and CLI history.",
-    "pending": []
+    "es": "En Acabado, Todos muestra Good, Better y Best uno al lado del otro como tres modelos interactivos. Arrastrar o acercar una vista sincroniza las cámaras; Frontal, Parte posterior, Lateral y Ver malla se aplican a las tres. Cada perfil conserva sus propias descargas GLB y Blender. En la estantería #2 (native:shelves), Good usa pixel art nítido con píxeles definidos y materiales de tres tonos; Better mantiene el modelado intermedio y Best añade etiquetas de producto y cartelas de balda de alta definición sobre el mueble detallado con acabados PBR. Los 45 envases son contenido visual; se conservan identidad, número, huella 1×2, fichas ITIL, preferencias, distribución e historial CLI.",
+    "en": "In Finish, Todos (All) shows Good, Better and Best side by side as three interactive models. Dragging or zooming one view synchronizes the cameras; Front, Back, Side and Wireframe apply to all three. Each profile retains its own GLB and Blender downloads. On shelf #2 (native:shelves), Good uses crisp pixel art with defined pixels and three-tone materials; Better keeps the intermediate model and Best adds high-definition product labels and shelf cards to the detailed furniture with PBR finishes. The 45 containers are visual content; identity, number, 1×2 footprint, ITIL records, preferences, placement and CLI history are preserved.",
+    "pending": [],
+    "quality_values": [
+      "good",
+      "better",
+      "best",
+      "all"
+    ],
+    "rendering": {
+      "good": "three-tone materials, low-resolution render without antialiasing; nearest-neighbour presentation with integer pixel scaling",
+      "better": "intermediate 3D model",
+      "best": "detailed PBR model with high-definition labels"
+    },
+    "labels": {
+      "revision": "shelves-labels-20261002-2",
+      "atlas": "https://www.xpaceos.com/inventario/assets/catalog/02/best-textures/selection-label-atlas.png",
+      "layout": "https://www.xpaceos.com/inventario/assets/catalog/02/best-textures/selection-label-atlas.layout.json",
+      "dimensions": [
+        4096,
+        3072
+      ],
+      "container_designs": 18,
+      "card_designs": 6,
+      "visual_products": 45,
+      "visual_cards": 45,
+      "stock_count": false,
+      "text": "original illustrative product names and A02-01…06 references"
+    }
   },
   "inventory_breakdown": {
     "status": "implemented",
@@ -875,5 +904,29 @@
     "en": "On each catalogue card, Desglose (Breakdown) sits beside Ver pieza (View item). It opens the Best model components grouped by function, with quantities, subcomponents where available and source links. The ES/EN selector translates the breakdown. Quantities describe the design model; they are not confirmed stock and do not create ITIL records.",
     "pending": [],
     "quantity_scope": "top-level per asset; nested components per parent unit"
+  },
+  "inventory_finish_compare": {
+    "status": "implemented",
+    "scope": "catalog_viewer",
+    "viewer": "https://www.xpaceos.com/inventario/?asset=2&quality=all#mostrador",
+    "quality_parameter": "quality",
+    "comparison_value": "all",
+    "profiles": [
+      "good",
+      "better",
+      "best"
+    ],
+    "layout": "three side-by-side interactive model views",
+    "camera": "synchronized orbit, zoom and named views",
+    "wireframe": "applies to all three models",
+    "downloads": "profile-specific GLB and Blender links",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/inventory-finishes.md",
+    "tutorial": "https://www.xpaceos.com/help/#shelf-best",
+    "es": "En Acabado, Todos muestra Good, Better y Best uno al lado del otro como tres modelos interactivos. Arrastrar o acercar una vista sincroniza las cámaras; Frontal, Parte posterior, Lateral y Ver malla se aplican a las tres. Cada perfil conserva sus propias descargas GLB y Blender. En la estantería #2 (native:shelves), Good usa pixel art nítido con píxeles definidos y materiales de tres tonos; Better mantiene el modelado intermedio y Best añade etiquetas de producto y cartelas de balda de alta definición sobre el mueble detallado con acabados PBR. Los 45 envases son contenido visual; se conservan identidad, número, huella 1×2, fichas ITIL, preferencias, distribución e historial CLI.",
+    "en": "In Finish, Todos (All) shows Good, Better and Best side by side as three interactive models. Dragging or zooming one view synchronizes the cameras; Front, Back, Side and Wireframe apply to all three. Each profile retains its own GLB and Blender downloads. On shelf #2 (native:shelves), Good uses crisp pixel art with defined pixels and three-tone materials; Better keeps the intermediate model and Best adds high-definition product labels and shelf cards to the detailed furniture with PBR finishes. The 45 containers are visual content; identity, number, 1×2 footprint, ITIL records, preferences, placement and CLI history are preserved.",
+    "new_cli_commands": false,
+    "new_remote_tools": false,
+    "itil_master": "Yokup",
+    "stock_count": false
   }
 }

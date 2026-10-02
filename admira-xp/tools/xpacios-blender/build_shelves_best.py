@@ -9,6 +9,8 @@ import argparse
 import hashlib
 import json
 import math
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,6 +22,8 @@ p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--output', required=True)
 p.add_argument('--resolution', type=int, default=1000)
 p.add_argument('--skip-render', action='store_true')
+p.add_argument('--label-python', default=shutil.which('python3'),
+               help='Python 3 with Pillow for original high-definition typography')
 args = p.parse_args(sys.argv[sys.argv.index('--') + 1:])
 out = Path(args.output).resolve()
 out.mkdir(parents=True, exist_ok=True)
@@ -36,7 +40,7 @@ asset.objects.link(root)
 root['inventoryId'] = 'native:shelves'
 root['inventoryNumber'] = 2
 root['quality'] = 'best'
-root['revision'] = 'shelves-best-20261002-1'
+root['revision'] = 'shelves-labels-20261002-2'
 root['units'] = 'uncalibrated_grid_units'
 root['referenceStatus'] = 'interpreted_not_measured'
 scene['description'] = 'Best shelf design interpretation. Physical measurements not provided.'
@@ -83,46 +87,16 @@ oak_normal = image('oak-normal', rgba_array(normal*.5+.5), True)
 rough = np.clip(.48 + grain*.05 + pores*.06, .34, .65)
 oak_rough = image('oak-roughness', rgba_array(np.repeat(rough[..., None], 3, axis=-1)), True)
 
-# A compact label atlas, with original generic graphics and readable bitmap type.
-glyphs = {
- 'A':['01110','10001','10001','11111','10001','10001','10001'],
- 'C':['01111','10000','10000','10000','10000','10000','01111'],
- 'D':['11110','10001','10001','10001','10001','10001','11110'],
- 'E':['11111','10000','10000','11110','10000','10000','11111'],
- 'F':['11111','10000','10000','11110','10000','10000','10000'],
- 'I':['11111','00100','00100','00100','00100','00100','11111'],
- 'L':['10000','10000','10000','10000','10000','10000','11111'],
- 'M':['10001','11011','10101','10101','10001','10001','10001'],
- 'O':['01110','10001','10001','10001','10001','10001','01110'],
- 'R':['11110','10001','10001','11110','10100','10010','10001'],
- 'S':['01111','10000','10000','01110','00001','00001','11110'],
- 'T':['11111','00100','00100','00100','00100','00100','00100'],
- '0':['01110','10011','10101','10101','11001','10001','01110'],
- '2':['01110','10001','00001','00010','00100','01000','11111']}
-atlas = np.ones((768, 512, 4), dtype=np.float32)
-ink = np.array([.12, .23, .22, 1])
-def pixels_text(canvas, text, x, y, scale=3, color=ink):
-    for char in text:
-        for row, bits in enumerate(glyphs.get(char, ['00000']*7)):
-            for col, bit in enumerate(bits):
-                if bit == '1':
-                    canvas[y+row*scale:y+(row+1)*scale, x+col*scale:x+(col+1)*scale] = color
-        x += 6*scale
-for index, word in enumerate(['CAFE', 'TE', 'CACAO', 'SELECT', 'CAFE', 'TE']):
-    tile = atlas[index//2*256:(index//2+1)*256, index%2*256:(index%2+1)*256]
-    tile[:] = [.93, .89, .79, 1]
-    tile[12:18, 12:244] = ink
-    tile[228:234, 12:244] = ink
-    pixels_text(tile, 'ADMIRA', 74, 32, 3)
-    # Stylised leaf/bean emblem with a fine brass border.
-    cy, cx = np.mgrid[0:256, 0:256]
-    mask = ((cx-128)/30)**2 + ((cy-111)/39)**2 < 1
-    tile[mask] = ink
-    tile[80:140, 125:129] = [.80, .64, .36, 1]
-    pixels_text(tile, word, (256-len(word)*24)//2, 166, 4)
-    pixels_text(tile, '02', 108, 205, 3)
-    tile[:] = tile[::-1].copy()
-labels = image('selection-label-atlas', atlas)
+# One portable atlas with real type, individual package formats and wide rail cards.
+# Pillow executes in the system Python; no fonts or external textures ship with GLB.
+if not args.label_python:
+    raise RuntimeError('A Python 3 executable with Pillow is required for label artwork')
+subprocess.run([args.label_python, str(Path(__file__).with_name('build_shelves_labels.py')),
+                '--output', str(textures)], check=True)
+label_layout = json.loads((textures/'selection-label-atlas.layout.json').read_text())
+labels = bpy.data.images.load(str(textures/'selection-label-atlas.png'), check_existing=False)
+labels.name = 'selection-label-atlas'
+labels.pack()
 
 
 def material(name, hexcolor, rough=.5, metal=0, wood=False, label=False):
@@ -144,6 +118,8 @@ def material(name, hexcolor, rough=.5, metal=0, wood=False, label=False):
         links.new(normal_tex.outputs['Color'], normal_node.inputs['Color'])
         links.new(normal_node.outputs['Normal'], bsdf.inputs['Normal'])
     if label:
+        # Matte printed paper: a frontal light must not wash out the ink details.
+        bsdf.inputs['Specular IOR Level'].default_value = .08
         c = nodes.new('ShaderNodeTexImage'); c.image = labels
         links.new(c.outputs['Color'], bsdf.inputs['Base Color'])
     return m
@@ -155,7 +131,7 @@ walnut = material('Walnut · recessed plinth', '#3d2b20', .45)
 brass = material('Brass · shelf edge and fittings', '#b89a5f', .3, .8)
 steel = material('Steel · pins and screws', '#899391', .27, .88)
 shadow = material('Recess · dark pin holes', '#202b2a', .85)
-labelmat = material('Printed paper · selection labels', '#efe6ce', .77, label=True)
+labelmat = material('Printed paper · selection labels', '#efe6ce', .90, label=True)
 glass = material('Amber glass · bottles', '#3e2314', .18, .05)
 paper = [material(name, color, .62) for name, color in [
     ('Pack · forest', '#294b43'), ('Pack · cream', '#ddd5bd'),
@@ -215,16 +191,26 @@ def rod(name, a, b, radius, finish, component, segments=20):
     return o
 
 
-def decal(name, u, y, v, width, height, tile, component):
-    # Quad facing +X, with the six atlas labels mapped independently.
+def decal(name, u, y, v, width, height, tile, component, label_format='carton'):
+    # Quad facing +X; each package and rail card uses its correctly proportioned region.
     verts = [xyz(u-width/2,y-height/2,v), xyz(u+width/2,y-height/2,v),
              xyz(u+width/2,y+height/2,v), xyz(u-width/2,y+height/2,v)]
     mesh = bpy.data.meshes.new(name); mesh.from_pydata(verts, [], [(0,1,2,3)]); mesh.update()
     o = bpy.data.objects.new(name, mesh); asset.objects.link(o); o.parent = root
     o.data.materials.append(labelmat); o['componentId'] = component
+    region_id = '%s-%d' % (label_format, tile)
+    region = label_layout['regions'][region_id]
+    o['labelRegion'] = region_id
+    o['printedTitle'] = region['title']
+    o['printedReference'] = region['reference']
+    o['labelArtworkStatus'] = label_layout['artwork_status']
     uv = mesh.uv_layers.new(name='UVMap')
-    x, y0 = tile%2*.5, tile//2/3
-    for i, (du,dv) in enumerate([(0,0),(.5,0),(.5,1/3),(0,1/3)]):
+    px, py, pw, ph = region['pixels']
+    aw, ah = label_layout['size']
+    # Half-pixel inset confines texture filtering to the region, with a 32 px gutter.
+    x, y0 = (px+.5)/aw, 1-(py+ph-.5)/ah
+    uw, vh = (pw-1)/aw, (ph-1)/ah
+    for i, (du,dv) in enumerate([(0,0),(uw,0),(uw,vh),(0,vh)]):
         uv.data[i].uv = (x+du, y0+dv)
     return o
 
@@ -292,7 +278,7 @@ for level in range(5):
             rod('Bottle cap',(u,base_y+.282,v),(u,base_y+.307,v),.029,brass,component,32)
             for h in (.288,.296,.302):
                 rod('Cap knurled band',(u,base_y+h-.001,v),(u,base_y+h+.001,v),.030,walnut,component,32)
-            decal('Bottle front label',u,base_y+.122,v+.056,.078,.096,tile,component)
+            decal('Bottle front label',u,base_y+.122,v+.056,.078,.096,tile,component,'bottle')
         elif (j+level)%3==1:
             # Pouch: folded shoulders and heat seal above the convex packet.
             finish=paper[tile]
@@ -300,7 +286,7 @@ for level in range(5):
             box('Pouch · folded shoulder',u,base_y+.263,v,.140,.030,.059,finish,component,.012)
             box('Pouch · sealed top',u,base_y+.285,v,.142,.019,.015,finish,component,.003)
             box('Pouch · lower gusset',u,base_y+.016,v,.151,.024,.105,finish,component,.009)
-            decal('Pouch printed label',u,base_y+.140,v+.053,.108,.146,tile,component)
+            decal('Pouch printed label',u,base_y+.140,v+.053,.108,.146,tile,component,'pouch')
             for du in (-.062,.062):
                 box('Pouch edge seam',u+du,base_y+.15,v+.045,.004,.20,.009,finish,component,.001)
         else:
@@ -313,7 +299,7 @@ for level in range(5):
             if o != group:
                 world=o.matrix_world.copy();o.parent=group;o.matrix_world=world
         # Small independent price/identification cards in the brass rail.
-        decal('Shelf card',u,y-.019,1.005,.070,.019,tile,'shelf-labels')
+        decal('Shelf card',u,y-.019,1.005,.070,.019,tile,'shelf-labels','card')
 
 # Pin-hole ladder and visible cabinet joinery, including the back face.
 for u in (.075,1.925):
@@ -374,7 +360,12 @@ manifest={
     'bounds_gltf':{'min':[lo[0],lo[2],-hi[1]],'max':[hi[0],hi[2],-lo[1]]},
     'detail':['baked oak colour/normal/roughness','recessed back and rear joinery',
               'levelling feet','shelf supports and pin-hole ladders','brass label rails',
-              'folded cartons and sealed pouches','turned bottles and cap bands','printed label atlas'],
+              'folded cartons and sealed pouches','turned bottles and cap bands',
+              'high-definition typographic product labels','dedicated horizontal rail-card artwork'],
+    'label_artwork':{'image':'best-textures/selection-label-atlas.png',
+                     'layout':'best-textures/selection-label-atlas.layout.json',
+                     'size':label_layout['size'],'product_designs':18,'rail_designs':6,
+                     'status':label_layout['artwork_status'],'fonts':label_layout['fonts']},
     'files':{'source':'best.blend','web':'best.glb','preview':'best-preview.png'},
     'bytes':(out/'best.glb').stat().st_size,'preserved_profiles_sha256':baseline}
 (out/'best.manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')

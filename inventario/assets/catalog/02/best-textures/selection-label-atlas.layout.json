@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "size": [
+    4096,
+    3072
+  ],
+  "revision": "shelves-labels-20261002-2",
+  "artwork_status": "original_illustrative_model_labels_not_stock",
+  "fonts": [
+    {
+      "name": "Arial.ttf",
+      "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    {
+      "name": "Arial Bold.ttf",
+      "sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+    }
+  ],
+  "regions": {
+    "carton-0": {
+      "pixels": [
+        32,
+        32,
+        640,
+        896
+      ],
+      "title": "CAFÉ",
+      "reference": "A02-01",
+      "role": "product",
+      "format": "carton"
+    },
+    "carton-1": {
+      "pixels": [
+        704,
+        32,
+        640,
+        896
+      ],
+      "title": "TÉ VERDE",
+      "reference": "A02-02",
+      "role": "product",
+      "format": "carton"
+    },
+    "carton-2": {
+      "pixels": [
+        1376,
+        32,
+        640,
+        896
+      ],
+      "title": "CACAO",
+      "reference": "A02-03",
+      "role": "product",
+      "format": "carton"
+    },
+    "carton-3": {
+      "pixels": [
+        2048,
+        32,
+        640,
+        896
+      ],
+      "title": "GRANOLA",
+      "reference": "A02-04",
+      "role": "product",
+      "format": "carton"
+    },
+    "carton-4": {
+      "pixels": [
+        2720,
+        32,
+        640,
+        896
+      ],
+      "title": "MIEL",
+      "reference": "A02-05",
+      "role": "product",
+      "format": "carton"
+    },
+    "carton-5": {
+      "pixels": [
+        3392,
+        32,
+        640,
+        896
+      ],
+      "title": "TÉ NEGRO",
+      "reference": "A02-06",
+      "role": "product",
+      "format": "carton"
+    },
+    "pouch-0": {
+      "pixels": [
+        32,
+        960,
+        640,
+        864
+      ],
+      "title": "CAFÉ",
+      "reference": "A02-01",
+      "role": "product",
+      "format": "pouch"
+    },
+    "pouch-1": {
+      "pixels": [
+        704,
+        960,
+        640,
+        864
+      ],
+      "title": "TÉ VERDE",
+      "reference": "A02-02",
+      "role": "product",
+      "format": "pouch"
+    },
+    "pouch-2": {
+      "pixels": [
+        1376,
+        960,
+        640,
+        864
+      ],
+      "title": "CACAO",
+      "reference": "A02-03",
+      "role": "product",
+      "format": "pouch"
+    },
+    "pouch-3": {
+      "pixels": [
+        2048,
+        960,
+        640,
+        864
+      ],
+      "title": "GRANOLA",
+      "reference": "A02-04",
+      "role": "product",
+      "format": "pouch"
+    },
+    "pouch-4": {
+      "pixels": [
+        2720,
+        960,
+        640,
+        864
+      ],
+      "title": "MIEL",
+      "reference": "A02-05",
+      "role": "product",
+      "format": "pouch"
+    },
+    "pouch-5": {
+      "pixels": [
+        3392,
+        960,
+        640,
+        864
+      ],
+      "title": "TÉ NEGRO",
+      "reference": "A02-06",
+      "role": "product",
+      "format": "pouch"
+    },
+    "bottle-0": {
+      "pixels": [
+        32,
+        1856,
+        640,
+        792
+      ],
+      "title": "CAFÉ",
+      "reference": "A02-01",
+      "role": "product",
+      "format": "bottle"
+    },
+    "bottle-1": {
+      "pixels": [
+        704,
+        1856,
+        640,
+        792
+      ],
+      "title": "TÉ VERDE",
+      "reference": "A02-02",
+      "role": "product",
+      "format": "bottle"
+    },
+    "bottle-2": {
+      "pixels": [
+        1376,
+        1856,
+        640,
+        792
+      ],
+      "title": "CACAO",
+      "reference": "A02-03",
+      "role": "product",
+      "format": "bottle"
+    },
+    "bottle-3": {
+      "pixels": [
+        2048,
+        1856,
+        640,
+        792
+      ],
+      "title": "GRANOLA",
+      "reference": "A02-04",
+      "role": "product",
+      "format": "bottle"
+    },
+    "bottle-4": {
+      "pixels": [
+        2720,
+        1856,
+        640,
+        792
+      ],
+      "title": "MIEL",
+      "reference": "A02-05",
+      "role": "product",
+      "format": "bottle"
+    },
+    "bottle-5": {
+      "pixels": [
+        3392,
+        1856,
+        640,
+        792
+      ],
+      "title": "TÉ NEGRO",
+      "reference": "A02-06",
+      "role": "product",
+      "format": "bottle"
+    },
+    "card-0": {
+      "pixels": [
+        32,
+        2680,
+        640,
+        174
+      ],
+      "title": "CAFÉ",
+      "reference": "A02-01",
+      "role": "rail",
+      "format": "card"
+    },
+    "card-1": {
+      "pixels": [
+        704,
+        2680,
+        640,
+        174
+      ],
+      "title": "TÉ VERDE",
+      "reference": "A02-02",
+      "role": "rail",
+      "format": "card"
+    },
+    "card-2": {
+      "pixels": [
+        1376,
+        2680,
+        640,
+        174
+      ],
+      "title": "CACAO",
+      "reference": "A02-03",
+      "role": "rail",
+      "format": "card"
+    },
+    "card-3": {
+      "pixels": [
+        2048,
+        2680,
+        640,
+        174
+      ],
+      "title": "GRANOLA",
+      "reference": "A02-04",
+      "role": "rail",
+      "format": "card"
+    },
+    "card-4": {
+      "pixels": [
+        2720,
+        2680,
+        640,
+        174
+      ],
+      "title": "MIEL",
+      "reference": "A02-05",
+      "role": "rail",
+      "format": "card"
+    },
+    "card-5": {
+      "pixels": [
+        3392,
+        2680,
+        640,
+        174
+      ],
+      "title": "TÉ NEGRO",
+      "reference": "A02-06",
+      "role": "rail",
+      "format": "card"
+    }
+  }
+}

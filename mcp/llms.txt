@@ -567,15 +567,21 @@ ITIL inventory link
 ES: ITIL está debajo de Percepción, a la derecha de Pixeria: abre en otra pestaña https://www.xpaceos.com/inventario/, con catálogo de muebles detallados, modelos 3D y editor. Yokup conserva el inventario maestro ITIL. Inventario mantiene sus acciones locales de añadir/eliminar.
 EN: ITIL sits below Perception, to the right of Pixeria: it opens https://www.xpaceos.com/inventario/ in a new tab, with detailed furniture, 3D models and the editor. Yokup remains the master ITIL inventory. Inventory keeps its local add/remove actions.
 
-## Estantería Best · piloto / Best shelf · pilot
+## Estantería · Good, Better, Best y Todos / Shelf · Good, Better, Best and All
 
-ES: La estantería #2 (native:shelves) estrena el piloto Best del catálogo: baldas y herrajes separados, cantos trabajados, veta de madera con mapas PBR de color, normal y rugosidad, y 45 envases representativos con más detalle. En el visor, el selector Good / Better / Best permite comparar los perfiles; Descargar GLB y Blender sigue el perfil elegido. Good y Better conservan sus modelos anteriores. Los envases son contenido visual; la selección de calidad conserva los IDs y las fichas ITIL, preferencias e historial CLI.
+ES: En Acabado, Todos muestra Good, Better y Best uno al lado del otro como tres modelos interactivos. Arrastrar o acercar una vista sincroniza las cámaras; Frontal, Parte posterior, Lateral y Ver malla se aplican a las tres. Cada perfil conserva sus propias descargas GLB y Blender. En la estantería #2 (native:shelves), Good usa pixel art nítido con píxeles definidos y materiales de tres tonos; Better mantiene el modelado intermedio y Best añade etiquetas de producto y cartelas de balda de alta definición sobre el mueble detallado con acabados PBR. Los 45 envases son contenido visual; se conservan identidad, número, huella 1×2, fichas ITIL, preferencias, distribución e historial CLI.
 
-EN: Shelf #2 (native:shelves) introduces the catalogue Best pilot: separate shelves and hardware, detailed edges, wood grain with PBR colour, normal and roughness maps, and 45 representative containers with more detail. In the viewer, the Good / Better / Best selector compares profiles; GLB and Blender downloads follow the selected profile. Good and Better retain their previous models. Containers are visual content; quality selection preserves IDs, ITIL records, preferences and CLI history.
+EN: In Finish, Todos (All) shows Good, Better and Best side by side as three interactive models. Dragging or zooming one view synchronizes the cameras; Front, Back, Side and Wireframe apply to all three. Each profile retains its own GLB and Blender downloads. On shelf #2 (native:shelves), Good uses crisp pixel art with defined pixels and three-tone materials; Better keeps the intermediate model and Best adds high-definition product labels and shelf cards to the detailed furniture with PBR finishes. The 45 containers are visual content; identity, number, 1×2 footprint, ITIL records, preferences, placement and CLI history are preserved.
 
-Catalogue ID: 2 · inventory ID: native:shelves · footprint: 1×2 · 45 representative visual containers, not stock.
-Viewer: https://www.xpaceos.com/inventario/?asset=2&quality=best
-Assets: https://www.xpaceos.com/inventario/assets/catalog/02/best.glb · https://www.xpaceos.com/inventario/assets/catalog/02/best.blend · https://www.xpaceos.com/inventario/assets/catalog/02/best-preview.png
-Contract: https://www.xpaceos.com/admira-xp/docs/shelf-best.md
+ES tutorial: 1. Abre el catálogo desde ITIL o /inventario y selecciona la estantería #2. 2. En Acabado, elige Todos. 3. Arrastra cualquiera de las tres vistas o acerca la cámara: las otras siguen la misma orientación y zoom. 4. Usa Frontal, Parte posterior, Lateral o Ver malla en Avanzados para comparar los tres perfiles. 5. Para ver un acabado solo, elige Good, Better o Best; en Todos, descarga GLB o Blender desde la columna del perfil deseado. El enlace ?asset=2&quality=all#mostrador abre directamente esta comparación. La ayuda está en español e inglés; lang=en selecciona inglés en Desglose.
+
+EN tutorial: 1. Open the catalogue from ITIL or /inventory and select shelf #2. 2. In Finish, choose Todos (All). 3. Drag any of the three views or zoom: the others follow the same orientation and zoom. 4. Use Front, Back, Side or Wireframe in Advanced to compare all three profiles. 5. To inspect one finish, choose Good, Better or Best; in All, download GLB or Blender from the desired profile column. The ?asset=2&quality=all#mostrador link opens this comparison directly. Help is available in Spanish and English; lang=en selects English in Breakdown.
+
+Viewer: https://www.xpaceos.com/inventario/?asset=2&quality=all#mostrador
+Individual profiles: quality=good|better|best. Comparison: quality=all. Breakdown language: lang=en.
+Contract: https://www.xpaceos.com/admira-xp/docs/inventory-finishes.md
+Shelf model: https://www.xpaceos.com/admira-xp/docs/shelf-best.md
+Best labels: RGBA 4096×3072 atlas; 18 container designs + 6 shelf-card designs; 45 visual products + 45 visual cards. revision shelves-labels-20261002-2. Original illustrative names and A02-01…06 references; not stock or measured quantities.
 Tutorial ES/EN: https://www.xpaceos.com/help/#shelf-best
-Status: implemented. Blender reimport, profile downloads and WebGL comparison validated. No new remote MCP tool or CLI command. Catalogue viewer selection does not alter /modo best or /distribute in the twin.
+Preserved: Good/Better model files, permanent identity and number, instance visibility/placement, /marca (/brand), shell and CLI history. Yokup remains the ITIL master; visual product counts are not stock.
+Scope: catalogue display and shared links; no new remote MCP tool or CLI command.

@@ -1,27 +1,36 @@
-import {preview} from './viewer.mjs?v=shelves-best-1';
-import {mountCounterStage} from './counter-stage.mjs?v=shelves-best-1';
-import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=shelves-best-1';
+import {preview} from './viewer.mjs?v=shelf-finishes-2';
+import {mountCounterStage} from './counter-stage.mjs?v=shelf-finishes-2';
+import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=shelf-finishes-2';
+import {stageCamera} from './stage-camera.mjs?v=shelf-finishes-2';
+import {pixelPreview} from './finish-rendering.mjs?v=shelf-finishes-2';
 import {referenceLabel,referencePhotoURL} from './starbucks/reference-model.mjs?v=photo-references-1';
 import {loadComponents,componentsFor,componentLabel,breakdownURL} from './breakdown-model.mjs?v=components-20261002-1';
-let disposePilot,stageQueue=Promise.resolve();
+let disposePilot,stageQueue=Promise.resolve(),inspectionRevision=0,activeCamera,activeAssetNumber;
 function inspectAsset(asset){
- const qualitySelect=document.querySelector('#model-quality'),quality=qualitySelect.value;
+ const qualitySelect=document.querySelector('#model-quality'),quality=qualitySelect.value,revision=++inspectionRevision;
  const current=new URL(location.href);current.searchParams.set('asset',asset.number);current.searchParams.set('quality',quality);history.replaceState(null,'',current);
- document.querySelector('#quality-note').textContent=asset.number===2&&quality==='best'?'Best · madera con veta y relieve, herrajes, envases y etiquetas detallados.':'Perfil '+quality.toUpperCase()+' · modelo 3D completo';
+ document.querySelector('#quality-note').textContent=quality==='all'?'Todos · Good, Better y Best · gira o amplía una vista para comparar las tres.':quality==='good'?'Good · pixel art nítido · píxeles sin suavizado.':asset.number===2&&quality==='best'?'Best · etiquetas de alta definición, madera con veta y herrajes detallados.':'Perfil '+quality.toUpperCase()+' · modelo 3D completo';
  const select=document.querySelector('#model-select');select.value=String(asset.number);
- stageQueue=stageQueue.then(async()=>{select.disabled=true;qualitySelect.disabled=true;disposePilot?.();disposePilot=null;const oldCanvas=document.querySelector('#mostrador canvas');oldCanvas.replaceWith(oldCanvas.cloneNode(false));
+ stageQueue=stageQueue.catch(()=>{}).then(async()=>{if(revision!==inspectionRevision)return;select.disabled=true;qualitySelect.disabled=true;disposePilot?.();disposePilot=null;
+  if(activeAssetNumber!==asset.number){activeAssetNumber=asset.number;activeCamera=stageCamera(asset.number===50?1.12:1);}const host=document.querySelector('#model-stages'),compare=quality==='all',profiles=compare?['good','better','best']:[quality],disposers=[],camera=activeCamera;host.classList.toggle('compare-stages',compare);host.replaceChildren();
   document.querySelector('[data-status]').textContent='Cargando '+asset.name+'…';
-  document.querySelector('[data-blend]').href=furnitureURL(asset.number,quality,'blend');
-  document.querySelector('[data-glb]').href=furnitureURL(asset.number,quality);
-  disposePilot=await mountCounterStage(document.querySelector('#mostrador'),asset,{controlsHost:document,quality});select.disabled=false;qualitySelect.disabled=false;
+  const singleDownloads=document.querySelector('#single-downloads');singleDownloads.hidden=compare;if(!compare){document.querySelector('[data-blend]').href=furnitureURL(asset.number,quality,'blend');document.querySelector('[data-glb]').href=furnitureURL(asset.number,quality);}
+  const profileDownloads=document.querySelector('#profile-downloads');profileDownloads.hidden=!compare;profileDownloads.replaceChildren();
+  const stages=profiles.map((tier,i)=>{const panel=document.createElement('section');panel.className='model-stage';panel.dataset.quality=tier;const title=document.createElement('h3');title.textContent=tier[0].toUpperCase()+tier.slice(1);title.hidden=!compare;const canvas=document.createElement('canvas');canvas.tabIndex=0;canvas.setAttribute('aria-label',asset.name+' '+title.textContent+': arrastra o usa las flechas para girar');const status=document.createElement('p');status.dataset.status='';status.setAttribute('role','status');panel.append(title,canvas,status);host.append(panel);
+   if(compare){const downloads=document.createElement('div'),label=document.createElement('b');label.textContent=title.textContent;downloads.append(label);for(const extension of ['glb','blend']){const link=document.createElement('a');link.href=furnitureURL(asset.number,tier,extension);link.download='';link.textContent=extension==='glb'?'GLB ↓':'Blender ↓';link.setAttribute('aria-label','Descargar '+title.textContent+' '+(extension==='glb'?'GLB':'Blender'));downloads.append(link);}profileDownloads.append(downloads);}
+   return {panel,tier,i};
+  });
+  try{for(const {panel,tier,i} of stages){disposers.push(await mountCounterStage(panel,asset,{controlsHost:i===0?document:document.createDocumentFragment(),quality:tier,cameraState:camera}));if(revision!==inspectionRevision)break;}disposePilot=()=>disposers.forEach(dispose=>dispose?.());document.querySelector('#mostrador > [data-status]').textContent=compare?'Good · Better · Best · vistas sincronizadas':asset.number+'. '+asset.name+' · '+quality.toUpperCase();}finally{select.disabled=false;qualitySelect.disabled=false;}
  });return stageQueue;
 }
-window.addEventListener('pagehide',()=>disposePilot?.());
+window.addEventListener('pagehide',()=>{disposePilot?.();for(const dispose of pixelPreviews.values())dispose();pixelPreviews.clear();});
 import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=catalog-43-objects-1';
 const $=s=>document.querySelector(s),store=window.XpaceInventory,tiers=['good','better','best'];
 let data,stock,registry,assets=[],category='Todas',selected=null,angle=0,space='xtanco',renderRevision=0;
 const realPhotos=new Map();
 const cache=new Map();
+const pixelPreviews=new Map();
+function cleanPixelPreviews(){for(const [stage,dispose]of pixelPreviews)if(!stage.isConnected){dispose();pixelPreviews.delete(stage);}}
 let componentsPromise,breakdownAsset,breakdownRevision=0;
 function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 function photoFor(asset){
@@ -35,7 +44,7 @@ function layout(){return store.retained(space,store.layout(space)||data.layouts[
 function imageFor(asset,tier,rotation=0){const key=asset.id+':'+tier+':'+rotation;if(!cache.has(key))cache.set(key,preview(asset,tier,rotation).catch(e=>{cache.delete(key);throw e;}));return cache.get(key);}
 function versions(asset,rotation=0){const fragment=document.createDocumentFragment();for(const [i,tier]of tiers.entries()){
  const figure=el('figure',undefined,'version '+tier),stage=el('div',undefined,'stage'),status=el('span','Preparando vista…','loading'),caption=el('figcaption');caption.append(el('b',['Good','Better','Best'][i]),el('span',[8,16,32][i]+' bits'));stage.append(status);figure.append(stage,caption);fragment.append(figure);
- imageFor(asset,tier,rotation).then(src=>{const img=el('img');img.alt=asset.name+' · '+tier+' · Blender 3D';img.onload=()=>status.remove();img.onerror=()=>{status.textContent='Imagen no disponible';img.remove();};img.src=src;stage.append(img);}).catch(()=>{status.textContent='Vista no disponible';status.classList.add('error');});
+ imageFor(asset,tier,rotation).then(src=>{if(!stage.isConnected)return;const alt=asset.name+' · '+tier+' · Blender 3D';if(tier==='good'){pixelPreviews.set(stage,pixelPreview(stage,src,alt,()=>status.remove(),()=>{status.textContent='Imagen no disponible';}));return;}const img=el('img');img.alt=alt;img.onload=()=>status.remove();img.onerror=()=>{status.textContent='Imagen no disponible';img.remove();};img.src=src;stage.append(img);}).catch(()=>{status.textContent='Vista no disponible';status.classList.add('error');});
  }return fragment;}
 const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){observer.unobserve(e.target);const a=assets.find(a=>a.id===e.target.dataset.id);if(a)e.target.replaceChildren(versions(a));}},{rootMargin:'180px'});
 function render(){
@@ -48,15 +57,15 @@ function render(){
   const foot=el('div',undefined,'card-foot'),instances=instancesFor(a,list),visible=instances.filter(i=>store.visible(space,i.id)).length;
   foot.append(el('span',instances.length?visible+'/'+instances.length+' visibles · '+a.fp.join(' × ')+' tiles':a.fp.join(' × ')+' tiles · sin colocar'));
   const actions=el('div',undefined,'card-actions'),button=el('button','Ver pieza ↗'),breakdown=el('button','Desglose');button.onclick=()=>openDetail(a);button.setAttribute('aria-label','Ver pieza '+a.name);breakdown.onclick=()=>openBreakdown(a);breakdown.setAttribute('aria-label','Desglose '+a.name);actions.append(button,breakdown);foot.append(actions);card.append(head,previews,foot);fragment.append(card);observer.observe(previews);
- });$('#catalog').replaceChildren(fragment);$('#empty').hidden=shown.length>0;
+ });$('#catalog').replaceChildren(fragment);cleanPixelPreviews();$('#empty').hidden=shown.length>0;
 }
 function showInstances(){
  if(!selected)return;const instances=instancesFor(selected,layout());$('#instance-note').textContent=instances.length?(space==='xtanco'?'La visibilidad se aplica a Good, Better y al Best editable del inventario.':'La visibilidad se aplica al gemelo Good. Better y Best operativos están conectados al Xtanco.'):'Esta pieza aún no está colocada. Puedes añadirla desde el editor de mobiliario o el importador Pixeria de la Xperience.';
  $('#footprint').textContent='Huella '+selected.fp.join(' × ')+' tiles'+' · modelo Blender interpretado';
  $('#instances').replaceChildren(...instances.map(item=>{const row=el('div',undefined,'instance'),name=el('div',item.label||selected.name);name.append(el('small',item.id+' · posición '+item.col+', '+item.row));const visible=store.visible(space,item.id),button=el('button',visible?'Visible ●':'Oculto ○');button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',(visible?'Ocultar ':'Mostrar ')+(item.label||item.id));button.onclick=()=>{try{store.setVisible(space,item.id,!store.visible(space,item.id));$('#save-error').textContent='';}catch{$('#save-error').textContent='No se pudo guardar. Comprueba que el almacenamiento del navegador esté disponible.';}};row.append(name,button);return row;}));
 }
-function openDetail(a){selected=a;angle=0;$('#detail-name').textContent=a.number+'. '+a.name;$('#detail-category').textContent=a.source?'PIXERIA / INTERPRETACIÓN BLENDER 3D':'XPACEOS / MODELO BLENDER 3D';const photo=photoFor(a);$('#detail-real-photo').replaceChildren(...(photo?[photo]:[]));$('#detail-real-photo').hidden=!photo;$('#detail-previews').replaceChildren(versions(a));showInstances();$('#detail').showModal();$('#inspect-detail').onclick=()=>{$('#detail').close();inspectAsset(a);$('#mostrador').scrollIntoView({behavior:'smooth',block:'start'});};}
-$('#close-detail').onclick=()=>$('#detail').close();$('#rotate').onclick=()=>{angle=(angle+Math.PI/4)%(2*Math.PI);$('#detail-previews').replaceChildren(versions(selected,angle));};
+function openDetail(a){selected=a;angle=0;$('#detail-name').textContent=a.number+'. '+a.name;$('#detail-category').textContent=a.source?'PIXERIA / INTERPRETACIÓN BLENDER 3D':'XPACEOS / MODELO BLENDER 3D';const photo=photoFor(a);$('#detail-real-photo').replaceChildren(...(photo?[photo]:[]));$('#detail-real-photo').hidden=!photo;$('#detail-previews').replaceChildren(versions(a));cleanPixelPreviews();showInstances();$('#detail').showModal();$('#inspect-detail').onclick=()=>{$('#detail').close();inspectAsset(a);$('#mostrador').scrollIntoView({behavior:'smooth',block:'start'});};}
+$('#close-detail').onclick=()=>$('#detail').close();$('#rotate').onclick=()=>{angle=(angle+Math.PI/4)%(2*Math.PI);$('#detail-previews').replaceChildren(versions(selected,angle));cleanPixelPreviews();};
 function componentRow(component,lang){
  const row=el('li',undefined,'component-row'),main=el('div',undefined,'component-main'),label=el('div'),quantity=el('span',component.quantity==null?(lang==='en'?'Unspecified':'Sin determinar'):String(component.quantity),'component-quantity');
  label.append(el('strong',componentLabel(component.label,lang)));if(component.note)label.append(el('p',componentLabel(component.note,lang),'component-note'));
@@ -85,7 +94,7 @@ store.subscribe(s=>{if(s===space){render();showInstances();}});window.addEventLi
 function merge(items){assets=numberedCatalog(data.native,[...stock.items,...items],registry);render();}
 $('#refresh').onclick=async()=>{const button=$('#refresh');button.disabled=true;$('#sync').textContent='Consultando Pixeria…';try{const r=await fetch(STOCK_URL,{signal:AbortSignal.timeout(20000),cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();if(!Array.isArray(d.items))throw Error();merge(d.items);$('#sync').textContent=assets.length+' piezas numeradas · metadatos actualizados desde Pixeria'+(d.total>d.items.length?' · el servicio ha limitado la respuesta':'')+'.';}catch{$('#sync').textContent='Pixeria no responde. Conservamos el catálogo cargado; puedes volver a intentarlo.';}finally{button.disabled=false;}};
 try{
- const [catalog,photos]=await Promise.all([loadCatalog(),fetch('./starbucks/manifest.json').then(r=>r.ok?r.json():null).catch(()=>null)]);({data,stock,registry}=catalog);for(const unit of photos?.units||[]){if(unit.asset_number>=44&&unit.asset_number<=50&&unit.photo&&unit.reference_id&&!realPhotos.has(unit.asset_number)){try{referencePhotoURL(unit,new URL('./starbucks/',location.href));realPhotos.set(unit.asset_number,unit);}catch{}}}merge(stock.items);const selector=$('#model-select');selector.replaceChildren(...assets.map(a=>{const o=el('option',a.number+'. '+a.name);o.value=a.number;return o;}));selector.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));const params=new URLSearchParams(location.search);const qualitySelect=$('#model-quality');qualitySelect.value=tiers.includes(params.get('quality'))?params.get('quality'):'best';qualitySelect.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));inspectAsset(assets.find(a=>a.number===Number(params.get('asset')))||assets[0]);$('#sync').textContent=assets.length+' piezas con identificadores permanentes · catálogo Pixeria del '+new Date(stock.fetchedAt).toLocaleDateString('es-ES')+'.';
+ const [catalog,photos]=await Promise.all([loadCatalog(),fetch('./starbucks/manifest.json').then(r=>r.ok?r.json():null).catch(()=>null)]);({data,stock,registry}=catalog);for(const unit of photos?.units||[]){if(unit.asset_number>=44&&unit.asset_number<=50&&unit.photo&&unit.reference_id&&!realPhotos.has(unit.asset_number)){try{referencePhotoURL(unit,new URL('./starbucks/',location.href));realPhotos.set(unit.asset_number,unit);}catch{}}}merge(stock.items);const selector=$('#model-select');selector.replaceChildren(...assets.map(a=>{const o=el('option',a.number+'. '+a.name);o.value=a.number;return o;}));selector.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));const params=new URLSearchParams(location.search);const qualitySelect=$('#model-quality');qualitySelect.value=[...tiers,'all'].includes(params.get('quality'))?params.get('quality'):'best';qualitySelect.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));inspectAsset(assets.find(a=>a.number===Number(params.get('asset')))||assets[0]);$('#sync').textContent=assets.length+' piezas con identificadores permanentes · catálogo Pixeria del '+new Date(stock.fetchedAt).toLocaleDateString('es-ES')+'.';
  if(params.get('view')==='breakdown')openBreakdown(assets.find(a=>a.number===Number(params.get('asset')))||assets[0]);
  imageFor(data.native.find(x=>x.type==='counter'),'best').then(src=>{$('#hero-img').src=src;}).catch(()=>{$('#hero-img').alt='Mostrador: vista no disponible';});
 }catch(e){$('#catalog').textContent=e.message;$('#sync').textContent='Recarga la página para volver a intentarlo.';}
