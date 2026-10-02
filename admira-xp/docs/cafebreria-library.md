@@ -22,3 +22,11 @@ Dependencies: shared Three r160, GLTFLoader, life-renderer/life-scene, floating-
 ES: No se crea una ficha patrimonial física en Yokup ni se declara una nueva herramienta MCP. La escena recuperada es la experiencia original; el gemelo/editor general conserva su ruta propia.
 
 EN: No physical Yokup lifecycle record or new MCP tool is created. The recovered scene restores the original experience; the general twin/editor retains its own route.
+
+## Verificación / Verification · 2026-10-03
+
+ES: 113 pruebas de inventario, importación/deshacer, cámara, editor, selección y ventanas correctas; cuatro pruebas de ayuda del servidor MCP real correctas. Good, Better y Best reabiertos en Blender y reimportados desde GLB: 32 mallas por perfil. La escena original y los seis archivos GLB/Blender públicos coinciden con sus hashes. Cafebrería, catálogo y ayudas bilingües responden en ambos dominios; `/help` y la herramienta MCP `help` recuperan la sección por Cafebrería, bookcase y 51. Selección de cápsulas, Parar y cierre comprobados en la web publicada. Importar la pieza en Xtanco y deshacer comprobados en navegador local.
+
+EN: 113 relevant inventory, import/undo, camera, editor, selection and window tests passed; four actual MCP help tests passed. All three Blender files were reopened and their GLBs reimported: 32 meshes per profile. Original scene and all six published GLB/Blender downloads match their hashes. Public café, catalogue and bilingual help were checked on both domains; MCP `/help` and `help` expose the new section. Capsule selection, stop and close were checked publicly; importing into Xtanco and undoing the addition were checked in a local browser.
+
+ES: Cinco fallos heredados de `mcp/funcionalidades.test.mjs` se reproducen contra el HEAD anterior; pertenecen al contrato general y no fueron introducidos por esta recuperación. EN: Five pre-existing failures in the general functional catalogue tests were reproduced against the preceding HEAD; this recovery does not introduce them.

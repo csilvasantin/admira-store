@@ -3174,8 +3174,23 @@
       "/inventario añadir 51",
       "/inventario deshacer"
     ],
-    "state": "implemented_pending_public_verification",
+    "state": "implemented",
     "physical_stock": false,
-    "new_mcp_tools": false
+    "new_mcp_tools": false,
+    "pending": [],
+    "verification": {
+      "date": "2026-10-03",
+      "local_tests": 113,
+      "mcp_help_tests": 4,
+      "blender_profiles": 3,
+      "editable_meshes": 32,
+      "public_scene": "https://www.admira.store/xpacios/cafebreria/",
+      "public_viewer": "https://www.xpaceos.com/inventario/?asset=51&quality=best#mostrador",
+      "mcp_help": "https://mcp.admira.store/help",
+      "mcp_commit": "9190d81",
+      "geometry_hashes": "original scene and all six GLB/Blender files match library.package.json",
+      "ui": "original café and ITIL capsule selection, close and stop; local target-project import and undo",
+      "baseline_failures": "five pre-existing mcp/funcionalidades.test.mjs failures reproduced against preceding HEAD"
+    }
   }
 }
