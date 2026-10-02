@@ -24,3 +24,5 @@ EN: Cafebrería uses the shared shell: Options on the left, Advanced on the righ
 ## Validation
 
 Common controller tests cover move/rotate/scale/lock/remove/undo, storage errors, obstacles and valid/failed PixerIA imports. Source coverage tests compare every GLB root to the roster and preserve source SHA-256 and catalogue identity 51. Browser checks cover a real chair movement, undo, reload and item selection.
+
+Public access: the XpaceOS inventory entry is public. On Admira.store, /inventario/cafebreria/ inherits the existing login perimeter; the same-origin public inventory opens at /xpacios/cafebreria/?inventory=1. Catalogue navigation uses that public entry without changing authentication rules.
