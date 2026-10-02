@@ -275,6 +275,21 @@
         0.44,
         0.46
       ]
+    },
+    {
+      "id": "native:cafebreriaLibrary",
+      "type": "cafebreriaLibrary",
+      "name": "Librería interactiva de Cafebrería",
+      "category": "Mobiliario",
+      "mount": "wall",
+      "fp": [
+        1.6,
+        0.28
+      ],
+      "wallY": 1.15,
+      "ph": 1.1,
+      "source": "Cafebrería",
+      "package": "/inventario/cafebreria/library.package.json"
     }
   ],
   "layouts": {

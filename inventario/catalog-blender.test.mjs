@@ -6,7 +6,7 @@ import {furnitureURL,inventoryIdFor} from '../admira-xp/scripts/furniture-asset.
 import {createLifeScene} from '../admira-xp/scripts/life-scene.mjs';
 const registry=JSON.parse(fs.readFileSync(new URL('./registry.json',import.meta.url)));
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
-test('all 50 immutable inventory IDs have three usable GLBs and editable sources',()=>{
+test('all 51 immutable inventory IDs have three usable GLBs and editable sources',()=>{
  for(const [id,n] of Object.entries(registry.numbers))for(const tier of ['good','better','best']){
   const b=fs.readFileSync(new URL(furnitureURL(n,tier)));assert.equal(b.toString('ascii',0,4),'glTF');assert.equal(b.length,b.readUInt32LE(8));
   const gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)));
@@ -15,7 +15,7 @@ test('all 50 immutable inventory IDs have three usable GLBs and editable sources
   for(const m of gltf.meshes)for(const p of m.primitives){const a=gltf.accessors[p.attributes.POSITION];assert.ok(a.count>=3);assert.ok([...a.min,...a.max].every(Number.isFinite));}
   assert.ok(fs.statSync(new URL(furnitureURL(n,tier,'blend'))).size>1000);
  }
- assert.throws(()=>furnitureURL(51));assert.throws(()=>furnitureURL(2,'../best'));
+ assert.throws(()=>furnitureURL(52));assert.throws(()=>furnitureURL(2,'../best'));
 });
 test('water rack keeps editable visual bottle identities and self-contained PBR textures',()=>{
  const manifest=JSON.parse(fs.readFileSync(new URL('./starbucks/manifest.json',import.meta.url)));

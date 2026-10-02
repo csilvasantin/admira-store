@@ -1,6 +1,6 @@
-import {preview} from './viewer.mjs?v=shelf-products-1';
-import {mountCounterStage} from './counter-stage.mjs?v=shelf-products-1';
-import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=shelf-products-1';
+import {preview} from './viewer.mjs?v=cafebreria-1';
+import {mountCounterStage} from './counter-stage.mjs?v=cafebreria-1';
+import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=cafebreria-1';
 import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
 import {pixelPreview} from './finish-rendering.mjs?v=shelf-products-1';
 import {referenceLabel,referencePhotoURL} from './starbucks/reference-model.mjs?v=photo-references-1';
@@ -23,7 +23,7 @@ function inspectAsset(asset){
    if(compare){const downloads=document.createElement('div'),label=document.createElement('b');label.textContent=title.textContent;downloads.append(label);for(const extension of ['glb','blend']){const link=document.createElement('a');link.href=furnitureURL(asset.number,tier,extension);link.download='';link.textContent=extension==='glb'?'GLB ↓':'Blender ↓';link.setAttribute('aria-label','Descargar '+title.textContent+' '+(extension==='glb'?'GLB':'Blender'));downloads.append(link);}profileDownloads.append(downloads);}
    return {panel,tier,i};
   });
-  try{for(const {panel,tier,i} of stages){disposers.push(await mountCounterStage(panel,asset,{controlsHost:i===0?document:document.createDocumentFragment(),quality:tier,cameraState:camera,onReady:async api=>{if(asset.number!==2||tier!=='best')return;try{const doc=await loadShelfParts(),parts=mountShelfProductPanel(productsHost,doc,{autoOpen:new URLSearchParams(location.search).get('select')==='products',onSelect:part=>api.setPartSelection(part?.numeric_id)});api.onPartPick=id=>{const part=doc.parts.find(p=>p.numeric_id===id);if(part)parts.select(part);};return()=>parts.dispose();}catch{productsHost.textContent='No se pudo cargar la selección de componentes. Recarga para reintentar.';}}}));if(revision!==inspectionRevision)break;}disposePilot=()=>disposers.forEach(dispose=>dispose?.());document.querySelector('#mostrador > [data-status]').textContent=compare?'Good · Better · Best · vistas sincronizadas':asset.number+'. '+asset.name+' · '+quality.toUpperCase();}finally{select.disabled=false;qualitySelect.disabled=false;}
+  try{for(const {panel,tier,i} of stages){disposers.push(await mountCounterStage(panel,asset,{controlsHost:i===0?document:document.createDocumentFragment(),quality:tier,cameraState:camera,onReady:async api=>{if(asset.number===51&&tier!=='good'){const {mountLibraryStage}=await import('./cafebreria/library-stage.mjs?v=cafebreria-1');return mountLibraryStage(productsHost,api);}if(asset.number!==2||tier!=='best')return;try{const doc=await loadShelfParts(),parts=mountShelfProductPanel(productsHost,doc,{autoOpen:new URLSearchParams(location.search).get('select')==='products',onSelect:part=>api.setPartSelection(part?.numeric_id)});api.onPartPick=id=>{const part=doc.parts.find(p=>p.numeric_id===id);if(part)parts.select(part);};return()=>parts.dispose();}catch{productsHost.textContent='No se pudo cargar la selección de componentes. Recarga para reintentar.';}}}));if(revision!==inspectionRevision)break;}disposePilot=()=>disposers.forEach(dispose=>dispose?.());document.querySelector('#mostrador > [data-status]').textContent=compare?'Good · Better · Best · vistas sincronizadas':asset.number+'. '+asset.name+' · '+quality.toUpperCase();}finally{select.disabled=false;qualitySelect.disabled=false;}
  });return stageQueue;
 }
 window.addEventListener('pagehide',()=>{disposePilot?.();for(const dispose of pixelPreviews.values())dispose();pixelPreviews.clear();});

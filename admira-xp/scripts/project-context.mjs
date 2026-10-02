@@ -24,5 +24,6 @@ export function projectUrl(href,id,currentQuality){
   url.hash='';p.set('project',id);p.set('circuit',adapter.circuit);p.set('autostart',adapter.vertical);
   p.set('quality',['good','better','best','matrix'].includes(quality)?quality:'better');
   if(adapter.loc)p.set('loc',adapter.loc);
+  if(id==='cafebreria')url.pathname='/xpacios/cafebreria/';
   return url.href;
 }

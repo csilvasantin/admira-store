@@ -1,6 +1,6 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
 import {createSurfaceBinding} from '../admira-xp/scripts/surface-materials.mjs?v=surfaces-1';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=shelf-products-1';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=cafebreria-1';
 import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
 import {pixelFinish,pixelLayout,preciseTextureSampling} from './finish-rendering.mjs?v=shelf-products-1';
 import {createPartHighlight,numericPartForHit} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-products-1';
@@ -51,7 +51,7 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
   const setView=(a,e,label)=>{state.update({angle:a,elevation:e,zoom:homeZoom});status.textContent=asset.number+'. '+asset.name+' · '+label+' · '+quality.toUpperCase()+t(' · modelo 3D completo',' · complete 3D model');draw();};
   for(const button of controlsHost.querySelectorAll('button[data-view]'))on(button,'click',()=>{const name=button.dataset.view;setView(...({front:[asset.number===2?Math.PI/2:0,.25,'frontal'],back:[asset.number===2?-Math.PI/2:Math.PI,.25,'parte posterior'],side:[asset.number===2?0:Math.PI/2,.25,'lateral'],home:[Math.PI/4,.38,'perspectiva']}[name]));});
   for(const button of controlsHost.querySelectorAll('button[data-zoom]'))on(button,'click',()=>state.update({zoom:state.get().zoom+(button.dataset.zoom==='in'?.15:-.15)}));
-  const api={binding,draw,onPick:null,onPartPick:null,setPartSelection:id=>{partHighlight.select(id);canvas.dataset.selectedPart=id||'';draw();},view:name=>{const values={home:[Math.PI/4,.38,'perspectiva'],front:[asset.number===2?Math.PI/2:0,.25,'frontal'],top:[0,1.35,'planta']};if(values[name])setView(...values[name]);},zoom:delta=>state.update({zoom:state.get().zoom+delta})};let press=null;
+  const api={root:object,canvas,scene,camera,binding,draw,pick:(x,y,objects)=>{const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),camera);scene.updateMatrixWorld(true);return ray.intersectObjects(objects,true);},frameObject:()=>{state.update({angle:0,elevation:.05,zoom:1.15});draw();return true;},clearClip:()=>{},invalidateShadows:draw,preset:()=>state.update({angle:Math.PI/4,elevation:.38,zoom:1}),onPick:null,onPartPick:null,setPartSelection:id=>{partHighlight.select(id);canvas.dataset.selectedPart=id||'';draw();},view:name=>{const values={home:[Math.PI/4,.38,'perspectiva'],front:[asset.number===2?Math.PI/2:0,.25,'frontal'],top:[0,1.35,'planta']};if(values[name])setView(...values[name]);},zoom:delta=>state.update({zoom:state.get().zoom+delta})};let press=null;
   on(canvas,'pointerdown',e=>{press={x:e.clientX,y:e.clientY};});
   on(canvas,'pointerup',e=>{if(!press||Math.hypot(e.clientX-press.x,e.clientY-press.y)>5)return;const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);scene.updateMatrixWorld(true);const hit=ray.intersectObject(object,true)[0];if(hit){api.onPick?.(binding.keyFor(hit.object,hit.face?.materialIndex||0));api.onPartPick?.(numericPartForHit(hit));}});
   on(canvas,'pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});

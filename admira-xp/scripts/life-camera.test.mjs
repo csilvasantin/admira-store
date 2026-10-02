@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import * as Three from './premium-three.mjs';
-import {mappedCameraFrame} from './life-camera.mjs';
+import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
 import {createLifeSnapshot} from './life-snapshot.mjs';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs';
 import {assetForInstance as inventoryIdFor} from '../../inventario/model.mjs';
@@ -75,7 +75,7 @@ function harness(options={}){
     update(value){this.snapshot=value;},animate(){calls.animate++;},refreshMedia(){calls.media++;},setLighting(){},dispose(){calls.disposed++;}};
   model.scene.add(model.world,model.actors);
   const T={...Three,WebGLRenderer:class{constructor(){this.shadowMap={};}setClearColor(){}setPixelRatio(){}setSize(){}render(scene,camera){calls.camera=camera;}dispose(){}forceContextLoss(){}}};
-  const context=vm.createContext({T,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,numericPartForHit,createPartHighlight,inventoryIdFor,performance:{now:()=>0}});
+  const context=vm.createContext({T,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,fitBoxFrame,createLibraryRuntime:()=>({reconcile(){},select:()=>false,dispose(){}}),numericPartForHit,createPartHighlight,inventoryIdFor,performance:{now:()=>0}});
   vm.runInContext(rendererSource,context);
   const viewer=context.createLifeRenderer({canvas,snapshot:model.snapshot,onCameraChange:state=>states.push(state),...options});
   return {viewer,states,calls,model,handlers,emit(type,properties={}){handlers.get(type)({button:0,pointerId:1,clientX:100,clientY:100,preventDefault(){},...properties});}};
@@ -127,4 +127,10 @@ test('Best raycast selects the exact numeric shelf part and preserves its highli
   h.viewer.preset('detail');root.position.x+=2;h.viewer.update({...h.model.snapshot,layout:[{...item,col:6}]});h.viewer.render(200);assert.equal(highlights()[0],highlighted);near(highlighted.matrix.elements[12],6.5);
   h.viewer.setEditor({});assert.equal(highlights().length,0);h.viewer.setPartMode(true);h.viewer.selectPart(item.id,23);assert.equal(highlights().length,0);
   h.viewer.setEditor(null);h.viewer.setPartMode(true);h.viewer.selectPart(item.id,23);assert.equal(highlights().length,1);h.viewer.setPartMode(false);assert.equal(highlights().length,0);h.viewer.dispose();geometry.dispose();mesh.material.dispose();
+});
+
+test('stock camera can frame a bookcase frontally, clip foreground and restore the original room view',()=>{
+ const h=harness({stockCamera:true}),shelf=new Three.Mesh(new Three.BoxGeometry(1.6,1.1,.28),new Three.MeshBasicMaterial());shelf.position.set(12,1.7,.25);h.model.world.add(shelf);
+ assert.equal(h.viewer.frameObject(shelf,{angle:Math.PI/2,elevation:.04,margin:2.4,clip:true}),true);assert.equal(h.viewer.clipping,true);near(h.viewer.cameraState.angle,Math.PI/2);assert.ok(h.viewer.cameraState.zoom>3.2);
+ for(let i=0;i<100;i++)h.viewer.render(i);assert.ok(h.calls.camera.near>.1);h.viewer.clearClip();assert.equal(h.viewer.clipping,false);h.viewer.preset('home');h.viewer.render(100);assert.equal(h.calls.camera.near,.1);h.viewer.dispose();
 });

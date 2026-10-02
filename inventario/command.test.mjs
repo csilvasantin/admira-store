@@ -16,8 +16,8 @@ function harness(){
  const options={store:root.XpaceInventory,space:'xtanco',getLayout:()=>layout,applyLayout:next=>{layout=next;},load:async()=>({assets})};
  return {options,values,localStorage,exec:raw=>executeInventoryCommand(raw,options),get layout(){return layout;},fail(){fail=true;}};
 }
-test('50 permanent numbers survive source reorder and category/search filtering',()=>{
- assert.equal(assets.length,50);assert.deepEqual(assets.map(a=>a.number),Array.from({length:50},(_,i)=>i+1));
+test('51 permanent numbers survive source reorder and category/search filtering',()=>{
+ assert.equal(assets.length,51);assert.deepEqual(assets.map(a=>a.number),Array.from({length:51},(_,i)=>i+1));
  assert.equal(assets[0].id,'native:counter');assert.equal(assets[0].name,'Mostrador');
  const reordered=numberedCatalog([...data.native].reverse(),[...stock.items].reverse(),registry);
  assert.deepEqual(reordered,assets);assert.equal(assets.filter(a=>a.type==='shelves')[0].number,2);
@@ -28,9 +28,9 @@ test('inventory grammar reserves invalid destructive commands locally without in
  for(const s of ['eliminar 0','eliminar -1','eliminar 1.2','eliminar 1 todos','/inventario eliminar 99999999999999999'])assert.equal(parseInventoryCommand(s).action,'help');
  for(const s of ['/inventariox','hola','/mobiliario'])assert.equal(parseInventoryCommand(s),null);
 });
-test('CLI lists all 50 models with counts, including unplaced Pixeria furniture',async()=>{
+test('CLI lists all 51 models with counts, including unplaced Pixeria furniture',async()=>{
  const h=harness(),answer=await h.exec('/inventario');assert.equal(answer.ok,true);
- assert.equal(answer.message.split('\n').filter(line=>/^\d+\./.test(line)).length,50);
+ assert.equal(answer.message.split('\n').filter(line=>/^\d+\./.test(line)).length,51);
  assert.match(answer.message,/1\. Mostrador · 1 en el espacio/);assert.match(answer.message,/43\./);
 });
 test('remove 1 affects only the current counter, survives reload/factory reset and leaves catalog numbering intact',async()=>{
@@ -118,4 +118,11 @@ test('cross-tab ledger merges additions, restorations and unrelated local moves'
  assert.equal(first.length,2);assert.equal(first[0].col,9);
  first[1].col=7;const same=h.options.store.applyDelta(first,{removed:{},added:{new:{...added,col:2}}},{removed:{},added:{new:{...added,col:2}}});assert.equal(same[1].col,7);
  const restored=h.options.store.applyDelta([],{removed:{new:{...added,col:2}}},{removed:{},added:{new:{...added,col:5}}});assert.equal(restored[0].col,5);
+});
+
+test('importing the Cafebrería library retains the stable type and wall placement and is reversible',async()=>{
+ const h=harness();h.options.getRoom=()=>({cols:14,rows:8});
+ const answer=await h.exec('/inventario añadir 51');assert.equal(answer.ok,true,answer.message);
+ const instance=h.layout.find(i=>i.type==='cafebreriaLibrary');assert.ok(instance);assert.equal(instance.mount,'wall');assert.equal(instance.wallY,1.15);assert.equal(instance.row,0);assert.deepEqual(instance.fp,[1.6,.28]);
+ const next=await h.exec('/inventario deshacer');assert.equal(next.ok,true);assert.ok(!h.layout.some(i=>i.type==='cafebreriaLibrary'));
 });

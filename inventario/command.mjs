@@ -50,7 +50,7 @@ export async function executeInventoryCommand(raw,{store,space,getLayout,applyLa
     }else{
      if(current.length>=300)return result(false,'Este Xpacio ha alcanzado el límite de 300 piezas. Retira alguna antes de añadir.');
      const retired=instancesFor(asset,Object.values(next.removed)).find(i=>!current.some(x=>x.id===i.id));
-     const item=retired?structuredClone(retired):{id:makeId(),type:asset.type,label:asset.name,fp:[...asset.fp],sx:1,sy:1,rot:0,...(asset.img?{custom:true,img:asset.img,ph:asset.ph}:{}),...(['tft','aroma'].includes(asset.type)?{wallY:2.2,ph:asset.type==='tft'?1.1:.75}:{})};
+     const item=retired?structuredClone(retired):{id:makeId(),type:asset.type,label:asset.name,fp:[...asset.fp],sx:1,sy:1,rot:0,...(asset.type==='cafebreriaLibrary'?{mount:'wall',wallY:1.15,ph:1.1}:{}),...(asset.img?{custom:true,img:asset.img,ph:asset.ph}:{}),...(['tft','aroma'].includes(asset.type)?{wallY:2.2,ph:asset.type==='tft'?1.1:.75}:{})};
      if(current.some(i=>i.id===item.id))return result(false,'No se pudo crear un identificador único. Reintenta.');
      const placement=findPlacement(item,current,getRoom()||{},assets,retired);
      if(!placement)return result(false,'No hay un hueco libre adecuado en este Xpacio. Retira o mueve otra pieza y vuelve a intentarlo.');

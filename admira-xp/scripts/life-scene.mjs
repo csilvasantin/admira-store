@@ -213,6 +213,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     root.userData={layoutId:item.id,item,type:item.type,label:item.label,selectable:true};
     root.scale.set((item.flipX?-1:1)*item.sx,item.sy,item.sx);root.rotation.y=-item.rot*Math.PI/2;
     const [w,d]=item.fp||FOOTPRINTS[item.type]||[1,1];
+    if(item.type==='cafebreriaLibrary')root.position.y=item.wallY??1.15;
     switch(item.type){
       case 'counter':{
         cabinet(root,w,d,.95);terminal(root,w*.5,1.02,d*.29,.56,.34);

@@ -1,0 +1,87 @@
+{
+  "schema": "xpaceos.furniture-package/1",
+  "id": "native:cafebreriaLibrary",
+  "number": 51,
+  "revision": "cafebreria-library-20261002-1",
+  "name": {
+    "es": "Librería interactiva de Cafebrería",
+    "en": "Interactive Cafebrería bookcase"
+  },
+  "classification": "reusable_visual_template",
+  "quantity_scope": "one_visual_template_not_physical_stock",
+  "units": "m",
+  "dimensions": {
+    "width": 1.6,
+    "depth": 0.28,
+    "height": 1.1
+  },
+  "mount": "wall",
+  "wallY": 1.15,
+  "pivot": "footprint_corner",
+  "profiles": {
+    "good": {
+      "glb": {
+        "url": "/inventario/assets/catalog/51/good.glb",
+        "sha256": "3bf00c6bf5445a39fef87ba47a9f161f446ac112c1c6f29a9b9dc20112911126"
+      },
+      "blend": {
+        "url": "/inventario/assets/catalog/51/good.blend",
+        "sha256": "3cd0a6e7950befa117cb11b91e73b9ab4804f9fec53fd978e9e7ef43054446e2"
+      }
+    },
+    "better": {
+      "glb": {
+        "url": "/inventario/assets/catalog/51/better.glb",
+        "sha256": "45e8ce09d807ab97aa5913a637a6a0fa38d283ed7e1f5f7e626c900985483263"
+      },
+      "blend": {
+        "url": "/inventario/assets/catalog/51/better.blend",
+        "sha256": "a6ea3ecb7b6afea6a511919724bceffed1797bc813fea13d86d180bd6cb9c27a"
+      }
+    },
+    "best": {
+      "glb": {
+        "url": "/inventario/assets/catalog/51/best.glb",
+        "sha256": "d512c630e03f3323745f9ea185a4b21a31d62af49936e55f89052ea54a8fbf6f"
+      },
+      "blend": {
+        "url": "/inventario/assets/catalog/51/best.blend",
+        "sha256": "a120fb60a02d41e19533350f25b1ce45edccce16fbb22bcc922b0b32a07600ac"
+      }
+    }
+  },
+  "behavior": {
+    "id": "cafebreria-library/v1",
+    "module": "/inventario/cafebreria/library-runtime.mjs",
+    "contents": "/inventario/cafebreria/capsulas.mjs",
+    "metadata": "/inventario/cafebreria/libros/estanteria-libros.json",
+    "liveSource": "https://stock.admira.store/stock/index.json",
+    "fallback": "/inventario/cafebreria/capsules.seed.json",
+    "physicalPublishing": false,
+    "associatedScreens": [
+      "Original café pizarra-3",
+      "Integrated retro TV when imported"
+    ]
+  },
+  "import": {
+    "command": "/inventario añadir 51",
+    "supported": "XpaceOS Better and Best; the GLB alone preserves editable geometry, not interactive code"
+  },
+  "source": {
+    "stockSceneId": "1790375438696-1ladz7",
+    "sceneSha256": "d8e9d1422ecdec63ddde0ed66c3c4fd9fc588319639d5e4258b88269a05be5d9",
+    "preservedDemo": "https://smith-cafebreria-emision-474.pixeria.pages.dev/xpacios/cafebreria/demo/?v=4e5d47c&ver=estanteria-libros&tier=better",
+    "confirmedByUser": true,
+    "builder": "admira-xp/tools/xpacios-blender/build_cafebreria_library.py"
+  },
+  "manufacturer": "",
+  "model": "",
+  "serial": "",
+  "warranty": "",
+  "bounds": {
+    "width": 1.6,
+    "depth": 0.28,
+    "height": 1.136,
+    "note": "1.10 m cabinet plus brass trim; nominal design dimensions, not measured stock"
+  }
+}

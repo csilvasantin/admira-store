@@ -1187,5 +1187,24 @@
       "reopening": "real tool opener when available; UI-only snapshot fallback for connected DOM",
       "xpl_fallback": "restore UI visibility only; no rule activation or setOn call"
     }
+  },
+  "cafebreria_library": {
+    "revision": "cafebreria-library-20261002-1",
+    "scope": "confirmed_original_demo_and_reusable_visual_template",
+    "es": "Cafebrería recuperada en /xpacios/cafebreria/ con la escena original confirmada, nogal, verde café y crema. La librería interactiva es la pieza 51 del catálogo ITIL: 1,60 × 0,28 × 1,10 m nominales, dos laterales, cuatro tableros, trasera, listón de latón, libros, vinilos y tele retro. Best/Better permiten seleccionar libros y contenidos; el libro seleccionado aparece en la pizarra original y en la tele integrada cuando se importa. Sus fichas tienen asa y X. En otro Xpacio ejecuta /inventario añadir 51; /inventario deshacer revierte el alta. Se conserva el ID native:cafebreriaLibrary y el montaje de pared a 1,15 m. Good ofrece pixel art sin suavizado. Descarga GLB y Blender desde el catálogo; el GLB conserva la geometría y XpaceOS añade las interacciones descritas en library.package.json. Fuera de XpaceOS hay que integrar ese comportamiento. Plantilla visual reutilizable, no alta patrimonial ni existencias físicas. Datos desconocidos de fabricante, serie y garantía permanecen vacíos. Fuente viva Stock con respaldo local y cargas acotadas. La tele usa un reproductor virtual; no publica en equipos físicos. /marca, Experto e historial CLI conservan sus funciones.",
+    "en": "Cafebrería is recovered at /xpacios/cafebreria/ with the confirmed original scene, walnut, café green and cream. Its interactive bookcase is ITIL catalogue piece 51: nominal 1.60 × 0.28 × 1.10 m, two sides, four horizontal boards, back, brass trim, books, records and retro TV. Better/Best support book and content selection; the selected book appears on the original board and on the integrated TV after import. Content windows have handles and X controls. In another XpaceOS project run /inventario añadir 51; /inventario deshacer reverses the addition. Identity native:cafebreriaLibrary and wall mounting at 1.15 m are retained. Good renders crisp pixel art. Download GLB and Blender from the catalogue; GLB retains geometry and XpaceOS adds the interactions described by library.package.json. Other engines require behavior integration. This is a reusable visual template, not a physical stock or lifecycle record. Unknown manufacturer, serial and warranty fields remain empty. Live Stock content has a local fallback and bounded loads. The TV uses a virtual player and does not publish to physical devices. /marca, Expert and CLI history retain their behavior.",
+    "inventory_id": "native:cafebreriaLibrary",
+    "number": 51,
+    "scene": "https://www.xpaceos.com/xpacios/cafebreria/",
+    "viewer": "https://www.xpaceos.com/inventario/?asset=51&quality=best#mostrador",
+    "package": "https://www.xpaceos.com/inventario/cafebreria/library.package.json",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/cafebreria-library.md",
+    "commands": [
+      "/inventario añadir 51",
+      "/inventario deshacer"
+    ],
+    "state": "implemented_pending_public_verification",
+    "physical_stock": false,
+    "new_mcp_tools": false
   }
 }

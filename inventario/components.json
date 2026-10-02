@@ -5277,6 +5277,96 @@
           ]
         }
       ]
+    },
+    {
+      "id": "native:cafebreriaLibrary",
+      "number": 51,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "admira-xp/tools/xpacios-blender/build_cafebreria_library.py",
+        "inventario/cafebreria/library.package.json"
+      ],
+      "note": {
+        "es": "Pieza original confirmada. Composición de una plantilla visual, no existencias físicas. Libros y vinilos interactivos se actualizan desde Stock; las seis portadas del GLB son la composición inicial.",
+        "en": "Confirmed original piece. Composition of one visual template, not physical stock. Interactive books and records refresh from Stock; the six GLB covers are the initial composition."
+      },
+      "groups": [
+        {
+          "id": "structure",
+          "label": {
+            "es": "Estructura de nogal",
+            "en": "Walnut structure"
+          },
+          "components": [
+            {
+              "id": "sides",
+              "label": {
+                "es": "Laterales",
+                "en": "Sides"
+              },
+              "quantity": 2
+            },
+            {
+              "id": "boards",
+              "label": {
+                "es": "Tableros horizontales",
+                "en": "Horizontal boards"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "back",
+              "label": {
+                "es": "Trasera",
+                "en": "Back"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "brass",
+              "label": {
+                "es": "Listón de latón",
+                "en": "Brass trim"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "contents",
+          "label": {
+            "es": "Contenidos independientes",
+            "en": "Independent contents"
+          },
+          "components": [
+            {
+              "id": "tv",
+              "label": {
+                "es": "Tele retro",
+                "en": "Retro TV"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "books",
+              "label": {
+                "es": "Libros iniciales del GLB",
+                "en": "Initial GLB books"
+              },
+              "quantity": 6
+            },
+            {
+              "id": "records",
+              "label": {
+                "es": "Vinilos iniciales",
+                "en": "Initial records"
+              },
+              "quantity": 6
+            }
+          ]
+        }
+      ]
     }
   ]
 }
