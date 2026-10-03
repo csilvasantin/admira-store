@@ -643,8 +643,26 @@
     ],
     "authorization": "current D1 status, account expiry, session_version, project permissions each request; guest/partner also requires xpaceos app",
     "pending": "Other venue associations must be explicitly registered by an admin; legacy map/catalog publication and its existing login are not migrated; existing MCP/hardware permissions unchanged",
-    "es": "Opciones → Proyecto y local → Conectar con AdmiraNext usa la identidad central y muestra sólo los proyectos comerciales y locales autorizados. El catálogo y las asociaciones viven en D1 de AdmiraNext; admira.app y XpaceOS son clientes. Sin conexión hay tres demos públicas claramente identificadas. Un proyecto autorizado sin local asociado no abre un gemelo inventado. Si hay varios locales, elige uno antes de abrirlo. Gestión central: https://www.admiranext.com/xpace/manage; permisos: https://www.admiranext.com/usuarios. El acceso de lectura dura 10 minutos en esta pestaña; al caducar o revocarse pide reconectar. Calidad, idioma y distribución siguen siendo locales. No concede escritura MCP ni control de dispositivos físicos.",
-    "en": "Options → Project and venue → Connect with AdmiraNext uses central identity and shows only permitted commercial projects and venues. The registry and associations live in AdmiraNext D1; admira.app and XpaceOS are clients. Without a connection, three clearly identified public demos are available. A permitted project with no associated venue never opens an invented twin. Choose a venue first when several are available. Central management: https://www.admiranext.com/xpace/manage; permissions: https://www.admiranext.com/usuarios. Read access lasts 10 minutes in this tab; expiry or revocation requires reconnection. Quality, language and layout remain local. It grants no MCP writes or physical device control."
+    "es": "Opciones → Proyecto y local → Conectar con AdmiraNext usa la identidad central y muestra sólo los proyectos comerciales y locales autorizados. El catálogo y las asociaciones viven en D1 de AdmiraNext; admira.app y XpaceOS son clientes. Sin conexión hay cuatro proyectos de demostración públicos claramente identificados. Un proyecto autorizado sin local asociado no abre un gemelo inventado. Si hay varios locales, elige uno antes de abrirlo. Gestión central: https://www.admiranext.com/xpace/manage; permisos: https://www.admiranext.com/usuarios. El acceso de lectura dura 10 minutos en esta pestaña; al caducar o revocarse pide reconectar. Calidad, idioma y distribución siguen siendo locales. No concede escritura MCP ni control de dispositivos físicos.",
+    "en": "Options → Project and venue → Connect with AdmiraNext uses central identity and shows only permitted commercial projects and venues. The registry and associations live in AdmiraNext D1; admira.app and XpaceOS are clients. Without a connection, four clearly identified public demo projects are available. A permitted project with no associated venue never opens an invented twin. Choose a venue first when several are available. Central management: https://www.admiranext.com/xpace/manage; permissions: https://www.admiranext.com/usuarios. Read access lasts 10 minutes in this tab; expiry or revocation requires reconnection. Quality, language and layout remain local. It grants no MCP writes or physical device control.",
+    "cafebreria_demo": {
+      "project_id": "cafebreria",
+      "venue_id": "demo-cafebreria",
+      "mode": "public demo only",
+      "destination": "https://www.admira.store/xpacios/cafebreria/",
+      "central_legacy_path": "/admira-xp/",
+      "language": "explicit lang retained; otherwise XpaceOS en / Admira es",
+      "preserves": [
+        "project",
+        "circuit",
+        "venue",
+        "lang",
+        "langlock",
+        "supported quality query"
+      ],
+      "es": "En las demos públicas, Opciones → Proyecto y local → Cafebrería abre https://www.admira.store/xpacios/cafebreria/, la cafetería recuperada con librería interactiva, inventario ITIL y editor 3D. Conserva el idioma; XpaceOS usa inglés si no hay lang explícito. La resolución se limita al local demo-cafebreria del proyecto cafebreria. Los locales de cuenta mantienen su asociación central. El catálogo central todavía publica la URL histórica /admira-xp/ para esta demo; el selector resuelve esa compatibilidad.",
+      "en": "In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. Language is preserved; XpaceOS defaults to English when lang is absent. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility."
+    }
   },
   "starbucksFurniture": {
     "manifest": "https://www.xpaceos.com/inventario/starbucks/manifest.json",

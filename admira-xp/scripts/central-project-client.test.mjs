@@ -8,4 +8,21 @@ test('disconnect revokes the scoped token and clears tab access even offline',as
 test('venue navigation preserves language and quality while excluding previous device/session context',()=>{const href='https://www.admira.store/admira-xp/?lang=es&langlock=1&virtualPlayer=1&twinSession=private&quality=better',p={id:'starbucks',circuit:'alsea_starbucks'},v={id:'alsea-sbux-021',project_id:'starbucks',xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021'};const u=new URL(venueUrl(href,v,p,'matrix'));assert.equal(u.origin,'https://www.admira.store');assert.equal(u.searchParams.get('quality'),'matrix');assert.equal(u.searchParams.get('lang'),'es');assert.equal(u.searchParams.get('venue'),v.id);assert.equal(u.searchParams.has('twinSession'),false);assert.equal(u.searchParams.has('virtualPlayer'),false);});
 test('unrelated or malicious venue cannot navigate; leaving Matrix avoids a different project reopening Starbucks',()=>{const p={id:'estancos',circuit:'estancos'},v={id:'demo',project_id:'estancos',xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco'};assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/',v,p,'matrix')).searchParams.get('quality'),'better');assert.throws(()=>venueUrl('https://www.xpaceos.com/',{...v,project_id:'other'},p));assert.throws(()=>venueUrl('https://www.xpaceos.com/',{...v,xpace_url:'https://evil.example/admira-xp/'},p));});
 
+const cafeProject={id:'cafebreria',circuit:'cafebreria'},cafeVenue={id:'demo-cafebreria',project_id:'cafebreria',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria&project=cafebreria&quality=better'};
+test('public Cafebrería selection opens the recovered café on Admira, preserving language and supported quality',()=>{
+ for(const [href,lang,quality] of [['https://www.xpaceos.com/admira-xp/?twinSession=private','en','best'],['https://www.admira.store/admira-xp/','es','good'],['https://www.xpaceos.com/admira-xp/?lang=es&langlock=1','es','better']]){
+  const u=new URL(venueUrl(href,cafeVenue,cafeProject,quality,{publicDemo:true}));
+  assert.equal(u.origin,'https://www.admira.store');assert.equal(u.pathname,'/xpacios/cafebreria/');assert.equal(u.searchParams.get('lang'),lang);assert.equal(u.searchParams.get('quality'),quality);assert.equal(u.searchParams.get('project'),'cafebreria');assert.equal(u.searchParams.get('venue'),'demo-cafebreria');assert.equal(u.searchParams.has('autostart'),false);assert.equal(u.searchParams.has('twinSession'),false);
+ }
+ assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/?langlock=1',cafeVenue,cafeProject,'matrix',{publicDemo:true})).searchParams.get('quality'),'better');
+});
+test('Cafebrería routing accepts a future canonical demo association without rewriting account venues or other cafeteria projects',()=>{
+ const canonical={...cafeVenue,xpace_url:'https://www.admira.store/xpacios/cafebreria/'};
+ assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/',canonical,cafeProject,'better',{publicDemo:true})).pathname,'/xpacios/cafebreria/');
+ for(const [v,p,options] of [[cafeVenue,cafeProject,{}],[{...cafeVenue,demo:false},cafeProject,{publicDemo:true}],[{...cafeVenue,id:'cafe-private-001'},cafeProject,{publicDemo:true}],[{...cafeVenue,project_id:'altadis'},{id:'altadis',circuit:'altadis_bcn'},{publicDemo:true}]]){
+  assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/',v,p,'better',options)).pathname,'/admira-xp/');
+ }
+ for(const xpace_url of ['https://evil.example/admira-xp/','https://user:password@www.xpaceos.com/admira-xp/','https://www.xpaceos.com/another/'])assert.throws(()=>venueUrl('https://www.xpaceos.com/admira-xp/',{...cafeVenue,xpace_url},cafeProject,'better',{publicDemo:true}),/Invalid venue/);
+});
+
 test('native browser fetch keeps the Window receiver across context, demos and disconnect',async()=>{const original=globalThis.fetch;let calls=0;globalThis.fetch=async function(){assert.equal(this,globalThis,'native Window.fetch rejects a ProjectClient receiver');calls++;return Response.json({projects:[],venues:[]});};try{const c=new ProjectClient();c.accept(access());await c.context();await c.demos();await c.disconnect();assert.equal(calls,3);}finally{globalThis.fetch=original;}});
