@@ -1,7 +1,7 @@
 (async()=>{
  const {projectMatrixFloor}=await import('/admira-xp/scripts/matrix-floor.mjs');
- const nav=await import('/admira-xp/scripts/customer-navigation.mjs');
- const snap=(await import('/admira-xp/scripts/life-snapshot.mjs?v=20261003-people-off')).createLifeSnapshot();
+ const nav=await import('/admira-xp/scripts/customer-navigation.mjs?v=actor-collision-20261004-1');
+ const snap=(await import('/admira-xp/scripts/life-snapshot.mjs?v=actor-collision-20261004-1')).createLifeSnapshot();
  const scene=snap(window.__xtancoVisualState());const cols=scene.cols,rows=scene.rows;
  const boxes=new Map(nav.buildCustomerNavigation(scene,{radius:0}).obstacles.map(o=>[o.id,o]));
  const items=new Map((scene.layout||[]).map(i=>[String(i.id),i]));

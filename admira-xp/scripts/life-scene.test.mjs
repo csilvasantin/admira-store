@@ -70,7 +70,7 @@ test('moving mode rebuilds Better with architecture only and restores the exact 
   assert.equal(model.actors.children.length,1);model.dispose();
 });
 
-test('Pose interpolation follows snapshots without advancing source positions or counters',()=>{
+test('interior staff follow continuous paths without advancing source positions or counters',()=>{
   const raw=structuredClone(input),model=createLifeScene(raw,{canvasFactory}),actor=model.actors.children[0];
   model.animate(1000);
   const moved={...raw,actors:[{...raw.actors[0],col:2.6,row:3.4,heading:.8,walking:true}]};
@@ -78,8 +78,13 @@ test('Pose interpolation follows snapshots without advancing source positions or
   assert.equal(model.actors.children[0],actor);assert.ok(actor.position.x>2&&actor.position.x<2.6);
   assert.ok(actor.rotation.y>0&&actor.rotation.y<.8);assert.notEqual(actor.userData.legs[0].rotation.x,0);
   assert.equal(model.snapshot.actors[0].col,2.6);assert.equal(model.snapshot.entries,17);
-  model.animate(1100);assert.deepEqual(actor.position.toArray(),[2.6,0,3.4]);assert.equal(JSON.stringify(moved),source);
-  model.update({...moved,actors:[{...moved.actors[0],col:9,row:7}]});assert.deepEqual(actor.position.toArray(),[9,0,7]);
+  for(let time=1066;time<=3000;time+=16)model.animate(time);
+  assert.ok(Math.hypot(actor.position.x-2.6,actor.position.z-3.4)<.00001);assert.equal(JSON.stringify(moved),source);
+  const prior=actor.position.clone();model.update({...moved,actors:[{...moved.actors[0],col:9,row:7}]});assert.ok(actor.position.equals(prior),'an interior snapshot jump must not teleport through furniture');
+  const nav=buildCustomerNavigation({...raw,colliders:model.snapshot.colliders},{radius:.72,allowOutside:true});
+  let previous={col:actor.position.x,row:actor.position.z};
+  for(let time=3016;time<=18000;time+=16){model.animate(time);const pose={col:actor.position.x,row:actor.position.z};assert.ok(nav.segmentClear(previous,pose));previous=pose;}
+  assert.ok(Math.hypot(actor.position.x-9,actor.position.z-7)<.00001);
   model.dispose();
 });
 
@@ -154,7 +159,7 @@ test('Best async replacement retains actor selection and source interpolation, t
   model.update({...raw,actors:[{...raw.actors[0],col:2.6,row:3.4,heading:.8,walking:true}]});model.animate(1050);
   assert.equal(model.actors.children[0],root);assert.ok(root.position.x>2&&root.position.x<2.6);
   assert.ok(root.rotation.y>0&&root.rotation.y<.8);assert.equal(root.scale.x,.9);
-  assert.equal(asset.calls.length,1);assert.equal(asset.calls[0][0],1050);assert.equal(asset.calls[0][1],model.snapshot.actors[0]);
+  assert.equal(asset.calls.length,1);assert.equal(asset.calls[0][0],1050);assert.deepEqual(asset.calls[0][1],model.snapshot.actors[0]);
   assert.equal(asset.calls[0][2].position,root.position);assert.equal(asset.calls[0][2].heading,root.rotation.y);
   assert.equal(asset.calls[0][1].walking,true);assert.equal(model.snapshot.entries,17);assert.equal(JSON.stringify(raw),original);
   model.update({...raw,actors:[]});assert.equal(asset.disposed,1);assert.equal(asset.scene.parent,null);
@@ -183,7 +188,7 @@ test('Failed or invalid Best loads leave the existing animated fallback and rele
   for(const loadPerson of [()=>Promise.reject(new Error('offline')),()=>{throw new Error('bad asset');},()=>({scene:new Group(),dispose(){invalidDisposed++;}})]){
     const model=createLifeScene(input,{canvasFactory,assetQuality:'best',loadPerson}),root=model.actors.children[0],body=root.userData.body,resources=model.resources;
     await settled();assert.equal(root.userData.personAssetStatus,'fallback');assert.equal(body.parent,root);assert.deepEqual(model.resources,resources);
-    model.update({...input,actors:[{...input.actors[0],walking:true}]});model.animate(1000);
+    model.animate(0);model.update({...input,actors:[{...input.actors[0],row:3.4,walking:true}]});model.animate(50);
     assert.notEqual(root.userData.legs[0].rotation.x,0);model.dispose();
   }
   assert.equal(invalidDisposed,1);
@@ -236,7 +241,7 @@ test('Better interprets a missing visitor gender from the shared style without r
   assert.equal(malformed.snapshot.actors[0].gender,null);malformed.dispose();
 });
 
-test('Better visitors bring their arms in beside furniture at every heading and walking phase',()=>{
+test('Better visitors keep their bodies clear of furniture at every heading and walking phase',()=>{
   const layout=[{id:'near-counter',type:'counter',col:3,row:2,fp:[1,2]}];
   const overlap=b=>b.max.x>3+1e-6&&b.min.x<4-1e-6&&b.max.z>2+1e-6&&b.min.z<4-1e-6;
   for(const profile of VISITOR_PROFILES){
@@ -248,7 +253,8 @@ test('Better visitors bring their arms in beside furniture at every heading and 
       const check=()=>{
         root.updateWorldMatrix(true,true);
         for(const arm of root.userData.arms)assert.equal(overlap(new Box3().setFromObject(arm)),false,`${profile.id}, heading ${heading}`);
-        assert.ok(Math.abs(root.position.x-2.75999)<1e-6,'arm posing must not move the customer through the shop');
+        assert.ok(root.position.x<=2.27999,'body clearance includes the actual animated mesh');
+        assert.equal(source.actors[0].col,2.75999,'a bad external pose never rewrites the source actor');
       };
       check();model.animate(0);check();
       const goal={...actor,row:3.85,walking:true};model.update({...source,actors:[goal]});
@@ -259,12 +265,12 @@ test('Better visitors bring their arms in beside furniture at every heading and 
   }
 });
 
-test('removing the nearby furniture restores the original Better shoulder positions',()=>{
+test('body clearance leaves Better shoulder positions natural after nearby furniture is removed',()=>{
   const actor={id:'a',kind:'customer',col:2.75999,row:3,heading:0,walking:false,color:'#334455',skin:'#c68642'};
   const raw={cols:8,rows:8,layout:[{id:'counter',type:'counter',col:3,row:2}],actors:[actor]};
   const model=createLifeScene(raw,{canvasFactory:()=>null}),root=model.actors.children[0];
   model.animate(0);
-  assert.ok(root.userData.arms.some(arm=>!arm.position.equals(arm.userData.restPosition)));
+  assert.ok(root.userData.arms.every(arm=>arm.position.equals(arm.userData.restPosition)));
   model.update({...raw,layout:[]});model.animate(16);
   for(const arm of root.userData.arms)assert.deepEqual(arm.position.toArray(),arm.userData.restPosition.toArray());
   model.dispose();

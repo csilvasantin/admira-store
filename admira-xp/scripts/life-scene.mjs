@@ -3,8 +3,9 @@ import {appearanceIdentity} from '../../inventario/starbucks/surface-identities.
 import * as T from './premium-three.mjs';
 import './starbucks-room.js?v=surfaces-1';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
-import {buildCustomerNavigation} from './customer-navigation.mjs?v=distribuir-3';
-import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
+import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collision-20261004-1';
+import {createCustomerMotion} from './customer-motion.mjs?v=actor-collision-20261004-1';
+import {actorCollisionRadius,physicalColliders} from './physical-colliders.mjs?v=actor-collision-20261004-1';
 import {createLifeExterior} from './life-exterior.mjs?v=exterior-1';
 
 // Keep the live game's appearance and selection metadata while reusing the
@@ -13,12 +14,16 @@ function normalizeLifeSnapshot(raw={}){
   raw=raw||{};const normalized=normalizeSnapshot(raw);
   const sourceLayout=(Array.isArray(raw.layout)?raw.layout:[]).slice(0,300).filter(Boolean);
   const sourceActors=(Array.isArray(raw.actors)?raw.actors:[]).slice(0,200).filter(Boolean);
-  return {...raw,...normalized,
+  const snapshot={...raw,...normalized,
     layout:normalized.layout.map((item,i)=>({...sourceLayout[i],...item})),
     actors:normalized.actors.map((actor,i)=>({...sourceActors[i],...actor,
       scale:Number.isFinite(Number(sourceActors[i]?.scale))?Math.max(.3,Math.min(2,Number(sourceActors[i].scale))):1
     }))
   };
+  const colliderMap=new Map();
+  for(const box of [...(Array.isArray(raw.colliders)?raw.colliders:[]),...physicalColliders(snapshot)])colliderMap.set(JSON.stringify([box.id,box.minCol,box.maxCol,box.minRow,box.maxRow]),box);
+  snapshot.colliders=[...colliderMap.values()];
+  return snapshot;
 }
 
 // A presentation of Xtanco's live snapshot. This module owns neither a clock,
@@ -26,6 +31,12 @@ function normalizeLifeSnapshot(raw={}){
 export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,surroundings=false,exteriorY=0,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
   let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',poseSignature='',lighting='day',disposed=false,lastAnimationTime=null;
   let customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
+  const navigationByRadius=new Map();
+  function navigationFor(actor){
+    const radius=actorCollisionRadius(actor);
+    if(!navigationByRadius.has(radius))navigationByRadius.set(radius,buildCustomerNavigation(snapshot,{radius,allowOutside:true}));
+    return navigationByRadius.get(radius);
+  }
   const scene=new T.Scene(),world=new T.Group(),actors=new T.Group();
   world.name='life:world';actors.name='life:actors';scene.add(world,actors);
   const geometry=new Set(),materials=new Set(),textures=new Set(),actorMap=new Map();
@@ -209,6 +220,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   }
 
   function furniture(item){
+    if(item.hidden===true||item.presentationExcluded===true)return;
     const root=group(world,item.col,0,item.row);root.name=`furniture:${item.id}`;
     root.userData={layoutId:item.id,item,type:item.type,label:item.label,selectable:true};
     root.scale.set((item.flipX?-1:1)*item.sx,item.sy,item.sx);root.rotation.y=-item.rot*Math.PI/2;
@@ -374,7 +386,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         ...(part.color==='#ffe2a0'?{emissive:part.color,emissiveIntensity:.7}:{} )},worldResources);
       colors.set(key,m);return m;
     };
-    for(const fixture of globalThis.XpaceStarbucks.build(snapshot.layout.filter(i=>i.source!=='PixerIA'),{quality:assetQuality,moving:snapshot.moving})){
+    for(const fixture of globalThis.XpaceStarbucks.build(snapshot.layout.filter(i=>i.source!=='PixerIA'&&i.hidden!==true&&i.presentationExcluded!==true),{quality:assetQuality,moving:snapshot.moving})){
       const root=group(world);root.name='starbucks:'+fixture.id;
       if(fixture.item){
         const item=fixture.item;root.userData={item,layoutId:fixture.id,selectable:true};
@@ -451,11 +463,12 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     for(const z of [.3,r-.3]){cylinder(architectureRoot,c+1.63,.18,z,.047,.58,palette.teal);cylinder(architectureRoot,c+1.63,.48,z,.054,.024,palette.brass);}
     // A single open shopfront detail signals the entrance without hiding people.
     if(!snapshot.moving){
-      const entrance=group(world,c+.08,0,2.06);entrance.name='life:entrance';
-      for(const z of [0,1.18])box(entrance,0,1.12,z,.07,2.24,.07,palette.brass);
-      box(entrance,0,2.27,.59,.10,.12,1.3,palette.teal);
-      const door=group(entrance,0,0,1.14);door.name='architectural:door';doors.push(door);
-      box(door,0,1.10,-.54,.03,2.13,1.05,palette.glass);box(door,.037,1.01,-.92,.038,.32,.038,palette.brass);
+      const center=Number.isFinite(snapshot.doorRow)?snapshot.doorRow:3.35,half=Number.isFinite(snapshot.doorHalfWidth)?snapshot.doorHalfWidth:1,width=Math.max(.06,half*2-.14);
+      const entrance=group(world,c+.08,0,center-half);entrance.name='life:entrance';
+      for(const z of [0,half*2])box(entrance,0,1.12,z,.07,2.24,.07,palette.brass);
+      box(entrance,0,2.27,half,.10,.12,half*2+.12,palette.teal);
+      const door=group(entrance,0,0,half*2-.035);door.name='architectural:door';doors.push(door);
+      box(door,0,1.10,-width/2-.035,.03,2.13,width,palette.glass);box(door,.037,1.01,-width+.08,.038,.32,.038,palette.brass);
     }
     batch(architectureRoot);
   }
@@ -594,7 +607,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   const armBounds=new T.Box3(),armWorld=new T.Vector3(),armShifted=new T.Vector3();
   function keepArmsClear(root){
     const {actor,arms,body}=root.userData;
-    if(!body||actor.kind!=='customer'||!arms.length)return;
+    if(!body||actor.outside||actor.kind==='passerby'||!arms.length)return;
     // A visitor gently brings the offending arm towards their body when a
     // cabinet is close. Keep the original anatomy and free-space arm swing;
     // only adjust the shoulder pose, never the customer's floor coordinates.
@@ -635,10 +648,13 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       }
       const fresh=!root;root=root||createActor(actor);
       const target=new T.Vector3(actor.col,0,actor.row);
-      const customer=actor.kind==='customer'&&!actor.outside&&actor.col>=0&&actor.row>=0&&actor.row<=snapshot.rows&&actor.col<=snapshot.cols+1.5;
-      if(customer){
-        const track=root.userData.customerMotion ||= createCustomerMotion(actor,{navigation:customerNavigation,time:lastAnimationTime??0});
-        const pose=track.update(actor,{navigation:customerNavigation,time:lastAnimationTime??0});
+      // An "outside" flag is metadata, not permission to walk through the
+      // shopfront during entry. Only pavement passersby use exterior tracks.
+      const interior=actor.kind!=='passerby';
+      if(interior){
+        const navigation=navigationFor(actor);
+        const track=root.userData.customerMotion ||= createCustomerMotion(actor,{navigation,time:lastAnimationTime??0});
+        const pose=track.update(actor,{navigation,time:lastAnimationTime??0});
         root.visible=!!pose;root.userData.motion=null;
         if(pose){root.position.set(pose.col,0,pose.row);root.rotation.y=pose.heading;}
       }else if(fresh||root.position.distanceTo(target)>3){
@@ -673,11 +689,11 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     snapshot=normalizeLifeSnapshot(raw);
     // The Canvas2D projection is deliberately absent from this signature. Orbit,
     // resize and editor zoom must never skew or rebuild genuine 3D furniture.
-    const poses=JSON.stringify(snapshot.layout.map(item=>[item.id,item.col,item.row]));
-    const next=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.wallHeight,snapshot.venue,snapshot.moving,snapshot.layout.map(({col,row,...shape})=>shape)]);
-    if(poses!==poseSignature){customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});poseSignature=poses;}
+    const poses=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.doorRow,snapshot.doorHalfWidth,snapshot.outsideDepth,snapshot.hardness,snapshot.colliders,snapshot.layout]);
+    const next=JSON.stringify([snapshot.cols,snapshot.rows,snapshot.wallHeight,snapshot.venue,snapshot.doorRow,snapshot.doorHalfWidth,snapshot.moving,snapshot.layout.map(({col,row,...shape})=>shape)]);
+    if(poses!==poseSignature){customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});navigationByRadius.clear();poseSignature=poses;}
     if(next!==signature){
-      customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
+      customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});navigationByRadius.clear();
       disconnectSurfaces();release(worldResources);world.traverse(o=>{if(o.isInstancedMesh)o.dispose();});world.clear();fixtureLights.length=0;doors.length=0;
       if(snapshot.venue==='alsea-sbux-021')starbucksRoom();
       else {if(!inventory)architecture();for(const item of snapshot.layout)furniture(item);}
@@ -711,8 +727,8 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         root.position.set(customerPose.col,0,customerPose.row);root.rotation.y=customerPose.heading;
       }
       const phase=customerPose?customerPose.phase*Math.PI*2:time*.0085+(seed%100)*.11;
-      // Smooth only the displayed pose between incoming snapshots. The source
-      // positions, heading, clock, routes and counters are never advanced here.
+      // Exterior-only snapshots may interpolate. Interior people and robots
+      // follow the same swept collision path, including every displayed frame.
       const motion=root.userData.motion;
       if(motion){
         if(motion.start===null||time<motion.start)motion.start=time;

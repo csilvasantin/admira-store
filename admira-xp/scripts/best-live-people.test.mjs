@@ -5,13 +5,14 @@ import {BEST_HARDNESS_ZONES,isBestWalkable,projectBestFloor,resolveBestHardness,
 import {createLifeSnapshot} from './life-snapshot.mjs';
 import {visitorProfileById} from './visitor-profiles.mjs';
 import {buildCustomerNavigation} from './customer-navigation.mjs';
+import {physicalColliders,actorCollisionRadius} from './physical-colliders.mjs';
 import {createCustomerMotion} from './customer-motion.mjs';
 
 // Isolate rendering from profile assignment: the original collision cases still
 // exercise the legacy fallback, while atlas cases supply a canonical snapshot.
 const source=readFileSync(new URL('./best-live-people.mjs',import.meta.url),'utf8');
 function layerFactory(snapshotFactory=createLifeSnapshot,profileLookup=()=>null,navigationFactory=buildCustomerNavigation,motionFactory=createCustomerMotion){
-  return new Function('createLifeSnapshot','visitorProfileById','buildCustomerNavigation','createCustomerMotion',source.replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')+'\nreturn createBestPeopleLayer;')(snapshotFactory,profileLookup,navigationFactory,motionFactory);
+  return new Function('createLifeSnapshot','visitorProfileById','buildCustomerNavigation','createCustomerMotion','physicalColliders','actorCollisionRadius',source.replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')+'\nreturn createBestPeopleLayer;')(snapshotFactory,profileLookup,navigationFactory,motionFactory,physicalColliders,actorCollisionRadius);
 }
 const createBestPeopleLayer=layerFactory();
 const imagesUnder=node=>node.tag==='img'?[node]:(node.children||[]).flatMap(imagesUnder);
@@ -351,8 +352,9 @@ test('Matrix retains a navigation graph while geometry is unchanged and invalida
   const people=create({container,getState:()=>({}),now:()=>0,requestFrame:()=>1,cancelFrame:()=>{}});
   try{
     people.update(100);people.update(200);assert.equal(seen.length,3);assert.equal(new Set(seen).size,1);
+    assert.equal(seen[0].radius,.72);assert.ok(seen[0].obstacles.some(box=>box.id==='architecture:rear-wall'),'the legacy image layer uses the same physical room boundaries');
     scene.layout.push({id:'counter',type:'counter',col:5,row:3,fp:[1,2]});people.update(300);
-    assert.notEqual(seen[3],seen[0]);people.update(400);assert.equal(seen[4],seen[3]);
+    assert.notEqual(seen[3],seen[0]);assert.ok(seen[3].obstacles.some(box=>box.id==='geometry:counter'),'rendered mesh overhangs participate even while images load');people.update(400);assert.equal(seen[4],seen[3]);
   }finally{people.dispose();globalThis.document=originalDocument;}
 });
 

@@ -94,7 +94,7 @@ test('todas las áreas tienen estados y criterios explícitos, sin anunciar Best
     nonempty(item.summary, `${item.id}: resumen`);
     assert.equal(item.good.status, 'code_present', `${item.id}: Good no significa backend probado`);
     assert.ok(statuses.includes(item.better.status), `${item.id}: estado Better desconocido`);
-    assert.equal(item.best.status, 'planned', `${item.id}: Best todavía reservado`);
+    assert.equal(item.best.status, item.id==='XP-F29'?'partial':'planned', `${item.id}: no presentar Best completo`);
     for (const tier of ['good', 'better', 'best']) nonempty(item[tier].detail, `${item.id}: detalle ${tier}`);
     assert.ok(Array.isArray(item.restore) && item.restore.length, `${item.id}: criterios de recuperación`);
     for (const criterion of item.restore) nonempty(criterion, `${item.id}: criterio vacío`);
@@ -124,6 +124,13 @@ test('la navegación Best confirma sólo una preview y conserva el baseline func
   assert.match(catalog.audit.baseline_note, /revisión funcional original/);
   assert.match(command('XP-F26', '/modo best').note, /ok:true.*preview:true/);
   for (const item of catalog.features) {
+    if(item.id==='XP-F29'){
+      assert.equal(item.best.status,'partial');
+      assert.match(item.best.detail,/mapa físico.*Good\/Better/);
+      assert.match(item.best.detail,/no acredita un robot físico/);
+      assert.equal(item.actor_collision,manifest.actor_collision.guide);
+      continue;
+    }
     assert.equal(item.best.status, 'planned', item.id);
     assert.match(item.best.detail, /Avenida Admira con inventario editable, cámara fija y personas del gemelo en vivo/, item.id);
   }

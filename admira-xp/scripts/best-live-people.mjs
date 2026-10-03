@@ -1,7 +1,8 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
 import {visitorProfileById} from './visitor-profiles.mjs?v=visitors-24';
-import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
-import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';
+import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collision-20261004-1';
+import {physicalColliders,actorCollisionRadius} from './physical-colliders.mjs?v=actor-collision-20261004-1';
+import {createCustomerMotion} from './customer-motion.mjs?v=actor-collision-20261004-1';
 import {walkSheetURL,walkFrame,walkBackgroundPosition} from './visitor-walk-sprites.mjs?v=walk-1';
 import {pixeriaWalkSheet} from './pixeria-personas.mjs?v=anon-demo-v1';
 
@@ -326,7 +327,9 @@ export function createBestPeopleLayer({container,getState=()=>window.__xtancoVis
       removeMissing(new Set());status.textContent='Esperando la simulación del Xtanco…';
       status.setAttribute('data-distinct-profiles','0');status.setAttribute('data-fallback-count','0');return;
     }
-    const nextNavigation=buildCustomerNavigation(current,{radius:.24});
+    const physical={...current,colliders:[...(current.colliders||[]),...physicalColliders(current)]};
+    const radius=Math.max(.72,...(current.actors||[]).map(actorCollisionRadius));
+    const nextNavigation=buildCustomerNavigation(physical,{radius});
     if(navigation?.key!==nextNavigation.key)navigation=nextNavigation;
     const active=new Set(),actors=current.actors.filter(actor=>actor?.kind==='customer'&&!actor.outside&&actor.col>=0&&actor.row>=0&&actor.col<current.cols&&actor.row<current.rows);
     for(const actor of actors){

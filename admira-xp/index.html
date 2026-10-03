@@ -1424,8 +1424,9 @@
 <script src="assets/js/session-ping.js" defer></script>
 <script src="assets/js/session-log.js" defer></script>
 <script type="module">
-import {buildCustomerNavigation} from './scripts/customer-navigation.mjs?v=customer-motion-1';
-window.XpaceCustomerNavigation={buildCustomerNavigation};
+import {buildCustomerNavigation,ACTOR_BODY_RADIUS} from './scripts/customer-navigation.mjs?v=actor-collision-20261004-1';
+import {physicalColliders,actorCollisionRadius} from './scripts/physical-colliders.mjs?v=actor-collision-20261004-1';
+window.XpaceCustomerNavigation={buildCustomerNavigation,ACTOR_BODY_RADIUS,physicalColliders,actorCollisionRadius};
 </script>
 <script>
 // Direct game.html loads can otherwise keep an old public service worker alive.
@@ -6834,7 +6835,7 @@ const LANGS={
       {title:'GESTIÓN DE PERSONAL',lines:['Contrata empleados en la pestaña PERSONAL.','Cada empleado genera ventas automáticamente.','Fórmalos para subir su nivel (máx. 5)','y aumentar su productividad y salario.']},
       {title:'EVENTOS ESPECIALES',lines:['⚡ HORA PUNTA: ventas x2.4 durante un tiempo.','🔍 INSPECCIÓN: mantén stock y personal o penalización.','📦 Repón stock regularmente (pestaña STOCK).','👁 Vigila la barra de OBJETIVO del año en el HUD.']},
       {"title": "BEST Y MATRIX", "lines": ["Best: Avenida Admira, muebles y personas.", "Matrix: captura 360° del Starbucks Alsea.", "Abrir incidencia: informa de un problema.", "Asignar contenidos: elige pantalla y playlist.", "Guardar mapa no publica en players reales."]},
-      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Todos los Xpacios: people OFF por defecto.", "Durezas de personas: pendientes para el final.", "/gente = /people: todas las personas.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
+      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Todos los Xpacios: people OFF por defecto.", "Good/Better/Best: cuerpos y recorridos respetan paredes y muebles.", "/gente = /people: todas las personas.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
       {"title": "AJUSTA EL MODO EXPERTO", "lines": ["Arrastra arriba para cambiar la altura.", "Separa comandos, calidad y Local view.", "Arrastra los dos separadores verticales.", "Las medidas se guardan en el navegador.", "Doble clic en separador: anchos iniciales."]},
       {"title": "PRUEBA LOS GRUPOS", "lines": ["/gente off: oculta todas las personas.", "/personal on: muestra solo trabajadores.", "/clientes on: vuelve a mostrar clientes.", "/gente on: muestra todas las personas.", "No borra personas ni cambia el aforo."]},
     ],
@@ -6923,7 +6924,7 @@ const LANGS={
       {title:'STAFF MANAGEMENT',lines:['Hire employees in the STAFF tab.','Each employee generates sales automatically.','Train them to raise their level (max 5)','and increase their productivity and salary.']},
       {title:'SPECIAL EVENTS',lines:['⚡ RUSH HOUR: sales x2.4 for a period.','🔍 INSPECTION: keep stock & staff or get fined.','📦 Restock products regularly (STOCK tab).','👁 Watch the OBJECTIVE bar in the HUD.']},
       {"title": "BEST AND MATRIX", "lines": ["Best: Avenida Admira, furniture and people.", "Matrix: Starbucks Alsea 360° capture.", "Open incident: report a device problem.", "Assign content: select a screen and playlist.", "Saving a map does not publish to devices."]},
-      {"title": "PEOPLE · EXPERT MODE", "lines": ["All Xpaces: people OFF by default.", "People hardness maps: pending for the final stage.", "/people = /gente: all people.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
+      {"title": "PEOPLE · EXPERT MODE", "lines": ["All Xpaces: people OFF by default.", "Good/Better/Best: bodies and swept routes respect walls and furniture.", "/people = /gente: all people.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
       {"title": "RESIZE EXPERT MODE", "lines": ["Drag the top handle to change height.", "Split commands, quality and Local view.", "Drag the two vertical dividers.", "Sizes are saved in this browser.", "Double-click a divider to reset widths."]},
       {"title": "TRY THE GROUPS", "lines": ["/people off: hide all people.", "/staff on: show workers only.", "/customers on: show customers again.", "/people on: show all people.", "People and audience counts are preserved."]},
     ],
@@ -8986,7 +8987,6 @@ function getFurnitureFootprint(item){
 
 // Check if a tile is blocked by furniture
 function isTileBlocked(col,row){
-  if(!shopFurnitureVisible) return false;
   const c=Math.round(col), r=Math.round(row);
   for(const item of shopLayout){
     if(item.type==='rug'||item.type==='led'||item.type==='tft'||item.type==='aroma') continue; // walkable / wall-mounted
@@ -9004,7 +9004,7 @@ function isGridWalkable(col,row){
 
 function actorTile(actor,kind){
   if(!actor) return null;
-  const ox=kind==='customer'?5:7;
+  const ox=7;
   const oy=20;
   const t=screenToIso((actor.x||0)+ox,(actor.y||0)+oy);
   const col=Math.round(t.col),row=Math.round(t.row);
@@ -9043,9 +9043,8 @@ function isTileOccupiedByOther(col,row,actor){
 }
 
 function canActorStepToTile(col,row,actor){
-  const c=Math.round(col),r=Math.round(row);
-  if(!isGridWalkable(c,r)) return false;
-  return !isTileOccupiedByOther(c,r,actor);
+  const nav=getActorNavigation(actor);
+  return !!nav&&nav.isWalkable({col,row});
 }
 
 function findNearestWalkableTile(col,row,opts={}){
@@ -9073,25 +9072,16 @@ function findNearestWalkableTile(col,row,opts={}){
 
 // Full walkability check: on floor grid AND not blocked by furniture
 function canWalkTo(screenX,screenY,opts={}){
-  const samples=[
-    [0,0],
-    [-8,0],[8,0],
-    [0,-6],[0,6],
-    [-5,-4],[5,-4],[-5,4],[5,4]
-  ];
-  for(const [ox,oy] of samples){
-    const tile=screenToIso(screenX+ox,screenY+oy);
-    if(tile.col<0||tile.col>=ISO.cols||tile.row<0||tile.row>=ISO.rows) return false;
-    if(isTileBlocked(tile.col,tile.row)) return false;
-  }
-  const center=screenToIso(screenX,screenY);
-  if(opts.ignore&&isTileOccupiedByOther(Math.round(center.col),Math.round(center.row),opts.ignore)) return false;
-  return true;
+  const actor=opts.ignore,navigation=getActorNavigation(actor);
+  const next=customerFloorPoint(screenX-7,screenY-20);
+  return !!navigation&&(actor?navigation.segmentClear(customerFloorPoint(actor.x,actor.y),next):navigation.isWalkable(next));
 }
 
-// Customers use the same continuous floor collision model as Matrix/Better/
-// Best. The old integer grid remains available for legacy staff behaviours.
+// Every interior actor shares the continuous, body-sized collision model in
+// Good, Better and Best. The integer grid is retained for editor compatibility.
 let customerNavigationCache=null,customerNavigationSignature='';
+let customerNavigationFrame=-1,customerNavigationRevision=-1,customerNavigationDoor=-1,customerPhysicalScene=null;
+const actorNavigationCaches=new Map(),actorJourneys=new WeakMap(),actorCollisionAnchors=new WeakMap();
 let customerQueueCache={key:'',slots:[]};
 let customerDoorPass=null;
 const customerRoutes=new WeakMap();
@@ -9099,16 +9089,35 @@ function customerFloorPoint(x,y){
   const dx=(x+7-ISO.ox)/(ISO.tileW/2),dy=(y+20-ISO.oy)/(ISO.tileH/2);
   return {col:(dx+dy)/2,row:(dy-dx)/2};
 }
-function getCustomerNavigation(){
-  const factory=window.XpaceCustomerNavigation?.buildCustomerNavigation;
+function getCustomerNavigation(actor){
+  const api=window.XpaceCustomerNavigation,factory=api?.buildCustomerNavigation;
   if(!factory)return null;
-  const visible=shopFurnitureVisible?(window.XpaceInventory?.filter(inventorySpace(),shopLayout)||shopLayout):[];
-  const signature=JSON.stringify([ISO.cols,ISO.rows,visible]);
-  if(signature!==customerNavigationSignature||!customerNavigationCache){
-    customerNavigationSignature=signature;
-    customerNavigationCache=factory({cols:ISO.cols,rows:ISO.rows,doorRow:3.35,layout:visible,footprints:FURNITURE_SIZE},{radius:.24,allowOutside:true});
+  // Hiding a render layer or filtering an inventory never removes its solids.
+  // Deleted furniture is already removed by retained() in buildWalkGrid.
+  if(customerNavigationFrame!==tt||customerNavigationRevision!==(window.XpacePhysicsRevision||0)||customerNavigationDoor!==(G.doorAnim??0)||!customerPhysicalScene){
+    customerNavigationFrame=tt;customerNavigationRevision=window.XpacePhysicsRevision||0;customerNavigationDoor=G.doorAnim??0;
+    const venue=typeof isStarbucksVenue==='function'&&isStarbucksVenue()?'alsea-sbux-021':'';
+    shopLayout=window.XpaceInventory?.retained(inventorySpace(),shopLayout)||shopLayout;
+    const signature=JSON.stringify([ISO.cols,ISO.rows,ISO.doorRow||3.35,G.doorAnim??0,window.XpacePhysicsRevision||0,venue,shopLayout]);
+    if(signature!==customerNavigationSignature||!customerPhysicalScene){
+      customerNavigationSignature=signature;actorNavigationCaches.clear();
+      const layout=shopLayout.map(item=>({...item,hidden:false}));
+      customerPhysicalScene={cols:ISO.cols,rows:ISO.rows,doorRow:ISO.doorRow||3.35,doorHalfWidth:1,outsideDepth:3.5,doorOpen:G.doorAnim??0,layout,footprints:FURNITURE_SIZE,venue};
+      customerPhysicalScene.colliders=api.physicalColliders?.(customerPhysicalScene)||[];
+    }
   }
-  return customerNavigationCache;
+  const body=actor===G.unitreeBot?{...actor,robot:true}:actor||{};
+  const radius=api.actorCollisionRadius?.(body)??(body.robot?.52:.72);
+  if(!actorNavigationCaches.has(radius))actorNavigationCaches.set(radius,factory(customerPhysicalScene,{radius,allowOutside:true}));
+  const navigation=actorNavigationCaches.get(radius);
+  if(!actor)customerNavigationCache=navigation;
+  return navigation;
+}
+function getActorNavigation(actor){return getCustomerNavigation(actor);}
+function resolveActorTarget(navigation,requested,current,{strict=false}={}){
+  if(!navigation)return null;
+  const exterior=requested.col>=ISO.cols;
+  return navigation.resolve(requested,{from:current,strict,accept:p=>exterior?p.col>=ISO.cols:p.col<=ISO.cols-navigation.radius});
 }
 function customerSpaceClear(actor,next){
   const current=customerFloorPoint(actor.x,actor.y);
@@ -9117,7 +9126,8 @@ function customerSpaceClear(actor,next){
     const p=customerFloorPoint(other.x,other.y),before=Math.hypot(current.col-p.col,current.row-p.row),after=Math.hypot(next.col-p.col,next.row-p.row);
     // An overlap at a group spawn may separate, but never deepen. A person
     // waiting at the till has the same physical space as someone walking.
-    if(after<.47&&after<before-1e-6)return false;
+    const clearance=(getActorNavigation(actor)?.radius||.72)+(getActorNavigation(other)?.radius||.72);
+    if(after<clearance&&after<before-1e-6)return false;
   }
   return true;
 }
@@ -9148,21 +9158,22 @@ function customerDoorAccess(actor){
   return !actor._waitingDoor;
 }
 function customerAvoidanceRoute(actor,current,target,navigation){
-  const layout=navigation.obstacles.map(b=>({id:b.id,type:'custom',col:b.minCol,row:b.minRow,fp:[b.maxCol-b.minCol,b.maxRow-b.minRow]}));
+  const colliders=navigation.obstacles.map(box=>({...box}));
   for(const other of G.custs||[]){
-    if(other===actor)continue;const p=customerFloorPoint(other.x,other.y);
-    if((Math.abs(p.col-current.col)<.48&&Math.abs(p.row-current.row)<.48)||(Math.abs(p.col-target.col)<.48&&Math.abs(p.row-target.row)<.48))continue;
-    layout.push({id:'visitor-'+other.id,type:'custom',col:p.col-.235,row:p.row-.235,fp:[.47,.47]});
+    if(other===actor||other.st==='gone')continue;const p=customerFloorPoint(other.x,other.y);
+    const radius=getActorNavigation(other)?.radius||.72;
+    if(Math.hypot(p.col-current.col,p.row-current.row)<radius+navigation.radius||Math.hypot(p.col-target.col,p.row-target.row)<radius+navigation.radius)continue;
+    colliders.push({id:'visitor-'+other.id,minCol:p.col-radius,maxCol:p.col+radius,minRow:p.row-radius,maxRow:p.row+radius});
   }
-  const nav=window.XpaceCustomerNavigation.buildCustomerNavigation({cols:ISO.cols,rows:ISO.rows,doorRow:3.35,layout},{radius:.24,allowOutside:true});
+  const nav=window.XpaceCustomerNavigation.buildCustomerNavigation({cols:ISO.cols,rows:ISO.rows,doorRow:navigation.doorRow,doorHalfWidth:navigation.doorHalfWidth,outsideDepth:navigation.outsideDepth,colliders},{radius:navigation.radius,allowOutside:true});
   return nav.route(current,target);
 }
 function moveCustomerTo(actor,screenX,screenY,speed){
-  const navigation=getCustomerNavigation();
+  const navigation=getActorNavigation(actor);
   if(!navigation)return 'blocked';
   if(!customerDoorAccess(actor)){actor.curSpeed=0;return 'waiting';}
   const current=customerFloorPoint(actor.x,actor.y),requested=customerFloorPoint(screenX,screenY);
-  const target=navigation.resolve(requested);
+  const target=resolveActorTarget(navigation,requested,current,{strict:requested.col>=ISO.cols});
   if(!target||!navigation.isWalkable(current)){actor.curSpeed=0;return 'blocked';}
   const targetKey=navigation.key+'|'+target.col.toFixed(4)+','+target.row.toFixed(4);
   let journey=customerRoutes.get(actor);
@@ -9223,14 +9234,14 @@ function ensureCustomerVisit(c){
   return c.visit;
 }
 function customerVisitTarget(c,stop){
-  const nav=getCustomerNavigation(),box=nav?.obstacles.find(it=>it.id===String(stop.id));
+  const nav=getActorNavigation(c),box=nav?.obstacles.find(it=>it.id===String(stop.id));
   if(!nav||!box)return null;
-  const current=customerFloorPoint(c.x,c.y),candidates=[];
-  for(let col=box.minCol-.65;col<=box.maxCol+.66;col+=.55){
-    candidates.push({col,row:box.minRow-.65},{col,row:box.maxRow+.65});
+  const current=customerFloorPoint(c.x,c.y),candidates=[],margin=Math.max(.65,nav.radius+.05);
+  for(let col=box.minCol-margin;col<=box.maxCol+margin+.01;col+=.55){
+    candidates.push({col,row:box.minRow-margin},{col,row:box.maxRow+margin});
   }
-  for(let row=box.minRow-.65;row<=box.maxRow+.66;row+=.55){
-    candidates.push({col:box.minCol-.65,row},{col:box.maxCol+.65,row});
+  for(let row=box.minRow-margin;row<=box.maxRow+margin+.01;row+=.55){
+    candidates.push({col:box.minCol-margin,row},{col:box.maxCol+margin,row});
   }
   const available=candidates.filter(p=>p.col<ISO.cols-2.5&&nav.isWalkable(p)&&!(G.custs||[]).some(o=>{
     if(o===c)return false;const t=o.visit?.target||customerFloorPoint(o.x,o.y);
@@ -9283,6 +9294,7 @@ let walkGrid=null;
 function buildWalkGrid(){
   // Removal tombstones take precedence over factory/template/remote layouts.
   shopLayout=window.XpaceInventory?.retained(inventorySpace(),shopLayout)||shopLayout;
+  window.XpacePhysicsRevision=(window.XpacePhysicsRevision||0)+1;
   walkGrid=[];
   for(let c=0;c<ISO.cols;c++){walkGrid[c]=[];for(let r=0;r<ISO.rows;r++) walkGrid[c][r]=!isTileBlocked(c,r);}
 }
@@ -9298,78 +9310,108 @@ window.addEventListener('storage',event=>{
 function getHardnessSnapshot(){
   if(!walkGrid) buildWalkGrid();
   const blocked=[];
-  for(let c=0;c<ISO.cols;c++) for(let r=0;r<ISO.rows;r++){
-    if(!walkGrid[c]?.[r]) blocked.push(gridKey(c,r));
-  }
-  return {cols:ISO.cols,rows:ISO.rows,blocked};
+  for(let c=0;c<ISO.cols;c++)for(let r=0;r<ISO.rows;r++)if(!walkGrid[c]?.[r])blocked.push(gridKey(c,r));
+  getCustomerNavigation();
+  return {cols:ISO.cols,rows:ISO.rows,blocked,colliders:customerPhysicalScene?.colliders||[],doorRow:ISO.doorRow||3.35,doorHalfWidth:1,outsideDepth:3.5,doorOpen:G.doorAnim??0};
 }
 function astarPath(sc,sr,ec,er,opts={}){
-  if(!walkGrid) buildWalkGrid();
-  sc=clampGridCol(sc);sr=clampGridRow(sr);ec=clampGridCol(ec);er=clampGridRow(er);
-  if(!isGridWalkable(sc,sr)){
-    const start=findNearestWalkableTile(sc,sr,{from:{col:ec,row:er},ignore:opts.ignore,avoidPeople:false});
-    if(!start) return null;
-    sc=start.col;sr=start.row;
-  }
-  const target=findNearestWalkableTile(ec,er,{from:{col:sc,row:sr},ignore:opts.ignore,avoidPeople:opts.avoidPeople!==false});
-  if(!target) return null;
-  ec=target.col;er=target.row;
-  const key=(c,r)=>c+','+r;
-  const occupied=opts.avoidPeople===false?new Set():buildDynamicOccupancy(opts.ignore||null);
-  const open=[{c:sc,r:sr,g:0,h:Math.abs(ec-sc)+Math.abs(er-sr),p:null}];
-  const closed=new Set();
-  while(open.length>0){
-    open.sort((a,b)=>(a.g+a.h)-(b.g+b.h));
-    const cur=open.shift();
-    if(cur.c===ec&&cur.r===er){
-      const path=[];let n=cur;while(n){path.unshift({col:n.c,row:n.r});n=n.p;}return path;
-    }
-    closed.add(key(cur.c,cur.r));
-    for(const[dc,dr]of[[1,0],[-1,0],[0,1],[0,-1]]){
-      const nc=cur.c+dc,nr=cur.r+dr;
-      if(nc<0||nc>=ISO.cols||nr<0||nr>=ISO.rows)continue;
-      if(closed.has(key(nc,nr)))continue;
-      if(!isGridWalkable(nc,nr))continue;
-      const nKey=key(nc,nr);
-      if(occupied.has(nKey)&&!(nc===sc&&nr===sr)&&!(nc===ec&&nr===er))continue;
-      const g=cur.g+1,h=Math.abs(ec-nc)+Math.abs(er-nr);
-      const existing=open.find(o=>o.c===nc&&o.r===nr);
-      if(existing){if(g<existing.g){existing.g=g;existing.p=cur;}}
-      else open.push({c:nc,r:nr,g,h,p:cur});
-    }
-  }
-  return null;
+  const navigation=getActorNavigation(opts.ignore);
+  if(!navigation)return null;
+  const current=opts.ignore?customerFloorPoint(opts.ignore.x,opts.ignore.y):{col:sc,row:sr};
+  const target=resolveActorTarget(navigation,{col:ec,row:er},current,{strict:ec>=ISO.cols});
+  return target?navigation.route(current,target):null;
 }
 
 function planActorPath(actor,targetCol,targetRow,pathProp='path',idxProp='pathIdx'){
-  if(!actor) return null;
-  const cur=actorTile(actor,actor.st?'customer':'staff')||{col:ISO.cols-1,row:3};
-  const path=astarPath(cur.col,cur.row,targetCol,targetRow,{ignore:actor})||[];
-  actor[pathProp]=path;
-  actor[idxProp]=0;
+  if(!actor)return null;
+  const navigation=getActorNavigation(actor),current=customerFloorPoint(actor.x,actor.y);
+  const target=resolveActorTarget(navigation,{col:targetCol,row:targetRow},current,{strict:targetCol>=ISO.cols});
+  const path=target?navigation.route(current,target):null;
+  actor[pathProp]=path;actor[idxProp]=0;
+  actor[pathProp+'Goal']=target;actor[pathProp+'Map']=navigation?.key;
   return path;
 }
 
 function stepActorPath(actor,pathProp='path',idxProp='pathIdx',speed=1,animEvery=8){
-  const path=actor&&actor[pathProp];
-  if(!path||actor[idxProp]>=path.length) return 'done';
+  if(!actor)return 'blocked';
+  const navigation=getActorNavigation(actor),path=actor[pathProp],current=customerFloorPoint(actor.x,actor.y);
+  if(!navigation||!navigation.isWalkable(current)||!Array.isArray(path))return 'blocked';
+  if(actor[pathProp+'Map']&&actor[pathProp+'Map']!==navigation.key)return 'blocked';
+  // Exact corners and swept segments prevent skipping a corner or crossing a
+  // new wall between two otherwise valid endpoints, even at accelerated time.
+  while(actor[idxProp]<path.length&&Math.hypot(current.col-path[actor[idxProp]].col,current.row-path[actor[idxProp]].row)<1e-7)actor[idxProp]++;
   const wp=path[actor[idxProp]];
-  if(!canActorStepToTile(wp.col,wp.row,actor)) return 'blocked';
-  const iso=toIso(wp.col,wp.row);
-  const tx=iso.x-7,ty=iso.y-20;
-  const dx=tx-actor.x,dy=ty-actor.y;
-  const d=Math.sqrt(dx*dx+dy*dy);
-  if(d<3){
-    actor[idxProp]++;
-    return actor[idxProp]>=path.length?'done':'next';
+  if(!wp){
+    const goal=actor[pathProp+'Goal']||path[path.length-1];
+    return goal&&navigation.isWalkable(goal)&&Math.hypot(current.col-goal.col,current.row-goal.row)<1e-6?'done':'blocked';
   }
-  const stepSpeed=speed*actorPathSpeedScale(actor);
-  actor.x+=dx/d*stepSpeed;
-  actor.y+=dy/d*stepSpeed;
-  actor.dir=dx<0?-1:1;
+  if(!navigation.segmentClear(current,wp))return 'blocked';
+  const dx=wp.col-current.col,dy=wp.row-current.row,d=Math.hypot(dx,dy);
+  const amount=Math.min(d,Math.max(0,speed)*actorPathSpeedScale(actor)/Math.hypot(ISO.tileW/2,ISO.tileH/2));
+  if(amount<=0)return 'waiting';
+  const next={col:current.col+dx/d*amount,row:current.row+dy/d*amount};
+  if(!navigation.segmentClear(current,next))return 'blocked';
+  const projected=toIso(next.col,next.row),oldX=actor.x;
+  actor.x=projected.x-7;actor.y=projected.y-20;
+  if(Math.abs(actor.x-oldX)>1e-7)actor.dir=actor.x<oldX?-1:1;
   actor.aTimer=(actor.aTimer||0)+1;
   if(actor.aTimer>=animEvery){actor.aTimer=0;actor.aFrame=((actor.aFrame||0)+1)%2;}
+  if(amount===d){actor[idxProp]++;return actor[idxProp]>=path.length?'done':'next';}
   return 'moving';
+}
+function moveActorTo(actor,screenX,screenY,speed=1){
+  const navigation=getActorNavigation(actor),requested=customerFloorPoint(screenX,screenY);
+  if(!navigation)return 'blocked';
+  const key=navigation.key+'|'+requested.col.toFixed(6)+','+requested.row.toFixed(6);
+  if(actorJourneys.get(actor)!==key||!actor.path){
+    planActorPath(actor,requested.col,requested.row);actorJourneys.set(actor,key);
+  }
+  const result=stepActorPath(actor,'path','pathIdx',speed);
+  if(result==='blocked'){actor.path=null;actorJourneys.delete(actor);}
+  return result;
+}
+function interiorCollisionActors(){
+  const actors=[...(G.staff||[]).filter(a=>a&&(a.hired||a.fired)),...(G.custs||[]).filter(a=>a&&a.st!=='gone')];
+  for(const key of ['saca','thief','guardiaCivil','opinador','unitreeBot']){const actor=G[key];if(actor&&actor.phase&&actor.phase!=='idle')actors.push(actor);}
+  return actors;
+}
+function invalidateActorRoute(actor){
+  actor.path=null;actor.navPath=null;actor.navTarget=null;actor.pathMode='';actor.isWalking=false;
+  actorJourneys.delete(actor);customerRoutes.delete(actor);
+}
+function prepareActorCollisionFrame(){
+  const previous=new Map();
+  for(const actor of interiorCollisionActors()){
+    const navigation=getActorNavigation(actor);if(!navigation)continue;
+    const anchor=actorCollisionAnchors.get(actor);
+    let p=customerFloorPoint(actor.x,actor.y);
+    if(!Number.isFinite(p.col)||!Number.isFinite(p.row)){
+      const outside=getDoorOutsidePos();
+      p=anchor?.point||((G.staff||[]).includes(actor)?{col:Number.isFinite(actor.homeCol)?actor.homeCol:2,row:Number.isFinite(actor.homeRow)?actor.homeRow:5}:customerFloorPoint(outside.x,outside.y));
+    }
+    if(!navigation.isWalkable(p)||!Number.isFinite(actor.x)||!Number.isFinite(actor.y)){
+      const sameComponent=q=>!anchor||(anchor.navigation.isWalkable(q)&&anchor.navigation.route(anchor.point,q)!==null);
+      const safe=navigation.resolve(p,{accept:q=>sameComponent(q)&&(p.col>=ISO.cols?q.col>=ISO.cols:q.col<=ISO.cols-navigation.radius)});
+      invalidateActorRoute(actor);
+      if(!safe){actor._collisionPending=true;continue;}
+      const projected=toIso(safe.col,safe.row);actor.x=projected.x-7;actor.y=projected.y-20;p=safe;
+    }else if(anchor&&anchor.navigation.key===navigation.key&&!navigation.segmentClear(anchor.point,p)){
+      const projected=toIso(anchor.point.col,anchor.point.row);actor.x=projected.x-7;actor.y=projected.y-20;p=anchor.point;invalidateActorRoute(actor);
+    }
+    actor._collisionPending=false;
+    actorCollisionAnchors.set(actor,{navigation,point:{...p}});
+    previous.set(actor,{x:actor.x,y:actor.y,phase:actor.phase,st:actor.st,hired:actor.hired,fired:actor.fired});
+  }
+  return previous;
+}
+function enforceActorCollisionFrame(previous){
+  for(const [actor,before] of previous){
+    const navigation=getActorNavigation(actor);
+    if(!navigation||!navigation.segmentClear(customerFloorPoint(before.x,before.y),customerFloorPoint(actor.x,actor.y))){
+      Object.assign(actor,before);invalidateActorRoute(actor);
+    }
+    const accepted=getActorNavigation(actor);if(accepted?.isWalkable(customerFloorPoint(actor.x,actor.y)))actorCollisionAnchors.set(actor,{navigation:accepted,point:customerFloorPoint(actor.x,actor.y)});
+  }
 }
 
 // ── GAME STATE ────────────────────────────────────────────────
@@ -9881,6 +9923,8 @@ function loadGame(){
         if(!s.look) s.look={shirt:s.shirt||0,hair:s.hair||3,skin:1,pants:0,shoes:0,accessory:0};
       });
       loadNPCCustoms();
+      for(const actor of interiorCollisionActors())invalidateActorRoute(actor);
+      prepareActorCollisionFrame();
       return true;}
   }catch(e){}
   return false;
@@ -11275,18 +11319,11 @@ function ensureUnitreeBot(){
   return G.unitreeBot;
 }
 function resetUnitreeBotPosition(bot){
-  const doorIso=toIso(ISO.cols,3);
-  bot.x=820;
-  bot.y=doorIso.y-20;
-  bot.dir=-1;
-  bot.aFrame=0;
-  bot.aTimer=0;
-  bot.scanTimer=0;
-  bot.path=null;
-  bot.pathIdx=0;
-  bot.pathMode='';
+  const outside=getDoorOutsidePos();bot.x=outside.x;bot.y=outside.y;bot.dir=-1;
+  bot.aFrame=0;bot.aTimer=0;bot.scanTimer=0;bot.path=null;bot.pathIdx=0;bot.pathMode='';
 }
 function startUnitreeBot(bot){
+  if(bot.phase!=='idle')return bot;
   resetUnitreeBotPosition(bot);
   const target=findNearestWalkableTile(7,4,{from:{col:ISO.cols-1,row:3},ignore:bot})||findNearestWalkableTile(6,3,{from:{col:ISO.cols-1,row:3},ignore:bot})||{col:7,row:4};
   bot.targetCol=target.col;
@@ -11295,8 +11332,7 @@ function startUnitreeBot(bot){
   bot.cooldown=9999;
   bot.bTimer=110;
   bot.bMsg=lang==='en'?'Unitree U1 online':'Unitree U1 online';
-  bot.path=astarPath(ISO.cols-1,3,bot.targetCol,bot.targetRow,{ignore:bot})||[];
-  bot.pathIdx=0;
+  planActorPath(bot,bot.targetCol,bot.targetRow);
   bot.pathMode='scan';
   G.doorOpen=90;
   showEv(lang==='en'?'🤖 Unitree Bot entering the store':'🤖 Unitree Bot entrando en tienda','#78f3ff');
@@ -11805,29 +11841,13 @@ function updateStaffNav(s){
     const cRow=Math.max(0,Math.min(ISO.rows-1,Math.round(cur.row)));
     const target=findNearestWalkableTile(tCol,tRow,{from:{col:cCol,row:cRow},ignore:s});
     if(target){tCol=target.col;tRow=target.row;}
-    s.navPath=astarPath(cCol,cRow,tCol,tRow,{ignore:s});
-    s.navPathIdx=0;
+    planActorPath(s,tCol,tRow,'navPath','navPathIdx');
     s.navTarget={col:tCol,row:tRow};
   }
 
-  // Move one step along path
-  if(s.navPath&&s.navPathIdx<s.navPath.length){
-    const wp=s.navPath[s.navPathIdx];
-    if(!canActorStepToTile(wp.col,wp.row,s)){
-      if(s.navTick%35===0) s.navTarget=null;
-      s.isWalking=false;
-      return;
-    }
-    const wIso=toIso(wp.col,wp.row);
-    const dx=(wIso.x-7)-s.x, dy=(wIso.y-20)-s.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(!(d>=3)){ s.navPathIdx++; }   // !(d>=3) en vez de d<3: si d es NaN (destino corrupto) NO dividimos por NaN
-    else{
-      s.x+=dx/d*1.0; s.y+=dy/d*1.0;
-      s.dir=dx<0?-1:1; s.isWalking=true;
-      s.aTimer++;if(s.aTimer>8){s.aFrame=(s.aFrame+1)%2;s.aTimer=0;}
-    }
-  } else { s.isWalking=false; }
+  const moved=stepActorPath(s,'navPath','navPathIdx',1/actorPathSpeedScale(s),8);
+  s.isWalking=moved==='moving'||moved==='next';
+  if(moved==='blocked'&&s.navTick%35===0)s.navTarget=null;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -12772,6 +12792,7 @@ window.XPACE_DISTRO={ snapshot:distroSnapshot, publish:distroPublish, list:distr
 
 function updateGame(){
   tt++;
+  const collisionPrevious=prepareActorCollisionFrame();
   // Pausa la simulación mientras se muestran los resultados del día (overlay).
   if(G && G.dayResultsOpen) return;
   // ── PEOPLE LOG ── observation-based: every tick, see who is around and
@@ -12852,7 +12873,7 @@ function updateGame(){
       // Calculate new position
       const newX=mgr.x+mx, newY=mgr.y+my;
       // Collision: check feet position against floor + furniture
-      const feetX=newX+7, feetY=newY+25;
+      const feetX=newX+7, feetY=newY+20;
       if(canWalkTo(feetX,feetY,{ignore:mgr})){
         mgr.x=newX;
         mgr.y=newY;
@@ -13030,9 +13051,9 @@ function updateGame(){
     const saca=G.saca;
     const doorIso=toIso(ISO.cols,3);
     const delivIso=toIso(10,5);
-    const startX=820, startY=doorIso.y-20;
+    const outside=getDoorOutsidePos(),startX=outside.x,startY=outside.y;
     const destX=delivIso.x-7, destY=delivIso.y-20;
-    if(saca.y===0) saca.y=startY; // init Y on first frame
+    if(saca.y===0){saca.x=startX;saca.y=startY;} // init Y on first frame
 
     if(saca.phase==='idle'){
       if(saca.cooldown>0) saca.cooldown--;
@@ -13045,18 +13066,9 @@ function updateGame(){
         SFX.restockThud();
       }
     } else if(saca.phase==='incoming'){
-      const dx=destX-saca.x, dy=destY-saca.y;
-      const dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<2){
-        saca.x=destX; saca.y=destY;
-        saca.phase='unloading'; saca.unloadTimer=360; saca.dir=1;
-      } else {
-        const spd=1.4;
-        saca.x+=dx/dist*spd; saca.y+=dy/dist*spd;
-        saca.dir=dx<0?-1:1;
-      }
+      const moved=moveActorTo(saca,destX,destY,1.4);
+      if(moved==='done'){saca.phase='unloading';saca.unloadTimer=360;saca.dir=1;}
       G.doorOpen=60;
-      saca.aTimer++; if(saca.aTimer>=8){saca.aTimer=0;saca.aFrame=(saca.aFrame+1)%2;}
     } else if(saca.phase==='unloading'){
       saca.unloadTimer--;
       G.doorOpen=60;
@@ -13076,19 +13088,10 @@ function updateGame(){
         SFX.restockThud();
       }
     } else if(saca.phase==='outgoing'){
-      const dx=startX-saca.x, dy=startY-saca.y;
-      const dist=Math.sqrt(dx*dx+dy*dy);
-      G.doorOpen=60; // door stays open while saca exits
-      if(dist<2||saca.x>810){
-        saca.phase='idle';
-        saca.cooldown=2400+Math.floor(Math.random()*1200);
-        saca.x=startX; saca.y=startY;
-      } else {
-        const spd=1.4;
-        saca.x+=dx/dist*spd; saca.y+=dy/dist*spd;
-        saca.dir=dx<0?-1:1;
+      G.doorOpen=60;
+      if(moveActorTo(saca,startX,startY,1.4)==='done'){
+        saca.phase='idle';saca.cooldown=2400+Math.floor(Math.random()*1200);
       }
-      saca.aTimer++; if(saca.aTimer>=8){saca.aTimer=0;saca.aFrame=(saca.aFrame+1)%2;}
     }
   }
 
@@ -13096,8 +13099,8 @@ function updateGame(){
   if(G.thief){
     const th=G.thief;
     const doorIso2=toIso(ISO.cols,3);
-    const startX2=820, startY2=doorIso2.y-20;
-    if(th.y===0) th.y=startY2;
+    const outside2=getDoorOutsidePos(),startX2=outside2.x,startY2=outside2.y;
+    if(th.y===0){th.x=startX2;th.y=startY2;}
 
     if(th.phase==='idle'){
       if(th.cooldown>0) th.cooldown--;
@@ -13109,7 +13112,7 @@ function updateGame(){
         th.phase='sneaking';
         th.x=startX2;th.y=startY2;
         th.aFrame=0;th.aTimer=0;th.caught=false;th.lootTimer=0;
-        th.path=astarPath(ISO.cols-1,3,th.targetCol,th.targetRow,{ignore:th})||[];
+        planActorPath(th,th.targetCol,th.targetRow);
         th.pathIdx=0;th.pathMode='steal';
         G.doorOpen=60;
         showEv('🚨 '+(lang==='es'?'¡Un ladrón ha entrado en la tienda!':'A thief entered the shop!'),P.red);
@@ -13118,7 +13121,7 @@ function updateGame(){
     } else if(th.phase==='sneaking'){
       // Move toward target
       if(!th.path||th.pathMode!=='steal') {
-        th.path=astarPath(ISO.cols-1,3,th.targetCol,th.targetRow,{ignore:th})||[];
+        planActorPath(th,th.targetCol,th.targetRow);
         th.pathIdx=0;th.pathMode='steal';
       }
       const moved=stepActorPath(th,'path','pathIdx',0.8,10);
@@ -13168,14 +13171,14 @@ function updateGame(){
       }
     } else if(th.phase==='fleeing'){
       if(!th.path||th.pathMode!=='exit'){
-        planActorPath(th,ISO.cols-1,3,'path','pathIdx');
+        planActorPath(th,ISO.cols+2.9,(ISO.doorRow||3.35),'path','pathIdx');
         th.pathMode='exit';
       }
       G.doorOpen=60;
       const moved=stepActorPath(th,'path','pathIdx',th.caught?2.2:1.5,5);
       const dx2=startX2-th.x, dy2=startY2-th.y;
       const dist2=Math.sqrt(dx2*dx2+dy2*dy2);
-      if(moved==='done'||dist2<3||th.x>810){
+      if(moved==='done'){
         // No teleport-to-idle: hand off to 'exiting' so the actor walks the
         // last visible stretch through the door frame before disappearing.
         th.phase='exiting';
@@ -13187,10 +13190,9 @@ function updateGame(){
     } else if(th.phase==='exiting'){
       G.doorOpen=Math.max(G.doorOpen,40);
       th.dir=1;
-      th.x+=th.caught?2.6:2.0;
-      th.aTimer=(th.aTimer||0)+1;
-      if(th.aTimer>=6){th.aTimer=0;th.aFrame=((th.aFrame||0)+1)%2;}
-      if(th.x>=startX2+12){
+
+      const exitResult=moveActorTo(th,startX2,startY2,th.caught?2.6:2);
+      if(exitResult==='done'){
         th.phase='idle';
         th.cooldown=4800+Math.floor(Math.random()*2400); // ~80-120 sec between thieves
         th.x=startX2;th.y=startY2;
@@ -13569,8 +13571,8 @@ function updateGame(){
   if(G.guardiaCivil){
     const gc=G.guardiaCivil;
     const doorIso3=toIso(ISO.cols,3);
-    const startX3=820,startY3=doorIso3.y-20;
-    if(gc.y===0) gc.y=startY3;
+    const outside3=getDoorOutsidePos(),startX3=outside3.x,startY3=outside3.y;
+    if(gc.y===0){gc.x=startX3;gc.y=startY3;}
     const patrolIso=toIso(gc.targetCol||9,gc.targetRow||3);
     const patrolX=patrolIso.x-7, patrolY=patrolIso.y-20;
 
@@ -13586,7 +13588,7 @@ function updateGame(){
       if(moved==='done'){
         const finalPatrolIso=toIso(gc.targetCol||9,gc.targetRow||3);
         const finalPatrolX=finalPatrolIso.x-7,finalPatrolY=finalPatrolIso.y-20;
-        gc.x=finalPatrolX;gc.y=finalPatrolY;gc.baseX=finalPatrolX;gc.baseY=finalPatrolY;gc.phase='patrolling';gc.patrolTimer=1800;
+        gc.baseX=gc.x;gc.baseY=gc.y;gc.phase='patrolling';gc.patrolTimer=1800;
         gc.path=null;gc.pathMode='';
         showEv('👮 Guardia Civil vigilando la tienda','#55aa55');
       } else if(moved==='blocked'){
@@ -13594,8 +13596,8 @@ function updateGame(){
       }
     } else if(gc.phase==='patrolling'){
       if(gc.patrolTimer>0) gc.patrolTimer--;
-      gc.x=(gc.baseX||gc.x)+Math.sin(tt*0.025)*1.2;
-      gc.y=(gc.baseY||gc.y)+Math.cos(tt*0.02)*0.5;
+      const patrolNext={x:(gc.baseX??gc.x)+Math.sin(tt*0.025)*1.2,y:(gc.baseY??gc.y)+Math.cos(tt*0.02)*.5};
+      if(getActorNavigation(gc)?.segmentClear(customerFloorPoint(gc.x,gc.y),customerFloorPoint(patrolNext.x,patrolNext.y))){gc.x=patrolNext.x;gc.y=patrolNext.y;}
       if(G.thief&&G.thief.phase!=='idle'){
         const dx=G.thief.x-gc.x,dy=G.thief.y-gc.y;
         if(Math.sqrt(dx*dx+dy*dy)<155){
@@ -13611,14 +13613,14 @@ function updateGame(){
       if(gc.patrolTimer<=0&&gc.autoLeave) gc.phase='leaving';
     } else if(gc.phase==='leaving'){
       if(!gc.path||gc.pathMode!=='exit'){
-        planActorPath(gc,ISO.cols-1,3,'path','pathIdx');
+        planActorPath(gc,ISO.cols+2.9,(ISO.doorRow||3.35),'path','pathIdx');
         gc.pathMode='exit';
       }
       G.doorOpen=60;
       const moved=stepActorPath(gc,'path','pathIdx',1.5,8);
       const dx=startX3-gc.x,dy=startY3-gc.y;
       const dist=Math.sqrt(dx*dx+dy*dy);
-      if(moved==='done'||dist<3||gc.x>810){
+      if(moved==='done'){
         gc.phase='exiting';
         gc.path=null;gc.pathMode='';
         gc.dir=1;
@@ -13628,10 +13630,8 @@ function updateGame(){
     } else if(gc.phase==='exiting'){
       G.doorOpen=Math.max(G.doorOpen,40);
       gc.dir=1;
-      gc.x+=1.7;
-      gc.aTimer=(gc.aTimer||0)+1;
-      if(gc.aTimer>=8){gc.aTimer=0;gc.aFrame=((gc.aFrame||0)+1)%2;}
-      if(gc.x>=startX3+12){
+      const exitResult=moveActorTo(gc,startX3,startY3,1.5);
+      if(exitResult==='done'){
         gc.phase='idle';gc.x=startX3;gc.y=startY3;gc.autoLeave=false;
       }
     }
@@ -13641,8 +13641,8 @@ function updateGame(){
 	  if(G.opinador){
 	    const op=G.opinador;
     const doorIso4=toIso(ISO.cols,3);
-    const startX4=820,startY4=doorIso4.y-20;
-    if(op.y===0) op.y=startY4;
+    const outside4=getDoorOutsidePos(),startX4=outside4.x,startY4=outside4.y;
+    if(op.y===0){op.x=startX4;op.y=startY4;}
     const kp=getTabletPos();
     const targetX=kp.x-10,targetY=kp.y-16;
     if(op.phase==='entering'){
@@ -13686,14 +13686,14 @@ function updateGame(){
       }
     } else if(op.phase==='leaving'){
       if(!op.path||op.pathMode!=='exit'){
-        planActorPath(op,ISO.cols-1,3,'path','pathIdx');
+        planActorPath(op,ISO.cols+2.9,(ISO.doorRow||3.35),'path','pathIdx');
         op.pathMode='exit';
       }
       G.doorOpen=60;
       const moved=stepActorPath(op,'path','pathIdx',1.55,8);
       const dx=startX4-op.x,dy=startY4-op.y;
       const dist=Math.sqrt(dx*dx+dy*dy);
-      if(moved==='done'||dist<3||op.x>810){
+      if(moved==='done'){
         op.phase='exiting';
         op.path=null;op.pathMode='';
         op.dir=1;
@@ -13703,10 +13703,8 @@ function updateGame(){
     } else if(op.phase==='exiting'){
       G.doorOpen=Math.max(G.doorOpen,40);
       op.dir=1;
-      op.x+=1.7;
-      op.aTimer=(op.aTimer||0)+1;
-      if(op.aTimer>=8){op.aTimer=0;op.aFrame=((op.aFrame||0)+1)%2;}
-      if(op.x>=startX4+12){
+      const exitResult=moveActorTo(op,startX4,startY4,1.5);
+      if(exitResult==='done'){
         op.phase='idle';op.x=startX4;op.y=startY4;op.bTimer=0;op.bMsg='';
       }
     }
@@ -13717,8 +13715,8 @@ function updateGame(){
 	  if(G.unitreeBot){
 	    const bot=G.unitreeBot;
 	    const doorIso5=toIso(ISO.cols,3);
-	    const startX5=820,startY5=doorIso5.y-20;
-	    if(bot.y===0) bot.y=startY5;
+	    const outside5=getDoorOutsidePos(),startX5=outside5.x,startY5=outside5.y;
+	    if(bot.y===0){bot.x=startX5;bot.y=startY5;}
 	    if(bot.phase==='idle'){
 	      if(bot.cooldown>0) bot.cooldown--;
 	      else if(!G.dayEnded&&G.custs.length<7&&(G.fame||0)>=18&&!G.storeClosed){
@@ -13770,14 +13768,14 @@ function updateGame(){
 	      }
 	    }else if(bot.phase==='leaving'){
 	      if(!bot.path||bot.pathMode!=='exit'){
-	        planActorPath(bot,ISO.cols-1,3,'path','pathIdx');
+	        planActorPath(bot,ISO.cols+2.9,(ISO.doorRow||3.35),'path','pathIdx');
 	        bot.pathMode='exit';
 	      }
 	      G.doorOpen=80;
 	      const moved=stepActorPath(bot,'path','pathIdx',1.25,7);
 	      const dx=startX5-bot.x,dy=startY5-bot.y;
 	      const dist=Math.sqrt(dx*dx+dy*dy);
-	      if(moved==='done'||dist<3||bot.x>810){
+	      if(moved==='done'){
 	        bot.phase='exiting';
 	        bot.path=null;bot.pathMode='';
 	        bot.dir=1;
@@ -13787,10 +13785,9 @@ function updateGame(){
 	    }else if(bot.phase==='exiting'){
 	      G.doorOpen=Math.max(G.doorOpen,50);
 	      bot.dir=1;
-	      bot.x+=1.5;
-	      bot.aTimer=(bot.aTimer||0)+1;
-	      if(bot.aTimer>=10){bot.aTimer=0;bot.aFrame=((bot.aFrame||0)+1)%2;}
-	      if(bot.x>=startX5+14){
+
+      const exitResult=moveActorTo(bot,startX5,startY5,1.5);
+      if(exitResult==='done'){
 	        bot.phase='idle';
 	        bot.cooldown=3600+Math.floor(Math.random()*1600);
 	        resetUnitreeBotPosition(bot);
@@ -13815,25 +13812,18 @@ function updateGame(){
   if(G.tftStockTimer>0){G.tftStockTimer--;}else{G.tftStockIdx=-1;}
   if(G.tftGrokArt&&G.tftGrokArt.timer>0) G.tftGrokArt.timer--;
   if(G.tftGrokArt&&G.tftGrokArt.timer<=0) G.tftGrokArt=null;
-  // Fired staff walks to door and leaves
+  // Fired staff leaves through a reachable opening; a closed door keeps the
+  // existing actor and employment transition pending until a route is clear.
   for(const s of G.staff){
-    if(!s.fired) continue;
-    const dx=s.fireTx-s.x,dy=s.fireTy-s.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<5){
-      // Reached door — unhire
-      s.hired=false;s.fired=false;s.fireBubble=false;s.clickBubble=0;
-      G.doorOpen=50;
-    } else {
-      s.x+=dx/d*1.5;s.y+=dy/d*1.5;
-      s.dir=dx>0?1:-1;
-      s.aTimer++;if(s.aTimer>6){s.aFrame=(s.aFrame+1)%2;s.aTimer=0;}
-      s.isWalking=true;
-    }
+    if(!s.fired)continue;
+    const outside=getDoorOutsidePos(),moved=moveActorTo(s,outside.x,outside.y,1.5);
+    s.isWalking=moved==='moving'||moved==='next';
+    if(moved==='done'){s.hired=false;s.fired=false;s.fireBubble=false;s.clickBubble=0;G.doorOpen=50;}
   }
 
   // Week end
   if(G.weekTimer>=CFG.WEEK_TICKS){G.weekTimer=0;SFX.weekEnd();endWeek();}
+  enforceActorCollisionFrame(collisionPrevious);
   updateBars();
 }
 
@@ -14071,14 +14061,12 @@ function getDoorThresholdPos(){
 }
 
 function getDoorOutsidePos(){
-  const outsideIso=toIso(ISO.cols+0.92,3.18+RIGHT_WALL_FEATURE_ROW_OFFSET);
+  const outsideIso=toIso(ISO.cols+2.9,ISO.doorRow||3.35);
   return {x:outsideIso.x-7,y:outsideIso.y-20};
 }
 
 function getCustomerExitPos(){
-  // Finish an outgoing visit beside the admission waiting point, not on it.
-  // Both points remain inside the real exterior doorway/vestibule bounds.
-  const outsideIso=toIso(ISO.cols+1.38,2.7);
+  const outsideIso=toIso(ISO.cols+3.25,ISO.doorRow||3.35);
   return {x:outsideIso.x-7,y:outsideIso.y-20};
 }
 
@@ -14468,11 +14456,11 @@ function getQueueTarget(index=0){
     if(customerQueueCache.key!==key)customerQueueCache={key,slots:[]};
     const slots=customerQueueCache.slots;
     for(let n=slots.length;n<=Math.min(80,Math.max(0,index));n++){
-      const desired={col:baseCol,row:baseRow+n*.85};
+      const desired={col:baseCol,row:baseRow+n*Math.max(.85,navigation.radius*2+.06)};
       let best=null,score=Infinity;
       for(let col=.25;col<ISO.cols;col+=.5)for(let row=.25;row<ISO.rows;row+=.5){
         const p={col,row};
-        if(col>ISO.cols-3||!navigation.isWalkable(p)||slots.some(s=>Math.hypot(s.col-col,s.row-row)<.72))continue;
+        if(col>ISO.cols-3||!navigation.isWalkable(p)||slots.some(s=>Math.hypot(s.col-col,s.row-row)<Math.max(.72,navigation.radius*2+.06)))continue;
         const cost=Math.hypot(col-desired.col,row-desired.row);
         if(cost<score){best=p;score=cost;}
       }
@@ -14667,7 +14655,7 @@ function isDoorThresholdTile(col,row){
 
 function actorTouchesDoor(actor,kind='staff'){
   if(!actor) return false;
-  const ox=kind==='customer'?5:7;
+  const ox=7;
   const oy=20;
   const points=[
     {x:actor.x,y:actor.y},
@@ -14741,12 +14729,26 @@ function setDoorMode(mode){
 }
 
 function updateDoorAnimation(){
-  if(!G) return;
-  if(typeof G.doorAnim!=='number') G.doorAnim=0;
-  const target=shouldDoorBeOpen()?1:0;
-  const speed=target>G.doorAnim?0.11:0.18;
-  G.doorAnim+=(target-G.doorAnim)*speed;
-  if(Math.abs(G.doorAnim-target)<0.02) G.doorAnim=target;
+  if(!G)return;
+  if(typeof G.doorAnim!=='number')G.doorAnim=0;
+  const previous=G.doorAnim,target=shouldDoorBeOpen()?1:0;
+  let next=previous+(target-previous)*(target>previous?.11:.18);
+  if(Math.abs(next-target)<.02)next=target;
+  const api=window.XpaceCustomerNavigation;
+  if(api?.physicalColliders&&api?.buildCustomerNavigation&&next!==previous){
+    getCustomerNavigation();
+    // A swinging leaf waits for an occupied sweep to clear. Closing a door
+    // cannot force a person into a wall or relocate a body at the next frame.
+    const scene={...customerPhysicalScene},colliders=[];
+    for(const open of [previous,(previous+next)/2,next])colliders.push(...api.physicalColliders({...scene,doorOpen:open}).filter(box=>box.id==='architecture:door-leaf'));
+    for(const actor of interiorCollisionActors()){
+      const current=getActorNavigation(actor),p=customerFloorPoint(actor.x,actor.y);
+      if(!current?.isWalkable(p))continue;
+      const sweep=api.buildCustomerNavigation({...scene,layout:[],colliders},{radius:current.radius,allowOutside:true});
+      if(!sweep.isWalkable(p)){next=previous;break;}
+    }
+  }
+  G.doorAnim=next;
 }
 
 // ── DRAW HELPERS ──────────────────────────────────────────────
@@ -18469,14 +18471,18 @@ function inventoryPresentationLayout(){
   return store?store.filter(space,shopLayout):shopLayout;
 }
 function drawShop(){
+  prepareActorCollisionFrame();
   const renderLayout=inventoryPresentationLayout();
   if(isStarbucksVenue()){
     const actors=[];
     if(!editorSceneActive && !document.body.classList.contains('xtanco-mudanza')){
       for(const s of G.staff||[])if(s.hired&&!s.hidden&&peopleGroupVisible('staff'))actors.push({depth:(s.y+27-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoStaff(s)});
       for(const c of G.custs||[])if(peopleGroupVisible('customers'))actors.push({depth:(c.y+20-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoCust(c)});
+      for(const [kind,draw] of [['saca',drawIsoSaca],['thief',drawIsoThief],['guardiaCivil',drawIsoGuardiaCivil],['opinador',drawIsoOpinador],['unitreeBot',drawIsoUnitreeBot]]){
+        const actor=G[kind];if(actor&&actor.phase!=='idle'&&(kind==='unitreeBot'||peopleGroupVisible('specials')))actors.push({depth:(actor.y+20-ISO.oy)/(ISO.tileH/2),draw:()=>draw(actor)});
+      }
     }
-    cx.save();cx.beginPath();cx.rect(SHOP.x,SHOP.y,SHOP.w,Math.max(SHOP.h,H-SHOP.y));cx.clip();
+    cx.save();cx.beginPath();cx.rect(SHOP.x,SHOP.y,Math.max(SHOP.w,W-SHOP.x),Math.max(SHOP.h,H-SHOP.y));cx.clip();
     window.XpaceStarbucks.draw(cx,ISO,toIso,shopFurnitureVisible?renderLayout:[],actors,document.body.classList.contains('xtanco-mudanza'));
     if(shopFurnitureVisible)for(const item of renderLayout)if(item.source==='PixerIA')drawCustomFurni(item);
     cx.restore();return;
@@ -18488,7 +18494,7 @@ function drawShop(){
   // walking on the sidewalk past the building footprint (route reaches y≈470,
   // SHOP.h is 466) aren't clipped at the lower edge.
   cx.save();
-  cx.beginPath();cx.rect(SHOP.x,SHOP.y,SHOP.w,Math.max(SHOP.h,H-SHOP.y));cx.clip();
+  cx.beginPath();cx.rect(SHOP.x,SHOP.y,Math.max(SHOP.w,W-SHOP.x),Math.max(SHOP.h,H-SHOP.y));cx.clip();
 
   // ── FLOOR (continuous neutral base + tiles so edge gaps never show through) ──
   const floorPoly=[toIso(0,0),toIso(ISO.cols,0),toIso(ISO.cols,ISO.rows),toIso(0,ISO.rows)];
@@ -18937,7 +18943,7 @@ function drawShop(){
     }
     // Unitree Bot (active phases only)
     if(G.unitreeBot&&G.unitreeBot.phase!=='idle'){
-      entities.push({type:'unitreeBot',data:G.unitreeBot,col:0,row:0,depth:G.unitreeBot.y+27});
+      entities.push({type:'unitreeBot',data:G.unitreeBot,col:0,row:0,depth:G.unitreeBot.y+20});
     }
   }
 
@@ -23677,6 +23683,7 @@ function drawNovahMocap(s){
 }
 
 function drawIsoStaff(s){
+  if(s?._collisionPending)return;
   if(!peopleGroupVisible('staff'))return;
   // Auto-curación: si la posición se corrompió a NaN (p.ej. un destino indefinido en la
   // navegación), recolócala en su tile de casa. Sin esto el NaN es permanente y tumba
@@ -23961,6 +23968,7 @@ function drawSponsorScrooge(x,y,dir,frame,tick){
 }
 
 function drawIsoCust(c){
+  if(c?._collisionPending)return;
   if(!peopleGroupVisible((G?.passersby||[]).includes(c)?'passersby':'customers'))return;
   // Auto-curación: una posición NaN en un cliente también rompe el dibujado; lo mandamos
   // a la puerta a salir limpio en vez de tumbar la escena.
@@ -24149,6 +24157,7 @@ function drawIsoCust(c){
 
 // ── LA SACA — delivery person with carretilla ────────────────
 function drawIsoSaca(saca){
+  if(saca?._collisionPending)return;
   if(!peopleGroupVisible('specials'))return;
   if(!saca||saca.phase==='idle') return;
   const x=saca.x, y=saca.y;
@@ -24253,6 +24262,7 @@ function drawIsoSaca(saca){
 
 // ── THIEF — caco con antifaz ────────────────────────────────
 function drawIsoThief(th){
+  if(th?._collisionPending)return;
   if(!peopleGroupVisible('specials'))return;
   if(!th||th.phase==='idle') return;
   const x=th.x, y=th.y;
@@ -24298,6 +24308,7 @@ function drawIsoThief(th){
 
 // ── GUARDIA CIVIL — personaje de seguridad ─────────────────────
 function drawIsoGuardiaCivil(gc){
+  if(gc?._collisionPending)return;
   if(!peopleGroupVisible('specials'))return;
   if(!gc||gc.phase==='idle') return;
   const x=gc.x,y=gc.y;
@@ -24325,6 +24336,7 @@ function drawIsoGuardiaCivil(gc){
 
 // ── OPINADOR — visita rápida al tótem de opinión ───────────────
 function drawIsoOpinador(op){
+  if(op?._collisionPending)return;
   if(!peopleGroupVisible('specials'))return;
   if(!op||op.phase==='idle') return;
   const x=op.x,y=op.y;
@@ -24368,8 +24380,9 @@ function drawIsoOpinador(op){
 
 // ── UNITREE BOT — robot cartoon original ───────────────────────
 function drawIsoUnitreeBot(bot){
+  if(bot?._collisionPending)return;
   if(!bot||bot.phase==='idle') return;
-  const x=bot.x,y=bot.y;
+  const x=bot.x-1,y=bot.y-8;
   const dir=bot.dir||1;
   const fr=bot.aFrame||0;
   const scan=bot.phase==='scanning';
@@ -27847,8 +27860,7 @@ window.xtAPI = (function(){
 
   function resetThiefPosition(th){
     const doorIso=toIso(ISO.cols,3);
-    th.x=820;
-    th.y=doorIso.y-20;
+    const outside=getDoorOutsidePos();th.x=outside.x;th.y=outside.y;
     th.dir=-1;
     th.aFrame=0;
     th.aTimer=0;
@@ -27868,7 +27880,7 @@ window.xtAPI = (function(){
         th.targetRow=target.row;
         th.phase='sneaking';
         resetThiefPosition(th);
-        th.path=astarPath(ISO.cols-1,3,th.targetCol,th.targetRow,{ignore:th})||[];
+        planActorPath(th,th.targetCol,th.targetRow);
         th.pathIdx=0;th.pathMode='steal';
         G.doorOpen=60;
         showEv('🚨 '+(lang==='es'?'¡Un ladrón ha entrado en la tienda!':'A thief entered the shop!'),P.red);
@@ -27885,8 +27897,7 @@ window.xtAPI = (function(){
 
   function resetSacaPosition(saca){
     const doorIso=toIso(ISO.cols,3);
-    saca.x=820;
-    saca.y=doorIso.y-20;
+    const outside=getDoorOutsidePos();saca.x=outside.x;saca.y=outside.y;
     saca.dir=-1;
     saca.aFrame=0;
     saca.aTimer=0;
@@ -30753,7 +30764,7 @@ window.xtAPI = (function(){
     const th=ensureThief();
     const clean=binaryToggleArg(arg,th.phase!=='idle');
     const doorIso=toIso(ISO.cols,3);
-    const startX=820,startY=doorIso.y-20;
+    const outside=getDoorOutsidePos(),startX=outside.x,startY=outside.y;
     if(['on','entrar','entra','start','robar','ladron','ladrón'].includes(clean)){
       const target=findNearestWalkableTile(3+Math.floor(Math.random()*6),1+Math.floor(Math.random()*4),{from:{col:ISO.cols-1,row:3},ignore:th})||{col:5,row:3};
       th.targetCol=target.col;
@@ -30791,7 +30802,7 @@ window.xtAPI = (function(){
     const gc=ensureGuardiaCivil();
     const clean=binaryToggleArg(arg,gc.phase!=='idle');
     const doorIso=toIso(ISO.cols,3);
-    const startX=820,startY=doorIso.y-20;
+    const outside=getDoorOutsidePos(),startX=outside.x,startY=outside.y;
     if(['on','entrar','entra','start','vigilar','guardia','gc'].includes(clean)){
       gc.targetCol=9;gc.targetRow=3;
       gc.phase='entering';
@@ -30874,7 +30885,7 @@ window.xtAPI = (function(){
     const op=ensureOpinador();
     const low=clean?clean.toLowerCase():binaryToggleArg(arg,op.phase!=='idle');
     const doorIso=toIso(ISO.cols,3);
-    const startX=820,startY=doorIso.y-20;
+    const outside=getDoorOutsidePos(),startX=outside.x,startY=outside.y;
     if(['off','stop','salir','sale','fuera','idle'].includes(low)){
       if(op.phase==='idle') return 'No hay opinador activo';
       op.phase='leaving';op.bTimer=60;op.bMsg='Me voy';G.doorOpen=80;
@@ -31573,7 +31584,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=20261003-people-off');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=actor-collision-20261004-1');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -35984,7 +35995,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=20261003-people-off"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=actor-collision-20261004-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

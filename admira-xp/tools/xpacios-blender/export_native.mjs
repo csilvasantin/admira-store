@@ -1,7 +1,7 @@
 // Serialize the existing native geometry for editable Blender authoring.
 import fs from 'node:fs';
 import * as T from '../../scripts/premium-three.mjs';
-import {createLifeScene} from '../../scripts/life-scene.mjs';
+import {createLifeScene} from '../../scripts/life-scene.mjs?v=actor-collision-20261004-1';
 const catalog=JSON.parse(fs.readFileSync('inventario/catalog.json'));
 const canvasFactory=()=>{const canvas={width:0,height:0,text:[],base:null};const ctx=new Proxy({fillRect(){canvas.base ||= this.fillStyle;},fillText(text,x,y){canvas.text.push({text,x,y,color:this.fillStyle});}}, {get:(o,k)=>k in o?o[k]:()=>{}});canvas.getContext=()=>ctx;return canvas;};
 const result=[];

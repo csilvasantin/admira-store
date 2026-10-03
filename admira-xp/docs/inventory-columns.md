@@ -2,13 +2,13 @@
 
 ## Español
 
-La ficha Inventory/ITIL muestra el número de piezas y fichas propias del Xpacio, incluidas las registradas pendientes y las retiradas conservadas para recuperación; dos unidades de un modelo cuentan como dos piezas. Al pulsar Inventory/ITIL o ejecutar /inventario se abre Experto: lista y búsqueda en la segunda columna; al seleccionar una pieza, detalle en la tercera. La escena permanece visible. El contador refleja el inventario completo, también al buscar. Cafebrería conserva sus campos editables, visibilidad, editor y exportación JSON/CSV. Starbucks incluye sus unidades registradas y ocho fichas IoT virtuales. La vinculación física y los mapas de dureza siguen pendientes.
+La ficha Inventory/ITIL muestra el número de piezas y fichas propias del Xpacio, incluidas las registradas pendientes y las retiradas conservadas para recuperación; dos unidades de un modelo cuentan como dos piezas. Al pulsar Inventory/ITIL o ejecutar /inventario se abre Experto: lista y búsqueda en la segunda columna; al seleccionar una pieza, detalle en la tercera. La escena permanece visible. El contador refleja el inventario completo, también al buscar. Cafebrería conserva sus campos editables, visibilidad, editor y exportación JSON/CSV. Starbucks incluye sus unidades registradas y ocho fichas IoT virtuales. La vinculación física IoT sigue pendiente; las colisiones del gemelo se describen en actor-collision.md.
 
 Entra en el Xpacio y local → pulsa Inventory/ITIL → comprueba el contador → busca o selecciona una pieza en la segunda columna → consulta su ficha en la tercera. Abrir modelo y desglose permite ir al catálogo de ese mismo Xpacio conservando local, idioma y marca. Añadir y Eliminar siguen en la categoría Inventario.
 
 ## English
 
-The Inventory/ITIL card shows the number of items and records owned by the Xpace, including pending registered records and removed items retained for recovery; two units of one model count as two items. Press Inventory/ITIL or run /inventario to open Expert: list and search in the second column; select an item for details in the third column. The scene remains visible. The count reflects the full inventory, including while searching. Cafebrería retains its editable fields, visibility, editor and JSON/CSV export. Starbucks includes its registered units and eight virtual IoT records. Physical binding and collision maps remain pending.
+The Inventory/ITIL card shows the number of items and records owned by the Xpace, including pending registered records and removed items retained for recovery; two units of one model count as two items. Press Inventory/ITIL or run /inventario to open Expert: list and search in the second column; select an item for details in the third column. The scene remains visible. The count reflects the full inventory, including while searching. Cafebrería retains its editable fields, visibility, editor and JSON/CSV export. Starbucks includes its registered units and eight virtual IoT records. Physical IoT binding remains pending; twin collisions are described in actor-collision.md.
 
 Enter the Xpace and venue → press Inventory/ITIL → check the count → search or select an item in the second column → view its record in the third. Open model and breakdown opens that same Xpace catalogue, preserving venue, language and brand. Add and Delete remain in the Inventory category.
 
@@ -20,7 +20,7 @@ Enter the Xpace and venue → press Inventory/ITIL → check the count → searc
 - Identity: stable unit ID in `data-inventory-id`; model number remains independent. Starbucks models 44–50 retain PG103 references. `starbucks-wall-01`…`06`, `starbucks-tpv-01` and `starbucks-alsea-paseo-de-gracia` identify virtual channels with physical binding pending.
 - Cafebrería retains all 96 initial scene records, existing scene focus and saved fields, visibility, Distribute editing and JSON/CSV export. Its existing record form is moved to the third column, preserving handlers and node identity. Explicit imports increase its own count.
 - Optional model link: same-origin `/inventario/?space=<space>&project=<project>&asset=<stable-number>` publishes the active layout and retains venue, brand and language. Ownership filtering remains documented in `inventory-scope.md`.
-- Existing `/inventario añadir`, `/inventario eliminar`, undo, CLI history, brand and identities remain available. No physical IoT state, collision map or remote lifecycle asset is changed. People stays OFF by default.
+- Existing `/inventario añadir`, `/inventario eliminar`, undo, CLI history, brand and identities remain available. No physical IoT state or remote lifecycle asset is changed. Shared actor collisions are documented in actor-collision.md. People stays OFF by default.
 
 ## Verificación / Verification
 

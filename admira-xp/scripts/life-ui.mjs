@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
 import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
@@ -153,7 +153,7 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=cafebreria-1');if(ticket!==generation)return;
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=actor-collision-20261004-1');if(ticket!==generation)return;
       viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
