@@ -840,7 +840,7 @@
 </nav>
 <div id="topBar">
   <button type="button" class="quad-icon" id="pfOptions" data-quad-toggle="left" aria-label="Opciones" aria-expanded="false" title="Opciones">☰</button>
-  <button type="button" id="projectContextChip" class="project-context-chip" aria-label="Proyecto y local">Xpacio</button>
+  <button type="button" id="projectContextChip" class="project-context-chip" aria-label="Proyecto y local" hidden>Xpacio</button>
   <span id="bbClock" style="display:none;color:#ffdd66;font-size:12px;font-weight:bold">09:00</span>
   <span id="bbDate" style="display:none;color:#b0a888;font-size:9px">22/03/2026</span>
   <div class="sep"></div>
@@ -874,6 +874,12 @@
   <button class="btn-quit" id="btnQuit" title="Cerrar audios y videos, volver al menú principal">⏻ Quit</button>
 </div>
 <!-- Trío canónico opciones/avanzado/experto (mismo patrón que pixeria.com/musica.html, temado al Xpacio) -->
+<style id="topbarCoreStyle">
+  /* Park venue telemetry while Carlos defines the core UI and operational IoT.
+     Keep live nodes and IDs so their producers and saved context still work. */
+  #topBar > :is(#projectContextChip,#bbClock,#bbDate,.stat,.sep,.comp-box,#bbStatus,#xpTopNotify){display:none!important}
+  #topBar.xtore-session-hud{height:46px!important;min-height:0!important;padding:0 10px!important;flex-wrap:nowrap!important}
+</style>
 <style id="quadCanonStyle">
   #topBar .pf-toggles{display:flex;align-items:center;gap:6px;margin-right:8px}
   #topBar .quad-icon{width:26px;height:26px;padding:0;border-radius:7px;font-size:14px;line-height:1;display:grid;place-items:center;background:rgba(2,8,13,.78);border:1px solid rgba(120,243,255,.34) !important;color:var(--xp-cyan);text-transform:none;box-shadow:inset 0 0 12px rgba(120,243,255,.06)}

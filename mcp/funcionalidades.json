@@ -3344,5 +3344,23 @@
     ],
     "new_remote_tools": false,
     "physical_publication": false
-  }
+  },
+  "topbar_core": {
+    "es": "La barra superior del gemelo muestra únicamente ☰ Opciones, ▤ Avanzado y ⌘ Experto. Se ocultan el acceso de proyecto/local junto a Opciones y los indicadores de ventas, beneficio, satisfacción, tráfico, aforo, embudo, estado y cuotas de marcas. Proyecto y local se eligen desde Opciones → Proyecto y local. Los nodos, IDs, cálculos, conexiones y datos guardados se conservan. La futura selección de indicadores queda pendiente hasta completar el núcleo de la interfaz gráfica y verificar los elementos IoT operativos; este cambio no acredita su conexión.",
+    "en": "The twin top bar shows only ☰ Options, ▤ Advanced and ⌘ Expert. The project/venue shortcut next to Options and the sales, profit, satisfaction, traffic, occupancy, funnel, status and brand-share indicators are hidden. Select a project and venue through Options → Project and venue. Nodes, IDs, calculations, connections and saved data are retained. Future indicator selection is pending until the graphical interface core is complete and operational IoT elements are verified; this change does not confirm their connection.",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/topbar-core.md",
+    "implementation": "admira-xp/index.html#topbarCoreStyle",
+    "status": "implemented",
+    "pending": "indicator selection after GUI core and verified operational IoT",
+    "preserves": [
+      "projectSelector",
+      "projectVenueSelector",
+      "telemetry nodes and producers",
+      "saved context",
+      "Expert CLI history",
+      "/marca",
+      "/avatarDigital"
+    ]
+  },
+  "version": "v.03.10.2026.r5.23:28"
 }
