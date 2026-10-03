@@ -25,9 +25,8 @@ test('ITIL retains origin, venue, language and brand; return links retain the sa
  const back=twinURL(url,inventoryContext(url));assert.equal(back.searchParams.get('loc'),'alsea-sbux-021');assert.equal(back.searchParams.get('project'),'starbucks');assert.equal(back.searchParams.get('marca'),'demo');
  const cafe=twinURL('/inventario/?space=cafebreria&project=cafebreria&lang=en',inventoryContext('/inventario/?space=cafebreria&project=cafebreria&lang=en'));assert.equal(cafe.pathname,'/xpacios/cafebreria/');assert.equal(cafe.searchParams.get('lang'),'en');
 });
-test('native ITIL click publishes the actual layout and opens the same-origin inventory',()=>{
+test('native ITIL opens the bottom inventory and displays unit count without navigation',()=>{
  const html=fs.readFileSync(new URL('../admira-xp/index.html',import.meta.url),'utf8'),fn=html.slice(html.indexOf('  function makeItil(){'),html.indexOf('  function mirror(){',html.indexOf('  function makeItil(){')));
- let click,opened,published;const shopLayout=[{id:'counter',type:'counter'}];
- const ctx={URL,lang:'es',location:{href:'https://www.admira.store/admira-xp/?project=starbucks&loc=altadis-bcn-003&lang=es',assign:url=>opened=new URL(url)},inventorySpace:()=> 'xtanco_altadis-bcn-003',isStarbucksVenue:()=>false,shopLayout,document:{createElement:()=>({dataset:{},addEventListener:(name,fn)=>{click=fn;}})},window:{XpaceInventory:{publish:(space,layout)=>published={space,layout}},open:url=>opened=new URL(url)}};
- vm.runInNewContext(fn+'makeItil();',ctx);click();assert.equal(published.layout,shopLayout);assert.equal(opened.origin,'https://www.admira.store');assert.equal(opened.searchParams.get('space'),'xtanco_altadis-bcn-003');assert.equal(opened.searchParams.get('project'),'estancos');assert.equal(opened.searchParams.get('loc'),'altadis-bcn-003');
+ let click,category,button;const ctx={lang:'es',document:{createElement:()=>button={dataset:{},addEventListener:(name,fn)=>{click=fn;}}},window:{XpaceInventoryUI:{count:19,open:key=>category=key}}};
+ vm.runInNewContext(fn+'makeItil();',ctx);click();assert.equal(category,'itil');assert.match(button.innerHTML,/19 piezas/);
 });

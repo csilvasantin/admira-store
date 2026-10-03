@@ -22,7 +22,7 @@
         await window.sendComposerText?.(text);
         result=document.getElementById('telegramLastResponse')?.textContent;
       }
-      output.textContent=typeof result==='string'?result:result?.message||'';
+      output.textContent=/^\/inventario\s*$/.test(text)?'':typeof result==='string'?result:result?.message||'';
       dockPanels();
     }catch(error){output.textContent=error.message;}
   }
@@ -95,12 +95,13 @@
   function dockPanels(){document.querySelectorAll(panelSelectors).forEach(dockPanel);}
   function select(button){
     const key=button.dataset.categoryId;if(!key)return;
-    if(key==='itil'){launch(key);return;}
     selected=key;heading.textContent=label(key);heading.parentElement.setAttribute('aria-label',label(key));host.hidden=false;
     section(key);for(const [id,s]of sections)s.hidden=id!==key;
+    host.closest('.expert-workspace').dataset.activeCategory=key;
+    document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));
     syncSelection();dockPanels();
     if(key==='signage'&&!document.querySelector('#telegramDock .send.signage-open'))launch(key);
-    if(key==='inventory')command('/inventario');
+    if(['inventory','itil'].includes(key)&&!window.XpaceInventoryUI)import('./scripts/inventory-workspace.mjs?v=columns-20261004-1').then(()=>{if(selected!==key)return;document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));});
   }
   new MutationObserver(syncSelection).observe(document.getElementById('expertQuickIcons'),{childList:true});
   let pending=false;

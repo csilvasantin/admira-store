@@ -82,15 +82,21 @@ export function mountExpertWorkspace({panel,shell,config}){
   selected=id;released=new WeakSet();section(def);heading.textContent=t(def);heading.dataset.shellEs=def.es;heading.dataset.shellEn=def.en;
   for(const [id,host]of sections)host.hidden=id!==selected;
   for(const button of cards.children){const active=button.dataset.categoryId===selected;button.classList.toggle('is-selected',active);button.setAttribute('aria-pressed',String(active));}
+  const preview=panel.querySelector('#expertPreviewLabel');if(preview){const inventory=['inventory','itil'].includes(id);preview.dataset.shellEs=inventory?'DETALLE':'PREVIOS';preview.dataset.shellEn=inventory?'DETAIL':'PREVIEWS';preview.textContent=t({es:preview.dataset.shellEs,en:preview.dataset.shellEn});}
+  panel.querySelector('.expert-workspace').dataset.activeCategory=id;
+  doc.dispatchEvent(new view.CustomEvent('xpace:expert-category',{detail:{id}}));
   dockTools();
+  if(['inventory','itil'].includes(id)&&view.XpaceInventoryUI)shell.run('/inventario');
  }
  function renderCards(){
   const focused=cards.contains(doc.activeElement)?doc.activeElement.dataset.categoryId:null;
   for(const def of definitions){
    let button=[...cards.children].find(b=>b.dataset.categoryId===def.id);
    if(!button){button=el('button');button.type='button';button.dataset.quickAction=def.id;listen(button,'click',()=>select(def.id));cards.append(button);}
-   button.replaceChildren(el('strong',t(def)),el('span',t(def.detail)));
+   const count=def.id==='itil'?view.XpaceInventoryUI?.count:null;
+   button.replaceChildren(el('strong',t(def)),el('span',Number.isFinite(count)?count+' '+t({es:'piezas',en:'items'}):t(def.detail)));
    view.XpaceExpertCategories.decorate(button,{en:doc.documentElement.lang==='en'});
+   if(Number.isFinite(count))button.title='ITIL · '+count+' '+t({es:'piezas',en:'items'});
    button.classList.toggle('is-selected',def.id===selected);button.setAttribute('aria-pressed',String(def.id===selected));
   }
   if(focused)[...cards.children].find(b=>b.dataset.categoryId===focused)?.focus({preventScroll:true});
