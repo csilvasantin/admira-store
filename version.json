@@ -1,11 +1,15 @@
 {
-  "version": "v.02.10.2026.r3.12:30",
-  "deployedAt": "2026-10-02T12:18:50Z",
-  "deployer": "SmithMacMini",
+  "version": "v.03.10.2026.r2.02:47",
+  "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
-  "signature": "SmithMacMini · MacMini",
-  "git": "288e7f6f77db0ac83392aaa46f625ce5801ef77f",
-  "gitShort": "288e7f6",
-  "gitFull": "288e7f6f77db0ac83392aaa46f625ce5801ef77f",
-  "dirty": false
+  "agent": "OraculoMacMini",
+  "deployer": "OraculoMacMini",
+  "evidence": "Experto común de Starbucks: tres columnas, categorías e iconos compartidos, editor e ITIL reales de Cafebrería desacoplables; conserva paneles superpuestos y cerrados al entrar.",
+  "deployedAt": "2026-10-03T09:53:54.505043+00:00",
+  "git": "54a829835cf2b287ea90b7275780301229601229",
+  "gitFull": "54a829835cf2b287ea90b7275780301229601229",
+  "gitShort": "54a8298",
+  "dirty": false,
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }
