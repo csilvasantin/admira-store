@@ -28,3 +28,11 @@ Enter the Xpace and venue → press Inventory/ITIL → check the count → searc
 Automated scope, instance ownership, ITIL unit counts and column routing, same-origin catalogue navigation, CLI isolation, inventory persistence/undo and common-shell regression tests. Browser checks cover Estancos, Starbucks, Cafebrería, foreign asset links and unknown scopes. Public release verification is recorded in Yokup after deployment.
 
 Sources: `inventario/context.mjs`, `model.mjs`, `app.mjs`, `frame.mjs`, native ITIL action, existing per-Xpacio inventory store. Help: `/help/#inventory-scope`, `/help/cli/#inventory-scope`, `/admira-xp/help.html#inventory-scope`. Real MCP: `https://mcp.admira.store/help`, help topic `inventory-scope` / `inventario del Xpacio`.
+
+## Idioma ITIL / ITIL language
+
+Inventario/ITIL sigue el idioma activo del Xpacio: en castellano muestra Inventario/ITIL y elementos; en inglés, Inventory/ITIL e items. Nombres estándar de mobiliario e IoT, categorías, búsqueda, modelo y detalle se presentan en ese idioma. Cambiar el idioma actualiza las columnas sin perder la selección ni el texto de búsqueda. Cafebrería traduce sus fichas, campos y acciones; conserva las ediciones sin guardar. Los nombres personalizados, identificadores, códigos ITIL, fichas guardadas y exportaciones JSON/CSV conservan sus datos originales. La traducción es de presentación. Continúan las diez subcategorías y el inventario propio de cada Xpacio.
+
+Inventory/ITIL follows the active Xpace language: Spanish displays Inventario/ITIL and elementos; English displays Inventory/ITIL and items. Standard furniture and IoT names, categories, search, model and details use that language. Changing language updates the columns without losing selection or search text. Cafebrería translates records, fields and actions while retaining unsaved edits. Custom names, identifiers, ITIL codes, saved records and JSON/CSV exports retain their original data. Translation affects presentation. The ten subcategories and each Xpace’s own inventory remain available.
+
+Contrato / Contract: `inventory-language.md`.

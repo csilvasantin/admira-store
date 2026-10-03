@@ -6,7 +6,8 @@ function refreshMenus(){for(const refresh of menus)refresh();}
 export function registerFloatingPanel(id,{label,open}){
   if(!id||typeof open!=='function')throw new TypeError('A floating panel entry needs an id and its own open callback.');
   const entry={label:String(label||id),open};windows.set(id,entry);refreshMenus();
-  return ()=>{if(windows.get(id)===entry){windows.delete(id);refreshMenus();}};
+  const unregister=()=>{if(windows.get(id)===entry){windows.delete(id);refreshMenus();}};
+  unregister.setLabel=value=>{entry.label=String(value);if(windows.get(id)===entry)refreshMenus();};return unregister;
 }
 
 // The menu invokes each feature's opener. It never guesses how a hidden tool
@@ -72,6 +73,7 @@ export function attachFloatingPanel(panel,{label,handle,closeButton,onClose,onOp
   const unregister=menu?registerFloatingPanel(typeof menu==='string'?menu:key||panel.id||label,{label,open}):null;
   return {
     panel,handle,closeButton,open,close,restore:motion.restore,clamp:motion.clamp,
+    setLabel(value){label=String(value);const name=handle.querySelector('.xp-floating-title');if(name)name.textContent=label;const english=doc.documentElement.lang==='en';if(generatedClose)closeButton.setAttribute('aria-label',(english?'Close ':'Cerrar ')+label);const resize=panel.querySelector('.xp-panel-resize');if(resize)resize.setAttribute('aria-label',(english?'Resize ':'Redimensionar ')+label);unregister?.setLabel(label);},
     dispose(){
       if(disposed)return;disposed=true;abort.abort();size.dispose();motion.dispose();unregister?.();
       if(generatedHeader)handle.remove();else {if(generatedClose)closeButton.remove();if(!wasHandleClass)handle.classList.remove('xp-floating-handle');}

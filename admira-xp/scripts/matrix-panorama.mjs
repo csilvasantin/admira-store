@@ -12,7 +12,7 @@ import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenS
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
 import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=devices-2';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=wall-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-expert-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=inventory-lang-20261004-1';
 
 export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}={}){
  const en=lang==='en',t=(es,english)=>en?english:es;

@@ -27,3 +27,11 @@ Enter the Xpace and venue → press Inventory/ITIL → check the count → searc
 Unit-count, duplicate-model, own ledger and Starbucks registry tests; native shell, inventory/undo and Cafebrería regressions. Browser checks verify the real second/third column parents, selection, category changes, search count and own records in Estancos, Starbucks and Cafebrería. Public source, mirror and actual MCP help are verified after deployment.
 
 Help ES/EN: `/admira-xp/help.html#inventory-columns`, `/help/#inventory-columns`, `/help/cli/#inventory-columns`, `/mcp/#inventory-columns`. Actual MCP help: `https://mcp.admira.store/help`, topic `inventory-columns`.
+
+## Idioma ITIL / ITIL language
+
+Inventario/ITIL sigue el idioma activo del Xpacio: en castellano muestra Inventario/ITIL y elementos; en inglés, Inventory/ITIL e items. Nombres estándar de mobiliario e IoT, categorías, búsqueda, modelo y detalle se presentan en ese idioma. Cambiar el idioma actualiza las columnas sin perder la selección ni el texto de búsqueda. Cafebrería traduce sus fichas, campos y acciones; conserva las ediciones sin guardar. Los nombres personalizados, identificadores, códigos ITIL, fichas guardadas y exportaciones JSON/CSV conservan sus datos originales. La traducción es de presentación. Continúan las diez subcategorías y el inventario propio de cada Xpacio.
+
+Inventory/ITIL follows the active Xpace language: Spanish displays Inventario/ITIL and elementos; English displays Inventory/ITIL and items. Standard furniture and IoT names, categories, search, model and details use that language. Changing language updates the columns without losing selection or search text. Cafebrería translates records, fields and actions while retaining unsaved edits. Custom names, identifiers, ITIL codes, saved records and JSON/CSV exports retain their original data. Translation affects presentation. The ten subcategories and each Xpace’s own inventory remain available.
+
+Contrato / Contract: `inventory-language.md`.

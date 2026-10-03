@@ -27,3 +27,7 @@
 #expertQuickIcons{grid-template-columns:repeat(2,minmax(0,1fr))}
 
 :is(#expertQuickIcons,#advQuickIcons) .expert-category[data-category-id=inventory] strong{font-size:9.5px!important;letter-spacing:0}
+
+/* Both localized inventory labels fit the shared category card. */
+:is(#expertQuickIcons,#advQuickIcons) .expert-category[data-category-id=inventory]{grid-template-columns:20px minmax(0,1fr);column-gap:4px}
+:is(#expertQuickIcons,#advQuickIcons) .expert-category[data-category-id=inventory] .expert-category-icon{width:20px}

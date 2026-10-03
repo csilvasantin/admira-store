@@ -1,8 +1,8 @@
 {
-  "version": "v.04.10.2026.r3.00:42",
+  "version": "v.04.10.2026.r4.01:01",
   "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
   "agent": "OraculoMacMini",
   "deployer": "OraculoMacMini",
-  "evidence": "Inventory/ITIL fusionados con contador propio; diez categorías sin ficha Pixeria, lista y detalle preservados; ayuda ES/EN y MCP actualizados."
+  "evidence": "Inventario ITIL en ES/EN según idioma activo; nombres y datos personales conservados; cambio de idioma y ayuda MCP verificados."
 }

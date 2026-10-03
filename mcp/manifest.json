@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.04.10.2026.r3.00:42",
+  "version": "v.04.10.2026.r4.01:01",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.26",
+    "version": "2.12.27",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -1444,8 +1444,14 @@
     "es": "Inventory/ITIL unifica Inventario e ITIL en la posición anterior de Inventory, junto a Percepción. Debajo muestra el número total de items propios del Xpacio. La cuadrícula tiene diez subcategorías y elimina la ficha Pixeria. Al pulsar Inventory/ITIL, la lista y la búsqueda aparecen en la segunda columna; seleccionar un objeto muestra su detalle en la tercera. Se conservan las acciones de añadir/eliminar, las identidades, el historial y las fichas editables de Cafebrería. La importación desde PixerIA sigue disponible en Mobiliario → Distribuir. Yokup sigue siendo el maestro ITIL; esta interfaz no acredita vinculación física IoT.",
     "en": "Inventory/ITIL merges Inventory and ITIL at the former Inventory position, next to Perception. Its subtitle shows the total number of items owned by the Xpace. The grid has ten subcategories and removes the Pixeria card. Press Inventory/ITIL for the list and search in the second column; select an object for details in the third. Add/remove actions, identities, history and editable Cafebrería records are retained. PixerIA import remains available under Furniture → Distribute. Yokup remains the ITIL master; this interface does not establish physical IoT binding.",
     "category_id": "inventory",
-    "label": "Inventory/ITIL",
-    "subtitle": "<owned-unit-count> items",
+    "label": {
+      "es": "Inventario/ITIL",
+      "en": "Inventory/ITIL"
+    },
+    "subtitle": {
+      "es": "<count> elementos",
+      "en": "<count> items"
+    },
     "category_ids": [
       "signage",
       "admiralive",
@@ -1466,6 +1472,38 @@
     "legacy_alias": "itil -> inventory",
     "guide": "https://www.xpaceos.com/admira-xp/docs/inventory-merged.md",
     "tutorial": "https://www.xpaceos.com/help/#inventory-merged",
+    "new_remote_tools": false
+  },
+  "inventory_language": {
+    "es": "Inventario/ITIL sigue el idioma activo del Xpacio: en castellano muestra Inventario/ITIL y elementos; en inglés, Inventory/ITIL e items. Nombres estándar de mobiliario e IoT, categorías, búsqueda, modelo y detalle se presentan en ese idioma. Cambiar el idioma actualiza las columnas sin perder la selección ni el texto de búsqueda. Cafebrería traduce sus fichas, campos y acciones; conserva las ediciones sin guardar. Los nombres personalizados, identificadores, códigos ITIL, fichas guardadas y exportaciones JSON/CSV conservan sus datos originales. La traducción es de presentación. Continúan las diez subcategorías y el inventario propio de cada Xpacio.",
+    "en": "Inventory/ITIL follows the active Xpace language: Spanish displays Inventario/ITIL and elementos; English displays Inventory/ITIL and items. Standard furniture and IoT names, categories, search, model and details use that language. Changing language updates the columns without losing selection or search text. Cafebrería translates records, fields and actions while retaining unsaved edits. Custom names, identifiers, ITIL codes, saved records and JSON/CSV exports retain their original data. Translation affects presentation. The ten subcategories and each Xpace’s own inventory remain available.",
+    "supported_languages": [
+      "es",
+      "en"
+    ],
+    "source": "document.documentElement.lang",
+    "category_id": "inventory",
+    "labels": {
+      "es": "Inventario/ITIL",
+      "en": "Inventory/ITIL"
+    },
+    "subtitle": {
+      "es": "<count> elementos",
+      "en": "<count> items"
+    },
+    "presentation_only": true,
+    "preserves": [
+      "ids",
+      "itil_codes",
+      "custom_names",
+      "saved_records",
+      "exports",
+      "selection",
+      "search",
+      "unsaved_edits"
+    ],
+    "guide": "https://www.xpaceos.com/admira-xp/docs/inventory-language.md",
+    "tutorial": "https://www.xpaceos.com/help/#inventory-language",
     "new_remote_tools": false
   }
 }

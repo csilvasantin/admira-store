@@ -1,11 +1,13 @@
-import {mountInventoryWorkspace} from '../../inventario/workspace.mjs?v=inventory-merge-20261004-1';
+import {inventoryCaption} from '../../inventario/labels.mjs?v=inventory-lang-20261004-1';
+import {mountInventoryWorkspace} from '../../inventario/workspace.mjs?v=inventory-lang-20261004-1';
 const doc=document,host=doc.getElementById('expertCategoryDetail'),view=doc.querySelector('#telegramDock .expert-view-pane'),abort=new AbortController();
 let workspace;
 function previewLabel(){const label=doc.getElementById('expertPreviewLabel');if(label)label.textContent=['itil','inventory'].includes(host?.closest('.expert-workspace')?.dataset.activeCategory)?(doc.documentElement.lang==='en'?'DETAIL':'DETALLE'):(doc.documentElement.lang==='en'?'PREVIEWS':'PREVIOS');}
 function updateCount(count){
  previewLabel();
- const en=doc.documentElement.lang==='en',label=count+' items';
- for(const button of doc.querySelectorAll('#advInventoryCli,[data-category-id=inventory]')){const status=button.querySelector('.expert-category-status')||button.querySelector('span');if(status&&status.textContent!==label)status.textContent=label;button.title='Inventory/ITIL · '+label;button.setAttribute('aria-label','Inventory/ITIL · '+label);}
+ const caption=inventoryCaption(count,doc.documentElement.lang),[name,label]=caption.split(' · ');
+ if(['itil','inventory'].includes(host?.closest('.expert-workspace')?.dataset.activeCategory)){const heading=doc.getElementById('expertControlsLabel');heading.textContent=doc.documentElement.lang==='en'?'INVENTORY':'INVENTARIO';heading.parentElement.setAttribute('aria-label',name);}
+ for(const button of doc.querySelectorAll('#advInventoryCli,[data-category-id=inventory]')){const strong=button.querySelector('strong');if(strong)strong.textContent=name;const status=button.querySelector('.expert-category-status')||button.querySelector('span');if(status&&status.textContent!==label)status.textContent=label;button.title=caption;button.setAttribute('aria-label',caption);}
 }
 if(host&&view){
  const list=doc.createElement('section');list.dataset.detailCategory='inventory-list';list.className='itil-workspace';list.hidden=true;host.append(list);
@@ -13,7 +15,7 @@ if(host&&view){
  workspace=mountInventoryWorkspace({listHost:list,detailHost:detail,read:()=>window.XpaceInventorySource?.read()||{},onCount:updateCount,signal:abort.signal});
  doc.addEventListener('xpace:inventory-select',event=>{
   const category=event.detail.category;
-  if(['itil','inventory'].includes(category)){for(const node of host.children)node.hidden=node!==list&&!(category==='inventory'&&node.dataset.detailCategory==='inventory');host.hidden=false;doc.getElementById('expertControlsLabel').textContent=doc.documentElement.lang==='en'?'INVENTORY':'INVENTARIO';workspace.show();}
+  if(['itil','inventory'].includes(category)){for(const node of host.children)node.hidden=node!==list&&!(category==='inventory'&&node.dataset.detailCategory==='inventory');host.hidden=false;{const heading=doc.getElementById('expertControlsLabel');heading.textContent=doc.documentElement.lang==='en'?'INVENTORY':'INVENTARIO';heading.parentElement.setAttribute('aria-label',name);}workspace.show();}
   else workspace.hide();
   previewLabel();
  },{signal:abort.signal});

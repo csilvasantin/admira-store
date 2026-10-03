@@ -12,7 +12,7 @@ export const EXPERT_CATEGORIES=[
  {id:'editor',es:'Mobiliario',en:'Furniture',detail:{es:'editor',en:'editor'},actions:[action('Distribuir muebles','Distribute furniture','/distribuir')]},
  {id:'avatar3d',es:'Avatar3D',en:'Avatar3D',detail:{es:'en vivo',en:'live'},actions:[action('Encender tótem en el gemelo','Turn on twin totem','/avatar3d on'),action('Apagar tótem en el gemelo','Turn off twin totem','/avatar3d off'),action('Avatar digital · on','Digital avatar · on','/avatardigital on'),action('Avatar digital · off','Digital avatar · off','/avatardigital off')]},
  {id:'impactos',es:'Audiencia',en:'Audience',detail:{es:'impactos · CPM',en:'impacts · CPM'},actions:[action('Mostrar audiencia','Show audience','/impactos on'),action('Ocultar audiencia','Hide audience','/impactos off')]},
- {id:'inventory',es:'Inventory/ITIL',en:'Inventory/ITIL',detail:{es:'… items',en:'… items'},actions:[action('Consultar inventario','View inventory','/inventario')]},
+ {id:'inventory',es:'Inventario/ITIL',en:'Inventory/ITIL',detail:{es:'… elementos',en:'… items'},actions:[action('Consultar inventario','View inventory','/inventario')]},
  {id:'perception',es:'Percepción',en:'Perception',detail:{es:'La pantalla te ve',en:'The screen sees you'},actions:[{es:'Abrir el gemelo · categoría Percepción',en:'Open the twin · Perception category',href:'/admira-xp/?autostart=xtanco&quality=better'}]},
 ];
 export function expertCategories(overrides={}){return EXPERT_CATEGORIES.map(def=>({...def,...overrides[def.id],id:def.id}));}
@@ -93,9 +93,9 @@ export function mountExpertWorkspace({panel,shell,config}){
    let button=[...cards.children].find(b=>b.dataset.categoryId===def.id);
    if(!button){button=el('button');button.type='button';button.dataset.quickAction=def.id;listen(button,'click',()=>select(def.id));cards.append(button);}
    const count=def.id==='inventory'?view.XpaceInventoryUI?.count:null;
-   button.replaceChildren(el('strong',t(def)),el('span',Number.isFinite(count)?count+' items':t(def.detail)));
+   button.replaceChildren(el('strong',t(def)),el('span',Number.isFinite(count)?count+' '+t({es:'elementos',en:'items'}):t(def.detail)));
    view.XpaceExpertCategories.decorate(button,{en:doc.documentElement.lang==='en'});
-   if(Number.isFinite(count))button.title='Inventory/ITIL · '+count+' items';
+   if(Number.isFinite(count))button.title=t(def)+' · '+count+' '+t({es:'elementos',en:'items'});
    button.classList.toggle('is-selected',def.id===selected);button.setAttribute('aria-pressed',String(def.id===selected));
   }
   if(focused)[...cards.children].find(b=>b.dataset.categoryId===focused)?.focus({preventScroll:true});
