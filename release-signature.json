@@ -1,8 +1,8 @@
 {
-  "version": "v.04.10.2026.r3.00:42",
-  "signature": "OraculoMacMini · MacMini",
+  "version": "v.04.10.2026.r4.01:08",
+  "signature": "MorfeoMacMini · MacMini",
   "machine": "MacMini",
-  "agent": "OraculoMacMini",
-  "deployer": "OraculoMacMini",
-  "evidence": "Inventory/ITIL fusionados con contador propio; diez categorías sin ficha Pixeria, lista y detalle preservados; ayuda ES/EN y MCP actualizados."
+  "agent": "MorfeoMacMini",
+  "deployer": "MorfeoMacMini",
+  "evidence": "Intercambio de dominios admira.biz/admira.app, paso 1C: control y catálogo de proyectos leen de www.clearchannel.tv (espejo de xpaceos); suite 682/698 con los 16 fallos previos (mismos nombres que en main)."
 }
