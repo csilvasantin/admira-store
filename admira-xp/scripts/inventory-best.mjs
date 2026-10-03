@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=anon-demo-v1';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
 /** Live Best surface: one snapshot, shared media and independently editable PBR models. */
 export function mountInventoryBest(container,onReady=()=>{}){
  let disposed=false,failed=false,viewer,frame=0,last=-Infinity,ready=false,started;const snapshot=createLifeSnapshot();

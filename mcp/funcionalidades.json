@@ -2299,7 +2299,7 @@
       {
         "es": "/gente on|off",
         "en": "/people on|off",
-        "target": "staff_and_customers"
+        "target": "all_human_scene_actors"
       },
       {
         "es": "/personal on|off",
@@ -2335,12 +2335,16 @@
     "tutorial": "https://www.xpaceos.com/help/#people-tutorial",
     "default": {
       "staff": false,
-      "customers": false
+      "customers": false,
+      "passersby": false,
+      "specials": false
     },
     "startup": {
-      "es": "Por defecto las tiendas empiezan con /gente OFF: personal y clientes ocultos hasta activarlos. Se conserva una elección explícita guardada en la partida.",
-      "en": "Stores default to /people OFF: staff and customers stay hidden until enabled. An explicit choice saved in the game is preserved."
-    }
+      "es": "Todos los Xpacios empiezan con /people OFF (/gente OFF): personal, clientes, viandantes y personajes especiales humanos ocultos. /people on los activa; /personal y /clientes permiten activar sólo su grupo. Se conservan personas, aforo, simulación y elecciones explícitas guardadas. Los robots y los equipos IoT mantienen sus controles. La navegación de personas y el respeto a los mapas de dureza quedan pendientes para el final del núcleo gráfico.",
+      "en": "All Xpaces default to /people OFF (/gente OFF): staff, customers, passersby and special human characters stay hidden. /people on enables them; /staff and /customers enable only their own group. People, audience counts, simulation and explicit saved choices are retained. Robots and IoT devices keep their controls. People navigation and hardness-map compliance remain pending until the graphical core is complete."
+    },
+    "pending": "people navigation and hardness-map compliance at the final GUI core stage",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/people-visibility.md"
   },
   "expert_layout": {
     "es": "Experto queda anclado al borde inferior, de extremo a extremo y sin margen exterior. Arrastra su tirador superior hacia arriba para ganar altura o hacia abajo para reducirla; el borde inferior no se mueve. Las posiciones flotantes antiguas se ignoran. Hay tres bloques: izquierda CLI con las categorías debajo de la entrada, centro opciones de la categoría seleccionada, derecha vistas y previos con Local view. Los dos separadores verticales ajustan el ancho de bloques contiguos; usa las flechas o doble clic/Inicio para restablecer. La altura y los anchos se guardan en este navegador. Opciones y Avanzadas conservan sus barras laterales independientes.",
@@ -3362,5 +3366,5 @@
       "/avatarDigital"
     ]
   },
-  "version": "v.03.10.2026.r6.23:39"
+  "version": "v.03.10.2026.r7.23:51"
 }

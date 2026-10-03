@@ -7,15 +7,14 @@ certifica ni habilita Better/Best/Matrix para esa vertical.
 
 En el modo experto:
 
-- `/gente on` y `/gente off`: personal y clientes juntos.
+- `/gente on` y `/gente off`: todas las personas de la escena.
 - `/personal on` y `/personal off`: solo los trabajadores.
 - `/clientes on` y `/clientes off`: solo los clientes.
 
 Se admiten mayúsculas y minúsculas. Cada orden cambia el grupo indicado;
 `/gente off` seguido de `/personal on` deja visibles únicamente los trabajadores.
 Son controles de presentación locales: preservan plantilla, visitantes,
-simulación, ventas y aforo. Se guardan con la partida. Los viandantes exteriores
-y actores especiales conservan sus controles propios.
+simulación, ventas y aforo. Se guardan con la partida. /gente incluye viandantes y personajes especiales humanos; los robots mantienen sus controles.
 
 El compositor, `__xtExec` y `xtAPI.command` usan el mismo manejador.
 Los usos anteriores (`/clientes <n>`, `/gente store <n>`, `/personal dashboard`)
@@ -37,8 +36,7 @@ validation messages follow the twin language. Old commands keep their behavior.
 
 Try `/people off`, then `/staff on` (staff only), `/customers on` (both),
 and `/people on` (restore both). This changes local visibility and preserves
-people, simulation and audience counts. Passersby and special actors keep their
-own controls.
+people, simulation and audience counts. /people includes passersby and special human characters; robots keep their controls.
 
 Bilingual documentation: `/help/cli/`, `/help/#people-tutorial`, in-game `/help`
 and manual, onboarding tutorial, `/mcp/` and `/mcp/llms.txt`. MCP embedded help:
@@ -53,6 +51,14 @@ Arrastra el tirador superior para ajustar la altura. Los dos separadores vertica
 
 Drag the top handle to adjust height. The two vertical dividers distribute width between commands, operational controls and views with Local view. Sizes are saved in this browser. Focus a divider and use arrow keys; double-click or Home resets column widths. Hide/Show toggles only Local view; the third column and view selector remain visible. Better, Best and Matrix information (view, camera, status and clock) appears in the third Expert pane, below the Good/Better/Best/Matrix selector. Permanent labels, compass and frames no longer cover the Xpacio. In Matrix, Open incident and Reset view also live in Expert; the editor opens on demand.
 
-Por defecto las tiendas empiezan con /gente OFF: personal y clientes ocultos hasta activarlos. Se conserva una elección explícita guardada en la partida.
+Todos los Xpacios empiezan con /people OFF (/gente OFF): personal, clientes, viandantes y personajes especiales humanos ocultos. /people on los activa; /personal y /clientes permiten activar sólo su grupo. Se conservan personas, aforo, simulación y elecciones explícitas guardadas. Los robots y los equipos IoT mantienen sus controles. La navegación de personas y el respeto a los mapas de dureza quedan pendientes para el final del núcleo gráfico.
 
-Stores default to /people OFF: staff and customers stay hidden until enabled. An explicit choice saved in the game is preserved.
+All Xpaces default to /people OFF (/gente OFF): staff, customers, passersby and special human characters stay hidden. /people on enables them; /staff and /customers enable only their own group. People, audience counts, simulation and explicit saved choices are retained. Robots and IoT devices keep their controls. People navigation and hardness-map compliance remain pending until the graphical core is complete.
+
+## Contrato vigente · 3 octubre 2026 / Current contract · 3 October 2026
+
+ES: El estado compartido es `G.peopleVisibility`: `staff`, `customers`, `passersby` y `specials` son false por defecto. `/people on|off` y `/gente on|off` controlan las cuatro categorías. `/staff` y `/customers` sólo cambian su grupo. Las partidas antiguas reciben OFF para los campos ausentes y conservan los true explícitos. Good filtra el dibujado y los clics; Better, Best y Matrix reciben los mismos actores filtrados desde `life-snapshot.mjs`. Cafebrería autónoma ya entrega `actors:[]`; los Xpacios heredados con Aforo mantienen su entrada desactivada. Los registros de cámaras, sus imágenes, las pantallas, MetaHuman y Unitree mantienen sus controles. No se borran personas ni se cambia su simulación. La navegación sobre durezas no se acredita corregida: queda pendiente para el final.
+
+EN: Shared state is `G.peopleVisibility`: `staff`, `customers`, `passersby` and `specials` default to false. `/people on|off` and `/gente on|off` control all four categories. `/staff` and `/customers` change only their own group. Old saves receive OFF for missing fields and retain explicit true choices. Good filters rendering and hit targets; Better, Best and Matrix receive the same filtered actors from `life-snapshot.mjs`. Standalone Cafebrería already supplies `actors:[]`; legacy Xpaces with Occupancy keep their entry disabled. Camera records and images, screens, MetaHuman and Unitree keep their controls. No person is deleted or their simulation changed. Hardness navigation is not claimed fixed: it remains pending for the final stage.
+
+Implementación / Implementation: `admira-xp/index.html` (`defaultPeopleVisibility`, `executePeopleVisibilityCommand`, `initGame`, `loadGame`, human draw functions), `admira-xp/scripts/life-snapshot.mjs`. Ayuda real / Real help: https://mcp.admira.store/help — topic `people`.

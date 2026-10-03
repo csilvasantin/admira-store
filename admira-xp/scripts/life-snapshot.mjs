@@ -114,9 +114,9 @@ export function createLifeSnapshot(){
     if(!editor&&!input.moving){
       for(const value of list(game.staff))if(value?.hired&&game.peopleVisibility?.staff===true)actors.push(actor(value,'staff'));
       for(const value of list(game.custs))if(game.peopleVisibility?.customers===true)actors.push(actor(value,'customer'));
-      if(!realTrafficActive)for(const value of list(game.passersby))actors.push(actor(value,'passerby'));
+      if(game.peopleVisibility?.passersby===true&&!realTrafficActive)for(const value of list(game.passersby))actors.push(actor(value,'passerby'));
       for(const kind of Object.keys(SPECIAL_NAMES)){
-        const value=game[kind];if(value&&value.phase!=='idle')actors.push(actor(value,kind));
+        const value=game[kind];if((kind==='unitreeBot'||game.peopleVisibility?.specials===true)&&value&&value.phase!=='idle')actors.push(actor(value,kind));
       }
     }
     return {

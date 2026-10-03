@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=anon-demo-v1';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
 import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43-objects-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';

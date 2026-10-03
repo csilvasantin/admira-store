@@ -5496,6 +5496,9 @@ const CAM={
 function peopleGroupVisible(group){
   return !!G&&G.peopleVisibility?.[group]===true;
 }
+function defaultPeopleVisibility(saved={}){
+  return Object.fromEntries(['staff','customers','passersby','specials'].map(group=>[group,saved?.[group]===true]));
+}
 function executePeopleVisibilityCommand(raw){
   const match=String(raw||'').trim().match(/^\/?(gente|people|personal|staff|clientes|customers)(?:@\w+)?\s+(on|off)(.*)$/i);
   if(!match)return null;
@@ -5504,21 +5507,22 @@ function executePeopleVisibilityCommand(raw){
   if(!G)return {ok:false,local:true,message:en?'Open an Xpace to show or hide its people.':'Abre un Xpacio para mostrar u ocultar sus personas.'};
   const aliases={people:'gente',staff:'personal',customers:'clientes'};
   const name=match[1].toLowerCase(),group=aliases[name]||name,on=match[2].toLowerCase()==='on';
-  const next={staff:peopleGroupVisible('staff'),customers:peopleGroupVisible('customers')};
+  const next=defaultPeopleVisibility(G.peopleVisibility);
+  if(group==='gente'){next.passersby=on;next.specials=on;}
   if(group==='gente'||group==='personal')next.staff=on;
   if(group==='gente'||group==='clientes')next.customers=on;
   G.peopleVisibility=next;
   // Drop stale click targets immediately, even while the canvas awaits its next frame.
   if(typeof BTNS!=='undefined')for(const key of Object.keys(BTNS)){
-    if((!next.staff&&key.startsWith('staffClick'))||(!next.customers&&key.startsWith('custClick')))delete BTNS[key];
+    if((!next.staff&&key.startsWith('staffClick'))||(!next.customers&&key.startsWith('custClick'))||(!next.specials&&/^specialClick_(saca|thief|guardia|opinador)$/.test(key)))delete BTNS[key];
   }
   if(typeof npcEdOpen!=='undefined'&&npcEdOpen&&
       ((npcEdKind==='staff'&&!next.staff)||(npcEdKind==='customer'&&!next.customers)))closeNPCEditor();
   saveGame();
-  const label=group==='gente'?(en?'Staff and customers':'Personal y clientes'):
+  const label=group==='gente'?(en?'People':'Personas'):
     group==='personal'?(en?'Staff':'Personal'):(en?'Customers':'Clientes');
   return {ok:true,local:true,message:label+' '+(on?'ON':'OFF')+' · '+
-    (en?(on?'visible':'hidden'):(on?'visibles':'ocultos')),data:{...next}};
+    (en?(on?'visible':'hidden'):(on?'visibles':group==='gente'?'ocultas':'ocultos')),data:{...next}};
 }
 
 // Manual demo population is separate from measured camera passages.
@@ -6830,9 +6834,9 @@ const LANGS={
       {title:'GESTIÓN DE PERSONAL',lines:['Contrata empleados en la pestaña PERSONAL.','Cada empleado genera ventas automáticamente.','Fórmalos para subir su nivel (máx. 5)','y aumentar su productividad y salario.']},
       {title:'EVENTOS ESPECIALES',lines:['⚡ HORA PUNTA: ventas x2.4 durante un tiempo.','🔍 INSPECCIÓN: mantén stock y personal o penalización.','📦 Repón stock regularmente (pestaña STOCK).','👁 Vigila la barra de OBJETIVO del año en el HUD.']},
       {"title": "BEST Y MATRIX", "lines": ["Best: Avenida Admira, muebles y personas.", "Matrix: captura 360° del Starbucks Alsea.", "Abrir incidencia: informa de un problema.", "Asignar contenidos: elige pantalla y playlist.", "Guardar mapa no publica en players reales."]},
-      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Inicio: gente OFF. on muestra, off oculta.", "/gente = /people: ambos grupos.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
+      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Todos los Xpacios: people OFF por defecto.", "Durezas de personas: pendientes para el final.", "/gente = /people: todas las personas.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
       {"title": "AJUSTA EL MODO EXPERTO", "lines": ["Arrastra arriba para cambiar la altura.", "Separa comandos, calidad y Local view.", "Arrastra los dos separadores verticales.", "Las medidas se guardan en el navegador.", "Doble clic en separador: anchos iniciales."]},
-      {"title": "PRUEBA LOS GRUPOS", "lines": ["/gente off: oculta ambos grupos.", "/personal on: muestra solo trabajadores.", "/clientes on: vuelve a mostrar clientes.", "/gente on: muestra ambos grupos.", "No borra personas ni cambia el aforo."]},
+      {"title": "PRUEBA LOS GRUPOS", "lines": ["/gente off: oculta todas las personas.", "/personal on: muestra solo trabajadores.", "/clientes on: vuelve a mostrar clientes.", "/gente on: muestra todas las personas.", "No borra personas ni cambia el aforo."]},
     ],
     tutNext:'SIGUIENTE →',tutStart:'¡EMPEZAR!',
     tabs:['VENTAS','PERSONAL','CON','LOCAL'],
@@ -6919,9 +6923,9 @@ const LANGS={
       {title:'STAFF MANAGEMENT',lines:['Hire employees in the STAFF tab.','Each employee generates sales automatically.','Train them to raise their level (max 5)','and increase their productivity and salary.']},
       {title:'SPECIAL EVENTS',lines:['⚡ RUSH HOUR: sales x2.4 for a period.','🔍 INSPECTION: keep stock & staff or get fined.','📦 Restock products regularly (STOCK tab).','👁 Watch the OBJECTIVE bar in the HUD.']},
       {"title": "BEST AND MATRIX", "lines": ["Best: Avenida Admira, furniture and people.", "Matrix: Starbucks Alsea 360° capture.", "Open incident: report a device problem.", "Assign content: select a screen and playlist.", "Saving a map does not publish to devices."]},
-      {"title": "PEOPLE · EXPERT MODE", "lines": ["Default: people OFF. on shows, off hides.", "/people = /gente: both groups.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
+      {"title": "PEOPLE · EXPERT MODE", "lines": ["All Xpaces: people OFF by default.", "People hardness maps: pending for the final stage.", "/people = /gente: all people.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
       {"title": "RESIZE EXPERT MODE", "lines": ["Drag the top handle to change height.", "Split commands, quality and Local view.", "Drag the two vertical dividers.", "Sizes are saved in this browser.", "Double-click a divider to reset widths."]},
-      {"title": "TRY THE GROUPS", "lines": ["/people off: hide both groups.", "/staff on: show workers only.", "/customers on: show customers again.", "/people on: show both groups.", "People and audience counts are preserved."]},
+      {"title": "TRY THE GROUPS", "lines": ["/people off: hide all people.", "/staff on: show workers only.", "/customers on: show customers again.", "/people on: show all people.", "People and audience counts are preserved."]},
     ],
     tutNext:'NEXT →',tutStart:'LET\'S GO!',
     tabs:['SALES','STAFF','CON','STORE'],
@@ -9513,6 +9517,7 @@ function initGame(){
   CFG.ADVERT=M.ADVERT;
 
   G={
+    peopleVisibility:defaultPeopleVisibility(),
     money:CFG.START_MONEY, week:1, year:1, weekTimer:0,
     yearRevenue:0, weekRevenue:0, weekExpenses:0,
     satisfaction:65, fame:25, customersToday:0, custIn:0, custOut:0, totalCustomers:0,
@@ -9833,6 +9838,8 @@ function loadGame(){
       clientSel=activeClient;
       activeModel=p.activeModel||0;
       modelSel=activeModel;
+      // Missing flags default OFF; retain every explicit saved visibility choice.
+      G.peopleVisibility=defaultPeopleVisibility(G.peopleVisibility);
       // Migrate old saves — add missing fields
       if(!G.weekHistory) G.weekHistory=[];
       if(!G.holiday) G.holiday={active:false,timer:0,name:''};
@@ -17318,7 +17325,7 @@ function drawEraClientMiniMap(originX,originY,w,h){
 const HELP_PAGES={
   es:[
   {"title": "PANEL EXPERTO AJUSTABLE", "lines": ["Arrastra el tirador superior: altura.", "Dos separadores: comandos, calidad, Local view.", "Las medidas se guardan en este navegador.", "Flechas: ajustar. Doble clic: anchos iniciales.", "Ocultar/Mostrar controla Local view."]},
-  {"title": "PERSONAS VISIBLES · EXPERTO", "lines": ["Inicio: /gente OFF. Actívalo en Experto (⌘).", "/gente on|off = /people on|off", "/personal on|off = /staff on|off", "/clientes on|off = /customers on|off", "on muestra; off oculta. Acepta ON/OFF.", "/gente off → /personal on: solo personal.", "/gente on: vuelven ambos grupos.", "Visibilidad local; conserva personas y aforo."]},
+  {"title": "PERSONAS VISIBLES · EXPERTO", "lines": ["Inicio: /gente OFF. Actívalo en Experto (⌘).", "/gente on|off = /people on|off", "/personal on|off = /staff on|off", "/clientes on|off = /customers on|off", "on muestra; off oculta. Acepta ON/OFF.", "/gente off → /personal on: solo personal.", "/gente on: vuelven todas las personas.", "Visibilidad local; conserva personas y aforo."]},
   { title:'ADMIRA XP // THE XPACE OS — XTANCO', lines:[
     '','Bienvenido a Admira XP // The Xpace OS,',
     'la plataforma viva de experiencias operativas.','',
@@ -17456,7 +17463,7 @@ const HELP_PAGES={
   ],
   en:[
   {"title":"RESIZABLE EXPERT PANEL","lines":["Drag the top handle to change height.","Drag the dividers between commands, quality","and Local view to distribute the width.","Sizes are saved in this browser.","Arrow keys resize; double-click resets widths."]},
-  {"title": "PEOPLE VISIBILITY · EXPERT", "lines": ["Default: /people OFF. Enable in Expert (⌘).", "/people on|off = /gente on|off", "/staff on|off = /personal on|off", "/customers on|off = /clientes on|off", "on shows; off hides. ON/OFF also works.", "/people off → /staff on: workers only.", "/people on: both groups are visible again.", "Local visibility; keeps people and counts."]},
+  {"title": "PEOPLE VISIBILITY · EXPERT", "lines": ["Default: /people OFF. Enable in Expert (⌘).", "/people on|off = /gente on|off", "/staff on|off = /personal on|off", "/customers on|off = /clientes on|off", "on shows; off hides. ON/OFF also works.", "/people off → /staff on: workers only.", "/people on: all people are visible again.", "Local visibility; keeps people and counts."]},
   { title:'ADMIRA XP // THE XPACE OS — XTANCO', lines:[
     '','Welcome to Admira XP // The Xpace OS,',
     'the living platform for operational experiences.','',
@@ -18465,8 +18472,8 @@ function drawShop(){
   if(isStarbucksVenue()){
     const actors=[];
     if(!editorSceneActive && !document.body.classList.contains('xtanco-mudanza')){
-      for(const s of G.staff||[])if(s.hired&&!s.hidden&&G.peopleVisibility?.staff!==false)actors.push({depth:(s.y+27-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoStaff(s)});
-      for(const c of G.custs||[])if(G.peopleVisibility?.customers!==false)actors.push({depth:(c.y+20-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoCust(c)});
+      for(const s of G.staff||[])if(s.hired&&!s.hidden&&peopleGroupVisible('staff'))actors.push({depth:(s.y+27-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoStaff(s)});
+      for(const c of G.custs||[])if(peopleGroupVisible('customers'))actors.push({depth:(c.y+20-ISO.oy)/(ISO.tileH/2),draw:()=>drawIsoCust(c)});
     }
     cx.save();cx.beginPath();cx.rect(SHOP.x,SHOP.y,SHOP.w,Math.max(SHOP.h,H-SHOP.y));cx.clip();
     window.XpaceStarbucks.draw(cx,ISO,toIso,shopFurnitureVisible?renderLayout:[],actors,document.body.classList.contains('xtanco-mudanza'));
@@ -19475,7 +19482,7 @@ function drawDoorForegroundPeople(){
   const NEAR=8; // px tolerance — actor x within this distance of doorX (or beyond) is "in/at the threshold"
   // Passersby always live on the sidewalk outside the door — they should never
   // be cropped by the door frame.
-  if(Array.isArray(G.passersby)&&!xtoreRealExteriorActive()){
+  if(peopleGroupVisible('passersby')&&Array.isArray(G.passersby)&&!xtoreRealExteriorActive()){
     for(const p of G.passersby) try{ drawIsoCust(p); }catch(e){}
     // Cámara del MUPI: la foto se toma AQUÍ, recién dibujado el viandante, para
     // que el recorte del canvas lo contenga (en update sólo se marca _wantSnap;
@@ -23953,7 +23960,7 @@ function drawSponsorScrooge(x,y,dir,frame,tick){
 }
 
 function drawIsoCust(c){
-  if(!peopleGroupVisible('customers')&&!(G.passersby||[]).includes(c))return;
+  if(!peopleGroupVisible((G?.passersby||[]).includes(c)?'passersby':'customers'))return;
   // Auto-curación: una posición NaN en un cliente también rompe el dibujado; lo mandamos
   // a la puerta a salir limpio en vez de tumbar la escena.
   if(c&&(!isFinite(c.x)||!isFinite(c.y))){ try{ const _d=toIso(ISO.cols-1,3); c.x=_d.x-7; c.y=_d.y-20; }catch(_){ c.x=0; c.y=0; } c.path=null; c.pathIdx=0; c.st='leave'; }
@@ -24141,6 +24148,7 @@ function drawIsoCust(c){
 
 // ── LA SACA — delivery person with carretilla ────────────────
 function drawIsoSaca(saca){
+  if(!peopleGroupVisible('specials'))return;
   if(!saca||saca.phase==='idle') return;
   const x=saca.x, y=saca.y;
   const dir=saca.dir||1;
@@ -24244,6 +24252,7 @@ function drawIsoSaca(saca){
 
 // ── THIEF — caco con antifaz ────────────────────────────────
 function drawIsoThief(th){
+  if(!peopleGroupVisible('specials'))return;
   if(!th||th.phase==='idle') return;
   const x=th.x, y=th.y;
   BTNS['specialClick_thief']={x:x-6,y:y-14,w:30,h:44};
@@ -24288,6 +24297,7 @@ function drawIsoThief(th){
 
 // ── GUARDIA CIVIL — personaje de seguridad ─────────────────────
 function drawIsoGuardiaCivil(gc){
+  if(!peopleGroupVisible('specials'))return;
   if(!gc||gc.phase==='idle') return;
   const x=gc.x,y=gc.y;
   BTNS['specialClick_guardia']={x:x-6,y:y-14,w:30,h:44};
@@ -24314,6 +24324,7 @@ function drawIsoGuardiaCivil(gc){
 
 // ── OPINADOR — visita rápida al tótem de opinión ───────────────
 function drawIsoOpinador(op){
+  if(!peopleGroupVisible('specials'))return;
   if(!op||op.phase==='idle') return;
   const x=op.x,y=op.y;
   BTNS['specialClick_opinador']={x:x-6,y:y-14,w:24,h:42};
@@ -31561,7 +31572,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=20261003-panels-2');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=20261003-people-off');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -35977,7 +35988,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=floating-panels-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=20261003-people-off"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

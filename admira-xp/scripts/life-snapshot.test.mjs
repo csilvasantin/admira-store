@@ -7,7 +7,7 @@ const at=(col,row,projection=iso)=>({x:projection.ox+(col-row)*projection.tileW/
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} != ${b}`);
 function fixture(){
   return {active:true,iso,layout:[{id:'counter',type:'counter',col:1,row:2}],footprints:{counter:[1,2]},
-    game:{peopleVisibility:{staff:true,customers:true},staff:[{...at(3,2),hired:true,name:'Player',shirt:0,hair:3,role:3,dir:1,
+    game:{peopleVisibility:{staff:true,customers:true,passersby:true,specials:true},staff:[{...at(3,2),hired:true,name:'Player',shirt:0,hair:3,role:3,dir:1,
       look:{skin:0,pants:2,shoes:1}}],custs:[{...at(6,4),id:12,dir:-1,st:'browse',num:8,
       look:{shirt:2,hair:1,skin:4,pants:3,shoes:2,age:'nino',gender:'f',accessory:1}}],
     passersby:[{...at(15,4),outside:true,dir:1,look:{shirt:4,hair:5,skin:1,age:'senior'}}],
@@ -102,7 +102,7 @@ test('presentation metadata copies existing customer fields without assigning nu
 test('people visibility hides each group across tiers without mutating actors or measured counts',()=>{
  const input=fixture(),snapshot=createLifeSnapshot(),initial=snapshot(input);
  for(const [staff,customers] of [[false,false],[true,false],[false,true],[true,true]]){
-  input.game.peopleVisibility={staff,customers};
+  input.game.peopleVisibility={staff,customers,passersby:true,specials:true};
   const before=JSON.stringify(input.game),scene=snapshot(input);
   assert.equal(scene.actors.some(a=>a.kind==='staff'),staff);
   assert.equal(scene.actors.some(a=>a.kind==='customer'),customers);
@@ -114,7 +114,16 @@ test('people visibility hides each group across tiers without mutating actors or
 });
 
 
-test('stores without an explicit visibility preference start with staff and customers hidden',()=>{
- const input=fixture();delete input.game.peopleVisibility;const before=JSON.stringify(input);
- const scene=createLifeSnapshot()(input);assert.equal(scene.actors.some(a=>['staff','customer'].includes(a.kind)),false);assert.equal(scene.inside,1);assert.equal(scene.entries,17);assert.equal(JSON.stringify(input),before);
+test('all Xpaces default to no human actors, preserving robots, people and audience counts',()=>{
+ const input=fixture();delete input.game.peopleVisibility;for(const kind of ['saca','thief','guardiaCivil','opinador','unitreeBot'])input.game[kind]={...at(4,1),phase:'walk'};const before=JSON.stringify(input);
+ const scene=createLifeSnapshot()(input);assert.deepEqual(scene.actors.map(a=>a.kind),['unitreeBot']);assert.equal(scene.inside,1);assert.equal(scene.entries,17);assert.equal(JSON.stringify(input),before);
+});
+
+test('people OFF hides passersby and special humans; explicit ON restores the same identities',()=>{
+ const input=fixture(),snapshot=createLifeSnapshot();input.game.thief={...at(4,1),phase:'walk'};
+ const first=snapshot(input),ids=first.actors.map(a=>a.id),before=JSON.stringify(input.game);
+ input.game.peopleVisibility={staff:false,customers:false,passersby:false,specials:false};
+ const off=snapshot(input);assert.deepEqual(off.actors,[]);assert.equal(off.inside,first.inside);assert.equal(off.entries,first.entries);
+ input.game.peopleVisibility={staff:true,customers:true,passersby:true,specials:true};
+ assert.deepEqual(snapshot(input).actors.map(a=>a.id),ids);assert.equal(JSON.stringify(input.game),before);
 });

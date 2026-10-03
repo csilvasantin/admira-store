@@ -148,14 +148,14 @@ En los Xpaces **todos los elementos tienen que ser movibles y sustituibles siemp
 - Avisos de cambios: Telegram grupo AdmiraXP, firmados "Admira IA".
 
 ## People visibility / Visibilidad de personas (ES/EN)
-- /people on|off = /gente on|off: staff and customers / personal y clientes.
+- /people on|off = /gente on|off: all human scene actors / todas las personas de la escena.
 - /staff on|off = /personal on|off: workers only / solo trabajadores.
 - /customers on|off = /clientes on|off: customers only / solo clientes.
 - on shows / muestra; off hides / oculta. Case-insensitive / acepta mayúsculas.
-- Example / ejemplo: /people off → /staff on (staff only / solo personal); /people on restores both / restaura ambos.
+- Example / ejemplo: /people off → /staff on (staff only / solo personal); /people on restores all people / restaura todas las personas.
 - Local browser controls via Expert (⌘), window.__xtExec or window.xtAPI.command.
 - Preserves people, simulation and audience counts / conserva personas, simulación y aforo.
-- Outdoor passersby and special actors keep their own controls / viandantes y actores especiales conservan sus controles.
+- /people also controls passersby and special human characters / /gente incluye viandantes y personajes especiales humanos.
 - These aliases do not add remote-control MCP tools / no añaden herramientas MCP de control remoto.
 - MCP help: help({"topic":"people"}) or help({"topic":"personas"}); resource xpaceos://help.
 - Help: https://www.xpaceos.com/help/cli/ · Tutorial ES/EN: https://www.xpaceos.com/help/#people-tutorial
@@ -169,9 +169,9 @@ Drag the top handle to adjust height. The two vertical dividers distribute width
 Tutorial: https://www.xpaceos.com/help/#expert-layout
 MCP help topic: expert / experto
 
-Por defecto las tiendas empiezan con /gente OFF: personal y clientes ocultos hasta activarlos. Se conserva una elección explícita guardada en la partida.
+Todos los Xpacios empiezan con /people OFF (/gente OFF): personal, clientes, viandantes y personajes especiales humanos ocultos. /people on los activa; /personal y /clientes permiten activar sólo su grupo. Se conservan personas, aforo, simulación y elecciones explícitas guardadas. Los robots y los equipos IoT mantienen sus controles. La navegación de personas y el respeto a los mapas de dureza quedan pendientes para el final del núcleo gráfico.
 
-Stores default to /people OFF: staff and customers stay hidden until enabled. An explicit choice saved in the game is preserved.
+All Xpaces default to /people OFF (/gente OFF): staff, customers, passersby and special human characters stay hidden. /people on enables them; /staff and /customers enable only their own group. People, audience counts, simulation and explicit saved choices are retained. Robots and IoT devices keep their controls. People navigation and hardness-map compliance remain pending until the graphical core is complete.
 
 ## Best / Matrix · Starbucks Alsea
 

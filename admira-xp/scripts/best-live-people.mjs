@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=anon-demo-v1';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
 import {visitorProfileById} from './visitor-profiles.mjs?v=visitors-24';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
 import {createCustomerMotion} from './customer-motion.mjs?v=customer-motion-1';

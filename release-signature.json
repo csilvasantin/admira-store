@@ -1,8 +1,8 @@
 {
-  "version": "v.03.10.2026.r6.23:39",
+  "version": "v.03.10.2026.r7.23:51",
   "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
   "agent": "OraculoMacMini",
   "deployer": "OraculoMacMini",
-  "evidence": "Cabecera compartida: ☰, XpaceOS y nombre del espacio activo como texto; contexto y telemetría conservados."
+  "evidence": "People OFF por defecto en todos los Xpacios: personal, clientes, viandantes y personajes especiales humanos; mapas de dureza pendientes para el final."
 }

@@ -1,4 +1,4 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=distribuir-3';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
 import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
