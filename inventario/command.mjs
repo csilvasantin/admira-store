@@ -1,4 +1,5 @@
-import {loadCatalog,instancesFor} from './model.mjs?v=catalog-43-objects-1';
+import {loadCatalog,instancesFor} from './model.mjs?v=scope-20261004-1';
+import {scopedAssets} from './context.mjs?v=scope-20261004-1';
 import {findPlacement} from './placement.mjs?v=inventory-cli-3';
 export function parseInventoryCommand(raw){
  const text=String(raw||'').trim();
@@ -29,7 +30,7 @@ export async function executeInventoryCommand(raw,{store,space,getLayout,applyLa
  if(cmd.action==='help')return result(false,help);
  try{
   const {assets}=await load();
-  if(cmd.action==='list')return result(true,`INVENTARIO · ${assets.length} piezas · ${space||'sin Xpacio activo'}\n`+assets.map(a=>`${a.number}. ${a.name} · ${instancesFor(a,getLayout?.()||[]).length} en el espacio`).join('\n')+'\n\n'+help);
+  if(cmd.action==='list'){const retired=store&&space?Object.values(store.removals(space).removed||{}):[],owned=scopedAssets(assets,[...(getLayout?.()||[]),...retired],{scoped:!!space});return result(true,`INVENTARIO · ${owned.length} piezas · ${space||'sin Xpacio activo'}\n`+owned.map(a=>`${a.number}. ${a.name} · ${instancesFor(a,getLayout?.()||[]).length} en el espacio`).join('\n')+'\n\n'+help);}
   if(!space||!store||!getLayout||!applyLayout)return result(false,'Abre un Xpacio antes de modificar su mobiliario.');
   if(locks.has(space))return result(false,'Hay un cambio de inventario en curso. Espera a que termine.');
   locks.add(space);

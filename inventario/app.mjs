@@ -1,3 +1,4 @@
+import {inventoryContext,inventoryURL,twinURL,scopedAssets,scopedInstances} from './context.mjs?v=scope-20261004-1';
 import {preview} from './viewer.mjs?v=cafebreria-1';
 import {mountCounterStage} from './counter-stage.mjs?v=cafebreria-1';
 import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=cafebreria-1';
@@ -9,6 +10,7 @@ import {loadShelfParts} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-produ
 import {mountShelfProductPanel} from './shelf-product-panel.mjs?v=shelf-products-1';
 let disposePilot,stageQueue=Promise.resolve(),inspectionRevision=0,activeCamera,activeAssetNumber;
 function inspectAsset(asset){
+ if(!asset||!assets.some(a=>a.id===asset.id))return;
  const qualitySelect=document.querySelector('#model-quality'),quality=qualitySelect.value,revision=++inspectionRevision;
  const current=new URL(location.href);current.searchParams.set('asset',asset.number);current.searchParams.set('quality',quality);history.replaceState(null,'',current);
  document.querySelector('#quality-note').textContent=quality==='all'?'Todos · Good, Better y Best · gira o amplía una vista para comparar las tres.':quality==='good'?'Good · pixel art nítido · píxeles sin suavizado.':asset.number===2&&quality==='best'?'Best · etiquetas de alta definición, madera con veta y herrajes detallados.':'Perfil '+quality.toUpperCase()+' · modelo 3D completo';
@@ -27,9 +29,42 @@ function inspectAsset(asset){
  });return stageQueue;
 }
 window.addEventListener('pagehide',()=>{disposePilot?.();for(const dispose of pixelPreviews.values())dispose();pixelPreviews.clear();});
-import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=catalog-43-objects-1';
+import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=scope-20261004-1';
 const $=s=>document.querySelector(s),store=window.XpaceInventory,tiers=['good','better','best'];
-let data,stock,registry,assets=[],category='Todas',selected=null,angle=0,space='xtanco',renderRevision=0;
+const context=inventoryContext(location.href),en=context.lang==='en',tr=(es,english)=>en?english:es;
+let data,stock,registry,allAssets=[],assets=[],ownedSeed=[],deviceRecords=[],category='Todas',selected=null,angle=0,space=context.space,renderRevision=0;
+const ownership=new Map();
+function activeLayout(){if(context.scoped&&!context.valid)return [];return store.retained(space,store.layout(space)||data.layouts[space]||ownedSeed);}
+function ownedLayout(){const current=activeLayout();return [...current.map(item=>({...item,inventoryAssetId:ownership.get(item.id)||item.inventoryAssetId})),...ownedSeed.filter(item=>!current.some(i=>i.id===item.id))];}
+function syncScope(){
+ assets=scopedAssets(allAssets,ownedLayout(),context);
+ const selector=$('#model-select'),previous=Number(selector.value);selector.replaceChildren(...assets.map(a=>{const option=el('option',a.number+'. '+a.name);option.value=a.number;return option;}));
+ if(assets.some(a=>a.number===previous))selector.value=String(previous);
+ $('#mostrador .pilot-heading .eyebrow').textContent=assets.length+' '+tr('PIEZAS / ','PIECES / ')+(context.scoped?context.name:tr('CATÁLOGO BLENDER','BLENDER CATALOGUE'));
+ if(context.scoped){
+  $('.intro h1').textContent=tr('Inventario de ','Inventory · ')+context.name;$('.intro .lede').textContent=tr('Mobiliario e IoT de este Xpacio. Cada elemento conserva su identidad.','Furniture and IoT belonging to this Xpace. Every item retains its identity.');
+  $('#total').nextElementSibling.textContent=tr('modelos de este Xpacio','models in this Xpace');
+  $('#mostrador').hidden=!assets.length;$('#hero').hidden=!assets.length;
+ }
+ if(selected&&!assets.some(a=>a.id===selected.id)){$('#detail').close();selected=null;}
+ if(breakdownAsset&&!assets.some(a=>a.id===breakdownAsset.id)){$('#breakdown').close();breakdownAsset=null;}
+ if(activeAssetNumber&&!assets.some(a=>a.number===activeAssetNumber)){inspectionRevision++;disposePilot?.();disposePilot=null;$('#model-stages').replaceChildren();$('#single-downloads').hidden=true;$('#profile-downloads').hidden=true;activeAssetNumber=null;}
+}
+function installContext(){
+ if(!context.scoped)return;
+ const applyTitle=()=>{const section=document.querySelector('.xs-section');if(section)section.textContent=context.name;};applyTitle();document.addEventListener('xpace:shell-ready',applyTitle,{once:true});
+ document.title=tr('Inventario ITIL · ','ITIL inventory · ')+context.name+' · XpaceOS';
+ const option=el('option',context.name);option.value=space;$('#space').replaceChildren(option);$('#space').disabled=true;
+ for(const link of document.querySelectorAll('a')){
+  const url=new URL(link.href,location.href);
+  if(url.origin!==location.origin)continue;
+  if(url.pathname==='/admira-xp/')link.href=twinURL(location.href,context);
+  if(url.pathname.includes('/inventario/conjunto')||url.pathname.endsWith('/admira-xp/inventario.html')||url.pathname.startsWith('/xpacios/cafebreria/')&&space!=='cafebreria'||url.pathname.startsWith('/inventario/starbucks/')&&space!=='starbucks_pg103')link.hidden=true;
+ }
+ if(document.querySelector('[data-current-inventory]'))return;const full=el('a',tr('Volver al inventario completo del Xpacio ↗','Back to the full Xpace inventory ↗'));full.dataset.currentInventory='';full.href=twinURL(location.href,context);$('#layout-source').after(full);
+}
+installContext();
+document.addEventListener('xpace:shell-ready',installContext,{once:true});
 const realPhotos=new Map();
 const cache=new Map();
 const pixelPreviews=new Map();
@@ -43,7 +78,7 @@ function photoFor(asset){
  image.onerror=()=>{image.replaceWith(el('span','Foto no disponible','catalog-photo-unavailable'));};
  link.append(image,el('small','Foto real · Ref. '+referenceLabel(reference)+(reference.photo_scope==='type'?' · tipo':'')));return link;
 }
-function layout(){return store.retained(space,store.layout(space)||data.layouts[space]||[]);}
+function layout(){return activeLayout().map(item=>({...item,inventoryAssetId:ownership.get(item.id)||item.inventoryAssetId}));}
 function imageFor(asset,tier,rotation=0){const key=asset.id+':'+tier+':'+rotation;if(!cache.has(key))cache.set(key,preview(asset,tier,rotation).catch(e=>{cache.delete(key);throw e;}));return cache.get(key);}
 function versions(asset,rotation=0){const fragment=document.createDocumentFragment();for(const [i,tier]of tiers.entries()){
  const figure=el('figure',undefined,'version '+tier),stage=el('div',undefined,'stage'),status=el('span','Preparando vista…','loading'),caption=el('figcaption');caption.append(el('b',['Good','Better','Best'][i]),el('span',[8,16,32][i]+' bits'));stage.append(status);figure.append(stage,caption);fragment.append(figure);
@@ -51,19 +86,22 @@ function versions(asset,rotation=0){const fragment=document.createDocumentFragme
  }return fragment;}
 const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){observer.unobserve(e.target);const a=assets.find(a=>a.id===e.target.dataset.id);if(a)e.target.replaceChildren(versions(a));}},{rootMargin:'180px'});
 function render(){
- if(!data)return;renderRevision++;observer.disconnect();const list=layout();$('#total').textContent=assets.length;$('#placed').textContent=list.length;
- $('#layout-source').textContent=store.layout(space)?'Último layout recibido del gemelo':'Distribución base · abre el gemelo para sincronizar';$('#open-space').href='/admira-xp/?play='+space+'&inventory=1';
+ if(!data)return;syncScope();renderRevision++;observer.disconnect();const list=layout();$('#total').textContent=assets.length;$('#placed').textContent=list.filter(item=>!item.referenceOnly).length;
+ $('#layout-source').textContent=store.layout(space)?'Último layout recibido del gemelo':'Distribución base · abre el gemelo para sincronizar';$('#open-space').href=twinURL(location.href,{...context,space});
  const query=$('#search').value.trim().toLocaleLowerCase('es');const shown=assets.filter(a=>(category==='Todas'||a.category===category)&&(a.number+' '+a.name).toLocaleLowerCase('es').includes(query));
  const fragment=document.createDocumentFragment();shown.forEach((a,i)=>{
   const card=el('article',undefined,'card'),head=el('div',undefined,'card-head'),title=el('div',undefined,'card-title');title.append(el('span',a.category+' / '+(a.source||'XpaceOS'),'badge'),el('h2',a.name));const photo=photoFor(a);if(photo)head.append(photo);head.append(title,el('span',String(a.number).padStart(2,'0'),'number'));
   const previews=el('div',undefined,'previews');previews.dataset.id=a.id;for(const tier of tiers)previews.append(el('div','···','stage loading'));
-  const foot=el('div',undefined,'card-foot'),instances=instancesFor(a,list),visible=instances.filter(i=>store.visible(space,i.id)).length;
+  const foot=el('div',undefined,'card-foot'),instances=scopedInstances(a,list).filter(item=>!item.referenceOnly),visible=instances.filter(i=>store.visible(space,i.id)).length;
   foot.append(el('span',instances.length?visible+'/'+instances.length+' visibles · '+a.fp.join(' × ')+' tiles':a.fp.join(' × ')+' tiles · sin colocar'));
   const actions=el('div',undefined,'card-actions'),button=el('button','Ver pieza ↗'),breakdown=el('button','Desglose');button.onclick=()=>openDetail(a);button.setAttribute('aria-label','Ver pieza '+a.name);breakdown.onclick=()=>openBreakdown(a);breakdown.setAttribute('aria-label','Desglose '+a.name);actions.append(button,breakdown);foot.append(actions);card.append(head,previews,foot);fragment.append(card);observer.observe(previews);
- });$('#catalog').replaceChildren(fragment);cleanPixelPreviews();$('#empty').hidden=shown.length>0;
+ });const extraRecords=context.scoped?list.filter(item=>!allAssets.some(asset=>scopedInstances(asset,[item]).length)&&item.id!=='sb-pillar').map(item=>({id:item.id,name:item.label||item.id,category:item.source==='PixerIA'||item.type==='custom'?'Pixeria':'Mobiliario'})):[];
+ for(const record of extraRecords){if(category!=='Todas'&&category!==record.category||!(record.name+' '+record.id).toLocaleLowerCase('es').includes(query))continue;const card=el('article',undefined,'card');card.dataset.instanceId=record.id;card.append(el('span',record.category+' / '+context.name,'badge'),el('h2',record.name),el('p',record.id),el('p',tr('Elemento de este Xpacio. Modelo numerado pendiente.','Item belonging to this Xpace. Numbered model pending.')));fragment.append(card);}
+ for(const record of deviceRecords){if(category!=='Todas'&&category!=='IoT'||!(record.name+' '+record.id).toLocaleLowerCase('es').includes(query))continue;const card=el('article',undefined,'card');card.dataset.deviceId=record.id;card.append(el('span','IoT / '+context.name,'badge'),el('h2',record.name),el('p',record.id),el('p',tr('Dispositivo virtual del Xpacio. Vinculación física pendiente.','Virtual Xpace device. Physical binding pending.')));fragment.append(card);}
+ $('#catalog').replaceChildren(fragment);cleanPixelPreviews();$('#empty').hidden=$('#catalog').children.length>0; if(context.scoped&&!context.valid)$('#empty').textContent=tr('No se reconoce este Xpacio. Abre ITIL desde el proyecto que estás visitando.','Unknown Xpace. Open ITIL from the project you are visiting.');
 }
 function showInstances(){
- if(!selected)return;const instances=instancesFor(selected,layout());$('#instance-note').textContent=instances.length?(space==='xtanco'?'La visibilidad se aplica a Good, Better y al Best editable del inventario.':'La visibilidad se aplica al gemelo Good. Better y Best operativos están conectados al Xtanco.'):'Esta pieza aún no está colocada. Puedes añadirla desde el editor de mobiliario o el importador Pixeria de la Xperience.';
+ if(!selected)return;const instances=scopedInstances(selected,layout()).filter(item=>!item.referenceOnly);$('#instance-note').textContent=instances.length?(space==='xtanco'?'La visibilidad se aplica a Good, Better y al Best editable del inventario.':'La visibilidad se aplica al gemelo Good. Better y Best operativos están conectados al Xtanco.'):'Esta pieza aún no está colocada. Puedes añadirla desde el editor de mobiliario o el importador Pixeria de la Xperience.';
  $('#footprint').textContent='Huella '+selected.fp.join(' × ')+' tiles'+' · modelo Blender interpretado';
  $('#instances').replaceChildren(...instances.map(item=>{const row=el('div',undefined,'instance'),name=el('div',item.label||selected.name);name.append(el('small',item.id+' · posición '+item.col+', '+item.row));const visible=store.visible(space,item.id),button=el('button',visible?'Visible ●':'Oculto ○');button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',(visible?'Ocultar ':'Mostrar ')+(item.label||item.id));button.onclick=()=>{try{store.setVisible(space,item.id,!store.visible(space,item.id));$('#save-error').textContent='';}catch{$('#save-error').textContent='No se pudo guardar. Comprueba que el almacenamiento del navegador esté disponible.';}};row.append(name,button);return row;}));
 }
@@ -91,14 +129,30 @@ async function showBreakdown(){
 function openBreakdown(asset){breakdownAsset=asset;$('#breakdown-language').value=new URLSearchParams(location.search).get('lang')==='en'?'en':'es';history.replaceState(null,'',breakdownURL(location.href,asset,$('#breakdown-language').value));$('#breakdown').showModal();showBreakdown();}
 $('#breakdown-language').onchange=()=>{history.replaceState(null,'',breakdownURL(location.href,breakdownAsset,$('#breakdown-language').value));showBreakdown();};$('#close-breakdown').onclick=()=>$('#breakdown').close();$('#breakdown').addEventListener('close',()=>{breakdownRevision++;const url=new URL(location.href);url.searchParams.delete('view');history.replaceState(null,'',url);});
 $('#breakdown-view').onclick=()=>{$('#breakdown').close();const url=new URL(location.href);url.searchParams.delete('view');url.hash='mostrador';history.replaceState(null,'',url);$('#model-quality').value='best';inspectAsset(breakdownAsset);$('#mostrador').scrollIntoView({behavior:'smooth',block:'start'});};
-$('#search').oninput=render;$('#space').onchange=e=>{space=e.target.value;render();};document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{category=b.dataset.cat;document.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('active',x===b));render();});
+$('#search').oninput=render;$('#space').onchange=e=>{location.assign(inventoryURL(location.href,{space:e.target.value,project:e.target.value==='xtanco'?'estancos':e.target.value}));};document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{category=b.dataset.cat;document.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('active',x===b));render();});
 $('#restore').onclick=()=>{try{store.restore(space);}catch{$('#sync').textContent='No se pudo restaurar la visibilidad.';}};
 store.subscribe(s=>{if(s===space){render();showInstances();}});window.addEventListener('storage',e=>{if(e.key==='xpaceos:inventory-layout:'+space){render();showInstances();}});
-function merge(items){assets=numberedCatalog(data.native,[...stock.items,...items],registry);render();}
+function merge(items){allAssets=numberedCatalog(data.native,[...stock.items,...items],registry);render();}
 $('#refresh').onclick=async()=>{const button=$('#refresh');button.disabled=true;$('#sync').textContent='Consultando Pixeria…';try{const r=await fetch(STOCK_URL,{signal:AbortSignal.timeout(20000),cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();if(!Array.isArray(d.items))throw Error();merge(d.items);$('#sync').textContent=assets.length+' piezas numeradas · metadatos actualizados desde Pixeria'+(d.total>d.items.length?' · el servicio ha limitado la respuesta':'')+'.';}catch{$('#sync').textContent='Pixeria no responde. Conservamos el catálogo cargado; puedes volver a intentarlo.';}finally{button.disabled=false;}};
 try{
- const [catalog,photos]=await Promise.all([loadCatalog(),fetch('./starbucks/manifest.json').then(r=>r.ok?r.json():null).catch(()=>null)]);({data,stock,registry}=catalog);for(const unit of photos?.units||[]){if(unit.asset_number>=44&&unit.asset_number<=50&&unit.photo&&unit.reference_id&&!realPhotos.has(unit.asset_number)){try{referencePhotoURL(unit,new URL('./starbucks/',location.href));realPhotos.set(unit.asset_number,unit);}catch{}}}merge(stock.items);const selector=$('#model-select');selector.replaceChildren(...assets.map(a=>{const o=el('option',a.number+'. '+a.name);o.value=a.number;return o;}));selector.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));const params=new URLSearchParams(location.search);const qualitySelect=$('#model-quality');qualitySelect.value=[...tiers,'all'].includes(params.get('quality'))?params.get('quality'):'best';qualitySelect.onchange=()=>inspectAsset(assets.find(a=>a.number===Number(selector.value)));inspectAsset(assets.find(a=>a.number===Number(params.get('asset')))||assets[0]);$('#sync').textContent=assets.length+' piezas con identificadores permanentes · catálogo Pixeria del '+new Date(stock.fetchedAt).toLocaleDateString('es-ES')+'.';
- if(params.get('view')==='breakdown')openBreakdown(assets.find(a=>a.number===Number(params.get('asset')))||assets[0]);
- imageFor(data.native.find(x=>x.type==='counter'),'best').then(src=>{$('#hero-img').src=src;}).catch(()=>{$('#hero-img').alt='Mostrador: vista no disponible';});
+ const [catalog,photos]=await Promise.all([loadCatalog(),context.space==='starbucks_pg103'||!context.scoped?fetch('./starbucks/manifest.json').then(r=>r.ok?r.json():null).catch(()=>null):null]);({data,stock,registry}=catalog);
+ allAssets=catalog.assets;
+ if(context.valid&&space==='starbucks_pg103'){
+  for(const unit of photos?.units||[]){const asset=allAssets.find(a=>a.number===unit.asset_number);if(!asset)continue;ownership.set(unit.instance_id,asset.id);ownedSeed.push({id:unit.instance_id,type:asset.type,inventoryAssetId:asset.id,label:unit.name,referenceOnly:true});}
+  const [{STARBUCKS_WALL_MAPPING},{STARBUCKS_TPV_MAPPING}]=await Promise.all([import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs')]);
+  deviceRecords=[...STARBUCKS_WALL_MAPPING.players,...STARBUCKS_TPV_MAPPING.players].map(device=>({id:device.id,name:device.name}));
+  deviceRecords.push({id:'starbucks-alsea-paseo-de-gracia',name:tr('Altavoz · hilo musical','Speaker · background music')});
+ }else if(context.valid&&space==='cafebreria'){
+  ownedSeed=[{id:'cafebreriaLibrary',type:'cafebreriaLibrary',inventoryAssetId:'native:cafebreriaLibrary',referenceOnly:true}];
+ }
+ for(const unit of photos?.units||[]){if(unit.asset_number>=44&&unit.asset_number<=50&&unit.photo&&unit.reference_id&&!realPhotos.has(unit.asset_number)){try{referencePhotoURL(unit,new URL('./starbucks/',location.href));realPhotos.set(unit.asset_number,unit);}catch{}}}
+ merge(stock.items);
+ const selector=$('#model-select'),params=new URLSearchParams(location.search),qualitySelect=$('#model-quality');
+ const choose=()=>{const asset=assets.find(a=>a.number===Number(selector.value));if(asset)inspectAsset(asset);};selector.onchange=choose;
+ qualitySelect.value=[...tiers,'all'].includes(params.get('quality'))?params.get('quality'):'best';qualitySelect.onchange=choose;
+ const requested=params.get('asset'),initial=requested?assets.find(a=>a.number===Number(requested)):assets[0];
+ if(initial){inspectAsset(initial);if(params.get('view')==='breakdown')openBreakdown(initial);}else{$('#single-downloads').hidden=true;$('#model-stages').replaceChildren(el('p',tr('Esta pieza no pertenece a este Xpacio. Elige una de su inventario.','This piece does not belong to this Xpace. Choose one from its inventory.')));}
+ $('#sync').textContent=assets.length+' '+tr('modelos con identificadores permanentes','models with permanent identities')+(context.scoped?' · '+context.name:'');
+ const hero=initial||assets[0];if(hero){$('.hero-note').textContent=hero.number+' / '+hero.name;$('#hero-img').alt=hero.name;imageFor(hero,'best').then(src=>{$('#hero-img').src=src;}).catch(()=>{$('#hero-img').alt=tr('Vista no disponible','Preview unavailable');});}
 }catch(e){$('#catalog').textContent=e.message;$('#sync').textContent='Recarga la página para volver a intentarlo.';}
 window.addEventListener('pagehide',()=>observer.disconnect());

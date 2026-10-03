@@ -1,3 +1,4 @@
+import {inventoryContext,inventoryURL} from '../inventario/context.mjs?v=scope-20261004-1';
 import '../admira-xp/scripts/expert-categories.js?v=20261003-expert-1';
 import '../admira-xp/scripts/expert-dock.js?v=20261003-expert-1';
 
@@ -62,7 +63,7 @@ export function mountExpertWorkspace({panel,shell,config}){
   if(def.input){const label=el('label'),caption=el('span',t(def.input));caption.dataset.shellEs=def.input.es;caption.dataset.shellEn=def.input.en;input=el('input');input.type='text';label.append(caption,input);host.append(label);}
   for(const spec of def.actions||[]){
    const button=el(spec.href?'a':'button',t(spec));button.dataset.shellEs=spec.es;button.dataset.shellEn=spec.en;
-   if(spec.href){button.href=spec.href;if(/^https:/.test(spec.href)){button.target='_blank';button.rel='noopener noreferrer';}}
+   if(spec.href){const context=inventoryContext(doc.location?.href||view.location.href);button.href=spec.href==='/inventario/'&&context.scoped?inventoryURL(doc.location?.href||view.location.href,context).href:spec.href;if(/^https:/.test(spec.href)){button.target='_blank';button.rel='noopener noreferrer';}}
    else{button.type='button';listen(button,'click',async()=>{
     if(spec.input&&!input?.value.trim())return;
     released=new WeakSet();

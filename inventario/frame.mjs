@@ -1,6 +1,8 @@
+import {inventoryContext,twinURL} from './context.mjs?v=scope-20261004-1';
 // Page adapter: inventory controls and links in the shared XpaceOS shell.
 const X = 'https://www.xpaceos.com', Y = 'https://www.yokup.com';
 const page = document.body.dataset.inventoryPage || 'catalog';
+const context=inventoryContext(location.href);
 const yokup = document.body.dataset.inventoryHost === 'yokup';
 const en = new URLSearchParams(location.search).get('lang') === 'en';
 const tr = (es, english) => en ? english : es;
@@ -11,7 +13,20 @@ function currentCode() { const selected = document.querySelector('#selected-iden
 function xpaceURL() { const code = currentCode(); return code ? X + '/inventario/starbucks/?view=inventory&item=' + encodeURIComponent(code) : X + '/inventario/'; }
 function yokupURL() { const code = currentCode(); return code ? Y + '/equipo-inventario?code=' + encodeURIComponent(code) : Y + '/retailer#itil'; }
 function install() {
- const shell = window.XpaceShell; if (!shell?.registerVerb || document.querySelector('.inventory-subnav')) return;
+ const shell = window.XpaceShell;
+ if(context.scoped){
+  if(!shell?.registerVerb)return;
+  const here=new URL(location.href);here.searchParams.delete('asset');here.searchParams.delete('view');here.hash='';
+  const nav=node('nav',null,'inventory-subnav');nav.setAttribute('aria-label',tr('Inventario del Xpacio','Xpace inventory'));
+  for(const [label,href] of [[context.name,here.href],[tr('Volver al Xpacio','Back to the Xpace'),twinURL(location.href,context).href]]){const a=node('a',label);a.href=href;nav.append(a);}
+  for(const lang of ['es','en']){const a=node('a',lang.toUpperCase()),url=new URL(location.href);url.searchParams.set('lang',lang);a.href=url;nav.append(a);}
+  document.querySelector('#xsOptions .xs-page-options')?.prepend(nav);
+  shell.registerVerb({id:'inventario',aliases:['inventory'],es:'Inventario de este Xpacio',en:'This Xpace inventory',run:args=>args?shell.handoff('/inventario '+args):location.assign(here.href)});
+  shell.registerVerb({id:'xpaceos',aliases:['xpacio'],es:'Volver a este Xpacio',en:'Return to this Xpace',run:()=>location.assign(twinURL(location.href,context))});
+  for(const panel of ['left','right','expert'])shell.close(panel);
+  return;
+ }
+ if (!shell?.registerVerb || document.querySelector('.inventory-subnav')) return;
  document.documentElement.classList.add('inventory-frame');
  const nav = node('nav',null,'inventory-subnav');nav.setAttribute('aria-label',tr('Vistas del inventario','Inventory views'));
  for (const [label,href] of [[tr('Catálogo','Catalogue'),X+'/inventario/'],[tr('Conjunto 3D','3D showroom'),X+'/inventario/conjunto/'],['Starbucks 3D',X+'/inventario/starbucks/?view=inventory'],[tr('Referencias reales','Real references'),X+'/inventario/starbucks/?view=references'],['ITIL · Yokup',Y+'/retailer#itil']]) {const a=node('a',label);a.href=localized(href);nav.append(a);}

@@ -2,7 +2,7 @@ import {groundCafe} from './grounding.mjs?v=cafe-grounding-1';
 import {loadPixeriaFurniture} from '../../admira-xp/scripts/pixeria-furniture.mjs';
 import {bindImportedObjects,createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs?v=cafe-grounding-1';
 import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs?v=20261003-panels-2';
-import {mountCafeInventory} from './inventory-panel.mjs?v=20261003-panels-2';
+import {mountCafeInventory} from './inventory-panel.mjs?v=scope-20261004-1';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {GLTFLoader} from '../../admira-xp/scripts/vendor/GLTFLoader.mjs';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=cafe-editor-1';

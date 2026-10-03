@@ -28,10 +28,10 @@ test('inventory grammar reserves invalid destructive commands locally without in
  for(const s of ['eliminar 0','eliminar -1','eliminar 1.2','eliminar 1 todos','/inventario eliminar 99999999999999999'])assert.equal(parseInventoryCommand(s).action,'help');
  for(const s of ['/inventariox','hola','/mobiliario'])assert.equal(parseInventoryCommand(s),null);
 });
-test('CLI lists all 51 models with counts, including unplaced Pixeria furniture',async()=>{
+test('CLI lists only models belonging to this Xpace and preserves their permanent numbers',async()=>{
  const h=harness(),answer=await h.exec('/inventario');assert.equal(answer.ok,true);
- assert.equal(answer.message.split('\n').filter(line=>/^\d+\./.test(line)).length,51);
- assert.match(answer.message,/1\. Mostrador · 1 en el espacio/);assert.match(answer.message,/43\./);
+ assert.equal(answer.message.split('\n').filter(line=>/^\d+\./.test(line)).length,new Set(h.layout.map(i=>i.type)).size);
+ assert.match(answer.message,/1\. Mostrador · 1 en el espacio/);assert.doesNotMatch(answer.message,/44\. Barra|51\. Librería/);
 });
 test('remove 1 affects only the current counter, survives reload/factory reset and leaves catalog numbering intact',async()=>{
  const h=harness(),before=structuredClone(h.layout);assert.equal((await h.exec('eliminar el 1')).ok,true);
@@ -76,7 +76,7 @@ test('real composer and __xtExec intercept inventory before network, bot, memory
    hideHelpPanel(){},showLastResponse:(...v)=>responses.push(v),renderQuickActionButtons(){},
    rememberMemory:forbidden,appendTelegramLog:forbidden,telegramSend:forbidden,fetch:forbidden
   });
-  const helper=section('  async function executeLocalVisualCommand(rawText){','  async function executeTelegramText(rawText){').replace("import('../inventario/command.mjs?v=inventory-cli-4')",'loadInventoryCommand()');
+  const helper=section('  async function executeLocalVisualCommand(rawText){','  async function executeTelegramText(rawText){').replace("import('../inventario/command.mjs?v=scope-20261004-1')",'loadInventoryCommand()');
   vm.runInContext(section('function peopleGroupVisible(group){','const MAX_RESET_AUDIENCE=')+helper+section('  async function executeTelegramText(rawText){','  // === Stream Deck (Corsair Galleon 100 SD) bridge')+section('  async function sendComposerText(text){','  function bindDockButton(button,handler){')+'window.__xtExec=executeTelegramText;',context);
   await context.sendComposerText('/inventario');assert.equal(responses[0][2],'local-inventory');
   const answer=await context.window.__xtExec('eliminar el 1');assert.match(answer,failure?/No se pudo cargar/:/Retirado: 1\. Mostrador/);

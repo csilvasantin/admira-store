@@ -536,7 +536,7 @@
     }
     if (!savePending(session, command)) { log(T('No se pudo preparar el gemelo (sessionStorage no disponible). Ábrelo y escribe la orden allí: ', 'Could not prepare the twin (no sessionStorage). Open it and type the command there: ') + TWIN_HOME); return false; }
     log(T('«' + command + '» es un verbo del gemelo: lo abro y lo ejecuto allí…', '“' + command + '” is a twin verb: opening the twin to run it there…'));
-    setTimeout(() => root.location.assign(TWIN_HOME), 350);
+    setTimeout(() => root.location.assign(target.href), 350);
     return true;
   }
 
@@ -671,7 +671,7 @@
       toggle: name => setPanel(name, !state[name]), state: () => Object.assign({}, state),
       run, print: log, registerVerb, handoff,
     });
-    import(new URL('./expert-workspace.mjs?v=20261003-expert-1',script.src).href).then(({mountExpertWorkspace})=>{
+    import(new URL('./expert-workspace.mjs?v=scope-20261004-1',script.src).href).then(({mountExpertWorkspace})=>{
       shared.expertWorkspace=mountExpertWorkspace({panel:parts.expert,shell:shared,config:cfg});
       doc.dispatchEvent(new CustomEvent('xpace:expert-ready'));
     }).catch(error=>console.warn('xpace-shell expert',error));

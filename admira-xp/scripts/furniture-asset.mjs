@@ -1,6 +1,6 @@
 import {GLTFLoader} from './vendor/GLTFLoader.mjs';
 import {cloneCounter,counterURL} from './counter-asset.mjs';
-import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43-objects-1';
+import {assetForInstance} from '../../inventario/model.mjs?v=scope-20261004-1';
 const cache=new Map();let registryPromise;
 export const inventoryIdFor=assetForInstance;
 export function furnitureURL(number,tier='best',extension='glb'){

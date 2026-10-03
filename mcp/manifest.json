@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.03.10.2026.r7.23:51",
+  "version": "v.04.10.2026.r1.00:08",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.23",
+    "version": "2.12.24",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -1394,5 +1394,34 @@
       "/marca",
       "/avatarDigital"
     ]
+  },
+  "inventory_scope": {
+    "es": "ITIL abre el inventario del Xpacio visitado en el mismo dominio, conservando proyecto, local, idioma y marca. Publica primero su distribución actual en este navegador. Tarjetas, selector 3D, desgloses y descargas se limitan a sus modelos; un enlace a una pieza ajena no la carga. Un Xpacio desconocido muestra un inventario vacío y pide abrir ITIL desde la escena. /inventario en el gemelo lista sólo sus modelos, conservando los números permanentes y las piezas retiradas para su recuperación. Las importaciones explícitas y Deshacer mantienen su funcionamiento. Starbucks PG103 conserva sus unidades y modelos 44–50 e incluye sus seis pantallas virtuales, TPV y altavoz; no acredita vinculación ni telemetría física. Cafebrería conserva su inventario completo de la escena y su librería 51. El catálogo general sin contexto sigue disponible para consultar plantillas. No crea altas patrimoniales en Yokup.",
+    "en": "ITIL opens the inventory of the Xpace being visited on the same origin, preserving project, venue, language and brand. It first publishes the current layout in this browser. Cards, the 3D selector, breakdowns and downloads are limited to its models; links to foreign pieces do not load them. Unknown Xpacios show an empty inventory and ask users to open ITIL from the scene. /inventario in the twin lists only its models, preserving permanent numbers and removed pieces for recovery. Explicit imports and Undo retain their behavior. Starbucks PG103 keeps its units and models 44–50 and includes its six virtual screens, POS and speaker; this does not establish physical binding or telemetry. Cafebrería retains its full scene inventory and bookcase 51. The general catalogue without context remains available for browsing templates. No Yokup lifecycle assets are created.",
+    "route": "/inventario/?space=<active-space>&project=<active-project>",
+    "same_origin": true,
+    "layout_key": "xpaceos:inventory-layout:<active-space>",
+    "scope_sources": [
+      "active native layout and existing per-space ledger",
+      "Starbucks registered instance/model manifest and virtual device mappings",
+      "Cafebrería existing full scene inventory"
+    ],
+    "stable_ids": {
+      "starbucks_models": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ],
+      "cafebreria_library": 51
+    },
+    "unknown_scope": "empty; no global fallback",
+    "foreign_asset": "not loaded; choose an owned model",
+    "physical_binding": "pending; no new remote write tool",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/inventory-scope.md",
+    "tutorial": "https://www.xpaceos.com/help/#inventory-scope"
   }
 }

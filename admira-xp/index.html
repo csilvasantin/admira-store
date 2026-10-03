@@ -757,7 +757,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261003-header-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261004-inventory-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -875,7 +875,7 @@
   <button class="btn-quit" id="btnQuit" title="Cerrar audios y videos, volver al menú principal">⏻ Quit</button>
 </div>
 <!-- Trío canónico opciones/avanzado/experto (mismo patrón que pixeria.com/musica.html, temado al Xpacio) -->
-<link rel="stylesheet" href="/assets/xpace-header.css?v=20261003-header-1">
+<link rel="stylesheet" href="/assets/xpace-header.css?v=20261004-inventory-1">
 <style id="topbarCoreStyle">
   /* Park venue telemetry while Carlos defines the core UI and operational IoT.
      Keep live nodes and IDs so their producers and saved context still work. */
@@ -18461,7 +18461,7 @@ function drawShopOperation(fn,kind='device'){
 
 // ── DRAW SHOP (ISOMETRIC — Kairosoft warm style) ─────────────
 let inventoryPublishedAt=0;
-function inventorySpace(){return isStarbucksVenue()?'starbucks_pg103':CLIENTS[activeClient]?.id||'xtanco';}
+function inventorySpace(){return isStarbucksVenue()?'starbucks_pg103':altadisEscena()?'xtanco_'+altadisEscena().id:CLIENTS[activeClient]?.id||'xtanco';}
 function inventoryPresentationLayout(){
   const store=window.XpaceInventory,space=inventorySpace();
   if(store&&Date.now()-inventoryPublishedAt>1000){store.publish(space,shopLayout);inventoryPublishedAt=Date.now();}
@@ -31580,7 +31580,7 @@ window.xtAPI = (function(){
     if(visibility)return visibility;
     if(/^\/?(?:inventario|eliminar|añadir|anadir)(?:@\w+)?(?:\s|$)/i.test(text)){
       try{
-        const {executeInventoryCommand}=await import('../inventario/command.mjs?v=inventory-cli-4');
+        const {executeInventoryCommand}=await import('../inventario/command.mjs?v=scope-20261004-1');
         const space=inventorySpace();
         const checkSpace=()=>{if(inventorySpace()!==space)throw Error('El Xpacio ha cambiado');};
         return await executeInventoryCommand(text,{
@@ -35765,7 +35765,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
 <script src="scripts/expert-category-detail.js?v=itil-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=central-2">
-<script type="module" src="scripts/project-selector.mjs?v=20261003-header-1"></script>
+<script type="module" src="scripts/project-selector.mjs?v=20261004-inventory-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -35794,9 +35794,16 @@ window.xtAPI = (function(){
   function makeItil(){
     var b=document.createElement('button');b.type='button';b.className='tg-quick-btn';b.dataset.quickAction='itil';
     var en=typeof lang!=='undefined'&&lang==='en';
-    b.innerHTML='<strong>ITIL</strong><span>'+(en?'Catalog · 3D editor':'Catálogo · Editor 3D')+'</span>';
+    b.innerHTML='<strong>ITIL</strong><span>'+(en?'This Xpace · furniture and IoT':'Este Xpacio · mobiliario e IoT')+'</span>';
     b.title=en?'Open ITIL inventory, detailed furniture and 3D editor':'Abrir inventario ITIL, muebles detallados y editor 3D';
-    b.addEventListener('click',function(){window.open('https://www.xpaceos.com/inventario/','_blank','noopener,noreferrer');});return b;
+    b.addEventListener('click',function(){
+      var space=inventorySpace(),project=isStarbucksVenue()?'starbucks':space.startsWith('xtanco')?'estancos':space;
+      window.XpaceInventory?.publish(space,shopLayout);
+      var url=new URL('../inventario/',location.href),source=new URL(location.href);
+      for(var key of ['loc','circuit','marca','quality'])if(source.searchParams.has(key))url.searchParams.set(key,source.searchParams.get(key));
+      url.searchParams.set('space',space);url.searchParams.set('project',project);url.searchParams.set('lang',en?'en':'es');
+      location.assign(url.href);
+    });return b;
   }
   function mirror(){
     if(scene.parentNode) scene.remove();
