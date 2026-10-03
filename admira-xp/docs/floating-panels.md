@@ -94,3 +94,11 @@ ES: **Cafebrería recuperada para análisis:** [demo preservada con estantería 
 EN: **Cafebrería recovered for analysis:** [preserved interactive-shelf demo](https://smith-cafebreria-emision-474.pixeria.pages.dev/xpacios/cafebreria/demo/?v=4e5d47c&ver=estanteria-libros&tier=better). Walnut shelving, selectable books with capsules, summaries and voice, records and a retro TV. The Science of Storytelling capsule was checked in the UI. Carlos has confirmed this Cafebrería. The recovered experience and reusable bookcase 51 are documented in [cafebreria-library.md](cafebreria-library.md).
 
 [Ayuda web / Web help](https://www.xpaceos.com/admira-xp/help.html#floating-panels) · [Tutorial ES/EN](https://www.xpaceos.com/help/#floating-panels) · [Ayuda CLI / CLI help](https://www.xpaceos.com/help/cli/#floating-panels) · [MCP help](https://mcp.admira.store/help)
+
+## Tamaño compartido / Shared sizing
+
+ES: Redimensiona el marco cuadrático: arrastra el borde superior de Experto hacia abajo para reducirlo o hacia arriba para ampliarlo; ajusta Opciones y Avanzado con los tiradores de sus bordes interiores. Las ventanas flotantes tienen una esquina inferior derecha para cambiar anchura y altura. Con el tirador enfocado, usa las flechas (20 px; Mayús, 5 px). Inicio o doble clic restaura el tamaño automático. Cada tamaño se guarda en este navegador y dominio, con límites para mantener visibles los controles. Los tiradores se ocultan al cerrar; el lienzo y los laterales se adaptan a la altura de Experto. Se conservan /marca, historial CLI, posición y cierre de cada herramienta.
+
+EN: Resize the quadratic shell: drag Expert's upper edge downward to shrink it or upward to enlarge it; adjust Options and Advanced with their inner-edge handles. Floating windows have a bottom-right corner to change width and height. With a handle focused, use arrow keys (20 px; Shift, 5 px). Home or double-click restores automatic sizing. Each size is saved in this browser and domain, bounded to keep controls reachable. Handles hide when closed; the canvas and side rails follow Expert's height. /brand, CLI history, window positions and each tool's close lifecycle are preserved.
+
+Guide: https://www.xpaceos.com/admira-xp/docs/panel-resize.md

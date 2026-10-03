@@ -1,3 +1,4 @@
+@import url('/admira-xp/scripts/panel-resize.css?v=20261003-panels-2');
 /* Shell cuadrático común de XpaceOS · FLT-101337.
    La misma barra y los mismos paneles que el gemelo (admira-xp/index.html: #topBar,
    .quad-icon, .quad-menu.quad-left/.quad-right y el modo Experto abajo), para cualquier
@@ -52,7 +53,7 @@ html.xs-no-anim body.xs-page,html.xs-no-anim .xs-panel,html.xs-no-anim .xs-exper
 .xs-layer > *{pointer-events:auto}
 .xs-layer > .is-collapsed{pointer-events:none}
 .xs-panel.quad-menu{position:absolute;top:var(--xs-bar-h);bottom:var(--xs-bottom);z-index:9000;display:flex;flex-direction:column;flex-wrap:nowrap;gap:6px;
-  width:min(280px,86vw);max-width:none;height:auto;margin:0;padding:14px 12px;overflow-y:auto;overscroll-behavior:contain;
+  width:min(280px,86vw);max-width:calc(100vw - 24px);min-width:0;height:auto;margin:0;padding:14px 12px;overflow-y:auto;overscroll-behavior:contain;
   background:var(--xs-surface);border:1px solid var(--xs-edge);box-shadow:0 0 24px rgba(120,243,255,.12),inset 0 0 18px rgba(120,243,255,.05);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--xp-ink);font:13px/1.35 var(--xs-font);
   transition:transform .22s ease,visibility 0s linear 0s}

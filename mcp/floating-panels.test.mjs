@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {CLASSIC_FLOATING_PANELS} from '../admira-xp/scripts/xp-floating-runtime.mjs';
+import {CLASSIC_FLOATING_PANELS} from '../admira-xp/scripts/xp-floating-runtime.mjs?v=20261003-panels-2';
 
 const root=new URL('../',import.meta.url),read=path=>readFile(new URL(path,root),'utf8');
 const manifest=JSON.parse(await read('mcp/manifest.json')),catalog=JSON.parse(await read('mcp/funcionalidades.json'));

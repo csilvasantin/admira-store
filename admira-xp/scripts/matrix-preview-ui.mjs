@@ -1,4 +1,4 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=floating-panels-1';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=20261003-panels-2';
 import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 const listeners=new Set();
 let dialog,dispose,controller,hud,requestId,lastFocus,busy=false,viewError='';

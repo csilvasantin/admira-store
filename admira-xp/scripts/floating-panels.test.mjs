@@ -1,13 +1,14 @@
+import {attachPanelResize,resizedPanel} from './panel-resize.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setMaxListeners} from 'node:events';
 import {boundedRectPosition,localWindowPosition,movableWindow} from './floating-window.mjs';
-import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs';
+import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=20261003-panels-2';
 
 function harness({left=600,top=100,width=300,height=180,lang='es',parentRect={left:100,top:48,width:900,height:650}}={}){
   class Controller extends AbortController{constructor(){super();setMaxListeners(0,this.signal);}}
   const view=new EventTarget(),stored=new Map(),writes=[];
-  Object.assign(view,{innerWidth:1200,innerHeight:900,scrollX:0,scrollY:0,AbortController:Controller,getComputedStyle:element=>({position:element.style.position||'absolute',display:element.style.display,visibility:element.style.visibility,opacity:element.style.opacity}),localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>{stored.set(key,String(value));writes.push(key);}}});
+  Object.assign(view,{innerWidth:1200,innerHeight:900,scrollX:0,scrollY:0,AbortController:Controller,getComputedStyle:element=>({position:element.style.position||'absolute',display:element.style.display,visibility:element.style.visibility,opacity:element.style.opacity}),localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>{stored.set(key,String(value));writes.push(key);},removeItem:key=>stored.delete(key)}});
   const doc={defaultView:view,documentElement:{lang},createElement:tag=>new Element(tag)};
   class Element extends EventTarget{
     constructor(tag='div',rect={left:0,top:0,width:0,height:0}){
@@ -25,7 +26,7 @@ function harness({left=600,top=100,width=300,height=180,lang='es',parentRect={le
     replaceChildren(...children){for(const child of this.children)child.parentNode=null;this.children=[];this.append(...children);}
     remove(){if(this.parentNode)this.parentNode.children=this.parentNode.children.filter(child=>child!==this);this.parentNode=null;}
     getBoundingClientRect(){
-      const rect={...this.rect};
+      const rect={...this.rect};if(parseFloat(this.style.width)>0)rect.width=parseFloat(this.style.width);if(parseFloat(this.style.height)>0)rect.height=parseFloat(this.style.height);
       if(this.classList.contains('xp-window-moved')){
         const parent=this.offsetParent?.getBoundingClientRect(),fixed=this.style.position==='fixed';
         rect.left=parseFloat(this.style['--xp-window-left'])+(fixed?0:parent?(parent.left+(this.offsetParent.clientLeft||0)-(this.offsetParent.scrollLeft||0)):-view.scrollX);
@@ -40,6 +41,7 @@ function harness({left=600,top=100,width=300,height=180,lang='es',parentRect={le
     releasePointerCapture(id){this.captures.delete(id);}
     click(){const event=new Event('click',{cancelable:true});this.dispatchEvent(event);this.onclick?.(event);}
   }
+  doc.body=new Element('body');
   const bounds=new Element('main',parentRect),panel=new Element('aside',{left,top,width,height}),handle=new Element('header');panel.offsetParent=bounds;panel.append(handle);
   function send(element,type,properties={}){const event=new Event(type,{cancelable:true});for(const [name,value] of Object.entries(properties))Object.defineProperty(event,name,{value});element.dispatchEvent(event);return event;}
   const pointer=(type,x,y,id=1)=>send(handle,type,{button:0,pointerId:id,isPrimary:true,clientX:x,clientY:y});
@@ -201,4 +203,29 @@ test('the optional Windows menu uses registered feature openers and removes disp
   const unregister=registerFloatingPanel('floating-test-only',{label:'Matrix',open(){opens++;}});
   const section=container.children[0],list=section.children[1];assert.equal(section.hidden,false);assert.equal(list.children[0].textContent,'Matrix');list.children[0].click();assert.equal(opens,1);
   const stale=list.children[0];unregister();assert.equal(section.hidden,true);stale.click();assert.equal(opens,1);menu.dispose();assert.equal(container.children.length,0);
+});
+
+test('quadratic edges shrink downward/rightward and respect narrow viewport limits',()=>{
+ assert.deepEqual(resizedPanel({width:280,height:302},0,120,{axis:'height',direction:-1}),{width:280,height:182});
+ assert.deepEqual(resizedPanel({width:280,height:302},80,0,{axis:'width',direction:-1}),{width:200,height:302});
+ assert.deepEqual(resizedPanel({width:280,height:302},-1000,1000,{maxWidth:120,maxHeight:110}),{width:120,height:110});
+});
+test('resizing persists independently, clamps to bounds, resets and disposes without consuming CLI shortcuts',()=>{
+ const h=harness(),resize=attachPanelResize(h.panel,{label:'Test',key:'window:size',limits:()=>({maxWidth:400,maxHeight:300})});
+ h.stored.set('cli-history','keep');h.stored.set('window:position','keep');
+ h.send(resize.handle,'pointerdown',{button:0,pointerId:1,clientX:900,clientY:280});
+ h.send(resize.handle,'pointermove',{pointerId:2,clientX:9999,clientY:9999});
+ assert.equal(h.panel.getBoundingClientRect().width,300);
+ h.send(resize.handle,'pointermove',{pointerId:1,clientX:9999,clientY:9999});
+ h.send(resize.handle,'pointerup',{pointerId:1});
+ assert.deepEqual(JSON.parse(h.stored.get('window:size')),{width:400,height:300});
+ h.send(resize.handle,'keydown',{key:'ArrowLeft',shiftKey:true});
+ assert.equal(h.panel.getBoundingClientRect().width,395);
+ assert.equal(h.send(resize.handle,'keydown',{key:'ArrowRight',ctrlKey:true}).defaultPrevented,false);assert.equal(h.panel.getBoundingClientRect().width,395);
+ assert.equal(h.stored.get('cli-history'),'keep');assert.equal(h.stored.get('window:position'),'keep');
+ h.send(resize.handle,'keydown',{key:'Home'});
+ assert.equal(h.stored.has('window:size'),false);assert.equal(h.panel.getBoundingClientRect().width,300);
+ h.panel.hidden=true;resize.sync();assert.equal(resize.handle.hidden,true);
+ resize.dispose();h.send(resize.handle,'keydown',{key:'ArrowRight'});
+ assert.equal(h.panel.getBoundingClientRect().width,300);assert.equal(resize.handle.parentNode,null);
 });

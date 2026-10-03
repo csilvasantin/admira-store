@@ -2,7 +2,7 @@
 
 **Regla: toda página nueva de xpaceos.com (= admira.store) usa el shell cuadrático.** Ninguna página trae su propia cabecera ni su propia navegación. Es lo mismo que ya tienen admira.app (`galaxy-shell`) y Pixeria (`shell-cuadratico`).
 
-Estado: implementado en la rama `morfeo/shell-marca-store` (pendiente de push y despliegue por el coordinador).
+Estado: shell compartido publicado; tiradores de tamaño añadidos el 3-oct-2026.
 
 ## Qué es
 
@@ -97,3 +97,9 @@ Guardián: `tests/shell-cuadratico.test.mjs` recorre todos los `.html`. Cada uno
 ---
 
 **English.** **Rule: every new xpaceos.com (= admira.store) page uses the four-band shell.** Load `/assets/xpace-shell.css` (after the page CSS) and `/assets/xpace-shell.js` (defer) in the `<head>`, declare the page section, links and actions in `window.XPACE_SHELL` or with `data-shell-slot` / `data-shell-nav` / `data-shell-replace`, and the page gets the twin's exact bar (☰ Options + XpaceOS + section on the left, ▤ Advanced and ⌘ Expert on the right, same glyphs and classes) and its Options, Advanced and Expert panels. Panels are independent, start closed and remember their state across pages; wide screens dock them, narrow ones overlay them; no horizontal scroll on mobile. Navigation goes to ☰ Options; page work and section shortcuts to ▤ Advanced; daily filters stay in the content. Heights use `var(--xs-bar-h)` / `var(--xs-bottom)`; own gates and modals sit at z-index ≥ 9100. Twin verbs typed in ⌘ Expert outside the twin are stored in `sessionStorage` (`xpaceos_expert_pending_v1`, 2-minute expiry, never in the URL), the twin opens and runs them once, as if typed in its console. 35 pages carry the shell, the twin keeps its inline bar, and 21 exceptions (full-screen stages, redirects and a fragment) are listed above and in `SHELL_EXCEPTIONS` of `tests/shell-cuadratico.test.mjs`, which fails when a page skips the shell.
+
+## Redimensionar / Resize
+
+ES: Redimensiona el marco cuadrático: arrastra el borde superior de Experto hacia abajo para reducirlo o hacia arriba para ampliarlo; ajusta Opciones y Avanzado con los tiradores de sus bordes interiores. Las ventanas flotantes tienen una esquina inferior derecha para cambiar anchura y altura. Con el tirador enfocado, usa las flechas (20 px; Mayús, 5 px). Inicio o doble clic restaura el tamaño automático. Cada tamaño se guarda en este navegador y dominio, con límites para mantener visibles los controles. Los tiradores se ocultan al cerrar; el lienzo y los laterales se adaptan a la altura de Experto. Se conservan /marca, historial CLI, posición y cierre de cada herramienta.
+
+EN: Resize the quadratic shell: drag Expert's upper edge downward to shrink it or upward to enlarge it; adjust Options and Advanced with their inner-edge handles. Floating windows have a bottom-right corner to change width and height. With a handle focused, use arrow keys (20 px; Shift, 5 px). Home or double-click restores automatic sizing. Each size is saved in this browser and domain, bounded to keep controls reachable. Handles hide when closed; the canvas and side rails follow Expert's height. /brand, CLI history, window positions and each tool's close lifecycle are preserved.

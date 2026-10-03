@@ -7,7 +7,7 @@ import {createLifeSnapshot} from './life-snapshot.mjs';
 // Execute the actual UI controller with renderer and panel adapters injected. No
 // WebGL/browser, external media, game loop or source files are changed by this
 // harness; the fake DOM exercises observable scheduling and event propagation.
-const source=fs.readFileSync(new URL('./life-ui.mjs',import.meta.url),'utf8')
+const source=fs.readFileSync(new URL('./life-ui.mjs?v=20261003-panels-2',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'')
   .replace(/await import\('\.\/life-renderer\.mjs\?v=[^']+'\)/,'await loadRenderer()')
   .replace(/^export \{.*\};?\s*$/m,'');

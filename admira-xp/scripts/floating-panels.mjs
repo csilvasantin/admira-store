@@ -1,4 +1,5 @@
-import {movableWindow} from './floating-window.mjs?v=floating-panels-1';
+import {movableWindow,visibleBounds} from './floating-window.mjs?v=20261003-panels-2';
+import {attachPanelResize} from './panel-resize.mjs?v=20261003-panels-2';
 
 const windows=new Map(),menus=new Set();
 function refreshMenus(){for(const refresh of menus)refresh();}
@@ -45,6 +46,7 @@ export function attachFloatingPanel(panel,{label,handle,closeButton,onClose,onOp
   const generatedClose=!closeButton;
   if(!closeButton){closeButton=doc.createElement('button');closeButton.type='button';closeButton.className='xp-floating-close';closeButton.textContent='×';closeButton.setAttribute('aria-label',(en?'Close ':'Cerrar ')+label);handle.append(closeButton);}
   const motion=movableWindow(panel,handle,{bounds,key,storage});
+  const size=attachPanelResize(panel,{label,key:key?key+':size':undefined,storage,view,limits:()=>{const area=visibleBounds(view,bounds,panel);return {minWidth:156,minHeight:128,maxWidth:Math.max(32,area.width-16),maxHeight:Math.max(32,area.height-16)};},onChange:()=>motion.clamp()});
   // Authored X controls can rely on click delegation at their panel. Let that
   // click reach the owner, then stop it there before document/game handlers.
   // Other generated-header clicks and mouse drag hooks stay local to the grip.
@@ -65,13 +67,13 @@ export function attachFloatingPanel(panel,{label,handle,closeButton,onClose,onOp
     if(disposed)return;
     if(typeof onOpen==='function')onOpen();
     else {panel.hidden=false;if(closedByHelper)panel.style.display=oldDisplay;closedByHelper=false;}
-    motion.restore();
+    motion.restore();size.fit();
   }
   const unregister=menu?registerFloatingPanel(typeof menu==='string'?menu:key||panel.id||label,{label,open}):null;
   return {
     panel,handle,closeButton,open,close,restore:motion.restore,clamp:motion.clamp,
     dispose(){
-      if(disposed)return;disposed=true;abort.abort();motion.dispose();unregister?.();
+      if(disposed)return;disposed=true;abort.abort();size.dispose();motion.dispose();unregister?.();
       if(generatedHeader)handle.remove();else {if(generatedClose)closeButton.remove();if(!wasHandleClass)handle.classList.remove('xp-floating-handle');}
       if(!wasPanelClass)panel.classList.remove('xp-floating-panel');
     }

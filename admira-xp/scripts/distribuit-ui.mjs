@@ -1,7 +1,7 @@
 import {createDistribuitController} from './distribuit-controller.mjs?v=imported-space-1';
 import {furniturePose,SCALE_LIMITS} from './distribuit.mjs?v=imported-space-1';
 import {isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-panels-2';
 
 export function mountDistribuit({dialog,viewer,bridge,onClose=()=>{}}){
   const en=document.documentElement.lang==='en',t=(es,english)=>en?english:es;

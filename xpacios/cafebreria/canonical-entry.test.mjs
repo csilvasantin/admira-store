@@ -8,7 +8,7 @@ test('Cafebrería canonical entry retains the original scene and common XpaceOS 
   assert.match(html,/xpace-shell\.js/);
   assert.match(html,/cafe-edit/);
   assert.match(html,/cafe-inventory/);
-  const runtime=fs.readFileSync(new URL('./cafe.mjs',import.meta.url),'utf8');
+  const runtime=fs.readFileSync(new URL('./cafe.mjs?v=20261003-panels-2',import.meta.url),'utf8');
   assert.match(runtime,/scene\.glb/);
   assert.match(runtime,/mountDistribuit/);
   assert.match(runtime,/surroundings:true/);

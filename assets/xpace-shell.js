@@ -624,6 +624,21 @@
     root.addEventListener('resize', layout);
     if (root.ResizeObserver) new ResizeObserver(layout).observe(parts.expert);
     new MutationObserver(translate).observe(html, {attributes: true, attributeFilter: ['lang']});
+    // Docked panels keep their quadratic anchors while their inside edges move.
+    import(new URL('../admira-xp/scripts/panel-resize.mjs?v=20261003-panels-2',script.src).href).then(({attachPanelResize})=>{
+      for(const name of ['left','right','expert']){
+        const panel=doc.getElementById(PANEL[name]),vertical=name==='expert';
+        const resize=attachPanelResize(panel,{
+          axis:vertical?'height':'width',direction:name==='left'?1:-1,
+          label:()=>T(name==='left'?'Opciones':name==='right'?'Avanzado':'Experto',name==='left'?'Options':name==='right'?'Advanced':'Expert'),
+          key:'xpaceos_shell_size_v1:'+name,storage:local,container:parts.expert.parentElement,
+          limits:()=>vertical?{minHeight:128,maxHeight:Math.max(128,root.innerHeight-BAR_HEIGHT-96)}:{minWidth:156,maxWidth:Math.max(156,Math.min(560,root.innerWidth*.45))},
+          onChange:layout
+        });
+        doc.addEventListener('xpace:shell-panel',()=>resize.sync());
+        root.addEventListener('pagehide',()=>resize.dispose(),{once:true});
+      }
+    }).catch(error=>console.warn('xpace-shell resize',error));
     wireCli();
     registerVerb({
       id: 'avatardigital',

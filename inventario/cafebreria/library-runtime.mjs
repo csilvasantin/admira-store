@@ -1,5 +1,5 @@
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import {mountCapsulas} from './capsulas.mjs?v=cafebreria-1';
+import {mountCapsulas} from './capsulas.mjs?v=20261003-panels-2';
 export const LIBRARY_ID='native:cafebreriaLibrary';
 export const LIBRARY_NUMBER=51;
 export const LIBRARY_SIZE=Object.freeze({ancho:1.6,fondo:.28,alto:1.1,unidad:'m'});

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CLASSIC_FLOATING_PANELS,floatingBoundsRect,mountClassicFloatingPanels} from './xp-floating-runtime.mjs';
+import {CLASSIC_FLOATING_PANELS,floatingBoundsRect,mountClassicFloatingPanels} from './xp-floating-runtime.mjs?v=20261003-panels-2';
 
 function harness(){
  const registry=new Map(),attaches=[],queue=[],view=new EventTarget();let observer;

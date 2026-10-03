@@ -1,3 +1,4 @@
+@import url('./panel-resize.css?v=20261003-panels-2');
 .xp-floating-panel[hidden]{display:none!important}
 .xp-floating-panel.xp-window-moved{left:var(--xp-window-left)!important;top:var(--xp-window-top)!important;right:auto!important;bottom:auto!important;margin:0!important;transform:none!important;translate:none!important;min-width:0!important;max-width:var(--xp-window-max-width,calc(100vw - 16px))!important;max-height:var(--xp-window-max-height,calc(100dvh - 16px))!important;overflow:auto}
 .xp-floating-panel .xp-floating-header{position:relative;z-index:3;display:flex;align-items:center;gap:8px;min-height:28px;padding:4px 6px;border-bottom:1px solid currentColor;box-sizing:border-box;background:#102b30;color:#dff8ff}
@@ -10,3 +11,5 @@
 .xp-floating-menu-items{display:flex;flex-wrap:wrap;gap:6px}
 .xp-floating-menu h3{margin:8px 0;font:inherit;font-weight:600}
 .xp-floating-menu button{font:inherit;color:inherit;border:1px solid currentColor;border-radius:5px;background:transparent;padding:6px 8px;cursor:pointer}
+
+.xp-floating-panel.xp-panel-sized{min-width:0!important;min-height:0!important;max-width:var(--xp-window-max-width,calc(100vw - 16px))!important;max-height:var(--xp-window-max-height,calc(100dvh - 16px))!important;overflow:auto}

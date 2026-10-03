@@ -11,9 +11,9 @@ export function boundedPosition(x,y,width,height,viewportWidth,viewportHeight){
 }
 
 function viewport(view){return {left:0,top:0,width:view.innerWidth,height:view.innerHeight};}
-const OBSTRUCTIONS='#xpace-side-left,#xpace-side-right,.quad-left,.quad-right,#telegramDock,#characterDock';
+const OBSTRUCTIONS='#xpace-side-left,#xpace-side-right,.quad-left,.quad-right,#telegramDock,#characterDock,#xsExpert';
 function shellObstructions(panel){return [...(panel.ownerDocument?.querySelectorAll?.(OBSTRUCTIONS)||[])];}
-function visibleBounds(view,bounds,panel){
+export function visibleBounds(view,bounds,panel){
   const area=typeof bounds==='function'?bounds():bounds;
   const rect=area?.getBoundingClientRect?.(),screen=viewport(view);
   const valid=rect&&[rect.left,rect.top,rect.width,rect.height].every(finite)&&rect.width>0&&rect.height>0;
@@ -34,7 +34,7 @@ function visibleBounds(view,bounds,panel){
       if(r.left>left)right=Math.min(right,r.left);
     }else if(blocker.id==='xpace-side-left'||blocker.classList?.contains('quad-left')){
       if(edgeRight<right)left=Math.max(left,edgeRight);
-    }else if((blocker.id==='telegramDock'||blocker.id==='characterDock')&&r.top>top){bottom=Math.min(bottom,r.top);}
+    }else if((blocker.id==='telegramDock'||blocker.id==='characterDock'||blocker.id==='xsExpert')&&r.top>top){bottom=Math.min(bottom,r.top);}
   }
   return {left,top,width:right-left,height:bottom-top};
 }

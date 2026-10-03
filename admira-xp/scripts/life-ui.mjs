@@ -2,7 +2,7 @@ import {createLifeSnapshot} from './life-snapshot.mjs?v=distribuir-3';
 import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
-import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=floating-panels-1';
+import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=20261003-panels-2';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const listeners=new Set();
@@ -186,7 +186,7 @@ async function openLifeEditor(){
   if(!dialog||!viewer||!window.__xtancoFurnitureEditor)return false;
   if(furnitureEditor)return true;
   const ticket=generation;
-  const {mountDistribuit}=await import('./distribuit-ui.mjs?v=floating-panels-1');
+  const {mountDistribuit}=await import('./distribuit-ui.mjs?v=20261003-panels-2');
   if(ticket!==generation||!viewer)return false;
   if(furnitureEditor)return true;
   try{furnitureEditor=mountDistribuit({dialog,viewer,bridge:window.__xtancoFurnitureEditor,onClose:closeLifeEditor});viewer.setPartMode(false);if(shelfHost)shelfHost.hidden=true;window.__shelfScreenPreview?.stop();dialog.querySelector('.life-selection').hidden=true;return true;}catch(error){console.warn('[Distribuit]',error);return false;}
