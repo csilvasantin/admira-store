@@ -9,7 +9,7 @@ test('shared Expert retains CLI IDs and the native three-column category contrac
  assert.equal([...html.matchAll(/data-expert-divider=/g)].length,2);
  assert.match(html,/<textarea id="xsCli"/);assert.match(html,/CATEGORY OPTIONS/);assert.match(html,/PREVIEWS/);
  const defs=expertCategories({editor:{id:'changed',actions:[{command:'/distribuir'}]}});
- assert.deepEqual(defs.map(d=>d.id),['signage','admiralive','livecam','dvr','anonymizer','editor','avatar3d','impactos','inventory','perception','pixerai','itil']);
+ assert.deepEqual(defs.map(d=>d.id),['signage','admiralive','livecam','dvr','anonymizer','editor','avatar3d','impactos','inventory','perception']);
  assert.equal(defs[5].actions[0].command,'/distribuir');assert.equal(expertCategories()[5].actions[0].command,'/distribuir');
 });
 function harness(){
@@ -24,7 +24,7 @@ function harness(){
  const root=new Node(),original=new Node(),first=new Node(),second=new Node(),tool=new Node();root.append(original);root.append(first);root.append(second);original.append(tool);
  const doc={createComment:()=>new Node(),createElement:()=>new Node()};return{doc,original,first,second,tool};
 }
-test('same live tool transfers between Inventory and ITIL and returns to its original parent',()=>{
+test('same live tool transfers between dock hosts and returns to its original parent',()=>{
  const h=harness(),dock=createExpertDock(h);let calls=0;h.tool.addEventListener('edit',()=>calls++);
  assert.equal(dock.dock(h.tool,h.first,'Detach'),true);const anchor=h.original.children[0];
  h.tool.dispatchEvent(new Event('edit'));assert.equal(calls,1);assert.equal(h.tool.parentNode,h.first);

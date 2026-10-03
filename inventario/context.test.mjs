@@ -25,8 +25,8 @@ test('ITIL retains origin, venue, language and brand; return links retain the sa
  const back=twinURL(url,inventoryContext(url));assert.equal(back.searchParams.get('loc'),'alsea-sbux-021');assert.equal(back.searchParams.get('project'),'starbucks');assert.equal(back.searchParams.get('marca'),'demo');
  const cafe=twinURL('/inventario/?space=cafebreria&project=cafebreria&lang=en',inventoryContext('/inventario/?space=cafebreria&project=cafebreria&lang=en'));assert.equal(cafe.pathname,'/xpacios/cafebreria/');assert.equal(cafe.searchParams.get('lang'),'en');
 });
-test('native ITIL opens the bottom inventory and displays unit count without navigation',()=>{
- const html=fs.readFileSync(new URL('../admira-xp/index.html',import.meta.url),'utf8'),fn=html.slice(html.indexOf('  function makeItil(){'),html.indexOf('  function mirror(){',html.indexOf('  function makeItil(){')));
+test('merged Inventory/ITIL opens the bottom inventory and displays unit count without navigation',()=>{
+ const html=fs.readFileSync(new URL('../admira-xp/index.html',import.meta.url),'utf8'),fn=html.slice(html.indexOf('  function makeInventory(){'),html.indexOf('  function mirror(){',html.indexOf('  function makeInventory(){')));
  let click,category,button;const ctx={lang:'es',document:{createElement:()=>button={dataset:{},addEventListener:(name,fn)=>{click=fn;}}},window:{XpaceInventoryUI:{count:19,open:key=>category=key}}};
- vm.runInNewContext(fn+'makeItil();',ctx);click();assert.equal(category,'itil');assert.match(button.innerHTML,/19 piezas/);
+ vm.runInNewContext(fn+'makeInventory();',ctx);click();assert.equal(category,'inventory');assert.match(button.innerHTML,/19 items/);
 });

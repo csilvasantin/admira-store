@@ -757,7 +757,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261004-itil-columns-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261004-inventory-merge-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -875,7 +875,7 @@
   <button class="btn-quit" id="btnQuit" title="Cerrar audios y videos, volver al menú principal">⏻ Quit</button>
 </div>
 <!-- Trío canónico opciones/avanzado/experto (mismo patrón que pixeria.com/musica.html, temado al Xpacio) -->
-<link rel="stylesheet" href="/assets/xpace-header.css?v=20261004-itil-columns-1">
+<link rel="stylesheet" href="/assets/xpace-header.css?v=20261004-inventory-merge-1">
 <style id="topbarCoreStyle">
   /* Park venue telemetry while Carlos defines the core UI and operational IoT.
      Keep live nodes and IDs so their producers and saved context still work. */
@@ -35765,11 +35765,11 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/expert-categories.css?v=itil-1">
 <script src="scripts/expert-categories.js?v=itil-1"></script>
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
-<script src="scripts/expert-category-detail.js?v=columns-20261004-1"></script>
+<script src="scripts/expert-category-detail.js?v=inventory-merge-20261004-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=central-2">
-<script type="module" src="scripts/project-selector.mjs?v=20261004-itil-columns-1"></script>
-<link rel="stylesheet" href="../inventario/workspace.css?v=columns-20261004-1">
-<script type="module" src="scripts/inventory-workspace.mjs?v=columns-20261004-1"></script>
+<script type="module" src="scripts/project-selector.mjs?v=20261004-inventory-merge-1"></script>
+<link rel="stylesheet" href="../inventario/workspace.css?v=inventory-merge-20261004-1">
+<script type="module" src="scripts/inventory-workspace.mjs?v=inventory-merge-20261004-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -35788,22 +35788,12 @@ window.xtAPI = (function(){
   }
   function makeInventory(){
     var b=document.createElement('button');b.type='button';b.className='tg-quick-btn';b.id='advInventoryCli';
-    var en=typeof lang!=='undefined'&&lang==='en';
-    b.innerHTML='<strong>'+(en?'Inventory':'Inventario')+'</strong><span>'+(en?'Add / remove · CLI':'Añadir / eliminar · CLI')+'</span>';b.title='/inventario añadir 43 · /inventario eliminar silla de madera';
-    b.addEventListener('click',function(){
-      document.body.classList.remove('xp-left-hidden');var expert=document.getElementById('pfExpert');expert?.setAttribute('aria-pressed','true');expert?.classList.add('is-active');
-      window.dispatchEvent(new Event('resize'));window.sendComposerText?.('/inventario');document.getElementById('telegramComposer')?.focus();
-    });return b;
-  }
-  function makeItil(){
-    var b=document.createElement('button');b.type='button';b.className='tg-quick-btn';b.dataset.quickAction='itil';
-    var en=typeof lang!=='undefined'&&lang==='en';
     var count=window.XpaceInventoryUI?.count;
-    b.innerHTML='<strong>ITIL</strong><span>'+((Number.isFinite(count)?count:'…')+(en?' items':' piezas'))+'</span>';
-    b.title=en?'Inventory of this Xpace':'Inventario de este Xpacio';
+    b.innerHTML='<strong>Inventory/ITIL</strong><span>'+((Number.isFinite(count)?count:'…')+' items')+'</span>';
+    b.title='Inventory/ITIL';
     b.addEventListener('click',function(){
-      if(window.XpaceInventoryUI)window.XpaceInventoryUI.open('itil');
-      else import('./scripts/inventory-workspace.mjs?v=columns-20261004-1').then(function(module){module.openNativeInventory('itil');});
+      if(window.XpaceInventoryUI)window.XpaceInventoryUI.open('inventory');
+      else import('./scripts/inventory-workspace.mjs?v=inventory-merge-20261004-1').then(function(module){module.openNativeInventory('inventory');});
     });return b;
   }
   function mirror(){
@@ -35818,9 +35808,6 @@ window.xtAPI = (function(){
     btns.filter(function(b){return b.getAttribute('data-quick-action')!=='pixerai';}).forEach(appendAction);
     host.appendChild(makeInventory());
     host.appendChild(makePercibe());
-    // Pixeria keeps its latest-item import. Scene bars (Better) sit under it.
-    btns.filter(function(b){return b.getAttribute('data-quick-action')==='pixerai';}).forEach(appendAction);
-    host.appendChild(makeItil());
     host.querySelectorAll('button').forEach(function(button){window.XpaceExpertCategories.decorate(button,{en:typeof lang!=='undefined'&&lang==='en',preserveId:true});});
     host.appendChild(scene);
     var categories=document.getElementById('expertQuickIcons');

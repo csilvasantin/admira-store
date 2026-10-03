@@ -1,5 +1,5 @@
 import {loadCatalog} from './model.mjs?v=scope-20261004-1';
-import {inventoryRows} from './workspace-model.mjs?v=columns-20261004-1';
+import {inventoryRows} from './workspace-model.mjs?v=inventory-merge-20261004-1';
 import {inventoryURL} from './context.mjs?v=scope-20261004-1';
 export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{},signal,load=loadCatalog}){
  const doc=listHost.ownerDocument,t=(es,en)=>doc.documentElement.lang==='en'?en:es;

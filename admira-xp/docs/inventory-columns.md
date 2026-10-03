@@ -2,15 +2,15 @@
 
 ## Español
 
-La ficha ITIL muestra el número de piezas y fichas propias del Xpacio, incluidas las registradas pendientes y las retiradas conservadas para recuperación; dos unidades de un modelo cuentan como dos piezas. Al pulsar ITIL o ejecutar /inventario se abre Experto: lista y búsqueda en la segunda columna; al seleccionar una pieza, detalle en la tercera. La escena permanece visible. El contador refleja el inventario completo, también al buscar. Cafebrería conserva sus campos editables, visibilidad, editor y exportación JSON/CSV. Starbucks incluye sus unidades registradas y ocho fichas IoT virtuales. La vinculación física y los mapas de dureza siguen pendientes.
+La ficha Inventory/ITIL muestra el número de piezas y fichas propias del Xpacio, incluidas las registradas pendientes y las retiradas conservadas para recuperación; dos unidades de un modelo cuentan como dos piezas. Al pulsar Inventory/ITIL o ejecutar /inventario se abre Experto: lista y búsqueda en la segunda columna; al seleccionar una pieza, detalle en la tercera. La escena permanece visible. El contador refleja el inventario completo, también al buscar. Cafebrería conserva sus campos editables, visibilidad, editor y exportación JSON/CSV. Starbucks incluye sus unidades registradas y ocho fichas IoT virtuales. La vinculación física y los mapas de dureza siguen pendientes.
 
-Entra en el Xpacio y local → pulsa ITIL → comprueba el contador → busca o selecciona una pieza en la segunda columna → consulta su ficha en la tercera. Abrir modelo y desglose permite ir al catálogo de ese mismo Xpacio conservando local, idioma y marca. Añadir y Eliminar siguen en la categoría Inventario.
+Entra en el Xpacio y local → pulsa Inventory/ITIL → comprueba el contador → busca o selecciona una pieza en la segunda columna → consulta su ficha en la tercera. Abrir modelo y desglose permite ir al catálogo de ese mismo Xpacio conservando local, idioma y marca. Añadir y Eliminar siguen en la categoría Inventario.
 
 ## English
 
-The ITIL card shows the number of items and records owned by the Xpace, including pending registered records and removed items retained for recovery; two units of one model count as two items. Press ITIL or run /inventario to open Expert: list and search in the second column; select an item for details in the third column. The scene remains visible. The count reflects the full inventory, including while searching. Cafebrería retains its editable fields, visibility, editor and JSON/CSV export. Starbucks includes its registered units and eight virtual IoT records. Physical binding and collision maps remain pending.
+The Inventory/ITIL card shows the number of items and records owned by the Xpace, including pending registered records and removed items retained for recovery; two units of one model count as two items. Press Inventory/ITIL or run /inventario to open Expert: list and search in the second column; select an item for details in the third column. The scene remains visible. The count reflects the full inventory, including while searching. Cafebrería retains its editable fields, visibility, editor and JSON/CSV export. Starbucks includes its registered units and eight virtual IoT records. Physical binding and collision maps remain pending.
 
-Enter the Xpace and venue → press ITIL → check the count → search or select an item in the second column → view its record in the third. Open model and breakdown opens that same Xpace catalogue, preserving venue, language and brand. Add and Delete remain in the Inventory category.
+Enter the Xpace and venue → press Inventory/ITIL → check the count → search or select an item in the second column → view its record in the third. Open model and breakdown opens that same Xpace catalogue, preserving venue, language and brand. Add and Delete remain in the Inventory category.
 
 ## Contrato compartido / Shared contract
 
