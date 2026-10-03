@@ -1,6 +1,6 @@
 @import url('/assets/xpace-header.css?v=20261003-header-1');
 @import url('/admira-xp/scripts/panel-resize.css?v=20261003-panels-2');
-@import url('/admira-xp/scripts/expert-categories.css?v=20261003-expert-1');
+@import url('/admira-xp/scripts/expert-categories.css?v=inventory-merge-20261004-2');
 /* Shell cuadrático común de XpaceOS · FLT-101337.
    La misma barra y los mismos paneles que el gemelo (admira-xp/index.html: #topBar,
    .quad-icon, .quad-menu.quad-left/.quad-right y el modo Experto abajo), para cualquier

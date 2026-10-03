@@ -25,3 +25,5 @@
 
 /* Keep the paired Expert categories and ITIL directly below Perception. */
 #expertQuickIcons{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+:is(#expertQuickIcons,#advQuickIcons) .expert-category[data-category-id=inventory] strong{font-size:9.5px!important;letter-spacing:0}
