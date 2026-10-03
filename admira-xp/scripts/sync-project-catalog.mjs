@@ -1,6 +1,6 @@
 // Build-time snapshot of the public backoffice registry. No remote code execution.
 import {readFile,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';
-const sourceUrl='https://www.admira.app/expert-commands.js?v=20261001-shell-2';
+const sourceUrl='https://www.clearchannel.tv/expert-commands.js?v=20261001-shell-2';
 const source=process.argv[2]?await readFile(process.argv[2],'utf8'):await (await fetch(sourceUrl)).text();
 const literal=source.match(/const CLIENTS = (\[.*?\n  \]);/s)?.[1];if(!literal)throw Error('Backoffice registry format changed; review before publishing');
 const json=literal.replace(/'([^']*)'/g,(_,value)=>JSON.stringify(value)).replace(/\b([a-z]+):/g,'"$1":').replace(/,\s*\]/g,']');
