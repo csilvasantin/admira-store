@@ -46,7 +46,7 @@ EN: Options → Project and venue → Connect with AdmiraNext uses central ident
     "mode": "public demo only",
     "destination": "https://www.admira.store/xpacios/cafebreria/",
     "central_legacy_path": "/admira-xp/",
-    "language": "explicit lang retained; otherwise XpaceOS en / Admira es",
+    "language": "explicit lang retained; otherwise current interface language; domain default as fallback",
     "preserves": [
       "project",
       "circuit",
@@ -55,8 +55,8 @@ EN: Options → Project and venue → Connect with AdmiraNext uses central ident
       "langlock",
       "supported quality query"
     ],
-    "es": "En las demos públicas, Opciones → Proyecto y local → Cafebrería abre https://www.admira.store/xpacios/cafebreria/, la cafetería recuperada con librería interactiva, inventario ITIL y editor 3D. Conserva el idioma; XpaceOS usa inglés si no hay lang explícito. La resolución se limita al local demo-cafebreria del proyecto cafebreria. Los locales de cuenta mantienen su asociación central. El catálogo central todavía publica la URL histórica /admira-xp/ para esta demo; el selector resuelve esa compatibilidad.",
-    "en": "In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. Language is preserved; XpaceOS defaults to English when lang is absent. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility."
+    "es": "En las demos públicas, Opciones → Proyecto y local → Cafebrería abre https://www.admira.store/xpacios/cafebreria/, la cafetería recuperada con librería interactiva, inventario ITIL y editor 3D. Conserva el idioma de la interfaz, incluidas las preferencias locales; lang explícito tiene prioridad. La resolución se limita al local demo-cafebreria del proyecto cafebreria. Los locales de cuenta mantienen su asociación central. El catálogo central todavía publica la URL histórica /admira-xp/ para esta demo; el selector resuelve esa compatibilidad.",
+    "en": "In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. The interface language is preserved, including local preferences; explicit lang takes priority. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility."
   }
 }
 ```
@@ -65,9 +65,9 @@ El snapshot project-catalog.json sólo documenta la migración inicial del backo
 
 ## Cafebrería: destino del desplegable / Dropdown destination
 
-ES: En las demos públicas, Opciones → Proyecto y local → Cafebrería abre https://www.admira.store/xpacios/cafebreria/, la cafetería recuperada con librería interactiva, inventario ITIL y editor 3D. Conserva el idioma; XpaceOS usa inglés si no hay lang explícito. La resolución se limita al local demo-cafebreria del proyecto cafebreria. Los locales de cuenta mantienen su asociación central. El catálogo central todavía publica la URL histórica /admira-xp/ para esta demo; el selector resuelve esa compatibilidad.
+ES: En las demos públicas, Opciones → Proyecto y local → Cafebrería abre https://www.admira.store/xpacios/cafebreria/, la cafetería recuperada con librería interactiva, inventario ITIL y editor 3D. Conserva el idioma de la interfaz, incluidas las preferencias locales; lang explícito tiene prioridad. La resolución se limita al local demo-cafebreria del proyecto cafebreria. Los locales de cuenta mantienen su asociación central. El catálogo central todavía publica la URL histórica /admira-xp/ para esta demo; el selector resuelve esa compatibilidad.
 
-EN: In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. Language is preserved; XpaceOS defaults to English when lang is absent. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility.
+EN: In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. The interface language is preserved, including local preferences; explicit lang takes priority. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility.
 
 ES: Sin iniciar sesión, abre Opciones → Proyecto y local, selecciona Cafebrería y comprueba la dirección /xpacios/cafebreria/. Usa Inventario ITIL y Distribuir desde Opciones para listar y mover sus elementos. La escena recuperada conserva su geometría original; el parámetro de calidad se mantiene en la URL, sin convertir el modelo importado en una variante del simulador histórico.
 

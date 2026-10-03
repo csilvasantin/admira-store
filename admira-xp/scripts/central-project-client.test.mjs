@@ -16,6 +16,10 @@ test('public Cafebrería selection opens the recovered café on Admira, preservi
  }
  assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/?langlock=1',cafeVenue,cafeProject,'matrix',{publicDemo:true})).searchParams.get('quality'),'better');
 });
+test('stored interface language survives the cross-domain demo route without overriding explicit lang',()=>{
+ assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/',cafeVenue,cafeProject,'better',{publicDemo:true,language:'es'})).searchParams.get('lang'),'es');
+ assert.equal(new URL(venueUrl('https://www.admira.store/admira-xp/?lang=en',cafeVenue,cafeProject,'better',{publicDemo:true,language:'es'})).searchParams.get('lang'),'en');
+});
 test('Cafebrería routing accepts a future canonical demo association without rewriting account venues or other cafeteria projects',()=>{
  const canonical={...cafeVenue,xpace_url:'https://www.admira.store/xpacios/cafebreria/'};
  assert.equal(new URL(venueUrl('https://www.xpaceos.com/admira-xp/',canonical,cafeProject,'better',{publicDemo:true})).pathname,'/xpacios/cafebreria/');

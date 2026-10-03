@@ -9,7 +9,7 @@ export class ProjectClient {
  async context(){if(!validAccess(this.access)){this.clear();throw Error('SESSION_EXPIRED');}const r=await this.fetchImpl(CENTRAL+'/api/xpace/context',{headers:{Authorization:'Bearer '+this.access.token},credentials:'omit',cache:'no-store'});if(r.status===401){this.clear();throw Error('SESSION_EXPIRED');}if(!r.ok)throw Error('CENTRAL_UNAVAILABLE');return r.json();}
  async disconnect(){const old=this.access;this.clear();if(old)await this.fetchImpl(CENTRAL+'/api/xpace/connect',{method:'DELETE',headers:{Authorization:'Bearer '+old.token},credentials:'omit'}).catch(()=>{});}
 }
-export function venueUrl(href,venue,project,quality,{publicDemo=false}={}){
+export function venueUrl(href,venue,project,quality,{publicDemo=false,language}={}){
  const source=new URL(venue.xpace_url),current=new URL(href);
  const cafeDemo=publicDemo&&venue.demo===true&&venue.id==='demo-cafebreria'&&project.id==='cafebreria'&&project.circuit==='cafebreria';
  if(!['https://www.xpaceos.com','https://www.admira.store'].includes(source.origin)||!(source.pathname==='/admira-xp/'||cafeDemo&&source.pathname==='/xpacios/cafebreria/')||source.username||source.password||venue.project_id!==project.id)throw Error('Invalid venue');
@@ -19,7 +19,7 @@ export function venueUrl(href,venue,project,quality,{publicDemo=false}={}){
  // AdmiraNext still publishes the historical simulator URL for this demo.
  // Resolve only its explicit identity to the recovered café; account venues
  // and other projects using the cafeteria vertical keep their associations.
- if(cafeDemo){source.href='https://www.admira.store/xpacios/cafebreria/';source.searchParams.set('lang',current.searchParams.get('lang')||(current.hostname==='www.xpaceos.com'?'en':'es'));}
+ if(cafeDemo){source.href='https://www.admira.store/xpacios/cafebreria/';source.searchParams.set('lang',current.searchParams.get('lang')||(['es','en'].includes(language)?language:null)||(current.hostname==='www.xpaceos.com'?'en':'es'));}
  source.searchParams.set('project',project.id);source.searchParams.set('circuit',project.circuit);source.searchParams.set('venue',venue.id);
  for(const k of ['lang','langlock'])if(current.searchParams.has(k))source.searchParams.set(k,current.searchParams.get(k));
  const selected=quality||current.searchParams.get('quality')||current.searchParams.get('visual')||'better';
