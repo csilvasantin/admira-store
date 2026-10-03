@@ -12,13 +12,14 @@
   (function(){
     var q=new URLSearchParams(location.search),visual=q.get('visual')??q.get('quality');
     var saved='';try{saved=localStorage.getItem('xtanco_visual_tier_v2')||'';}catch(e){}
-    // Estancos Altadis BCN (FLT-101352): escena cafetería rotulada como el estanco,
-    // nunca Matrix (Matrix = Starbucks Pg. de Gràcia aunque el nivel venga guardado).
+    // Estancos Altadis BCN: cada uno entra en SU escena de estanco (FLT-101401;
+    // antes, FLT-101352, todos compartían la cafetería), nunca en Matrix (Matrix =
+    // Starbucks Pg. de Gràcia aunque el nivel venga guardado).
     var altadisLoc=(q.get('loc')||'').trim().toLowerCase();
     if(/^altadis-bcn-\d+$/.test(altadisLoc)){
       var tier=(visual==='good'||visual==='better')?visual:(saved==='good'||saved==='better')?saved:'good';
-      if(q.get('autostart')!=='cafeteria'||!q.get('project')||visual!==tier){
-        q.set('autostart','cafeteria');if(!q.get('project'))q.set('project','estancos');q.delete('visual');q.set('quality',tier);
+      if(q.get('autostart')!=='xtanco'||!q.get('project')||visual!==tier){
+        q.set('autostart','xtanco');if(!q.get('project'))q.set('project','estancos');q.delete('visual');q.set('quality',tier);
         try{history.replaceState(history.state,'',location.pathname+'?'+q.toString()+location.hash);}catch(e){}
       }
       return;
@@ -6776,6 +6777,8 @@ function getProductLabel(index,clientIndex){
 function isStarbucksVenue(){return !!window.XpaceStarbucks?.active();}
 function getLayoutStoragePrefix(){
   if(isStarbucksVenue())return "starbucks_pg103_v1";
+  const altadis=altadisEscena();
+  if(altadis)return 'xtanco_'+altadis.id;
   const id=(getActiveClient()||CLIENTS[0]).id||'xtanco';
   return id==='xtanco' ? 'xtanco' : 'xtanco_'+id;
 }
@@ -8483,6 +8486,46 @@ let shopStaffZones=null;   // saved staff influence zones (null = use home-based
 const LAYOUT_SCHEMA_VERSION='20260426-public-canonical-1';
 const CANONICAL_LAYOUT_IDS=new Set([...Object.values(FACTORY_LAYOUTS).flat(),...window.XpaceStarbucks.layout()].map(item=>item.id));
 const PINNED_LAYOUT_IDS=new Set(['aroma']);
+// ── ESTANCOS ALTADIS BCN · escena propia por punto (FLT-101401) ─────────────
+// Los 9 puntos del circuito altadis_bcn (admira.app, ?loc=altadis-bcn-NNN) entran
+// en la escena de estanco y cada uno tiene la suya: distribución (espejo + muebles
+// que lleva o no), color de pared y hueco de guardado propio (xtanco_altadis-bcn-NNN),
+// así lo que se edite en uno no pisa a los demás ni al Xtanco de serie.
+const ALTADIS_ESCENAS={
+  '001':{espejo:false,sin:['djBooth','metahuman'],pared:'#e0d4b8'},
+  '002':{espejo:true, sin:['djBooth'],pared:'#d8c8e0'},
+  '003':{espejo:false,sin:['wineRack','floorLamp'],pared:'#c8dcc8'},
+  '004':{espejo:true, sin:['vending','metahuman'],pared:'#e8d0b0'},
+  '005':{espejo:false,sin:['magazines','djBooth'],pared:'#c8d4e4'},
+  '006':{espejo:true, sin:['lottery','floorLamp'],pared:'#e4c8c0'},
+  '007':{espejo:false,sin:['djBooth','vending'],pared:'#d4dcb8'},
+  '008':{espejo:true, sin:['wineRack','metahuman'],pared:'#dcd0c0'},
+  '009':{espejo:false,sin:['metahuman','floorLamp','magazines'],pared:'#c0d8dc'},
+};
+const ALTADIS_FIJOS=new Set(['led']); // anclados a la esquina, no se espejan
+function altadisEscena(){
+  let loc='';
+  try{ loc=(new URLSearchParams(location.search).get('loc')||'').trim().toLowerCase(); }catch(_){}
+  const m=/^altadis-bcn-(\d{3})$/.exec(loc);
+  if(!m||!ALTADIS_ESCENAS[m[1]]) return null;
+  return Object.assign({id:'altadis-bcn-'+m[1]},ALTADIS_ESCENAS[m[1]]);
+}
+function altadisLayout(esc){
+  const sin=new Set(esc.sin||[]);
+  return FACTORY_LAYOUTS.xtanco.filter(it=>!sin.has(it.id)).map(it=>{
+    const o=Object.assign({},it);
+    if(esc.espejo&&!ALTADIS_FIJOS.has(o.id)){ o.col=13-o.col-((o.sx||1)-1); if(o.col<0)o.col=0; }
+    return o;
+  });
+}
+function altadisAplicarPared(esc){
+  try{
+    P.wallInner=esc.pared;
+    const n=parseInt(esc.pared.slice(1),16),c=k=>Math.min(255,((n>>k)&255)+16);
+    P.wallLight='#'+[16,8,0].map(k=>c(k).toString(16).padStart(2,'0')).join('');
+  }catch(_){}
+}
+window.XPACE_ALTADIS={escenas:ALTADIS_ESCENAS,escena:altadisEscena,layout:altadisLayout};
 
 // Default staff home positions (used when no custom positions saved)
 const DEFAULT_STAFF_POS=[
@@ -8632,6 +8675,18 @@ function syncLayout0(){
 function loadLayout(){
   // NOTE: ISO is not yet defined when this runs at page-start (line 1203).
   // Do NOT reference ISO here — use raw numbers or simple checks only.
+  const altadis=altadisEscena();
+  if(altadis){
+    altadisAplicarPared(altadis);
+    try{
+      const d=localStorage.getItem(getLayoutSlotKeys(getLayoutStoragePrefix()).current);
+      const saved=d?JSON.parse(d):null;
+      if(Array.isArray(saved)&&saved.length){ shopLayout=saved; shopStaffPos=null; shopStaffZones=null; console.log('[Layout] ✓ '+altadis.id+': distribución guardada'); return; }
+    }catch(_){}
+    shopLayout=altadisLayout(altadis); shopStaffPos=null; shopStaffZones=null;
+    console.log('[Layout] ✓ '+altadis.id+': escena propia ('+shopLayout.length+' muebles)');
+    return;
+  }
   try{
     const prefix=getLayoutStoragePrefix();
     const keys=getLayoutSlotKeys(prefix);

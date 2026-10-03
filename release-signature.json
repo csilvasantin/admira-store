@@ -1,8 +1,8 @@
 {
-  "version": "v.03.10.2026.r2.02:47",
-  "signature": "OraculoMacMini · MacMini",
-  "machine": "MacMini",
-  "agent": "OraculoMacMini",
-  "deployer": "OraculoMacMini",
-  "evidence": "Experto común de Starbucks: tres columnas, categorías e iconos compartidos, editor e ITIL reales de Cafebrería desacoplables; conserva paneles superpuestos y cerrados al entrar."
+  "version": "v.03.10.2026.r4.22:40",
+  "signature": "NeoMBP14 · MBP14",
+  "machine": "MBP14",
+  "agent": "NeoMBP14",
+  "deployer": "NeoMBP14",
+  "evidence": "Perímetro: entrada de servicio para agentes en /auth/agente con token de bóveda (ADMIRA_AGENT_LOGIN_TOKEN); sin token sigue pidiendo Google; cada uso queda registrado · encargo #4955."
 }

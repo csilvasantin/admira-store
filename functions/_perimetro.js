@@ -28,6 +28,15 @@ const SESSION_TTL_SECONDS = 24 * 60 * 60;
 const CHALLENGE_TTL_SECONDS = 10 * 60;
 const ACCESS_TTL_MS = 60 * 1000;
 const OWNER_FALLBACK = new Set(['csilva@admira.com', 'csilvasantin@gmail.com']);
+// Entrada de servicio para los agentes de silicio (Carlos, 3-oct-2026: «tenéis
+// que tener acceso a todo»). Un agente no tiene cuenta de Google: entra en
+// /auth/agente con ADMIRA_AGENT_LOGIN_TOKEN (secret del proyecto, el mismo en
+// las cuatro patas) y recibe la misma cookie de 24 h que un usuario con permiso.
+// Ve todo; no gestiona permisos (no es superuser). Cambiar el secret corta la
+// entrada Y las sesiones ya abiertas, porque la cookie lleva la huella del token.
+const AGENT_EMAIL = 'agentes@silicio.admiranext.com';
+const AGENT_TOKEN_MIN = 32;
+const AGENT_LOG_URL = WHITELIST_URL + '/agent-log';
 const encoder = new TextEncoder();
 
 // Una entrada por web. `hosts` son los dominios públicos (el primero es el
@@ -206,10 +215,21 @@ export async function verifyGoogleCredential(credential, fetchImpl = fetch) {
   }
 }
 
-async function createSessionToken(env, site, identity) {
+function agentToken(env) {
+  const token = String(env.ADMIRA_AGENT_LOGIN_TOKEN || '');
+  return token.length >= AGENT_TOKEN_MIN ? token : '';
+}
+
+// Huella del token vigente: va dentro de la cookie de agente. Sin secret → ''.
+async function agentFingerprint(env) {
+  const token = agentToken(env);
+  return token && env.PERIMETRO_SIGNING_KEY ? (await hmac(env.PERIMETRO_SIGNING_KEY, `agente:${token}`)).slice(0, 22) : '';
+}
+
+async function createSessionToken(env, site, identity, extra = {}) {
   const now = Math.floor(Date.now() / 1000);
   const payload = base64url(encoder.encode(JSON.stringify({
-    v:1, aud:site.id, email:identity.email, sub:identity.sub, iat:now, exp:now + SESSION_TTL_SECONDS
+    v:1, aud:site.id, email:identity.email, sub:identity.sub, iat:now, exp:now + SESSION_TTL_SECONDS, ...extra
   })));
   return `${payload}.${await hmac(env.PERIMETRO_SIGNING_KEY, `perimetro:${payload}`)}`;
 }
@@ -229,6 +249,12 @@ export async function readSession(request, env, site, fetchImpl = fetch) {
     if (payload.v !== 1 || payload.aud !== site.id || Number(payload.exp) <= now || Number(payload.iat) > now + 60) return null;
     const email = normalEmail(payload.email);
     if (!email) return null;
+    // Sesión de agente: no pasa por la lista; vale mientras el token con el que
+    // se abrió siga siendo el vigente. El correo de agente SIN huella no entra.
+    if (payload.agent || email === AGENT_EMAIL) {
+      return email === AGENT_EMAIL && sameValue(payload.agent, await agentFingerprint(env))
+        ? {email, superuser:false, agent:true} : null;
+    }
     const info = await accessInfo(env, site.id, email, fetchImpl);
     if (!info.allowed) return null;
     return {email, superuser:info.superuser};
@@ -277,10 +303,74 @@ function redirect(location, extraCookies = []) {
   return response;
 }
 
+// Cada uso de la entrada de agentes queda escrito: en el log del worker y, sin
+// frenar la respuesta, en el registro de AdmiraNeXT (la misma lista de
+// permisos). Nunca se escribe el token.
+function logAgentUse(env, entry, fetchImpl, waitUntil) {
+  console.log(JSON.stringify({evento:'perimetro_agente', ...entry}));
+  if (!env.WHITELIST_SITE_TOKEN) return;
+  const sent = Promise.resolve().then(() => fetchImpl(AGENT_LOG_URL, {
+    method:'POST', headers:{'X-Whitelist-Token':env.WHITELIST_SITE_TOKEN, 'Content-Type':'application/json'},
+    body:JSON.stringify(entry)
+  })).catch(() => null);
+  if (waitUntil) waitUntil(sent);
+}
+
+function agentPage(site, returnTo, error) {
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(site.name)} · Entrada de agentes</title><style>
+  :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:${site.background};color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:32px 26px;border:1px solid ${site.accent}55;border-radius:16px;background:#070c10e6}.mark{color:${site.accent};font:700 12px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase}h1{margin:14px 0 8px;font-size:22px}p{margin:0 0 18px;color:#9fb1bb;line-height:1.5;font-size:14px}a{color:${site.accent}}label{display:block;margin:0 0 6px;font:600 12px ui-monospace,monospace;color:#9fb1bb}input{width:100%;padding:10px;border-radius:8px;border:1px solid #ffffff2a;background:#0008;color:#fff;font-size:14px;margin-bottom:14px}button{width:100%;padding:11px;border-radius:8px;border:1px solid ${site.accent};background:transparent;color:${site.accent};font:700 13px ui-monospace,monospace;cursor:pointer}.error{margin-top:14px;color:#ff8f7a;font:600 13px ui-monospace,monospace}</style></head><body><main class="box"><div class="mark">${escapeHtml(site.name)} · perímetro de seguridad</div><h1>Entrada de agentes</h1><p>Para los agentes de silicio de AdmiraNeXT. El token está en la bóveda (ADMIRA_AGENT_LOGIN_TOKEN) y cada entrada queda registrada. Las personas entran con Google en <a href="/auth/login">/auth/login</a>.</p><form method="post" action="/auth/agente" autocomplete="off"><input type="hidden" name="return_to" value="${escapeHtml(returnTo)}"><label for="agente">Agente y máquina</label><input id="agente" name="agente" maxlength="80" placeholder="NeoMBP14" required><label for="token">Token</label><input id="token" name="token" type="password" required><button>Entrar</button></form>${error ? `<div class="error">${escapeHtml(error)}</div>` : ''}</main></body></html>`;
+}
+
+// /auth/agente: GET pinta el formulario; POST comprueba el token (cabecera
+// Authorization: Bearer o campo del formulario — nunca en la URL, que acaba en
+// historiales y logs) y abre la sesión de agente.
+async function agente(request, env, site, fetchImpl, waitUntil) {
+  const url = new URL(request.url);
+  const headers = {...secureHeaders(), 'content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"};
+  // Sin secret configurado la entrada no existe.
+  if (!agentToken(env) || !env.PERIMETRO_SIGNING_KEY) return new Response('Not found', {status:404, headers:{'cache-control':'no-store'}});
+  if (request.method === 'GET') {
+    // Las cookies __Host- son del host exacto: la entrada vive en el canónico.
+    if (site.hosts.includes(url.hostname) && url.hostname !== site.hosts[0]) {
+      return redirect(`https://${site.hosts[0]}/auth/agente`);
+    }
+    return new Response(agentPage(site, safeReturnTo(url.searchParams.get('return_to') || '/'), ''), {status:200, headers});
+  }
+  if (request.method !== 'POST') return new Response('Method not allowed', {status:405, headers:{'cache-control':'no-store', allow:'GET, POST'}});
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== 'null' && origin !== url.origin) return new Response('Origen no válido', {status:403, headers:{'cache-control':'no-store'}});
+  const bearer = (request.headers.get('Authorization') || '').match(/^Bearer\s+(\S+)$/i);
+  let form = new FormData();
+  if (!bearer) { try { form = await request.formData(); } catch (_) {} }
+  const given = bearer ? bearer[1] : String(form.get('token') || '');
+  const who = String(request.headers.get('X-Agente') || form.get('agente') || '').replace(/[^\p{L}\p{N} ._·@-]/gu, '').slice(0, 80) || 'sin nombre';
+  const returnTo = safeReturnTo(request.headers.get('X-Return-To') || form.get('return_to') || '/');
+  // Se comparan las firmas, no los tokens: mismo largo siempre y tiempo constante.
+  const key = env.PERIMETRO_SIGNING_KEY;
+  const ok = given.length > 0 && given.length <= 512 &&
+    sameValue(await hmac(key, `agente-login:${given}`), await hmac(key, `agente-login:${agentToken(env)}`));
+  logAgentUse(env, {
+    site:site.id, host:url.hostname, agente:who, ok, at:new Date().toISOString(),
+    ip:request.headers.get('CF-Connecting-IP') || '', ua:(request.headers.get('User-Agent') || '').slice(0, 160)
+  }, fetchImpl, waitUntil);
+  if (!ok) {
+    return bearer
+      ? Response.json({ok:false, error:'token no válido'}, {status:401, headers:{'cache-control':'no-store'}})
+      : new Response(agentPage(site, returnTo, 'Token no válido.'), {status:401, headers});
+  }
+  const token = await createSessionToken(env, site, {email:AGENT_EMAIL, sub:`agente:${who}`}, {agent:await agentFingerprint(env)});
+  return new Response(null, {status:303, headers:{
+    location:returnTo, 'cache-control':'no-store', 'referrer-policy':'no-referrer',
+    'set-cookie':`${SESSION_COOKIE}=${token}; Path=/; Max-Age=${SESSION_TTL_SECONDS}; HttpOnly; Secure; SameSite=Lax`
+  }});
+}
+
 // Rutas /auth/* del perímetro. Devuelve null si la petición no es suya.
-export async function handleAuth(request, env, site, fetchImpl = fetch) {
+export async function handleAuth(request, env, site, fetchImpl = fetch, waitUntil = null) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/auth/')) return null;
+
+  if (url.pathname === '/auth/agente') return agente(request, env, site, fetchImpl, waitUntil);
 
   if (url.pathname === '/auth/login' && request.method === 'GET') {
     // Las cookies __Host- son del host exacto: el login vive en el canónico.
@@ -321,7 +411,7 @@ export async function handleAuth(request, env, site, fetchImpl = fetch) {
 
   if (url.pathname === '/auth/session' && request.method === 'GET') {
     const session = await readSession(request, env, site, fetchImpl);
-    return Response.json(session ? {ok:true, email:session.email, site:site.id} : {ok:false}, {
+    return Response.json(session ? {ok:true, email:session.email, site:site.id, agent:Boolean(session.agent)} : {ok:false}, {
       status:session ? 200 : 401, headers:{'cache-control':'no-store'}
     });
   }
@@ -399,7 +489,8 @@ export async function perimetro(context, fetchImpl = fetch) {
   // olvidado por el que colarse sin perímetro.
   if (!site) return new Response('Host no reconocido', {status:421, headers:{'cache-control':'no-store'}});
 
-  const authResponse = await handleAuth(request, env, site, fetchImpl);
+  const waitUntil = typeof context.waitUntil === 'function' ? context.waitUntil.bind(context) : null;
+  const authResponse = await handleAuth(request, env, site, fetchImpl, waitUntil);
   if (authResponse) return authResponse;
 
   // Manda la RUTA, no lo que diga el cliente: con Accept:*/* un bot se llevaba

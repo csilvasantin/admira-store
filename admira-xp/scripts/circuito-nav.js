@@ -8,6 +8,7 @@
  *    horizontal 16:9 dentro de su tramo de pared (mismo quad para el div y para
  *    el hueco del canvas). Sin `orient` → comportamiento de siempre. Si todas
  *    traen `media` (vídeo del Stock adaptado), cada una va a una DS y lo reproduce.
+ *    `&media=formatos18` (o `&mv=`/`&mh=`) sustituye esa media por orientación.
  * 2) ANTERIOR / SIGUIENTE entre los puntos del circuito, en su `tourOrder`
  *    (como el recorrido de admira.app / CanalKiosk): HUD inferior, teclas
  *    [ y ], y `&tour=<segundos>` para el recorrido automático.
@@ -21,14 +22,32 @@
   if (!LOC) return;
 
   // ── 1) Orientación ────────────────────────────────────────────────────────
+  // `&media=formatos18` (o `&mv=<url>` / `&mh=<url>`) sustituye el vídeo de cada
+  // pantalla según su orientación: vertical → 9:16, horizontal → 16:9. El preset
+  // `formatos18` usa los renders 01-vertical / 02-horizontal de los 18 formatos
+  // Altadis servidos con el propio sitio (/altadis/media/). Sin parámetro → la
+  // media de la ficha del punto, como siempre. La navegación conserva el parámetro.
+  var MEDIA_PRESETS = {
+    formatos18: { vertical: '/altadis/media/01-vertical-1080x1920.mp4', horizontal: '/altadis/media/02-horizontal-1920x1080.mp4' }
+  };
+  function okUrl(u) { return typeof u === 'string' && (/^https:\/\//.test(u) || /^\/[^\/]/.test(u)); }
+  var MEDIA_OVR = (function () {
+    var o = Object.assign({}, MEDIA_PRESETS[(qs.get('media') || '').trim().toLowerCase()] || {});
+    if (okUrl(qs.get('mv'))) o.vertical = qs.get('mv');
+    if (okUrl(qs.get('mh'))) o.horizontal = qs.get('mh');
+    return (o.vertical || o.horizontal) ? o : null;
+  })();
+  window.circuitoMediaOverride = MEDIA_OVR;
   function screenSurfaces() {
     var c = window.STORE_CFG; if (!c || !Array.isArray(c.surfaces)) return [];
-    return c.surfaces.filter(function (s) { return s && (s.surface === 'pantalla' || s.surface === 'escaparate'); });
+    var ss = c.surfaces.filter(function (s) { return s && (s.surface === 'pantalla' || s.surface === 'escaparate'); });
+    if (MEDIA_OVR) ss.forEach(function (s) { var u = MEDIA_OVR[s.orient]; if (u && s.media !== u) { s.mediaFicha = s.mediaFicha || s.media || ''; s.media = u; } });
+    return ss;
   }
   // Si TODAS las pantallas del punto traen `media` (vídeo del Stock ya adaptado a
   // su formato), cada una va a una DS de pared corta con su vídeo; la TFT larga
   // sigue con su contenido de siempre.
-  function allMedia() { var ss = screenSurfaces(); return ss.length > 0 && ss.length <= 2 && ss.every(function (s) { return s.media && /^https:\/\//.test(s.media); }); }
+  function allMedia() { var ss = screenSurfaces(); return ss.length > 0 && ss.length <= 2 && ss.every(function (s) { return okUrl(s.media); }); }
   // Orientaciones de las DS de pared corta (índice 0, 1).
   function dsOrients() {
     var o = screenSurfaces().map(function (s) { return s.orient || ''; });
@@ -93,7 +112,7 @@
   var API = 'https://api.admira.store/da/locations';
   function goTo(id) {
     var p = new URLSearchParams(location.search); p.set('loc', id);
-    if (/^altadis-bcn-\d+$/.test(id)) { p.set('autostart', 'cafeteria'); if (!p.get('project')) p.set('project', 'estancos'); }
+    if (/^altadis-bcn-\d+$/.test(id)) { p.set('autostart', 'xtanco'); if (!p.get('project')) p.set('project', 'estancos'); }
     else if (!p.get('autostart')) p.set('autostart', 'xtanco');
     location.href = location.pathname + '?' + p.toString() + location.hash;
   }
@@ -106,7 +125,7 @@
     var ors = screenSurfaces().map(function (s) { return s.orient === 'vertical' ? '▯ vertical' : s.orient === 'horizontal' ? '▭ horizontal' : ''; }).filter(Boolean).join(' + ');
     d.innerHTML = '<button data-go="prev" style="' + b + '" title="Anterior ([)">◀ ' + (prev.tourOrder || '') + '</button>' +
       '<span style="padding:0 6px;text-align:center;line-height:1.25"><span style="color:#ff6a3d">' + (cur.circuitLabel || cur.circuit) + '</span> · ' + (idx + 1) + '/' + items.length +
-      '<br><span style="font-weight:400">' + (cur.name || cur.id) + (ors ? ' · ' + ors : '') + '</span></span>' +
+      '<br><span style="font-weight:400">' + (cur.name || cur.id) + (ors ? ' · ' + ors : '') + (MEDIA_OVR ? ' · <span style="color:#ff6a3d">pieza JTI 9:16 / 16:9</span>' : '') + '</span></span>' +
       '<button data-go="tour" style="' + b + '">' + (tourSec ? '■' : '▶ Recorrido') + '</button>' +
       '<button data-go="next" style="' + b + '" title="Siguiente (])">' + (next.tourOrder || '') + ' ▶</button>';
     d.addEventListener('click', function (ev) {
