@@ -1,4 +1,4 @@
-import {attachFloatingPanel} from '../../admira-xp/scripts/floating-panels.mjs?v=20261003-panels-2';
+import {attachFloatingPanel} from '../../admira-xp/scripts/floating-panels.mjs?v=20261003-expert-1';
 export function mountCafeInventory({host,manifest,bridge,bindings,onSelect,onEdit,onClose=()=>{},signal}){
  const en=document.documentElement.lang==='en',t=(es,enText)=>en?enText:es;
  const panel=document.createElement('aside');panel.className='cafe-inventory';panel.hidden=true;panel.setAttribute('aria-label',t('Inventario ITIL de Cafebrería','Cafebrería ITIL inventory'));

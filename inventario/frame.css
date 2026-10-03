@@ -5,7 +5,6 @@ html.inventory-frame #topBar.xs-bar{height:46px}
 .inventory-frame .inventory-subnav a{color:#78f3ff;text-decoration:none;padding:6px 0}
 .inventory-frame .inventory-subnav a[aria-current=page]{color:white;border-bottom:2px solid #78f3ff}
 .inventory-frame .inventory-subnav .inventory-languages{display:flex;gap:10px;margin-left:0}
-.inventory-frame body.xs-page{padding-bottom:var(--xs-bottom)}
 .inventory-frame :is(.detail,.blender-pilot){scroll-margin-top:58px}
 .inventory-frame .detail{top:58px}
 .inventory-frame .xs-panel :is(.toolbar,.spacebar,.controls,.pilot-controls,.pilot-downloads,.show-toolbar,.downloads){display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:0;margin:12px 0;font-size:12px}

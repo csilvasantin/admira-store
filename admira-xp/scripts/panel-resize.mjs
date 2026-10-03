@@ -15,7 +15,7 @@ export function attachPanelResize(panel,{axis='both',direction=1,label='Window',
   const wasSized=panel.classList.contains('xp-panel-sized');
   const original={width:panel.style.width,height:panel.style.height};let drag=null,manual=null,disposed=false;
   const store=()=>{if(storage!==undefined)return storage;try{return view.localStorage;}catch{return null;}};
-  const visible=()=>!panel.hidden&&!panel.classList.contains('is-collapsed')&&panel.getAttribute('aria-hidden')!=='true'&&panel.getClientRects().length>0&&view.getComputedStyle(panel).display!=='none';
+  const visible=()=>!panel.classList.contains('xs-expert-docked')&&!panel.hidden&&!panel.classList.contains('is-collapsed')&&panel.getAttribute('aria-hidden')!=='true'&&panel.getClientRects().length>0&&view.getComputedStyle(panel).display!=='none';
   const measure=()=>{const r=panel.getBoundingClientRect();return {width:r.width,height:r.height};};
   const rules=()=>({axis,direction,...limits()});
   function sync(){
@@ -30,7 +30,7 @@ export function attachPanelResize(panel,{axis='both',direction=1,label='Window',
     const bounds=rules();handle.setAttribute('aria-valuenow',Math.round(height?r.height:r.width));handle.setAttribute('aria-valuemin',height?(bounds.minHeight??128):(bounds.minWidth??156));handle.setAttribute('aria-valuemax',height?(bounds.maxHeight??600):(bounds.maxWidth??560));
   }
   function apply(size,persist=false){
-    if(disposed||!finite(size.width)||!finite(size.height))return;
+    if(disposed||panel.classList.contains('xs-expert-docked')||!finite(size.width)||!finite(size.height))return;
     manual=resizedPanel(size,0,0,rules());panel.classList.add('xp-panel-sized');
     if(axis!=='height')panel.style.width=manual.width+'px';
     if(axis!=='width')panel.style.height=manual.height+'px';

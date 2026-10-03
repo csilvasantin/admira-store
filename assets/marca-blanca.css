@@ -119,7 +119,7 @@
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-log{background:var(--mbx-inset);border-color:var(--mb-borde);color:var(--mbx-ink);font-family:var(--mb-fuente-mono)}
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-log li{color:var(--mbx-ink)}
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-log li.xs-in,:root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-prompt{color:var(--mbx-brand)}
-:root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-cli input{background:var(--mb-superficie);border-color:var(--mb-borde);color:var(--mbx-ink);font-family:var(--mb-fuente-mono)}
+:root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-cli :is(input,textarea){background:var(--mb-superficie);border-color:var(--mb-borde);color:var(--mbx-ink);font-family:var(--mb-fuente-mono)}
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-cli button{background:var(--mbx-brand);border-color:var(--mbx-brand);color:var(--mbx-on-brand);border-radius:var(--mb-radio-boton,8px)}
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert :is(.xs-hint,.xs-close){color:var(--mbx-mut)}
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .qm-head{color:var(--mbx-ok)!important}

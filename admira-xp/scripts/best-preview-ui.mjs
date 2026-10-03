@@ -4,7 +4,7 @@ import {mountMatrixFurniture} from './matrix-furniture.mjs?v=floating-panels-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-panels-2';
+import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-expert-1';
 
 // Best keeps the Avenida Admira room as its backdrop. Furniture and visitors
 // are separate, depth-sorted layers driven by the shared Xtanco inventory.

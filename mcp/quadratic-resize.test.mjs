@@ -16,9 +16,12 @@ test('shell and floating sizing contract agrees with both public catalogues and 
 test('all shell consumers use one release while existing CLI and brand contracts remain callable',async()=>{
  const {glob}=await import('node:fs/promises');
  const root=new URL('../',import.meta.url).pathname;
+ // El sello vigente es el ?v= con el que la portada carga el shell (como en tests/shell-cuadratico).
+ const release=(await read('index.html')).match(/\/assets\/xpace-shell\.js\?v=([^"'&\s]+)/)?.[1];
+ assert.match(release||'',/^\d{8}-[a-z0-9-]+$/);
  for await(const path of glob('**/*.html',{cwd:root,exclude:['.git/**']})){
   const html=await read(path);
-  for(const match of html.matchAll(/xpace-shell\.(?:js|css)\?v=([^"']+)/g))assert.equal(match[1],'20261003-panels-2',path);
+  for(const match of html.matchAll(/xpace-shell\.(?:js|css)\?v=([^"']+)/g))assert.equal(match[1],release,path);
  }
  const shell=createRequire(import.meta.url)('../assets/xpace-shell.js');
  assert.equal(shell.parseCommand('/marca starbucks').verb,'marca');

@@ -1,4 +1,4 @@
-import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-panels-2';
+import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-expert-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export function incidentPayload({equipo,problema='',gravedad='alta',demo=false,resolve=false,uuid=crypto.randomUUID()}){
  if(!/^(pantalla-[1-6]|tpv)$/.test(equipo))throw Error('Equipo inválido / Invalid device');if(!['urgente','alta','normal','baja'].includes(gravedad))throw Error('Gravedad inválida / Invalid severity');

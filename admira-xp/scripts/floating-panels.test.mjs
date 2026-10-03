@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setMaxListeners} from 'node:events';
 import {boundedRectPosition,localWindowPosition,movableWindow} from './floating-window.mjs';
-import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=20261003-panels-2';
+import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=20261003-expert-1';
 
 function harness({left=600,top=100,width=300,height=180,lang='es',parentRect={left:100,top:48,width:900,height:650}}={}){
   class Controller extends AbortController{constructor(){super();setMaxListeners(0,this.signal);}}
@@ -228,4 +228,14 @@ test('resizing persists independently, clamps to bounds, resets and disposes wit
  h.panel.hidden=true;resize.sync();assert.equal(resize.handle.hidden,true);
  resize.dispose();h.send(resize.handle,'keydown',{key:'ArrowRight'});
  assert.equal(h.panel.getBoundingClientRect().width,300);assert.equal(resize.handle.parentNode,null);
+});
+
+test('docked tools never overwrite their floating geometry through drag, keys or resize',()=>{
+ const h=harness(),api=movableWindow(h.panel,h.handle,{bounds:h.bounds,key:'docked-position'});
+ h.panel.classList.add('xs-expert-docked');const before=h.panel.getBoundingClientRect();
+ h.pointer('pointerdown',650,110);h.pointer('pointermove',300,210);h.pointer('pointerup',300,210);
+ h.send(h.handle,'keydown',{key:'ArrowDown'});h.view.dispatchEvent(new Event('resize'));
+ assert.deepEqual(h.panel.getBoundingClientRect(),before);assert.equal(h.writes.length,0);
+ h.panel.classList.remove('xs-expert-docked');h.send(h.handle,'keydown',{key:'ArrowDown'});
+ assert.equal(h.writes.length,1);api.dispose();
 });

@@ -2,7 +2,7 @@ import {createLifeSnapshot} from './life-snapshot.mjs?v=distribuir-3';
 import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
-import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=20261003-panels-2';
+import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=20261003-expert-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const listeners=new Set();

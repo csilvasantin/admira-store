@@ -2,7 +2,7 @@
 
 **Regla: toda página nueva de xpaceos.com (= admira.store) usa el shell cuadrático.** Ninguna página trae su propia cabecera ni su propia navegación. Es lo mismo que ya tienen admira.app (`galaxy-shell`) y Pixeria (`shell-cuadratico`).
 
-Estado: shell compartido publicado; tiradores de tamaño añadidos el 3-oct-2026.
+Estado: shell compartido publicado; tiradores de tamaño añadidos el 3-oct-2026; paneles superpuestos y siempre cerrados al cargar desde el 3-oct-2026 (`v.03.10.2026.r1`).
 
 ## Qué es
 
@@ -13,15 +13,23 @@ La interfaz de cuatro bandas del gemelo (`admira-xp/index.html`), ahora en todas
 - **▤ Avanzado** (`nav.quad-menu.quad-right`, panel derecho): las acciones de trabajo de la página y los atajos a sus secciones (`#…`).
 - **⌘ Experto** (`section.quad-menu.quad-bottom`, abajo): la consola. `/help`, `/limpiar`, `/gemelo [orden]` y los verbos propios de la página; los verbos del gemelo se ejecutan en el gemelo (ver abajo).
 
-Los paneles son independientes (pueden estar abiertos a la vez), empiezan cerrados en una visita nueva y **recuerdan su estado entre páginas** (`localStorage` `xpaceos_shell_panels_v1`). En pantallas de 1100 px o más, Opciones y Avanzado abiertos se acoplan y el contenido se desplaza a su lado; en pantallas más estrechas se superponen. Esc cierra el panel que tiene el foco. Sin scroll horizontal en móvil (los paneles viven en una capa fija que recorta su desplazamiento); bajo 420 px la sección se oculta y quedan ☰, XpaceOS, ▤ y ⌘.
+Los paneles son independientes (pueden estar abiertos a la vez) y **entran cerrados en cada página**: el estado abierto no se guarda ni se restaura (la clave antigua `xpaceos_shell_panels_v1` se borra al arrancar); solo se recuerda su tamaño (`xpaceos_shell_size_v1:<panel>`). Esc cierra el panel que tiene el foco.
+
+### Principio: el contenido no se mueve (Carlos, 3-oct-2026)
+
+> «El cuerpo central del sitio (contenido) no se desplaza al abrir las barras opcionales, ni verticales ni la horizontal inferior».
+
+☰ Opciones, ▤ Avanzado y ⌘ Experto **se superponen** al contenido en todos los anchos (no hay modo acoplado). Abrirlos o cerrarlos no cambia la posición, el ancho ni el alto del cuerpo de la página: el shell no aplica `padding`, `margin`, `width` ni `height` al contenido según el estado de los paneles, y las páginas tampoco. `--xs-left`, `--xs-right` y `--xs-bottom` siguen existiendo, pero **solo para elementos flotantes** (los laterales se detienen sobre ⌘ con `bottom: var(--xs-bottom)`; una barra pegajosa puede quedar sobre ⌘, como la de `altadis/datos.html`). Igual que Yokup y que el gemelo `admira-xp`. El guardián lo vigila.
+
+Sin scroll horizontal en móvil (los paneles viven en una capa fija que recorta su desplazamiento); bajo 420 px la sección se oculta y quedan ☰, XpaceOS, ▤ y ⌘.
 
 ## Cómo la adopta una página
 
 En el `<head>`, **después de todo el CSS propio**:
 
 ```html
-<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261001-marca-1">
-<script defer src="/assets/xpace-shell.js?v=20261001-marca-1" data-section="/ ayuda" data-section-en="/ help"></script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261003-expert-1">
+<script defer src="/assets/xpace-shell.js?v=20261003-expert-1" data-section="/ ayuda" data-section-en="/ help"></script>
 ```
 
 Opcionalmente, antes del script, `window.XPACE_SHELL = {...}`:
@@ -51,7 +59,7 @@ Un enlace común que la página ya trae (mismo destino) no se repite. El enlace 
 
 - **Reparto**: lo que lleva a otra página o a otro sitio va a **☰ Opciones**; lo que trabaja sobre la página (exportar, salir, ver código) y los atajos a sus secciones, a **▤ Avanzado**. Los filtros de uso diario (circuito y día de `control/`, buscador y CSV de `leads.html`, pestañas del backoffice y del panel XPL) se quedan en el contenido.
 - **Cabeceras de contenido**: un `<header>` que es el título de la página (Starbucks PG103, Condicional, CMDB, Mobiliario) se queda; solo su navegación pasa a la barra.
-- **Alturas**: nada de `100vh - Npx`: `calc(100dvh - var(--xs-bar-h) - var(--xs-bottom))`. `--xs-bar-h` vale 46 px con el shell montado y 0 sin él; `--xs-bottom` es la altura de ⌘ Experto abierto. Lo pegajoso de la página usa `top: var(--xs-bar-h)`.
+- **Alturas**: nada de `100vh - Npx`: `calc(100dvh - var(--xs-bar-h))`. `--xs-bar-h` vale 46 px con el shell montado y 0 sin él. `--xs-bottom` (altura de ⌘ Experto abierto) **nunca** resta altura ni añade relleno al contenido: solo lo usan elementos flotantes. Lo pegajoso de la página usa `top: var(--xs-bar-h)`.
 - **Capas**: barra 8900, paneles 9000. Puertas, cajones, modales y avisos propios van a ≥ 9100 (backoffice, `leads.html`, CMDB).
 - **Misma barra en todas**: `xpace-shell.css` fija en la barra y los paneles los colores del gemelo (`--xp-*`) aunque la página sea clara (Inventario, Personas) y aísla el shell de los selectores de elemento de cada página (`header`, `nav`, `button`, `input`…).
 - **Una sola consola**: el ⌥ de XpaceScan pasa a ⌘ (el mismo panel inferior; el log de captura y el feed crudo de la sala de máquinas viven dentro de ⌘). `robot/` conserva su CLI de robot en el contenido.
@@ -68,11 +76,11 @@ El shell es el único enganche de la marca blanca del catálogo de admiranext.co
 
 ## Páginas
 
-Guardián: `tests/shell-cuadratico.test.mjs` recorre todos los `.html`. Cada uno carga `xpace-shell.css` y `xpace-shell.js` (defer) en el `<head>`, con el `?v=` de la portada y después del CSS propio, sin alturas `100vh - Npx`; o es el gemelo (barra en línea con los mismos glifos) o figura en `SHELL_EXCEPTIONS` con su motivo. Falla con una página nueva sin shell, con un `?v=` antiguo, con una excepción que ya no existe o que sí carga el shell, y si el gemelo añade un verbo a su `/help` que el shell no sabe traspasar.
+Guardián: `tests/shell-cuadratico.test.mjs` recorre todos los `.html`. Cada uno carga `xpace-shell.css` y `xpace-shell.js` (defer) en el `<head>`, con el `?v=` de la portada y después del CSS propio, sin alturas `100vh - Npx` ni contenido que se encoja o se desplace según los paneles (`--xs-left/right/bottom` en `padding`, `margin`, `width` o `height` de `body`/contenido, `html.xs-docked`, restaurar `xpaceos_shell_panels_v1`); o es el gemelo (barra en línea con los mismos glifos) o figura en `SHELL_EXCEPTIONS` con su motivo. Falla con una página nueva sin shell, con un `?v=` antiguo, con una excepción que ya no existe o que sí carga el shell, y si el gemelo añade un verbo a su `/help` que el shell no sabe traspasar.
 
-**Con shell (35)**: portada `index.html`, `lenovo/`, `robot/`, `altadis/` (+ `datos.html`, `guion.html`), `help/`, `help/cli/`, `help/funcionalidades/`, `admira-xp/help.html`, `ayuda/`, `cpm/`, `control/`, `doc/`, `mcp/`, `backoffice/` (privada), `leads.html` (privada), `admira-xp/inventario.html` (CMDB), `admira-xp/xpl.html`, `admira-xp/xpl/`, `admira-xp/docs/navigator/`, `admira-xp/buscador/`, `inventario/`, `inventario/conjunto/`, `inventario/starbucks/`, `admira-xp/personas/`, `mobiliario/`, `mobiliario/salas/`, `mobiliario/reponer/`, `scan/`, `scan/ops.html`, `scan/levantado/`, `scan/planos/`, `xpacios/`, `xpacios/lab/`.
+**Con shell**: portada `index.html`, `lenovo/`, `robot/`, `altadis/` (+ `datos.html`, `guion.html`), `help/`, `help/cli/`, `help/funcionalidades/`, `admira-xp/help.html`, `ayuda/`, `cpm/`, `control/`, `doc/`, `mcp/`, `backoffice/` (privada), `leads.html` (privada), `admira-xp/inventario.html` (CMDB), `admira-xp/xpl.html`, `admira-xp/xpl/`, `admira-xp/docs/navigator/`, `admira-xp/buscador/`, `inventario/`, `inventario/conjunto/`, `inventario/starbucks/`, `admira-xp/personas/`, `mobiliario/`, `mobiliario/salas/`, `mobiliario/reponer/`, `scan/`, `scan/ops.html`, `scan/levantado/`, `scan/planos/`, `xpacios/`, `xpacios/lab/`, `xpacios/cafebreria/`.
 
-**El gemelo** (`admira-xp/index.html`) conserva su barra en línea (acoplada al lienzo: `sizeSideColumns`, `resizeCanvas`), con el mismo marcado y las mismas clases; solo ejecuta la orden pendiente que le pasa el shell.
+**El gemelo** (`admira-xp/index.html`) conserva su barra en línea (integrada con el lienzo: `sizeSideColumns`, `resizeCanvas`; sus paneles también se superponen al Xpacio, que no cambia de tamaño), con el mismo marcado y las mismas clases; solo ejecuta la orden pendiente que le pasa el shell.
 
 ### Excepciones (21)
 
@@ -84,7 +92,7 @@ Guardián: `tests/shell-cuadratico.test.mjs` recorre todos los `.html`. Cada uno
 | `xperiencias/batcueva/`, `xperiencias/sheldon/`, `xperiencias/soledad/` | Xperiencias inmersivas a pantalla completa. |
 | `scan/pelicula.html`, `scan/visor.html` | Reproductor y visor 3D de XpaceScan a pantalla completa. |
 | `admira-xp/emulador/` | Emulador Street View a pantalla completa. |
-| `CPM.html`, `Nvidia.html`, `game.html`, `arcade/`, `inventari/`, `xpacios/cafebreria/` | Redirecciones inmediatas: no pintan nada. |
+| `CPM.html`, `Nvidia.html`, `game.html`, `arcade/`, `inventari/`, `inventario/cafebreria/` | Redirecciones inmediatas: no pintan nada. |
 | `admira-xp/tools/walk-sprites/bake.html` | Fragmento: herramienta interna de horneado de sprites. |
 
 `admira-xp/buscador/` estaba en la lista de pantalla completa y se ha adoptado: es una herramienta con panel lateral y mapa que cabe bajo la barra.
@@ -92,14 +100,23 @@ Guardián: `tests/shell-cuadratico.test.mjs` recorre todos los `.html`. Cada uno
 ### Pendiente conocido
 
 - Algunas páginas ya tenían scroll horizontal en móvil antes del shell (`help/cli/`, `cpm/`, `control/`, `mobiliario/`, `mobiliario/reponer/`, `admira-xp/xpl*.html`…): el shell no lo añade ni lo corrige.
-- El gemelo no persiste el estado de sus paneles (su comportamiento no cambia en esta tarea).
+- Ni el gemelo ni el shell persisten el estado abierto de los paneles: entran cerrados en cada carga.
 
 ---
 
-**English.** **Rule: every new xpaceos.com (= admira.store) page uses the four-band shell.** Load `/assets/xpace-shell.css` (after the page CSS) and `/assets/xpace-shell.js` (defer) in the `<head>`, declare the page section, links and actions in `window.XPACE_SHELL` or with `data-shell-slot` / `data-shell-nav` / `data-shell-replace`, and the page gets the twin's exact bar (☰ Options + XpaceOS + section on the left, ▤ Advanced and ⌘ Expert on the right, same glyphs and classes) and its Options, Advanced and Expert panels. Panels are independent, start closed and remember their state across pages; wide screens dock them, narrow ones overlay them; no horizontal scroll on mobile. Navigation goes to ☰ Options; page work and section shortcuts to ▤ Advanced; daily filters stay in the content. Heights use `var(--xs-bar-h)` / `var(--xs-bottom)`; own gates and modals sit at z-index ≥ 9100. Twin verbs typed in ⌘ Expert outside the twin are stored in `sessionStorage` (`xpaceos_expert_pending_v1`, 2-minute expiry, never in the URL), the twin opens and runs them once, as if typed in its console. 35 pages carry the shell, the twin keeps its inline bar, and 21 exceptions (full-screen stages, redirects and a fragment) are listed above and in `SHELL_EXCEPTIONS` of `tests/shell-cuadratico.test.mjs`, which fails when a page skips the shell.
+**English.** **Rule: every new xpaceos.com (= admira.store) page uses the four-band shell.** Load `/assets/xpace-shell.css` (after the page CSS) and `/assets/xpace-shell.js` (defer) in the `<head>`, declare the page section, links and actions in `window.XPACE_SHELL` or with `data-shell-slot` / `data-shell-nav` / `data-shell-replace`, and the page gets the twin's exact bar (☰ Options + XpaceOS + section on the left, ▤ Advanced and ⌘ Expert on the right, same glyphs and classes) and its Options, Advanced and Expert panels. Panels are independent and **start closed on every page load** (the open state is neither saved nor restored; the legacy `xpaceos_shell_panels_v1` key is removed at start-up; only their size is remembered). **Principle (Carlos, 3 Oct 2026): the central body of the site never moves when the optional bars open** — ☰, ▤ and ⌘ overlay the content at every width (no docked mode), so its position, width and height stay the same; nothing applies `padding`, `margin`, `width` or `height` to the content based on panel state. `--xs-left/right/bottom` remain for floating elements only, like Yokup and the `admira-xp` twin. No horizontal scroll on mobile. Navigation goes to ☰ Options; page work and section shortcuts to ▤ Advanced; daily filters stay in the content. Heights use `calc(100dvh - var(--xs-bar-h))`, never `- var(--xs-bottom)`; own gates and modals sit at z-index ≥ 9100. Twin verbs typed in ⌘ Expert outside the twin are stored in `sessionStorage` (`xpaceos_expert_pending_v1`, 2-minute expiry, never in the URL), the twin opens and runs them once, as if typed in its console. The listed pages and Cafebrería carry the shell, the twin keeps its inline bar, and 21 exceptions (full-screen stages, redirects and a fragment) are listed above and in `SHELL_EXCEPTIONS` of `tests/shell-cuadratico.test.mjs`, which fails when a page skips the shell.
 
 ## Redimensionar / Resize
 
-ES: Redimensiona el marco cuadrático: arrastra el borde superior de Experto hacia abajo para reducirlo o hacia arriba para ampliarlo; ajusta Opciones y Avanzado con los tiradores de sus bordes interiores. Las ventanas flotantes tienen una esquina inferior derecha para cambiar anchura y altura. Con el tirador enfocado, usa las flechas (20 px; Mayús, 5 px). Inicio o doble clic restaura el tamaño automático. Cada tamaño se guarda en este navegador y dominio, con límites para mantener visibles los controles. Los tiradores se ocultan al cerrar; el lienzo y los laterales se adaptan a la altura de Experto. Se conservan /marca, historial CLI, posición y cierre de cada herramienta.
+ES: Redimensiona el marco cuadrático: arrastra el borde superior de Experto hacia abajo para reducirlo o hacia arriba para ampliarlo; ajusta Opciones y Avanzado con los tiradores de sus bordes interiores. Las ventanas flotantes tienen una esquina inferior derecha para cambiar anchura y altura. Con el tirador enfocado, usa las flechas (20 px; Mayús, 5 px). Inicio o doble clic restaura el tamaño automático. Cada tamaño se guarda en este navegador y dominio, con límites para mantener visibles los controles. Los tiradores se ocultan al cerrar; los laterales se detienen sobre Experto y el contenido no cambia de posición ni de tamaño: los paneles se superponen y entran cerrados en cada página. Se conservan /marca, historial CLI, posición y cierre de cada herramienta.
 
-EN: Resize the quadratic shell: drag Expert's upper edge downward to shrink it or upward to enlarge it; adjust Options and Advanced with their inner-edge handles. Floating windows have a bottom-right corner to change width and height. With a handle focused, use arrow keys (20 px; Shift, 5 px). Home or double-click restores automatic sizing. Each size is saved in this browser and domain, bounded to keep controls reachable. Handles hide when closed; the canvas and side rails follow Expert's height. /brand, CLI history, window positions and each tool's close lifecycle are preserved.
+EN: Resize the quadratic shell: drag Expert's upper edge downward to shrink it or upward to enlarge it; adjust Options and Advanced with their inner-edge handles. Floating windows have a bottom-right corner to change width and height. With a handle focused, use arrow keys (20 px; Shift, 5 px). Home or double-click restores automatic sizing. Each size is saved in this browser and domain, bounded to keep controls reachable. Handles hide when closed; side rails stop above Expert and the content never moves or resizes: panels overlay it and start closed on every page. /brand, CLI history, window positions and each tool's close lifecycle are preserved.
+
+## Experto común / Shared Expert
+
+ES: El modo Experto comparte el patrón de Starbucks en Cafebrería y las páginas con el shell común: CONTROL XTORE y categorías a la izquierda, opciones de la categoría en el centro y PREVIOS con las respuestas a la derecha. Las doce categorías mantienen los mismos iconos y orden; ITIL está debajo de Percepción, a la derecha de Pixeria. Arrastra los dos separadores para ajustar las columnas; las flechas también funcionan y Inicio o doble clic restaura 32/38/30. El borde superior sigue redimensionando la altura. En Cafebrería, Mobiliario → Distribuir muebles abre el editor real en el centro; Inventario e ITIL muestran las mismas fichas locales. ↗ desacopla la herramienta como ventana movible, redimensionable y cerrable. Cerrar Experto devuelve las herramientas abiertas a su ubicación flotante. Enter ejecuta la orden y Mayús+Enter añade una línea. Se conservan historial CLI, /marca (/brand), /avatarDigital y la distribución guardada. Las acciones disponibles en el gemelo se abren allí cuando la página no tiene una herramienta local. El gemelo nativo conserva su menú y sus controles originales.
+
+EN: Expert mode shares the Starbucks pattern in Cafebrería and common-shell pages: CONTROL XTORE and categories on the left, category options in the centre and PREVIEWS with responses on the right. The twelve categories retain the same icons and order; ITIL sits below Perception, to the right of Pixeria. Drag the two separators to resize columns; arrow keys also work and Home or double-click restores 32/38/30. The upper edge still resizes the dock height. In Cafebrería, Furniture → Distribute furniture opens the real editor in the centre; Inventory and ITIL show the same local records. ↗ detaches the tool as a movable, resizable, closable window. Closing Expert restores open tools to their floating location. Enter runs the command and Shift+Enter adds a line. CLI history, /brand (/marca), /avatarDigital and saved layout are preserved. Actions available in the twin open there when a page has no local tool. The native twin retains its original menu and controls.
+
+
+Guía / Guide: [expert-workspace.md](expert-workspace.md).

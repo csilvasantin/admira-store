@@ -61,7 +61,7 @@ export function movableWindow(panel,handle,{key,onClose,closeButton,bounds,stora
   if(handle.tabIndex<0)handle.tabIndex=0;
   if(!oldHandle.title)handle.setAttribute('title',panel.ownerDocument?.documentElement?.lang==='en'?'Drag to move; arrow keys also move this window':'Arrastra para mover; también puedes usar las flechas');
   function move(x,y){
-    if(disposed||!finite(x)||!finite(y))return false;
+    if(disposed||panel.classList.contains('xs-expert-docked')||!finite(x)||!finite(y))return false;
     const rect=panel.getBoundingClientRect(),area=visibleBounds(view,bounds,panel),p=boundedRectPosition(x,y,rect.width,rect.height,area);
     const local=localWindowPosition(panel,p.x,p.y,view);
     panel.classList.add('xp-window-moved');panel.style.position=local.position;
@@ -77,7 +77,7 @@ export function movableWindow(panel,handle,{key,onClose,closeButton,bounds,stora
     save();
   }
   handle.addEventListener('pointerdown',event=>{
-    if(disposed||event.button!==0||event.isPrimary===false||event.target?.closest?.('button,a,input,textarea,select,summary,[contenteditable="true"],[role="button"]'))return;
+    if(disposed||panel.classList.contains('xs-expert-docked')||event.button!==0||event.isPrimary===false||event.target?.closest?.('button,a,input,textarea,select,summary,[contenteditable="true"],[role="button"]'))return;
     const rect=panel.getBoundingClientRect();drag={id:event.pointerId,x:event.clientX-rect.left,y:event.clientY-rect.top};
     try{handle.setPointerCapture?.(event.pointerId);}catch{}
     event.preventDefault();event.stopPropagation();
@@ -85,6 +85,7 @@ export function movableWindow(panel,handle,{key,onClose,closeButton,bounds,stora
   handle.addEventListener('pointermove',event=>{if(drag&&event.pointerId===drag.id){move(event.clientX-drag.x,event.clientY-drag.y);event.stopPropagation();}},{signal});
   for(const type of ['pointerup','pointercancel','lostpointercapture'])handle.addEventListener(type,finish,{signal});
   handle.addEventListener('keydown',event=>{
+    if(panel.classList.contains('xs-expert-docked'))return;
     const offsets={ArrowLeft:[-20,0],ArrowRight:[20,0],ArrowUp:[0,-20],ArrowDown:[0,20]},delta=offsets[event.key];
     if(!delta||event.target!==handle||event.altKey||event.ctrlKey||event.metaKey)return;
     const rect=panel.getBoundingClientRect(),scale=event.shiftKey?0.25:1;
@@ -92,7 +93,7 @@ export function movableWindow(panel,handle,{key,onClose,closeButton,bounds,stora
   },{signal});
   if(closeButton&&typeof onClose==='function')closeButton.addEventListener('click',onClose,{signal});
   function clamp(){
-    if(disposed||!panel.getClientRects().length)return false;
+    if(disposed||panel.classList.contains('xs-expert-docked')||!panel.getClientRects().length)return false;
     const rect=panel.getBoundingClientRect(),p=boundedRectPosition(rect.left,rect.top,rect.width,rect.height,visibleBounds(view,bounds,panel));
     if(panel.classList.contains('xp-window-moved')||p.x!==rect.left||p.y!==rect.top)return move(p.x,p.y);
     return false;

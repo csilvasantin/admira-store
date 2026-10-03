@@ -36,5 +36,5 @@
     button.title=button.title||label+(status?' — '+status:'');
     if(!preserveId)button.removeAttribute('id');return button;
   }
-  window.XpaceExpertCategories={decorate,keyFor};
+  if(typeof window!=='undefined')window.XpaceExpertCategories={decorate,keyFor};
 })();

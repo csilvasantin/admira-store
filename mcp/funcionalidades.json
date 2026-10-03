@@ -3279,8 +3279,8 @@
   "quadratic_resize": {
     "revision": "20261003-panels-2",
     "state": "implemented",
-    "es": "Redimensiona el marco cuadrático: arrastra el borde superior de Experto hacia abajo para reducirlo o hacia arriba para ampliarlo; ajusta Opciones y Avanzado con los tiradores de sus bordes interiores. Las ventanas flotantes tienen una esquina inferior derecha para cambiar anchura y altura. Con el tirador enfocado, usa las flechas (20 px; Mayús, 5 px). Inicio o doble clic restaura el tamaño automático. Cada tamaño se guarda en este navegador y dominio, con límites para mantener visibles los controles. Los tiradores se ocultan al cerrar; el lienzo y los laterales se adaptan a la altura de Experto. Se conservan /marca, historial CLI, posición y cierre de cada herramienta.",
-    "en": "Resize the quadratic shell: drag Expert's upper edge downward to shrink it or upward to enlarge it; adjust Options and Advanced with their inner-edge handles. Floating windows have a bottom-right corner to change width and height. With a handle focused, use arrow keys (20 px; Shift, 5 px). Home or double-click restores automatic sizing. Each size is saved in this browser and domain, bounded to keep controls reachable. Handles hide when closed; the canvas and side rails follow Expert's height. /brand, CLI history, window positions and each tool's close lifecycle are preserved.",
+    "es": "Redimensiona el marco cuadrático: arrastra el borde superior de Experto hacia abajo para reducirlo o hacia arriba para ampliarlo; ajusta Opciones y Avanzado con los tiradores de sus bordes interiores. Las ventanas flotantes tienen una esquina inferior derecha para cambiar anchura y altura. Con el tirador enfocado, usa las flechas (20 px; Mayús, 5 px). Inicio o doble clic restaura el tamaño automático. Cada tamaño se guarda en este navegador y dominio, con límites para mantener visibles los controles. Los tiradores se ocultan al cerrar; los laterales se detienen sobre Experto y el contenido no cambia de posición ni de tamaño: los paneles se superponen y entran cerrados en cada página. Se conservan /marca, historial CLI, posición y cierre de cada herramienta.",
+    "en": "Resize the quadratic shell: drag Expert's upper edge downward to shrink it or upward to enlarge it; adjust Options and Advanced with their inner-edge handles. Floating windows have a bottom-right corner to change width and height. With a handle focused, use arrow keys (20 px; Shift, 5 px). Home or double-click restores automatic sizing. Each size is saved in this browser and domain, bounded to keep controls reachable. Handles hide when closed; side rails stop above Expert and the content never moves or resizes: panels overlay it and start closed on every page. /brand, CLI history, window positions and each tool's close lifecycle are preserved.",
     "controller": "https://www.xpaceos.com/admira-xp/scripts/panel-resize.mjs",
     "styles": "https://www.xpaceos.com/admira-xp/scripts/panel-resize.css",
     "docs": "https://www.xpaceos.com/admira-xp/docs/panel-resize.md",
@@ -3309,6 +3309,39 @@
       "scope": "same browser and origin",
       "preserve_history": true
     },
+    "new_remote_tools": false,
+    "physical_publication": false
+  },
+  "expert_workspace": {
+    "es": "El modo Experto comparte el patrón de Starbucks en Cafebrería y las páginas con el shell común: CONTROL XTORE y categorías a la izquierda, opciones de la categoría en el centro y PREVIOS con las respuestas a la derecha. Las doce categorías mantienen los mismos iconos y orden; ITIL está debajo de Percepción, a la derecha de Pixeria. Arrastra los dos separadores para ajustar las columnas; las flechas también funcionan y Inicio o doble clic restaura 32/38/30. El borde superior sigue redimensionando la altura. En Cafebrería, Mobiliario → Distribuir muebles abre el editor real en el centro; Inventario e ITIL muestran las mismas fichas locales. ↗ desacopla la herramienta como ventana movible, redimensionable y cerrable. Cerrar Experto devuelve las herramientas abiertas a su ubicación flotante. Enter ejecuta la orden y Mayús+Enter añade una línea. Se conservan historial CLI, /marca (/brand), /avatarDigital y la distribución guardada. Las acciones disponibles en el gemelo se abren allí cuando la página no tiene una herramienta local. Los paneles se superponen a la escena y entran cerrados en cada carga. El gemelo nativo conserva su menú y sus controles originales.",
+    "en": "Expert mode shares the Starbucks pattern in Cafebrería and common-shell pages: CONTROL XTORE and categories on the left, category options in the centre and PREVIEWS with responses on the right. The twelve categories retain the same icons and order; ITIL sits below Perception, to the right of Pixeria. Drag the two separators to resize columns; arrow keys also work and Home or double-click restores 32/38/30. The upper edge still resizes the dock height. In Cafebrería, Furniture → Distribute furniture opens the real editor in the centre; Inventory and ITIL show the same local records. ↗ detaches the tool as a movable, resizable, closable window. Closing Expert restores open tools to their floating location. Enter runs the command and Shift+Enter adds a line. CLI history, /brand (/marca), /avatarDigital and saved layout are preserved. Actions available in the twin open there when a page has no local tool. Panels overlay the scene and start closed on every page load. The native twin retains its original menu and controls.",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/expert-workspace.md",
+    "implementation": "assets/expert-workspace.mjs",
+    "columns": [
+      "commands_categories",
+      "category_options",
+      "previews"
+    ],
+    "category_ids": [
+      "signage",
+      "admiralive",
+      "livecam",
+      "dvr",
+      "anonymizer",
+      "editor",
+      "avatar3d",
+      "impactos",
+      "inventory",
+      "perception",
+      "pixerai",
+      "itil"
+    ],
+    "columns_key": "xpace_expert_columns_v1",
+    "history_key": "xpaceos_expert_history_v1",
+    "page_bindings": [
+      "XPACE_SHELL.expertCategories",
+      "XPACE_SHELL.expertPanels"
+    ],
     "new_remote_tools": false,
     "physical_publication": false
   }

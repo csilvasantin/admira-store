@@ -1,6 +1,8 @@
 {
-  "version": "v.02.10.2026.r3.12:30",
-  "deployer": "SmithMacMini",
+  "version": "v.03.10.2026.r2.02:47",
+  "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
-  "signature": "SmithMacMini · MacMini"
+  "agent": "OraculoMacMini",
+  "deployer": "OraculoMacMini",
+  "evidence": "Experto común de Starbucks: tres columnas, categorías e iconos compartidos, editor e ITIL reales de Cafebrería desacoplables; conserva paneles superpuestos y cerrados al entrar."
 }

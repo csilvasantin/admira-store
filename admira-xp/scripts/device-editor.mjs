@@ -2,7 +2,7 @@ import {createSharedPlaylists,playlistReference} from './shared-playlists.mjs?v=
 import {mountPlaylistReorder} from './playlist-reorder.mjs?v=drop-1';
 import {mountPixeriaPicker} from './pixeria-picker.mjs?v=drop-1';
 import {DEVICE_IDS,emptyDeviceLayout,validateDeviceLayout,changeDeviceLayout,assignedPlaylist} from './device-layout.mjs?v=loop-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-panels-2';
+import {attachFloatingPanel} from './floating-panels.mjs?v=20261003-expert-1';
 export const DEVICE_STORAGE='xpaceos.starbucks.device-layout.v1';
 export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChange,onPlay,onPreview,onReload,onOpen=()=>{},getPlayback=()=>[]}){
  const t=(es,en)=>lang==='en'?en:es,selected=new Set();let config=emptyDeviceLayout(),seen=0,enabled=false,multiple=false,savedDraft='',draftRevision;const shared=createSharedPlaylists();let busy=false,disposed=false,pollTimer;const activeShared=new Set();

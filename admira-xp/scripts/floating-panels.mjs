@@ -1,5 +1,5 @@
-import {movableWindow,visibleBounds} from './floating-window.mjs?v=20261003-panels-2';
-import {attachPanelResize} from './panel-resize.mjs?v=20261003-panels-2';
+import {movableWindow,visibleBounds} from './floating-window.mjs?v=20261003-expert-1';
+import {attachPanelResize} from './panel-resize.mjs?v=20261003-expert-1';
 
 const windows=new Map(),menus=new Set();
 function refreshMenus(){for(const refresh of menus)refresh();}

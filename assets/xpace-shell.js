@@ -20,7 +20,10 @@
 (function (root) {
   'use strict';
 
-  const PANELS_KEY = 'xpaceos_shell_panels_v1';      // {left, right, expert}: estado compartido entre páginas
+  // Clave antigua del estado abierto/cerrado. Ya no se restaura: los paneles entran CERRADOS en
+  // cada carga (Carlos, 3-oct-2026). Se borra al arrancar; el tamaño sí se recuerda
+  // (xpaceos_shell_size_v1:<panel>).
+  const PANELS_KEY = 'xpaceos_shell_panels_v1';
   const HISTORY_KEY = 'xpaceos_expert_history_v1';   // historial del CLI (↑/↓)
   const PENDING_KEY = 'xpaceos_expert_pending_v1';   // orden para el gemelo (nunca en la URL)
   const PENDING_TTL = 2 * 60 * 1000;
@@ -119,15 +122,20 @@
   <p class="qm-hint xs-empty"${bilingual(lang, {es: 'Esta página no tiene acciones avanzadas.', en: 'This page has no advanced actions.'})}</p>
 </nav>`;
     const expert = `<section class="quad-menu quad-bottom xs-expert is-collapsed" id="xsExpert" aria-label="${T('Modo experto', 'Expert mode')}" data-shell-label-es="Modo experto" data-shell-label-en="Expert mode">
-  <div class="xs-expert-head"><strong class="qm-head"${bilingual(lang, {es: 'Modo experto · CLI', en: 'Expert mode · CLI'})}</strong><button type="button" class="xs-close" data-shell-close="expert" aria-label="${T('Cerrar', 'Close')}">×</button></div>
-  <div class="xs-expert-slot"></div>
-  <ol class="xs-log" id="xsLog" role="log" aria-live="polite"></ol>
-  <form class="xs-cli" id="xsCliForm" autocomplete="off">
-    <span class="xs-prompt" aria-hidden="true">›</span>
-    <input id="xsCli" type="text" spellcheck="false" autocapitalize="off" placeholder="/help" aria-label="${T('Orden del modo experto', 'Expert mode command')}" data-shell-label-es="Orden del modo experto" data-shell-label-en="Expert mode command">
-    <button type="submit"${bilingual(lang, {es: 'Ejecutar', en: 'Run'})}</button>
-  </form>
-  <p class="xs-hint"${bilingual(lang, {es: 'Tab completa · ↑/↓ historial · /help ayuda', en: 'Tab completes · ↑/↓ history · /help help'})}</p>
+  <div class="expert-workspace">
+    <div class="tg-cli-row">
+      <form class="xs-cli" id="xsCliForm" autocomplete="off">
+        <div class="xs-command-head"><strong class="expert-section-label">⠿ CONTROL XTORE</strong><button type="submit" data-shell-label-es="Ejecutar orden" data-shell-label-en="Run command" aria-label="${T('Ejecutar orden','Run command')}" title="${T('Enter: ejecutar · Mayús+Enter: nueva línea','Enter: run · Shift+Enter: newline')}">↵</button></div>
+        <textarea id="xsCli" rows="2" spellcheck="false" autocapitalize="off" placeholder="/help" aria-label="${T('Orden del modo experto', 'Expert mode command')}" data-shell-label-es="Orden del modo experto" data-shell-label-en="Expert mode command"></textarea>
+      </form>
+      <section class="expert-category-panel" aria-labelledby="expertCategoriesLabel"><strong class="expert-section-label" id="expertCategoriesLabel"${bilingual(lang,{es:'CATEGORÍAS',en:'CATEGORIES'})}</strong><div id="expertQuickIcons"></div></section>
+      <p class="xs-hint"${bilingual(lang, {es: 'Tab completa · ↑/↓ historial · /help ayuda', en: 'Tab completes · ↑/↓ history · /help help'})}</p>
+    </div>
+    <div class="expert-divider" data-expert-divider="0" role="separator" aria-orientation="vertical" tabindex="0"></div>
+    <div class="expert-controls-pane" aria-labelledby="expertControlsLabel"><strong class="expert-section-label" id="expertControlsLabel"${bilingual(lang,{es:'OPCIONES DE CATEGORÍA',en:'CATEGORY OPTIONS'})}</strong><div class="xs-expert-slot"></div><div id="expertCategoryDetail"></div></div>
+    <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
+    <div class="expert-view-pane"><div class="xs-expert-head"><strong class="expert-section-label" id="expertPreviewLabel"${bilingual(lang,{es:'PREVIOS',en:'PREVIEWS'})}</strong><button type="button" class="xs-close" data-shell-close="expert" data-shell-label-es="Cerrar modo experto" data-shell-label-en="Close Expert mode" aria-label="${T('Cerrar modo experto','Close Expert mode')}">×</button></div><ol class="xs-log" id="xsLog" role="log" aria-live="polite"></ol></div>
+  </div>
 </section>`;
     // Los paneles viven en una capa fija que recorta su desplazamiento: plegados no crean scroll horizontal.
     return {bar, options, advanced, expert, html: [bar, '<div class="xs-layer">', options, advanced, expert, '</div>'].join('\n')};
@@ -432,19 +440,17 @@
   const state = {left: false, right: false, expert: false};
   const PANEL = {left: 'xsOptions', right: 'xsAdvanced', expert: 'xsExpert'};
 
-  function loadPanels() {
-    try { const s = JSON.parse(local.getItem(PANELS_KEY) || '{}'); for (const k of Object.keys(state)) state[k] = s[k] === true; } catch (_) {}
-  }
-  function savePanels() { try { local.setItem(PANELS_KEY, JSON.stringify(state)); } catch (_) {} }
+  // Los paneles entran cerrados en cada página: el estado abierto no se guarda ni se restaura.
+  function forgetPanels() { try { local.removeItem(PANELS_KEY); } catch (_) {} }
 
+  // Los paneles se SUPERPONEN al contenido en todos los anchos: el cuerpo de la página no cambia
+  // de posición, ancho ni alto al abrir ☰, ▤ o ⌘. Las variables solo informan a lo flotante
+  // (los laterales se detienen sobre ⌘ con bottom:var(--xs-bottom)).
   function layout() {
-    const dock = wide();
-    const width = id => { const el = doc.getElementById(id); return el ? Math.round(el.getBoundingClientRect().width) : 0; };
-    html.style.setProperty('--xs-left', state.left && dock ? width('xsOptions') + 'px' : '0px');
-    html.style.setProperty('--xs-right', state.right && dock ? width('xsAdvanced') + 'px' : '0px');
-    const ex = doc.getElementById('xsExpert');
-    html.style.setProperty('--xs-bottom', state.expert && ex ? Math.round(ex.getBoundingClientRect().height) + 'px' : '0px');
-    html.classList.toggle('xs-docked', dock);
+    const size = (id, prop) => { const el = doc.getElementById(id); return el ? Math.round(el.getBoundingClientRect()[prop]) : 0; };
+    html.style.setProperty('--xs-left', state.left ? size('xsOptions', 'width') + 'px' : '0px');
+    html.style.setProperty('--xs-right', state.right ? size('xsAdvanced', 'width') + 'px' : '0px');
+    html.style.setProperty('--xs-bottom', state.expert ? size('xsExpert', 'height') + 'px' : '0px');
   }
 
   function paintPanel(name) {
@@ -465,7 +471,6 @@
     if (!(name in state)) return;
     state[name] = !!open;
     paintPanel(name);
-    savePanels();
     layout();
     if (open && name === 'expert' && opts.focus !== false) { const input = doc.getElementById('xsCli'); if (input) setTimeout(() => input.focus({preventScroll: true}), 30); }
     doc.dispatchEvent(new CustomEvent('xpace:shell-panel', {detail: {panel: name, open: !!open}}));
@@ -579,6 +584,7 @@
       run(value);
     });
     input.addEventListener('keydown', ev => {
+      if(ev.key==='Enter'&&!ev.shiftKey&&!ev.isComposing){ev.preventDefault();form.requestSubmit();return;}
       if (ev.key === 'Tab' && !ev.shiftKey) {
         const brands = root.AdmiraMarca ? root.AdmiraMarca.conocidas().map(b => b.id) : BRAND_SEED;
         const c = complete(input.value, allVerbs(), brands);
@@ -599,8 +605,8 @@
     parts = mount();
     cfg = parts.cfg;
     for (const verb of cfg.verbs) { try { registerVerb(verb); } catch (e) { console.warn(e); } }
-    loadPanels();
-    // Primer pintado sin animación (el estado viene de la visita anterior).
+    forgetPanels();
+    // Primer pintado sin animación: los tres paneles entran cerrados.
     html.classList.add('xs-no-anim');
     for (const name of Object.keys(state)) paintPanel(name);
     translate();
@@ -624,8 +630,8 @@
     root.addEventListener('resize', layout);
     if (root.ResizeObserver) new ResizeObserver(layout).observe(parts.expert);
     new MutationObserver(translate).observe(html, {attributes: true, attributeFilter: ['lang']});
-    // Docked panels keep their quadratic anchors while their inside edges move.
-    import(new URL('../admira-xp/scripts/panel-resize.mjs?v=20261003-panels-2',script.src).href).then(({attachPanelResize})=>{
+    // Los paneles conservan su anclaje cuadrático mientras se mueve su borde interior (superpuestos).
+    import(new URL('../admira-xp/scripts/panel-resize.mjs?v=20261003-expert-1',script.src).href).then(({attachPanelResize})=>{
       for(const name of ['left','right','expert']){
         const panel=doc.getElementById(PANEL[name]),vertical=name==='expert';
         const resize=attachPanelResize(panel,{
@@ -665,6 +671,10 @@
       toggle: name => setPanel(name, !state[name]), state: () => Object.assign({}, state),
       run, print: log, registerVerb, handoff,
     });
+    import(new URL('./expert-workspace.mjs?v=20261003-expert-1',script.src).href).then(({mountExpertWorkspace})=>{
+      shared.expertWorkspace=mountExpertWorkspace({panel:parts.expert,shell:shared,config:cfg});
+      doc.dispatchEvent(new CustomEvent('xpace:expert-ready'));
+    }).catch(error=>console.warn('xpace-shell expert',error));
     doc.dispatchEvent(new CustomEvent('xpace:shell-ready'));
   }
 

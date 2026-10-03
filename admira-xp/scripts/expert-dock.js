@@ -1,6 +1,7 @@
 /* Three expert columns share available width. Only adjacent columns change. */
 (()=>{
-  const dock=document.getElementById('telegramDock');
+  if(typeof document==='undefined')return;
+  const dock=document.getElementById('telegramDock')||document.getElementById('xsExpert');
   const workspace=dock?.querySelector('.expert-workspace');
   if(!workspace)return;
   const key='xpace_expert_columns_v1';
