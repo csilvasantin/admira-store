@@ -1,3 +1,4 @@
+@import url('/assets/xpace-header.css?v=20261003-header-1');
 @import url('/admira-xp/scripts/panel-resize.css?v=20261003-panels-2');
 @import url('/admira-xp/scripts/expert-categories.css?v=20261003-expert-1');
 /* Shell cuadrático común de XpaceOS · FLT-101337.
@@ -43,11 +44,7 @@ html.xs-no-anim .xs-panel,html.xs-no-anim .xs-expert{transition:none!important}
 #topBar.xs-bar .quad-icon:hover{border-color:var(--xp-cyan);background:rgba(120,243,255,.12)}
 #topBar.xs-bar .quad-icon.is-active{background:var(--xp-cyan);color:#03151a;border-color:var(--xp-cyan);box-shadow:0 0 12px rgba(120,243,255,.5)}
 #topBar.xs-bar .quad-icon:focus-visible,#topBar.xs-bar .xs-brand:focus-visible{outline:2px solid var(--xp-gold);outline-offset:2px}
-#topBar.xs-bar .xs-brand-wrap{display:inline-flex;align-items:center;gap:10px;min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden}
-#topBar.xs-bar .xs-brand{display:inline-flex;align-items:center;gap:8px;min-width:0;padding:0;margin:0;color:var(--xp-cyan);text-decoration:none;border-radius:4px;
-  font:800 13px/1 var(--xs-font);letter-spacing:.14em;text-transform:uppercase;text-shadow:0 0 12px rgba(120,243,255,.35);background:none;border:0}
-#topBar.xs-bar .xs-brand:hover{color:#fff}
-#topBar.xs-bar .xs-section{color:var(--xp-muted);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;min-width:0}
+
 
 /* ─── Paneles Opciones (☰, izquierda) y Avanzado (▤, derecha) ───
    Viven en una capa fija que recorta su desplazamiento (plegados no crean scroll). */
@@ -108,10 +105,8 @@ html.xs-no-anim .xs-panel,html.xs-no-anim .xs-expert{transition:none!important}
 /* ─── Móvil: sin scroll horizontal; la sección cede antes que los iconos ─── */
 @media (max-width:600px){
   #topBar.xs-bar{gap:7px;padding:0 8px}
-  #topBar.xs-bar .xs-brand{font-size:12px;letter-spacing:.1em}
   .xs-expert.quad-menu{height:min(55vh,360px)}
 }
-@media (max-width:420px){#topBar.xs-bar .xs-section{display:none}}
 @media (prefers-reduced-motion:reduce){.xs-panel,.xs-expert{transition:none!important}}
 @media print{#topBar.xs-bar,.xs-panel,.xs-expert{display:none!important}body.xs-page{padding:0!important}}
 

@@ -1,8 +1,8 @@
 {
-  "version": "v.03.10.2026.r5.23:28",
+  "version": "v.03.10.2026.r6.23:39",
   "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
   "agent": "OraculoMacMini",
   "deployer": "OraculoMacMini",
-  "evidence": "Barra superior limpia: Opciones, Avanzado y Experto; contexto y telemetría conservados para definir indicadores tras el núcleo gráfico e IoT operativos."
+  "evidence": "Cabecera compartida: ☰, XpaceOS y nombre del espacio activo como texto; contexto y telemetría conservados."
 }

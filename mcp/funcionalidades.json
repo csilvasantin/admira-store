@@ -3346,8 +3346,8 @@
     "physical_publication": false
   },
   "topbar_core": {
-    "es": "La barra superior del gemelo muestra únicamente ☰ Opciones, ▤ Avanzado y ⌘ Experto. Se ocultan el acceso de proyecto/local junto a Opciones y los indicadores de ventas, beneficio, satisfacción, tráfico, aforo, embudo, estado y cuotas de marcas. Proyecto y local se eligen desde Opciones → Proyecto y local. Los nodos, IDs, cálculos, conexiones y datos guardados se conservan. La futura selección de indicadores queda pendiente hasta completar el núcleo de la interfaz gráfica y verificar los elementos IoT operativos; este cambio no acredita su conexión.",
-    "en": "The twin top bar shows only ☰ Options, ▤ Advanced and ⌘ Expert. The project/venue shortcut next to Options and the sales, profit, satisfaction, traffic, occupancy, funnel, status and brand-share indicators are hidden. Select a project and venue through Options → Project and venue. Nodes, IDs, calculations, connections and saved data are retained. Future indicator selection is pending until the graphical interface core is complete and operational IoT elements are verified; this change does not confirm their connection.",
+    "es": "La barra superior usa el formato de Cafebrería: ☰, XpaceOS (con esta escritura) y el nombre del espacio activo como texto, por ejemplo Cafebrería, Estancos o Starbucks; ▤ Avanzado y ⌘ Experto quedan a la derecha. El nombre no es un combo ni cambia al preseleccionar otro proyecto: identifica la escena abierta. Se ocultan el acceso de proyecto/local junto a Opciones y los indicadores de ventas, beneficio, satisfacción, tráfico, aforo, embudo, estado y cuotas de marcas. Proyecto y local se eligen desde Opciones → Proyecto y local. Los nodos, IDs, cálculos, conexiones y datos guardados se conservan. La futura selección de indicadores queda pendiente hasta completar el núcleo de la interfaz gráfica y verificar los elementos IoT operativos; este cambio no acredita su conexión.",
+    "en": "The top bar uses the Cafebrería format: ☰, XpaceOS (with this capitalization) and the active space name as text, such as Cafebrería, Estancos or Starbucks; ▤ Advanced and ⌘ Expert stay on the right. The name is not a combo box and does not change when another project is preselected: it identifies the open scene. The project/venue shortcut next to Options and the sales, profit, satisfaction, traffic, occupancy, funnel, status and brand-share indicators are hidden. Select a project and venue through Options → Project and venue. Nodes, IDs, calculations, connections and saved data are retained. Future indicator selection is pending until the graphical interface core is complete and operational IoT elements are verified; this change does not confirm their connection.",
     "guide": "https://www.xpaceos.com/admira-xp/docs/topbar-core.md",
     "implementation": "admira-xp/index.html#topbarCoreStyle",
     "status": "implemented",
@@ -3362,5 +3362,5 @@
       "/avatarDigital"
     ]
   },
-  "version": "v.03.10.2026.r5.23:28"
+  "version": "v.03.10.2026.r6.23:39"
 }

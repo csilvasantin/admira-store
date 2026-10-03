@@ -1,6 +1,6 @@
 import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-2';
 import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=cafebreria-route-3';
-const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip');
+const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip'),space=$('xpaceActiveSpace');
 let storage;try{storage=sessionStorage;}catch{}
 const client=new ProjectClient({storage}),chosenQuality=()=>document.querySelector('#visualQualityOptions [aria-pressed="true"]')?.dataset.visualMode;
 const english=()=>document.documentElement.lang==='en',text=(en,es)=>english()?en:es;
@@ -10,12 +10,13 @@ function currentId(){return pendingProject||sceneId();}
 function currentVenue(project){if(project!==sceneId())return null;const p=new URL(location.href).searchParams;return catalog.venues.find(v=>v.project_id===project&&v.id===p.get('venue'))||catalog.venues.find(v=>v.project_id===project&&new URL(v.xpace_url).searchParams.get('loc')===p.get('loc'));}
 function draw(){
  const id=currentId(),project=catalog.projects.find(p=>p.id===id),venue=currentVenue(id);
- const stamp=JSON.stringify([catalog,mode,error,busy,english(),id,venue?.id]);if(stamp===last)return;last=stamp;
+ const stamp=JSON.stringify([catalog,mode,error,busy,english(),id,sceneId(),venue?.id]);if(stamp===last)return;last=stamp;
  $('projectSelectorLabel').textContent=text('Project and venue','Proyecto y local');$('projectFieldLabel').textContent=text('Project','Proyecto');$('projectVenueLabel').textContent=text('Venue','Local');
  $('projectVenueFieldLabel').textContent=text('Choose venue','Elegir local');
  select.replaceChildren(new Option(text('Choose a project','Escoge un proyecto'),''));
  for(const p of catalog.projects){const o=new Option(p.name,p.id);select.add(o);}select.value=project?.id||'';select.disabled=busy||!catalog.projects.length;
  venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));for(const v of catalog.venues.filter(v=>v.project_id===id))venueSelect.add(new Option(v.name,v.id));venueSelect.value=venue?.id||'';venueSelect.disabled=busy||venueSelect.options.length<2;
+ const activeId=sceneId();space.textContent=catalog.projects.find(p=>p.id===activeId)?.name||({estancos:'Estancos',cafebreria:'Cafebrería',starbucks:'Starbucks'}[activeId]||'');space.title=space.textContent;
  chip.textContent=(catalog.projects.find(p=>p.id===sceneId())?.name||text('Choose project','Elegir proyecto'))+(mode==='demo'?' · Demo':'');chip.title=chip.textContent;
  $('projectVenueName').textContent=venue?.name||'—';
  $('projectSelectionStatus').textContent=error||(mode==='demo'?text('Public demos · no account permissions','Demos públicas · sin permisos de cuenta'):!project?text('Choose one of your permitted projects','Escoge uno de tus proyectos autorizados'):!catalog.venues.some(v=>v.project_id===id)?text('No associated venue. Manage it in AdmiraNext.','Sin local asociado. Gestiónalo en AdmiraNext.'):text('Authorized venues · AdmiraNext','Locales autorizados · AdmiraNext'));

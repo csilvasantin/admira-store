@@ -1,0 +1,8 @@
+/* Shared XpaceOS + space identity for the common shell and inline twin. */
+#topBar .xs-brand-wrap{display:inline-flex;align-items:center;gap:10px;min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden}
+#topBar .xs-brand{display:inline-flex;align-items:center;gap:8px;min-width:0;padding:0;margin:0;color:var(--xp-cyan);text-decoration:none;border-radius:4px;
+  font:800 13px/1 var(--xs-font, 'Orbitron', 'Press Start 2P', ui-monospace, SFMono-Regular, Menlo, monospace);letter-spacing:.14em;text-transform:none;text-shadow:0 0 12px rgba(120,243,255,.35);background:none;border:0}
+#topBar .xs-brand:hover{color:#fff}
+#topBar .xs-section{color:var(--xp-muted);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:none;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#topBar .xs-brand:focus-visible{outline:2px solid var(--xp-gold);outline-offset:2px}
+@media (max-width:600px){#topBar .xs-brand{font-size:12px;letter-spacing:.1em}}
