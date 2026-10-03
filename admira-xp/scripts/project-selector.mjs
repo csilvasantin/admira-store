@@ -1,5 +1,5 @@
 import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-2';
-import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=cafebreria-route-2';
+import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=cafebreria-route-3';
 const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip');
 let storage;try{storage=sessionStorage;}catch{}
 const client=new ProjectClient({storage}),chosenQuality=()=>document.querySelector('#visualQualityOptions [aria-pressed="true"]')?.dataset.visualMode;
@@ -40,5 +40,5 @@ $('projectConnect').onclick=()=>{
 };
 chip.addEventListener('click',()=>{if($('pfOptions').getAttribute('aria-expanded')!=='true')$('pfOptions').click();select.focus({preventScroll:true});});
 window.addEventListener('xpaceos:project-change',()=>{last='';draw();});window.addEventListener('resize',draw);new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-setInterval(()=>{if(mode==='account'&&client.access&&!validAccess(client.access)){client.clear();pendingProject='';catalog={projects:[],venues:[]};error=text('Connection expired. Reconnect with AdmiraNext.','Conexión caducada. Reconecta con AdmiraNext.');}last='';draw();},1000);
+setInterval(()=>{if(mode==='account'&&client.access&&!validAccess(client.access)){client.clear();pendingProject='';catalog={projects:[],venues:[]};error=text('Connection expired. Reconnect with AdmiraNext.','Conexión caducada. Reconecta con AdmiraNext.');}draw();},1000);
 load();

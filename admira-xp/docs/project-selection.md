@@ -56,7 +56,13 @@ EN: Options → Project and venue → Connect with AdmiraNext uses central ident
       "supported quality query"
     ],
     "es": "En las demos públicas, Opciones → Proyecto y local → Cafebrería abre https://www.admira.store/xpacios/cafebreria/, la cafetería recuperada con librería interactiva, inventario ITIL y editor 3D. Conserva el idioma de la interfaz, incluidas las preferencias locales; lang explícito tiene prioridad. La resolución se limita al local demo-cafebreria del proyecto cafebreria. Los locales de cuenta mantienen su asociación central. El catálogo central todavía publica la URL histórica /admira-xp/ para esta demo; el selector resuelve esa compatibilidad.",
-    "en": "In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. The interface language is preserved, including local preferences; explicit lang takes priority. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility."
+    "en": "In public demos, Options → Project and venue → Cafebrería opens https://www.admira.store/xpacios/cafebreria/, the recovered café with its interactive bookcase, ITIL inventory and 3D editor. The interface language is preserved, including local preferences; explicit lang takes priority. Resolution is limited to venue demo-cafebreria in project cafebreria. Account venues keep their central association. The central catalogue still publishes the historical /admira-xp/ URL for this demo; the selector handles that compatibility.",
+    "selection_stability": {
+      "es": "El desplegable conserva sus opciones mientras eliges: la comprobación de sesión cada segundo no reconstruye el menú si nada cambia. La caducidad del acceso sigue retirando los proyectos autorizados. Abre Proyecto, elige Cafebrería y confirma la opción; puedes dejar el menú abierto antes de confirmar.",
+      "en": "The dropdown keeps its options while you choose: the session check every second does not rebuild the menu when nothing changes. Access expiry still removes authorized projects. Open Project, choose Cafebrería and confirm the option; you can leave the menu open before confirming.",
+      "session_check": "every second; redraw only when state changes",
+      "expiry": "authorized project options are cleared"
+    }
   }
 }
 ```
@@ -72,3 +78,9 @@ EN: In public demos, Options → Project and venue → Cafebrería opens https:/
 ES: Sin iniciar sesión, abre Opciones → Proyecto y local, selecciona Cafebrería y comprueba la dirección /xpacios/cafebreria/. Usa Inventario ITIL y Distribuir desde Opciones para listar y mover sus elementos. La escena recuperada conserva su geometría original; el parámetro de calidad se mantiene en la URL, sin convertir el modelo importado en una variante del simulador histórico.
 
 EN: Without signing in, open Options → Project and venue, select Cafebrería and check the /xpacios/cafebreria/ address. Use ITIL inventory and Distribute under Options to list and move its elements. The recovered scene keeps its original geometry; the quality query remains in the URL without converting the imported model into a historical simulator variant.
+
+## Selección manual estable / Stable manual selection
+
+ES: El desplegable conserva sus opciones mientras eliges: la comprobación de sesión cada segundo no reconstruye el menú si nada cambia. La caducidad del acceso sigue retirando los proyectos autorizados. Abre Proyecto, elige Cafebrería y confirma la opción; puedes dejar el menú abierto antes de confirmar.
+
+EN: The dropdown keeps its options while you choose: the session check every second does not rebuild the menu when nothing changes. Access expiry still removes authorized projects. Open Project, choose Cafebrería and confirm the option; you can leave the menu open before confirming.
