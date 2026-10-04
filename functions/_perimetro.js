@@ -321,9 +321,10 @@ function agentPage(site, returnTo, error) {
   :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:${site.background};color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:32px 26px;border:1px solid ${site.accent}55;border-radius:16px;background:#070c10e6}.mark{color:${site.accent};font:700 12px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase}h1{margin:14px 0 8px;font-size:22px}p{margin:0 0 18px;color:#9fb1bb;line-height:1.5;font-size:14px}a{color:${site.accent}}label{display:block;margin:0 0 6px;font:600 12px ui-monospace,monospace;color:#9fb1bb}input{width:100%;padding:10px;border-radius:8px;border:1px solid #ffffff2a;background:#0008;color:#fff;font-size:14px;margin-bottom:14px}button{width:100%;padding:11px;border-radius:8px;border:1px solid ${site.accent};background:transparent;color:${site.accent};font:700 13px ui-monospace,monospace;cursor:pointer}.error{margin-top:14px;color:#ff8f7a;font:600 13px ui-monospace,monospace}</style></head><body><main class="box"><div class="mark">${escapeHtml(site.name)} · perímetro de seguridad</div><h1>Entrada de agentes</h1><p>Para los agentes de silicio de AdmiraNeXT. El token está en la bóveda (ADMIRA_AGENT_LOGIN_TOKEN) y cada entrada queda registrada. Las personas entran con Google en <a href="/auth/login">/auth/login</a>.</p><form method="post" action="/auth/agente" autocomplete="off"><input type="hidden" name="return_to" value="${escapeHtml(returnTo)}"><label for="agente">Agente y máquina</label><input id="agente" name="agente" maxlength="80" placeholder="NeoMBP14" required><label for="token">Token</label><input id="token" name="token" type="password" required><button>Entrar</button></form>${error ? `<div class="error">${escapeHtml(error)}</div>` : ''}</main></body></html>`;
 }
 
-// /auth/agente: GET pinta el formulario; POST comprueba el token (cabecera
-// Authorization: Bearer o campo del formulario — nunca en la URL, que acaba en
-// historiales y logs) y abre la sesión de agente.
+// /auth/agente: GET pinta el formulario. POST comprueba el token (Authorization:
+// Bearer o campo del formulario — nunca en la URL). Bearer bueno → 200 JSON y
+// cookie. Formulario bueno → 303 con la misma cookie. Token malo → 401.
+// #5078/#5075: X-Agente opcional; sin nombre → «agente» (nunca 400).
 async function agente(request, env, site, fetchImpl, waitUntil) {
   const url = new URL(request.url);
   const headers = {...secureHeaders(), 'content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"};
@@ -340,11 +341,28 @@ async function agente(request, env, site, fetchImpl, waitUntil) {
   const origin = request.headers.get('Origin');
   if (origin && origin !== 'null' && origin !== url.origin) return new Response('Origen no válido', {status:403, headers:{'cache-control':'no-store'}});
   const bearer = (request.headers.get('Authorization') || '').match(/^Bearer\s+(\S+)$/i);
-  let form = new FormData();
-  if (!bearer) { try { form = await request.formData(); } catch (_) {} }
-  const given = bearer ? bearer[1] : String(form.get('token') || '');
-  const who = String(request.headers.get('X-Agente') || form.get('agente') || '').replace(/[^\p{L}\p{N} ._·@-]/gu, '').slice(0, 80) || 'sin nombre';
-  const returnTo = safeReturnTo(request.headers.get('X-Return-To') || form.get('return_to') || '/');
+  let formToken = '';
+  let formAgent = '';
+  let formReturn = '';
+  if (!bearer) {
+    const type = String(request.headers.get('content-type') || '').split(';', 1)[0].trim().toLowerCase();
+    if (type === 'application/json') {
+      let body = {};
+      try { body = await request.json(); } catch (_) {}
+      formToken = String(body.token || '');
+      formAgent = String(body.agente || '');
+      formReturn = String(body.return_to || '');
+    } else {
+      let form = new FormData();
+      try { form = await request.formData(); } catch (_) {}
+      formToken = String(form.get('token') || '');
+      formAgent = String(form.get('agente') || '');
+      formReturn = String(form.get('return_to') || '');
+    }
+  }
+  const given = bearer ? bearer[1] : formToken;
+  const who = String(request.headers.get('X-Agente') || formAgent || '').replace(/[^\p{L}\p{N} ._·@-]/gu, '').slice(0, 80) || 'agente';
+  const returnTo = safeReturnTo(request.headers.get('X-Return-To') || formReturn || '/');
   // Se comparan las firmas, no los tokens: mismo largo siempre y tiempo constante.
   const key = env.PERIMETRO_SIGNING_KEY;
   const ok = given.length > 0 && given.length <= 512 &&
@@ -359,9 +377,16 @@ async function agente(request, env, site, fetchImpl, waitUntil) {
       : new Response(agentPage(site, returnTo, 'Token no válido.'), {status:401, headers});
   }
   const token = await createSessionToken(env, site, {email:AGENT_EMAIL, sub:`agente:${who}`}, {agent:await agentFingerprint(env)});
+  const cookie = `${SESSION_COOKIE}=${token}; Path=/; Max-Age=${SESSION_TTL_SECONDS}; HttpOnly; Secure; SameSite=Lax`;
+  if (bearer) {
+    return Response.json({ok:true, email:AGENT_EMAIL, name:who, agent:true}, {
+      status:200,
+      headers:{'cache-control':'no-store', 'referrer-policy':'no-referrer', 'set-cookie':cookie}
+    });
+  }
   return new Response(null, {status:303, headers:{
     location:returnTo, 'cache-control':'no-store', 'referrer-policy':'no-referrer',
-    'set-cookie':`${SESSION_COOKIE}=${token}; Path=/; Max-Age=${SESSION_TTL_SECONDS}; HttpOnly; Secure; SameSite=Lax`
+    'set-cookie':cookie
   }});
 }
 
