@@ -1,8 +1,8 @@
 {
-  "version": "v.04.10.2026.r12.21:02",
+  "version": "v.04.10.2026.r13.22:01",
   "signature": "HuangMacMini · MacMini",
   "machine": "MacMini",
   "agent": "HuangMacMini",
   "deployer": "HuangMacMini",
-  "evidence": "Avatar digital: xpace-shell.js carga el cargador común de admiranext.com (bandera xpaceos apagada) y añade /avatarON, /avatarOFF y /avatar; preguntas al relevo central."
+  "evidence": "Avatar en admira.store: nuevo token de caché del shell (20261004-avatar-2). Con el token antiguo, los navegadores que ya tenían la web abierta seguían 4 h con el xpace-shell.js anterior al avatar (sin cargador ni /avatarON)."
 }
