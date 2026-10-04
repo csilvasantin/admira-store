@@ -157,7 +157,7 @@
     if (parsed.verb === 'avatardigital' || parsed.verb === 'digitalavatar') return true;
     // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF, /avatar [on|off|reset].
     if (parsed.verb === 'avataron' || parsed.verb === 'avataroff') return true;
-    if (parsed.verb === 'avatar') return /^(on|off|reset)?$/i.test(parsed.args);
+    if (parsed.verb === 'avatar') return /^(on|off|reset|good|better|best)?$/i.test(parsed.args);
     if (parsed.verb !== 'cli') return false;
     return /^(ayudante|helper)(?:\s|$)/i.test(parsed.args);
   }
@@ -405,7 +405,7 @@
   // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
   // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
   // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
-  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-1';
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-2';
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
@@ -738,8 +738,8 @@
     registerVerb({
       id: 'avatardigital',
       aliases: ['digitalavatar'],
-      es: 'Muestra u oculta el avatar digital. Sin argumento alterna; on/off lo fija.',
-      en: 'Show or hide the digital avatar. No argument toggles; on/off pins it.',
+      es: 'Alias de /avatar. Sin argumento dice el estado; good, better y best abren el calvo, la chica o Neo.',
+      en: 'Alias of /avatar. No argument shows the status; good, better and best open the bald face, the girl or Neo.',
       run: (args) => shared.avatar('/avatardigital' + (args ? ' ' + args : '')),
     });
     registerVerb({
@@ -756,8 +756,8 @@
     });
     registerVerb({
       id: 'avatar',
-      es: 'Avatar digital: /avatar on|off lo fija; /avatar reset vuelve a lo que diga el proyecto; sin argumento alterna.',
-      en: 'Digital avatar: /avatar on|off pins it; /avatar reset returns to the project setting; no argument toggles.',
+      es: '/avatar good abre el calvo (cara 3D, 52 blendshapes) · /avatar better abre la chica (Ready Player Me, gafas) · /avatar best abre a Neo (MetaHuman; si el host de render está apagado, cae a la chica). /avatar sin nivel dice el estado. /avatarON lo muestra y /avatarOFF lo oculta. /avatar reset vuelve al interruptor del proyecto.',
+      en: '/avatar good opens the bald 3D face (facecap, 52 blendshapes) · /avatar better opens the web girl (Ready Player Me, glasses) · /avatar best opens Neo (MetaHuman; if the render host is off, the girl takes over). /avatar alone shows the status. /avatarON shows it and /avatarOFF hides it. /avatar reset follows the project switch.',
       run: (args) => shared.avatar('/avatar' + (args ? ' ' + args : '')),
     });
     registerVerb({
