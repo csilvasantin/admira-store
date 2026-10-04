@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.04.10.2026.r6.18:27",
+  "version": "v.04.10.2026.r8.18:39",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.28",
+    "version": "2.12.29",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -549,8 +549,8 @@
     ],
     "tier": "better",
     "snap_tiles": 0.25,
-    "es": "En Modo Experto ejecuta /cli distribuir; en inglés, /cli distribute. Distribuir / Distribute abre Better · 16 bits. Selecciona un mueble en la escena o en la lista. Arrastra por el suelo o mueve ¼ de casilla con las flechas; Columna/Fila + Mover aplica un desplazamiento recto. Girar ↶/↷ aplica 90° sobre el origen del mueble. Escala permite 25–300% con −/+, un porcentaje y Enter; mantiene las proporciones de altura y suelo. Se valida la huella completa, el perímetro, otros muebles y el recorrido, incluido el espacio barrido durante el giro. Un intento bloqueado conserva la transformación anterior. El mapa de dureza muestra perímetro y huellas. Mover, girar y escalar se guardan en este navegador y admiten Deshacer (hasta 50 cambios mientras el editor siga abierto). Recargar conserva posición, giro y escala; reinicia Deshacer. Escape cancela un arrastre pendiente o cierra; Mayús + arrastre mueve la cámara. /distribuir off cierra. La simulación se pausa al editar y recupera su estado anterior al cerrar. Elementos montados y bloqueados, incluido el pilar de Starbucks, quedan fijos. El alias anterior /cli distribuit sigue funcionando. Sin herramienta MCP remota nueva. Bloquear/Desbloquear impide o permite mover, girar y escalar el objeto seleccionado. Eliminar retira sólo esa instancia; Deshacer la recupera si su posición sigue libre. Cargar desde PixerIA abre los 60 objetos recientes compatibles con vista previa; Añadir al espacio carga el GLB real en Better o una imagen ilustrada y busca un hueco libre para toda su huella. Un catálogo o archivo inaccesible no guarda una pieza nueva. Bloqueo, eliminación e importación se guardan con el inventario de este Xpacio y admiten Deshacer mientras el editor siga abierto. Recargar mantiene los cambios, pero reinicia Deshacer. La posición de los objetos montados sigue fija aunque se quite su bloqueo; el pilar estructural no se puede desbloquear ni eliminar. Good muestra la imagen del objeto de PixerIA cuando está disponible.",
-    "en": "In Expert mode run /cli distribute (Spanish: /cli distribuir). Distribute / Distribuir opens Better · 16 bits. Select furniture in the scene or list. Drag along the floor or move ¼ tile with arrow keys; Column/Row + Move applies a straight move. Rotate ↶/↷ turns 90° around the furniture origin. Scale accepts 25–300% using −/+, a percentage and Enter; it preserves height-to-floor proportions. The full footprint, room boundary, other furniture and path are checked, including the area swept during rotation. Blocked attempts retain the previous transform. The hardness map shows the perimeter and footprints. Move, rotate and scale save in this browser and support Undo (up to 50 changes while the editor is open). Reload retains position, rotation and scale but clears Undo history. Escape cancels a pending drag or closes; Shift + drag moves the camera. /distribute off closes. Simulation pauses during editing and restores its previous state on exit. Mounted and locked items, including the Starbucks pillar, remain fixed. The legacy /cli distribuit alias still works. No new remote MCP tool. Lock/Unlock prevents or allows moving, rotating and scaling the selected object. Delete removes only that instance; Undo restores it if its original position is still clear. Load from PixerIA opens the 60 recent compatible objects with previews; Add to space loads the actual GLB in Better or an illustrated image and finds free space for its full footprint. An unavailable catalog or asset does not save a new instance. Locks, deletions and imports save with this Xpace inventory and support Undo while the editor stays open. Reload keeps edits but resets Undo. Mounted objects remain fixed even when their user lock is removed; the structural pillar cannot be unlocked or deleted. Good shows the PixerIA object image when available.",
+    "es": "En Modo Experto ejecuta /cli distribuir; en inglés, /cli distribute. Distribuir / Distribute abre Better · 16 bits. Selecciona un mueble en la escena o en la lista. Arrastra por el suelo o mueve ¼ de casilla con las flechas; Columna/Fila + Mover aplica un desplazamiento recto. Girar ↶/↷ aplica 90° sobre el origen del mueble. Escala permite 25–300% con −/+, un porcentaje y Enter; mantiene las proporciones de altura y suelo. Se valida la huella completa, el perímetro, otros muebles y el recorrido, incluido el espacio barrido durante el giro. Un intento bloqueado conserva la transformación anterior. El mapa de dureza muestra perímetro y huellas. Mover, girar y escalar se guardan en este navegador y admiten Deshacer (hasta 50 cambios mientras el editor siga abierto). Recargar conserva posición, giro y escala; reinicia Deshacer. Escape cancela un arrastre pendiente o cierra; Mayús + arrastre mueve la cámara. /distribuir off cierra. La simulación se pausa al editar y recupera su estado anterior al cerrar. Elementos montados y bloqueados, incluido el pilar de Starbucks, quedan fijos. El alias anterior /cli distribuit sigue funcionando. Sin herramienta MCP remota nueva. Bloquear/Desbloquear impide o permite mover, girar y escalar el objeto seleccionado. Eliminar retira sólo esa instancia; Deshacer la recupera si su posición sigue libre. Cargar desde PixerIA abre los 60 objetos recientes compatibles con vista previa; Añadir al espacio carga el GLB real en Better o una imagen ilustrada y busca un hueco libre para toda su huella. Un catálogo o archivo inaccesible no guarda una pieza nueva. Bloqueo, eliminación e importación se guardan con el inventario de este Xpacio y admiten Deshacer mientras el editor siga abierto. Recargar mantiene los cambios, pero reinicia Deshacer. La posición de los objetos montados sigue fija aunque se quite su bloqueo; el pilar estructural no se puede desbloquear ni eliminar. Good muestra la imagen del objeto de PixerIA cuando está disponible. Comprobar paso permite elegir Persona/Unitree y diagnosticar entrada → mueble seleccionado o centro, con puerta abierta virtualmente, el mapa físico compartido y radios 0,72/0,52. La ruta o los bloqueos implicados se recalculan con la vista previa y Deshacer; Seleccionar un bloqueador conserva el destino. No guarda, mueve actores ni activa People. Cafebrería sin portal operativo muestra no disponible. Guía: https://www.xpaceos.com/admira-xp/docs/check-passage.md.",
+    "en": "In Expert mode run /cli distribute (Spanish: /cli distribuir). Distribute / Distribuir opens Better · 16 bits. Select furniture in the scene or list. Drag along the floor or move ¼ tile with arrow keys; Column/Row + Move applies a straight move. Rotate ↶/↷ turns 90° around the furniture origin. Scale accepts 25–300% using −/+, a percentage and Enter; it preserves height-to-floor proportions. The full footprint, room boundary, other furniture and path are checked, including the area swept during rotation. Blocked attempts retain the previous transform. The hardness map shows the perimeter and footprints. Move, rotate and scale save in this browser and support Undo (up to 50 changes while the editor is open). Reload retains position, rotation and scale but clears Undo history. Escape cancels a pending drag or closes; Shift + drag moves the camera. /distribute off closes. Simulation pauses during editing and restores its previous state on exit. Mounted and locked items, including the Starbucks pillar, remain fixed. The legacy /cli distribuit alias still works. No new remote MCP tool. Lock/Unlock prevents or allows moving, rotating and scaling the selected object. Delete removes only that instance; Undo restores it if its original position is still clear. Load from PixerIA opens the 60 recent compatible objects with previews; Add to space loads the actual GLB in Better or an illustrated image and finds free space for its full footprint. An unavailable catalog or asset does not save a new instance. Locks, deletions and imports save with this Xpace inventory and support Undo while the editor stays open. Reload keeps edits but resets Undo. Mounted objects remain fixed even when their user lock is removed; the structural pillar cannot be unlocked or deleted. Good shows the PixerIA object image when available. Check passage selects Person/Unitree and diagnoses entrance → selected furniture or centre, with a virtually open door, shared physical map and radii 0.72/0.52. The route or implicated blockers recompute with previews and Undo; Select a blocker retains the destination. It does not save, move actors or enable People. Cafebrería without an operational portal reports unavailable. Guide: https://www.xpaceos.com/admira-xp/docs/check-passage.md.",
     "guide": "https://www.xpaceos.com/admira-xp/docs/distribuir.md",
     "mcp_control": false,
     "source_ids": "existing layout item IDs",
@@ -608,6 +608,11 @@
       "max_instances": 300,
       "scope": "local-browser-layout",
       "asset_bytes_remote": true
+    },
+    "check_passage": {
+      "help_topic": "check-passage",
+      "guide": "https://www.xpaceos.com/admira-xp/docs/check-passage.md",
+      "scope": "local-browser-diagnostic"
     }
   },
   "weather": {
@@ -794,7 +799,8 @@
     "inventory_breakdown": "https://www.xpaceos.com/admira-xp/docs/inventory-breakdown.md",
     "inventory_finish_compare": "https://www.xpaceos.com/admira-xp/docs/inventory-finishes.md",
     "shelf_product_content": "https://www.xpaceos.com/admira-xp/docs/shelf-product-content.md",
-    "actor_collision": "https://www.xpaceos.com/admira-xp/docs/actor-collision.md"
+    "actor_collision": "https://www.xpaceos.com/admira-xp/docs/actor-collision.md",
+    "check_passage": "https://www.xpaceos.com/admira-xp/docs/check-passage.md"
   },
   "surface_editor": {
     "es": "Inventario → Starbucks PG103 → selecciona una unidad → Editar, en la esquina del modelo. Elige una superficie en la lista o tocando el modelo; cambia el color, importa PNG/JPG/WebP (hasta 20 MB, optimizados a 1024 px) o usa Cuadros, Rayas o Terrazo. Ajusta repetición, rotación, rugosidad y metalizado; compara con el original y usa Deshacer/Rehacer. Aplicar al Xpacio guarda una versión por local + instancia + CI y actualiza sus superficies en Better/Best, también en otra pestaña del mismo navegador y dominio. Histórico permite recuperar un acabado y aplicarlo como nueva versión. Exportar copia JSON conserva imágenes e histórico; importar recupera el acabado actual como una nueva versión, sin reemplazar el histórico local. Guardado local, sin sincronización entre usuarios ni escritura en el histórico patrimonial de Yokup. Good, Matrix y los archivos GLB/Blender originales conservan su vista. El botellero no está colocado en la escena de referencia; editarlo no añade una ubicación. /marca y el shell Experto se conservan; /avatarDigital continúa a cargo de Woz.",
@@ -1544,5 +1550,99 @@
     "tutorial": "https://www.xpaceos.com/help/#actor-collision",
     "pending": "physical robot binding, real Stock and IoT telemetry",
     "new_remote_tools": false
+  },
+  "check_passage": {
+    "id": "check-passage",
+    "status": "implemented",
+    "scope": "local-browser-diagnostic",
+    "es": "Distribuir incorpora Comprobar paso: en Cuerpo elige Persona o Unitree y pulsa Comprobar. Comprueba una ruta completa desde la entrada hasta la zona de acceso del mueble seleccionado, o el centro sin selección, con el mapa físico de Good, Better y Best y radios de 0,72 y 0,52 celdas respectivamente. La puerta se considera abierta virtualmente; la escena no cambia. Paso libre muestra la ruta y el volumen corporal; Paso bloqueado identifica los bloqueos implicados, sin prometer un conjunto mínimo. Seleccionar un mueble bloqueador lo selecciona para editar conservando el destino. Ver mapa de dureza muestra la superposición. La vista previa válida, mover, girar, escalar, guardar, bloquear, eliminar, añadir, Deshacer y cambios de geometría recalculan el diagnóstico; una vista previa inválida conserva la última pose válida. Cerrar limpia la comprobación. No mueve actores ni muebles, no abre la puerta real, no guarda ni activa People. Desde Good/Better/Best se abre el mismo editor Better mediante Mobiliario → Distribuir o /cli distribuir. Cafebrería sin portal operativo muestra que la entrada no está definida; no presenta un falso paso libre. Implementado A: este diagnóstico local. Pendientes B y C: Mostrar ITIL en escena e IoT piloto, además de la vinculación física IoT. Se conservan IDs, marca, historial CLI e inventario. No añade herramienta MCP remota.",
+    "en": "Distribute includes Check passage: under Body choose Person or Unitree and press Check. It checks a complete route from the entrance to the selected furniture access area, or the centre without selection, using the physical map of Good, Better and Best and radii of 0.72 and 0.52 tiles respectively. The door is virtually open; the scene is unchanged. Passage clear shows the route and body volume; Passage blocked identifies the implicated blockers, without promising a minimum set. Select chooses a furniture blocker for editing while retaining the destination. Show hardness map displays the overlay. Valid previews, move, rotate, scale, save, lock, delete, add, Undo and geometry changes recompute the diagnostic; an invalid preview retains the last valid pose. Closing clears the check. It does not move actors or furniture, open the actual door, save or enable People. Good/Better/Best open the same Better editor through Furniture → Distribute or /cli distribute. Cafebrería without an operational portal reports an undefined entrance; it never shows a false clear passage. Delivered A: this local diagnostic. Pending B and C: Show ITIL in scene and an IoT pilot, plus physical IoT binding. IDs, brand, CLI history and inventory are retained. No new remote MCP tool.",
+    "entry": {
+      "es": "Mobiliario → Distribuir → Comprobar paso",
+      "en": "Furniture → Distribute → Check passage"
+    },
+    "editor_tier": "better",
+    "entry_qualities": [
+      "good",
+      "better",
+      "best"
+    ],
+    "actors": {
+      "human": {
+        "es": "Persona",
+        "en": "Person",
+        "radius_floor_tiles": 0.72
+      },
+      "unitree": {
+        "es": "Unitree",
+        "en": "Unitree",
+        "radius_floor_tiles": 0.52
+      }
+    },
+    "controls": {
+      "es": [
+        "Cuerpo",
+        "Comprobar",
+        "Ver mapa de dureza",
+        "Seleccionar"
+      ],
+      "en": [
+        "Body",
+        "Check",
+        "Show hardness map",
+        "Select"
+      ]
+    },
+    "origin": "configured operational entrance",
+    "destination": "selected furniture access area; room centre without selection",
+    "door": "virtually open in a copied diagnostic scene; actual state and opening sweep unchanged",
+    "physics": "same physical colliders and swept body route as actors; no radius reduction by quality",
+    "results": [
+      "clear",
+      "blocked",
+      "unavailable"
+    ],
+    "clear_contract": "complete entry-to-destination swept body route only",
+    "blockers": "validated implicated blockers; sufficient set, no globally minimal-set claim",
+    "blocker_selection": "existing stable furniture item ID; diagnostic destination retained; fixed architecture remains fixed",
+    "recompute": [
+      "valid-preview",
+      "move",
+      "rotate",
+      "scale",
+      "save",
+      "lock",
+      "delete",
+      "add",
+      "undo",
+      "geometry-change"
+    ],
+    "invalid_preview": "retains last valid pose",
+    "close": "clear diagnostic",
+    "cafebreria": "unavailable without passageEntrance; entrance_unconfigured; no invented portal or false clear result",
+    "mutates_scene": false,
+    "saves_layout": false,
+    "activates_people": false,
+    "new_remote_tools": false,
+    "help_topic": "check-passage",
+    "help_aliases": [
+      "comprobar-paso"
+    ],
+    "resource": "xpaceos://help",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/check-passage.md",
+    "tutorial": "https://www.xpaceos.com/help/#check-passage",
+    "pending": [
+      "B: Show ITIL in scene",
+      "C: IoT pilot",
+      "physical robot/IoT binding and measured venue geometry"
+    ],
+    "source": [
+      "admira-xp/scripts/passage-diagnostic.mjs",
+      "admira-xp/scripts/customer-navigation.mjs",
+      "admira-xp/scripts/physical-colliders.mjs",
+      "admira-xp/scripts/distribuit-ui.mjs",
+      "admira-xp/scripts/passage-overlay.mjs"
+    ],
+    "local_api": "diagnosePassage(scene, {actor: human|unitree, targetId})"
   }
 }

@@ -884,6 +884,24 @@
   #topBar .quad-icon{flex-shrink:0}
   #topBar.xtore-session-hud{height:46px!important;min-height:0!important;padding:0 10px!important;flex-wrap:nowrap!important}
 </style>
+<div id="altadisAdapt" hidden>
+  <span class="aa-kicker">Pantallas</span>
+  <button type="button" id="altadisAdaptOrigen" aria-pressed="true">Sin adaptar</button>
+  <button type="button" id="altadisAdaptPixeria" aria-pressed="false">Adaptado con Pixeria</button>
+</div>
+<style id="altadisAdaptStyle">
+  #altadisAdapt{position:fixed;z-index:10000;top:54px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:6px;padding:6px 8px;
+    background:rgba(3,10,16,.94);border:2px solid #ffd866;border-radius:10px;
+    font-family:monospace;box-shadow:0 0 18px rgba(255,216,102,.45)}
+  #altadisAdapt[hidden]{display:none!important}
+  #altadisAdapt .aa-kicker{color:#ffd866;font-size:11px;letter-spacing:.08em;padding:0 6px}
+  #altadisAdapt button{border:1px solid #3a4a55;background:#0c1620;color:#d5dde2;
+    font:700 14px/1.1 monospace;padding:8px 12px;border-radius:8px;cursor:pointer}
+  #altadisAdapt button[aria-pressed="true"]{background:#ffd866;color:#1a1204;border-color:#ffd866}
+  #altadisAdapt.is-pixeria{border-color:#3df0c0}
+  #altadisAdapt.is-pixeria button[aria-pressed="true"]{background:#3df0c0;color:#042018;border-color:#3df0c0}
+</style>
 <style id="quadCanonStyle">
   #topBar .pf-toggles{display:flex;align-items:center;gap:6px;margin-right:8px}
   #topBar .quad-icon{width:26px;height:26px;padding:0;border-radius:7px;font-size:14px;line-height:1;display:grid;place-items:center;background:rgba(2,8,13,.78);border:1px solid rgba(120,243,255,.34) !important;color:var(--xp-cyan);text-transform:none;box-shadow:inset 0 0 12px rgba(120,243,255,.06)}
@@ -1409,7 +1427,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20260924-1339"></script>
+<script src="xtanco-version.js?v=20261004-1639"></script>
 <script src="xtanco-runtime-config.js?r=27"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -3726,6 +3744,10 @@ const DS_MSGS=[
 ];
 
 function renderDSCanvas(ctx,w,h,frame,displayIdx){
+  if(window.altadisAdaptado?.()){
+    window.altadisPintarCreativo(ctx,w,h,displayIdx===0?'ds1':'ds2');
+    return;
+  }
   if(displayIdx===0&&!isStarbucksVenue()&&window.__shelfScreenPreview?.draw(ctx,w,h,'ds1'))return;
   if(window.__xtoreWindowPlayer?.drawScreen?.(ctx,w,h,displayIdx===0?'player':'street'))return;
   if(displayIdx===0&&window.__xtoreWindowPlayer){window.__xtoreWindowPlayer.draw(ctx,w,h);return;}
@@ -3874,7 +3896,8 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
 
 function updateDSCanvases(){
   const demo=window.__xtoreWindowPlayer?.demoActive?.();
-  if(!videoPlaying&&!demo) return;
+  const adapt=!!window.altadisAdaptado?.();
+  if(!videoPlaying&&!demo&&!adapt) return;
   dsFrame++;
   checkDSConditions();
   // Imported images don't auto-end like videos — advance after their duration
@@ -3946,7 +3969,8 @@ function punchDsScreenHoles(){
 
 function updateVideoPosition(){
   const tubeActive=G&&G.admiraTube&&G.admiraTube.active;
-  if((!videoPlaying&&!tubeActive&&!window.__xtoreWindowPlayer?.demoActive?.())||!G||state!==S.GAME){
+  const adapt=!!window.altadisAdaptado?.();
+  if((!videoPlaying&&!tubeActive&&!window.__xtoreWindowPlayer?.demoActive?.()&&!adapt)||!G||state!==S.GAME){
     videoEl.style.display='none';videoEl2.style.display='none';
     syncAdmiraTubeFrames();
     try{ positionGenVideoOverlay(); }catch(_){}
@@ -8541,6 +8565,96 @@ function altadisAplicarPared(esc){
   }catch(_){}
 }
 window.XPACE_ALTADIS={escenas:ALTADIS_ESCENAS,escena:altadisEscena,layout:altadisLayout};
+
+window.__altadisAdapt='origen';
+function altadisLeerAdapt(){
+  let q='';
+  try{ q=(new URLSearchParams(location.search).get('adapt')||'').trim().toLowerCase(); }catch(_){}
+  if(q==='1'||q==='pixeria'||q==='adaptado'||q==='on') return 'pixeria';
+  if(q==='0'||q==='origen'||q==='off') return 'origen';
+  try{
+    const s=sessionStorage.getItem('altadis_adapt');
+    if(s==='pixeria'||s==='origen') return s;
+  }catch(_){}
+  return 'origen';
+}
+window.__altadisAdapt=altadisLeerAdapt();
+function altadisAdaptado(){
+  return !!(altadisEscena() && window.__altadisAdapt==='pixeria');
+}
+window.altadisAdaptado=altadisAdaptado;
+function altadisPintarCreativo(ctx,w,h,slot){
+  ctx.save();
+  const g=ctx.createLinearGradient(0,0,w,h);
+  g.addColorStop(0, slot==='ds2' ? '#063024' : '#041820');
+  g.addColorStop(1, '#0c4034');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#3df0c0';
+  ctx.fillRect(0,0,w,Math.max(3,h*0.045));
+  ctx.fillRect(0,h-Math.max(3,h*0.045),w,Math.max(3,h*0.045));
+  const n=6;
+  for(let i=0;i<n;i++){
+    const bw=Math.max(4,(w-16)/n-3);
+    const x=8+i*((w-16)/n);
+    const bh=Math.max(8,h*0.16)+(i%3)*Math.max(4,h*0.06);
+    ctx.fillStyle=i%2?'#ffd866':'#7af0d2';
+    ctx.fillRect(x, h*0.48, bw, bh);
+  }
+  ctx.textAlign='center';
+  ctx.textBaseline='alphabetic';
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold '+(w>=140?15:10)+'px monospace';
+  ctx.fillText('PIXERIA', w/2, h*0.28);
+  ctx.fillStyle='#3df0c0';
+  ctx.font='bold '+(w>=140?7:6)+'px monospace';
+  ctx.fillText('CONTENIDO ADAPTADO', w/2, h*0.28+(w>=140?12:9));
+  ctx.fillStyle='#ffd866';
+  ctx.font=(w>=140?6:5)+'px monospace';
+  const etiqueta=slot==='ds1'?'PARED 1':slot==='ds2'?'PARED 2':'ESTANCO';
+  let id='';
+  try{ id=(altadisEscena()&&altadisEscena().id)||''; }catch(_){}
+  ctx.fillText((etiqueta+' · '+(id||'ALTADIS')).toUpperCase().slice(0,28), w/2, h-8);
+  ctx.restore();
+}
+window.altadisPintarCreativo=altadisPintarCreativo;
+function altadisMontarInterruptor(){
+  const bar=document.getElementById('altadisAdapt');
+  if(!bar) return;
+  if(!altadisEscena()){ bar.hidden=true; return; }
+  bar.hidden=false;
+  const origen=document.getElementById('altadisAdaptOrigen');
+  const pix=document.getElementById('altadisAdaptPixeria');
+  const pintar=()=>{
+    const on=window.__altadisAdapt==='pixeria';
+    if(origen) origen.setAttribute('aria-pressed', on?'false':'true');
+    if(pix) pix.setAttribute('aria-pressed', on?'true':'false');
+    bar.classList.toggle('is-pixeria', on);
+  };
+  const set=(modo)=>{
+    window.__altadisAdapt=modo==='pixeria'?'pixeria':'origen';
+    try{ sessionStorage.setItem('altadis_adapt', window.__altadisAdapt); }catch(_){}
+    const url=new URL(location.href);
+    if(window.__altadisAdapt==='pixeria') url.searchParams.set('adapt','pixeria');
+    else url.searchParams.delete('adapt');
+    try{ history.replaceState(null,'',url.pathname+url.search+url.hash); }catch(_){}
+    pintar();
+  };
+  if(origen && !origen.dataset.wired){
+    origen.dataset.wired='1';
+    origen.addEventListener('click', ()=>set('origen'));
+  }
+  if(pix && !pix.dataset.wired){
+    pix.dataset.wired='1';
+    pix.addEventListener('click', ()=>set('pixeria'));
+  }
+  pintar();
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', altadisMontarInterruptor);
+else altadisMontarInterruptor();
+
+window.XPACE_ALTADIS.adaptado=altadisAdaptado;
+
 
 // Default staff home positions (used when no custom positions saved)
 const DEFAULT_STAFF_POS=[
@@ -21376,6 +21490,11 @@ function activeLedMessages(){
 }
 
 function _getLedParams(){
+  if(window.altadisAdaptado?.()){
+    const fullMsg='   ◆   PIXERIA   ◆   CONTENIDO ADAPTADO AL ESTANCO   ◆   PIXERIA   ◆   ';
+    cx.font='bold 12px monospace';
+    return {fullMsg, msgW:cx.measureText(fullMsg).width};
+  }
   const msgs=activeLedMessages();
   const comunicado=(G&&G.comunicadoMsg)
     ? `  📢  COMUNICADO: ${G.comunicadoMsg.toUpperCase()}  📢  `
@@ -21783,6 +21902,13 @@ function drawAltadisTFT(centerCol, yPx, colsWide){
   cx.setTransform(ax,ay,bx,by,tl.x,tl.y);
   const cX=vW/2, cY=vH/2;
   const sH=vH;
+
+  if(window.altadisAdaptado?.()){
+    window.altadisPintarCreativo(cx,vW,vH,'tft');
+    cx.restore();
+    cx.restore();
+    return;
+  }
 
   if(window.__xtoreWindowPlayer?.drawScreen?.(cx,vW,vH,'statistics')){
     // Demo owns this surface ahead of simulated campaigns and camera effects.
@@ -27285,7 +27411,7 @@ function loop(){
   try{updateMobileSkipButton();}catch(e){}
   try{updateEraVerticalDock();}catch(e){}
   try{syncHomeMusic();}catch(e){}
-  try{if(videoPlaying||window.__xtoreWindowPlayer?.demoActive?.()){updateVideoPosition();updateDSCanvases();}}catch(e){}
+  try{if(videoPlaying||window.__xtoreWindowPlayer?.demoActive?.()||window.altadisAdaptado?.()){updateVideoPosition();updateDSCanvases();}}catch(e){}
   try{updateLiveMocap();}catch(e){}
 
   // No auto-start from selection screens:
@@ -27391,7 +27517,7 @@ window.__xtancoFurnitureEditor={
     const layout=(store?.retained(space,shopLayout)||shopLayout).map(item=>({...cloneLayoutData(item),mount:getItemMount(item.type),inventoryHidden:store?.visible(space,item.id)===false,nativeFixed:item.id==='sb-pillar',locked:!!item.locked||item.id==='sb-pillar'}));
     const owned=new Set();
     for(const item of shopLayout){if(['rug','led','tft','aroma'].includes(item.type))continue;const fp=getFurnitureFootprint(item);for(let c=fp.col;c<fp.col+fp.w;c++)for(let r=fp.row;r<fp.row+fp.d;r++)owned.add(c+','+r);}
-    return {roomId,active:source.active&&!source.moving,cols:ISO.cols,rows:ISO.rows,layout,footprints:FURNITURE_SIZE,hardness:{fixed:source.hardness.blocked.filter(cell=>!owned.has(cell))}};
+    return {roomId,active:source.active&&!source.moving,venue:source.venue,cols:ISO.cols,rows:ISO.rows,doorRow:source.hardness.doorRow,doorHalfWidth:source.hardness.doorHalfWidth,outsideDepth:source.hardness.outsideDepth,doorOpen:source.hardness.doorOpen,colliders:cloneLayoutData(source.hardness.colliders||[]),layout,footprints:FURNITURE_SIZE,hardness:{fixed:source.hardness.blocked.filter(cell=>!owned.has(cell))}};
   },
   begin(){
     const scene=this.read();if(!scene.active)throw Error('room');
@@ -31584,7 +31710,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=actor-collision-20261004-1');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=check-passage-20261004-1');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -35984,7 +36110,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
-<link rel="stylesheet" href="scripts/distribuit.css?v=distribuir-3">
+<link rel="stylesheet" href="scripts/distribuit.css?v=check-passage-20261004-1">
 <link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
 <link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
@@ -35995,7 +36121,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=actor-collision-20261004-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=check-passage-20261004-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

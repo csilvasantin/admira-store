@@ -1,5 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {inventoryName,inventoryCategory,inventoryCaption,localizedRow,cafeRecordName} from './labels.mjs';
+
+test('the passage editor uses the canonical pillar label without changing its Spanish inventory name',()=>{
+ assert.equal(inventoryName('Pilar','en'),'Pillar');assert.equal(inventoryName('Pilar','es'),'Pilar');
+ assert.equal(inventoryName('Pilar de Carlos','en'),'Pilar de Carlos');
+});
 import {inventoryRows} from './workspace-model.mjs';import {numberedCatalog} from './model.mjs';
 const json=name=>JSON.parse(fs.readFileSync(new URL(name,import.meta.url))),catalog=json('./catalog.json'),registry=json('./registry.json'),assets=numberedCatalog(catalog.native,json('./pixeria-cache.json').items,registry);
 test('all authored catalogue, layout and café names have English presentation; canonical data remains Spanish',()=>{

@@ -43,3 +43,11 @@ FLT-101352 (2-oct) los mandaba a la escena cafetería rotulada con el nombre del
 EN: each of the 9 `altadis_bcn` points opens the tobacco-shop scene with its own layout,
 wall colour and save slot (`xtanco_altadis-bcn-NNN`). Source `ALTADIS_ESCENAS` in
 `admira-xp/index.html`, runtime `window.XPACE_ALTADIS`.
+
+## Interruptor de pantallas
+
+En cualquier estanco `?loc=altadis-bcn-NNN` hay un interruptor fijo:
+**Sin adaptar** deja el contenido que ya tenía la sala.
+**Adaptado con Pixeria** cambia la pantalla del fondo, las dos de la pared y la cinta de letreros
+por un creativo de Pixeria (geometría y texto, sin marcas ajenas).
+`?adapt=pixeria` abre ya en la posición adaptada. `?adapt=0` vuelve a Sin adaptar.

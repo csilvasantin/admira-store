@@ -10,6 +10,14 @@ En Modo Experto ejecuta /cli distribuir; en inglés, /cli distribute. Distribuir
 4. Bloquear/Desbloquear protege una pieza. Eliminar la retira; Deshacer puede recuperarla. Cargar desde PixerIA → elige un objeto → Añadir al espacio. Los modelos 3D y las imágenes se comprueban antes de guardar. Cada cambio válido se guarda. Deshacer restaura movimiento, giro o escala. Si el espacio cambia durante el guardado, se rechaza; si falla el almacenamiento, se recupera la distribución anterior.
 5. Pulsa × o `/distribuir off`. Si estabas jugando, se reanuda; si estabas en pausa, permanece en pausa.
 
+### Comprobar paso
+
+Distribuir incorpora Comprobar paso: en Cuerpo elige Persona o Unitree y pulsa Comprobar. Comprueba una ruta completa desde la entrada hasta la zona de acceso del mueble seleccionado, o el centro sin selección, con el mapa físico de Good, Better y Best y radios de 0,72 y 0,52 celdas respectivamente. La puerta se considera abierta virtualmente; la escena no cambia. Paso libre muestra la ruta y el volumen corporal; Paso bloqueado identifica los bloqueos implicados, sin prometer un conjunto mínimo. Seleccionar un mueble bloqueador lo selecciona para editar conservando el destino. Ver mapa de dureza muestra la superposición. La vista previa válida, mover, girar, escalar, guardar, bloquear, eliminar, añadir, Deshacer y cambios de geometría recalculan el diagnóstico; una vista previa inválida conserva la última pose válida. Cerrar limpia la comprobación. No mueve actores ni muebles, no abre la puerta real, no guarda ni activa People. Desde Good/Better/Best se abre el mismo editor Better mediante Mobiliario → Distribuir o /cli distribuir. Cafebrería sin portal operativo muestra que la entrada no está definida; no presenta un falso paso libre. Implementado A: este diagnóstico local. Pendientes B y C: Mostrar ITIL en escena e IoT piloto, además de la vinculación física IoT. Se conservan IDs, marca, historial CLI e inventario. No añade herramienta MCP remota.
+
+Experto → Mobiliario → Distribuir → selecciona el destino, o usa el centro → Cuerpo: Persona/Unitree → Comprobar → Ver mapa de dureza → consulta Paso libre o Paso bloqueado → Seleccionar un bloqueador → edita si lo deseas → Deshacer recalcula el resultado.
+
+[Guía y contrato](check-passage.md) · [Tutorial](https://www.xpaceos.com/help/#check-passage).
+
 ## English
 
 In Expert mode run /cli distribute (Spanish: /cli distribuir). Distribute / Distribuir opens Better · 16 bits. Select furniture in the scene or list. Drag along the floor or move ¼ tile with arrow keys; Column/Row + Move applies a straight move. Rotate ↶/↷ turns 90° around the furniture origin. Scale accepts 25–300% using −/+, a percentage and Enter; it preserves height-to-floor proportions. The full footprint, room boundary, other furniture and path are checked, including the area swept during rotation. Blocked attempts retain the previous transform. The hardness map shows the perimeter and footprints. Move, rotate and scale save in this browser and support Undo (up to 50 changes while the editor is open). Reload retains position, rotation and scale but clears Undo history. Escape cancels a pending drag or closes; Shift + drag moves the camera. /distribute off closes. Simulation pauses during editing and restores its previous state on exit. Mounted and locked items, including the Starbucks pillar, remain fixed. The legacy /cli distribuit alias still works. No new remote MCP tool. Lock/Unlock prevents or allows moving, rotating and scaling the selected object. Delete removes only that instance; Undo restores it if its original position is still clear. Load from PixerIA opens the 60 recent compatible objects with previews; Add to space loads the actual GLB in Better or an illustrated image and finds free space for its full footprint. An unavailable catalog or asset does not save a new instance. Locks, deletions and imports save with this Xpace inventory and support Undo while the editor stays open. Reload keeps edits but resets Undo. Mounted objects remain fixed even when their user lock is removed; the structural pillar cannot be unlocked or deleted. Good shows the PixerIA object image when available.
@@ -19,6 +27,14 @@ In Expert mode run /cli distribute (Spanish: /cli distribuir). Distribute / Dist
 3. Drag, rotate 90° with ↶/↷ or change Scale. Rotation uses the layout origin; move into a clear area first when needed. Scaling multiplies floor and height dimensions by the same factor, preserving the original proportions.
 4. Lock/Unlock protects an instance. Delete removes it; Undo can restore it. Load from PixerIA → choose an object → Add to space. 3D models and images are checked before saving. Each valid change saves. Undo restores a move, rotation or scale. A changed venue or source transform rejects stale saves; storage failures roll back the layout.
 5. Close with × or `/distribute off`. Running simulation resumes; paused simulation remains paused.
+
+### Check passage
+
+Distribute includes Check passage: under Body choose Person or Unitree and press Check. It checks a complete route from the entrance to the selected furniture access area, or the centre without selection, using the physical map of Good, Better and Best and radii of 0.72 and 0.52 tiles respectively. The door is virtually open; the scene is unchanged. Passage clear shows the route and body volume; Passage blocked identifies the implicated blockers, without promising a minimum set. Select chooses a furniture blocker for editing while retaining the destination. Show hardness map displays the overlay. Valid previews, move, rotate, scale, save, lock, delete, add, Undo and geometry changes recompute the diagnostic; an invalid preview retains the last valid pose. Closing clears the check. It does not move actors or furniture, open the actual door, save or enable People. Good/Better/Best open the same Better editor through Furniture → Distribute or /cli distribute. Cafebrería without an operational portal reports an undefined entrance; it never shows a false clear passage. Delivered A: this local diagnostic. Pending B and C: Show ITIL in scene and an IoT pilot, plus physical IoT binding. IDs, brand, CLI history and inventory are retained. No new remote MCP tool.
+
+Expert → Furniture → Distribute → select the destination, or use the centre → Body: Person/Unitree → Check → Show hardness map → read Passage clear or Passage blocked → Select a blocker → edit if desired → Undo recomputes the result.
+
+[Guide and contract](check-passage.md) · [Tutorial](https://www.xpaceos.com/help/#check-passage).
 
 ## Shared contract / Contrato compartido
 
@@ -32,8 +48,8 @@ In Expert mode run /cli distribute (Spanish: /cli distribuir). Distribute / Dist
 - Starbucks Better/Best groups and Good parts share the same origin, rotation, mirror and scales. Starbucks storage remains separate (`starbucks_pg103_v1`). Its scene is an interpretive reconstruction, not a metric floor plan.
 - Translation reuses models; shape changes rebuild owned geometry without starting a second simulation. Closing/disposal releases editor inputs and restores the previous simulation state.
 - Dependencies: WebGL, Pointer Events and writable localStorage.
-- Delivered: selection, drag, quarter-tile moves, coordinate moves, rotation, proportional scale, lock/unlock, instance deletion, live PixerIA catalog import, collision/path checks, map, save, undo, close, ES/EN help.
-- Pending: one-step replacement, cross-browser/shared MCP editing and a measured 3D survey.
+- Delivered: local Person/Unitree Check passage diagnostic with virtual door opening, complete route/blockers and preview/Undo recomputation; selection, drag, quarter-tile moves, coordinate moves, rotation, proportional scale, lock/unlock, instance deletion, live PixerIA catalog import, collision/path checks, map, save, undo, close, ES/EN help.
+- Pending: B Show ITIL in scene; C IoT pilot; one-step replacement, cross-browser/shared MCP editing and a measured 3D survey.
 
 ## Verification / Verificación
 

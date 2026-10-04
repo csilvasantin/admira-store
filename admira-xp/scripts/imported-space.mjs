@@ -53,7 +53,7 @@ export function createImportedBridge({roomId,cols,rows,layout,storage=globalThis
     }
   }catch{}
   const structuralColliders=original.filter(i=>i.navigationSolid===true).map(i=>({...furnitureBounds(i),id:'architecture:'+i.id}));
-  const read=()=>({roomId,cols,rows,active,layout:structuredClone(state.layout).map(i=>({...i,label:state.records?.[i.id]?.nombre||i.label})),colliders:structuredClone(structuralColliders),hardness:{fixed:[]},footprints:{}});
+  const read=()=>({roomId,cols,rows,active,imported:true,layout:structuredClone(state.layout).map(i=>({...i,label:state.records?.[i.id]?.nombre||i.label})),colliders:structuredClone(structuralColliders),hardness:{fixed:[]},footprints:{}});
   const persist=next=>{storage.setItem(key,JSON.stringify({...next,version:1}));state=next;onSave(read(),state.records);};
   return {key,read,begin:()=>Symbol(roomId),end:()=>{},
     async commit(request){

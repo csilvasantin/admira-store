@@ -5,6 +5,8 @@ import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-p
 import {inventoryIdFor} from './furniture-asset.mjs?v=cafebreria-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
+import {appendPassageOverlay} from './passage-overlay.mjs?v=check-passage-1';
+import {physicalColliders} from './physical-colliders.mjs?v=actor-collision-20261004-1';
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 /** Presentation only: no simulation, media owner or autonomous animation loop. */
@@ -164,9 +166,20 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   function clearOverlay(){for(const child of [...overlay.children]){child.geometry.dispose();child.material.dispose();overlay.remove(child);}}
   function setEditorOverlay(value){
     clearOverlay();if(!value)return;
-    const {scene,selectedId,showMap,candidate,valid}=value;
+    const {scene,selectedId,showMap,candidate,valid,passage}=value;
     function outline(b,color){const g=new T.BufferGeometry().setFromPoints([new T.Vector3(b.minCol,.075,b.minRow),new T.Vector3(b.maxCol,.075,b.minRow),new T.Vector3(b.maxCol,.075,b.maxRow),new T.Vector3(b.minCol,.075,b.maxRow),new T.Vector3(b.minCol,.075,b.minRow)]);const m=new T.LineBasicMaterial({color,transparent:true,opacity:.8,depthTest:false});const line=new T.Line(g,m);line.renderOrder=15;overlay.add(line);}
-    if(showMap){outline({minCol:0,minRow:0,maxCol:scene.cols,maxRow:scene.rows},'#86e3bd');for(const item of scene.layout)if(isSolidFurniture(item)&&String(item.id)!==String(selectedId))outline(furnitureBounds(item,scene.footprints),'#ea9e77');for(const cell of scene.hardness?.fixed||[]){const [col,row]=cell.split(',').map(Number);outline({minCol:col,maxCol:col+1,minRow:row,maxRow:row+1},'#ea9e77');}}
+    if(showMap){
+      outline({minCol:0,minRow:0,maxCol:scene.cols,maxRow:scene.rows},'#86e3bd');
+      for(const item of scene.layout)if(isSolidFurniture({...item,hidden:false})&&String(item.id)!==String(selectedId))outline(furnitureBounds(item,scene.footprints),'#ea9e77');
+      for(const cell of scene.hardness?.fixed||[]){const [col,row]=cell.split(',').map(Number);outline({minCol:col,maxCol:col+1,minRow:row,maxRow:row+1},'#ea9e77');}
+      const mapScene=passage?.doorMode==='open'?{...scene,doorOpen:1}:scene;
+      const supplied=[...(scene.colliders||[]),...(scene.hardness?.colliders||[])].filter(c=>{
+        const id=String(c.id),structural=id.startsWith('architecture:')||c.kind==='architecture'||c.kind==='hardness';
+        return id!=='architecture:door-leaf'&&(structural||(!id.startsWith('geometry:')&&c.itemId==null&&c.kind!=='furniture'&&!scene.layout.some(item=>String(item.id)===id)));
+      });
+      for(const collider of supplied.concat(physicalColliders(mapScene)))outline(collider,'#ea9e77');
+      appendPassageOverlay(overlay,passage);
+    }
     const item=scene.layout.find(i=>String(i.id)===String(selectedId));
     if(item){const b=furnitureBounds({...item,...candidate},scene.footprints);outline(b,valid===false?'#ff6457':'#70f2b4');const g=new T.PlaneGeometry(b.maxCol-b.minCol,b.maxRow-b.minRow),m=new T.MeshBasicMaterial({color:valid===false?'#ff6457':'#70f2b4',transparent:true,opacity:.2,depthTest:false,depthWrite:false,side:T.DoubleSide}),mesh=new T.Mesh(g,m);mesh.rotation.x=-Math.PI/2;mesh.position.set((b.minCol+b.maxCol)/2,.07,(b.minRow+b.maxRow)/2);mesh.renderOrder=14;overlay.add(mesh);}
   }

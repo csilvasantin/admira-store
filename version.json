@@ -1,11 +1,15 @@
 {
-  "version": "v.04.10.2026.r6.18:27",
-  "deployedAt": "2026-10-04T16:32:17Z",
-  "deployer": "MorfeoMacMini",
+  "version": "v.04.10.2026.r8.18:39",
+  "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
-  "signature": "MorfeoMacMini · MacMini",
-  "git": "de63bd13aad1d9ca9e45db49211a924eb84df9f9",
-  "gitShort": "de63bd1",
-  "gitFull": "de63bd13aad1d9ca9e45db49211a924eb84df9f9",
-  "dirty": false
+  "agent": "OraculoMacMini",
+  "deployer": "OraculoMacMini",
+  "evidence": "Comprobar paso Persona/Unitree dentro de Distribuir: física compartida, puerta virtual, rutas completas, bloqueos, recálculo, ayuda ES/EN y MCP 2.12.29; Altadis y catálogo actuales conservados.",
+  "deployedAt": "2026-10-04T16:41:31.134441+00:00",
+  "git": "8fc6a19f26694c5b49f3c0e11d3aa3b65bf50006",
+  "gitFull": "8fc6a19f26694c5b49f3c0e11d3aa3b65bf50006",
+  "gitShort": "8fc6a19",
+  "dirty": false,
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }

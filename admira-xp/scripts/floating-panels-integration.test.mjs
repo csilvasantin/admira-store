@@ -22,7 +22,7 @@ test('Distribuir movement uses scene bounds and its own close/dispose lifecycle'
   assert.match(source,/attachFloatingPanel\(host,\{[^\n]*bounds:stage/);
   assert.match(source,/closeButton:host\.querySelector\('\[data-action="close"\]'\)/);
   assert.match(source,/host\.querySelector\('\[data-action="close"\]'\)\.onclick=onClose/);
-  assert.match(source,/dispose\(\)\{floating\.dispose\(\);canvas\.setAttribute/);
+  assert.match(source,/dispose\(\)\{[^}]*floating\.dispose\(\);canvas\.setAttribute/);
   assert.doesNotMatch(source,/menu:/,'Life owns the persistent opener after this editor has been disposed');
 });
 

@@ -1,6 +1,8 @@
 {
-  "version": "v.04.10.2026.r6.18:27",
-  "deployer": "MorfeoMacMini",
+  "version": "v.04.10.2026.r8.18:39",
+  "signature": "OraculoMacMini · MacMini",
   "machine": "MacMini",
-  "signature": "MorfeoMacMini · MacMini"
+  "agent": "OraculoMacMini",
+  "deployer": "OraculoMacMini",
+  "evidence": "Comprobar paso Persona/Unitree dentro de Distribuir: física compartida, puerta virtual, rutas completas, bloqueos, recálculo, ayuda ES/EN y MCP 2.12.29; Altadis y catálogo actuales conservados."
 }

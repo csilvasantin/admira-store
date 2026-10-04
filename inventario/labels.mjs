@@ -1,5 +1,6 @@
 // Presentation only: canonical records, IDs and exported data remain unchanged.
 const names={
+ "Pilar": "Pillar",
  "Mostrador": "Counter",
  "Estantería": "Shelf",
  "Botellero": "Bottle rack",
