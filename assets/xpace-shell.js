@@ -456,7 +456,12 @@
     return avatarPromise;
   }
   Object.assign(shared, {
-    avatar: (text) => cargarAvatar().then(A => (A ? A.handle(text) : T('Avatar digital no disponible', 'Digital avatar unavailable'))),
+    // /cli y /cli good|better|best (como en admira.app) son /avatar y /avatar <nivel>; también en el gemelo.
+    avatar: (text) => {
+      const p = parseCommand(text);
+      if (p && p.verb === 'cli' && /^(good|better|best)?$/i.test(p.args)) text = ('/avatar ' + p.args.toLowerCase()).trim();
+      return cargarAvatar().then(A => (A ? A.handle(text) : T('Avatar digital no disponible', 'Digital avatar unavailable')));
+    },
   });
 
   // El gemelo trae la barra en línea: no se duplica nada (solo queda el API y la marca).
@@ -699,7 +704,7 @@
   // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
-    const V = '20261004-experto-store-1', BASE = 'https://www.admiranext.com/suite/experto';
+    const V = '20261004-experto-store-2', BASE = 'https://www.admiranext.com/suite/experto';
     const css = doc.createElement('link');
     css.rel = 'stylesheet'; css.href = BASE + '.css?v=' + V;
     doc.head.appendChild(css);
