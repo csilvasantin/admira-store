@@ -1,4 +1,4 @@
-import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=distribuir-3';
+import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=actor-collision-20261004-1';
 import {visitorProfilesForGame} from './visitor-profiles.mjs?v=visitors-24';
 import {pixeriaPersonaStyle} from './pixeria-personas.mjs?v=anon-demo-v1';
 

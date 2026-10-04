@@ -28,3 +28,11 @@ Corriendo sobre **Lenovo edge** + **Nvidia GPU**.
 ## Editar
 
 Es un único `index.html`. Edita y haz push — GitHub Pages publica en menos de 1 minuto.
+
+## Personas y robots / People and robots
+
+Good, Better y Best comparten mapa físico, cuerpo completo y recorridos barridos. Un paso cerrado produce espera; People sigue OFF por defecto. Matrix aplica el mismo contrato a sus actores heredados, conservando la fotografía y la proyección. La conexión con robots físicos, stock y telemetría IoT sigue pendiente.
+
+Good, Better and Best share physical geometry, full-body clearance and swept routes. Closed passages produce waiting; People remains OFF by default. Matrix applies the same contract to legacy actors while retaining its photograph and projection. Physical robot, stock and IoT telemetry binding remains pending.
+
+[Guía y contrato ES/EN](admira-xp/docs/actor-collision.md) · [Tutorial](https://www.xpaceos.com/help/#actor-collision) · MCP help topic `actor-collision`.

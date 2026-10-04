@@ -1,4 +1,4 @@
-import {attachFloatingPanel} from '../../admira-xp/scripts/floating-panels.mjs?v=20261003-expert-1';
+import {attachFloatingPanel} from '../../admira-xp/scripts/floating-panels.mjs?v=inventory-lang-20261004-1';
 // Estantería de libros + «libro del día» del Xpace Cafetería Alsea (encargo #4397 · FLT-101048).
 // Fuente viva: índice público del Stock de Pixeria (type=capsula con etiqueta o enlace Blinkist).
 // La rutina diaria publica cápsulas nuevas; aquí se relee el índice cada 5 min y al volver a la pestaña.

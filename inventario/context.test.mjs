@@ -27,6 +27,6 @@ test('ITIL retains origin, venue, language and brand; return links retain the sa
 });
 test('merged Inventory/ITIL opens the bottom inventory and displays unit count without navigation',()=>{
  const html=fs.readFileSync(new URL('../admira-xp/index.html',import.meta.url),'utf8'),fn=html.slice(html.indexOf('  function makeInventory(){'),html.indexOf('  function mirror(){',html.indexOf('  function makeInventory(){')));
- let click,category,button;const ctx={lang:'es',document:{createElement:()=>button={dataset:{},addEventListener:(name,fn)=>{click=fn;}}},window:{XpaceInventoryUI:{count:19,open:key=>category=key}}};
- vm.runInNewContext(fn+'makeInventory();',ctx);click();assert.equal(category,'inventory');assert.match(button.innerHTML,/19 items/);
+ let click,category,button;const ctx={lang:'es',document:{documentElement:{lang:'es'},createElement:()=>button={dataset:{},addEventListener:(name,fn)=>{click=fn;}}},window:{XpaceInventoryUI:{count:19,open:key=>category=key}}};
+ vm.runInNewContext(fn+'makeInventory();',ctx);click();assert.equal(category,'inventory');assert.match(button.innerHTML,/19 elementos/);
 });

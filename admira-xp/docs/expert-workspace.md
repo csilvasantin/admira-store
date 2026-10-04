@@ -14,3 +14,11 @@ EN: Expert mode shares the Starbucks pattern in Cafebrería and common-shell pag
 - Persistence: xpace_expert_columns_v1 (shared native/common column ratios); xpaceos_expert_history_v1 (existing CLI history); xpaceos_shell_size_v1:expert (height). No new remote tool or physical publication.
 - Local integration: https://www.admira.store/xpacios/cafebreria/ — inventory/editor actions use the existing scene bridge and its instance IDs. External full-screen applications with their own shell retain their integration.
 - Verification: node --test assets/expert-workspace.test.mjs admira-xp/scripts/floating-panels.test.mjs mcp/quadratic-resize.test.mjs. Browser: local editor docking, Inventory/ITIL selection, detach/close, CLI Enter, column and height keyboard resize.
+
+## Idioma ITIL / ITIL language
+
+Inventario/ITIL sigue el idioma activo del Xpacio: en castellano muestra Inventario/ITIL y elementos; en inglés, Inventory/ITIL e items. Nombres estándar de mobiliario e IoT, categorías, búsqueda, modelo y detalle se presentan en ese idioma. Cambiar el idioma actualiza las columnas sin perder la selección ni el texto de búsqueda. Cafebrería traduce sus fichas, campos y acciones; conserva las ediciones sin guardar. Los nombres personalizados, identificadores, códigos ITIL, fichas guardadas y exportaciones JSON/CSV conservan sus datos originales. La traducción es de presentación. Continúan las diez subcategorías y el inventario propio de cada Xpacio.
+
+Inventory/ITIL follows the active Xpace language: Spanish displays Inventario/ITIL and elementos; English displays Inventory/ITIL and items. Standard furniture and IoT names, categories, search, model and details use that language. Changing language updates the columns without losing selection or search text. Cafebrería translates records, fields and actions while retaining unsaved edits. Custom names, identifiers, ITIL codes, saved records and JSON/CSV exports retain their original data. Translation affects presentation. The ten subcategories and each Xpace’s own inventory remain available.
+
+Contrato / Contract: `inventory-language.md`.

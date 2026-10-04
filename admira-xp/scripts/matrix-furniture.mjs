@@ -1,5 +1,5 @@
-import {createLifeSnapshot} from './life-snapshot.mjs?v=20261003-people-off';
-import {buildCustomerNavigation} from './customer-navigation.mjs?v=customer-motion-1';
+import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
+import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collision-20261004-1';
 import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43-objects-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_ARCHITECTURE_DETAILS,photoPieceFor} from './matrix-photo-pieces.mjs?v=customer-motion-1';

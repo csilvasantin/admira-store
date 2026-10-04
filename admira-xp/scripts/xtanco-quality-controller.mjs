@@ -1,4 +1,4 @@
-import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs';
+import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs?v=actor-collision-20261004-1';
 
 // A visual layer of the running shop. It never handles input, owns a clock,
 // creates a player or advances the simulation.

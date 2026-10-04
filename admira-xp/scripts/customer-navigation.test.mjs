@@ -2,7 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {buildCustomerNavigation} from './customer-navigation.mjs';
+import {buildCustomerNavigation as buildPhysicalCustomerNavigation} from './customer-navigation.mjs';
+
+// These algorithm/regression fixtures deliberately use a small body to keep
+// their half-tile passages useful. Real rendered bodies use the shared default
+// and have separate adversarial coverage in customer-physical-navigation.test.
+const buildCustomerNavigation=(scene,options={})=>buildPhysicalCustomerNavigation(scene,{radius:.24,...options});
 
 const table={id:'table',type:'custom',col:3,row:2,fp:[2,2],sx:1,sy:1};
 const scene={cols:10,rows:8,layout:[table]};
@@ -82,10 +87,15 @@ function extractFunction(name){
   for(;braces;at++){if(html[at]==='{')braces++;else if(html[at]==='}')braces--;}
   return html.slice(start,at);
 }
-function simulation(layout){
+function simulation(layout,{radius=.24,seed=2026}={}){
   const helperStart=html.indexOf("let customerNavigationCache="),helperEnd=html.indexOf('// ── A* PATHFINDING',helperStart);
   const loopStart=html.indexOf("  for(let i=G.custs.length-1;i>=0;i--){"),loopEnd=html.indexOf('  // ── MEDICIÓN PLV',loopStart);
-  const sandbox={window:{XpaceCustomerNavigation:{buildCustomerNavigation}},console,Math,Object,Number,WeakMap,JSON};
+  // This legacy route fixture has a 2.3-tile opening and a valid first exit
+  // stop beyond its totem. The separate physical suite checks that the actual
+  // rendered body and unmodified doorway remain blocked when they do not fit.
+  let randomState=seed>>>0;
+  const seededMath=Object.assign(Object.create(Math),{random:()=>((randomState=Math.imul(randomState,1664525)+1013904223>>>0)/4294967296)});
+  const sandbox={window:{XpaceCustomerNavigation:{buildCustomerNavigation:(scene,options)=>buildPhysicalCustomerNavigation({...scene,doorHalfWidth:1.15},{...options,radius})}},console,Math:seededMath,Object,Number,WeakMap,JSON};
   vm.createContext(sandbox);
   vm.runInContext(`
     const ISO={cols:14,rows:8,ox:270,oy:185,tileW:80,tileH:28};
@@ -104,18 +114,18 @@ function simulation(layout){
     const getCustomerRoamAnchor=()=>null,isNearDoorSensor=()=>true;
     const getTabletPos=()=>({x:0,y:0}),addFloat=()=>{};
     function toIso(col,row){return{x:ISO.ox+(col-row)*40,y:ISO.oy+(col+row)*14};}
-    function getDoorThresholdPos(){const p=toIso(14,3.35);return{x:p.x-7,y:p.y-20};}
+    function getDoorThresholdPos(){const p=toIso(14.25,3.25);return{x:p.x-7,y:p.y-20};}
     function getDoorOutsidePos(){const p=toIso(14.92,3.53);return{x:p.x-7,y:p.y-20};}
     function inventorySpace(){return 'xtanco';}
     ${html.slice(helperStart,helperEnd)}
-    ${extractFunction('getCustomerExitPos')}
+    ${radius<.5?"function getCustomerExitPos(){const p=toIso(15.38,2.7);return{x:p.x-7,y:p.y-20};}":extractFunction('getCustomerExitPos')}
     ${extractFunction('getQueueTarget')}
     ${extractFunction('startCustomerLeave')}
     ${extractFunction('camForceExact')}
     function resolveCustomerCheckout(c){G.sales++;c.bought=true;startCustomerLeave(c);}
     function tick(){tt++;${html.slice(loopStart,loopEnd)}}
     globalThis.api={tick,get G(){return G;},get nav(){return getCustomerNavigation();},moveCustomerTo,customerFloorPoint,toIso,getQueueTarget,startCustomerLeave,ensureCustomerVisit,camForceExact,
-      layout(value){shopLayout=value;},actor(col,row,state='walk'){
+      layout(value){shopLayout=value;tt++;},actor(col,row,state='walk'){
         const p=toIso(col,row),c={id:1,num:1,x:p.x-7,y:p.y-20,tx:0,ty:0,st:state,path:[],pathIdx:0,look:{age:'adulto'},persona:'loyal',dwellTicks:0,stayTargetTicks:100000,roamCooldown:100000,fr:0,ft:0,bTimer:0,bShown:true,ticketPicked:false,wantsTurn:true};G.custs.push(c);return c;}
     };
   `,sandbox);
@@ -176,6 +186,36 @@ test('queue slots remain distinct beyond the old four-person limit',()=>{
   const slots=Array.from({length:10},(_,i)=>sim.getQueueTarget(i));
   assert.equal(new Set(slots.map(p=>`${p.col},${p.row}`)).size,10);
   for(const p of slots)assert.ok(sim.nav.isWalkable(p));
+});
+
+test('a full-body queue advances through service and exit without overlapping customers or furniture',()=>{
+  const radius=.72,sim=simulation([{id:'counter',type:'counter',col:1,row:2}],{radius});
+  const slots=Array.from({length:6},(_,i)=>sim.getQueueTarget(i));
+  for(let i=0;i<slots.length;i++){
+    assert.ok(sim.nav.isWalkable(slots[i]));
+    for(let j=0;j<i;j++)assert.ok(Math.hypot(slots[i].col-slots[j].col,slots[i].row-slots[j].row)>=2*radius+.06-1e-8);
+    const c=sim.actor(slots[i].col,slots[i].row,'queue');
+    c.id=c.num=c.queueNumber=i+1;c.ticketPicked=true;
+  }
+  const visited=new Map(sim.G.custs.map(c=>[c,new Set()]));let frames=0;
+  for(;frames<18000&&sim.G.custs.length;frames++){
+    const before=new Map(sim.G.custs.map(c=>[c,sim.customerFloorPoint(c.x,c.y)]));
+    sim.tick();
+    for(const c of sim.G.custs){
+      visited.get(c).add(c.st);
+      const p=sim.customerFloorPoint(c.x,c.y),previous=before.get(c);
+      assert.ok(sim.nav.segmentClear(previous,p),`full-body queue crosses furniture: ${c.num}:${c.st}:${frames}`);
+      assert.ok(Math.hypot(p.col-previous.col,p.row-previous.row)<.065,'queue progression never teleports');
+      for(const other of sim.G.custs){
+        if(other===c)continue;
+        const q=sim.customerFloorPoint(other.x,other.y);
+        assert.ok(Math.hypot(p.col-q.col,p.row-q.row)>=2*radius-1e-6,`full-body overlap: ${c.num}/${other.num}:${frames}`);
+      }
+    }
+  }
+  assert.equal(sim.G.custs.length,0,JSON.stringify(sim.G.custs.map(c=>({id:c.id,st:c.st,p:sim.customerFloorPoint(c.x,c.y)}))));
+  assert.equal(sim.G.sales,6);assert.equal(sim.G.custOut,6);
+  for(const states of visited.values()){assert.ok(states.has('buy'));assert.ok(states.has('leave'));}
 });
 
 test('visitors approaching one another give way without overlapping, and continue to their destinations',()=>{
@@ -249,6 +289,26 @@ function realLayout(){
  const begin=html.indexOf('const FACTORY_LAYOUTS=')+'const FACTORY_LAYOUTS='.length;
  return vm.runInNewContext('('+html.slice(begin,html.indexOf('// Helper: ¿estamos dentro',begin)).replace(/;\s*$/,'')+')').xtanco;
 }
+test('real entry state cannot finish on an exterior correction when the requested inside point is sealed',()=>{
+ const sim=simulation([{id:'sealed-front',type:'custom',col:13,row:0,fp:[1,8]},
+   {id:'blocked-destination',type:'custom',col:6,row:3,fp:[2,2]}],{radius:.72});
+ const c=sim.actor(14.92,3.53,'walk');c.path=[{col:7,row:4}];
+ const start=sim.customerFloorPoint(c.x,c.y);
+ for(let frame=0;frame<1000;frame++){
+  sim.tick();const p=sim.customerFloorPoint(c.x,c.y);
+  assert.ok(sim.nav.segmentClear(start,p));assert.deepEqual(p,start);
+  assert.equal(c.st,'walk','waiting outside is never a completed entry');
+ }
+ assert.equal(sim.G.sales,0);assert.equal(sim.G.custOut,0);
+});
+test('real full-body leave state keeps a blocked visitor instead of recording a false exit',()=>{
+ const sim=simulation(realLayout(),{radius:.72}),c=sim.actor(8,5,'leave');sim.startCustomerLeave(c);
+ let previous=sim.customerFloorPoint(c.x,c.y);
+ for(let frame=0;frame<1500;frame++){
+  sim.tick();const p=sim.customerFloorPoint(c.x,c.y);assert.ok(sim.nav.segmentClear(previous,p));previous=p;
+ }
+ assert.equal(sim.G.custOut,0);assert.equal(sim.G.custs.length,1);assert.equal(c.st,'leave');
+});
 test('mixed incoming and outgoing visitors clear the door, with browsing missions inside',()=>{
  const sim=simulation(realLayout());
  for(let i=0;i<12;i++){

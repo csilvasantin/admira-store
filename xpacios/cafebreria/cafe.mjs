@@ -1,14 +1,15 @@
+import {inventoryCaption} from '../../inventario/labels.mjs?v=inventory-lang-20261004-1';
 import {groundCafe} from './grounding.mjs?v=cafe-grounding-1';
 import {loadPixeriaFurniture} from '../../admira-xp/scripts/pixeria-furniture.mjs';
-import {bindImportedObjects,createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs?v=cafe-grounding-1';
+import {bindImportedObjects,createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs?v=actor-collision-20261004-1';
 import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs?v=20261003-panels-2';
-import {mountCafeInventory} from './inventory-panel.mjs?v=inventory-merge-20261004-1';
+import {mountCafeInventory} from './inventory-panel.mjs?v=inventory-lang-20261004-1';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {GLTFLoader} from '../../admira-xp/scripts/vendor/GLTFLoader.mjs';
-import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=cafe-editor-1';
-import {createLifeScene} from '../../admira-xp/scripts/life-scene.mjs?v=cafebreria-street-1';
+import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=actor-collision-20261004-1';
+import {createLifeScene} from '../../admira-xp/scripts/life-scene.mjs?v=actor-collision-20261004-1';
 import {buildShelf,mountCapsulas} from '../../inventario/cafebreria/capsulas.mjs?v=20261003-panels-2';
-import {attachFloatingPanel,mountFloatingPanelMenu} from '../../admira-xp/scripts/floating-panels.mjs?v=20261003-expert-1';
+import {attachFloatingPanel,mountFloatingPanelMenu} from '../../admira-xp/scripts/floating-panels.mjs?v=inventory-lang-20261004-1';
 const en=new URLSearchParams(location.search).get('lang')==='en';document.documentElement.lang=en?'en':'es';
 const abort=new AbortController(),{signal}=abort,host=document.querySelector('#cafe-stage'),canvas=host.querySelector('canvas'),status=document.querySelector('#cafe-status'),welcome=document.querySelector('#cafe-welcome'),bookList=document.querySelector('#cafe-books');
 if(en){
@@ -47,7 +48,7 @@ try{
  await capsules.ready;bookList.replaceChildren(bookWindow.handle);for(const b of capsules.state.books){const button=document.createElement('button');button.textContent=b.libro;const author=document.createElement('small');author.textContent=b.autor||b.consejero;button.append(author);on(button,'click',()=>capsules.openBook(b.id));bookList.append(button);}if(capsules.state.error)status.textContent=capsules.state.error;else status.hidden=true;
  function closeEditor(){editor?.dispose();editor=null;}
  function openEditor(id){const workspace=window.XpaceShell?.expertWorkspace;if(window.XpaceShell?.state?.().expert&&!['editor','pixerai'].includes(workspace?.selected))workspace?.select('editor');capsules.exitDetail({reset:false});bookList.hidden=true;welcome.hidden=true;if(!editor)editor=mountDistribuit({dialog:host,viewer,bridge,onClose:closeEditor});if(id){editor.select({item:{id}});viewer.selectItem(id);}return true;}
- inventory=mountCafeInventory({host,manifest,bridge,bindings:bound.bindings,signal,getDetailHost:()=>window.XpaceShell?.state?.().expert&&['itil','inventory'].includes(window.XpaceShell?.expertWorkspace?.selected)?document.querySelector('#xsExpert .expert-view-pane'):null,onCount:count=>{for(const card of document.querySelectorAll('#expertQuickIcons [data-category-id=inventory]')){const status=card.querySelector('.expert-category-status');if(status)status.textContent=count+' items';card.setAttribute('aria-label','Inventory/ITIL · '+count+' items');card.title='Inventory/ITIL · '+count+' items';}},onSelect:id=>{viewer.selectItem(id);const object=bound.bindings.get(id)?.group;if(object)viewer.frameObject(object,{margin:2});},onEdit:openEditor});
+ inventory=mountCafeInventory({host,manifest,bridge,bindings:bound.bindings,signal,getDetailHost:()=>window.XpaceShell?.state?.().expert&&['itil','inventory'].includes(window.XpaceShell?.expertWorkspace?.selected)?document.querySelector('#xsExpert .expert-view-pane'):null,onCount:count=>{for(const card of document.querySelectorAll('#expertQuickIcons [data-category-id=inventory]')){const caption=inventoryCaption(count,document.documentElement.lang),[name,label]=caption.split(' · '),status=card.querySelector('.expert-category-status');if(status)status.textContent=label;card.querySelector('strong').textContent=name;card.setAttribute('aria-label',caption);card.title=caption;}},onSelect:id=>{viewer.selectItem(id);const object=bound.bindings.get(id)?.group;if(object)viewer.frameObject(object,{margin:2});},onEdit:openEditor});
  on(host,'keydown',event=>{if(editor?.keydown(event))return;if(event.target!==canvas)return;if(['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();viewer.rotate(event.key==='ArrowLeft'?1:-1);}if(['+','=','-'].includes(event.key)){event.preventDefault();viewer.zoomBy(event.key==='-'?.88:1.14);}if(event.key==='Home')viewer.preset('home');});
  window.XpaceInventoryUI={get count(){return inventory.count;}};
  const openInventory=id=>{const shell=window.XpaceShell,workspace=shell?.expertWorkspace;if(!shell?.state?.().expert)shell?.open('expert');if(!['inventory','itil'].includes(workspace?.selected))workspace?.select('inventory');welcome.hidden=true;inventory.open(id);workspace?.dockTools();};

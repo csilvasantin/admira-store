@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import {createSceneSnapshot} from './xtanco-scene-snapshot.mjs';
 import {normalizeSnapshot} from './premium-model.mjs';
 const iso={cols:14,rows:8,tileW:80,tileH:28,wallH:165,ox:270,oy:185};
-const at=(col,row,kind)=>({x:iso.ox+(col-row)*40-(kind==='customer'?5:7),y:iso.oy+(col+row)*14-20});
+const at=(col,row)=>({x:iso.ox+(col-row)*40-7,y:iso.oy+(col+row)*14-20});
 test('both views receive the running layout and stable actor identities without changing the simulation',()=>{
  const snapshot=createSceneSnapshot(),staff={...at(3,2),hired:true,dir:1},customer={...at(6,4,'customer'),st:'walk'};
  const game={staff:[staff,{...at(8,1),hired:false}],custs:[customer],passersby:[],custIn:7,doorAnim:.4};
@@ -14,7 +14,7 @@ test('both views receive the running layout and stable actor identities without 
  const a=snapshot(raw);assert.equal(JSON.stringify(raw),before);
  assert.deepEqual(a.actors.map(v=>[v.col,v.row]),[[3,2],[6,4]]);assert.equal(a.entries,7);assert.equal(a.inside,1);
  assert.deepEqual(a.layout[0].fp,[2,1]);assert.equal(a.layout[0].rot,1);
- assert.deepEqual(a.hardness,{cols:14,rows:8,blocked:['5,4']});
+ assert.deepEqual(a.hardness,{cols:14,rows:8,blocked:['5,4'],fixed:[],colliders:[]});
  customer.x+=40;const b=snapshot(raw);assert.equal(a.actors[1].id,b.actors[1].id);assert.equal(b.actors[1].col,6.5);
  b.layout[0].fp[0]=99;assert.deepEqual(raw.footprints.manager,[2,1]);
  assert.equal(snapshot({...raw,active:false}),null);

@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createCustomerMotion} from './customer-motion.mjs';
-import {buildCustomerNavigation} from './customer-navigation.mjs';
+import {buildCustomerNavigation as buildPhysicalCustomerNavigation} from './customer-navigation.mjs';
+const buildCustomerNavigation=(scene,options={})=>buildPhysicalCustomerNavigation(scene,{radius:.24,...options});
 
 const scene={cols:14,rows:8,layout:[{id:'island',type:'counter',col:5,row:2,fp:[2,3],sx:1,sy:1,rot:0}]};
 const actor={id:'visitor-1',kind:'customer',col:3,row:3,heading:Math.PI/2,walking:false};

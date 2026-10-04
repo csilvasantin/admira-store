@@ -1,5 +1,6 @@
+import {localizedRow} from './labels.mjs?v=inventory-lang-20261004-1';
 import {loadCatalog} from './model.mjs?v=scope-20261004-1';
-import {inventoryRows} from './workspace-model.mjs?v=inventory-merge-20261004-1';
+import {inventoryRows} from './workspace-model.mjs?v=inventory-lang-20261004-1';
 import {inventoryURL} from './context.mjs?v=scope-20261004-1';
 export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{},signal,load=loadCatalog}){
  const doc=listHost.ownerDocument,t=(es,en)=>doc.documentElement.lang==='en'?en:es;
@@ -8,9 +9,10 @@ export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{}
  let complete=false,assets=[],units=[],devices=[],rows=[],selectedId=null,activeSpace='',last='',opened=false,revision=0,disposeStage,stageRevision=0,disposed=false;
  const ready=load().then(catalog=>{assets=catalog.assets;}).catch(()=>{status.textContent=t('No se pudo cargar el catálogo. Se conservan los elementos de la escena.','Catalogue unavailable. Scene items are retained.');});
  let starbucksPromise;
- async function starbucks(){return starbucksPromise??=Promise.all([fetch(new URL('./starbucks/manifest.json',import.meta.url)).then(r=>{if(!r.ok)throw Error();return r.json();}),import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs')]).then(([manifest,wall,pos])=>({units:manifest.units,devices:[...wall.STARBUCKS_WALL_MAPPING.players,...pos.STARBUCKS_TPV_MAPPING.players,{id:'starbucks-alsea-paseo-de-gracia',name:t('Altavoz · hilo musical','Speaker · background music')}]})).catch(()=>{starbucksPromise=null;status.textContent=t('No se pudo cargar el registro Starbucks. Reintenta.','Starbucks registry unavailable. Retry.');return {units:[],devices:[]};});}
+ async function starbucks(){return starbucksPromise??=Promise.all([fetch(new URL('./starbucks/manifest.json',import.meta.url)).then(r=>{if(!r.ok)throw Error();return r.json();}),import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs')]).then(([manifest,wall,pos])=>({units:manifest.units,devices:[...wall.STARBUCKS_WALL_MAPPING.players,...pos.STARBUCKS_TPV_MAPPING.players,{id:'starbucks-alsea-paseo-de-gracia',name:'Altavoz · hilo musical'}]})).catch(()=>{starbucksPromise=null;status.textContent=t('No se pudo cargar el registro Starbucks. Reintenta.','Starbucks registry unavailable. Retry.');return {units:[],devices:[]};});}
  function emptyDetail(){stageRevision++;disposeStage?.();disposeStage=null;detailHost.replaceChildren(el('p',t('Selecciona una pieza del inventario para ver su detalle.','Select an inventory item to view its details.')));}
  function render(){
+  search.setAttribute('aria-label',t('Buscar en el inventario del Xpacio','Search this Xpace inventory'));search.placeholder=t('Buscar pieza…','Search item…');
   summary.textContent=activeSpace+' · '+rows.length+' '+t('piezas','items');const query=search.value.trim().toLocaleLowerCase();list.replaceChildren();
   for(const row of rows.filter(row=>(row.name+' '+row.id+' '+(row.code||'')).toLocaleLowerCase().includes(query))){
    const button=el('button',null,'itil-unit');button.type='button';button.dataset.inventoryId=row.id;button.setAttribute('aria-pressed',String(row.id===selectedId));button.append(el('strong',row.name),el('small',(row.asset?row.asset.number+' · ':'')+row.category+' · '+(row.code||row.id)));
@@ -32,10 +34,11 @@ export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{}
   const snapshot=read(),key=JSON.stringify([snapshot,doc.documentElement.lang]);if(!force&&key===last)return;last=key;const turn=++revision;await ready;
   let registry={units:[],devices:[]};if(snapshot.space==='starbucks_pg103')registry=await starbucks();if(turn!==revision||disposed)return;
   if(snapshot.space!==activeSpace){selectedId=null;search.value='';emptyDetail();}activeSpace=snapshot.space;
-  units=registry.units;devices=registry.devices;rows=inventoryRows({...snapshot,assets,units,devices});complete=true;onCount(rows.length);
+  units=registry.units;devices=registry.devices;rows=inventoryRows({...snapshot,assets,units,devices}).map(row=>localizedRow(row,doc.documentElement.lang));complete=true;onCount(rows.length);
   if(opened){render();if(selectedId&&rows.some(row=>row.id===selectedId))select(selectedId);else{selectedId=null;emptyDetail();}}
  }
  search.addEventListener('input',render,{signal});const timer=setInterval(()=>refresh(),750);signal?.addEventListener('abort',dispose,{once:true});
- function dispose(){disposed=true;clearInterval(timer);stageRevision++;disposeStage?.();}
+ const language=new MutationObserver(()=>refresh(true));language.observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});
+ function dispose(){disposed=true;language.disconnect();clearInterval(timer);stageRevision++;disposeStage?.();}
  refresh(true);return {async show(){opened=true;listHost.hidden=false;detailHost.hidden=false;await refresh(true);render();if(!selectedId)emptyDetail();},hide(){opened=false;listHost.hidden=true;detailHost.hidden=true;stageRevision++;disposeStage?.();disposeStage=null;},refresh,select,dispose,get count(){return complete?rows.length:null;}};
 }

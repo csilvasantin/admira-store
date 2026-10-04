@@ -23,7 +23,7 @@ export function createSceneSnapshot(){
     }
     const actor=(value,kind)=>{
       if(!value||!Number.isFinite(value.x)||!Number.isFinite(value.y))return null;
-      const dx=(value.x+(kind==='customer'||kind==='passerby'?5:7)-iso.ox)/(iso.tileW/2);
+      const dx=(value.x+7-iso.ox)/(iso.tileW/2);
       const dy=(value.y+20-iso.oy)/(iso.tileH/2);
       return {id:identity(value,kind),kind,col:(dx+dy)/2,row:(dy-dx)/2,
         color:value.look?.shirt||value.shirt||'#487e8b',heading:value.dir||0,
@@ -36,12 +36,16 @@ export function createSceneSnapshot(){
       const value=game[kind];if(value&&value.phase!=='idle')actors.push(actor(value,kind));
     }
     const blocked=Array.isArray(hardness.blocked)?[...new Set(hardness.blocked.filter(value=>typeof value==='string'&&/^\d+,\d+$/.test(value)))]:[];
-    return {venue,cols:iso.cols,rows:iso.rows,elevation,editor,
+    return {venue,cols:iso.cols,rows:iso.rows,
+      doorRow:Number.isFinite(hardness.doorRow)?hardness.doorRow:Number.isFinite(iso.doorRow)?iso.doorRow:3.35,
+      doorHalfWidth:Number.isFinite(hardness.doorHalfWidth)?hardness.doorHalfWidth:undefined,
+      outsideDepth:Number.isFinite(hardness.outsideDepth)?hardness.outsideDepth:undefined,elevation,editor,
       projection:projection?{...projection}:undefined,
-      hardness:{cols:iso.cols,rows:iso.rows,blocked},
+      hardness:{cols:iso.cols,rows:iso.rows,blocked,fixed:Array.isArray(hardness.fixed)?structuredClone(hardness.fixed):[],colliders:Array.isArray(hardness.colliders)?structuredClone(hardness.colliders):[]},
+      colliders:Array.isArray(hardness.colliders)?structuredClone(hardness.colliders):[],
       wallHeight:iso.wallH/pixelsPerHeightUnit,
       layout:layout.map(v=>({id:v.id,type:v.type,col:v.col,row:v.row,sx:v.sx||1,sy:v.sy||1,
-        rot:v.rot||0,flipX:!!v.flipX,source:typeof v.source==='string'?v.source:'',sourceAssetId:typeof v.sourceAssetId==='string'?v.sourceAssetId:'',modelUrl:typeof v.modelUrl==='string'?v.modelUrl:null,locked:!!v.locked,img:typeof v.img==='string'?v.img:'',label:v.label||'',fp:[...(v.fp||footprints[v.type]||[1,1])],...dimensions(v)})),
+        rot:v.rot||0,flipX:!!v.flipX,solid:v.solid,hidden:!!v.hidden,mount:v.mount,source:typeof v.source==='string'?v.source:'',sourceAssetId:typeof v.sourceAssetId==='string'?v.sourceAssetId:'',modelUrl:typeof v.modelUrl==='string'?v.modelUrl:null,locked:!!v.locked,img:typeof v.img==='string'?v.img:'',label:v.label||'',fp:[...(v.fp||footprints[v.type]||[1,1])],...dimensions(v)})),
       actors:actors.filter(Boolean),doorOpen:game.doorAnim??0,time:game.gameTime??12,
       inside:(game.custs||[]).length,entries:game.custIn||0};
   };

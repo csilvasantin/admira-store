@@ -2,6 +2,7 @@ import * as T from './premium-three.mjs';
 import {furniturePose,sameFurniturePose,validateFurniturePath} from './distribuit.mjs?v=imported-space-1';
 import {planFurnitureObjectChange} from './distribuit-objects.mjs?v=imported-space-1';
 import {pixeriaFurnitureAsset,loadPixeriaFurniture,disposePixeriaModel} from './pixeria-furniture.mjs';
+import {furnitureBounds} from './furniture-geometry.mjs';
 
 // Imported objects use the same footprint corner, quarter turns and editor as
 // native Xpacios. Their original geometry and scene identities are retained.
@@ -17,7 +18,11 @@ export function bindImportedObjects(root,entries){
     root.add(group);group.position.copy(root.worldToLocal(box.min.clone()));
     group.updateMatrixWorld(true);group.attach(entry.object);
     const structural=entry.categoria==='Arquitectura',presentationExcluded=entry.presentationExcluded===true;
-    const item={id:entry.id,type:'custom',source:'Cafebrería',label:entry.nombre,col:box.min.x,row:box.min.z,rot:0,sx:1,sy:1,fp:[Math.max(.1,size.x),Math.max(.1,size.z)],locked:structural||presentationExcluded,nativeFixed:structural||presentationExcluded,presentationExcluded,solid:box.min.y-floorY<.2&&!structural&&!presentationExcluded&&entry.categoria!=='Desglose',inventoryId:'cafebreria:'+entry.id};
+    // Structural pieces remain fixed inventory records, but walls, jambs and
+    // low architecture still impede a body. The floor and overhead beams do
+    // not become navigation obstacles merely because they are architecture.
+    const navigationSolid=structural&&!presentationExcluded&&box.max.y>floorY+.12&&box.min.y<floorY+1.9;
+    const item={id:entry.id,type:'custom',source:'Cafebrería',label:entry.nombre,col:box.min.x,row:box.min.z,rot:0,sx:1,sy:1,fp:[Math.max(.1,size.x),Math.max(.1,size.z)],locked:structural||presentationExcluded,nativeFixed:structural||presentationExcluded,presentationExcluded,navigationSolid,solid:box.min.y-floorY<.2&&!structural&&!presentationExcluded&&entry.categoria!=='Desglose',inventoryId:'cafebreria:'+entry.id};
     group.userData.item=item;
     bindings.set(entry.id,{group,entry,baseY:box.min.y});layout.push(item);
   }
@@ -47,7 +52,8 @@ export function createImportedBridge({roomId,cols,rows,layout,storage=globalThis
       state={...state,...saved,layout:clean.map(i=>{const base=original.find(o=>o.id===i.id);return base?{...base,...furniturePose(i),locked:base.nativeFixed?true:!!i.locked,hidden:!!i.hidden}:i;})};
     }
   }catch{}
-  const read=()=>({roomId,cols,rows,active,layout:structuredClone(state.layout).map(i=>({...i,label:state.records?.[i.id]?.nombre||i.label})),hardness:{fixed:[]},footprints:{}});
+  const structuralColliders=original.filter(i=>i.navigationSolid===true).map(i=>({...furnitureBounds(i),id:'architecture:'+i.id}));
+  const read=()=>({roomId,cols,rows,active,layout:structuredClone(state.layout).map(i=>({...i,label:state.records?.[i.id]?.nombre||i.label})),colliders:structuredClone(structuralColliders),hardness:{fixed:[]},footprints:{}});
   const persist=next=>{storage.setItem(key,JSON.stringify({...next,version:1}));state=next;onSave(read(),state.records);};
   return {key,read,begin:()=>Symbol(roomId),end:()=>{},
     async commit(request){

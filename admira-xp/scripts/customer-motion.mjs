@@ -10,9 +10,18 @@ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 export function createCustomerMotion(actor,{navigation,time=0}={}){
   let nav=navigation,pose=null,target=null,route=[],lastTime=finite(time)?time:0,lastObserved=lastTime,lastSource=null;
   let preferredSpeed=1.6,speed=0,phase=0,heading=finite(actor?.heading)?actor.heading:0,relocated=false,blocked=false;
+  let recoveryOrigin=null;
   const valid=a=>a&&finite(a.col)&&finite(a.row);
   const seed=Array.from(String(actor?.id||'visitor')).reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777619)>>>0,2166136261);
   phase=(seed%997)/997;
+  function rememberRecoveryOrigin(map,position){
+    if(!recoveryOrigin&&map?.isWalkable(position))recoveryOrigin={navigation:map,position:point(position)};
+  }
+  function inRecoveryRegion(candidate){
+    if(!recoveryOrigin)return true;
+    const {navigation:map,position}=recoveryOrigin;
+    return map.isWalkable(candidate)&&map.route(position,candidate)!==null;
+  }
   function publish(moved=null){
     if(!pose)return null;
     if(moved!==null)Object.assign(pose,{walking:moved>.000001,speed:moved>0?speed:0,distance:moved});
@@ -20,30 +29,40 @@ export function createCustomerMotion(actor,{navigation,time=0}={}){
     return {...pose};
   }
   function update(next,{navigation:nextNav=nav,time:now=lastTime}={}){
-    if(!valid(next)||!nextNav)return publish();
-    const changed=nav?.key!==nextNav.key;nav=nextNav;
+    if(!nextNav){route=[];speed=0;blocked=true;return publish(0);}
+    const previousNavigation=nav,changed=nav?.key!==nextNav.key;nav=nextNav;
+    if(!valid(next)){
+      // Never retain a running route after a malformed snapshot or a new map.
+      // A stale pose inside the replacement map is hidden rather than drawn.
+      if(pose&&!nav.isWalkable(pose)){rememberRecoveryOrigin(previousNavigation,pose);pose=null;}
+      route=[];target=null;speed=0;blocked=true;return publish(0);
+    }
     if(!pose){
-      const start=nav.resolve(next);
+      const start=nav.resolve(next,{accept:inRecoveryRegion});
       if(!start){blocked=true;return null;}
       pose={...point(start),walking:false,speed:0,distance:0};relocated=distance(start,next)>.001;
+      recoveryOrigin=null;
       heading=finite(next.heading)?next.heading:heading;
     }else if(changed&&!nav.isWalkable(pose)){
       // Furniture may be placed on an existing visitor by the editor. Recover
-      // to the closest valid location once, never animate through that object.
-      const safe=nav.resolve(pose);
+      // once without animating through it, but retain the previous connected
+      // region: a new cabinet cannot teleport a person through an older wall.
+      rememberRecoveryOrigin(previousNavigation,pose);
+      const safe=nav.resolve(pose,{accept:inRecoveryRegion});
       if(!safe){pose=null;route=[];target=null;speed=0;blocked=true;return null;}
       pose={...point(safe),walking:false,speed:0,distance:0};relocated=true;route=[];speed=0;
+      recoveryOrigin=null;
     }
-    const source=point(next),elapsed=clamp((now-lastObserved)/1000,.05,1);
+    const source=point(next),observedAt=finite(now)?now:lastObserved,elapsed=clamp((observedAt-lastObserved)/1000,.05,1);
     if(lastSource){
       const observed=distance(lastSource,source)/elapsed;
       if(observed>.015)preferredSpeed=clamp(observed*1.12,.65,6);
     }
-    lastSource=source;lastObserved=finite(now)?now:lastObserved;
+    lastSource=source;lastObserved=observedAt;
     // Bad external snapshots do not put a body inside furniture. A corrected
     // target remains a presentation target only, never a new simulation state.
-    const goal=nav.isWalkable(source)?source:nav.resolve(source);
-    if(!goal){route=[];speed=0;blocked=true;return publish();}
+    const goal=nav.isWalkable(source)?source:nav.resolve(source,{from:pose});
+    if(!goal){route=[];target=null;speed=0;blocked=true;return publish(0);}
     if(!target||changed||distance(target,goal)>.00001){
       target=point(goal);
       const planned=nav.route(pose,target);

@@ -1,6 +1,6 @@
 import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=cafebreria-1';
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=shelf-products-1';
+import {createLifeScene} from './life-scene.mjs?v=actor-collision-20261004-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
 import {inventoryIdFor} from './furniture-asset.mjs?v=cafebreria-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';

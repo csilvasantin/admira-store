@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildCustomerNavigation} from './customer-navigation.mjs';
+import {buildCustomerNavigation as buildPhysicalCustomerNavigation} from './customer-navigation.mjs';
+const buildCustomerNavigation=(scene,options={})=>buildPhysicalCustomerNavigation(scene,{radius:.24,...options});
 
 function corridor(left=3.3,width=.6){
   return {cols:8,rows:8,layout:[

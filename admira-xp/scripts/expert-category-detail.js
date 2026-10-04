@@ -31,11 +31,11 @@
   }
   function launch(key){original(key)?.click();dockPanels();}
   function button(parent,es,english,run){
-    const b=document.createElement('button');b.type='button';b.textContent=t(es,english);
+    const b=document.createElement('button');b.type='button';b.textContent=t(es,english);b.dataset.itilEs=es;b.dataset.itilEn=english;
     b.addEventListener('click',run);parent.append(b);return b;
   }
   function field(parent,es,english){
-    const l=document.createElement('label');l.textContent=t(es,english);
+    const l=document.createElement('label');const text=document.createElement('span');text.textContent=t(es,english);text.dataset.itilEs=es;text.dataset.itilEn=english;l.append(text);
     const input=document.createElement('input');input.type='text';l.append(input);parent.append(l);return input;
   }
   function section(key){
@@ -101,7 +101,7 @@
     document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));
     syncSelection();dockPanels();
     if(key==='signage'&&!document.querySelector('#telegramDock .send.signage-open'))launch(key);
-    if(['inventory','itil'].includes(key)&&!window.XpaceInventoryUI)import('./scripts/inventory-workspace.mjs?v=inventory-merge-20261004-1').then(()=>{if(selected!==key)return;document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));});
+    if(['inventory','itil'].includes(key)&&!window.XpaceInventoryUI)import('./scripts/inventory-workspace.mjs?v=inventory-lang-20261004-1').then(()=>{if(selected!==key)return;document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));});
   }
   new MutationObserver(syncSelection).observe(document.getElementById('expertQuickIcons'),{childList:true});
   let pending=false;
@@ -109,5 +109,6 @@
     if(!selected||pending||!records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches?.(panelSelectors)||n.querySelector?.(panelSelectors)))))return;
     pending=true;requestAnimationFrame(()=>{pending=false;dockPanels();});
   }).observe(document.body,{childList:true,subtree:true});
+  new MutationObserver(()=>{for(const node of host.querySelectorAll('[data-itil-es]'))node.textContent=t(node.dataset.itilEs,node.dataset.itilEn);}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   host.hidden=true;window.XpaceExpertDetail={select,dockPanels};
 })();
