@@ -1,8 +1,8 @@
 {
-  "version": "v.04.10.2026.r13.22:01",
-  "signature": "HuangMacMini · MacMini",
-  "machine": "MacMini",
-  "agent": "HuangMacMini",
-  "deployer": "HuangMacMini",
-  "evidence": "Avatar en admira.store: nuevo token de caché del shell (20261004-avatar-2). Con el token antiguo, los navegadores que ya tenían la web abierta seguían 4 h con el xpace-shell.js anterior al avatar (sin cargador ni /avatarON)."
+  "version": "v.05.10.2026.r2.00:16",
+  "signature": "WaltDisneyBox · Box",
+  "machine": "Box",
+  "agent": "WaltDisneyBox",
+  "deployer": "WaltDisneyBox",
+  "evidence": "⌘ EXPERTO · CLI con la piel compartida de la suite (look digitalavatar.ai) minimizado por defecto como una línea de orden; /cli del avatar como en admira.app (/cli estado, /cli good|better|best). Sello del shell 20261004-experto-store-2."
 }

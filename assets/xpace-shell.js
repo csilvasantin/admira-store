@@ -155,12 +155,11 @@
     const parsed = parseCommand(text);
     if (!parsed) return false;
     if (parsed.verb === 'avatardigital' || parsed.verb === 'digitalavatar') return true;
-    // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF,
-    // /avatar [on|off|reset|good|better|best]. good, better y best se quedan aquí.
+    // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF, /avatar [on|off|reset].
     if (parsed.verb === 'avataron' || parsed.verb === 'avataroff') return true;
     if (parsed.verb === 'avatar') return /^(on|off|reset|good|better|best)?$/i.test(parsed.args);
     if (parsed.verb !== 'cli') return false;
-    return /^(ayudante|helper)(?:\s|$)/i.test(parsed.args);
+    return /^(?:(ayudante|helper)(?:\s|$)|(good|better|best)$|$)/i.test(parsed.args);
   }
   const isTwinVerb = verb => TWIN_VERBS.includes(String(verb || '').toLowerCase());
   // Orden canónica para el gemelo: las vistas van sin barra; el resto con barra.
@@ -457,7 +456,12 @@
     return avatarPromise;
   }
   Object.assign(shared, {
-    avatar: (text) => cargarAvatar().then(A => (A ? A.handle(text) : T('Avatar digital no disponible', 'Digital avatar unavailable'))),
+    // /cli y /cli good|better|best (como en admira.app) son /avatar y /avatar <nivel>; también en el gemelo.
+    avatar: (text) => {
+      const p = parseCommand(text);
+      if (p && p.verb === 'cli' && /^(good|better|best)?$/i.test(p.args)) text = ('/avatar ' + p.args.toLowerCase()).trim();
+      return cargarAvatar().then(A => (A ? A.handle(text) : T('Avatar digital no disponible', 'Digital avatar unavailable')));
+    },
   });
 
   // El gemelo trae la barra en línea: no se duplica nada (solo queda el API y la marca).
@@ -691,6 +695,54 @@
     });
   }
 
+  // ⌘ EXPERTO · CLI con la piel compartida de la suite (www.admiranext.com/suite), look de
+  // digitalavatar.ai y MINIMIZADO por defecto (Carlos, 4-oct-2026 23:08/23:11): abajo solo queda
+  // la orden «› /help» de una línea, escribible; el asa, el ▾ o ⌘ despliegan y una orden lanzada
+  // en minimizado se despliega para ver la respuesta. Los verbos, el historial, la marca blanca y
+  // el avatar siguen siendo los de este shell. El registro sale de «PREVIOS» a la columna del CLI
+  // y los tres paneles (categorías, opciones de categoría, previos) quedan tras «＋ vista».
+  // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
+  function suiteExperto() {
+    if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
+    const V = '20261004-experto-store-2', BASE = 'https://www.admiranext.com/suite/experto';
+    const css = doc.createElement('link');
+    css.rel = 'stylesheet'; css.href = BASE + '.css?v=' + V;
+    doc.head.appendChild(css);
+    const js = doc.createElement('script');
+    js.src = BASE + '.js?v=' + V; js.defer = true;
+    const host = location.hostname.replace(/^www\./, '');
+    const attrs = {
+      panel: '#xsExpert', body: '.expert-workspace', form: '#xsCliForm', input: '#xsCli', log: '#xsLog', hint: '.xs-hint',
+      extras: '.expert-category-panel,.expert-controls-pane,.expert-view-pane', extrasLabel: 'vista',
+      chrome: '.expert-divider,.xs-command-head', moveLog: '', toggle: '', pata: host,
+      engine: /xpaceos/.test(host) ? 'XPACEOS ENGINE' : 'ADMIRA STORE ENGINE', versionUrl: '/version.json'
+    };
+    for (const k of Object.keys(attrs)) js.setAttribute('data-' + k.replace(/[A-Z]/g, c => '-' + c.toLowerCase()), attrs[k]);
+    const skin = () => !!(root.AdmiraExperto && parts.expert.classList.contains('ax-experto'));
+    // Con la piel, el panel ⌘ queda siempre abierto para el shell (sin inert): si una página lo
+    // cierra (escena, inventario…), se reabre; plegar/desplegar es cosa de la piel.
+    const keepOpen = () => { if (skin() && (parts.expert.inert || parts.expert.classList.contains('is-collapsed'))) setPanel('expert', true, {focus: false}); };
+    new MutationObserver(keepOpen).observe(parts.expert, {attributes: true, attributeFilter: ['class', 'inert']});
+    js.onload = keepOpen;
+    // ⌘, × y Esc pliegan/despliegan la piel en vez de cerrar (inert) el panel.
+    doc.addEventListener('click', ev => {
+      if (!skin()) return;
+      const t = ev.target.closest && ev.target.closest('#topBar [data-quad-toggle="expert"], [data-shell-close="expert"]');
+      if (!t) return;
+      ev.stopImmediatePropagation(); ev.preventDefault();
+      if (t.matches('[data-shell-close]')) root.AdmiraExperto.close(); else root.AdmiraExperto.toggle();
+    }, true);
+    doc.addEventListener('keydown', ev => {
+      if (ev.key !== 'Escape' || !skin() || !(ev.target && ev.target.closest && ev.target.closest('.xs-expert'))) return;
+      ev.stopImmediatePropagation(); root.AdmiraExperto.close();
+    }, true);
+    // Con la piel el alto lo lleva el anclaje de la suite: sobra el asa de redimensionar de ⌘.
+    const st = doc.createElement('style');
+    st.textContent = 'html[data-ax-experto] .xp-panel-resize-height{display:none!important}';
+    doc.head.appendChild(st);
+    doc.head.appendChild(js);
+  }
+
   function start() {
     parts = mount();
     cfg = parts.cfg;
@@ -736,6 +788,7 @@
       }
     }).catch(error=>console.warn('xpace-shell resize',error));
     wireCli();
+    suiteExperto();
     registerVerb({
       id: 'avatardigital',
       aliases: ['digitalavatar'],
@@ -763,11 +816,15 @@
     });
     registerVerb({
       id: 'cli',
-      es: 'Interruptor del avatar: /cli ayudante [on|off]. El resto de /cli sigue al gemelo.',
-      en: 'Avatar switch: /cli helper [on|off]. Any other /cli still goes to the twin.',
+      es: 'Avatar: /cli dice su estado, /cli good|better|best abre ese nivel y /cli ayudante [on|off] es el interruptor. El resto de /cli sigue al gemelo.',
+      en: 'Avatar: /cli shows its status, /cli good|better|best opens that level and /cli helper [on|off] is the switch. Any other /cli still goes to the twin.',
       run(args) {
         const first = String(args || '').trim().split(/\s+/)[0].toLowerCase();
         if (first === 'ayudante' || first === 'helper') return shared.avatar('/cli ' + String(args || '').trim());
+        // Como en admira.app (tool #33): /cli solo dice el estado del avatar y /cli good|better|best
+        // abre ese nivel; no salta al gemelo. El resto de /cli <orden> sigue yendo al gemelo.
+        if (!first) return shared.avatar('/avatar');
+        if (first === 'good' || first === 'better' || first === 'best') return shared.avatar('/avatar ' + first);
         handoff('/cli' + (args ? ' ' + args : ''));
       },
     });

@@ -28,8 +28,8 @@ Sin scroll horizontal en móvil (los paneles viven en una capa fija que recorta 
 En el `<head>`, **después de todo el CSS propio**:
 
 ```html
-<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261004-avatar-3">
-<script defer src="/assets/xpace-shell.js?v=20261004-avatar-3" data-section="/ ayuda" data-section-en="/ help"></script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261003-expert-1">
+<script defer src="/assets/xpace-shell.js?v=20261003-expert-1" data-section="/ ayuda" data-section-en="/ help"></script>
 ```
 
 Opcionalmente, antes del script, `window.XPACE_SHELL = {...}`:

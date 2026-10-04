@@ -743,8 +743,8 @@
     "avatar": {
       "guide": "https://www.xpaceos.com/admira-xp/docs/avatar-levels.md",
       "loader": "https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-3",
-      "shell": "/assets/xpace-shell.js?v=20261004-avatar-3",
-      "commands": ["/avatar good", "/avatar better", "/avatar best", "/avatar", "/avatarON", "/avatarOFF", "/avatar reset"],
+      "shell": "/assets/xpace-shell.js?v=20261004-experto-store-2",
+      "commands": ["/avatar good", "/avatar better", "/avatar best", "/avatar", "/avatarON", "/avatarOFF", "/avatar reset", "/cli", "/cli good", "/cli better", "/cli best"],
       "stays_local": true,
       "fallback": "best falls back to the girl when the MetaHuman render host is off",
       "pending": "Neo render host is outside this repo",
