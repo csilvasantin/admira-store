@@ -1,8 +1,6 @@
 {
   "version": "v.04.10.2026.r6.18:27",
-  "signature": "MorfeoMacMini · MacMini",
-  "machine": "MacMini",
-  "agent": "MorfeoMacMini",
   "deployer": "MorfeoMacMini",
-  "evidence": "Intercambio de dominios admira.biz/admira.app, paso 1C: control y catálogo de proyectos leen de www.clearchannel.tv (espejo de xpaceos); rama puesta al día con main."
+  "machine": "MacMini",
+  "signature": "MorfeoMacMini · MacMini"
 }
