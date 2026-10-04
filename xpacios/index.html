@@ -127,7 +127,7 @@
 
   <h2 class="sec">Xpacios destacados</h2>
   <div class="grid">
-    <div class="card" style="border-color:rgba(143,214,255,.45)">
+    <div class="card" data-cliente="caixabank" style="border-color:rgba(143,214,255,.45)">
       <a class="thumb" href="/Xcaixa/" style="text-decoration:none;background:radial-gradient(circle at 50% 35%,#0d4f8c,#062038 58%,#03080f);font-size:0;position:relative">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#8fd6ff">★ <b style="color:#eaf4ff">Xcaixa</b> · Sucursal</div>
       </a>
@@ -234,7 +234,10 @@
           <a class="act bcn" href="${BASE}?xpacio=${encodeURIComponent(x.id)}&go=decorar">🖼️ Decorar</a>
         </div>
       </div></div>`; }
-  async function render(){ const items=await loadIndex(); const grid=document.getElementById("grid");
+  // Cliente activo (/assets/xpace-cliente.js): Admira ve todos; con otro cliente, solo los suyos y los genéricos.
+  document.addEventListener("xpace:cliente",()=>render());
+  async function render(){ let items=await loadIndex(); const grid=document.getElementById("grid");
+    if(window.XpaceCliente) items=window.XpaceCliente.filtrar(items.map(x=>Object.assign({kind:x.city||""},x)));
     document.getElementById("count").textContent=items.length;
     grid.innerHTML = `<div class="card new" id="newCard">＋ Nuevo Xpacio</div>` + items.slice().reverse().map(cardHTML).join("");
     const nc=document.getElementById("newCard"); if(nc) nc.addEventListener("click",newXpacio);

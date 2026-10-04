@@ -1,0 +1,27 @@
+{
+  "_nota": "Mapeo editable Xpacio → cliente (XpaceOS · Carlos, 4-oct-2026). Admira, por defecto, lo ve todo. Con otro cliente activo (/marca <cliente> en ⌘ Experto o ?cliente=<id> desde Pixeria) se ve lo suyo más lo genérico de Admira. Orden: 0) «asignaciones» (id del gemelo → cliente), para corregir a mano; 1) data-cliente en la ficha; 2) «marcas»: primer tramo del tipo del gemelo («Correos · Oficina postal» → Correos), comparación exacta; 3) «patrones» (regex sin mayúsculas) sobre id, nombre y tipo, en orden y consumiendo lo que casa; 4) «rutas»: enlaces a páginas de ese cliente. Si casan varios clientes, solo se ve con Admira. «Cafetería · Starbucks · Circuito DOOH Alsea» cuenta como Starbucks (Alsea opera Starbucks); Alsea suelto es Alsea. No se borra nada: solo se ocultan fichas.",
+  "genericos": ["admira"],
+  "asignaciones": {},
+  "clientes": {
+    "altadis": {"patrones": ["\\baltadis\\b"]},
+    "starbucks-mexico": {"patrones": ["\\bstarbucks\\W+alsea\\s+m[eé]xico\\b", "\\bstarbucks\\s+m[eé]xico\\b"]},
+    "starbucks": {"patrones": ["\\bstarbucks\\b(?:.*\\balsea\\b)?"], "rutas": ["/inventario/starbucks"]},
+    "alsea": {"patrones": ["\\balsea\\b"]},
+    "jti": {"patrones": ["\\bjti\\b", "\\bjapan tobacco\\b"]},
+    "cafebreria": {"patrones": ["\\bcafebrer[ií]a\\b"], "rutas": ["/xpacios/cafebreria", "/inventario/cafebreria"]},
+    "canalkiosk": {"patrones": ["\\bcanal\\s?kiosk\\b"]},
+    "caixabank": {"marcas": ["La Caixa / CaixaBank"], "patrones": ["\\bcaixabank\\b", "\\bxcaixa\\b"], "rutas": ["/Xcaixa"]},
+    "bbva": {"marcas": ["BBVA"], "patrones": ["\\bbbva\\b"]},
+    "banorte": {"marcas": ["Banorte"], "patrones": ["\\bbanorte\\b"]},
+    "alcampo": {"patrones": ["\\balcampo\\b"]},
+    "decathlon": {"marcas": ["Decathlon"], "patrones": ["\\bdecathlon\\b"]},
+    "elcorteingles": {"marcas": ["El Corte Inglés"], "patrones": ["\\bel corte ingl[eé]s\\b"]},
+    "multiopticas": {"marcas": ["MultiÓpticas"], "patrones": ["\\bmulti[oó]pticas\\b"]},
+    "correos": {"marcas": ["Correos"]},
+    "mango": {"marcas": ["Mango"]},
+    "metro": {"marcas": ["Metro Barcelona"]},
+    "liverpool": {"marcas": ["Liverpool"]},
+    "palacio": {"marcas": ["El Palacio de Hierro"]},
+    "desigual": {"marcas": ["Desigual"]}
+  }
+}

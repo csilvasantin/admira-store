@@ -1428,7 +1428,7 @@
 })();
 </script>
 <script src="xtanco-version.js?v=20261004-1639"></script>
-<script src="xtanco-runtime-config.js?r=27"></script>
+<script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
@@ -18078,6 +18078,8 @@ function drawModelSelect(){
 // Screen nuevo (S.NETWORK): plotea TODOS los puntos del KV de OmniPublicity
 // como pins sobre un mapa estilizado; al elegir uno se entra a SU twin.
 window.STORE_LIST = window.STORE_LIST || [];
+// Red de tiendas por cliente activo (/assets/xpace-cliente.js): Admira ve todas; al cambiar de cliente se vuelve a pedir.
+document.addEventListener('xpace:cliente', () => { window.STORE_LIST = []; });
 let netSel = 0, netLoading = false, _netReturnState = null;
 function openNetworkView(){
   _netReturnState = (state===S.GAME) ? null : state;
@@ -18085,7 +18087,7 @@ function openNetworkView(){
   if(!Array.isArray(window.STORE_LIST) || !window.STORE_LIST.length){
     netLoading = true;
     fetch('https://api.admira.store/da/locations',{cache:'no-store'})
-      .then(rs=>rs.json()).then(d=>{ window.STORE_LIST=(d&&Array.isArray(d.locations))?d.locations:[]; netLoading=false; netSel=0; })
+      .then(rs=>rs.json()).then(d=>{ const all=(d&&Array.isArray(d.locations))?d.locations:[]; window.STORE_LIST=window.XpaceCliente?window.XpaceCliente.filtrar(all):all; netLoading=false; netSel=0; })
       .catch(()=>{ netLoading=false; });
   }
 }
@@ -22293,7 +22295,7 @@ function drawExteriorAd(g,age,vW,vH){
     }
     cx.textAlign='center';
     cx.fillStyle='rgba(0,0,0,.55)'; cx.fillRect(0,0,vW,11);
-    cx.fillStyle='#8defff'; cx.font='bold 7px sans-serif'; cx.fillText('CANALKIOSK',vW/2,8);
+    cx.fillStyle='#8defff'; cx.font='bold 7px sans-serif'; cx.fillText(dm.canal||'CANALKIOSK',vW/2,8);
     cx.fillStyle='rgba(0,0,0,.55)'; cx.fillRect(0,vH-12,vW,12);
     cx.fillStyle='#ffffff'; cx.font='bold 7px sans-serif';
     cx.fillText(String(dm.title||'').toUpperCase().slice(0,22),vW/2,vH-4);

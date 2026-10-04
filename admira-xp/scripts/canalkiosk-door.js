@@ -15,11 +15,22 @@
   // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
   var STOCK = 'https://stock.admira.store/stock/index.json';
   var items = [], thumbs = {}, period = 10000, curIdx = -1;
+  // Gemelo de un estanco del circuito Altadis (loc=altadis-bcn-*): la parrilla del CanalKiosk
+  // emite campañas de otros clientes (Alcampo, JTI…), y en un gemelo de Altadis no puede salir
+  // otro cliente (Carlos, 4-oct-2026). La puerta pasa a la pieza neutra de Admira del circuito
+  // (docs/circuito-media.md) con rótulo ADMIRA. El resto de Xtancos siguen con el CanalKiosk.
+  var LOC = ''; try { LOC = (new URLSearchParams(location.search).get('loc') || '').trim().toLowerCase(); } catch (e) {}
+  var NEUTRA = { url: '/altadis/media/01-vertical-1080x1920.mp4?v=admira-20261004', type: 'video', title: 'Admira', canal: 'ADMIRA', position: 0 };
+  function esAltadis() {
+    var c = window.STORE_CFG;
+    return /^altadis-/.test(LOC) || !!(c && (/^altadis-/i.test(String(c.id || '')) || /altadis/i.test(String(c.kind || ''))));
+  }
   var vid = document.createElement('video');
   vid.muted = true; vid.playsInline = true; vid.crossOrigin = 'anonymous'; vid.preload = 'auto'; vid.loop = true;
   var imgs = {};
   function im(u){ var x=imgs[u]; if(!x){ x=new Image(); x.crossOrigin='anonymous'; x.src=u; imgs[u]=x; } return x; }
   function tickPlay(){
+    if (esAltadis() && items[0] !== NEUTRA) { items = [NEUTRA]; curIdx = -1; }
     if (!items.length){ window.__doorMedia = null; return; }
     var idx = Math.floor(Date.now() / period) % items.length;
     var it = items[idx];
@@ -33,9 +44,10 @@
     else if (it.type === 'image') el = im(it.url);
     else if (it.thumb) el = im(it.thumb);
     if (el && !(el.videoWidth || el.naturalWidth)) el = it.thumb ? im(it.thumb) : null;
-    window.__doorMedia = { el: el, title: it.title };
+    window.__doorMedia = { el: el, title: it.title, canal: it.canal || 'CANALKIOSK' };
   }
   function load(){
+    if (esAltadis()) { items = [NEUTRA]; curIdx = -1; return; }
     try {
       var pS = fetch(STOCK, { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
         (j.items || []).forEach(function(x){ if (x && x.id && x.thumbnail) thumbs[x.id] = x.thumbnail; });
@@ -44,6 +56,7 @@
       Promise.all([pS, pG]).then(function(rs){
         var gd = rs[1] || {};
         try{ var ss = gd.config && gd.config.slotSeconds; if (ss > 0) period = ss * 1000; }catch(e){}
+        if (esAltadis()) return;
         var band = (gd.bands || []).find(function(b){ return b.isNow; }) || (gd.bands || [])[0];
         var seen = {};
         items = ((band && band.slots) || []).filter(function(s){

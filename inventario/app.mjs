@@ -85,10 +85,12 @@ function versions(asset,rotation=0){const fragment=document.createDocumentFragme
  imageFor(asset,tier,rotation).then(src=>{if(!stage.isConnected)return;const alt=asset.name+' · '+tier+' · Blender 3D';if(tier==='good'){pixelPreviews.set(stage,pixelPreview(stage,src,alt,()=>status.remove(),()=>{status.textContent='Imagen no disponible';}));return;}const img=el('img');img.alt=alt;img.onload=()=>status.remove();img.onerror=()=>{status.textContent='Imagen no disponible';img.remove();};img.src=src;stage.append(img);}).catch(()=>{status.textContent='Vista no disponible';status.classList.add('error');});
  }return fragment;}
 const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){observer.unobserve(e.target);const a=assets.find(a=>a.id===e.target.dataset.id);if(a)e.target.replaceChildren(versions(a));}},{rootMargin:'180px'});
+// Cliente activo (/assets/xpace-cliente.js): Admira ve todas las piezas; con otro cliente se ocultan las de otros clientes.
+document.addEventListener('xpace:cliente',()=>render());
 function render(){
  if(!data)return;syncScope();renderRevision++;observer.disconnect();const list=layout();$('#total').textContent=assets.length;$('#placed').textContent=list.filter(item=>!item.referenceOnly).length;
  $('#layout-source').textContent=store.layout(space)?'Último layout recibido del gemelo':'Distribución base · abre el gemelo para sincronizar';$('#open-space').href=twinURL(location.href,{...context,space});
- const query=$('#search').value.trim().toLocaleLowerCase('es');const shown=assets.filter(a=>(category==='Todas'||a.category===category)&&(a.number+' '+a.name).toLocaleLowerCase('es').includes(query));
+ const query=$('#search').value.trim().toLocaleLowerCase('es');const shown=assets.filter(a=>(category==='Todas'||a.category===category)&&(a.number+' '+a.name).toLocaleLowerCase('es').includes(query)&&(!window.XpaceCliente||window.XpaceCliente.visible({id:a.id,name:a.name})));
  const fragment=document.createDocumentFragment();shown.forEach((a,i)=>{
   const card=el('article',undefined,'card'),head=el('div',undefined,'card-head'),title=el('div',undefined,'card-title');title.append(el('span',a.category+' / '+(a.source||'XpaceOS'),'badge'),el('h2',a.name));const photo=photoFor(a);if(photo)head.append(photo);head.append(title,el('span',String(a.number).padStart(2,'0'),'number'));
   const previews=el('div',undefined,'previews');previews.dataset.id=a.id;for(const tier of tiers)previews.append(el('div','···','stage loading'));

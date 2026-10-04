@@ -1552,6 +1552,12 @@
           "note": "Marca blanca del catálogo admiranext.com/marcablanca (plataforma store). En la consola local del gemelo y en ⌘ Experto de cualquier página con shell se aplica en ese navegador tras comprobar el catálogo; por __xtExec (Telegram, MCP, /twin/cmd) solo devuelve el enlace https://www.xpaceos.com/admira-xp/?marca=starbucks y no cambia ninguna pantalla. Alias /brand. Starbucks es una propuesta automática, no la marca oficial."
         },
         {
+          "text": "/marca altadis",
+          "entrypoint": "CLI experto / __xtExec",
+          "status": "source_verified",
+          "note": "Cliente activo (assets/xpace-cliente.js, docs admira-xp/docs/cliente-activo.md): en ⌘ Experto filtra las listas de Xpacios por ese cliente más lo genérico de Admira (también ?cliente=<id>); /marca todas lista los clientes; /marca off vuelve a Admira, que lo ve todo. Mapeo editable /data/clientes-mapeo.json. Por __xtExec sigue siendo solo marca blanca (enlace)."
+        },
+        {
           "text": "/marca off",
           "entrypoint": "__xtExec",
           "status": "source_verified",

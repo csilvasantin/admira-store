@@ -155,6 +155,9 @@
     const parsed = parseCommand(text);
     if (!parsed) return false;
     if (parsed.verb === 'avatardigital' || parsed.verb === 'digitalavatar') return true;
+    // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF, /avatar [on|off|reset].
+    if (parsed.verb === 'avataron' || parsed.verb === 'avataroff') return true;
+    if (parsed.verb === 'avatar') return /^(on|off|reset)?$/i.test(parsed.args);
     if (parsed.verb !== 'cli') return false;
     return /^(ayudante|helper)(?:\s|$)/i.test(parsed.args);
   }
@@ -314,6 +317,56 @@
   const lang = () => langOf(html.lang);
   const T = (es, en) => (lang() === 'en' ? en : es);
   const shared = Object.assign({}, api, {version: VERSION, session: () => session});
+  // Cliente activo (assets/xpace-cliente.js): Admira lo ve todo; /marca <cliente> o ?cliente=<id> filtra
+  // las listas de Xpacios, sin selector visible. Como la marca blanca, solo se descarga si hace falta:
+  // con ?cliente=<id> (o un cliente recordado) o al usar /marca <cliente>. Una visita normal no carga nada.
+  let clientePromise = null;
+  function clientePedido() {
+    let id = '';
+    try { id = new URLSearchParams(root.location.search).get('cliente') || ''; } catch (_) {}
+    if (!id) { try { id = (JSON.parse(session && session.getItem('pixeria:cliente:v2') || 'null') || {}).id || ''; } catch (_) {} }
+    return !!id && !/^(admira|todos|todas|all|off|ninguno)$/i.test(id);
+  }
+  function cargarCliente() {
+    if (root.XpaceCliente) return root.XpaceCliente.cuando();
+    if (!clientePromise) {
+      clientePromise = new Promise(resolve => {
+        const sc = doc.createElement('script');
+        sc.src = '/assets/xpace-cliente.js' + (VERSION ? '?v=' + encodeURIComponent(VERSION) : '');
+        sc.async = true;
+        sc.setAttribute('data-xpace-cliente', '');
+        sc.onload = () => (root.XpaceCliente ? root.XpaceCliente.cuando().then(resolve) : resolve(null));
+        sc.onerror = () => { sc.remove(); clientePromise = null; resolve(null); };
+        (doc.head || html).append(sc);
+      });
+    }
+    return clientePromise;
+  }
+  if (clientePedido()) cargarCliente();
+  // /marca y el cliente (Carlos, 4-oct-2026): /marca <cliente> filtra por ese cliente (y si además es
+  // marca del catálogo, la viste como siempre); /marca off vuelve a Admira, que lo ve todo; /marca todas
+  // lista los clientes (en XpaceOS no hay selector visible). → true si ya no hace falta la marca blanca.
+  function marcaCliente(arg, write) {
+    const a = String(arg || '').trim();
+    // Sin cliente cargado, /marca, /marca off y /marca <web> siguen siendo solo marca blanca.
+    if (!root.XpaceCliente && (!a || /^off$/i.test(a) || /[.:\/]/.test(a))) return Promise.resolve(false);
+    return cargarCliente().then(C => (C ? marcaClienteListo(C, a, write) : false));
+  }
+  function marcaClienteListo(C, a, write) {
+    if (/^(todas|todos|all)$/i.test(a)) {
+      write(T('Clientes: ', 'Clients: ') + C.lista().map(c => c.id).join(', ') + T('. /marca <cliente> filtra los Xpacios; /marca off vuelve a Admira (todo).', '. /marca <client> filters the Xpaces; /marca off returns to Admira (everything).'));
+      return Promise.resolve(true);
+    }
+    if (/^off$/i.test(a)) { if (C.activo()) { C.fijar(''); write(T('Cliente Admira: ves todos los Xpacios.', 'Admira client: you see every Xpace.')); } return Promise.resolve(false); }
+    if (!a) { if (C.activo()) write(T('Cliente activo: ', 'Active client: ') + C.nombre() + '.'); return Promise.resolve(false); }
+    const c = C.resolver(a);
+    if (!c) return Promise.resolve(false);
+    C.fijar(c.id);
+    if (c.id === 'admira') { write(T('Cliente Admira: ves todos los Xpacios.', 'Admira client: you see every Xpace.')); return Promise.resolve(false); }
+    write(T('Cliente activo: ' + c.nombre + ' (' + c.id + '). Solo sus Xpacios y los genéricos de Admira; /marca off vuelve a Admira.', 'Active client: ' + c.nombre + ' (' + c.id + '). Only its Xpaces plus Admira generic ones; /marca off returns to Admira.'));
+    return cargarMarca().then(M => (M ? M.listar().catch(() => M.conocidas()) : []))
+      .then(items => !(items || []).some(b => b.id === c.id || b.id === a.toLowerCase()), () => true);
+  }
 
   // ─── Marca blanca: el único enganche. assets/marca-blanca.js se inserta con el sello de
   // este fichero solo si la pestaña pide marca o se usa /marca; sin marca, una visita no
@@ -339,15 +392,20 @@
   Object.assign(shared, {
     brandSeed: BRAND_SEED,
     cargarMarca,
-    marca: (arg, write) => cargarMarca().then(M => runMarca(arg, M, lang() === 'en', write)),
+    marca: (arg, write) => marcaCliente(arg, write).then(hecho => (hecho ? {ok: true} : cargarMarca().then(M => runMarca(arg, M, lang() === 'en', write)))),
     marcaCatalog: () => cargarMarca().then(M => (M ? M.listar().catch(() => null) : null)),
   });
   // Una página muy pintada a mano (CMDB) pide que la marca vista solo la barra y los paneles.
   if (script && script.dataset.marca === 'barra') html.setAttribute('data-mb-alcance', 'barra');
   if (wantsBrand(root.location && root.location.search, session)) cargarMarca();
 
-  // Avatar digital: no se descarga en una visita normal. Solo si el sitio lo dejó
-  // encendido, o cuando el CLI llama a shared.avatar (FLT-101350).
+  // Avatar digital (encargo avatar · 4-oct-2026). Lo gobierna el cargador común de
+  // admiranext.com: elección del visitante > interruptor del proyecto > apagado. El
+  // cargador pesa poco y, apagado, solo consulta la bandera: el avatar en sí no se
+  // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
+  // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
+  // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-1';
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
@@ -355,7 +413,32 @@
     try { return !!(local && local.getItem(avatarKey()) === '1'); } catch (_) { return false; }
   }
   let avatarPromise = null;
+  let loaderPromise = null;
+  function cargarCargador() {
+    if (root.AdmiraAvatar) return Promise.resolve(root.AdmiraAvatar);
+    if (!loaderPromise) {
+      loaderPromise = new Promise(resolve => {
+        const s = doc.querySelector('script[data-admira-avatar]') || doc.createElement('script');
+        if (s.isConnected) {
+          s.addEventListener('load', () => resolve(root.AdmiraAvatar || null), {once: true});
+          s.addEventListener('error', () => resolve(null), {once: true});
+          return;
+        }
+        s.src = AVATAR_LOADER;
+        s.async = true;
+        s.setAttribute('data-admira-avatar', '');
+        s.onload = () => resolve(root.AdmiraAvatar || null);
+        s.onerror = () => { s.remove(); loaderPromise = null; resolve(null); };
+        (doc.head || doc.documentElement).append(s);
+      });
+    }
+    return loaderPromise;
+  }
   function cargarAvatar() {
+    if (root.AdmiraAvatar) return Promise.resolve(root.AdmiraAvatar);
+    return cargarCargador().then(A => A || cargarAvatarAntiguo());
+  }
+  function cargarAvatarAntiguo() {
     if (root.AvatarDigital) return Promise.resolve(root.AvatarDigital);
     if (!avatarPromise) {
       avatarPromise = new Promise(resolve => {
@@ -379,7 +462,9 @@
   // El gemelo trae la barra en línea: no se duplica nada (solo queda el API y la marca).
   if (doc.getElementById('topBar') && !doc.querySelector('[data-xpace-shell]')) {
     root.XpaceShell = Object.assign(shared, {inline: true});
-    if (avatarStoredOn()) cargarAvatar();
+    let enIframe = false;
+    try { enIframe = root.self !== root.top; } catch (_) { enIframe = true; }
+    if (!enIframe) cargarCargador();
     return;
   }
   if (root.XpaceShell) return;
@@ -391,6 +476,8 @@
     root.XpaceShell = Object.assign(shared, {inline: false, framed: true});
     return;
   }
+  // Un solo avatar por pestaña: dentro de un iframe nunca se carga.
+  if (!framed) cargarCargador();
 
   function mount() {
     const cfg = normalizeConfig(root.XPACE_SHELL, script ? script.dataset : {});
@@ -520,6 +607,8 @@
     L.push(T('  /gemelo [orden] — abre el gemelo y, si la das, ejecuta allí la orden', '  /gemelo [command] — open the twin and, if given, run the command there'));
     L.push(T('  /marca [marca] — Marca blanca del catálogo de admiranext.com/marcablanca: /marca <id> viste la web con esa marca, /marca off vuelve a Admira, /marca sola dice cuál está activa y lista las disponibles, /marca <web> abre el analizador en otra pestaña. Alias: /brand.',
       '  /marca [brand] — White label from the admiranext.com/marcablanca catalogue: /marca <id> dresses the site in that brand, /marca off returns to Admira, /marca alone shows the active one and lists them, /marca <website> opens the analyser in a new tab. Alias: /brand.'));
+    L.push(T('  /marca <cliente> — filtra las listas de Xpacios por ese cliente (lo suyo y lo genérico de Admira); /marca todas lista los clientes; /marca off vuelve a Admira, que lo ve todo. También ?cliente=<id> en la URL.',
+      '  /marca <client> — filters the Xpace lists by that client (its own plus Admira generic); /marca todas lists the clients; /marca off returns to Admira, which sees everything. Also ?cliente=<id> in the URL.'));
     for (const def of new Set(pageVerbs.values())) L.push('  /' + def.id + (def.aliases && def.aliases.length ? ' (/' + def.aliases.join(', /') + ')' : '') + ' — ' + pick(lang(), def));
     L.push(T('Verbos del gemelo (se abren y se ejecutan en /admira-xp/): ', 'Twin verbs (opened and run in /admira-xp/): ') +
       '/distribuir · matrix · better · /status · /stock · /music · /ds · /layout · /inventario · /sincro · /xpacio …');
@@ -654,6 +743,24 @@
       run: (args) => shared.avatar('/avatardigital' + (args ? ' ' + args : '')),
     });
     registerVerb({
+      id: 'avatarON',
+      es: 'Muestra el avatar digital en esta web y lo recuerda.',
+      en: 'Show the digital avatar on this site and remember it.',
+      run: () => shared.avatar('/avatarON'),
+    });
+    registerVerb({
+      id: 'avatarOFF',
+      es: 'Oculta el avatar digital en esta web y lo recuerda.',
+      en: 'Hide the digital avatar on this site and remember it.',
+      run: () => shared.avatar('/avatarOFF'),
+    });
+    registerVerb({
+      id: 'avatar',
+      es: 'Avatar digital: /avatar on|off lo fija; /avatar reset vuelve a lo que diga el proyecto; sin argumento alterna.',
+      en: 'Digital avatar: /avatar on|off pins it; /avatar reset returns to the project setting; no argument toggles.',
+      run: (args) => shared.avatar('/avatar' + (args ? ' ' + args : '')),
+    });
+    registerVerb({
       id: 'cli',
       es: 'Interruptor del avatar: /cli ayudante [on|off]. El resto de /cli sigue al gemelo.',
       en: 'Avatar switch: /cli helper [on|off]. Any other /cli still goes to the twin.',
@@ -663,7 +770,6 @@
         handoff('/cli' + (args ? ' ' + args : ''));
       },
     });
-    if (avatarStoredOn()) cargarAvatar();
     log(T('XpaceOS · consola lista. Escribe /help.', 'XpaceOS · console ready. Type /help.'));
 
     Object.assign(shared, {

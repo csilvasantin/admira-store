@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.04.10.2026.r8.18:39"/>
-  <!-- Espejo de www.xpaceos.com (8fc6a19), sincronizado con
+  <meta name="admiranext-version" content="v.04.10.2026.r12.21:02"/>
+  <!-- Espejo de www.xpaceos.com (0a6ba1b), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
@@ -1275,6 +1275,19 @@ const GEMELOS_API = 'https://brain.digitalavatar.ai/locations?view=summary'; // 
 const SURF_ICON = { pantalla:'📺', escaparate:'🪟', mostrador:'🧾', vending:'🥤', pwa:'📱' };
 const GEMELOS_MAX = 24; // tope de tarjetas renderizadas — el catálogo puede tener miles
 let gemelosData = null; // null = loading · 'error' · []/[…] = data
+// Cliente activo (assets/xpace-cliente.js): Admira lo ve todo; con /marca <cliente> o ?cliente=<id>
+// solo sus gemelos y los genéricos de Admira (mapeo editable en /data/clientes-mapeo.json).
+let gemelosTodos = null;
+function gemelosDelCliente() { return window.XpaceCliente ? window.XpaceCliente.filtrar(gemelosTodos) : gemelosTodos; }
+document.addEventListener('xpace:cliente', () => {
+  if (!Array.isArray(gemelosTodos)) return;
+  gemelosData = gemelosDelCliente();
+  const b = document.getElementById('pr-brands'); if (b) b.dataset.built = '';
+  if (typeof prState === 'object') prState.page = 1;
+  renderGemelos();
+  if (typeof renderCatalogo === 'function') renderCatalogo();
+  if (typeof renderPulses === 'function') renderPulses();
+});
 
 function gmDict() { return I18N[document.documentElement.lang] || I18N.en; }
 function gmEsc(s) {
@@ -1329,7 +1342,8 @@ async function loadGemelos() {
     clearTimeout(t);
     if (!r.ok) throw new Error('http ' + r.status);
     const json = await r.json();
-    gemelosData = (json && Array.isArray(json.locations)) ? json.locations : [];
+    gemelosTodos = (json && Array.isArray(json.locations)) ? json.locations : [];
+    gemelosData = gemelosDelCliente();
   } catch (e) {
     gemelosData = 'error';
   }

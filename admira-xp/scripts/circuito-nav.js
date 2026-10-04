@@ -28,7 +28,7 @@
   // Altadis servidos con el propio sitio (/altadis/media/). Sin parámetro → la
   // media de la ficha del punto, como siempre. La navegación conserva el parámetro.
   var MEDIA_PRESETS = {
-    formatos18: { vertical: '/altadis/media/01-vertical-1080x1920.mp4', horizontal: '/altadis/media/02-horizontal-1920x1080.mp4' }
+    formatos18: { vertical: '/altadis/media/01-vertical-1080x1920.mp4?v=admira-20261004', horizontal: '/altadis/media/02-horizontal-1920x1080.mp4?v=admira-20261004' } // ?v=: la pieza JTI anterior no sale de la caché
   };
   function okUrl(u) { return typeof u === 'string' && (/^https:\/\//.test(u) || /^\/[^\/]/.test(u)); }
   var MEDIA_OVR = (function () {
@@ -125,7 +125,7 @@
     var ors = screenSurfaces().map(function (s) { return s.orient === 'vertical' ? '▯ vertical' : s.orient === 'horizontal' ? '▭ horizontal' : ''; }).filter(Boolean).join(' + ');
     d.innerHTML = '<button data-go="prev" style="' + b + '" title="Anterior ([)">◀ ' + (prev.tourOrder || '') + '</button>' +
       '<span style="padding:0 6px;text-align:center;line-height:1.25"><span style="color:#ff6a3d">' + (cur.circuitLabel || cur.circuit) + '</span> · ' + (idx + 1) + '/' + items.length +
-      '<br><span style="font-weight:400">' + (cur.name || cur.id) + (ors ? ' · ' + ors : '') + (MEDIA_OVR ? ' · <span style="color:#ff6a3d">pieza JTI 9:16 / 16:9</span>' : '') + '</span></span>' +
+      '<br><span style="font-weight:400">' + (cur.name || cur.id) + (ors ? ' · ' + ors : '') + (MEDIA_OVR ? ' · <span style="color:#ff6a3d">pieza Admira 9:16 / 16:9</span>' : '') + '</span></span>' +
       '<button data-go="tour" style="' + b + '">' + (tourSec ? '■' : '▶ Recorrido') + '</button>' +
       '<button data-go="next" style="' + b + '" title="Siguiente (])">' + (next.tourOrder || '') + ' ▶</button>';
     d.addEventListener('click', function (ev) {
