@@ -1,15 +1,11 @@
 {
   "version": "v.05.10.2026.r2.00:16",
-  "signature": "WaltDisneyBox · Box",
-  "machine": "Box",
-  "agent": "WaltDisneyBox",
-  "deployer": "WaltDisneyBox",
-  "evidence": "⌘ EXPERTO · CLI con la piel compartida de la suite (look digitalavatar.ai) minimizado por defecto como una línea de orden; /cli del avatar como en admira.app (/cli estado, /cli good|better|best). Sello del shell 20261004-experto-store-2.",
-  "deployedAt": "2026-10-04T22:17:10.455396+00:00",
-  "git": "80067aa59083a4fcda40fcac6d98d71d348f655a",
-  "gitFull": "80067aa59083a4fcda40fcac6d98d71d348f655a",
-  "gitShort": "80067aa",
-  "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "deployedAt": "2026-10-04T22:26:12Z",
+  "deployer": "SmithMacMini",
+  "machine": "MacMini",
+  "signature": "SmithMacMini · MacMini",
+  "git": "c81ffe2638bccf7830941f026b1802d98c48988b",
+  "gitShort": "c81ffe2",
+  "gitFull": "c81ffe2638bccf7830941f026b1802d98c48988b",
+  "dirty": false
 }
