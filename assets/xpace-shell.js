@@ -155,7 +155,8 @@
     const parsed = parseCommand(text);
     if (!parsed) return false;
     if (parsed.verb === 'avatardigital' || parsed.verb === 'digitalavatar') return true;
-    // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF, /avatar [on|off|reset].
+    // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF,
+    // /avatar [on|off|reset|good|better|best]. good, better y best se quedan aquí.
     if (parsed.verb === 'avataron' || parsed.verb === 'avataroff') return true;
     if (parsed.verb === 'avatar') return /^(on|off|reset|good|better|best)?$/i.test(parsed.args);
     if (parsed.verb !== 'cli') return false;
