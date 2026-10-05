@@ -1,4 +1,4 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=ipad-20261005-1';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=center-20261006-1';
 import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
 const listeners=new Set();
 let dialog,dispose,controller,hud,requestId,lastFocus,busy=false,viewError='';

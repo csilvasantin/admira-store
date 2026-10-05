@@ -142,24 +142,3 @@
 
 /* 5 · Lo que no cambia: el lienzo y los medios del gemelo y de las páginas. */
 :root[data-mb-marca][data-mb-plataforma="store"] :is(canvas,video,img:not(.mb-logo-img),iframe){filter:none;mix-blend-mode:normal}
-
-/* Docked modules must use the same opaque, contrast-checked panel palette.
-   Matrix/HUD colours were authored for dark scenes and cannot bleed into light brands. */
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,.xs-expert,#telegramDock,#characterDock){
-  --mbx-ink:var(--mbx-panel-ink);--mbx-mut:var(--mbx-panel-mut);--mbx-brand:var(--mbx-panel-brand);
-  --mbx-accent:var(--mbx-panel-accent);--mbx-ok:var(--mbx-panel-ok);--mbx-warn:var(--mbx-panel-warn);--mbx-error:var(--mbx-panel-error);--mbx-on-brand:var(--mbx-panel-on-brand);
-  --mbx-panel:var(--mbx-panel-surface);--mbx-inset:var(--mbx-panel-inset);
-}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,#telegramDock,#characterDock,.xs-expert) :is(p,span,small,b,strong,label,summary,output,[role="status"]){color:var(--mbx-ink)!important;text-shadow:none!important;opacity:1}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(#telegramDock,.xs-expert) :is(.expert-controls-pane,.expert-view-pane,.expert-docked-panel,.xs-expert-docked){background:var(--mbx-panel)!important;color:var(--mbx-ink)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,#telegramDock,#characterDock,.xs-expert) :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select){background:var(--mbx-inset)!important;color:var(--mbx-ink)!important;border-color:var(--mb-borde)!important;opacity:1;color-scheme:normal}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,#telegramDock,#characterDock,.xs-expert) :is(input,textarea)::placeholder{color:var(--mbx-mut)!important;opacity:1}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(#telegramDock,.xs-expert) :is(.matrix-map-toolbar,.tier-hud,.tier-hud-heading,.tier-hud-clock,.tier-hud-status,.tier-hud-details,.matrix-announcement-line,.matrix-map-status,.matrix-music-status,.matrix-screen-status,.matrix-tpv-status,.matrix-remote-status,.matrix-announcement-status){color:var(--mbx-ink)!important;opacity:1;text-shadow:none}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(#telegramDock,.xs-expert) :is(.matrix-map-toolbar,.matrix-announcement-line) :is(button,a){background:var(--mbx-inset)!important;color:var(--mbx-ink)!important;border-color:var(--mb-borde)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(#telegramDock,.xs-expert) :is(.matrix-map-toolbar,.matrix-announcement-line) button[aria-pressed="true"]{background:var(--mbx-brand)!important;color:var(--mbx-on-brand)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,#telegramDock,#characterDock,.xs-expert) :is(button,a) :is(span,small,b,strong){color:inherit!important}
-:root[data-mb-marca][data-mb-plataforma="store"] .quad-menu :is(.qm-acc-body,.media-ready,.options-playlist,.pixeria-picker){background:var(--mbx-inset)!important;color:var(--mbx-ink)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] .quad-menu :is(button,a){background:var(--mbx-panel)!important;color:var(--mbx-ink)!important;border-color:var(--mb-borde)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,#telegramDock,.xs-expert) :is(button,a):is(.is-active,.is-selected,[aria-pressed="true"]){background:var(--mbx-brand)!important;color:var(--mbx-on-brand)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(.quad-menu,#telegramDock,.xs-expert) button:disabled{opacity:1;color:var(--mbx-mut)!important;background:var(--mbx-panel)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] :is(#telegramDock,.xs-expert) :is(.expert-media-form,.xs-category-detail){background:var(--mbx-inset)!important;color:var(--mbx-ink)!important}

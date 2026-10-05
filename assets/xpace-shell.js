@@ -372,6 +372,12 @@
   const doc = document, html = doc.documentElement;
   const script = doc.currentScript;
   const VERSION = (() => { try { return new URL(script.src).searchParams.get('v') || ''; } catch (_) { return ''; } })();
+  // Self-contained Expert pilot, including the twin's inline shell.
+  if (!doc.querySelector('link[data-expert-legibility]')) {
+    const sheet = doc.createElement('link');
+    sheet.rel = 'stylesheet'; sheet.href = '/assets/expert-legibility.css?v=' + encodeURIComponent(VERSION);
+    sheet.setAttribute('data-expert-legibility', ''); doc.head.append(sheet);
+  }
   const local = (() => { try { return root.localStorage; } catch (_) { return null; } })();
   const session = (() => { try { return root.sessionStorage; } catch (_) { return null; } })();
   const lang = () => langOf(html.lang);

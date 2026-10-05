@@ -4230,18 +4230,24 @@
     "en": "Starbucks adds a landscape iPad on the counter, replacing the promotion sign below screen 4. Expert → Inventory/ITIL shows record PDG103-IPAD-01, model 52. This is a planned virtual device: the photo identifies the previous sign; physical installation, serial number and measurements are pending. In Options → Image or Video import Pixeria content, review its preview and drag it to the iPad: only that target displays it. To keep it, open Current playlist at the bottom of Video, choose iPad · Landscape advertising and add or drag the content; Launch plays it. The playlist starts empty. Reload screen restores its schedule. Good, Better, Best and Matrix retain this identity, bezel and landscape format; content fits without stretching. Wall, POS and background music retain their independent playlists."
   },
   "white_label": {
-    "es": "Con /marca, los paneles Opciones, Avanzados y Experto usan superficies opacas y pares de texto/fondo propios con contraste mínimo 4,5:1, incluidos campos, ayudas, estados Matrix y previsualizaciones. Si la superficie alternativa de una marca tiene un color incompatible, se usa la superficie segura. Los fondos claros, oscuros o transparentes de la página no atraviesan los campos ni borran sus textos. Los botones seleccionados también calculan su texto sobre el fondo activo. La escena y los contenidos conservan sus colores.",
-    "en": "With /marca, Options, Advanced and Expert panels use opaque surfaces and their own text/background pairs with at least 4.5:1 contrast, including fields, hints, Matrix statuses and previews. If a brand alternative surface has an incompatible colour, the safe surface is used. Light, dark or transparent page backgrounds do not bleed through fields or erase their text. Selected buttons also calculate their text against the active background. The scene and media retain their colours.",
-    "panel_contrast": {
-      "minimum_ratio": 4.5,
-      "opaque_surfaces": true,
+    "es": "La corrección de legibilidad se prueba sólo en Experto: una hoja independiente fija superficies opacas oscuras y texto claro, incluidos campos, categorías, Signage y estados Matrix. No depende de que carguen las variables de /marca. Opciones y Avanzados recuperan sus estilos anteriores. La extensión al resto de la interfaz queda pendiente de validar este piloto con Carlos.",
+    "en": "The readability correction is piloted only in Expert: an independent stylesheet sets opaque dark surfaces and light text for fields, categories, Signage and Matrix statuses. It does not depend on /marca variables loading. Options and Advanced return to their previous styles. Extending the correction to the rest of the interface is pending Carlos validating this pilot.",
+    "expert_legibility": {
       "scope": [
-        "Options",
-        "Advanced",
-        "Expert",
-        "Matrix statuses"
+        "Expert"
       ],
-      "alternate_fallback": "safe panel surface"
+      "sheet": "/assets/expert-legibility.css",
+      "opaque": true,
+      "brand_variables_required": false,
+      "other_panels": "previous styles restored; expansion pending Carlos validation"
     }
+  },
+  "media_centre_grip": {
+    "es": "El punto de cogida y de destino es el centro del previo gráfico: imagen, fotograma de vídeo o carátula de audio/música. La miniatura se centra bajo el cursor, sin desplazamiento lateral ni reajuste al borde de la ventana; el destino se comprueba en ese mismo punto al pasar y soltar. Hilo Musical permite importar también archivos de audio y locuciones publicados en Stock, conservando su ID y tipo original en el catálogo. Arrastra su carátula a la playlist musical; los controles de audio quedan debajo. Imagen y vídeo van a pantallas o su playlist. Soltar en una playlist añade sin reproducir. Escape o soltar fuera cancela. Los previos de Playlist del dispositivo y las miniaturas de Signage también se cogen por el centro.",
+    "en": "The pickup and target point is the centre of the graphic preview: image, video frame or audio/music cover. The thumbnail is centred under the cursor, without an offset or repositioning at the window edge; hover and drop use that same point. Background music also imports audio files and announcements published in Stock, keeping their ID and original catalogue type. Drag their cover to the music playlist; audio controls remain below. Images and videos go to screens or their playlist. A playlist drop adds without playback. Escape or dropping outside cancels. Device playlist previews and Signage thumbnails are also picked up at their centre.",
+    "anchor": "graphic centre",
+    "target_coordinates": "same pointer for hover and drop",
+    "audio_destination": "music playlist",
+    "silent_playlist_insert": true
   }
 }
