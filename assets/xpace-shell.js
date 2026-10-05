@@ -58,7 +58,7 @@
   ];
   // Las vistas del gemelo se escriben sin barra (good, better, best, matrix).
   const BARE_TWIN = ['good', 'better', 'best', 'matrix'];
-  const SHELL_VERBS = ['help', 'ayuda', 'limpiar', 'clear', 'gemelo', 'twin', 'marca', 'brand', 'idioma', 'language'];
+  const SHELL_VERBS = ['help', 'ayuda', 'limpiar', 'clear', 'gemelo', 'twin', 'marca', 'brand', 'idioma', 'language', 'avatar', 'avatardigital', 'digitalavatar', 'admirito', 'avataron', 'avataroff'];
 
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const pick = (lang, item) => (typeof item === 'string' ? item : lang === 'en' ? (item.en || item.es || '') : (item.es || item.en || ''));
@@ -149,18 +149,24 @@
     if (!m) return null;
     return {raw, slash: !!m[1], verb: m[2].toLowerCase(), args: (m[3] || '').trim()};
   }
-  // Interruptor del avatar (FLT-101350). /cli ayudante|helper es el avatar;
-  // cualquier otro /cli sigue siendo verbo del gemelo.
-  function isAvatarCommand(text) {
-    const parsed = parseCommand(text);
-    if (!parsed) return false;
-    if (parsed.verb === 'avatardigital' || parsed.verb === 'digitalavatar') return true;
-    // Cargador común (encargo avatar · 4-oct-2026): /avatarON, /avatarOFF, /avatar [on|off|reset].
-    if (parsed.verb === 'avataron' || parsed.verb === 'avataroff') return true;
-    if (parsed.verb === 'avatar') return /^(on|off|reset|good|better|best)?$/i.test(parsed.args);
-    if (parsed.verb !== 'cli') return false;
-    return /^(?:(ayudante|helper)(?:\s|$)|(good|better|best)$|$)/i.test(parsed.args);
+  // The digital assistant belongs to this browser; /avatar3d remains the scene totem.
+  function avatarCommandText(text) {
+    const p = parseCommand(text);
+    if (!p) return null;
+    let verb = p.verb, args = p.args;
+    if (verb === 'avatar' && /^digital(?:\s|$)/i.test(args)) {
+      verb = 'avatardigital'; args = args.replace(/^digital(?:\s+|$)/i, '').trim();
+    }
+    if (verb === 'cli') {
+      if (/^(good|better|best)?$/i.test(args)) return ('/avatar ' + args.toLowerCase()).trim();
+      if (!/^(ayudante|helper)(?:\s|$)/i.test(args)) return null;
+    } else if (!['avatardigital', 'digitalavatar', 'admirito', 'avataron', 'avataroff'].includes(verb)) {
+      if (verb !== 'avatar' || !/^(on|off|reset|status|estado|good|better|best|encender|apagar|mostrar|ocultar|show|hide)?$/i.test(args)) return null;
+    }
+    if (/^(status|estado)$/i.test(args)) return '/avatar';
+    return '/' + verb + (args ? ' ' + args : '');
   }
+  function isAvatarCommand(text) { return avatarCommandText(text) !== null; }
   const isTwinVerb = verb => TWIN_VERBS.includes(String(verb || '').toLowerCase());
   // Orden canónica para el gemelo: las vistas van sin barra; el resto con barra.
   function twinCommand(parsed) {
@@ -329,7 +335,7 @@
 
   const api = {PANELS_KEY, HISTORY_KEY, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
-    esc, normalizeConfig, markup, parseCommand, languageCommand, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
+    esc, normalizeConfig, markup, parseCommand, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -505,11 +511,28 @@
     return avatarPromise;
   }
   Object.assign(shared, {
-    // /cli y /cli good|better|best (como en admira.app) son /avatar y /avatar <nivel>; también en el gemelo.
-    avatar: (text) => {
-      const p = parseCommand(text);
-      if (p && p.verb === 'cli' && /^(good|better|best)?$/i.test(p.args)) text = ('/avatar ' + p.args.toLowerCase()).trim();
-      return cargarAvatar().then(A => (A ? A.handle(text) : T('Avatar digital no disponible', 'Digital avatar unavailable')));
+    avatar: async (text) => {
+      const command = avatarCommandText(text);
+      const A = await cargarAvatar();
+      if (!A || typeof A.handle !== 'function') throw Error(T('Avatar digital no disponible. Reintenta.', 'Digital avatar unavailable. Retry.'));
+      // Do not silently accept extra arguments or multiple commands.
+      const p = parseCommand(command || text);
+      const args = p?.verb === 'cli' ? p.args.replace(/^(ayudante|helper)\s*/i, '') : p?.args;
+      if (/\s/.test(args || '') || (A.decide && A.decide(command || text) === 'bad')) throw Error(T('Usa /avatar digital on o /avatar digital off.', 'Use /avatar digital on or /avatar digital off.'));
+      let executable = command || text;
+      if (A.decide && A.decide(executable) == null) {
+        const legacy = executable.match(/^\/(?:avatar(on|off)|avatar\s+(on|off|encender|apagar|mostrar|ocultar|show|hide))$/i);
+        if (!legacy) throw Error(T('Esta orden requiere el cargador central del avatar. Reintenta.', 'This command requires the central avatar loader. Retry.'));
+        executable = '/avatardigital ' + (legacy[1] || legacy[2]).toLowerCase();
+      }
+      const line = await A.handle(executable);
+      if (!line) throw Error(T('El avatar no confirmó la orden. Reintenta.', 'The avatar did not confirm the command. Retry.'));
+      return line;
+    },
+    avatarCommand: async (text) => {
+      if (!isAvatarCommand(text)) return null;
+      try { return {ok: true, local: true, kind: 'avatar', message: await shared.avatar(text)}; }
+      catch (error) { return {ok: false, local: true, kind: 'avatar', message: 'Error: ' + error.message}; }
     },
   });
 
@@ -692,6 +715,8 @@
     try {
       const languageResult = shared.language(text);
       if (languageResult) {translate(); log(languageResult.message); return;}
+      const avatarResult = await shared.avatarCommand(text);
+      if (avatarResult) { log(avatarResult.message); return; }
       if (verb === 'help' || verb === 'ayuda' || verb === '?') { log(helpText()); return; }
       if (verb === 'limpiar' || verb === 'clear' || verb === 'cls') { const ol = doc.getElementById('xsLog'); if (ol) ol.replaceChildren(); return; }
       if (verb === 'gemelo' || verb === 'twin') {
@@ -843,9 +868,9 @@
     suiteExperto();
     registerVerb({
       id: 'avatardigital',
-      aliases: ['digitalavatar'],
-      es: 'Alias de /avatar. Sin argumento dice el estado; good, better y best abren el calvo, la chica o Neo.',
-      en: 'Alias of /avatar. No argument shows the status; good, better and best open the bald face, the girl or Neo.',
+      aliases: ['digitalavatar', 'admirito'],
+      es: '/avatar digital on|off activa u oculta el asistente. /avatarDigital sin argumento alterna Admirito; good, better y best conservan sus modelos.',
+      en: '/avatar digital on|off enables or hides the assistant. /avatarDigital alone toggles Admirito; good, better and best retain their models.',
       run: (args) => shared.avatar('/avatardigital' + (args ? ' ' + args : '')),
     });
     registerVerb({
@@ -862,8 +887,8 @@
     });
     registerVerb({
       id: 'avatar',
-      es: '/avatar good abre el calvo (cara 3D, 52 blendshapes) · /avatar better abre la chica (Ready Player Me, gafas) · /avatar best abre a Neo (MetaHuman; si el host de render está apagado, cae a la chica). /avatar sin nivel dice el estado. /avatarON lo muestra y /avatarOFF lo oculta. /avatar reset vuelve al interruptor del proyecto.',
-      en: '/avatar good opens the bald 3D face (facecap, 52 blendshapes) · /avatar better opens the web girl (Ready Player Me, glasses) · /avatar best opens Neo (MetaHuman; if the render host is off, the girl takes over). /avatar alone shows the status. /avatarON shows it and /avatarOFF hides it. /avatar reset follows the project switch.',
+      es: '/avatar good abre el calvo (cara 3D, 52 blendshapes) · /avatar better abre la chica (Ready Player Me, gafas) · /avatar best abre a Neo (MetaHuman; si el host de render está apagado, cae a la chica). /avatar sin nivel dice el estado. /avatar digital on lo muestra y /avatar digital off lo oculta; /avatarON y /avatarOFF siguen disponibles. /avatar reset vuelve al interruptor del proyecto.',
+      en: '/avatar good opens the bald 3D face (facecap, 52 blendshapes) · /avatar better opens the web girl (Ready Player Me, glasses) · /avatar best opens Neo (MetaHuman; if the render host is off, the girl takes over). /avatar alone shows the status. /avatar digital on shows it and /avatar digital off hides it; /avatarON and /avatarOFF remain available. /avatar reset follows the project switch.',
       run: (args) => shared.avatar('/avatar' + (args ? ' ' + args : '')),
     });
     registerVerb({

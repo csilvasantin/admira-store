@@ -3682,5 +3682,38 @@
     ],
     "preference": "xtanco_lang per browser origin; explicit command updates lang URL and overrides locale lock",
     "new_remote_tool": false
+  },
+  "avatar_controls": {
+    "es": "En Experto, /avatar digital on activa el asistente y /avatar digital off lo oculta y detiene su voz. Se mantienen /avatarDigital on|off, /avatarON, /avatarOFF y /cli ayudante on|off. En Avatar3D → Opciones, los botones «Avatar digital · on/off» controlan ese mismo asistente; «Encender/Apagar tótem» mantienen el avatar de la escena. La elección se recuerda por navegador y dominio. Los comandos son locales: no se envían a Telegram ni al MCP. Un fallo devuelve error, sin confirmar una activación inexistente. Se conservan modelos, marca blanca, idioma, historial CLI y datos del Xpacio.",
+    "en": "In Expert, /avatar digital on enables the assistant and /avatar digital off hides it and stops its voice. /avatarDigital on|off, /avatarON, /avatarOFF and /cli helper on|off remain available. In Avatar3D → Options, “Digital avatar · on/off” controls that same assistant; “Turn on/off totem” retains the scene avatar. The choice is remembered per browser and domain. Commands run locally and are never sent to Telegram or MCP. Failures report an error without confirming a nonexistent activation. Models, white label, language, CLI history and Xpace data are preserved.",
+    "commands": [
+      "/avatar digital on",
+      "/avatar digital off"
+    ],
+    "aliases": [
+      "/avatarDigital on|off",
+      "/avatarON",
+      "/avatarOFF",
+      "/cli ayudante on|off",
+      "/cli helper on|off"
+    ],
+    "guide": "https://www.xpaceos.com/admira-xp/docs/avatar-controls.md",
+    "local": true,
+    "new_remote_tool": false,
+    "implementation": [
+      "assets/xpace-shell.js",
+      "admira-xp/index.html",
+      "admira-xp/scripts/expert-category-detail.js"
+    ],
+    "renderer": "https://www.admiranext.com/assets/avatar.js",
+    "preference": "admira-avatar:override per browser origin",
+    "independent_scene_command": "/avatar3d on|off",
+    "preserves": [
+      "models",
+      "white_label",
+      "language",
+      "cli_history",
+      "scene_data"
+    ]
   }
 }

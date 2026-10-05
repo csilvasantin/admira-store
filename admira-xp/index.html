@@ -756,7 +756,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=options-language-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261005-avatar-controls-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -31188,6 +31188,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Atmosphere':'Atmósfera',items:['/ambiente','/ambiente vol 50','/voces']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Real operations':'Operativa real',items:['/devolucion','/pedido']},
       {title:typeof lang!=='undefined'&&lang==='en'?'AdmiraNext integration':'Integración AdmiraNext',items:['/socios export']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Digital assistant (local)':'Asistente digital (local)',items:['/avatar digital on','/avatar digital off','/avatarDigital on','/avatarDigital off','/avatarON','/avatarOFF','/avatar','/avatar reset']},
       {title:typeof lang!=='undefined'&&lang==='en'?'AI and content':'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Quick settings':'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Music and layout':'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
@@ -31721,6 +31722,8 @@ window.xtAPI = (function(){
     const text=String(rawText||'').trim();
     const languageResult=window.XpaceShell?.language(text,next=>setLanguage(next));
     if(languageResult)return languageResult;
+    const avatarResult=await window.XpaceShell?.avatarCommand?.(text);
+    if(avatarResult)return avatarResult;
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
@@ -32964,11 +32967,9 @@ window.xtAPI = (function(){
     if(window.XpaceShell&&typeof window.XpaceShell.isAvatarCommand==='function'&&window.XpaceShell.isAvatarCommand(clean)){
       hideHelpPanel();
       appendTelegramLog('out','Experto',clean);
-      let line='';
-      try{ line=await window.XpaceShell.avatar(clean); }
-      catch(e){ line='Error: '+(e&&e.message||e); }
-      appendTelegramLog('bot','XpaceOS',line||'');
-      showLastResponse(line||'','ok','local-visual');
+      const result=await window.XpaceShell.avatarCommand(clean);
+      appendTelegramLog(result.ok?'bot':'err','XpaceOS',result.message);
+      showLastResponse(result.message,result.ok?'ok':'err','local-visual');
       if(composer)composer.value='';
       renderQuickActionButtons();return;
     }
@@ -35917,7 +35918,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/expert-categories.css?v=options-language-1">
 <script src="scripts/expert-categories.js?v=options-language-1"></script>
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
-<script src="scripts/expert-category-detail.js?v=inventory-lang-20261004-1"></script>
+<script src="scripts/expert-category-detail.js?v=avatar-controls-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">

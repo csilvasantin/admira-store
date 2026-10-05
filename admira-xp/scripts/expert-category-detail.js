@@ -13,7 +13,11 @@
     const key=selected,output=section(key).querySelector('.expert-detail-response');
     try{
       let result;
-      if(/^\/dvr$/.test(text))result=window.openDVRPanel?.();
+      if(window.XpaceShell?.isAvatarCommand(text)){
+        const avatar=await window.XpaceShell.avatarCommand(text);
+        result=avatar.message;
+      }
+      else if(/^\/dvr$/.test(text))result=window.openDVRPanel?.();
       else if(/^\/envivo$/.test(text))result=window.closeDVRPanel?.();
       else if(/^\/AdmiraLive /.test(text))result=window.XpaceExpertActions.setAdmiraLive(text.slice(12));
       else if(/^\/livecam$/.test(text))result=await window.toggleLiveCam?.();
@@ -56,8 +60,10 @@
     if(key==='anonymizer')button(actions,'Abrir Anonymizer en Pixeria','Open Anonymizer in Pixeria',()=>launch(key));
     if(key==='editor')button(actions,'Distribuir muebles','Distribute furniture',()=>command('/cli '+(en()?'distribute':'distribuir')));
     if(key==='avatar3d'){
-      button(actions,'Encender','Turn on',()=>command('/avatar3d on'));
-      button(actions,'Apagar','Turn off',()=>command('/avatar3d off'));
+      button(actions,'Encender tótem','Turn on totem',()=>command('/avatar3d on'));
+      button(actions,'Apagar tótem','Turn off totem',()=>command('/avatar3d off'));
+      button(actions,'Avatar digital · on','Digital avatar · on',()=>command('/avatar digital on'));
+      button(actions,'Avatar digital · off','Digital avatar · off',()=>command('/avatar digital off'));
       button(actions,'Opciones del avatar','Avatar options',()=>window.openMetahumanPanel?.());
     }
     if(key==='impactos'){
