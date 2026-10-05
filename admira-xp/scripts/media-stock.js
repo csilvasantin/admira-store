@@ -9,7 +9,8 @@
  async function generate(kind,payload,{signal,onProgress=()=>{}}={}){
   if(!endpoints[kind])throw error('invalid_kind');
   let saved=pending(kind);const signature=JSON.stringify(payload);
-  if(saved&&JSON.stringify(saved.payload)!==signature)throw error('pending_previous');
+  // An explicit changed brief/voice/language replaces local playback, while the old server job still archives.
+  if(saved&&JSON.stringify(saved.payload)!==signature)saved=null;
   const resumed=!!saved;saved=saved||{requestId:root.crypto.randomUUID(),payload};keep(kind,saved);
   const status=root.document?.getElementById({image:'imagePromptStatus',video:'videoPromptStatus',audio:'announcementStatus'}[kind]);if(status)status.dataset.requestId=saved.requestId;
   const previousLink=root.document?.getElementById(kind+'StockLink');if(previousLink)previousLink.hidden=true;

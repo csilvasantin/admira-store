@@ -39,3 +39,5 @@ Real Options generations with an active session; reload recovery; ES/EN interfac
 | audio | Stock #1379 · creatividad de café / coffee creative | https://api.admira.store/stock/asset/1791227936105-q53hjz |
 
 El recibo confirma el archivo y sus metadatos; el recuento completo del catálogo y las notificaciones continúan en segundo plano. / The receipt confirms the file and metadata; catalogue-wide statistics and notifications continue in the background.
+
+Cambiar explícitamente el texto, voz o idioma al generar inicia otro trabajo de pago; el anterior aceptado conserva su cola de Stock. Reintentar el mismo contenido pendiente conserva su UUID. / Explicitly generating changed text, voice or language starts another paid operation; the previous accepted job retains its Stock queue. Retrying the same pending content retains its UUID.
