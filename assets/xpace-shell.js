@@ -331,7 +331,8 @@
   function parseLangCommand(text) {
     const raw = String(text == null ? '' : text).trim();
     if (!raw) return null;
-    const body = raw.replace(/^\//, '').trim();
+    const body = raw.replace(/^\//, '').trim().replace(/^(idioma|language|languague)@[a-z0-9_]+(?=\s|$)/i, '$1');
+    if (/[\r\n]/.test(body) && /^(idioma|language|languague)/i.test(body)) return {ok: false};
     const m = body.match(/^(idioma|language|languague)(?:[\s_-]*(.*))?$/i);
     if (!m) return null;
     const token = normalizeLangToken(m[2] || '');
