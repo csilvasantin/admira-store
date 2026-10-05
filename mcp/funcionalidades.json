@@ -3403,7 +3403,7 @@
       "visualQualityOptions"
     ]
   },
-  "version": "v.04.10.2026.r8.18:39",
+  "version": "v.05.10.2026.r11.20:19",
   "inventory_scope": {
     "es": "ITIL abre el inventario del Xpacio visitado en la segunda columna de Experto y el detalle seleccionado en la tercera. El enlace opcional al catálogo conserva el mismo dominio, proyecto, local, idioma y marca y publica primero la distribución actual en este navegador. Tarjetas, selector 3D, desgloses y descargas se limitan a sus modelos; un enlace a una pieza ajena no la carga. Un Xpacio desconocido muestra un inventario vacío y pide abrir ITIL desde la escena. /inventario en el gemelo lista sólo sus modelos, conservando los números permanentes y las piezas retiradas para su recuperación. Las importaciones explícitas y Deshacer mantienen su funcionamiento. Starbucks PG103 conserva sus unidades y modelos 44–50 e incluye sus seis pantallas virtuales, TPV y altavoz; no acredita vinculación ni telemetría física. Cafebrería conserva su inventario completo de la escena y su librería 51. El catálogo general sin contexto sigue disponible para consultar plantillas. No crea altas patrimoniales en Yokup.",
     "en": "ITIL opens the inventory of the Xpace being visited in the second Expert column and the selected details in the third. The optional catalogue link preserves the same origin, project, venue, language and brand and first publishes the current layout in this browser. Cards, the 3D selector, breakdowns and downloads are limited to its models; links to foreign pieces do not load them. Unknown Xpacios show an empty inventory and ask users to open ITIL from the scene. /inventario in the twin lists only its models, preserving permanent numbers and removed pieces for recovery. Explicit imports and Undo retain their behavior. Starbucks PG103 keeps its units and models 44–50 and includes its six virtual screens, POS and speaker; this does not establish physical binding or telemetry. Cafebrería retains its full scene inventory and bookcase 51. The general catalogue without context remains available for browsing templates. No Yokup lifecycle assets are created.",
@@ -3655,8 +3655,8 @@
     "official_campaign": "pending_carlos"
   },
   "options_language": {
-    "es": "Megafonía, Hilo Musical, Imagen, Video, Avatar y Contador usan los mismos iconos SVG de línea, trazo de 1,5 y color cian que Avanzados. Sus desplegables conservan las acciones existentes. Abre ⌘ Experto, escribe /idioma ESP para castellano o /idioma ENG para inglés y pulsa Enter. La interfaz cambia sin recargar el Xpacio: barra superior, Opciones, Avanzados, Experto y controles de vistas. El idioma se guarda en este navegador y origen; la URL se actualiza a lang=es o lang=en. La orden explícita prevalece sobre el idioma de entrada, incluso langlock=1. Se conservan proyecto, local, calidad, escena, datos, marca blanca, dimensiones de paneles e historial CLI. Los nombres propios, contenidos y respuestas anteriores conservan su texto original. La orden es local y no se envía a Telegram ni al MCP.",
-    "en": "PA system, Background music, Image, Video, Avatar and Counter use the same cyan line SVG icons and 1.5 stroke as Advanced. Their dropdowns retain existing actions. Open ⌘ Expert, type /idioma ESP for Spanish or /idioma ENG for English and press Enter. The interface changes without reloading the Xpace: top bar, Options, Advanced, Expert and view controls. Language is saved in this browser and origin; the URL changes to lang=es or lang=en. An explicit command takes precedence over the incoming locale, including langlock=1. Project, venue, quality, scene, data, white label, panel sizes and CLI history are preserved. Proper names, content and earlier responses retain their original text. This is a local command, never sent to Telegram or MCP.",
+    "es": "Megafonía, Hilo Musical, Imagen, Video, Avatar y Contador usan los mismos iconos SVG de línea, trazo de 1,5 y color cian que Avanzados. Sus desplegables conservan las acciones existentes. Abre ⌘ Experto, escribe /idioma ESP para castellano o /idioma ENG para inglés y pulsa Enter. La interfaz cambia sin recargar el Xpacio: barra superior, Opciones, Avanzados, Experto y controles de vistas. El idioma se guarda en este navegador y origen; la URL se actualiza a lang=es o lang=en. La portada, Lenovo, Ayuda, Comandos CLI, Documentación y Backoffice también traducen su propio contenido al momento y lo conservan al recargar: comparten la preferencia xtanco_lang y el evento admira:languagechange (assets/xpace-lang.js); una preferencia anterior (xpaceosLang, xpace_lang) se migra una sola vez. La orden explícita prevalece sobre el idioma de entrada, incluso langlock=1. Se conservan proyecto, local, calidad, escena, datos, marca blanca, dimensiones de paneles e historial CLI. Los nombres propios, contenidos y respuestas anteriores conservan su texto original. La orden es local y no se envía a Telegram ni al MCP.",
+    "en": "PA system, Background music, Image, Video, Avatar and Counter use the same cyan line SVG icons and 1.5 stroke as Advanced. Their dropdowns retain existing actions. Open ⌘ Expert, type /idioma ESP for Spanish or /idioma ENG for English and press Enter. The interface changes without reloading the Xpace: top bar, Options, Advanced, Expert and view controls. Language is saved in this browser and origin; the URL changes to lang=es or lang=en. The home page, Lenovo, Help, CLI commands, Documentation and Backoffice also translate their own content immediately and keep it after reloading: they share the xtanco_lang preference and the admira:languagechange event (assets/xpace-lang.js); an earlier preference (xpaceosLang, xpace_lang) is migrated once. An explicit command takes precedence over the incoming locale, including langlock=1. Project, venue, quality, scene, data, white label, panel sizes and CLI history are preserved. Proper names, content and earlier responses retain their original text. This is a local command, never sent to Telegram or MCP.",
     "commands": [
       "/idioma ESP",
       "/idioma ENG"
@@ -3669,7 +3669,7 @@
     ],
     "guide": "https://www.xpaceos.com/admira-xp/docs/options-language.md",
     "local": true,
-    "implementation": "assets/xpace-shell.js + admira-xp/index.html + admira-xp/scripts/interface-language.mjs",
+    "implementation": "assets/xpace-shell.js + assets/xpace-lang.js + admira-xp/index.html + admira-xp/scripts/interface-language.mjs",
     "preserves": [
       "project_id",
       "venue_id",
@@ -3681,6 +3681,9 @@
       "cli_history"
     ],
     "preference": "xtanco_lang per browser origin; explicit command updates lang URL and overrides locale lock",
+    "event": "admira:languagechange (detail: lang, source)",
+    "shared_pages": ["/", "/lenovo/", "/help/", "/help/cli/", "/doc/", "/backoffice/"],
+    "legacy_preferences": "xpaceosLang, xpace_lang, loyalty_admin_lang migrated once to xtanco_lang",
     "new_remote_tool": false
   },
   "avatar_controls": {

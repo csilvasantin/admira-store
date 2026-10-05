@@ -45,5 +45,13 @@ jobs:
           mkdir -p _site
           git archive HEAD | tar -x -C _site
           rm -rf _site/.github _site/tests
-          if [ -f version.json ]; then cp version.json _site/version.json; fi
+          release="$(sed -n 's/.*admiranext-version.*content="\(v\.[^"]*\)".*/\1/p' index.html | head -1)"
+          deployer="$(jq -r '.deployer // empty' release-signature.json)"
+          machine="$(jq -r '.machine // empty' release-signature.json)"
+          test -n "$release"
+          test "$release" = "$(jq -r '.version' release-signature.json)"
+          jq -n --arg version "$release" --arg deployedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg deployer "$deployer" --arg machine "$machine" --arg git "$sha" \
+            '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:($deployer+" · "+$machine),git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false,origin:"cloudflare-pages"}' \
+            > _site/version.json
           npx --yes wrangler@4 pages deploy _site --project-name admira-store --branch main --commit-hash "$sha"

@@ -12,8 +12,7 @@
   function lng() {
     try {
       var l = document.documentElement.lang
-        || localStorage.getItem('xpaceosLang')
-        || localStorage.getItem('xtanco_lang')
+        || localStorage.getItem((window.XpaceLang && window.XpaceLang.LANG_KEY) || 'xtanco_lang')
         || (window.lang || '');
       return /^es/i.test(l) ? 'es' : 'en';
     } catch (e) { return 'en'; }

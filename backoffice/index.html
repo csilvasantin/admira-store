@@ -193,6 +193,8 @@
   .foot{color:var(--mut);font-size:11px;text-align:center;margin-top:30px;font-family:ui-monospace,monospace;letter-spacing:.06em}
   @media(max-width:560px){.dstats{grid-template-columns:1fr 1fr}.wrap{padding:16px 14px 60px}}
 </style>
+<!-- Idioma compartido con ⌘ Experto (/idioma ESP|ENG): clave xtanco_lang y evento admira:languagechange. -->
+<script src="/assets/xpace-lang.js?v=20261005-idioma-1"></script>
 <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261005-windows-menu-1">
 <script defer src="/assets/xpace-shell.js?v=20261005-windows-menu-1" data-section="/ club backoffice" data-section-en="/ club backoffice"></script>
 </head>
@@ -362,15 +364,15 @@
 // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
 const API = 'https://loyalty.admira.store';
 const TOKEN_KEY = 'loyalty_admin_token';
-const LANG_KEY = 'loyalty_admin_lang';
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let TOKEN = '';
 try { TOKEN = localStorage.getItem(TOKEN_KEY) || ''; } catch {}
+// Idioma compartido (assets/xpace-lang.js): ?lang= → xtanco_lang (migra loyalty_admin_lang una vez) → castellano.
 let LANG = 'es';
-try { LANG = localStorage.getItem(LANG_KEY) || 'es'; } catch {}
+try { if (window.XpaceLang) LANG = window.XpaceLang.resolve({ url: location.href, storage: localStorage, fallback: 'es' }); } catch {}
 
 let RULES = null;        // current program rules
 let RULES_DRAFT = null;  // editable copy in rewards view
@@ -443,8 +445,19 @@ function applyLang(){
   $$('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
   $$('[data-i18n-ph]').forEach(el=>{ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
   $('#langToggle').textContent = LANG==='es'?'EN':'ES';
-  try{ localStorage.setItem(LANG_KEY, LANG); }catch{}
 }
+function switchLang(next){
+  LANG = next==='en'?'en':'es';
+  applyLang(); buildSelects(); refreshCurrentView();
+  if($('#view-rewards').classList.contains('on'))renderRewards();
+  if($('#view-settings').classList.contains('on'))loadSettings();
+  if($('#view-segments').classList.contains('on'))renderSegments();
+}
+// /idioma ESP|ENG en ⌘ Experto: el shell guarda xtanco_lang y emite admira:languagechange.
+if (window.XpaceLang) window.addEventListener(window.XpaceLang.LANG_EVENT, e => {
+  const next = window.XpaceLang.normalize(e.detail && e.detail.lang);
+  if (next && (e.detail.source !== 'backoffice') && next !== LANG) switchLang(next);
+});
 
 // ── formatting ──
 let CURRENCY = 'EUR';
@@ -816,7 +829,12 @@ function buildSelects(){
 function bind(){
   $('#gateBtn').onclick=()=>tryLogin($('#gateInput').value.trim());
   $('#gateInput').onkeydown=e=>{ if(e.key==='Enter') tryLogin($('#gateInput').value.trim()); };
-  $('#langToggle').onclick=()=>{ LANG=LANG==='es'?'en':'es'; applyLang(); buildSelects(); refreshCurrentView(); if($('#view-rewards').classList.contains('on'))renderRewards(); if($('#view-settings').classList.contains('on'))loadSettings(); if($('#view-segments').classList.contains('on'))renderSegments(); };
+  $('#langToggle').onclick=()=>{
+    const next = LANG==='es'?'en':'es';
+    try { if (window.XpaceLang) window.XpaceLang.remember(next, { url: location.href, storage: localStorage, history }); } catch {}
+    switchLang(next);
+    if (window.XpaceLang) window.XpaceLang.announce(next, 'backoffice');
+  };
   $('#lockBtn').onclick=lock;
   $$('#tabs .tab').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
   $('#drawerBg').onclick=closeDrawer;

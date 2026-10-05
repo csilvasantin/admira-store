@@ -314,6 +314,10 @@
     return {ok: true, url, message: t('Marca «' + id + '»: abre ' + url + ' para ver el gemelo con esa marca (vale en cualquier página de XpaceOS con ?marca=' + id + ').', 'Brand “' + id + '”: open ' + url + ' to see the twin wearing it (works on any XpaceOS page with ?marca=' + id + ').') + note};
   }
 
+  // Idioma compartido con las páginas (assets/xpace-lang.js): misma clave y mismo evento.
+  const LANG_KEY = 'xtanco_lang';
+  const LANG_EVENT = 'admira:languagechange';
+
   function languageCommand(text, env = {}) {
     const p = parseCommand(text);
     if (!p || !['idioma', 'language'].includes(p.verb)) return null;
@@ -323,7 +327,7 @@
     // No navigation: retain the active scene, panel state and CLI history.
     const win = env.window;
     if (win) {win.XPACE_LANG_OVERRIDE = next; win.XPACE_LANG_LOCKED = false;}
-    try {env.storage?.setItem('xtanco_lang', next);} catch (_) {}
+    try {env.storage?.setItem(LANG_KEY, next);} catch (_) {}
     try {
       const url = new URL(env.url);
       url.searchParams.set('lang', next); url.searchParams.delete('langlock');
@@ -333,7 +337,7 @@
     return {ok:true, local:true, language:next, message:next === 'en' ? 'Interface language: English.' : 'Idioma de la interfaz: castellano.'};
   }
 
-  const api = {PANELS_KEY, HISTORY_KEY, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
+  const api = {PANELS_KEY, HISTORY_KEY, LANG_KEY, LANG_EVENT, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
     esc, normalizeConfig, markup, parseCommand, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -354,6 +358,8 @@
     else if (typeof root.setLanguage === 'function') root.setLanguage(next);
     else if (typeof root.applyHtmlLang === 'function') root.applyHtmlLang(next);
     doc.querySelectorAll('[data-shell-es][data-shell-en]').forEach(node => {node.textContent = node.getAttribute('data-shell-' + next);});
+    // Las páginas con contenido bilingüe propio (portada, ayudas…) escuchan este evento.
+    try {root.dispatchEvent(new CustomEvent(LANG_EVENT, {detail: {lang: next, source: 'xpace-shell'}}));} catch (_) {}
   }});
   // Cliente activo (assets/xpace-cliente.js): Admira lo ve todo; /marca <cliente> o ?cliente=<id> filtra
   // las listas de Xpacios, sin selector visible. Como la marca blanca, solo se descarga si hace falta:

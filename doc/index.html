@@ -6,10 +6,13 @@
 <meta name="robots" content="noindex, nofollow" />
 <title>XpaceOS · Spec de elementos isométricos (Admira XP)</title>
 <meta name="description" content="Especificación técnica bilingüe (ES/EN) para crear elementos a medida que encajan en los Xpacios isométricos de Admira XP. · Bilingual technical spec for custom isometric assets." />
+<!-- Idioma compartido con ⌘ Experto (/idioma ESP|ENG): clave xtanco_lang y evento admira:languagechange. -->
+<script src="/assets/xpace-lang.js?v=20261005-idioma-1"></script>
 <script>
-  (function(){try{var k='xpace_lang',l=localStorage.getItem(k);
-    if(!l){l=(navigator.language||'es').toLowerCase().indexOf('en')===0?'en':'es';}
-    document.documentElement.lang=(l==='en')?'en':'es';}catch(e){}})();
+  // Idioma inicial antes del primer render: ?lang= → xtanco_lang (migra xpace_lang una vez) → idioma del navegador.
+  (function(){var nav=(navigator.language||'es').toLowerCase().indexOf('en')===0?'en':'es';
+    try{document.documentElement.lang=window.XpaceLang?window.XpaceLang.resolve({url:location.href,storage:localStorage,fallback:nav}):nav;}
+    catch(e){document.documentElement.lang=nav;}})();
 </script>
 <style>
   :root{
@@ -223,13 +226,13 @@
 
 <script>
   (function(){
-    var KEY='xpace_lang';
-    function apply(l){l=(l==='en')?'en':'es';document.documentElement.lang=l;try{localStorage.setItem(KEY,l)}catch(e){}
+    // Comparte xtanco_lang con XpaceOS y sigue /idioma de ⌘ Experto (assets/xpace-lang.js).
+    function apply(l){l=(l==='en')?'en':'es';document.documentElement.lang=l;
       var b=document.getElementById('langToggle');if(b)b.textContent=(l==='es')?'EN':'ES';}
-    var saved;try{saved=localStorage.getItem(KEY)}catch(e){}
-    apply(saved||document.documentElement.lang||'es');
+    var shared=window.XpaceLang?window.XpaceLang.bind(apply,{source:'doc',fallback:document.documentElement.lang||'es'}):null;
+    if(!shared)apply(document.documentElement.lang||'es');
     var b=document.getElementById('langToggle');
-    if(b)b.addEventListener('click',function(e){e.preventDefault();apply(document.documentElement.lang==='es'?'en':'es');});
+    if(b)b.addEventListener('click',function(e){e.preventDefault();var next=document.documentElement.lang==='es'?'en':'es';if(shared)shared.set(next);else apply(next);});
   })();
 </script>
 

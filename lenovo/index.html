@@ -20,6 +20,8 @@
 <link rel="stylesheet" href="https://csilvasantin.github.io/admira-design/nav.css">
 <link rel="stylesheet" href="/lead-form.css">
 <script defer src="/lead-form.js"></script>
+<!-- Idioma compartido con ⌘ Experto (/idioma ESP|ENG): clave xtanco_lang y evento admira:languagechange. -->
+<script src="/assets/xpace-lang.js?v=20261005-idioma-1"></script>
 
 <!-- Google Tag Manager -->
 <script>
@@ -874,8 +876,8 @@ function applyLanguage(lang) {
     langToggle.textContent = dict.lang_toggle || (lang === 'en' ? 'ESP' : 'ENG');
     langToggle.setAttribute('aria-label', dict.lang_toggle_aria || (lang === 'en' ? 'Switch to Spanish' : 'Cambiar a inglés'));
   }
-  try { localStorage.setItem('xpaceosLang', lang); } catch {}
-  try { window.dispatchEvent(new CustomEvent('admira:languagechange', { detail: { lang } })); } catch {}
+  // Guardar y avisar lo hace XpaceLang (assets/xpace-lang.js): clave xtanco_lang y
+  // evento admira:languagechange, los mismos que /idioma en ⌘ Experto.
   if (typeof renderGemelos === 'function') renderGemelos();
 }
 
@@ -953,15 +955,15 @@ async function loadGemelos() {
 renderGemelos();
 loadGemelos();
 
-document.getElementById('lang-toggle')?.addEventListener('click', event => {
-  applyLanguage(event.currentTarget.dataset.langTarget || (document.documentElement.lang === 'en' ? 'es' : 'en'));
-});
+// Idioma: ?lang= → xtanco_lang (migra xpaceosLang una vez) → inglés. Sigue /idioma de ⌘ Experto.
+const lenovoLanguage = window.XpaceLang
+  ? window.XpaceLang.bind(applyLanguage, { source: 'lenovo', fallback: 'en' })
+  : (applyLanguage('en'), null);
 
-try {
-  applyLanguage(localStorage.getItem('xpaceosLang') || 'en');
-} catch {
-  applyLanguage('en');
-}
+document.getElementById('lang-toggle')?.addEventListener('click', event => {
+  const next = event.currentTarget.dataset.langTarget || (document.documentElement.lang === 'en' ? 'es' : 'en');
+  if (lenovoLanguage) lenovoLanguage.set(next); else applyLanguage(next);
+});
 
 
 // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
