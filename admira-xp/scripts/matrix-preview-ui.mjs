@@ -1,4 +1,4 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=options-preview-2';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=pixeria-screens-3';
 import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
 const listeners=new Set();
 let dialog,dispose,controller,hud,requestId,lastFocus,busy=false,viewError='';

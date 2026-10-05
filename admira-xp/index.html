@@ -964,6 +964,13 @@
   .options-playlist li[aria-current=true]{background:#78f3ff18;border-left:2px solid #78f3ff}
   .options-playlist li button{margin:0;white-space:normal;text-align:left;min-width:0}
   .media-drop-over{outline:2px solid #78f3ff}
+  .pixeria-library{display:grid;gap:6px;padding:7px;border:1px solid #4c7580;border-radius:5px;background:#10171c;min-width:0}
+  .pixeria-library strong{font:600 12px monospace;color:#d5edf4}
+  .pixeria-library input,.pixeria-library select{width:100%;box-sizing:border-box;background:#0d1720;color:#d5edf4;border:1px solid #345360;border-radius:4px;padding:8px;font:11px monospace;min-width:0}
+  .quad-left .pixeria-library input,.quad-left .pixeria-library select{background:#101319!important;color:#d5edf4!important}
+  .pixeria-library input:focus{outline:2px solid #6bf5d3;outline-offset:2px}
+  .pixeria-library p{white-space:normal;font:11px/1.4 monospace;margin:0;color:#9dadbc}
+  .media-ready button[hidden],.pixeria-library button[hidden]{display:none!important}
   .media-ready button,.options-playlist button{touch-action:manipulation}
   #announcementLogin[hidden],#imagePromptLogin[hidden],#videoPromptLogin[hidden],[data-media-stock][hidden],#videoPreview[hidden]{display:none!important}
   .quad-left #announcementVoice{width:100%;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:7px;font:12px monospace}
@@ -1025,6 +1032,7 @@
       <button type="button" data-xp-do="musicPrev" title="Canción anterior">◀ Anterior</button>
       <button type="button" data-xp-do="musicNext" title="Canción siguiente">▶ Siguiente</button>
       <button type="button" data-xp-do="sfxToggle" title="Efectos de sonido on/off">🔊 Efectos (FX)</button>
+      <section class="pixeria-library" data-pixeria-library="music"></section>
       <section class="media-ready" data-media-ready="music" hidden></section>
       <details class="options-playlist" data-options-playlist="music"><summary>Playlist actual · Hilo musical</summary><div class="options-playlist-body"></div></details>
     </div>
@@ -1032,26 +1040,14 @@
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="pixerai"><span class="expert-category-icon" data-options-icon="pixerai" aria-hidden="true"></span><strong class="option-label">Imagen</strong></button>
     <div class="qm-acc-body">
-      <label id="imagePromptLabel" for="imagePrompt">Qué quieres anunciar</label>
-      <textarea id="imagePrompt" rows="4" maxlength="1500" placeholder="Describe el producto, oferta o anuncio que quieres mostrar…" aria-describedby="imagePromptStatus"></textarea>
-      <span id="imagePromptNote">PixerIA · una generación de pago. Requiere sesión.</span>
-      <button type="button" data-xp-do="imgGen" title="Generar una imagen y revisar el previo antes de lanzar">✨ Generar imagen (PixerIA)</button>
-      <a id="imagePromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
-      <a id="imageStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
-      <span id="imagePromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera la imagen.</span>
+      <section class="pixeria-library" data-pixeria-library="image"></section>
       <section class="media-ready" data-media-ready="image" hidden></section>
     </div>
   </div>
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="video"><span class="expert-category-icon" data-options-icon="video" aria-hidden="true"></span><strong class="option-label">Video</strong></button>
     <div class="qm-acc-body">
-      <label id="videoPromptLabel" for="videoPrompt">Qué quieres anunciar</label>
-      <textarea id="videoPrompt" rows="4" maxlength="1500" aria-describedby="videoPromptStatus" placeholder="Describe el vídeo del producto, oferta o anuncio…"></textarea>
-      <span id="videoPromptNote">Grok · 8 s · 16:9 · 720p · Stock</span>
-      <button type="button" data-xp-do="videoGen">✨ Generar vídeo (Grok)</button>
-      <a id="videoPromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
-      <span id="videoPromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera el vídeo.</span>
-      <a id="videoStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
+      <section class="pixeria-library" data-pixeria-library="video"></section>
       <section class="media-ready" data-media-ready="video" hidden><video id="videoPreview" controls muted playsinline preload="metadata" hidden></video></section>
       <button type="button" data-xp-do="dsToggle" title="Reproducir / pausar el vídeo de las pantallas">▶ Play / Pausa</button>
       <button type="button" data-xp-do="dsPrev" title="Vídeo anterior">◀ Vídeo anterior</button>
@@ -1078,11 +1074,13 @@
   </div>
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
-<script src="scripts/media-options.js?v=20261005-preview-1"></script>
+<script src="scripts/screen-media.js?v=20261005-pixeria-1"></script>
+<script src="scripts/media-options.js?v=20261005-pixeria-1"></script>
+<script type="module" src="scripts/pixeria-library.mjs?v=20261005-pixeria-1"></script>
 <script src="scripts/media-stock.js?v=20261005-preview-1"></script>
 <script src="scripts/announcements.js?v=20261005-stock-3"></script>
-<script src="scripts/image-prompt.js?v=20261005-preview-1"></script>
-<script src="scripts/video-prompt.js?v=20261005-preview-1"></script>
+<script defer src="scripts/image-prompt.js?v=20261005-pixeria-1"></script>
+<script defer src="scripts/video-prompt.js?v=20261005-pixeria-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
   <div class="qm-title">Opciones Avanzadas</div>
   <section id="advancedStreamControls" class="expert-menu-group" aria-labelledby="streamControlsLabel"><h2 id="streamControlsLabel">Player y cámara</h2><div class="tg-actions expert-primary-actions">
@@ -1359,7 +1357,21 @@
       <section class="expert-category-panel" aria-labelledby="expertCategoriesLabel"><span class="expert-section-label" id="expertCategoriesLabel">CATEGORÍAS</span><div id="expertQuickIcons"></div></section>
     </div>
     <div class="expert-divider" data-expert-divider="0" role="separator" aria-orientation="vertical" tabindex="0"></div>
-      <div class="tg-actions expert-controls-pane" aria-label="Opciones de categoría"><span class="expert-section-label" id="expertControlsLabel">OPCIONES DE CATEGORÍA</span><div id="expertCategoryDetail" aria-live="polite" hidden></div></div>
+      <div class="tg-actions expert-controls-pane" aria-label="Opciones de categoría"><span class="expert-section-label" id="expertControlsLabel">OPCIONES DE CATEGORÍA</span><div id="expertCategoryDetail" aria-live="polite" hidden><div id="expertMediaGeneration" hidden><details class="expert-media-form"><summary data-itil-es="Crear música" data-itil-en="Create music">Crear música</summary><p data-itil-es="Crea música en Pixeria. Las entregas del hilo musical quedan en Stock y se preparan como previo; pulsa Lanzar para emitir." data-itil-en="Create music in Pixeria. Background music deliveries stay in Stock and become previews; press Launch to play.">Crea música en Pixeria. Las entregas del hilo musical quedan en Stock y se preparan como previo; pulsa Lanzar para emitir.</p><a href="https://www.pixeria.com/musica.html" target="_blank" rel="noopener" data-pixeria-music-create data-itil-es="Crear música en Pixeria" data-itil-en="Create music in Pixeria">Crear música en Pixeria</a></details><details class="expert-media-form"><summary data-itil-es="Crear imagen" data-itil-en="Create image">Crear imagen</summary>      <label id="imagePromptLabel" for="imagePrompt">Qué quieres anunciar</label>
+      <textarea id="imagePrompt" rows="4" maxlength="1500" placeholder="Describe el producto, oferta o anuncio que quieres mostrar…" aria-describedby="imagePromptStatus"></textarea>
+      <span id="imagePromptNote">PixerIA · una generación de pago. Requiere sesión.</span>
+      <button type="button" data-xp-do="imgGen" title="Generar una imagen y revisar el previo antes de lanzar">✨ Generar imagen (PixerIA)</button>
+      <a id="imagePromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
+      <a id="imageStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
+      <span id="imagePromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera la imagen.</span>
+</details><details class="expert-media-form"><summary data-itil-es="Crear vídeo" data-itil-en="Create video">Crear vídeo</summary>      <label id="videoPromptLabel" for="videoPrompt">Qué quieres anunciar</label>
+      <textarea id="videoPrompt" rows="4" maxlength="1500" aria-describedby="videoPromptStatus" placeholder="Describe el vídeo del producto, oferta o anuncio…"></textarea>
+      <span id="videoPromptNote">Grok · 8 s · 16:9 · 720p · Stock</span>
+      <button type="button" data-xp-do="videoGen">✨ Generar vídeo (Grok)</button>
+      <a id="videoPromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
+      <span id="videoPromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera el vídeo.</span>
+      <a id="videoStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
+</details></div></div></div>
     <div class="expert-divider" data-expert-divider="1" role="separator" aria-orientation="vertical" tabindex="0"></div>
     <div class="expert-view-pane"><span class="expert-section-label" id="expertPreviewLabel">PREVIOS</span><div id="telegramLastResponse" class="tg-last-response" hidden aria-live="polite"></div></div>
     </div>
@@ -1493,7 +1505,7 @@
 <script src="assets/js/sfx.js?v=quiet-rain-1"></script>
 <script src="assets/js/ambient.js?v=quiet-rain-1"></script>
 <script src="assets/js/sky.js"></script>
-<script src="scripts/starbucks-room.js?v=surfaces-1"></script>
+<script src="scripts/starbucks-room.js?v=pixeria-screens-3-surfaces-1"></script>
 <script src="assets/js/heatmap.js"></script>
 <script src="assets/js/streamdeck.js"></script>
 <script src="assets/js/session-ping.js" defer></script>
@@ -3418,6 +3430,10 @@ function switchDSVideo(idx){
  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(saved));localStorage.setItem('xtanco_ds_playlist_order',JSON.stringify(VIDEO_LIST));localStorage.setItem('xpaceos.options-music-order.v1',JSON.stringify(SONG_LIST));}catch(_){}window.dispatchEvent(new Event('xpace:playlist'));};
  window.XpaceOptionsPlayback={
   ownsScreens:false,
+  screenAt(x,y){if(document.elementFromPoint(x,y)?.closest('nav,#telegramDock,#xpace-side-left,#xpace-side-right'))return null;if(isStarbucksVenue()){const cv=document.getElementById('c'),r=cv.getBoundingClientRect(),px=(x-r.left)*cv.width/r.width,py=(y-r.top)*cv.height/r.height;return Object.entries(window.XpaceStarbucks.screenQuads||{}).find(([id,q])=>dsPointInQuad(px,py,q.map(([x,y])=>({x,y}))))?.[0]||null;}return dsSurfaceAtClientPoint(x,y);},
+  screenHighlight(id){if(isStarbucksVenue())window.XpaceStarbucks.dropTarget=id;else dsUpdateDragHighlight(id);},
+  async previewScreen(id,track){if(track.kind==='music')throw Error('Choose a screen media item');if(isStarbucksVenue()){await window.XpaceScreenMedia.preview(id,track);return;}if(!dsSurfaceById(id))throw Error('Unknown screen');await window.XpaceScreenMedia.preview(id,track);},
+  async restoreScreen(id){window.XpaceScreenMedia.restore(id);},
   control(action){if(action==='musicToggle'){toggleMusic();return;}if(action.startsWith('music')){const list=SONG_LIST,index=list.indexOf(G?.nowPlaying||shopTimeSettings.nowPlaying),next=(index+(action==='musicPrev'?-1:1)+list.length)%list.length;return this.play('music',list[next]);}this.ownsScreens=true;if(action==='dsToggle'){toggleVideoPause();return;}const next=(dsVideoIdx+(action==='dsPrev'?-1:1)+VIDEO_LIST.length)%VIDEO_LIST.length;return this.play('screens',VIDEO_LIST[next]);},
   groups(channel){return [{id:channel,title:channel==='music'?(lang==='en'?'Background music':'Hilo musical'):(lang==='en'?'Xpace screens':'Pantallas del Xpacio')}];},
   state(channel){const music=channel==='music',list=music?SONG_LIST:VIDEO_LIST,files=music?SONG_FILES:VIDEO_FILES,now=music?absolute(bgMusic.currentSrc||bgMusic.src):absolute(VIDEO_FILES[currentDSVideoName()]);
@@ -3843,6 +3859,7 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
   }
   if(displayIdx===0&&!isStarbucksVenue()&&window.__shelfScreenPreview?.draw(ctx,w,h,'ds1'))return;
   if(window.__xtoreWindowPlayer?.drawScreen?.(ctx,w,h,displayIdx===0?'player':'street'))return;
+  if(window.XpaceScreenMedia?.draw(ctx,w,h,displayIdx===0?'ds1':'ds2'))return;
   if(displayIdx===0&&window.__xtoreWindowPlayer){window.__xtoreWindowPlayer.draw(ctx,w,h);return;}
   const display=DS_DISPLAYS[displayIdx];
   // Xtanco Club celebration takes over every screen for a few seconds.
@@ -19507,6 +19524,7 @@ function drawEscaparate(){
     }
   }
 
+  if(window.XpaceScreenMedia?.get('escaparate')){cx.save();cx.beginPath();cx.moveTo(iTL.x,iTL.y);cx.lineTo(iTR.x,iTR.y);cx.lineTo(iBR.x,iBR.y);cx.lineTo(iBL.x,iBL.y);cx.closePath();cx.clip();cx.setTransform(ax,ay,bx,by,iTL.x,iTL.y);window.XpaceScreenMedia.draw(cx,vW,vH,'escaparate');cx.restore();return;}
   // Per-surface pin override: replace posters with pinned imported media.
   if(DS_PIN.escaparate){
     const m=DS_SURFACE_MEDIA.escaparate;
@@ -20161,11 +20179,11 @@ function drawIsoMetahuman(col,row){
 
   const pin=DS_PIN.metahuman;
   const m=DS_SURFACE_MEDIA.metahuman;
-  let drewPinned=false;
-  if(typeof isClubBurstActive==='function' && isClubBurstActive()){
+  let drewPinned=!!window.XpaceScreenMedia?.draw(cx,SW,SH,'metahuman');
+  if(!drewPinned && typeof isClubBurstActive==='function' && isClubBurstActive()){
     drawClubBurst(cx,SW,SH);
     drewPinned=true;
-  } else if(window.MarketplaceBridge){
+  } else if(!drewPinned && window.MarketplaceBridge){
     const camp=window.MarketplaceBridge.getCampaignFor('metahuman');
     if(camp && window.MarketplaceBridge.drawSignageCampaign(cx,SW,SH,camp)) drewPinned=true;
   }
@@ -31805,7 +31823,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=windows-menu-1');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=pixeria-screens-3');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -35996,9 +36014,9 @@ window.xtAPI = (function(){
 </style>
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
 <link rel="stylesheet" href="scripts/expert-categories.css?v=windows-menu-1">
-<script src="scripts/expert-categories.js?v=windows-menu-1"></script>
-<link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
-<script src="scripts/expert-category-detail.js?v=avatar-controls-1"></script>
+<script src="scripts/expert-categories.js?v=pixeria-screens-3"></script>
+<link rel="stylesheet" href="scripts/expert-category-detail.css?v=pixeria-screens-3">
+<script src="scripts/expert-category-detail.js?v=pixeria-screens-3"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">
@@ -36040,8 +36058,9 @@ window.xtAPI = (function(){
       host.appendChild(c);
     }
     btns.filter(function(b){return b.getAttribute('data-quick-action')!=='pixerai';}).forEach(appendAction);
+    var create=document.createElement('button');create.type='button';create.className='tg-quick-btn';create.dataset.quickAction='creation';create.innerHTML='<strong>'+ (document.documentElement.lang==='en'?'Create media':'Crear contenidos')+'</strong><span>Pixeria · IA</span>';
     host.appendChild(makeInventory());
-    host.appendChild(makePercibe());
+    host.appendChild(makePercibe());host.appendChild(create);
     host.querySelectorAll('button').forEach(function(button){window.XpaceExpertCategories.decorate(button,{en:typeof lang!=='undefined'&&lang==='en',preserveId:true});});
     host.appendChild(scene);
     var categories=document.getElementById('expertQuickIcons');
@@ -36217,7 +36236,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=options-preview-2"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=pixeria-screens-3"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

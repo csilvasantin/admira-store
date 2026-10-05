@@ -171,7 +171,12 @@
           "line": 518,
           "symbol": "refreshMedia"
         }
-      ]
+      ],
+      "pixeriaScreenDrop": {
+        "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
+        "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
+      }
     },
     {
       "id": "XP-F02",
@@ -246,7 +251,12 @@
           "line": 256,
           "symbol": "djBooth"
         }
-      ]
+      ],
+      "pixeriaScreenDrop": {
+        "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
+        "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
+      }
     },
     {
       "id": "XP-F03",
@@ -409,15 +419,15 @@
       "summary": "Vídeos, AdmiraTube, medios importados y su uso en pantallas.",
       "good": {
         "status": "code_present",
-        "detail": "Opciones → Vídeo permite describir un anuncio de hasta 1500 caracteres y generar con Grok un vídeo de 8 segundos, 16:9 y 720p. Muestra progreso, reproductor y enlace Stock. Requiere sesión Admira y una generación de pago. Mantiene importación, reproducción y controles anteriores; no crea una campaña ni conecta equipos físicos."
+        "detail": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas."
       },
       "better": {
         "status": "partial",
-        "detail": "Puede verse la fuente compartida del player, pero no existen biblioteca, importador ni selección de fuente propia por superficie dentro de Better."
+        "detail": "Biblioteca Pixeria por hashtag, previo y arrastre de imagen o vídeo a una pantalla concreta verificados en el gemelo local. Esta entrega no acredita paridad de hardware o controles operativos adicionales."
       },
       "best": {
-        "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre Avenida Admira con inventario editable, cámara fija y personas del gemelo en vivo; la apertura no demuestra la implementación de esta función operativa."
+        "status": "partial",
+        "detail": "Biblioteca Pixeria por hashtag, previo y arrastre de imagen o vídeo a una pantalla concreta verificados en el gemelo local. Esta entrega no acredita paridad de hardware o controles operativos adicionales."
       },
       "commands": [
         {
@@ -480,7 +490,7 @@
       "media_stock": {
         "implemented": true,
         "guide": "https://www.admira.store/admira-xp/docs/video-stock.md",
-        "scope": "Options in classic / Opciones del clásico",
+        "scope": "Generation in Expert; library, preview and launch in Options / Generación en Experto; biblioteca, previo y lanzamiento en Opciones",
         "remote_generation_tool": false
       },
       "optionsPlaylists": {
@@ -511,6 +521,11 @@
           "duration_seconds": 30
         },
         "music_generation": "existing PixerIA delivery to Stock; no new paid music generator added"
+      },
+      "pixeriaScreenDrop": {
+        "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
+        "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
       }
     },
     {
@@ -1507,16 +1522,16 @@
       "title": "Creación con IA y Pixeria",
       "summary": "Imágenes, vídeo, campañas TikTok, catálogo creativo y consultas IA.",
       "good": {
-        "status": "code_present",
-        "detail": "Opciones → Imagen y Vídeo muestra campos de anuncio editables y genera con PixerIA/Grok usando la sesión Admira existente. Imágenes, vídeos y locuciones ElevenLabs se archivan en Stock con ID, número, hash y URL estable. Cada nuevo trabajo puede consumir créditos y requiere autorización mediante la acción de generar. Reintentar recupera el mismo ID. La imagen mantiene la vista previa del contador durante 30 segundos."
+        "status": "partial",
+        "detail": "Experto → Crear contenidos conserva los formularios PixerIA/Grok y la sesión existente; Crear música abre Pixeria. La generación archiva en Stock y prepara el previo de Opciones, sin emitir. Importación por hashtag y arrastre a pantalla concreta disponibles en todas las vistas. No acredita generación, publicación o conexión física mediante herramientas MCP."
       },
       "better": {
-        "status": "classic_only",
-        "detail": "No hay compositor, selección de propuesta, progreso de generación ni confirmación de publicación en Better."
+        "status": "partial",
+        "detail": "Experto → Crear contenidos conserva los formularios PixerIA/Grok y la sesión existente; Crear música abre Pixeria. La generación archiva en Stock y prepara el previo de Opciones, sin emitir. Importación por hashtag y arrastre a pantalla concreta disponibles en todas las vistas. No acredita generación, publicación o conexión física mediante herramientas MCP."
       },
       "best": {
-        "status": "planned",
-        "detail": "Esta función operativa de Best sigue en preparación. El selector abre Avenida Admira con inventario editable, cámara fija y personas del gemelo en vivo; la apertura no demuestra la implementación de esta función operativa."
+        "status": "partial",
+        "detail": "Experto → Crear contenidos conserva los formularios PixerIA/Grok y la sesión existente; Crear música abre Pixeria. La generación archiva en Stock y prepara el previo de Opciones, sin emitir. Importación por hashtag y arrastre a pantalla concreta disponibles en todas las vistas. No acredita generación, publicación o conexión física mediante herramientas MCP."
       },
       "commands": [
         {
@@ -1556,7 +1571,6 @@
         "gap": "La generación no está implementada en este MCP; se federaría con los servicios de creación y sus permisos."
       },
       "restore": [
-        "Recuperar vista previa, progreso y confirmación explícita de coste/publicación.",
         "Conservar asset_id de la propuesta a la pantalla y a su comprobación."
       ],
       "evidence": [
@@ -1584,7 +1598,7 @@
       "media_stock": {
         "implemented": true,
         "guide": "https://www.admira.store/admira-xp/docs/video-stock.md",
-        "scope": "Options in classic / Opciones del clásico",
+        "scope": "Generation in Expert; library, preview and launch in Options / Generación en Experto; biblioteca, previo y lanzamiento en Opciones",
         "remote_generation_tool": false
       },
       "optionsPlaylists": {
@@ -1615,6 +1629,11 @@
           "duration_seconds": 30
         },
         "music_generation": "existing PixerIA delivery to Stock; no new paid music generator added"
+      },
+      "pixeriaScreenDrop": {
+        "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
+        "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
       }
     },
     {
@@ -3523,7 +3542,7 @@
       "visualQualityOptions"
     ]
   },
-  "version": "v.05.10.2026.r17.22:07",
+  "version": "v.05.10.2026.r18.22:47",
   "inventory_scope": {
     "es": "ITIL abre el inventario del Xpacio visitado en la segunda columna de Experto y el detalle seleccionado en la tercera. El enlace opcional al catálogo conserva el mismo dominio, proyecto, local, idioma y marca y publica primero la distribución actual en este navegador. Tarjetas, selector 3D, desgloses y descargas se limitan a sus modelos; un enlace a una pieza ajena no la carga. Un Xpacio desconocido muestra un inventario vacío y pide abrir ITIL desde la escena. /inventario en el gemelo lista sólo sus modelos, conservando los números permanentes y las piezas retiradas para su recuperación. Las importaciones explícitas y Deshacer mantienen su funcionamiento. Starbucks PG103 conserva sus unidades y modelos 44–50 e incluye sus seis pantallas virtuales, TPV y altavoz; no acredita vinculación ni telemetría física. Cafebrería conserva su inventario completo de la escena y su librería 51. El catálogo general sin contexto sigue disponible para consultar plantillas. No crea altas patrimoniales en Yokup.",
     "en": "ITIL opens the inventory of the Xpace being visited in the second Expert column and the selected details in the third. The optional catalogue link preserves the same origin, project, venue, language and brand and first publishes the current layout in this browser. Cards, the 3D selector, breakdowns and downloads are limited to its models; links to foreign pieces do not load them. Unknown Xpacios show an empty inventory and ask users to open ITIL from the scene. /inventario in the twin lists only its models, preserving permanent numbers and removed pieces for recovery. Explicit imports and Undo retain their behavior. Starbucks PG103 keeps its units and models 44–50 and includes its six virtual screens, POS and speaker; this does not establish physical binding or telemetry. Cafebrería retains its full scene inventory and bookcase 51. The general catalogue without context remains available for browsing templates. No Yokup lifecycle assets are created.",
@@ -3957,8 +3976,8 @@
     "automatic_stock": true
   },
   "image_prompt": {
-    "es": "Opciones → Imagen: escribe en Qué quieres anunciar el producto, oferta o anuncio (hasta 1500 caracteres) y pulsa Generar imagen (PixerIA). El campo está visible en el desplegable, conserva el texto al cambiar de idioma y evita envíos duplicados mientras genera. Requiere sesión autorizada y consume una generación de pago. La imagen usa el generador PixerIA existente y se guarda en Stock y aparece en el previo de Opciones; pulsa Lanzar para enviarla a la playlist de pantallas; no publica una campaña ni envía contenido a tiendas físicas. Un texto vacío pide completar el campo; un fallo se muestra en el estado. /creaimagen genera y prepara el previo sin autoemisión.",
-    "en": "Options → Image: enter the product, offer or announcement in What do you want to advertise? (up to 1500 characters), then press Generate image (PixerIA). The field is visible inside the panel, retains text across language changes and prevents duplicate submissions while generating. An authorized session is required and one paid image generation is consumed. It uses the existing PixerIA generator and saves the image to Stock and shows it in the Options preview; press Launch to send it to the screen playlist; it does not publish a campaign or send content to physical stores. An empty brief asks you to fill the field; failures are shown in the status. /creaimagen generates and stages the preview without autoplay.",
+    "es": "Experto → Crear contenidos → Crear imagen: escribe en Qué quieres anunciar el producto, oferta o anuncio (hasta 1500 caracteres) y pulsa Generar imagen (PixerIA). El campo está visible en el desplegable, conserva el texto al cambiar de idioma y evita envíos duplicados mientras genera. Requiere sesión autorizada y consume una generación de pago. La imagen usa el generador PixerIA existente y se guarda en Stock y aparece en el previo de Opciones; pulsa Lanzar para enviarla a la playlist de pantallas; no publica una campaña ni envía contenido a tiendas físicas. Un texto vacío pide completar el campo; un fallo se muestra en el estado. /creaimagen genera y prepara el previo sin autoemisión.",
+    "en": "Expert → Create media → Create image: enter the product, offer or announcement in What do you want to advertise? (up to 1500 characters), then press Generate image (PixerIA). The field is visible inside the panel, retains text across language changes and prevents duplicate submissions while generating. An authorized session is required and one paid image generation is consumed. It uses the existing PixerIA generator and saves the image to Stock and shows it in the Options preview; press Launch to send it to the screen playlist; it does not publish a campaign or send content to physical stores. An empty brief asks you to fill the field; failures are shown in the status. /creaimagen generates and stages the preview without autoplay.",
     "text_field": "#imagePrompt",
     "status": "#imagePromptStatus",
     "generate": "[data-xp-do=\"imgGen\"]",
@@ -3976,7 +3995,11 @@
     "credentials": "XAI_KEY remains in pixer-eleven",
     "domain_dependency": "www.xpaceos.com awaits Cloudflare Pages migration",
     "automatic_stock": true,
-    "response": "JSON job with Stock receipt; base64 stays private"
+    "response": "JSON job with Stock receipt; base64 stays private",
+    "creation_location": {
+      "es": "Experto → Crear contenidos",
+      "en": "Expert → Create media"
+    }
   },
   "session_access": {
     "human_ttl_days": 30,
@@ -3993,8 +4016,8 @@
     "en": "Access with your Admira Google account: opening the Xpace as an application verifies your identity before image or announcement generation. Human sessions are retained for 30 days of use in this browser and renewed on return, without a separate XpaceOS password. Google reuses a connected account when available; the first visit or a signed-out Google session may require choosing an account or authenticating with Google. AdmiraNeXT permissions remain enforced and revocable. Image and Public Announcement System show Session active when access is verified. Signing out prevents immediate automatic reconnection. No keys are stored in the browser. For now, interactive xpaceos.com entry opens admira.store while retaining the route, Xpace, language and parameters; embedded players retain public access. GoDaddy DNS migration to Cloudflare Pages remains pending."
   },
   "media_stock": {
-    "es": "Opciones → Vídeo: escribe en Qué quieres anunciar (hasta 1500 caracteres) y pulsa Generar vídeo (Grok). Se crea un vídeo de 8 segundos, 16:9 y 720p, con el idioma ESP/ENG seleccionado. El estado muestra generación y guardado; al terminar aparece el reproductor y Ver en Stock. Imágenes, vídeos y locuciones ElevenLabs se archivan automáticamente en Stock con ID, número de catálogo, hash y URL estable. Una locución se genera una vez y se reproduce tres veces. La sesión Admira existente sirve para las tres funciones, sin otra contraseña. Reintentar recupera el mismo trabajo; el servidor puede terminar el guardado aunque cierres la página. Un nuevo trabajo consume otra generación de pago. Publicar en Stock sigue sus contratos y distribución existentes; este botón no crea una campaña ni conecta equipos físicos.",
-    "en": "Options → Video: enter What do you want to advertise? (up to 1500 characters), then press Generate video (Grok). It creates an 8-second, 16:9, 720p video in the selected ESP/ENG language. Status shows generation and saving; once complete, the player and Open in Stock appear. Images, videos and ElevenLabs announcements are automatically archived in Stock with an ID, catalog number, hash and stable URL. Each announcement is generated once and played three times. The existing Admira session covers all three functions, without another password. Retrying recovers the same operation; the server can finish archiving after you close the page. A new operation consumes another paid generation. Stock publication follows its existing contracts and distribution; this button does not create a campaign or connect physical devices.",
+    "es": "Experto → Crear contenidos → Crear vídeo: escribe en Qué quieres anunciar (hasta 1500 caracteres) y pulsa Generar vídeo (Grok). Se crea un vídeo de 8 segundos, 16:9 y 720p, con el idioma ESP/ENG seleccionado. El estado muestra generación y guardado; al terminar aparece el reproductor y Ver en Stock. Imágenes, vídeos y locuciones ElevenLabs se archivan automáticamente en Stock con ID, número de catálogo, hash y URL estable. Una locución se genera una vez y se reproduce tres veces. La sesión Admira existente sirve para las tres funciones, sin otra contraseña. Reintentar recupera el mismo trabajo; el servidor puede terminar el guardado aunque cierres la página. Un nuevo trabajo consume otra generación de pago. Publicar en Stock sigue sus contratos y distribución existentes; este botón no crea una campaña ni conecta equipos físicos.",
+    "en": "Expert → Create media → Create video: enter What do you want to advertise? (up to 1500 characters), then press Generate video (Grok). It creates an 8-second, 16:9, 720p video in the selected ESP/ENG language. Status shows generation and saving; once complete, the player and Open in Stock appear. Images, videos and ElevenLabs announcements are automatically archived in Stock with an ID, catalog number, hash and stable URL. Each announcement is generated once and played three times. The existing Admira session covers all three functions, without another password. Retrying recovers the same operation; the server can finish archiving after you close the page. A new operation consumes another paid generation. Stock publication follows its existing contracts and distribution; this button does not create a campaign or connect physical devices.",
     "guide": "https://www.admira.store/admira-xp/docs/video-stock.md",
     "text_field": "#videoPrompt",
     "generate": "[data-xp-do=\"videoGen\"]",
@@ -4050,7 +4073,11 @@
         "contentHash": "7bac1cbb758ad50beed460d2477b84bfffd1e2312e535ec6e4edccadf9a3cf5e",
         "mime": "audio/mpeg"
       }
-    ]
+    ],
+    "creation_location": {
+      "es": "Experto → Crear contenidos",
+      "en": "Expert → Create media"
+    }
   },
   "optionsPlaylists": {
     "guide": "https://www.admira.store/admira-xp/docs/options-playlists.md",
@@ -4067,7 +4094,7 @@
       "[data-options-playlist=\"music\"]",
       "[data-options-playlist=\"screens\"]"
     ],
-    "drop_behavior": "insert at chosen position, preserve current playback",
+    "drop_behavior": "insert into playlist at chosen position, preserve current playback",
     "image_duration_seconds": 30,
     "runtime_scope": "local virtual players; physical broadcast not verified",
     "staged_storage": "sessionStorage:xpaceos.options-media-ready.v1",
@@ -4079,6 +4106,32 @@
       "url": "direct HTTPS media URL",
       "duration_seconds": 30
     },
-    "music_generation": "existing PixerIA delivery to Stock; no new paid music generator added"
+    "music_generation": "existing PixerIA delivery to Stock; no new paid music generator added",
+    "screen_drop_behavior": "temporary local preview on the exact target screen; restore original schedule"
+  },
+  "pixeriaScreenDrop": {
+    "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
+    "library": "https://stock.admira.store/stock/index.json",
+    "creation": "Expert creation category",
+    "qualities": [
+      "good",
+      "better",
+      "best",
+      "matrix"
+    ],
+    "selection": "stage without playback",
+    "screenDrop": "local temporary exact screen; reload restores",
+    "playlistDrop": "append without playback",
+    "types": [
+      "music",
+      "image",
+      "video"
+    ],
+    "id": "stable Stock asset id",
+    "physicalBroadcast": false,
+    "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
+    "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
+    "status": "implemented",
+    "scope": "local virtual screen preview; authenticated MCP changes remain explicit"
   }
 }

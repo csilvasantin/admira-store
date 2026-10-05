@@ -102,6 +102,12 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function optionGroups(channel){if(channel==='music')return [{id:'music',title:t('Hilo musical · Starbucks','Background music · Starbucks')}];const config=deviceEditor.config,all={...catalog(),...config.playlists};return Object.entries(all).filter(([pid])=>DEVICE_IDS.some(id=>assignedPlaylist(config,id)===pid)).map(([id,p])=>({id,title:p.title+' · '+DEVICE_IDS.filter(device=>assignedPlaylist(config,device)===id).map(device=>screenNumber(device)||'TPV').join(', ')}));}
  const playlistValue=pid=>deviceEditor.config.playlists[pid]||catalog()[pid];
  window.XpaceMatrixOptions={
+  isActive:()=>!disposed,
+  screenAt(x,y){for(const n of nodes.values())if(n.dataset.deviceId)n.style.pointerEvents='auto';const id=document.elementFromPoint(x,y)?.closest('[data-device-id]')?.dataset.deviceId;return DEVICE_IDS.includes(id)?id:null;},
+  screenTitle:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),
+  screenHighlight(id){for(const n of nodes.values())if(!id)n.style.pointerEvents='';for(const n of root.querySelectorAll('[data-device-id]'))n.classList.toggle('device-drop-target',n.dataset.deviceId===id);},
+  async previewScreen(id,track){if(disposed||!DEVICE_IDS.includes(id)||incidents.off.has(id))throw Error(t('Pantalla apagada o no disponible','Screen off or unavailable'));if(!['image','video'].includes(track.kind))throw Error('Invalid screen content');const result=await previewDevices([id],track);if(result.error)throw Error(t('No se pudo mostrar el contenido','Could not display content'));return result;},
+  restoreScreen:id=>{if(disposed)throw Error(t('Vuelve a Matrix.','Return to Matrix.'));return deviceEditor.reload([id]);},
   groups:optionGroups,
   control(action,pid){if(action==='musicToggle'){music.toggle();return;}if(action.startsWith('music')){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url),next=(index+(action==='musicPrev'?-1:1)+tracks.length)%tracks.length;if(tracks[next])return music.jump(tracks[next].url);return;}const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid);if(action==='dsToggle'){runtime.setPlaying(ids,!runtime.state(ids).playing);return;}const p=playlistValue(pid),active=runtime.nowPlaying(ids)[0],index=p?.tracks.findIndex(t=>t.id===active?.trackId)??-1,next=(index+(action==='dsPrev'?-1:1)+(p?.tracks.length||0))%(p?.tracks.length||0);if(p?.tracks[next])return this.play('screens',p.tracks[next].id,pid);},
   suppressMusic:()=>music.suppress(),

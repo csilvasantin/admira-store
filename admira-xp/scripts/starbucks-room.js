@@ -112,8 +112,11 @@
     return {...part,x:Math.min(...xs),z:Math.min(...zs),w:Math.max(...xs)-Math.min(...xs),d:Math.max(...zs)-Math.min(...zs),y:part.y*sy,h:part.h*sy};
   }
   // Canvas follows the existing Good projection and pixel grid; no image backdrop.
+  const screenId=device=>device==='pos'?'starbucks-tpv-01':'starbucks-wall-0'+(7-device);
+  const screenQuads={};let dropTarget=null;
   let cachedKey=null,cachedGroups=null;
   function draw(ctx,iso,project,items,actors=[],moving=false){
+    for(const id of Object.keys(screenQuads))delete screenQuads[id];
     const height=iso.tileW/Math.SQRT2*Math.cos(Math.asin(iso.tileH/iso.tileW));
     const p=(x,y,z)=>{const v=project(x,z);return [Math.round(v.x),Math.round(v.y-y*height)];};
     const shade=(hex,k)=>'#'+hex.slice(1).match(/../g).map(v=>Math.min(255,Math.round(parseInt(v,16)*k)).toString(16).padStart(2,'0')).join('');
@@ -130,7 +133,10 @@
         poly(ring.map(([xx,zz])=>p(xx,y+h,zz)),color);
       }else{poly([b,k,f,c],shade(color,.70));poly([e,c,f,j],shade(color,.88));poly([a,b,c,e],color);}
       if(v.text){ctx.save();ctx.transform((c[0]-e[0])/w,(c[1]-e[1])/w,0,height,e[0],e[1]);ctx.fillStyle='#f5eed9';ctx.font=`bold ${h*.72}px monospace`;ctx.textAlign='center';ctx.fillText(v.text,w/2,h*.78,w*.93);ctx.restore();}
+    }for(const raw of g.parts.filter(part=>part.device)){const v=transformPart(raw,g.item),id=screenId(v.device),{x,y,z,w,h,d}=v,q=[p(x,y+h,z+d+.002),p(x+w,y+h,z+d+.002),p(x+w,y,z+d+.002),p(x,y,z+d+.002)];screenQuads[id]=q;
+      if(root.XpaceScreenMedia?.get(id)){ctx.save();ctx.transform((q[1][0]-q[0][0])/512,(q[1][1]-q[0][1])/512,(q[3][0]-q[0][0])/768,(q[3][1]-q[0][1])/768,q[0][0],q[0][1]);root.XpaceScreenMedia.draw(ctx,512,768,id);ctx.restore();}
+      if(dropTarget===id){ctx.save();ctx.globalAlpha=1;ctx.strokeStyle='#78f3ff';ctx.lineWidth=3;ctx.beginPath();q.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();ctx.stroke();ctx.restore();}
     }}ctx.globalAlpha=1;
   }
-  root.XpaceStarbucks={id:ID,active,layout,build,draw,transformPart};
+  root.XpaceStarbucks={id:ID,active,layout,build,draw,transformPart,screenId,screenQuads,get dropTarget(){return dropTarget;},set dropTarget(id){dropTarget=id;}};
 })(globalThis);

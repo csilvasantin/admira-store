@@ -24,6 +24,7 @@
     try{result=String(await provider(text)||'');phase=['Sign in to generate the image.','Inicia sesión para generar la imagen.'].includes(result)?'auth':['Could not generate the image. Try again.','No se pudo generar la imagen. Vuelve a intentarlo.'].includes(result)?'error':'result';}catch(_){phase='error';}
     finally{busy=false;render();}
   }};
+  button?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();root.XpaceImagePrompt.generate(root.admiraCreaImagen);});
   if(input)for(const event of ['keydown','keyup','keypress'])input.addEventListener(event,e=>e.stopPropagation());
   if(root.MutationObserver)new root.MutationObserver(render).observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});
   root.addEventListener('xpace:session',render);

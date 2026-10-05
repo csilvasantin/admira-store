@@ -1,6 +1,7 @@
 // Local presentation only: buttons still forward to their existing actions.
 (()=>{
   const paths={
+    creation:'<path d="m12 3 2 6 6 2-6 2-2 6-2-6-6-2 6-2zM20 3v4M18 5h4"/>',
     megafonia:'<path d="M3 9h5l11-5v16l-11-5H3zM8 15l2 6H6l-2-6M8 9v6M22 9v6"/>',
     music:'<path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>',
     video:'<rect x="3" y="4" width="18" height="16" rx="1"/><path d="m10 8 6 4-6 4z"/>',

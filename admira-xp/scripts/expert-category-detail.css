@@ -17,3 +17,10 @@
 #telegramDock #expertCategoryDetail .distribuit-panel p{white-space:normal}
 body.expert-signage-docked #telegramDock.compose-start .send.signage-open #telegramComposer{display:block!important}
 body.expert-signage-docked #telegramDock.compose-start .send.signage-open .expert-workspace{flex:1 1 auto;min-height:0}
+.expert-media-form{border:1px solid #345360;border-radius:4px;padding:7px;margin:6px 0}
+.expert-media-form summary{cursor:pointer;font-weight:bold}
+.expert-media-form textarea{width:100%;box-sizing:border-box;min-height:70px;background:#05121c;border:1px solid #345360;color:#d5edf4;font:inherit;padding:6px;resize:vertical}
+.expert-media-form p{white-space:normal;margin:5px 0}
+.expert-media-form a{color:#8ae6ff}
+#expertMediaGeneration[hidden]{display:none!important}
+#advQuickIcons [data-category-id=creation]{display:none}

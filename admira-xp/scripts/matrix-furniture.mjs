@@ -3,6 +3,7 @@ import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collisi
 import {assetForInstance} from '../../inventario/model.mjs?v=catalog-43-objects-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_ARCHITECTURE_DETAILS,photoPieceFor} from './matrix-photo-pieces.mjs?v=customer-motion-1';
+import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
 
 const MANIFEST_URL=new URL('../assets/matrix-furniture/catalog/manifest.json',import.meta.url);
 const SVG='http://www.w3.org/2000/svg';
@@ -188,6 +189,15 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
         entry.node=node;layer.append(node);
       }
       entry.current=p;if(entry.node){entry.node.setAttribute('aria-label',`${p.number}. ${p.label}`);entry.node.title=`${p.number}. ${p.label}`;applyPlacement(entry.node,p);}
+      // Screen apertures follow the actual atlas cutout and its existing transform.
+      const screenId=p.item?.type==='metahuman'?'metahuman':p.item?.type==='tft'?'escaparate':p.item?.type==='led'?'inventory:'+p.id:null;
+      if(screenId&&entry.node&&(p.kind==='photo'||(p.number===13&&[0,3].includes(p.view?.rotation)))){
+        if(!entry.screen){entry.screen=document.createElement('canvas');entry.screen.width=512;entry.screen.height=768;entry.screen.dataset.mediaScreen=screenId;entry.screen.style.cssText='position:absolute;left:0;top:0;width:512px;height:768px;transform-origin:0 0;pointer-events:auto';entry.node.append(entry.screen);}
+        const aperture=p.kind==='sprite'?(p.view.rotation===0?[[125,35],[247,75],[247,170],[124,128]]:[[135,78],[256,36],[256,125],[135,169]]):p.item.type==='metahuman'?[[692,392],[755,414],[755,565],[690,540]]:[[410,129],[475,106],[475,264],[410,286]];
+        const box=p.kind==='photo'?p.box:{x:0,y:0,width:p.view.width,height:p.view.height};const points=aperture.map(([x,y])=>({x:(x-box.x)/box.width*entry.node.clientWidth,y:(y-box.y)/box.height*entry.node.clientHeight})),matrix=quadTransform(points,512,768);
+        if(matrix)entry.screen.style.transform='matrix3d('+matrix.join(',')+')';
+        const ctx=entry.screen.getContext?.('2d');if(ctx){ctx.clearRect(0,0,512,768);globalThis.XpaceScreenMedia?.draw(ctx,512,768,screenId);}
+      }
     }
     if(!decorators.length){
       for(const photo of MATRIX_ARCHITECTURE_DETAILS){const box=bounds(photo.polygons),node=document.createElement('div');node.className='matrix-furniture-item matrix-architecture-detail';node.append(photoContent(photo,box,`${prefix}-detail-${++sequence}`));

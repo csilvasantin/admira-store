@@ -46,6 +46,9 @@
     if(sections.has(key))return sections.get(key);
     const s=document.createElement('section');s.dataset.detailCategory=key;s.hidden=key!==selected;host.append(s);sections.set(key,s);
     const actions=document.createElement('div');actions.className='expert-detail-actions';s.append(actions);
+    if(key==='creation'){
+      const forms=document.getElementById('expertMediaGeneration');if(forms){forms.hidden=false;s.append(forms);}
+    }
     if(key==='signage')button(actions,'Abrir playlist','Open playlist',()=>launch(key));
     if(key==='admiralive'){
       const input=field(s,'Texto LED','LED text');
@@ -115,6 +118,7 @@
     if(!selected||pending||!records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches?.(panelSelectors)||n.querySelector?.(panelSelectors)))))return;
     pending=true;requestAnimationFrame(()=>{pending=false;dockPanels();});
   }).observe(document.body,{childList:true,subtree:true});
-  new MutationObserver(()=>{for(const node of host.querySelectorAll('[data-itil-es]'))node.textContent=t(node.dataset.itilEs,node.dataset.itilEn);}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  const translateCreation=()=>{for(const node of host.querySelectorAll('[data-itil-es]'))node.textContent=t(node.dataset.itilEs,node.dataset.itilEn);const music=host.querySelector('[data-pixeria-music-create]');if(music)music.href=en()?'https://www.pixeria.com/en/musica.html':'https://www.pixeria.com/musica.html';};
+  translateCreation();new MutationObserver(translateCreation).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   host.hidden=true;window.XpaceExpertDetail={select,dockPanels};
 })();

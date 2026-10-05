@@ -17,3 +17,10 @@ MCP: matrix_preview {action:"preview",device_ids:["starbucks-wall-04","starbucks
 MCP: matrix_preview {action:"reload",device_ids:["starbucks-wall-04","starbucks-wall-03"],expected_revision:N}. Read matrix_state before either write. Both commands require the agent’s own fleet authentication and the Matrix revision (not the UUID playlist revision). The signed previewCommand is consumed only by already-open Matrix clients on the next poll, approximately five seconds. Old commands are not replayed on entry. Each browser restores its own saved assignments; commands do not overwrite playlist contents. A saved command is not a playback acknowledgement. These are virtual devices, not physical broadcasting.
 
 ES: Arrastrar desde la UI es local y temporal. Para solicitar lo mismo desde otro agente usa matrix_preview. EN: UI dragging is local and temporary. Agents request the same actions through matrix_preview. Endpoint: https://mcp.admira.store/mcp. Guide: https://www.xpaceos.com/admira-xp/docs/playlist-drop.md.
+
+
+ES: También puedes arrastrar el previo elegido en Opciones o una fila de Playlist actual sobre una pantalla en cualquier calidad. Este gesto usa sólo ese destino, sin necesitar /layout.
+
+EN: You can also drag an Options preview or Current playlist row onto a screen in any quality. This gesture uses only that destination and does not require /layout.
+
+Guide: https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md

@@ -22,3 +22,10 @@ Inventario/ITIL sigue el idioma activo del Xpacio: en castellano muestra Inventa
 Inventory/ITIL follows the active Xpace language: Spanish displays Inventario/ITIL and elementos; English displays Inventory/ITIL and items. Standard furniture and IoT names, categories, search, model and details use that language. Changing language updates the columns without losing selection or search text. Cafebrería translates records, fields and actions while retaining unsaved edits. Custom names, identifiers, ITIL codes, saved records and JSON/CSV exports retain their original data. Translation affects presentation. The ten subcategories and each Xpace’s own inventory remain available.
 
 Contrato / Contract: `inventory-language.md`.
+
+
+ES: Se añade al final Crear contenidos (creation), conservando las diez categorías anteriores y sus identidades. Contiene Crear música (Pixeria), Crear imagen y Crear vídeo; los previos y la biblioteca por hashtags quedan en Opciones.
+
+EN: Create media (creation) is appended, retaining the ten previous categories and their identities. It contains Create music (Pixeria), Create image and Create video; previews and the hashtag library remain in Options.
+
+Guide: https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md

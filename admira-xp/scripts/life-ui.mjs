@@ -80,7 +80,7 @@ function clearSceneToolbar(){sceneSlot()?.replaceChildren();}
 function parkSceneToolbar(toolbar){const slot=sceneSlot();if(slot&&toolbar)slot.replaceChildren(toolbar);}
 function pressGroup(buttons,button){for(const other of buttons){const on=other===button;other.setAttribute('aria-pressed',String(on));if(on)other.classList.add('is-active');else other.classList.remove('is-active');}}
 function close(reason=''){
-  stopLanguage?.();stopLanguage=null;generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
+  delete window.XpaceSceneScreens;stopLanguage?.();stopLanguage=null;generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
   closeLifeEditor();closeShelfPanel();for(const window of floatingWindows.splice(0))window.dispose();selectionWindow=null;for(const unregister of windowEntries.splice(0))unregister();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
@@ -216,13 +216,14 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=windows-menu-1');if(ticket!==generation)return;
-      viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=pixeria-screens-3');if(ticket!==generation)return;
+      viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,getScreenPreview:()=>window.XpaceScreenMedia?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
         dialog.querySelector('.life-mapping-state').textContent=mapped?'· cámara alineada':'· exploración libre';
         for(const button of presetButtons){const on=mapped&&button.dataset.preset==='mapped';button.setAttribute('aria-pressed',String(on));if(on)button.classList.add('is-active');else button.classList.remove('is-active');}
       }});
+      window.XpaceSceneScreens={screenAt:(x,y)=>viewer?.screenAt(x,y),screenHighlight:id=>viewer?.screenHighlight(id),previewScreen:(id,track)=>window.XpaceScreenMedia.preview(id,track),restoreScreen:id=>window.XpaceScreenMedia.restore(id)};
       if(best&&!venue&&!cafe&&sourceState?.vertical==='xtanco')void openShelfPanel(ticket,viewer);
       if(dialog.dataset.light)viewer.setLighting(dialog.dataset.light);
       resizeObserver=new ResizeObserver(()=>{if(viewer&&dialog){const rect=dialog.querySelector('.life-stage').getBoundingClientRect();viewer.resize(rect.width,rect.height);}});resizeObserver.observe(dialog.querySelector('.life-stage'));

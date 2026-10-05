@@ -1,6 +1,6 @@
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=windows-menu-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=pixeria-screens-3';
 import {createBestPeopleLayer} from './best-live-people.mjs?v=actor-collision-20261004-1';
-import {mountMatrixFurniture} from './matrix-furniture.mjs?v=actor-collision-20261004-1';
+import {mountMatrixFurniture} from './matrix-furniture.mjs?v=pixeria-screens-3';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
@@ -18,6 +18,7 @@ export function subscribeBestView(fn){listeners.add(fn);return ()=>listeners.del
 export function closeBestView(reason=''){
   if(starbucksDelegate){closeLifeView(reason);starbucksDelegate=false;return;}
   if(!dialog)return;
+  delete window.XpaceSceneScreens;
   const current=dialog;dialog=null;
   removeAbort?.();removeAbort=null;errorWindow?.dispose();errorWindow=null;people?.dispose();people=null;furniture?.dispose();furniture=null;exterior?.dispose();exterior=null;hud?.dispose();hud=null;
   const image=current.querySelector('.matrix-reference-clean');image.onload=null;image.onerror=null;
@@ -42,6 +43,7 @@ export function openBestView(options={}){
     <section class="best-image-error" role="alert" hidden><p class="best-image-error-message">No se ha podido cargar Best. Puedes cambiar de vista desde el menú avanzado o el CLI.</p></section>
   </figure>`;
   const current=dialog,image=current.querySelector('.matrix-reference-clean');
+  window.XpaceSceneScreens={screenAt(x,y){const node=document.elementFromPoint(x,y)?.closest('[data-media-screen]');return node&&current.contains(node)?node.dataset.mediaScreen:null;},screenHighlight(id){for(const node of current.querySelectorAll('[data-media-screen]'))node.classList.toggle('media-drop-over',node.dataset.mediaScreen===id);},previewScreen:(id,track)=>window.XpaceScreenMedia.preview(id,track),restoreScreen:id=>window.XpaceScreenMedia.restore(id)};
   const errorPanel=current.querySelector('.best-image-error');
   errorWindow=attachFloatingPanel(errorPanel,{label:document.documentElement?.lang==='en'?'Best loading error':'Error al cargar Best',bounds:current.querySelector('.best-stage'),key:'xpaceos.window.best-error.v1',menu:'best-error',onOpen:()=>{if(dialog===current&&viewError)errorPanel.hidden=false;}});
   hud=mountTierHud(current,{mode:'best',stage:current.querySelector('.best-stage')});
