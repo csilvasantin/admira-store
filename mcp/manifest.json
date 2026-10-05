@@ -1813,6 +1813,6 @@
     "output_format": "mp3_44100_192",
     "generation_endpoint": "/admira-xp/announcement-tts",
     "authentication": "perimeter session; credentials stay server-side",
-    "deployment_status": "private service configured; authorized perimeter session required"
+    "deployment_status": "admira.store and xpaceos.pages.dev enabled; www.xpaceos.com awaits Cloudflare Pages migration; authorized session required"
   }
 }
