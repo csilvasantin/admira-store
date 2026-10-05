@@ -58,7 +58,7 @@
   ];
   // Las vistas del gemelo se escriben sin barra (good, better, best, matrix).
   const BARE_TWIN = ['good', 'better', 'best', 'matrix'];
-  const SHELL_VERBS = ['help', 'ayuda', 'limpiar', 'clear', 'gemelo', 'twin', 'marca', 'brand', 'idioma', 'language', 'avatar', 'avatardigital', 'digitalavatar', 'admirito', 'avataron', 'avataroff'];
+  const SHELL_VERBS = ['help', 'ayuda', 'limpiar', 'clear', 'gemelo', 'twin', 'marca', 'brand', 'idioma', 'language', 'languague', 'avatar', 'avatardigital', 'digitalavatar', 'admirito', 'avataron', 'avataroff'];
 
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const pick = (lang, item) => (typeof item === 'string' ? item : lang === 'en' ? (item.en || item.es || '') : (item.es || item.en || ''));
@@ -318,11 +318,35 @@
   const LANG_KEY = 'xtanco_lang';
   const LANG_EVENT = 'admira:languagechange';
 
+  function normalizeLangToken(s) {
+    const n = String(s == null ? '' : s).toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z]/g, '');
+    if (!n) return '';
+    if (/^(en|eng|english|ingles)$/.test(n)) return 'en';
+    if (/^(es|esp|spa|spanish|espanol|castellano)$/.test(n)) return 'es';
+    return null;
+  }
+  // /idioma · /language · /languague (typo); arg vacío = toggle; ESP|ENG|es|en; pegados (idiomaESP).
+  function parseLangCommand(text) {
+    const raw = String(text == null ? '' : text).trim();
+    if (!raw) return null;
+    const body = raw.replace(/^\//, '').trim();
+    const m = body.match(/^(idioma|language|languague)(?:[\s_-]*(.*))?$/i);
+    if (!m) return null;
+    const token = normalizeLangToken(m[2] || '');
+    if (token === null) return {ok: false, verb: m[1].toLowerCase()};
+    return {ok: true, verb: m[1].toLowerCase(), token, toggled: !token};
+  }
   function languageCommand(text, env = {}) {
-    const p = parseCommand(text);
-    if (!p || !['idioma', 'language'].includes(p.verb)) return null;
-    const next = ({esp:'es',eng:'en',es:'es',en:'en'})[p.args.trim().toLowerCase()];
-    if (!next) return {ok:false, local:true, message:env.lang === 'en' ? 'Use /idioma ESP (Spanish) or /idioma ENG (English).' : 'Usa /idioma ESP (castellano) o /idioma ENG (inglés).'};
+    const parsed = parseLangCommand(text);
+    if (!parsed) return null;
+    const usage = env.lang === 'en'
+      ? 'Use /idioma or /language (toggle), /idioma ESP|ENG (or es|en). Also languageENG, idiomaESP…'
+      : 'Usa /idioma o /language (toggle), /idioma ESP|ENG (o es|en). También languageENG, idiomaESP…';
+    if (!parsed.ok) return {ok:false, local:true, message: usage};
+    const current = (env.lang === 'en') ? 'en' : 'es';
+    const next = parsed.token || (current === 'en' ? 'es' : 'en');
     // An explicit local choice overrides a locale pinned by the incoming URL.
     // No navigation: retain the active scene, panel state and CLI history.
     const win = env.window;
@@ -334,12 +358,12 @@
       env.history?.replaceState(env.history.state, '', url.href);
     } catch (_) {}
     env.apply?.(next);
-    return {ok:true, local:true, language:next, message:next === 'en' ? 'Interface language: English.' : 'Idioma de la interfaz: castellano.'};
+    return {ok:true, local:true, language:next, message: next === 'en' ? 'Language: English' : 'Idioma: español'};
   }
 
   const api = {PANELS_KEY, HISTORY_KEY, LANG_KEY, LANG_EVENT, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
-    esc, normalizeConfig, markup, parseCommand, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
+    esc, normalizeConfig, markup, parseCommand, parseLangCommand, normalizeLangToken, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -686,7 +710,7 @@
     const L = [];
     L.push(T('XpaceOS · modo experto. Verbos de esta página:', 'XpaceOS · expert mode. Verbs on this page:'));
     L.push(T('  /help (/ayuda) — esta ayuda', '  /help (/ayuda) — this help'));
-    L.push(T('  /idioma ESP | ENG — castellano o inglés, sin recargar el Xpacio', '  /idioma ESP | ENG — Spanish or English without reloading the Xpace'));
+    L.push(T('  /idioma [/language] [ESP|ENG] — castellano o inglés (sin arg: alterna; también idiomaESP)', '  /idioma [/language] [ESP|ENG] — Spanish or English (no arg: toggle; also idiomaESP)'));
     L.push(T('  /limpiar (/clear) — vacía la consola', '  /limpiar (/clear) — clear the console'));
     L.push(T('  /gemelo [orden] — abre el gemelo y, si la das, ejecuta allí la orden', '  /gemelo [command] — open the twin and, if given, run the command there'));
     L.push(T('  /marca [marca] — Marca blanca del catálogo de admiranext.com/marcablanca: /marca <id> viste la web con esa marca, /marca off vuelve a Admira, /marca sola dice cuál está activa y lista las disponibles, /marca <web> abre el analizador en otra pestaña. Alias: /brand.',
@@ -787,7 +811,7 @@
   // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
-    const V = '20261004-experto-store-2', BASE = 'https://www.admiranext.com/suite/experto';
+    const V = '20261005-experto-idioma-1', BASE = 'https://www.admiranext.com/suite/experto';
     const css = doc.createElement('link');
     css.rel = 'stylesheet'; css.href = BASE + '.css?v=' + V;
     doc.head.appendChild(css);

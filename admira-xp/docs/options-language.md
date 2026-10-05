@@ -18,7 +18,7 @@ EN: PA system, Background music, Image, Video, Avatar and Counter use the same c
 
 ## Contrato compartido / Shared contract
 
-- Comandos / Commands: `/idioma ESP`, `/idioma ENG`; aliases `/language ESP|ENG`, `es|en`, case insensitive. Invalid arguments return local usage and change nothing.
+- Comandos / Commands: `/idioma` o `/language` solos alternan; `/idioma ESP|ENG` (o `es|en`) fija; typo `/languague`; pegados `idiomaESP`, `languageENG`. Invalid arguments return local usage and change nothing.
 - Estado / State: `document.documentElement.lang`, `xtanco_lang`, `XPACE_LANG_OVERRIDE`, URL `lang=es|en`. An explicit command clears the incoming locale lock. Explicit URL language still takes priority on a new visit.
 - Páginas con contenido propio / Pages with their own content: `/`, `/lenovo/`, `/help/`, `/help/cli/`, `/doc/`, `/backoffice/` load `assets/xpace-lang.js` synchronously (`XpaceLang.bind`). Order: URL `lang=` → `xtanco_lang` → one-time migration of `xpaceosLang`, `xpace_lang`, `loyalty_admin_lang` (copied only when `xtanco_lang` is empty, then removed) → page default (home ES, Lenovo EN, CLI/Doc browser locale). The initial default is not stored, so the twin keeps its own default for visitors who never chose. After `/idioma`, the shell emits `admira:languagechange` with `detail {lang, source:'xpace-shell'}`; pages repaint without reloading. A page language button stores `xtanco_lang`, rewrites an existing `lang=` and emits the same event with its own `source`.
 - Recursos / Resources: `assets/xpace-shell.js` (local dispatcher), `admira-xp/scripts/expert-categories.js` (shared SVG factory), `expert-categories.css` (shared style), `interface-language.mjs` (declared interface translations, no DOM replacement).
