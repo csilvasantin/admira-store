@@ -24,10 +24,21 @@ GIT="$(git rev-parse HEAD)"
 jq -n --arg v "$SELLO" --arg a "$ADMIRA_RELEASE_AGENT" --arg m "$ADMIRA_RELEASE_MACHINE" \
       '{version:$v,deployer:$a,machine:$m,signature:($a+" · "+$m)}' \
       > release-signature.json
-jq -n --arg v "$SELLO" --arg t "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+# NOVEDADES DEL SELLO (Merovingio, 06-10-2026 · sello con novedades en toda la suite).
+# novedades.json[sello] o .default → version.json.novedades[] (2-4 líneas en español). Las
+# pinta al pasar el ratón el cargador compartido https://www.admiranext.com/assets/sello-novedades.js
+NOVEDADES_JSON='[]'
+if [ -f novedades.json ]; then
+  NOVEDADES_JSON="$(jq -c --arg v "$SELLO" '
+    (if type=="object" then (.[$v] // .default // .novedades // []) elif type=="array" then . else [] end)
+    | if type=="array" then . else [] end | map(tostring) | map(select(length>0)) | .[0:4]
+  ' novedades.json 2>/dev/null || echo '[]')"
+fi
+[ -n "$NOVEDADES_JSON" ] || NOVEDADES_JSON='[]'
+jq -n --argjson novedades "$NOVEDADES_JSON" --arg v "$SELLO" --arg t "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
       --arg a "$ADMIRA_RELEASE_AGENT" --arg m "$ADMIRA_RELEASE_MACHINE" \
       --arg g "$GIT" --arg gs "${GIT:0:7}" \
-      '{version:$v,deployedAt:$t,deployer:$a,machine:$m,signature:($a+" · "+$m),git:$g,gitShort:$gs,gitFull:$g,dirty:false}' \
+      '{version:$v,deployedAt:$t,deployer:$a,machine:$m,signature:($a+" · "+$m),git:$g,gitShort:$gs,gitFull:$g,dirty:false,novedades:$novedades}' \
       > version.json
 git add release-signature.json version.json && git commit -q -m "sello $SELLO · $ADMIRA_RELEASE_AGENT · $ADMIRA_RELEASE_MACHINE" || true
 echo "  ✓ $SELLO · $ADMIRA_RELEASE_AGENT · $ADMIRA_RELEASE_MACHINE"
