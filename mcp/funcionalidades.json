@@ -3637,5 +3637,12 @@
       "admira-xp/scripts/passage-overlay.mjs"
     ],
     "local_api": "diagnosePassage(scene, {actor: human|unitree, targetId})"
+  },
+  "altadis_pixeria_demo": {
+    "es": "Demo neutra Altadis en nueve estancos (altadis-bcn-001…009) con MP4 Pixeria Sin adaptar/Adaptado. Campaña oficial pendiente de Carlos.",
+    "en": "Neutral Altadis demo across nine venues (altadis-bcn-001…009) with Pixeria Original/Adapted MP4s. Official campaign awaits Carlos.",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/altadis-pixeria.md",
+    "manifest": "/admira-xp/altadis/demo.json",
+    "official_campaign": "pending_carlos"
   }
 }

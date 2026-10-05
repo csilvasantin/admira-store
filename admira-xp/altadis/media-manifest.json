@@ -1,0 +1,29 @@
+[
+  {
+    "file": "admira-xp/altadis/media/neutro-1920x1080.mp4",
+    "width": 1920,
+    "height": 1080,
+    "duration": "10.333008",
+    "bytes": 2908207,
+    "sha256": "2b5482b537e6b51577b8d6092a5207c03da6b8a2e52397042b6d98ec6a127c56",
+    "audio": false
+  },
+  {
+    "file": "admira-xp/altadis/media/neutro-original.mp4",
+    "width": 360,
+    "height": 640,
+    "duration": "10.333008",
+    "bytes": 1639437,
+    "sha256": "e72cc7ea3c50e0e87d2bf4038b019a95dc838dca5459760d2e2df8cffb0cba2a",
+    "audio": false
+  },
+  {
+    "file": "admira-xp/altadis/media/neutro-1080x1920.mp4",
+    "width": 1080,
+    "height": 1920,
+    "duration": "10.333008",
+    "bytes": 2913168,
+    "sha256": "668afe11b27c8ed4f713c10216418eeb7b8e2be5ae4c3ddefd10c9e108f77fa6",
+    "audio": false
+  }
+]

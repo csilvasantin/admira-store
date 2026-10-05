@@ -1,0 +1,68 @@
+{
+  "encargo": 4970,
+  "parent_encargo": 4967,
+  "previous_correction": 4969,
+  "status": "local-preview-official-content-pending",
+  "comparison": "Placeholder screenshots in both modes, not a comparison of actual videos",
+  "browser": "Chrome on MacBookProNegro14",
+  "checks": {
+    "unit_and_shell_tests": 10,
+    "unit_and_shell_tests_passed": 10,
+    "locations_verified": 9,
+    "registered_screens": 18,
+    "official_media_connected": false,
+    "production_deployed": false,
+    "video_tutorial_exported": false
+  },
+  "captures": [
+    {
+      "file": "4970-preview-final.jpg",
+      "url": "https://api.yokup.com/media/fleet/e9801d52be12bf68.jpeg",
+      "sha256": "c24f1c6803a37b7a9280038632e6e1188ff8e3349889770e7b4797077263b9ba",
+      "verified": true
+    },
+    {
+      "file": "4970-pixeria-preview.jpg",
+      "url": "https://api.yokup.com/media/fleet/57695ec13da8419c.jpeg",
+      "sha256": "910605db76a3c677f77e05c9243d855bb4bef4343f4771fdae666f2046ff5d57",
+      "verified": true
+    },
+    {
+      "file": "4970-001-original.jpg",
+      "url": "https://api.yokup.com/media/fleet/0c3470c6145df6b1.jpeg",
+      "sha256": "f0f9ce4d4b9e28ad78e4a03f22b32f094d749faa391ac44bd68761fb34064016",
+      "verified": true
+    },
+    {
+      "file": "4970-001-adaptado.jpg",
+      "url": "https://api.yokup.com/media/fleet/68677fe1df60c653.jpeg",
+      "sha256": "927e148f20180ff2d3c0d8184a38a58437ef4c87161d8ac232a9c93bf5656d79",
+      "verified": true
+    },
+    {
+      "file": "4970-002-original.jpg",
+      "url": "https://api.yokup.com/media/fleet/e13fc7998fee383e.jpeg",
+      "sha256": "cb7e85fe66fb292fda65a5af0d888ecec045e9cd4ef95846487ecd32624d0444",
+      "verified": true
+    },
+    {
+      "file": "4970-002-adaptado.jpg",
+      "url": "https://api.yokup.com/media/fleet/7f385e92c0825e47.jpeg",
+      "sha256": "baae7105d71c4ea4d9ba8ca765232721b3b40834c42a1e697a60fbd67befd284",
+      "verified": true
+    },
+    {
+      "file": "4970-003-original.jpg",
+      "url": "https://api.yokup.com/media/fleet/3afb1abe755e9499.jpeg",
+      "sha256": "dd7026fdc5f244084a05a2ad75e901842a21a7d6deb38ca0740b6df4e2925b35",
+      "verified": true
+    },
+    {
+      "file": "4970-003-adaptado.jpg",
+      "url": "https://api.yokup.com/media/fleet/6a153dbd4bc1130c.jpeg",
+      "sha256": "c996db7cfa2dc3809ea35f95d1937fe360266d87c5c5b689e453b4a217552242",
+      "verified": true
+    }
+  ],
+  "verified_code_commit": "0b1cf761a5c1c258401b66f7fdddc2bdbfc68187"
+}

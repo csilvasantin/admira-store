@@ -1,0 +1,626 @@
+{
+  "version": "altadis-pixeria-neutral-5038",
+  "demo_url": "https://altadis-adaptador.xpaceos.pages.dev/admira-xp/?autostart=xtanco&loc=altadis-bcn-001&adaptado=1&quality=good&lang=es",
+  "adapter_url": "https://altadis-adaptador.pixeria.pages.dev/adaptaciones/?demo=altadis",
+  "source": {
+    "stock_id": "1783975679206-g3u9ej",
+    "title": "Paisaje de naturaleza · reserva neutra",
+    "stock_url": "https://stock.admira.store/stock/1783975679206-g3u9ej/asset.mp4?v=482371",
+    "official_altadis_pending": true,
+    "no_brand": true,
+    "audio": "silent-demo",
+    "adapter": "Pixeria signage-bateria",
+    "adaptation": "derived-blurred-background-no-ai"
+  },
+  "limitations_es": [
+    "Demostración de reproducción en gemelo; no envía contenido a hardware físico.",
+    "Los 9 locales tienen dos superficies registradas; no hay videowalls o LED registrados.",
+    "Adaptaciones MP4 existentes; el horizontal utiliza fondo desenfocado, no generación IA en tiempo real."
+  ],
+  "limitations_en": [
+    "Playback demo in digital twins; does not publish to physical hardware.",
+    "Nine venues with two registered surfaces each; no registered LED or video walls.",
+    "Existing MP4 renders; landscape uses a blurred extended background, not live AI generation."
+  ],
+  "locations": [
+    {
+      "id": "altadis-bcn-001",
+      "name": "Estanc Gran de Gràcia 61",
+      "circuit": "altadis_bcn",
+      "tourOrder": 1,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-001-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-001/original.mp4",
+            "adapted": "media/altadis-bcn-001/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-001-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-001/original.mp4",
+            "adapted": "media/altadis-bcn-001/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-002",
+      "name": "Moe's Expenedoria",
+      "circuit": "altadis_bcn",
+      "tourOrder": 2,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-002-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-002/original.mp4",
+            "adapted": "media/altadis-bcn-002/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-002-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-002/original.mp4",
+            "adapted": "media/altadis-bcn-002/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-003",
+      "name": "Estanc nº 275 · Torrent de l'Olla",
+      "circuit": "altadis_bcn",
+      "tourOrder": 3,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-003-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-003/original.mp4",
+            "adapted": "media/altadis-bcn-003/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-003-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-003/original.mp4",
+            "adapted": "media/altadis-bcn-003/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-004",
+      "name": "L'Estanc de Còrsega · nº 124",
+      "circuit": "altadis_bcn",
+      "tourOrder": 4,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-004-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-004/original.mp4",
+            "adapted": "media/altadis-bcn-004/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-004-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-004/original.mp4",
+            "adapted": "media/altadis-bcn-004/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-005",
+      "name": "Estanc nº 419 · Via Augusta",
+      "circuit": "altadis_bcn",
+      "tourOrder": 5,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-005-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-005/original.mp4",
+            "adapted": "media/altadis-bcn-005/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-005-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-005/original.mp4",
+            "adapted": "media/altadis-bcn-005/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-006",
+      "name": "Estanco nº 003",
+      "circuit": "altadis_bcn",
+      "tourOrder": 6,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-006-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-006/original.mp4",
+            "adapted": "media/altadis-bcn-006/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-006-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-006/original.mp4",
+            "adapted": "media/altadis-bcn-006/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-007",
+      "name": "Tabacs M. Àngels · nº 359",
+      "circuit": "altadis_bcn",
+      "tourOrder": 7,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-007-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-007/original.mp4",
+            "adapted": "media/altadis-bcn-007/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-007-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-007/original.mp4",
+            "adapted": "media/altadis-bcn-007/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-008",
+      "name": "Estanc de Gràcia · nº 393",
+      "circuit": "altadis_bcn",
+      "tourOrder": 8,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-008-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-008/original.mp4",
+            "adapted": "media/altadis-bcn-008/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-008-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-008/original.mp4",
+            "adapted": "media/altadis-bcn-008/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "altadis-bcn-009",
+      "name": "Estanc Torrijos 8",
+      "circuit": "altadis_bcn",
+      "tourOrder": 9,
+      "surfaces": [
+        {
+          "name": "P1 · Vertical escaparate",
+          "desc": "Pantalla vertical en escaparate · 1080×1920 · adaptación 9:16",
+          "orient": "vertical",
+          "w": 1080,
+          "h": 1920,
+          "status": "sched",
+          "impr": 250,
+          "cpm": "€5",
+          "surface": "escaparate",
+          "screen": "altadis-bcn-009-p1-vertical",
+          "media": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1080x1920.mp4",
+              "width": 1080,
+              "height": 1920
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-009/original.mp4",
+            "adapted": "media/altadis-bcn-009/p1-1080x1920.mp4"
+          }
+        },
+        {
+          "name": "P2 · Horizontal mostrador",
+          "desc": "Pantalla horizontal sobre el mostrador · 1920×1080 · adaptación 16:9",
+          "orient": "horizontal",
+          "w": 1920,
+          "h": 1080,
+          "status": "sched",
+          "impr": 450,
+          "cpm": "€8",
+          "surface": "pantalla",
+          "screen": "altadis-bcn-009-p2-horizontal",
+          "media": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+          "files": {
+            "original": {
+              "url": "/admira-xp/altadis/media/neutro-original.mp4",
+              "width": 360,
+              "height": 640
+            },
+            "adapted": {
+              "url": "/admira-xp/altadis/media/neutro-1920x1080.mp4",
+              "width": 1920,
+              "height": 1080
+            }
+          },
+          "expectedFiles": {
+            "original": "media/altadis-bcn-009/original.mp4",
+            "adapted": "media/altadis-bcn-009/p2-1920x1080.mp4"
+          }
+        }
+      ]
+    }
+  ],
+  "limitations": {
+    "es": "Preview con marcadores grises: todavía no hay vídeo ni formatos oficiales conectados. La comparación sólo muestra el estado y la geometría de las pantallas. Gemelo virtual, sin prueba de entrega física.",
+    "en": "Preview with grey placeholders: no official video or adapted files connected yet. Comparison currently shows screen geometry and mode only. Virtual twin, no physical delivery proof."
+  },
+  "contentStatus": "neutral-stock-reserve"
+}

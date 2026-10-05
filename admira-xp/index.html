@@ -1475,12 +1475,15 @@ window.XpaceCustomerNavigation={buildCustomerNavigation,ACTOR_BODY_RADIUS,physic
 //  El resto del juego lo lee de forma perezosa (banner, música, pantallas,
 //  empleados, cámaras) y se autoconfigura cuando llega.
 // ═══════════════════════════════════════════════════════════════
-window.STORE_CFG=null; window.STORE_CFG_READY=false;
+window.ALTADIS_PIXERIA_DEMO=/^altadis-bcn-00[1-9]$/.test((new URLSearchParams(location.search).get('loc')||'').trim().toLowerCase());
+if(window.ALTADIS_PIXERIA_DEMO) document.querySelectorAll('.comp-name').forEach((el,i)=>el.textContent=['Local','Zona','Red','Circuito'][i]||'Red');
+window.STORE_CFG=window.ALTADIS_PIXERIA_DEMO?{id:new URLSearchParams(location.search).get('loc'),name:'Contenido Altadis pendiente',screens:2,surfaces:[{name:'P1 · Vertical escaparate',surface:'escaparate',orient:'vertical',w:1080,h:1920,files:{original:null,adapted:null}},{name:'P2 · Horizontal mostrador',surface:'pantalla',orient:'horizontal',w:1920,h:1080,files:{original:null,adapted:null}}]}:null; window.STORE_CFG_READY=false;
 (function loadStoreCfg(){
   let loc=''; try{ loc=(new URLSearchParams(window.location.search).get('loc')||'').trim().toLowerCase(); }catch(e){}
   if(!loc){ window.STORE_CFG_READY=true; return; }
   // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
-  const API='https://api.admira.store/da/locations';
+  // Demo Altadis neutra: nueve estancos desde /admira-xp/altadis/demo.json (reserva Pixeria).
+  const API=window.ALTADIS_PIXERIA_DEMO ? '/admira-xp/altadis/demo.json' : 'https://api.admira.store/da/locations';
   // Reintentos: el worker omnipublicity puede estar "frío" y fallar el primer
   // fetch → sin reintento el twin se quedaba sin config (sin pantallas/nombre).
   const MAX=4;
@@ -8637,6 +8640,7 @@ function altadisMontarInterruptor(){
     const url=new URL(location.href);
     if(window.__altadisAdapt==='pixeria') url.searchParams.set('adapt','pixeria');
     else url.searchParams.delete('adapt');
+    try{ if(window.ALTADIS_PIXERIA_DEMO&&window.altadisDemo){ window.altadisDemo.setMode(window.__altadisAdapt==='pixeria'?'adapted':'original'); url.searchParams.set('adaptado', window.__altadisAdapt==='pixeria'?'1':'0'); } }catch(_){}
     try{ history.replaceState(null,'',url.pathname+url.search+url.hash); }catch(_){}
     pintar();
   };

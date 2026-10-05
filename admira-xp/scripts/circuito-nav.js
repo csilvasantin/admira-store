@@ -20,6 +20,7 @@
   var qs = new URLSearchParams(location.search);
   var LOC = (qs.get('loc') || '').trim().toLowerCase();
   if (!LOC) return;
+  var ALTADIS = /^altadis-bcn-00[1-9]$/.test(LOC);
 
   // ── 1) Orientación ────────────────────────────────────────────────────────
   // `&media=formatos18` (o `&mv=<url>` / `&mh=<url>`) sustituye el vídeo de cada
@@ -41,13 +42,13 @@
   function screenSurfaces() {
     var c = window.STORE_CFG; if (!c || !Array.isArray(c.surfaces)) return [];
     var ss = c.surfaces.filter(function (s) { return s && (s.surface === 'pantalla' || s.surface === 'escaparate'); });
-    if (MEDIA_OVR) ss.forEach(function (s) { var u = MEDIA_OVR[s.orient]; if (u && s.media !== u) { s.mediaFicha = s.mediaFicha || s.media || ''; s.media = u; } });
+    if (MEDIA_OVR && !ALTADIS) ss.forEach(function (s) { var u = MEDIA_OVR[s.orient]; if (u && s.media !== u) { s.mediaFicha = s.mediaFicha || s.media || ''; s.media = u; } });
     return ss;
   }
   // Si TODAS las pantallas del punto traen `media` (vídeo del Stock ya adaptado a
   // su formato), cada una va a una DS de pared corta con su vídeo; la TFT larga
   // sigue con su contenido de siempre.
-  function allMedia() { var ss = screenSurfaces(); return ss.length > 0 && ss.length <= 2 && ss.every(function (s) { return okUrl(s.media); }); }
+  function allMedia() { var ss = screenSurfaces(); return !ALTADIS && ss.length > 0 && ss.length <= 2 && ss.every(function (s) { return okUrl(s.media); }); }
   // Orientaciones de las DS de pared corta (índice 0, 1).
   function dsOrients() {
     var o = screenSurfaces().map(function (s) { return s.orient || ''; });
@@ -66,7 +67,7 @@
     var x2 = pT.x, y2 = pT.y - ISO.wallH + ISO.wallH * midWallFrac;
     var mw = x2 - x1, t0 = 0, t1 = 1, h = H0, dy = 0;
     var or = dsOrients()[i] || '';
-    if (or === 'vertical') { var w = Math.min(mw, H0 * 9 / 16 * 1.15); t0 = (1 - w / mw) / 2; t1 = t0 + w / mw; }
+    if (or === 'vertical') { var w = Math.min(mw, H0 * 9 / 16); h = w * 16 / 9; t0 = (1 - w / mw) / 2; t1 = t0 + w / mw; }
     else if (or === 'horizontal') { h = Math.min(H0, mw * 9 / 16); dy = (H0 - h) * 0.35; }
     return { x: x1 + (x2 - x1) * t0, y: y1 + (y2 - y1) * t0 + dy, w: mw * (t1 - t0), h: h, dyw: (y2 - y1) * (t1 - t0), skew: Math.atan2(pT.y - pB.y, pT.x - pB.x) * 180 / Math.PI, or: or };
   }
@@ -82,13 +83,19 @@
       el.style.width = (q.w * sx) + 'px'; el.style.height = (q.h * sy) + 'px';
       el.style.transformOrigin = 'bottom left'; el.style.transform = 'skewY(' + q.skew + 'deg)';
       el.dataset.orient = q.or;
-      var sf = allMedia() ? screenSurfaces()[i] : null;
+      var sf = ALTADIS && window.altadisDemo ? window.altadisDemo.shortSurface(i) : allMedia() ? screenSurfaces()[i] : null;
       if (sf) {
         var mv = el.querySelector('video.circuito-media');
         if (!mv) { mv = document.createElement('video'); mv.className = 'circuito-media'; mv.muted = true; mv.loop = true; mv.playsInline = true; mv.autoplay = true; mv.setAttribute('playsinline', ''); mv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000'; el.appendChild(mv); }
-        if (mv.getAttribute('src') !== sf.media) { mv.setAttribute('src', sf.media); var pr = mv.play(); if (pr && pr.catch) pr.catch(function () {}); }
+        if (ALTADIS && window.altadisDemo) {
+          var marker=el.querySelector('.altadis-placeholder');
+          if (!marker) { marker=document.createElement('div'); marker.className='altadis-placeholder'; marker.textContent='contenido Altadis'; marker.style.cssText='position:absolute;inset:0;display:grid;place-items:center;background:#70757b;color:white;font:12px sans-serif'; el.appendChild(marker); }
+          el.dataset.screen=sf.screen; el.setAttribute('aria-label',sf.name+' '+sf.w+'×'+sf.h+' · reserva neutra Pixeria');
+          window.altadisDemo.bindVideo(mv, sf);
+        }
+        else if (mv.getAttribute('src') !== sf.media) { mv.setAttribute('src', sf.media); var pr = mv.play(); if (pr && pr.catch) pr.catch(function () {}); }
       }
-      try { var v = el.querySelector('video') || (el.tagName === 'VIDEO' ? el : null); if (v) v.style.objectFit = 'cover'; } catch (e) {}
+      try { var v = el.querySelector('video') || (el.tagName === 'VIDEO' ? el : null); if (v) v.style.objectFit = ALTADIS ? 'contain' : 'cover'; } catch (e) {}
     };
     window.punchDsScreenHoles = function () {
       if (!dsOrients().length) return origPunch();
@@ -109,9 +116,10 @@
   (function waitInstall(n) { if (!install() && n < 80) setTimeout(function () { waitInstall(n + 1); }, 250); })(0);
 
   // ── 2) Anterior / siguiente ──────────────────────────────────────────────
-  var API = 'https://api.admira.store/da/locations';
+  var API = ALTADIS ? '/admira-xp/altadis/demo.json' : 'https://api.admira.store/da/locations';
   function goTo(id) {
     var p = new URLSearchParams(location.search); p.set('loc', id);
+    if (ALTADIS && window.altadisDemo) p.set('adaptado', window.altadisDemo.mode() === 'adapted' ? '1' : '0');
     if (/^altadis-bcn-\d+$/.test(id)) { p.set('autostart', 'xtanco'); if (!p.get('project')) p.set('project', 'estancos'); }
     else if (!p.get('autostart')) p.set('autostart', 'xtanco');
     location.href = location.pathname + '?' + p.toString() + location.hash;
@@ -123,11 +131,16 @@
       'background:rgba(8,10,16,.88);color:#e8ecf3;border:1px solid #ff6a3d;border-radius:999px;padding:6px 10px;font:600 12px system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.5)';
     var b = 'background:#1b2030;color:#e8ecf3;border:1px solid #39415a;border-radius:999px;padding:5px 11px;cursor:pointer;font:inherit';
     var ors = screenSurfaces().map(function (s) { return s.orient === 'vertical' ? '▯ vertical' : s.orient === 'horizontal' ? '▭ horizontal' : ''; }).filter(Boolean).join(' + ');
-    d.innerHTML = '<button data-go="prev" style="' + b + '" title="Anterior ([)">◀ ' + (prev.tourOrder || '') + '</button>' +
+    d.innerHTML = (ALTADIS ? '<a class="altadis-admiranext-brand" href="https://www.admiranext.com/" target="_blank" rel="noopener" aria-label="ADmiraNeXT · Inicio" style="font:800 16px/1 Montserrat,Helvetica Neue,system-ui,sans-serif;display:inline-flex;align-items:baseline;text-decoration:none;white-space:nowrap"><span style="color:#fff">ADmira</span><span style="color:#FF3366">N</span><span style="color:#FFCC00">e</span><span style="color:#33FF99">X</span><span style="color:#FF33CC">T</span></a>' : '') + '<button data-go="prev" style="' + b + '" title="Anterior ([)">◀ ' + (prev.tourOrder || '') + '</button>' +
       '<span style="padding:0 6px;text-align:center;line-height:1.25"><span style="color:#ff6a3d">' + (cur.circuitLabel || cur.circuit) + '</span> · ' + (idx + 1) + '/' + items.length +
-      '<br><span style="font-weight:400">' + (cur.name || cur.id) + (ors ? ' · ' + ors : '') + (MEDIA_OVR ? ' · <span style="color:#ff6a3d">pieza Admira 9:16 / 16:9</span>' : '') + '</span></span>' +
+      '<br><span style="font-weight:400">' + (cur.name || cur.id) + (ors ? ' · ' + ors : '') + (ALTADIS ? ' · <span style="color:#ff6a3d">reserva neutra · vídeo Altadis pendiente</span>' : '') + '</span></span>' +
       '<button data-go="tour" style="' + b + '">' + (tourSec ? '■' : '▶ Recorrido') + '</button>' +
-      '<button data-go="next" style="' + b + '" title="Siguiente (])">' + (next.tourOrder || '') + ' ▶</button>';
+      '<button data-go="next" style="' + b + '" title="Siguiente (])">' + (next.tourOrder || '') + ' ▶</button>' +
+      (ALTADIS ? '<div id="altadis-comparison" role="group" aria-label="Comparación de contenido Altadis" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
+        '<button data-altadis-mode="original" aria-pressed="false" style="' + b + '">Sin adaptar</button>' +
+        '<button data-altadis-mode="adapted" aria-pressed="true" style="' + b + '">Adaptado con Pixeria</button>' +
+        '<a href="https://altadis-adaptador.pixeria.pages.dev/adaptaciones/?demo=altadis" target="_blank" rel="noopener" style="color:#76e0e9">Abrir Adaptador ↗</a>' +
+        '<span id="altadis-screen-status" role="status" style="font-weight:400">Cargando pantallas…</span></div>' : '');
     d.addEventListener('click', function (ev) {
       var g = ev.target && ev.target.getAttribute && ev.target.getAttribute('data-go'); if (!g) return;
       if (g === 'prev') goTo(prev.id);
@@ -135,6 +148,18 @@
       else { var p = new URLSearchParams(location.search); if (tourSec) p.delete('tour'); else p.set('tour', '12'); location.search = p.toString(); }
     });
     document.body.appendChild(d);
+    if (ALTADIS) {
+      d.style.flexWrap = 'wrap'; d.style.borderRadius = '14px'; d.style.maxWidth = 'min(94vw,1000px)';
+      var css = document.createElement('style');
+      css.textContent = '#altadis-comparison button[aria-pressed="true"]{background:#125d62!important;border-color:#8de5e8!important;color:#fff!important}#altadis-screen-status[data-status="error"]{color:#ffb3a0}#circuito-nav{overflow:auto}';
+      document.head.appendChild(css);
+      d.addEventListener('click', function (ev) {
+        var control = ev.target.closest('[data-altadis-mode]');
+        if (control && window.altadisDemo) window.altadisDemo.setMode(control.dataset.altadisMode);
+      });
+      if (location.hostname === '127.0.0.1') d.querySelector('#altadis-comparison a').href='http://127.0.0.1:9172/adaptaciones/?demo=altadis&lang=es&gate=off';
+      if (window.altadisDemo) window.altadisDemo.setMode(window.altadisDemo.mode());
+    }
     document.addEventListener('keydown', function (ev) {
       if (/INPUT|TEXTAREA/.test((ev.target && ev.target.tagName) || '')) return;
       if (ev.key === '[') goTo(prev.id); if (ev.key === ']') goTo(next.id);
