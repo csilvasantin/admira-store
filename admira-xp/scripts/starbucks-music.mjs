@@ -67,6 +67,15 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
       select(index,'playlist');if(wasStarted)void play();emit();
     },
     next:()=>advance(true),
+    setActiveLang(lang){
+      lang = lang === 'es' ? 'es' : 'en';
+      const classify = (title)=>/\bES\b|español|Nyla|Prioridad|Flagship Tarde/i.test(String(title||'')) ? 'es'
+        : (/\bEN\b|Deep House|Retail Morning|english/i.test(String(title||'')) ? 'en' : '');
+      const preferred = tracks.map((t,i)=>({t,i})).filter(x=>classify(x.t.title)===lang);
+      if(!preferred.length){emit();return state();}
+      const wasStarted=started; select(preferred[0].i,'lang'); if(wasStarted) void play(); emit(); return state();
+    },
+
     subscribe(fn){listeners.add(fn);fn(state());return ()=>listeners.delete(fn);},
     refresh(){
       if(request||disposed||managed)return request;
