@@ -20,7 +20,7 @@ Options → Image: enter the product, offer or announcement in What do you want 
 
 ## Contrato / Contract
 
-Module: admira-xp/scripts/image-prompt.js; internal controller window.XpaceImagePrompt.generate(admiraCreaImagen). UI: #imagePrompt, #imagePromptLabel, #imagePromptStatus. Existing imgGen action and /creaimagen command retained. Text is local to this page and retained across accordion/language changes; it is sent only when generating. The existing /grok/image provider receives the advertising brief. No credentials or new service bindings. Existing counter-screen preview lasts 30 seconds; no campaign publication or physical store broadcast. Empty input sends no request; the generate button is disabled while a request is pending. Keyboard entry is isolated from game shortcuts and CLI history.
+Module: admira-xp/scripts/image-prompt.js; internal controller window.XpaceImagePrompt.generate(window.admiraCreaImagen). UI: #imagePrompt, #imagePromptLabel, #imagePromptStatus. Existing imgGen action and /creaimagen command retained. Text is local to this page and retained across accordion/language changes; it is sent only when generating. The existing /grok/image provider receives the advertising brief. No credentials or new service bindings. Existing counter-screen preview lasts 30 seconds; no campaign publication or physical store broadcast. Empty input sends no request; the generate button is disabled while a request is pending. Keyboard entry is isolated from game shortcuts and CLI history.
 
 Stable guide: https://www.admira.store/admira-xp/docs/image-prompt.md . Source: https://www.xpaceos.com/admira-xp/docs/image-prompt.md . MCP topic image-prompt / imagen, resource xpaceos://help; https://mcp.admira.store/help . All 35 tools retained.
 

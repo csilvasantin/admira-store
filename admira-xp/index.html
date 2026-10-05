@@ -11184,7 +11184,7 @@ function doAction(id){
   // ── Cuadrática · Opciones (Equipo Silicio): acciones de los acordeones ──
   if(id==='mega'){window.XpaceAnnouncements?.play(document.getElementById('announcementText')?.value,{language:lang,muted:dsMasterMute});return;}
   if(id==='megaStop'){window.XpaceAnnouncements?.stop();return;}
-  if(id==='imgGen'){window.XpaceImagePrompt?.generate(admiraCreaImagen);return;}
+  if(id==='imgGen'){window.XpaceImagePrompt?.generate(window.admiraCreaImagen);return;}
   if(id==='avatarShow'){openMetahumanPanel();return;}
   if(id==='avatarHide'){closeMetahumanPanel();return;}
   if(id==='aforoReal'){try{xtAPI.command('/aforo real');}catch(e){}return;}
@@ -30240,6 +30240,7 @@ window.xtAPI = (function(){
   }
   // \u2500\u2500 Pantalla del gestor de turnos a PANTALLA COMPLETA (clic en la pantalla) \u2500\u2500
   // Muestra la creaci\u00f3n de PixerIA (o la \u00faltima) en grande, o el turno; \u2715 vuelve al Xtanco.
+  window.admiraCreaImagen=admiraCreaImagen;
   function openTurnFull(){
     let ov=document.getElementById('turnFullOv');
     if(!ov){
