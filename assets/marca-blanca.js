@@ -7,8 +7,9 @@
 // carga el gemelo) inserta este fichero con su mismo sello, y solo si la pestaña pide una
 // marca o se usa /marca. Ninguna página lo carga a mano.
 //
-// Sin marca activa (ni ?marca=<id> ni marca recordada en la pestaña, o ?marca=admira/off)
-// este fichero no hace nada más: no inserta estilos ni pide nada a admiranext.com.
+// Sin marca activa (ni ?marca=<id>, ni ?project= / local Starbucks, ni marca o proyecto
+// recordados en la pestaña, o ?marca=admira/off) este fichero no hace nada más: no inserta
+// estilos ni pide nada a admiranext.com.
 // Con marca, primero comprueba que existe en el catálogo (/marcablanca/api/marcas/<id>,
 // 8 s como mucho) y solo entonces carga marcablanca.css + marcablanca.js (plataforma
 // «store», sin arranque automático) y marca-blanca.css (los ajustes propios de XpaceOS)
@@ -20,6 +21,9 @@
   const PLATAFORMA = 'store';
   const SESSION_KEY = 'mb:marca';        // la misma clave que usa el cargador común
   const MODE_KEY = 'mb:modo';
+  const PROJECT_KEY = 'mb:proyecto';     // proyecto cuya marca (o su ausencia) recuerda la pestaña
+  const MANUAL_KEY = 'mb:manual';        // '1' si /marca o ?marca= mandan hasta el siguiente proyecto; 'off' si el usuario volvió a Admira
+  const STARBUCKS_LOC = 'alsea-sbux-021';
   const ID_RE = /^[a-z0-9][a-z0-9-]{0,40}$/;
   const OFF = ['off', 'admira', 'ninguna', 'ninguno', 'none', 'default', 'apagar', 'quitar', 'reset'];
   const MODES = ['marca', 'nativo', 'claro', 'oscuro', 'auto'];
@@ -34,18 +38,52 @@
   const fold = value => String(value == null ? '' : value).normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase();
   const isOff = value => OFF.includes(fold(value).replace(/[^a-z]/g, ''));
 
+  // El id de proyecto es la marca si existe en el catálogo. Único alias: starbucks-mexico → starbucks.
+  function aliasProject(id) {
+    const v = fold(id);
+    return v === 'starbucks-mexico' ? 'starbucks' : v;
+  }
+  // Proyecto activo en la URL. El local de Starbucks manda sobre un ?project= viejo.
+  // '' = la URL nombra un proyecto que es Admira (admira/off o un id ilegible). null = no hay proyecto.
+  function projectFrom(search) {
+    let params = null;
+    try { params = new URLSearchParams(search || ''); } catch (_) { return null; }
+    if (params.get('loc') === STARBUCKS_LOC) return 'starbucks';
+    if (!params.has('project')) return null;
+    const raw = params.get('project');
+    if (raw == null || !fold(raw) || isOff(raw)) return '';
+    const id = aliasProject(raw);
+    return ID_RE.test(id) ? id : '';
+  }
+
   // ─── Qué marca toca en esta carga ───
-  // ?marca=<id> manda y se recuerda en la pestaña (como el cargador común); ?marca=admira
-  // (u off) la olvida; sin parámetro vale la recordada. Un id mal formado se ignora.
+  // Prioridad: ?marca= explícita > proyecto activo (?project= o loc Starbucks) > mb:marca.
+  // /marca manual (mb:manual) se mantiene mientras el proyecto no cambie. Un id mal formado se ignora.
   function decide(search, storage) {
     let q = null;
     try { q = new URLSearchParams(search || '').get('marca'); } catch (_) {}
-    let stored = null;
+    let stored = null, storedProject = null, manual = null;
     try { stored = storage && storage.getItem(SESSION_KEY); } catch (_) {}
+    try { storedProject = storage && storage.getItem(PROJECT_KEY); } catch (_) {}
+    try { manual = storage && storage.getItem(MANUAL_KEY); } catch (_) {}
     if (q != null) {
       if (isOff(q) || !fold(q)) return {id: null, forget: true};
       const id = fold(q);
-      if (ID_RE.test(id)) return {id, remember: true};
+      if (ID_RE.test(id)) {
+        const project = projectFrom(search);
+        const out = {id, remember: true};
+        if (project) out.project = project;
+        return out;
+      }
+    }
+    const project = projectFrom(search);
+    if (project === '') return {id: null, forget: true};
+    if (project) {
+      if (storedProject === project && manual === 'off') return {id: null, project, suppress: true};
+      if (storedProject === project && manual === '1' && stored && ID_RE.test(stored) && !isOff(stored)) {
+        return {id: stored, project, hold: true};
+      }
+      return {id: project, project, fromProject: true};
     }
     if (stored && ID_RE.test(stored) && !isOff(stored)) return {id: stored};
     return {id: null};
@@ -163,7 +201,7 @@
     };
   }
 
-  const api = {BASE, PLATAFORMA, SESSION_KEY, MODE_KEY, SEED, OFF, ID_RE, TIMEOUT, fold, isOff, decide, decideMode, looksLikeUrl, normalizeUrl, analyzerUrl, brandUrl, parseArg, parseColor, contrast, pick, shellTokens};
+  const api = {BASE, PLATAFORMA, SESSION_KEY, MODE_KEY, PROJECT_KEY, MANUAL_KEY, SEED, OFF, ID_RE, TIMEOUT, fold, isOff, aliasProject, projectFrom, decide, decideMode, looksLikeUrl, normalizeUrl, analyzerUrl, brandUrl, parseArg, parseColor, contrast, pick, shellTokens};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined' || root.AdmiraMarca) return;
 
@@ -465,6 +503,13 @@
         current = {id: detail.id || id, nombre, modo: detail.modo, ejemplo: !!marca.ejemplo, propuesta,
           aviso: propuesta ? String(catalogo.aviso || '') : ''};
         store.set(SESSION_KEY, current.id);
+        // /marca y ?marca= mandan hasta que cambie el proyecto. fromProject y {manual:false} no.
+        if (opts.fromProject) store.del(MANUAL_KEY);
+        else if (opts.manual !== false) {
+          store.set(MANUAL_KEY, '1');
+          const project = projectFrom(location.search);
+          if (project) store.set(PROJECT_KEY, project);
+        }
         if (opts.modo || new URLSearchParams(location.search).get('modo')) store.set(MODE_KEY, modo);
         ensureChrome();
         watchChrome();
@@ -493,11 +538,17 @@
     removeCss();
   }
 
-  /** Vuelve a Admira (XpaceOS), sin recargar. */
-  function desactivar() {
+  /** Vuelve a Admira (XpaceOS), sin recargar. fromProject: el proyecto no tiene marca; no es un /marca off. */
+  function desactivar(opts = {}) {
     const was = current;
     store.del(SESSION_KEY);
     store.del(MODE_KEY);
+    if (opts.fromProject) store.del(MANUAL_KEY);
+    else {
+      const project = projectFrom(location.search) || store.get(PROJECT_KEY);
+      if (project) { store.set(PROJECT_KEY, project); store.set(MANUAL_KEY, 'off'); }
+      else { store.del(PROJECT_KEY); store.del(MANUAL_KEY); }
+    }
     try {
       const url = new URL(location.href);
       if (url.searchParams.has('marca') || url.searchParams.has('modo')) {
@@ -521,22 +572,66 @@
     return {ok: true, href, url};
   }
 
+  // El proyecto elige la marca (el id, con el alias de México). 404 → Admira, sin dejar la marca anterior.
+  function aplicarProyecto(id) {
+    const project = aliasProject(id);
+    if (!project || isOff(project) || !ID_RE.test(project)) {
+      store.del(PROJECT_KEY);
+      store.del(MANUAL_KEY);
+      return Promise.resolve(desactivar({fromProject: true}));
+    }
+    const prevProject = store.get(PROJECT_KEY);
+    const manual = store.get(MANUAL_KEY);
+    const stored = store.get(SESSION_KEY);
+    if (prevProject === project && manual === '1' && stored && ID_RE.test(stored) && !isOff(stored)) {
+      return activar(stored, {manual: true});
+    }
+    if (prevProject === project && manual === 'off') return Promise.resolve({ok: true, off: true, project});
+    store.set(PROJECT_KEY, project);
+    store.del(MANUAL_KEY);
+    return activar(project, {fromProject: true}).then(r => {
+      if (r.ok) return Object.assign({project}, r);
+      if (r.reason === 'unknown') {
+        desactivar({fromProject: true});
+        store.set(PROJECT_KEY, project);
+        store.del(MANUAL_KEY);
+        store.del(SESSION_KEY);
+        return {ok: true, off: true, project, reason: 'unknown'};
+      }
+      return r;
+    });
+  }
+
   root.AdmiraMarca = Object.freeze(Object.assign({}, api, {
     actual: () => (current ? Object.assign({}, current) : null),
     conocidas: () => known.slice(),
-    listar, activar, desactivar, analizar,
+    listar, activar, desactivar, analizar, aplicarProyecto,
   }));
 
-  // Arranque: solo si esta pestaña tiene marca.
+  function finish(decision, r) {
+    if (!r.ok) {
+      if (root.console) console.warn('marca blanca: no se aplicó «' + decision.id + '» (' + r.reason + ')');
+      doc.dispatchEvent(new CustomEvent('admira:marca-error', {detail: r}));
+    }
+    if (r.ok && !r.off) listar().catch(() => {});
+  }
+
+  // Arranque: ?marca= explícita, si no el proyecto, si no la marca recordada. Sin nada, cero peticiones.
   const decision = decide(location.search, session);
-  if (decision.forget) { store.del(SESSION_KEY); store.del(MODE_KEY); }
-  if (decision.id) {
-    activar(decision.id).then(r => {
-      if (!r.ok) {
-        if (root.console) console.warn('marca blanca: no se aplicó «' + decision.id + '» (' + r.reason + ')');
-        doc.dispatchEvent(new CustomEvent('admira:marca-error', {detail: r}));
-      }
-      if (r.ok) listar().catch(() => {});
-    });
+  if (decision.forget) {
+    store.del(SESSION_KEY); store.del(MODE_KEY);
+    const project = projectFrom(location.search);
+    if (project) { store.set(PROJECT_KEY, project); store.set(MANUAL_KEY, 'off'); }
+    else store.del(MANUAL_KEY);
+  }
+  if (decision.suppress) {
+    store.del(SESSION_KEY); store.del(MODE_KEY);
+    if (decision.project) store.set(PROJECT_KEY, decision.project);
+    store.set(MANUAL_KEY, 'off');
+  }
+  if (decision.fromProject) aplicarProyecto(decision.id).then(r => finish(decision, r));
+  else if (decision.id) {
+    if (decision.project) store.set(PROJECT_KEY, decision.project);
+    activar(decision.id, {manual: !!(decision.remember || decision.hold)}).then(r => finish(decision, r));
   }
 })(typeof window === 'undefined' ? globalThis : window);

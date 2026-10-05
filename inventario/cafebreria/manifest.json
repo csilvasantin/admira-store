@@ -4,9 +4,9 @@
   "client": "cafebreria",
   "confirmed_by": "Huang · mapeo visual 2026-10-05",
   "confirmed_on": "2026-10-05",
-  "yokup_alta": "pending_carlos",
-  "yokup_alta_note_es": "Códigos CAF-* listos para alta en Yokup. Carlos confirma o corrige la lista; hasta entonces Yokup puede no tener ficha maestra.",
-  "yokup_alta_note_en": "CAF-* codes ready for Yokup registration. Carlos confirms or corrects the list; until then Yokup may lack the master record.",
+  "yokup_alta": "confirmed",
+  "yokup_alta_note_es": "Carlos confirmó los 13 CAF-* el 2026-10-05. Fichas maestras creadas en Yokup (itil_ci_upsert) sin serie ni garantía inventadas.",
+  "yokup_alta_note_en": "Carlos confirmed the 13 CAF-* on 2026-10-05. Yokup master records created (itil_ci_upsert) without invented serials or warranty.",
   "geometry_basis": "Inventario de escena Cafebrería (scene.inventory.json). Medidas de modelo; no verificadas en campo. Garantía y serie solo en Yokup con acceso autorizado.",
   "privacy": {
     "public_gallery": "no_warranty_no_serial",
@@ -266,6 +266,29 @@
       "description": "Primer mapeo visual→CI de Cafebrería más allá del piloto Starbucks PG103. Sin copiar garantía ni serie a la galería pública.",
       "description_en": "First Cafebrería visual→CI mapping beyond the Starbucks PG103 pilot. Warranty and serial stay out of the public gallery.",
       "source": "https://www.xpaceos.com/xpacios/cafebreria/?inventory=1"
+    },
+    {
+      "date": "2026-10-05",
+      "kind": "yokup_alta",
+      "codes": [
+        "CAF-BAR-01",
+        "CAF-MTR-01",
+        "CAF-BVN-01",
+        "CAF-MES-01",
+        "CAF-MES-02",
+        "CAF-SOF-01",
+        "CAF-MBJ-01",
+        "CAF-LIB-01",
+        "CAF-PZD-01",
+        "CAF-PZD-02",
+        "CAF-PRC-01",
+        "CAF-HIL-01",
+        "CAF-CAM-01"
+      ],
+      "description": "Alta Yokup de los 13 CAF-* tras confirmación de Carlos. Sin lifecycle serial/warranty.",
+      "description_en": "Yokup registration of 13 CAF-* after Carlos confirmation. No lifecycle serial/warranty."
     }
-  ]
+  ],
+  "yokup_alta_on": "2026-10-05",
+  "yokup_alta_by": "Huang · MCP flota itil_ci_upsert"
 }

@@ -743,7 +743,7 @@
     "avatar": {
       "guide": "https://www.xpaceos.com/admira-xp/docs/avatar-levels.md",
       "loader": "https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-5",
-      "shell": "/assets/xpace-shell.js?v=20261004-avatar-5",
+      "shell": "/assets/xpace-shell.js?v=20261005-marca-proyecto",
       "commands": [
         "/avatar good",
         "/avatar better",

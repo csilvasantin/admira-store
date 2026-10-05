@@ -215,13 +215,19 @@
   const BRAND_SEED = ['admira', 'lumbre', 'brumelle', 'frescaria'];
   const MARCA_VERB = /^\/?(?:marca|brand|marcablanca)$/i;
   const MB_SESSION_KEY = 'mb:marca';
+  const MB_PROJECT_KEY = 'mb:proyecto';
   const SITE = 'https://www.xpaceos.com';
-  // ¿Pide marca esta pestaña? (?marca=<algo> en la URL o una marca recordada en la pestaña)
+  // ¿Pide marca esta pestaña? ?marca=, ?project=, el local de Starbucks, o una marca/proyecto recordados.
+  // Sin proyecto ni marca no se carga nada y no se habla con admiranext.com.
   function wantsBrand(search, storage) {
-    let q = null;
-    try { q = new URLSearchParams(search || '').get('marca'); } catch (_) {}
-    if (q != null) return true;
-    try { return !!(storage && storage.getItem(MB_SESSION_KEY)); } catch (_) { return false; }
+    let params = null;
+    try { params = new URLSearchParams(search || ''); } catch (_) {}
+    if (params) {
+      if (params.get('marca') != null) return true;
+      if (params.get('project')) return true;
+      if (params.get('loc') === 'alsea-sbux-021') return true;
+    }
+    try { return !!(storage && (storage.getItem(MB_SESSION_KEY) || storage.getItem(MB_PROJECT_KEY))); } catch (_) { return false; }
   }
   // /marca <id|off|web> (alias /brand). M es window.AdmiraMarca (assets/marca-blanca.js);
   // write pinta una línea en la consola. → Promise<{ok}>
@@ -303,7 +309,7 @@
   }
 
   const api = {PANELS_KEY, HISTORY_KEY, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
-    BRAND_SEED, MARCA_VERB, MB_SESSION_KEY,
+    BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
     esc, normalizeConfig, markup, parseCommand, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
@@ -398,6 +404,23 @@
   // Una página muy pintada a mano (CMDB) pide que la marca vista solo la barra y los paneles.
   if (script && script.dataset.marca === 'barra') html.setAttribute('data-mb-alcance', 'barra');
   if (wantsBrand(root.location && root.location.search, session)) cargarMarca();
+  // Cambiar de proyecto (selector, gemelo o cliente) aplica la marca sin esperar a otra visita.
+  function projectEventId(ev) {
+    const detail = ev && ev.detail;
+    if (detail && (detail.id || detail.project)) return detail.id || detail.project;
+    try {
+      const params = new URLSearchParams(root.location.search);
+      if (params.get('loc') === 'alsea-sbux-021') return 'starbucks';
+      return params.get('project') || '';
+    } catch (_) { return ''; }
+  }
+  function onProject(ev) {
+    const id = projectEventId(ev);
+    if (!id) return;
+    cargarMarca().then(M => { if (M && typeof M.aplicarProyecto === 'function') return M.aplicarProyecto(id); });
+  }
+  if (typeof root.addEventListener === 'function') root.addEventListener('xpaceos:project-change', onProject);
+  if (doc && typeof doc.addEventListener === 'function') doc.addEventListener('xpace:cliente', onProject);
 
   // Avatar digital (encargo avatar · 4-oct-2026). Lo gobierna el cargador común de
   // admiranext.com: elección del visitante > interruptor del proyecto > apagado. El

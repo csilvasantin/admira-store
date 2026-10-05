@@ -2,13 +2,14 @@
 
 XpaceOS (xpaceos.com = admira.store, la pata «Store distribuye») puede vestirse con la marca de un cliente del **catálogo único** de https://www.admiranext.com/marcablanca (semillas Admira, Lumbre, BRUMELLE y Frescaria, y las marcas guardadas después, p. ej. `starbucks`), con la plataforma `store`. Sigue el mismo diseño, textos y reglas que admira.app (FLT-101331, `clearchannel-tv/docs/marca-blanca.md`) y Pixeria (FLT-101333, `pixeria/docs/marca-blanca.md`).
 
-Estado: implementado en la rama `morfeo/shell-marca-store` (pendiente de push y despliegue por el coordinador).
+Estado: al cambiar de proyecto se aplica la marca del catálogo. Sello v.05.10.2026.r3.10:26. Punto de retorno: tag `retorno/pre-marcablanca-proyecto-20261005`.
 
 ## Cómo se activa
 
 | Cómo | Efecto |
 |---|---|
-| `?marca=<id>` en cualquier página con la barra de 4 bandas, también el gemelo (`/admira-xp/?marca=starbucks`) | Aplica la marca y la recuerda en la pestaña (`sessionStorage` `mb:marca`, la misma clave que el cargador común, admira.app y Pixeria). |
+| `?marca=<id>` en cualquier página con la barra de 4 bandas, también el gemelo (`/admira-xp/?marca=starbucks`) | Aplica la marca y la recuerda en la pestaña (`sessionStorage` `mb:marca`, la misma clave que el cargador común, admira.app y Pixeria). Gana al proyecto hasta el siguiente cambio. |
+| Cambiar de proyecto (Opciones → Proyecto y local, `?project=<id>` o el local `loc=alsea-sbux-021`) | Aplica la marca del catálogo con ese id (`starbucks-mexico` → `starbucks`). Si el proyecto no tiene marca (`estancos`, `cafebreria`, 404) se quita la anterior y queda Admira. Se recuerda el proyecto (`mb:proyecto`) al recargar y al navegar. |
 | ⌘ Experto → `/marca <id>` (alias `/brand`) | Igual, sin recargar. Tab completa el comando, los ids del catálogo y `off`. En el gemelo, en su consola Experto. |
 | `?modo=marca\|nativo\|claro\|oscuro\|auto` | Modo de color (por defecto `marca`: el del cliente, claro u oscuro). |
 
@@ -60,7 +61,7 @@ Los textos son los de admira.app y Pixeria. **Sin navegador** (Telegram, el MCP 
 | Fichero | Papel |
 |---|---|
 | `assets/xpace-shell.js` | Único enganche (`cargarMarca`), verbo `/marca` del CLI (`runMarca`, textos de admira.app y Pixeria) y respuesta sin navegador (`remoteMarca`). |
-| `assets/marca-blanca.js` | Decide la marca, comprueba el catálogo, carga lo necesario, aplica, deshace y expone `window.AdmiraMarca` (`actual`, `conocidas`, `listar`, `activar`, `desactivar`, `analizar`). |
+| `assets/marca-blanca.js` | Decide la marca, comprueba el catálogo, carga lo necesario, aplica, deshace y expone `window.AdmiraMarca` (`actual`, `conocidas`, `listar`, `activar`, `desactivar`, `analizar`, `aplicarProyecto`). |
 | `assets/marca-blanca.css` | Todo bajo `:root[data-mb-marca][data-mb-plataforma="store"]`. Solo se descarga con marca. |
 | `admira-xp/index.html` | Carga `xpace-shell.js` en modo barra en línea; `/marca` en la consola local, en `__xtExec`, en `xtAPI.command` y en `/help`. |
 | `tests/marca-blanca.test.mjs` | Sin marca no se carga nada; catálogo antes que nada; AA; hoja acotada; verbo, alias, Tab y respuesta remota; ayuda y MCP. |
@@ -68,8 +69,8 @@ Los textos son los de admira.app y Pixeria. **Sin navegador** (Telegram, el MCP 
 ## Límites conocidos
 
 - `POST /marcablanca/api/analizar` exige mismo origen: `/marca <web>` abre el analizador de admiranext.com en otra pestaña (`?web=<url>`).
-- La marca por dominio (`<cliente>.admira.store`) del cargador común no se usa aquí: XpaceOS solo se viste con `?marca=` o `/marca`.
+- La marca por dominio (`<cliente>.admira.store`) del cargador común no se usa aquí: XpaceOS se viste con `?marca=`, con `/marca` o con el proyecto activo cuando ese id existe en el catálogo.
 
 ---
 
-**English.** XpaceOS (xpaceos.com = admira.store) can wear a client brand from the admiranext.com/marcablanca catalogue, platform `store`. Turn it on with `?marca=<id>` on any page with the four-band bar, including the twin (`/admira-xp/?marca=starbucks`), or with `/marca <id>` (alias `/brand`) in ⌘ Expert; it stays for the tab. `/marca off`, `?marca=admira` or “Back to Admira” at the top of ☰ Options undo it in place, without reloading. `assets/xpace-shell.js` is the single hook (pages and the twin load it): it inserts `assets/marca-blanca.js` with its own stamp only when the tab asks for a brand or `/marca` is used, so a normal visit loads nothing new and never contacts admiranext.com. With a brand, the catalogue entry is checked first (8 s max); only then the common stylesheet and loader (platform `store`, no auto start) plus `assets/marca-blanca.css` are loaded and the brand applied; if anything fails nothing is applied. The bar shows the client logo │ “powered by XpaceOS”; the title warns when the brand is an automatic proposal (Starbucks) or a sample. Options, Advanced and Expert, the twin's bar, panels and console (its `--xp-*` and fixed cyan rgba values) and page variables take the brand colours with texts corrected to WCAG AA; the twin's 3D scene, models, textures and media are never recoloured. Without a browser (Telegram, MCP, `/twin/cmd`) `/marca` answers with the link that opens the brand (`?marca=<id>`) and changes no screen.
+**English.** XpaceOS (xpaceos.com = admira.store) can wear a client brand from the admiranext.com/marcablanca catalogue, platform `store`. Turn it on with `?marca=<id>` on any page with the four-band bar, including the twin (`/admira-xp/?marca=starbucks`), or with `/marca <id>` (alias `/brand`) in ⌘ Expert; it stays for the tab. Changing project (Options → Project and venue, `?project=<id>`, or the Starbucks venue `loc=alsea-sbux-021`) applies the catalogue brand with that id. A project with no brand (estancos, cafebreria) clears the previous one and stays on Admira. A manual `/marca` wins until the next project change. `/marca off`, `?marca=admira` or “Back to Admira” at the top of ☰ Options undo it in place, without reloading. `assets/xpace-shell.js` is the single hook (pages and the twin load it): it inserts `assets/marca-blanca.js` with its own stamp only when the tab asks for a brand or `/marca` is used, so a normal visit loads nothing new and never contacts admiranext.com. With a brand, the catalogue entry is checked first (8 s max); only then the common stylesheet and loader (platform `store`, no auto start) plus `assets/marca-blanca.css` are loaded and the brand applied; if anything fails nothing is applied. The bar shows the client logo │ “powered by XpaceOS”; the title warns when the brand is an automatic proposal (Starbucks) or a sample. Options, Advanced and Expert, the twin's bar, panels and console (its `--xp-*` and fixed cyan rgba values) and page variables take the brand colours with texts corrected to WCAG AA; the twin's 3D scene, models, textures and media are never recoloured. Without a browser (Telegram, MCP, `/twin/cmd`) `/marca` answers with the link that opens the brand (`?marca=<id>`) and changes no screen.
