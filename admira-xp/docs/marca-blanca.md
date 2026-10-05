@@ -77,3 +77,9 @@ Los textos son los de admira.app y Pixeria. **Sin navegador** (Telegram, el MCP 
 
 
 «Volver a Admira» se ha retirado de Opciones / “Back to Admira” has been removed from Options. [Guía actualizada de menús / Updated menu guide](windows-menu.md).
+
+## Contraste de paneles / Panel contrast
+
+Con /marca, los paneles Opciones, Avanzados y Experto usan superficies opacas y pares de texto/fondo propios con contraste mínimo 4,5:1, incluidos campos, ayudas, estados Matrix y previsualizaciones. Si la superficie alternativa de una marca tiene un color incompatible, se usa la superficie segura. Los fondos claros, oscuros o transparentes de la página no atraviesan los campos ni borran sus textos. Los botones seleccionados también calculan su texto sobre el fondo activo. La escena y los contenidos conservan sus colores.
+
+With /marca, Options, Advanced and Expert panels use opaque surfaces and their own text/background pairs with at least 4.5:1 contrast, including fields, hints, Matrix statuses and previews. If a brand alternative surface has an incompatible colour, the safe surface is used. Light, dark or transparent page backgrounds do not bleed through fields or erase their text. Selected buttons also calculate their text against the active background. The scene and media retain their colours.

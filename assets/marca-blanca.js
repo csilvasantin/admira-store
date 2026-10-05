@@ -185,7 +185,26 @@
     const accent = pick([g('acento'), g('primario'), g('secundario'), g('texto')], bgs);
     const ok = pick([g('ok'), g('texto')], bgs);
     const solidOk = solid(g('ok'), sup);
+    // Docked modules share one opaque surface. A black/white brand can have
+    // incompatible page and panel backgrounds, so panel text needs its own pair.
+    const rgb = c => `rgb(${Math.round(c.r)}, ${Math.round(c.g)}, ${Math.round(c.b)})`;
+    const panelSurface = parseColor(rgb(sup)), alternate = parseColor(rgb(alt));
+    const opaque = value => parseColor(value) ? rgb(solid(value, panelSurface)) : '';
+    const panelInk = pick([opaque(g('texto'))], [panelSurface]);
+    const panelAlt = contrast(panelInk, alternate) >= 4.5 ? alternate : panelSurface;
+    const panelBgs = [panelSurface, panelAlt];
+    const panelBrand = pick([opaque(g('primario')), opaque(g('secundario')), panelInk], panelBgs);
     return {
+      '--mbx-panel-surface': rgb(panelSurface),
+      '--mbx-panel-inset': rgb(panelAlt),
+      '--mbx-panel-ink': panelInk,
+      '--mbx-panel-mut': pick([opaque(g('texto-suave')), panelInk], panelBgs),
+      '--mbx-panel-brand': panelBrand,
+      '--mbx-panel-accent': pick([opaque(g('acento')), panelInk], panelBgs),
+      '--mbx-panel-ok': pick([opaque(g('ok')), panelInk], panelBgs),
+      '--mbx-panel-warn': pick([opaque(g('aviso')), panelInk], panelBgs),
+      '--mbx-panel-error': pick([opaque(g('error')), panelInk], panelBgs),
+      '--mbx-panel-on-brand': pick([opaque(g('primario-texto')), '#ffffff', '#000000'], [parseColor(panelBrand)]),
       '--mbx-ink': ink,
       '--mbx-mut': pick([g('texto-suave'), g('texto')], bgs),
       '--mbx-brand': brand,

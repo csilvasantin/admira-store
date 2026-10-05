@@ -757,7 +757,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261005-windows-menu-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261006-panel-contrast-2" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1030,6 +1030,7 @@
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
       <a id="announcementLogin" href="/auth/login" hidden>Iniciar sesión</a>
       <a id="audioStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
+      <span id="announcementArchiveStatus" role="status" hidden></span>
       <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará tres veces.</span>
     </div>
   </div>
@@ -1085,8 +1086,8 @@
 <script src="scripts/screen-media.js?v=20261005-pixeria-1"></script>
 <script src="scripts/media-options.js?v=20261005-preview-grab-2"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261005-pixeria-1"></script>
-<script src="scripts/media-stock.js?v=20261005-preview-1"></script>
-<script src="scripts/announcements.js?v=20261005-stock-3"></script>
+<script src="scripts/media-stock.js?v=20261006-megafonia-1"></script>
+<script src="scripts/announcements.js?v=20261006-megafonia-1"></script>
 <script defer src="scripts/image-prompt.js?v=20261005-pixeria-1"></script>
 <script defer src="scripts/video-prompt.js?v=20261005-pixeria-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
@@ -1504,7 +1505,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261005-2353-preview-grab"></script>
+<script src="xtanco-version.js?v=20261006-0003-megafonia-contrast"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
