@@ -56,7 +56,7 @@ test('Google auto sign-in is offered, explicit logout and login errors suppress 
 test('static XpaceOS human route reaches the authenticated app without changing project or embedded players',()=>{
  for(const embedded of [false,true]){
   let redirected;const win={location:{hostname:'www.xpaceos.com',pathname:'/admira-xp/',search:'?project=starbucks&loc=sbux&lang=en',hash:'#desk',replace:url=>{redirected=url;}},document:{readyState:'loading',addEventListener(){}},addEventListener(){}};win.self=win;win.top=embedded?{}:win;
-  vm.runInNewContext(source,{window:win});
+  vm.runInNewContext(source,{window:win,URL});
   assert.equal(redirected,embedded?undefined:'https://www.admira.store/admira-xp/?project=starbucks&loc=sbux&lang=en#desk');
  }
 });
@@ -68,4 +68,10 @@ test('an existing 24-hour human session migrates immediately on a paid-generatio
  const request=new Request('https://www.admira.store/admira-xp/advertising-image',{method:'POST',headers:{Cookie:'__Host-perimetro_session='+part+'.'+signature,Origin:'https://www.admira.store','Sec-Fetch-Dest':'empty'}});
  const response=await perimetro(ctx(request),async()=>Response.json({ok:true,allowed:true}));
  assert.equal(response.status,200);assert.match(response.headers.get('set-cookie'),/Max-Age=2592000/);
+});
+
+test('XpaceOS routing retains saved language and quality without overwriting explicit choices or moving private data',()=>{
+ const values=new Map([['xtanco_lang','es'],['xtanco_render','matrix'],['cli_history','private local history']]);let redirected;
+ const win={location:{hostname:'xpaceos.com',pathname:'/admira-xp/',search:'?project=starbucks',hash:'',replace:url=>redirected=url},localStorage:{getItem:key=>values.get(key)},document:{}};win.self=win;win.top=win;
+ vm.runInNewContext(source,{window:win,URL});const url=new URL(redirected);assert.equal(url.searchParams.get('lang'),'es');assert.equal(url.searchParams.get('quality'),'matrix');assert.equal(values.get('cli_history'),'private local history');assert.equal(url.searchParams.has('cli_history'),false);
 });

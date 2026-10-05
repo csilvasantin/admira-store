@@ -4,7 +4,13 @@
   const doc=root.document;if(!doc)return;
   let embedded=true;try{embedded=root.top!==root.self;}catch(_){}
   if(!embedded&&['xpaceos.com','www.xpaceos.com'].includes(root.location.hostname)){
-    root.location.replace('https://www.admira.store'+root.location.pathname+root.location.search+root.location.hash);
+    const target=new URL('https://www.admira.store'+root.location.pathname+root.location.search+root.location.hash);
+    try{
+      const language=root.localStorage.getItem('xtanco_lang'),quality=root.localStorage.getItem('xtanco_render');
+      if(!target.searchParams.has('lang')&&['es','en'].includes(language))target.searchParams.set('lang',language);
+      if(!target.searchParams.has('quality')&&!target.searchParams.has('visual')&&['16bit','good','better','best','matrix'].includes(quality))target.searchParams.set('quality',quality);
+    }catch(_){}
+    root.location.replace(target.href);
     return;
   }
   let active=false;
