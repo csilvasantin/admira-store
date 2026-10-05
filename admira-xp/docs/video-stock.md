@@ -25,3 +25,17 @@ Same-origin authenticated POST /admira-xp/advertising-image, /admira-xp/advertis
 Source: admira-xp/scripts/media-stock.js, video-prompt.js and pixer-worker/src/xpace-media.mjs. Existing private service binding ANNOUNCEMENT_TTS. MCP topics video-stock / media-stock / video; xpaceos://help, https://mcp.admira.store/help. No new remote generation tool: all 35 MCP tools retained.
 
 Seguimiento / Tracking: FLT-101631 · vídeo y creatividades guardadas en Stock. Implemented contract; production verification is recorded in Yokup after deployment.
+
+## Estado verificado / Verified state · 2026-10-05
+
+Generaciones reales desde Opciones con sesión activa; recuperación tras recarga; idioma ES/EN; archivos públicos con SHA-256 e identidad confirmados en Stock. Vídeo decodificado: 1280 × 720, 8.04 s. Voz inglesa James: tres lecturas completadas. Ayuda MCP real 2.12.40 y 35 herramientas conservadas.
+
+Real Options generations with an active session; reload recovery; ES/EN interface; public files checked against Stock SHA-256 and identity. Decoded video: 1280 × 720, 8.04 s. English James voice: three completed readings. Actual MCP help 2.12.40 retains all 35 tools.
+
+| Tipo / Type | Pieza / Asset | URL estable / Stable URL |
+|---|---|---|
+| image | Stock #1376 · creatividad de café / coffee creative | https://api.admira.store/stock/asset/1791227596031-5ano5x |
+| video | Stock #1378 · creatividad de café / coffee creative | https://api.admira.store/stock/asset/auto-8985fa5f5f9ec8776256 |
+| audio | Stock #1379 · creatividad de café / coffee creative | https://api.admira.store/stock/asset/1791227936105-q53hjz |
+
+El recibo confirma el archivo y sus metadatos; el recuento completo del catálogo y las notificaciones continúan en segundo plano. / The receipt confirms the file and metadata; catalogue-wide statistics and notifications continue in the background.

@@ -1926,6 +1926,32 @@
     ],
     "retry": "same identity-scoped UUID; no provider restart",
     "authentication": "retained signed perimeter session; same origin",
-    "physical_campaign": false
+    "physical_campaign": false,
+    "verified_examples": [
+      {
+        "kind": "image",
+        "id": "1791227596031-5ano5x",
+        "num": 1376,
+        "url": "https://api.admira.store/stock/asset/1791227596031-5ano5x",
+        "contentHash": "5378eba44ad23d986f45b7624d1f3cf77b18d278401bf905d03deead18000225",
+        "mime": "image/jpeg"
+      },
+      {
+        "kind": "video",
+        "id": "auto-8985fa5f5f9ec8776256",
+        "num": 1378,
+        "url": "https://api.admira.store/stock/asset/auto-8985fa5f5f9ec8776256",
+        "contentHash": "c484a1005ed52f807c92095ca095161a72f014a73c65062e658ebfb6cca06041",
+        "mime": "video/mp4"
+      },
+      {
+        "kind": "audio",
+        "id": "1791227936105-q53hjz",
+        "num": 1379,
+        "url": "https://api.admira.store/stock/asset/1791227936105-q53hjz",
+        "contentHash": "7bac1cbb758ad50beed460d2477b84bfffd1e2312e535ec6e4edccadf9a3cf5e",
+        "mime": "audio/mpeg"
+      }
+    ]
   }
 }

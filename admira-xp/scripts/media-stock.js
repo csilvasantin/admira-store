@@ -12,6 +12,7 @@
   if(saved&&JSON.stringify(saved.payload)!==signature)throw error('pending_previous');
   const resumed=!!saved;saved=saved||{requestId:root.crypto.randomUUID(),payload};keep(kind,saved);
   const status=root.document?.getElementById({image:'imagePromptStatus',video:'videoPromptStatus',audio:'announcementStatus'}[kind]);if(status)status.dataset.requestId=saved.requestId;
+  const previousLink=root.document?.getElementById(kind+'StockLink');if(previousLink)previousLink.hidden=true;
   const requestSignal=()=>signal||root.AbortSignal?.timeout(180000);
   const post=()=>root.fetch('/admira-xp/'+endpoints[kind],{method:'POST',credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,requestId:saved.requestId}),signal:requestSignal()});
   let response=resumed?await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal:requestSignal()}):await post();
