@@ -950,11 +950,11 @@
   .quad-left .qm-acc-body button{padding:6px 8px;font-size:9px !important;line-height:1.25;color:#cdeef6;
     align-items:flex-start;text-align:left;border-radius:6px;background:rgba(120,243,255,.06);font-weight:600}
   .quad-left [data-option-id="megafonia"] .option-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
-  .quad-left #announcementText,.quad-left #imagePrompt{box-sizing:border-box;width:100%;min-height:80px;resize:vertical;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:8px;font:12px/1.4 monospace}
-  #announcementLogin[hidden],#imagePromptLogin[hidden]{display:none!important}
+  .quad-left #announcementText,.quad-left #imagePrompt,.quad-left #videoPrompt{box-sizing:border-box;width:100%;min-height:80px;resize:vertical;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:8px;font:12px/1.4 monospace}
+  #announcementLogin[hidden],#imagePromptLogin[hidden],#videoPromptLogin[hidden],[data-media-stock][hidden],#videoPreview[hidden]{display:none!important}
   .quad-left #announcementVoice{width:100%;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:7px;font:12px monospace}
   .quad-left #announcementVoiceLabel,.quad-left #announcementVoiceNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
-  .quad-left #announcementTextLabel,.quad-left #announcementStatus,.quad-left #imagePromptLabel,.quad-left #imagePromptStatus,.quad-left #imagePromptNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
+  .quad-left #announcementTextLabel,.quad-left #announcementStatus,.quad-left #imagePromptLabel,.quad-left #imagePromptStatus,.quad-left #imagePromptNote,.quad-left #videoPromptLabel,.quad-left #videoPromptStatus,.quad-left #videoPromptNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
   .quad-left .qm-acc-body button:hover{background:rgba(120,243,255,.18);color:var(--xp-cyan)}
   /* Panel Avanzado (▤) — columna derecha a altura completa; desliza de der→izq */
   .quad-right{top:38px;right:0;bottom:var(--xp-dock-clear,0px);width:280px;z-index:200;display:flex;flex-direction:column;gap:6px;padding:16px 12px;border-radius:14px 0 0 14px;overflow-y:auto;transform:translateX(100%);pointer-events:none;transition:transform .22s ease}
@@ -1000,6 +1000,7 @@
       <button type="button" data-xp-do="mega" title="Emitir el texto tres veces por voz">📢 Emitir locución</button>
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
       <a id="announcementLogin" href="/auth/login" hidden>Iniciar sesión</a>
+      <a id="audioStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
       <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará tres veces.</span>
     </div>
   </div>
@@ -1020,12 +1021,21 @@
       <span id="imagePromptNote">PixerIA · una generación de pago. Requiere sesión.</span>
       <button type="button" data-xp-do="imgGen" title="Generar una imagen con PixerIA y mostrarla en pantalla">✨ Generar imagen (PixerIA)</button>
       <a id="imagePromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
+      <a id="imageStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
       <span id="imagePromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera la imagen.</span>
     </div>
   </div>
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="video"><span class="expert-category-icon" data-options-icon="video" aria-hidden="true"></span><strong class="option-label">Video</strong></button>
     <div class="qm-acc-body">
+      <label id="videoPromptLabel" for="videoPrompt">Qué quieres anunciar</label>
+      <textarea id="videoPrompt" rows="4" maxlength="1500" aria-describedby="videoPromptStatus" placeholder="Describe el vídeo del producto, oferta o anuncio…"></textarea>
+      <span id="videoPromptNote">Grok · 8 s · 16:9 · 720p · Stock</span>
+      <button type="button" data-xp-do="videoGen">✨ Generar vídeo (Grok)</button>
+      <a id="videoPromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
+      <span id="videoPromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera el vídeo.</span>
+      <a id="videoStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
+      <video id="videoPreview" controls playsinline preload="metadata" hidden style="width:100%;max-height:180px"></video>
       <button type="button" data-xp-do="dsToggle" title="Reproducir / pausar el vídeo de las pantallas">▶ Play / Pausa</button>
       <button type="button" data-xp-do="dsPrev" title="Vídeo anterior">◀ Vídeo anterior</button>
       <button type="button" data-xp-do="dsNext" title="Vídeo siguiente">▶ Vídeo siguiente</button>
@@ -1050,8 +1060,10 @@
   </div>
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
-<script src="scripts/announcements.js?v=20261005-pa-session-4"></script>
-<script src="scripts/image-prompt.js?v=20261005-image-session-3"></script>
+<script src="scripts/media-stock.js?v=20261005-stock-1"></script>
+<script src="scripts/announcements.js?v=20261005-stock-1"></script>
+<script src="scripts/image-prompt.js?v=20261005-stock-1"></script>
+<script src="scripts/video-prompt.js?v=20261005-stock-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
   <div class="qm-title">Opciones Avanzadas</div>
   <section id="advancedStreamControls" class="expert-menu-group" aria-labelledby="streamControlsLabel"><h2 id="streamControlsLabel">Player y cámara</h2><div class="tg-actions expert-primary-actions">
@@ -30226,15 +30238,13 @@ window.xtAPI = (function(){
     if(d.length>1500)return en?'Use up to 1500 characters.':'Utiliza hasta 1500 caracteres.';
     const job={desc:d.slice(0,60),t0:Date.now(),eta:18000,img:null,until:0};window.ADMIRA_CREA=job;
     try{
-      const r=await fetch('/admira-xp/advertising-image',{method:'POST',credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:d,language:en?'en':'es'}),signal:AbortSignal.timeout(180000)});
-      if(r.status===401){if(window.ADMIRA_CREA===job)window.ADMIRA_CREA=null;return en?'Sign in to generate the image.':'Inicia sesión para generar la imagen.';}
-      if(!r.ok)throw new Error('generation');
-      const j=await r.json();if(!j?.ok||!j.b64)throw new Error('generation');
-      const im=new Image();await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=reject;im.src='data:'+(/^image\/(jpeg|png|webp)$/.test(j.mime)?j.mime:'image/jpeg')+';base64,'+j.b64;});
+      const saved=window.XpaceMedia.pending('image');const j=await window.XpaceMedia.generate('image',saved?.payload.text===d?saved.payload:{text:d,language:en?'en':'es'});
+      const im=new Image();im.crossOrigin='anonymous';await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=reject;im.src=j.stock.url;});
+      window.XpaceMedia.link('image',j.stock);
       if(window.ADMIRA_CREA!==job)return en?'A newer image request replaced this preview.':'Una nueva solicitud ha sustituido esta vista previa.';
       job.img=im;job.until=Date.now()+30000;window.ADMIRA_CREA_LAST=job;
-      return en?'PixerIA created “'+d.slice(0,40)+'” → counter screen (30 s).':'PixerIA ha creado «'+d.slice(0,40)+'» → pantalla del contador (30 s).';
-    }catch(_){if(window.ADMIRA_CREA===job)window.ADMIRA_CREA=null;return en?'Could not generate the image. Try again.':'No se pudo generar la imagen. Vuelve a intentarlo.';}
+      return en?'Saved to Stock → counter screen (30 s).':'Guardada en Stock → pantalla del contador (30 s).';
+    }catch(e){if(window.ADMIRA_CREA===job)window.ADMIRA_CREA=null;if(e.code==='auth')return en?'Sign in to generate the image.':'Inicia sesión para generar la imagen.';return en?'Could not generate the image. Try again.':'No se pudo generar la imagen. Vuelve a intentarlo.';}
   }
   window.admiraCreaImagen=admiraCreaImagen;
   function openTurnFull(){

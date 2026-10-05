@@ -90,10 +90,9 @@
     doc.querySelector('[data-xp-do="mega"]')?.setAttribute('aria-busy',String(['generating','starting','speaking','between'].includes(s.phase)));
   }
   const api=createAnnouncements({synthesis:root.speechSynthesis,Utterance:root.SpeechSynthesisUtterance,Audio:root.Audio,async generate(text,{voice,language,signal}){
-    const res=await root.fetch('/admira-xp/announcement-tts',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice,language}),signal,redirect:'error'});
-    if(!res.ok){const e=new Error('generation');e.code=res.status===401?'auth':'generation';throw e;}
-    if(!String(res.headers.get('Content-Type')).startsWith('audio/'))throw new Error('invalid_audio');
-    const blob=await res.blob();if(!blob.size)throw new Error('empty_audio');const url=root.URL.createObjectURL(blob);return {url,release:()=>root.URL.revokeObjectURL(url)};
+    const result=await root.XpaceMedia.generate('audio',{text,voice,language},{signal,onProgress(phase){if(status)status.textContent=phase==='archiving'?(doc.documentElement.lang==='en'?'Saving voice to Stock…':'Guardando locución en Stock…'):(doc.documentElement.lang==='en'?'Preparing ElevenLabs voice…':'Preparando voz ElevenLabs…');}});
+    root.XpaceMedia.link('audio',result.stock);
+    const url=root.URL.createObjectURL(result.audioBlob);return {url,release:()=>root.URL.revokeObjectURL(url)};
   },onState:render,duck(){
     const saved=['bgMusic','starbucksMusic'].map(id=>doc.getElementById(id)).filter(Boolean).map(audio=>({audio,volume:audio.volume,ducked:Math.min(audio.volume,0.06)}));
     for(const s of saved)s.audio.volume=s.ducked;

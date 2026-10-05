@@ -540,7 +540,7 @@ export async function perimetro(context, fetchImpl = fetch) {
   // Embedded players, decks, public help and assets retain their public contract.
   const humanEntry = ['/admira-xp', '/admira-xp/', '/admira-xp/index.html'].includes(url.pathname) && request.headers.get('Sec-Fetch-Dest') === 'document';
   if (!wantsDocument || (isPublicPath(url.pathname) && !humanEntry)) {
-    if (['/admira-xp/advertising-image', '/admira-xp/announcement-tts'].includes(url.pathname)) {
+    if (['/admira-xp/advertising-image', '/admira-xp/announcement-tts', '/admira-xp/advertising-video', '/admira-xp/media-job'].includes(url.pathname)) {
       const session = await readSession(request, env, site, fetchImpl);
       return renewSession(await context.next(), session, env, site);
     }

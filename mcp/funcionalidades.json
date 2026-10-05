@@ -3403,7 +3403,7 @@
       "visualQualityOptions"
     ]
   },
-  "version": "v.05.10.2026.r11.20:19",
+  "version": "v.05.10.2026.r15.21:09",
   "inventory_scope": {
     "es": "ITIL abre el inventario del Xpacio visitado en la segunda columna de Experto y el detalle seleccionado en la tercera. El enlace opcional al catálogo conserva el mismo dominio, proyecto, local, idioma y marca y publica primero la distribución actual en este navegador. Tarjetas, selector 3D, desgloses y descargas se limitan a sus modelos; un enlace a una pieza ajena no la carga. Un Xpacio desconocido muestra un inventario vacío y pide abrir ITIL desde la escena. /inventario en el gemelo lista sólo sus modelos, conservando los números permanentes y las piezas retiradas para su recuperación. Las importaciones explícitas y Deshacer mantienen su funcionamiento. Starbucks PG103 conserva sus unidades y modelos 44–50 e incluye sus seis pantallas virtuales, TPV y altavoz; no acredita vinculación ni telemetría física. Cafebrería conserva su inventario completo de la escena y su librería 51. El catálogo general sin contexto sigue disponible para consultar plantillas. No crea altas patrimoniales en Yokup.",
     "en": "ITIL opens the inventory of the Xpace being visited in the second Expert column and the selected details in the third. The optional catalogue link preserves the same origin, project, venue, language and brand and first publishes the current layout in this browser. Cards, the 3D selector, breakdowns and downloads are limited to its models; links to foreign pieces do not load them. Unknown Xpacios show an empty inventory and ask users to open ITIL from the scene. /inventario in the twin lists only its models, preserving permanent numbers and removed pieces for recovery. Explicit imports and Undo retain their behavior. Starbucks PG103 keeps its units and models 44–50 and includes its six virtual screens, POS and speaker; this does not establish physical binding or telemetry. Cafebrería retains its full scene inventory and bookcase 51. The general catalogue without context remains available for browsing templates. No Yokup lifecycle assets are created.",
@@ -3833,11 +3833,12 @@
       "es",
       "en"
     ],
-    "language_change": "stop current batch; retain text and gender preference"
+    "language_change": "stop current batch; retain text and gender preference",
+    "automatic_stock": true
   },
   "image_prompt": {
-    "es": "Opciones → Imagen: escribe en Qué quieres anunciar el producto, oferta o anuncio (hasta 1500 caracteres) y pulsa Generar imagen (PixerIA). El campo está visible en el desplegable, conserva el texto al cambiar de idioma y evita envíos duplicados mientras genera. Requiere sesión autorizada y consume una generación de pago. La imagen usa el generador PixerIA existente y aparece durante 30 segundos en la pantalla del contador; no publica una campaña ni envía contenido a tiendas físicas. Un texto vacío pide completar el campo; un fallo se muestra en el estado. /creaimagen mantiene su uso anterior.",
-    "en": "Options → Image: enter the product, offer or announcement in What do you want to advertise? (up to 1500 characters), then press Generate image (PixerIA). The field is visible inside the panel, retains text across language changes and prevents duplicate submissions while generating. An authorized session is required and one paid image generation is consumed. It uses the existing PixerIA generator and displays the image on the counter screen for 30 seconds; it does not publish a campaign or send content to physical stores. An empty brief asks you to fill the field; failures are shown in the status. /creaimagen retains its existing behavior.",
+    "es": "Opciones → Imagen: escribe en Qué quieres anunciar el producto, oferta o anuncio (hasta 1500 caracteres) y pulsa Generar imagen (PixerIA). El campo está visible en el desplegable, conserva el texto al cambiar de idioma y evita envíos duplicados mientras genera. Requiere sesión autorizada y consume una generación de pago. La imagen usa el generador PixerIA existente y se guarda en Stock y aparece durante 30 segundos en la pantalla del contador; no publica una campaña ni envía contenido a tiendas físicas. Un texto vacío pide completar el campo; un fallo se muestra en el estado. /creaimagen mantiene su uso anterior.",
+    "en": "Options → Image: enter the product, offer or announcement in What do you want to advertise? (up to 1500 characters), then press Generate image (PixerIA). The field is visible inside the panel, retains text across language changes and prevents duplicate submissions while generating. An authorized session is required and one paid image generation is consumed. It uses the existing PixerIA generator and saves the image to Stock and displays it on the counter screen for 30 seconds; it does not publish a campaign or send content to physical stores. An empty brief asks you to fill the field; failures are shown in the status. /creaimagen retains its existing behavior.",
     "text_field": "#imagePrompt",
     "status": "#imagePromptStatus",
     "generate": "[data-xp-do=\"imgGen\"]",
@@ -3853,7 +3854,9 @@
     "images_per_request": 1,
     "paid_generation": true,
     "credentials": "XAI_KEY remains in pixer-eleven",
-    "domain_dependency": "www.xpaceos.com awaits Cloudflare Pages migration"
+    "domain_dependency": "www.xpaceos.com awaits Cloudflare Pages migration",
+    "automatic_stock": true,
+    "response": "JSON job with Stock receipt; base64 stays private"
   },
   "session_access": {
     "human_ttl_days": 30,
@@ -3868,5 +3871,39 @@
     "guide": "https://www.admira.store/admira-xp/docs/session-access.md",
     "es": "Acceso con la cuenta Google de Admira: al abrir el Xpacio como aplicación se verifica tu identidad antes de generar imágenes o locuciones. La sesión humana se conserva durante 30 días de uso en este navegador y se renueva al volver, sin una contraseña propia de XpaceOS. Google reutiliza la cuenta conectada cuando puede; el primer acceso o una sesión Google cerrada pueden requerir elegir la cuenta o autenticarse en Google. Los permisos de AdmiraNeXT siguen activos y revocables. Imagen y Locuciones muestran Sesión activa cuando la sesión está verificada. Cerrar sesión impide la reconexión automática inmediata. No se almacenan claves en el navegador. Por ahora, la entrada interactiva de xpaceos.com abre admira.store conservando ruta, Xpacio, idioma y parámetros; los reproductores incrustados conservan su acceso público. La migración del DNS de GoDaddy a Cloudflare Pages sigue pendiente.",
     "en": "Access with your Admira Google account: opening the Xpace as an application verifies your identity before image or announcement generation. Human sessions are retained for 30 days of use in this browser and renewed on return, without a separate XpaceOS password. Google reuses a connected account when available; the first visit or a signed-out Google session may require choosing an account or authenticating with Google. AdmiraNeXT permissions remain enforced and revocable. Image and Public Announcement System show Session active when access is verified. Signing out prevents immediate automatic reconnection. No keys are stored in the browser. For now, interactive xpaceos.com entry opens admira.store while retaining the route, Xpace, language and parameters; embedded players retain public access. GoDaddy DNS migration to Cloudflare Pages remains pending."
+  },
+  "media_stock": {
+    "es": "Opciones → Vídeo: escribe en Qué quieres anunciar (hasta 1500 caracteres) y pulsa Generar vídeo (Grok). Se crea un vídeo de 8 segundos, 16:9 y 720p, con el idioma ESP/ENG seleccionado. El estado muestra generación y guardado; al terminar aparece el reproductor y Ver en Stock. Imágenes, vídeos y locuciones ElevenLabs se archivan automáticamente en Stock con ID, número de catálogo, hash y URL estable. Una locución se genera una vez y se reproduce tres veces. La sesión Admira existente sirve para las tres funciones, sin otra contraseña. Reintentar recupera el mismo trabajo; el servidor puede terminar el guardado aunque cierres la página. Un nuevo trabajo consume otra generación de pago. Publicar en Stock sigue sus contratos y distribución existentes; este botón no crea una campaña ni conecta equipos físicos.",
+    "en": "Options → Video: enter What do you want to advertise? (up to 1500 characters), then press Generate video (Grok). It creates an 8-second, 16:9, 720p video in the selected ESP/ENG language. Status shows generation and saving; once complete, the player and Open in Stock appear. Images, videos and ElevenLabs announcements are automatically archived in Stock with an ID, catalog number, hash and stable URL. Each announcement is generated once and played three times. The existing Admira session covers all three functions, without another password. Retrying recovers the same operation; the server can finish archiving after you close the page. A new operation consumes another paid generation. Stock publication follows its existing contracts and distribution; this button does not create a campaign or connect physical devices.",
+    "guide": "https://www.admira.store/admira-xp/docs/video-stock.md",
+    "text_field": "#videoPrompt",
+    "generate": "[data-xp-do=\"videoGen\"]",
+    "generation_endpoints": {
+      "image": "/admira-xp/advertising-image",
+      "video": "/admira-xp/advertising-video",
+      "audio": "/admira-xp/announcement-tts"
+    },
+    "recovery_endpoint": "/admira-xp/media-job?requestId=<UUID>",
+    "automatic_stock": [
+      "image",
+      "video",
+      "locucion"
+    ],
+    "video": {
+      "model": "grok-imagine-video",
+      "duration": 8,
+      "aspect": "16:9",
+      "resolution": "720p"
+    },
+    "receipt": [
+      "id",
+      "num",
+      "url",
+      "contentHash",
+      "mime"
+    ],
+    "retry": "same identity-scoped UUID; no provider restart",
+    "authentication": "retained signed perimeter session; same origin",
+    "physical_campaign": false
   }
 }

@@ -21,3 +21,11 @@ Access with your Admira Google account: opening the Xpace as an application veri
 Tracking: FLT-101630 · sesión Google persistente para generar imágenes.
 Stable guide: https://www.admira.store/admira-xp/docs/session-access.md
 Google reference: https://developers.google.com/identity/gsi/web/guides/automatic-sign-in-sign-out
+
+## Archivo automático / Automatic archive
+
+Opciones → Vídeo: escribe en Qué quieres anunciar (hasta 1500 caracteres) y pulsa Generar vídeo (Grok). Se crea un vídeo de 8 segundos, 16:9 y 720p, con el idioma ESP/ENG seleccionado. El estado muestra generación y guardado; al terminar aparece el reproductor y Ver en Stock. Imágenes, vídeos y locuciones ElevenLabs se archivan automáticamente en Stock con ID, número de catálogo, hash y URL estable. Una locución se genera una vez y se reproduce tres veces. La sesión Admira existente sirve para las tres funciones, sin otra contraseña. Reintentar recupera el mismo trabajo; el servidor puede terminar el guardado aunque cierres la página. Un nuevo trabajo consume otra generación de pago. Publicar en Stock sigue sus contratos y distribución existentes; este botón no crea una campaña ni conecta equipos físicos.
+
+Options → Video: enter What do you want to advertise? (up to 1500 characters), then press Generate video (Grok). It creates an 8-second, 16:9, 720p video in the selected ESP/ENG language. Status shows generation and saving; once complete, the player and Open in Stock appear. Images, videos and ElevenLabs announcements are automatically archived in Stock with an ID, catalog number, hash and stable URL. Each announcement is generated once and played three times. The existing Admira session covers all three functions, without another password. Retrying recovers the same operation; the server can finish archiving after you close the page. A new operation consumes another paid generation. Stock publication follows its existing contracts and distribution; this button does not create a campaign or connect physical devices.
+
+Contrato actual / Current contract: [Vídeo y Stock](https://www.admira.store/admira-xp/docs/video-stock.md). Image JSON now returns a Stock job, not base64; audio returns MP3 with X-Stock-Id/Url/Num and X-Media-Job, or JSON while archiving. POST requests include requestId and the private RPC receives server-derived owner; see the shared guide.
