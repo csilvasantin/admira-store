@@ -1,3 +1,4 @@
+import {createStarbucksMusic} from '../admira-xp/scripts/starbucks-music.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import {readFileSync} from 'node:fs';
 const html=readFileSync(new URL('../admira-xp/index.html',import.meta.url),'utf8');
 const bridge=html.slice(html.indexOf('(function(){\n const KEY=\'xpaceos.options-playlist-stock'),html.indexOf('function nextDSVideo(){'));
@@ -15,4 +16,10 @@ test('new music delivery stages Stock media and never invokes the audio transpor
 
 test('automatic XPL selection excludes generated drafts from both cached and fetched Stock pools',async()=>{const source=readFileSync(new URL('../admira-xp/scripts/xpl-stock.js',import.meta.url),'utf8'),draft={id:'draft',url:image.url,type:'image',tags:['admira-xp'],title:'Coffee'},live={id:'live',url:'https://stock.example/live.jpg',type:'image',title:'Approved'};
  for(const cached of [true,false]){const root={},store=cached?JSON.stringify({ts:Date.now(),items:[draft,live]}):null;vm.runInNewContext(source,{window:root,localStorage:{getItem:()=>store,setItem(){}},fetch:async()=>({ok:true,json:async()=>({items:[draft,live]})}),Date,Math,Promise});await root.XPLStock.ensure();assert.equal(root.XPLStock.count(),1);assert.equal(root.XPLStock.pick({}).id,'live');}
+});
+
+test('blocked Matrix music launch reports failure rather than a successful send',async()=>{
+ class Audio extends EventTarget{volume=1;paused=true;currentTime=0;load(){}removeAttribute(){}pause(){this.paused=true;}play(){return Promise.reject(Error('blocked'));}}
+ const music=createStarbucksMusic({audio:new Audio(),publishedTracks:[{url:image.url,title:'Music'}]}),source=readFileSync(new URL('../admira-xp/scripts/matrix-panorama.mjs',import.meta.url),'utf8'),start=source.indexOf('window.XpaceMatrixOptions={'),end=source.indexOf('\n\n const announcementAnchor',start),root={};
+ try{vm.runInNewContext(source.slice(start,end),{window:root,music,optionGroups:()=>[],t:(es,en)=>es});await assert.rejects(root.XpaceMatrixOptions.play('music',image.url),/No se pudo reproducir el audio/);assert.equal(music.state().playing,false);}finally{music.dispose();}
 });
