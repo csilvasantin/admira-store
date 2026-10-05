@@ -50,8 +50,13 @@ jobs:
           machine="$(jq -r '.machine // empty' release-signature.json)"
           test -n "$release"
           test "$release" = "$(jq -r '.version' release-signature.json)"
-          jq -n --arg version "$release" --arg deployedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+          novedades='[]'
+          if [ -f novedades.json ]; then
+            novedades="$(jq -c --arg v "$release" '(if type=="object" then (.[$v] // .default // .novedades // []) elif type=="array" then . else [] end) | if type=="array" then . else [] end | map(tostring) | map(select(length>0)) | .[0:4]' novedades.json 2>/dev/null || echo '[]')"
+          fi
+          [ -n "$novedades" ] || novedades='[]'
+          jq -n --argjson novedades "$novedades" --arg version "$release" --arg deployedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --arg deployer "$deployer" --arg machine "$machine" --arg git "$sha" \
-            '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:($deployer+" · "+$machine),git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false,origin:"cloudflare-pages"}' \
+            '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:($deployer+" · "+$machine),git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false,novedades:$novedades,origin:"cloudflare-pages"}' \
             > _site/version.json
           npx --yes wrangler@4 pages deploy _site --project-name admira-store --branch main --commit-hash "$sha"

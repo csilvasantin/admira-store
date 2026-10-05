@@ -34,14 +34,19 @@ jobs:
           test "$signature" = "$deployer · $machine"
           mkdir -p _site
           git archive HEAD | tar -x -C _site
-          jq -n \
+          novedades='[]'
+          if [ -f novedades.json ]; then
+            novedades="$(jq -c --arg v "$release" '(if type=="object" then (.[$v] // .default // .novedades // []) elif type=="array" then . else [] end) | if type=="array" then . else [] end | map(tostring) | map(select(length>0)) | .[0:4]' novedades.json 2>/dev/null || echo '[]')"
+          fi
+          [ -n "$novedades" ] || novedades='[]'
+          jq -n --argjson novedades "$novedades" \
             --arg version "$release" \
             --arg deployedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --arg deployer "$deployer" \
             --arg machine "$machine" \
             --arg signature "$signature" \
             --arg git "$GITHUB_SHA" \
-            '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:$signature,git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false}' \
+            '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:$signature,git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false,novedades:$novedades}' \
             > _site/version.json
       - uses: actions/upload-pages-artifact@v3
         with:
