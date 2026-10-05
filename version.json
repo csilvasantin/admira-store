@@ -1,12 +1,11 @@
 {
-  "version": "v.05.10.2026.r12.20:25",
+  "version": "v.05.10.2026.r20.23:39",
+  "deployedAt": "2026-10-05T21:39:50Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "deployedAt": "2026-10-05T18:25:10.924963+00:00",
-  "git": "0f42e6dd3f2f51c83a5c8fd1a58a431d2c10e42d",
-  "gitFull": "0f42e6dd3f2f51c83a5c8fd1a58a431d2c10e42d",
-  "gitShort": "0f42e6d",
-  "dirty": false,
-  "origin": "cloudflare-pages"
+  "git": "45fc2f0ba959ddd6099756c88abe9e99c4c53574",
+  "gitShort": "45fc2f0",
+  "gitFull": "45fc2f0ba959ddd6099756c88abe9e99c4c53574",
+  "dirty": false
 }
