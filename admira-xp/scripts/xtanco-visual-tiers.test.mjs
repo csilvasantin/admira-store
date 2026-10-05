@@ -39,18 +39,15 @@ test('explicit visual links override preferences and the former Life URL aliases
   }
 });
 
-test('versioned Better and Best preferences reopen their own view; former hybrid preferences never migrate',()=>{
+test('ordinary entry always starts Good despite saved quality or a Starbucks venue',()=>{
   assert.equal(TIER_STORAGE_KEY,'xtanco_visual_tier_v2');
-  for(const legacy of ['good','better','best']){
-    const storage=memoryStorage({xtanco_visual_quality:legacy});
-    assert.equal(requestedTier('',storage),'good');assert.deepEqual(storage.reads,[TIER_STORAGE_KEY]);
+  for(const stored of ['good','better','best','matrix','life','unknown']){
+    const storage=memoryStorage({[TIER_STORAGE_KEY]:stored});
+    assert.equal(requestedTier('',storage),'good');
+    assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'good');
+    assert.deepEqual(storage.reads,[]);
+    assert.equal(requestedTier('?quality=matrix',storage),'matrix');
   }
-  for(const [stored,expected]of [['good','good'],['better','better'],['best','best'],['matrix','matrix'],['life','good'],['unknown','good']]){
-    assert.equal(requestedTier('',memoryStorage({[TIER_STORAGE_KEY]:stored})),expected);
-  }
-  assert.equal(requestedTier(),'good');
-  assert.equal(requestedTier('?visual=life',{getItem(){throw Error('blocked');}}),'better');
-  assert.equal(requestedTier('',{getItem(){throw Error('blocked');}}),'good');
 });
 
 test('Better opens the live view, and its own close event returns selection and preference to Good',async()=>{
@@ -247,7 +244,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
   vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
-  const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in Options');
+  const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the top-bar host');
   return {body,actions,advanced,expertPane,controls,document,window,storage,good,life,best,matrix,created,queries,
     get status(){return document.getElementById('xtanco-best-status');},
     pagehide(){for(const fn of windowEvents.pagehide||[])fn({persisted:false});},
@@ -255,11 +252,11 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
     setVertical(next){vertical=next;body.dataset.xpaceVertical=next;notify(body,'data-xpace-vertical');if(next==='cafeteria')body.classList.add('vertical-cafeteria');else body.classList.remove('vertical-cafeteria');}};
 }
 
-test('Options owns the quality selector and Advanced does not duplicate it',()=>{
+test('Top bar owns the quality selector and Advanced does not duplicate it',()=>{
   const h=selectorHarness({search:'?visual=best'});
   assert.deepEqual(h.queries,['#visualQualityOptions','#telegramDock .expert-view-pane','dialog.visual-tier-surface[open]']);assert.equal(h.controls.parent,h.actions);
   assert.equal(h.advanced.children.length,0,'the side panel must not host a second Good/Better/Best/Matrix selector');
-  assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/Opciones/);
+  assert.equal(h.controls.attrs.role,'group');assert.match(h.controls.attrs['aria-label'],/Barra superior/);
   assert.notEqual(h.button('best').attrs['aria-disabled'],'true');assert.equal(h.button('best').attrs['aria-pressed'],'true');
   assert.match(h.button('best').attrs.title,/Avenida Admira.*mobiliario editable/);
   assert.equal(h.status.hidden,true,'a successful Best surface must not cover the shared interface');
@@ -364,7 +361,7 @@ test('Matrix is an independent preview and can switch to live Best and back with
   f.tiers.dispose();assert.equal(f.matrix.listeners.size,0);assert.equal(f.matrix.calls.close,2);
 });
 
-test('Matrix stays on the Options selector and reports missing initialization honestly',async()=>{
+test('Matrix stays on the top-bar selector and reports missing initialization honestly',async()=>{
   const h=selectorHarness({search:'?quality=matrix'});
   assert.equal(h.button('matrix').attrs['aria-pressed'],'true');
   assert.equal(h.advanced.children.length,0);
@@ -374,6 +371,6 @@ test('Matrix stays on the Options selector and reports missing initialization ho
   const result=await routerFixture({openMatrix:undefined}).tiers.choose('matrix');
   assert.equal(result.ok,false);assert.equal(result.mode,'good');assert.match(result.error,/Matrix no disponible/);
 });
-test('Starbucks Paseo de Gracia defaults to Matrix before saved preferences and keeps explicit view choices',()=>{
- const storage={getItem:()=> 'better'};assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'matrix');assert.equal(requestedTier('?loc=alsea-sbux-021&visual=good',storage),'good');assert.equal(requestedTier('?loc=another',storage),'better');assert.equal(requestedTier('?loc=ALSEA-SBUX-021',storage),'matrix');
+test('Starbucks venue starts Good and retains explicit view choices',()=>{
+ const storage={getItem:()=> 'better'};assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'good');assert.equal(requestedTier('?loc=alsea-sbux-021&visual=good',storage),'good');assert.equal(requestedTier('?loc=another',storage),'good');assert.equal(requestedTier('?loc=ALSEA-SBUX-021',storage),'good');
 });

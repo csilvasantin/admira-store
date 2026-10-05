@@ -1,8 +1,6 @@
 {
-  "version": "v.05.10.2026.r3.10:26",
-  "signature": "SmithMacMini · MacMini",
+  "version": "v.05.10.2026.r4.17:51",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "agent": "SmithMacMini",
-  "deployer": "SmithMacMini",
-  "evidence": "Al cambiar de proyecto, XpaceOS aplica la marca blanca del catálogo. Si el proyecto no tiene marca, se queda en Admira."
+  "signature": "OraculoMacMini · MacMini"
 }

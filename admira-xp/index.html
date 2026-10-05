@@ -11,20 +11,19 @@
   // Resolve the Starbucks entry before the first paint; never reveal the arcade on a timer.
   (function(){
     var q=new URLSearchParams(location.search),visual=q.get('visual')??q.get('quality');
-    var saved='';try{saved=localStorage.getItem('xtanco_visual_tier_v2')||'';}catch(e){}
     // Estancos Altadis BCN: cada uno entra en SU escena de estanco (FLT-101401;
     // antes, FLT-101352, todos compartían la cafetería), nunca en Matrix (Matrix =
     // Starbucks Pg. de Gràcia aunque el nivel venga guardado).
     var altadisLoc=(q.get('loc')||'').trim().toLowerCase();
     if(/^altadis-bcn-\d+$/.test(altadisLoc)){
-      var tier=(visual==='good'||visual==='better')?visual:(saved==='good'||saved==='better')?saved:'good';
+      var tier=(visual==='good'||visual==='better')?visual:'good';
       if(q.get('autostart')!=='xtanco'||!q.get('project')||visual!==tier){
         q.set('autostart','xtanco');if(!q.get('project'))q.set('project','estancos');q.delete('visual');q.set('quality',tier);
         try{history.replaceState(history.state,'',location.pathname+'?'+q.toString()+location.hash);}catch(e){}
       }
       return;
     }
-    var matrix=visual==='matrix'||(visual===null&&((q.get('loc')||'').trim().toLowerCase()==='alsea-sbux-021'||saved==='matrix'));
+    var matrix=visual==='matrix';
     if(!matrix)return;
     window.__xpaceMatrixEntry=true;document.documentElement.classList.add('matrix-entry','matrix-boot');
     var ready=false,failed=false,timer;
@@ -840,7 +839,23 @@
 </nav>
 <div id="topBar">
   <button type="button" class="quad-icon" id="pfOptions" data-quad-toggle="left" aria-label="Opciones" aria-expanded="false" title="Opciones">☰</button>
-  <span class="xs-brand-wrap"><a class="xs-brand" href="/" title="XpaceOS"><span class="xs-brand-name">XpaceOS</span></a><span class="xs-section" id="xpaceActiveSpace"></span></span>
+  <span class="xs-brand-wrap"><a class="xs-brand" href="/" title="XpaceOS"><span class="xs-brand-name">XpaceOS</span></a></span>
+  <details id="topbarXpace" class="topbar-picker">
+    <summary aria-label="Seleccionar Xpacio / Select Xpace"><span class="picker-label" data-es="Xpacio" data-en="Xpace">Xpacio</span><span id="xpaceActiveSpace">Estancos</span><span aria-hidden="true">▾</span></summary>
+  <section id="projectContextPanel" class="expert-menu-group" aria-labelledby="projectSelectorLabel">
+    <h2 id="projectSelectorLabel">Proyecto y local</h2>
+    <label for="projectSelector" id="projectFieldLabel">Proyecto</label>
+    <select id="projectSelector" aria-describedby="projectSelectionStatus"></select>
+    <label for="projectVenueSelector" id="projectVenueFieldLabel">Elegir local</label><select id="projectVenueSelector"></select>
+    <div class="project-session-actions"><button type="button" id="projectConnect">Conectar con AdmiraNext</button><button type="button" id="projectRefresh">Actualizar</button><button type="button" id="projectDisconnect" hidden>Desconectar</button><button type="button" id="projectDemos" hidden>Ver demos públicas</button></div>
+    <div class="project-venue"><span id="projectVenueLabel">Local</span><strong id="projectVenueName"></strong><small id="projectSelectionStatus" role="status"></small></div>
+    <a href="https://www.admiranext.com/xpace/manage" target="_blank" rel="noopener" id="projectBackofficeLink">Gestionar proyectos en admira.app ↗</a>
+  </section>
+  </details>
+  <details id="topbarQuality" class="topbar-picker">
+    <summary aria-label="Calidad del Xpacio / Xpace quality"><span class="picker-label" data-es="Calidad" data-en="Quality">Calidad</span><span id="topbarQualityValue">Good</span><span aria-hidden="true">▾</span></summary>
+  <section id="topbarQualityPanel" class="expert-menu-group" aria-labelledby="visualQualityLabel"><h2 id="visualQualityLabel">Calidad del Xpacio</h2><div id="visualQualityOptions"></div></section>
+  </details>
   <button type="button" id="projectContextChip" class="project-context-chip" aria-label="Proyecto y local" hidden>Xpacio</button>
   <span id="bbClock" style="display:none;color:#ffdd66;font-size:12px;font-weight:bold">09:00</span>
   <span id="bbDate" style="display:none;color:#b0a888;font-size:9px">22/03/2026</span>
@@ -875,7 +890,7 @@
   <button class="btn-quit" id="btnQuit" title="Cerrar audios y videos, volver al menú principal">⏻ Quit</button>
 </div>
 <!-- Trío canónico opciones/avanzado/experto (mismo patrón que pixeria.com/musica.html, temado al Xpacio) -->
-<link rel="stylesheet" href="/assets/xpace-header.css?v=20261004-avatar-2">
+<link rel="stylesheet" href="/assets/xpace-header.css?v=topbar-20261005-1">
 <style id="topbarCoreStyle">
   /* Park venue telemetry while Carlos defines the core UI and operational IoT.
      Keep live nodes and IDs so their producers and saved context still work. */
@@ -967,16 +982,6 @@
 </style>
 <nav class="quad-menu quad-left is-collapsed" aria-label="Opciones">
   <div class="qm-title">Opciones</div>
-  <section id="projectContextPanel" class="expert-menu-group" aria-labelledby="projectSelectorLabel">
-    <h2 id="projectSelectorLabel">Proyecto y local</h2>
-    <label for="projectSelector" id="projectFieldLabel">Proyecto</label>
-    <select id="projectSelector" aria-describedby="projectSelectionStatus"></select>
-    <label for="projectVenueSelector" id="projectVenueFieldLabel">Elegir local</label><select id="projectVenueSelector"></select>
-    <div class="project-session-actions"><button type="button" id="projectConnect">Conectar con AdmiraNext</button><button type="button" id="projectRefresh">Actualizar</button><button type="button" id="projectDisconnect" hidden>Desconectar</button><button type="button" id="projectDemos" hidden>Ver demos públicas</button></div>
-    <div class="project-venue"><span id="projectVenueLabel">Local</span><strong id="projectVenueName"></strong><small id="projectSelectionStatus" role="status"></small></div>
-    <a href="https://www.admiranext.com/xpace/manage" target="_blank" rel="noopener" id="projectBackofficeLink">Gestionar proyectos en admira.app ↗</a>
-  </section>
-  <section class="expert-menu-group" aria-labelledby="visualQualityLabel"><h2 id="visualQualityLabel">Calidad del Xpacio</h2><div id="visualQualityOptions"></div></section>
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head" data-acc-head>📢 Megafonía</button>
     <div class="qm-acc-body">
@@ -34719,7 +34724,7 @@ window.xtAPI = (function(){
     {sel:'#streamControlsLabel', en:'Player and camera', es:'Player y cámara'},
     {sel:'#xtore-window-entry', en:'Player and camera', es:'Player y cámara'},
     {sel:'#xtore-expert-close', attr:'aria-label', en:'Close Expert mode', es:'Cerrar modo experto'},
-    {sel:'#xtanco-visual-quality', attr:'aria-label', en:'Xpace quality · Options', es:'Calidad del Xpacio · Opciones'},
+    {sel:'#xtanco-visual-quality', attr:'aria-label', en:'Xpace quality · Top bar', es:'Calidad del Xpacio · Barra superior'},
     {sel:'#expertCategoriesLabel', en:'CATEGORIES', es:'CATEGORÍAS'},
     {sel:'#expertPreviewLabel', en:'PREVIEWS', es:'PREVIOS'},
     {sel:'#pfToggles', attr:'aria-label', en:'Modes: advanced, expert', es:'Modos: avanzado, experto'},
@@ -35910,7 +35915,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
 <script src="scripts/expert-category-detail.js?v=inventory-lang-20261004-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=central-2">
-<script type="module" src="scripts/project-selector.mjs?v=20261004-avatar-2"></script>
+<script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">
 <script type="module" src="scripts/inventory-workspace.mjs?v=inventory-lang-20261004-1"></script>
 <script id="quickLaunchScript">
@@ -36127,10 +36132,11 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=check-passage-20261004-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=topbar-20261005-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>
 <script type="module" src="scripts/side-panel-bounds.mjs?v=2"></script>
+<script type="module" src="scripts/topbar-controls.mjs?v=topbar-20261005-1"></script>
 </body>
 </html>

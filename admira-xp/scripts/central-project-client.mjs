@@ -22,9 +22,9 @@ export function venueUrl(href,venue,project,quality,{publicDemo=false,language}=
  if(cafeDemo){source.href='https://www.admira.store/xpacios/cafebreria/';source.searchParams.set('lang',current.searchParams.get('lang')||(['es','en'].includes(language)?language:null)||(current.hostname==='www.xpaceos.com'?'en':'es'));}
  source.searchParams.set('project',project.id);source.searchParams.set('circuit',project.circuit);source.searchParams.set('venue',venue.id);
  for(const k of ['lang','langlock'])if(current.searchParams.has(k))source.searchParams.set(k,current.searchParams.get(k));
- const selected=quality||current.searchParams.get('quality')||current.searchParams.get('visual')||'better';
+ const selected=quality||current.searchParams.get('quality')||current.searchParams.get('visual')||'good';
  const q=selected==='matrix'&&source.searchParams.get('loc')!=='alsea-sbux-021'||selected==='best'&&source.searchParams.get('autostart')==='cafeteria'&&source.searchParams.get('loc')!=='alsea-sbux-021'?'better':selected;
- source.searchParams.delete('visual');source.searchParams.set('quality',['good','better','best','matrix'].includes(q)?q:'better');
+ source.searchParams.delete('visual');source.searchParams.set('quality',['good','better','best','matrix'].includes(q)?q:'good');
  return source.href;
 }
 

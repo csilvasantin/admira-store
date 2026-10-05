@@ -11,6 +11,6 @@ test('Cafebrería dropdown route agrees with the bilingual public contract and s
  for(const path of ['admira-xp/help.html','help/index.html','help/cli/index.html','admira-xp/docs/project-selection.md']){
   const text=await read(path);assert.ok(text.includes(route.es),path+' ES');assert.ok(text.includes(route.en),path+' EN');
  }
- assert.ok((await read('admira-xp/index.html')).includes('scripts/project-selector.mjs?v=cafebreria-route-3'));
- assert.ok((await read('admira-xp/scripts/project-selector.mjs')).includes('central-project-client.mjs?v=cafebreria-route-3'));
+ assert.ok((await read('admira-xp/index.html')).includes('scripts/project-selector.mjs?v=topbar-20261005-1'));
+ assert.ok((await read('admira-xp/scripts/project-selector.mjs')).includes('central-project-client.mjs?v=topbar-20261005-1'));
 });

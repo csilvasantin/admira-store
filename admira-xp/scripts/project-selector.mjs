@@ -1,5 +1,5 @@
 import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-2';
-import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=cafebreria-route-3';
+import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=topbar-20261005-1';
 const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip'),space=$('xpaceActiveSpace');
 let storage;try{storage=sessionStorage;}catch{}
 const client=new ProjectClient({storage}),chosenQuality=()=>document.querySelector('#visualQualityOptions [aria-pressed="true"]')?.dataset.visualMode;
@@ -39,7 +39,7 @@ $('projectConnect').onclick=()=>{
  if(cancelConnection){cancelConnection();cancelConnection=null;error=text('Connection cancelled.','Conexión cancelada.');last='';draw();return;}
  cancelConnection=connectCentral(client,{onWaiting(){error=text('Complete the login in AdmiraNext. Press Connect again to cancel.','Completa el login en AdmiraNext. Pulsa Conectar otra vez para cancelar.');last='';draw();},onComplete(){cancelConnection=null;mode='account';load();},onError(e){cancelConnection=null;error=e.message==='POPUP_BLOCKED'?text('Allow the login window.','Permite abrir la ventana de login.'):text('Unable to connect. You can try again.','No se pudo conectar. Puedes volver a intentarlo.');last='';draw();}});
 };
-chip.addEventListener('click',()=>{if($('pfOptions').getAttribute('aria-expanded')!=='true')$('pfOptions').click();select.focus({preventScroll:true});});
+chip.addEventListener('click',()=>{$('topbarXpace').open=true;select.focus({preventScroll:true});});
 window.addEventListener('xpaceos:project-change',()=>{last='';draw();});window.addEventListener('resize',draw);new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 setInterval(()=>{if(mode==='account'&&client.access&&!validAccess(client.access)){client.clear();pendingProject='';catalog={projects:[],venues:[]};error=text('Connection expired. Reconnect with AdmiraNext.','Conexión caducada. Reconecta con AdmiraNext.');}draw();},1000);
 load();
