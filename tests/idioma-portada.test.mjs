@@ -110,3 +110,20 @@ test('xpaceosLang migra a xtanco_lang una sola vez y no vuelve a competir', () =
   assert.equal(XpaceLang.resolve({url: 'https://www.xpaceos.com/', storage: blocked, fallback: 'es'}), 'es');
   assert.equal(XpaceLang.remember('en', {url: 'https://www.xpaceos.com/', storage: blocked}), 'en');
 });
+
+
+test('/idioma sin arg alterna; typo languague y pegados funcionan', () => {
+  const storage = memoryStorage();
+  const r1 = shell.languageCommand('/idioma', {storage, url: 'https://www.xpaceos.com/', lang: 'es',
+    apply: () => {}});
+  assert.equal(r1.ok, true);
+  assert.equal(r1.language, 'en');
+  assert.equal(r1.message, 'Language: English');
+  const r2 = shell.languageCommand('/languague', {storage, url: 'https://www.xpaceos.com/', lang: 'en',
+    apply: () => {}});
+  assert.equal(r2.language, 'es');
+  assert.equal(r2.message, 'Idioma: español');
+  assert.equal(shell.languageCommand('idiomaESP', {storage, url: 'https://www.xpaceos.com/', lang: 'en', apply: () => {}}).language, 'es');
+  assert.equal(shell.languageCommand('/languageENG', {storage, url: 'https://www.xpaceos.com/', lang: 'es', apply: () => {}}).language, 'en');
+  assert.equal(shell.languageCommand('/idioma foo', {storage, url: 'https://www.xpaceos.com/', lang: 'es', apply: () => {}}).ok, false);
+});
