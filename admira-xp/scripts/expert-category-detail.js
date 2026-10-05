@@ -107,7 +107,7 @@
     document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));
     syncSelection();dockPanels();
     if(key==='signage'&&!document.querySelector('#telegramDock .send.signage-open'))launch(key);
-    if(['inventory','itil'].includes(key)&&!window.XpaceInventoryUI)import('./scripts/inventory-workspace.mjs?v=inventory-lang-20261004-1').then(()=>{if(selected!==key)return;document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));});
+    if(['inventory','itil'].includes(key)&&!window.XpaceInventoryUI)import('./scripts/inventory-workspace.mjs?v=windows-menu-1').then(()=>{if(selected!==key)return;document.dispatchEvent(new CustomEvent('xpace:inventory-select',{detail:{category:key}}));});
   }
   new MutationObserver(syncSelection).observe(document.getElementById('expertQuickIcons'),{childList:true});
   let pending=false;

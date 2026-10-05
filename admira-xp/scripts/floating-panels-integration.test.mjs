@@ -4,7 +4,7 @@ import fs from 'node:fs';
 
 const read=name=>fs.readFileSync(new URL(name,import.meta.url),'utf8');
 test('Matrix windows retain feature-specific reopeners and dispose registrations with the scene',()=>{
-  const map=read('./matrix-panorama.mjs?v=options-language-1'),playlist=read('./device-editor.mjs?v=options-language-1'),incidents=read('./starbucks-incidents.mjs?v=options-language-1');
+  const map=read('./matrix-panorama.mjs?v=windows-menu-1'),playlist=read('./device-editor.mjs?v=windows-menu-1'),incidents=read('./starbucks-incidents.mjs?v=windows-menu-1');
   assert.match(map,/menu:'matrix-map',onOpen:.*incidents\?\.close\(\);cancel\(\);panel\.hidden=false/);
   assert.match(map,/mappingWindow\.dispose\(\)/);
   assert.match(playlist,/menu:'matrix-playlist',onOpen:openPanel/);
@@ -18,7 +18,7 @@ test('Matrix windows retain feature-specific reopeners and dispose registrations
 });
 
 test('Distribuir movement uses scene bounds and its own close/dispose lifecycle',()=>{
-  const source=read('./distribuit-ui.mjs?v=20261003-panels-2');
+  const source=read('./distribuit-ui.mjs?v=windows-menu-1');
   assert.match(source,/attachFloatingPanel\(host,\{[^\n]*bounds:stage/);
   assert.match(source,/closeButton:host\.querySelector\('\[data-action="close"\]'\)/);
   assert.match(source,/host\.querySelector\('\[data-action="close"\]'\)\.onclick=onClose/);
@@ -27,7 +27,7 @@ test('Distribuir movement uses scene bounds and its own close/dispose lifecycle'
 });
 
 test('Best keeps metadata readable by Expert while dismissible errors preserve their message and controls',()=>{
-  const source=read('./best-preview-ui.mjs?v=20261003-panels-2'),furniture=read('./matrix-furniture.mjs');
+  const source=read('./best-preview-ui.mjs?v=windows-menu-1'),furniture=read('./matrix-furniture.mjs');
   assert.match(source,/<figcaption style="display:none">Inventario compartido/);
   assert.match(source,/<p class="matrix-furniture-selection"[^>]*style="display:none"/);
   assert.match(furniture,/status\.style\.display='none'/);

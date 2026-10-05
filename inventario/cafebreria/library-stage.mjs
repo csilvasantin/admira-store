@@ -1,5 +1,5 @@
-import {hydrateLibrary,libraryEntry} from './library-runtime.mjs?v=cafebreria-1';
-import {mountCapsulas} from './capsulas.mjs?v=20261003-panels-2';
+import {hydrateLibrary,libraryEntry} from './library-runtime.mjs?v=windows-menu-1';
+import {mountCapsulas} from './capsulas.mjs?v=windows-menu-1';
 export async function mountLibraryStage(host,api){
  const en=document.documentElement.lang==='en',abort=new AbortController();
  hydrateLibrary(api.root);const shelf=api.root.getObjectByName('estanteria-libros'),controller=mountCapsulas({scene:api.scene,entries:[libraryEntry(shelf)],signal:abort.signal});controller.setViewer(api);controller.attachUI({stage:api.canvas.parentElement,canvas:api.canvas,on:(el,type,fn)=>{el.addEventListener(type,fn,{signal:abort.signal});}});

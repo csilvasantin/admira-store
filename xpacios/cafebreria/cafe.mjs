@@ -2,14 +2,14 @@ import {inventoryCaption} from '../../inventario/labels.mjs?v=inventory-lang-202
 import {groundCafe} from './grounding.mjs?v=cafe-grounding-1';
 import {loadPixeriaFurniture} from '../../admira-xp/scripts/pixeria-furniture.mjs';
 import {bindImportedObjects,createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs?v=check-passage-20261004-1';
-import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs?v=check-passage-20261004-1';
-import {mountCafeInventory} from './inventory-panel.mjs?v=inventory-lang-20261004-1';
+import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs?v=windows-menu-1';
+import {mountCafeInventory} from './inventory-panel.mjs?v=windows-menu-1';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {GLTFLoader} from '../../admira-xp/scripts/vendor/GLTFLoader.mjs';
-import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=check-passage-20261004-1';
+import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs?v=windows-menu-1';
 import {createLifeScene} from '../../admira-xp/scripts/life-scene.mjs?v=actor-collision-20261004-1';
-import {buildShelf,mountCapsulas} from '../../inventario/cafebreria/capsulas.mjs?v=20261003-panels-2';
-import {attachFloatingPanel,mountFloatingPanelMenu} from '../../admira-xp/scripts/floating-panels.mjs?v=inventory-lang-20261004-1';
+import {buildShelf,mountCapsulas} from '../../inventario/cafebreria/capsulas.mjs?v=windows-menu-1';
+import {attachFloatingPanel,mountFloatingPanelMenu} from '../../admira-xp/scripts/floating-panels.mjs?v=windows-menu-1';
 const en=new URLSearchParams(location.search).get('lang')==='en';document.documentElement.lang=en?'en':'es';
 const abort=new AbortController(),{signal}=abort,host=document.querySelector('#cafe-stage'),canvas=host.querySelector('canvas'),status=document.querySelector('#cafe-status'),welcome=document.querySelector('#cafe-welcome'),bookList=document.querySelector('#cafe-books');
 if(en){

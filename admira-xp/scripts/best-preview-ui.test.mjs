@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {projectMatrixFloor,MATRIX_FLOOR_POLYGON} from './matrix-floor.mjs';
 
-const source=fs.readFileSync(new URL('./best-preview-ui.mjs?v=20261003-panels-2',import.meta.url),'utf8');
+const source=fs.readFileSync(new URL('./best-preview-ui.mjs?v=windows-menu-1',import.meta.url),'utf8');
 function harness({cached=false,broken=false,showFailure=false,peopleFailure=false,furnitureFailure=false,furniturePending=false,search='',vertical='xtanco',starbucks=false}={}){
   let document,releases=0;
   const layers=[],furnitureLayers=[],floating=[];

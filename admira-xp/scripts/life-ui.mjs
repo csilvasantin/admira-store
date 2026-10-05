@@ -3,7 +3,7 @@ import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004
 import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
-import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=options-language-1';
+import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
 const copy=interfaceTranslator([
@@ -216,7 +216,7 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=check-passage-20261004-1');if(ticket!==generation)return;
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=windows-menu-1');if(ticket!==generation)return;
       viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
@@ -249,7 +249,7 @@ async function openLifeEditor(){
   if(!dialog||!viewer||!window.__xtancoFurnitureEditor)return false;
   if(furnitureEditor)return true;
   const ticket=generation;
-  const {mountDistribuit}=await import('./distribuit-ui.mjs?v=check-passage-20261004-1');
+  const {mountDistribuit}=await import('./distribuit-ui.mjs?v=windows-menu-1');
   if(ticket!==generation||!viewer)return false;
   if(furnitureEditor)return true;
   try{furnitureEditor=mountDistribuit({dialog,viewer,bridge:window.__xtancoFurnitureEditor,onClose:closeLifeEditor});viewer.setPartMode(false);if(shelfHost)shelfHost.hidden=true;window.__shelfScreenPreview?.stop();dialog.querySelector('.life-selection').hidden=true;return true;}catch(error){console.warn('[Distribuit]',error);return false;}

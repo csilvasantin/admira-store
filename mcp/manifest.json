@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.05.10.2026.r7.18:50",
+  "version": "v.05.10.2026.r8.19:05",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.32",
+    "version": "2.12.33",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -768,7 +768,7 @@
     "catalog": "https://www.admiranext.com/marcablanca/api/marcas",
     "platform": "store",
     "activate": "?marca=<id> on any page with the shell or the twin (e.g. https://www.xpaceos.com/admira-xp/?marca=starbucks), or /marca <id> (alias /brand) in ⌘ Expert",
-    "deactivate": "/marca off, ?marca=admira or «Volver a Admira» in ☰ Options",
+    "deactivate": "/marca off, ?marca=admira or the top bar project entry",
     "remote": "__xtExec (Telegram, MCP, /twin/cmd) and xtAPI.command answer with the ?marca= link; they never restyle a screen",
     "es": "Marca blanca del catálogo único de admiranext.com/marcablanca, plataforma store. Sin marca no se carga nada ni se contacta admiranext.com; con marca se comprueba el catálogo antes de cargar el cargador común y las hojas. La barra muestra el logo del cliente │ powered by XpaceOS; Opciones, Avanzado, Experto y la interfaz del gemelo toman la marca con textos AA; la escena 3D, los modelos y las texturas no se recolorean. No es una herramienta MCP.",
     "en": "White label from the single admiranext.com/marcablanca catalogue, platform store. Without a brand nothing is loaded and admiranext.com is never contacted; with one, the catalogue is checked before the common loader and sheets load. The bar shows the client logo │ powered by XpaceOS; Options, Advanced, Expert and the twin's interface take the brand with AA texts; the 3D scene, models and textures are never recoloured. Not an MCP tool."
@@ -1732,6 +1732,34 @@
     "independent_scene_command": "/avatar3d on|off",
     "preserves": [
       "models",
+      "white_label",
+      "language",
+      "cli_history",
+      "scene_data"
+    ]
+  },
+  "windows_menu": {
+    "es": "Opciones deja de mostrar «Volver a Admira»: utiliza el acceso del proyecto en la barra superior; /marca off y /brand off siguen disponibles en Experto. En Avanzados → Ventanas, DVR, MetaHuman, Unitree, Pixeria, Plantillas de Xpacio, Guardar plantilla y Presentación del gemelo usan tarjetas e iconos SVG del mismo sistema gráfico que las demás opciones. Los nombres permanecen visibles y cambian con /idioma ESP o /idioma ENG. Cada botón conserva la apertura de su herramienta original; no cambia el inventario, la escena, la marca blanca ni el historial CLI.",
+    "en": "Options no longer shows “Back to Admira”: use the project entry in the top bar; /marca off and /brand off remain available in Expert. In Advanced → Windows, DVR, MetaHuman, Unitree, Pixeria, Xpace templates, Save template and Twin presentation use cards and SVG icons from the same graphic system as the other options. Names remain visible and change with /idioma ESP or /idioma ENG. Each button retains its original tool opener; inventory, scene, white label and CLI history are unchanged.",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/windows-menu.md",
+    "menu": "#advFloatingWindows",
+    "window_ids": [
+      "classic:dvr",
+      "classic:metahuman",
+      "classic:unitree",
+      "classic:pixeria",
+      "classic:templates",
+      "classic:save-template",
+      "classic:presentation"
+    ],
+    "icon_factory": "admira-xp/scripts/expert-categories.js:iconMarkup",
+    "removed": "#mb-volver",
+    "return_entry": "top bar project entry",
+    "local": true,
+    "new_remote_tool": false,
+    "preserves": [
+      "opener_callbacks",
+      "tool_lifecycles",
       "white_label",
       "language",
       "cli_history",

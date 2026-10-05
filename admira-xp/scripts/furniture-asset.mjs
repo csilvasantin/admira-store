@@ -21,5 +21,5 @@ export async function loadFurniture(item,tier='best'){
  registryPromise ||= fetch(new URL('../../inventario/registry.json',import.meta.url)).then(r=>{if(!r.ok)throw Error('Catálogo no disponible');return r.json();}).catch(e=>{registryPromise=null;throw e;});
  const registry=await registryPromise,number=registry.numbers[assetForInstance(item)];
  if(!number)return null;
- const root=await cloneFurniture(number,tier);if(number===51){const {hydrateLibrary}=await import('../../inventario/cafebreria/library-runtime.mjs?v=cafebreria-1');hydrateLibrary(root);}return root;
+ const root=await cloneFurniture(number,tier);if(number===51){const {hydrateLibrary}=await import('../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1');hydrateLibrary(root);}return root;
 }

@@ -1,3 +1,4 @@
+import './expert-categories.js?v=windows-menu-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {movableWindow,visibleBounds} from './floating-window.mjs?v=20261003-expert-1';
 import {attachPanelResize} from './panel-resize.mjs?v=20261003-expert-1';
@@ -23,7 +24,15 @@ export function mountFloatingPanelMenu(container,{label}={}){
   function refresh(){
     buttonsAbort?.abort();buttonsAbort=new Controller();
     list.replaceChildren();section.hidden=windows.size===0;
-    for(const [id,entry] of windows){const button=doc.createElement('button');button.type='button';button.dataset.windowId=id;button.textContent=entry.label;button.addEventListener('click',()=>{if(windows.get(id)===entry)entry.open();},{signal:buttonsAbort.signal});list.append(button);}
+    const keys={dvr:'dvr',metahuman:'avatar3d',unitree:'unitree',pixeria:'pixerai',templates:'templates','save-template':'save',presentation:'presentation'};
+    for(const [id,entry] of windows){
+      const button=doc.createElement('button');button.type='button';button.dataset.windowId=id;button.className='expert-category';
+      const icon=doc.createElement('span');icon.className='expert-category-icon';icon.setAttribute('aria-hidden','true');
+      icon.innerHTML=doc.defaultView?.XpaceExpertCategories?.iconMarkup(keys[id.replace(/^classic:/,'')]||'signage')||'';
+      const text=doc.createElement('span');text.className='expert-category-text';
+      const name=doc.createElement('strong');name.textContent=entry.label;text.append(name);button.append(icon,text);
+      button.addEventListener('click',()=>{if(windows.get(id)===entry)entry.open();},{signal:buttonsAbort.signal});list.append(button);
+    }
   }
   menus.add(refresh);refresh();
   const stopLanguage=copy.observe(section);

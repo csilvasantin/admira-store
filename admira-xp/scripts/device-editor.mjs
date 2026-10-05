@@ -3,7 +3,7 @@ import {createSharedPlaylists,playlistReference} from './shared-playlists.mjs?v=
 import {mountPlaylistReorder} from './playlist-reorder.mjs?v=drop-1';
 import {mountPixeriaPicker} from './pixeria-picker.mjs?v=drop-1';
 import {DEVICE_IDS,emptyDeviceLayout,validateDeviceLayout,changeDeviceLayout,assignedPlaylist} from './device-layout.mjs?v=loop-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=options-language-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 export const DEVICE_STORAGE='xpaceos.starbucks.device-layout.v1';
 export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChange,onPlay,onPreview,onReload,onOpen=()=>{},getPlayback=()=>[]}){
  const copy=interfaceTranslator(),t=copy.t,selected=new Set();let config=emptyDeviceLayout(),seen=0,enabled=false,multiple=false,savedDraft='',draftRevision;const shared=createSharedPlaylists();let busy=false,disposed=false,pollTimer;const activeShared=new Set();

@@ -1,9 +1,9 @@
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
-import {mountIncidentPanel} from './starbucks-incidents.mjs?v=options-language-2';
+import {mountIncidentPanel} from './starbucks-incidents.mjs?v=windows-menu-1';
 import {createSincroIA} from './sincro-ia.mjs?v=devices-2';
-import {mountDeviceEditor} from './device-editor.mjs?v=options-language-1';
+import {mountDeviceEditor} from './device-editor.mjs?v=windows-menu-1';
 import {createDevicePlayback} from './device-playback.mjs?v=loop-1';
 import {DEVICE_IDS,assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=loop-1';
 import {createAnnouncement,ANNOUNCEMENT_SPEAKER,CLOSING_ANNOUNCEMENT,ANNOUNCEMENT_QUALITIES} from './starbucks-announcement.mjs?v=eleven-1';
@@ -13,7 +13,7 @@ import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenS
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
 import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=devices-2';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=wall-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=options-language-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 
 export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}={}){
  const copy=interfaceTranslator(Object.values(ANNOUNCEMENT_QUALITIES).map(q=>[q.label.es,q.label.en])),t=copy.t;

@@ -1,6 +1,6 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
 import {createSurfaceBinding} from '../admira-xp/scripts/surface-materials.mjs?v=surfaces-1';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=cafebreria-1';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=windows-menu-1';
 import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
 import {pixelFinish,pixelLayout,preciseTextureSampling} from './finish-rendering.mjs?v=shelf-products-1';
 import {createPartHighlight,numericPartForHit} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-products-1';

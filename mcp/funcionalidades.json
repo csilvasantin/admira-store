@@ -1561,7 +1561,7 @@
           "text": "/marca off",
           "entrypoint": "__xtExec",
           "status": "source_verified",
-          "note": "Vuelve a Admira sin recargar en el navegador local (también «Volver a Admira» en Opciones o ?marca=admira). Por __xtExec devuelve el enlace ?marca=admira."
+          "note": "Vuelve a Admira sin recargar en el navegador local (también el acceso del proyecto en la barra superior o ?marca=admira). Por __xtExec devuelve el enlace ?marca=admira."
         },
         {
           "text": "/marca",
@@ -3710,6 +3710,34 @@
     "independent_scene_command": "/avatar3d on|off",
     "preserves": [
       "models",
+      "white_label",
+      "language",
+      "cli_history",
+      "scene_data"
+    ]
+  },
+  "windows_menu": {
+    "es": "Opciones deja de mostrar «Volver a Admira»: utiliza el acceso del proyecto en la barra superior; /marca off y /brand off siguen disponibles en Experto. En Avanzados → Ventanas, DVR, MetaHuman, Unitree, Pixeria, Plantillas de Xpacio, Guardar plantilla y Presentación del gemelo usan tarjetas e iconos SVG del mismo sistema gráfico que las demás opciones. Los nombres permanecen visibles y cambian con /idioma ESP o /idioma ENG. Cada botón conserva la apertura de su herramienta original; no cambia el inventario, la escena, la marca blanca ni el historial CLI.",
+    "en": "Options no longer shows “Back to Admira”: use the project entry in the top bar; /marca off and /brand off remain available in Expert. In Advanced → Windows, DVR, MetaHuman, Unitree, Pixeria, Xpace templates, Save template and Twin presentation use cards and SVG icons from the same graphic system as the other options. Names remain visible and change with /idioma ESP or /idioma ENG. Each button retains its original tool opener; inventory, scene, white label and CLI history are unchanged.",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/windows-menu.md",
+    "menu": "#advFloatingWindows",
+    "window_ids": [
+      "classic:dvr",
+      "classic:metahuman",
+      "classic:unitree",
+      "classic:pixeria",
+      "classic:templates",
+      "classic:save-template",
+      "classic:presentation"
+    ],
+    "icon_factory": "admira-xp/scripts/expert-categories.js:iconMarkup",
+    "removed": "#mb-volver",
+    "return_entry": "top bar project entry",
+    "local": true,
+    "new_remote_tool": false,
+    "preserves": [
+      "opener_callbacks",
+      "tool_lifecycles",
       "white_label",
       "language",
       "cli_history",

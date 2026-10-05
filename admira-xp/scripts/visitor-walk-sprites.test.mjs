@@ -34,7 +34,7 @@ test('la fase de paso elige uno de 8 fotogramas; parado usa el fotograma de repo
 });
 
 test('Best activa las hojas de caminata; la capa conserva el recorte y el rig como reserva', () => {
-  const matrix=readFileSync(new URL('./best-preview-ui.mjs?v=20261003-panels-2',import.meta.url),'utf8');
+  const matrix=readFileSync(new URL('./best-preview-ui.mjs?v=windows-menu-1',import.meta.url),'utf8');
   assert.match(matrix,/createBestPeopleLayer\(\{[^}]*walkSprites:true/);
   const layer=readFileSync(new URL('./best-live-people.mjs',import.meta.url),'utf8');
   assert.match(layer,/walkSprites=false/);

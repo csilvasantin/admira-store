@@ -1,5 +1,5 @@
 import {inventoryCategory,inventoryCaption,cafeRecordName} from '../../inventario/labels.mjs?v=inventory-lang-20261004-1';
-import {attachFloatingPanel} from '../../admira-xp/scripts/floating-panels.mjs?v=inventory-lang-20261004-1';
+import {attachFloatingPanel} from '../../admira-xp/scripts/floating-panels.mjs?v=windows-menu-1';
 import {unitByInstance, recordForUnit, recordFields, recordURL, redactPrivateInventoryFields} from '../../inventario/cafebreria/ci-record.mjs?v=itil-map-20261005-1';
 export function mountCafeInventory({host,manifest,bridge,bindings,onSelect,onEdit,onClose=()=>{},getDetailHost=()=>null,onCount=()=>{},signal}){
  const language=()=>document.documentElement.lang==='en'?'en':'es',phrases=new Map(),t=(es,enText)=>{const pair=[es,enText];phrases.set(es,pair);phrases.set(enText,pair);return pair[language()==='en'?1:0];};

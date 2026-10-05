@@ -1,8 +1,8 @@
-import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=cafebreria-1';
+import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1';
 import * as T from './premium-three.mjs';
 import {createLifeScene} from './life-scene.mjs?v=actor-collision-20261004-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
-import {inventoryIdFor} from './furniture-asset.mjs?v=cafebreria-1';
+import {inventoryIdFor} from './furniture-asset.mjs?v=windows-menu-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
 import {appendPassageOverlay} from './passage-overlay.mjs?v=check-passage-1';
@@ -17,7 +17,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   let model;
   try{model=sceneFactory(snapshot,{
     assetQuality,
-    loadFurniture:item=>import('./furniture-asset.mjs?v=cafebreria-1').then(m=>m.loadFurniture(item,assetQuality)),
+    loadFurniture:item=>import('./furniture-asset.mjs?v=windows-menu-1').then(m=>m.loadFurniture(item,assetQuality)),
     loadPerson:assetQuality==='best'?actor=>import('./best-person-asset.mjs?v=visitors-24').then(m=>m.loadBestPerson(actor)):null
   });}catch(error){renderer.dispose();renderer.forceContextLoss();throw error;}
   const camera=new T.OrthographicCamera(-15,15,10,-10,.1,200);

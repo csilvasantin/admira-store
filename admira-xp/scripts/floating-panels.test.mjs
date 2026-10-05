@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setMaxListeners} from 'node:events';
 import {boundedRectPosition,localWindowPosition,movableWindow} from './floating-window.mjs';
-import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=options-language-1';
+import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=windows-menu-1';
 
 function harness({left=600,top=100,width=300,height=180,lang='es',parentRect={left:100,top:48,width:900,height:650}}={}){
   class Controller extends AbortController{constructor(){super();setMaxListeners(0,this.signal);}}
@@ -201,7 +201,7 @@ test('the optional Windows menu uses registered feature openers and removes disp
   const h=harness(),container=new h.Element(),menu=mountFloatingPanelMenu(container);let opens=0;
   assert.equal(container.children[0].hidden,true);
   const unregister=registerFloatingPanel('floating-test-only',{label:'Matrix',open(){opens++;}});
-  const section=container.children[0],list=section.children[1];assert.equal(section.hidden,false);assert.equal(list.children[0].textContent,'Matrix');list.children[0].click();assert.equal(opens,1);
+  const section=container.children[0],list=section.children[1];assert.equal(section.hidden,false);assert.equal(list.children[0].children[1].children[0].textContent,'Matrix');list.children[0].click();assert.equal(opens,1);
   const stale=list.children[0];unregister();assert.equal(section.hidden,true);stale.click();assert.equal(opens,1);menu.dispose();assert.equal(container.children.length,0);
 });
 

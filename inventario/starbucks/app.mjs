@@ -1,6 +1,6 @@
 import {mountSurfaceEditor} from '../surface-editor.mjs?v=surfaces-1';
 import {recordFor, recordURL, recordFields} from './ci-record.mjs?v=ci-record-1';
-import {mountCounterStage} from '../counter-stage.mjs?v=surfaces-1';
+import {mountCounterStage} from '../counter-stage.mjs?v=windows-menu-1';
 import {indexReferences, referenceLabel, referencePhotoURL, selectReference, selectionURL, nameFor} from './reference-model.mjs?v=photo-references-1';
 
 const params = new URLSearchParams(location.search), language = params.get('lang') === 'en' ? 'en' : 'es', en = language === 'en';

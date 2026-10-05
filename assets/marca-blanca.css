@@ -110,11 +110,6 @@
 :root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .qm-acc-body{border-top-color:var(--mb-borde)!important}
 :root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .qm-acc-body button{background:var(--mbx-inset)!important;color:var(--mbx-ink)!important}
 :root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .expert-menu-group :is(h2,small,span,strong){color:var(--mbx-ink)}
-/* «Volver a Admira» (solo existe con marca activa). */
-:root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .mb-volver{display:flex;align-items:center;justify-content:flex-start;width:100%;margin:2px 0 8px;padding:10px 12px;border:1px solid var(--mbx-brand)!important;border-radius:var(--mb-radio-sm,8px);background:var(--mbx-soft)!important;color:var(--mbx-brand)!important;font:600 13px/1.3 var(--mb-fuente-texto);text-align:left;cursor:pointer;flex-shrink:0}
-:root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .mb-volver::before{content:"↩";margin-right:8px}
-:root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .mb-volver:hover{background:var(--mbx-brand)!important;color:var(--mbx-on-brand)!important}
-:root[data-mb-marca][data-mb-plataforma="store"] .quad-menu .mb-volver:focus-visible{outline:2px solid var(--mbx-brand);outline-offset:3px}
 /* Consola Experto del shell común. */
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-log{background:var(--mbx-inset);border-color:var(--mb-borde);color:var(--mbx-ink);font-family:var(--mb-fuente-mono)}
 :root[data-mb-marca][data-mb-plataforma="store"] .xs-expert .xs-log li{color:var(--mbx-ink)}

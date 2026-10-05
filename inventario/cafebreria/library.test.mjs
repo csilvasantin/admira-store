@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import vm from 'node:vm';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {libraryEntry,LIBRARY_ID} from './library-runtime.mjs';
-import {selectBooks} from './capsulas.mjs?v=20261003-panels-2';
+import {selectBooks} from './capsulas.mjs?v=windows-menu-1';
 import {numberedCatalog} from '../model.mjs';
 const read=p=>JSON.parse(fs.readFileSync(new URL(p,import.meta.url))),pkg=read('./library.package.json');
 test('piece 51 appends an independent wall template without changing the first 50 identities',()=>{

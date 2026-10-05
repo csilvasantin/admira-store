@@ -1,10 +1,10 @@
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=options-language-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=windows-menu-1';
 import {createBestPeopleLayer} from './best-live-people.mjs?v=actor-collision-20261004-1';
 import {mountMatrixFurniture} from './matrix-furniture.mjs?v=actor-collision-20261004-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=options-language-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 
 // Best keeps the Avenida Admira room as its backdrop. Furniture and visitors
 // are separate, depth-sorted layers driven by the shared Xtanco inventory.

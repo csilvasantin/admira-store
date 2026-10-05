@@ -1,5 +1,5 @@
 import {inventoryContext,inventoryURL} from '../inventario/context.mjs?v=scope-20261004-1';
-import '../admira-xp/scripts/expert-categories.js?v=20261003-expert-1';
+import '../admira-xp/scripts/expert-categories.js?v=windows-menu-1';
 import '../admira-xp/scripts/expert-dock.js?v=20261003-expert-1';
 
 const action=(es,en,command)=>({es,en,command});

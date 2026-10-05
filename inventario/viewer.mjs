@@ -1,5 +1,5 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=cafebreria-1';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=windows-menu-1';
 import {pixelFinish,preciseTextureSampling} from './finish-rendering.mjs?v=shelf-products-1';
 let renderers=new Map(),queue=Promise.resolve();
 export function preview(asset,tier,angle=0){const task=queue.then(()=>render(asset,tier,angle));queue=task.catch(()=>{});return task;}

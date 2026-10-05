@@ -313,7 +313,7 @@
     return catalogPromise;
   }
 
-  // ─── Lo que XpaceOS añade a la marca: logo en la barra, «Volver a Admira», título ───
+  // ─── Lo que XpaceOS añade a la marca: logo en la barra y título ───
   // La barra es la de las 4 bandas: en el shell común (#topBar.xs-bar) el logo va delante
   // de la marca XpaceOS, que pasa a «powered by XpaceOS»; en el gemelo (barra en línea, sin
   // marca escrita) el logo y el «powered by XpaceOS» van detrás de ☰ Opciones.
@@ -359,22 +359,6 @@
     }
     return slot;
   }
-  function backButton(create) {
-    let b = doc.getElementById('mb-volver');
-    if (b || !create) return b;
-    const rail = doc.querySelector('#xsOptions, nav.quad-menu.quad-left');
-    if (!rail) return null;
-    b = doc.createElement('button');
-    b.type = 'button';
-    b.id = 'mb-volver';
-    b.className = 'mb-volver';
-    b.textContent = T('Volver a Admira', 'Back to Admira');
-    b.addEventListener('click', () => { desactivar(); const t = doc.getElementById('pfOptions'); if (t) t.focus(); });
-    // Arriba del todo, bajo el título «Opciones»: a la vista sin desplazar el panel.
-    const hd = rail.querySelector(':scope > .qm-title');
-    rail.insertBefore(b, hd ? hd.nextSibling : rail.firstChild);
-    return b;
-  }
   function paintSlot() {
     const slot = logoSlot(true);
     if (!slot || !current) return;
@@ -398,17 +382,17 @@
       } else slot.textContent = current.nombre;   // marca sin logo
     }
   }
-  // ¿Falta algo? (la barra o el panel de Opciones existen, pero sin el logo o sin el botón)
+  // ¿Falta algo? (la barra o el panel de Opciones existen, pero sin el logo)
   function chromeMissing() {
     const at = barAnchor();
     if (at && !slotInPlace(doc.getElementById('mb-bar-logo'), at)) return true;
-    return !!doc.querySelector('#xsOptions, nav.quad-menu.quad-left') && !doc.getElementById('mb-volver');
+    return false;
   }
   function ensureChrome() {
     chromeQueued = false;
     if (!current) return;
     paintSlot();
-    backButton(true);
+    doc.getElementById('mb-volver')?.remove(); // Remove stale chrome after a module refresh.
   }
   function watchChrome() {
     if (chromeObserver || typeof MutationObserver === 'undefined' || !doc.body) return;
@@ -532,7 +516,7 @@
     clearRoot();
     const slot = logoSlot(false); if (slot) slot.remove();
     const powered = doc.getElementById('mb-powered'); if (powered) powered.remove();
-    const b = backButton(false); if (b) b.remove();
+    const b = doc.getElementById('mb-volver'); if (b) b.remove();
     restoreTitle();
     restoreSnapshot();
     removeCss();

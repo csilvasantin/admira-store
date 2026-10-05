@@ -27,7 +27,7 @@ export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{}
   if(row.asset){
    const stage=el('div',null,'itil-unit-stage'),canvas=el('canvas'),note=el('p',t('Cargando modelo…','Loading model…'));canvas.tabIndex=0;canvas.setAttribute('aria-label',row.name+' · 3D');note.dataset.status='';stage.append(canvas,note);detailHost.append(stage);
    const source=read(),url=inventoryURL(doc.location.href,{space:source.space,project:source.project,lang:doc.documentElement.lang});url.searchParams.set('asset',row.asset.number);url.searchParams.set('quality','better');const link=el('a',t('Abrir modelo y desglose ↗','Open model and breakdown ↗'));link.href=url.href;link.addEventListener('click',()=>doc.defaultView.XpaceInventory?.publish(source.space,read().layout),{signal});detailHost.append(link);
-   try{const {mountCounterStage}=await import('./counter-stage.mjs?v=cafebreria-1');if(turn!==stageRevision||disposed)return;const dispose=await mountCounterStage(stage,row.asset,{controlsHost:stage,quality:'better'});if(turn!==stageRevision||disposed)dispose?.();else disposeStage=dispose;}catch{if(turn===stageRevision)note.textContent=t('Vista 3D no disponible. La ficha se conserva.','3D view unavailable. Record retained.');}
+   try{const {mountCounterStage}=await import('./counter-stage.mjs?v=windows-menu-1');if(turn!==stageRevision||disposed)return;const dispose=await mountCounterStage(stage,row.asset,{controlsHost:stage,quality:'better'});if(turn!==stageRevision||disposed)dispose?.();else disposeStage=dispose;}catch{if(turn===stageRevision)note.textContent=t('Vista 3D no disponible. La ficha se conserva.','3D view unavailable. Record retained.');}
   }
  }
  async function refresh(force=false){
