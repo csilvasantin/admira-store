@@ -9,7 +9,7 @@
 (function(){
   let ac = null;
   const weatherNodes=new Set();
-  const weatherAudible=()=>window.G?.weather?.type==='rain'&&window.G.weather.sonora===true;
+  const weatherAudible=()=>!document.querySelector?.('.matrix-panorama-dialog[open]')&&window.G?.weather?.type==='rain'&&window.G.weather.sonora===true;
   function vol(){
     var G = (typeof window !== 'undefined') ? window.G : null;
     return (G && G.sfxVolume !== undefined) ? G.sfxVolume : 0.7;
