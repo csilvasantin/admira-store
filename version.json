@@ -1,11 +1,11 @@
 {
-  "version": "v.05.10.2026.r21.23:53",
-  "deployedAt": "2026-10-05T21:53:34Z",
+  "version": "v.06.10.2026.r1.00:03",
+  "deployedAt": "2026-10-05T22:05:55Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "6626afaa080b6b737cfdc40f6f709cc72728b142",
-  "gitShort": "6626afa",
-  "gitFull": "6626afaa080b6b737cfdc40f6f709cc72728b142",
+  "git": "86612a136ec093926b28b98f0750f69ef74a7a38",
+  "gitShort": "86612a1",
+  "gitFull": "86612a136ec093926b28b98f0750f69ef74a7a38",
   "dirty": false
 }
