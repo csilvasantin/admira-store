@@ -10,7 +10,7 @@
   function render(){
     const en=doc.documentElement.lang==='en';
     if(label)label.textContent=en?'What do you want to advertise?':'Qué quieres anunciar';
-    if(note)note.textContent=en?'PixerIA · one paid generation. Sign-in required.':'PixerIA · una generación de pago. Requiere sesión.';
+    if(note){const active=root.XpaceAccess?.active();note.textContent=en?'PixerIA · one paid generation. '+(active?'Session active.':'Connect your Admira account.'):'PixerIA · una generación de pago. '+(active?'Sesión activa.':'Conecta tu cuenta de Admira.');}
     if(input)input.placeholder=en?'Describe the product, offer or announcement to display…':'Describe el producto, oferta o anuncio que quieres mostrar…';
     if(status){status.dataset.phase=phase;status.textContent=phase==='generating'?(en?'Generating the advertising image…':'Generando la imagen del anuncio…'):phase==='auth'?(en?'Sign in to generate the image.':'Inicia sesión para generar la imagen.'):phase==='empty'?(en?'Write what you want to advertise first.':'Escribe primero qué quieres anunciar.'):phase==='error'?(en?'Could not generate the image. Try again.':'No se pudo generar la imagen. Vuelve a intentarlo.'):phase==='result'?result:(en?'Write what you want to advertise, then generate the image.':'Escribe lo que quieres anunciar y genera la imagen.');}
     if(login){login.hidden=phase!=='auth';login.textContent=en?'Sign in':'Iniciar sesión';login.href='/auth/login?return_to='+encodeURIComponent(root.location.pathname+root.location.search);}
@@ -26,5 +26,6 @@
   }};
   if(input)for(const event of ['keydown','keyup','keypress'])input.addEventListener(event,e=>e.stopPropagation());
   if(root.MutationObserver)new root.MutationObserver(render).observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});
+  root.addEventListener('xpace:session',render);
   render();
 })(typeof window!=='undefined'?window:globalThis);

@@ -11,7 +11,7 @@
 // eso la web se reconoce por el HOST y cada una pide su propia casilla en la
 // lista de AdmiraNeXT (admira-whitelist /access?site=xpaceos|admira-store).
 //
-// Sin base de datos: la sesión es una cookie firmada (HMAC) de 24 h y el
+// Sin base de datos: la sesión es una cookie humana firmada (HMAC) de 30 días de uso y el
 // permiso se pregunta a la lista en cada visita, con 60 s de memoria por
 // isolate. Quitar la casilla en AdmiraNeXT corta el acceso en un minuto.
 //
@@ -24,7 +24,9 @@ const ACCESS_URL = WHITELIST_URL + '/access';
 const SESSION_COOKIE = '__Host-perimetro_session';
 const NONCE_COOKIE = '__Host-perimetro_nonce';
 const RETURN_COOKIE = '__Host-perimetro_return';
-const SESSION_TTL_SECONDS = 24 * 60 * 60;
+const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+const AGENT_SESSION_TTL_SECONDS = 24 * 60 * 60;
+const SESSION_RENEW_AFTER_SECONDS = 12 * 60 * 60;
 const CHALLENGE_TTL_SECONDS = 10 * 60;
 const ACCESS_TTL_MS = 60 * 1000;
 const OWNER_FALLBACK = new Set(['csilva@admira.com', 'csilvasantin@gmail.com']);
@@ -229,7 +231,7 @@ async function agentFingerprint(env) {
 async function createSessionToken(env, site, identity, extra = {}) {
   const now = Math.floor(Date.now() / 1000);
   const payload = base64url(encoder.encode(JSON.stringify({
-    v:1, aud:site.id, email:identity.email, sub:identity.sub, iat:now, exp:now + SESSION_TTL_SECONDS, ...extra
+    v:1, aud:site.id, email:identity.email, sub:identity.sub, iat:now, exp:now + (extra.agent ? AGENT_SESSION_TTL_SECONDS : SESSION_TTL_SECONDS), ...extra
   })));
   return `${payload}.${await hmac(env.PERIMETRO_SIGNING_KEY, `perimetro:${payload}`)}`;
 }
@@ -257,7 +259,7 @@ export async function readSession(request, env, site, fetchImpl = fetch) {
     }
     const info = await accessInfo(env, site.id, email, fetchImpl);
     if (!info.allowed) return null;
-    return {email, superuser:info.superuser};
+    return {email, superuser:info.superuser, sub:payload.sub, issuedAt:Number(payload.iat), expiresAt:Number(payload.exp)};
   } catch (_) {
     return null;
   }
@@ -281,15 +283,15 @@ function secureHeaders() {
   };
 }
 
-function loginPage(site, origin, nonce, error) {
+function loginPage(site, origin, nonce, error, automatic = true, en = false) {
   const accent = site.accent;
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(site.name)} · Acceso</title><style>
-  :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,#14202a,${site.background} 70%);color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:36px 30px;border:1px solid ${accent}55;border-radius:16px;background:#070c10e6;box-shadow:0 25px 80px #000b;text-align:center}.mark{color:${accent};font:700 12px ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase}h1{margin:16px 0 8px;font-size:26px}p{margin:0 0 24px;color:#9fb1bb;line-height:1.55}.picker{display:flex;justify-content:center;min-height:44px;max-width:100%;overflow:hidden}.error{margin-top:18px;color:#ff8f7a;font:600 13px ui-monospace,monospace;line-height:1.5}.foot{margin-top:24px;color:#5d707b;font:11px ui-monospace,monospace}@media (max-width:430px){body{padding:16px}.box{padding:28px 18px}}</style></head><body><main class="box"><div class="mark">${escapeHtml(site.name)} · perímetro de seguridad</div><h1>Acceso con Google</h1><p>Esta web es privada. Entra con tu cuenta de Google; si tienes permiso en AdmiraNeXT, la sesión dura 24 horas en este navegador.</p><div id="g_id_onload" data-client_id="${CLIENT_ID}" data-login_uri="${escapeHtml(origin)}/auth/callback" data-nonce="${escapeHtml(nonce)}" data-ux_mode="redirect" data-auto_prompt="false"></div><div class="picker"><div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="continue_with" data-size="large" data-ux_mode="redirect"></div></div>${error ? `<div class="error">${escapeHtml(error)}</div>` : ''}<div class="foot">Permisos: AdmiraNeXT · admira.live/usuarios</div></main><script src="https://accounts.google.com/gsi/client" async defer></script></body></html>`;
+  return `<!doctype html><html lang="${en ? 'en' : 'es'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(site.name)} · ${en ? 'Access' : 'Acceso'}</title><style>
+  :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,#14202a,${site.background} 70%);color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:36px 30px;border:1px solid ${accent}55;border-radius:16px;background:#070c10e6;box-shadow:0 25px 80px #000b;text-align:center}.mark{color:${accent};font:700 12px ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase}h1{margin:16px 0 8px;font-size:26px}p{margin:0 0 24px;color:#9fb1bb;line-height:1.55}.picker{display:flex;justify-content:center;min-height:44px;max-width:100%;overflow:hidden}.error{margin-top:18px;color:#ff8f7a;font:600 13px ui-monospace,monospace;line-height:1.5}.foot{margin-top:24px;color:#5d707b;font:11px ui-monospace,monospace}@media (max-width:430px){body{padding:16px}.box{padding:28px 18px}}</style></head><body><main class="box"><div class="mark">${escapeHtml(site.name)} · ${en ? 'secure access' : 'perímetro de seguridad'}</div><h1>${en ? 'Continue with Google' : 'Acceso con Google'}</h1><p>${en ? 'Use your Admira Google account. We keep your session for 30 days of use in this browser so you can create images and announcements without signing in again. Permissions are checked in AdmiraNeXT.' : 'Accede con tu cuenta Google de Admira. Conservamos tu sesión durante 30 días de uso en este navegador para crear imágenes y locuciones sin volver a iniciar sesión. Los permisos se comprueban en AdmiraNeXT.'}</p><div id="g_id_onload" data-client_id="${CLIENT_ID}" data-login_uri="${escapeHtml(origin)}/auth/callback" data-nonce="${escapeHtml(nonce)}" data-ux_mode="redirect" data-auto_prompt="${automatic ? 'true' : 'false'}" data-auto_select="${automatic ? 'true' : 'false'}" data-hd="admira.com"></div><div class="picker"><div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="continue_with" data-size="large" data-ux_mode="redirect"></div></div>${error ? `<div class="error">${escapeHtml(error)}</div>` : ''}<div class="foot">Permisos: AdmiraNeXT · admira.live/usuarios</div></main><script src="https://accounts.google.com/gsi/client" async defer></script></body></html>`;
 }
 
-function loginResponse(site, origin, returnTo, error = '', status = 401) {
+function loginResponse(site, origin, returnTo, error = '', status = 401, automatic = true) {
   const nonce = base64url(crypto.getRandomValues(new Uint8Array(32)));
-  const response = new Response(loginPage(site, origin, nonce, error), {status, headers:secureHeaders()});
+  const response = new Response(loginPage(site, origin, nonce, error, automatic && !error, new URL(safeReturnTo(returnTo), origin).searchParams.get('lang') === 'en'), {status, headers:secureHeaders()});
   // SameSite=None: Google vuelve con un POST desde accounts.google.com y una
   // cookie Lax no viajaría en esa petición entre sitios.
   response.headers.append('Set-Cookie', `${NONCE_COOKIE}=${nonce}; Path=/; Max-Age=${CHALLENGE_TTL_SECONDS}; HttpOnly; Secure; SameSite=None`);
@@ -377,7 +379,7 @@ async function agente(request, env, site, fetchImpl, waitUntil) {
       : new Response(agentPage(site, returnTo, 'Token no válido.'), {status:401, headers});
   }
   const token = await createSessionToken(env, site, {email:AGENT_EMAIL, sub:`agente:${who}`}, {agent:await agentFingerprint(env)});
-  const cookie = `${SESSION_COOKIE}=${token}; Path=/; Max-Age=${SESSION_TTL_SECONDS}; HttpOnly; Secure; SameSite=Lax`;
+  const cookie = `${SESSION_COOKIE}=${token}; Path=/; Max-Age=${AGENT_SESSION_TTL_SECONDS}; HttpOnly; Secure; SameSite=Lax`;
   if (bearer) {
     return Response.json({ok:true, email:AGENT_EMAIL, name:who, agent:true}, {
       status:200,
@@ -404,7 +406,7 @@ export async function handleAuth(request, env, site, fetchImpl = fetch, waitUnti
     }
     const returnTo = safeReturnTo(url.searchParams.get('return_to') || '/');
     if (await readSession(request, env, site, fetchImpl)) return redirect(returnTo);
-    return loginResponse(site, url.origin, returnTo);
+    return loginResponse(site, url.origin, returnTo, '', 401, url.searchParams.get('signed_out') !== '1');
   }
 
   if (url.pathname === '/auth/callback' && request.method === 'POST') {
@@ -436,14 +438,14 @@ export async function handleAuth(request, env, site, fetchImpl = fetch, waitUnti
 
   if (url.pathname === '/auth/session' && request.method === 'GET') {
     const session = await readSession(request, env, site, fetchImpl);
-    return Response.json(session ? {ok:true, email:session.email, site:site.id, agent:Boolean(session.agent)} : {ok:false}, {
+    return renewSession(Response.json(session ? {ok:true, email:session.email, site:site.id, agent:Boolean(session.agent)} : {ok:false}, {
       status:session ? 200 : 401, headers:{'cache-control':'no-store'}
-    });
+    }), session, env, site);
   }
 
   if (url.pathname === '/auth/logout' && (request.method === 'GET' || request.method === 'POST')) {
     return new Response(null, {status:303, headers:{
-      location:'/auth/login', 'cache-control':'no-store',
+      location:'/auth/login?signed_out=1', 'cache-control':'no-store',
       'set-cookie':`${SESSION_COOKIE}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax`
     }});
   }
@@ -505,6 +507,17 @@ async function permisos(request, env, site, fetchImpl) {
   return new Response(permisosPage(site, session.email, data, notice), {status:200, headers});
 }
 
+// Sliding human session; agents retain their fixed 24-hour lifetime.
+async function renewSession(response, session, env, site) {
+  if (!session || session.agent) return response;
+  if (session.expiresAt - session.issuedAt >= SESSION_TTL_SECONDS && Math.floor(Date.now() / 1000) - session.issuedAt < SESSION_RENEW_AFTER_SECONDS) return response;
+  const token = await createSessionToken(env, site, {email:session.email, sub:session.sub});
+  const renewed = new Response(response.body, response);
+  renewed.headers.append('Set-Cookie', `${SESSION_COOKIE}=${token}; Path=/; Max-Age=${SESSION_TTL_SECONDS}; HttpOnly; Secure; SameSite=Lax`);
+  renewed.headers.set('cache-control', 'private, no-store');
+  return renewed;
+}
+
 // Punto de entrada del middleware de Pages.
 export async function perimetro(context, fetchImpl = fetch) {
   const {request, env} = context;
@@ -523,13 +536,24 @@ export async function perimetro(context, fetchImpl = fetch) {
   const wantsDocument = isDocumentPath(url.pathname) ||
     request.headers.get('Sec-Fetch-Dest') === 'document' ||
     (request.headers.get('Accept') || '').includes('text/html');
-  if (!wantsDocument || isPublicPath(url.pathname)) return context.next();
-  if (await readSession(request, env, site, fetchImpl)) {
+  // Only the interactive top-level application enters with an identified user.
+  // Embedded players, decks, public help and assets retain their public contract.
+  const humanEntry = ['/admira-xp', '/admira-xp/', '/admira-xp/index.html'].includes(url.pathname) && request.headers.get('Sec-Fetch-Dest') === 'document';
+  if (!wantsDocument || (isPublicPath(url.pathname) && !humanEntry)) {
+    if (['/admira-xp/advertising-image', '/admira-xp/announcement-tts'].includes(url.pathname)) {
+      const session = await readSession(request, env, site, fetchImpl);
+      return renewSession(await context.next(), session, env, site);
+    }
+    return context.next();
+  }
+  if (humanEntry && site.hosts.includes(url.hostname) && url.hostname !== site.hosts[0]) return redirect(`https://${site.hosts[0]}${url.pathname}${url.search}`);
+  const session = await readSession(request, env, site, fetchImpl);
+  if (session) {
     const response = await context.next();
     const guarded = new Response(response.body, response);
     guarded.headers.set('cache-control', 'private, no-store');
     guarded.headers.set('x-robots-tag', 'noindex, nofollow');
-    return guarded;
+    return renewSession(guarded, session, env, site);
   }
 
   const returnTo = safeReturnTo(url.pathname + url.search);
