@@ -31,3 +31,16 @@ Tutorial EN: 1. Open Inventory → Starbucks PG103. 2. Select a unit. 3. Read �
 [Vídeo / Video](https://api.yokup.com/media/fleet/f21a6bf5c07eb5ae.mp4): ADmira Motion, H264/AAC, 1080 × 1920, 15.162313 s. Tres escenas exportadas y verificadas. Guía animada, no grabación de pantalla. / Three exported scenes verified. Animated guide, not a screen recording.
 
 Misión / Mission: DCL-8d385725c93e5609c146afeb · Yokup 2-oct-2026 #68.
+
+
+## Segundo local · Cafebrería / Second locale · Cafebrería
+
+ES: Más allá del piloto Starbucks PG103, Cafebrería publica un mapeo visual→CI en `/inventario/cafebreria/manifest.json` (códigos `CAF-*`, local `cafebreria-xpacio-001`). En `/xpacios/cafebreria/?inventory=1` selecciona una unidad registrada (barra, mesas, librería, pantallas…) para ver la ficha ITIL y 3D. El vínculo a Yokup solo lleva `code`, `lang` y `marca`. Garantía y nº de serie no se copian a la galería pública ni al CSV/JSON exportado; el texto es «Consultar en Yokup con acceso autorizado». Las medidas siguen pendientes de campo. El alta maestra de los códigos CAF-* en Yokup queda pendiente de confirmación de Carlos (`yokup_alta: pending_carlos`).
+
+EN: Beyond the Starbucks PG103 pilot, Cafebrería publishes a visual→CI mapping in `/inventario/cafebreria/manifest.json` (`CAF-*` codes, locale `cafebreria-xpacio-001`). At `/xpacios/cafebreria/?inventory=1` select a registered unit (bar, tables, bookcase, screens…) to open the ITIL and 3D record. The Yokup link forwards only `code`, `lang` and `marca`. Warranty and serial are not copied into the public gallery or CSV/JSON export; the label is “Consult in Yokup with authorised access”. Dimensions remain pending field measurement. Master registration of CAF-* codes in Yokup awaits Carlos confirmation (`yokup_alta: pending_carlos`).
+
+Tutorial ES: 1. Inventario → Cafebrería (o `/xpacios/cafebreria/?inventory=1`). 2. Abre una pieza registrada (p. ej. barra). 3. Lee «Ficha ITIL y 3D» y abre Yokup. 4. Comprueba que PG103 `/inventario/starbucks/` sigue igual.
+
+Tutorial EN: 1. Inventory → Cafebrería (or `/xpacios/cafebreria/?inventory=1`). 2. Open a registered unit (e.g. bar). 3. Read “ITIL and 3D record” and open Yokup. 4. Confirm PG103 `/inventario/starbucks/` is unchanged.
+
+Contrato compartido: `inventario/ci-record.mjs` (Starbucks reexporta desde `inventario/starbucks/ci-record.mjs`).

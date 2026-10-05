@@ -1,0 +1,271 @@
+{
+  "schema": "xpaceos.cafebreria.furniture/1",
+  "location_id": "cafebreria-xpacio-001",
+  "client": "cafebreria",
+  "confirmed_by": "Huang · mapeo visual 2026-10-05",
+  "confirmed_on": "2026-10-05",
+  "yokup_alta": "pending_carlos",
+  "yokup_alta_note_es": "Códigos CAF-* listos para alta en Yokup. Carlos confirma o corrige la lista; hasta entonces Yokup puede no tener ficha maestra.",
+  "yokup_alta_note_en": "CAF-* codes ready for Yokup registration. Carlos confirms or corrects the list; until then Yokup may lack the master record.",
+  "geometry_basis": "Inventario de escena Cafebrería (scene.inventory.json). Medidas de modelo; no verificadas en campo. Garantía y serie solo en Yokup con acceso autorizado.",
+  "privacy": {
+    "public_gallery": "no_warranty_no_serial",
+    "authenticated_store": "/inventario/ requires login on admira.store; /xpacios/cafebreria stays public and must keep warranty/serial redacted"
+  },
+  "units": [
+    {
+      "itil_code": "CAF-BAR-01",
+      "instance_id": "barra",
+      "status": "registered",
+      "name": "Barra frente verde friso + encimera roble",
+      "name_en": "Main bar",
+      "category": "Mobiliario",
+      "asset_number": 901,
+      "reference_id": "CAF-001",
+      "zone": "mostrador",
+      "zone_en": "counter",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 4.8m · fondo 0.75m · alto 1.05m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-MTR-01",
+      "instance_id": "mueble-trasero",
+      "status": "registered",
+      "name": "Mueble trasero nogal",
+      "name_en": "Back cabinet",
+      "category": "Mobiliario",
+      "asset_number": 902,
+      "reference_id": "CAF-002",
+      "zone": "obrador",
+      "zone_en": "back of house",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 4.8m · fondo 0.6m · alto 0.9m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-BVN-01",
+      "instance_id": "barra-ventana",
+      "status": "registered",
+      "name": "Barra de ventana roble",
+      "name_en": "Window ledge",
+      "category": "Mobiliario",
+      "asset_number": 903,
+      "reference_id": "CAF-003",
+      "zone": "fachada",
+      "zone_en": "façade",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 0.45m · fondo 4.2m · alto 1.05m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-MES-01",
+      "instance_id": "mesa-1",
+      "status": "registered",
+      "name": "Mesa redonda Ø70 roble + pie negro · 1",
+      "name_en": "Round table 1",
+      "category": "Mobiliario",
+      "asset_number": 904,
+      "reference_id": "CAF-004",
+      "zone": "sala",
+      "zone_en": "seating",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 0.7m · fondo 0.7m · alto 0.75m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-MES-02",
+      "instance_id": "mesa-2",
+      "status": "registered",
+      "name": "Mesas",
+      "name_en": "Round table 2",
+      "category": "Mobiliario",
+      "asset_number": 904,
+      "reference_id": "CAF-005",
+      "zone": "sala",
+      "zone_en": "seating",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 0.7m · fondo 0.7m · alto 0.75m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-SOF-01",
+      "instance_id": "sofa",
+      "status": "registered",
+      "name": "Sofá terciopelo verde 3 plazas",
+      "name_en": "Green sofa",
+      "category": "Mobiliario",
+      "asset_number": 905,
+      "reference_id": "CAF-006",
+      "zone": "sala",
+      "zone_en": "seating",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 2.0m · fondo 0.85m · alto 0.8m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-MBJ-01",
+      "instance_id": "mesa-baja",
+      "status": "registered",
+      "name": "Mesa baja nogal",
+      "name_en": "Low table",
+      "category": "Mobiliario",
+      "asset_number": 906,
+      "reference_id": "CAF-007",
+      "zone": "sala",
+      "zone_en": "seating",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 1.1m · fondo 0.6m · alto 0.42m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-LIB-01",
+      "instance_id": "estanteria-libros",
+      "status": "registered",
+      "name": "Estantería de libros nogal · cápsulas Blinkist",
+      "name_en": "Interactive bookcase",
+      "category": "Mobiliario",
+      "asset_number": 51,
+      "reference_id": "CAF-008",
+      "zone": "pared sala",
+      "zone_en": "seating wall",
+      "model3d": "/inventario/assets/catalog/51/best.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 1.6m · fondo 0.28m · alto 1.1m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-PZD-01",
+      "instance_id": "pizarra-1",
+      "status": "registered",
+      "name": "Pizarra digital 49\" · cafés",
+      "name_en": "Digital board · coffee",
+      "category": "Pantallas",
+      "asset_number": 907,
+      "reference_id": "CAF-009",
+      "zone": "pared menú",
+      "zone_en": "menu wall",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 1.09m · fondo 0.05m · alto 0.62m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-PZD-02",
+      "instance_id": "pizarra-2",
+      "status": "registered",
+      "name": "Pizarra digital 49\" · bollería · vertical",
+      "name_en": "Digital board · pastry",
+      "category": "Pantallas",
+      "asset_number": 907,
+      "reference_id": "CAF-010",
+      "zone": "pared menú",
+      "zone_en": "menu wall",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 0.62m · fondo 0.05m · alto 1.09m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-PRC-01",
+      "instance_id": "pantalla-recogida",
+      "status": "registered",
+      "name": "Pantalla recogida de pedidos 43\"",
+      "name_en": "Order pickup screen",
+      "category": "Pantallas",
+      "asset_number": 908,
+      "reference_id": "CAF-011",
+      "zone": "recogida",
+      "zone_en": "pickup",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false,
+        "label": "ancho 0.96m · fondo 0.05m · alto 0.55m",
+        "source": "scene.inventory.json · sin medición de campo"
+      }
+    },
+    {
+      "itil_code": "CAF-HIL-01",
+      "instance_id": "S1",
+      "status": "registered",
+      "name": "Altavoz techo · hilo musical",
+      "name_en": "Background music speaker",
+      "category": "IoT",
+      "asset_number": 909,
+      "reference_id": "CAF-012",
+      "zone": "techo",
+      "zone_en": "ceiling",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false
+      }
+    },
+    {
+      "itil_code": "CAF-CAM-01",
+      "instance_id": "camara-1",
+      "status": "registered",
+      "name": "Cámara",
+      "name_en": "Camera",
+      "category": "IoT",
+      "asset_number": 910,
+      "reference_id": "CAF-013",
+      "zone": "entrada",
+      "zone_en": "entrance",
+      "model3d": "/inventario/cafebreria/scene.glb",
+      "measurements": {
+        "verified": false
+      }
+    }
+  ],
+  "record_history": [
+    {
+      "date": "2026-10-05",
+      "kind": "visual_link",
+      "codes": [
+        "CAF-BAR-01",
+        "CAF-MTR-01",
+        "CAF-BVN-01",
+        "CAF-MES-01",
+        "CAF-MES-02",
+        "CAF-SOF-01",
+        "CAF-MBJ-01",
+        "CAF-LIB-01",
+        "CAF-PZD-01",
+        "CAF-PZD-02",
+        "CAF-PRC-01",
+        "CAF-HIL-01",
+        "CAF-CAM-01"
+      ],
+      "description": "Primer mapeo visual→CI de Cafebrería más allá del piloto Starbucks PG103. Sin copiar garantía ni serie a la galería pública.",
+      "description_en": "First Cafebrería visual→CI mapping beyond the Starbucks PG103 pilot. Warranty and serial stay out of the public gallery.",
+      "source": "https://www.xpaceos.com/xpacios/cafebreria/?inventory=1"
+    }
+  ]
+}

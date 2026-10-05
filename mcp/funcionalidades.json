@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "title": "Catálogo funcional del Xpacio · Good / Better / Best",
-  "updated_at": "2026-10-02",
+  "updated_at": "2026-10-05",
   "audit": {
     "basis": "Revisión estática del código del gemelo; inventario MCP contrastado con tools/list y resources/list públicos. No se ejecutaron operaciones físicas, envíos, compras ni generación de pago.",
     "source_commit": "a7b8d62eacfcbb166d2ddc1e3a6758bec0fdc178",
@@ -2777,8 +2777,8 @@
     "new_remote_tools": false
   },
   "itil_3d_record": {
-    "es": "En Inventario → Starbucks PG103, selecciona una unidad: «Ficha ITIL y 3D» reúne código, instancia, modelo compartido, zona observada y medidas pendientes. Abre el histórico del vínculo visual y la ficha maestra de Yokup con sus permisos. En Experto: /ficha PDG103-MES-02; /marca y /marca off conservan el cambio de aspecto. /avatarDigital de Woz sigue pendiente de publicación. Los candidatos no se dan de alta y la ficha no acredita telemetría real.",
-    "en": "In Inventory → Starbucks PG103 select a unit: “ITIL and 3D record” shows code, instance, shared model, photo-observed zone and pending measurements. Open visual-link history and the Yokup master record with its existing permissions. In Expert: /record PDG103-MES-02; /marca and /marca off retain appearance changes. Woz’s /avatarDigital is pending publication. Candidates are not registered automatically; this record does not establish real telemetry.",
+    "es": "En Inventario → Starbucks PG103, selecciona una unidad: «Ficha ITIL y 3D» reúne código, instancia, modelo compartido, zona observada y medidas pendientes. Segundo local: Cafebrería (códigos CAF-* en /xpacios/cafebreria/?inventory=1); la galería pública no copia garantía ni serie. Abre Yokup con code/lang/marca. Alta Yokup de CAF-* pendiente de Carlos. /avatarDigital de Woz sigue pendiente.",
+    "en": "In Inventory → Starbucks PG103 select a unit: “ITIL and 3D record” shows code, instance, shared model, photo-observed zone and pending measurements. Second locale: Cafebrería (CAF-* codes at /xpacios/cafebreria/?inventory=1); public gallery never copies warranty or serial. Yokup links carry code/lang/marca only. CAF-* Yokup registration awaits Carlos. Woz’s /avatarDigital remains pending.",
     "docs": "https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md",
     "commands": [
       "/ficha PDG103-MES-02",
@@ -2786,7 +2786,13 @@
     ],
     "new_remote_tools": false,
     "master": "Yokup",
-    "history": "Visual link events; lifecycle audit remains in Yokup"
+    "history": "Visual link events; lifecycle audit remains in Yokup",
+    "locales": [
+      "alsea-sbux-021",
+      "cafebreria-xpacio-001"
+    ],
+    "privacy": "no_warranty_no_serial_in_public_gallery",
+    "shared_module": "/inventario/ci-record.mjs"
   },
   "surface_editor": {
     "es": "Inventario → Starbucks PG103 → selecciona una unidad → Editar, en la esquina del modelo. Elige una superficie en la lista o tocando el modelo; cambia el color, importa PNG/JPG/WebP (hasta 20 MB, optimizados a 1024 px) o usa Cuadros, Rayas o Terrazo. Ajusta repetición, rotación, rugosidad y metalizado; compara con el original y usa Deshacer/Rehacer. Aplicar al Xpacio guarda una versión por local + instancia + CI y actualiza sus superficies en Better/Best, también en otra pestaña del mismo navegador y dominio. Histórico permite recuperar un acabado y aplicarlo como nueva versión. Exportar copia JSON conserva imágenes e histórico; importar recupera el acabado actual como una nueva versión, sin reemplazar el histórico local. Guardado local, sin sincronización entre usuarios ni escritura en el histórico patrimonial de Yokup. Good, Matrix y los archivos GLB/Blender originales conservan su vista. El botellero no está colocado en la escena de referencia; editarlo no añade una ubicación. /marca y el shell Experto se conservan; /avatarDigital continúa a cargo de Woz.",
