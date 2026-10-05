@@ -2007,7 +2007,19 @@
       "video"
     ],
     "id": "stable Stock asset id",
-    "physicalBroadcast": false
+    "physicalBroadcast": false,
+    "previewDrag": {
+      "es": "Pasa sobre el previo de imagen o vídeo: el cursor se convierte en una mano. Mantén pulsado y arrastra; una miniatura del contenido sigue al ratón hasta soltarla en la pantalla o playlist elegida, sin botón adicional. Los controles de vídeo siguen disponibles en la franja inferior. Escape o soltar fuera cancela el arrastre. También puedes arrastrar una fila de la playlist.",
+      "en": "Hover over an image or video preview: the cursor becomes a hand. Hold and drag; a content thumbnail follows the pointer until you drop it onto the chosen screen or playlist, without an extra button. Video controls remain available along the bottom. Escape or dropping outside cancels the drag. You can also drag a playlist row.",
+      "cursor": "grab / grabbing",
+      "feedback": "image or current video frame follows pointer",
+      "cancel": [
+        "Escape",
+        "outside drop",
+        "pointercancel",
+        "blur"
+      ]
+    }
   },
   "starbucks_ipad": {
     "guide": "https://www.admira.store/admira-xp/docs/starbucks-ipad.md",

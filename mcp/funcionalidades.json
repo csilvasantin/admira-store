@@ -175,7 +175,19 @@
       "pixeriaScreenDrop": {
         "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
         "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
-        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
+        "previewDrag": {
+          "es": "Pasa sobre el previo de imagen o vídeo: el cursor se convierte en una mano. Mantén pulsado y arrastra; una miniatura del contenido sigue al ratón hasta soltarla en la pantalla o playlist elegida, sin botón adicional. Los controles de vídeo siguen disponibles en la franja inferior. Escape o soltar fuera cancela el arrastre. También puedes arrastrar una fila de la playlist.",
+          "en": "Hover over an image or video preview: the cursor becomes a hand. Hold and drag; a content thumbnail follows the pointer until you drop it onto the chosen screen or playlist, without an extra button. Video controls remain available along the bottom. Escape or dropping outside cancels the drag. You can also drag a playlist row.",
+          "cursor": "grab / grabbing",
+          "feedback": "image or current video frame follows pointer",
+          "cancel": [
+            "Escape",
+            "outside drop",
+            "pointercancel",
+            "blur"
+          ]
+        }
       }
     },
     {
@@ -255,7 +267,19 @@
       "pixeriaScreenDrop": {
         "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
         "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
-        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
+        "previewDrag": {
+          "es": "Pasa sobre el previo de imagen o vídeo: el cursor se convierte en una mano. Mantén pulsado y arrastra; una miniatura del contenido sigue al ratón hasta soltarla en la pantalla o playlist elegida, sin botón adicional. Los controles de vídeo siguen disponibles en la franja inferior. Escape o soltar fuera cancela el arrastre. También puedes arrastrar una fila de la playlist.",
+          "en": "Hover over an image or video preview: the cursor becomes a hand. Hold and drag; a content thumbnail follows the pointer until you drop it onto the chosen screen or playlist, without an extra button. Video controls remain available along the bottom. Escape or dropping outside cancels the drag. You can also drag a playlist row.",
+          "cursor": "grab / grabbing",
+          "feedback": "image or current video frame follows pointer",
+          "cancel": [
+            "Escape",
+            "outside drop",
+            "pointercancel",
+            "blur"
+          ]
+        }
       }
     },
     {
@@ -525,7 +549,19 @@
       "pixeriaScreenDrop": {
         "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
         "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
-        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
+        "previewDrag": {
+          "es": "Pasa sobre el previo de imagen o vídeo: el cursor se convierte en una mano. Mantén pulsado y arrastra; una miniatura del contenido sigue al ratón hasta soltarla en la pantalla o playlist elegida, sin botón adicional. Los controles de vídeo siguen disponibles en la franja inferior. Escape o soltar fuera cancela el arrastre. También puedes arrastrar una fila de la playlist.",
+          "en": "Hover over an image or video preview: the cursor becomes a hand. Hold and drag; a content thumbnail follows the pointer until you drop it onto the chosen screen or playlist, without an extra button. Video controls remain available along the bottom. Escape or dropping outside cancels the drag. You can also drag a playlist row.",
+          "cursor": "grab / grabbing",
+          "feedback": "image or current video frame follows pointer",
+          "cancel": [
+            "Escape",
+            "outside drop",
+            "pointercancel",
+            "blur"
+          ]
+        }
       }
     },
     {
@@ -1633,7 +1669,19 @@
       "pixeriaScreenDrop": {
         "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
         "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
-        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments."
+        "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
+        "previewDrag": {
+          "es": "Pasa sobre el previo de imagen o vídeo: el cursor se convierte en una mano. Mantén pulsado y arrastra; una miniatura del contenido sigue al ratón hasta soltarla en la pantalla o playlist elegida, sin botón adicional. Los controles de vídeo siguen disponibles en la franja inferior. Escape o soltar fuera cancela el arrastre. También puedes arrastrar una fila de la playlist.",
+          "en": "Hover over an image or video preview: the cursor becomes a hand. Hold and drag; a content thumbnail follows the pointer until you drop it onto the chosen screen or playlist, without an extra button. Video controls remain available along the bottom. Escape or dropping outside cancels the drag. You can also drag a playlist row.",
+          "cursor": "grab / grabbing",
+          "feedback": "image or current video frame follows pointer",
+          "cancel": [
+            "Escape",
+            "outside drop",
+            "pointercancel",
+            "blur"
+          ]
+        }
       }
     },
     {
@@ -4132,7 +4180,19 @@
     "es": "Opciones → Hilo Musical, Imagen o Vídeo conecta con la biblioteca de Pixeria: selector de hashtags reales, número Stock o título y desplegable por tipo. Importar prepara el previo sin emitir. Arrastra una imagen o vídeo desde el previo o una fila de playlist a la cara visible de una pantalla en Good, Better, Best o Matrix: sólo ese destino muestra el contenido, sin modificar su playlist ni las otras pantallas. Recargar pantalla restaura su programación. En Matrix funciona con Layout cerrado y respeta Power apagado. Arrastrar al menú Playlist actual sólo añade sin reproducir. La música se añade o se lanza al hilo musical. Crear música, imagen y vídeo está en Experto → Crear contenidos; música abre el creador existente de Pixeria. Se conservan los IDs, el historial CLI y las preferencias. Se utiliza el archivo maestro de Stock sin reducir su calidad; la fidelidad visual depende de la vista. El arrastre es local al gemelo y no confirma emisión física ni modifica asignaciones MCP compartidas.",
     "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
     "status": "implemented",
-    "scope": "local virtual screen preview; authenticated MCP changes remain explicit"
+    "scope": "local virtual screen preview; authenticated MCP changes remain explicit",
+    "previewDrag": {
+      "es": "Pasa sobre el previo de imagen o vídeo: el cursor se convierte en una mano. Mantén pulsado y arrastra; una miniatura del contenido sigue al ratón hasta soltarla en la pantalla o playlist elegida, sin botón adicional. Los controles de vídeo siguen disponibles en la franja inferior. Escape o soltar fuera cancela el arrastre. También puedes arrastrar una fila de la playlist.",
+      "en": "Hover over an image or video preview: the cursor becomes a hand. Hold and drag; a content thumbnail follows the pointer until you drop it onto the chosen screen or playlist, without an extra button. Video controls remain available along the bottom. Escape or dropping outside cancels the drag. You can also drag a playlist row.",
+      "cursor": "grab / grabbing",
+      "feedback": "image or current video frame follows pointer",
+      "cancel": [
+        "Escape",
+        "outside drop",
+        "pointercancel",
+        "blur"
+      ]
+    }
   },
   "starbucks_ipad": {
     "guide": "https://www.admira.store/admira-xp/docs/starbucks-ipad.md",

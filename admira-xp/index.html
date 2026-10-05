@@ -972,6 +972,14 @@
   .pixeria-library p{white-space:normal;font:11px/1.4 monospace;margin:0;color:#9dadbc}
   .media-ready button[hidden],.pixeria-library button[hidden]{display:none!important}
   .media-ready button,.options-playlist button{touch-action:manipulation}
+  .media-preview-frame{position:relative;min-width:0}.media-preview-frame>img,.media-preview-frame>video{display:block}
+  .media-preview-grab{position:absolute;inset:0;cursor:grab;touch-action:none;border-radius:3px}
+  .media-preview-video .media-preview-grab{bottom:40px}
+  .media-preview-grab:hover,.media-preview-grab:focus-visible,.media-preview-grab.media-picked{outline:2px solid #86ffe6;outline-offset:-2px;background:#86ffe60b}
+  .media-drag-source{cursor:grab}.media-dragging,.media-dragging *{cursor:grabbing!important}
+  .media-drag-ghost{position:fixed;z-index:2147483647;width:160px;max-width:32vw;padding:4px;border:2px solid #a5b7b5;border-radius:6px;background:#062024f2;box-shadow:0 8px 24px #0009;pointer-events:none;user-select:none;overflow:hidden}
+  .media-drag-ghost img,.media-drag-ghost canvas{display:block;width:100%;max-height:105px;object-fit:contain;background:#020c0e}.media-drag-ghost>span{display:block;padding:15px;text-align:center;font:32px system-ui;color:#dcfff5}
+  .media-drag-ghost strong{display:block;margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:11px/1.4 system-ui;color:#e9fff8}.media-drag-ghost.can-drop{border-color:#86ffe6}
   #announcementLogin[hidden],#imagePromptLogin[hidden],#videoPromptLogin[hidden],[data-media-stock][hidden],#videoPreview[hidden]{display:none!important}
   .quad-left #announcementVoice{width:100%;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:7px;font:12px monospace}
   .quad-left #announcementVoiceLabel,.quad-left #announcementVoiceNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
@@ -1075,7 +1083,7 @@
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
 <script src="scripts/screen-media.js?v=20261005-pixeria-1"></script>
-<script src="scripts/media-options.js?v=20261005-pixeria-1"></script>
+<script src="scripts/media-options.js?v=20261005-preview-grab-2"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261005-pixeria-1"></script>
 <script src="scripts/media-stock.js?v=20261005-preview-1"></script>
 <script src="scripts/announcements.js?v=20261005-stock-3"></script>
@@ -1496,7 +1504,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261005-2339-matrix-quiet"></script>
+<script src="xtanco-version.js?v=20261005-2353-preview-grab"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
