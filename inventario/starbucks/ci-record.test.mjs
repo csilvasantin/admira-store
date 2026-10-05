@@ -4,10 +4,10 @@ import {readFileSync} from 'node:fs';
 import {recordFor,recordURL,recordFields} from './ci-record.mjs';
 const read = name => JSON.parse(readFileSync(new URL(name, import.meta.url),'utf8'));
 const manifest=read('./manifest.json'), references=read('./references.json');
-test('eleven distinct CIs retain seven shared models and all history entries',()=>{
+test('twelve distinct CIs retain eight shared models and all history entries',()=>{
  const records=references.items.filter(r=>r.status==='registered').map(r=>recordFor(manifest,r));
- assert.equal(records.length,11); assert.equal(new Set(records.map(r=>r.code)).size,11); assert.equal(new Set(records.map(r=>r.asset)).size,7);
- for(const r of records){assert.equal(r.history[0].kind,'identity_confirmation');assert.equal(r.history.length,2);assert.equal(r.dimensions,null);assert.equal(r.location,'alsea-sbux-021');}
+ assert.equal(records.length,12); assert.equal(new Set(records.map(r=>r.code)).size,12); assert.equal(new Set(records.map(r=>r.asset)).size,8);
+ for(const r of records.filter(r=>r.lifecycle!=='virtual_planned')){assert.equal(r.history[0].kind,'identity_confirmation');assert.equal(r.history.length,2);assert.equal(r.dimensions,null);assert.equal(r.location,'alsea-sbux-021');}
 });
 test('unregistered observations cannot become CIs or link to a private record',()=>{
  for(const r of references.items.filter(r=>r.status!=='registered')) assert.equal(recordFor(manifest,r),null);

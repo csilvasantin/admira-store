@@ -5,7 +5,7 @@ export function fromPixeria(item){
  return {id:'pixeria:'+item.id,type:'custom',name:String(item.title||'Mueble Pixeria').slice(0,120),category:'Pixeria',mount:'floor',source:'Pixeria',views:/4 caras/.test(item.comment||'')?4:1,img:safeAsset(item.url),fp:Array.isArray(item.fp)?item.fp.slice(0,2).map(v=>Math.max(.1,Math.min(10,Number(v)||1))):[1,1],ph:Math.max(12,Math.min(200,Number(item.ph)||46))};
 }
 // Starbucks instance IDs belong to their registered models, independently of legacy scene types.
-const registeredInstances={"sb-backbar":"native:starbucksBackbar","sb-pos":"native:starbucksCounter","sb-pastry":"native:starbucksDisplay","sb-mugs":"native:starbucksShelves","sb-table-a":"native:starbucksTable","sb-table-b":"native:starbucksTable","sb-chair-1":"native:starbucksChair","sb-chair-2":"native:starbucksChair","sb-chair-3":"native:starbucksChair","sb-chair-4":"native:starbucksChair","sb-water-rack":"native:starbucksWaterRack"};
+const registeredInstances={"sb-backbar":"native:starbucksBackbar","sb-pos":"native:starbucksCounter","sb-pastry":"native:starbucksDisplay","sb-mugs":"native:starbucksShelves","sb-table-a":"native:starbucksTable","sb-table-b":"native:starbucksTable","sb-chair-1":"native:starbucksChair","sb-chair-2":"native:starbucksChair","sb-chair-3":"native:starbucksChair","sb-chair-4":"native:starbucksChair","sb-water-rack":"native:starbucksWaterRack","starbucks-ipad-01":"native:ipadLandscape"};
 export function assetForInstance(item){return item.inventoryAssetId||(Object.hasOwn(registeredInstances,item.id)?registeredInstances[item.id]:null)||(item.type==='custom'?'pixeria:'+(item.sourceAssetId||/\/stock\/asset\/([^/?]+)/.exec(item.modelUrl||item.img||'')?.[1]||item.id):'native:'+item.type);}
 export function instancesFor(asset,layout){return layout.filter(i=>assetForInstance(i)===asset.id);}
 // Numbers belong to asset identities, never to a filtered or sorted array index.
@@ -18,7 +18,7 @@ export function numberedCatalog(native,items,registry){
 export async function loadCatalog(fetcher=fetch){
  const files=['catalog.json','pixeria-cache.json','registry.json'];
  const [data,stock,registry]=await Promise.all(files.map(async file=>{
-  const response=await fetcher(new URL(file,import.meta.url));
+  const response=await fetcher(new URL(file,import.meta.url),{cache:"no-store"});
   if(!response.ok)throw Error('No se pudo cargar el catálogo');return response.json();
  }));
  return {data,stock,registry,assets:numberedCatalog(data.native,stock.items,registry)};

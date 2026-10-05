@@ -20,11 +20,11 @@ const input={cols:14,rows:8,wallHeight:3.25,inside:2,entries:17,
 };
 const meshes=model=>{const result=[];model.scene.traverse(o=>{if(o.isMesh)result.push(o);});return result;};
 
-test('Better and Best keep seven distinct Starbucks drop identities and restore each screen texture',()=>{
+test('Better and Best keep eight distinct Starbucks drop identities and restore each screen texture',()=>{
  for(const quality of ['better','best']){
   const raw={...input,venue:'alsea-sbux-021',layout:globalThis.XpaceStarbucks.layout(),actors:[]},model=createLifeScene(raw,{canvasFactory,assetQuality:quality});
-  const screens=meshes(model).filter(o=>o.userData.previewOnly);assert.equal(screens.length,7);assert.equal(new Set(screens.map(o=>o.userData.surfaceId)).size,7);
-  assert.equal(meshes(model).filter(o=>o.userData.screenTarget).length,7);
+  const screens=meshes(model).filter(o=>o.userData.previewOnly);assert.equal(screens.length,8);assert.equal(new Set(screens.map(o=>o.userData.surfaceId)).size,8);
+  assert.equal(meshes(model).filter(o=>o.userData.screenTarget).length,8);
   const chosen=screens.find(o=>o.userData.surfaceId==='starbucks-wall-03'),original=chosen.material;
   model.refreshMedia(null,null,(ctx,w,h,id)=>id==='starbucks-wall-03');assert.equal(chosen.visible,true);assert.notEqual(chosen.material,original);assert.equal(screens.filter(o=>o.visible).length,1);
   model.refreshMedia(null,null,()=>false);assert.equal(chosen.visible,false);assert.equal(chosen.material,original);assert.equal(JSON.stringify(raw.layout),JSON.stringify(globalThis.XpaceStarbucks.layout()));model.dispose();

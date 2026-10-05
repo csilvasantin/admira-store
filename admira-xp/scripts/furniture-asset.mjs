@@ -1,10 +1,10 @@
 import {GLTFLoader} from './vendor/GLTFLoader.mjs';
 import {cloneCounter,counterURL} from './counter-asset.mjs';
-import {assetForInstance} from '../../inventario/model.mjs?v=scope-20261004-1';
+import {assetForInstance} from '../../inventario/model.mjs?v=ipad-20261005-1';
 const cache=new Map();let registryPromise;
 export const inventoryIdFor=assetForInstance;
 export function furnitureURL(number,tier='best',extension='glb'){
- if(!Number.isSafeInteger(number)||number<1||number>51||!['good','better','best'].includes(tier)||!['glb','blend'].includes(extension))throw Error('Pieza o perfil no válido');
+ if(!Number.isSafeInteger(number)||number<1||number>52||!['good','better','best'].includes(tier)||!['glb','blend'].includes(extension))throw Error('Pieza o perfil no válido');
  if(number===1)return counterURL(tier,extension);
  const url=new URL(`../../inventario/assets/catalog/${String(number).padStart(2,'0')}/${tier}.${extension}`,import.meta.url);
  if(number===2&&tier==='best')url.searchParams.set('v','shelves-parts-20261002-3');
@@ -18,7 +18,7 @@ export async function cloneFurniture(number,tier='best'){
 }
 export async function loadFurniture(item,tier='best'){
  if(item.source==='PixerIA')return import('./pixeria-furniture.mjs?v=distribuir-3').then(m=>m.loadPixeriaFurniture(item));
- registryPromise ||= fetch(new URL('../../inventario/registry.json',import.meta.url)).then(r=>{if(!r.ok)throw Error('Catálogo no disponible');return r.json();}).catch(e=>{registryPromise=null;throw e;});
+ registryPromise ||= fetch(new URL('../../inventario/registry.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo no disponible');return r.json();}).catch(e=>{registryPromise=null;throw e;});
  const registry=await registryPromise,number=registry.numbers[assetForInstance(item)];
  if(!number)return null;
  const root=await cloneFurniture(number,tier);if(number===51){const {hydrateLibrary}=await import('../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1');hydrateLibrary(root);}return root;

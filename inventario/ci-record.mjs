@@ -30,11 +30,12 @@ function recordFromUnit(manifest, unit, observation = {}) {
     instance: unit.instance_id,
     asset: unit.asset_number,
     location: manifest.location_id,
-    confirmed_on: manifest.confirmed_on,
+    confirmed_on: unit.confirmed_on || manifest.confirmed_on,
+    lifecycle: unit.lifecycle || "registered",
     observed_zone: observation.zone || unit.zone || '',
     observed_zone_en: observation.zone_en || unit.zone_en || '',
     dimensions: unit.measurements?.verified === true ? unit.measurements : null,
-    geometry_basis: manifest.geometry_basis,
+    geometry_basis: unit.geometry_basis || manifest.geometry_basis,
     history: (manifest.record_history || []).filter(event => event.codes.includes(unit.itil_code))
   };
 }
@@ -54,6 +55,7 @@ export function recordFields(record, en = false) {
   const protectedData = en ? 'Consult in Yokup with authorised access' : 'Consultar en Yokup con acceso autorizado';
   return [
     row('Código ITIL', 'ITIL code', record.code),
+    ...(record.lifecycle==='virtual_planned'?[row('Estado','Status',en?'Virtual planned device; physical installation pending':'Dispositivo virtual previsto; instalación física pendiente')]:[]),
     row('Instancia 3D', '3D instance', record.instance),
     row('Modelo compartido', 'Shared model', String(record.asset)),
     row('Xpacio', 'Space', record.location),

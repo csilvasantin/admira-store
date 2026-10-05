@@ -1,5 +1,5 @@
 const API='https://mcp.admira.store/playlists',KEY='xpaceos.playlist-owners.v1';
-export const playlistReference=id=>id==='wall'?'#playliststarbucks-wall':id==='tpv'?'#playliststarbucks-tpv':'#playlist'+id.replace(/^playlist-/,'');
+export const playlistReference=id=>id==='wall'?'#playliststarbucks-wall':id==='ipad'?'#playliststarbucks-ipad':id==='tpv'?'#playliststarbucks-tpv':'#playlist'+id.replace(/^playlist-/,'');
 const uuid=id=>/^playlist-[0-9a-f-]{36}$/.test(id)?id.slice(9):null;
 export function createSharedPlaylists(){
  let owners={};try{owners=JSON.parse(localStorage.getItem(KEY))||{};}catch{}

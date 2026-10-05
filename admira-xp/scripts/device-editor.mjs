@@ -1,8 +1,8 @@
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
-import {createSharedPlaylists,playlistReference} from './shared-playlists.mjs?v=registry-1';
+import {createSharedPlaylists,playlistReference} from './shared-playlists.mjs?v=ipad-20261005-1';
 import {mountPlaylistReorder} from './playlist-reorder.mjs?v=drop-1';
 import {mountPixeriaPicker} from './pixeria-picker.mjs?v=drop-1';
-import {DEVICE_IDS,emptyDeviceLayout,validateDeviceLayout,changeDeviceLayout,assignedPlaylist} from './device-layout.mjs?v=options-preview-1';
+import {DEVICE_IDS,emptyDeviceLayout,validateDeviceLayout,changeDeviceLayout,assignedPlaylist} from './device-layout.mjs?v=ipad-20261005-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 export const DEVICE_STORAGE='xpaceos.starbucks.device-layout.v1';
 export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChange,onPlay,onPreview,onReload,onOpen=()=>{},getPlayback=()=>[]}){

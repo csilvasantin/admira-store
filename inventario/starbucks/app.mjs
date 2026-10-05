@@ -1,14 +1,14 @@
 import {mountSurfaceEditor} from '../surface-editor.mjs?v=surfaces-1';
-import {recordFor, recordURL, recordFields} from './ci-record.mjs?v=ci-record-1';
+import {recordFor, recordURL, recordFields} from './ci-record.mjs?v=ipad-20261005-1';
 import {mountCounterStage} from '../counter-stage.mjs?v=windows-menu-1';
-import {indexReferences, referenceLabel, referencePhotoURL, selectReference, selectionURL, nameFor} from './reference-model.mjs?v=photo-references-1';
+import {indexReferences, referenceLabel, referencePhotoURL, selectReference, selectionURL, nameFor} from './reference-model.mjs?v=ipad-20261005-1';
 
 const params = new URLSearchParams(location.search), language = params.get('lang') === 'en' ? 'en' : 'es', en = language === 'en';
 const $ = selector => document.querySelector(selector);
 const copy = en ? {
   inventory:'3D inventory', references:'Real references', units:'Registered units', refs:'Numbered references', all:'All references',
   registered:'In inventory', candidate:'To review', product_reference:'Product reference', photo:'Real photo', unavailable:'Photo unavailable',
-  element:'Photograph of this element', type:'Shared photograph of this furniture/product type; it does not identify an individual unit', context:'Context photograph; other elements also appear',
+  position_reference:'Photograph of the previous sign, reference for the planned virtual device', element:'Photograph of this element', type:'Shared photograph of this furniture/product type; it does not identify an individual unit', context:'Context photograph; other elements also appear',
   ref:'Ref.', asset:'3D model', code:'Inventory', showModel:'View 3D model', photoLink:'Open real photo ↗', permalink:'Link to this reference',
   zone:'Zone', quantity:'Visible quantity', basis:'Reference basis', source:'Source', confidence:'Observation confidence',
   candidateNote:'Reference to review and choose the next model. It has no inventory registration or 3D model yet.',
@@ -17,7 +17,7 @@ const copy = en ? {
 } : {
   inventory:'Inventario 3D', references:'Referencias reales', units:'Unidades registradas', refs:'Referencias numeradas', all:'Todas las referencias',
   registered:'En inventario', candidate:'Por revisar', product_reference:'Producto de referencia', photo:'Foto real', unavailable:'Foto no disponible',
-  element:'Fotografía de este elemento', type:'Foto compartida del tipo de mueble/producto; no identifica una unidad individual', context:'Foto de contexto; también aparecen otros elementos',
+  position_reference:'Foto del cartel anterior, referencia para el dispositivo virtual previsto', element:'Fotografía de este elemento', type:'Foto compartida del tipo de mueble/producto; no identifica una unidad individual', context:'Foto de contexto; también aparecen otros elementos',
   ref:'Ref.', asset:'Modelo 3D', code:'Inventario', showModel:'Ver modelo 3D', photoLink:'Abrir foto real ↗', permalink:'Enlace a esta referencia',
   zone:'Zona', quantity:'Cantidad visible', basis:'Base de la referencia', source:'Fuente', confidence:'Confianza de la observación',
   candidateNote:'Referencia para revisar y elegir el siguiente modelo. Aún sin alta de inventario ni modelo 3D.',
@@ -100,7 +100,7 @@ function showReferenceDetails(reference, unit) {
   for (const selector of ['[data-glb]', '[data-blend]', '[data-bottle-glb]', '[data-bottle-blend]']) $(selector).removeAttribute('href');
   if (unit) { $('[data-glb]').href = unit.model3d; $('[data-blend]').href = unit.master; }
   const filling = unit?.visual_filling;
-  $('#unit-basis').textContent = filling ? (en ? 'Photo/360 interpretation with nominal dimensions. The 19 editable bottles form a visual composition; actual stock is unknown. Embedded PBR textures; approximate label.' : 'Interpretación de foto/360 con dimensiones nominales. Las 19 botellas editables forman una composición visual; las existencias reales son desconocidas. Texturas PBR embebidas y etiqueta aproximada.') : '';
+  $('#unit-basis').textContent = unit?.lifecycle==='virtual_planned' ? (en?'Virtual landscape iPad; the photograph identifies the previous sign position. Physical installation and measurements pending.':'iPad horizontal virtual; la foto identifica la posición del cartel anterior. Instalación física y medidas pendientes.') : filling ? (en ? 'Photo/360 interpretation with nominal dimensions. The 19 editable bottles form a visual composition; actual stock is unknown. Embedded PBR textures; approximate label.' : 'Interpretación de foto/360 con dimensiones nominales. Las 19 botellas editables forman una composición visual; las existencias reales son desconocidas. Texturas PBR embebidas y etiqueta aproximada.') : '';
   for (const [selector, url] of [['[data-bottle-glb]', filling?.model3d], ['[data-bottle-blend]', filling?.master]]) { const link = $(selector); link.hidden = !url; if (url) link.href = url; }
   return show3d;
 }

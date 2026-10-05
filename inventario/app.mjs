@@ -1,11 +1,11 @@
 import {inventoryContext,inventoryURL,twinURL,scopedAssets,scopedInstances} from './context.mjs?v=scope-20261004-1';
 import {preview} from './viewer.mjs?v=windows-menu-1';
 import {mountCounterStage} from './counter-stage.mjs?v=windows-menu-1';
-import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=windows-menu-1';
+import {furnitureURL} from '../admira-xp/scripts/furniture-asset.mjs?v=ipad-20261005-1';
 import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
 import {pixelPreview} from './finish-rendering.mjs?v=shelf-products-1';
-import {referenceLabel,referencePhotoURL} from './starbucks/reference-model.mjs?v=photo-references-1';
-import {loadComponents,componentsFor,componentLabel,breakdownURL} from './breakdown-model.mjs?v=components-20261002-1';
+import {referenceLabel,referencePhotoURL} from './starbucks/reference-model.mjs?v=ipad-20261005-1';
+import {loadComponents,componentsFor,componentLabel,breakdownURL} from './breakdown-model.mjs?v=ipad-20261005-1';
 import {loadShelfParts} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from './shelf-product-panel.mjs?v=shelf-products-1';
 let disposePilot,stageQueue=Promise.resolve(),inspectionRevision=0,activeCamera,activeAssetNumber;
@@ -29,7 +29,7 @@ function inspectAsset(asset){
  });return stageQueue;
 }
 window.addEventListener('pagehide',()=>{disposePilot?.();for(const dispose of pixelPreviews.values())dispose();pixelPreviews.clear();});
-import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=scope-20261004-1';
+import {STOCK_URL,numberedCatalog,loadCatalog,instancesFor} from './model.mjs?v=ipad-20261005-1';
 const $=s=>document.querySelector(s),store=window.XpaceInventory,tiers=['good','better','best'];
 const context=inventoryContext(location.href),en=context.lang==='en',tr=(es,english)=>en?english:es;
 let data,stock,registry,allAssets=[],assets=[],ownedSeed=[],deviceRecords=[],category='Todas',selected=null,angle=0,space=context.space,renderRevision=0;
@@ -141,8 +141,8 @@ try{
  allAssets=catalog.assets;
  if(context.valid&&space==='starbucks_pg103'){
   for(const unit of photos?.units||[]){const asset=allAssets.find(a=>a.number===unit.asset_number);if(!asset)continue;ownership.set(unit.instance_id,asset.id);ownedSeed.push({id:unit.instance_id,type:asset.type,inventoryAssetId:asset.id,label:unit.name,referenceOnly:true});}
-  const [{STARBUCKS_WALL_MAPPING},{STARBUCKS_TPV_MAPPING}]=await Promise.all([import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs')]);
-  deviceRecords=[...STARBUCKS_WALL_MAPPING.players,...STARBUCKS_TPV_MAPPING.players].map(device=>({id:device.id,name:device.name}));
+  const [{STARBUCKS_WALL_MAPPING},{STARBUCKS_TPV_MAPPING},{STARBUCKS_IPAD_MAPPING}]=await Promise.all([import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs'),import('../admira-xp/scripts/starbucks-ipad.mjs')]);
+  deviceRecords=[...STARBUCKS_WALL_MAPPING.players,...STARBUCKS_TPV_MAPPING.players,...STARBUCKS_IPAD_MAPPING.players].map(device=>({id:device.id,name:device.name}));
   deviceRecords.push({id:'starbucks-alsea-paseo-de-gracia',name:tr('Altavoz · hilo musical','Speaker · background music')});
  }else if(context.valid&&space==='cafebreria'){
   ownedSeed=[{id:'cafebreriaLibrary',type:'cafebreriaLibrary',inventoryAssetId:'native:cafebreriaLibrary',referenceOnly:true}];

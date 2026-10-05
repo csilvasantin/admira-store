@@ -9,8 +9,8 @@ import {selectBooks} from './capsulas.mjs?v=windows-menu-1';
 import {numberedCatalog} from '../model.mjs';
 const read=p=>JSON.parse(fs.readFileSync(new URL(p,import.meta.url))),pkg=read('./library.package.json');
 test('piece 51 appends an independent wall template without changing the first 50 identities',()=>{
- const registry=read('../registry.json'),catalog=read('../catalog.json'),stock=read('../pixeria-cache.json'),assets=numberedCatalog(catalog.native,stock.items,registry),library=assets.at(-1);
- assert.equal(assets.length,51);assert.equal(library.id,LIBRARY_ID);assert.equal(library.number,51);assert.equal(library.mount,'wall');assert.deepEqual(library.fp,[1.6,.28]);assert.equal(library.wallY,1.15);
+ const registry=read('../registry.json'),catalog=read('../catalog.json'),stock=read('../pixeria-cache.json'),assets=numberedCatalog(catalog.native,stock.items,registry),library=assets.find(a=>a.id===LIBRARY_ID);
+ assert.equal(assets.length,52);assert.equal(library.id,LIBRARY_ID);assert.equal(library.number,51);assert.equal(library.mount,'wall');assert.deepEqual(library.fp,[1.6,.28]);assert.equal(library.wallY,1.15);
  assert.equal(registry.numbers['native:shelves'],2);assert.equal(registry.numbers['native:starbucksWaterRack'],50);
  const scene=fs.readFileSync(new URL('./scene.glb',import.meta.url));assert.equal(createHash('sha256').update(scene).digest('hex'),pkg.source.sceneSha256);assert.equal(pkg.classification,'reusable_visual_template');assert.equal(pkg.physical_stock,undefined);for(const key of ['manufacturer','model','serial','warranty'])assert.equal(pkg[key],'');
 });

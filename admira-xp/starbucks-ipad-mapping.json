@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "capture": "alsea-starbucks-360",
+  "players": [
+    {
+      "id": "starbucks-ipad-01",
+      "name": "iPad horizontal",
+      "playerId": "",
+      "url": "",
+      "type": "video",
+      "width": 1024,
+      "height": 768,
+      "corners": [
+        {
+          "yaw": 19.564034,
+          "pitch": 5.076355
+        },
+        {
+          "yaw": 10.492924,
+          "pitch": 5.267327
+        },
+        {
+          "yaw": 10.505333,
+          "pitch": -0.770688
+        },
+        {
+          "yaw": 20.758103,
+          "pitch": -0.875231
+        }
+      ]
+    }
+  ]
+}

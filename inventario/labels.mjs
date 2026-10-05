@@ -1,5 +1,8 @@
 // Presentation only: canonical records, IDs and exported data remain unchanged.
 const names={
+ "iPad horizontal": "Landscape iPad",
+ "iPad horizontal · Starbucks": "Landscape iPad · Starbucks",
+ "iPad horizontal · cartel de mostrador": "Landscape iPad · counter sign",
  "Pilar": "Pillar",
  "Mostrador": "Counter",
  "Estantería": "Shelf",

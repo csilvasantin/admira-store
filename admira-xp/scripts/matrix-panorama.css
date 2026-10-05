@@ -145,3 +145,10 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-music-controls button{flex:none}
 .matrix-current-track{flex:1;min-width:0;color:#9dffcf;font:12px/1.4 system-ui;overflow-wrap:anywhere}
 #telegramDock .matrix-current-track{font:10px/1.4 monospace}
+
+/* Landscape counter iPad, mapped over the old printed sign. */
+.matrix-mapped-player.matrix-landscape-ipad{border:26px solid #161a1d;border-radius:40px;box-shadow:0 0 0 8px #070a0c;background:#063d30}
+.matrix-mapped-player.matrix-landscape-ipad.has-preview{border:26px solid #161a1d;background:#063d30}
+.matrix-ipad-idle{position:absolute;inset:0;display:grid;place-items:center;color:#b5d6c7;font:50px monospace;letter-spacing:4px}
+.matrix-landscape-ipad .matrix-player-media{background:transparent;object-fit:contain}
+.matrix-landscape-ipad .matrix-player-media[src],.matrix-landscape-ipad .matrix-player-media[poster]:not([poster=""]){background:#000}

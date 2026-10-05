@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.05.10.2026.r18.22:47",
+  "version": "v.05.10.2026.r19.23:18",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.42",
+    "version": "2.12.43",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -114,7 +114,7 @@
     },
     {
       "name": "matrix_device_layout",
-      "description": "matrix_device_layout: save_playlist {playlist_id:\"playlist-local\",title:\"Local\",tracks:[{id:\"clip\",title:\"Promotion\",url:\"https://stock.admira.store/stock/ID/asset.mp4\"}]}; assign {device_ids:[\"starbucks-wall-06\",\"starbucks-tpv-01\"],playlist_id:\"playlist-local\"}; reset {device_ids:[...]}; remove_playlist {playlist_id:\"playlist-local\"}. Every call requires action and a fresh expected_revision from matrix_state. deviceLayout contains custom playlists and assignments; deviceLayoutRevision controls delivery. Maximum 24 custom playlists, 100 clips each. Only the seven documented virtual screen IDs are supported. No physical-device publication or cross-browser playback clock."
+      "description": "matrix_device_layout: save_playlist {playlist_id:\"playlist-local\",title:\"Local\",tracks:[{id:\"clip\",title:\"Promotion\",url:\"https://stock.admira.store/stock/ID/asset.mp4\"}]}; assign {device_ids:[\"starbucks-wall-06\",\"starbucks-tpv-01\"],playlist_id:\"playlist-local\"}; reset {device_ids:[...]}; remove_playlist {playlist_id:\"playlist-local\"}. Every call requires action and a fresh expected_revision from matrix_state. deviceLayout contains custom playlists and assignments; deviceLayoutRevision controls delivery. Maximum 24 custom playlists, 100 clips each. Only the eight documented virtual screen IDs are supported. No physical-device publication or cross-browser playback clock."
     },
     {
       "name": "playlist_list",
@@ -442,8 +442,8 @@
     "audio": "https://www.xpaceos.com/admira-xp/assets/audio/starbucks-cierre-22h.m4a"
   },
   "device_playlists": {
-    "es": "En Matrix · Starbucks, /layout activa los números y la selección de las seis pantallas y el TPV. Pulsa el dispositivo o su número para editar su playlist. Ctrl + clic, Cmd + clic en Mac o Selección múltiple permiten añadir o quitar dispositivos de la selección. Unir seleccionados les asigna una playlist común y un reloj de reproducción local. Puedes añadir vídeos por URL HTTPS directa, quitarlos, ordenarlos, guardar, usar otra playlist, separar dispositivos o restaurar su playlist original. Editar una playlist compartida afecta a todos sus miembros, indicados en el editor. Al editar una playlist original se crea una copia para los seleccionados. Los cambios del panel se guardan en este navegador; las operaciones MCP autenticadas comparten asignaciones entre clientes abiertos. Salir de /layout cierra el editor y devuelve el arrastre de cámara.",
-    "en": "In Matrix · Starbucks, /layout enables labels and selection for the six wall screens and POS. Click the device or its number to edit its playlist. Ctrl + click, Cmd + click on Mac or Multiple selection adds/removes devices from the selection. Group selected assigns one shared playlist and a local playback clock. Add direct HTTPS video URLs, remove/reorder clips, save, use another playlist, ungroup devices or restore their original playlist. Editing a shared playlist affects every member listed in the editor. Editing a base playlist creates a copy for the selected devices. Panel edits are saved in this browser; authenticated MCP operations share assignments with open clients. Leaving /layout closes the editor and restores camera dragging.",
+    "es": "En Matrix · Starbucks, /layout activa los números y la selección de las seis pantallas, el TPV y el iPad horizontal. Pulsa el dispositivo o su número para editar su playlist. Ctrl + clic, Cmd + clic en Mac o Selección múltiple permiten añadir o quitar dispositivos de la selección. Unir seleccionados les asigna una playlist común y un reloj de reproducción local. Puedes añadir vídeos por URL HTTPS directa, quitarlos, ordenarlos, guardar, usar otra playlist, separar dispositivos o restaurar su playlist original. Editar una playlist compartida afecta a todos sus miembros, indicados en el editor. Al editar una playlist original se crea una copia para los seleccionados. Los cambios del panel se guardan en este navegador; las operaciones MCP autenticadas comparten asignaciones entre clientes abiertos. Salir de /layout cierra el editor y devuelve el arrastre de cámara.",
+    "en": "In Matrix · Starbucks, /layout enables labels and selection for the six wall screens, POS and landscape iPad. Click the device or its number to edit its playlist. Ctrl + click, Cmd + click on Mac or Multiple selection adds/removes devices from the selection. Group selected assigns one shared playlist and a local playback clock. Add direct HTTPS video URLs, remove/reorder clips, save, use another playlist, ungroup devices or restore their original playlist. Editing a shared playlist affects every member listed in the editor. Editing a base playlist creates a copy for the selected devices. Panel edits are saved in this browser; authenticated MCP operations share assignments with open clients. Leaving /layout closes the editor and restores camera dragging.",
     "docs": "https://www.xpaceos.com/admira-xp/docs/device-playlists.md"
   },
   "starbucks_operations": {
@@ -729,6 +729,11 @@
       "basis": "real panorama crops; type/context references when unit identity is unverified",
       "autoRegistration": false,
       "yokup": "ITIL cards and equipment sheets map registered references by exact venue and code; public fetch without credentials"
+    },
+    "virtual_planned": {
+      "code": "PDG103-IPAD-01",
+      "model": 52,
+      "reference": "PG103-061"
     }
   },
   "common_shell": {
@@ -2003,5 +2008,31 @@
     ],
     "id": "stable Stock asset id",
     "physicalBroadcast": false
+  },
+  "starbucks_ipad": {
+    "guide": "https://www.admira.store/admira-xp/docs/starbucks-ipad.md",
+    "catalog_number": 52,
+    "asset_id": "native:ipadLandscape",
+    "itil_code": "PDG103-IPAD-01",
+    "device_id": "starbucks-ipad-01",
+    "orientation": "horizontal",
+    "lifecycle": "virtual_planned",
+    "physical_installation_verified": false,
+    "qualities": [
+      "good",
+      "better",
+      "best",
+      "matrix"
+    ],
+    "playlist": "starbucks-alsea-paseo-de-gracia-ipad",
+    "base_channel": "ipad",
+    "reference": "#playliststarbucks-ipad",
+    "fit": "contain",
+    "tracks": [],
+    "master": "Yokup",
+    "mapping": "https://www.admira.store/admira-xp/starbucks-ipad-mapping.json",
+    "source": "admira-xp/scripts/starbucks-ipad.mjs",
+    "es": "Starbucks incorpora un iPad horizontal sobre el mostrador, en lugar del cartel de promoción bajo la pantalla 4. Experto → Inventario/ITIL muestra la ficha PDG103-IPAD-01, modelo 52. Es un dispositivo virtual previsto: la foto identifica el cartel anterior; instalación física, serie y medidas pendientes. En Opciones → Imagen o Vídeo importa contenido de Pixeria, revisa el previo y arrástralo al iPad: sólo ese destino lo muestra. Para conservarlo, abre Playlist actual al final de Vídeo, elige iPad · Publicidad horizontal y añade o arrastra el contenido; Lanzar lo reproduce. La playlist empieza vacía. Recargar pantalla vuelve a su programación. Good, Better, Best y Matrix mantienen esta identidad, marco y formato horizontal; los contenidos se ajustan sin estirar. La pared, el TPV y el hilo musical conservan sus playlists independientes.",
+    "en": "Starbucks adds a landscape iPad on the counter, replacing the promotion sign below screen 4. Expert → Inventory/ITIL shows record PDG103-IPAD-01, model 52. This is a planned virtual device: the photo identifies the previous sign; physical installation, serial number and measurements are pending. In Options → Image or Video import Pixeria content, review its preview and drag it to the iPad: only that target displays it. To keep it, open Current playlist at the bottom of Video, choose iPad · Landscape advertising and add or drag the content; Launch plays it. The playlist starts empty. Reload screen restores its schedule. Good, Better, Best and Matrix retain this identity, bezel and landscape format; content fits without stretching. Wall, POS and background music retain their independent playlists."
   }
 }

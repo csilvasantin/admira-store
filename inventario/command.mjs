@@ -1,4 +1,4 @@
-import {loadCatalog,instancesFor} from './model.mjs?v=scope-20261004-1';
+import {loadCatalog,instancesFor} from './model.mjs?v=ipad-20261005-1';
 import {scopedAssets} from './context.mjs?v=scope-20261004-1';
 import {findPlacement} from './placement.mjs?v=inventory-cli-3';
 export function parseInventoryCommand(raw){

@@ -1,7 +1,7 @@
 import {createSurfaceBinding,connectAppearance} from './surface-materials.mjs?v=surfaces-1';
 import {appearanceIdentity} from '../../inventario/starbucks/surface-identities.mjs';
 import * as T from './premium-three.mjs';
-import './starbucks-room.js?v=pixeria-screens-3';
+import './starbucks-room.js?v=ipad-20261005-1';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collision-20261004-1';
 import {createCustomerMotion} from './customer-motion.mjs?v=actor-collision-20261004-1';
@@ -296,6 +296,10 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         cylinder(root,w/2,.045,d/2,.29,.09,palette.stone);cylinder(root,w/2,1.05,d/2,.023,2.03,palette.brass);
         fixture(root,w/2,1.94,d/2,{size:.38,pendant:false});break;
       }
+      case 'ipadLandscape':{
+        box(root,.16,.025,.09,.28,.025,.16,palette.black);box(root,.16,.09,.09,.04,.13,.04,palette.steel);
+        box(root,.16,.23,.03,.32,.236,.016,palette.black);const face=surface(root,null,.16,.23,.041,.288,.216,0,palette.black);face.userData={liveMedia:true,dynamic:true,surfaceId:item.id,screenTarget:item.id,previewOnly:true};break;
+      }
       case 'tablet':case 'turnKiosk':{
         cylinder(root,w/2,.045,d/2,.3,.09,palette.stone);box(root,w/2,.57,d/2,.095,1.05,.12,palette.brass);
         const display=group(root,w/2,1.14,d/2);display.rotation.x=-.18;box(display,0,0,0,.66,.62,.12,palette.teal);
@@ -368,6 +372,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         for(let i=doors.length-1;i>=0;i--)if(retiredDoors.has(doors[i]))doors.splice(i,1);
         asset.traverse(o=>{if(o.userData.doorHinge){o.rotation.y=-snapshot.doorOpen*Math.PI*.48;doors.push(o);}});
         asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='existing_shared_player'){o.material=mediaMaterial;o.userData.liveMedia=true;o.userData.surfaceId=item.type==='metahuman'?'metahuman':item.type==='tft'?'escaparate':'inventory:'+item.id;}});
+        asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='landscape_ipad'){o.userData.liveMedia=true;o.userData.surfaceId=item.id;o.userData.screenTarget=item.id;o.userData.previewOnly=true;}});
         if(asset.userData.pixeria)asset.traverse(o=>{if(o.isMesh){own(o.geometry,worldResources);for(const m of Array.isArray(o.material)?o.material:[o.material]){own(m,worldResources);for(const v of Object.values(m))if(v?.isTexture)own(v,worldResources);}}});
         root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);bindSurfaces(asset,item.id);root.userData.assetStatus='ready';root.userData.assetSource=item.source==='PixerIA'?'PixerIA':'Blender';
       }).catch(()=>{if(!disposed&&root.parent===world)root.userData.assetStatus='fallback';});
@@ -403,7 +408,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         else {const partMesh=box(parent,x+w/2,y+h/2,z+d/2,w,h,d,finish(part),assetQuality==='best'&&Math.max(w,h,d)<2.5);if(part.device){partMesh.userData={dynamic:true,screenTarget:globalThis.XpaceStarbucks.screenId(part.device)};}}
         if(part.text)label(root,part.text,x+w/2,y+h/2,z+d+.006,w*.96,h*.96,{bg:part.color,fg:'#f5eed9',font:40});
       }
-      for(const part of fixture.parts.filter(part=>part.device)){const {x,y,z,w,h,d}=part,id=globalThis.XpaceStarbucks.screenId(part.device),display=surface(root,null,x+w/2-(fixture.item?.col||0),y+h/2,z+d+(part.device==='pos'?.06:.20)-(fixture.item?.row||0),w*.94,h*.94,0,palette.black);display.userData={liveMedia:true,dynamic:true,surfaceId:id,previewOnly:true};display.visible=false;}
+      for(const part of fixture.parts.filter(part=>part.device)){const {x,y,z,w,h,d}=part,id=globalThis.XpaceStarbucks.screenId(part.device),display=surface(root,null,x+w/2-(fixture.item?.col||0),y+h/2,z+d+(['pos','ipad'].includes(part.device)?.012:.20)-(fixture.item?.row||0),w*.94,h*.94,0,palette.black);display.userData={liveMedia:true,dynamic:true,surfaceId:id,previewOnly:true};display.visible=false;}
       for(const [instance,g]of editableGroups){bindSurfaces(g,instance);batch(g);}
       batch(root);
     }
@@ -766,8 +771,8 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
   }
   function refreshScreenMedia(drawScreens){
     scene.traverse(mesh=>{const id=mesh.userData?.surfaceId;if(!mesh.isMesh||!id||!mesh.userData.liveMedia)return;
-      let value=screenMaterials.get(id);if(!value){const canvas=canvasFactory(),context=canvas?.getContext('2d');if(!context)return;canvas.width=512;canvas.height=768;const map=own(new T.CanvasTexture(canvas));map.colorSpace=T.SRGBColorSpace;map.minFilter=T.LinearFilter;value={context,map,material:basic({map,side:T.DoubleSide},sharedResources)};screenMaterials.set(id,value);}
-      const active=drawScreens?.(value.context,512,768,id);if(active){mesh.userData.originalMaterial||=mesh.material;mesh.material=value.material;mesh.visible=true;value.map.needsUpdate=true;}else{if(mesh.userData.originalMaterial)mesh.material=mesh.userData.originalMaterial;if(mesh.userData.previewOnly)mesh.visible=false;}
+      let value=screenMaterials.get(id);if(!value){const canvas=canvasFactory(),context=canvas?.getContext('2d');if(!context)return;canvas.width=id==='starbucks-ipad-01'?1024:512;canvas.height=768;const map=own(new T.CanvasTexture(canvas));map.colorSpace=T.SRGBColorSpace;map.minFilter=T.LinearFilter;value={context,map,material:basic({map,side:T.DoubleSide},sharedResources)};screenMaterials.set(id,value);}
+      const active=drawScreens?.(value.context,id==='starbucks-ipad-01'?1024:512,768,id);if(active){mesh.userData.originalMaterial||=mesh.material;mesh.material=value.material;mesh.visible=true;value.map.needsUpdate=true;}else{if(mesh.userData.originalMaterial)mesh.material=mesh.userData.originalMaterial;if(mesh.userData.previewOnly)mesh.visible=false;}
     });
   }
   function dispose(){

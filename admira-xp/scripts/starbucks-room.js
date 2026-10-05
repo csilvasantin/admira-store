@@ -5,6 +5,7 @@
   const ID='alsea-sbux-021';
   const active=()=>{try{return new URLSearchParams(root.location?.search||'').get('loc')===ID;}catch{return false;}};
   const layout=()=>[
+    {id:'starbucks-ipad-01',type:'ipadLandscape',inventoryAssetId:'native:ipadLandscape',col:7.6,row:.4,fp:[.65,.35],label:'iPad horizontal',mountY:.96},
     {id:'sb-backbar',type:'counter',col:3,row:0,fp:[10,1],label:'Barra de preparación · Espresso'},
     {id:'sb-pos',type:'counter',col:3,row:3,fp:[4,1],label:'Caja · TPV'},
     {id:'sb-pastry',type:'vending',col:7,row:3,fp:[6,1],label:'Vitrina · Bollería y bebidas'},
@@ -50,9 +51,12 @@
     for(let x=3.5;x<13;x+=1.5){box(x,2.93,1.15,.13,.2,.15,C.cream);box(x,2.9,1.14,.14,.035,.17,C.light);}
     if(moving)return groups;
     for(const item of items){
-      if(!item.id?.startsWith('sb-'))continue;
+      if(!item.id?.startsWith('sb-')&&item.id!=='starbucks-ipad-01')continue;
       const x=item.col,z=item.row;begin(item.id,x+z+(item.fp?.[1]||1));current.item=item;
-      if(item.id==='sb-backbar'){
+      if(item.id==='starbucks-ipad-01'){
+        const y=item.mountY??.96;box(x+.08,y,z+.04,.49,.025,.27,C.black);box(x+.28,y+.025,z+.13,.10,.13,.07,C.steel);
+        box(x,y+.13,z,.65,.50,.025,C.black);box(x+.025,y+.155,z+.026,.60,.45,.008,'#063d30',{device:'ipad'});
+      }else if(item.id==='sb-backbar'){
         box(x,0,z,10,.87,.85,C.wood);box(x,.87,z,10,.09,1,C.steel);
         for(let i=0;i<8;i++)box(x+.1+i*1.23,.06,z+.86,1.14,.72,.035,C.wall);
         box(x+2.5,.98,z+.22,2,.49,.49,C.steel);box(x+2.55,1.10,z+.73,1.90,.17,.035,C.black);
@@ -112,7 +116,7 @@
     return {...part,x:Math.min(...xs),z:Math.min(...zs),w:Math.max(...xs)-Math.min(...xs),d:Math.max(...zs)-Math.min(...zs),y:part.y*sy,h:part.h*sy};
   }
   // Canvas follows the existing Good projection and pixel grid; no image backdrop.
-  const screenId=device=>device==='pos'?'starbucks-tpv-01':'starbucks-wall-0'+(7-device);
+  const screenId=device=>device==='ipad'?'starbucks-ipad-01':device==='pos'?'starbucks-tpv-01':'starbucks-wall-0'+(7-device);
   const screenQuads={};let dropTarget=null;
   let cachedKey=null,cachedGroups=null;
   function draw(ctx,iso,project,items,actors=[],moving=false){
@@ -134,7 +138,7 @@
       }else{poly([b,k,f,c],shade(color,.70));poly([e,c,f,j],shade(color,.88));poly([a,b,c,e],color);}
       if(v.text){ctx.save();ctx.transform((c[0]-e[0])/w,(c[1]-e[1])/w,0,height,e[0],e[1]);ctx.fillStyle='#f5eed9';ctx.font=`bold ${h*.72}px monospace`;ctx.textAlign='center';ctx.fillText(v.text,w/2,h*.78,w*.93);ctx.restore();}
     }for(const raw of g.parts.filter(part=>part.device)){const v=transformPart(raw,g.item),id=screenId(v.device),{x,y,z,w,h,d}=v,q=[p(x,y+h,z+d+.002),p(x+w,y+h,z+d+.002),p(x+w,y,z+d+.002),p(x,y,z+d+.002)];screenQuads[id]=q;
-      if(root.XpaceScreenMedia?.get(id)){ctx.save();ctx.transform((q[1][0]-q[0][0])/512,(q[1][1]-q[0][1])/512,(q[3][0]-q[0][0])/768,(q[3][1]-q[0][1])/768,q[0][0],q[0][1]);root.XpaceScreenMedia.draw(ctx,512,768,id);ctx.restore();}
+      if(root.XpaceScreenMedia?.get(id)){const cw=v.device==='ipad'?1024:512,ch=768;ctx.save();ctx.transform((q[1][0]-q[0][0])/cw,(q[1][1]-q[0][1])/cw,(q[3][0]-q[0][0])/ch,(q[3][1]-q[0][1])/ch,q[0][0],q[0][1]);root.XpaceScreenMedia.draw(ctx,cw,ch,id);ctx.restore();}
       if(dropTarget===id){ctx.save();ctx.globalAlpha=1;ctx.strokeStyle='#78f3ff';ctx.lineWidth=3;ctx.beginPath();q.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();ctx.stroke();ctx.restore();}
     }}ctx.globalAlpha=1;
   }

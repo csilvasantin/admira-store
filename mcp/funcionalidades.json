@@ -3542,7 +3542,7 @@
       "visualQualityOptions"
     ]
   },
-  "version": "v.05.10.2026.r18.22:47",
+  "version": "v.05.10.2026.r19.23:18",
   "inventory_scope": {
     "es": "ITIL abre el inventario del Xpacio visitado en la segunda columna de Experto y el detalle seleccionado en la tercera. El enlace opcional al catálogo conserva el mismo dominio, proyecto, local, idioma y marca y publica primero la distribución actual en este navegador. Tarjetas, selector 3D, desgloses y descargas se limitan a sus modelos; un enlace a una pieza ajena no la carga. Un Xpacio desconocido muestra un inventario vacío y pide abrir ITIL desde la escena. /inventario en el gemelo lista sólo sus modelos, conservando los números permanentes y las piezas retiradas para su recuperación. Las importaciones explícitas y Deshacer mantienen su funcionamiento. Starbucks PG103 conserva sus unidades y modelos 44–50 e incluye sus seis pantallas virtuales, TPV y altavoz; no acredita vinculación ni telemetría física. Cafebrería conserva su inventario completo de la escena y su librería 51. El catálogo general sin contexto sigue disponible para consultar plantillas. No crea altas patrimoniales en Yokup.",
     "en": "ITIL opens the inventory of the Xpace being visited in the second Expert column and the selected details in the third. The optional catalogue link preserves the same origin, project, venue, language and brand and first publishes the current layout in this browser. Cards, the 3D selector, breakdowns and downloads are limited to its models; links to foreign pieces do not load them. Unknown Xpacios show an empty inventory and ask users to open ITIL from the scene. /inventario in the twin lists only its models, preserving permanent numbers and removed pieces for recovery. Explicit imports and Undo retain their behavior. Starbucks PG103 keeps its units and models 44–50 and includes its six virtual screens, POS and speaker; this does not establish physical binding or telemetry. Cafebrería retains its full scene inventory and bookcase 51. The general catalogue without context remains available for browsing templates. No Yokup lifecycle assets are created.",
@@ -4133,5 +4133,31 @@
     "en": "Options → Background music, Image or Video connects to the Pixeria library: real hashtag, Stock number or title filter and a media-type dropdown. Importing stages a preview without playing. Drag an image or video from its preview or a playlist row to a visible screen face in Good, Better, Best or Matrix: only that target displays it, without editing its playlist or other screens. Reload screen restores its schedule. Matrix works with Layout closed and respects Power off. Dropping onto Current playlist only adds without playing. Music is added or launched to background music. Create music, image and video are in Expert → Create media; music opens the existing Pixeria creator. IDs, CLI history and preferences are retained. The Stock master file is used without reducing its quality; visual fidelity depends on the view. Dropping is local to the twin and does not confirm physical broadcasting or change shared MCP assignments.",
     "status": "implemented",
     "scope": "local virtual screen preview; authenticated MCP changes remain explicit"
+  },
+  "starbucks_ipad": {
+    "guide": "https://www.admira.store/admira-xp/docs/starbucks-ipad.md",
+    "catalog_number": 52,
+    "asset_id": "native:ipadLandscape",
+    "itil_code": "PDG103-IPAD-01",
+    "device_id": "starbucks-ipad-01",
+    "orientation": "horizontal",
+    "lifecycle": "virtual_planned",
+    "physical_installation_verified": false,
+    "qualities": [
+      "good",
+      "better",
+      "best",
+      "matrix"
+    ],
+    "playlist": "starbucks-alsea-paseo-de-gracia-ipad",
+    "base_channel": "ipad",
+    "reference": "#playliststarbucks-ipad",
+    "fit": "contain",
+    "tracks": [],
+    "master": "Yokup",
+    "mapping": "https://www.admira.store/admira-xp/starbucks-ipad-mapping.json",
+    "source": "admira-xp/scripts/starbucks-ipad.mjs",
+    "es": "Starbucks incorpora un iPad horizontal sobre el mostrador, en lugar del cartel de promoción bajo la pantalla 4. Experto → Inventario/ITIL muestra la ficha PDG103-IPAD-01, modelo 52. Es un dispositivo virtual previsto: la foto identifica el cartel anterior; instalación física, serie y medidas pendientes. En Opciones → Imagen o Vídeo importa contenido de Pixeria, revisa el previo y arrástralo al iPad: sólo ese destino lo muestra. Para conservarlo, abre Playlist actual al final de Vídeo, elige iPad · Publicidad horizontal y añade o arrastra el contenido; Lanzar lo reproduce. La playlist empieza vacía. Recargar pantalla vuelve a su programación. Good, Better, Best y Matrix mantienen esta identidad, marco y formato horizontal; los contenidos se ajustan sin estirar. La pared, el TPV y el hilo musical conservan sus playlists independientes.",
+    "en": "Starbucks adds a landscape iPad on the counter, replacing the promotion sign below screen 4. Expert → Inventory/ITIL shows record PDG103-IPAD-01, model 52. This is a planned virtual device: the photo identifies the previous sign; physical installation, serial number and measurements are pending. In Options → Image or Video import Pixeria content, review its preview and drag it to the iPad: only that target displays it. To keep it, open Current playlist at the bottom of Video, choose iPad · Landscape advertising and add or drag the content; Launch plays it. The playlist starts empty. Reload screen restores its schedule. Good, Better, Best and Matrix retain this identity, bezel and landscape format; content fits without stretching. Wall, POS and background music retain their independent playlists."
   }
 }

@@ -178,6 +178,35 @@
       "photo_scope": "element",
       "photo_basis": "Recorte real del panorama Matrix; las zonas ocultas y las medidas no están verificadas.",
       "photo_basis_en": "Real Matrix panorama crop; hidden areas and dimensions are not verified."
+    },
+    {
+      "itil_code": "PDG103-IPAD-01",
+      "instance_id": "starbucks-ipad-01",
+      "device_id": "starbucks-ipad-01",
+      "asset_number": 52,
+      "name": "iPad horizontal · cartel de mostrador",
+      "name_en": "Landscape iPad · counter sign",
+      "status": "registered",
+      "lifecycle": "virtual_planned",
+      "physical_installation_verified": false,
+      "confirmed_on": "2026-10-05",
+      "reference_number": 61,
+      "reference_id": "PG103-061",
+      "model3d": "https://www.admira.store/inventario/assets/catalog/52/best.glb",
+      "master": "https://www.admira.store/inventario/assets/catalog/52/best.blend",
+      "photo": "./photos/ipad-position.png",
+      "photo_scope": "position_reference",
+      "photo_basis": "Foto aportada por Carlos del cartel que sustituye el iPad virtual. No muestra un iPad instalado.",
+      "photo_basis_en": "Carlos supplied a photo of the sign replaced by the virtual iPad. It does not show an installed iPad.",
+      "geometry_basis": "nominal_not_measured",
+      "zone": "Sobre el mostrador de preparación, debajo de la pantalla 4",
+      "zone_en": "On the preparation counter, below screen 4",
+      "measurements": {
+        "verified": false
+      },
+      "content_fit": "contain",
+      "playlist_id": "starbucks-alsea-paseo-de-gracia-ipad",
+      "category": "pantalla"
     }
   ],
   "record_history": [
@@ -220,6 +249,15 @@
       "description": "Ficha visual unificada añadida; identidades y modelos conservados. El histórico patrimonial permanece en Yokup.",
       "description_en": "Unified visual record added; identities and models retained. Lifecycle history remains in Yokup.",
       "source": "https://www.xpaceos.com/admira-xp/docs/itil-3d-record.md"
+    },
+    {
+      "date": "2026-10-05",
+      "codes": [
+        "PDG103-IPAD-01"
+      ],
+      "description": "Carlos solicita un iPad horizontal virtual en lugar del cartel. Alta de identidad y mapeo; instalación física pendiente.",
+      "description_en": "Carlos requests a virtual landscape iPad replacing the sign. Identity and mapping registered; physical installation pending.",
+      "kind": "virtual_planned"
     }
   ]
 }

@@ -3,7 +3,7 @@ import {furniturePose,SCALE_LIMITS} from './distribuit.mjs?v=imported-space-1';
 import {isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 import {diagnosePassage} from './passage-diagnostic.mjs?v=check-passage-1';
-import {inventoryName} from '../../inventario/labels.mjs?v=check-passage-20261004-1';
+import {inventoryName} from '../../inventario/labels.mjs?v=ipad-20261005-1';
 
 // Only geometry/editor inputs determine a passage. Audience and media updates
 // must not repeat a path search every frame.

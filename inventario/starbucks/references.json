@@ -1931,6 +1931,28 @@
       "visible_quantity": "grupo",
       "zone": "Columna",
       "zone_en": "Pillar"
+    },
+    {
+      "reference_number": 61,
+      "reference_id": "PG103-061",
+      "key": "starbucks-ipad-01",
+      "itil_code": "PDG103-IPAD-01",
+      "asset_number": 52,
+      "name": "iPad horizontal · cartel de mostrador",
+      "name_en": "Landscape iPad · counter sign",
+      "status": "registered",
+      "lifecycle": "virtual_planned",
+      "photo": "./photos/ipad-position.png",
+      "photo_scope": "position_reference",
+      "basis": "Foto aportada por Carlos del cartel que sustituye el iPad virtual. No muestra un iPad instalado.",
+      "basis_en": "Carlos supplied a photo of the sign replaced by the virtual iPad. It does not show an installed iPad.",
+      "photo_basis": "Foto aportada por Carlos del cartel que sustituye el iPad virtual. No muestra un iPad instalado.",
+      "photo_basis_en": "Carlos supplied a photo of the sign replaced by the virtual iPad. It does not show an installed iPad.",
+      "source": "Carlos · referencia aportada 2026-10-05",
+      "confidence": "Posición visual del cartel; iPad virtual previsto",
+      "confidence_en": "Visual sign position; planned virtual iPad",
+      "zone": "Sobre el mostrador de preparación, debajo de la pantalla 4",
+      "zone_en": "On the preparation counter, below screen 4"
     }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "number": 52,
+  "id": "native:ipadLandscape",
+  "name": "iPad horizontal · Starbucks",
+  "tier": "good",
+  "geometry_basis": "nominal_not_measured",
+  "physical_installation_verified": false,
+  "measured": false,
+  "lifecycle": "virtual_planned",
+  "aspect": "4:3",
+  "mesh_count": 6
+}

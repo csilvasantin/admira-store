@@ -7,14 +7,14 @@ const assets=numberedCatalog(data.native,stock.items,registry);
 test('Estancos shows assigned furniture and IoT, with stable numbers and no other projects',()=>{
  const context=inventoryContext('https://www.admira.store/inventario/?space=xtanco&project=estancos');
  const owned=scopedAssets(assets,data.layouts.xtanco,context);assert.ok(owned.some(a=>a.category==='IoT'));assert.ok(owned.some(a=>a.category==='Mobiliario'));assert.ok(owned.every(a=>a.number<44));assert.equal(owned.find(a=>a.type==='aroma').number,16);
- assert.equal(scopedAssets(assets,[],context).length,0);assert.equal(scopedAssets(assets,[],inventoryContext('/inventario/')).length,51);
+ assert.equal(scopedAssets(assets,[],context).length,0);assert.equal(scopedAssets(assets,[],inventoryContext('/inventario/')).length,52);
 });
 test('unknown or mismatched projects never fall back to Estancos or the global catalogue',()=>{
  for(const query of ['space=missing','project=unknown','space=starbucks_pg103&project=estancos','space=xtanco&project=starbucks'])assert.deepEqual(scopedAssets(assets,data.layouts.xtanco,inventoryContext('/inventario/?'+query)),[]);
 });
 test('Starbucks legacy instance types resolve its registered models and match the manifest',()=>{
  for(const unit of manifest.units){const asset=assets.find(a=>a.number===unit.asset_number),instance={id:unit.instance_id,type:'counter'};assert.equal(assetForInstance(instance),asset.id);assert.equal(scopedInstances(asset,[instance]).length,1);}
- const owned=scopedAssets(assets,manifest.units.map(u=>({id:u.instance_id,type:'counter'})));assert.deepEqual(owned.map(a=>a.number),[44,45,46,47,48,49,50]);
+ const owned=scopedAssets(assets,manifest.units.map(u=>({id:u.instance_id,type:'counter'})));assert.deepEqual(owned.map(a=>a.number),[44,45,46,47,48,49,50,52]);
 });
 test('deliberate imports belong to the target layout only and keep their source identity',()=>{
  const asset=assets.find(a=>a.number===43),item={id:'imported',type:'custom',sourceAssetId:asset.id.slice(8),img:asset.img};

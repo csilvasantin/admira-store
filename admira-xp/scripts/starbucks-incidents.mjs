@@ -2,7 +2,7 @@ import {interfaceTranslator} from './interface-language.mjs?v=options-language-1
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export function incidentPayload({equipo,problema='',gravedad='alta',demo=false,resolve=false,uuid=crypto.randomUUID()}){
- if(!/^(pantalla-[1-6]|tpv)$/.test(equipo))throw Error('Equipo inválido / Invalid device');if(!['urgente','alta','normal','baja'].includes(gravedad))throw Error('Gravedad inválida / Invalid severity');
+ if(!/^(pantalla-[1-6]|tpv|PDG103-IPAD-01)$/.test(equipo))throw Error('Equipo inválido / Invalid device');if(!['urgente','alta','normal','baja'].includes(gravedad))throw Error('Gravedad inválida / Invalid severity');
  if(!demo&&!problema.trim())throw Error('Describe el problema / Describe the problem');
  const resource='demo:'+STARBUCKS_STORE+':'+equipo+(demo?'':':manual:'+uuid);
  return {subject:'Starbucks Paseo de Gracia 103 · '+(demo?'Pantalla '+equipo.replace('pantalla-','')+' sin señal (desenchufada)':equipo+' · '+problema.slice(0,120)),resource,kind:'screen',severity:gravedad,source:demo?'xpaceos-demo':'xpaceos-manual',project_id:'xpaceos',loc:'Starbucks Alsea · Paseo de Gracia 103',detail:problema,by:'XpaceOS Matrix',...(resolve?{resolve:true}:{})};
@@ -10,7 +10,7 @@ export function incidentPayload({equipo,problema='',gravedad='alta',demo=false,r
 export async function sendIncident(args,fetcher=fetch){const payload=incidentPayload(args);const response=await fetcher('https://api.yokup.com/incident',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});let data;try{data=await response.json();}catch{throw Error('Respuesta inválida de Yokup / Invalid Yokup response');}if(!response.ok||!data.ok)throw Error(data.error||'Yokup HTTP '+response.status);return {...data,resource:payload.resource};}
 // Vuelta del ciclo Yokup → gemelo (DEC-munpe1fhy7kq): el estado del ticket se pinta sobre la pantalla.
 export const YOKUP_STATUS_URL='https://api.yokup.com/incident/status',STATUS_POLL_MS=15000,CLOSED_VISIBLE_MS=10*60000;
-export function equipoFromResource(resource){const m=/^demo:([^:]+):(pantalla-[1-6]|tpv)(?::|$)/.exec(String(resource||''));return m&&m[1]===STARBUCKS_STORE?m[2]:null;}
+export function equipoFromResource(resource){const m=/^demo:([^:]+):(pantalla-[1-6]|tpv|PDG103-IPAD-01)(?::|$)/.exec(String(resource||''));return m&&m[1]===STARBUCKS_STORE?m[2]:null;}
 export async function fetchIncidentStatus(ids=[],fetcher=fetch){const q=new URLSearchParams({prefix:'demo:'+STARBUCKS_STORE+':'});if(ids.length)q.set('ids',ids.slice(-20).join(','));const response=await fetcher(YOKUP_STATUS_URL+'?'+q,{cache:'no-store'});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw Error(data.error||'Yokup HTTP '+response.status);return data;}
 // Detalle en Yokup (Carlos, 01-10-2026): pulsar la pantalla averiada abre la FICHA de su incidencia
 // (www.yokup.com/ticket?id=INC-…), no el listado genérico. Sin id válido se queda en /incidencias.

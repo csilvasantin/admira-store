@@ -290,6 +290,21 @@
       "ph": 1.1,
       "source": "Cafebrería",
       "package": "/inventario/cafebreria/library.package.json"
+    },
+    {
+      "id": "native:ipadLandscape",
+      "type": "ipadLandscape",
+      "name": "iPad horizontal · Starbucks",
+      "name_en": "Landscape iPad · Starbucks",
+      "category": "IoT",
+      "mount": "counter",
+      "fp": [
+        0.32,
+        0.18
+      ],
+      "ph": 0.28,
+      "status": "virtual_planned",
+      "geometry_basis": "nominal_not_measured"
     }
   ],
   "layouts": {

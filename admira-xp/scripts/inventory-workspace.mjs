@@ -1,5 +1,5 @@
-import {inventoryCaption} from '../../inventario/labels.mjs?v=inventory-lang-20261004-1';
-import {mountInventoryWorkspace} from '../../inventario/workspace.mjs?v=windows-menu-1';
+import {inventoryCaption} from '../../inventario/labels.mjs?v=ipad-20261005-1';
+import {mountInventoryWorkspace} from '../../inventario/workspace.mjs?v=ipad-20261005-1';
 const doc=document,host=doc.getElementById('expertCategoryDetail'),view=doc.querySelector('#telegramDock .expert-view-pane'),abort=new AbortController();
 let workspace;
 function previewLabel(){const label=doc.getElementById('expertPreviewLabel');if(label)label.textContent=['itil','inventory'].includes(host?.closest('.expert-workspace')?.dataset.activeCategory)?(doc.documentElement.lang==='en'?'DETAIL':'DETALLE'):(doc.documentElement.lang==='en'?'PREVIEWS':'PREVIOS');}

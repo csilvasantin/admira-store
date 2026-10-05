@@ -5367,6 +5367,66 @@
           ]
         }
       ]
+    },
+    {
+      "id": "native:ipadLandscape",
+      "number": 52,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "admira-xp/tools/xpacios-blender/build_ipad.py"
+      ],
+      "note": {
+        "es": "iPad virtual previsto. Proporciones nominales; no son medidas de un equipo instalado. Componentes del modelo, no stock.",
+        "en": "Planned virtual iPad. Nominal proportions, not measurements of installed hardware. Model components, not stock."
+      },
+      "groups": [
+        {
+          "id": "ipad",
+          "label": {
+            "es": "iPad horizontal",
+            "en": "Landscape iPad"
+          },
+          "components": [
+            {
+              "id": "body",
+              "label": {
+                "es": "Carcasa",
+                "en": "Body"
+              },
+              "quantity": 1,
+              "unit": "piece"
+            },
+            {
+              "id": "bezel",
+              "label": {
+                "es": "Marco",
+                "en": "Bezel"
+              },
+              "quantity": 1,
+              "unit": "piece"
+            },
+            {
+              "id": "display",
+              "label": {
+                "es": "Pantalla 4:3",
+                "en": "4:3 display"
+              },
+              "quantity": 1,
+              "unit": "piece"
+            },
+            {
+              "id": "stand",
+              "label": {
+                "es": "Soporte de sobremesa",
+                "en": "Counter stand"
+              },
+              "quantity": 1,
+              "unit": "piece"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
-import {localizedRow} from './labels.mjs?v=inventory-lang-20261004-1';
-import {loadCatalog} from './model.mjs?v=scope-20261004-1';
-import {inventoryRows} from './workspace-model.mjs?v=inventory-lang-20261004-1';
+import {localizedRow} from './labels.mjs?v=ipad-20261005-1';
+import {loadCatalog} from './model.mjs?v=ipad-20261005-1';
+import {inventoryRows} from './workspace-model.mjs?v=ipad-20261005-1';
 import {inventoryURL} from './context.mjs?v=scope-20261004-1';
 export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{},signal,load=loadCatalog}){
  const doc=listHost.ownerDocument,t=(es,en)=>doc.documentElement.lang==='en'?en:es;
@@ -9,7 +9,7 @@ export function mountInventoryWorkspace({listHost,detailHost,read,onCount=()=>{}
  let complete=false,assets=[],units=[],devices=[],rows=[],selectedId=null,activeSpace='',last='',opened=false,revision=0,disposeStage,stageRevision=0,disposed=false;
  const ready=load().then(catalog=>{assets=catalog.assets;}).catch(()=>{status.textContent=t('No se pudo cargar el catálogo. Se conservan los elementos de la escena.','Catalogue unavailable. Scene items are retained.');});
  let starbucksPromise;
- async function starbucks(){return starbucksPromise??=Promise.all([fetch(new URL('./starbucks/manifest.json',import.meta.url)).then(r=>{if(!r.ok)throw Error();return r.json();}),import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs')]).then(([manifest,wall,pos])=>({units:manifest.units,devices:[...wall.STARBUCKS_WALL_MAPPING.players,...pos.STARBUCKS_TPV_MAPPING.players,{id:'starbucks-alsea-paseo-de-gracia',name:'Altavoz · hilo musical'}]})).catch(()=>{starbucksPromise=null;status.textContent=t('No se pudo cargar el registro Starbucks. Reintenta.','Starbucks registry unavailable. Retry.');return {units:[],devices:[]};});}
+ async function starbucks(){return starbucksPromise??=Promise.all([fetch(new URL('./starbucks/manifest.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json();}),import('../admira-xp/scripts/starbucks-screens.mjs'),import('../admira-xp/scripts/starbucks-tpv.mjs'),import('../admira-xp/scripts/starbucks-ipad.mjs')]).then(([manifest,wall,pos,ipad])=>({units:manifest.units,devices:[...wall.STARBUCKS_WALL_MAPPING.players,...pos.STARBUCKS_TPV_MAPPING.players,...ipad.STARBUCKS_IPAD_MAPPING.players,{id:'starbucks-alsea-paseo-de-gracia',name:'Altavoz · hilo musical'}]})).catch(()=>{starbucksPromise=null;status.textContent=t('No se pudo cargar el registro Starbucks. Reintenta.','Starbucks registry unavailable. Retry.');return {units:[],devices:[]};});}
  function emptyDetail(){stageRevision++;disposeStage?.();disposeStage=null;detailHost.replaceChildren(el('p',t('Selecciona una pieza del inventario para ver su detalle.','Select an inventory item to view its details.')));}
  function render(){
   search.setAttribute('aria-label',t('Buscar en el inventario del Xpacio','Search this Xpace inventory'));search.placeholder=t('Buscar pieza…','Search item…');

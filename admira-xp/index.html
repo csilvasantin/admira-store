@@ -1496,7 +1496,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261005-2247-pixeria"></script>
+<script src="xtanco-version.js?v=20261005-2318-ipad"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -1505,7 +1505,7 @@
 <script src="assets/js/sfx.js?v=quiet-rain-1"></script>
 <script src="assets/js/ambient.js?v=quiet-rain-1"></script>
 <script src="assets/js/sky.js"></script>
-<script src="scripts/starbucks-room.js?v=pixeria-screens-3-surfaces-1"></script>
+<script src="scripts/starbucks-room.js?v=ipad-20261005-1"></script>
 <script src="assets/js/heatmap.js"></script>
 <script src="assets/js/streamdeck.js"></script>
 <script src="assets/js/session-ping.js" defer></script>
@@ -31823,7 +31823,7 @@ window.xtAPI = (function(){
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=pixeria-screens-3');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=ipad-20261005-1');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -36020,7 +36020,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">
-<script type="module" src="scripts/inventory-workspace.mjs?v=windows-menu-1"></script>
+<script type="module" src="scripts/inventory-workspace.mjs?v=ipad-20261005-1"></script>
 <script id="quickLaunchScript">
 (function(){
   var src=document.getElementById('telegramQuickActions'); if(!src) return;
@@ -36045,7 +36045,7 @@ window.xtAPI = (function(){
     b.title=name;
     b.addEventListener('click',function(){
       if(window.XpaceInventoryUI)window.XpaceInventoryUI.open('inventory');
-      else import('./scripts/inventory-workspace.mjs?v=windows-menu-1').then(function(module){module.openNativeInventory('inventory');});
+      else import('./scripts/inventory-workspace.mjs?v=ipad-20261005-1').then(function(module){module.openNativeInventory('inventory');});
     });return b;
   }
   function mirror(){
@@ -36221,7 +36221,7 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=closed-resume-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=ipad-20261005-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36236,7 +36236,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=pixeria-screens-3"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=ipad-20261005-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

@@ -1,7 +1,7 @@
-import {assetForInstance} from '../../inventario/model.mjs?v=scope-20261004-1';
+import {assetForInstance} from '../../inventario/model.mjs?v=ipad-20261005-1';
 import {isSolidFurniture} from './furniture-geometry.mjs';
 import {CATALOG_COLLISION_BOUNDS} from './catalog-collision-bounds.mjs?v=actor-collision-20261004-1';
-import './starbucks-room.js?v=surfaces-1';
+import './starbucks-room.js?v=ipad-20261005-1';
 
 const finite=(v,f)=>Number.isFinite(Number(v))?Number(v):f;
 // Body clearance is independent of the selected quality. The largest published

@@ -16,8 +16,8 @@ function harness(){
  const options={store:root.XpaceInventory,space:'xtanco',getLayout:()=>layout,applyLayout:next=>{layout=next;},load:async()=>({assets})};
  return {options,values,localStorage,exec:raw=>executeInventoryCommand(raw,options),get layout(){return layout;},fail(){fail=true;}};
 }
-test('51 permanent numbers survive source reorder and category/search filtering',()=>{
- assert.equal(assets.length,51);assert.deepEqual(assets.map(a=>a.number),Array.from({length:51},(_,i)=>i+1));
+test('52 permanent numbers survive source reorder and category/search filtering',()=>{
+ assert.equal(assets.length,52);assert.deepEqual(assets.map(a=>a.number),Array.from({length:52},(_,i)=>i+1));
  assert.equal(assets[0].id,'native:counter');assert.equal(assets[0].name,'Mostrador');
  const reordered=numberedCatalog([...data.native].reverse(),[...stock.items].reverse(),registry);
  assert.deepEqual(reordered,assets);assert.equal(assets.filter(a=>a.type==='shelves')[0].number,2);

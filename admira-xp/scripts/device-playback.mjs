@@ -1,5 +1,5 @@
 import {createScreenPlaylist} from './screen-playlist.mjs?v=options-preview-1';
-import {assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=options-preview-1';
+import {assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=ipad-20261005-1';
 // One local playback clock per playlist. Pause partitions keep wall/POS controls independent.
 export function createDevicePlayback({onState=()=>{}}={}){
  let entries=[],layout=emptyDeviceLayout(),defaults={},disposed=false,reconciling=false,preview=null;const buckets=new Map(),paused=new Set();
