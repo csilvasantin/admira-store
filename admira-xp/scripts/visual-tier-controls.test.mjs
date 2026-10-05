@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import {interfaceTranslator} from './interface-language.mjs';
 
 const source=fs.readFileSync(new URL('./visual-tier-controls.mjs',import.meta.url),'utf8');
 function harness(){
@@ -28,8 +29,8 @@ function harness(){
       return event;
     }
   }
-  const context=vm.createContext({document:{createElement(tag){created.push(tag);return new Element(tag);}}});
-  vm.runInContext(source.replace(/export function /g,'function '),context);
+  const context=vm.createContext({interfaceTranslator,document:{createElement(tag){created.push(tag);return new Element(tag);}}});
+  vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function '),context);
   return {created,Element,create:options=>context.createTierControls(options),update:state=>context.updateTierControls(state)};
 }
 

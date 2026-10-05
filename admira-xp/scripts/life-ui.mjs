@@ -1,10 +1,72 @@
+import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
-import {mountTierHud} from './tier-hud.mjs?v=floating-panels-1';
+import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
-import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=inventory-lang-20261004-1';
+import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=options-language-1';
 
 // The expert Good/Better/Best selector owns launch, routing and preference.
+const copy=interfaceTranslator([
+  ["· cámara alineada", "· aligned camera"],
+  ["· exploración libre", "· free exploration"],
+  ["Conectando con el gemelo…", "Connecting to the twin…"],
+  ["Abriendo tu espacio", "Opening your space"],
+  ["Preparando la escena 3D del gemelo…", "Preparing the 3D twin scene…"],
+  ["Reintentar", "Retry"],
+  ["Cerrar detalle", "Close details"],
+  ["Iluminación de la escena", "Scene lighting"],
+  ["☀ Día", "☀ Day"],
+  ["iluminación", "lighting"],
+  ["◒ Atardecer", "◒ Sunset"],
+  ["luz cálida", "warm light"],
+  ["☾ Noche", "☾ Night"],
+  ["luz nocturna", "night lighting"],
+  ["Cámara", "Camera"],
+  ["Comparar con Good", "Compare with Good"],
+  ["cámara alineada", "aligned camera"],
+  ["Explorar 3D", "Explore 3D"],
+  ["cámara libre", "free camera"],
+  ["Planta", "Floor plan"],
+  ["vista cenital", "top view"],
+  ["Detalle", "Detail"],
+  ["primer plano", "close-up"],
+  ["Alejar", "Zoom out"],
+  ["alejar", "zoom out"],
+  ["Acercar", "Zoom in"],
+  ["acercar", "zoom in"],
+  ["EN ESTE ESPACIO", "IN THIS SPACE"],
+  ["Elemento del layout actual. Para editarlo, vuelve a los controles del gemelo.", "Current layout element. Return to the twin controls to edit it."],
+  ["Posición y movimiento sincronizados con la simulación del gemelo.", "Position and movement synced with the twin simulation."],
+  ["El 3D no está disponible", "3D is unavailable"],
+  ["Elemento seleccionado", "Selected element"],
+  ["Abrir espacio", "Opening space"],
+  ["Distribuir muebles", "Distribute furniture"],
+  ["Componentes de la estantería", "Shelf components"],
+  ["Equipo", "Staff"],
+  ["Cliente del gemelo", "Twin customer"],
+  ["Transeúnte simulado", "Simulated passerby"],
+  ["Logística", "Logistics"],
+  ["Personaje del juego", "Game character"],
+  ["Visitante", "Visitor"],
+  ["Elemento del espacio", "Space element"],
+  ["Personaje", "Character"],
+  ["Better · gemelo 3D del Xtanco", "Better · Xtanco 3D twin"],
+  ["Best · gemelo 3D del Xtanco", "Best · Xtanco 3D twin"],
+  ["Gemelo 3D interactivo. Arrastra para girar, usa las flechas para rotar y más o menos para acercar.", "Interactive 3D twin. Drag to orbit, use arrows to rotate and plus or minus to zoom."],
+  ["La conexión gráfica se ha interrumpido. Reintenta o vuelve al gemelo clásico.", "Graphics connection interrupted. Retry or return to the classic twin."],
+  ["Abre El Xtanco y elige Avanzado → Better. Tus controles habituales siguen disponibles.", "Open El Xtanco and choose Advanced → Better. Your usual controls remain available."],
+  ["No se ha podido dibujar la escena. Puedes reintentar sin reiniciar el gemelo.", "Could not render the scene. You can retry without restarting the twin."],
+  ["Este dispositivo no ha podido iniciar WebGL. El gemelo clásico continúa disponible.", "This device could not start WebGL. The classic twin remains available."],
+  ["Cerrar Elemento seleccionado", "Close Selected element"],
+  ["Redimensionar Elemento seleccionado", "Resize Selected element"],
+  ["Cerrar Abrir espacio", "Close Opening space"],
+  ["Redimensionar Abrir espacio", "Resize Opening space"],
+  ["Cerrar Distribuir muebles", "Close Distribute furniture"],
+  ["Redimensionar Distribuir muebles", "Resize Distribute furniture"],
+  ["Cerrar Componentes de la estantería", "Close Shelf components"],
+  ["Redimensionar Componentes de la estantería", "Resize Shelf components"]
+]);
+let stopLanguage;
 const listeners=new Set();
 const announce=(busy=false,error='',reason='')=>{for(const listener of listeners)listener({open:!!dialog,busy,error,reason,requestId});};
 function subscribeLifeView(listener){listeners.add(listener);return ()=>listeners.delete(listener);}
@@ -18,7 +80,7 @@ function clearSceneToolbar(){sceneSlot()?.replaceChildren();}
 function parkSceneToolbar(toolbar){const slot=sceneSlot();if(slot&&toolbar)slot.replaceChildren(toolbar);}
 function pressGroup(buttons,button){for(const other of buttons){const on=other===button;other.setAttribute('aria-pressed',String(on));if(on)other.classList.add('is-active');else other.classList.remove('is-active');}}
 function close(reason=''){
-  generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
+  stopLanguage?.();stopLanguage=null;generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
   closeLifeEditor();closeShelfPanel();for(const window of floatingWindows.splice(0))window.dispose();selectionWindow=null;for(const unregister of windowEntries.splice(0))unregister();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
   document.body.classList.remove('xtanco-life-open');lastFocus?.focus?.();announce(false,'',typeof reason==='string'?reason:'');
@@ -112,7 +174,8 @@ async function open(options={}){
   for(const button of zoomButtons)button.onclick=event=>{event?.stopPropagation?.();viewer?.zoomBy(button.dataset.zoom==='in'?1.2:1/1.2);};
   pressGroup(lightButtons,lightButtons.find(button=>button.dataset.light==='day')||lightButtons[0]);
   pressGroup(presetButtons,presetButtons.find(button=>button.dataset.preset==='mapped')||presetButtons[0]);
-  parkSceneToolbar(dialog.querySelector('.life-toolbar'));
+  const toolbar=dialog.querySelector('.life-toolbar');parkSceneToolbar(toolbar);
+  stopLanguage=copy.observe([dialog,toolbar]);
   document.body.append(dialog);dialog.show();dialog.getBoundingClientRect();dialog.classList.add('is-visible');
   const stage=dialog.querySelector('.life-stage'),en=document.documentElement?.lang==='en';
   // Location and quality are already presented in the fixed shell/Expert HUD.

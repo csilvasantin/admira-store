@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.04.10.2026.r8.18:39",
+  "version": "v.05.10.2026.r6.18:30",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.29",
+    "version": "2.12.31",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -1675,5 +1675,34 @@
       "admira-xp/scripts/passage-overlay.mjs"
     ],
     "local_api": "diagnosePassage(scene, {actor: human|unitree, targetId})"
+  },
+  "options_language": {
+    "es": "Megafonía, Hilo Musical, Imagen, Video, Avatar y Contador usan los mismos iconos SVG de línea, trazo de 1,5 y color cian que Avanzados. Sus desplegables conservan las acciones existentes. Abre ⌘ Experto, escribe /idioma ESP para castellano o /idioma ENG para inglés y pulsa Enter. La interfaz cambia sin recargar el Xpacio: barra superior, Opciones, Avanzados, Experto y controles de vistas. El idioma se guarda en este navegador y origen; la URL se actualiza a lang=es o lang=en. La orden explícita prevalece sobre el idioma de entrada, incluso langlock=1. Se conservan proyecto, local, calidad, escena, datos, marca blanca, dimensiones de paneles e historial CLI. Los nombres propios, contenidos y respuestas anteriores conservan su texto original. La orden es local y no se envía a Telegram ni al MCP.",
+    "en": "PA system, Background music, Image, Video, Avatar and Counter use the same cyan line SVG icons and 1.5 stroke as Advanced. Their dropdowns retain existing actions. Open ⌘ Expert, type /idioma ESP for Spanish or /idioma ENG for English and press Enter. The interface changes without reloading the Xpace: top bar, Options, Advanced, Expert and view controls. Language is saved in this browser and origin; the URL changes to lang=es or lang=en. An explicit command takes precedence over the incoming locale, including langlock=1. Project, venue, quality, scene, data, white label, panel sizes and CLI history are preserved. Proper names, content and earlier responses retain their original text. This is a local command, never sent to Telegram or MCP.",
+    "commands": [
+      "/idioma ESP",
+      "/idioma ENG"
+    ],
+    "aliases": [
+      "/language ESP",
+      "/language ENG",
+      "/idioma es",
+      "/idioma en"
+    ],
+    "guide": "https://www.xpaceos.com/admira-xp/docs/options-language.md",
+    "local": true,
+    "implementation": "assets/xpace-shell.js + admira-xp/index.html + admira-xp/scripts/interface-language.mjs",
+    "preserves": [
+      "project_id",
+      "venue_id",
+      "quality",
+      "scene",
+      "inventory",
+      "white_label",
+      "panel_sizes",
+      "cli_history"
+    ],
+    "preference": "xtanco_lang per browser origin; explicit command updates lang URL and overrides locale lock",
+    "new_remote_tool": false
   }
 }

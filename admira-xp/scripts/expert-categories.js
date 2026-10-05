@@ -1,6 +1,12 @@
 // Local presentation only: buttons still forward to their existing actions.
 (()=>{
   const paths={
+    megafonia:'<path d="M3 9h5l11-5v16l-11-5H3zM8 15l2 6H6l-2-6M8 9v6M22 9v6"/>',
+    music:'<path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>',
+    video:'<rect x="3" y="4" width="18" height="16" rx="1"/><path d="m10 8 6 4-6 4z"/>',
+    avatar:'<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M12 3v3M2 10v6M22 10v6M8 16h8"/><circle cx="8" cy="11" r="1"/><circle cx="16" cy="11" r="1"/>',
+    counter:'<rect x="3" y="5" width="18" height="15" rx="1"/><path d="M7 3v4M17 3v4M3 10h18M7 14h2v3H7M14 14h3l-3 3h3"/>',
+
     signage:'<rect x="3" y="4" width="18" height="13" rx="1"/><path d="M9 21h6M12 17v4M6 8h12M6 11h7"/>',
     admiralive:'<path d="M3 14h3l3-7 5 11 3-8 2 4h2M3 4h18M3 21h18"/>',
     livecam:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/><circle cx="9" cy="12" r="2"/>',
@@ -14,6 +20,7 @@
     itil:'<rect x="5" y="4" width="14" height="17" rx="1"/><path d="M9 3h6v3H9zM8 10h1M12 10h4M8 14h1M12 14h4M8 18h1M12 18h4"/>',
     pixerai:'<path d="M4 4h16v16H4zM4 16l5-5 4 4 3-3 4 4"/><circle cx="15" cy="8" r="1"/>'
   };
+  const iconMarkup=key=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">'+(paths[key]||paths.signage)+'</svg>';
   function keyFor(button){
     const command=(button.dataset.quickCommand||'').replace(/^\//,'').split(/\s/)[0].toLowerCase();
     return button.id==='advInventoryCli'?'inventory':button.id==='advPercibeBtn'?'perception':button.dataset.quickAction||({envivo:'dvr',impactos:'impactos'})[command]||command;
@@ -24,7 +31,7 @@
     const label=key==='perception'?(en?'Perception':'Percepción'):key==='anonymizer'?'Anonymizer':oldLabel.replace(/^[^\p{L}\p{N}]+/u,'').trim();
     const status=(button.querySelector('.expert-category-status')||button.querySelector('span'))?.textContent||'';
     const icon=document.createElement('span');icon.className='expert-category-icon';icon.setAttribute('aria-hidden','true');
-    icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">'+(paths[key]||paths.signage)+'</svg>';
+    icon.innerHTML=iconMarkup(key);
     const text=document.createElement('span');text.className='expert-category-text';
     const name=document.createElement('strong');name.textContent=label;
     const detail=document.createElement('span');detail.className='expert-category-status';detail.textContent=status;
@@ -36,5 +43,6 @@
     button.title=button.title||label+(status?' — '+status:'');
     if(!preserveId)button.removeAttribute('id');return button;
   }
-  if(typeof window!=='undefined')window.XpaceExpertCategories={decorate,keyFor};
+  if(typeof window!=='undefined')window.XpaceExpertCategories={decorate,keyFor,iconMarkup};
+  if(typeof document!=='undefined')document.querySelectorAll('[data-options-icon]').forEach(icon=>{icon.innerHTML=iconMarkup(icon.dataset.optionsIcon);});
 })();

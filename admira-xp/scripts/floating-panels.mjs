@@ -1,3 +1,4 @@
+import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {movableWindow,visibleBounds} from './floating-window.mjs?v=20261003-expert-1';
 import {attachPanelResize} from './panel-resize.mjs?v=20261003-expert-1';
 
@@ -14,6 +15,7 @@ export function registerFloatingPanel(id,{label,open}){
 // should be enabled or recreates a disposed scene/editor.
 export function mountFloatingPanelMenu(container,{label}={}){
   const doc=container.ownerDocument,en=doc.documentElement?.lang==='en';
+  const copy=interfaceTranslator([["Ventanas", "Windows"], ["Plantillas de Xpacio", "Xpace templates"], ["Guardar plantilla", "Save template"], ["Presentación del gemelo", "Twin presentation"], ["Distribuir muebles", "Distribute furniture"], ["Componentes de la estantería", "Shelf components"], ["Elemento seleccionado", "Selected element"], ["Abrir espacio", "Opening space"]]);
   const section=doc.createElement('section');section.className='xp-floating-menu';
   const title=doc.createElement('h3');title.textContent=label||(en?'Windows':'Ventanas');
   const list=doc.createElement('div');list.className='xp-floating-menu-items';section.append(title,list);container.append(section);
@@ -24,7 +26,8 @@ export function mountFloatingPanelMenu(container,{label}={}){
     for(const [id,entry] of windows){const button=doc.createElement('button');button.type='button';button.dataset.windowId=id;button.textContent=entry.label;button.addEventListener('click',()=>{if(windows.get(id)===entry)entry.open();},{signal:buttonsAbort.signal});list.append(button);}
   }
   menus.add(refresh);refresh();
-  return {dispose(){buttonsAbort?.abort();menus.delete(refresh);section.remove();}};
+  const stopLanguage=copy.observe(section);
+  return {dispose(){stopLanguage();buttonsAbort?.abort();menus.delete(refresh);section.remove();}};
 }
 
 /** Add a movable header and accessible close control to an existing tool.

@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setMaxListeners} from 'node:events';
 import {boundedRectPosition,localWindowPosition,movableWindow} from './floating-window.mjs';
-import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=20261003-expert-1';
+import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=options-language-1';
 
 function harness({left=600,top=100,width=300,height=180,lang='es',parentRect={left:100,top:48,width:900,height:650}}={}){
   class Controller extends AbortController{constructor(){super();setMaxListeners(0,this.signal);}}

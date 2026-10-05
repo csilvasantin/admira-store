@@ -5,8 +5,8 @@
 .quad-menu .expert-menu-group h2{color:#91b9c7;font:700 9px/1.3 monospace;letter-spacing:.1em;text-transform:uppercase}
 .quad-menu button,.quad-menu select,.quad-menu input{font-family:monospace!important;border-radius:3px!important}
 .quad-menu .qm-acc{margin:6px 3px}
-.quad-menu .qm-acc-head{position:relative;display:flex;align-items:center;min-height:36px;padding:8px 10px!important;background:linear-gradient(135deg,#10232e,#09151f)!important;border:1px solid #264955!important;color:#d9f6ff!important;font:600 11px/1.3 monospace!important;text-align:left!important;letter-spacing:.03em}
-.quad-menu .qm-acc-head::before{content:'';width:4px;height:14px;flex:none;margin-right:8px;border-left:2px solid #79cddd;border-top:1px solid #79cddd;border-bottom:1px solid #79cddd}
+.quad-menu .qm-acc-head{position:relative;display:grid!important;grid-template-columns:24px minmax(0,1fr);gap:7px;align-items:center;min-height:36px;padding:4px 7px!important;background:linear-gradient(135deg,#10232e,#09151f)!important;border:1px solid #264955!important;color:#d9f6ff!important;font:600 11px/1.3 monospace!important;text-align:left!important;letter-spacing:.03em}
+.quad-menu .qm-acc-head::before{content:none}
 .quad-menu .qm-acc-body{padding:6px 4px!important;border-left:1px solid #315766;background:#07141c99}
 .quad-menu .qm-acc-head:hover,.quad-menu button:focus-visible{outline:1px solid #76d7e8!important;outline-offset:-1px;background-color:#15394a!important}
 #advQuickIcons{display:grid;grid-template-columns:1fr;gap:5px;margin:8px 5px;min-width:0}

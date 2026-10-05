@@ -2,12 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import {interfaceTranslator} from './interface-language.mjs';
 import {createLifeSnapshot} from './life-snapshot.mjs';
 
 // Execute the actual UI controller with renderer and panel adapters injected. No
 // WebGL/browser, external media, game loop or source files are changed by this
 // harness; the fake DOM exercises observable scheduling and event propagation.
-const source=fs.readFileSync(new URL('./life-ui.mjs?v=20261003-panels-2',import.meta.url),'utf8')
+const source=fs.readFileSync(new URL('./life-ui.mjs?v=options-language-1',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'')
   .replace(/await import\('\.\/life-renderer\.mjs\?v=[^']+'\)/,'await loadRenderer()')
   .replace(/^export \{.*\};?\s*$/m,'');
@@ -70,7 +71,7 @@ function harness({load,loadParts,search=''}={}){
       clearSelection(){calls.clearSelection++;options.onSelect(null);},setPartMode:value=>calls.partMode.push(value),selectPart:(id,num)=>calls.parts.push({id,num}),get snapshot(){return calls.updates.at(-1)||options.snapshot;}};
     viewers.push(viewer);return viewer;
   };
-  const context=vm.createContext({mountTierHud:()=>({setStatus(){},dispose(){}}),loadShelfParts:()=>loadParts?loadParts(partsDoc):Promise.resolve(partsDoc),mountShelfProductPanel,attachFloatingPanel,registerFloatingPanel,document,window,keys,createLifeSnapshot,createTierControls:()=>({element:new Element('tiers'),dispose(){}}),performance:{now:()=>clock},URLSearchParams,location:{search},
+  const context=vm.createContext({interfaceTranslator,mountTierHud:()=>({setStatus(){},dispose(){}}),loadShelfParts:()=>loadParts?loadParts(partsDoc):Promise.resolve(partsDoc),mountShelfProductPanel,attachFloatingPanel,registerFloatingPanel,document,window,keys,createLifeSnapshot,createTierControls:()=>({element:new Element('tiers'),dispose(){}}),performance:{now:()=>clock},URLSearchParams,location:{search},
     console:{warn(){}},loadRenderer:()=>{loads++;return load?load({createLifeRenderer},loads):Promise.resolve({createLifeRenderer});},
     requestAnimationFrame:fn=>{const id=++sequence;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),
     setTimeout:(fn,delay)=>{const id=++sequence;timers.set(id,{fn,at:clock+delay});return id;},clearTimeout:id=>timers.delete(id),

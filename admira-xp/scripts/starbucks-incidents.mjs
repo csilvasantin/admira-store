@@ -1,4 +1,5 @@
-import {attachFloatingPanel} from './floating-panels.mjs?v=inventory-lang-20261004-1';
+import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=options-language-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export function incidentPayload({equipo,problema='',gravedad='alta',demo=false,resolve=false,uuid=crypto.randomUUID()}){
  if(!/^(pantalla-[1-6]|tpv)$/.test(equipo))throw Error('Equipo inválido / Invalid device');if(!['urgente','alta','normal','baja'].includes(gravedad))throw Error('Gravedad inválida / Invalid severity');
@@ -25,7 +26,7 @@ export function chipModel(inc,now=Date.now(),lang='es'){const t=(es,en)=>lang===
  else{const responding=!sla.responded_at,due=responding?sla.response_due:sla.resolution_due,label=responding?t('Respuesta ≤ ','Response ≤ ')+sla.response_min+' min':t('Resolución ≤ ','Resolution ≤ ')+Math.round(sla.resolution_min/60)+' h',left=(due||0)-now;if(left<0)tone='alert';lines.push(label+' · '+(left>=0?t('quedan ','left ')+clock(left):t('fuera de SLA +','SLA breached +')+clock(-left)));}
  return {tone,lines};}
 export function mountIncidentPanel({root,surface=root,lang='es',devices,onPower,nodeFor=()=>null,fetcher=(...a)=>fetch(...a)}){
- const t=(es,en)=>lang==='en'?en:es,off=new Set(),tracked=new Map(),dismissed=new Map();let statusData=[],pollTimer=0,tickTimer=0;
+ const copy=interfaceTranslator(),t=copy.t,off=new Set(),tracked=new Map(),dismissed=new Map();let statusData=[],pollTimer=0,tickTimer=0;
  try{for(const [k,v] of Object.entries(JSON.parse(localStorage.getItem('xpaceos.starbucks.tickets.v1')||'{}')))if(/^[A-Z]{3}-[A-Z0-9]{4,10}$/.test(k))tracked.set(k,Number(v)||Date.now());}catch{}let target=devices[0].id,busy=false,manualId=crypto.randomUUID();
  try{for(const id of JSON.parse(localStorage.getItem('xpaceos.starbucks.off.v1')||'[]'))if(devices.some(d=>d.id===id))off.add(id);}catch{}
  try{for(const [id,at] of Object.entries(JSON.parse(localStorage.getItem('xpaceos.starbucks.dismissed.v1')||'{}')))dismissed.set(id,Number(at)||0);}catch{}
@@ -70,5 +71,6 @@ export function mountIncidentPanel({root,surface=root,lang='es',devices,onPower,
  }}
  async function poll(){clearTimeout(pollTimer);if(abort.signal.aborted)return;try{const data=await fetchIncidentStatus([...tracked.keys()],fetcher);statusData=data.incidents||[];const now=Date.now();for(const inc of statusData)if(inc.stage==='cerrada'&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS&&tracked.delete(inc.id))try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}paint();}catch{}pollTimer=setTimeout(poll,document.hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);}
  tickTimer=setInterval(()=>{if(statusData.length)paint();},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll();},opts);abort.signal.addEventListener('abort',()=>{clearTimeout(pollTimer);clearInterval(tickTimer);for(const d of devices)nodeFor(d.id)?.querySelector(':scope>.matrix-incident-chip')?.remove();});poll();
- return {off,paint,open(id=target){target=id;floating.open();},get visible(){return !panel.hidden;},select(id){target=id;refresh();},close(){panel.hidden=true;},remote(id,value){setPower(id,value);},dispose(){floating.dispose();abort.abort();panel.remove();}};
+ const stopLanguage=copy.observe(panel);
+ return {off,paint,open(id=target){target=id;floating.open();},get visible(){return !panel.hidden;},select(id){target=id;refresh();},close(){panel.hidden=true;},remote(id,value){setPower(id,value);},dispose(){stopLanguage();floating.dispose();abort.abort();panel.remove();}};
 }

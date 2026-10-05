@@ -58,7 +58,7 @@
   ];
   // Las vistas del gemelo se escriben sin barra (good, better, best, matrix).
   const BARE_TWIN = ['good', 'better', 'best', 'matrix'];
-  const SHELL_VERBS = ['help', 'ayuda', 'limpiar', 'clear', 'gemelo', 'twin', 'marca', 'brand'];
+  const SHELL_VERBS = ['help', 'ayuda', 'limpiar', 'clear', 'gemelo', 'twin', 'marca', 'brand', 'idioma', 'language'];
 
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const pick = (lang, item) => (typeof item === 'string' ? item : lang === 'en' ? (item.en || item.es || '') : (item.es || item.en || ''));
@@ -308,9 +308,28 @@
     return {ok: true, url, message: t('Marca «' + id + '»: abre ' + url + ' para ver el gemelo con esa marca (vale en cualquier página de XpaceOS con ?marca=' + id + ').', 'Brand “' + id + '”: open ' + url + ' to see the twin wearing it (works on any XpaceOS page with ?marca=' + id + ').') + note};
   }
 
+  function languageCommand(text, env = {}) {
+    const p = parseCommand(text);
+    if (!p || !['idioma', 'language'].includes(p.verb)) return null;
+    const next = ({esp:'es',eng:'en',es:'es',en:'en'})[p.args.trim().toLowerCase()];
+    if (!next) return {ok:false, local:true, message:env.lang === 'en' ? 'Use /idioma ESP (Spanish) or /idioma ENG (English).' : 'Usa /idioma ESP (castellano) o /idioma ENG (inglés).'};
+    // An explicit local choice overrides a locale pinned by the incoming URL.
+    // No navigation: retain the active scene, panel state and CLI history.
+    const win = env.window;
+    if (win) {win.XPACE_LANG_OVERRIDE = next; win.XPACE_LANG_LOCKED = false;}
+    try {env.storage?.setItem('xtanco_lang', next);} catch (_) {}
+    try {
+      const url = new URL(env.url);
+      url.searchParams.set('lang', next); url.searchParams.delete('langlock');
+      env.history?.replaceState(env.history.state, '', url.href);
+    } catch (_) {}
+    env.apply?.(next);
+    return {ok:true, local:true, language:next, message:next === 'en' ? 'Interface language: English.' : 'Idioma de la interfaz: castellano.'};
+  }
+
   const api = {PANELS_KEY, HISTORY_KEY, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
-    esc, normalizeConfig, markup, parseCommand, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
+    esc, normalizeConfig, markup, parseCommand, languageCommand, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -323,6 +342,13 @@
   const lang = () => langOf(html.lang);
   const T = (es, en) => (lang() === 'en' ? en : es);
   const shared = Object.assign({}, api, {version: VERSION, session: () => session});
+  shared.language = (text, apply) => languageCommand(text, {window:root, storage:local, history:root.history, url:root.location.href, lang:lang(), apply:next => {
+    html.lang = next;
+    if (apply) apply(next);
+    else if (typeof root.setLanguage === 'function') root.setLanguage(next);
+    else if (typeof root.applyHtmlLang === 'function') root.applyHtmlLang(next);
+    doc.querySelectorAll('[data-shell-es][data-shell-en]').forEach(node => {node.textContent = node.getAttribute('data-shell-' + next);});
+  }});
   // Cliente activo (assets/xpace-cliente.js): Admira lo ve todo; /marca <cliente> o ?cliente=<id> filtra
   // las listas de Xpacios, sin selector visible. Como la marca blanca, solo se descarga si hace falta:
   // con ?cliente=<id> (o un cliente recordado) o al usar /marca <cliente>. Una visita normal no carga nada.
@@ -631,6 +657,7 @@
     const L = [];
     L.push(T('XpaceOS · modo experto. Verbos de esta página:', 'XpaceOS · expert mode. Verbs on this page:'));
     L.push(T('  /help (/ayuda) — esta ayuda', '  /help (/ayuda) — this help'));
+    L.push(T('  /idioma ESP | ENG — castellano o inglés, sin recargar el Xpacio', '  /idioma ESP | ENG — Spanish or English without reloading the Xpace'));
     L.push(T('  /limpiar (/clear) — vacía la consola', '  /limpiar (/clear) — clear the console'));
     L.push(T('  /gemelo [orden] — abre el gemelo y, si la das, ejecuta allí la orden', '  /gemelo [command] — open the twin and, if given, run the command there'));
     L.push(T('  /marca [marca] — Marca blanca del catálogo de admiranext.com/marcablanca: /marca <id> viste la web con esa marca, /marca off vuelve a Admira, /marca sola dice cuál está activa y lista las disponibles, /marca <web> abre el analizador en otra pestaña. Alias: /brand.',
@@ -663,6 +690,8 @@
     echo(p.raw);
     const verb = p.verb;
     try {
+      const languageResult = shared.language(text);
+      if (languageResult) {translate(); log(languageResult.message); return;}
       if (verb === 'help' || verb === 'ayuda' || verb === '?') { log(helpText()); return; }
       if (verb === 'limpiar' || verb === 'clear' || verb === 'cls') { const ol = doc.getElementById('xsLog'); if (ol) ol.replaceChildren(); return; }
       if (verb === 'gemelo' || verb === 'twin') {

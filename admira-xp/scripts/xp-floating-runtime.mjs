@@ -1,4 +1,4 @@
-import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=inventory-lang-20261004-1';
+import {attachFloatingPanel,registerFloatingPanel,mountFloatingPanelMenu} from './floating-panels.mjs?v=options-language-1';
 
 const spec=(id,selector,es,en,closeSelector='',openMethod='',visibilitySelector='')=>({id,selector,label:{es,en},closeSelector,openMethod,visibilitySelector});
 export const CLASSIC_FLOATING_PANELS=Object.freeze([

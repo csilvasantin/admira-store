@@ -1,3 +1,4 @@
+import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 // View metadata belongs to the third Expert pane; the scene stays clear.
 export const TIER_HUD={
   better:{index:'02',name:'BETTER',bits:16,caption:'Gemelo 3D · cámara alineada con Good',captionEn:'3D twin · camera aligned with Good'},
@@ -16,6 +17,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
   const host=document.querySelector?.('#telegramDock .expert-view-pane');
   dialog.dataset.tierHud=mode;
   const en=document.documentElement?.lang==='en';
+  const copy=interfaceTranslator([[tier.caption,tier.captionEn],['Estado de la vista','View status'],['EN VIVO','LIVE'],['Detalles de la escena','Scene details']]);
   const hud=document.createElement('div');
   hud.className='tier-hud';hud.dataset.mode=mode;
   hud.setAttribute('aria-label',en?'View status':'Estado de la vista');
@@ -34,6 +36,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
     hud.querySelector('.tier-hud-extra').textContent=lines.join(' · ');
     hud.querySelector('.tier-hud-details').hidden=!lines.length;
   };
+  const stopLanguage=copy.observe(hud);
   syncDetails();
   const observer=typeof MutationObserver==='function'?new MutationObserver(syncDetails):null;
   observer?.observe(scene,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden']});
@@ -50,7 +53,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
   const tick=()=>{const now=new Date();clock.textContent=[now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');safeBottom();};
   tick();const timer=setInterval(tick,1000);
   return {
-    setStatus(text){hud.querySelector('.tier-hud-status').textContent=String(text||(en?'LIVE':'EN VIVO')).toUpperCase();},
-    dispose(){clearInterval(timer);observer?.disconnect();hud.remove();delete dialog.dataset.tierHud;dialog.style?.removeProperty?.('--hud-safe-bottom');}
+    setStatus(text){hud.querySelector('.tier-hud-status').textContent=String(text||(document.documentElement?.lang==='en'?'LIVE':'EN VIVO')).toUpperCase();},
+    dispose(){stopLanguage();clearInterval(timer);observer?.disconnect();hud.remove();delete dialog.dataset.tierHud;dialog.style?.removeProperty?.('--hud-safe-bottom');}
   };
 }

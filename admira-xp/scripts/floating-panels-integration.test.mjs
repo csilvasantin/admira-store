@@ -4,7 +4,7 @@ import fs from 'node:fs';
 
 const read=name=>fs.readFileSync(new URL(name,import.meta.url),'utf8');
 test('Matrix windows retain feature-specific reopeners and dispose registrations with the scene',()=>{
-  const map=read('./matrix-panorama.mjs?v=20261003-panels-2'),playlist=read('./device-editor.mjs?v=20261003-panels-2'),incidents=read('./starbucks-incidents.mjs?v=20261003-panels-2');
+  const map=read('./matrix-panorama.mjs?v=options-language-1'),playlist=read('./device-editor.mjs?v=options-language-1'),incidents=read('./starbucks-incidents.mjs?v=options-language-1');
   assert.match(map,/menu:'matrix-map',onOpen:.*incidents\?\.close\(\);cancel\(\);panel\.hidden=false/);
   assert.match(map,/mappingWindow\.dispose\(\)/);
   assert.match(playlist,/menu:'matrix-playlist',onOpen:openPanel/);

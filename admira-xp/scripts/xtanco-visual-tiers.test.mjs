@@ -1,3 +1,4 @@
+import {interfaceTranslator} from './interface-language.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -238,11 +239,11 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   class MutationObserver {constructor(callback){this.callback=callback;}observe(node,options){this.node=node;this.options=options;observers.push(this);}}
   const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},MutationObserver,__xtancoVisualState:()=>({vertical})};Object.defineProperty(window,'localStorage',{get(){if(storageBlocked)throw Error('denied');return storage;}});
   document.documentElement={lang:'es'};
-  const context=vm.createContext({document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,...life,
+  const context=vm.createContext({interfaceTranslator,document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,...life,
     openGoodView:good.openLifeView,closeGoodView:good.closeLifeView,subscribeGoodView:good.subscribeLifeView,
     openBestView:best.openLifeView,closeBestView:best.closeLifeView,subscribeBestView:best.subscribeLifeView,
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
-  vm.runInContext(controlsSource.replace(/export function /g,'function '),context);
+  vm.runInContext(controlsSource.replace(/^import .*;\n/gm,'').replace(/export function /g,'function '),context);
   vm.runInContext(selectorSource.replace(/^import .*;\n/gm,''),context);
   const controls=actions.children[0];assert.ok(controls,'the selector must be inserted in the top-bar host');
   return {body,actions,advanced,expertPane,controls,document,window,storage,good,life,best,matrix,created,queries,

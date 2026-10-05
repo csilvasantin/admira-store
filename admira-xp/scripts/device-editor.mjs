@@ -1,11 +1,12 @@
+import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {createSharedPlaylists,playlistReference} from './shared-playlists.mjs?v=registry-1';
 import {mountPlaylistReorder} from './playlist-reorder.mjs?v=drop-1';
 import {mountPixeriaPicker} from './pixeria-picker.mjs?v=drop-1';
 import {DEVICE_IDS,emptyDeviceLayout,validateDeviceLayout,changeDeviceLayout,assignedPlaylist} from './device-layout.mjs?v=loop-1';
-import {attachFloatingPanel} from './floating-panels.mjs?v=inventory-lang-20261004-1';
+import {attachFloatingPanel} from './floating-panels.mjs?v=options-language-1';
 export const DEVICE_STORAGE='xpaceos.starbucks.device-layout.v1';
 export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChange,onPlay,onPreview,onReload,onOpen=()=>{},getPlayback=()=>[]}){
- const t=(es,en)=>lang==='en'?en:es,selected=new Set();let config=emptyDeviceLayout(),seen=0,enabled=false,multiple=false,savedDraft='',draftRevision;const shared=createSharedPlaylists();let busy=false,disposed=false,pollTimer;const activeShared=new Set();
+ const copy=interfaceTranslator(),t=copy.t,selected=new Set();let config=emptyDeviceLayout(),seen=0,enabled=false,multiple=false,savedDraft='',draftRevision;const shared=createSharedPlaylists();let busy=false,disposed=false,pollTimer;const activeShared=new Set();
  try{const saved=JSON.parse(localStorage.getItem(DEVICE_STORAGE));if(saved){config=validateDeviceLayout(saved.config);seen=Number(saved.remoteRevision)||0;}}catch{}
  const panel=document.createElement('section');panel.className='matrix-device-editor matrix-playlist-editor';panel.hidden=true;panel.setAttribute('aria-label',t('Playlist del dispositivo','Device playlist'));
  panel.innerHTML=`<header><strong>${t('Dispositivos · Playlist','Devices · Playlist')}</strong><button type="button" data-device="close" aria-label="${t('Cerrar','Close')}">×</button></header>
@@ -82,6 +83,7 @@ export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChan
   else if(action==='reset')commit(changeDeviceLayout(config,{action:'reset',device_ids:[...selected]}));
   else if(action==='split'){let next=config;for(const device of selected){const p=all()[assignedPlaylist(config,device)],id=fresh();next=changeDeviceLayout(next,{action:'save_playlist',playlist_id:id,title:p.title+' · '+nameFor(device),tracks:p.tracks,loop:p.loop});next=changeDeviceLayout(next,{action:'assign',device_ids:[device],playlist_id:id});}commit(next);}
  }catch(error){notice.textContent=t('No guardado: ','Not saved: ')+error.message;}},opts);
+ const stopLanguage=copy.observe(panel);
  return {
   get config(){return config;},
   reload:reloadOriginal,
@@ -91,6 +93,6 @@ export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChan
   refresh(){if(!panel.hidden&&!busy&&JSON.stringify(draft())===savedDraft)render();},
   remote(state){const revision=state.deviceLayoutRevision||0;if(revision<=seen)return;const next=validateDeviceLayout(state.deviceLayout||emptyDeviceLayout());for(const [id,p]of Object.entries(config.playlists))if(shared.known(id)){next.playlists[id]=p;for(const [device,pid]of Object.entries(config.assignments))if(pid===id)next.assignments[device]=id;}seen=revision;commit(next);notice.textContent=t('Configuración compartida recibida por MCP','Shared configuration received through MCP');},
   open(){floating.open();},
-  dispose(){disposed=true;floating.dispose();resize.disconnect();clearTimeout(pollTimer);controls.abort();panel.remove();}
+  dispose(){stopLanguage();disposed=true;floating.dispose();resize.disconnect();clearTimeout(pollTimer);controls.abort();panel.remove();}
  };
 }

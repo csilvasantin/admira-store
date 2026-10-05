@@ -756,7 +756,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261005-marca-proyecto" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=options-language-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -983,14 +983,14 @@
 <nav class="quad-menu quad-left is-collapsed" aria-label="Opciones">
   <div class="qm-title">Opciones</div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head" data-acc-head>📢 Megafonía</button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="megafonia"><span class="expert-category-icon" data-options-icon="megafonia" aria-hidden="true"></span><strong class="option-label">Megafonía</strong></button>
     <div class="qm-acc-body">
       <button type="button" data-xp-do="mega" title="Redactar y lanzar un aviso por voz">📢 Lanzar aviso</button>
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
     </div>
   </div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head" data-acc-head>♪ Hilo Musical</button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="music"><span class="expert-category-icon" data-options-icon="music" aria-hidden="true"></span><strong class="option-label">Hilo Musical</strong></button>
     <div class="qm-acc-body">
       <button type="button" data-xp-do="musicToggle" title="Reproducir / pausar la música">▶ Play / Pausa</button>
       <button type="button" data-xp-do="musicPrev" title="Canción anterior">◀ Anterior</button>
@@ -999,13 +999,13 @@
     </div>
   </div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head" data-acc-head>🖼 Imagen</button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="pixerai"><span class="expert-category-icon" data-options-icon="pixerai" aria-hidden="true"></span><strong class="option-label">Imagen</strong></button>
     <div class="qm-acc-body">
       <button type="button" data-xp-do="imgGen" title="Generar una imagen con PixerIA y mostrarla en pantalla">✨ Generar imagen (PixerIA)</button>
     </div>
   </div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head" data-acc-head>📺 Video</button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="video"><span class="expert-category-icon" data-options-icon="video" aria-hidden="true"></span><strong class="option-label">Video</strong></button>
     <div class="qm-acc-body">
       <button type="button" data-xp-do="dsToggle" title="Reproducir / pausar el vídeo de las pantallas">▶ Play / Pausa</button>
       <button type="button" data-xp-do="dsPrev" title="Vídeo anterior">◀ Vídeo anterior</button>
@@ -1014,14 +1014,14 @@
     </div>
   </div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head" data-acc-head>🤖 Avatar</button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="avatar"><span class="expert-category-icon" data-options-icon="avatar" aria-hidden="true"></span><strong class="option-label">Avatar</strong></button>
     <div class="qm-acc-body">
       <button type="button" data-xp-do="avatarShow" title="Mostrar el panel del presentador (MetaHuman)">👤 Mostrar presentador</button>
       <button type="button" data-xp-do="avatarHide" title="Ocultar el panel del presentador">✕ Ocultar</button>
     </div>
   </div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head" data-acc-head>🔢 Contador</button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="counter"><span class="expert-category-icon" data-options-icon="counter" aria-hidden="true"></span><strong class="option-label">Contador</strong></button>
     <div class="qm-acc-body">
       <button type="button" data-xp-do="aforoReal" title="Xtore enlazado: pasos de sesión; otras tiendas: cámara de aforo">📷 Aforo real (cámara)</button>
       <button type="button" data-xp-do="aforoExact" title="Espejo 1:1 estricto: la tienda = exactamente la cámara">🎯 Aforo exacto (1:1)</button>
@@ -31167,34 +31167,35 @@ window.xtAPI = (function(){
   function helpSections(){
     // Orden actual = orden alfabético/legado. Pendiente: reordenar por uso real.
     return [
+      {title:typeof lang!=='undefined'&&lang==='en'?'Interface language':'Idioma de la interfaz',items:['/idioma ESP','/idioma ENG']},
       {title:typeof lang!=='undefined'&&lang==='en'?'People visibility · ES / EN':'Personas visibles · ES / EN',items:['/gente on','/gente off','/people on','/people off','/personal on','/personal off','/staff on','/staff off','/clientes on','/clientes off','/customers on','/customers off']},
-      {title:'Consulta',items:['/status','/staff','/stock','/turno']},
-      {title:'Turnos (pantalla pared larga)',items:['/turno on','/turno off','/turno next','/turno previous','/turno 15','/turno auto']},
-      {title:'Equipo y stock',items:['/hire 1','/hire dj','/hire all','/train 1','/train all','/restock 2','/restock all','/restock prensa']},
-      {title:'Equipo del punto (gemelo)',items:['/nuevoMiembro Laura azafata','/nuevoMiembro Pedro cajero','/echarMiembro Laura','/report Marta']},
-      {title:'DVR del Xpacio (grabar/velocidad/replay)',items:['/velocidad 1','/velocidad 2','/velocidad 4','/velocidad 8','/dvr','/envivo','/calendario']},
-      {title:'Personal (panel /staff)',items:['/staff','/staff bonus 0 100','/staff eotm 0','/staff eotm ana','/staff train 1','/staff hire 2','/staff fire 1']},
-      {title:'Tienda',items:['/resetaudiencia 0','/resetaudiencia 100','/resetaudiencia auto','/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Queries':'Consulta',items:['/status','/staff','/stock','/turno']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Queue (long wall screen)':'Turnos (pantalla pared larga)',items:['/turno on','/turno off','/turno next','/turno previous','/turno 15','/turno auto']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Staff and stock':'Equipo y stock',items:['/hire 1','/hire dj','/hire all','/train 1','/train all','/restock 2','/restock all','/restock prensa']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Venue staff (twin)':'Equipo del punto (gemelo)',items:['/nuevoMiembro Laura azafata','/nuevoMiembro Pedro cajero','/echarMiembro Laura','/report Marta']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Xpace DVR (record/speed/replay)':'DVR del Xpacio (grabar/velocidad/replay)',items:['/velocidad 1','/velocidad 2','/velocidad 4','/velocidad 8','/dvr','/envivo','/calendario']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Staff (/staff panel)':'Personal (panel /staff)',items:['/staff','/staff bonus 0 100','/staff eotm 0','/staff eotm ana','/staff train 1','/staff hire 2','/staff fire 1']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Store':'Tienda',items:['/resetaudiencia 0','/resetaudiencia 100','/resetaudiencia auto','/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
       {title:'Look & feel',items:['/camiseta on','/camiseta off','/camiseta']},
-      {title:'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/tiempo lluvia','/tiempo lluvia sonora','/weather rain audible','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
-      {title:'Pantalla y directo',items:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
-      {title:'Digital Signage (vídeos)',items:['/ds on','/ds off','/ds next','/ds previous','/ds audio on','/ds audio off','/info','/info on','/info off']},
-      {title:'Mupi del Xtanco (tótem vertical)',items:['/admiratv','/admiratv on','/admiratv off','/admiratv tiktok','/admiratv all','/admiratv condicional (player condicionado por audiencia · también ?totem=condicional en la URL · chip de debug con ?debugchip=1)']},
-      {title:'Campañas de TikTok (rodar en Pixeria)',items:['/tiktok <titular>','/tiktok pizzeria del barrio','/tiktok ok','/tiktok no','/tiktok ya <titular>','/tiktok demo <titular>','/tiktok cerrar']},
-      {title:'Condicional (contenidos condicionados)',items:['/xpl (1ª vez ON · 2ª OFF)']},
-      {title:'Escena en vivo',items:['/dj','/ladron','/guardiacivil','/opinador','/robot','/sponsor','/socio','/door open','/door close','/door auto','/subasta','/subasta off']},
-      {title:'Notificaciones al personal',items:['/personal socio','/personal dashboard','/socios listado','/heatmap','/heatmap reset','/sponsor recurrente 120 10']},
-      {title:'Atmósfera',items:['/ambiente','/ambiente vol 50','/voces']},
-      {title:'Operativa real',items:['/devolucion','/pedido']},
-      {title:'Integración AdmiraNext',items:['/socios export']},
-      {title:'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
-      {title:'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
-      {title:'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
-      {title:'Distribuir / Distribute · editor de muebles · Better 16 bits',items:['/cli distribuir','/cli distribute','/distribuir off']},
-      {title:'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Time and weather':'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/tiempo lluvia','/tiempo lluvia sonora','/weather rain audible','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Screens and live content':'Pantalla y directo',items:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Digital Signage (videos)':'Digital Signage (vídeos)',items:['/ds on','/ds off','/ds next','/ds previous','/ds audio on','/ds audio off','/info','/info on','/info off']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Xtanco vertical totem':'Mupi del Xtanco (tótem vertical)',items:['/admiratv','/admiratv on','/admiratv off','/admiratv tiktok','/admiratv all','/admiratv condicional (player condicionado por audiencia · también ?totem=condicional en la URL · chip de debug con ?debugchip=1)']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'TikTok campaigns (shoot in Pixeria)':'Campañas de TikTok (rodar en Pixeria)',items:['/tiktok <titular>','/tiktok pizzeria del barrio','/tiktok ok','/tiktok no','/tiktok ya <titular>','/tiktok demo <titular>','/tiktok cerrar']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Conditional content':'Condicional (contenidos condicionados)',items:['/xpl (1ª vez ON · 2ª OFF)']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Live scene':'Escena en vivo',items:['/dj','/ladron','/guardiacivil','/opinador','/robot','/sponsor','/socio','/door open','/door close','/door auto','/subasta','/subasta off']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Staff notifications':'Notificaciones al personal',items:['/personal socio','/personal dashboard','/socios listado','/heatmap','/heatmap reset','/sponsor recurrente 120 10']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Atmosphere':'Atmósfera',items:['/ambiente','/ambiente vol 50','/voces']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Real operations':'Operativa real',items:['/devolucion','/pedido']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'AdmiraNext integration':'Integración AdmiraNext',items:['/socios export']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'AI and content':'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Quick settings':'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Music and layout':'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Distribute · furniture editor · Better 16 bits':'Distribuir / Distribute · editor de muebles · Better 16 bits',items:['/cli distribuir','/cli distribute','/distribuir off']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Local inventory · permanent numbers':'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
       {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Starbucks Alsea',items:['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']},
-      {title:'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
-      {title:'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Classic rendering style':'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Navigation map':'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
       {title:'Marca blanca · White label (admiranext.com/marcablanca)',items:['/marca','/marca starbucks','/marca off','/marca starbucks.es','/brand lumbre']},
     ];
   }
@@ -31204,8 +31205,8 @@ window.xtAPI = (function(){
     const sections=helpSections();
     // La ✕ vive DENTRO del panel: al quitar el botón /help de la barra, era la
     // única forma de cerrarlo y la ayuda se quedaba abierta para siempre.
-    helpPanel.innerHTML='<div class="tg-help-top"><strong>Comandos de control</strong>'
-      +'<button type="button" class="tg-help-close" data-help-close title="Cerrar la ayuda">✕</button></div>'
+    helpPanel.innerHTML='<div class="tg-help-top"><strong>'+(lang==='en'?'Control commands':'Comandos de control')+'</strong>'
+      +'<button type="button" class="tg-help-close" data-help-close title="'+(lang==='en'?'Close help':'Cerrar la ayuda')+'">✕</button></div>'
       +'<p class="tg-help-layout">'+(lang==='en'?'Drag the top handle for height and the two dividers to resize commands, quality and Local view. Sizes are saved. Double-click a divider to reset widths.':'Arrastra el tirador superior para la altura y los dos separadores para repartir comandos, calidad y Local view. Se guardan las medidas. Doble clic en un separador restablece los anchos.')+'</p>'
       +'<div class="tg-help-grid">'
       +sections.map((section,si)=>'<div class="tg-help-section"><h4>'+(si+1)+'. '+section.title+'</h4>'
@@ -31718,10 +31719,12 @@ window.xtAPI = (function(){
 
   async function executeLocalVisualCommand(rawText){
     const text=String(rawText||'').trim();
+    const languageResult=window.XpaceShell?.language(text,next=>setLanguage(next));
+    if(languageResult)return languageResult;
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
       try{
         const {executeDistribuitCommand}=await import('./scripts/distribuit.mjs?v=distribuir-3');
-        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=check-passage-20261004-1');
+        const {openLifeEditor,closeLifeEditor}=await import('./scripts/life-ui.mjs?v=options-language-1');
         return await executeDistribuitCommand(text,{router:window.__xtancoVisualTiers,open:openLifeEditor,close:closeLifeEditor,lang:typeof lang==='undefined'?'es':lang});
       }catch{return {ok:false,local:true,message:typeof lang!=='undefined'&&lang==='en'?'Distribute unavailable. Open an Xpace and retry.':'Distribuir no disponible. Abre un Xpacio y reintenta.'};}
     }
@@ -34719,6 +34722,7 @@ window.xtAPI = (function(){
     {sel:'#splashContactBtn', en:'Contact', es:'Contacto'},
     {sel:'#pfOptions', attr:'aria-label', en:'Options', es:'Opciones'},
     {sel:'#pfOptions', attr:'title', en:'Options', es:'Opciones'},
+    {sel:'.expert-controls-pane',attr:'aria-label',en:'Category options',es:'Opciones de categoría'},
     {sel:'#expertControlsLabel', en:'CATEGORY OPTIONS', es:'OPCIONES DE CATEGORÍA'},
     {sel:'#visualQualityLabel', en:'Xpace quality', es:'Calidad del Xpacio'},
     {sel:'#streamControlsLabel', en:'Player and camera', es:'Player y cámara'},
@@ -34777,12 +34781,12 @@ window.xtAPI = (function(){
     {sel:'[data-xp-do="aforoFake"]', attr:'title', en:'Customers generated by the simulation', es:'Clientes en modo aleatorio del juego'},
     {sel:'[data-xp-do="aforoStatus"]', en:'ℹ Status', es:'ℹ Estado'},
     {sel:'[data-xp-do="aforoStatus"]', attr:'title', en:'Show current occupancy status', es:'Ver el estado actual del aforo'},
-    {sel:'.quad-left .qm-acc-head', idx:0, en:'📢 PA system', es:'📢 Megafonía'},
-    {sel:'.quad-left .qm-acc-head', idx:1, en:'♪ Background music', es:'♪ Hilo Musical'},
-    {sel:'.quad-left .qm-acc-head', idx:2, en:'🖼 Image', es:'🖼 Imagen'},
-    {sel:'.quad-left .qm-acc-head', idx:3, en:'📺 Video', es:'📺 Video'},
-    {sel:'.quad-left .qm-acc-head', idx:4, en:'🤖 Avatar', es:'🤖 Avatar'},
-    {sel:'.quad-left .qm-acc-head', idx:5, en:'🔢 Occupancy', es:'🔢 Contador'},
+    {sel:'.quad-left .option-label', idx:0, en:'PA system', es:'Megafonía'},
+    {sel:'.quad-left .option-label', idx:1, en:'Background music', es:'Hilo Musical'},
+    {sel:'.quad-left .option-label', idx:2, en:'Image', es:'Imagen'},
+    {sel:'.quad-left .option-label', idx:3, en:'Video', es:'Video'},
+    {sel:'.quad-left .option-label', idx:4, en:'Avatar', es:'Avatar'},
+    {sel:'.quad-left .option-label', idx:5, en:'Counter', es:'Contador'},
     {sel:'#quadOptVersion', attr:'title', en:'Help · features', es:'Ayuda · funcionalidades'},
     {sel:'.quad-right', attr:'aria-label', en:'Advanced options', es:'Opciones Avanzadas'},
     {sel:'.quad-right > .qm-title', en:'Advanced options', es:'Opciones Avanzadas'},
@@ -35910,11 +35914,11 @@ window.xtAPI = (function(){
   #advSceneControls .tg-quick-btn[aria-pressed=true] span{color:#a7e6be !important}
 </style>
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
-<link rel="stylesheet" href="scripts/expert-categories.css?v=inventory-lang-20261004-1">
-<script src="scripts/expert-categories.js?v=itil-1"></script>
+<link rel="stylesheet" href="scripts/expert-categories.css?v=options-language-1">
+<script src="scripts/expert-categories.js?v=options-language-1"></script>
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=detail-1">
 <script src="scripts/expert-category-detail.js?v=inventory-lang-20261004-1"></script>
-<link rel="stylesheet" href="scripts/side-console.css?v=central-2">
+<link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">
 <script type="module" src="scripts/inventory-workspace.mjs?v=inventory-lang-20261004-1"></script>
