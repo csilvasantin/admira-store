@@ -950,6 +950,9 @@
     align-items:flex-start;text-align:left;border-radius:6px;background:rgba(120,243,255,.06);font-weight:600}
   .quad-left [data-option-id="megafonia"] .option-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
   .quad-left #announcementText{box-sizing:border-box;width:100%;min-height:80px;resize:vertical;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:8px;font:12px/1.4 monospace}
+  #announcementLogin[hidden]{display:none!important}
+  .quad-left #announcementVoice{width:100%;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:7px;font:12px monospace}
+  .quad-left #announcementVoiceLabel,.quad-left #announcementVoiceNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
   .quad-left #announcementTextLabel,.quad-left #announcementStatus{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
   .quad-left .qm-acc-body button:hover{background:rgba(120,243,255,.18);color:var(--xp-cyan)}
   /* Panel Avanzado (▤) — columna derecha a altura completa; desliza de der→izq */
@@ -988,10 +991,14 @@
   <div class="qm-acc" data-acc>
     <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="megafonia"><span class="expert-category-icon" data-options-icon="megafonia" aria-hidden="true"></span><strong class="option-label">Locuciones</strong></button>
     <div class="qm-acc-body">
+      <label id="announcementVoiceLabel" for="announcementVoice">Voz de la locución</label>
+      <select id="announcementVoice" aria-describedby="announcementVoiceNote"><option value="female">Femenina · Sara Martín (España)</option><option value="male">Masculina · David Martín (España)</option><option value="browser">Voz local del navegador · gratuita</option></select>
+      <span id="announcementVoiceNote">ElevenLabs · alta calidad. Una generación de pago, tres lecturas. Inicia sesión para generar.</span>
       <label id="announcementTextLabel" for="announcementText">Texto de la locución</label>
       <textarea id="announcementText" rows="4" maxlength="1500" placeholder="Escribe el texto que sonará en la tienda…" aria-describedby="announcementStatus"></textarea>
       <button type="button" data-xp-do="mega" title="Emitir el texto tres veces por voz">📢 Emitir locución</button>
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
+      <a id="announcementLogin" href="/auth/login" hidden>Iniciar sesión</a>
       <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará tres veces.</span>
     </div>
   </div>
@@ -1037,7 +1044,7 @@
   </div>
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
-<script src="scripts/announcements.js?v=20261005-pa-1"></script>
+<script src="scripts/announcements.js?v=20261005-pa-eleven-2"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
   <div class="qm-title">Opciones Avanzadas</div>
   <section id="advancedStreamControls" class="expert-menu-group" aria-labelledby="streamControlsLabel"><h2 id="streamControlsLabel">Player y cámara</h2><div class="tg-actions expert-primary-actions">
@@ -1439,7 +1446,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261005-pa-1"></script>
+<script src="xtanco-version.js?v=20261005-pa-eleven-2"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
