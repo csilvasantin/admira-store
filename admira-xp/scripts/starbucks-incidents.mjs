@@ -65,7 +65,7 @@ export function mountIncidentPanel({root,surface=root,lang='es',devices,onPower,
   const closed=inc.stage==='cerrada';
   if(closed){chip.removeAttribute('href');chip.setAttribute('role','button');chip.tabIndex=0;}
   else{chip.href=incidentDetailUrl(inc.id);chip.removeAttribute('role');chip.removeAttribute('tabindex');}
-  const model=chipModel(inc,now,lang);chip.dataset.tone=model.tone;chip.dataset.stage=inc.stage;
+  const model=chipModel(inc,now,document.documentElement.lang);chip.dataset.tone=model.tone;chip.dataset.stage=inc.stage;
   chip.title=(inc.subject||inc.id)+(closed?' · '+t('Pulsa para volver a emitir','Click to resume playback'):' · '+t('Abrir la ficha en Yokup','Open the ticket in Yokup'));
   chip.replaceChildren(...model.lines.map((line,i)=>{const el=document.createElement(i?'span':'strong');el.textContent=line;return el;}));
  }}
