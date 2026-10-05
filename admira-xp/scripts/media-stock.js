@@ -11,8 +11,10 @@
   let saved=pending(kind);const signature=JSON.stringify(payload);
   if(saved&&JSON.stringify(saved.payload)!==signature)throw error('pending_previous');
   const resumed=!!saved;saved=saved||{requestId:root.crypto.randomUUID(),payload};keep(kind,saved);
-  const post=()=>root.fetch('/admira-xp/'+endpoints[kind],{method:'POST',credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,requestId:saved.requestId}),signal});
-  let response=resumed?await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal}):await post();
+  const status=root.document?.getElementById({image:'imagePromptStatus',video:'videoPromptStatus',audio:'announcementStatus'}[kind]);if(status)status.dataset.requestId=saved.requestId;
+  const requestSignal=()=>signal||root.AbortSignal?.timeout(180000);
+  const post=()=>root.fetch('/admira-xp/'+endpoints[kind],{method:'POST',credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,requestId:saved.requestId}),signal:requestSignal()});
+  let response=resumed?await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal:requestSignal()}):await post();
   // A previous network failure may have happened before admission. Same ID is safe.
   if(resumed&&response.status===404)response=await post();
   const started=Date.now();
@@ -33,7 +35,7 @@
    }
    if(Date.now()-started>10*60*1000)throw error('still_pending');
    await sleep(4000,signal);
-   response=await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal});
+   response=await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal:requestSignal()});
   }
  }
  function link(kind,stock){const a=root.document?.getElementById(kind+'StockLink');if(!a)return;a.href='https://www.pixeria.com/stock.html?highlight='+encodeURIComponent(stock.id);a.dataset.stockId=stock.id;a.dataset.assetUrl=stock.url;a.hidden=false;renderLinks();}
