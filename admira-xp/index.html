@@ -948,6 +948,9 @@
      distinguirlas de las cabeceras, cian al pasar (Carlos, r35). */
   .quad-left .qm-acc-body button{padding:6px 8px;font-size:9px !important;line-height:1.25;color:#cdeef6;
     align-items:flex-start;text-align:left;border-radius:6px;background:rgba(120,243,255,.06);font-weight:600}
+  .quad-left [data-option-id="megafonia"] .option-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+  .quad-left #announcementText{box-sizing:border-box;width:100%;min-height:80px;resize:vertical;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:8px;font:12px/1.4 monospace}
+  .quad-left #announcementTextLabel,.quad-left #announcementStatus{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
   .quad-left .qm-acc-body button:hover{background:rgba(120,243,255,.18);color:var(--xp-cyan)}
   /* Panel Avanzado (▤) — columna derecha a altura completa; desliza de der→izq */
   .quad-right{top:38px;right:0;bottom:var(--xp-dock-clear,0px);width:280px;z-index:200;display:flex;flex-direction:column;gap:6px;padding:16px 12px;border-radius:14px 0 0 14px;overflow-y:auto;transform:translateX(100%);pointer-events:none;transition:transform .22s ease}
@@ -983,10 +986,13 @@
 <nav class="quad-menu quad-left is-collapsed" aria-label="Opciones">
   <div class="qm-title">Opciones</div>
   <div class="qm-acc" data-acc>
-    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="megafonia"><span class="expert-category-icon" data-options-icon="megafonia" aria-hidden="true"></span><strong class="option-label">Megafonía</strong></button>
+    <button type="button" class="qm-acc-head expert-category" data-acc-head data-option-id="megafonia"><span class="expert-category-icon" data-options-icon="megafonia" aria-hidden="true"></span><strong class="option-label">Locuciones</strong></button>
     <div class="qm-acc-body">
-      <button type="button" data-xp-do="mega" title="Redactar y lanzar un aviso por voz">📢 Lanzar aviso</button>
+      <label id="announcementTextLabel" for="announcementText">Texto de la locución</label>
+      <textarea id="announcementText" rows="4" maxlength="1500" placeholder="Escribe el texto que sonará en la tienda…" aria-describedby="announcementStatus"></textarea>
+      <button type="button" data-xp-do="mega" title="Emitir el texto tres veces por voz">📢 Emitir locución</button>
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
+      <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará tres veces.</span>
     </div>
   </div>
   <div class="qm-acc" data-acc>
@@ -1031,6 +1037,7 @@
   </div>
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
+<script src="scripts/announcements.js?v=20261005-pa-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
   <div class="qm-title">Opciones Avanzadas</div>
   <section id="advancedStreamControls" class="expert-menu-group" aria-labelledby="streamControlsLabel"><h2 id="streamControlsLabel">Player y cámara</h2><div class="tg-actions expert-primary-actions">
@@ -1432,7 +1439,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261004-1639"></script>
+<script src="xtanco-version.js?v=20261005-pa-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -2734,6 +2741,7 @@ function setMasterMute(on){
       }
     }
   }catch(e){}
+  if(dsMasterMute) window.XpaceAnnouncements?.stop();
   // Cancela cualquier locucion en cola del browser TTS.
   try{ if(dsMasterMute && window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){}
   // Iframes AdmiraTube
@@ -4120,6 +4128,7 @@ function toggleDigitalSignagePlayback(){
 }
 
 function stopAllMedia(){
+  window.XpaceAnnouncements?.stop();
   try{bgMusic.pause();}catch(e){}
   stopHomeMusic();
   try{dsVideoEl.pause();}catch(e){}
@@ -11162,8 +11171,8 @@ function doAction(id){
   if(id==='musicToggle'){toggleMusic();return;}
   if(id==='sfxToggle'){G.sfxVolume=G.sfxVolume>0?0:0.7;return;}
   // ── Cuadrática · Opciones (Equipo Silicio): acciones de los acordeones ──
-  if(id==='mega'){var _t=prompt(lang==='es'?'Texto del aviso de megafonía:':'Announcement text:');if(_t&&_t.trim())speakAnnouncementBrowser(_t.trim());return;}
-  if(id==='megaStop'){try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}return;}
+  if(id==='mega'){window.XpaceAnnouncements?.play(document.getElementById('announcementText')?.value,{language:lang,muted:dsMasterMute});return;}
+  if(id==='megaStop'){window.XpaceAnnouncements?.stop();return;}
   if(id==='imgGen'){var _d=prompt(lang==='es'?'Describe la imagen a generar (PixerIA):':'Describe the image to generate (PixerIA):');if(_d&&_d.trim())admiraCreaImagen(_d.trim());return;}
   if(id==='avatarShow'){openMetahumanPanel();return;}
   if(id==='avatarHide'){closeMetahumanPanel();return;}
@@ -34748,8 +34757,10 @@ window.xtAPI = (function(){
     {sel:'#btnConnectScreen', attr:'title', en:'Connect a physical screen (QR): the twin storefront mirrors live', es:'Conectar una pantalla física (QR): el escaparate del gemelo se refleja en vivo'},
     {sel:'.quad-left', attr:'aria-label', en:'Options', es:'Opciones'},
     {sel:'.quad-left > .qm-title', en:'Options', es:'Opciones'},
-    {sel:'[data-xp-do="mega"]', en:'📢 Make announcement', es:'📢 Lanzar aviso'},
-    {sel:'[data-xp-do="mega"]', attr:'title', en:'Write and play a voice announcement', es:'Redactar y lanzar un aviso por voz'},
+    {sel:'[data-xp-do="mega"]', en:'📢 Make Announcement', es:'📢 Emitir locución'},
+    {sel:'#announcementTextLabel', en:'Announcement text', es:'Texto de la locución'},
+    {sel:'#announcementText', attr:'placeholder', en:'Write the text to play in the store…', es:'Escribe el texto que sonará en la tienda…'},
+    {sel:'[data-xp-do="mega"]', attr:'title', en:'Play the text three times by voice', es:'Emitir el texto tres veces por voz'},
     {sel:'[data-xp-do="megaStop"]', en:'⏹ Stop', es:'⏹ Detener'},
     {sel:'[data-xp-do="megaStop"]', attr:'title', en:'Stop the current announcement', es:'Detener el aviso en curso'},
     {sel:'[data-xp-do="musicToggle"]', en:'▶ Play / Pause', es:'▶ Play / Pausa'},
@@ -34782,7 +34793,7 @@ window.xtAPI = (function(){
     {sel:'[data-xp-do="aforoFake"]', attr:'title', en:'Customers generated by the simulation', es:'Clientes en modo aleatorio del juego'},
     {sel:'[data-xp-do="aforoStatus"]', en:'ℹ Status', es:'ℹ Estado'},
     {sel:'[data-xp-do="aforoStatus"]', attr:'title', en:'Show current occupancy status', es:'Ver el estado actual del aforo'},
-    {sel:'.quad-left .option-label', idx:0, en:'PA system', es:'Megafonía'},
+    {sel:'.quad-left .option-label', idx:0, en:'Public Announcement System', es:'Locuciones'},
     {sel:'.quad-left .option-label', idx:1, en:'Background music', es:'Hilo Musical'},
     {sel:'.quad-left .option-label', idx:2, en:'Image', es:'Imagen'},
     {sel:'.quad-left .option-label', idx:3, en:'Video', es:'Video'},

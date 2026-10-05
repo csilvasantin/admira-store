@@ -1,12 +1,12 @@
 {
-  "version": "v.05.10.2026.r8.19:05",
+  "version": "v.05.10.2026.r9.19:22",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "deployedAt": "2026-10-05T17:10:14.871559+00:00",
-  "git": "fe5a4c728141a89a11ade33424aba3ee073e2e3a",
-  "gitFull": "fe5a4c728141a89a11ade33424aba3ee073e2e3a",
-  "gitShort": "fe5a4c7",
+  "deployedAt": "2026-10-05T17:25:07.068184+00:00",
+  "git": "07ce967e580490b4b9bc57320bbd82b8c028387b",
+  "gitFull": "07ce967e580490b4b9bc57320bbd82b8c028387b",
+  "gitShort": "07ce967",
   "dirty": false,
   "mirrorOf": "https://www.xpaceos.com/",
   "locale": "es"

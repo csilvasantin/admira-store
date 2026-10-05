@@ -1765,5 +1765,32 @@
       "cli_history",
       "scene_data"
     ]
+  },
+  "announcements": {
+    "es": "Opciones → Locuciones: escribe el texto y pulsa Emitir locución. El navegador lo lee completo tres veces consecutivas con voz castellana (es-ES); en inglés, Public Announcement System → Make Announcement usa en-US. El contador muestra 1/3, 2/3, 3/3 y la finalización. Detener cancela la lectura y las repeticiones pendientes. Un nuevo envío sustituye al anterior. La música del gemelo baja durante la emisión y recupera su volumen al finalizar o detener. El texto se conserva al cambiar /idioma ESP o /idioma ENG. Si el audio maestro está silenciado, falta síntesis de voz o falla la reproducción, se muestra un error sin confirmar una emisión. Es audio local del navegador que reproduce la tienda virtual; no envía avisos a tiendas físicas ni contrata voces de pago. /comunicar y /aviso conservan sus funciones anteriores.",
+    "en": "Options → Public Announcement System: write the text and press Make Announcement. The browser reads the full text three times sequentially using an English voice (en-US); in Spanish, Locuciones → Emitir locución uses es-ES. The counter shows 1/3, 2/3, 3/3 and completion. Stop cancels the reading and pending repetitions. A new submission replaces the previous one. Twin music is lowered during playback and its volume restored on completion or stop. Text is retained when switching /idioma ESP or /idioma ENG. Master mute, unavailable speech synthesis or playback failures show an error without confirming playback. Audio plays locally in the browser running the virtual store; it does not send announcements to physical stores or purchase paid voices. /comunicar and /aviso retain their earlier behavior.",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/announcements.md",
+    "text_field": "#announcementText",
+    "status": "#announcementStatus",
+    "play": "[data-xp-do=\"mega\"]",
+    "stop": "[data-xp-do=\"megaStop\"]",
+    "controller": "window.XpaceAnnouncements",
+    "repetitions": 3,
+    "language": {
+      "es": "es-ES",
+      "en": "en-US"
+    },
+    "local": true,
+    "physical_store_broadcast": false,
+    "paid_voice": false,
+    "new_remote_tool": false,
+    "preserves": [
+      "editable_text",
+      "white_label",
+      "language",
+      "cli_history",
+      "scene_data",
+      "existing_cli_announcements"
+    ]
   }
 }
