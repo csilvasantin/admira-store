@@ -37,7 +37,7 @@
   function readLS() {
     try {
       var c = JSON.parse(localStorage.getItem(LS_CACHE) || 'null');
-      if (c && Array.isArray(c.items) && c.items.length) { ITEMS = c.items; loadedAt = c.ts || 0; }
+      if (c && Array.isArray(c.items) && c.items.length) { ITEMS = c.items.filter(function(it){return !(it.tags||[]).includes('admira-xp');}); loadedAt = c.ts || 0; }
     } catch (e) {}
   }
   function writeLS() {
@@ -54,7 +54,7 @@
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         var raw = (d && Array.isArray(d.items)) ? d.items : [];
-        var items = raw.filter(function (it) { return it && it.url && RENDERABLE[it.type]; });
+        var items = raw.filter(function (it) { return it && it.url && RENDERABLE[it.type] && !(it.tags||[]).includes('admira-xp'); });
         if (items.length) { ITEMS = items; loadedAt = Date.now(); writeLS(); }
         inflight = null;
         return ITEMS;

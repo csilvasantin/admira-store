@@ -8,7 +8,7 @@ export function cleanTracks(tracks){
  if(!Array.isArray(tracks)||tracks.length>100)fail('Expected up to 100 tracks');const ids=new Set();
  return tracks.map((t,i)=>{let u;try{u=new URL(t.url);}catch{fail('Use a playable HTTPS media URL');}
  if(u.protocol!=='https:'||u.username||u.password||/(^|\.)(youtube\.com|youtu\.be)$/.test(u.hostname))fail('Use a direct HTTPS media URL, not a YouTube page');
- const id=String(t.id||t.stockId||'track-'+i),title=String(t.title||'').trim();if(!/^[\w-]{1,100}$/.test(id)||ids.has(id)||!title||title.length>200)fail('Track IDs must be unique and titles 1–200 characters');ids.add(id);return {id,title,url:u.href};});
+ const id=String(t.id||t.stockId||'track-'+i),title=String(t.title||'').trim();if(!/^[\w-]{1,100}$/.test(id)||ids.has(id)||!title||title.length>200)fail('Track IDs must be unique and titles 1–200 characters');ids.add(id);return {id,title,url:u.href,...(t.kind==='image'?{kind:'image'}:{})};});
 }
 export function validateDeviceLayout(value){
  if(!value||typeof value!=='object'||!value.playlists||!value.assignments)fail('Invalid device layout');const out=emptyDeviceLayout();

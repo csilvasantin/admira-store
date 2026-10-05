@@ -34,3 +34,9 @@ test('changing a playlist loop flag keeps its current clock and does not affect 
  await runtime.reload([ids[0]]);assert.equal(v[0].src,a.url);assert.equal(runtime.nowPlaying([ids[0]])[0].loop,false);
  }finally{runtime.dispose();}
 });
+
+test('image identity survives paused partitions and playlist additions without launching a different item',async()=>{
+ const previous=globalThis.Image;globalThis.Image=class{set src(value){queueMicrotask(()=>this.onload());}};
+ const photo={id:'photo',title:'Coffee',kind:'image',url:'https://stock.example/coffee.jpg'},v=new Video(),id='starbucks-wall-06',runtime=createDevicePlayback(),config={playlists:{'playlist-mixed':{title:'Mixed',tracks:[a,photo]}},assignments:{[id]:'playlist-mixed'}};
+ try{runtime.update({devices:[{id,video:v}],config});await tick();await runtime.jump('playlist-mixed','photo');assert.equal(v.poster,photo.url);runtime.setPlaying([id],false);await tick();assert.equal(runtime.nowPlaying([id])[0].trackId,'photo');assert.equal(runtime.state([id]).playing,false);config.playlists['playlist-mixed'].tracks.push(b);runtime.update({config});assert.equal(runtime.nowPlaying([id])[0].trackId,'photo');assert.equal(runtime.state([id]).playing,false);runtime.setPlaying([id],true);await tick();assert.equal(runtime.nowPlaying([id])[0].trackId,'photo');assert.equal(v.poster,photo.url);assert.equal(runtime.state([id]).playing,true);}finally{runtime.dispose();globalThis.Image=previous;}
+});

@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.05.10.2026.r15.21:09",
+  "version": "v.05.10.2026.r16.22:03",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.40",
+    "version": "2.12.41",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -1859,8 +1859,8 @@
     "automatic_stock": true
   },
   "image_prompt": {
-    "es": "Opciones → Imagen: escribe en Qué quieres anunciar el producto, oferta o anuncio (hasta 1500 caracteres) y pulsa Generar imagen (PixerIA). El campo está visible en el desplegable, conserva el texto al cambiar de idioma y evita envíos duplicados mientras genera. Requiere sesión autorizada y consume una generación de pago. La imagen usa el generador PixerIA existente y se guarda en Stock y aparece durante 30 segundos en la pantalla del contador; no publica una campaña ni envía contenido a tiendas físicas. Un texto vacío pide completar el campo; un fallo se muestra en el estado. /creaimagen mantiene su uso anterior.",
-    "en": "Options → Image: enter the product, offer or announcement in What do you want to advertise? (up to 1500 characters), then press Generate image (PixerIA). The field is visible inside the panel, retains text across language changes and prevents duplicate submissions while generating. An authorized session is required and one paid image generation is consumed. It uses the existing PixerIA generator and saves the image to Stock and displays it on the counter screen for 30 seconds; it does not publish a campaign or send content to physical stores. An empty brief asks you to fill the field; failures are shown in the status. /creaimagen retains its existing behavior.",
+    "es": "Opciones → Imagen: escribe en Qué quieres anunciar el producto, oferta o anuncio (hasta 1500 caracteres) y pulsa Generar imagen (PixerIA). El campo está visible en el desplegable, conserva el texto al cambiar de idioma y evita envíos duplicados mientras genera. Requiere sesión autorizada y consume una generación de pago. La imagen usa el generador PixerIA existente y se guarda en Stock y aparece en el previo de Opciones; pulsa Lanzar para enviarla a la playlist de pantallas; no publica una campaña ni envía contenido a tiendas físicas. Un texto vacío pide completar el campo; un fallo se muestra en el estado. /creaimagen genera y prepara el previo sin autoemisión.",
+    "en": "Options → Image: enter the product, offer or announcement in What do you want to advertise? (up to 1500 characters), then press Generate image (PixerIA). The field is visible inside the panel, retains text across language changes and prevents duplicate submissions while generating. An authorized session is required and one paid image generation is consumed. It uses the existing PixerIA generator and saves the image to Stock and shows it in the Options preview; press Launch to send it to the screen playlist; it does not publish a campaign or send content to physical stores. An empty brief asks you to fill the field; failures are shown in the status. /creaimagen generates and stages the preview without autoplay.",
     "text_field": "#imagePrompt",
     "status": "#imagePromptStatus",
     "generate": "[data-xp-do=\"imgGen\"]",
@@ -1953,5 +1953,34 @@
         "mime": "audio/mpeg"
       }
     ]
+  },
+  "optionsPlaylists": {
+    "guide": "https://www.admira.store/admira-xp/docs/options-playlists.md",
+    "es": "Opciones muestra un previo de cada imagen, vídeo o música nueva de Stock. Generar y guardar en Stock no envían ni reproducen el contenido. Revisa el previo y pulsa Lanzar para incorporarlo y reproducirlo en las pantallas o el hilo musical del Xpacio. Añadir a playlist y arrastrar al menú Playlist actual incorporan el contenido en la posición elegida sin interrumpir la emisión actual. Los menús compactos están al final de Hilo Musical y Vídeo: el título de una fila abre el previo, ▶ salta a ese contenido, arrastrar reordena y ↑ permite ordenar con teclado. En Matrix el selector indica la playlist y sus pantallas o TPV; se conservan las asignaciones y el contenido activo. Las imágenes duran 30 segundos en la playlist. Los previos de vídeo son silenciosos y no arrancan solos; el previo musical se escucha sólo al pulsar Play y baja temporalmente el hilo. Las canciones recibidas de PixerIA esperan en el previo. Los contenidos recién creados se excluyen de la selección automática XPL. Las locuciones conservan su botón explícito Emitir y sus tres lecturas. La emisión corresponde al reproductor virtual de esta página; no confirma publicación física.",
+    "en": "Options shows a preview of each new Stock image, video or music track. Generating and saving to Stock never send or play the content. Review it and press Launch to add it and play it on the Xpace screens or background music. Add to playlist and dropping onto Current playlist insert the content at the chosen position without interrupting current playback. Compact menus appear at the bottom of Background music and Video: a row title opens its preview, ▶ jumps to that content, dragging reorders and ↑ supports keyboard ordering. In Matrix the selector identifies the playlist and its screens or POS; assignments and the active item are retained. Playlist images last 30 seconds. Video previews stay muted and never autoplay; music previews require Play and temporarily lower background music. Tracks delivered by PixerIA wait in preview. Newly generated content is excluded from automatic XPL selection. Announcements keep their explicit Play announcement action and three readings. Playback refers to this page’s virtual player; it does not confirm physical broadcasting.",
+    "auto_send": false,
+    "generation_preview": [
+      "image",
+      "video",
+      "music"
+    ],
+    "launch": "[data-media-launch]",
+    "playlist_menus": [
+      "[data-options-playlist=\"music\"]",
+      "[data-options-playlist=\"screens\"]"
+    ],
+    "drop_behavior": "insert at chosen position, preserve current playback",
+    "image_duration_seconds": 30,
+    "runtime_scope": "local virtual players; physical broadcast not verified",
+    "staged_storage": "sessionStorage:xpaceos.options-media-ready.v1",
+    "stock_reference_storage": "localStorage:xpaceos.options-playlist-stock.v1",
+    "matrix_playlist_storage": "xpaceos.starbucks.device-layout.v1",
+    "matrix_registry": "https://mcp.admira.store/playlists",
+    "matrix_tracks_image_contract": {
+      "kind": "image",
+      "url": "direct HTTPS media URL",
+      "duration_seconds": 30
+    },
+    "music_generation": "existing PixerIA delivery to Stock; no new paid music generator added"
   }
 }

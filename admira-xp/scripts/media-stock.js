@@ -40,7 +40,7 @@
    response=await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal:requestSignal()});
   }
  }
- function link(kind,stock){const a=root.document?.getElementById(kind+'StockLink');if(!a)return;a.href='https://www.pixeria.com/stock.html?highlight='+encodeURIComponent(stock.id);a.dataset.stockId=stock.id;a.dataset.assetUrl=stock.url;a.hidden=false;renderLinks();}
+ function link(kind,stock){const a=root.document?.getElementById(kind+'StockLink');if(!a)return;a.href='https://www.pixeria.com/stock.html?highlight='+encodeURIComponent(stock.id);a.dataset.stockId=stock.id;a.dataset.assetUrl=stock.url;a.hidden=false;renderLinks();if(['image','video'].includes(kind))root.XpaceMediaOptions?.stage(kind,stock);}
  function renderLinks(){const en=root.document.documentElement.lang==='en';for(const a of root.document.querySelectorAll('[data-media-stock]'))a.textContent=en?'Open in Stock':'Ver en Stock';}
  root.XpaceMedia={generate,pending,link};
  if(root.MutationObserver)new root.MutationObserver(renderLinks).observe(root.document.documentElement,{attributes:true,attributeFilter:['lang']});renderLinks();

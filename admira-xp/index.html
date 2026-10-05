@@ -951,6 +951,20 @@
     align-items:flex-start;text-align:left;border-radius:6px;background:rgba(120,243,255,.06);font-weight:600}
   .quad-left [data-option-id="megafonia"] .option-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
   .quad-left #announcementText,.quad-left #imagePrompt,.quad-left #videoPrompt{box-sizing:border-box;width:100%;min-height:80px;resize:vertical;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:8px;font:12px/1.4 monospace}
+  .media-ready[hidden]{display:none!important}
+  .media-ready{border:1px solid #78f3ff55;border-radius:4px;padding:6px;display:grid;gap:5px;min-width:0}
+  .media-ready img,.media-ready video,.options-playlist-preview img,.options-playlist-preview video{width:100%;max-height:150px;object-fit:contain;background:#031316}
+  .media-ready audio,.options-playlist-preview audio{width:100%;height:32px}
+  .media-ready p,.options-playlist p{margin:3px 0;font:11px/1.4 monospace;white-space:normal}
+  .options-playlist{border:1px solid #78f3ff44;border-radius:4px;padding:5px;font:11px/1.4 monospace}
+  .options-playlist summary{cursor:pointer;white-space:normal}
+  .options-playlist select{width:100%;background:#071923;color:#cdeef6}
+  .options-playlist ol{margin:5px 0;padding:0;list-style:none;max-height:240px;overflow:auto}
+  .options-playlist li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:3px;border-top:1px solid #78f3ff33;padding:4px 0}
+  .options-playlist li[aria-current=true]{background:#78f3ff18;border-left:2px solid #78f3ff}
+  .options-playlist li button{margin:0;white-space:normal;text-align:left;min-width:0}
+  .media-drop-over{outline:2px solid #78f3ff}
+  .media-ready button,.options-playlist button{touch-action:manipulation}
   #announcementLogin[hidden],#imagePromptLogin[hidden],#videoPromptLogin[hidden],[data-media-stock][hidden],#videoPreview[hidden]{display:none!important}
   .quad-left #announcementVoice{width:100%;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:7px;font:12px monospace}
   .quad-left #announcementVoiceLabel,.quad-left #announcementVoiceNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
@@ -1011,6 +1025,8 @@
       <button type="button" data-xp-do="musicPrev" title="Canción anterior">◀ Anterior</button>
       <button type="button" data-xp-do="musicNext" title="Canción siguiente">▶ Siguiente</button>
       <button type="button" data-xp-do="sfxToggle" title="Efectos de sonido on/off">🔊 Efectos (FX)</button>
+      <section class="media-ready" data-media-ready="music" hidden></section>
+      <details class="options-playlist" data-options-playlist="music"><summary>Playlist actual · Hilo musical</summary><div class="options-playlist-body"></div></details>
     </div>
   </div>
   <div class="qm-acc" data-acc>
@@ -1019,10 +1035,11 @@
       <label id="imagePromptLabel" for="imagePrompt">Qué quieres anunciar</label>
       <textarea id="imagePrompt" rows="4" maxlength="1500" placeholder="Describe el producto, oferta o anuncio que quieres mostrar…" aria-describedby="imagePromptStatus"></textarea>
       <span id="imagePromptNote">PixerIA · una generación de pago. Requiere sesión.</span>
-      <button type="button" data-xp-do="imgGen" title="Generar una imagen con PixerIA y mostrarla en pantalla">✨ Generar imagen (PixerIA)</button>
+      <button type="button" data-xp-do="imgGen" title="Generar una imagen y revisar el previo antes de lanzar">✨ Generar imagen (PixerIA)</button>
       <a id="imagePromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
       <a id="imageStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
       <span id="imagePromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera la imagen.</span>
+      <section class="media-ready" data-media-ready="image" hidden></section>
     </div>
   </div>
   <div class="qm-acc" data-acc>
@@ -1035,11 +1052,12 @@
       <a id="videoPromptLogin" href="/auth/login" hidden>Iniciar sesión</a>
       <span id="videoPromptStatus" role="status" aria-live="polite">Escribe lo que quieres anunciar y genera el vídeo.</span>
       <a id="videoStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
-      <video id="videoPreview" controls playsinline preload="metadata" hidden style="width:100%;max-height:180px"></video>
+      <section class="media-ready" data-media-ready="video" hidden><video id="videoPreview" controls muted playsinline preload="metadata" hidden></video></section>
       <button type="button" data-xp-do="dsToggle" title="Reproducir / pausar el vídeo de las pantallas">▶ Play / Pausa</button>
       <button type="button" data-xp-do="dsPrev" title="Vídeo anterior">◀ Vídeo anterior</button>
       <button type="button" data-xp-do="dsNext" title="Vídeo siguiente">▶ Vídeo siguiente</button>
       <button type="button" data-xp-do="dsMute" title="Audio de las pantallas on/off">🔈 Audio DS</button>
+      <details class="options-playlist" data-options-playlist="screens"><summary>Playlist actual · Pantallas</summary><div class="options-playlist-body"></div></details>
     </div>
   </div>
   <div class="qm-acc" data-acc>
@@ -1060,10 +1078,11 @@
   </div>
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
-<script src="scripts/media-stock.js?v=20261005-stock-4"></script>
+<script src="scripts/media-options.js?v=20261005-preview-1"></script>
+<script src="scripts/media-stock.js?v=20261005-preview-1"></script>
 <script src="scripts/announcements.js?v=20261005-stock-3"></script>
-<script src="scripts/image-prompt.js?v=20261005-stock-3"></script>
-<script src="scripts/video-prompt.js?v=20261005-stock-3"></script>
+<script src="scripts/image-prompt.js?v=20261005-preview-1"></script>
+<script src="scripts/video-prompt.js?v=20261005-preview-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
   <div class="qm-title">Opciones Avanzadas</div>
   <section id="advancedStreamControls" class="expert-menu-group" aria-labelledby="streamControlsLabel"><h2 id="streamControlsLabel">Player y cámara</h2><div class="tg-actions expert-primary-actions">
@@ -1465,7 +1484,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261005-pa-eleven-2"></script>
+<script src="xtanco-version.js?v=20261005-preview-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -2444,6 +2463,7 @@ const DS_IMPORT={
   KIND:Object.create(null),         // name -> 'image' | 'video'
   BLOB_URLS:Object.create(null),    // name -> object URL (revoke on remove)
   IDS:Object.create(null),          // name -> IndexedDB record id
+  DURATION_BY_NAME:Object.create(null),
   DURATION_MS:8000,                 // image slide duration
 };
 
@@ -2827,7 +2847,7 @@ const dsImageEl=new Image();
 dsImageEl.decoding='async';
 let dsImageDeadlineMs=0;
 let dsImageReady=false;
-dsImageEl.onload=()=>{ dsImageReady=true; dsImageDeadlineMs=Date.now()+DS_IMPORT.DURATION_MS; };
+dsImageEl.onload=()=>{ dsImageReady=true; dsImageDeadlineMs=Date.now()+(DS_IMPORT.DURATION_BY_NAME?.[currentDSVideoName()]||DS_IMPORT.DURATION_MS); };
 dsImageEl.onerror=()=>{ dsImageReady=false; };
 
 function dsImportsDBOpen(){
@@ -3360,7 +3380,7 @@ function switchDSVideo(idx){
     dsMode='image';
     dsVideoEl.pause();
     dsImageReady=false;
-    dsImageDeadlineMs=Date.now()+DS_IMPORT.DURATION_MS; // tentative; refreshed onload
+    dsImageDeadlineMs=Date.now()+(DS_IMPORT.DURATION_BY_NAME?.[currentDSVideoName()]||DS_IMPORT.DURATION_MS); // tentative; refreshed onload
     dsImageEl.src=file;
     mgrDanceTimer=300;
     mgrSongBubbleTimer=300;
@@ -3379,6 +3399,37 @@ function switchDSVideo(idx){
   }
   applyDSAudioRouting();
 }
+
+// Options uses the existing playback lists. Generated Stock media remains staged until an explicit action.
+(function(){
+ const KEY='xpaceos.options-playlist-stock.v1';let saved={screens:[],music:[]};
+ try{const value=JSON.parse(localStorage.getItem(KEY));if(value)saved=value;}catch(_){}
+ const absolute=u=>u?new URL(u,location.href).href:'';
+ const valid=t=>{try{const u=new URL(t.url);return ['image','video','music'].includes(t.kind)&&u.origin==='https://api.admira.store'&&u.pathname==='/stock/asset/'+t.id;}catch(_){return false;}};
+ function register(t){if(!valid(t))throw Error('Invalid Stock content');
+  const list=t.kind==='music'?SONG_LIST:VIDEO_LIST,files=t.kind==='music'?SONG_FILES:VIDEO_FILES;
+  let name=list.find(n=>absolute(files[n])===t.url);if(name)return name;
+  name=String(t.title||t.id).slice(0,70)+' · '+t.id.slice(-6);while(list.includes(name))name+='+';
+  list.push(name);files[name]=t.url;if(t.kind!=='music'){DS_IMPORT.KIND[name]=t.kind;if(t.kind==='image')DS_IMPORT.DURATION_BY_NAME[name]=30000;}return name;
+ }
+ for(const channel of ['screens','music'])saved[channel]=(saved[channel]||[]).filter(valid);
+ for(const t of [...saved.screens,...saved.music])register(t);
+ try{const order=JSON.parse(localStorage.getItem('xpaceos.options-music-order.v1'));if(Array.isArray(order)){const retained=order.filter(n=>SONG_LIST.includes(n));SONG_LIST.splice(0,SONG_LIST.length,...retained,...SONG_LIST.filter(n=>!retained.includes(n)));}}catch(_){}
+ const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(saved));localStorage.setItem('xtanco_ds_playlist_order',JSON.stringify(VIDEO_LIST));localStorage.setItem('xpaceos.options-music-order.v1',JSON.stringify(SONG_LIST));}catch(_){}window.dispatchEvent(new Event('xpace:playlist'));};
+ window.XpaceOptionsPlayback={
+  ownsScreens:false,
+  control(action){if(action==='musicToggle'){toggleMusic();return;}if(action.startsWith('music')){const list=SONG_LIST,index=list.indexOf(G?.nowPlaying||shopTimeSettings.nowPlaying),next=(index+(action==='musicPrev'?-1:1)+list.length)%list.length;return this.play('music',list[next]);}this.ownsScreens=true;if(action==='dsToggle'){toggleVideoPause();return;}const next=(dsVideoIdx+(action==='dsPrev'?-1:1)+VIDEO_LIST.length)%VIDEO_LIST.length;return this.play('screens',VIDEO_LIST[next]);},
+  groups(channel){return [{id:channel,title:channel==='music'?(lang==='en'?'Background music':'Hilo musical'):(lang==='en'?'Xpace screens':'Pantallas del Xpacio')}];},
+  state(channel){const music=channel==='music',list=music?SONG_LIST:VIDEO_LIST,files=music?SONG_FILES:VIDEO_FILES,now=music?absolute(bgMusic.currentSrc||bgMusic.src):absolute(VIDEO_FILES[currentDSVideoName()]);
+   return {groups:this.groups(channel),tracks:list.map(name=>({id:name,title:name,url:absolute(files[name]),kind:music?'music':DS_IMPORT.KIND[name]||'video',active:music?!!files[name]&&absolute(files[name])===now:name===currentDSVideoName()})),playing:music?!bgMusic.paused:videoPlaying&&!videoPaused};},
+  async play(channel,id){if(channel==='music'){if(G?.staff?.some(s=>s.hired&&s.role===4))throw Error(lang==='en'?'DJ controls the music':'DJ controla la música');if(!SONG_FILES[id])throw Error('Audio unavailable');if(G)G.nowPlaying=id;shopTimeSettings.nowPlaying=id;bgMusic.src=SONG_FILES[id];bgMusic.load();await bgMusic.play();}
+   else{const idx=VIDEO_LIST.indexOf(id);if(idx<0)throw Error('Content unavailable');this.ownsScreens=true;videoPlaying=true;switchDSVideo(idx);if(DS_IMPORT.KIND[id]==='image'){if(!dsImageEl.complete||!dsImageEl.naturalWidth)await new Promise((resolve,reject)=>{dsImageEl.addEventListener('load',resolve,{once:true});dsImageEl.addEventListener('error',reject,{once:true});});}else if(VIDEO_FILES[id])await dsVideoEl.play();}window.dispatchEvent(new Event('xpace:playlist'));},
+  async insert(channel,t,before){if((channel==='music')!==(t.kind==='music'))throw Error('Wrong playlist');const name=register(t),list=channel==='music'?SONG_LIST:VIDEO_LIST,current=currentDSVideoName();
+   const existing=list.indexOf(name);list.splice(existing,1);const at=before?list.indexOf(before):-1;list.splice(at<0?list.length:at,0,name);if(channel==='screens')dsVideoIdx=Math.max(0,VIDEO_LIST.indexOf(current));
+   const queue=saved[channel];if(!queue.some(x=>x.id===t.id))queue.push(t);persist();return name;},
+  async move(channel,id,before){const list=channel==='music'?SONG_LIST:VIDEO_LIST,current=currentDSVideoName(),from=list.indexOf(id);if(from<0||id===before)return;list.splice(from,1);const at=before?list.indexOf(before):-1;list.splice(at<0?list.length:at,0,id);if(channel==='screens')dsVideoIdx=Math.max(0,VIDEO_LIST.indexOf(current));persist();}
+ };
+})();
 
 function nextDSVideo(){ switchDSVideo(dsVideoIdx+1); }
 function prevDSVideo(){ switchDSVideo(dsVideoIdx-1); }
@@ -3835,7 +3886,7 @@ function renderDSCanvas(ctx,w,h,frame,displayIdx){
   // se emite en las DOS pantallas gigantes del fondo. Manda sobre la rotación
   // (vídeos/slides) pero NO sobre un PIN explícito (que ya retornó arriba).
   const xm=(typeof window!=='undefined')?window.__dsXplMsg:null;
-  if(xm && Date.now()<(xm.until||0)){
+  if(!window.XpaceOptionsPlayback?.ownsScreens && xm && Date.now()<(xm.until||0)){
     const grd=ctx.createLinearGradient(0,0,w,h);
     grd.addColorStop(0,xm.bg||'#0a1a2a'); grd.addColorStop(1,'#000');
     ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
@@ -4095,7 +4146,7 @@ function setDigitalSignagePaused(displayIdx,paused){
     if(!DS_DISPLAYS.some(item=>!item.paused)&&!dsVideoEl.paused) dsVideoEl.pause();
     else if(DS_DISPLAYS.some(item=>!item.paused)&&dsVideoEl.paused&&dsVideoEl.src) dsVideoEl.play().catch(()=>{});
   } else if(dsMode==='image' && !paused){
-    dsImageDeadlineMs=Date.now()+DS_IMPORT.DURATION_MS;
+    dsImageDeadlineMs=Date.now()+(DS_IMPORT.DURATION_BY_NAME?.[currentDSVideoName()]||DS_IMPORT.DURATION_MS);
   }
   if(G&&G.admiraTube&&G.admiraTube.active) setAdmiraTubePaused(displayIdx,paused);
   syncGlobalVideoPaused();
@@ -29247,7 +29298,7 @@ window.xtAPI = (function(){
             const r=await fetch(WORKER+'/stock/list?limit=80',{cache:'no-store'});
             if(!r.ok) return null;
             const d=await r.json();
-            const items=(Array.isArray(d&&d.items)?d.items:[]).filter(it=>it&&it.url&&['image','video','animation'].includes(it.type));
+            const items=(Array.isArray(d&&d.items)?d.items:[]).filter(it=>it&&it.url&&['image','video','animation'].includes(it.type)&&!(it.tags||[]).includes('admira-xp'));
             if(!items.length) return null;
             let pool=null;
             if(seg.audience){
@@ -30236,14 +30287,14 @@ window.xtAPI = (function(){
     const d=String(desc||'').trim(),en=lang==='en';
     if(!d)return en?'Usage: /creaimagen <advertising brief>':'Uso: /creaimagen <qué quieres anunciar>';
     if(d.length>1500)return en?'Use up to 1500 characters.':'Utiliza hasta 1500 caracteres.';
-    const job={desc:d.slice(0,60),t0:Date.now(),eta:18000,img:null,until:0};window.ADMIRA_CREA=job;
+    const job={desc:d.slice(0,60),t0:Date.now(),eta:18000,img:null,until:0};
     try{
       const saved=window.XpaceMedia.pending('image');const j=await window.XpaceMedia.generate('image',saved?.payload.text===d?saved.payload:{text:d,language:en?'en':'es'});
       const im=new Image();im.crossOrigin='anonymous';await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=reject;im.src=j.stock.url;});
       window.XpaceMedia.link('image',j.stock);
-      if(window.ADMIRA_CREA!==job)return en?'A newer image request replaced this preview.':'Una nueva solicitud ha sustituido esta vista previa.';
-      job.img=im;job.until=Date.now()+30000;window.ADMIRA_CREA_LAST=job;
-      return en?'Saved to Stock → counter screen (30 s).':'Guardada en Stock → pantalla del contador (30 s).';
+      job.img=im;window.ADMIRA_CREA_LAST=job;
+      window.XpaceMediaOptions.stage('image',{...j.stock,title:d});
+      return en?'Saved to Stock. Review the preview and press Launch.':'Guardada en Stock. Revisa el previo y pulsa Lanzar.';
     }catch(e){if(window.ADMIRA_CREA===job)window.ADMIRA_CREA=null;if(e.code==='auth')return en?'Sign in to generate the image.':'Inicia sesión para generar la imagen.';return en?'Could not generate the image. Try again.':'No se pudo generar la imagen. Vuelve a intentarlo.';}
   }
   window.admiraCreaImagen=admiraCreaImagen;
@@ -34790,7 +34841,7 @@ window.xtAPI = (function(){
     {sel:'[data-xp-do="sfxToggle"]', en:'🔊 Sound effects (FX)', es:'🔊 Efectos (FX)'},
     {sel:'[data-xp-do="sfxToggle"]', attr:'title', en:'Sound effects on/off', es:'Efectos de sonido on/off'},
     {sel:'[data-xp-do="imgGen"]', en:'✨ Generate image (PixerIA)', es:'✨ Generar imagen (PixerIA)'},
-    {sel:'[data-xp-do="imgGen"]', attr:'title', en:'Generate an image with PixerIA and show it on screen', es:'Generar una imagen con PixerIA y mostrarla en pantalla'},
+    {sel:'[data-xp-do="imgGen"]', attr:'title', en:'Generate an image and review it before launching', es:'Generar una imagen y revisar el previo antes de lanzar'},
     {sel:'[data-xp-do="dsToggle"]', en:'▶ Play / Pause', es:'▶ Play / Pausa'},
     {sel:'[data-xp-do="dsToggle"]', attr:'title', en:'Play / pause screen video', es:'Reproducir / pausar el vídeo de las pantallas'},
     {sel:'[data-xp-do="dsPrev"]', en:'◀ Previous video', es:'◀ Vídeo anterior'},
@@ -36166,7 +36217,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=windows-menu-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=options-preview-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>

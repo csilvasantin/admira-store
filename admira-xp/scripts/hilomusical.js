@@ -3,9 +3,9 @@
  *
  * AUTÓNOMO: no toca la lógica del juego (index.html). Sondea la cola del worker
  * pixer-eleven (/hilomusical/next) y, cuando llega una canción nueva (generada en
- * pixeria y YA publicada en el Stock), la pone en #bgMusic al vuelo. La canción
+ * pixeria y YA publicada en el Stock), la deja en el previo de Opciones, sin cambiar #bgMusic. La canción
  * vive en el Stock (inventario, type=music, tag 'hilo-<store>'), así que también
- * es emitible en los players y vendible; aquí solo la reproducimos en el gemelo.
+ * es emitible en los players y vendible; Lanzar la añade explícitamente al hilo del gemelo.
  *
  * id de la tienda: window.MEGAFONIA_STORE › STORE_CFG.loc › ?store › ?loc › ?play › 'default'
  * Disparo manual: window.HILOMUSICAL.add(sourceUrl, title)
@@ -29,16 +29,9 @@
   var since = null;          // baseline = reloj del SERVIDOR (sin skew, sin repetir cola vieja)
   function bgMusicEl() { return document.getElementById('bgMusic'); }
 
-  function playSong(item) {
-    var m = bgMusicEl(); if (!m || !item || !item.url) return;
-    try {
-      m.src = item.url;      // el asset de Stock es reproducible (audio/mpeg)
-      m.loop = true;         // el nuevo tema queda como hilo del Xpacio
-      m.load();
-      var p = m.play(); if (p && p.catch) p.catch(function () {});
-    } catch (e) {}
-    window.HILOMUSICAL.now = item;
-    try { if (typeof showEv === 'function') showEv('🎵 Hilo musical: ' + String(item.title || '').slice(0, 50), '#8cffbd'); } catch (e) {}
+  function previewSong(item) {
+    if (!item || !item.id || !item.url) return;
+    try { window.XpaceMediaOptions?.stage('music', item); } catch (_) {}
   }
 
   function poll() {
@@ -47,10 +40,10 @@
       .then(function (d) {
         if (!d) return;
         if (d.playlist) window.HILOMUSICAL.playlist = d.playlist;
-        if (since == null) { since = d.now || Date.now(); return; }   // 1er poll: baseline
+        if (since == null) { since = d.now || Date.now(); if (!window.XpaceMediaOptions?.get('music') && d.playlist?.length) previewSong(d.playlist[d.playlist.length - 1]); return; }   // 1er poll: baseline
         if (d.pending && d.pending.length) {
           d.pending.forEach(function (e) { if (e.ts > since) since = e.ts; });
-          playSong(d.pending[d.pending.length - 1]);                 // la más reciente
+          previewSong(d.pending[d.pending.length - 1]);                 // la más reciente
         }
       })
       .catch(function () {});
@@ -63,7 +56,7 @@
       return fetch(API + '/hilomusical/push', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ store: storeId(), sourceUrl: sourceUrl, title: title || 'Canción', motor: 'manual' })
-      }).then(function () { setTimeout(poll, 1000); }).catch(function () {});
+      }).then(function (r) { if (!r.ok) throw Error('Stock unavailable'); return r.json(); }).then(function (item) { previewSong(item); return item; }).catch(function () {});
     }
   };
 

@@ -37,3 +37,11 @@ test('loop defaults on, can stop at the last item, and manual play restarts a co
  await c.play();assert.equal(c.state().index,0);assert.equal(c.state().playing,true);c.setLoop(true);await c.jump('b');v.dispatchEvent(new Event('ended'));await flush();assert.equal(c.state().index,0);assert.equal(c.state().playing,true);
  }finally{c.dispose();}
 });
+
+test('an explicitly launched image uses a muted 30-second poster, pauses and advances to video without audio',async()=>{
+ class MixedVideo extends Video{playCalls=0;removeAttribute(n){this[n]='';}play(){this.playCalls++;return super.play();}}
+ const videos=[new MixedVideo(),new MixedVideo()],pending=new Map();let key=0;
+ const control=createScreenPlaylist({videos,tracks:[{id:'photo',title:'Coffee',kind:'image',url:'https://stock.example/photo.jpg'},{id:'movie',title:'Video',url:'https://stock.example/video.mp4'}],loadImage:async()=>{},schedule:(fn,ms)=>{assert.ok(ms>29000&&ms<=30000);pending.set(++key,fn);return key;},unschedule:k=>pending.delete(k)});
+ try{await control.jump('photo');assert.equal(control.state().playing,true);assert.ok(videos.every(v=>v.poster==='https://stock.example/photo.jpg'&&v.playCalls===0&&v.muted));await control.play();assert.equal(pending.size,1);control.pause();assert.equal(pending.size,0);await control.play();assert.equal(pending.size,1);[...pending.values()][0]();await flush();assert.equal(control.state().index,1);assert.ok(videos.every(v=>v.src==='https://stock.example/video.mp4'&&v.playCalls===1&&v.poster===''));}finally{control.dispose();}
+});
+test('an unavailable image exposes an error without advancing or reporting playback',async()=>{class PosterVideo extends Video{removeAttribute(n){this[n]='';}}const control=createScreenPlaylist({videos:[new PosterVideo()],tracks:[{id:'photo',kind:'image',url:'https://stock.example/missing.jpg'}],loadImage:async()=>{throw Error('unavailable');}});try{await control.play();assert.equal(control.state().error,true);assert.equal(control.state().playing,false);}finally{control.dispose();}});

@@ -1,5 +1,5 @@
-import {createScreenPlaylist} from './screen-playlist.mjs?v=loop-1';
-import {assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=loop-1';
+import {createScreenPlaylist} from './screen-playlist.mjs?v=options-preview-1';
+import {assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=options-preview-1';
 // One local playback clock per playlist. Pause partitions keep wall/POS controls independent.
 export function createDevicePlayback({onState=()=>{}}={}){
  let entries=[],layout=emptyDeviceLayout(),defaults={},disposed=false,reconciling=false,preview=null;const buckets=new Map(),paused=new Set();
@@ -8,7 +8,7 @@ export function createDevicePlayback({onState=()=>{}}={}){
   for(const entry of entries){const pid=preview?.ids.includes(entry.id)?'__preview':assignedPlaylist(layout,entry.id),key=pid+':'+(paused.has(entry.id)?'paused':'playing');if(!next.has(key))next.set(key,{pid,entries:[],loop:pid==='__preview'?true:(layout.playlists[pid]||defaults[pid])?.loop!==false,tracks:pid==='__preview'?[preview.track]:(layout.playlists[pid]||defaults[pid])?.tracks||[]});next.get(key).entries.push(entry);}
   for(const [key,b] of buckets)if(!next.has(key)||next.get(key).entries.map(e=>e.id).join()!==b.ids||next.get(key).entries.some((e,i)=>e.video!==b.entries[i]?.video)){b.player.dispose();buckets.delete(key);}
   for(const [key,b] of next){let old=buckets.get(key);const json=JSON.stringify(b.tracks);if(old){old.player.setLoop(b.loop);if(old.tracks!==json){old.player.replaceTracks(b.tracks);old.tracks=json;}continue;}
-   const videos=b.entries.map(e=>e.video);if(!b.tracks.length)for(const v of videos){v.pause();v.removeAttribute('src');v.load();}else if(key.endsWith(':paused'))for(const v of videos)if(!b.tracks.some(t=>t.url===v.getAttribute('src'))){v.src=b.tracks[0].url;v.load();v.pause();}const player=createScreenPlaylist({videos,tracks:b.tracks,loop:b.loop,initialURL:videos[0]?.getAttribute('src'),onState:notify});old={player,pid:b.pid,ids:b.entries.map(e=>e.id).join(),entries:b.entries,tracks:json};buckets.set(key,old);if(!key.endsWith(':paused'))void player.play();
+   const videos=b.entries.map(e=>e.video);if(!b.tracks.length)for(const v of videos){v.pause();v.removeAttribute('src');v.load();}else if(key.endsWith(':paused'))for(const v of videos)if(!b.tracks.some(t=>t.url===(v.getAttribute('src')||v.poster))){if(b.tracks[0].kind==='image'){v.removeAttribute('src');v.poster=b.tracks[0].url;}else{v.poster='';v.src=b.tracks[0].url;}v.load();v.pause();}const player=createScreenPlaylist({videos,tracks:b.tracks,loop:b.loop,initialURL:videos[0]?.getAttribute('src')||videos[0]?.poster,onState:notify});old={player,pid:b.pid,ids:b.entries.map(e=>e.id).join(),entries:b.entries,tracks:json};buckets.set(key,old);if(!key.endsWith(':paused'))void player.play();
   }reconciling=false;notify();
  }
  async function jump(playlistId,trackId){

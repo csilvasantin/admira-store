@@ -3,15 +3,15 @@ import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
 import {mountIncidentPanel} from './starbucks-incidents.mjs?v=windows-menu-1';
 import {createSincroIA} from './sincro-ia.mjs?v=devices-2';
-import {mountDeviceEditor} from './device-editor.mjs?v=windows-menu-1';
-import {createDevicePlayback} from './device-playback.mjs?v=loop-1';
-import {DEVICE_IDS,assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=loop-1';
+import {mountDeviceEditor} from './device-editor.mjs?v=options-preview-1';
+import {createDevicePlayback} from './device-playback.mjs?v=options-preview-1';
+import {DEVICE_IDS,assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=options-preview-1';
 import {createAnnouncement,ANNOUNCEMENT_SPEAKER,CLOSING_ANNOUNCEMENT,ANNOUNCEMENT_QUALITIES} from './starbucks-announcement.mjs?v=eleven-1';
 import {watchMatrixState} from './matrix-remote.mjs?v=drop-1';
 import {STARBUCKS_TPV_PLAYLIST,STARBUCKS_TPV_MAPPING,STARBUCKS_TPV_VIEW,withStarbucksTPV} from './starbucks-tpv.mjs?v=tpv-1';
 import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenSlice,screenNumber,screenGroup,getScreenNumbersVisible,setScreenNumbersVisible,subscribeScreenNumbers} from './screen-display.mjs?v=number-layout-1';
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
-import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=devices-2';
+import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=options-preview-1';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=wall-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 
@@ -99,6 +99,20 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  const currentTrack=root.querySelector('.matrix-current-track');
  const exitNext=root.querySelector('.matrix-exit-next'),nextButtons=[...root.querySelectorAll('[data-music-next]')];
  const music=starbucksMusic();
+ function optionGroups(channel){if(channel==='music')return [{id:'music',title:t('Hilo musical · Starbucks','Background music · Starbucks')}];const config=deviceEditor.config,all={...catalog(),...config.playlists};return Object.entries(all).filter(([pid])=>DEVICE_IDS.some(id=>assignedPlaylist(config,id)===pid)).map(([id,p])=>({id,title:p.title+' · '+DEVICE_IDS.filter(device=>assignedPlaylist(config,device)===id).map(device=>screenNumber(device)||'TPV').join(', ')}));}
+ const playlistValue=pid=>deviceEditor.config.playlists[pid]||catalog()[pid];
+ window.XpaceMatrixOptions={
+  groups:optionGroups,
+  control(action,pid){if(action==='musicToggle'){music.toggle();return;}if(action.startsWith('music')){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url),next=(index+(action==='musicPrev'?-1:1)+tracks.length)%tracks.length;if(tracks[next])return music.jump(tracks[next].url);return;}const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid);if(action==='dsToggle'){runtime.setPlaying(ids,!runtime.state(ids).playing);return;}const p=playlistValue(pid),active=runtime.nowPlaying(ids)[0],index=p?.tracks.findIndex(t=>t.id===active?.trackId)??-1,next=(index+(action==='dsPrev'?-1:1)+(p?.tracks.length||0))%(p?.tracks.length||0);if(p?.tracks[next])return this.play('screens',p.tracks[next].id,pid);},
+  suppressMusic:()=>music.suppress(),
+  state(channel,pid){if(channel==='music'){const state=music.state();return {playing:state.playing,tracks:music.getTracks().map(track=>({...track,id:track.url,kind:'music',active:track.url===state.url}))};}
+   const active=runtime.nowPlaying(DEVICE_IDS);return {playing:active.some(x=>x.playing),tracks:(playlistValue(pid)?.tracks||[]).map(track=>({...track,kind:track.kind||'video',active:active.some(s=>s.playlistId===pid&&s.trackId===track.id)}))};},
+  async play(channel,id,pid){if(channel==='music')return music.jump(id);if(demoMode==='ia')await setDemoMode('linear');ensurePlaylistMedia(pid);updateRuntime();const result=await runtime.jump(pid,id);if(result.error)throw Error(t('Contenido no disponible','Content unavailable'));return result;},
+  async insert(channel,track,before,pid){if(channel==='music'){const tracks=music.getTracks().filter(t=>t.url!==track.url),at=tracks.findIndex(t=>t.url===before);tracks.splice(at<0?tracks.length:at,0,{url:track.url,title:track.title});music.replaceTracks(tracks);return track.url;}
+   const p=playlistValue(pid);if(!p)throw Error('Unknown destination');const tracks=p.tracks.filter(t=>t.id!==track.id),at=tracks.findIndex(t=>t.id===before);tracks.splice(at<0?tracks.length:at,0,{id:track.id,title:track.title,url:track.url,...(track.kind==='image'?{kind:'image'}:{})});const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid),states=runtime.nowPlaying(ids),stopped=ids.filter(id=>!states.some(x=>x.playing&&x.deviceIds.includes(id)));runtime.setPlaying(stopped,false);const next=await deviceEditor.updatePlaylist(pid,{...p,tracks});runtime.setPlaying(stopped,false);window.dispatchEvent(new CustomEvent('xpace:playlist-destination',{detail:{channel,id:next}}));return track.id;},
+  async move(channel,id,before,pid){if(channel==='music'){const tracks=music.getTracks(),from=tracks.findIndex(t=>t.url===id);if(from<0||id===before)return;const [track]=tracks.splice(from,1),at=tracks.findIndex(t=>t.url===before);tracks.splice(at<0?tracks.length:at,0,track);music.replaceTracks(tracks);return;}const p=playlistValue(pid),tracks=[...p.tracks],from=tracks.findIndex(t=>t.id===id);if(from<0||id===before)return;const [track]=tracks.splice(from,1),at=tracks.findIndex(t=>t.id===before);tracks.splice(at<0?tracks.length:at,0,track);const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid),states=runtime.nowPlaying(ids),stopped=ids.filter(id=>!states.some(x=>x.playing&&x.deviceIds.includes(id)));runtime.setPlaying(stopped,false);const next=await deviceEditor.updatePlaylist(pid,{...p,tracks});runtime.setPlaying(stopped,false);window.dispatchEvent(new CustomEvent('xpace:playlist-destination',{detail:{channel,id:next}}));}
+ };
+
  const announcementAnchor=root.querySelector('.matrix-announcement'),announcementButtons=[...root.querySelectorAll('[data-announcement]')],announcementStatus=root.querySelector('.matrix-announcement-status');
  const announcementAudio=new Audio();announcementAudio.id='starbucksClosingAnnouncement';announcementAudio.hidden=true;document.body.append(announcementAudio);
  const qualityButtons=[...root.querySelectorAll('[data-announcement-quality]')];
@@ -187,7 +201,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  document.querySelector('#telegramDock .tg-actions')?.append(toolbar);
  let stopRemote=()=>{};
  stopLanguage=copy.observe([root,toolbar]);
- const dispose=()=>{if(disposed)return;disposed=true;stopLanguage();mappingWindow.dispose();delete window.XpaceStarbucksDemo;iaPlayback?.dispose();incidents.dispose();deviceEditor.dispose();runtime.dispose();announcement.dispose();announcementAudio.remove();stopRemote();stopWall();stopTPV();controls.abort();clearInterval(musicPoll);unsubscribeMusic();unsubscribeLayout();unsubscribeNumbers();music.mute();cancelAnimationFrame(frame);observer?.disconnect();for(const id of previews.keys())destroyPreview(id);geometry?.dispose();material?.dispose();texture?.dispose();renderer?.dispose();toolbar.remove();root.replaceChildren();};
+ const dispose=()=>{if(disposed)return;disposed=true;stopLanguage();mappingWindow.dispose();delete window.XpaceStarbucksDemo;delete window.XpaceMatrixOptions;iaPlayback?.dispose();incidents.dispose();deviceEditor.dispose();runtime.dispose();announcement.dispose();announcementAudio.remove();stopRemote();stopWall();stopTPV();controls.abort();clearInterval(musicPoll);unsubscribeMusic();unsubscribeLayout();unsubscribeNumbers();music.mute();cancelAnimationFrame(frame);observer?.disconnect();for(const id of previews.keys())destroyPreview(id);geometry?.dispose();material?.dispose();texture?.dispose();renderer?.dispose();toolbar.remove();root.replaceChildren();};
  let observer;
  signal?.addEventListener('abort',dispose,{once:true});
  try{

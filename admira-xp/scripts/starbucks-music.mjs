@@ -54,6 +54,8 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
   audio.addEventListener('ended',ended);audio.addEventListener('error',mediaError);audio.addEventListener('timeupdate',clock);
   return {
     state,
+    getTracks:()=>tracks.map(t=>({...t})),
+    async jump(url){const next=tracks.findIndex(t=>t.url===url);if(next<0)throw Error('Unknown track');failed.clear();error='';started=true;select(next,'jump');await play();emit();return state();},
     suppress(){
       if(suppressions++===0){restoreVolume=audio.volume;audio.volume=0;}emit();let released=false;
       return ()=>{if(released)return;released=true;suppressions=Math.max(0,suppressions-1);if(!suppressions&&!disposed)audio.volume=restoreVolume;emit();};
@@ -84,7 +86,8 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
         try{
           const response=await fetchFeed();if(!response.ok)throw Error('feed');
           const data=await response.json();if(data.ok===false)throw Error('feed');
-          const incoming=musicTracks([...published,...musicTracks(data.playlist)]);if(disposed||managed)return;
+          const feed=musicTracks(data.playlist);let incoming=musicTracks([...published,...feed]);if(disposed||managed)return;
+          if(globalThis.XpaceMediaOptions){for(const item of data.playlist||[])if(!tracks.some(t=>t.url===item.url))try{globalThis.XpaceMediaOptions.stage('music',item);}catch{}incoming=musicTracks([...published,...tracks]);}
           // An empty/transient response must not cut off a playing song.
           if(incoming.length){
             const current=tracks[index]?.url,kept=incoming.findIndex(t=>t.url===current);
