@@ -35,3 +35,7 @@ Options → Public Announcement System: enter the text, choose Female · Sara Ma
 El enlace privado `ANNOUNCEMENT_TTS` está configurado en admira.store y XpaceOS. Ambas voces se han generado realmente con Eleven v4 a MP3 44,1 kHz/192 kbps. Las pruebas cubren tres lecturas, cancelación, restauración de música y el control de sesión/origen. La versión desplegada se consulta en `/version.json`; la reproducción requiere sesión autorizada y audio habilitado. Seguimiento: misión FLT-101624 · voces españolas para Locuciones.
 
 The private `ANNOUNCEMENT_TTS` binding is configured in admira.store and XpaceOS. Both voices have been generated with Eleven v4 at MP3 44.1 kHz/192 kbps. Tests cover three readings, cancellation, music restoration and session/origin checks. The deployed release is available at `/version.json`; playback requires an authorized session and enabled audio. Tracking: mission FLT-101624 · Spanish voices for announcements.
+
+Dependencia de dominio: `www.xpaceos.com` todavía sirve GitHub Pages y no ejecuta el proxy. El origen `xpaceos.pages.dev` sí tiene Functions y el enlace privado. Las voces de pago del dominio XpaceOS dependen de su migración pendiente a Cloudflare Pages; admira.store ya usa Cloudflare Pages.
+
+Domain dependency: `www.xpaceos.com` still serves GitHub Pages and cannot run the proxy. `xpaceos.pages.dev` has Functions and the private binding. Paid voices on the XpaceOS domain depend on its pending Cloudflare Pages migration; admira.store already uses Cloudflare Pages.
