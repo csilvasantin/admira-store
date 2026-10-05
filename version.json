@@ -1,11 +1,15 @@
 {
   "version": "v.05.10.2026.r2.00:16",
-  "deployedAt": "2026-10-04T22:26:12Z",
-  "deployer": "SmithMacMini",
-  "machine": "MacMini",
   "signature": "SmithMacMini · MacMini",
-  "git": "c81ffe2638bccf7830941f026b1802d98c48988b",
-  "gitShort": "c81ffe2",
-  "gitFull": "c81ffe2638bccf7830941f026b1802d98c48988b",
-  "dirty": false
+  "machine": "MacMini",
+  "agent": "SmithMacMini",
+  "deployer": "SmithMacMini",
+  "evidence": "Token del avatar y del shell a 20261004-avatar-5.",
+  "deployedAt": "2026-10-05T06:17:01.071594+00:00",
+  "git": "e67baf634ed7926e397b6ecba07631dd028a44e1",
+  "gitFull": "e67baf634ed7926e397b6ecba07631dd028a44e1",
+  "gitShort": "e67baf6",
+  "dirty": false,
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }

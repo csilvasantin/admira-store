@@ -16,7 +16,7 @@
   var STOCK = 'https://stock.admira.store/stock/index.json';
   var items = [], thumbs = {}, period = 10000, curIdx = -1;
   // Gemelo de un estanco del circuito Altadis (loc=altadis-bcn-*): la parrilla del CanalKiosk
-  // emite campañas de otros clientes (Alcampo, JTI…), y en un gemelo de Altadis no puede salir
+  // emite campañas de otros clientes (Alcampo, competencia…), y en un gemelo de Altadis no puede salir
   // otro cliente (Carlos, 4-oct-2026). La puerta pasa a la pieza neutra de Admira del circuito
   // (docs/circuito-media.md) con rótulo ADMIRA. El resto de Xtancos siguen con el CanalKiosk.
   var LOC = ''; try { LOC = (new URLSearchParams(location.search).get('loc') || '').trim().toLowerCase(); } catch (e) {}

@@ -28,7 +28,7 @@
   // Altadis servidos con el propio sitio (/altadis/media/). Sin parámetro → la
   // media de la ficha del punto, como siempre. La navegación conserva el parámetro.
   var MEDIA_PRESETS = {
-    formatos18: { vertical: '/altadis/media/01-vertical-1080x1920.mp4?v=admira-20261004', horizontal: '/altadis/media/02-horizontal-1920x1080.mp4?v=admira-20261004' } // ?v=: la pieza JTI anterior no sale de la caché
+    formatos18: { vertical: '/altadis/media/01-vertical-1080x1920.mp4?v=admira-20261004', horizontal: '/altadis/media/02-horizontal-1920x1080.mp4?v=admira-20261004' } // ?v=: la pieza anterior de la competencia no sale de la caché
   };
   function okUrl(u) { return typeof u === 'string' && (/^https:\/\//.test(u) || /^\/[^\/]/.test(u)); }
   var MEDIA_OVR = (function () {

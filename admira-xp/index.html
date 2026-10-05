@@ -863,7 +863,7 @@
   <span id="xpTopNotify" aria-live="polite"></span>
   <div class="sep"></div>
   <div class="comp-box" style="border-color:#1a3a6a"><span class="comp-name">Altadis</span><span class="comp-pct" id="compAlt">0%</span></div>
-  <div class="comp-box" style="border-color:#cc2222"><span class="comp-name">JTI</span><span class="comp-pct" id="compJTI">0%</span></div>
+  <div class="comp-box" style="border-color:#cc2222"><span class="comp-name">Otros</span><span class="comp-pct" id="compOtro">0%</span></div>
   <div class="comp-box" style="border-color:#2266aa"><span class="comp-name">PM</span><span class="comp-pct" id="compPM">0%</span></div>
   <div class="comp-box" style="border-color:#333399"><span class="comp-name">BAT</span><span class="comp-pct" id="compBAT">0%</span></div>
   <div class="spacer"></div>
@@ -5362,7 +5362,7 @@ function updateHtmlBar(){
   if(G.gameTime&&G.comp){
     const shares=G.comp.shares;
     const total=shares.reduce((a,b)=>a+b,0);
-    ['compAlt','compJTI','compPM','compBAT'].forEach((id,i)=>{
+    ['compAlt','compOtro','compPM','compBAT'].forEach((id,i)=>{
       const el=document.getElementById(id);
       el.textContent=Math.round(shares[i]/total*100)+'%';
       const isPromo=G.comp.promoBrand===i;
@@ -6552,7 +6552,7 @@ const CFG={
   UPGRADE_COST:4500,
   START_MONEY:3500,
   GAMEOVER_THRESHOLD:0.55,
-  COMP_NAMES:['Altadis','JTI','PM','BAT'],
+  COMP_NAMES:['Altadis','Otros','PM','BAT'],
   COMP_BASE:[28,26,25,21],
   COMP_PROMO_CHANCE:0.0005,
   COMP_PROMO_DURATION:280,
@@ -16982,12 +16982,12 @@ function drawIntro(){
     // ── LA COMPETENCIA ──
     nt(isEs?'LA COMPETENCIA':'THE COMPETITION',W/2,44,P.red,16);
     nl(W/2-140,52,W/2+140,52,P.red,1);
-    nt(isEs?'Altadis · JTI · PM · BAT compiten contigo activamente.':'Altadis · JTI · PM · BAT actively compete with you.',W/2,76,P.uiT3,10);
+    nt(isEs?'Altadis · Otros · PM · BAT compiten contigo activamente.':'Altadis · Otros · PM · BAT actively compete with you.',W/2,76,P.uiT3,10);
     // Animated comp bars
-    const compNames=['Altadis','JTI','PM','BAT'];
+    const compNames=['Altadis','Otros','PM','BAT'];
     const compCols=['#3366cc','#cc2222','#2266aa','#333399'];
     const compBase=[28,26,25,21];
-    const promoIdx=1; // JTI is doing a promo in this slide
+    const promoIdx=1; // "Otros" (generic rival) is doing a promo in this slide
     compNames.forEach((cn,i)=>{
       const bx=W/2-190+i*100,by=100;
       const isPromo=i===promoIdx&&t>60;
@@ -27704,7 +27704,7 @@ try {
 // ═══════════════════════════════════════════════════════════════
 window.xtAPI = (function(){
   const ROLE_NAMES = {0:'cajero',1:'repositor',2:'azafata',3:'manager',4:'dj'};
-  const BRAND_NAMES = ['Altadis','JTI','PM','BAT'];
+  const BRAND_NAMES = ['Altadis','Otros','PM','BAT'];
   const ROLE_LOOKUP = {};
   Object.entries(ROLE_NAMES).forEach(([k,v])=>{ ROLE_LOOKUP[v]=+k; });
   ROLE_LOOKUP['cashier']=0; ROLE_LOOKUP['cajera']=0;
@@ -35377,7 +35377,7 @@ window.xtAPI = (function(){
   /* Respira: un poco más de aire entre grupos.
      ALTURA (Carlos, 2026-07-21): este bloque agrandó los chips de Competencia
      (6→8px, 10→12px, borde superior 3px) pero la barra seguía clavada en 36px,
-     así que Altadis/JTI/PM/BAT desbordaban y se cortaban por arriba. La barra
+     así que Altadis/Otros/PM/BAT desbordaban y se cortaban por arriba. La barra
      baja a 46px para que TODO quede dentro de la navegación. */
   #topBar{gap:9px;padding:0 10px;height:46px}
   /* nada de la barra se recorta ni se sale */

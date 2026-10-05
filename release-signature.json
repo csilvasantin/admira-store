@@ -1,6 +1,8 @@
 {
   "version": "v.05.10.2026.r2.00:16",
-  "deployer": "SmithMacMini",
+  "signature": "SmithMacMini · MacMini",
   "machine": "MacMini",
-  "signature": "SmithMacMini · MacMini"
+  "agent": "SmithMacMini",
+  "deployer": "SmithMacMini",
+  "evidence": "Token del avatar y del shell a 20261004-avatar-5."
 }
