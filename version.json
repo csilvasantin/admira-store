@@ -1,16 +1,16 @@
 {
-  "version": "v.06.10.2026.r25.22:04",
+  "version": "v.06.10.2026.r26.22:15",
   "deployedAt": "2026-10-06T20:05:36Z",
-  "deployer": "GrokBot",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
+  "signature": "OraculoMacMini · MacMini",
   "git": "f70129bd72d8164d975ef30cb56d977f55c3f974",
   "gitShort": "f70129b",
   "gitFull": "f70129bd72d8164d975ef30cb56d977f55c3f974",
   "dirty": false,
   "novedades": [
-    "Avatar good = Admirito: la nube de la casa, animada, que mueve los labios al hablar y hace cosas sola si nadie la toca",
-    "En el gemelo, con calidad Good el tótem y la pantalla de la pared larga muestran a Admirito; Better, Best y Matrix siguen con la chica",
-    "La pared Matrix con /avatar good abre la nube (digitalavatar.ai/nube.html)"
+    "Selector ESP/ENG visible dentro del avatar",
+    "Botones modernos: Micrófono, Detener y Preguntar en castellano; Microphone, Stop y Ask en inglés",
+    "El idioma elegido se conserva al cerrar y reabrir el avatar de la pared"
   ]
 }

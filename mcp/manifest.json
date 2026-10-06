@@ -2118,7 +2118,7 @@
     "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
   },
   "retained_ui_contract": {
-    "revision": "starbucks-kiosk-20261006",
+    "revision": "avatar-language-controls-20261006",
     "files": [
       "assets/expert-legibility.css",
       "admira-xp/scripts/created-media-history.js",
@@ -2209,7 +2209,18 @@
     "default_mode": "kiosk",
     "kiosk_url": "/admira-xp/kiosk/starbucks/index.html",
     "official_url": "https://www.starbucksathome.com/es/",
-    "simulation": true
+    "simulation": true,
+    "language_controls": {
+      "es": "El avatar ofrece ESP y ENG junto a la pregunta, también en modo integrado. ESP muestra Micrófono, Detener y Preguntar; ENG muestra Microphone, Stop y Ask. Los controles conservan sus acciones de voz, escucha y envío, con iconos SVG, etiquetas legibles y foco de teclado. Al cambiar de idioma se detiene la conversación anterior, se mantienen la pregunta escrita, el nivel y el contexto de la tienda; el cambio no envía preguntas ni activa el micrófono. La pared Alsea recuerda la elección durante esta pestaña, incluso al cerrar y reabrir el avatar, sin recargar la conversación al elegir idioma.",
+      "en": "The avatar offers ESP and ENG next to the question, including embedded mode. ESP shows Micrófono, Detener and Preguntar; ENG shows Microphone, Stop and Ask. Controls retain their speech, listening and send actions, with SVG icons, readable labels and keyboard focus. Changing language stops the previous conversation while preserving the typed question, tier and store context; switching neither sends questions nor enables the microphone. The Alsea wall remembers the choice for this tab, including closing and reopening the avatar, without reloading the conversation when selecting a language.",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "parent_message": "da-language-selected",
+      "storage": "sessionStorage:admira-avatar:language:alsea-sbux-021",
+      "iframe_reload_on_choice": false
+    }
   },
   "latest_media_preview": {
     "help_topic": "latest-media-preview",

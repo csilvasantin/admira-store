@@ -26,6 +26,7 @@ function defaultContext(win){
 // Level on the wall (06-10-2026): the user's /avatar <level> in this tab (sessionStorage,
 // written by the shared loader) > the level the page asks for (Matrix 64 bits = best) >
 // the last stored level > good.
+export const AVATAR_WALL_LANGUAGE_KEY='admira-avatar:language:alsea-sbux-021';
 export const AVATAR_WALL_CHOICE_KEY='admira-avatar:nivel-elegido';
 export function wallAvatarLevel({chosen='',tier='',stored=''}={}){
  for(const value of [chosen,tier,stored])if(AVATAR_WALL_RENDERERS[value])return value;
@@ -44,7 +45,7 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  let disposed=false,expanded=false,source='',releaseMusic=null,mode='kiosk';
  function showMode(next){mode=next;wall.dataset.mode=mode;frame.title=mode==='kiosk'?t('Starbucks at Home · Demo kiosko','Starbucks at Home · Kiosk demo'):t('Avatar digital','Digital avatar');if(mode==='avatar')frame.allow='microphone; autoplay';else frame.removeAttribute('allow');frame.src=mode==='kiosk'?STARBUCKS_KIOSK_URL:source;kiosk.setAttribute('aria-pressed',String(mode==='kiosk'));talk.setAttribute('aria-pressed',String(mode==='avatar'));}
  showMode('kiosk');
- function currentContext(){let extra={};try{extra=(typeof context==='function'?context():context)||{};}catch{}return {...defaultContext(win),...extra};}
+ function currentContext(){let extra={},lang='';try{extra=(typeof context==='function'?context():context)||{};}catch{}try{lang=win.sessionStorage.getItem(AVATAR_WALL_LANGUAGE_KEY)||'';}catch{}return {...defaultContext(win),...extra,...(['es','en'].includes(lang)?{lang}:{})};}
  let sentLive='';
  function postLive(force){if(mode!=='avatar')return;let value='';try{value=String((typeof live==='function'?live():'')||'').slice(0,600);}catch{}if(!force&&value===sentLive)return;sentLive=value;try{frame.contentWindow?.postMessage({type:'da-context',live:value},AVATAR_WALL_ORIGIN);}catch{}}
  frame.addEventListener('load',()=>postLive(true));
@@ -58,7 +59,7 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  for(const name of ['pointerdown','wheel','keydown'])wall.addEventListener(name,e=>e.stopPropagation());
  // A same-tab model command updates localStorage without a storage event; the same poll
  // follows language/brand changes and pushes the now-playing track (best tier uses it).
- function onKioskMessage(e){if(mode==='kiosk'&&expanded&&e.source===frame.contentWindow&&e.origin===win.location.origin&&e.data?.type==='starbucks-kiosk:close')collapse();}
+ function onKioskMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){try{win.sessionStorage.setItem(AVATAR_WALL_LANGUAGE_KEY,e.data.lang);}catch{}source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());return;}if(mode==='kiosk'&&expanded&&e.source===frame.contentWindow&&e.origin===win.location.origin&&e.data?.type==='starbucks-kiosk:close')collapse();}
  win.addEventListener('message',onKioskMessage);
  const levelPoll=win.setInterval(render,1000);
  // focus(): the camera already looks at the wall; point keyboard focus at the talk button.

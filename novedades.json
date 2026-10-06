@@ -125,5 +125,10 @@
     "Kiosko Starbucks at Home por defecto en la pared del avatar",
     "Portada, catálogo, recetas y buscador locales para la demo Alsea",
     "Conversación del avatar disponible al pulsar Hablar"
+  ],
+  "v.06.10.2026.r26.22:15": [
+    "Selector ESP/ENG visible dentro del avatar",
+    "Botones modernos: Micrófono, Detener y Preguntar en castellano; Microphone, Stop y Ask en inglés",
+    "El idioma elegido se conserva al cerrar y reabrir el avatar de la pared"
   ]
 }
