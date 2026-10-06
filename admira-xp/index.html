@@ -759,7 +759,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261006-avatar-ctx-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261006-matrix-signage-reset-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1081,7 +1081,7 @@
 <script src="scripts/voice-receipts.js?v=person-voice-3"></script>
 <link rel="stylesheet" href="scripts/media-experience.css?v=20261006-media-experience-1">
 <script src="scripts/media-experience.js?v=20261006-media-experience-1"></script>
-<script src="scripts/media-options.js?v=20261006-media-experience-1"></script>
+<script src="scripts/media-options.js?v=matrix-signage-reset-1"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
 <script src="scripts/announcements.js?v=person-voice-1"></script>
@@ -1089,7 +1089,7 @@
 <script defer src="scripts/video-prompt.js?v=20261006-media-experience-1"></script>
 <script defer src="scripts/voiceover-prompt.js?v=person-voice-1"></script>
 <!-- Experto → PREVIOS (3.ª columna): lo creado en Crear contenidos se previsualiza aquí, el último primero. -->
-<link rel="stylesheet" href="scripts/expert-previews.css?v=latest-preview-1">
+<link rel="stylesheet" href="scripts/expert-previews.css?v=matrix-signage-reset-1">
 <script defer src="scripts/expert-previews.js?v=latest-preview-1"></script>
 <!-- Sello flotante «v.… NUEVO» por encima del menú inferior del Experto: no tapa las categorías (Crear contenidos). -->
 <script defer src="scripts/sello-chip-dock.js?v=20261006-store-previews-1"></script>
@@ -2442,6 +2442,8 @@ const VIDEO_LIST=[
   'DJ Novah - Live Set',
   'George Michael - Freedom! 90',
 ];
+const DS_BASE_VIDEO_LIST=Object.freeze(VIDEO_LIST.slice());
+const DS_RESET_IMPORTS_KEY="xtanco_ds_reset_imports.v1";
 const VIDEO_FILES={
   'Dire Straits - Money For Nothing':'assets/videos/signage_money_for_nothing_160x90.mp4',
   'a-ha - Take On Me':'assets/videos/signage_take_on_me_160x90.mp4',
@@ -2610,7 +2612,16 @@ function drawClubBurst(ctx,w,h){
   return true;
 }
 
-function dsSurfaceById(id){ return DS_SURFACES.find(s=>s.id===id)||null; }
+// Matrix owns its hit tests and destinations: never fall through to Good while opening.
+function dsMatrixAdapter(){return window.XpaceMatrixOptions?.isActive?.()?window.XpaceMatrixOptions:null;}
+function dsMatrixOwnsScreens(){return document.body.classList.contains('xpace-matrix-active');}
+function dsActiveSurfaces(){return dsMatrixOwnsScreens()?(dsMatrixAdapter()?.devices()||[]):DS_SURFACES;}
+function dsSurfaceById(id){ return dsActiveSurfaces().find(s=>s.id===id)||null; }
+function dsActivePin(id){return dsMatrixOwnsScreens()?dsMatrixAdapter()?.screenPreview(id)||null:DS_PIN[id]||null;}
+function dsPreviewMatrix(id,track){
+ const api=dsMatrixAdapter();if(!api||!api.devices().some(s=>s.id===id))return false;
+ void api.previewScreen(id,track).then(()=>{if(typeof refreshTelegramHelpPanel==='function')refreshTelegramHelpPanel();}).catch(error=>{if(typeof showEv==='function')showEv(error.message,'#ff8866');});return true;
+}
 function dsSurfaceLabel(id){ const s=dsSurfaceById(id); return s?s.label:id; }
 function dsEnsureSurfaceMedia(id){
   if(DS_SURFACE_MEDIA[id]) return DS_SURFACE_MEDIA[id];
@@ -2626,6 +2637,10 @@ function dsEnsureSurfaceMedia(id){
   return m;
 }
 function dsPinSurface(surfaceId,name){
+  if(dsMatrixOwnsScreens()){
+    const url=VIDEO_FILES[name];if(!url)return false;
+    return dsPreviewMatrix(surfaceId,{id:'signage-'+VIDEO_LIST.indexOf(name),title:name,url:new URL(url,location.href).href,kind:DS_IMPORT.KIND[name]||(/\.(png|jpe?g|webp|gif)(\?|#|$)/i.test(url)?'image':'video')});
+  }
   if(!dsSurfaceById(surfaceId)) return false;
   const url=VIDEO_FILES[name];
   if(!url) return false;
@@ -2666,6 +2681,7 @@ function dsMediaUrlPlayable(url){
   return /^https?:\/\//i.test(String(url||''));
 }
 function dsPinSurfaceFromUrl(surfaceId,kind,url,name){
+  if(dsMatrixOwnsScreens())return dsMediaUrlPlayable(url)&&['image','video'].includes(kind)?dsPreviewMatrix(surfaceId,{id:'signage-url',title:name||url,url,kind}):false;
   if(!dsSurfaceById(surfaceId)||!url) return false;
   if(!dsMediaUrlPlayable(url)) return false;
   if(kind!=='image'&&kind!=='video') return false;
@@ -2850,6 +2866,7 @@ function setMasterMute(on){
 }
 
 function dsUnpinSurface(surfaceId){
+  const matrix=dsMatrixAdapter();if(dsMatrixOwnsScreens()&&matrix?.devices().some(s=>s.id===surfaceId)){void matrix.restoreScreen(surfaceId).catch(error=>showEv(error.message,'#ff8866'));return;}
   const m=DS_SURFACE_MEDIA[surfaceId];
   if(m){
     m.kind=null; m.name=null; m.ready=false;
@@ -2934,7 +2951,8 @@ function dsImportsKindFromMime(mime){
 function dsImportsLabelFromFilename(filename){
   return String(filename||'').replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim().slice(0,80) || 'Importado';
 }
-function dsImportsRegister(record){
+function dsImportsRegister(record,restoring=false){
+  if(restoring){try{if((JSON.parse(localStorage.getItem(DS_RESET_IMPORTS_KEY))||[]).includes(record.id))return null;}catch{}}
   // record: {id,name,mime,kind,blob,ledMessage}
   const url=URL.createObjectURL(record.blob);
   const name=dsImportsUniqueName(record.name);
@@ -2996,7 +3014,7 @@ async function dsImportsRemoveByName(name){
 async function dsImportsRestore(){
   try{
     const records=await dsImportsDBList();
-    for(const r of records) dsImportsRegister(r);
+    for(const r of records) dsImportsRegister(r,true);
     dsLoadPinsFromStorage();
   }catch(e){ console.warn('[ds-import] restore failed',e); }
 }
@@ -3115,7 +3133,7 @@ async function dsImportFromYouTube(youTubeUrl){
   // Pin to every DS surface so it shows everywhere in the Xtanco
   dsImportSetStatus('processing','Adaptando "'+finalName+'" a todas las pantallas…',80);
   const pinned=[];
-  for(const s of DS_SURFACES){ if(dsPinSurface(s.id,finalName)) pinned.push(s.id); }
+  for(const s of dsActiveSurfaces()){ if(dsPinSurface(s.id,finalName)) pinned.push(s.id); }
   // Wait for the slowest surface to be ready
   dsImportSetStatus('processing','Cargando vídeo en '+pinned.length+' pantalla(s)…',92);
   await Promise.all(pinned.map(sid=>dsWaitMediaReady(sid,30000)));
@@ -3262,6 +3280,7 @@ function dsQuadCvToClient(quad){
 try{ window.__dsQuadCvToClient=dsQuadCvToClient; window.__DS_SURFACE_QUADS=DS_SURFACE_QUADS; }catch(e){}
 // Hit-test: which DS surface (if any) is under the given client coords?
 function dsSurfaceAtClientPoint(cxC,cyC){
+  if(dsMatrixOwnsScreens())return dsMatrixAdapter()?.screenAt(cxC,cyC)||null;
   // DOM canvases first (they may overlap iso-quads when positioned)
   const ds1=document.getElementById('videoMonitor');
   const ds2=document.getElementById('videoMonitor2');
@@ -3282,6 +3301,7 @@ function dsSurfaceAtClientPoint(cxC,cyC){
   return null;
 }
 function dsUpdateDragHighlight(surfaceId,clientX,clientY){
+  if(dsMatrixOwnsScreens()){dsMatrixAdapter()?.screenHighlight(surfaceId);return;}
   const drop=document.getElementById('dsImportDrop');
   const svg=document.getElementById('dsImportTargetSVG');
   const poly=document.getElementById('dsImportTargetPoly');
@@ -3450,6 +3470,7 @@ function switchDSVideo(idx){
  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(saved));localStorage.setItem('xtanco_ds_playlist_order',JSON.stringify(VIDEO_LIST));localStorage.setItem('xpaceos.options-music-order.v1',JSON.stringify(SONG_LIST));}catch(_){}window.dispatchEvent(new Event('xpace:playlist'));};
  window.XpaceOptionsPlayback={
   ownsScreens:false,
+  resetScreens(){saved.screens=[];this.ownsScreens=false;persist();},
   screenAt(x,y){if(document.elementFromPoint(x,y)?.closest('nav,#telegramDock,#xpace-side-left,#xpace-side-right'))return null;if(isStarbucksVenue()){const cv=document.getElementById('c'),r=cv.getBoundingClientRect(),px=(x-r.left)*cv.width/r.width,py=(y-r.top)*cv.height/r.height;return Object.entries(window.XpaceStarbucks.screenQuads||{}).find(([id,q])=>dsPointInQuad(px,py,q.map(([x,y])=>({x,y}))))?.[0]||null;}return dsSurfaceAtClientPoint(x,y);},
   screenHighlight(id){if(isStarbucksVenue())window.XpaceStarbucks.dropTarget=id;else dsUpdateDragHighlight(id);},
   async previewScreen(id,track){if(track.kind==='music')throw Error('Choose a screen media item');if(isStarbucksVenue()){await window.XpaceScreenMedia.preview(id,track);return;}if(!dsSurfaceById(id))throw Error('Unknown screen');await window.XpaceScreenMedia.preview(id,track);},
@@ -31324,7 +31345,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Venue staff (twin)':'Equipo del punto (gemelo)',items:['/nuevoMiembro Laura azafata','/nuevoMiembro Pedro cajero','/echarMiembro Laura','/report Marta']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Xpace DVR (record/speed/replay)':'DVR del Xpacio (grabar/velocidad/replay)',items:['/velocidad 1','/velocidad 2','/velocidad 4','/velocidad 8','/dvr','/envivo','/calendario']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Staff (/staff panel)':'Personal (panel /staff)',items:['/staff','/staff bonus 0 100','/staff eotm 0','/staff eotm ana','/staff train 1','/staff hire 2','/staff fire 1']},
-      {title:typeof lang!=='undefined'&&lang==='en'?'Store':'Tienda',items:['/resetaudiencia 0','/resetaudiencia 100','/resetaudiencia auto','/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Store':'Tienda',items:['/reset','/resetaudiencia 0','/resetaudiencia 100','/resetaudiencia auto','/ad 0','/ad 1','/ad 2','/upgrade','/aforo real','/aforo exacto','/aforo fake','/aforo','/visit com','/visit tec','/visit del','/visit gc','/save']},
       {title:'Look & feel',items:['/camiseta on','/camiseta off','/camiseta']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Time and weather':'Tiempo y ambiente',items:['/reloj 14:30','/reloj 14 30','/time am','/time pm','/time night','/tiempo lluvia','/tiempo lluvia sonora','/weather rain audible','/weather normal','/weather rain','/weather sun','/lamp','/lamp auto','/hue','/hue auto']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Screens and live content':'Pantalla y directo',items:['/livecam','/mocap','/pixeria','/AdmiraLive texto','/comunicar texto','/comunicar texto --grok','/comunicar texto --elevenlabs','/AdmiraTube URL 2 audio','/say texto','/targetPublicity aforo','/targetPublicity genero','/targetPublicity off','/generovideo','/generovideo off','/impactos','/impactos cpm 12','/impactos tft','/impactos reset','/impactos off','/audienciaIN 8','/audienciaOUT 4']},
@@ -31518,22 +31539,34 @@ window.xtAPI = (function(){
           el.innerHTML='<img src="'+dsEscapeHtml(src)+'" alt="" draggable="false">';
           // Defensive: also prevent the img from being a separate drag source
           const ig=el.querySelector('img'); if(ig){ ig.addEventListener('dragstart',e=>e.preventDefault()); }
+          dsBindSignagePreview(el.closest('[data-signage-play]'));
         }
       });
     });
   }
   function dsEscapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+  function dsBindSignagePreview(row){
+    if(!row||row.dataset.signagePointer)return;const name=row.dataset.signageName,url=VIDEO_FILES[name];if(!url||!window.XpaceMediaOptions?.attachSignage)return;
+    const picture=row.querySelector('.tg-signage-thumb img'),kind=DS_IMPORT.KIND[name]||'video';row.dataset.signagePointer='1';
+    window.XpaceMediaOptions.attachSignage(row,name,{id:'signage-'+VIDEO_LIST.indexOf(name),title:name,url:new URL(url,location.href).href,kind,thumbnail:picture?.src||(kind==='image'?new URL(url,location.href).href:null)},picture);
+  }
+  window.XpaceSignagePointer={
+    active(value){dsDragging=value;},
+    target(element,x,y){const card=element?.closest('[data-pin-target]'),zone=element?.closest('[data-pin-all-zone]');if(card||zone)return {ids:dsSelectedSurfaces.size?[...dsSelectedSurfaces]:card?[card.dataset.pinTarget]:dsActiveSurfaces().map(s=>s.id),node:card||zone};const row=element?.closest('[data-signage-play]');if(row){const r=row.getBoundingClientRect();return {before:Number(row.dataset.signagePlay)+(y>(r.top+r.height/2)?1:0),node:row};}return null;},
+    drop(name,target){if(target.ids){for(const id of target.ids)dsPinSurface(id,name);}else dsHandlePlaylistReorder(VIDEO_LIST.indexOf(name),target.before);renderSignagePanel();}
+  };
   function renderSignagePanel(){
     if(!signagePanel) return;
     if(dsDragging) return; // don't wipe drop indicators mid-drag
-    const surfaces=(typeof DS_SURFACES!=='undefined')?DS_SURFACES:[];
+    const surfaces=dsActiveSurfaces();
+    for(const id of [...dsSelectedSurfaces])if(!surfaces.some(s=>s.id===id))dsSelectedSurfaces.delete(id);
     const playlist=(typeof VIDEO_LIST!=='undefined')?VIDEO_LIST:[];
     const currentIdx=(typeof dsVideoIdx!=='undefined')?dsVideoIdx:-1;
     const currentName=playlist[currentIdx]||'';
     const mode=(typeof dsMode!=='undefined')?dsMode:'?';
     const pinnedBy=Object.create(null);
     if(typeof DS_PIN!=='undefined'){
-      for(const sid in DS_PIN){ const n=DS_PIN[sid].name; (pinnedBy[n]=pinnedBy[n]||[]).push(sid); }
+      for(const s of surfaces){const pin=dsActivePin(s.id);if(pin)(pinnedBy[pin.name]=pinnedBy[pin.name]||[]).push(s.id);}
     }
     const importCount=(typeof dsImportsListNames==='function')?dsImportsListNames().length:0;
     const isFs=document.body.classList.contains('ds-signage-fullwidth');
@@ -31555,11 +31588,13 @@ window.xtAPI = (function(){
     // Surface cards (also drop targets for playlist rows)
     html+='<div class="tg-signage-surfaces" data-pin-all-zone>';
     for(const s of surfaces){
-      const pin=(typeof DS_PIN!=='undefined' && DS_PIN[s.id])||null;
+      const pin=dsActivePin(s.id);
       let body, meta='';
       if(pin){
         body='📌 '+dsEscapeHtml(pin.name);
         meta='Fijado · '+dsEscapeHtml(pin.kind);
+      } else if(dsMatrixOwnsScreens()){
+        const active=dsMatrixAdapter()?.screenState(s.id);body=dsEscapeHtml(active?.title||'—');meta=lang==='en'?'Matrix · saved schedule':'Matrix · programación guardada';
       } else if(s.id==='ds1'||s.id==='ds2'){
         body=currentName?(dsKindIcon(currentName)+' '+dsEscapeHtml(currentName)):'—';
         meta='Rotación global · modo '+dsEscapeHtml(mode);
@@ -31627,6 +31662,7 @@ window.xtAPI = (function(){
     signagePanel.innerHTML=html;
     document.body.classList.toggle('ds-signage-selected', dsSelectedSurfaces.size>0);
     dsApplyPanelThumbs();
+    signagePanel.querySelectorAll('[data-signage-play]').forEach(dsBindSignagePreview);
   }
   function showSignagePanel(){
     if(!signagePanel||!sendPane) return;
@@ -31676,10 +31712,10 @@ window.xtAPI = (function(){
   // Empty set → click switches the global rotation (default behaviour).
   const dsSelectedSurfaces=new Set();
   function dsAllSurfacesSelected(){
-    return DS_SURFACES.length>0 && DS_SURFACES.every(s=>dsSelectedSurfaces.has(s.id));
+    const surfaces=dsActiveSurfaces();return surfaces.length>0 && surfaces.every(s=>dsSelectedSurfaces.has(s.id));
   }
   function dsSelectedLabels(){
-    return DS_SURFACES.filter(s=>dsSelectedSurfaces.has(s.id)).map(s=>s.label);
+    return dsActiveSurfaces().filter(s=>dsSelectedSurfaces.has(s.id)).map(s=>s.label);
   }
   function dsClearDropIndicators(){
     if(!signagePanel) return;
@@ -32685,6 +32721,18 @@ window.xtAPI = (function(){
         });
         return 'Registro · '+Object.entries(counts).map(([k,v])=>k+'='+v).join(', ')+'\n'+lines.join('\n');
       }
+      if(cmd==='reset'){
+        if(arg.trim())return lang==='en'?'Use /reset without arguments.':'Usa /reset sin argumentos.';
+        const matrix=dsMatrixAdapter();if(dsMatrixOwnsScreens()&&!matrix)return lang==='en'?'Matrix is loading. Try /reset again.':'Matrix se está cargando. Vuelve a ejecutar /reset.';
+        const records=await dsImportsDBList();
+        localStorage.setItem(DS_RESET_IMPORTS_KEY,JSON.stringify(records.map(r=>r.id)));
+        for(const surface of DS_SURFACES)dsUnpinSurface(surface.id);
+        VIDEO_LIST.splice(0,VIDEO_LIST.length,...DS_BASE_VIDEO_LIST);dsVideoIdx=0;dsSelectedSurfaces.clear();
+        window.XpaceOptionsPlayback?.resetScreens();dsSavePlaylistOrder();
+        if(matrix)await matrix.reset();else switchDSVideo(0);
+        renderSignagePanel();window.dispatchEvent(new Event('xpace:playlist'));
+        return lang==='en'?'Reset complete · basic Signage order, no pins; Matrix uses its base wall, POS and iPad playlists. Stock, history and shared MCP playlists retained.':'Reset completado · Signage básico en su orden original, sin pines; Matrix vuelve a sus playlists base de pared, TPV e iPad. Stock, historial y playlists MCP compartidas conservados.';
+      }
       if(cmd==='importtube'||cmd==='tube'){
         if(!arg) return 'Uso: /importTube <URL de YouTube>';
         // fire-and-forget; the status overlay reports phases
@@ -32700,7 +32748,7 @@ window.xtAPI = (function(){
           return 'Selector de archivos abierto. También puedes arrastrar el archivo sobre la pantalla concreta del juego.';
         }
         if(sub==='surfaces'||sub==='pantallas'){
-          return DS_SURFACES.map(s=>{
+          return dsActiveSurfaces().map(s=>{
             const p=DS_PIN[s.id];
             return s.id+' · '+s.label+(p?(' → 📌 '+p.name):' (sin pin)');
           }).join('\n');
@@ -33112,6 +33160,14 @@ window.xtAPI = (function(){
   async function sendComposerText(text){
     const clean=String(text||'').trim();
     if(!clean) return;
+    function resetNotice(text){let note=document.getElementById('signageResetStatus');if(!note){note=document.createElement('output');note.id='signageResetStatus';note.setAttribute('role','status');composer?.parentElement.append(note);}note.textContent=text;}
+    // Reset affects this browser only; do not echo it to Telegram or publish shared playlists.
+    if(/^\/?reset(?:\s|$)/i.test(clean)){
+      appendTelegramLog('out','Experto',clean);
+      try{resetNotice(lang==='en'?'Restoring base schedule…':'Restaurando programación base…');const answer=await executeTelegramText(clean);appendTelegramLog('bot','XpaceOS',answer);showLastResponse(answer,'ok','local-visual');resetNotice(answer);}
+      catch(error){showLastResponse(error.message,'err','local-visual');resetNotice(error.message);}
+      if(composer)composer.value='';renderQuickActionButtons();return;
+    }
     // Avatar digital (FLT-101350): interruptor local. No sale a Telegram.
     if(window.XpaceShell&&typeof window.XpaceShell.isAvatarCommand==='function'&&window.XpaceShell.isAvatarCommand(clean)){
       hideHelpPanel();
@@ -33212,6 +33268,9 @@ window.xtAPI = (function(){
       const name=VIDEO_LIST[dsDragSrcIdx];
       console.log('[DS-DROP dragstart]',{idx:dsDragSrcIdx,name});
       try{ e.dataTransfer.effectAllowed='copyMove'; e.dataTransfer.setData('text/plain',String(dsDragSrcIdx)); }catch(err){}
+      // Keep the graphical thumb centred under the hand, independent of where the row was picked.
+      const picture=row.querySelector('.tg-signage-thumb img');
+      if(picture&&e.dataTransfer){const ghost=picture.cloneNode();ghost.style.cssText='position:fixed;left:-10000px;top:0;width:160px;height:90px;object-fit:contain;background:#05121c';document.body.append(ghost);e.dataTransfer.setDragImage(ghost,80,45);setTimeout(()=>ghost.remove(),0);}
       row.classList.add('is-dragging');
     });
     signagePanel.addEventListener('dragover',e=>{
@@ -33314,7 +33373,7 @@ window.xtAPI = (function(){
         e.preventDefault(); e.stopPropagation();
         let pinned=0;
         if(typeof DS_SURFACES!=='undefined' && typeof dsPinSurface==='function'){
-          for(const s of DS_SURFACES) if(dsPinSurface(s.id,srcName)) pinned++;
+          for(const s of dsActiveSurfaces()) if(dsPinSurface(s.id,srcName)) pinned++;
         }
         dsDragging=false; dsDragSrcIdx=-1;
         dsClearDropIndicators();
@@ -33347,6 +33406,7 @@ window.xtAPI = (function(){
     // ── Drop sobre las pantallas del juego (canvas) — ds1, ds2, escaparate, metahuman.
     // Reusa la deteccion de superficie ya existente para imports de archivos.
     function dsHighlightCanvasSurface(sid){
+      if(dsMatrixOwnsScreens()){dsMatrixAdapter()?.screenHighlight(sid);return;}
       const svg=document.getElementById('dsImportTargetSVG');
       const poly=document.getElementById('dsImportTargetPoly');
       if(!sid){
@@ -33485,7 +33545,7 @@ window.xtAPI = (function(){
         if(dsAllSurfacesSelected()){
           dsSelectedSurfaces.clear();
         } else {
-          for(const s of DS_SURFACES) dsSelectedSurfaces.add(s.id);
+          for(const s of dsActiveSurfaces()) dsSelectedSurfaces.add(s.id);
           if(typeof showEv==='function') showEv('Las 3 pantallas seleccionadas · pulsa un contenido','#78f3ff');
         }
         renderSignagePanel();
@@ -33500,7 +33560,7 @@ window.xtAPI = (function(){
           dsSelectedSurfaces.delete(sid);
         } else {
           dsSelectedSurfaces.add(sid);
-          if(typeof showEv==='function') showEv('Añadida '+dsSurfaceLabel(sid)+' (total '+dsSelectedSurfaces.size+'/'+DS_SURFACES.length+')','#78f3ff');
+          if(typeof showEv==='function') showEv('Añadida '+dsSurfaceLabel(sid)+' (total '+dsSelectedSurfaces.size+'/'+dsActiveSurfaces().length+')','#78f3ff');
         }
         renderSignagePanel();
         return;
@@ -33527,7 +33587,7 @@ window.xtAPI = (function(){
           renderSignagePanel();
           return;
         }
-        if(typeof switchDSVideo==='function'){ switchDSVideo(idx); renderSignagePanel(); }
+        if(typeof switchDSVideo==='function'){ if(dsMatrixOwnsScreens()){for(const surface of dsActiveSurfaces())if(surface.id.startsWith('starbucks-wall-'))dsPinSurface(surface.id,VIDEO_LIST[idx]);}else switchDSVideo(idx); renderSignagePanel(); }
         return;
       }
     });
@@ -35979,6 +36039,7 @@ window.xtAPI = (function(){
   function set(id,pct){ prog[id].pct=Math.max(0,Math.min(100,pct)); }
   function done(id){ clearTimeout(prog[id].t); if(prog[id].active){ prog[id].pct=100; setTimeout(function(){ prog[id].active=false; },420); } else { prog[id].active=false; } }
   function pinWithProgress(surfaceId, kind, url, name){
+    if(dsMatrixOwnsScreens())return orig&&orig(surfaceId,kind,url,name);
     try{
       if(SURF.indexOf(surfaceId)<0 || typeof orig!=='function') return orig&&orig(surfaceId,kind,url,name);
       if(blobCache[url]) return orig(surfaceId,kind,blobCache[url],name);              // ya descargado
@@ -36289,7 +36350,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=avatar-ctx-2"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=matrix-signage-reset-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

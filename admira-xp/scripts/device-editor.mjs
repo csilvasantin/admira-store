@@ -92,6 +92,7 @@ export function mountDeviceEditor({root,surface,lang='es',nameFor,catalog,onChan
     let next=changeDeviceLayout(config,{action:'save_playlist',playlist_id:result.playlist_id,title:result.title,tracks:result.tracks,loop:result.loop});next=changeDeviceLayout(next,{action:'assign',device_ids:ids,playlist_id:result.playlist_id});commit(next);return result.playlist_id;
    }finally{busy=false;}
   },
+  async reset(ids=DEVICE_IDS){if(busy)throw Error(t('Guardando…','Saving…'));commit(changeDeviceLayout(config,{action:'reset',device_ids:ids}));return onReload(ids);},
   reload:reloadOriginal,
   playbackChanged,
   select(id,event={}){if(!enabled||!DEVICE_IDS.includes(id))return;event.preventDefault?.();event.stopPropagation?.();if(event.ctrlKey||event.metaKey||multiple){if(selected.has(id))selected.delete(id);else selected.add(id);}else{selected.clear();selected.add(id);}panel.hidden=!selected.size;notice.textContent='';render();if(!panel.hidden)floating.restore();},

@@ -6,8 +6,8 @@ import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
 import {mountIncidentPanel} from './starbucks-incidents.mjs?v=ipad-20261005-1';
 import {createSincroIA} from './sincro-ia.mjs?v=devices-2';
-import {mountDeviceEditor} from './device-editor.mjs?v=options-preview-1';
-import {createDevicePlayback} from './device-playback.mjs?v=options-preview-1';
+import {mountDeviceEditor} from './device-editor.mjs?v=matrix-signage-reset-1';
+import {createDevicePlayback} from './device-playback.mjs?v=matrix-signage-reset-1';
 import {DEVICE_IDS,assignedPlaylist,emptyDeviceLayout} from './device-layout.mjs?v=ipad-20261005-1';
 import {createAnnouncement,ANNOUNCEMENT_SPEAKER,CLOSING_ANNOUNCEMENT,ANNOUNCEMENT_QUALITIES} from './starbucks-announcement.mjs?v=eleven-1';
 import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
@@ -61,7 +61,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
   layoutSelect.value=mode;
   for(const [id,media] of previews){
    if(!media.dataset.wallVideo&&!media.dataset.tpvVideo)continue;
-   const temporary=previewSlice(id,runtime.previewIds,key=>{const p=model.players.find(p=>p.id===key);return (p?.width||640)/(p?.height||360);});
+   const temporary=previewSlice(id,runtime.previewGroup(id),key=>{const p=model.players.find(p=>p.id===key);return (p?.width||640)/(p?.height||360);});
    if(temporary){Object.assign(media.style,{width:temporary.width+'%',left:temporary.left+'%',right:'auto',objectFit:temporary.fit});media.dataset.screenGroup=temporary.group;continue;}
    if(media.dataset.tpvVideo){Object.assign(media.style,{width:'100%',left:'0%',objectFit:'contain'});delete media.dataset.screenGroup;continue;}
    let slice=screenSlice(id,demoMode==='ia'?'individual':mode);if(!slice)continue;const config=deviceEditor?.config||emptyDeviceLayout();const members=STARBUCKS_WALL_MAPPING.players.filter(p=>slice.group.split('-').map(Number).includes(screenNumber(p.id)));if(members.some(p=>assignedPlaylist(config,p.id)!==assignedPlaylist(config,id)))slice=screenSlice(id,'individual');
@@ -104,13 +104,18 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  const exitNext=root.querySelector('.matrix-exit-next'),nextButtons=[...root.querySelectorAll('[data-music-next]')];
  const music=starbucksMusic();
  function optionGroups(channel){if(channel==='music')return [{id:'music',title:t('Hilo musical · Starbucks','Background music · Starbucks')}];const config=deviceEditor.config,all={...catalog(),...config.playlists};return Object.entries(all).filter(([pid])=>DEVICE_IDS.some(id=>assignedPlaylist(config,id)===pid)).map(([id,p])=>({id,title:p.title+' · '+DEVICE_IDS.filter(device=>assignedPlaylist(config,device)===id).map(device=>screenNumber(device)||(device===STARBUCKS_IPAD_ID?'iPad':'TPV')).join(', ')}));}
+ const signagePreviews=new Map();
  const playlistValue=pid=>deviceEditor.config.playlists[pid]||catalog()[pid];
  window.XpaceMatrixOptions={
   isActive:()=>!disposed,
+  devices:()=>DEVICE_IDS.filter(id=>nodes.has(id)).map(id=>({id,label:playerName(model.players.find(p=>p.id===id)||{id,name:id})})),
+  screenState(id){const active=runtime.nowPlaying([id])[0];const track=active?.preview?signagePreviews.get(id):playlistValue(active?.playlistId)?.tracks.find(t=>(t.id||t.stockId)===active?.trackId);return {...active,title:track?.title||''};},
+  screenPreview:id=>runtime.nowPlaying([id])[0]?.preview?signagePreviews.get(id)||null:null,
+  async reset(){await setDemoMode('linear');for(const id of DEVICE_IDS){const p=model.players.find(p=>p.id===id);if(p&&nodes.has(id)&&previews.get(id)?.tagName!=='VIDEO')mediaFor(p,[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo');}signagePreviews.clear();const result=await deviceEditor.reset();if(result.error)throw Error(t('No se pudo restaurar la reproducción','Playback could not be restored'));return result;},
   screenAt(x,y){for(const n of nodes.values())if(n.dataset.deviceId)n.style.pointerEvents='auto';const id=document.elementFromPoint(x,y)?.closest('[data-device-id]')?.dataset.deviceId;return DEVICE_IDS.includes(id)?id:null;},
   screenTitle:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),
   screenHighlight(id){for(const n of nodes.values())if(!id)n.style.pointerEvents='';for(const n of root.querySelectorAll('[data-device-id]'))n.classList.toggle('device-drop-target',n.dataset.deviceId===id);},
-  async previewScreen(id,track){if(disposed||!DEVICE_IDS.includes(id)||incidents.off.has(id))throw Error(t('Pantalla apagada o no disponible','Screen off or unavailable'));if(!['image','video'].includes(track.kind))throw Error('Invalid screen content');const result=await previewDevices([id],track);if(result.error)throw Error(t('No se pudo mostrar el contenido','Could not display content'));return result;},
+  async previewScreen(id,track){if(disposed||!DEVICE_IDS.includes(id)||incidents.off.has(id))throw Error(t('Pantalla apagada o no disponible','Screen off or unavailable'));if(!['image','video'].includes(track.kind))throw Error('Invalid screen content');const result=await previewDevices([id],track);signagePreviews.set(id,{...track,name:track.title});if(result.error)throw Error(t('No se pudo mostrar el contenido','Could not display content'));return result;},
   restoreScreen:id=>{if(disposed)throw Error(t('Vuelve a Matrix.','Return to Matrix.'));return deviceEditor.reload([id]);},
   groups:optionGroups,
   control(action,pid){if(action==='musicToggle'){music.toggle();return;}if(action.startsWith('music')){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url),next=(index+(action==='musicPrev'?-1:1)+tracks.length)%tracks.length;if(tracks[next])return music.jump(tracks[next].url);return;}const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid);if(action==='dsToggle'){runtime.setPlaying(ids,!runtime.state(ids).playing);return;}const p=playlistValue(pid),active=runtime.nowPlaying(ids)[0],index=p?.tracks.findIndex(t=>t.id===active?.trackId)??-1,next=(index+(action==='dsPrev'?-1:1)+(p?.tracks.length||0))%(p?.tracks.length||0);if(p?.tracks[next])return this.play('screens',p.tracks[next].id,pid);},
