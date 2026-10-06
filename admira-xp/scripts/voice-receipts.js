@@ -25,7 +25,8 @@
   if(!VOICES[lang]?.[voice])return null;const key=lang+':'+voice;if(bank[key])return {...bank[key]};if(fetchedAt&&Date.now()-fetchedAt<30000)return null;
   // Recover already published XpaceOS PA when this browser has no matching receipt.
   // Strict metadata matching: no generic demo audio, no wrong language/voice, no paid POST.
-  if(!pending)pending=(async()=>{const res=await root.fetch('/admira-xp/voice-receipts',{credentials:'same-origin',signal:root.AbortSignal.timeout(90000)});if(!res.ok)throw Error('stock_unavailable');const data=await res.json();for(const item of data.items||[]){const v=valid(item);if(v)remember(v);}fetchedAt=Date.now();})().finally(()=>{pending=null;});
+  let staticSource=false;try{staticSource=/^(?:www\.)?xpaceos\.com$/.test(new URL(root.location.href).hostname);}catch(_){}
+  if(!pending)pending=(async()=>{const res=await root.fetch(staticSource?'https://www.admira.store/admira-xp/voice-receipts':'/admira-xp/voice-receipts',{credentials:staticSource?'omit':'same-origin',signal:root.AbortSignal.timeout(90000)});if(!res.ok)throw Error('stock_unavailable');const data=await res.json();for(const item of data.items||[]){const v=valid(item);if(v)remember(v);}fetchedAt=Date.now();})().finally(()=>{pending=null;});
   await pending;return bank[key]?{...bank[key]}:null;
  }
  root.XpaceVoiceReceipts={key:KEY,VOICES,remember,latest,get:(voice,lang)=>bank[lang+':'+voice]?{...bank[lang+':'+voice]}:null};
