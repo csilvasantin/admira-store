@@ -4134,6 +4134,30 @@
     "status": "implemented",
     "scope": "local virtual screen preview; authenticated MCP changes remain explicit"
   },
+  "expertPreviews": {
+    "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md",
+    "slot": "Expert bottom menu · third column PREVIEWS (#telegramDock .expert-view-pane > #expertCreatedPreviews)",
+    "creation": "Expert → Create media: image (PixerIA), voiceover (ElevenLabs), video (Grok); music deliveries from the Pixeria creator",
+    "types": [
+      "image",
+      "music",
+      "voice",
+      "video"
+    ],
+    "order": "newest first; up to 6 items",
+    "storage": "sessionStorage:xpaceos.expert-previews.v1",
+    "event": "window xpace:media-created {kind, track}",
+    "api": "window.XpaceExpertPreviews.add(kind, stockReceipt) · list() · clear()",
+    "actions": {
+      "image": "Launch to screens + Open in Stock",
+      "video": "Launch to screens + Open in Stock",
+      "music": "Launch to background music + Open in Stock",
+      "voice": "Play ×3 (XpaceAnnouncements.playStock) + Open in Stock · Public announcements"
+    },
+    "voiceover_endpoint": "same-origin /admira-xp/announcement-tts (session; archives in Stock · Megafonía). /megafonia/push is not used because that queue plays immediately in the store twins",
+    "playback": "creating never plays; Launch adds and plays on this Xpace's virtual players; physical broadcast not verified",
+    "forms": "stay in the middle column (Create media)"
+  },
   "starbucks_ipad": {
     "guide": "https://www.admira.store/admira-xp/docs/starbucks-ipad.md",
     "catalog_number": 52,

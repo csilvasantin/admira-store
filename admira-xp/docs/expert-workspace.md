@@ -24,8 +24,8 @@ Inventory/ITIL follows the active Xpace language: Spanish displays Inventario/IT
 Contrato / Contract: `inventory-language.md`.
 
 
-ES: Se añade al final Crear contenidos (creation), conservando las diez categorías anteriores y sus identidades. Contiene Crear música (Pixeria), Crear imagen y Crear vídeo; los previos y la biblioteca por hashtags quedan en Opciones.
+ES: Se añade al final Crear contenidos (creation), conservando las diez categorías anteriores y sus identidades. Contiene Crear música (Pixeria), Crear locución (ElevenLabs), Crear imagen y Crear vídeo. Desde el 06-10-2026 lo creado se previsualiza en PREVIOS, la tercera columna, el último primero, con Lanzar y Ver en Stock (`expert-previews.md`); la biblioteca por hashtags y el previo de Opciones se mantienen.
 
-EN: Create media (creation) is appended, retaining the ten previous categories and their identities. It contains Create music (Pixeria), Create image and Create video; previews and the hashtag library remain in Options.
+EN: Create media (creation) is appended, retaining the ten previous categories and their identities. It contains Create music (Pixeria), Create voiceover (ElevenLabs), Create image and Create video. Since 06-10-2026 created media previews in PREVIEWS, the third column, newest first, with Launch and Open in Stock (`expert-previews.md`); the hashtag library and Options previews remain.
 
 Guide: https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md

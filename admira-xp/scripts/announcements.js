@@ -93,13 +93,23 @@
     const result=await root.XpaceMedia.generate('audio',{text,voice,language},{signal,onProgress(phase){if(status)status.textContent=phase==='archiving'?(doc.documentElement.lang==='en'?'Saving voice to Stock…':'Guardando locución en Stock…'):(doc.documentElement.lang==='en'?'Preparing ElevenLabs voice…':'Preparando voz ElevenLabs…');}});
     root.XpaceMedia.link('audio',result.stock);
     const url=root.URL.createObjectURL(result.audioBlob);return {url,release:()=>root.URL.revokeObjectURL(url)};
-  },onState:render,duck(){
+  },onState:render,duck});
+  function duck(){
     const saved=['bgMusic','starbucksMusic'].map(id=>doc.getElementById(id)).filter(Boolean).map(audio=>({audio,volume:audio.volume,ducked:Math.min(audio.volume,0.06)}));
     for(const s of saved)s.audio.volume=s.ducked;
     return ()=>{for(const s of saved)if(s.audio.volume===s.ducked)s.audio.volume=s.volume;};
-  }});
-  root.XpaceAnnouncements={...api,play:(text,opts={})=>api.play(text,{...opts,voice:opts.voice||selector?.value||'browser'})};
+  }
+  // Experto → PREVIOS: una locución ya guardada en Stock se emite sólo al pulsar Emitir,
+  // con las mismas tres lecturas y la misma bajada del hilo musical. No genera otra vez.
+  let stockPlayer=null;
+  function stopStock(){const player=stockPlayer;stockPlayer=null;player?.stop();}
+  function playStock(url,text,{language='es',onState=()=>{}}={}){
+    api.stop();stopStock();
+    const player=createAnnouncements({Audio:root.Audio,generate:async()=>({url}),onState,duck});
+    stockPlayer=player;return player.play(String(text||'').trim()||'Stock',{voice:'female',language:language==='en'?'en':'es'});
+  }
+  root.XpaceAnnouncements={...api,play:(text,opts={})=>{stopStock();return api.play(text,{...opts,voice:opts.voice||selector?.value||'browser'});},stop:()=>{stopStock();api.stop();},playStock,stopStock};
   if(input)for(const event of ['keydown','keyup','keypress'])input.addEventListener(event,e=>e.stopPropagation());
   if(root.MutationObserver)new root.MutationObserver(()=>{api.stop();render();}).observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});
-  root.addEventListener('xpace:session',()=>render());root.addEventListener('pagehide',api.stop);render();
+  root.addEventListener('xpace:session',()=>render());root.addEventListener('pagehide',()=>{stopStock();api.stop();});render();
 })(typeof window!=='undefined'?window:globalThis);
