@@ -84,7 +84,12 @@
 
   function itemMarkup(lang, item, cls) {
     const id = item.id ? ` id="${esc(item.id)}"` : '';
-    const label = bilingual(lang, item);
+    let label = bilingual(lang, item);
+    if(cls==='xs-link'){
+      const key=(item.href||item.id||'').toLowerCase();
+      const path=key==='/'?'M3 10l9-7 9 7v11h-6v-7H9v7H3z':key.includes('help')?'M12 17v1M9 8a3 3 0 1 1 5 2c-2 1-2 2-2 3M3 3h18v18H3z':key.includes('invent')?'M3 3h18v18H3zM3 10h18M10 3v18':key.includes('admira-xp')?'M3 5h18v14H3zM8 23h8M12 19v4':'M3 4h18v16H3zM7 8h10M7 12h10M7 16h6';
+      label=`><span class="xs-option-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="${path}"></path></svg></span><span class="xs-option-label"${bilingual(lang,item)}</span>`;
+    }
     if (item.href) return `<a class="${cls}"${id} href="${esc(safeHref(item.href))}"${item.newTab ? ' target="_blank" rel="noopener"' : ''}${label}</a>`;
     return `<button type="button" class="${cls}"${id}${label}</button>`;
   }
@@ -887,15 +892,20 @@
     if (root.ResizeObserver) new ResizeObserver(layout).observe(parts.expert);
     new MutationObserver(translate).observe(html, {attributes: true, attributeFilter: ['lang']});
     // Los paneles conservan su anclaje cuadrático mientras se mueve su borde interior (superpuestos).
-    import(new URL('../admira-xp/scripts/panel-resize.mjs?v=20261003-expert-1',script.src).href).then(({attachPanelResize})=>{
+    Promise.all([import(new URL('../admira-xp/scripts/panel-resize.mjs?v=20261006-compact-options-1',script.src).href),import(new URL('../admira-xp/scripts/options-rail.mjs?v=20261006-compact-options-1',script.src).href)]).then(([{attachPanelResize},{attachOptionsRail,optionsWidth,OPTIONS_ICON_WIDTH}])=>{
+      let options,preferred=null;
+      const paintOptions=()=>{if(!options)return;const width=options.desired(preferred);parts.options.style.width=width+'px';options.sync(width);layout();};
+      options=attachOptionsRail(parts.options,{onChange:paintOptions});paintOptions();
       for(const name of ['left','right','expert']){
         const panel=doc.getElementById(PANEL[name]),vertical=name==='expert';
         const resize=attachPanelResize(panel,{
           axis:vertical?'height':'width',direction:name==='left'?1:-1,
           label:()=>T(name==='left'?'Opciones':name==='right'?'Avanzado':'Experto',name==='left'?'Options':name==='right'?'Advanced':'Expert'),
           key:'xpaceos_shell_size_v1:'+name,storage:local,container:parts.expert.parentElement,
-          limits:()=>vertical?{minHeight:128,maxHeight:Math.max(128,root.innerHeight-BAR_HEIGHT-96)}:{minWidth:156,maxWidth:Math.max(156,Math.min(560,root.innerWidth*.45))},
-          onChange:layout
+          limits:()=>vertical?{minHeight:128,maxHeight:Math.max(128,root.innerHeight-BAR_HEIGHT-96)}:{minWidth:name==='left'?OPTIONS_ICON_WIDTH:156,maxWidth:Math.max(156,Math.min(560,root.innerWidth-24))},
+          normaliseWidth:width=>name==='left'?optionsWidth(width,options.readable()):width,
+          widthStep:(width,delta)=>name==='left'&&width===OPTIONS_ICON_WIDTH&&delta>0?options.readable():width+delta,
+          onChange:size=>{if(name==='left'){preferred=size?.width??null;paintOptions();}else layout();}
         });
         doc.addEventListener('xpace:shell-panel',()=>resize.sync());
         root.addEventListener('pagehide',()=>resize.dispose(),{once:true});

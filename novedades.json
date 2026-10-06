@@ -13,5 +13,10 @@
     "La versión se muestra al pie de Opciones y se oculta al plegarlo",
     "Sólo una novedad sin reconocer permite el primer aviso exterior",
     "Carga compatible con los distintos sellos nativos de la suite"
+  ],
+  "v.06.10.2026.r5.08:18": [
+    "Opciones abre con el ancho mínimo para leer sus etiquetas",
+    "Arrastra el borde para dejar sólo iconos con nombre al pasar el cursor",
+    "Las herramientas recuperan espacio para sus controles y vuelven al ancho elegido"
   ]
 }
