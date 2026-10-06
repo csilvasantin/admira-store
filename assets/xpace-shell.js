@@ -6,8 +6,8 @@
 // el modo Experto (la consola). Cualquier otra página obtiene la misma barra, los mismos
 // glifos y las mismas clases cargando este fichero:
 //
-//   <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261006-alsea-repair-1">          (después del CSS propio)
-//   <script defer src="/assets/xpace-shell.js?v=20261006-alsea-repair-1" data-section="/ ayuda" data-section-en="/ help"></script>
+//   <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261006-avatar-ctx-1">          (después del CSS propio)
+//   <script defer src="/assets/xpace-shell.js?v=20261006-avatar-ctx-1" data-section="/ ayuda" data-section-en="/ help"></script>
 //
 // La página declara lo suyo en window.XPACE_SHELL (antes del script) o con atributos:
 //   data-shell-slot="options|advanced|expert"  mueve ese elemento (con sus manejadores) al panel;
@@ -502,7 +502,7 @@
   // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
   // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
   // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
-  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-5';
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1';
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }

@@ -4286,6 +4286,13 @@
     "en": "In Starbucks Alsea Matrix, the digital avatar is anchored on the brick wall beside the exit, left of the shelves. The Digital avatar control centres that wall. Click the avatar to enlarge its view and use its conversation controls. Close or Escape returns it to the wall and reloads the iframe to stop speech. The enlarged conversation temporarily silences background music. Existing live digitalavatar.ai renderers and this browser’s selected level are reused; no microphone or question starts automatically. In Expert categories, Create Media replaces the former LiveCam tile without a duplicate below. LiveCam remains available in Advanced and through /livecam. Readable forms, creation bars, enlarged previews, centred dragging and Stock receipts are retained.",
     "id": "starbucks-avatar-wall",
     "renderer_origin": "https://digitalavatar.ai",
+    "client_context": {
+      "loc": "alsea-sbux-021",
+      "sector": "cafeteria",
+      "params": ["loc", "lang", "sector", "brand", "site", "city", "tier"],
+      "live": "postMessage da-context · now-playing background music (best tier)",
+      "since": "06-10-2026"
+    },
     "guide": "https://www.admira.store/admira-xp/docs/matrix-wall-avatar.md",
     "expert_categories": {
       "replaces": "livecam",
@@ -4320,6 +4327,7 @@
     "receipts_key": "xpaceos.voice-receipts.v1:<Xpacio>",
     "reads": 3,
     "generation_on_click": false,
-    "historical_recovery": "published XpaceOS Stock audio with explicit voice/language metadata"
+    "historical_recovery": "published XpaceOS Stock audio with explicit voice/language metadata",
+    "recovery_endpoint": "/admira-xp/voice-receipts"
   }
 }

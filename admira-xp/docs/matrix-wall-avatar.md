@@ -27,3 +27,13 @@ EN: In Starbucks Alsea Matrix, the digital avatar is anchored on the brick wall 
 - Stable demo: https://www.admira.store/admira-xp/?loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&quality=matrix&lang=es (use `lang=en` for English).
 - MCP: help topic `matrix-wall-avatar`, existing help resource `xpaceos://help`; public https://mcp.admira.store/help. No new tool, remote player or Matrix-state mutation.
 - Publication: publish the XpaceOS source and its retained contract before admira.store mirror. Both require this module and guide; earlier creation/recovery contracts remain in the manifest.
+
+## Contexto del cliente / Client context (06-10-2026)
+
+Contexto (06-10-2026): la pared abre el avatar con loc=alsea-sbux-021, sector=cafeteria, idioma, marca y nivel (tier); en best también le llega la canción del hilo musical (postMessage da-context). Las sugerencias y respuestas son de cafetería en good, better y best.
+
+Context (06-10-2026): the wall opens the avatar with loc=alsea-sbux-021, sector=cafeteria, language, brand and level (tier); in best it also receives the current background-music track (postMessage da-context). Suggestions and answers are coffee-shop ones in good, better and best.
+
+- `wallAvatarUrl(level, context)` y `AVATAR_WALL_CONTEXT` en `matrix-wall-avatar.mjs`; `mountWallAvatar(surface,{t,onChange,context,live})`. `context` (objeto o función) se suma a loc/sector/idioma/marca por defecto; `live` devuelve el texto en vivo que se envía sólo a `https://digitalavatar.ai`.
+- El sondeo de 1 s recarga el iframe sólo si cambia la URL (nivel, idioma o marca); si no, reenvía `live` cuando cambia.
+- Test: `admira-xp/scripts/matrix-wall-avatar.test.mjs`.

@@ -1,5 +1,5 @@
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=person-voice-1';
-import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=wall-avatar-1';
+import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=wall-avatar-ctx-1';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
@@ -46,7 +46,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  <p class="matrix-map-note">${t('Mapa local en este navegador. Un ID anotado no confirma conexión con el player real. La vista previa no publica contenido en las pantallas.','Local map in this browser. An entered ID does not confirm a connection to the real player. Previewing does not publish content to screens.')}</p>
  </section>`;
  const surface=root.querySelector('.matrix-panorama'),layer=root.querySelector('.matrix-player-layer'),markers=root.querySelector('.matrix-markers'),panel=root.querySelector('.matrix-map-panel'),status=root.querySelector('.matrix-map-status'),list=root.querySelector('.matrix-map-list'),form=root.querySelector('form');
- const wallAvatar=mountWallAvatar(surface,{t,onChange:()=>{renderKey='';}});
+ const wallAvatar=mountWallAvatar(surface,{t,onChange:()=>{renderKey='';},live:()=>{const state=music.state(),track=music.getTracks().find(x=>x.url===state.url);return state.playing&&track?.title?t('Suena ahora en el hilo musical: ','Now playing on the background music: ')+track.title:'';}});
  const controls=new AbortController(),options={signal:controls.signal},previews=new Map(),nodes=new Map();
  const mappingWindow=attachFloatingPanel(panel,{label:t('Mapeo de players','Player mapping'),handle:panel.querySelector('header'),closeButton:panel.querySelector('[data-map="close"]'),bounds:surface,key:'xpaceos.window.matrix-map.v1',menu:'matrix-map',onOpen:()=>{if(disposed)return;incidents?.close();cancel();panel.hidden=false;}});
  const numberLayer=root.querySelector('.matrix-screen-numbers'),numberButton=root.querySelector('[data-screen-numbers]'),numberNodes=new Map();

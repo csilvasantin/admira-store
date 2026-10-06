@@ -747,7 +747,7 @@
     "en": "Every xpaceos.com (= admira.store) page carries the twin's four-band bar: ☰ Options, ▤ Advanced and ⌘ Expert. Outside the twin, ⌘ Expert offers /help, /limpiar, /gemelo [command], /marca and /avatar good|better|best. /avatar good opens the bald face, /avatar better the girl and /avatar best Neo; they stay with the avatar and do not travel to the twin. Twin verbs (including bare good, better and best) travel through sessionStorage and the twin runs them once on load. Panels start closed on every page and overlay the content, which never moves or resizes. Not an MCP tool.",
     "avatar": {
       "guide": "https://www.xpaceos.com/admira-xp/docs/avatar-levels.md",
-      "loader": "https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-5",
+      "loader": "https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1",
       "shell": "/assets/xpace-shell.js?v=20261005-marca-proyecto",
       "commands": [
         "/avatar good",
@@ -765,6 +765,7 @@
       "stays_local": true,
       "fallback": "best falls back to the girl when the MetaHuman render host is off",
       "pending": "Neo render host is outside this repo",
+      "client_context": "loc, lang, sector, brand and tier travel to digitalavatar.ai; twin sector from the project (estancos→estanco, cafebreria/starbucks→cafeteria); legal rules (Law 28/2005) at every tier; no opening hours",
       "mcp_tool": null
     }
   },
@@ -2133,7 +2134,8 @@
       "admira-xp/scripts/voice-receipts.js",
       "admira-xp/scripts/matrix-person-announcements.mjs",
       "admira-xp/scripts/expert-composer.mjs",
-      "admira-xp/docs/matrix-person-voice.md"
+      "admira-xp/docs/matrix-person-voice.md",
+      "functions/admira-xp/voice-receipts.js"
     ]
   },
   "media_creation_experience": {
@@ -2171,6 +2173,13 @@
     "en": "In Starbucks Alsea Matrix, the digital avatar is anchored on the brick wall beside the exit, left of the shelves. The Digital avatar control centres that wall. Click the avatar to enlarge its view and use its conversation controls. Close or Escape returns it to the wall and reloads the iframe to stop speech. The enlarged conversation temporarily silences background music. Existing live digitalavatar.ai renderers and this browser’s selected level are reused; no microphone or question starts automatically. In Expert categories, Create Media replaces the former LiveCam tile without a duplicate below. LiveCam remains available in Advanced and through /livecam. Readable forms, creation bars, enlarged previews, centred dragging and Stock receipts are retained.",
     "id": "starbucks-avatar-wall",
     "renderer_origin": "https://digitalavatar.ai",
+    "client_context": {
+      "loc": "alsea-sbux-021",
+      "sector": "cafeteria",
+      "params": ["loc", "lang", "sector", "brand", "site", "city", "tier"],
+      "live": "postMessage da-context · now-playing background music (best tier)",
+      "since": "06-10-2026"
+    },
     "guide": "https://www.admira.store/admira-xp/docs/matrix-wall-avatar.md",
     "expert_categories": {
       "replaces": "livecam",
@@ -2205,6 +2214,7 @@
     "receipts_key": "xpaceos.voice-receipts.v1:<Xpacio>",
     "reads": 3,
     "generation_on_click": false,
-    "historical_recovery": "published XpaceOS Stock audio with explicit voice/language metadata"
+    "historical_recovery": "published XpaceOS Stock audio with explicit voice/language metadata",
+    "recovery_endpoint": "/admira-xp/voice-receipts"
   }
 }

@@ -30,14 +30,24 @@ El ⌘ Experto lleva la piel común de la suite (`experto.css/js` de admiranext.
 
 - Estas órdenes se quedan en el avatar. No se guardan en `xpaceos_expert_pending_v1` y no abren el gemelo.
 - `good`, `better` y `best` sueltos siguen siendo las vistas del gemelo y sí viajan a `/admira-xp/`.
-- Cargador: `https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-5`.
+- Cargador: `https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1`.
 - Sello del shell en las páginas: `/assets/xpace-shell.js?v=20261005-avatar-controls-1` (y el CSS con el mismo sello).
 - El estado se recuerda en este sitio, en el navegador (`admira-avatar:override`; `da-avatar:<host>` sólo en el fallback / fallback only). No hay claves en la página.
 - La ficha que responde el cerebro está en `functions/avatar-ask.js`. Si el cerebro no contesta, se usa esa ficha.
 - `/avatarDigital` sigue en el registro del shell (FLT-101350, Woz). Esta entrega no lo sustituye ni anuncia una publicación distinta de la suya.
 - Pendiente fuera de este repo: el host de render de Neo. Si está apagado, best cae a la chica. No hay herramienta MCP nueva.
 
-These commands stay with the avatar. They are not stored in `xpaceos_expert_pending_v1` and they do not open the twin. Bare `good`, `better` and `best` remain twin views and still travel to `/admira-xp/`. Loader: `https://www.admiranext.com/assets/avatar.js?v=20261004-avatar-5`. Shell cache token on pages: `/assets/xpace-shell.js?v=20261005-avatar-controls-1` (CSS uses the same token). State is remembered on this site, in the browser. There are no keys in the page. The fallback sheet is `functions/avatar-ask.js`. `/avatarDigital` stays in the shell registry (FLT-101350, Woz); this delivery does not replace it. Pending outside this repo: Neo’s render host. If it is off, best falls back to the girl. No new MCP tool.
+These commands stay with the avatar. They are not stored in `xpaceos_expert_pending_v1` and they do not open the twin. Bare `good`, `better` and `best` remain twin views and still travel to `/admira-xp/`. Loader: `https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1`. Shell cache token on pages: `/assets/xpace-shell.js?v=20261005-avatar-controls-1` (CSS uses the same token). State is remembered on this site, in the browser. There are no keys in the page. The fallback sheet is `functions/avatar-ask.js`. `/avatarDigital` stays in the shell registry (FLT-101350, Woz); this delivery does not replace it. Pending outside this repo: Neo’s render host. If it is off, best falls back to the girl. No new MCP tool.
 
 
 Control local y tutorial actualizado ES/EN / Updated local controls and ES/EN tutorial: [avatar-controls](avatar-controls.md). `/avatar digital on` / `/avatar digital off` también funcionan en el gemelo nativo / also work in the native twin. `/avatarDigital` sin argumentos alterna la mascota del cargador central / without arguments toggles the central loader mascot.
+
+## Contexto del cliente / Client context (06-10-2026)
+
+Contexto del cliente (06-10-2026): el avatar habla del negocio del local en los tres niveles. El cargador envía loc, idioma, sector, marca (mb:marca) y nivel a digitalavatar.ai; en el gemelo el sector sale del proyecto (estancos → estanco, Cafebrería y Starbucks → cafetería), no del loc xtanco-generic. good = persona del sector y sugerencias; better = además tono de la marca y datos del local; best = además lo que suena y el historial de la charla. Las reglas legales se aplican en todos los niveles: en estancos (Ley 28/2005) sólo información, sin recomendar ni promocionar tabaco o vapeo. No responde horarios: no hay datos fiables.
+
+Client context (06-10-2026): the avatar talks about the venue's business at all three levels. The loader sends loc, language, sector, brand (mb:marca) and level to digitalavatar.ai; in the twin the sector comes from the project (estancos → tobacconist, Cafebrería and Starbucks → coffee shop), not from the xtanco-generic loc. good = sector persona and suggestions; better = plus brand tone and venue data; best = plus what is playing and the chat history. Legal rules apply at every level: tobacconists (Spanish Law 28/2005) get information only, never tobacco or vape recommendations or promotion. Opening hours are not answered: there is no reliable data.
+
+- Catálogo de sectores / Sector catalogue: https://www.admiranext.com/avatar/sectores.json · perfil / profile: `GET https://brain.digitalavatar.ai/metahuman/profile?loc=&sector=&brand=&tier=&lang=`.
+- Gemelo / Twin: `avatar3dSector()`, `avatar3dAskLoc()`, `avatar3dContextQS()` y `window.AdmiraAvatarContext` en `admira-xp/index.html`; `avatar3dLoc()` no cambia para métricas, campañas y día / unchanged for metrics, campaigns and day data.
+- Sin herramienta MCP nueva / No new MCP tool.

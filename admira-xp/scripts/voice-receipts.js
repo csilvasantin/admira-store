@@ -25,7 +25,7 @@
   if(!VOICES[lang]?.[voice])return null;const key=lang+':'+voice;if(bank[key])return {...bank[key]};if(fetchedAt&&Date.now()-fetchedAt<30000)return null;
   // Recover already published XpaceOS PA when this browser has no matching receipt.
   // Strict metadata matching: no generic demo audio, no wrong language/voice, no paid POST.
-  if(!pending)pending=(async()=>{const res=await root.fetch('https://api.admira.store/stock/list?type=locucion&limit=100',{credentials:'omit',signal:root.AbortSignal.timeout(90000)});if(!res.ok)throw Error('stock_unavailable');const data=await res.json();for(const item of data.items||[]){const v=fromStock(item);if(v)remember(v);}fetchedAt=Date.now();})().finally(()=>{pending=null;});
+  if(!pending)pending=(async()=>{const res=await root.fetch('/admira-xp/voice-receipts',{credentials:'same-origin',signal:root.AbortSignal.timeout(90000)});if(!res.ok)throw Error('stock_unavailable');const data=await res.json();for(const item of data.items||[]){const v=valid(item);if(v)remember(v);}fetchedAt=Date.now();})().finally(()=>{pending=null;});
   await pending;return bank[key]?{...bank[key]}:null;
  }
  root.XpaceVoiceReceipts={key:KEY,VOICES,remember,latest,get:(voice,lang)=>bank[lang+':'+voice]?{...bank[lang+':'+voice]}:null};
