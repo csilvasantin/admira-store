@@ -1,13 +1,16 @@
 {
   "version": "v.06.10.2026.r25.22:04",
+  "deployedAt": "2026-10-06T20:05:36Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "deployedAt": "2026-10-06T20:05:28.505555+00:00",
-  "git": "6590c55a96004132e51f74f6f84b1491415648bc",
-  "gitFull": "6590c55a96004132e51f74f6f84b1491415648bc",
-  "gitShort": "6590c55",
+  "git": "f70129bd72d8164d975ef30cb56d977f55c3f974",
+  "gitShort": "f70129b",
+  "gitFull": "f70129bd72d8164d975ef30cb56d977f55c3f974",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "novedades": [
+    "Avatar good = Admirito: la nube de la casa, animada, que mueve los labios al hablar y hace cosas sola si nadie la toca",
+    "En el gemelo, con calidad Good el tótem y la pantalla de la pared larga muestran a Admirito; Better, Best y Matrix siguen con la chica",
+    "La pared Matrix con /avatar good abre la nube (digitalavatar.ai/nube.html)"
+  ]
 }
