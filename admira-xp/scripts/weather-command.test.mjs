@@ -31,10 +31,11 @@ function audioFixture(weather={type:'rain'},ambient=false){
   createBiquadFilter(){return {frequency:parameter(),Q:parameter(),connect(){}};}
  }
  const window={G:{weather,sfxVolume:.7,ambient:{enabled:ambient,volume:.25}},AudioContext,ambientActive:()=>true};
- const context=vm.createContext({window,document:{hidden:false,addEventListener(){}},setInterval(){},setTimeout(){}});
+ const document={hidden:false,matrix:false,querySelector:()=>document.matrix?{}:null,addEventListener(){}};
+ const context=vm.createContext({window,document,setInterval(){},setTimeout(){}});
  vm.runInContext(source('../assets/js/sfx.js'),context);vm.runInContext(source('../assets/js/ambient.js'),context);
  window.AMBIENT.init();window.AMBIENT.update();
- return {window,gains,oscillators};
+ return {window,document,gains,oscillators};
 }
 test('silent rain gates both sound engines without muting unrelated effects or ambient rumor',()=>{
  const f=audioFixture({type:'rain'},true);
@@ -53,4 +54,15 @@ test('rain sound respects SFX mute and pause',()=>{
  const f=audioFixture({type:'rain',sonora:true});f.window.G.sfxVolume=0;f.window.AMBIENT.update();
  f.window.SFX.thunder();assert.equal(f.oscillators.length,0);assert.equal(f.gains[2].gain.value,0);
  f.window.G.sfxVolume=.7;f.window.ambientActive=()=>false;f.window.AMBIENT.update();assert.equal(f.gains[2].gain.value,0);
+});
+test('Matrix silences hidden cafe and rain engines and leaving restores unchanged preferences',()=>{
+ const f=audioFixture({type:'rain',sonora:true},true),before=structuredClone(f.window.G);
+ assert.ok(f.gains.every(g=>g.gain.value>0));
+ f.window.SFX.rainLoop();assert.equal(f.oscillators.length,3);
+ f.document.matrix=true;f.window.AMBIENT.update();f.window.SFX.stopWeather();
+ assert.ok(f.gains.slice(0,3).every(g=>g.gain.value===0));assert.ok(f.oscillators.every(o=>o.stopped));
+ f.window.SFX.rainLoop();f.window.SFX.thunder();assert.equal(f.oscillators.length,3);
+ assert.deepEqual(f.window.G,before);
+ f.document.matrix=false;f.window.AMBIENT.update();assert.ok(f.gains.slice(0,3).every(g=>g.gain.value>0));
+ f.window.SFX.rainLoop();assert.equal(f.oscillators.length,6);
 });

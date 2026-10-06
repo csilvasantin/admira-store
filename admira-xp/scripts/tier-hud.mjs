@@ -21,7 +21,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
   const hud=document.createElement('div');
   hud.className='tier-hud';hud.dataset.mode=mode;
   hud.setAttribute('aria-label',en?'View status':'Estado de la vista');
-  hud.innerHTML=`<div class="tier-hud-heading"><b>${tierPlate(mode)}</b><time class="tier-hud-clock"></time></div>
+  hud.innerHTML=`<div class="tier-hud-heading"><b>${tierPlate(mode)}</b></div>
     <p class="tier-hud-caption">${en?tier.captionEn:tier.caption}</p>
     <p class="tier-hud-status">${en?'LIVE':'EN VIVO'}</p>
     <details class="tier-hud-details" hidden><summary>${en?'Scene details':'Detalles de la escena'}</summary><div class="tier-hud-extra"></div></details>`;
@@ -30,6 +30,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
   const selector=host?.querySelector('.visual-tier-controls');
   if(selector?.insertAdjacentElement)selector.insertAdjacentElement('afterend',hud);
   else host?.append(hud);
+  hud.hidden=true; // PREVIOS is reserved for media, not scene diagnostics or clocks.
   const syncDetails=()=>{
     const lines=[...scene.querySelectorAll?.('.matrix-furniture-status,.matrix-furniture-selection,.best-people-status,.best-stage figcaption')||[]]
       .filter(node=>!node.hidden).map(node=>node.textContent.trim()).filter(Boolean);
@@ -40,7 +41,6 @@ export function mountTierHud(dialog,{mode,stage}={}){
   syncDetails();
   const observer=typeof MutationObserver==='function'?new MutationObserver(syncDetails):null;
   observer?.observe(scene,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden']});
-  const clock=hud.querySelector('.tier-hud-clock');
   // Keep contextual selection/editor panels above the dock's hidden strip.
   const safeBottom=()=>{
     try{
@@ -50,7 +50,7 @@ export function mountTierHud(dialog,{mode,stage}={}){
       dialog.style?.setProperty?.('--hud-safe-bottom',Math.max(0,Math.round(rect.bottom-visible))+'px');
     }catch{/* presentation only */}
   };
-  const tick=()=>{const now=new Date();clock.textContent=[now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');safeBottom();};
+  const tick=safeBottom;
   tick();const timer=setInterval(tick,1000);
   return {
     setStatus(text){hud.querySelector('.tier-hud-status').textContent=String(text||(document.documentElement?.lang==='en'?'LIVE':'EN VIVO')).toUpperCase();},

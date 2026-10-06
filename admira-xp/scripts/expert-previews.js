@@ -23,8 +23,9 @@
  const doc=root.document;if(!doc||!doc.querySelector)return;
  const t=(es,en)=>doc.documentElement.lang==='en'?en:es;
  const LABEL={image:['IMAGEN','IMAGE'],video:['VÍDEO','VIDEO'],music:['MÚSICA','MUSIC'],voice:['LOCUCIÓN','VOICEOVER']};
- let items=[],section=null,list=null,releases=[];const cards=new Map(),notes=new Map(),playing=new Map();
+ let items=[],section=null,list=null,empty=null,releases=[];const cards=new Map(),notes=new Map(),playing=new Map();
  try{const saved=JSON.parse(root.sessionStorage.getItem(KEY)||'[]');if(Array.isArray(saved))for(const v of saved.reverse()){const p=preview(v?.kind,v);if(p)items=merge(items,p);}}catch(_){}
+ if(root.XpaceCreatedMedia){items=[];for(const v of root.XpaceCreatedMedia.list().reverse()){const p=preview(v.kind,v);if(p)items=merge(items,p);}}
  function persist(){try{root.sessionStorage.setItem(KEY,JSON.stringify(items));}catch(_){}}
  const uid=item=>item.kind+':'+item.id;
  function el(tag,cls,text){const e=doc.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
@@ -32,7 +33,7 @@
  function mount(){
   if(section?.isConnected)return section;const host=pane();if(!host)return null;
   section=el('section','expert-created-previews');section.id='expertCreatedPreviews';section.setAttribute('aria-live','polite');
-  list=el('div','expert-preview-list');section.append(list);
+  list=el('div','expert-preview-list');empty=el('p','expert-preview-empty');section.append(empty,list);
   const label=host.querySelector('#expertPreviewLabel');if(label)label.after(section);else host.prepend(section);return section;
  }
  function quiet(except){for(const release of releases)release();releases=[];for(const media of doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.options-playlist-preview audio,.options-playlist-preview video'))if(media!==except&&!media.paused)media.pause();}
@@ -95,7 +96,7 @@
   texts(c,item);return c;
  }
  function render(fresh){
-  if(!mount())return;section.hidden=!items.length;
+  if(!mount())return;section.hidden=false;empty.hidden=!!items.length;empty.textContent=t('Aquí aparecerán la imagen, el vídeo, la música y la locución que crees. Crear no emite; revisa el previo y pulsa Lanzar o Emitir.','Your created images, videos, music and voiceovers will appear here. Creating does not play; review the preview, then press Launch or Play.');
   section.setAttribute('aria-label',t('Contenidos creados · el último primero','Created media · newest first'));
   const keep=new Set(items.map(uid));
   for(const [key,node]of cards)if(!keep.has(key)){node.querySelectorAll('audio,video').forEach(m=>m.pause());node.remove();cards.delete(key);notes.delete(key);}
@@ -103,8 +104,8 @@
   if(fresh){const node=cards.get(uid(fresh));if(node){node.classList.add('is-fresh');root.setTimeout(()=>node.classList.remove('is-fresh'),2400);const host=pane();if(host)host.scrollTop=0;}}
  }
  function add(kind,value){const item=preview(kind,{...value,at:Date.now()});if(!item)return null;items=merge(items,item);persist();render(item);return {...item};}
- function clear(){items=[];persist();render();}
- root.XpaceExpertPreviews={add,clear,list:()=>items.map(x=>({...x}))};
+ function clear(){items=[];root.XpaceCreatedMedia?.clear();persist();render();}
+ root.XpaceExpertPreviews={add:(kind,value)=>root.XpaceCreatedMedia?root.XpaceCreatedMedia.add(kind,value):add(kind,value),clear,list:()=>items.map(x=>({...x}))};
  root.addEventListener('xpace:media-created',event=>{const d=event.detail||{};add(d.kind,d.track);});
  if(root.MutationObserver)new root.MutationObserver(()=>render()).observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});
  root.addEventListener('pagehide',()=>quiet());

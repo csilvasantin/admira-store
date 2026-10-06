@@ -1,7 +1,7 @@
 import './expert-categories.js?v=windows-menu-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {movableWindow,visibleBounds} from './floating-window.mjs?v=20261003-expert-1';
-import {attachPanelResize} from './panel-resize.mjs?v=20261003-expert-1';
+import {attachPanelResize} from './panel-resize.mjs?v=20261006-alsea-repair-1';
 
 const windows=new Map(),menus=new Set();
 function refreshMenus(){for(const refresh of menus)refresh();}

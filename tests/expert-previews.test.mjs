@@ -62,7 +62,7 @@ test('imagen, audio/locución y vídeo se abren en PREVIOS (tercera columna), co
  load(root);
  const section=view.querySelector('#expertCreatedPreviews');
  assert.ok(section,'la sección vive en .expert-view-pane');assert.equal(view.children.indexOf(section),view.children.indexOf(label)+1,'justo bajo el rótulo PREVIOS');assert.ok(view.children.indexOf(hud)>view.children.indexOf(section));
- assert.equal(section.hidden,true,'sin creaciones no se ve nada nuevo');
+ assert.equal(section.hidden,false,'sin creaciones se explica dónde aparecerán');assert.match(section.textContent,/Aquí aparecerán/);
  root.dispatchEvent(new root.CustomEvent('xpace:media-created',{detail:{kind:'image',track:stock('image',1,{title:'Café en Barcelona'})}}));
  root.XpaceExpertPreviews.add('voice',stock('voice',2,{title:'Hoy cerramos a las 21 h',language:'es'}));
  root.XpaceExpertPreviews.add('video',stock('video',3,{title:'Barista con latte'}));

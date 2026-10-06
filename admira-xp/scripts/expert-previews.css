@@ -1,6 +1,6 @@
 /* Experto → PREVIOS · interfaz cuadrativa AdmiraNeXT: cajas rectas, filete cian, monoespaciada.
    Tarjeta = [medio | ficha]; el audio ocupa todo el ancho debajo. Bajo 240 px de columna se apila. */
-#expertCreatedPreviews{order:-1;flex:0 0 auto;display:flex;flex-direction:column;gap:5px;min-width:0;container-type:inline-size}
+#expertCreatedPreviews{order:0;flex:0 0 auto;display:flex;flex-direction:column;gap:5px;min-width:0;container-type:inline-size}
 #expertCreatedPreviews[hidden]{display:none!important}
 #expertCreatedPreviews .expert-preview-list{display:flex;flex-direction:column;gap:5px;min-width:0}
 #expertCreatedPreviews .expert-preview-card{display:grid;grid-template-columns:minmax(64px,40%) minmax(0,1fr);gap:4px 7px;align-items:start;min-width:0;padding:5px;border:1px solid #345360;border-left:2px solid #78f3ff;border-radius:2px;background:#0b1720;font:10px/1.35 monospace;transition:border-color .3s,box-shadow .3s}
@@ -47,3 +47,6 @@
 .expert-media-form[data-media-form="voice"] label{display:block;margin:4px 0 2px}
 .expert-media-form[data-media-form="voice"] select{max-width:100%;font:11px/1.3 monospace;padding:3px 4px}
 #voiceoverLogin[hidden]{display:none!important}
+
+#expertCreatedPreviews .expert-preview-empty{padding:10px;margin:0;color:#ccd9df;background:#101b24;font:11px/1.5 monospace}
+#telegramDock .tier-hud[hidden]{display:none!important}

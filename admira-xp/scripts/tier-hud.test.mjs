@@ -23,7 +23,7 @@ test('el HUD vive en Experto, deja libre el escenario y se libera al cerrar', ()
   assert.equal(dialog.dataset.tierHud,'matrix');
   assert.equal(stage.children.length,0);
   const layer=dock.children[0];assert.equal(layer.className,'tier-hud');assert.equal(layer.attrs['aria-hidden'],undefined);
-  assert.match(layer.innerHTML,/MATRIX/);assert.match(layer.innerHTML,/64 BITS/);
+  assert.equal(layer.hidden,true);assert.doesNotMatch(layer.innerHTML,/tier-hud-clock/);assert.match(layer.innerHTML,/MATRIX/);assert.match(layer.innerHTML,/64 BITS/);
   hud.setStatus('Gemelo conectado · 3 clientes');
   assert.equal(layer.querySelector('.tier-hud-status').textContent,'GEMELO CONECTADO · 3 CLIENTES');
   hud.dispose();assert.equal(layer.removed,true);assert.equal(dialog.dataset.tierHud,undefined);

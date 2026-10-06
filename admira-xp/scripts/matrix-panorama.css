@@ -152,3 +152,4 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-ipad-idle{position:absolute;inset:0;display:grid;place-items:center;color:#b5d6c7;font:50px monospace;letter-spacing:4px}
 .matrix-landscape-ipad .matrix-player-media{background:transparent;object-fit:contain}
 .matrix-landscape-ipad .matrix-player-media[src],.matrix-landscape-ipad .matrix-player-media[poster]:not([poster=""]){background:#000}
+.matrix-mapped-player.has-preview .matrix-ipad-idle{display:none}

@@ -6,7 +6,7 @@ export function resizedPanel(start,dx,dy,{axis='both',direction=1,minWidth=156,m
 
 // The same accessible splitter controls docked rails and floating tools.
 // Position and size have separate storage keys, preserving existing history.
-export function attachPanelResize(panel,{axis='both',direction=1,label='Window',key,storage,container=panel.ownerDocument.body,limits=()=>({}),onChange=()=>{},view=panel.ownerDocument.defaultView}={}){
+export function attachPanelResize(panel,{axis='both',direction=1,label='Window',key,storage,container=panel.ownerDocument.body,limits=()=>({}),onChange=()=>{},normaliseWidth=w=>w,widthStep=(w,delta)=>w+delta,view=panel.ownerDocument.defaultView}={}){
   const doc=panel.ownerDocument,abort=new view.AbortController(),signal=abort.signal;
   const handle=doc.createElement('div');handle.className='xp-panel-resize xp-panel-resize-'+axis;handle.tabIndex=0;handle.setAttribute('role','separator');
   handle.setAttribute('aria-orientation',axis==='height'?'horizontal':'vertical');
@@ -31,12 +31,12 @@ export function attachPanelResize(panel,{axis='both',direction=1,label='Window',
   }
   function apply(size,persist=false){
     if(disposed||panel.classList.contains('xs-expert-docked')||!finite(size.width)||!finite(size.height))return;
-    manual=resizedPanel(size,0,0,rules());panel.classList.add('xp-panel-sized');
+    manual=resizedPanel({...size,width:axis==='height'?size.width:normaliseWidth(size.width)},0,0,rules());panel.classList.add('xp-panel-sized');
     if(axis!=='height')panel.style.width=manual.width+'px';
     if(axis!=='width')panel.style.height=manual.height+'px';
-    onChange();sync();if(persist&&key)try{store()?.setItem(key,JSON.stringify(manual));}catch{}
+    onChange(manual);sync();if(persist&&key)try{store()?.setItem(key,JSON.stringify(manual));}catch{}
   }
-  function reset(){manual=null;if(!wasSized)panel.classList.remove('xp-panel-sized');panel.style.width=original.width;panel.style.height=original.height;if(key)try{store()?.removeItem(key);}catch{}onChange();sync();}
+  function reset(){manual=null;if(!wasSized)panel.classList.remove('xp-panel-sized');panel.style.width=original.width;panel.style.height=original.height;if(key)try{store()?.removeItem(key);}catch{}onChange(null);sync();}
   handle.addEventListener('pointerdown',e=>{if(e.button!==0||e.isPrimary===false)return;drag={id:e.pointerId,x:e.clientX,y:e.clientY,start:measure()};handle.setPointerCapture(e.pointerId);e.preventDefault();e.stopPropagation();},{signal});
   handle.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;apply(resizedPanel(drag.start,e.clientX-drag.x,e.clientY-drag.y,rules()));e.preventDefault();e.stopPropagation();},{signal});
   function finish(e){if(!drag||e.pointerId!==undefined&&e.pointerId!==drag.id)return;const id=drag.id;drag=null;if(handle.hasPointerCapture?.(id))try{handle.releasePointerCapture(id);}catch{}apply(measure(),true);}
@@ -47,7 +47,7 @@ export function attachPanelResize(panel,{axis='both',direction=1,label='Window',
     if(e.key==='Home'){e.preventDefault();e.stopPropagation();reset();return;}
     const step=e.shiftKey?5:20,delta={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,-step],ArrowDown:[0,step]}[e.key];
     if(!delta||axis==='height'&&delta[0]||axis==='width'&&delta[1])return;
-    e.preventDefault();e.stopPropagation();apply(resizedPanel(measure(),...delta,rules()),true);
+    e.preventDefault();e.stopPropagation();const start=measure();if(delta[0])delta[0]=(widthStep(start.width,delta[0]*direction)-start.width)*direction;apply(resizedPanel(start,...delta,rules()),true);
   },{signal});
   function fit(){if(manual)apply(manual);else sync();}
   view.addEventListener('resize',fit,{signal});

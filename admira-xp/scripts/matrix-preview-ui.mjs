@@ -1,5 +1,5 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=ipad-20261005-1';
-import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=20261006-alsea-repair-1';
+import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
 const listeners=new Set();
 let dialog,dispose,controller,hud,requestId,lastFocus,busy=false,viewError='';
 const announce=(reason='')=>{for(const fn of listeners)fn({open:!!dialog,busy,error:viewError,reason,requestId});};

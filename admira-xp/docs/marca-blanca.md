@@ -77,3 +77,9 @@ Los textos son los de admira.app y Pixeria. **Sin navegador** (Telegram, el MCP 
 
 
 «Volver a Admira» se ha retirado de Opciones / “Back to Admira” has been removed from Options. [Guía actualizada de menús / Updated menu guide](windows-menu.md).
+
+## Contraste de paneles / Panel contrast
+
+La corrección de legibilidad se prueba sólo en Experto: una hoja independiente fija superficies opacas oscuras y texto claro, incluidos campos, categorías, Signage y estados Matrix. No depende de que carguen las variables de /marca. Opciones y Avanzados recuperan sus estilos anteriores. La extensión al resto de la interfaz queda pendiente de validar este piloto con Carlos.
+
+The readability correction is piloted only in Expert: an independent stylesheet sets opaque dark surfaces and light text for fields, categories, Signage and Matrix statuses. It does not depend on /marca variables loading. Options and Advanced return to their previous styles. Extending the correction to the rest of the interface is pending Carlos validating this pilot.

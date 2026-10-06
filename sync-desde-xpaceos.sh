@@ -49,6 +49,8 @@ git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 #  · CNAME     — o el dominio se lo queda xpaceos.com y esta web se cae
 #  · gate.js   — la verja de acceso de admira.studio/store/app
 #  · deploy.sh y este script — herramientas del repo, no contenido
+node "$AQUI/scripts/validate-mirror-contract.mjs" "$ORIGEN_LIMPIO" "$AQUI"
+
 echo "→ Espejando contenido…"
 rsync -a --delete \
   --exclude '.git/' \
@@ -58,6 +60,7 @@ rsync -a --delete \
   --exclude 'deploy.sh' \
   --exclude 'sync-desde-xpaceos.sh' \
   --exclude 'sello-y-verja.py' \
+  --exclude 'scripts/validate-mirror-contract.mjs' \
   --exclude '.gitignore' \
   --exclude 'functions/_live-presence.js' \
   --exclude 'install-live-presence.py' \

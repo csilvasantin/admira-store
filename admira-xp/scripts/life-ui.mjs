@@ -1,6 +1,6 @@
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
-import {mountTierHud} from './tier-hud.mjs?v=options-language-1';
+import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
 import {loadShelfParts} from './shelf-parts.mjs?v=shelf-products-1';
 import {mountShelfProductPanel} from '../../inventario/shelf-product-panel.mjs?v=shelf-products-1';
 import {attachFloatingPanel,registerFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
