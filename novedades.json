@@ -8,5 +8,10 @@
     "La versión vuelve al pie de Opciones y se oculta al plegarlo",
     "Aviso inicial de novedad una vez por versión y navegador",
     "Se conserva la ayuda del sello y la acción Recargar"
+  ],
+  "v.06.10.2026.r4.07:47": [
+    "La versión se muestra al pie de Opciones y se oculta al plegarlo",
+    "Sólo una novedad sin reconocer permite el primer aviso exterior",
+    "Carga compatible con los distintos sellos nativos de la suite"
   ]
 }
