@@ -1,13 +1,17 @@
 {
-  "version": "v.06.10.2026.r2.13:14",
-  "deployer": "GrokBot",
+  "version": "v.06.10.2026.r8.15:44",
+  "deployedAt": "2026-10-06T13:45:11Z",
+  "deployer": "MerovingioMBP16",
   "machine": "MacBookPro16",
-  "signature": "GrokBot · MacBookPro16",
-  "deployedAt": "2026-10-06T11:18:36.670245+00:00",
-  "git": "9c77621ba7e874e410a218c813824f0814a0329c",
-  "gitFull": "9c77621ba7e874e410a218c813824f0814a0329c",
-  "gitShort": "9c77621",
+  "signature": "MerovingioMBP16 · MacBookPro16",
+  "git": "bd5d4fb51db19e455ae02b24e5c28548e8166b6f",
+  "gitShort": "bd5d4fb",
+  "gitFull": "bd5d4fb51db19e455ae02b24e5c28548e8166b6f",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "novedades": [
+    "Lo que creas en Experto se previsualiza en PREVIOS, a la derecha del todo, el último arriba",
+    "Imagen, música, locución y vídeo con reproductor, Lanzar y Ver en Stock",
+    "Nuevo Crear locución: se emite tres veces sólo al pulsar Emitir",
+    "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
+  ]
 }
