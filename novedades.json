@@ -14,6 +14,11 @@
     "Sólo una novedad sin reconocer permite el primer aviso exterior",
     "Carga compatible con los distintos sellos nativos de la suite"
   ],
+  "v.06.10.2026.r6.11:12": [
+    "Acceso de solo lectura para grabar la demo 365, sin Google",
+    "El enlace caduca a las 8 horas y vale una sola vez",
+    "Una escritura con esa clave responde 403 y se revoca al momento"
+  ],
   "v.06.10.2026.r5.08:18": [
     "Opciones abre con el ancho mínimo para leer sus etiquetas",
     "Arrastra el borde para dejar sólo iconos con nombre al pasar el cursor",

@@ -38,6 +38,12 @@ const OWNER_FALLBACK = new Set(['csilva@admira.com', 'csilvasantin@gmail.com']);
 // entrada Y las sesiones ya abiertas, porque la cookie lleva la huella del token.
 const AGENT_EMAIL = 'agentes@silicio.admiranext.com';
 const AGENT_TOKEN_MIN = 32;
+// Acceso de solo lectura para grabar la demo (encargo #5261). La clave no está
+// en este sitio: el canje y la revocación viven en data.yokup.com. La cookie
+// solo abre páginas; cualquier escritura responde 403.
+const LECTURA_API = 'https://data.yokup.com';
+const LECTURA_EMAIL = 'lectura@merovingio.box';
+const LECTURA_SITE = {'admira-store':'store', xpaceos:'xpaceos'};
 const AGENT_LOG_URL = WHITELIST_URL + '/agent-log';
 const encoder = new TextEncoder();
 
@@ -253,6 +259,16 @@ export async function readSession(request, env, site, fetchImpl = fetch) {
     if (!email) return null;
     // Sesión de agente: no pasa por la lista; vale mientras el token con el que
     // se abrió siga siendo el vigente. El correo de agente SIN huella no entra.
+    if (payload.lectura === true) {
+      const expect = LECTURA_SITE[site.id];
+      if (email !== LECTURA_EMAIL || !expect || !/^[a-f0-9]{64}$/.test(payload.sid || '')) return null;
+      const live = await fetchImpl(`${LECTURA_API}/api/lectura/sesion?sid=${encodeURIComponent(payload.sid)}`, {headers:{Accept:'application/json'}}).catch(() => null);
+      if (!live || !live.ok) return null;
+      const body = await live.json().catch(() => null);
+      return body && body.ok && body.site === expect
+        ? {email, superuser:false, agent:false, lectura:true, sid:payload.sid, issuedAt:Number(payload.iat), expiresAt:Number(payload.exp)}
+        : null;
+    }
     if (payload.agent || email === AGENT_EMAIL) {
       return email === AGENT_EMAIL && sameValue(payload.agent, await agentFingerprint(env))
         ? {email, superuser:false, agent:true} : null;
@@ -392,11 +408,70 @@ async function agente(request, env, site, fetchImpl, waitUntil) {
   }});
 }
 
+const TWIN_365 = '/admira-xp/?autostart=cafeteria&visual=better&marca=365&loc=365-demo-bcn-tetuan&store=365-demo-bcn-tetuan';
+
+function lecturaKeyHeader(request) {
+  const header = String(request.headers.get('X-Admira-Machine-Key') || '').trim();
+  if (header.startsWith('mbl_')) return header.slice(0, 200);
+  const match = /^Bearer\s+(mbl_\S+)$/i.exec(String(request.headers.get('Authorization') || ''));
+  return match ? match[1].slice(0, 200) : '';
+}
+
+// GET /auth/lectura?t= canjea el enlace de un solo uso y deja la cookie visor.
+async function lecturaEntrada(request, env, site, fetchImpl) {
+  const url = new URL(request.url);
+  const headers = {'cache-control':'no-store', 'referrer-policy':'no-referrer'};
+  if (request.method !== 'GET') return new Response('Clave de solo lectura.', {status:403, headers});
+  if (!env.PERIMETRO_SIGNING_KEY || !LECTURA_SITE[site.id]) return new Response('Not found', {status:404, headers});
+  if (site.hosts.includes(url.hostname) && url.hostname !== site.hosts[0]) {
+    return redirect(`https://${site.hosts[0]}${url.pathname}${url.search}`);
+  }
+  const token = String(url.searchParams.get('t') || '');
+  if (!/^[A-Za-z0-9_-]{20,2200}\.[A-Za-z0-9_-]{20,200}$/.test(token)) {
+    return new Response('Enlace no válido o caducado.', {status:401, headers:{...headers, 'content-type':'text/plain; charset=utf-8'}});
+  }
+  const expect = LECTURA_SITE[site.id];
+  const redeemed = await fetchImpl(`${LECTURA_API}/api/lectura/canjear?site=${expect}&t=${encodeURIComponent(token)}`, {headers:{Accept:'application/json'}}).catch(() => null);
+  if (!redeemed || !redeemed.ok) {
+    const status = redeemed && redeemed.status === 410 ? 410 : 401;
+    const text = status === 410 ? 'Este enlace ya se ha usado.' : 'Enlace no válido o caducado.';
+    return new Response(text, {status, headers:{...headers, 'content-type':'text/plain; charset=utf-8'}});
+  }
+  const data = await redeemed.json().catch(() => null);
+  if (!data || data.site !== expect || !/^[a-f0-9]{64}$/.test(data.sid || '')) {
+    return new Response('Enlace no válido o caducado.', {status:401, headers:{...headers, 'content-type':'text/plain; charset=utf-8'}});
+  }
+  const exp = Number(data.exp);
+  const session = await createSessionToken(env, site, {email:LECTURA_EMAIL, sub:'lectura'}, {lectura:true, sid:data.sid, exp});
+  const maxAge = Math.max(0, exp - Math.floor(Date.now() / 1000));
+  return new Response(null, {status:302, headers:{
+    location:TWIN_365, 'cache-control':'no-store', 'referrer-policy':'no-referrer',
+    'set-cookie':`${SESSION_COOKIE}=${session}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`
+  }});
+}
+
+async function rejectLecturaWrite(request, env, site, fetchImpl) {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(request.method)) return null;
+  const session = await readSession(request, env, site, fetchImpl);
+  if (session && session.lectura) {
+    return new Response(JSON.stringify({error:'Clave de solo lectura.'}), {status:403, headers:{'content-type':'application/json; charset=utf-8', 'cache-control':'no-store'}});
+  }
+  const supplied = lecturaKeyHeader(request);
+  if (!supplied) return null;
+  const seen = await fetchImpl(`${LECTURA_API}/api/lectura/reconocer`, {headers:{Accept:'application/json', 'X-Admira-Machine-Key':supplied}}).catch(() => null);
+  const body = seen && seen.ok ? await seen.json().catch(() => null) : null;
+  if (body && body.lectura === true) {
+    return new Response(JSON.stringify({error:'Clave de solo lectura.'}), {status:403, headers:{'content-type':'application/json; charset=utf-8', 'cache-control':'no-store'}});
+  }
+  return null;
+}
+
 // Rutas /auth/* del perímetro. Devuelve null si la petición no es suya.
 export async function handleAuth(request, env, site, fetchImpl = fetch, waitUntil = null) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/auth/')) return null;
 
+  if (url.pathname === '/auth/lectura') return lecturaEntrada(request, env, site, fetchImpl);
   if (url.pathname === '/auth/agente') return agente(request, env, site, fetchImpl, waitUntil);
 
   if (url.pathname === '/auth/login' && request.method === 'GET') {
@@ -509,7 +584,7 @@ async function permisos(request, env, site, fetchImpl) {
 
 // Sliding human session; agents retain their fixed 24-hour lifetime.
 async function renewSession(response, session, env, site) {
-  if (!session || session.agent) return response;
+  if (!session || session.agent || session.lectura) return response;
   if (session.expiresAt - session.issuedAt >= SESSION_TTL_SECONDS && Math.floor(Date.now() / 1000) - session.issuedAt < SESSION_RENEW_AFTER_SECONDS) return response;
   const token = await createSessionToken(env, site, {email:session.email, sub:session.sub});
   const renewed = new Response(response.body, response);
@@ -528,6 +603,8 @@ export async function perimetro(context, fetchImpl = fetch) {
   if (!site) return new Response('Host no reconocido', {status:421, headers:{'cache-control':'no-store'}});
 
   const waitUntil = typeof context.waitUntil === 'function' ? context.waitUntil.bind(context) : null;
+  const lecturaWrite = await rejectLecturaWrite(request, env, site, fetchImpl);
+  if (lecturaWrite) return lecturaWrite;
   const authResponse = await handleAuth(request, env, site, fetchImpl, waitUntil);
   if (authResponse) return authResponse;
 
