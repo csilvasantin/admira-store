@@ -1,5 +1,11 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "_proxima": [
+    "Lo que creas en Experto se previsualiza en PREVIOS, a la derecha del todo",
+    "Imagen, música, locución y vídeo con reproductor, Lanzar y Ver en Stock",
+    "Nuevo Crear locución: se emite tres veces sólo al pulsar Emitir",
+    "El último creado arriba; el formulario sigue en la columna central"
+  ],
   "default": [
     "Sello de versión con novedades al pasar el ratón",
     "Marca NUEVO cuando hay una versión que aún no has visto"
