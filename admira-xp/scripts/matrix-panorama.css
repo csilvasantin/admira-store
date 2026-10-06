@@ -153,3 +153,13 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-landscape-ipad .matrix-player-media{background:transparent;object-fit:contain}
 .matrix-landscape-ipad .matrix-player-media[src],.matrix-landscape-ipad .matrix-player-media[poster]:not([poster=""]){background:#000}
 .matrix-mapped-player.has-preview .matrix-ipad-idle{display:none}
+
+/* The avatar shares the capture perspective. The same iframe expands into the top layer. */
+.matrix-wall-avatar{position:absolute;left:0;top:0;margin:0;padding:0;width:400px;height:900px;max-width:none;max-height:none;box-sizing:border-box;transform-origin:0 0;border:12px solid #101817;border-radius:10px;background:#05080f;color:#eafff4;overflow:hidden;z-index:2;pointer-events:auto;backface-visibility:hidden}
+.matrix-wall-avatar[hidden]{display:none}.matrix-wall-avatar iframe{display:block;width:100%;height:100%;border:0;pointer-events:none}
+.matrix-avatar-expand{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding:18px 5px;background:transparent;border:0;color:#fff;font:600 24px/1.3 system-ui;cursor:pointer;text-shadow:0 1px 4px #000}
+.matrix-avatar-expand:focus-visible{outline:8px solid #78f3ff;outline-offset:-8px}.matrix-avatar-close{display:none}
+.matrix-wall-avatar:modal{position:fixed;inset:0;margin:auto;transform:none!important;width:min(440px,92vw);height:min(840px,90dvh);max-height:90dvh;border-width:1px;display:flex;flex-direction:column;box-shadow:0 20px 80px #000b}
+.matrix-wall-avatar:modal iframe{flex:1;min-height:0;pointer-events:auto}.matrix-wall-avatar:modal .matrix-avatar-expand{display:none}
+.matrix-wall-avatar:modal .matrix-avatar-close{display:block;align-self:flex-end;margin:8px;padding:8px 12px;border:1px solid #72958d;border-radius:4px;background:#122822;color:#fff;font:14px system-ui;cursor:pointer}
+.matrix-wall-avatar::backdrop{background:#04100fd9}

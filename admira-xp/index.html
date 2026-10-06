@@ -1515,7 +1515,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-media-experience-1"></script>
+<script src="xtanco-version.js?v=wall-avatar-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -36084,14 +36084,14 @@ window.xtAPI = (function(){
     host.appendChild(scene);
     var categories=document.getElementById('expertQuickIcons');
     var focused=categories?.contains(document.activeElement)?document.activeElement.dataset.categoryId:null;
-    if(categories){var keep=new Set();host.querySelectorAll('button').forEach(function(original){
+    if(categories){var keep=new Set();var expertActions=[...host.querySelectorAll('button')].filter(function(b){return b.dataset.categoryId!=='creation';}).map(function(b){return b.dataset.categoryId==='livecam'?create:b;});expertActions.forEach(function(original){
       if(original.closest('#advSceneControls'))return;
       var fresh=original.cloneNode(true);window.XpaceExpertCategories.decorate(fresh,{en:typeof lang!=='undefined'&&lang==='en'});
       var key=fresh.dataset.categoryId;keep.add(key);
       var copy=[...categories.children].find(function(b){return b.dataset.categoryId===key;});
       if(!copy){copy=fresh;copy.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();window.XpaceExpertDetail.select(e.currentTarget);});categories.appendChild(copy);}
       else{var selected=copy.classList.contains('is-selected');copy.className=fresh.className;copy.classList.toggle('is-selected',selected);copy.title=fresh.title;copy.setAttribute('aria-label',fresh.getAttribute('aria-label'));if(fresh.hasAttribute('aria-pressed'))copy.setAttribute('aria-pressed',fresh.getAttribute('aria-pressed'));else copy.removeAttribute('aria-pressed');if(copy.innerHTML!==fresh.innerHTML)copy.replaceChildren(...fresh.childNodes);}
-    });[...categories.children].forEach(function(b){if(!keep.has(b.dataset.categoryId))b.remove();});if(focused){[...categories.children].find(function(b){return b.dataset.categoryId===focused;})?.focus({preventScroll:true});}}
+    });[...categories.children].forEach(function(b){if(!keep.has(b.dataset.categoryId))b.remove();});expertActions.forEach(function(b){var key=b.dataset.categoryId;var existing=[...categories.children].find(function(c){return c.dataset.categoryId===key;});if(existing)categories.appendChild(existing);});if(focused){[...categories.children].find(function(b){return b.dataset.categoryId===focused;})?.focus({preventScroll:true});}}
   }
   try{ var mo=new MutationObserver(mirror); mo.observe(src,{childList:true,subtree:true,characterData:true}); }catch(e){}
   mirror();
@@ -36240,7 +36240,7 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=20261006-alsea-repair-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=wall-avatar-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36255,7 +36255,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=ipad-20261005-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=wall-avatar-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

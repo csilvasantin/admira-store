@@ -4277,5 +4277,19 @@
       "publishes": false
     },
     "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
+  },
+  "matrix_wall_avatar": {
+    "help_topic": "matrix-wall-avatar",
+    "es": "En Matrix de Starbucks Alsea, el avatar digital está anclado en la pared de ladrillo junto a la salida, a la izquierda de las estanterías. El botón Avatar digital de los controles centra esa pared. Pulsa el avatar para ampliar su vista y usar sus controles de conversación. Cerrar o Escape vuelve a la pared y reinicia el iframe para detener la voz. La conversación ampliada silencia temporalmente el hilo musical. Se reutilizan los renderizadores vivos de digitalavatar.ai y el nivel elegido en este navegador; no se activa el micrófono ni se envía una pregunta automáticamente. En las categorías de Experto, Crear contenidos / Create Media ocupa la antigua casilla de LiveCam y no se repite abajo. LiveCam sigue disponible en Avanzado y mediante /livecam. Se conservan los formularios legibles, las barras de creación, los previos ampliados, el arrastre centrado y los recibos de Stock.",
+    "en": "In Starbucks Alsea Matrix, the digital avatar is anchored on the brick wall beside the exit, left of the shelves. The Digital avatar control centres that wall. Click the avatar to enlarge its view and use its conversation controls. Close or Escape returns it to the wall and reloads the iframe to stop speech. The enlarged conversation temporarily silences background music. Existing live digitalavatar.ai renderers and this browser’s selected level are reused; no microphone or question starts automatically. In Expert categories, Create Media replaces the former LiveCam tile without a duplicate below. LiveCam remains available in Advanced and through /livecam. Readable forms, creation bars, enlarged previews, centred dragging and Stock receipts are retained.",
+    "id": "starbucks-avatar-wall",
+    "renderer_origin": "https://digitalavatar.ai",
+    "guide": "https://www.admira.store/admira-xp/docs/matrix-wall-avatar.md",
+    "expert_categories": {
+      "replaces": "livecam",
+      "replacement": "creation",
+      "duplicates": false
+    },
+    "scope": "Local Matrix presentation; no new MCP tool or remote player assignment"
   }
 }

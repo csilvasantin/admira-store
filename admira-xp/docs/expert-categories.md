@@ -35,3 +35,6 @@ Top bar → Xpace → Project and venue switches between Xtanco (estancos projec
 ES: ITIL está debajo de Percepción, a la derecha de Pixeria: abre en otra pestaña https://www.xpaceos.com/inventario/, con catálogo de muebles detallados, modelos 3D y editor. Yokup conserva el inventario maestro ITIL. Inventario mantiene sus acciones locales de añadir/eliminar.
 
 EN: ITIL sits below Perception, to the right of Pixeria: it opens https://www.xpaceos.com/inventario/ in a new tab, with detailed furniture, 3D models and the editor. Yokup remains the master ITIL inventory. Inventory keeps its local add/remove actions.
+
+
+ES: Crear contenidos sustituye la casilla LiveCam en Experto y no se duplica abajo; LiveCam permanece en Avanzado y /livecam. EN: Create Media replaces the Expert LiveCam tile without a bottom duplicate; LiveCam remains in Advanced and /livecam. Guide: [Avatar en pared / Wall avatar](matrix-wall-avatar.md).

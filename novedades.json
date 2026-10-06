@@ -7,10 +7,10 @@
     "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
   ],
   "default": [
-    "Barra de creación por fases para imagen, vídeo, locución y entregas musicales",
-    "Doble clic abre un previo grande en el centro; Cerrar o Escape detiene el visor",
-    "Arrastre centrado y PREVIOS persistentes conservados",
-    "Contraste de Experto y silencio ambiental de Matrix conservados"
+    "Avatar digital anclado en la pared de Starbucks, con vista ampliada y Cerrar",
+    "Create Media sustituye LiveCam en Experto y deja de repetirse abajo",
+    "LiveCam sigue disponible en Avanzado y por comando",
+    "Se conservan contraste, silencio ambiental, barras y previos de contenido"
   ],
   "v.06.10.2026.r2.13:14": [
     "⌘ Experto cerrado por defecto: quien entra por primera vez no lo ve; se abre con el ⌘ de la barra",
@@ -38,5 +38,11 @@
     "Doble clic abre un previo grande en el centro; Cerrar o Escape detiene el visor",
     "Arrastre centrado y PREVIOS persistentes conservados",
     "Contraste de Experto y silencio ambiental de Matrix conservados"
+  ],
+  "v.06.10.2026.r12.19:57": [
+    "Avatar digital anclado en la pared de Starbucks, con vista ampliada y Cerrar",
+    "Create Media sustituye LiveCam en Experto y deja de repetirse abajo",
+    "LiveCam sigue disponible en Avanzado y por comando",
+    "Se conservan contraste, silencio ambiental, barras y previos de contenido"
   ]
 }
