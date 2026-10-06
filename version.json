@@ -1,16 +1,16 @@
 {
-  "version": "v.06.10.2026.r3.07:38",
-  "deployedAt": "2026-10-06T05:40:48Z",
+  "version": "v.06.10.2026.r4.07:47",
+  "deployedAt": "2026-10-06T05:48:28Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "bbc0c704bac49c923b0d96656349ca2aab4f6fe4",
-  "gitShort": "bbc0c70",
-  "gitFull": "bbc0c704bac49c923b0d96656349ca2aab4f6fe4",
+  "git": "8af27aab5957d39c35dc3f77e7d012c5c8acfe9c",
+  "gitShort": "8af27aa",
+  "gitFull": "8af27aab5957d39c35dc3f77e7d012c5c8acfe9c",
   "dirty": false,
   "novedades": [
-    "La versión vuelve al pie de Opciones y se oculta al plegarlo",
-    "Aviso inicial de novedad una vez por versión y navegador",
-    "Se conserva la ayuda del sello y la acción Recargar"
+    "La versión se muestra al pie de Opciones y se oculta al plegarlo",
+    "Sólo una novedad sin reconocer permite el primer aviso exterior",
+    "Carga compatible con los distintos sellos nativos de la suite"
   ]
 }
