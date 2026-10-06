@@ -7,10 +7,10 @@
     "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
   ],
   "default": [
-    "Avatar digital anclado en la pared de Starbucks, con vista ampliada y Cerrar",
-    "Create Media sustituye LiveCam en Experto y deja de repetirse abajo",
-    "LiveCam sigue disponible en Avanzado y por comando",
-    "Se conservan contraste, silencio ambiental, barras y previos de contenido"
+    "PREVIOS muestra sólo la última creación multimedia a máximo tamaño",
+    "Lanzar a pantalla y Ver en Stock quedan debajo del contenido",
+    "Música y locuciones conservan sus controles; el historial guardado se mantiene",
+    "Arrastre centrado, doble clic y Create Media se conservan"
   ],
   "v.06.10.2026.r2.13:14": [
     "⌘ Experto cerrado por defecto: quien entra por primera vez no lo ve; se abre con el ⌘ de la barra",
@@ -44,5 +44,11 @@
     "Create Media sustituye LiveCam en Experto y deja de repetirse abajo",
     "LiveCam sigue disponible en Avanzado y por comando",
     "Se conservan contraste, silencio ambiental, barras y previos de contenido"
+  ],
+  "v.06.10.2026.r13.20:17": [
+    "PREVIOS muestra sólo la última creación multimedia a máximo tamaño",
+    "Lanzar a pantalla y Ver en Stock quedan debajo del contenido",
+    "Música y locuciones conservan sus controles; el historial guardado se mantiene",
+    "Arrastre centrado, doble clic y Create Media se conservan"
   ]
 }

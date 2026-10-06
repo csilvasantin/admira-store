@@ -1,5 +1,5 @@
 // Experto → PREVIOS (3.ª columna): lo creado en Crear contenidos se previsualiza a la derecha
-// del todo, el último primero, con Lanzar y Ver en Stock. Carlos, 6-oct-2026.
+// del todo, sólo la última creación, con Lanzar y Ver en Stock debajo. Carlos, 6-oct-2026.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -43,47 +43,44 @@ function dom(){
 }
 const load=(root)=>vm.runInNewContext(read('admira-xp/scripts/expert-previews.js'),{window:root,URL,Date,Number,String,JSON,Map,Set,Array,Object});
 
-test('previo válido sólo para Stock de api.admira.store; el último primero, sin duplicados y como máximo seis',()=>{
+test('only the latest completed creation is visible, with valid Stock identity and its brief title',()=>{
  const {preview,merge,MAX}=require('../admira-xp/scripts/expert-previews.js');
  assert.equal(preview('image',{id:'x',url:'https://evil.example/stock/asset/x'}),null);
  assert.equal(preview('image',{id:'x',url:'https://api.admira.store/stock/asset/y'}),null);
  assert.equal(preview('pdf',stock('pdf',1)),null);
  let list=[];for(let i=1;i<=8;i++)list=merge(list,preview(i%2?'image':'voice',stock('a',i,{title:'Pieza '+i})));
- assert.equal(list.length,MAX);assert.equal(list[0].title,'Pieza 8');assert.equal(list.at(-1).title,'Pieza 3');
- list=merge(list,preview('voice',stock('a',6,{title:'Stock 6'})));
- assert.equal(list[0].id,'a-6');assert.equal(list[0].title,'Pieza 6','conserva el título del brief frente al «Stock N» genérico');
- assert.equal(list.filter(x=>x.id==='a-6').length,1);
+ assert.equal(MAX,1);assert.equal(list.length,1);assert.equal(list[0].title,'Pieza 8');
+ list=merge(list,preview('voice',stock('a',8,{title:'Stock 8'})));
+ assert.equal(list[0].id,'a-8');assert.equal(list[0].title,'Pieza 8');
 });
 
-test('imagen, audio/locución y vídeo se abren en PREVIOS (tercera columna), con reproductor, título, Lanzar y Ver en Stock',async()=>{
+test('each media kind replaces the previous preview, stops its local player, keeps the right actions and survives reload',async()=>{
  const {root,view,label,hud}=dom();const launched=[],spoken=[];
  root.XpaceMediaOptions={launch:async(kind,item)=>{launched.push([kind,item.id]);}};
  root.XpaceAnnouncements={playStock:(url,text,{onState})=>{spoken.push([url,text]);onState({phase:'speaking',completed:0});return true;},stopStock(){}};
- load(root);
- const section=view.querySelector('#expertCreatedPreviews');
- assert.ok(section,'la sección vive en .expert-view-pane');assert.equal(view.children.indexOf(section),view.children.indexOf(label)+1,'justo bajo el rótulo PREVIOS');assert.ok(view.children.indexOf(hud)>view.children.indexOf(section));
- assert.equal(section.hidden,false,'sin creaciones se explica dónde aparecerán');assert.match(section.textContent,/Aquí aparecerán/);
- root.dispatchEvent(new root.CustomEvent('xpace:media-created',{detail:{kind:'image',track:stock('image',1,{title:'Café en Barcelona'})}}));
- root.XpaceExpertPreviews.add('voice',stock('voice',2,{title:'Hoy cerramos a las 21 h',language:'es'}));
- root.XpaceExpertPreviews.add('video',stock('video',3,{title:'Barista con latte'}));
- root.XpaceExpertPreviews.add('music',stock('music',4,{title:'Hilo de mañana'}));
- assert.equal(section.hidden,false);
- const cards=section.querySelectorAll('.expert-preview-card');
- assert.deepEqual(cards.map(c=>c.dataset.kind),['music','video','voice','image'],'el último creado arriba');
- const tag=kind=>cards.find(c=>c.dataset.kind===kind).querySelectorAll('img,audio,video').map(m=>m.tagName);
- assert.deepEqual(tag('image'),['IMG']);assert.deepEqual(tag('video'),['VIDEO']);assert.deepEqual(tag('voice'),['AUDIO']);assert.deepEqual(tag('music'),['AUDIO']);
- const video=cards[1].querySelector('video');assert.equal(video.muted,true);assert.equal(video.autoplay,undefined,'el vídeo no arranca solo');
- for(const c of cards){assert.match(c.querySelector('[data-preview-stock]').href,/^https:\/\/www\.pixeria\.com\/stock\.html\?highlight=/);assert.ok(c.querySelector('.epc-title').textContent.length>0);}
- assert.equal(cards[3].querySelector('[data-preview-launch]').textContent,'▶ Lanzar a pantallas');
- assert.equal(cards[2].querySelector('[data-preview-launch]').textContent,'📢 Emitir ×3');
- cards[1].querySelector('[data-preview-launch]').click();await new Promise(setImmediate);
- assert.deepEqual(launched,[['video','video-3']]);assert.equal(cards[1].querySelector('.epc-status').textContent,'Lanzado al reproductor del Xpacio.');
- cards[2].querySelector('[data-preview-launch]').click();
- assert.deepEqual(spoken,[['https://api.admira.store/stock/asset/voice-2','Hoy cerramos a las 21 h']]);assert.equal(cards[2].querySelector('[data-preview-launch]').textContent,'⏹ Detener');
- assert.match(cards[2].querySelector('.epc-status').textContent,/Emitiendo locución · 1\/3/);
- // Persistencia en la sesión del navegador: una recarga conserva PREVIOS.
+ load(root);const section=view.querySelector('#expertCreatedPreviews');
+ assert.equal(view.children.indexOf(section),view.children.indexOf(label)+1);assert.match(section.textContent,/Aquí aparecerá tu última/);
+ let previous;
+ for(const [kind,n,title]of [['image',1,'Café en Barcelona'],['video',2,'Barista con latte'],['voice',3,'Cerramos a las 21 h'],['music',4,'Hilo de mañana']]){
+  root.XpaceExpertPreviews.add(kind,stock(kind,n,{title,language:'es'}));
+  const cards=section.querySelectorAll('.expert-preview-card');assert.equal(cards.length,1);const c=cards[0];assert.equal(c.dataset.kind,kind);assert.equal(c.querySelector('.epc-title').textContent,title);
+  assert.equal(root.XpaceExpertPreviews.list().length,1);assert.match(c.querySelector('[data-preview-stock]').href,/^https:\/\/www\.pixeria\.com\/stock\.html\?highlight=/);
+  const player=c.querySelector('img,audio,video');assert.equal(player.tagName,kind==='image'?'IMG':kind==='video'?'VIDEO':'AUDIO');
+  if(kind==='video'){assert.equal(player.muted,true);assert.equal(player.autoplay,undefined);await player.play();}
+  if(previous?.tagName==='VIDEO')assert.equal(previous.paused,true,'replaced local video must stop');previous=player;
+  if(kind==='image')assert.equal(c.querySelector('[data-preview-launch]').textContent,'▶ Lanzar a pantalla');
+  if(kind==='video'){c.querySelector('[data-preview-launch]').click();await new Promise(setImmediate);assert.deepEqual(launched,[['video','video-2']]);}
+  if(kind==='voice'){c.querySelector('[data-preview-launch]').click();assert.equal(spoken[0][0],'https://api.admira.store/stock/asset/voice-3');assert.equal(c.querySelector('[data-preview-launch]').textContent,'⏹ Detener');}
+ }
  const again=dom();again.root.sessionStorage.data=root.sessionStorage.data;load(again.root);
- assert.deepEqual(again.view.querySelectorAll('.expert-preview-card').map(c=>c.dataset.kind),['music','video','voice','image']);
+ assert.deepEqual(again.view.querySelectorAll('.expert-preview-card').map(c=>c.dataset.kind),['music']);
+});
+
+test('recovering a legacy six-item history shows only the latest without deleting canonical receipts',()=>{
+ const {root,view}=dom();const history=Array.from({length:6},(_,i)=>({kind:i%2?'voice':'image',...stock('saved',6-i),at:100-i}));
+ root.XpaceCreatedMedia={list:()=>history.map(x=>({...x}))};load(root);
+ assert.equal(view.querySelectorAll('.expert-preview-card').length,1);assert.equal(view.querySelector('.expert-preview-card').dataset.stockId,'saved-6');
+ assert.equal(history.length,6);assert.equal(root.XpaceExpertPreviews.list()[0].id,'saved-6');
 });
 
 test('PREVIOS habla el idioma de la interfaz',()=>{

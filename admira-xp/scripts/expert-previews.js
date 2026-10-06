@@ -1,11 +1,11 @@
 /* Experto → PREVIOS (tercera columna del menú inferior, a la derecha del todo).
    Lo que se crea en Crear contenidos (imagen, música/audio, locución, vídeo) se abre aquí,
-   el último primero: miniatura o reproductor, título, Lanzar y Ver en Stock.
+   sólo la última creación: previo grande y, debajo, título, Lanzar y Ver en Stock.
    Crear nunca emite: Lanzar añade y reproduce en los players virtuales de este Xpacio;
    una locución se emite tres veces sólo al pulsar Emitir. El formulario sigue en el centro.
-   Expert → PREVIEWS (third, far-right slot). Newly created media opens here, newest first. */
+   Expert → PREVIEWS (third, far-right slot). Only the latest creation opens here, filling the pane with actions below. */
 (function(root){'use strict';
- const KEY='xpaceos.expert-previews.v1',MAX=6,KINDS=['image','video','music','voice'];
+ const KEY='xpaceos.expert-previews.v1',MAX=1,KINDS=['image','video','music','voice'];
  function preview(kind,value){
   if(!KINDS.includes(kind)||!value)return null;const id=String(value.id||'');let u;try{u=new URL(value.url);}catch(_){return null;}
   if(!id||u.username||u.password||u.origin!=='https://api.admira.store'||u.pathname!=='/stock/asset/'+id)return null;
@@ -53,7 +53,7 @@
   card.querySelector('.epc-when').textContent=(item.num?'#'+item.num+' · ':'')+hh;
   const title=card.querySelector('.epc-title');title.textContent=item.title;title.title=item.title;
   const launch=card.querySelector('[data-preview-launch]');
-  launch.textContent=item.kind==='voice'?(playing.has(uid(item))?t('⏹ Detener','⏹ Stop'):t('📢 Emitir ×3','📢 Play ×3')):item.kind==='music'?t('▶ Lanzar al hilo','▶ Launch to music'):t('▶ Lanzar a pantallas','▶ Launch to screens');
+  launch.textContent=item.kind==='voice'?(playing.has(uid(item))?t('⏹ Detener','⏹ Stop'):t('📢 Emitir ×3','📢 Play ×3')):item.kind==='music'?t('▶ Lanzar al hilo','▶ Launch to music'):t('▶ Lanzar a pantalla','▶ Launch to screen');
   launch.title=item.kind==='voice'?t('Emitir la locución tres veces en el Xpacio','Play the voiceover three times in the Xpace'):t('Añadir a la playlist y reproducir en el Xpacio','Add to the playlist and play in the Xpace');
   const stock=card.querySelector('[data-preview-stock]');stock.textContent=item.kind==='voice'?t('Ver en Stock · Megafonía','Open in Stock · Announcements'):t('Ver en Stock','Open in Stock');
   card.setAttribute('aria-label',t(...LABEL[item.kind])+' · '+item.title);
@@ -98,8 +98,8 @@
   texts(c,item);return c;
  }
  function render(fresh){
-  if(!mount())return;section.hidden=false;empty.hidden=!!items.length;empty.textContent=t('Aquí aparecerán la imagen, el vídeo, la música y la locución que crees. Crear no emite; revisa el previo y pulsa Lanzar o Emitir.','Your created images, videos, music and voiceovers will appear here. Creating does not play; review the preview, then press Launch or Play.');
-  section.setAttribute('aria-label',t('Contenidos creados · el último primero','Created media · newest first'));
+  if(!mount())return;section.hidden=false;empty.hidden=!!items.length;empty.textContent=t('Aquí aparecerá tu última creación multimedia. Crear no emite; revisa el previo y pulsa Lanzar o Emitir.','Your latest multimedia creation will appear here. Creating does not play; review the preview, then press Launch or Play.');
+  section.setAttribute('aria-label',t('Última creación multimedia','Latest multimedia creation'));
   const keep=new Set(items.map(uid));
   for(const [key,node]of cards)if(!keep.has(key)){node.querySelectorAll('audio,video').forEach(m=>m.pause());node.remove();cards.delete(key);notes.delete(key);}
   items.forEach((item,i)=>{const key=uid(item);let node=cards.get(key);if(!node){node=card(item);cards.set(key,node);}else texts(node,item);if(list.children[i]!==node)list.insertBefore(node,list.children[i]||null);});

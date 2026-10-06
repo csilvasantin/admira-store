@@ -2019,19 +2019,21 @@
       "voice",
       "video"
     ],
-    "order": "newest first; up to 6 items",
+    "order": "latest creation only; full available pane; actions below",
     "storage": "localStorage:xpaceos.created-media.v2:<loc|store|project>",
     "event": "window xpace:media-created {kind, track}",
     "api": "window.XpaceExpertPreviews.add(kind, stockReceipt) · list() · clear()",
     "actions": {
-      "image": "Launch to screens + Open in Stock",
-      "video": "Launch to screens + Open in Stock",
+      "image": "Launch to screen + Open in Stock",
+      "video": "Launch to screen + Open in Stock",
       "music": "Launch to background music + Open in Stock",
       "voice": "Play ×3 (XpaceAnnouncements.playStock) + Open in Stock · Public announcements"
     },
     "voiceover_endpoint": "same-origin /admira-xp/announcement-tts (session; archives in Stock · Megafonía). /megafonia/push is not used because that queue plays immediately in the store twins",
     "playback": "creating never plays; Launch adds and plays on this Xpace's virtual players; physical broadcast not verified",
-    "forms": "stay in the middle column (Create media)"
+    "forms": "stay in the middle column (Create media)",
+    "visible_limit": 1,
+    "history_preserved": true
   },
   "starbucks_ipad": {
     "guide": "https://www.admira.store/admira-xp/docs/starbucks-ipad.md",
@@ -2109,13 +2111,13 @@
   },
   "expert_media_recovery": {
     "help_topic": "expert-previews",
-    "es": "Experto tiene fondos opacos y contraste independiente de /marca. PREVIOS muestra los últimos seis contenidos creados, sin reloj; los recibos persisten por Xpacio y navegador tras cerrar o recargar. Crear nunca emite. Matrix silencia el ambiente sintético, conservando Escuchar y avisos.",
-    "en": "Expert uses opaque backgrounds and contrast independent of /brand. PREVIEWS shows the latest six created assets without a clock; receipts persist per Xpace and browser after closing or reloading. Creating never plays. Matrix silences synthetic ambience, retaining Listen and announcements.",
+    "es": "Experto tiene fondos opacos y contraste independiente de /marca. PREVIOS muestra sólo la última creación al máximo tamaño, con acciones debajo, sin reloj; los recibos persisten por Xpacio y navegador tras cerrar o recargar. Crear nunca emite. Matrix silencia el ambiente sintético, conservando Escuchar y avisos.",
+    "en": "Expert uses opaque backgrounds and contrast independent of /brand. PREVIEWS shows only the latest creation at full available size with actions below without a clock; receipts persist per Xpace and browser after closing or reloading. Creating never plays. Matrix silences synthetic ambience, retaining Listen and announcements.",
     "storage": "localStorage:xpaceos.created-media.v2:<loc|store|project>",
     "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
   },
   "retained_ui_contract": {
-    "revision": "wall-avatar-20261006",
+    "revision": "latest-preview-20261006",
     "files": [
       "assets/expert-legibility.css",
       "admira-xp/scripts/created-media-history.js",
@@ -2126,7 +2128,8 @@
       "admira-xp/scripts/media-experience.js",
       "admira-xp/scripts/media-experience.css",
       "admira-xp/scripts/matrix-wall-avatar.mjs",
-      "admira-xp/docs/matrix-wall-avatar.md"
+      "admira-xp/docs/matrix-wall-avatar.md",
+      "admira-xp/scripts/expert-previews.css"
     ]
   },
   "media_creation_experience": {
@@ -2171,5 +2174,13 @@
       "duplicates": false
     },
     "scope": "Local Matrix presentation; no new MCP tool or remote player assignment"
+  },
+  "latest_media_preview": {
+    "help_topic": "latest-media-preview",
+    "es": "PREVIOS muestra sólo la última creación multimedia. La imagen, el vídeo o la carátula ocupa el máximo ancho y alto disponible sin recortar sus proporciones; el reproductor de audio y las acciones quedan debajo. Imagen y vídeo ofrecen Lanzar a pantalla y Ver en Stock; música conserva Lanzar al hilo y la locución Emitir ×3. Una nueva creación sustituye el previo y detiene su reproductor local anterior, sin emitir automáticamente. El historial de recibos guardado se conserva; al recargar sólo se muestra la última creación. Se mantienen el arrastre centrado, el doble clic y los formularios centrales.",
+    "en": "PREVIEWS shows only the latest multimedia creation. The image, video or cover uses the largest available width and height without cropping its proportions; audio controls and actions sit below. Images and videos offer Launch to screen and Open in Stock; music keeps Launch to music and voiceovers Play ×3. A new creation replaces the preview and stops its previous local player without automatic playback. Saved receipt history is preserved; reload shows only the latest creation. Centred dragging, double-click enlargement and middle-column forms remain available.",
+    "visible_limit": 1,
+    "stored_history_limit": 6,
+    "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
   }
 }
