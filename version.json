@@ -1,15 +1,13 @@
 {
-  "version": "v.06.10.2026.r7.13:14",
-  "deployedAt": "2026-10-06T09:06:03Z",
+  "version": "v.06.10.2026.r2.13:14",
   "deployer": "GrokBot",
   "machine": "MacBookPro16",
   "signature": "GrokBot · MacBookPro16",
-  "git": "b503c7e9474493ae67e7feb2dcb634e6f3e632b0",
-  "gitShort": "b503c7e",
-  "gitFull": "b503c7e9474493ae67e7feb2dcb634e6f3e632b0",
+  "deployedAt": "2026-10-06T11:18:36.670245+00:00",
+  "git": "9c77621ba7e874e410a218c813824f0814a0329c",
+  "gitFull": "9c77621ba7e874e410a218c813824f0814a0329c",
+  "gitShort": "9c77621",
   "dirty": false,
-  "novedades": [
-    "⌘ Experto cerrado por defecto: quien entra por primera vez no lo ve; se abre con el ⌘ de la barra",
-    "Abierto o cerrado se recuerda solo en la pestaña: ya no se reabre solo en cada visita"
-  ]
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }

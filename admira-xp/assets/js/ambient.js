@@ -40,18 +40,11 @@
   // El ambiente solo debe sonar si: el usuario lo tiene activado, la pestaña está
   // visible, y el juego está en partida activa (no menú/pausa/fin). window.ambientActive
   // lo expone game.html; si no existiera, no bloqueamos (fallback permisivo).
-  function sceneActive(){
-    // Matrix has its own music and announcement controls. The hidden simulator
-    // must not mix synthesized cafe/rain noise into that scene.
-    if (document.querySelector?.('.matrix-panorama-dialog[open]')) return false;
-    return typeof window.ambientActive !== 'function' || window.ambientActive();
-  }
-
   function audible(){
     const G = window.G;
     if (!G || !G.ambient || !G.ambient.enabled) return false;
     if (typeof document !== 'undefined' && document.hidden) return false;
-    if (!sceneActive()) return false;
+    if (typeof window.ambientActive === 'function' && !window.ambientActive()) return false;
     return true;
   }
 
@@ -99,7 +92,7 @@
     const G = window.G;
     const on = audible();
     const vol = on ? (G.ambient.volume || 0.25) : 0;
-    const isRain = G?.weather?.type === 'rain' && G.weather.sonora === true && (G.sfxVolume ?? 0.7)>0 && !document.hidden && sceneActive();
+    const isRain = G?.weather?.type === 'rain' && G.weather.sonora === true && (G.sfxVolume ?? 0.7)>0 && !document.hidden && (typeof window.ambientActive!=='function'||window.ambientActive());
     const rainVol=isRain?Math.max(0,Math.min(1,G.sfxVolume ?? 0.7))*0.25:0;
     master.gain.setTargetAtTime(vol, ac.currentTime, 0.4);
     nodes[0].gain.gain.setTargetAtTime(vol * 0.7, ac.currentTime, 0.4);

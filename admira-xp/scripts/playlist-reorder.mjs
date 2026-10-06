@@ -15,7 +15,7 @@ export function mountPlaylistReorder({list,scrollRoot,signal,onMove=()=>{},hitTe
   if(!drag)return;
   if(drag.moved){
    if(!drag.ghost){drag.ghost=document.createElement('div');drag.ghost.className='device-drag-ghost';const preview=drag.row.querySelector('.device-preview');if(preview&&!preview.hidden){const video=preview.cloneNode();video.muted=true;drag.ghost.append(video);}list.closest('dialog')?.append(drag.ghost);}
-   Object.assign(drag.ghost.style,{left:drag.x+'px',top:drag.y+'px',transform:'translate(-50%,-50%)'});
+   Object.assign(drag.ghost.style,{left:drag.x+14+'px',top:drag.y+14+'px'});
    onHover(hitTest(drag.x,drag.y));
    const bounds=scrollRoot.getBoundingClientRect();
    if(drag.x>=bounds.left&&drag.x<=bounds.right){

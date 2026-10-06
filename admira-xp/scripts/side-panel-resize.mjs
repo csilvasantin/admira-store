@@ -1,21 +1,13 @@
 // Manual rail widths take precedence over automatic canvas letterboxing.
-import {attachOptionsRail,optionsWidth,OPTIONS_ICON_WIDTH} from './options-rail.mjs?v=20261006-compact-options-1';
 const root=document.body;
 const es=()=>document.documentElement.lang!=='en';
 const saved={};
-let options;
-const limits=side=>({min:side==='left'?OPTIONS_ICON_WIDTH:152,max:Math.max(120,Math.min(560,innerWidth-32))});
-const clamp=(side,width)=>{const {min,max}=limits(side);return side==='left'&&options?optionsWidth(width,options.readable(),max):Math.round(Math.max(min,Math.min(max,width)));};
+const limits=side=>({min:side==='left'?156:152,max:Math.max(120,Math.min(560,innerWidth-32))});
+const clamp=(side,width)=>{const {min,max}=limits(side);return Math.round(Math.max(min,Math.min(max,width)));};
 for(const side of ['left','right']){
   try{const width=Number(localStorage.getItem('xpace_side_width_'+side));if(width>0)saved[side]=width;}catch{}
 }
-window.__xpSidePanelWidth=(side,automatic)=>{
-  const width=side==='left'&&options?options.desired(saved[side]>0?saved[side]:null):clamp(side,saved[side]>0?saved[side]:Math.max(192,automatic));
-  if(side==='left')options?.sync(width);
-  return width;
-};
-const left=document.querySelector('.quad-left');
-if(left)options=attachOptionsRail(left,{onChange:()=>{if(options)window.dispatchEvent(new Event('resize'));}});
+window.__xpSidePanelWidth=(side,automatic)=>clamp(side,saved[side]>0?saved[side]:Math.max(192,automatic));
 for(const side of ['left','right']){
   const panel=document.querySelector('.quad-'+side);if(!panel)continue;
   const handle=document.createElement('div');handle.className='quad-resize quad-resize-'+side;handle.tabIndex=0;
@@ -32,7 +24,7 @@ for(const side of ['left','right']){
     handle.setAttribute('aria-label',label);handle.title=label+(es()?' · arrastra o usa las flechas · doble clic para restaurar':' · drag or use arrows · double-click to reset');
   }
   function set(width,persist=false){
-    saved[side]=clamp(side,width);panel.style.width=(side==='left'?options.desired(saved[side]):saved[side])+'px';if(side==='left')options.sync(parseFloat(panel.style.width));sync();
+    saved[side]=clamp(side,width);panel.style.width=saved[side]+'px';sync();
     if(persist)try{localStorage.setItem('xpace_side_width_'+side,String(saved[side]));}catch{}
   }
   function reset(){delete saved[side];try{localStorage.removeItem('xpace_side_width_'+side);}catch{}window.dispatchEvent(new Event('resize'));sync();}
@@ -48,8 +40,7 @@ for(const side of ['left','right']){
   handle.addEventListener('keydown',event=>{
     if(event.key==='Home'){event.preventDefault();reset();return;}
     if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
-    event.preventDefault();const width=panel.getBoundingClientRect().width;
-    set(side==='left'&&width<options.readable()&&event.key==='ArrowRight'?options.readable():width+(event.key==='ArrowRight'?20:-20)*(side==='left'?1:-1),true);
+    event.preventDefault();set(panel.getBoundingClientRect().width+(event.key==='ArrowRight'?20:-20)*(side==='left'?1:-1),true);
   });
   new ResizeObserver(sync).observe(panel);
   new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['class']});

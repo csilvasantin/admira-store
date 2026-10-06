@@ -1,5 +1,4 @@
 import {attachPanelResize,resizedPanel} from './panel-resize.mjs';
-import {optionsWidth,OPTIONS_ICON_WIDTH} from './options-rail.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setMaxListeners} from 'node:events';
@@ -239,20 +238,4 @@ test('docked tools never overwrite their floating geometry through drag, keys or
  assert.deepEqual(h.panel.getBoundingClientRect(),before);assert.equal(h.writes.length,0);
  h.panel.classList.remove('xs-expert-docked');h.send(h.handle,'keydown',{key:'ArrowDown'});
  assert.equal(h.writes.length,1);api.dispose();
-});
-
-test('Options crosses between readable and icon widths by pointer or keyboard and restores its own saved choice',()=>{
- const h=harness({width:138});h.stored.set('cli-history','keep');
- const config={axis:'width',label:'Opciones',key:'options:size',limits:()=>({minWidth:OPTIONS_ICON_WIDTH,maxWidth:560}),normaliseWidth:w=>optionsWidth(w,138),widthStep:(w,d)=>w===OPTIONS_ICON_WIDTH&&d>0?138:w+d};
- let resize=attachPanelResize(h.panel,config);
- h.send(resize.handle,'pointerdown',{button:0,pointerId:1,clientX:738,clientY:200});
- h.send(resize.handle,'pointermove',{pointerId:1,clientX:720,clientY:200});
- h.send(resize.handle,'pointerup',{pointerId:1});
- assert.equal(h.panel.getBoundingClientRect().width,52);assert.equal(JSON.parse(h.stored.get('options:size')).width,52);
- resize.dispose();resize=attachPanelResize(h.panel,config);
- assert.equal(h.panel.getBoundingClientRect().width,52);
- h.send(resize.handle,'keydown',{key:'ArrowRight'});assert.equal(h.panel.getBoundingClientRect().width,138);
- h.send(resize.handle,'keydown',{key:'ArrowLeft'});assert.equal(h.panel.getBoundingClientRect().width,52);
- h.send(resize.handle,'keydown',{key:'Home'});assert.equal(h.panel.getBoundingClientRect().width,138);assert.equal(h.stored.has('options:size'),false);
- assert.equal(h.stored.get('cli-history'),'keep');resize.dispose();
 });

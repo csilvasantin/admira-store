@@ -757,7 +757,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261006-compact-options-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261005-windows-menu-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -972,17 +972,6 @@
   .pixeria-library p{white-space:normal;font:11px/1.4 monospace;margin:0;color:#9dadbc}
   .media-ready button[hidden],.pixeria-library button[hidden]{display:none!important}
   .media-ready button,.options-playlist button{touch-action:manipulation}
-  .media-preview-frame{position:relative;min-width:0}.media-preview-frame>img,.media-preview-frame>video{display:block}
-  .media-preview-grab{position:absolute;inset:0;cursor:grab;touch-action:none;border-radius:3px}
-  .media-preview-video .media-preview-grab{bottom:40px}
-  .media-audio-art{position:relative;height:96px;display:grid;place-items:center;background:#031316;color:#dcfff5;font:40px system-ui;overflow:hidden}
-  .media-audio-art>img{width:100%;height:96px;object-fit:contain;max-height:none}
-  .media-preview-grab:hover,.media-preview-grab:focus-visible,.media-preview-grab.media-picked{outline:2px solid #86ffe6;outline-offset:-2px;background:#86ffe60b}
-  .media-drag-source{cursor:grab}.media-dragging,.media-dragging *{cursor:grabbing!important}
-  .media-drag-ghost{position:fixed;z-index:2147483647;width:160px;max-width:32vw;padding:4px;border:2px solid #a5b7b5;border-radius:6px;background:#062024f2;box-shadow:0 8px 24px #0009;pointer-events:none;user-select:none;overflow:hidden;transform:translate(-50%,-54px)}
-  .media-drag-visual{height:96px;display:grid;place-items:center;overflow:hidden;background:#020c0e}
-  .media-drag-visual img,.media-drag-visual canvas{display:block;width:100%;height:96px;object-fit:contain}.media-drag-visual>span{font:32px system-ui;color:#dcfff5}
-  .media-drag-ghost strong{display:block;margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:11px/1.4 system-ui;color:#e9fff8}.media-drag-ghost.can-drop{border-color:#86ffe6}
   #announcementLogin[hidden],#imagePromptLogin[hidden],#videoPromptLogin[hidden],[data-media-stock][hidden],#videoPreview[hidden]{display:none!important}
   .quad-left #announcementVoice{width:100%;background:#071923;color:#cdeef6;border:1px solid #78f3ff55;border-radius:4px;padding:7px;font:12px monospace}
   .quad-left #announcementVoiceLabel,.quad-left #announcementVoiceNote{font:11px/1.4 monospace;color:#9dd9e3;white-space:normal}
@@ -1033,7 +1022,6 @@
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
       <a id="announcementLogin" href="/auth/login" hidden>Iniciar sesión</a>
       <a id="audioStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
-      <span id="announcementArchiveStatus" role="status" hidden></span>
       <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará tres veces.</span>
     </div>
   </div>
@@ -1087,10 +1075,10 @@
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
 <script src="scripts/screen-media.js?v=20261005-pixeria-1"></script>
-<script src="scripts/media-options.js?v=20261006-center-1"></script>
-<script type="module" src="scripts/pixeria-library.mjs?v=20261006-audio-center-1"></script>
-<script src="scripts/media-stock.js?v=20261006-megafonia-1"></script>
-<script src="scripts/announcements.js?v=20261006-megafonia-1"></script>
+<script src="scripts/media-options.js?v=20261005-pixeria-1"></script>
+<script type="module" src="scripts/pixeria-library.mjs?v=20261005-pixeria-1"></script>
+<script src="scripts/media-stock.js?v=20261005-preview-1"></script>
+<script src="scripts/announcements.js?v=20261005-stock-3"></script>
 <script defer src="scripts/image-prompt.js?v=20261005-pixeria-1"></script>
 <script defer src="scripts/video-prompt.js?v=20261005-pixeria-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
@@ -1508,14 +1496,14 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-0747-options-sello"></script>
+<script src="xtanco-version.js?v=20261005-2318-ipad"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
 <script src="scripts/weather-command.js?v=quiet-rain-1"></script>
-<script src="assets/js/sfx.js?v=matrix-quiet-20261005-1"></script>
-<script src="assets/js/ambient.js?v=matrix-quiet-20261005-1"></script>
+<script src="assets/js/sfx.js?v=quiet-rain-1"></script>
+<script src="assets/js/ambient.js?v=quiet-rain-1"></script>
 <script src="assets/js/sky.js"></script>
 <script src="scripts/starbucks-room.js?v=ipad-20261005-1"></script>
 <script src="assets/js/heatmap.js"></script>
@@ -33171,8 +33159,6 @@ window.xtAPI = (function(){
       const name=VIDEO_LIST[dsDragSrcIdx];
       console.log('[DS-DROP dragstart]',{idx:dsDragSrcIdx,name});
       try{ e.dataTransfer.effectAllowed='copyMove'; e.dataTransfer.setData('text/plain',String(dsDragSrcIdx)); }catch(err){}
-      const dragPreview=row.querySelector('img')||row;
-      try{const bounds=dragPreview.getBoundingClientRect();e.dataTransfer.setDragImage(dragPreview,bounds.width/2,bounds.height/2);}catch(err){}
       row.classList.add('is-dragging');
     });
     signagePanel.addEventListener('dragover',e=>{
@@ -36235,7 +36221,7 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=matrix-quiet-20261005-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=ipad-20261005-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36250,10 +36236,10 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=expert-center-20261006-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=ipad-20261005-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=aviso-1"></script>
-<link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-compact-options-1">
-<script type="module" src="scripts/side-panel-resize.mjs?v=20261006-compact-options-1"></script>
+<link rel="stylesheet" href="scripts/side-panel-resize.css?v=1">
+<script type="module" src="scripts/side-panel-resize.mjs?v=2"></script>
 <script type="module" src="scripts/side-panel-bounds.mjs?v=2"></script>
 <script type="module" src="scripts/topbar-controls.mjs?v=topbar-20261005-1"></script>
 </body>
