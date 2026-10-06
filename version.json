@@ -1,15 +1,16 @@
 {
-  "version": "v.06.10.2026.r2.00:21",
-  "deployedAt": "2026-10-05T23:16:08Z",
-  "deployer": "SmithMacMini",
+  "version": "v.06.10.2026.r3.07:38",
+  "deployedAt": "2026-10-06T05:40:48Z",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "SmithMacMini · MacMini",
-  "git": "9a96919f4e3518b8dd138859af174c1634839a0c",
-  "gitShort": "9a96919",
-  "gitFull": "9a96919f4e3518b8dd138859af174c1634839a0c",
+  "signature": "OraculoMacMini · MacMini",
+  "git": "bbc0c704bac49c923b0d96656349ca2aab4f6fe4",
+  "gitShort": "bbc0c70",
+  "gitFull": "bbc0c704bac49c923b0d96656349ca2aab4f6fe4",
   "dirty": false,
   "novedades": [
-    "Sello de versión con novedades al pasar el ratón",
-    "Marca NUEVO cuando hay una versión que aún no has visto"
+    "La versión vuelve al pie de Opciones y se oculta al plegarlo",
+    "Aviso inicial de novedad una vez por versión y navegador",
+    "Se conserva la ayuda del sello y la acción Recargar"
   ]
 }
