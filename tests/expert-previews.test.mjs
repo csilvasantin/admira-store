@@ -148,3 +148,23 @@ test('el sello flotante sube por encima del menú inferior del Experto y vuelve 
  assert.match(src,/#admira-sello-chip\{top:auto!important;bottom:var\(--xp-sello-lift\)!important\}/);
  assert.match(src,/#telegramDock/);
 });
+
+test('preview Reset follows Stock, restores playback once and keeps the latest receipt and media',async()=>{
+ const {root,view}=dom();let finish,calls=0;
+ root.XpaceResetPlayback=()=>{calls++;return new Promise(resolve=>finish=resolve);};
+ load(root);root.XpaceExpertPreviews.add('image',stock('image',21,{title:'Nueva campaña'}));
+ const c=view.querySelector('.expert-preview-card'),actions=c.querySelector('.epc-actions'),button=c.querySelector('[data-preview-reset]'),img=c.querySelector('img');
+ assert.equal(actions.children.at(-1),button);assert.equal(actions.children.at(-2),c.querySelector('[data-preview-stock]'));assert.equal(button.textContent,'Reset');
+ button.click();button.click();assert.equal(calls,1);assert.equal(button.disabled,true);assert.match(c.querySelector('.epc-status').textContent,/Restaurando/);
+ finish();await new Promise(setImmediate);assert.equal(button.disabled,false);assert.match(c.querySelector('.epc-status').textContent,/programación inicial restaurada/i);
+ assert.equal(c.querySelector('img'),img);assert.equal(root.XpaceExpertPreviews.list()[0].id,'image-21');assert.equal(view.querySelectorAll('.expert-preview-card').length,1);
+ root.XpaceResetPlayback=async()=>{throw Error('Offline');};button.click();await new Promise(setImmediate);assert.equal(button.disabled,false);assert.match(c.querySelector('.epc-status').textContent,/No se pudo restaurar: Offline/);
+});
+
+test('preview Reset uses the native local command and surfaces restoration errors without a Telegram send',async()=>{
+ const html=read('admira-xp/index.html'),start=html.indexOf('  window.XpaceResetPlayback=async()=>'),end=html.indexOf('\n\n  async function sendComposerText',start);
+ const calls=[],ctx={window:{},lang:'en',dsMatrixOwnsScreens:()=>true,dsMatrixAdapter:()=>({}),executeTelegramText:async command=>{calls.push(command);return 'Reset complete';},Error};
+ vm.runInNewContext(html.slice(start,end),ctx);assert.equal(await ctx.window.XpaceResetPlayback(),'Reset complete');assert.deepEqual(calls,['/reset']);
+ ctx.executeTelegramText=async()=> 'Error ejecutando comando: Offline';await assert.rejects(ctx.window.XpaceResetPlayback(),/Offline/);
+ ctx.dsMatrixAdapter=()=>null;await assert.rejects(ctx.window.XpaceResetPlayback(),/Matrix is loading/);
+});

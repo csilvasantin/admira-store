@@ -1089,8 +1089,8 @@
 <script defer src="scripts/video-prompt.js?v=20261006-media-experience-1"></script>
 <script defer src="scripts/voiceover-prompt.js?v=person-voice-1"></script>
 <!-- Experto → PREVIOS (3.ª columna): lo creado en Crear contenidos se previsualiza aquí, el último primero. -->
-<link rel="stylesheet" href="scripts/expert-previews.css?v=matrix-signage-reset-1">
-<script defer src="scripts/expert-previews.js?v=latest-preview-1"></script>
+<link rel="stylesheet" href="scripts/expert-previews.css?v=preview-reset-1">
+<script defer src="scripts/expert-previews.js?v=preview-reset-1"></script>
 <!-- Sello flotante «v.… NUEVO» por encima del menú inferior del Experto: no tapa las categorías (Crear contenidos). -->
 <script defer src="scripts/sello-chip-dock.js?v=20261006-store-previews-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
@@ -1516,7 +1516,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-avatar-wall-1"></script>
+<script src="xtanco-version.js?v=20261006-preview-reset-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -33164,6 +33164,14 @@ window.xtAPI = (function(){
     const wait=()=>{ if(ready()||Date.now()-t0>30000){ setTimeout(go,900); return; } setTimeout(wait,300); };
     wait();
   })();
+
+  // PREVIEWS Reset and /reset share the same local restoration; never relay to Telegram.
+  window.XpaceResetPlayback=async()=>{
+    if(dsMatrixOwnsScreens()&&!dsMatrixAdapter())throw Error(lang==='en'?'Matrix is loading. Try Reset again.':'Matrix se está cargando. Vuelve a pulsar Reset.');
+    const message=await executeTelegramText('/reset');
+    if(/^(?:❌\s*)?Error[: ]/i.test(message))throw Error(message);
+    return message;
+  };
 
   async function sendComposerText(text){
     const clean=String(text||'').trim();

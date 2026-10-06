@@ -1,6 +1,6 @@
 /* Experto → PREVIOS (tercera columna del menú inferior, a la derecha del todo).
    Lo que se crea en Crear contenidos (imagen, música/audio, locución, vídeo) se abre aquí,
-   sólo la última creación: previo grande y, debajo, título, Lanzar y Ver en Stock.
+   sólo la última creación: previo grande y, debajo, título, Lanzar, Ver en Stock y Reset.
    Crear nunca emite: Lanzar añade y reproduce en los players virtuales de este Xpacio;
    una locución se emite tres veces sólo al pulsar Emitir. El formulario sigue en el centro.
    Expert → PREVIEWS (third, far-right slot). Only the latest creation opens here, filling the pane with actions below. */
@@ -56,6 +56,7 @@
   launch.textContent=item.kind==='voice'?(playing.has(uid(item))?t('⏹ Detener','⏹ Stop'):t('📢 Emitir ×3','📢 Play ×3')):item.kind==='music'?t('▶ Lanzar al hilo','▶ Launch to music'):t('▶ Lanzar a pantalla','▶ Launch to screen');
   launch.title=item.kind==='voice'?t('Emitir la locución tres veces en el Xpacio','Play the voiceover three times in the Xpace'):t('Añadir a la playlist y reproducir en el Xpacio','Add to the playlist and play in the Xpace');
   const stock=card.querySelector('[data-preview-stock]');stock.textContent=item.kind==='voice'?t('Ver en Stock · Megafonía','Open in Stock · Announcements'):t('Ver en Stock','Open in Stock');
+  const reset=card.querySelector('[data-preview-reset]');if(reset){reset.textContent='Reset';reset.title=t('Restaurar la programación inicial de los dispositivos; conservar esta creación en Stock','Restore the initial device schedule; keep this creation in Stock');}
   card.setAttribute('aria-label',t(...LABEL[item.kind])+' · '+item.title);
   for(const node of card.querySelectorAll('.epc-media,.epc-audio,[data-media-expand]'))root.XpaceMediaExperience?.bind(node,item);
   const media=card.querySelector('.epc-media img');if(media)media.alt=item.title;
@@ -83,6 +84,13 @@
   catch(e){say(item,'No se pudo lanzar: '+e.message,'Could not launch: '+e.message);}
   finally{button.disabled=false;}
  }
+ async function resetItem(item,button){
+  if(button.disabled)return;button.disabled=true;quiet();
+  say(item,'Restaurando programación inicial…','Restoring initial schedule…');
+  try{if(typeof root.XpaceResetPlayback!=='function')throw Error(t('Reset no está disponible en esta vista.','Reset is unavailable in this view.'));await root.XpaceResetPlayback();say(item,'Programación inicial restaurada. La creación sigue en el previo y en Stock.','Initial schedule restored. The creation remains in the preview and in Stock.');}
+  catch(error){say(item,'No se pudo restaurar: '+error.message,'Could not reset: '+error.message);}
+  finally{button.disabled=false;}
+ }
  function card(item){
   const c=el('article','expert-preview-card');c.dataset.kind=item.kind;c.dataset.stockId=item.id;
   const media=el('div','epc-media');
@@ -92,7 +100,7 @@
   const meta=el('div','epc-meta'),tag=el('p','epc-tag');tag.append(el('b','epc-kind'),el('span','epc-when'));
   const actions=el('div','epc-actions'),launch=el('button');launch.type='button';launch.dataset.previewLaunch=item.kind;launch.addEventListener('click',()=>launchItem(item,launch));
   const stock=el('a');stock.dataset.previewStock=item.kind;stock.href=stockHref(item);stock.target='_blank';stock.rel='noopener';
-  actions.append(launch,stock);const status=el('p','epc-status');status.setAttribute('role','status');status.hidden=true;
+  actions.append(launch,stock);if(item.kind==='image'||item.kind==='video'){const reset=el('button');reset.type='button';reset.dataset.previewReset=item.kind;reset.addEventListener('click',()=>resetItem(item,reset));actions.append(reset);}const status=el('p','epc-status');status.setAttribute('role','status');status.hidden=true;
   meta.append(tag,el('p','epc-title'),actions,status);c.append(media,meta);
   if(item.kind==='music'||item.kind==='voice'){const audio=el('div','epc-audio');audio.append(player(item));root.XpaceMediaExperience?.bind(audio,item);c.append(audio);}
   texts(c,item);return c;

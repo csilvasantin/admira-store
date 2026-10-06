@@ -109,5 +109,11 @@
     "Previos independientes por pantalla y última creación grande con acciones debajo",
     "/reset restaura el Signage básico y las playlists base Matrix sin borrar Stock ni historial",
     "La pestaña abierta recibe esta corrección mediante el identificador actualizado de build; ayuda MCP bilingüe publicada"
+  ],
+  "v.06.10.2026.r23.21:23": [
+    "Reset a la derecha de Open in Stock en imágenes y vídeos de PREVIOS",
+    "La programación inicial vuelve sin perder el previo ni la creación guardada",
+    "Restauración local compartida con /reset, con progreso y errores visibles",
+    "Se conserva la entrega concurrente del avatar en pared Matrix; ayuda MCP bilingüe actualizada"
   ]
 }

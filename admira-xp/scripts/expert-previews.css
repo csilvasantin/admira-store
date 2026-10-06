@@ -55,3 +55,9 @@ body.xpace-matrix-active :is(#c,#videoMonitor,#videoMonitor2,#totemAvatar,#wallA
 #telegramDock.compose-start .expert-workspace .expert-view-pane:has(.expert-preview-card){overflow:hidden}
 
 #telegramDock #signageResetStatus{display:block;flex:none;font:10px/1.35 monospace;background:#10232f;color:#eff8fb!important;border:1px solid #78929e;padding:4px;max-height:60px;overflow:auto}
+
+/* Keep Reset immediately to the right of Open in Stock without shrinking the media. */
+#expertCreatedPreviews .epc-actions:has([data-preview-reset]){flex-wrap:nowrap}
+#expertCreatedPreviews .epc-actions:has([data-preview-reset]) :is(button,a){min-width:0}
+#expertCreatedPreviews .epc-actions [data-preview-reset]{flex:0 0 auto}
+@container (max-width:240px){#expertCreatedPreviews .epc-actions:has([data-preview-reset]){flex-direction:column}}

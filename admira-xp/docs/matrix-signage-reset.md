@@ -19,3 +19,10 @@ Matrix exclusively owns the capture and its eight devices: six wall screens, POS
 - Stock and created-media receipt storage remain unchanged. Reset is not `/import clear`; it never purges imported files.
 - Live MCP updates with a newer revision remain authoritative. Offline error/off devices are reported; reset does not silently power on unavailable devices.
 - No new MCP tool: public help topic `matrix-signage-reset`.
+
+
+## Reset desde PREVIOS / Reset from PREVIEWS
+
+ES: En PREVIOS, las imágenes y vídeos muestran Reset a la derecha de Ver en Stock. Tras Lanzar a pantalla o arrastrar, Reset devuelve los dispositivos a su programación inicial mediante la misma restauración local que /reset: Signage básico y playlists base vigentes de Matrix. Conserva la última creación visible, su archivo y recibo de Stock, historial y estado MCP compartido; no modifica el hilo musical. Durante la operación muestra progreso y evita repetir el clic. Si falla, informa del error y permite reintentar.
+
+EN: In PREVIEWS, images and videos show Reset to the right of Open in Stock. After Launch to screen or a drop, Reset returns devices to their initial schedule using the same local restoration as /reset: basic Signage and the current Matrix base playlists. It keeps the latest creation visible, its Stock file and receipt, history and shared MCP state; background music is unchanged. While running it shows progress and prevents duplicate clicks. Failures are reported and can be retried.

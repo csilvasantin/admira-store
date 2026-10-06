@@ -63,7 +63,7 @@ const bootMarca = opts => browser(Object.assign({file: 'assets/marca-blanca.js',
 // Única excepción (encargo avatar · 4-oct-2026): el shell inserta el cargador común del
 // avatar de admiranext.com, que decide con la bandera del proyecto (apagada en XpaceOS).
 // Se comprueba aparte que sea exactamente uno y nada más; el resto del contrato sigue igual.
-const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1';
+const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-2';
 // Segunda excepción, del mismo tipo (sello con novedades · 6-oct-2026): el cargador común del sello
 // de versión, que solo lee el /version.json de ESTE sitio. Exactamente uno, y nada más.
 const SELLO_LOADER = 'https://www.admiranext.com/assets/sello-novedades.js?v=20261006-options-sello-4';
