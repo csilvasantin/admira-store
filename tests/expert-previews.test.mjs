@@ -137,3 +137,17 @@ test('ayuda y documentación describen PREVIOS en español e inglés',()=>{
  assert.match(read('admira-xp/help.html'),/id="expert-previews"/);
  assert.match(read('mcp/funcionalidades.json'),/expert-previews/);
 });
+
+test('el sello flotante sube por encima del menú inferior del Experto y vuelve abajo con el Experto cerrado',()=>{
+ const {liftFor}=require('../admira-xp/scripts/sello-chip-dock.js');
+ const dock=(top,bottom=900)=>({top,bottom,height:bottom-top});
+ assert.equal(liftFor(900,[]),0,'Experto cerrado (por defecto): el chip se queda en su sitio');
+ assert.equal(liftFor(900,[dock(700)]),208,'menú bajo de 200 px: el chip queda 8 px por encima, sin tapar Crear contenidos');
+ assert.equal(liftFor(900,[dock(340),dock(332,340)]),568,'menú alto: manda el borde superior del dock anclado abajo');
+ assert.equal(liftFor(900,[dock(900,1100)]),0,'un dock fuera de la pantalla no levanta el chip');
+ assert.equal(liftFor(900,[dock(100,500)]),0,'un panel que no llega al borde inferior no es el menú inferior');
+ const html=read('admira-xp/index.html'),src=read('admira-xp/scripts/sello-chip-dock.js');
+ assert.match(html,/<script defer src="scripts\/sello-chip-dock\.js\?v=[^"]+"><\/script>/);
+ assert.match(src,/#admira-sello-chip\{top:auto!important;bottom:var\(--xp-sello-lift\)!important\}/);
+ assert.match(src,/#telegramDock/);
+});

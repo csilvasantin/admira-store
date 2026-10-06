@@ -19,6 +19,10 @@ La lista se conserva al recargar la página durante la sesión del navegador (`s
 
 Locución: la generación usa la ruta con sesión `/admira-xp/announcement-tts` (la misma de Opciones → Locuciones), que guarda el MP3 en Stock · Megafonía. No se usa `POST https://api.admira.store/megafonia/push` (la que usa `clearchannel-tv/tools/crear-demo`): esa cola la reproducen al momento los gemelos de la tienda, y aquí la locución debe esperar en el previo. Una generación de pago por locución; reintentar con el mismo texto y voz recupera el mismo trabajo.
 
+Experto cerrado por defecto: el menú inferior arranca oculto (`body.xp-left-hidden`) y ⌘ lo muestra. PREVIOS se mantiene montado aunque el Experto esté cerrado: lo que termine de generarse mientras tanto (p. ej. un vídeo pendiente) entra arriba y se ve al abrir ⌘.
+
+Sello flotante: el chip común «v.… NUEVO» (`www.admiranext.com/assets/sello-novedades.js`) sólo se eleva sobre el dock de la piel de la suite. En el gemelo, con el Experto abierto, quedaba en la esquina inferior izquierda encima de las categorías y tapaba «Crear contenidos» con el menú bajo. `scripts/sello-chip-dock.js` lo coloca 8 px por encima del borde superior de `#telegramDock` mientras el menú está visible; con el Experto cerrado vuelve a su sitio.
+
 Por qué no se veía antes: los creadores llamaban a `XpaceMediaOptions.stage()`, que pinta el previo en `[data-media-ready]` dentro del menú lateral Opciones (plegado en Experto). La columna PREVIOS sólo contenía la respuesta del CLI y la placa de calidad (`04 · MATRIX · 64 BITS`). El mensaje «Revisa el previo y pulsa Lanzar» apuntaba a un previo que no estaba a la vista.
 
 ## EN
@@ -31,8 +35,10 @@ Each card shows type, Stock number, time and title, plus **▶ Launch** (to scre
 
 The list survives a reload within the browser session (`sessionStorage: xpaceos.expert-previews.v1`). Options previews are unchanged; Pixeria library imports are not "created" and stay out of PREVIEWS. In a narrow column (mobile) the card stacks.
 
+Expert closed by default: the bottom menu starts hidden and ⌘ shows it. PREVIEWS stays mounted while closed, so anything that finishes meanwhile (e.g. a pending video) is on top when ⌘ opens. Version seal: `scripts/sello-chip-dock.js` keeps the shared floating chip 8 px above `#telegramDock` while the menu is visible, so it no longer covers the Create media category.
+
 Voiceover generation uses the session route `/admira-xp/announcement-tts`, archived to Stock · Public announcements. `POST /megafonia/push` is not used because that queue plays immediately in the store twins. One paid generation per voiceover; retrying the same text and voice recovers the same job.
 
 Contract for agents: `window.XpaceExpertPreviews.add(kind, stockReceipt)` with `kind` ∈ `image|music|voice|video` and a receipt `{id, url:'https://api.admira.store/stock/asset/<id>', num, title}`; or `XpaceMediaOptions.stage(kind, receipt, {created:true})`, which dispatches `xpace:media-created`. `XpaceMediaOptions.launch(kind, receipt)` and `XpaceAnnouncements.playStock(url, text, {language, onState})`.
 
-Pendiente / Pending: update the real MCP server help (`csilvasantin/xpaceos-mcp`, https://mcp.admira.store/help) and port this change to `csilvasantin/xpaceos`, whose daily mirror (`sync-xpaceos-minus-1d.yml`) would otherwise overwrite admira.store.
+Pendiente / Pending: update the real MCP server help (`csilvasantin/xpaceos-mcp`, https://mcp.admira.store/help). The same change must live in `csilvasantin/xpaceos`: the mirror `sync-xpaceos-minus-1d.yml` copies XpaceOS over admira.store.
