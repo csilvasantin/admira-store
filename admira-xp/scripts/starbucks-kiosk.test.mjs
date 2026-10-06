@@ -17,7 +17,7 @@ test('default kiosk does not load an avatar or request speech permissions, inclu
 test('screen opens kiosk; explicit Talk retains selected avatar; switching back stops that renderer',()=>{
  const h=harness();h.expand.emit('click');assert.equal(h.api.expanded,true);assert.equal(h.frame.inert,false);assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);
  h.talk.emit('click');assert.match(h.frame.src,/metahuman.html/);assert.equal(h.frame.allow,'microphone; autoplay');
- h.storage.set('admira-avatar:nivel-elegido','good');h.poll();assert.match(h.frame.src,/better.html/);
+ h.storage.set('admira-avatar:nivel-elegido','good');h.poll();assert.match(h.frame.src,/nube.html/);
  h.kiosk.emit('click');assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.frame.allow,undefined);
  h.close.emit('click');assert.equal(h.api.expanded,false);assert.equal(h.frame.inert,true);assert.equal(h.released(),1);
 });

@@ -4,7 +4,8 @@ import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
 export const STARBUCKS_AVATAR_WALL=Object.freeze({id:'starbucks-avatar-wall',width:400,height:900,
  corners:[{yaw:-120.336046,pitch:5.338008},{yaw:-127.419517,pitch:5.876790},{yaw:-127.351265,pitch:-11.862630},{yaw:-120.619692,pitch:-11.143135}]});
 // Existing live renderers used by the shared AdmiraNeXT loader, not copied models.
-export const AVATAR_WALL_RENDERERS=Object.freeze({good:'https://digitalavatar.ai/better.html?dock=1',better:'https://digitalavatar.ai/best.html?dock=1&kiosk=0',best:'https://digitalavatar.ai/metahuman.html?dock=1'});
+// good = Admirito, the animated cloud (nube.html, 06-10-2026); the bald 3D head stays on digitalavatar.ai/better.html.
+export const AVATAR_WALL_RENDERERS=Object.freeze({good:'https://digitalavatar.ai/nube.html?dock=1',better:'https://digitalavatar.ai/best.html?dock=1&kiosk=0',best:'https://digitalavatar.ai/metahuman.html?dock=1'});
 // Client context for the avatar brain (06-10-2026): the wall belongs to Starbucks Alsea,
 // so the avatar talks as a coffee shop at every level (persona/chips per tier on digitalavatar.ai).
 export const STARBUCKS_KIOSK_URL=new URL('../kiosk/starbucks/index.html?v=1',import.meta.url).href;

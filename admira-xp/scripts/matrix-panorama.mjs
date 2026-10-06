@@ -1,5 +1,5 @@
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=person-voice-1';
-import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=starbucks-kiosk-1';
+import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=nube-good-1';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';

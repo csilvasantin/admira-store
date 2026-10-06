@@ -759,7 +759,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261006-avatar-wall-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261006-avatar-nube-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1516,7 +1516,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-starbucks-kiosk-1"></script>
+<script src="xtanco-version.js?v=20261006-nube-good-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -20665,13 +20665,19 @@ const AVATAR3D={
   url:(typeof AVATAR3D_CFG.url==='string'&&AVATAR3D_CFG.url)?AVATAR3D_CFG.url.replace(/\/+$/,''):'https://api.admira.store/da',
   loc:(typeof AVATAR3D_CFG.loc==='string'&&AVATAR3D_CFG.loc)?AVATAR3D_CFG.loc:'',
   totemUrl:(typeof AVATAR3D_CFG.totemUrl==='string'&&AVATAR3D_CFG.totemUrl)?AVATAR3D_CFG.totemUrl:'https://digitalavatar.ai/best.html?kiosk=1',
+  totemFixed:!!(typeof AVATAR3D_CFG.totemUrl==='string'&&AVATAR3D_CFG.totemUrl),
 };
+// Tótem por nivel (06-10-2026): con la calidad Good el tótem y la pared larga muestran a
+// Admirito, la nube animada (nube.html, 2D ligera); Better/Best/Matrix siguen con la chica
+// (best.html). Una totemUrl fijada en la configuración manda siempre.
+const AVATAR3D_TOTEM_GOOD='https://digitalavatar.ai/nube.html?kiosk=1';
+function avatar3dTotemUrl(){ let lv='';try{ lv=avatar3dVisualLevel(); }catch(_){} return (!AVATAR3D.totemFixed&&lv==='good')?AVATAR3D_TOTEM_GOOD:AVATAR3D.totemUrl; }
 // Silencio del avatar del tótem (/avatar3d audio off|on). Se aplica en vivo por
 // postMessage y se añade a la URL (&audio=off) para que un montaje nuevo nazca mudo.
 let avatar3dMuted=false;
 // Avatar 3D también en la pantalla TFT de la pared larga (/avatar3d ds on|off).
 let avatar3dWall=false;
-// Fuente de la pared larga: '' = avatar WEB (best.html); si tiene URL = MetaHuman
+// Fuente de la pared larga: '' = avatar WEB (best.html; con Good, la nube nube.html); si tiene URL = MetaHuman
 // (Pixel Streaming). Lo pone /avatar3d ds metahuman [url] o el param ?wallmh=.
 let avatar3dWallSrc='';
 // URL por defecto del MetaHuman de Keanu para la pared: localhost si el gemelo
@@ -20702,7 +20708,8 @@ function setAvatar3dTotem(on){
     const loc=avatar3dLoc();
     const lg=(typeof lang!=='undefined'&&lang==='en')?'en':'es';  // idioma de la plataforma
     const bust=(typeof window!=='undefined'&&window.XTANCO_APP&&window.XTANCO_APP.build)?('&v='+window.XTANCO_APP.build):'';
-    const url=AVATAR3D.totemUrl+(AVATAR3D.totemUrl.indexOf('?')>=0?'&':'?')+avatar3dContextQS(AVATAR3D.totemUrl)+'&lang='+lg+(avatar3dMuted?'&audio=off':'')+(avatar3dModel?'&avatar='+encodeURIComponent(avatar3dModel):'')+bust;
+    const base=avatar3dTotemUrl();
+    const url=base+(base.indexOf('?')>=0?'&':'?')+avatar3dContextQS(base)+'&lang='+lg+(avatar3dMuted?'&audio=off':'')+(avatar3dModel?'&avatar='+encodeURIComponent(avatar3dModel):'')+bust;
     DS_PIN['metahuman']={kind:'web',name:'DigitalAvatar.ai',src:url};
   } else {
     try{ delete DS_PIN['metahuman']; }catch(_){ DS_PIN['metahuman']=null; }
@@ -21204,7 +21211,7 @@ function avatar3dAskLoc(){
   return (loc==='xtanco-generic'&&avatar3dSector()!=='estanco')?'':loc;
 }
 function avatar3dBrand(){ try{ return String(sessionStorage.getItem('mb:marca')||'').replace(/[^a-z0-9_-]/gi,'').slice(0,60); }catch(_){ return ''; } }
-function avatar3dTier(url){ const u=String(url||''); return /metahuman\.html/.test(u)?'best':/best\.html/.test(u)?'better':/better\.html/.test(u)?'good':''; }
+function avatar3dTier(url){ const u=String(url||''); return /metahuman\.html/.test(u)?'best':/best\.html/.test(u)?'better':/(nube|better)\.html/.test(u)?'good':''; }
 // Query de contexto (loc, sector, marca, nivel) que entiende digitalavatar.ai/assets/da-context.js.
 function avatar3dContextQS(url){
   const loc=avatar3dAskLoc(),brand=avatar3dBrand(),tier=avatar3dTier(url);
@@ -21220,7 +21227,9 @@ function avatar3dLang(){ return String(document.documentElement.lang||'').toLowe
 try{ Object.defineProperty(window,'AdmiraAvatarContext',{configurable:true,get(){ const loc=avatar3dAskLoc(),tier=avatar3dVisualLevel(),c={sector:avatar3dSector(),lang:avatar3dLang()}; if(loc) c.loc=loc; if(tier) c.tier=tier; return c; }}); }catch(_){}
 // Si cambia la calidad o el idioma con el panel abierto, la cara se actualiza
 // (cambio de nivel = otra cara; idioma = chips y respuestas en el idioma nuevo).
-(function(){ let last=''; setInterval(function(){ const tier=avatar3dVisualLevel(),key=tier+'|'+avatar3dLang(); if(key===last) return; const first=!last; last=key; if(first) return; try{ window.AdmiraAvatar&&typeof window.AdmiraAvatar.setContext==='function'&&window.AdmiraAvatar.setContext({tier:tier||null,lang:avatar3dLang()}); }catch(_){} },1000); })();
+(function(){ let last=''; setInterval(function(){ const tier=avatar3dVisualLevel(),key=tier+'|'+avatar3dLang(); if(key===last) return; const first=!last; last=key; if(first) return; try{ window.AdmiraAvatar&&typeof window.AdmiraAvatar.setContext==='function'&&window.AdmiraAvatar.setContext({tier:tier||null,lang:avatar3dLang()}); }catch(_){}
+  // Tótem encendido con el avatar de digitalavatar.ai: si el nivel cambia de cara (Good = nube ↔ chica), se remonta.
+  try{ const pin=(typeof DS_PIN==='object'&&DS_PIN)?DS_PIN['metahuman']:null; if(pin&&pin.kind==='web'&&/digitalavatar\.ai\/(nube|best)\.html/.test(pin.src||'')&&String(pin.src).indexOf(avatar3dTotemUrl())!==0) setAvatar3dTotem(true); }catch(_){} },1000); })();
 function playAvatar3dVoice(b64,mime){
   if(!b64) return;
   try{ if(window.__avatar3dAudio){ window.__avatar3dAudio.pause(); } }catch(e){}
@@ -21266,7 +21275,7 @@ function mountedAvatarFrames(){
   const out=[];
   ['totemAvatar','wallAvatar'].forEach(function(id){
     const el=document.getElementById(id);
-    if(el && el.style.display!=='none' && el.contentWindow && (el.src||'').indexOf('best.html')>=0) out.push(el);
+    if(el && el.style.display!=='none' && el.contentWindow && /(best|nube)\.html/.test(el.src||'')) out.push(el);
   });
   return out;
 }
@@ -21287,7 +21296,8 @@ function wallAvatarUrl(){
   const loc=avatar3dLoc();
   const lg=(typeof lang!=='undefined'&&lang==='en')?'en':'es';
   const bust=(typeof window!=='undefined'&&window.XTANCO_APP&&window.XTANCO_APP.build)?('&v='+window.XTANCO_APP.build):'';
-  return AVATAR3D.totemUrl+(AVATAR3D.totemUrl.indexOf('?')>=0?'&':'?')+'embed=1&'+avatar3dContextQS(AVATAR3D.totemUrl)+'&lang='+lg+(avatar3dMuted?'&audio=off':'')+(avatar3dModel?'&avatar='+encodeURIComponent(avatar3dModel):'')+bust;
+  const base=avatar3dTotemUrl();
+  return base+(base.indexOf('?')>=0?'&':'?')+'embed=1&'+avatar3dContextQS(base)+'&lang='+lg+(avatar3dMuted?'&audio=off':'')+(avatar3dModel?'&avatar='+encodeURIComponent(avatar3dModel):'')+bust;
 }
 function positionWallAvatar(){
   const el=document.getElementById('wallAvatar'); if(!el) return;
@@ -21311,7 +21321,7 @@ function positionWallAvatar(){
     el.style.transformOrigin='0 0';
     el.style.transform='matrix('+(ux/w0)+','+(uy/w0)+','+(vx/h0)+','+(vy/h0)+','+tl.x+','+tl.y+')';
     // monta una vez; remonta si cambia el modo (web ↔ metahuman)
-    const wantMark=avatar3dWallSrc?'mh':'web';
+    const wantMark=avatar3dWallSrc?'mh':'web:'+avatar3dTotemUrl();   // Good = nube, resto = chica
     if(el.dataset.avmark!==wantMark || !el.src || el.src==='about:blank'){ el.src=wallAvatarUrl(); el.dataset.avmark=wantMark; }
     el.style.display='block';
     // cache del centro del borde inferior de la pared para el subtítulo de Neo
@@ -36366,7 +36376,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=starbucks-kiosk-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=nube-good-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

@@ -6,7 +6,7 @@ import {wallAvatarUrl,wallAvatarLevel,AVATAR_WALL_CONTEXT,AVATAR_WALL_RENDERERS}
 // Contexto de cliente del avatar en la pared Alsea (06-10-2026): habla de café en cada nivel.
 test('wall avatar URL carries Starbucks Alsea context and the avatar tier',()=>{
   const good=new URL(wallAvatarUrl('good',{...AVATAR_WALL_CONTEXT,lang:'es'}));
-  assert.equal(good.origin+good.pathname,'https://digitalavatar.ai/better.html');
+  assert.equal(good.origin+good.pathname,'https://digitalavatar.ai/nube.html');
   assert.equal(good.searchParams.get('dock'),'1');
   assert.equal(good.searchParams.get('loc'),'alsea-sbux-021');
   assert.equal(good.searchParams.get('sector'),'cafeteria');
@@ -29,8 +29,12 @@ test('twin avatar takes the sector from the project, not xtanco-generic',()=>{
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert.match(html,/AVATAR3D_SECTOR_BY_VERTICAL=\{xtanco:'estanco',cafeteria:'cafeteria'/);
   assert.match(html,/project==='starbucks'\|\|project==='cafebreria'\) return 'cafeteria'/);
-  assert.match(html,/\+avatar3dContextQS\(AVATAR3D\.totemUrl\)\+'&lang='/);
-  assert.match(html,/'embed=1&'\+avatar3dContextQS\(AVATAR3D\.totemUrl\)/);
+  assert.match(html,/\+avatar3dContextQS\(base\)\+'&lang='/);
+  assert.match(html,/'embed=1&'\+avatar3dContextQS\(base\)/);
+  // Good = Admirito (nube.html) en el tótem y la pared larga; una totemUrl configurada manda.
+  assert.match(html,/AVATAR3D_TOTEM_GOOD='https:\/\/digitalavatar\.ai\/nube\.html\?kiosk=1'/);
+  assert.match(html,/return \(!AVATAR3D\.totemFixed&&lv==='good'\)\?AVATAR3D_TOTEM_GOOD:AVATAR3D\.totemUrl/);
+  assert.match(html,/\/\(nube\|better\)\\\.html\/\.test\(u\)\?'good'/);
   assert.match(html,/sector:avatar3dSector\(\),brand:avatar3dBrand\(\)\|\|undefined,tier:'better'/);
   assert.match(html,/defineProperty\(window,'AdmiraAvatarContext'/);
   const panorama=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');

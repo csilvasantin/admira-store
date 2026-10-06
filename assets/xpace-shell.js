@@ -503,7 +503,7 @@
   // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
   // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
   // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
-  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-2';
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-nube-1';
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
@@ -935,8 +935,8 @@
     });
     registerVerb({
       id: 'avatar',
-      es: '/avatar good abre el calvo (cara 3D, 52 blendshapes) · /avatar better abre la chica (Ready Player Me, gafas) · /avatar best abre a Neo (MetaHuman; si el host de render está apagado, cae a la chica). /avatar sin nivel dice el estado. /avatar digital on lo muestra y /avatar digital off lo oculta; /avatarON y /avatarOFF siguen disponibles. /avatar reset vuelve al interruptor del proyecto.',
-      en: '/avatar good opens the bald 3D face (facecap, 52 blendshapes) · /avatar better opens the web girl (Ready Player Me, glasses) · /avatar best opens Neo (MetaHuman; if the render host is off, the girl takes over). /avatar alone shows the status. /avatar digital on shows it and /avatar digital off hides it; /avatarON and /avatarOFF remain available. /avatar reset follows the project switch.',
+      es: '/avatar good abre a Admirito, la nube animada (2D ligera: mueve los labios y hace cosas si nadie la toca; en el gemelo, con calidad Good, también sale en el tótem) · /avatar better abre la chica (Ready Player Me, gafas) · /avatar best abre a Neo (MetaHuman; si el host de render está apagado, cae a la chica). /avatar sin nivel dice el estado. /avatar digital on lo muestra y /avatar digital off lo oculta; /avatarON y /avatarOFF siguen disponibles. /avatar reset vuelve al interruptor del proyecto.',
+      en: '/avatar good opens Admirito, the animated cloud (light 2D: moves its lips and does things when idle; in the twin at Good quality it is also on the totem) · /avatar better opens the web girl (Ready Player Me, glasses) · /avatar best opens Neo (MetaHuman; if the render host is off, the girl takes over). /avatar alone shows the status. /avatar digital on shows it and /avatar digital off hides it; /avatarON and /avatarOFF remain available. /avatar reset follows the project switch.',
       run: (args) => shared.avatar('/avatar' + (args ? ' ' + args : '')),
     });
     registerVerb({

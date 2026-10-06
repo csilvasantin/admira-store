@@ -21,7 +21,7 @@ EN: In Starbucks Alsea Matrix, the brick-wall screen starts in kiosk mode with a
 ## Contrato compartido / Shared contract
 
 - Module: `admira-xp/scripts/matrix-wall-avatar.mjs`; stable local ID `starbucks-avatar-wall`. Four spherical corners in `STARBUCKS_AVATAR_WALL` refer to capture `alsea-starbucks-360`, independent of playlist and mapping seeds. Projection reuses `quadTransform`; perspective follows camera pan, zoom and resize. Hidden behind the camera or during screen calibration.
-- Existing shared renderer URLs: Good `https://digitalavatar.ai/better.html?dock=1`, Better `https://digitalavatar.ai/best.html?dock=1&kiosk=0`, Best `https://digitalavatar.ai/metahuman.html?dock=1`. Read-only existing `admira-avatar:nivel` preference; no writes to the central on/off override. Unknown level falls back to Good. Renderer/model/brain availability belongs to DigitalAvatar.ai; this placement does not certify new Woz models or a new brain integration.
+- Existing shared renderer URLs: Good `https://digitalavatar.ai/nube.html?dock=1` (Admirito, la nube animada), Better `https://digitalavatar.ai/best.html?dock=1&kiosk=0`, Best `https://digitalavatar.ai/metahuman.html?dock=1`. Read-only existing `admira-avatar:nivel` preference; no writes to the central on/off override. Unknown level falls back to Good. Renderer/model/brain availability belongs to DigitalAvatar.ai; this placement does not certify new Woz models or a new brain integration.
 - The wall is a scene preview, separate from the floating assistant: existing `/avatar digital on|off`, `/avatarDigital`, `/avatar good|better|best`, mascot, and totem commands remain unchanged. Single wall iframe; modal expansion changes the native dialog’s top-layer status without moving or duplicating the iframe. Closing loads the local kiosk, cancelling conversation playback. Matrix disposal removes it and its level subscription.
 - `expertQuickIcons` lists category `creation` in the previous `livecam` position, exactly once. `advQuickIcons` retains LiveCam. Creation forms, category selection, IDs, inputs and callbacks are retained; no new provider API.
 - Stable demo: https://www.admira.store/admira-xp/?loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&quality=matrix&lang=es (use `lang=en` for English).
@@ -46,7 +46,7 @@ EN: When Talk to the avatar is pressed, Matrix (64-bit) opens the wall avatar at
 
 - `wallAvatarLevel({chosen,tier,stored})` y `AVATAR_WALL_CHOICE_KEY` (`admira-avatar:nivel-elegido`, sessionStorage, lo escribe el cargador común) en `matrix-wall-avatar.mjs`; `mountWallAvatar(…,{tier:'best'})` devuelve `focus()`, `enlarge()`, `expanded` y `level`.
 - `window.XpaceMatrixOptions.focusAvatar({talk})` (gira la cámara; `talk:true` además lo amplía) y `avatarState()`; el botón de controles `data-map="avatar"` usa `focusAvatar()`.
-- Escucha el evento cancelable `admira-avatar:open` del cargador (`avatar.js?v=20261006-avatar-ctx-2`) y lo cancela mientras Matrix está activo.
+- Escucha el evento cancelable `admira-avatar:open` del cargador (`avatar.js?v=20261006-avatar-nube-1`) y lo cancela mientras Matrix está activo.
 - Sin herramienta MCP nueva / No new MCP tool. Test: `admira-xp/scripts/matrix-wall-avatar.test.mjs`.
 
 ## Kiosko local / Local kiosk · 06-10-2026
