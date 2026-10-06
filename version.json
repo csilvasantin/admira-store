@@ -1,16 +1,16 @@
 {
-  "version": "v.06.10.2026.r4.07:47",
-  "deployedAt": "2026-10-06T05:48:28Z",
+  "version": "v.06.10.2026.r5.08:18",
+  "deployedAt": "2026-10-06T06:18:28Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "8af27aab5957d39c35dc3f77e7d012c5c8acfe9c",
-  "gitShort": "8af27aa",
-  "gitFull": "8af27aab5957d39c35dc3f77e7d012c5c8acfe9c",
+  "git": "4c15bab95bd16ce69960344f156b34799c1f8807",
+  "gitShort": "4c15bab",
+  "gitFull": "4c15bab95bd16ce69960344f156b34799c1f8807",
   "dirty": false,
   "novedades": [
-    "La versión se muestra al pie de Opciones y se oculta al plegarlo",
-    "Sólo una novedad sin reconocer permite el primer aviso exterior",
-    "Carga compatible con los distintos sellos nativos de la suite"
+    "Opciones abre con el ancho mínimo para leer sus etiquetas",
+    "Arrastra el borde para dejar sólo iconos con nombre al pasar el cursor",
+    "Las herramientas recuperan espacio para sus controles y vuelven al ancho elegido"
   ]
 }
