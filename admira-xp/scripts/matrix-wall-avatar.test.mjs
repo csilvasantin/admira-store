@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {wallAvatarUrl,AVATAR_WALL_CONTEXT,AVATAR_WALL_RENDERERS} from './matrix-wall-avatar.mjs';
+import {wallAvatarUrl,wallAvatarLevel,AVATAR_WALL_CONTEXT,AVATAR_WALL_RENDERERS} from './matrix-wall-avatar.mjs';
 
 // Contexto de cliente del avatar en la pared Alsea (06-10-2026): habla de café en cada nivel.
 test('wall avatar URL carries Starbucks Alsea context and the avatar tier',()=>{
@@ -35,4 +35,19 @@ test('twin avatar takes the sector from the project, not xtanco-generic',()=>{
   assert.match(html,/defineProperty\(window,'AdmiraAvatarContext'/);
   const panorama=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
   assert.match(panorama,/mountWallAvatar\(surface,\{t,onChange:[^\n]*live:\(\)=>/,'the wall avatar receives the now-playing track');
+});
+
+// Matrix 64 bits = best (06-10-2026): la pared no cae a good por un nivel guardado antiguo.
+test('wall avatar level: tab choice > page tier (Matrix → best) > stored > good',()=>{
+  assert.equal(wallAvatarLevel({tier:'best',stored:'good'}),'best');
+  assert.equal(wallAvatarLevel({chosen:'better',tier:'best',stored:'good'}),'better');
+  assert.equal(wallAvatarLevel({tier:'',stored:'better'}),'better');
+  assert.equal(wallAvatarLevel({chosen:'x',tier:'matrix'}),'good');
+  assert.equal(wallAvatarLevel(),'good');
+  const src=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
+  assert.match(src,/addEventListener\('admira-avatar:open',e=>\{if\(disposed\)return;e\.preventDefault\(\);focusAvatar\(\);\}/);
+  assert.match(src,/case 'avatar':focusAvatar\(\);break;/);
+  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(html,/AVATAR3D_LEVEL_BY_VISUAL=\{good:'good',better:'better',best:'best',matrix:'best'\}/);
+  assert.match(html,/c=\{sector:avatar3dSector\(\),lang:avatar3dLang\(\)\}/);
 });

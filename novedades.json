@@ -1,6 +1,23 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
-  "v.06.10.2026.r8.15:44": [
+  "v.06.10.2026.r22.21:13": [
+    "Matrix: la burbuja del avatar lleva a la pared de ladrillo y el avatar se ve allí (ya no abre un panel lateral aparte)",
+    "Calidad → avatar: Good = good, Better = better, Best y Matrix = best (Matrix ya no cae a good)",
+    "Chips y respuestas del avatar en el idioma de la página, también si cambia con el panel abierto",
+    "Si Neo no está emitiendo se ve el avatar web en lugar de una pantalla negra"
+  ],
+  "v.06.10.2026.r17.20:38": [
+    "El relevo /avatar-ask manda la pregunta entera al cerebro y la ficha aparte: ya no se pierde la pregunta",
+    "Respuestas del relevo sólo en texto, sin gastar voz",
+    "Se mantiene la ficha de respaldo si el cerebro no contesta"
+  ],
+  "v.06.10.2026.r16.20:35": [
+    "El avatar digital habla del negocio de cada local en good, better y best: café en Starbucks y Cafebrería, estanco en Xtanco",
+    "La pared Matrix de Starbucks Alsea abre el avatar con su local, sector, idioma y marca; en best sabe qué suena en el hilo musical",
+    "En estancos sólo informa: sin recomendar ni promocionar tabaco o vapeo (Ley 28/2005) en ningún nivel",
+    "Ayuda, tutorial, CLI y MCP describen el contexto del cliente en español e inglés"
+  ],
+  "v.06.10.2026.r9.15:46": [
     "Lo que creas en Experto se previsualiza en PREVIOS, a la derecha del todo, el último arriba",
     "Imagen, música, locución y vídeo con reproductor, Lanzar y Ver en Stock",
     "Nuevo Crear locución: se emite tres veces sólo al pulsar Emitir",
@@ -20,65 +37,6 @@
     "Acceso de solo lectura para grabar la demo 365, sin Google",
     "El enlace caduca a las 8 horas y vale una sola vez",
     "Una escritura con esa clave responde 403 y se revoca al momento"
-  ],
-  "v.06.10.2026.r9.19:10": [
-    "Experto legible con cualquier marca; contraste limitado al menú inferior",
-    "Matrix sin rumor, cafetera ni lluvia del simulador oculto",
-    "PREVIOS persistentes por Xpacio: imagen, vídeo, música y locución; sin reloj",
-    "Restaurados Opciones compactas y arrastre centrado; espejo protegido"
-  ],
-  "v.06.10.2026.r10.19:13": [
-    "Experto legible con cualquier marca; contraste limitado al menú inferior",
-    "Matrix sin rumor, cafetera ni lluvia del simulador oculto",
-    "PREVIOS persistentes por Xpacio: imagen, vídeo, música y locución; sin reloj",
-    "Restaurados Opciones compactas y arrastre centrado; espejo protegido"
-  ],
-  "v.06.10.2026.r11.19:33": [
-    "Barra de creación por fases para imagen, vídeo, locución y entregas musicales",
-    "Doble clic abre un previo grande en el centro; Cerrar o Escape detiene el visor",
-    "Arrastre centrado y PREVIOS persistentes conservados",
-    "Contraste de Experto y silencio ambiental de Matrix conservados"
-  ],
-  "v.06.10.2026.r12.19:57": [
-    "Avatar digital anclado en la pared de Starbucks, con vista ampliada y Cerrar",
-    "Create Media sustituye LiveCam en Experto y deja de repetirse abajo",
-    "LiveCam sigue disponible en Avanzado y por comando",
-    "Se conservan contraste, silencio ambiental, barras y previos de contenido"
-  ],
-  "v.06.10.2026.r13.20:17": [
-    "PREVIOS muestra sólo la última creación multimedia a máximo tamaño",
-    "Lanzar a pantalla y Ver en Stock quedan debajo del contenido",
-    "Música y locuciones conservan sus controles; el historial guardado se mantiene",
-    "Arrastre centrado, doble clic y Create Media se conservan"
-  ],
-  "v.06.10.2026.r14.20:32": [
-    "El CLI conserva /avatar digital good, better y best al escribir",
-    "Chica: Sara Martín en castellano o Cassidy en inglés; chico: David Martín o James",
-    "Se reutiliza la última locución guardada en Stock, sin generar al pulsar",
-    "Segundo clic detiene; se conservan PREVIOS, contraste y arrastre centrado"
-  ],
-  "v.06.10.2026.r15.20:36": [
-    "El CLI conserva /avatar digital good, better y best al escribir",
-    "Chica: Sara Martín en castellano o Cassidy en inglés; chico: David Martín o James",
-    "Locuciones antiguas recuperadas desde el servidor y las nuevas por voz e idioma",
-    "Segundo clic detiene; se conservan PREVIOS, contraste y arrastre centrado"
-  ],
-  "v.06.10.2026.r17.20:38": [
-    "El relevo /avatar-ask manda la pregunta entera al cerebro y la ficha aparte: ya no se pierde la pregunta",
-    "Respuestas del relevo sólo en texto, sin gastar voz",
-    "Se mantiene la ficha de respaldo si el cerebro no contesta"
-  ],
-  "v.06.10.2026.r16.20:35": [
-    "El avatar digital habla del negocio de cada local en good, better y best: café en Starbucks y Cafebrería, estanco en Xtanco",
-    "La pared Matrix de Starbucks Alsea abre el avatar con su local, sector, idioma y marca; en best sabe qué suena en el hilo musical",
-    "En estancos sólo informa: sin recomendar ni promocionar tabaco o vapeo (Ley 28/2005) en ningún nivel",
-    "Ayuda, tutorial, CLI y MCP describen el contexto del cliente en español e inglés"
-  ],
-  "v.06.10.2026.r9.15:46": [
-    "Lo que creas en Experto se previsualiza en PREVIOS, a la derecha del todo, el último arriba",
-    "Imagen, música, locución y vídeo con reproductor, Lanzar y Ver en Stock",
-    "Nuevo Crear locución: se emite tres veces sólo al pulsar Emitir",
-    "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
   ],
   "v.06.10.2026.r10.19:10": [
     "Experto legible con cualquier marca; contraste limitado al menú inferior",
@@ -134,25 +92,19 @@
     "Recuperación de locuciones desde el servidor; segundo clic detiene",
     "El avatar conserva el contexto del local; ayuda y MCP en español e inglés"
   ],
-  "v.06.10.2026.r15.20:40": [
+  "v.06.10.2026.r19.20:43": [
     "El CLI conserva /avatar digital good, better y best al escribir",
     "Chica: Sara Martín o Cassidy; chico: David Martín o James, según idioma",
     "Recuperación de locuciones desde el servidor; segundo clic detiene",
     "El avatar conserva el contexto del local; ayuda y MCP en español e inglés"
   ],
-  "v.06.10.2026.r16.20:43": [
-    "El CLI conserva /avatar digital good, better y best al escribir",
-    "Chica: Sara Martín o Cassidy; chico: David Martín o James, según idioma",
-    "Recuperación de locuciones desde el servidor; segundo clic detiene",
-    "El avatar conserva el contexto del local; ayuda y MCP en español e inglés"
-  ],
-  "v.06.10.2026.r17.21:01": [
+  "v.06.10.2026.r20.21:01": [
     "Matrix oculta las capas de Good y Signage apunta a los ocho dispositivos Matrix",
     "Previos independientes por pantalla y última creación grande con acciones debajo",
     "/reset restaura el Signage básico y las playlists base Matrix sin borrar Stock ni historial",
     "Fuente, espejo y ayuda MCP bilingüe con contrato de conservación actualizado"
   ],
-  "v.06.10.2026.r18.21:13": [
+  "v.06.10.2026.r21.21:13": [
     "Matrix oculta las capas de Good y Signage apunta a los ocho dispositivos Matrix",
     "Previos independientes por pantalla y última creación grande con acciones debajo",
     "/reset restaura el Signage básico y las playlists base Matrix sin borrar Stock ni historial",

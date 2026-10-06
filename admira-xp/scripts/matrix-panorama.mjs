@@ -1,5 +1,5 @@
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=person-voice-1';
-import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=wall-avatar-ctx-1';
+import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=wall-avatar-ctx-2';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
@@ -106,8 +106,16 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function optionGroups(channel){if(channel==='music')return [{id:'music',title:t('Hilo musical · Starbucks','Background music · Starbucks')}];const config=deviceEditor.config,all={...catalog(),...config.playlists};return Object.entries(all).filter(([pid])=>DEVICE_IDS.some(id=>assignedPlaylist(config,id)===pid)).map(([id,p])=>({id,title:p.title+' · '+DEVICE_IDS.filter(device=>assignedPlaylist(config,device)===id).map(device=>screenNumber(device)||(device===STARBUCKS_IPAD_ID?'iPad':'TPV')).join(', ')}));}
  const signagePreviews=new Map();
  const playlistValue=pid=>deviceEditor.config.playlists[pid]||catalog()[pid];
+ // Avatar digital en Matrix (06-10-2026): vive en la pared de ladrillo junto a la salida.
+ // focusAvatar() gira la cámara hacia él; con {talk:true} además lo amplía para hablar.
+ function focusAvatar({talk=false}={}){if(disposed)return false;yaw=-123.8;pitch=-18;fov=65;renderKey='';if(talk)wallAvatar.enlarge();else wallAvatar.focus();return true;}
+ // La burbuja y /avatar digital on del cargador común no abren un segundo avatar en Matrix:
+ // llevan a la pared (el panel lateral se queda cerrado).
+ window.addEventListener('admira-avatar:open',e=>{if(disposed)return;e.preventDefault();focusAvatar();},options);
  window.XpaceMatrixOptions={
   isActive:()=>!disposed,
+  focusAvatar:o=>focusAvatar(o),
+  avatarState:()=>({level:wallAvatar.level,expanded:wallAvatar.expanded}),
   devices:()=>DEVICE_IDS.filter(id=>nodes.has(id)).map(id=>({id,label:playerName(model.players.find(p=>p.id===id)||{id,name:id})})),
   screenState(id){const active=runtime.nowPlaying([id])[0];const track=active?.preview?signagePreviews.get(id):playlistValue(active?.playlistId)?.tracks.find(t=>(t.id||t.stockId)===active?.trackId);return {...active,title:track?.title||''};},
   screenPreview:id=>runtime.nowPlaying([id])[0]?.preview?signagePreviews.get(id)||null:null,
@@ -195,7 +203,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
    case 'tpv':{if(!model.players.some(p=>p.id===tpvId)){const next=withStarbucksTPV(model);if(next.players.length===model.players.length){message(t('Máximo 24 pantallas','Maximum 24 screens'));break;}model=next;changed();renderList();}yaw=STARBUCKS_TPV_VIEW.yaw;pitch=STARBUCKS_TPV_VIEW.pitch;fov=STARBUCKS_TPV_VIEW.fov;if(!tpvPlayback)startTPV();break;}
    case 'tpv-playlist':if(tpvPlayback?.state().playing)tpvPlayback.pause();else if(tpvPlayback)void tpvPlayback.play();else startTPV();break;
    case 'announcement':yaw=ANNOUNCEMENT_SPEAKER.yaw;pitch=ANNOUNCEMENT_SPEAKER.pitch;fov=45;break;
-   case 'avatar':yaw=-123.8;pitch=-18;fov=65;break;
+   case 'avatar':focusAvatar();break;
    case 'speaker':yaw=STARBUCKS_SPEAKER.yaw;pitch=STARBUCKS_SPEAKER.pitch;fov=75;break;
    case 'add':if(model.players.length>=24){message(t('Máximo 24 pantallas','Maximum 24 screens'));break;}cancel();marking=[];surface.classList.add('is-mapping');root.querySelector('[data-map=cancel]').hidden=false;message(t('Marca esquina 1: arriba izquierda','Mark corner 1: top left'));break;
    case 'recalibrate':if(selected){cancel();recalibrating=selected;marking=[];surface.classList.add('is-mapping');root.querySelector('[data-map=cancel]').hidden=false;message(t('Marca esquina 1: arriba izquierda','Mark corner 1: top left'));}break;

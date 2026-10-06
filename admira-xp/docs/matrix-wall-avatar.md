@@ -37,3 +37,14 @@ Context (06-10-2026): the wall opens the avatar with loc=alsea-sbux-021, sector=
 - `wallAvatarUrl(level, context)` y `AVATAR_WALL_CONTEXT` en `matrix-wall-avatar.mjs`; `mountWallAvatar(surface,{t,onChange,context,live})`. `context` (objeto o función) se suma a loc/sector/idioma/marca por defecto; `live` devuelve el texto en vivo que se envía sólo a `https://digitalavatar.ai`.
 - El sondeo de 1 s recarga el iframe sólo si cambia la URL (nivel, idioma o marca); si no, reenvía `live` cuando cambia.
 - Test: `admira-xp/scripts/matrix-wall-avatar.test.mjs`.
+
+## Nivel, idioma y burbuja en Matrix / Level, language and bubble in Matrix (06-10-2026)
+
+ES: Matrix (64 bits) abre el avatar de la pared en nivel best (Neo); si el MetaHuman no está emitiendo, digitalavatar.ai enseña el avatar web («MODO WEB») en lugar de una pantalla negra. Orden del nivel: `/avatar good|better|best` elegido en esta pestaña > nivel que pide la página (Matrix → best) > último nivel guardado > good. La burbuja del avatar digital y `/avatar digital on` no abren un segundo avatar en el panel lateral: giran la cámara hacia la pared de ladrillo y resaltan «Avatar digital ↗» (pulsa para ampliarlo y hablar). El idioma de la página (`?lang=`) llega al avatar con sus chips.
+
+EN: Matrix (64-bit) opens the wall avatar at the best level (Neo); if the MetaHuman is not streaming, digitalavatar.ai shows the web avatar ("WEB MODE") instead of a black screen. Level order: `/avatar good|better|best` chosen in this tab > level the page asks for (Matrix → best) > last stored level > good. The digital-avatar bubble and `/avatar digital on` do not open a second avatar in the side panel: they turn the camera to the brick wall and highlight "Digital avatar ↗" (click it to enlarge and talk). The page language (`?lang=`) reaches the avatar with its chips.
+
+- `wallAvatarLevel({chosen,tier,stored})` y `AVATAR_WALL_CHOICE_KEY` (`admira-avatar:nivel-elegido`, sessionStorage, lo escribe el cargador común) en `matrix-wall-avatar.mjs`; `mountWallAvatar(…,{tier:'best'})` devuelve `focus()`, `enlarge()`, `expanded` y `level`.
+- `window.XpaceMatrixOptions.focusAvatar({talk})` (gira la cámara; `talk:true` además lo amplía) y `avatarState()`; el botón de controles `data-map="avatar"` usa `focusAvatar()`.
+- Escucha el evento cancelable `admira-avatar:open` del cargador (`avatar.js?v=20261006-avatar-ctx-2`) y lo cancela mientras Matrix está activo.
+- Sin herramienta MCP nueva / No new MCP tool. Test: `admira-xp/scripts/matrix-wall-avatar.test.mjs`.

@@ -30,14 +30,14 @@ El ⌘ Experto lleva la piel común de la suite (`experto.css/js` de admiranext.
 
 - Estas órdenes se quedan en el avatar. No se guardan en `xpaceos_expert_pending_v1` y no abren el gemelo.
 - `good`, `better` y `best` sueltos siguen siendo las vistas del gemelo y sí viajan a `/admira-xp/`.
-- Cargador: `https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1`.
+- Cargador: `https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-2`.
 - Sello del shell en las páginas: `/assets/xpace-shell.js?v=20261005-avatar-controls-1` (y el CSS con el mismo sello).
 - El estado se recuerda en este sitio, en el navegador (`admira-avatar:override`; `da-avatar:<host>` sólo en el fallback / fallback only). No hay claves en la página.
 - La ficha que responde el cerebro está en `functions/avatar-ask.js`. Si el cerebro no contesta, se usa esa ficha.
 - `/avatarDigital` sigue en el registro del shell (FLT-101350, Woz). Esta entrega no lo sustituye ni anuncia una publicación distinta de la suya.
 - Pendiente fuera de este repo: el host de render de Neo. Si está apagado, best cae a la chica. No hay herramienta MCP nueva.
 
-These commands stay with the avatar. They are not stored in `xpaceos_expert_pending_v1` and they do not open the twin. Bare `good`, `better` and `best` remain twin views and still travel to `/admira-xp/`. Loader: `https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1`. Shell cache token on pages: `/assets/xpace-shell.js?v=20261005-avatar-controls-1` (CSS uses the same token). State is remembered on this site, in the browser. There are no keys in the page. The fallback sheet is `functions/avatar-ask.js`. `/avatarDigital` stays in the shell registry (FLT-101350, Woz); this delivery does not replace it. Pending outside this repo: Neo’s render host. If it is off, best falls back to the girl. No new MCP tool.
+These commands stay with the avatar. They are not stored in `xpaceos_expert_pending_v1` and they do not open the twin. Bare `good`, `better` and `best` remain twin views and still travel to `/admira-xp/`. Loader: `https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-2`. Shell cache token on pages: `/assets/xpace-shell.js?v=20261005-avatar-controls-1` (CSS uses the same token). State is remembered on this site, in the browser. There are no keys in the page. The fallback sheet is `functions/avatar-ask.js`. `/avatarDigital` stays in the shell registry (FLT-101350, Woz); this delivery does not replace it. Pending outside this repo: Neo’s render host. If it is off, best falls back to the girl. No new MCP tool.
 
 
 Control local y tutorial actualizado ES/EN / Updated local controls and ES/EN tutorial: [avatar-controls](avatar-controls.md). `/avatar digital on` / `/avatar digital off` también funcionan en el gemelo nativo / also work in the native twin. `/avatarDigital` sin argumentos alterna la mascota del cargador central / without arguments toggles the central loader mascot.
@@ -51,3 +51,9 @@ Client context (06-10-2026): the avatar talks about the venue's business at all 
 - Catálogo de sectores / Sector catalogue: https://www.admiranext.com/avatar/sectores.json · perfil / profile: `GET https://brain.digitalavatar.ai/metahuman/profile?loc=&sector=&brand=&tier=&lang=`.
 - Gemelo / Twin: `avatar3dSector()`, `avatar3dAskLoc()`, `avatar3dContextQS()` y `window.AdmiraAvatarContext` en `admira-xp/index.html`; `avatar3dLoc()` no cambia para métricas, campañas y día / unchanged for metrics, campaigns and day data.
 - Sin herramienta MCP nueva / No new MCP tool.
+
+## Nivel según la calidad del gemelo / Level from the twin's quality (06-10-2026)
+
+ES: En el gemelo, el avatar abre con el nivel de la calidad visual: Good 8 bits = good, Better 16 bits = better, Best 32 bits y Matrix 64 bits = best (Matrix nunca cae a good). `/avatar good|better|best` escrito en la pestaña manda sobre eso. `window.AdmiraAvatarContext` lleva `tier` y `lang` (el de `<html lang>`, que sigue a `?lang=`); si cambian con el panel abierto, el gemelo llama a `AdmiraAvatar.setContext({tier, lang})` y la cara cambia de nivel o de idioma (chips incluidos). En Matrix la burbuja lleva a la pared de ladrillo en lugar de abrir el panel lateral ([matrix-wall-avatar](matrix-wall-avatar.md)).
+
+EN: In the twin, the avatar opens at the level of the visual quality: Good 8-bit = good, Better 16-bit = better, Best 32-bit and Matrix 64-bit = best (Matrix never falls back to good). `/avatar good|better|best` typed in the tab overrides it. `window.AdmiraAvatarContext` carries `tier` and `lang` (from `<html lang>`, which follows `?lang=`); if they change with the panel open, the twin calls `AdmiraAvatar.setContext({tier, lang})` and the face switches level or language (chips included). In Matrix the bubble goes to the brick wall instead of opening the side panel ([matrix-wall-avatar](matrix-wall-avatar.md)).

@@ -21,7 +21,15 @@ function defaultContext(win){
  return {...AVATAR_WALL_CONTEXT,lang,...(brand?{brand}:{})};
 }
 
-export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null,live=null}={}){
+// Level on the wall (06-10-2026): the user's /avatar <level> in this tab (sessionStorage,
+// written by the shared loader) > the level the page asks for (Matrix 64 bits = best) >
+// the last stored level > good.
+export const AVATAR_WALL_CHOICE_KEY='admira-avatar:nivel-elegido';
+export function wallAvatarLevel({chosen='',tier='',stored=''}={}){
+ for(const value of [chosen,tier,stored])if(AVATAR_WALL_RENDERERS[value])return value;
+ return 'good';
+}
+export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null,live=null,tier='best'}={}){
  const doc=surface.ownerDocument,win=doc.defaultView;
  const wall=doc.createElement('dialog');wall.id=STARBUCKS_AVATAR_WALL.id;wall.className='matrix-wall-avatar';wall.setAttribute('aria-label',t('Avatar digital · pared Starbucks','Digital avatar · Starbucks wall'));
  const frame=doc.createElement('iframe');frame.title=t('Avatar digital','Digital avatar');frame.allow='microphone; autoplay';frame.referrerPolicy='no-referrer-when-downgrade';frame.inert=true;
@@ -33,7 +41,7 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  let sentLive='';
  function postLive(force){let value='';try{value=String((typeof live==='function'?live():'')||'').slice(0,600);}catch{}if(!force&&value===sentLive)return;sentLive=value;try{frame.contentWindow?.postMessage({type:'da-context',live:value},AVATAR_WALL_ORIGIN);}catch{}}
  frame.addEventListener('load',()=>postLive(true));
- function render(){let level='good';try{level=win.localStorage.getItem('admira-avatar:nivel')||'good';}catch{}const next=wallAvatarUrl(level,currentContext());if(next!==source){source=next;frame.src=source;}else postLive(false);}
+ function render(){let chosen='',stored='';try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||'';}catch{}try{stored=win.localStorage.getItem('admira-avatar:nivel')||'';}catch{}let wanted=tier;try{wanted=typeof tier==='function'?tier():tier;}catch{}const level=wallAvatarLevel({chosen,tier:wanted,stored});const next=wallAvatarUrl(level,currentContext());if(next!==source){source=next;frame.src=source;}else postLive(false);}
  render();
  function collapse(){if(disposed||!expanded)return;expanded=false;frame.inert=true;wall.close();wall.show();frame.src=source;releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
  function enlarge(){if(disposed||expanded)return;win.XpaceMediaExperience?.close();doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.media-ready video,.options-playlist-preview audio,.options-playlist-preview video').forEach(n=>n.pause());win.XpaceAnnouncements?.stopStock?.();expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();releaseMusic=win.XpaceMatrixOptions?.suppressMusic?.();close.focus();}
@@ -44,6 +52,8 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  // A same-tab model command updates localStorage without a storage event; the same poll
  // follows language/brand changes and pushes the now-playing track (best tier uses it).
  const levelPoll=win.setInterval(render,1000);
- return {draw(project,marking){if(expanded||disposed)return;const points=STARBUCKS_AVATAR_WALL.corners.map(project);const matrix=points.every(Boolean)&&quadTransform(points,400,900);wall.hidden=!!marking||!matrix;if(matrix)wall.style.transform='matrix3d('+matrix.join(',')+')';},
+ // focus(): the camera already looks at the wall; point keyboard focus at the talk button.
+ function focus(){if(disposed)return;expand.classList.add('is-called');expand.focus({preventScroll:true});win.setTimeout(()=>expand.classList.remove('is-called'),2400);}
+ return {focus,enlarge,get expanded(){return expanded;},get level(){return (source.match(/[?&]tier=(\w+)/)||[])[1]||'';},draw(project,marking){if(expanded||disposed)return;const points=STARBUCKS_AVATAR_WALL.corners.map(project);const matrix=points.every(Boolean)&&quadTransform(points,400,900);wall.hidden=!!marking||!matrix;if(matrix)wall.style.transform='matrix3d('+matrix.join(',')+')';},
  dispose(){if(disposed)return;disposed=true;win.clearInterval(levelPoll);releaseMusic?.();frame.removeAttribute('src');if(wall.open)wall.close();wall.remove();}};
 }

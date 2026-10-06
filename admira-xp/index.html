@@ -759,7 +759,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261006-matrix-signage-reset-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261006-avatar-wall-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1516,7 +1516,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-matrix-reset-refresh-1"></script>
+<script src="xtanco-version.js?v=20261006-avatar-wall-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -21210,9 +21210,17 @@ function avatar3dContextQS(url){
   const loc=avatar3dAskLoc(),brand=avatar3dBrand(),tier=avatar3dTier(url);
   return (loc?'loc='+encodeURIComponent(loc)+'&':'')+'sector='+encodeURIComponent(avatar3dSector())+(brand?'&brand='+encodeURIComponent(brand):'')+(tier?'&tier='+tier:'');
 }
+// Calidad visual del gemelo → nivel del avatar (06-10-2026): Good 8 bits = good,
+// Better 16 bits = better, Best 32 bits y Matrix 64 bits = best (Matrix nunca cae a good).
+const AVATAR3D_LEVEL_BY_VISUAL={good:'good',better:'better',best:'best',matrix:'best'};
+function avatar3dVisualLevel(){ let m='';try{ m=String(window.__xtancoVisualTiers&&window.__xtancoVisualTiers.mode||''); }catch(_){} return AVATAR3D_LEVEL_BY_VISUAL[m]||''; }
+function avatar3dLang(){ return String(document.documentElement.lang||'').toLowerCase().startsWith('en')?'en':'es'; }
 // El asistente flotante común (admiranext.com/assets/avatar.js) lee window.AdmiraAvatarContext
-// al abrir cada cara: aquí siempre refleja la escena actual (loc + sector).
-try{ Object.defineProperty(window,'AdmiraAvatarContext',{configurable:true,get(){ const loc=avatar3dAskLoc(),c={sector:avatar3dSector()}; if(loc) c.loc=loc; return c; }}); }catch(_){}
+// al abrir cada cara: aquí siempre refleja la escena actual (loc, sector, idioma y nivel).
+try{ Object.defineProperty(window,'AdmiraAvatarContext',{configurable:true,get(){ const loc=avatar3dAskLoc(),tier=avatar3dVisualLevel(),c={sector:avatar3dSector(),lang:avatar3dLang()}; if(loc) c.loc=loc; if(tier) c.tier=tier; return c; }}); }catch(_){}
+// Si cambia la calidad o el idioma con el panel abierto, la cara se actualiza
+// (cambio de nivel = otra cara; idioma = chips y respuestas en el idioma nuevo).
+(function(){ let last=''; setInterval(function(){ const tier=avatar3dVisualLevel(),key=tier+'|'+avatar3dLang(); if(key===last) return; const first=!last; last=key; if(first) return; try{ window.AdmiraAvatar&&typeof window.AdmiraAvatar.setContext==='function'&&window.AdmiraAvatar.setContext({tier:tier||null,lang:avatar3dLang()}); }catch(_){} },1000); })();
 function playAvatar3dVoice(b64,mime){
   if(!b64) return;
   try{ if(window.__avatar3dAudio){ window.__avatar3dAudio.pause(); } }catch(e){}
@@ -36335,7 +36343,7 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=person-voice-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=avatar-wall-call-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36350,7 +36358,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=matrix-signage-reset-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=avatar-wall-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

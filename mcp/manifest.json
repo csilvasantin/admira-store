@@ -747,7 +747,7 @@
     "en": "Every xpaceos.com (= admira.store) page carries the twin's four-band bar: ☰ Options, ▤ Advanced and ⌘ Expert. Outside the twin, ⌘ Expert offers /help, /limpiar, /gemelo [command], /marca and /avatar good|better|best. /avatar good opens the bald face, /avatar better the girl and /avatar best Neo; they stay with the avatar and do not travel to the twin. Twin verbs (including bare good, better and best) travel through sessionStorage and the twin runs them once on load. Panels start closed on every page and overlay the content, which never moves or resizes. Not an MCP tool.",
     "avatar": {
       "guide": "https://www.xpaceos.com/admira-xp/docs/avatar-levels.md",
-      "loader": "https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-1",
+      "loader": "https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-2",
       "shell": "/assets/xpace-shell.js?v=20261005-marca-proyecto",
       "commands": [
         "/avatar good",
