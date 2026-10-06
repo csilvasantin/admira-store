@@ -1,16 +1,16 @@
 {
-  "version": "v.06.10.2026.r5.08:18",
-  "deployedAt": "2026-10-06T06:18:28Z",
-  "deployer": "OraculoMacMini",
+  "version": "v.06.10.2026.r6.11:12",
+  "deployedAt": "2026-10-06T09:06:03Z",
+  "deployer": "SmithMacMini",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
-  "git": "4c15bab95bd16ce69960344f156b34799c1f8807",
-  "gitShort": "4c15bab",
-  "gitFull": "4c15bab95bd16ce69960344f156b34799c1f8807",
+  "signature": "SmithMacMini · MacMini",
+  "git": "b503c7e9474493ae67e7feb2dcb634e6f3e632b0",
+  "gitShort": "b503c7e",
+  "gitFull": "b503c7e9474493ae67e7feb2dcb634e6f3e632b0",
   "dirty": false,
   "novedades": [
-    "Opciones abre con el ancho mínimo para leer sus etiquetas",
-    "Arrastra el borde para dejar sólo iconos con nombre al pasar el cursor",
-    "Las herramientas recuperan espacio para sus controles y vuelven al ancho elegido"
+    "Acceso de solo lectura para grabar la demo 365, sin Google",
+    "El enlace caduca a las 8 horas y vale una sola vez",
+    "Una escritura con esa clave responde 403 y se revoca al momento"
   ]
 }
