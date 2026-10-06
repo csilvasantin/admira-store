@@ -50,3 +50,6 @@
 
 #expertCreatedPreviews .expert-preview-empty{padding:10px;margin:0;color:#ccd9df;background:#101b24;font:11px/1.5 monospace}
 #telegramDock .tier-hud[hidden]{display:none!important}
+
+#expertCreatedPreviews .epc-media>.media-preview-frame{width:100%;height:100%;margin:0}
+#expertCreatedPreviews .epc-media .media-preview-frame>img,#expertCreatedPreviews .epc-media .media-preview-frame>video{width:100%;height:100%;object-fit:contain}

@@ -85,8 +85,8 @@
  function card(item){
   const c=el('article','expert-preview-card');c.dataset.kind=item.kind;c.dataset.stockId=item.id;
   const media=el('div','epc-media');
-  if(item.kind==='image'||item.kind==='video')media.append(player(item));
-  else{const art=item.thumbnail?Object.assign(el('img'),{src:item.thumbnail,alt:'',draggable:false}):el('span','epc-glyph',item.kind==='voice'?'🎙':'♫');art.setAttribute?.('aria-hidden','true');media.classList.add('epc-art');media.append(art);}
+  if(item.kind==='image'||item.kind==='video'){const p=player(item);media.append(root.XpaceMediaOptions?.preview?root.XpaceMediaOptions.preview(item.kind,item,p):p);}
+  else{const art=item.thumbnail?Object.assign(el('img'),{src:item.thumbnail,alt:'',draggable:false}):el('span','epc-glyph',item.kind==='voice'?'🎙':'♫');art.setAttribute?.('aria-hidden','true');media.classList.add('epc-art');media.append(art);root.XpaceMediaOptions?.attachPreview?.(media,'music',{...item,sourceType:item.kind==='voice'?'locucion':item.sourceType},art);}
   const meta=el('div','epc-meta'),tag=el('p','epc-tag');tag.append(el('b','epc-kind'),el('span','epc-when'));
   const actions=el('div','epc-actions'),launch=el('button');launch.type='button';launch.dataset.previewLaunch=item.kind;launch.addEventListener('click',()=>launchItem(item,launch));
   const stock=el('a');stock.dataset.previewStock=item.kind;stock.href=stockHref(item);stock.target='_blank';stock.rel='noopener';

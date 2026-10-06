@@ -1,7 +1,7 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.06.10.2026.r9.19:10",
+  "version": "v.06.10.2026.r10.19:13",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
@@ -2121,7 +2121,8 @@
       "admira-xp/scripts/created-media-history.js",
       "admira-xp/scripts/expert-previews.js",
       "admira-xp/scripts/options-rail.mjs",
-      "admira-xp/docs/options-compact.md"
+      "admira-xp/docs/options-compact.md",
+      "admira-xp/scripts/media-drag.css"
     ]
   }
 }
