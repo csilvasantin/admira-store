@@ -2020,7 +2020,7 @@
       "video"
     ],
     "order": "newest first; up to 6 items",
-    "storage": "sessionStorage:xpaceos.expert-previews.v1",
+    "storage": "localStorage:xpaceos.created-media.v2:<loc|store|project>",
     "event": "window xpace:media-created {kind, track}",
     "api": "window.XpaceExpertPreviews.add(kind, stockReceipt) · list() · clear()",
     "actions": {
