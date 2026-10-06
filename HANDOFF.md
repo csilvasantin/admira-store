@@ -1,82 +1,51 @@
-# handOFF · Admira.store / XpaceOS · 3 octubre 2026
+# handOFF · Admirito Good en Starbucks · 6 octubre 2026
 
-Autor: OraculoMacMini · MacMini. Carlos pide parar: «handOFF y mañana más». No continuar cambios de interfaz ni operar Chrome durante este cierre.
+Autor: OraculoMacMini · MacMini. Carlos: «cuando acabes handOFF y mañana mas». Trabajo cerrado; no continuar ni programar trabajo de fondo hasta que Carlos retome.
 
-## Lo primero al retomar
+## Entrega solicitada y publicada
 
-**Pendiente y no aceptado por Carlos: Cafebrería debe tener el mismo modo Experto que Starbucks y Xtanco.** El último mensaje de Carlos muestra una Cafebrería con la consola anterior (título MODO EXPERTO · CLI, log ancho y entrada de una línea) frente al menú nativo de tres columnas. La respuesta anterior que lo dio por terminado no resuelve esa discrepancia.
+- La pared Matrix muestra Good · Admirito y al pulsarla abre directamente su conversación, sin la web Starbucks ni el kiosko local.
+- Eliminados los dos botones de la escena que Carlos precisó: nota musical y siguiente, situados sobre la pantalla del avatar. Se retiraron nodos, referencias, posicionamiento y estilos, no sólo su visibilidad. Las acciones del hilo musical se conservan en Opciones y en el controlador existente.
+- Se conservan idioma del site, contexto de cafetería, elección explícita de modelo, CLI, marca blanca y preferencias. Cerrar/Escape recarga el avatar de pared sin permiso de micrófono delegado y libera la supresión musical.
+- Ayuda web, tutorial, CLI, catálogo, manifiesto, guía y ayuda del servidor MCP real actualizados en ES/EN.
 
-El 3-oct se publicaron tres columnas en el shell común y se verificaron en una pestaña nueva de Admira.store. Después Carlos volvió a mostrar la consola antigua. En la comprobación más reciente, el HTML público de www.admira.store, admira.store, www.xpaceos.com y xpaceos.com apuntaba a xpace-shell.js/css?v=20261003-expert-1 y contenía expertPanels. **No se ha identificado la causa de lo que ve Carlos.** Caché, una pestaña cargada antes de publicar o una ruta distinta son hipótesis, no diagnóstico confirmado.
+## Revisiones y despliegue verificados
 
-Próximo paso: identificar la URL y el DOM de la Cafebrería que Carlos está usando y comparar su menú con el nativo de Starbucks/Xtanco. Verificar recursos efectivamente cargados, no solo el HTML recuperado desde otra pestaña. Conseguir igualdad visible y de comportamiento en esa ruta. No presentar una reproducción aproximada o una captura de otra pestaña como prueba suficiente.
+- Commit c5e5b7bc6042633c0e54542cec22a632518e1a5a · Admirito directo y retirada de iconos (admira-store, main).
+- Commit bb5d5503d11e7c8351129dd30b6b5ea9b21e6659 · mismo cambio y ayuda de XpaceOS (main).
+- Commit c51b3e4 · ayuda MCP del avatar directo (xpaceos-mcp, main), versión MCP 2.12.60.
+- Worker e37a2495-f2a4-43e6-b28d-62e314a59376 · despliegue de ayuda MCP directa.
+- Sello v.06.10.2026.r28.23:50 · Admirito directo sin iconos sobre pared; homepage y release-signature alineados.
+- Cloudflare Pages y GitHub Pages de ambos repositorios terminaron success. Este handOFF añade después un commit documental, sin cambio funcional.
 
-La inspección de Chrome encontró una ventana con digitalsignage.ai y otra pestaña titulada XpaceOS.com; no se llegó a inspeccionar esta última. Chrome notificó un cambio del usuario; el turno fue interrumpido. No hubo corrección nueva después de la objeción. No mover ni redimensionar ventanas del Mac.
+## URLs estables
 
-Capturas de Carlos:
-- Cafebrería con consola antigua: /var/folders/1r/269mlqt92pq5lf_070_z32zc0000gn/T/codex-clipboard-7441ec58-be6b-49f3-bc19-8871f48494c0.png
-- Referencia Starbucks/Xtanco: /var/folders/1r/269mlqt92pq5lf_070_z32zc0000gn/T/codex-clipboard-e65e5cf9-3589-4ae8-a83c-5ce9fcafa53b.png
+- https://www.admira.store/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks
+- https://www.xpaceos.com/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks
+- https://www.xpaceos.com/admira-xp/docs/matrix-wall-avatar.md
+- https://www.xpaceos.com/help/#matrix-wall-avatar
+- https://www.xpaceos.com/help/cli/#matrix-wall-avatar
+- https://mcp.admira.store/help · tema matrix-wall-avatar; tools/call help verificado.
 
-## Estado publicado antes de este handOFF
+## Evidencia y límites
 
-- Admira.store: c41d16a5387dad7b22c556354b104691bad7c90b. Implementación: e0e2f85; c41d16a ajusta el sello de publicación.
-- XpaceOS: 19b706542813007ff18b89a4bbb149572cfc5e3d. Implementación: a66eafa.
-- MCP real: e94e54be3e575e253ea2e36493e2dfe168ebbaa6. Worker: f260161e-a9d4-48fe-acc9-0830b23de4c3.
-- Cloudflare y GitHub Pages de ambos sitios terminaron success para esas revisiones.
-- Esta nota generará un commit documental posterior; no cambia el runtime.
+Pruebas focalizadas: 20 correctas (avatar de pared, ciclo abrir/cerrar, idioma, selector y música). MCP: 3 correctas (contrato ES/EN y controles retenidos). El catálogo general mantiene seis fallos previos, reproducidos con los archivos del HEAD anterior; no atribuirlos a esta entrega ni contar grupos solapados como pruebas nuevas.
 
-URLs:
-- Cafebrería original: https://www.admira.store/xpacios/cafebreria/
-- Espejo: https://www.xpaceos.com/xpacios/cafebreria/
-- Xtanco de referencia: https://www.admira.store/admira-xp/?autostart=xtanco&from=portada&project=estancos&circuit=estancos&quality=better
-- Inventario: https://www.xpaceos.com/inventario/?asset=2&quality=all#mostrador
-- Librería reutilizable: https://www.xpaceos.com/inventario/?asset=51&quality=best#mostrador
-- Guía actual: https://www.xpaceos.com/admira-xp/docs/expert-workspace.md
-- Ayuda MCP: https://mcp.admira.store/help
+Navegador público Admira.store: Good · Admirito visible, iframe nube.html con tier=good y lang=en heredado del site; clic abre diálogo directamente; ausencia de matrix-speaker y matrix-exit-next (cero nodos); cerrar devuelve pantalla de pared y retira allow. No se pidió micrófono ni se emitió una pregunta de prueba. Los controles de música se conservan en fuente y pruebas; no se afirma aquí una nueva prueba audible.
 
-## Implementación que hay que revisar
+Scripts/CSS, guía Markdown, catálogos y manifiestos públicos comparados con los checkouts; ayuda web ES/EN comprobada en ambos sitios. Tutorial y CLI de XpaceOS comprobados. En Admira.store /help/index.html y /help/cli/index.html requieren sesión (HTTP 401 sin autenticar); archivos publicados y verificados en el espejo, sin eludir el perímetro.
 
-El menú nativo de Starbucks/Xtanco vive en admira-xp/index.html: telegramDock, telegramComposer, expertQuickIcons, expertCategoryDetail y telegramLastResponse. Sus iconos y separadores están en admira-xp/scripts/expert-categories.js/css y expert-dock.js. El shell común no sustituye el menú nativo cuando detecta su barra en línea.
+Captura: https://api.yokup.com/media/fleet/9507d3878f273890.jpeg
+Local: /Users/csilvasantin/.codex/visualizations/2026/10/06/01a1132f-fcde-70c3-bb7a-7114c16df3ab/admirito-good-publicado.jpg
 
-El shell común usa assets/xpace-shell.js/css y assets/expert-workspace.mjs. Tiene xsExpert, xsCliForm, xsCli (textarea), xsLog y las doce categorías en el orden nativo. Usa los iconos y separadores del nativo. Configuración de Cafebrería en xpacios/cafebreria/index.html: expertCategories y expertPanels conectan editor, Inventario, ITIL y Pixeria con los nodos reales, sin clonarlos. El acoplamiento mueve el mismo nodo al centro; ↗ o cerrar Experto lo devuelve a su padre original. floating-window.mjs y panel-resize.mjs suspenden movimiento y redimensión flotantes mientras está acoplado.
+Yokup: misión DCL-96910cd31fb5f22d3746795a · Admirito directo y retirada de iconos; Hoy #284 · cierre del avatar de pared. /declare confirmó cerrada con tareas a/b/c done y evidencia. /fleet/missions confirmó status=resolved, owner OraculoMacMini y has_report=1 en las tres tareas. Informe adicional a /fleet/informe rechazado con mission_closed: no reabrir ni presentar ese intento adicional como un ACK nuevo.
 
-Preservar:
-- Historial CLI xpaceos_expert_history_v1 y /marca (/brand).
-- /avatarDigital es la integración de Woz; no sustituirla.
-- xpace_expert_columns_v1 comparte las proporciones de columnas; xpaceos_shell_size_v1:<panel> conserva tamaños.
-- Mejora publicada por Morfeo en XpaceOS 7c80053, incorporada a esta implementación: los paneles se superponen y entran cerrados en cada carga; el cuerpo central no cambia de tamaño ni posición al abrirlos.
-- Identidades, modelos, materiales, fichas y distribución guardada del Xpacio.
+## Continuación mañana
 
-Cafebrería: cafe.mjs, cafe.css, grounding.mjs e inventory-panel.mjs. Escena original inventario/cafebreria/scene.glb; catálogo scene.inventory.json. La librería original y sus componentes forman parte del ITIL y el editor existentes. La escena tiene 96 fichas, 83 geometrías y 13 pendientes; no convertir pendientes en stock o modelos confirmados.
+Esperar instrucciones de Carlos. No hay automatización ni objetivo en segundo plano. Workspace principal limpio en main; espejo en /tmp/itil-xpaceos; MCP en /tmp/avatar-good-mcp (rama codex/avatar-good-wall). El checkout habitual /Users/csilvasantin/Claude/repos/xpaceos-mcp no se modificó: fetch/pull antes de usarlo. El servidor local temporal 8882 se apaga al cerrar este turno.
 
-El desplegable de proyectos ya se corrigió: project-selector.mjs y central-project-client.mjs, sello cafebreria-route-3. Solo demo-cafebreria del proyecto/circuito cafebreria dirige al Xpacio original. El temporizador conserva las opciones mientras se abre el menú nativo; la caducidad de sesiones sigue retirando proyectos autorizados. No revertirlo.
+Pendientes anteriores ajenos a esta petición: se conserva el handOFF de Cafebrería en [2026-10-03-cafebreria-experto.md](admira-xp/docs/handoffs/2026-10-03-cafebreria-experto.md). No se resuelve ni se reabre su aceptación visual en este turno.
 
-## Verificaciones realizadas y sus límites
+## English continuation
 
-Pruebas correctas: Expert compartido, identidad/transferencia/restauración de herramientas, cierre y desacoplamiento, guardas de geometría flotante, editor Distribuir, inventario de Cafebrería, selector de proyectos, marca/CLI y contratos ES/EN. Guardián tests/shell-cuadratico.test.mjs actualizado: Cafebrería real usa el shell; inventario/cafebreria/index.html es el redirect.
-
-Comandos relevantes:
-
-    node --test assets/expert-workspace.test.mjs tests/shell-cuadratico.test.mjs mcp/quadratic-resize.test.mjs admira-xp/scripts/floating-panels.test.mjs
-    node --test admira-xp/scripts/distribuit.test.mjs admira-xp/scripts/distribuit-objects.test.mjs admira-xp/scripts/distribuit-docs.test.mjs xpacios/cafebreria/editor.test.mjs xpacios/cafebreria/canonical-entry.test.mjs admira-xp/scripts/project-selector.test.mjs
-
-MCP: expert-workspace-help.test.mjs, quadratic-resize-help.test.mjs y consultas reales GET /help y tools/call help. 22 recursos públicos se compararon byte a byte con el checkout, y se verificaron páginas café/ayuda de ambos sitios. Navegador: editor acoplado, Inventario→ITIL, desacoplar/cerrar, Enter CLI, tamaño del dock y columnas; inglés en Cafebrería. Esto confirma esas pestañas de prueba, **no explica la consola antigua de la captura de Carlos**.
-
-Captura de la pestaña pública probada:
-/Users/csilvasantin/.codex/visualizations/2026/10/02/01a0fde7-1cbc-7822-8467-ec906b89d881/cafebreria-experto-starbucks-20261003.jpg
-
-Verificador reutilizable: /tmp/verify-expert-public.py. El servidor local propio 8879 fue cerrado; no tocar el servidor preexistente 8765.
-
-## Workspaces y cierre operativo
-
-- Checkout principal: /Users/csilvasantin/Documents/ChatGPT/admira.store, rama codex/itil-inventory-link, origin csilvasantin/admira-store.
-- Espejo: /tmp/itil-xpaceos, origin csilvasantin/xpaceos.
-- MCP: /tmp/itil-xpaceos-mcp, origin csilvasantin/xpaceos-mcp.
-- Los tres estaban limpios al preparar esta nota. Fetch antes de editar: puede haber trabajo de otros agentes. No sobreescribir sus cambios.
-- AGENTS.md exige ayuda web, tutorial, CLI, manifiestos y MCP real ES/EN para cada implementación; commit, push, despliegue y verificación pública. Carlos autoriza publicar sin reconfirmación.
-- Yokup: DCL-9ac4e7781dec778d5fee8eb4, Hoy #49, quedó resolved con a/b/c done y owner OraculoMacMini después de las pruebas técnicas. La objeción posterior de Carlos significa que la igualdad del menú **sigue pendiente de aceptación y diagnóstico**; no usar ese cierre como prueba de resolución del problema actual.
-- Desplegable anterior: DCL-2cbf85cf088cd8fdb92382f7, resuelto.
-- No hay automatización para mañana ni un objetivo en segundo plano. Esperar a Carlos.
-
-## English continuation note
-
-Carlos stopped work and requested this handoff. His latest screenshots show the old single-column Cafebrería CLI versus the native Starbucks/Xtanco three-column Expert panel. A common three-column implementation was deployed and verified in separate tabs, but the cause of his old UI is unresolved. Start by inspecting the actual URL, DOM and loaded resources he uses, then ensure visible and behavioral parity with the native Expert panel. Do not assume cache is the cause or report the task complete from a different test tab. Preserve the recent overlay/closed-on-entry behavior, existing CLI history, white label, Woz avatar integration and all scene/inventory identities. No further work until he resumes.
+Published: the Matrix wall defaults to Good Admirito; clicking opens its conversation directly without Starbucks website/kiosk. Both music-note and next-track scene hotspots above the avatar are removed. Existing music controls, explicit models, site language, context, CLI and preferences remain. Public UI, mirrored contracts and live MCP help were verified; six unrelated catalogue failures also occur on the previous revision. Admira.store tutorial/CLI routes require authentication; the XpaceOS copies were verified publicly. Yokup canonical mission is resolved with reported evidence. Stop until Carlos resumes; no scheduled background work.
