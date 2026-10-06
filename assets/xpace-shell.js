@@ -967,7 +967,7 @@
   try{ if(window.self!==window.top) return; }catch(e){ return; }
   if(document.querySelector('script[data-admira-sello-loader]')) return;
   var s=document.createElement('script');
-  s.src='https://www.admiranext.com/assets/sello-novedades.js?v=20261006-sello-1';
+  s.src='https://www.admiranext.com/assets/sello-novedades.js?v=20261006-options-sello-2';
   s.defer=true;
   s.setAttribute('data-admira-sello-loader','');
   (document.head||document.documentElement).appendChild(s);
