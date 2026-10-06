@@ -1,13 +1,17 @@
 {
   "version": "v.06.10.2026.r22.21:13",
+  "deployedAt": "2026-10-06T19:24:58Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "deployedAt": "2026-10-06T19:24:43.011656+00:00",
-  "git": "7c1acd7264fcdd9f145426482fdd6b1e4fbabfad",
-  "gitFull": "7c1acd7264fcdd9f145426482fdd6b1e4fbabfad",
-  "gitShort": "7c1acd7",
+  "git": "3dc49cf31ace8638c63d28392d31b7661b0d4803",
+  "gitShort": "3dc49cf",
+  "gitFull": "3dc49cf31ace8638c63d28392d31b7661b0d4803",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "novedades": [
+    "Matrix: la burbuja del avatar lleva a la pared de ladrillo y el avatar se ve allí (ya no abre un panel lateral aparte)",
+    "Calidad → avatar: Good = good, Better = better, Best y Matrix = best (Matrix ya no cae a good)",
+    "Chips y respuestas del avatar en el idioma de la página, también si cambia con el panel abierto",
+    "Si Neo no está emitiendo se ve el avatar web en lugar de una pantalla negra"
+  ]
 }
