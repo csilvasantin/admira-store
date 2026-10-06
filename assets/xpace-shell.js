@@ -821,9 +821,10 @@
   // el avatar siguen siendo los de este shell. El registro sale de «PREVIOS» a la columna del CLI
   // y los tres paneles (categorías, opciones de categoría, previos) quedan tras «＋ vista».
   // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
+  // Cerrado por defecto (Carlos, 6-oct-2026): la piel oculta el Experto hasta pulsar ⌘; abierto solo en la pestaña.
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
-    const V = '20261005-experto-idioma-1', BASE = 'https://www.admiranext.com/suite/experto';
+    const V = '20261006-experto-cerrado-1', BASE = 'https://www.admiranext.com/suite/experto';
     const css = doc.createElement('link');
     css.rel = 'stylesheet'; css.href = BASE + '.css?v=' + V;
     doc.head.appendChild(css);
