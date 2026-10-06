@@ -29,9 +29,10 @@
   var since = null;          // baseline = reloj del SERVIDOR (sin skew, sin repetir cola vieja)
   function bgMusicEl() { return document.getElementById('bgMusic'); }
 
-  function previewSong(item) {
+  // created=true: entrega NUEVA de Pixeria (Crear música) → también se abre en PREVIOS del Experto.
+  function previewSong(item, created) {
     if (!item || !item.id || !item.url) return;
-    try { window.XpaceMediaOptions?.stage('music', item); } catch (_) {}
+    try { window.XpaceMediaOptions?.stage('music', item, { created: !!created }); } catch (_) {}
   }
 
   function poll() {
@@ -43,7 +44,7 @@
         if (since == null) { since = d.now || Date.now(); if (!window.XpaceMediaOptions?.get('music') && d.playlist?.length) previewSong(d.playlist[d.playlist.length - 1]); return; }   // 1er poll: baseline
         if (d.pending && d.pending.length) {
           d.pending.forEach(function (e) { if (e.ts > since) since = e.ts; });
-          previewSong(d.pending[d.pending.length - 1]);                 // la más reciente
+          previewSong(d.pending[d.pending.length - 1], true);           // la más reciente
         }
       })
       .catch(function () {});
@@ -56,7 +57,7 @@
       return fetch(API + '/hilomusical/push', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ store: storeId(), sourceUrl: sourceUrl, title: title || 'Canción', motor: 'manual' })
-      }).then(function (r) { if (!r.ok) throw Error('Stock unavailable'); return r.json(); }).then(function (item) { previewSong(item); return item; }).catch(function () {});
+      }).then(function (r) { if (!r.ok) throw Error('Stock unavailable'); return r.json(); }).then(function (item) { previewSong(item, true); return item; }).catch(function () {});
     }
   };
 

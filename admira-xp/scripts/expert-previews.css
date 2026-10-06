@@ -1,0 +1,49 @@
+/* Experto → PREVIOS · interfaz cuadrativa AdmiraNeXT: cajas rectas, filete cian, monoespaciada.
+   Tarjeta = [medio | ficha]; el audio ocupa todo el ancho debajo. Bajo 240 px de columna se apila. */
+#expertCreatedPreviews{order:-1;flex:0 0 auto;display:flex;flex-direction:column;gap:5px;min-width:0;container-type:inline-size}
+#expertCreatedPreviews[hidden]{display:none!important}
+#expertCreatedPreviews .expert-preview-list{display:flex;flex-direction:column;gap:5px;min-width:0}
+#expertCreatedPreviews .expert-preview-card{display:grid;grid-template-columns:minmax(64px,40%) minmax(0,1fr);gap:4px 7px;align-items:start;min-width:0;padding:5px;border:1px solid #345360;border-left:2px solid #78f3ff;border-radius:2px;background:#0b1720;font:10px/1.35 monospace;transition:border-color .3s,box-shadow .3s}
+#expertCreatedPreviews .expert-preview-card:not(:first-child){grid-template-columns:minmax(48px,26%) minmax(0,1fr);border-left-color:#4d7d8a}
+#expertCreatedPreviews .expert-preview-card.is-fresh{border-color:#78f3ff;box-shadow:0 0 0 1px #78f3ff66,0 0 14px #78f3ff33}
+#expertCreatedPreviews .epc-media{position:relative;min-width:0;aspect-ratio:16/9;background:#05121c;border:1px solid #233d48;border-radius:1px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#expertCreatedPreviews .epc-media>img,#expertCreatedPreviews .epc-media>video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+#expertCreatedPreviews .epc-media.epc-art{aspect-ratio:1/1;max-width:72px}
+#expertCreatedPreviews .expert-preview-card:not(:first-child) .epc-media.epc-art{max-width:48px}
+#expertCreatedPreviews .epc-glyph{font:22px/1 monospace;color:#78f3ff}
+#expertCreatedPreviews .epc-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+#expertCreatedPreviews .epc-tag{display:flex;justify-content:space-between;gap:6px;margin:0;font:9px/1.2 monospace;letter-spacing:.08em}
+#expertCreatedPreviews .epc-kind{color:#78f3ff;font-weight:bold}
+#expertCreatedPreviews .epc-when{white-space:nowrap;opacity:.8}
+#expertCreatedPreviews .epc-title{margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;font-weight:bold}
+#expertCreatedPreviews .expert-preview-card:not(:first-child) .epc-title{-webkit-line-clamp:1}
+#expertCreatedPreviews .epc-actions{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+#expertCreatedPreviews .epc-actions button,#expertCreatedPreviews .epc-actions a{display:inline-flex;align-items:center;min-height:22px;padding:2px 7px;border:1px solid #78929e;border-radius:2px;font:10px/1.2 monospace;text-decoration:none;cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#expertCreatedPreviews .epc-actions button:disabled{cursor:progress}
+#expertCreatedPreviews .epc-status{margin:0;font:9px/1.3 monospace;opacity:.9;overflow-wrap:anywhere}
+#expertCreatedPreviews .epc-status[hidden]{display:none}
+#expertCreatedPreviews .epc-audio{grid-column:1/-1;min-width:0}
+#expertCreatedPreviews .epc-audio audio{display:block;width:100%;height:28px;color-scheme:dark}
+#expertCreatedPreviews video{color-scheme:dark}
+@container (max-width:240px){
+  #expertCreatedPreviews .expert-preview-card,#expertCreatedPreviews .expert-preview-card:not(:first-child){grid-template-columns:minmax(0,1fr)}
+  #expertCreatedPreviews .epc-media:not(.epc-art){width:100%}
+  #expertCreatedPreviews .expert-preview-card:not(:first-child) .epc-media:not(.epc-art){display:none}
+  #expertCreatedPreviews .epc-media.epc-art{display:none}
+  #expertCreatedPreviews .epc-actions{flex-direction:column;align-items:stretch}
+  #expertCreatedPreviews .epc-actions button,#expertCreatedPreviews .epc-actions a{justify-content:center;white-space:normal;text-align:center}
+  #expertCreatedPreviews .epc-tag{flex-wrap:wrap}
+}
+/* Colores propios (no dependen de capas de legibilidad ni de la marca): la tarjeta es una pantalla oscura
+   también cuando el dock del Experto va en claro. */
+#expertCreatedPreviews .expert-preview-card{color:#e6f1f5!important}
+#expertCreatedPreviews .epc-title{color:#f4f8fa!important}
+#expertCreatedPreviews .epc-when,#expertCreatedPreviews .epc-status{color:#b9cbd3!important;opacity:1}
+#expertCreatedPreviews .epc-kind{color:#78f3ff!important}
+#expertCreatedPreviews .epc-actions button{background:#1d2d39!important;color:#f4f8fa!important;border-color:#78929e!important}
+#expertCreatedPreviews .epc-actions a{background:transparent!important;color:#78f3ff!important;border-color:#3f6f7c!important}
+#expertCreatedPreviews .epc-actions :is(button,a):is(:hover,:focus-visible){border-color:#78f3ff!important;outline:none}
+/* Crear locución (columna central) */
+.expert-media-form[data-media-form="voice"] label{display:block;margin:4px 0 2px}
+.expert-media-form[data-media-form="voice"] select{max-width:100%;font:11px/1.3 monospace;padding:3px 4px}
+#voiceoverLogin[hidden]{display:none!important}

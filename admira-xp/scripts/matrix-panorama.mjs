@@ -12,7 +12,7 @@ import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
 import {STARBUCKS_TPV_PLAYLIST,STARBUCKS_TPV_MAPPING,STARBUCKS_TPV_VIEW,withStarbucksTPV} from './starbucks-tpv.mjs?v=tpv-1';
 import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenSlice,screenNumber,screenGroup,getScreenNumbersVisible,setScreenNumbersVisible,subscribeScreenNumbers} from './screen-display.mjs?v=number-layout-1';
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
-import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=options-preview-1';
+import {starbucksMusic,STARBUCKS_SPEAKER,STARBUCKS_EXIT} from './starbucks-music.mjs?v=store-previews-1';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=wall-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 

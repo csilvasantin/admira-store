@@ -23,7 +23,7 @@ export function musicTracks(value){
 // Kept separate from the game's bgMusic, whose mute action pauses playback.
 export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fetch(STARBUCKS_FEED,{cache:'no-store'})}={}){
   const published=musicTracks(publishedTracks);
-  let tracks=[...published],index=0,started=false,loading=false,error='',request=null,disposed=false;
+  let tracks=[...published],index=0,started=false,loading=false,error='',request=null,disposed=false,seeded=false;
   let managed=false,suppressions=0,restoreVolume=audio.volume;
   let playVersion=0,revision=0,reason='initial',lastClockEmit=0;
   const listeners=new Set(),failed=new Set();
@@ -87,7 +87,7 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
           const response=await fetchFeed();if(!response.ok)throw Error('feed');
           const data=await response.json();if(data.ok===false)throw Error('feed');
           const feed=musicTracks(data.playlist);let incoming=musicTracks([...published,...feed]);if(disposed||managed)return;
-          if(globalThis.XpaceMediaOptions){for(const item of data.playlist||[])if(!tracks.some(t=>t.url===item.url))try{globalThis.XpaceMediaOptions.stage('music',item);}catch{}incoming=musicTracks([...published,...tracks]);}
+          if(globalThis.XpaceMediaOptions){for(const item of data.playlist||[])if(!tracks.some(t=>t.url===item.url))try{globalThis.XpaceMediaOptions.stage('music',item,{created:seeded});}catch{}seeded=true;incoming=musicTracks([...published,...tracks]);}
           // An empty/transient response must not cut off a playing song.
           if(incoming.length){
             const current=tracks[index]?.url,kept=incoming.findIndex(t=>t.url===current);
