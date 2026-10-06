@@ -115,5 +115,10 @@
     "La programación inicial vuelve sin perder el previo ni la creación guardada",
     "Restauración local compartida con /reset, con progreso y errores visibles",
     "Se conserva la entrega concurrente del avatar en pared Matrix; ayuda MCP bilingüe actualizada"
+  ],
+  "v.06.10.2026.r24.21:47": [
+    "Kiosko Starbucks at Home por defecto en la pared del avatar",
+    "Portada, catálogo, recetas y buscador locales para la demo Alsea",
+    "Conversación del avatar disponible al pulsar Hablar"
   ]
 }

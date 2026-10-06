@@ -1,0 +1,14 @@
+{
+  "source": "https://www.starbucksathome.com/es/",
+  "purpose": "Carlos-authorized local kiosk simulation for Alsea demo",
+  "assets": {
+    "logo.svg": "https://www.starbucksathome.com/es/sites/default/files/2021-03/logo_global_new.svg",
+    "hero.jpg": "https://www.starbucksathome.com/es/sites/default/files/2026-02/SBX_SBU_Chocolate-Hazelnut_2025_Website_Homepage_Hero-Banner_LTR_Desktop_2880x1660.jpg",
+    "chocolate.jpg": "https://www.starbucksathome.com/es/sites/default/files/styles/promo_carousel_xlarge/public/2026-02/SBX_SBU_Chocolate-Hazelnut_2025_Website_Homepage_Feature-Highlight_Tablet_LTR_928x382.png?h=37b4f37b&itok=GTwZu0xf",
+    "ristretto.jpg": "https://www.starbucksathome.com/es/sites/default/files/styles/promo_carousel_xlarge/public/2025-02/Ristretto%20Activation%20-%20Navigation%20-%20Feature%20Highlight-%20DESKTOP_960x560.jpg?h=bbb2c827&itok=Gk0eqxhQ",
+    "nespresso.jpg": "https://www.starbucksathome.com/es/sites/default/files/styles/promo_carousel_xlarge/public/2024-03/STARBUCKS_NESPRESSO_WEBSITE_Navigation_Feature%20Highlight_Desktop_960x560_v2.jpg?h=bbb2c827&itok=tYiazvMa",
+    "mocha.png": "https://www.starbucksathome.com/es/sites/default/files/styles/recommended_recipe/public/2021-06/10032021_CafeMocha_LS-min.png?itok=5LI7MCnC",
+    "vanilla.png": "https://www.starbucksathome.com/es/sites/default/files/styles/recommended_recipe/public/2021-06/10032021_BlondeVanillaLatte_LS-min.png?itok=s1e8FLoo",
+    "iced.png": "https://www.starbucksathome.com/es/sites/default/files/styles/recommended_recipe/public/2021-06/10032021_CARAMEL_LATTEwVANILLA_LS-min.png?itok=V4L1YD3J"
+  }
+}
