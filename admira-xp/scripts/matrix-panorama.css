@@ -163,3 +163,12 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-wall-avatar:modal iframe{flex:1;min-height:0;pointer-events:auto}.matrix-wall-avatar:modal .matrix-avatar-expand{display:none}
 .matrix-wall-avatar:modal .matrix-avatar-close{display:block;align-self:flex-end;margin:8px;padding:8px 12px;border:1px solid #72958d;border-radius:4px;background:#122822;color:#fff;font:14px system-ui;cursor:pointer}
 .matrix-wall-avatar::backdrop{background:#04100fd9}
+
+/* Click the photographed staff to replay saved PA. Hit regions follow the panorama. */
+.matrix-person-announcement{position:absolute;left:0;top:0;width:120px;height:160px;transform-origin:0 0;z-index:4;border:1px solid transparent;background:transparent;cursor:pointer;touch-action:manipulation;padding:0}
+.matrix-person-announcement[hidden]{display:none}
+.matrix-person-announcement:is(:hover,:focus-visible){border-color:#78f3ff;background:#78f3ff15;outline:none}
+.matrix-person-announcement::after{content:'🔊 ' attr(data-voice-name);position:absolute;left:0;right:0;bottom:0;background:#071820e8;color:#f4f8fa;font:10px/1.4 monospace;opacity:0}
+.matrix-person-announcement:is(:hover,:focus-visible,[aria-pressed="true"])::after{opacity:1}
+.matrix-person-status{position:absolute;z-index:5;top:12px;left:50%;transform:translateX(-50%);max-width:calc(100% - 24px);padding:6px 10px;border:1px solid #78929e;border-radius:3px;background:#071820f2;color:#f4f8fa;font:11px/1.4 monospace;pointer-events:none}
+.matrix-person-status:empty{display:none}

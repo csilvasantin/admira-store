@@ -7,10 +7,10 @@
     "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
   ],
   "default": [
-    "PREVIOS muestra sólo la última creación multimedia a máximo tamaño",
-    "Lanzar a pantalla y Ver en Stock quedan debajo del contenido",
-    "Música y locuciones conservan sus controles; el historial guardado se mantiene",
-    "Arrastre centrado, doble clic y Create Media se conservan"
+    "El CLI conserva /avatar digital good, better y best al escribir",
+    "Chica: Sara Martín en castellano o Cassidy en inglés; chico: David Martín o James",
+    "Se reutiliza la última locución guardada en Stock, sin generar al pulsar",
+    "Segundo clic detiene; se conservan PREVIOS, contraste y arrastre centrado"
   ],
   "v.06.10.2026.r2.13:14": [
     "⌘ Experto cerrado por defecto: quien entra por primera vez no lo ve; se abre con el ⌘ de la barra",
@@ -50,5 +50,11 @@
     "Lanzar a pantalla y Ver en Stock quedan debajo del contenido",
     "Música y locuciones conservan sus controles; el historial guardado se mantiene",
     "Arrastre centrado, doble clic y Create Media se conservan"
+  ],
+  "v.06.10.2026.r14.20:32": [
+    "El CLI conserva /avatar digital good, better y best al escribir",
+    "Chica: Sara Martín en castellano o Cassidy en inglés; chico: David Martín o James",
+    "Se reutiliza la última locución guardada en Stock, sin generar al pulsar",
+    "Segundo clic detiene; se conservan PREVIOS, contraste y arrastre centrado"
   ]
 }

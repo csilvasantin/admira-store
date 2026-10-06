@@ -31,10 +31,11 @@
   busy=true;num=null;phase='generating';render();
   try{
    const chosen=['male','female'].includes(voice?.value)?voice.value:'female',saved=root.XpaceMedia.pending('audio');
-   const payload=saved&&saved.payload.text===text&&saved.payload.voice===chosen?saved.payload:{text,voice:chosen,language:doc.documentElement.lang==='en'?'en':'es'};
+   const language=doc.documentElement.lang==='en'?'en':'es';
+   const payload=saved&&saved.payload.text===text&&saved.payload.voice===chosen&&saved.payload.language===language?saved.payload:{text,voice:chosen,language};
    const result=await root.XpaceMedia.generate('audio',payload,{onProgress(value){phase=value==='archiving'?'archiving':'generating';render();}});
    root.XpaceMedia.link('audio',result.stock);num=result.stock.num||null;
-   const created={...result.stock,title:text,language:payload.language};
+   const created={...result.stock,title:text,language:payload.language,voice:chosen};
    if(root.XpaceExpertPreviews)root.XpaceExpertPreviews.add('voice',created);else root.dispatchEvent(new root.CustomEvent('xpace:media-created',{detail:{kind:'voice',track:created}}));
    phase='done';
   }catch(e){phase=e?.code==='auth'?'auth':'error';}

@@ -3,7 +3,7 @@
  const prefix='xpace-media-pending-v1:',audioReceiptKey='xpace-media-stock-audio.v1',endpoints={image:'advertising-image',video:'advertising-video',audio:'announcement-tts'};
  function pending(kind){try{return JSON.parse(root.sessionStorage.getItem(prefix+kind)||'null');}catch(_){return null;}}
  function keep(kind,value){try{value?root.sessionStorage.setItem(prefix+kind,JSON.stringify(value)):root.sessionStorage.removeItem(prefix+kind);}catch(_){}}
- function completed(kind,stock,payload){root.XpaceCreatedMedia?.add(kind==='audio'?'voice':kind,{...stock,title:payload.text,language:payload.language});}
+ function completed(kind,stock,payload){root.XpaceCreatedMedia?.add(kind==='audio'?'voice':kind,{...stock,title:payload.text,language:payload.language,...(kind==='audio'?{voice:payload.voice}:{})});}
  const error=(code)=>Object.assign(new Error(code),{code});
  function receipt(stock){if(!stock?.id||!stock.url)throw error('invalid_stock');const u=new URL(stock.url);if(u.origin!=='https://api.admira.store'||u.pathname!=='/stock/asset/'+stock.id)throw error('invalid_stock');return stock;}
  function sleep(ms,signal){return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(error('cancelled'));};const timer=root.setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});});}

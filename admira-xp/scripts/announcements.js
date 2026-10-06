@@ -95,9 +95,10 @@
     const url=root.URL.createObjectURL(result.audioBlob);return {url,release:()=>root.URL.revokeObjectURL(url)};
   },onState:render,duck});
   function duck(){
+    const releaseMatrix=root.XpaceMatrixOptions?.suppressMusic?.();
     const saved=['bgMusic','starbucksMusic'].map(id=>doc.getElementById(id)).filter(Boolean).map(audio=>({audio,volume:audio.volume,ducked:Math.min(audio.volume,0.06)}));
     for(const s of saved)s.audio.volume=s.ducked;
-    return ()=>{for(const s of saved)if(s.audio.volume===s.ducked)s.audio.volume=s.volume;};
+    return ()=>{releaseMatrix?.();for(const s of saved)if(s.audio.volume===s.ducked)s.audio.volume=s.volume;};
   }
   // Experto → PREVIOS: una locución ya guardada en Stock se emite sólo al pulsar Emitir,
   // con las mismas tres lecturas y la misma bajada del hilo musical. No genera otra vez.

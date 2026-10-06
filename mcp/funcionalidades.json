@@ -4301,5 +4301,25 @@
     "visible_limit": 1,
     "stored_history_limit": 6,
     "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
+  },
+  "matrix_person_voice": {
+    "help_topic": "matrix-person-voice",
+    "es": "En Matrix de Starbucks Alsea, pulsa la chica para emitir la última locución de Sara Martín en castellano o Cassidy en inglés; pulsa el chico con gafas para David Martín en castellano o James en inglés. Se reproduce el audio ya guardado en Stock tres veces, sin otra generación de pago. Pulsar de nuevo detiene la lectura; cambiar de persona cancela la búsqueda o reproducción anterior. La música baja durante la locución y vuelve al terminar. Cada voz e idioma conserva su último recibo por Xpacio, aunque cambie PREVIOS o recargues. Si no hay recibo local, se busca audio publicado desde XpaceOS en Stock, con coincidencia explícita de voz e idioma; no se sustituye por una voz diferente ni por el aviso de cierre. Si no existe audio coincidente o Stock no responde, se informa para crear esa locución o reintentar. Las personas siguen al panorama al girar y hacer zoom. El CLI conserva la escritura de /avatar digital good, /avatar digital better y /avatar digital best; el autocompletado de /aviso no se transforma en /sincro. Enter ejecuta y Shift+Enter añade una línea; se conservan la marca blanca y el cargador central del avatar.",
+    "en": "In Starbucks Alsea Matrix, click the woman to play the latest Sara Martín voiceover in Spanish or Cassidy in English; click the man with glasses for David Martín in Spanish or James in English. Saved Stock audio plays three times without another paid generation. Click again to stop; changing person cancels the previous lookup or playback. Music is reduced during the voiceover and restored afterwards. Each voice and language retains its latest receipt per Xpace even when PREVIEWS changes or the page reloads. Without a local receipt, published XpaceOS audio is recovered from Stock using explicit voice and language metadata; another voice or the closing announcement is never substituted. Missing matching audio or a Stock error is reported so you can create that voiceover or retry. People follow panorama movement and zoom. The CLI preserves /avatar digital good, /avatar digital better and /avatar digital best while typing; /aviso autocomplete never turns into /sincro. Enter runs the command and Shift+Enter adds a line; white label and the central avatar loader are retained.",
+    "guide": "/admira-xp/docs/matrix-person-voice.md",
+    "voices": {
+      "es": {
+        "female": "Sara Martín",
+        "male": "David Martín"
+      },
+      "en": {
+        "female": "Cassidy",
+        "male": "James"
+      }
+    },
+    "receipts_key": "xpaceos.voice-receipts.v1:<Xpacio>",
+    "reads": 3,
+    "generation_on_click": false,
+    "historical_recovery": "published XpaceOS Stock audio with explicit voice/language metadata"
   }
 }
