@@ -7,26 +7,20 @@ function harness(){
  const win={location:{origin:'https://example.test'},document:{documentElement:{lang:'es'}},sessionStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},localStorage:{getItem:()=>null},setInterval:f=>(poll=f,1),clearInterval(){},setTimeout(){},addEventListener(k,f){events[k]=f;},removeEventListener(k){delete events[k];},XpaceMatrixOptions:{suppressMusic:()=>()=>released++}};
  const doc={defaultView:win,createElement:t=>{const n=new Node(t);if(t==='iframe')n.contentWindow={postMessage:(...p)=>posts.push(p)};return n;},querySelectorAll:()=>[]};
  const surface=new Node('surface');surface.ownerDocument=doc;
- const api=mountWallAvatar(surface),wall=surface.children[0],[toolbar,frame,expand]=wall.children,[kiosk,talk,close,model]=toolbar.children;
- return {api,wall,frame,expand,kiosk,talk,close,model,win,storage,poll:()=>poll(),message:e=>events.message?.(e),released:()=>released,posts};
+ const api=mountWallAvatar(surface),wall=surface.children[0],[toolbar,frame,expand]=wall.children,[close,model]=toolbar.children;
+ return {api,wall,frame,expand,close,model,win,storage,poll:()=>poll(),message:e=>events.message?.(e),released:()=>released,posts};
 }
-test('default kiosk does not load an avatar or request speech permissions, including during tier polling',()=>{
- const h=harness();assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.wall.dataset.mode,'kiosk');assert.equal(h.frame.allow,undefined);
- h.storage.set('admira-avatar:nivel-elegido','better');h.poll();assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.api.level,'better');assert.equal(h.posts.length,0);
+test('wall shows Good Admirito without granting speech permissions',()=>{
+ const h=harness();assert.match(h.frame.src,/nube.html/);assert.notEqual(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.wall.dataset.mode,'avatar');assert.equal(h.frame.allow,undefined);assert.equal(h.frame.inert,true);
 });
-test('screen opens kiosk; explicit Talk retains selected avatar; switching back stops that renderer',()=>{
- const h=harness();h.expand.emit('click');assert.equal(h.api.expanded,true);assert.equal(h.frame.inert,false);assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);
- h.talk.emit('click');assert.match(h.frame.src,/nube.html/);assert.equal(h.frame.allow,'microphone; autoplay');
- h.storage.set('admira-avatar:nivel-elegido','good');h.poll();assert.match(h.frame.src,/nube.html/);
- h.kiosk.emit('click');assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.frame.allow,undefined);
- h.close.emit('click');assert.equal(h.api.expanded,false);assert.equal(h.frame.inert,true);assert.equal(h.released(),1);
+test('click opens avatar directly; close unloads conversation and restores wall and music',()=>{
+ const h=harness();h.expand.emit('click');assert.equal(h.api.expanded,true);assert.equal(h.frame.inert,false);assert.match(h.frame.src,/nube.html/);assert.equal(h.frame.allow,'microphone; autoplay');
+ h.close.emit('click');assert.equal(h.api.expanded,false);assert.equal(h.frame.inert,true);assert.equal(h.frame.allow,undefined);assert.match(h.frame.src,/nube.html/);assert.equal(h.released(),1);
+ h.api.enlarge('kiosk');assert.match(h.frame.src,/nube.html/,'legacy caller cannot reopen website');
 });
-test('Escape accepts only the expanded local kiosk iframe; close restores its home instead of conversation',()=>{
- const h=harness();h.expand.emit('click');const e={origin:'https://example.test',source:h.frame.contentWindow,data:{type:'starbucks-kiosk:close'}};
- h.message({...e,origin:'https://evil.test'});assert.equal(h.api.expanded,true);
- h.message({...e,source:{}});assert.equal(h.api.expanded,true);
- h.talk.emit('click');h.message(e);assert.equal(h.api.expanded,true);
- h.kiosk.emit('click');h.message(e);assert.equal(h.api.expanded,false);assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);
+test('Escape closes avatar; retired kiosk messages cannot change its lifecycle',()=>{
+ const h=harness();h.expand.emit('click');h.message({origin:'https://example.test',source:h.frame.contentWindow,data:{type:'starbucks-kiosk:close'}});assert.equal(h.api.expanded,true);
+ let prevented=false;h.wall.emit('cancel',{preventDefault(){prevented=true;}});assert.equal(prevented,true);assert.equal(h.api.expanded,false);assert.match(h.frame.src,/nube.html/);assert.equal(h.released(),1);
 });
 
 test('opening inherits site language despite legacy preference; manual choice lasts only this conversation',()=>{

@@ -55,3 +55,11 @@ test('wall avatar level: explicit tab choice > Good; visual quality and legacy l
   assert.match(html,/AVATAR3D_LEVEL_BY_VISUAL=\{good:'good',better:'better',best:'best',matrix:'best'\}/);
   assert.match(html,/tier='good',c=\{sector:avatar3dSector\(\),lang:avatar3dLang\(\)\}/);
 });
+
+test('music controls remain in toolbar with both scene hotspots removed',()=>{
+ const source=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
+ assert.ok(!source.includes('matrix-speaker'));
+ assert.ok(!source.includes('matrix-exit-next'));
+ assert.match(source,/data-music-toggle type="button"/);
+ assert.match(source,/data-music-next type="button"/);
+});

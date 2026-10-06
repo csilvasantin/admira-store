@@ -135,5 +135,10 @@
     "El avatar hereda el idioma del site al abrir: ESP o ENG",
     "Good · Admirito por defecto, independiente de la calidad Matrix",
     "Selector de modelo: Good · Admirito, Better · Chica, Best · Neo"
+  ],
+  "v.06.10.2026.r28.23:50": [
+    "Admirito Good en la pared; al pulsar abre directamente el avatar",
+    "Sin web Starbucks al pulsar el avatar",
+    "Retirados los iconos de nota musical y siguiente sobre el avatar; controles disponibles en Opciones"
   ]
 }

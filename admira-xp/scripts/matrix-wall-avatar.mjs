@@ -33,35 +33,34 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  const doc=surface.ownerDocument,win=doc.defaultView;
  const wall=doc.createElement('dialog');wall.id=STARBUCKS_AVATAR_WALL.id;wall.className='matrix-wall-avatar';wall.setAttribute('aria-label',t('Avatar digital · pared Starbucks','Digital avatar · Starbucks wall'));
  const frame=doc.createElement('iframe');frame.title=t('Avatar digital','Digital avatar');frame.referrerPolicy='no-referrer-when-downgrade';frame.inert=true;
- const expand=doc.createElement('button');expand.type='button';expand.className='matrix-avatar-expand';expand.setAttribute('aria-label',t('Ampliar kiosko Starbucks','Enlarge Starbucks kiosk'));expand.title=t('Explorar Starbucks at Home','Explore Starbucks at Home');expand.textContent=t('Starbucks at Home ↗','Starbucks at Home ↗');
+ const expand=doc.createElement('button');expand.type='button';expand.className='matrix-avatar-expand';expand.setAttribute('aria-label',t('Hablar con el avatar','Talk to the avatar'));expand.title=t('Avatar digital · Admirito','Digital avatar · Admirito');expand.textContent=t('Hablar con el avatar','Talk to the avatar');
  const close=doc.createElement('button');close.type='button';close.className='matrix-avatar-close';close.textContent=t('✕ Cerrar','✕ Close');
  const toolbar=doc.createElement('div');toolbar.className='matrix-avatar-toolbar';
- const kiosk=doc.createElement('button');kiosk.type='button';kiosk.textContent=t('Web Starbucks · Demo','Starbucks website · Demo');
- const talk=doc.createElement('button');talk.type='button';talk.textContent=t('Hablar con el avatar','Talk to the avatar');
  const model=doc.createElement('select');model.className='matrix-avatar-model';model.setAttribute('aria-label',t('Modelo del avatar','Avatar model'));for(const [value,label]of [['good','Good · Admirito'],['better',t('Better · Chica','Better · Girl')],['best','Best · Neo']]){const option=doc.createElement('option');option.value=value;option.textContent=label;model.append(option);}
- toolbar.append(kiosk,talk,close,model);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
- let disposed=false,expanded=false,source='',releaseMusic=null,mode='kiosk',avatarLanguage='',siteLanguage=defaultContext(win).lang,localChoice='';
- function showMode(next){if(next==='avatar'&&mode!=='avatar'){avatarLanguage='';render();}if(next==='kiosk')avatarLanguage='';mode=next;wall.dataset.mode=mode;frame.title=mode==='kiosk'?t('Starbucks at Home · Demo kiosko','Starbucks at Home · Kiosk demo'):t('Avatar digital','Digital avatar');if(mode==='avatar')frame.allow='microphone; autoplay';else frame.removeAttribute('allow');frame.src=mode==='kiosk'?STARBUCKS_KIOSK_URL:source;kiosk.setAttribute('aria-pressed',String(mode==='kiosk'));talk.setAttribute('aria-pressed',String(mode==='avatar'));}
+ toolbar.append(close,model);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
+ let disposed=false,expanded=false,source='',releaseMusic=null,mode='avatar',avatarLanguage='',siteLanguage=defaultContext(win).lang,localChoice='';
+ function resetConversation(){avatarLanguage='';render();frame.src=source;}
+ wall.dataset.mode='avatar';
  function currentContext(){let extra={};try{extra=(typeof context==='function'?context():context)||{};}catch{}return {...defaultContext(win),...extra,lang:avatarLanguage||defaultContext(win).lang};}
  let sentLive='';
  function postLive(force){if(mode!=='avatar')return;let value='';try{value=String((typeof live==='function'?live():'')||'').slice(0,600);}catch{}if(!force&&value===sentLive)return;sentLive=value;try{frame.contentWindow?.postMessage({type:'da-context',live:value},AVATAR_WALL_ORIGIN);}catch{}}
  frame.addEventListener('load',()=>postLive(true));
  function render(){const language=defaultContext(win).lang;if(language!==siteLanguage){siteLanguage=language;avatarLanguage='';}let chosen=localChoice;try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||localChoice;}catch{}const level=wallAvatarLevel({chosen});model.value=level;const next=wallAvatarUrl(level,currentContext());if(next!==source){const previous=source?new URL(source):null;source=next;if(mode==='avatar'){if(previous&&previous.searchParams.get('tier')===level){try{frame.contentWindow?.postMessage({type:'da-context',...currentContext()},AVATAR_WALL_ORIGIN);}catch{}}else frame.src=source;}}else postLive(false);}
- render();showMode('kiosk');
+ render();
  model.addEventListener('change',()=>{if(!AVATAR_WALL_RENDERERS[model.value])return;localChoice=model.value;try{win.sessionStorage.setItem(AVATAR_WALL_CHOICE_KEY,localChoice);win.localStorage.setItem('admira-avatar:nivel',localChoice);}catch{}render();});
- function collapse(){if(disposed||!expanded)return;expanded=false;frame.inert=true;wall.close();wall.show();showMode('kiosk');releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
- function enlarge(next='avatar'){if(disposed)return;if(expanded){showMode(next);return;}showMode(next);win.XpaceMediaExperience?.close();doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.media-ready video,.options-playlist-preview audio,.options-playlist-preview video').forEach(n=>n.pause());win.XpaceAnnouncements?.stopStock?.();expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();releaseMusic=win.XpaceMatrixOptions?.suppressMusic?.();close.focus();}
- expand.addEventListener('click',()=>enlarge('kiosk'));kiosk.addEventListener('click',()=>showMode('kiosk'));talk.addEventListener('click',()=>showMode('avatar'));close.addEventListener('click',collapse);
+ function collapse(){if(disposed||!expanded)return;expanded=false;frame.inert=true;frame.removeAttribute('allow');frame.src='about:blank';resetConversation();wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
+ function enlarge(){if(disposed||expanded)return;frame.allow='microphone; autoplay';resetConversation();win.XpaceMediaExperience?.close();doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.media-ready video,.options-playlist-preview audio,.options-playlist-preview video').forEach(n=>n.pause());win.XpaceAnnouncements?.stopStock?.();expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();releaseMusic=win.XpaceMatrixOptions?.suppressMusic?.();close.focus();}
+ expand.addEventListener('click',enlarge);close.addEventListener('click',collapse);
  wall.addEventListener('cancel',e=>{e.preventDefault();collapse();});wall.addEventListener('close',()=>{if(!wall.open)collapse();});
  wall.addEventListener('click',e=>{if(expanded&&e.target===wall)collapse();});
  for(const name of ['pointerdown','wheel','keydown'])wall.addEventListener(name,e=>e.stopPropagation());
  // A same-tab model command updates localStorage without a storage event; the same poll
  // follows language/brand changes and pushes the now-playing track (best tier uses it).
- function onKioskMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){avatarLanguage=e.data.lang;source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());return;}if(mode==='kiosk'&&expanded&&e.source===frame.contentWindow&&e.origin===win.location.origin&&e.data?.type==='starbucks-kiosk:close')collapse();}
- win.addEventListener('message',onKioskMessage);
+ function onAvatarMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){avatarLanguage=e.data.lang;source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());return;}}
+ win.addEventListener('message',onAvatarMessage);
  const levelPoll=win.setInterval(render,1000);
  // focus(): the camera already looks at the wall; point keyboard focus at the talk button.
  function focus(){if(disposed)return;expand.classList.add('is-called');expand.focus({preventScroll:true});win.setTimeout(()=>expand.classList.remove('is-called'),2400);}
  return {focus,enlarge,get expanded(){return expanded;},get level(){return (source.match(/[?&]tier=(\w+)/)||[])[1]||'';},draw(project,marking){if(expanded||disposed)return;const points=STARBUCKS_AVATAR_WALL.corners.map(project);const matrix=points.every(Boolean)&&quadTransform(points,400,900);wall.hidden=!!marking||!matrix;if(matrix)wall.style.transform='matrix3d('+matrix.join(',')+')';},
- dispose(){if(disposed)return;disposed=true;win.clearInterval(levelPoll);win.removeEventListener('message',onKioskMessage);releaseMusic?.();frame.removeAttribute('src');if(wall.open)wall.close();wall.remove();}};
+ dispose(){if(disposed)return;disposed=true;win.clearInterval(levelPoll);win.removeEventListener('message',onAvatarMessage);releaseMusic?.();frame.removeAttribute('src');if(wall.open)wall.close();wall.remove();}};
 }
