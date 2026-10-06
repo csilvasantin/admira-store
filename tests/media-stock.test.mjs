@@ -26,3 +26,14 @@ test('an unconfirmed audio archive cannot show a Stock success receipt or play a
  const h=runtime(async()=>new Response('MP3',{headers:{'Content-Type':'audio/mpeg'}}),new Map(),nodes);
  await assert.rejects(h.api.generate('audio',{text:'Fresh coffee',voice:'female',language:'en'}),e=>e.code==='invalid_stock');assert.equal(nodes.announcementArchiveStatus.hidden,true);assert.equal(nodes.audioStockLink.hidden,true);
 });
+
+test('generation feedback follows one operation through server phases and asset readiness without invented percentages',async()=>{
+ const phases=[],callbacks=[];let n=0;const h=runtime(async url=>{if(url===stock.url)return new Response('MP3');return Response.json({ok:true,job:{status:['pending','archiving','done'][n++],stock}});});
+ h.root.XpaceMediaExperience={progress:(kind,phase)=>phases.push([kind,phase])};
+ await h.api.generate('audio',{text:'Aviso',voice:'female',language:'es'},{onProgress:phase=>callbacks.push(phase)});
+ assert.deepEqual(phases.map(x=>x[1]),['preparing','pending','archiving','loading','done']);assert.deepEqual(callbacks,phases.map(x=>x[1]));
+});
+test('feedback reports failure and retains the same request for recovery instead of finishing the bar',async()=>{
+ const h=runtime(async()=>{throw Error('network');}),phases=[];h.root.XpaceMediaExperience={progress:(kind,phase)=>phases.push(phase)};
+ await assert.rejects(h.api.generate('video',{text:'Coffee'}));assert.deepEqual(phases,['preparing','error']);assert.ok(h.api.pending('video').requestId);
+});

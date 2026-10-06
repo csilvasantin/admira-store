@@ -7,10 +7,10 @@
     "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
   ],
   "default": [
-    "Experto legible con cualquier marca; contraste limitado al menú inferior",
-    "Matrix sin rumor, cafetera ni lluvia del simulador oculto",
-    "PREVIOS persistentes por Xpacio: imagen, vídeo, música y locución; sin reloj",
-    "Restaurados Opciones compactas y arrastre centrado; espejo protegido"
+    "Barra de creación por fases para imagen, vídeo, locución y entregas musicales",
+    "Doble clic abre un previo grande en el centro; Cerrar o Escape detiene el visor",
+    "Arrastre centrado y PREVIOS persistentes conservados",
+    "Contraste de Experto y silencio ambiental de Matrix conservados"
   ],
   "v.06.10.2026.r2.13:14": [
     "⌘ Experto cerrado por defecto: quien entra por primera vez no lo ve; se abre con el ⌘ de la barra",
@@ -32,5 +32,11 @@
     "Matrix sin rumor, cafetera ni lluvia del simulador oculto",
     "PREVIOS persistentes por Xpacio: imagen, vídeo, música y locución; sin reloj",
     "Restaurados Opciones compactas y arrastre centrado; espejo protegido"
+  ],
+  "v.06.10.2026.r11.19:33": [
+    "Barra de creación por fases para imagen, vídeo, locución y entregas musicales",
+    "Doble clic abre un previo grande en el centro; Cerrar o Escape detiene el visor",
+    "Arrastre centrado y PREVIOS persistentes conservados",
+    "Contraste de Experto y silencio ambiental de Matrix conservados"
   ]
 }

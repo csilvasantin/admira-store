@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.06.10.2026.r10.19:13",
+  "version": "v.06.10.2026.r11.19:33",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.48",
+    "version": "2.12.49",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -2115,14 +2115,45 @@
     "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
   },
   "retained_ui_contract": {
-    "revision": "alsea-readable-previews-20261006",
+    "revision": "media-experience-20261006",
     "files": [
       "assets/expert-legibility.css",
       "admira-xp/scripts/created-media-history.js",
       "admira-xp/scripts/expert-previews.js",
       "admira-xp/scripts/options-rail.mjs",
       "admira-xp/docs/options-compact.md",
-      "admira-xp/scripts/media-drag.css"
+      "admira-xp/scripts/media-drag.css",
+      "admira-xp/scripts/media-experience.js",
+      "admira-xp/scripts/media-experience.css"
     ]
+  },
+  "media_creation_experience": {
+    "help_topic": "media-creation-experience",
+    "es": "La creación muestra una barra por fases: Preparar, Crear, Stock y Listo. La animación indica espera sin inventar porcentajes ni tiempos; sólo termina cuando el recibo de Stock y el contenido están listos. Música se crea en Pixeria: al abrir el creador se muestra «esperando la nueva entrega en Stock» hasta recibirla en este Xpacio. Haz doble clic sobre una imagen, vídeo, carátula o audio en PREVIOS o en el previo de Opciones/playlist para abrirlo grande en el centro. También puedes enfocar el previo y pulsar Enter. Cerrar, Escape o pulsar el fondo cierra el previo y detiene su audio/vídeo. Abrir no reproduce ni publica; los controles del previo sólo actúan en este navegador. El arrastre sigue disponible al mantener pulsado y mover.",
+    "en": "Creation shows a stage bar: Prepare, Create, Stock and Ready. Animation indicates waiting without invented percentages or times; it finishes only once the Stock receipt and media are ready. Music is created in Pixeria: opening the creator shows “waiting for the new Stock delivery” until this Xpace receives it. Double-click an image, video, cover or audio in PREVIEWS or the Options/playlist preview to open it large in the centre. You can also focus the preview and press Enter. Close, Escape or clicking the backdrop closes the preview and stops its audio/video. Opening does not play or publish; preview controls act only in this browser. Hold and move to keep using drag and drop.",
+    "progress": {
+      "type": "confirmed_stages",
+      "stages": [
+        "preparing",
+        "generating",
+        "archiving",
+        "loading",
+        "done"
+      ],
+      "music": "external_creator_waits_for_stock_delivery",
+      "estimated_percentage": false
+    },
+    "preview": {
+      "gesture": "double_click",
+      "keyboard": "Enter",
+      "close": [
+        "button",
+        "Escape",
+        "backdrop"
+      ],
+      "autoplay": false,
+      "publishes": false
+    },
+    "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
   }
 }

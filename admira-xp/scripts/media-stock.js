@@ -7,7 +7,7 @@
  const error=(code)=>Object.assign(new Error(code),{code});
  function receipt(stock){if(!stock?.id||!stock.url)throw error('invalid_stock');const u=new URL(stock.url);if(u.origin!=='https://api.admira.store'||u.pathname!=='/stock/asset/'+stock.id)throw error('invalid_stock');return stock;}
  function sleep(ms,signal){return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(error('cancelled'));};const timer=root.setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});});}
- async function generate(kind,payload,{signal,onProgress=()=>{}}={}){
+ async function operation(kind,payload,{signal,onProgress=()=>{}}={}){
   if(!endpoints[kind])throw error('invalid_kind');
   let saved=pending(kind);const signature=JSON.stringify(payload);
   // An explicit changed brief/voice/language replaces local playback, while the old server job still archives.
@@ -26,11 +26,12 @@
    if(response.status===401){keep(kind,null);throw error('auth');}
    if(!response.ok)throw error('generation');
    if(String(response.headers.get('Content-Type')).startsWith('audio/')){
+    onProgress('loading');
     const stock=receipt({id:response.headers.get('X-Stock-Id'),url:response.headers.get('X-Stock-Url'),num:Number(response.headers.get('X-Stock-Num'))||null});
     const audioBlob=await response.blob();if(!audioBlob.size)throw error('empty_audio');completed(kind,stock,payload);keep(kind,null);return {stock,audioBlob};
    }
    const data=await response.json(),job=data?.job;if(!data.ok||!job)throw error('generation');
-   onProgress(job.status);
+   onProgress(job.status==='done'?'loading':job.status);
    if(job.status==='failed'){keep(kind,null);throw error(job.error||'generation');}
    if(job.status==='done'){
     const stock=receipt(job.stock);let audioBlob;
@@ -41,6 +42,12 @@
    await sleep(4000,signal);
    response=await root.fetch('/admira-xp/media-job?requestId='+saved.requestId,{credentials:'same-origin',redirect:'error',cache:'no-store',signal:requestSignal()});
   }
+ }
+ async function generate(kind,payload,options={}){
+  const report=phase=>{root.XpaceMediaExperience?.progress(kind,phase,{title:payload.text,requestId:pending(kind)?.requestId||''});options.onProgress?.(phase);};
+  report('preparing');
+  try{const result=await operation(kind,payload,{...options,onProgress:report});report('done');return result;}
+  catch(e){report(e.code==='auth'?'auth':e.code==='still_pending'?'waiting':e.code==='cancelled'||e.name==='AbortError'?'cancelled':'error');throw e;}
  }
  function link(kind,stock){stock=receipt(stock);const a=root.document?.getElementById(kind+'StockLink');if(!a)return;a.href='https://www.pixeria.com/stock.html?highlight='+encodeURIComponent(stock.id);a.dataset.stockId=stock.id;a.dataset.assetUrl=stock.url;if(kind==='audio'){a.dataset.stockNum=stock.num||'';try{root.sessionStorage.setItem(audioReceiptKey,JSON.stringify(stock));}catch(_){}const archive=root.document.getElementById('announcementArchiveStatus');if(archive){archive.dataset.stockNum=stock.num||'';archive.hidden=false;}}a.hidden=false;renderLinks();if(['image','video'].includes(kind))root.XpaceMediaOptions?.stage(kind,stock);}
  function renderLinks(){const en=root.document.documentElement.lang==='en';for(const a of root.document.querySelectorAll('[data-media-stock]'))a.textContent=a.id==='audioStockLink'?(en?'Open in Stock · Public announcements':'Ver en Stock · Megafonía'):(en?'Open in Stock':'Ver en Stock');const archive=root.document.getElementById('announcementArchiveStatus');if(archive&&!archive.hidden)archive.textContent=(en?'Last announcement saved automatically in Stock · Public announcements':'Última locución guardada automáticamente en Stock · Megafonía')+(archive.dataset.stockNum?' · #'+archive.dataset.stockNum:'');}

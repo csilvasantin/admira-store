@@ -57,6 +57,7 @@
   launch.title=item.kind==='voice'?t('Emitir la locución tres veces en el Xpacio','Play the voiceover three times in the Xpace'):t('Añadir a la playlist y reproducir en el Xpacio','Add to the playlist and play in the Xpace');
   const stock=card.querySelector('[data-preview-stock]');stock.textContent=item.kind==='voice'?t('Ver en Stock · Megafonía','Open in Stock · Announcements'):t('Ver en Stock','Open in Stock');
   card.setAttribute('aria-label',t(...LABEL[item.kind])+' · '+item.title);
+  for(const node of card.querySelectorAll('.epc-media,.epc-audio,[data-media-expand]'))root.XpaceMediaExperience?.bind(node,item);
   const media=card.querySelector('.epc-media img');if(media)media.alt=item.title;
   const note=card.querySelector('.epc-status');const n=notes.get(uid(item));note.textContent=n?t(n[0],n[1]):'';note.hidden=!n;
  }
@@ -87,12 +88,13 @@
   const media=el('div','epc-media');
   if(item.kind==='image'||item.kind==='video'){const p=player(item);media.append(root.XpaceMediaOptions?.preview?root.XpaceMediaOptions.preview(item.kind,item,p):p);}
   else{const art=item.thumbnail?Object.assign(el('img'),{src:item.thumbnail,alt:'',draggable:false}):el('span','epc-glyph',item.kind==='voice'?'🎙':'♫');art.setAttribute?.('aria-hidden','true');media.classList.add('epc-art');media.append(art);root.XpaceMediaOptions?.attachPreview?.(media,'music',{...item,sourceType:item.kind==='voice'?'locucion':item.sourceType},art);}
+  root.XpaceMediaExperience?.bind(media,item);
   const meta=el('div','epc-meta'),tag=el('p','epc-tag');tag.append(el('b','epc-kind'),el('span','epc-when'));
   const actions=el('div','epc-actions'),launch=el('button');launch.type='button';launch.dataset.previewLaunch=item.kind;launch.addEventListener('click',()=>launchItem(item,launch));
   const stock=el('a');stock.dataset.previewStock=item.kind;stock.href=stockHref(item);stock.target='_blank';stock.rel='noopener';
   actions.append(launch,stock);const status=el('p','epc-status');status.setAttribute('role','status');status.hidden=true;
   meta.append(tag,el('p','epc-title'),actions,status);c.append(media,meta);
-  if(item.kind==='music'||item.kind==='voice'){const audio=el('div','epc-audio');audio.append(player(item));c.append(audio);}
+  if(item.kind==='music'||item.kind==='voice'){const audio=el('div','epc-audio');audio.append(player(item));root.XpaceMediaExperience?.bind(audio,item);c.append(audio);}
   texts(c,item);return c;
  }
  function render(fresh){
