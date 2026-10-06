@@ -23,16 +23,13 @@ function defaultContext(win){
  return {...AVATAR_WALL_CONTEXT,lang,...(brand?{brand}:{})};
 }
 
-// Level on the wall (06-10-2026): the user's /avatar <level> in this tab (sessionStorage,
-// written by the shared loader) > the level the page asks for (Matrix 64 bits = best) >
-// the last stored level > good.
+// Assistant model is independent of the Xpace visual quality. Explicit tab choice > Good.
+// The legacy language key is retained for compatibility but never overrides the site.
 export const AVATAR_WALL_LANGUAGE_KEY='admira-avatar:language:alsea-sbux-021';
 export const AVATAR_WALL_CHOICE_KEY='admira-avatar:nivel-elegido';
-export function wallAvatarLevel({chosen='',tier='',stored=''}={}){
- for(const value of [chosen,tier,stored])if(AVATAR_WALL_RENDERERS[value])return value;
- return 'good';
-}
-export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null,live=null,tier='best'}={}){
+export function wallAvatarLevel({chosen=''}={}){return AVATAR_WALL_RENDERERS[chosen]?chosen:'good';}
+
+export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null,live=null}={}){
  const doc=surface.ownerDocument,win=doc.defaultView;
  const wall=doc.createElement('dialog');wall.id=STARBUCKS_AVATAR_WALL.id;wall.className='matrix-wall-avatar';wall.setAttribute('aria-label',t('Avatar digital · pared Starbucks','Digital avatar · Starbucks wall'));
  const frame=doc.createElement('iframe');frame.title=t('Avatar digital','Digital avatar');frame.referrerPolicy='no-referrer-when-downgrade';frame.inert=true;
@@ -41,16 +38,17 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  const toolbar=doc.createElement('div');toolbar.className='matrix-avatar-toolbar';
  const kiosk=doc.createElement('button');kiosk.type='button';kiosk.textContent=t('Web Starbucks · Demo','Starbucks website · Demo');
  const talk=doc.createElement('button');talk.type='button';talk.textContent=t('Hablar con el avatar','Talk to the avatar');
- toolbar.append(kiosk,talk,close);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
- let disposed=false,expanded=false,source='',releaseMusic=null,mode='kiosk';
- function showMode(next){mode=next;wall.dataset.mode=mode;frame.title=mode==='kiosk'?t('Starbucks at Home · Demo kiosko','Starbucks at Home · Kiosk demo'):t('Avatar digital','Digital avatar');if(mode==='avatar')frame.allow='microphone; autoplay';else frame.removeAttribute('allow');frame.src=mode==='kiosk'?STARBUCKS_KIOSK_URL:source;kiosk.setAttribute('aria-pressed',String(mode==='kiosk'));talk.setAttribute('aria-pressed',String(mode==='avatar'));}
- showMode('kiosk');
- function currentContext(){let extra={},lang='';try{extra=(typeof context==='function'?context():context)||{};}catch{}try{lang=win.sessionStorage.getItem(AVATAR_WALL_LANGUAGE_KEY)||'';}catch{}return {...defaultContext(win),...extra,...(['es','en'].includes(lang)?{lang}:{})};}
+ const model=doc.createElement('select');model.className='matrix-avatar-model';model.setAttribute('aria-label',t('Modelo del avatar','Avatar model'));for(const [value,label]of [['good','Good · Admirito'],['better',t('Better · Chica','Better · Girl')],['best','Best · Neo']]){const option=doc.createElement('option');option.value=value;option.textContent=label;model.append(option);}
+ toolbar.append(kiosk,talk,close,model);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
+ let disposed=false,expanded=false,source='',releaseMusic=null,mode='kiosk',avatarLanguage='',siteLanguage=defaultContext(win).lang,localChoice='';
+ function showMode(next){if(next==='avatar'&&mode!=='avatar'){avatarLanguage='';render();}if(next==='kiosk')avatarLanguage='';mode=next;wall.dataset.mode=mode;frame.title=mode==='kiosk'?t('Starbucks at Home · Demo kiosko','Starbucks at Home · Kiosk demo'):t('Avatar digital','Digital avatar');if(mode==='avatar')frame.allow='microphone; autoplay';else frame.removeAttribute('allow');frame.src=mode==='kiosk'?STARBUCKS_KIOSK_URL:source;kiosk.setAttribute('aria-pressed',String(mode==='kiosk'));talk.setAttribute('aria-pressed',String(mode==='avatar'));}
+ function currentContext(){let extra={};try{extra=(typeof context==='function'?context():context)||{};}catch{}return {...defaultContext(win),...extra,lang:avatarLanguage||defaultContext(win).lang};}
  let sentLive='';
  function postLive(force){if(mode!=='avatar')return;let value='';try{value=String((typeof live==='function'?live():'')||'').slice(0,600);}catch{}if(!force&&value===sentLive)return;sentLive=value;try{frame.contentWindow?.postMessage({type:'da-context',live:value},AVATAR_WALL_ORIGIN);}catch{}}
  frame.addEventListener('load',()=>postLive(true));
- function render(){let chosen='',stored='';try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||'';}catch{}try{stored=win.localStorage.getItem('admira-avatar:nivel')||'';}catch{}let wanted=tier;try{wanted=typeof tier==='function'?tier():tier;}catch{}const level=wallAvatarLevel({chosen,tier:wanted,stored});const next=wallAvatarUrl(level,currentContext());if(next!==source){source=next;if(mode==='avatar')frame.src=source;}else postLive(false);}
- render();
+ function render(){const language=defaultContext(win).lang;if(language!==siteLanguage){siteLanguage=language;avatarLanguage='';}let chosen=localChoice;try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||localChoice;}catch{}const level=wallAvatarLevel({chosen});model.value=level;const next=wallAvatarUrl(level,currentContext());if(next!==source){const previous=source?new URL(source):null;source=next;if(mode==='avatar'){if(previous&&previous.searchParams.get('tier')===level){try{frame.contentWindow?.postMessage({type:'da-context',...currentContext()},AVATAR_WALL_ORIGIN);}catch{}}else frame.src=source;}}else postLive(false);}
+ render();showMode('kiosk');
+ model.addEventListener('change',()=>{if(!AVATAR_WALL_RENDERERS[model.value])return;localChoice=model.value;try{win.sessionStorage.setItem(AVATAR_WALL_CHOICE_KEY,localChoice);win.localStorage.setItem('admira-avatar:nivel',localChoice);}catch{}render();});
  function collapse(){if(disposed||!expanded)return;expanded=false;frame.inert=true;wall.close();wall.show();showMode('kiosk');releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
  function enlarge(next='avatar'){if(disposed)return;if(expanded){showMode(next);return;}showMode(next);win.XpaceMediaExperience?.close();doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.media-ready video,.options-playlist-preview audio,.options-playlist-preview video').forEach(n=>n.pause());win.XpaceAnnouncements?.stopStock?.();expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();releaseMusic=win.XpaceMatrixOptions?.suppressMusic?.();close.focus();}
  expand.addEventListener('click',()=>enlarge('kiosk'));kiosk.addEventListener('click',()=>showMode('kiosk'));talk.addEventListener('click',()=>showMode('avatar'));close.addEventListener('click',collapse);
@@ -59,7 +57,7 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  for(const name of ['pointerdown','wheel','keydown'])wall.addEventListener(name,e=>e.stopPropagation());
  // A same-tab model command updates localStorage without a storage event; the same poll
  // follows language/brand changes and pushes the now-playing track (best tier uses it).
- function onKioskMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){try{win.sessionStorage.setItem(AVATAR_WALL_LANGUAGE_KEY,e.data.lang);}catch{}source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());return;}if(mode==='kiosk'&&expanded&&e.source===frame.contentWindow&&e.origin===win.location.origin&&e.data?.type==='starbucks-kiosk:close')collapse();}
+ function onKioskMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){avatarLanguage=e.data.lang;source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());return;}if(mode==='kiosk'&&expanded&&e.source===frame.contentWindow&&e.origin===win.location.origin&&e.data?.type==='starbucks-kiosk:close')collapse();}
  win.addEventListener('message',onKioskMessage);
  const levelPoll=win.setInterval(render,1000);
  // focus(): the camera already looks at the wall; point keyboard focus at the talk button.

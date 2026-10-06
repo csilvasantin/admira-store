@@ -2118,7 +2118,7 @@
     "guide": "https://www.admira.store/admira-xp/docs/expert-previews.md"
   },
   "retained_ui_contract": {
-    "revision": "avatar-language-controls-20261006",
+    "revision": "avatar-site-defaults-20261006",
     "files": [
       "assets/expert-legibility.css",
       "admira-xp/scripts/created-media-history.js",
@@ -2146,7 +2146,8 @@
       "admira-xp/kiosk/starbucks/index.html",
       "admira-xp/kiosk/starbucks/kiosk.js",
       "admira-xp/kiosk/starbucks/kiosk.css",
-      "admira-xp/kiosk/starbucks/assets/sources.json"
+      "admira-xp/kiosk/starbucks/assets/sources.json",
+      "admira-xp/scripts/matrix-panorama.css"
     ]
   },
   "media_creation_experience": {
@@ -2211,16 +2212,24 @@
     "official_url": "https://www.starbucksathome.com/es/",
     "simulation": true,
     "language_controls": {
-      "es": "El avatar ofrece ESP y ENG junto a la pregunta, también en modo integrado. ESP muestra Micrófono, Detener y Preguntar; ENG muestra Microphone, Stop y Ask. Los controles conservan sus acciones de voz, escucha y envío, con iconos SVG, etiquetas legibles y foco de teclado. Al cambiar de idioma se detiene la conversación anterior, se mantienen la pregunta escrita, el nivel y el contexto de la tienda; el cambio no envía preguntas ni activa el micrófono. La pared Alsea recuerda la elección durante esta pestaña, incluso al cerrar y reabrir el avatar, sin recargar la conversación al elegir idioma.",
-      "en": "The avatar offers ESP and ENG next to the question, including embedded mode. ESP shows Micrófono, Detener and Preguntar; ENG shows Microphone, Stop and Ask. Controls retain their speech, listening and send actions, with SVG icons, readable labels and keyboard focus. Changing language stops the previous conversation while preserving the typed question, tier and store context; switching neither sends questions nor enables the microphone. The Alsea wall remembers the choice for this tab, including closing and reopening the avatar, without reloading the conversation when selecting a language.",
+      "es": "Al abrir el avatar se hereda el idioma actual del site: ESP en castellano y ENG en inglés. El modelo inicial es Good · Admirito, independiente de la calidad del Xpacio (también en Matrix). El selector Modelo del avatar permite elegir Good · Admirito, Better · Chica o Best · Neo; también sirven /avatar digital good, /avatar digital better y /avatar digital best. Una elección explícita de modelo se conserva en esta pestaña. ESP muestra Micrófono, Detener y Preguntar; ENG muestra Microphone, Stop y Ask. Cambiar ESP/ENG dentro de la conversación conserva la pregunta escrita y detiene la voz/escucha anterior, sin enviar una pregunta ni activar el micrófono. Al cerrar y reabrir vuelve a heredarse el idioma del site; cambiar el idioma del site actualiza la conversación abierta sin recargar el iframe. Best utiliza el MetaHuman Neo y conserva el respaldo web existente cuando el host no emite.",
+      "en": "Opening the avatar inherits the current site language: ESP for Spanish and ENG for English. The initial model is Good · Admirito, independent of Xpace quality (including Matrix). The Avatar model selector offers Good · Admirito, Better · Girl or Best · Neo; /avatar digital good, /avatar digital better and /avatar digital best also work. An explicit model choice is retained for this tab. ESP shows Micrófono, Detener and Preguntar; ENG shows Microphone, Stop and Ask. Switching ESP/ENG in the conversation preserves the typed question and stops the previous speech/listening without sending a question or enabling the microphone. Closing and reopening inherits the site language again; changing the site language updates the open conversation without reloading its iframe. Best uses the Neo MetaHuman and retains the existing web fallback when the render host is unavailable.",
       "languages": [
         "es",
         "en"
       ],
       "parent_message": "da-language-selected",
-      "storage": "sessionStorage:admira-avatar:language:alsea-sbux-021",
-      "iframe_reload_on_choice": false
-    }
+      "storage": "open conversation only; site html.lang on every opening",
+      "iframe_reload_on_choice": false,
+      "site_language_authoritative": true
+    },
+    "default_avatar_model": "good",
+    "models": {
+      "good": "Admirito",
+      "better": "Chica / Girl",
+      "best": "Neo"
+    },
+    "model_selection": "visible selector or explicit CLI choice; independent of visual quality"
   },
   "latest_media_preview": {
     "help_topic": "latest-media-preview",

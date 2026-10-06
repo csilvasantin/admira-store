@@ -1,5 +1,5 @@
 {
-  "version": "v.06.10.2026.r26.22:15",
+  "version": "v.06.10.2026.r27.22:36",
   "deployedAt": "2026-10-06T20:05:36Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
@@ -9,8 +9,8 @@
   "gitFull": "f70129bd72d8164d975ef30cb56d977f55c3f974",
   "dirty": false,
   "novedades": [
-    "Selector ESP/ENG visible dentro del avatar",
-    "Botones modernos: Micrófono, Detener y Preguntar en castellano; Microphone, Stop y Ask en inglés",
-    "El idioma elegido se conserva al cerrar y reabrir el avatar de la pared"
+    "El avatar hereda el idioma del site al abrir: ESP o ENG",
+    "Good · Admirito por defecto, independiente de la calidad Matrix",
+    "Selector de modelo: Good · Admirito, Better · Chica, Best · Neo"
   ]
 }

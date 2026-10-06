@@ -7,8 +7,8 @@ function harness(){
  const win={location:{origin:'https://example.test'},document:{documentElement:{lang:'es'}},sessionStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},localStorage:{getItem:()=>null},setInterval:f=>(poll=f,1),clearInterval(){},setTimeout(){},addEventListener(k,f){events[k]=f;},removeEventListener(k){delete events[k];},XpaceMatrixOptions:{suppressMusic:()=>()=>released++}};
  const doc={defaultView:win,createElement:t=>{const n=new Node(t);if(t==='iframe')n.contentWindow={postMessage:(...p)=>posts.push(p)};return n;},querySelectorAll:()=>[]};
  const surface=new Node('surface');surface.ownerDocument=doc;
- const api=mountWallAvatar(surface),wall=surface.children[0],[toolbar,frame,expand]=wall.children,[kiosk,talk,close]=toolbar.children;
- return {api,wall,frame,expand,kiosk,talk,close,storage,poll:()=>poll(),message:e=>events.message?.(e),released:()=>released,posts};
+ const api=mountWallAvatar(surface),wall=surface.children[0],[toolbar,frame,expand]=wall.children,[kiosk,talk,close,model]=toolbar.children;
+ return {api,wall,frame,expand,kiosk,talk,close,model,win,storage,poll:()=>poll(),message:e=>events.message?.(e),released:()=>released,posts};
 }
 test('default kiosk does not load an avatar or request speech permissions, including during tier polling',()=>{
  const h=harness();assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.wall.dataset.mode,'kiosk');assert.equal(h.frame.allow,undefined);
@@ -16,7 +16,7 @@ test('default kiosk does not load an avatar or request speech permissions, inclu
 });
 test('screen opens kiosk; explicit Talk retains selected avatar; switching back stops that renderer',()=>{
  const h=harness();h.expand.emit('click');assert.equal(h.api.expanded,true);assert.equal(h.frame.inert,false);assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);
- h.talk.emit('click');assert.match(h.frame.src,/metahuman.html/);assert.equal(h.frame.allow,'microphone; autoplay');
+ h.talk.emit('click');assert.match(h.frame.src,/nube.html/);assert.equal(h.frame.allow,'microphone; autoplay');
  h.storage.set('admira-avatar:nivel-elegido','good');h.poll();assert.match(h.frame.src,/nube.html/);
  h.kiosk.emit('click');assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);assert.equal(h.frame.allow,undefined);
  h.close.emit('click');assert.equal(h.api.expanded,false);assert.equal(h.frame.inert,true);assert.equal(h.released(),1);
@@ -29,12 +29,18 @@ test('Escape accepts only the expanded local kiosk iframe; close restores its ho
  h.kiosk.emit('click');h.message(e);assert.equal(h.api.expanded,false);assert.equal(h.frame.src,STARBUCKS_KIOSK_URL);
 });
 
-test('explicit embedded-avatar language is retained without reload; forged changes are ignored',()=>{
- const h=harness();h.api.enlarge();const src=h.frame.src;
+test('opening inherits site language despite legacy preference; manual choice lasts only this conversation',()=>{
+ const h=harness();h.storage.set(AVATAR_WALL_LANGUAGE_KEY,'en');h.api.enlarge();assert.equal(new URL(h.frame.src).searchParams.get('lang'),'es');const src=h.frame.src;
  const event={source:h.frame.contentWindow,origin:'https://digitalavatar.ai',data:{type:'da-language-selected',lang:'en'}};
- h.message({...event,origin:'https://evil.test'});assert.equal(h.storage.has(AVATAR_WALL_LANGUAGE_KEY),false);
- h.message({...event,source:{}});assert.equal(h.storage.has(AVATAR_WALL_LANGUAGE_KEY),false);
- h.message(event);assert.equal(h.storage.get(AVATAR_WALL_LANGUAGE_KEY),'en');h.poll();assert.equal(h.frame.src,src,'same conversation must not reload');
+ h.message({...event,origin:'https://evil.test'});h.message({...event,source:{}});h.poll();assert.equal(h.frame.src,src);
+ h.message(event);h.poll();assert.equal(h.frame.src,src,'same conversation must not reload');
+ h.close.emit('click');h.api.enlarge();assert.equal(new URL(h.frame.src).searchParams.get('lang'),'es');
+ h.win.document.documentElement.lang='en';h.poll();assert.ok(h.posts.some(([p])=>p.type==='da-context'&&p.lang==='en'));assert.equal(h.frame.src,src,'site language travels without remount');
  h.close.emit('click');h.api.enlarge();assert.equal(new URL(h.frame.src).searchParams.get('lang'),'en');
- h.message({...event,data:{type:'da-language-selected',lang:'fr'}});assert.equal(h.storage.get(AVATAR_WALL_LANGUAGE_KEY),'en');
+});
+test('default Good and model selector retain explicit Better and Best independently of page quality',()=>{
+ const h=harness();assert.equal(h.api.level,'good');h.api.enlarge();assert.match(h.frame.src,/nube.html/);
+ h.model.value='better';h.model.emit('change');assert.equal(h.api.level,'better');assert.match(h.frame.src,/best.html/);assert.equal(h.storage.get('admira-avatar:nivel-elegido'),'better');
+ h.model.value='best';h.model.emit('change');assert.equal(h.api.level,'best');assert.match(h.frame.src,/metahuman.html/);
+ h.model.value='good';h.model.emit('change');assert.match(h.frame.src,/nube.html/);
 });

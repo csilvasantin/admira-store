@@ -130,5 +130,10 @@
     "Selector ESP/ENG visible dentro del avatar",
     "Botones modernos: Micrófono, Detener y Preguntar en castellano; Microphone, Stop y Ask en inglés",
     "El idioma elegido se conserva al cerrar y reabrir el avatar de la pared"
+  ],
+  "v.06.10.2026.r27.22:36": [
+    "El avatar hereda el idioma del site al abrir: ESP o ENG",
+    "Good · Admirito por defecto, independiente de la calidad Matrix",
+    "Selector de modelo: Good · Admirito, Better · Chica, Best · Neo"
   ]
 }

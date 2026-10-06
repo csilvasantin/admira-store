@@ -177,3 +177,5 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-avatar-toolbar{display:none}.matrix-wall-avatar:modal .matrix-avatar-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px;background:#122822}
 .matrix-avatar-toolbar button{padding:10px 12px;border:1px solid #72958d;border-radius:4px;background:#122822;color:white;font:14px system-ui;cursor:pointer}.matrix-avatar-toolbar button[aria-pressed=true]{background:#e3eade;color:#183e31}
 .matrix-wall-avatar:modal .matrix-avatar-close{margin:0}.matrix-wall-avatar:modal[data-mode=kiosk]{width:min(1000px,94vw)}
+
+.matrix-avatar-toolbar .matrix-avatar-model{flex:1 1 220px;min-width:180px;max-width:100%;min-height:34px;padding:6px 10px;border:1px solid #72958d;border-radius:8px;background:#0b201a;color:#effff5;font:13px system-ui}.matrix-wall-avatar[data-mode=kiosk] .matrix-avatar-model{display:none}
