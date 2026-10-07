@@ -1,16 +1,17 @@
 {
   "version": "v.07.10.2026.r15.10:57",
-  "deployedAt": "2026-10-07T08:22:08Z",
+  "deployedAt": "2026-10-07T08:57:17Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "8a71be34e8ae0ee7f37da801a7e27b13e8284af6",
-  "gitShort": "8a71be3",
-  "gitFull": "8a71be34e8ae0ee7f37da801a7e27b13e8284af6",
+  "git": "55b523f4ac0445b06abb0ca6c18441e62e27a397",
+  "gitShort": "55b523f",
+  "gitFull": "55b523f4ac0445b06abb0ca6c18441e62e27a397",
   "dirty": false,
   "novedades": [
-    "Tótem con voz: cuando el quiosco o un script Admingo de ainimation.studio pide hablar, el avatar del tótem lo dice en castellano de España",
-    "Solo se aceptan mensajes de ainimation.studio; el gemelo responde con un acuse y, si no lo hay, el quiosco habla con la voz del navegador",
-    "ainimation.studio entra en el registro de la Galaxia con sus 17 herramientas MCP"
+    "Tótem ON enseña el interactivo en el player: en Starbucks Paseo de Gracia, el quiosco de pedido en la pantalla de la pared junto a la salida; OFF vuelve al avatar digital",
+    "Nuevo /totem on|off (siguen kiosko, url, luna y admiratv) y la elección se recuerda",
+    "El player del tótem recibe toques y «👆 Tocar el tótem» lo abre a tamaño real",
+    "El gemelo pasa el formato del player y el quiosco se reorganiza para él"
   ]
 }
