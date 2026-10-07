@@ -1081,7 +1081,7 @@
 <script src="scripts/voice-receipts.js?v=person-voice-3"></script>
 <link rel="stylesheet" href="scripts/media-experience.css?v=20261006-media-experience-1">
 <script src="scripts/media-experience.js?v=20261006-media-experience-1"></script>
-<script src="scripts/media-options.js?v=xtore-ux-1"></script>
+<script src="scripts/media-options.js?v=xtore-ux-3"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
 <script src="scripts/announcements.js?v=person-voice-1"></script>
@@ -1517,8 +1517,8 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-xtore-ux-1"></script>
-<script src="xtanco-runtime-config.js?r=xtore-ux-1"></script>
+<script src="xtanco-version.js?v=20261006-xtore-ux-3"></script>
+<script src="xtanco-runtime-config.js?r=xtore-ux-3"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
@@ -31987,7 +31987,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=xtore-ux-1');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=xtore-ux-3');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -36176,10 +36176,10 @@ window.xtAPI = (function(){
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
 <link rel="stylesheet" href="scripts/expert-categories.css?v=windows-menu-1">
 <script src="scripts/expert-categories.js?v=pixeria-screens-3"></script>
-<link rel="stylesheet" href="scripts/expert-category-detail.css?v=xtore-ux-1">
-<script src="/assets/day-summary.js?v=xtore-ux-1"></script>
+<link rel="stylesheet" href="scripts/expert-category-detail.css?v=xtore-ux-3">
+<script src="/assets/day-summary.js?v=xtore-ux-3"></script>
 <script src="/assets/expert-toggle.js?v=xtore-ux-2"></script>
-<script src="scripts/expert-category-detail.js?v=xtore-ux-1"></script>
+<script src="scripts/expert-category-detail.js?v=xtore-ux-3"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">
@@ -36384,8 +36384,8 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=xtore-ux-1">
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=xtore-ux-1">
+<link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=xtore-ux-3">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=xtore-ux-3">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36400,7 +36400,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=xtore-ux-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=xtore-ux-3"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

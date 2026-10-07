@@ -1,5 +1,5 @@
-import './xpl-runtime.js?v=xtore-ux-1';
-import {POS_DEMO_SONG,createPOSDemoSound} from './pos-demo-sound.mjs?v=xtore-ux-1';
+import './xpl-runtime.js?v=xtore-ux-3';
+import {POS_DEMO_SONG,createPOSDemoSound} from './pos-demo-sound.mjs?v=xtore-ux-3';
 export const RETAIL_RULES_KEY='xpaceos.xpl.retail.v1:alsea-sbux-021:starbucks-tpv-01';
 export const RETAIL_STOCK_URL='https://api.admira.store/stock/list?type=music&limit=200';
 export const RETAIL_CATALOG_URL='https://www.admira.store/admira-xp/media-catalog';
@@ -42,7 +42,7 @@ export function retailRulebook(){return shared||(shared=createRetailRulebook({on
 // Snapshot and prime all actions inside the original gesture. One event, N DOs.
 export function createRetailRulePlayer({book,audio,audioFactory, music,visual,visualFactory,onState=()=>{}}){
  let plans=new Map(),fired=new Set(),active=[],error='',generation=0;
- const state=()=>({playing:active.some(x=>x.playing),title:active.map(x=>x.asset.title).join(' + '),kind:active[0]?.asset.kind||'',error,actions:active.map(x=>({title:x.asset.title,kind:x.asset.kind,screens:x.asset.screens,playing:x.playing}))});
+ const state=()=>({playing:active.some(x=>x.playing),title:[...new Set(active.map(x=>x.asset.title))].join(' + '),kind:active[0]?.asset.kind||'',error,actions:active.map(x=>({title:x.asset.title,kind:x.asset.kind,screens:x.asset.screens,playing:x.playing}))});
  const publish=()=>onState(state());
  function stop(){generation++;for(const entries of plans.values())for(const e of entries){e.dispose();e.playing=false;}plans.clear();active=[];error='';publish();}
  function prepare(){stop();fired.clear();const snapshot=book.state().rules;let audioUsed=false;for(const event of RETAIL_EVENTS){
