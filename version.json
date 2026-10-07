@@ -1,16 +1,16 @@
 {
   "version": "v.07.10.2026.r28.15:27",
-  "deployedAt": "2026-10-07T13:24:08Z",
+  "deployedAt": "2026-10-07T13:28:39Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "6b826940a04c2d1e38fba70dd5e93c66190a3c7f",
-  "gitShort": "6b82694",
-  "gitFull": "6b826940a04c2d1e38fba70dd5e93c66190a3c7f",
+  "git": "93c3002a984289602cb62cf374298dc01d0d2642",
+  "gitShort": "93c3002",
+  "gitFull": "93c3002a984289602cb62cf374298dc01d0d2642",
   "dirty": false,
   "novedades": [
-    "Admirito ocupa toda la pantalla del iPad cuando la cola está vacía",
-    "Recibido, En preparación y Preparado reaparecen al llegar pedidos",
-    "Vista de escena y ampliada sin controles del avatar; ayuda y MCP ES/EN actualizados"
+    "Un toque en el iPad de Starbucks abre el gestor de colas (admira.tv/gestorColas)",
+    "Botón visible «Abrir gestor de colas» y enlace al control de barra",
+    "ITIL: el iPad starbucks-ipad-01 pasa a contenido web app"
   ]
 }
