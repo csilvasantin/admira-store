@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r51.21:51": [
+    "idIoT: el alta de un equipo pide el proyecto y ese proyecto es el primer tramo de su nombre (Starbucks_…)",
+    "Vale un proyecto del catálogo o uno escrito a mano"
+  ],
   "v.07.10.2026.r50.21:37": [
     "idIoT: un equipo nuevo recibe su nombre único solo al darse de alta (admira.tv/alta)",
     "Publicar el catálogo nombra las superficies nuevas y conserva los nombres ya guardados"
