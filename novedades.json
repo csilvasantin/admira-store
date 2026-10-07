@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r14.10:21": [
+    "Tótem con voz: cuando el quiosco o un script Admingo de ainimation.studio pide hablar, el avatar del tótem lo dice en castellano de España",
+    "Solo se aceptan mensajes de ainimation.studio; el gemelo responde con un acuse y, si no lo hay, el quiosco habla con la voz del navegador",
+    "ainimation.studio entra en el registro de la Galaxia con sus 17 herramientas MCP"
+  ],
   "v.07.10.2026.r13.09:28": [
     "Pastilla de categoría del avatar: toca AVATAR·Admirito / HUMAN·Luna / METAHUMAN·Neo para cambiar de personalidad",
     "Cargador del avatar (avatar.js) y ⌘ Experto (suite/experto.js) fijados a la versión 20261007-pill-1"
