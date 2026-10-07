@@ -24,13 +24,16 @@ export function musicTracks(value){
 export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fetch(STARBUCKS_FEED,{cache:'no-store'})}={}){
   const published=musicTracks(publishedTracks);
   let tracks=[...published],index=0,started=false,loading=false,error='',request=null,disposed=false,seeded=false;
-  let managed=false,suppressions=0,restoreVolume=audio.volume;
+  let managed=false,suppressions=0,resumeAfter=false;
   let playVersion=0,revision=0,reason='initial',lastClockEmit=0;
   const listeners=new Set(),failed=new Set();
   audio.preload='metadata';audio.loop=false;audio.muted=true;audio.volume=.35;
   const state=()=>({schemaVersion:1,store:STARBUCKS_STORE,managed,suppressed:suppressions>0,tracks:tracks.length,index,title:tracks[index]?.title||'',url:tracks[index]?.url||'',position:Number.isFinite(audio.currentTime)?audio.currentTime:0,playing:started&&!audio.paused,started,muted:audio.muted,loading,error,revision,reason,updatedAt:Date.now()});
   const emit=()=>{for(const fn of listeners)fn(state());};
   async function play(){
+    // Prioridad de las locuciones (Carlos, 7-oct-2026): con un aviso sonando la música no arranca; queda
+    // apuntada para seguir cuando el aviso termine.
+    if(suppressions>0){resumeAfter=true;emit();return;}
     const version=++playVersion;
     try{await audio.play();if(disposed||version!==playVersion)return;error='';emit();}
     catch{if(disposed||version!==playVersion)return;started=false;audio.muted=true;error='play';emit();}
@@ -57,8 +60,10 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
     getTracks:()=>tracks.map(t=>({...t})),
     async jump(url){const next=tracks.findIndex(t=>t.url===url);if(next<0)throw Error('Unknown track');failed.clear();error='';started=true;select(next,'jump');await play();emit();return state();},
     suppress(){
-      if(suppressions++===0){restoreVolume=audio.volume;audio.volume=0;}emit();let released=false;
-      return ()=>{if(released)return;released=true;suppressions=Math.max(0,suppressions-1);if(!suppressions&&!disposed)audio.volume=restoreVolume;emit();};
+      // La locución tiene prioridad: el hilo musical se PARA (antes seguía avanzando a volumen cero) y,
+      // al terminar, sigue en el mismo punto si estaba sonando. Los avisos anidados sólo lo reanudan al soltarse el último.
+      if(suppressions++===0){resumeAfter=started&&!audio.paused;if(resumeAfter){++playVersion;audio.pause();}}emit();let released=false;
+      return ()=>{if(released)return;released=true;suppressions=Math.max(0,suppressions-1);if(!suppressions&&!disposed){const resume=resumeAfter&&started;resumeAfter=false;if(resume)void play();}emit();};
     },
     replaceTracks(incoming){
       managed=true;const next=musicTracks(incoming),current=tracks[index]?.url,wasStarted=started;

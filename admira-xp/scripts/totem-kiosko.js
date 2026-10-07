@@ -134,6 +134,8 @@
     const t=String(text||'').replace(/\s+/g,' ').trim().slice(0,400); if(!t) return {spoken:false,via:'none'};
     try{ if(typeof showEv==='function') showEv('🗣 '+t.slice(0,90),'#00a862'); }catch(_){}
     let muted=false; try{ muted=(typeof homeMusicMuted!=='undefined')&&homeMusicMuted; }catch(_){}
+    // /audio mute manda sobre todo, también sobre la cara viva (Carlos, 7-oct-2026).
+    if(window.dsMasterMute) return {spoken:false,via:'muted'};
     // 1) la cara viva (MetaHuman en pared/panel): la misma ruta que las respuestas del avatar
     let face=false; try{ face=!!(window.MH_FACE_ENABLED||((typeof metahumanWallOn==='function')&&metahumanWallOn())); }catch(_){}
     if(face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
@@ -145,6 +147,7 @@
   }
   // Voz por defecto: Santiago (nuzVc5hpXBWZjFEe4izg), la fija el worker /voz.
   const VOZ_URL='https://mcp-ainimation.admira.store/voz'; let vozAudio=null; window.__admiritoVoz=window.__admiritoVoz||[];
+  window.addEventListener('xpace:master-mute',e=>{ if(e&&e.detail&&e.detail.muted){ try{ if(vozAudio) vozAudio.pause(); }catch(_){} try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){} } });
   function elOn(){ try{ const q=new URLSearchParams(location.search); if(q.get('voz_el')==='0') return false; return localStorage.getItem('xpace:voz-admirito')!=='navegador'; }catch(_){ return true; } }
   function elSpeak(t,fallback){
     let done=false; const fin=(ok,why)=>{ if(done) return; done=true; window.__admiritoVoz.push({texto:t,via:ok?'elevenlabs':'respaldo',why:why||'',at:Date.now()}); if(!ok) fallback(); };

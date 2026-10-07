@@ -35,21 +35,28 @@
   function bgMusicEl() { return document.getElementById('bgMusic'); }
 
   // Ducking: guarda el volumen y lo baja mientras suena el aviso; lo restaura al final.
+  // Prioridad del aviso (Carlos, 7-oct-2026): el hilo musical se PARA y sigue al terminar (antes bajaba al 6 %).
+  var holdRelease = null;
   function duck(on) {
-    var m = bgMusicEl(); if (!m) return;
     try {
-      if (on) { if (m._megaPrevVol == null) m._megaPrevVol = m.volume; m.volume = Math.min(m.volume, 0.06); }
-      else if (m._megaPrevVol != null) { m.volume = m._megaPrevVol; m._megaPrevVol = null; }
+      if (on) {
+        if (holdRelease) return;
+        if (typeof window.XpaceMusicHold === 'function') { holdRelease = window.XpaceMusicHold(); return; }
+        var m = bgMusicEl(), was = !!(m && !m.paused);
+        if (was) m.pause();
+        holdRelease = function () { if (was && m.paused && !window.dsMasterMute) { try { m.play().catch(function () {}); } catch (e) {} } };
+      } else if (holdRelease) { var r = holdRelease; holdRelease = null; r(); }
     } catch (e) {}
   }
+  var current = null;
 
   function playNext() {
     if (playing) return;
     var item = queue.shift(); if (!item) return;
+    if (window.dsMasterMute) { window.MEGAFONIA.last = item; setTimeout(playNext, 250); return; }   // /audio mute: el aviso no suena
     playing = true; duck(true);
-    var a = new Audio(item.url);
-    try { a.muted = !!window.dsMasterMute; } catch (e) {}   // respeta el mute maestro /audio
-    var done = function () { if (!playing) return; playing = false; duck(false); setTimeout(playNext, 250); };
+    var a = current = new Audio(item.url);
+    var done = function () { if (!playing) return; playing = false; current = null; duck(false); setTimeout(playNext, 250); };
     a.addEventListener('ended', done);
     a.addEventListener('error', done);
     a.play().catch(done);
@@ -81,6 +88,11 @@
       }).then(function () { setTimeout(poll, 800); }).catch(function () {});
     }
   };
+
+  // /audio mute corta el aviso que esté sonando.
+  window.addEventListener('xpace:master-mute', function (e) {
+    if (e && e.detail && e.detail.muted && current) { try { current.pause(); } catch (x) {} current.dispatchEvent(new Event('ended')); }
+  });
 
   setInterval(poll, POLL_MS);
   poll();

@@ -16,8 +16,8 @@ import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
 import {STARBUCKS_TPV_PLAYLIST,STARBUCKS_TPV_MAPPING,STARBUCKS_TPV_VIEW,withStarbucksTPV} from './starbucks-tpv.mjs?v=tpv-1';
 import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenSlice,screenNumber,screenGroup,getScreenNumbersVisible,setScreenNumbersVisible,subscribeScreenNumbers} from './screen-display.mjs?v=number-layout-1';
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
-import {starbucksMusic,STARBUCKS_SPEAKER} from './starbucks-music.mjs?v=store-previews-1';
-import {mountSpeakerLocutions} from './starbucks-locuciones.mjs?v=altavoces-1';
+import {starbucksMusic,STARBUCKS_SPEAKER} from './starbucks-music.mjs?v=audio-mute-1';
+import {mountSpeakerLocutions} from './starbucks-locuciones.mjs?v=audio-mute-1';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=wall-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 
@@ -131,7 +131,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
   async previewScreen(id,track){if(disposed||!DEVICE_IDS.includes(id)||incidents.off.has(id))throw Error(t('Pantalla apagada o no disponible','Screen off or unavailable'));if(!['image','video'].includes(track.kind))throw Error('Invalid screen content');const result=await previewDevices([id],track);signagePreviews.set(id,{...track,name:track.title});if(result.error)throw Error(t('No se pudo mostrar el contenido','Could not display content'));return result;},
   restoreScreen:id=>{if(disposed)throw Error(t('Vuelve a Matrix.','Return to Matrix.'));return deviceEditor.reload([id]);},
   groups:optionGroups,
-  control(action,pid){if(action==='musicToggle'){music.toggle();return;}if(action.startsWith('music')){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url),next=(index+(action==='musicPrev'?-1:1)+tracks.length)%tracks.length;if(tracks[next])return music.jump(tracks[next].url);return;}const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid);if(action==='dsToggle'){runtime.setPlaying(ids,!runtime.state(ids).playing);return;}const p=playlistValue(pid),active=runtime.nowPlaying(ids)[0],index=p?.tracks.findIndex(t=>t.id===active?.trackId)??-1,next=(index+(action==='dsPrev'?-1:1)+(p?.tracks.length||0))%(p?.tracks.length||0);if(p?.tracks[next])return this.play('screens',p.tracks[next].id,pid);},
+  control(action,pid){if(action==='musicToggle'){if(window.dsMasterMute&&music.state().muted)return;music.toggle();return;}if(action.startsWith('music')){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url),next=(index+(action==='musicPrev'?-1:1)+tracks.length)%tracks.length;if(tracks[next])return music.jump(tracks[next].url);return;}const ids=DEVICE_IDS.filter(id=>assignedPlaylist(deviceEditor.config,id)===pid);if(action==='dsToggle'){runtime.setPlaying(ids,!runtime.state(ids).playing);return;}const p=playlistValue(pid),active=runtime.nowPlaying(ids)[0],index=p?.tracks.findIndex(t=>t.id===active?.trackId)??-1,next=(index+(action==='dsPrev'?-1:1)+(p?.tracks.length||0))%(p?.tracks.length||0);if(p?.tracks[next])return this.play('screens',p.tracks[next].id,pid);},
   suppressMusic:()=>music.suppress(),
   state(channel,pid){if(channel==='music'){const state=music.state();return {playing:state.playing,tracks:music.getTracks().map(track=>({...track,id:track.url,kind:'music',active:track.url===state.url}))};}
    const active=runtime.nowPlaying(DEVICE_IDS);return {playing:active.some(x=>x.playing),tracks:(playlistValue(pid)?.tracks||[]).map(track=>({...track,kind:track.kind||'video',active:active.some(s=>s.playlistId===pid&&s.trackId===track.id)}))};},
@@ -152,7 +152,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
   announcementStatus.dataset.playing=String(!!(state.playing||state.pending));
   for(const button of announcementButtons){if(button===announcementAnchor)continue;button.setAttribute('aria-pressed',String(state.playing||state.pending));button.title=CLOSING_ANNOUNCEMENT.text;button.setAttribute('aria-label',state.playing||state.pending?t('Detener aviso de cierre','Stop closing announcement'):t('Emitir aviso de cierre','Play closing announcement'));button.textContent=button===announcementAnchor?'':(state.playing||state.pending?t('Detener aviso','Stop announcement'):t('Aviso de cierre','Closing announcement'));}
  }});
- for(const button of announcementButtons)if(button!==announcementAnchor)button.addEventListener('click',()=>{speakerLocutions.stop();announcement.toggle();},options);
+ for(const button of announcementButtons)if(button!==announcementAnchor)button.addEventListener('click',()=>{if(window.dsMasterMute){announcementStatus.textContent=t('Audio silenciado · /audio unmute','Audio muted · /audio unmute');return;}speakerLocutions.stop();announcement.toggle();},options);
  for(const button of qualityButtons)button.addEventListener('click',()=>announcement.setQuality(button.dataset.announcementQuality),options);
  {const q=announcement.quality;for(const b of qualityButtons){const on=b.dataset.announcementQuality===q;b.setAttribute('aria-checked',String(on));b.classList.toggle('active',on);}announcementStatus.textContent=t('Voz','Voice')+' · '+(document.documentElement.lang==='en'?ANNOUNCEMENT_QUALITIES[q].label.en:ANNOUNCEMENT_QUALITIES[q].label.es);}
  window.XpaceStarbucksDemo.announcement={toggle:()=>announcement.toggle(),setQuality:q=>announcement.setQuality(q),state:()=>announcement.state()};
@@ -179,7 +179,15 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
   for(const button of nextButtons){button.disabled=!state.tracks;button.title=state.tracks===1?t('Una canción: vuelve al inicio de la pista','One track: restarts the track'):t('Siguiente canción · conserva sonido/mute','Next track · preserves sound/mute');}
   for(const button of musicButtons){button.setAttribute('aria-pressed',String(audible));button.setAttribute('aria-label',action+' · Starbucks Alsea');button.title=label;button.textContent=action;}
  });
- for(const button of musicButtons)button.addEventListener('click',()=>{music.toggle();},options);
+ // /audio mute (Carlos, 7-oct-2026): con el audio silenciado nada arranca en Matrix; al silenciar se corta el
+ // aviso de cierre y las locuciones de los altavoces, y el hilo de Starbucks calla hasta /audio unmute.
+ const audioOff=()=>!!window.dsMasterMute,audioOffText=()=>t('Audio silenciado · /audio unmute','Audio muted · /audio unmute');
+ let musicSilencedByMaster=false;
+ window.addEventListener('xpace:master-mute',event=>{
+  if(event.detail?.muted){speakerLocutions.stop();announcement.stop();const s=music.state();if(s.started&&!s.muted){musicSilencedByMaster=true;music.mute();}}
+  else if(musicSilencedByMaster){musicSilencedByMaster=false;const s=music.state();if(s.started&&s.muted)music.toggle();}
+ },options);
+ for(const button of musicButtons)button.addEventListener('click',()=>{if(audioOff()&&music.state().muted){musicStatus.textContent=audioOffText();return;}music.toggle();},options);
  for(const button of nextButtons)button.addEventListener('click',()=>{music.next();},options);
  void music.refresh();const musicPoll=setInterval(()=>{void music.refresh();},30000);
  function message(value){status.textContent=value;}
@@ -283,7 +291,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
     if(key==='musicMuted'&&value)music.mute();
    }
    if(remoteState&&state.musicNext>remoteState.musicNext)for(let i=remoteState.musicNext;i<state.musicNext;i++)music.next();
-   if(remoteState&&(state.announcementNext||0)>(remoteState.announcementNext||0)){speakerLocutions.stop();void announcement.play();}
+   if(remoteState&&(state.announcementNext||0)>(remoteState.announcementNext||0)&&!window.dsMasterMute){speakerLocutions.stop();void announcement.play();}
    if(remoteState&&state.playlistJump&&state.playlistJump.revision!==remoteState.playlistJump?.revision){
     const command=state.playlistJump;
     void (async()=>{try{const track=command.playlistId==='wall'?wallTracks.find(t=>t.id===command.trackId):null;if(command.playlistId==='wall')await setDemoMode(track?.condition==='/navidad'?'christmas':'linear');else if(demoMode==='ia')await setDemoMode('linear');updateRuntime();await runtime.jump(command.playlistId,command.trackId);applyScreenLayout();}catch(error){message(t('No se pudo saltar al contenido: ','Could not jump to content: ')+error.message);}})();
