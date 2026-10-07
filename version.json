@@ -1,15 +1,14 @@
 {
-  "version": "v.07.10.2026.r33.16:33",
-  "deployedAt": "2026-10-07T14:33:40Z",
+  "version": "v.07.10.2026.r34.16:36",
+  "deployedAt": "2026-10-07T14:37:07Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "9a5ab8b64e72df4fcec8d7b7dbcfc37f70e49897",
-  "gitShort": "9a5ab8b",
-  "gitFull": "9a5ab8b64e72df4fcec8d7b7dbcfc37f70e49897",
+  "git": "397ad12517e3ed545988d90cdfc021bac4146ebc",
+  "gitShort": "397ad12",
+  "gitFull": "397ad12517e3ed545988d90cdfc021bac4146ebc",
   "dirty": false,
   "novedades": [
-    "Admirito habla por defecto con la voz «Santiago» de ElevenLabs (elegida por Carlos)",
-    "?vozid=daniela o ?vozid=raquel prueban las otras voces"
+    "Arreglo: los avisos del gemelo vuelven a sonar con la voz «Santiago» (y con la voz del navegador si ElevenLabs falla)"
   ]
 }
