@@ -11,6 +11,8 @@ Desde el menú avanzado (▤), «Inventario · Añadir / eliminar · CLI» abre 
 /inventario deshacer
 ```
 
+`/inventario idIoT` es aparte: no toca el mobiliario. Enseña el nombre único de cada elemento IoT (`Proyecto_Xpacio_Tipo_n`, p. ej. `Starbucks_PaseodeGracia_103_Pantalla_1`) del Xpacio abierto, de un proyecto (`/inventario idIoT starbucks`) o el resumen de la red (`/inventario idIoT proyectos`); con `csv` al final descarga la lista. Guía: `admira-xp/docs/inventory-idiot.md`.
+
 En Matrix, pulsa un mueble para consultar su número y nombre. La vista usa recortes y renders transparentes en 2.5D; la cámara no orbita.
 
 El número siempre identifica el modelo, no la posición de una fila. Los nombres ignoran tildes, mayúsculas y signos; una coincidencia parcial única se acepta. Si «sofá» coincide con varios modelos, se muestran los números y nombres completos y no se modifica nada.
