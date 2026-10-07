@@ -1,16 +1,17 @@
 {
-  "version": "v.07.10.2026.r16.11:18",
-  "deployedAt": "2026-10-07T09:18:28Z",
+  "version": "v.07.10.2026.r17.12:30",
+  "deployedAt": "2026-10-07T10:30:44Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "170bdde55ee218aa5110140e71c6e456fe916d48",
-  "gitShort": "170bdde",
-  "gitFull": "170bdde55ee218aa5110140e71c6e456fe916d48",
+  "git": "22d68383cc82e10ffdce25099ff25cfb30fc6163",
+  "gitShort": "22d6838",
+  "gitFull": "22d68383cc82e10ffdce25099ff25cfb30fc6163",
   "dirty": false,
   "novedades": [
-    "El quiosco del tótem en la escena se comporta como el avatar digital: es una vista previa que no recibe toques",
-    "Al tocarlo se abre en grande, en la misma ventana que el avatar, y solo ahí se usa",
-    "Al cerrar vuelve a la vista previa y el pedido sigue donde estaba (con el reinicio por inactividad del quiosco)"
+    "El Admirito del gemelo de Starbucks lee la cola de pedidos de Paseo de Gracia y anuncia cada pedido listo una sola vez",
+    "Llama por el nombre que diste en el quiosco: «Carlos, tu pedido Starbucks está preparado»; sin nombre, dice el número",
+    "Habla con la cara del avatar si está activa y, si no, con la voz del navegador en castellano (es-ES); el aviso también sale en pantalla",
+    "Con ?cola=<tienda> se puede escuchar la cola de otra tienda"
   ]
 }
