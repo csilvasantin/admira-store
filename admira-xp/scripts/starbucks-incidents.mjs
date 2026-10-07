@@ -107,12 +107,16 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
  async function typeInto(field,text,total=1800){field.focus({preventScroll:true});field.value='';const step=Math.max(8,Math.min(45,Math.round(total/Math.max(1,text.length))));for(const ch of text){if(abort.signal.aborted)return;field.value+=ch;await wait(step);}field.dispatchEvent(new Event('input',{bubbles:true}));}
  function press(el){el?.classList.add('is-demo-press');setTimeout(()=>el?.classList.remove('is-demo-press'),700);}
  let ficha=null;
- function fichaPanel(){if(ficha&&ficha.isConnected)return ficha;ficha=document.createElement('section');ficha.className='matrix-device-editor matrix-incident-editor matrix-ficha';ficha.dataset.i18nLive='';ficha.setAttribute('role','dialog');ficha.setAttribute('aria-label','admira.app · ficha');
-  for(const ev of ['pointerdown','pointerup','click','keydown','keyup','keypress','input','wheel'])ficha.addEventListener(ev,e=>e.stopPropagation(),opts);root.append(ficha);return ficha;}
+ // La ficha es un <dialog> modal: va a la capa superior (top layer), por encima del menú ☰, del dock experto y
+ // del propio Matrix, a la derecha para no tapar la pantalla que se está cerrando (Carlos, r46: se abría detrás).
+ function fichaPanel(){if(!(ficha&&ficha.isConnected)){ficha=document.createElement('dialog');ficha.className='matrix-device-editor matrix-incident-editor matrix-ficha';ficha.dataset.i18nLive='';ficha.setAttribute('aria-label','admira.app · ficha');
+   for(const ev of ['pointerdown','pointerup','click','keydown','keyup','keypress','input','wheel'])ficha.addEventListener(ev,e=>e.stopPropagation(),opts);root.append(ficha);}
+  if(!ficha.open){try{ficha.showModal();}catch{ficha.setAttribute('open','');}}return ficha;}
+ function closeFicha(){if(!ficha)return;try{if(ficha.open)ficha.close();}catch{}ficha.remove();ficha=null;}
  function paintFicha(inc,{note='',phase=''}={}){const f=fichaPanel(),L=document.documentElement.lang==='en',tt=(es,en)=>L?en:es;const stage={abierta:tt('Abierta','Open'),en_curso:tt('En curso','In progress'),cerrada:tt('Finalizada','Finished'),recuperada:tt('Recuperada','Recovered')}[inc.stage]||inc.stage;const m=chipModel(inc,Date.now(),L?'en':'es');
   const time=v=>v?new Date(v).toLocaleTimeString(L?'en-GB':'es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
   f.innerHTML=`<header><strong>admira.app · ${tt('Ficha','Ticket')} ${esc(inc.id)}</strong><button type="button" data-ficha="close" aria-label="${tt('Cerrar ficha','Close ticket')}">×</button></header><p class="ficha-url">www.admira.app/ticket?id=${esc(inc.id)}</p><p class="ficha-stage" data-stage="${esc(inc.stage)}">${esc(stage)}</p><dl><dt>${tt('Asunto','Subject')}</dt><dd>${esc(inc.subject||inc.id)}</dd><dt>${tt('Prioridad','Priority')}</dt><dd>${esc(m.lines[1]||'')}</dd><dt>${tt('Técnico','Technician')}</dt><dd>${esc(inc.assignee||'—')}</dd><dt>${tt('Abierta','Opened')}</dt><dd>${time(inc.created_at)}</dd>${inc.stage==='cerrada'?`<dt>${tt('Finalizada','Finished')}</dt><dd>${time(inc.resolved_at)} · ${esc(inc.closed_by||'')}</dd><dt>${tt('Nota','Note')}</dt><dd>«${esc(inc.resolution||'')}»</dd>`:''}</dl>${inc.stage==='cerrada'?'':`<label>${tt('Nota de resolución','Resolution note')}<textarea class="ficha-note" rows="2" readonly>${esc(note)}</textarea></label><div class="ficha-actions"><button type="button" data-ficha="start" ${inc.stage==='abierta'?'':'disabled'}>▶ ${tt('Iniciar','Start')}</button><button type="button" data-ficha="finish">✓ ${tt('Finalizar','Finish')}</button></div>`}<p class="ficha-phase" role="status">${esc(phase)}</p><a href="https://www.admira.app/ticket?id=${encodeURIComponent(inc.id)}" target="_blank" rel="noopener">${tt('Abrir en admira.app ↗','Open in admira.app ↗')}</a>`;
-  f.querySelector('[data-ficha="close"]').addEventListener('click',()=>f.remove(),opts);f.hidden=false;return f;}
+  f.querySelector('[data-ficha="close"]').addEventListener('click',closeFicha,opts);f.hidden=false;return f;}
  const findInc=id=>statusData.find(i=>i.id===id)||null;
  async function freshInc(id){track(id);for(let i=0;i<8;i++){await poll();const inc=findInc(id);if(inc)return inc;await wait(800);}return findInc(id);}
  const demo={
@@ -127,7 +131,9 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
    try{const data=await sendIncident({equipo:d.equipo,problema:text,gravedad:sev,demo:false,uuid:'cli-'+uuid});problem.value='';track(data.id);const a=document.createElement('a');a.href=incidentDetailUrl(data.id);a.target='_blank';a.rel='noopener';a.textContent=data.id+' · Yokup';result.replaceChildren(a);step(t('«Abrir ticket» pulsado → ','“Open ticket” pressed → ')+data.id);await freshInc(data.id);return {id:data.id,resource:data.resource,deviceId:d.id,name:d.name};}
    finally{busy=false;for(const b of panel.querySelectorAll('button'))b.disabled=false;refresh();}
   },
-  async close({id,note,by='admira.store · XpaceOS Matrix · CLI',step=()=>{}}){
+  // Si algo falla a mitad, la ficha modal se cierra para no bloquear el gemelo.
+  close(o){return demoClose(o).finally(closeFicha);},
+  async __close({id,note,by='admira.store · XpaceOS Matrix · CLI',step=()=>{},hold=3000}){
    let inc=await freshInc(id);if(!inc)throw Error(t('No encuentro ','Cannot find ')+id);if(!/:manual:cli-/.test(String(inc.resource||'')))throw Error(t('sólo se cierran desde la CLI las incidencias que abrió la CLI','the CLI only closes incidents it opened'));const d=devices.find(x=>x.equipo===equipoFromResource(inc.resource));
    if(inc.stage==='cerrada'||inc.stage==='cancelada')return {inc,already:true,deviceId:d?.id};
    const chip=d&&nodeFor(d.id)?.querySelector(':scope>.matrix-incident-chip');press(chip);step(t('Pulsada la tarjeta de la pantalla → ficha de ','Screen card pressed → ticket ')+id);await wait(700);
@@ -136,9 +142,10 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
    const area=f.querySelector('.ficha-note');if(area)await typeInto(area,note,1600);step(t('Nota de resolución escrita','Resolution note typed'));await wait(300);
    press(f.querySelector('[data-ficha="finish"]'));const data=await closeIncident({id,resource:inc.resource,note,by});if(d&&off.has(d.id))setPower(d.id,false);
    for(let i=0;i<6;i++){inc=await freshInc(id)||inc;if(inc.stage==='cerrada')break;await wait(700);}
-   paintFicha(inc,{phase:t('✓ Finalizada en admira.app','✓ Finished in admira.app')});step(t('Ficha: ✓ Finalizar → FINALIZADA','Ticket: ✓ Finish → FINISHED'));paint();
+   paintFicha(inc,{phase:t('✓ Finalizada en admira.app','✓ Finished in admira.app')});step(t('Ficha: ✓ Finalizar → FINALIZADA','Ticket: ✓ Finish → FINISHED'));paint();await wait(hold);
    return {inc,applied:data.applied!==false,deviceId:d?.id};
   }
  };
+ const demoClose=o=>demo.__close(o);
  return {off,paint,demo,open(id=target){target=id;floating.open();},get visible(){return !panel.hidden;},select(id){target=id;refresh();},close(){panel.hidden=true;},remote(id,value){setPower(id,value);},dispose(){stopLanguage();floating.dispose();abort.abort();panel.remove();}};
 }

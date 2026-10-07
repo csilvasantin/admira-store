@@ -3,6 +3,7 @@
 // lineal sin incidencia activa (nunca la 1 ni ninguna con ticket abierto), escribe un motivo realista y abre el
 // ticket; /cerrar incidencia va a esa pantalla, abre su ficha de admira.app, la finaliza con una nota acorde al
 // motivo y pide el informe PDF, que el servidor envía SOLO a csilvasantin@gmail.com.
+import {captureIncidentPhoto,brandLogoJpeg,brandIdFor} from './incident-snapshot.mjs?v=cli-incidencia-3';
 export const REPORT_URL='https://data.yokup.com/api/demo/incident-report',REPORT_TO='csilvasantin@gmail.com',STORE_KEY='xpaceos.starbucks.cli-incidents.v1';
 export const CAUSES=Object.freeze([
  {es:'HDMI suelto: la pantalla muestra «Sin señal»',en:'Loose HDMI: the screen shows “No signal”',sev:'alta',fix_es:'Cable HDMI reconectado y asegurado con brida; vuelve a emitir.',fix_en:'HDMI cable reseated and secured with a tie; playback resumed.'},
@@ -22,15 +23,24 @@ export const CAUSES=Object.freeze([
  {es:'Disco del reproductor lleno: no entran contenidos nuevos',en:'Player storage full: new content cannot download',sev:'normal',fix_es:'Contenidos antiguos purgados en remoto; descarga completada.',fix_en:'Old content purged remotely; download completed.'}
 ]);
 const ID_RE=/^[A-Z]{3}-[A-Z0-9]{4,10}$/;
+// Fotos de la pantalla (abierta / cerrada) para el informe: aparte de la lista y sólo las 3 últimas (pesan).
+export const PHOTO_KEY='xpaceos.starbucks.cli-incidents.photos.v1';
+function loadPhotos(store){try{const m=JSON.parse(store?.getItem(PHOTO_KEY)||'{}');return m&&typeof m==='object'?m:{};}catch{return {};}}
+function savePhoto(store,id,shot){if(!shot)return;try{const m=loadPhotos(store);m[id]=shot;const keys=Object.keys(m);for(const k of keys.slice(0,Math.max(0,keys.length-3)))delete m[k];store?.setItem(PHOTO_KEY,JSON.stringify(m));}catch{}}
+function dropPhoto(store,id){try{const m=loadPhotos(store);if(m[id]){delete m[id];store?.setItem(PHOTO_KEY,JSON.stringify(m));}}catch{}}
 export function pick(list,rnd=Math.random){return list[Math.floor(rnd()*list.length)%list.length];}
 export function parseIncidentCommand(text){const m=/^\/(crear|create|cerrar|close)(?:@\w+)?\s+(incidencia|incident)(?:\s+([A-Za-z]{3}-[A-Za-z0-9]{4,10}))?\s*$/i.exec(String(text||'').trim());if(!m)return null;return {action:/^(crear|create)$/i.test(m[1])?'create':'close',id:m[3]?m[3].toUpperCase():''};}
 function loadList(store){try{const l=JSON.parse(store?.getItem(STORE_KEY)||'[]');return Array.isArray(l)?l.filter(x=>x&&ID_RE.test(x.id)):[];}catch{return [];}}
 function saveList(store,list){try{store?.setItem(STORE_KEY,JSON.stringify(list.slice(-20)));}catch{}}
 const clock=()=>new Date().toTimeString().slice(0,8);
+// Mientras corre la demo se pliega el menú ☰ Opciones (columna izquierda) y al acabar se deja como estaba.
+export function collapseLeftMenu(doc=globalThis.document){try{const panel=doc?.querySelector?.('.quad-left:not(.is-collapsed)'),btn=doc?.getElementById?.('pfOptions');if(!panel||!btn)return ()=>{};btn.click();return ()=>{try{if(panel.classList.contains('is-collapsed'))btn.click();}catch{}};}catch{return ()=>{};}}
 async function matrixDemo(router,timeout=25000){let api=globalThis.XpaceMatrixOptions;if(!api?.isActive?.()||!api.incidentDemo){await router?.choose?.('matrix');}const t0=Date.now();while(Date.now()-t0<timeout){api=globalThis.XpaceMatrixOptions;if(api?.isActive?.()&&api.incidentDemo)return api.incidentDemo;await new Promise(r=>setTimeout(r,250));}return null;}
 export async function runIncidentDemo(text,{router,lang='es',store=globalThis.localStorage,fetcher=(...a)=>fetch(...a),rnd=Math.random,progress=()=>{}}={}){
  const cmd=parseIncidentCommand(text);if(!cmd)return null;const en=lang==='en',t=(es,e)=>en?e:es;
  const demo=await matrixDemo(router);if(!demo)return {ok:false,local:true,message:t('Abre Matrix · Starbucks para usar /crear incidencia (no se pudo cargar el gemelo).','Open Matrix · Starbucks to use /create incident (the twin did not load).')};
+ const restoreMenu=collapseLeftMenu();try{return await body();}finally{restoreMenu();}
+ async function body(){
  const list=loadList(store);
  if(cmd.action==='create'){
   const candidates=demo.candidates();if(!candidates.length)return {ok:false,local:true,message:t('Todas las pantallas verticales del lineal tienen ya una incidencia activa. Cierra una con /cerrar incidencia.','Every vertical shelf screen already has an active incident. Close one with /close incident.')};
@@ -38,7 +48,9 @@ export async function runIncidentDemo(text,{router,lang='es',store=globalThis.lo
   step(t('Elegida al azar ','Randomly picked ')+demo.name(deviceId)+t(' (pantalla vertical del lineal sin incidencia)',' (vertical shelf screen without incident)'));
   await demo.focus(deviceId);step(t('Cámara en la pantalla','Camera on the screen'));
   try{const r=await demo.open({deviceId,problem:en?cause.en:cause.es,severity:cause.sev,step});list.push({id:r.id,deviceId,cause:idx,lang,openedAt:Date.now(),steps});saveList(store,list);
-   return {ok:true,local:true,id:r.id,message:'🛠 '+r.id+' · '+demo.name(deviceId)+' · '+(en?cause.en:cause.es)+' · '+t('gravedad ','severity ')+cause.sev+'\n'+t('Ticket abierto en Yokup / admira.app. Ciérralo con /cerrar incidencia','Ticket opened in Yokup / admira.app. Close it with /close incident')};}
+   const shot=await captureIncidentPhoto(demo,deviceId,{stage:'abierta',text:r.id+' · '+demo.name(deviceId)+' · '+t('ABIERTA','OPEN')+' · '+clock(),lines:[r.id,t('ABIERTA','OPEN'),en?cause.en:cause.es]});
+   if(shot){savePhoto(store,r.id,shot);step(t('Foto de la pantalla con la tarjeta para el informe','Photo of the screen with its card for the report'));}
+   return {ok:true,local:true,id:r.id,message:'🛠 '+r.id+' · '+demo.name(deviceId)+' · '+(en?cause.en:cause.es)+' · '+t('gravedad ','severity ')+(en?({urgente:'urgent',alta:'high',normal:'normal',baja:'low'}[cause.sev]||cause.sev):cause.sev)+'\n'+t('Ticket abierto en Yokup / admira.app. Ciérralo con /cerrar incidencia','Ticket opened in Yokup / admira.app. Close it with /close incident')};}
   catch(e){return {ok:false,local:true,message:t('No se pudo abrir la incidencia: ','Could not open the incident: ')+e.message};}
  }
  let entry=cmd.id?list.find(x=>x.id===cmd.id)||{id:cmd.id,cause:-1,steps:[]}:null;
@@ -49,9 +61,14 @@ export async function runIncidentDemo(text,{router,lang='es',store=globalThis.lo
  try{if(entry.deviceId){await demo.focus(entry.deviceId);step(t('Cámara en la pantalla','Camera on the screen'));}
   const r=await demo.close({id:entry.id,note,step});if(r.deviceId&&!entry.deviceId)await demo.focus(r.deviceId);
   if(r.inc?.stage!=='cerrada')return {ok:false,local:true,message:t('La incidencia no quedó cerrada (¿la lleva un técnico del portal?).','The incident was not closed (held by a portal technician?).')};
-  progress('📧 '+t('Enviando informe PDF a ','Sending PDF report to ')+REPORT_TO+'…');let report='';try{const res=await fetcher(REPORT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:entry.id,timeline:steps.slice(-12)})});const d=await res.json().catch(()=>({}));
-   report=res.ok&&d.sent?'📧 '+t('Informe enviado a ','Report sent to ')+REPORT_TO+(d.message_id?' · '+d.message_id:''):d.already?'📧 '+t('El informe ya se había enviado a ','Report already sent to ')+REPORT_TO:'⚠ '+t('Informe no enviado: ','Report not sent: ')+(d.error||('HTTP '+res.status));}catch(e){report='⚠ '+t('Informe no enviado: ','Report not sent: ')+e.message;}
-  saveList(store,list.filter(x=>x.id!==entry.id));
+  const devId=entry.deviceId||r.deviceId,closedShot=await captureIncidentPhoto(demo,devId,{stage:'cerrada',wait:6000,text:entry.id+' · '+demo.name(devId)+' · '+t('CERRADA','CLOSED')+' · '+clock(),lines:[entry.id,t('CERRADA','CLOSED'),'«'+(r.inc.resolution||note)+'»']});
+  if(closedShot)step(t('Foto de la pantalla cerrada para el informe','Photo of the closed screen for the report'));
+  const openShot=loadPhotos(store)[entry.id]||null,marca=brandIdFor(globalThis.document?.documentElement?.getAttribute?.('data-mb-marca'),r.inc.resource),logo=await brandLogoJpeg(marca,{fetcher});
+  progress('📧 '+t('Enviando informe PDF a ','Sending PDF report to ')+REPORT_TO+'…');let report='';try{const res=await fetcher(REPORT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:entry.id,timeline:steps.slice(-12),marca,logo,photos:{open:openShot?.src||null,open_at:openShot?.at||0,closed:closedShot?.src||null,closed_at:closedShot?.at||0}})});const d=await res.json().catch(()=>({}));
+   const tg=d.telegram?.sent?'\n📨 '+t('PDF también en tu Telegram','PDF also sent to your Telegram')+(d.telegram.message_id?' · #'+d.telegram.message_id:''):d.telegram&&d.telegram.reason?'\n⚠ Telegram: '+d.telegram.reason:'';
+   report=res.ok&&(d.sent||d.telegram?.sent)?(d.sent?'📧 '+t('Informe enviado a ','Report sent to ')+REPORT_TO+(d.message_id?' · '+d.message_id:''):'⚠ '+t('Correo no enviado: ','Email not sent: ')+(d.mail_error||''))+tg+(d.pages?' · '+d.pages+' '+t('págs.','pages')+(d.ai&&d.ai!=='plantilla'?' · IA':'')+(d.photos?' · '+d.photos+' '+t('fotos','photos'):'')+(d.brand&&d.brand!=='admira'?' · '+t('marca ','brand ')+d.brand:''):''):d.already?'📧 '+t('El informe ya se había enviado a ','Report already sent to ')+REPORT_TO:'⚠ '+t('Informe no enviado: ','Report not sent: ')+(d.error||('HTTP '+res.status));}catch(e){report='⚠ '+t('Informe no enviado: ','Report not sent: ')+e.message;}
+  saveList(store,list.filter(x=>x.id!==entry.id));dropPhoto(store,entry.id);
   return {ok:true,local:true,id:entry.id,message:'✓ '+entry.id+' '+t('cerrada · Finalizada en admira.app','closed · Finished in admira.app')+(r.already?t(' (ya lo estaba)',' (already closed)'):'')+' · «'+(r.inc.resolution||note)+'»\n'+report};}
  catch(e){return {ok:false,local:true,message:t('No se pudo cerrar: ','Could not close: ')+e.message};}
+ }
 }

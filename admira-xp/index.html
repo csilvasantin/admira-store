@@ -1518,7 +1518,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261007-r47"></script>
+<script src="xtanco-version.js?v=20261007-r52"></script>
 <script src="xtanco-runtime-config.js?r=audio-mute-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -32076,7 +32076,7 @@ window.xtAPI = (function(){
       // /crear incidencia · /cerrar incidencia [INC-…] (/create incident · /close incident): demo guiada en Matrix ·
       // Starbucks con ticket real en Yokup, ficha de admira.app e informe PDF a Carlos (scripts/incident-demo.mjs).
       if(['crear','create','cerrar','close'].includes(cmd)&&/^(incidencia|incident)(\s|$)/i.test(arg)){
-        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-1');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:typeof lang==='undefined'?'es':lang,progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
+        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-3');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:typeof lang==='undefined'?'es':lang,progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
         catch(e){return (typeof lang!=='undefined'&&lang==='en'?'Incident demo error: ':'Error en la demo de incidencias: ')+(e&&e.message||e);}
       }
       // /marca <id|off|web> (FLT-101337). Aquí llega de Telegram, el MCP o /twin/cmd: no hay
@@ -33275,6 +33275,8 @@ window.xtAPI = (function(){
   };
 
   async function sendComposerText(text){
+    // Sólo se vacía el CLI si aún contiene el comando enviado: los comandos largos (/crear incidencia ~30 s)
+    // ya no borran lo que el usuario haya empezado a escribir mientras tanto.
     const clean=String(text||'').trim();
     if(!clean) return;
     function resetNotice(text){let note=document.getElementById('signageResetStatus');if(!note){note=document.createElement('output');note.id='signageResetStatus';note.setAttribute('role','status');composer?.parentElement.append(note);}note.textContent=text;}
@@ -33283,7 +33285,7 @@ window.xtAPI = (function(){
       appendTelegramLog('out','Experto',clean);
       try{resetNotice(lang==='en'?'Restoring base schedule…':'Restaurando programación base…');const answer=await executeTelegramText(clean);appendTelegramLog('bot','XpaceOS',answer);showLastResponse(answer,'ok','local-visual');resetNotice(answer);}
       catch(error){showLastResponse(error.message,'err','local-visual');resetNotice(error.message);}
-      if(composer)composer.value='';renderQuickActionButtons();return;
+      if(composer&&composer.value.trim()===clean)composer.value='';renderQuickActionButtons();return;
     }
     // Avatar digital (FLT-101350): interruptor local. No sale a Telegram.
     if(window.XpaceShell&&typeof window.XpaceShell.isAvatarCommand==='function'&&window.XpaceShell.isAvatarCommand(clean)){
@@ -33292,7 +33294,7 @@ window.xtAPI = (function(){
       const result=await window.XpaceShell.avatarCommand(clean);
       appendTelegramLog(result.ok?'bot':'err','XpaceOS',result.message);
       showLastResponse(result.message,result.ok?'ok':'err','local-visual');
-      if(composer)composer.value='';
+      if(composer&&composer.value.trim()===clean)composer.value='';
       renderQuickActionButtons();return;
     }
     // The visual command belongs to this browser, never to a remote bot.
@@ -33305,13 +33307,13 @@ window.xtAPI = (function(){
       try{ await window.XpaceShell.marca(clean.replace(/^\/?\S+\s*/,''),t=>{ lines.push(t); appendTelegramLog('bot','XpaceOS',t); }); }
       catch(e){ lines.push('Error: '+(e&&e.message||e)); }
       showLastResponse(lines.join('\n'),'ok','local-visual');
-      if(composer)composer.value='';
+      if(composer&&composer.value.trim()===clean)composer.value='';
       renderQuickActionButtons();return;
     }
     const visual=await executeLocalVisualCommand(clean);
     if(visual){
       hideHelpPanel();showLastResponse(visual.message,visual.ok?'ok':'err',visual.kind==='inventory'?'local-inventory':'local-visual');
-      if(composer)composer.value='';
+      if(composer&&composer.value.trim()===clean)composer.value='';
       renderQuickActionButtons();return;
     }
     rememberMemory('dialog','Consola local: '+clean);
@@ -33327,7 +33329,7 @@ window.xtAPI = (function(){
         appendTelegramLog('err','Error',errMsg);
         showLastResponse(errMsg,'err');
       }
-      if(composer&&clean.replace(/^\/([a-zA-Z0-9_]+).*/,'$1').toLowerCase()!=='help') composer.value='';
+      if(composer&&composer.value.trim()===clean&&clean.replace(/^\/([a-zA-Z0-9_]+).*/,'$1').toLowerCase()!=='help') composer.value='';
       renderQuickActionButtons();
       return;
     }
@@ -33335,7 +33337,7 @@ window.xtAPI = (function(){
     const result=await telegramSend(clean);
     if(result&&result.ok){
       showLastResponse('Mensaje enviado a Telegram','ok');
-      if(composer) composer.value='';
+      if(composer&&composer.value.trim()===clean)composer.value='';
     } else {
       showLastResponse('No se pudo enviar a Telegram'+((result&&result.error)?(': '+result.error):''),'err');
     }
@@ -36481,7 +36483,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
 <link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=xtore-ux-3">
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=avatar-lang-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=cli-incidencia-2">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">

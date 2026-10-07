@@ -4681,8 +4681,11 @@
     ],
     "es": "En el modo experto, /crear incidencia lleva el gemelo a Matrix · Starbucks, elige al azar una pantalla vertical del lineal sin incidencia activa (nunca la 1), escribe un motivo técnico o circunstancial realista y abre el ticket en Yokup. /cerrar incidencia va a la última que abrió la CLI, pulsa su tarjeta, abre la ficha de admira.app, la inicia y la finaliza con una nota acorde al motivo, la pantalla vuelve a emitir y se envía un informe PDF a csilvasantin@gmail.com.",
     "en": "In expert mode, /create incident moves the twin to Matrix · Starbucks, picks a random vertical shelf screen without an active incident (never screen 1), types a realistic technical or circumstantial reason and opens the ticket in Yokup. /close incident goes to the last one opened from the CLI, presses its card, opens the admira.app ticket, starts it and finishes it with a matching note, the screen resumes and a PDF report is emailed to csilvasantin@gmail.com.",
-    "report_endpoint": "POST https://data.yokup.com/api/demo/incident-report {id,timeline} — destinatario fijo (csilvasantin@gmail.com), sólo incidencias demo cerradas abiertas por la CLI (…:manual:cli-…), 1 por incidencia, 10/hora",
-    "email_provider": "Cloudflare Email Routing (admira.live) · binding send_email de yokup-api",
-    "only_cli_tickets": true
+    "report_endpoint": "POST https://data.yokup.com/api/demo/incident-report {id,timeline,marca,logo,photos:{open,closed,open_at,closed_at}} — informe de misión PDF (3 págs.: proyecto, ubicación, activo ITIL con compra/garantía/fallos/MTBF, evidencia visual, cronología T+, SLA, firmas y resumen IA de Workers AI) por correo a csilvasantin@gmail.com y al Telegram privado de Carlos; destinatarios fijos en el servidor, sólo incidencias demo cerradas abiertas por la CLI (…:manual:cli-…), 1 por incidencia, 10/hora",
+    "email_provider": "Cloudflare Email Routing (admira.live) · binding send_email de yokup-api; Telegram: bot de Yokup (sendDocument) al chat privado fijado como secreto",
+    "only_cli_tickets": true,
+    "inventory_source": "Yokup ITIL (CIs PDG103-PAN-01…06 del Xpacio alsea-sbux-021); datos de compra/serie/garantía de las pantallas del gemelo = registro DEMO en device_lifecycle",
+    "white_label": "El PDF se viste con la marca del catálogo único admiranext.com/marcablanca (el de /marca): colores (paleta clara), nombre y tipografía (aproximada con Helvetica/Times/Courier) los lee el servidor; el logo SVG lo rasteriza el gemelo a JPEG. Marca = la activa (/marca) o la de la tienda del recurso (starbucks-… → starbucks); sin marca en el catálogo, aspecto Admira.",
+    "photos": "Fotos JPEG de la pantalla con su tarjeta ABIERTA (al crear) y CERRADA (al cerrar): el 360° de Matrix pintado en el momento + la tarjeta real deformada sobre las esquinas calibradas (scripts/incident-snapshot.mjs); sin 360°, render del equipo. Son capturas del gemelo, no de una cámara de tienda."
   }
 }
