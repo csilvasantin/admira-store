@@ -1518,7 +1518,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261007-r52"></script>
+<script src="xtanco-version.js?v=20261007-r53"></script>
 <script src="xtanco-runtime-config.js?r=audio-mute-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -32076,7 +32076,7 @@ window.xtAPI = (function(){
       // /crear incidencia · /cerrar incidencia [INC-…] (/create incident · /close incident): demo guiada en Matrix ·
       // Starbucks con ticket real en Yokup, ficha de admira.app e informe PDF a Carlos (scripts/incident-demo.mjs).
       if(['crear','create','cerrar','close'].includes(cmd)&&/^(incidencia|incident)(\s|$)/i.test(arg)){
-        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-3');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:typeof lang==='undefined'?'es':lang,progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
+        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-4');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:typeof lang==='undefined'?'es':lang,progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
         catch(e){return (typeof lang!=='undefined'&&lang==='en'?'Incident demo error: ':'Error en la demo de incidencias: ')+(e&&e.message||e);}
       }
       // /marca <id|off|web> (FLT-101337). Aquí llega de Telegram, el MCP o /twin/cmd: no hay

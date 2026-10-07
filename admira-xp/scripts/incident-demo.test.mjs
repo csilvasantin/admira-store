@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {PHOTO_KEY,parseIncidentCommand,CAUSES,pick,runIncidentDemo,REPORT_TO} from './incident-demo.mjs';
+import {describeOpen,screenLabel,PHOTO_KEY,parseIncidentCommand,CAUSES,pick,runIncidentDemo,REPORT_TO} from './incident-demo.mjs';
 test('parsea /crear incidencia, /cerrar incidencia [id] y sus alias en inglés',()=>{
  assert.deepEqual(parseIncidentCommand('/crear incidencia'),{action:'create',id:''});assert.deepEqual(parseIncidentCommand('/create incident'),{action:'create',id:''});
  assert.deepEqual(parseIncidentCommand('/cerrar incidencia inc-ab12cd'),{action:'close',id:'INC-AB12CD'});assert.deepEqual(parseIncidentCommand('/close incident'),{action:'close',id:''});
@@ -14,12 +14,12 @@ test('crea en una candidata al azar y cierra la última de la CLI enviando el in
  const fetcher=async(url,opt)=>{calls.push(['report',url,JSON.parse(opt.body).id]);return {ok:true,status:200,json:async()=>({ok:true,sent:true,message_id:'<m@admira.live>',telegram:{sent:true,message_id:42},pages:3,ai:'meta/llama'})};};
  const closed=await runIncidentDemo('/cerrar incidencia',{store:mem,fetcher});assert.match(closed.message,/INC-CLI001 cerrada/);assert.match(closed.message,new RegExp('Informe enviado a '+REPORT_TO));assert.match(closed.message,/📨 PDF también en tu Telegram · #42 · 3 págs\. · IA/);
  assert.deepEqual(calls.at(-1),['report','https://data.yokup.com/api/demo/incident-report','INC-CLI001']);
- assert.match((await runIncidentDemo('/cerrar incidencia',{store:mem,fetcher})).message,/No hay incidencias abiertas por la CLI/);
+ assert.match((await runIncidentDemo('/cerrar incidencia',{store:mem,fetcher})).message,/No hay incidencias abiertas en las pantallas del gemelo/);
  delete globalThis.XpaceMatrixOptions;
 });
 test('cableado: CLI, ayuda, panel (nunca la pantalla 1, sólo tickets de la CLI), cámara y documentación',()=>{
  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),panel=fs.readFileSync(new URL('./starbucks-incidents.mjs',import.meta.url),'utf8'),pano=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
- assert.match(html,/\['crear','create','cerrar','close'\]\.includes\(cmd\)/);assert.match(html,/incident-demo\.mjs\?v=cli-incidencia-3/);assert.match(html,/'\/crear incidencia','\/cerrar incidencia'/);
+ assert.match(html,/\['crear','create','cerrar','close'\]\.includes\(cmd\)/);assert.match(html,/incident-demo\.mjs\?v=cli-incidencia-4/);assert.match(html,/'\/crear incidencia','\/cerrar incidencia'/);
  assert.match(panel,/\/\^pantalla-\[2-6\]\$\//);assert.match(panel,/:manual:cli-/);assert.match(panel,/uuid:'cli-'\+uuid/);assert.match(pano,/function focusScreen\(id/);assert.match(pano,/incidentDemo:\{/);
  assert.match(fs.readFileSync(new URL('../help.html',import.meta.url),'utf8'),/id="incident-cli-demo"/);assert.ok(JSON.parse(fs.readFileSync(new URL('../../mcp/funcionalidades.json',import.meta.url),'utf8')).incident_cli_demo);
 });
@@ -46,5 +46,21 @@ test('informe con marca del recurso, foto de apertura guardada y fotos/marca en 
  const r=await runIncidentDemo('/cerrar incidencia',{store:mem,fetcher});
  assert.equal(body.marca,'starbucks');assert.equal(body.photos.open,'data:image/jpeg;base64,AAA');assert.equal(body.photos.open_at,5);assert.match(r.message,/3 págs\. · IA · 2 fotos · marca starbucks/);
  assert.equal(JSON.parse(store.get(PHOTO_KEY))['INC-CLI002'],undefined,'la foto se borra tras el informe');
+ delete globalThis.XpaceMatrixOptions;
+});
+// r53 (Carlos 23:06): «¿cómo me dices que no hay incidencias si se ve en la pantalla?»
+test('sin id ni incidencias de la CLI lista TODAS las abiertas del gemelo; con id cierra también una manual; 409 del portal explicado',async()=>{
+ const cf={id:'INC-CFHI7Z',priority:'urgente',assignee:'Sofía P.',created_at:Date.parse('2026-10-07T16:50:00Z'),equipo:'pantalla-1',deviceId:'starbucks-wall-01',via:'manual',stage:'abierta'};
+ assert.equal(describeOpen([cf]),'Hay 1 incidencia abierta en pantalla 1: INC-CFHI7Z (urgente, abierta manualmente a las 18:50, técnico Sofía P.). No la abrió la CLI; para cerrarla escribe /cerrar incidencia INC-CFHI7Z');
+ assert.match(describeOpen([cf],{en:true}),/^There is 1 open incident on screen 1: INC-CFHI7Z \(urgent, opened manually at 18:50, technician Sofía P\.\)\. The CLI did not open it; to close it type \/close incident INC-CFHI7Z$/);
+ const two=describeOpen([cf,{...cf,id:'INC-TEST01',equipo:'pantalla-4',priority:'alta',created_at:Date.now()-600000}]);assert.match(two,/^Hay 2 incidencias abiertas/);assert.match(two,/• pantalla 4 · INC-TEST01 · alta · hace 10 min/);assert.match(two,/\/cerrar incidencia INC-XXXX/);
+ assert.equal(screenLabel({equipo:'tpv'}),'TPV');
+ const store=new Map(),mem={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},closed=[];let body=null;
+ globalThis.XpaceMatrixOptions={isActive:()=>true,incidentDemo:{candidates:()=>[],focus:async()=>true,name:id=>id,stage:()=>null,listOpen:async()=>[cf],
+  close:async o=>{closed.push(o.id);if(o.id==='INC-HELD01'){const e=Error('la lleva un técnico en el portal del comercio (Sofía P.)');e.code='portal_assigned';e.url='https://www.yokup.com/ticket?id=INC-HELD01';throw e;}return {inc:{id:o.id,stage:'cerrada',resolution:o.note,resource:'demo:starbucks-alsea-paseo-de-gracia:pantalla-1:manual:040c'}};}}};
+ const r1=await runIncidentDemo('/cerrar incidencia',{store:mem});assert.match(r1.message,/^Hay 1 incidencia abierta en pantalla 1: INC-CFHI7Z/);assert.doesNotMatch(r1.message,/No hay incidencias/);assert.equal(closed.length,0,'sin id no cierra una que no abrió la CLI');
+ const fetcher=async(u,o)=>{body=JSON.parse(o.body);return {ok:true,status:200,json:async()=>({ok:true,sent:true,message_id:'<m@admira.live>',telegram:{sent:true,message_id:9},pages:3})};};
+ const r2=await runIncidentDemo('/cerrar incidencia INC-CFHI7Z',{store:mem,fetcher});assert.match(r2.message,/INC-CFHI7Z cerrada/);assert.match(r2.message,/Informe enviado a csilvasantin@gmail\.com/);assert.equal(body.id,'INC-CFHI7Z');assert.deepEqual(closed,['INC-CFHI7Z']);
+ const r3=await runIncidentDemo('/cerrar incidencia INC-HELD01',{store:mem,fetcher});assert.match(r3.message,/^⚠ INC-HELD01 no se ha cerrado: la lleva un técnico en el portal del comercio \(Sofía P\.\)\. Se cierra desde su ficha, con evidencia: https:\/\/www\.yokup\.com\/ticket\?id=INC-HELD01$/);
  delete globalThis.XpaceMatrixOptions;
 });
