@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r13.09:28": [
+    "Pastilla de categoría del avatar: toca AVATAR·Admirito / HUMAN·Luna / METAHUMAN·Neo para cambiar de personalidad",
+    "Cargador del avatar (avatar.js) y ⌘ Experto (suite/experto.js) fijados a la versión 20261007-pill-1"
+  ],
   "v.06.10.2026.r25.22:04": [
     "Avatar good = Admirito: la nube de la casa, animada, que mueve los labios al hablar y hace cosas sola si nadie la toca",
     "En el gemelo, con calidad Good el tótem y la pantalla de la pared larga muestran a Admirito; Better, Best y Matrix siguen con la chica",
