@@ -138,7 +138,8 @@
     if(!/^en/i.test(String(langTag||''))&&elOn()){ elSpeak(t,()=>browserSpeak(t,langTag)); return {spoken:true,via:'elevenlabs'}; }
     return browserSpeak(t,langTag);
   }
-  const VOZ_URL='https://mcp-ainimation.admira.store/voz'; // voz por defecto: Santiago (nuzVc5hpXBWZjFEe4izg), la fija el worker let vozAudio=null; window.__admiritoVoz=window.__admiritoVoz||[];
+  // Voz por defecto: Santiago (nuzVc5hpXBWZjFEe4izg), la fija el worker /voz.
+  const VOZ_URL='https://mcp-ainimation.admira.store/voz'; let vozAudio=null; window.__admiritoVoz=window.__admiritoVoz||[];
   function elOn(){ try{ const q=new URLSearchParams(location.search); if(q.get('voz_el')==='0') return false; return localStorage.getItem('xpace:voz-admirito')!=='navegador'; }catch(_){ return true; } }
   function elSpeak(t,fallback){
     let done=false; const fin=(ok,why)=>{ if(done) return; done=true; window.__admiritoVoz.push({texto:t,via:ok?'elevenlabs':'respaldo',why:why||'',at:Date.now()}); if(!ok) fallback(); };
