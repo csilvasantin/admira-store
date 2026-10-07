@@ -51,7 +51,8 @@ test('wall avatar level: explicit tab choice > Good; visual quality and legacy l
   assert.equal(wallAvatarLevel({chosen:'x',tier:'matrix'}),'good');
   assert.equal(wallAvatarLevel(),'good');
   const src=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
-  assert.match(src,/addEventListener\('admira-avatar:open',e=>\{if\(disposed\)return;e\.preventDefault\(\);focusAvatar\(\);\}/);
+  // 7-oct-2026: con el tótem en modo quiosco la pared no enseña al avatar; ahí no se intercepta y se abre el panel flotante.
+  assert.match(src,/addEventListener\('admira-avatar:open',e=>\{if\(disposed\)return;if\(wallAvatar\.mode==='kiosk'\)return;e\.preventDefault\(\);focusAvatar\(\);\}/);
   assert.match(src,/case 'avatar':focusAvatar\(\);break;/);
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert.match(html,/AVATAR3D_LEVEL_BY_VISUAL=\{good:'good',better:'better',best:'best',matrix:'best'\}/);

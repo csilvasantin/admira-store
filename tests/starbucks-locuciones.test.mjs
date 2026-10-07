@@ -9,9 +9,9 @@ import {SPEAKER_LOCUTIONS,mountSpeakerLocutions} from '../admira-xp/scripts/star
 const require=createRequire(import.meta.url);
 const {createAnnouncements}=require('../admira-xp/scripts/announcements.js');
 
-test('cada altavoz tiene su idioma, su audio de Stock y dos lecturas',()=>{
+test('cada altavoz tiene su idioma, su audio de Stock y una sola lectura',()=>{
  assert.equal(SPEAKER_LOCUTIONS.altavoz.language,'en');assert.equal(SPEAKER_LOCUTIONS.videowall.language,'es');
- for(const L of Object.values(SPEAKER_LOCUTIONS)){assert.equal(L.times,2);assert.match(L.url,/^https:\/\/api\.admira\.store\/stock\/asset\/\d+-[a-z0-9]+$/);assert.ok(L.url.endsWith(L.stock));}
+ for(const L of Object.values(SPEAKER_LOCUTIONS)){assert.equal(L.times,1);assert.match(L.url,/^https:\/\/api\.admira\.store\/stock\/asset\/\d+-[a-z0-9]+$/);assert.ok(L.url.endsWith(L.stock));}
  assert.match(SPEAKER_LOCUTIONS.altavoz.text,/best coffee shop in the world/);assert.match(SPEAKER_LOCUTIONS.videowall.text,/refill de Chai Latte/);
 });
 
@@ -34,15 +34,15 @@ function escena(){
  return {api,buttons,status,calls,stops,before:()=>before};
 }
 
-test('pulsar el altavoz emite la de inglés ×2 y el de la pared del videowall la de castellano ×2',()=>{
+test('pulsar el altavoz emite la de inglés y el de la pared del videowall la de castellano, una vez cada una',()=>{
  const e=escena();
  e.buttons.altavoz.click();
- assert.equal(e.calls[0].url,SPEAKER_LOCUTIONS.altavoz.url);assert.equal(e.calls[0].opts.language,'en');assert.equal(e.calls[0].opts.times,2);
+ assert.equal(e.calls[0].url,SPEAKER_LOCUTIONS.altavoz.url);assert.equal(e.calls[0].opts.language,'en');assert.equal(e.calls[0].opts.times,1);
  assert.equal(e.buttons.altavoz.attr['aria-pressed'],'true');assert.equal(e.before(),1,'para antes el aviso de cierre');
- e.calls[0].opts.onState({phase:'speaking',completed:1});assert.match(e.status.textContent,/2\/2/);
- e.calls[0].opts.onState({phase:'done',completed:2});assert.equal(e.buttons.altavoz.attr['aria-pressed'],'false');
+ e.calls[0].opts.onState({phase:'speaking',completed:0});assert.match(e.status.textContent,/Emitiendo · Altavoz · inglés$/);
+ e.calls[0].opts.onState({phase:'done',completed:1});assert.equal(e.buttons.altavoz.attr['aria-pressed'],'false');
  e.buttons.videowall.click();
- assert.equal(e.calls[1].url,SPEAKER_LOCUTIONS.videowall.url);assert.equal(e.calls[1].opts.language,'es');assert.equal(e.calls[1].opts.times,2);
+ assert.equal(e.calls[1].url,SPEAKER_LOCUTIONS.videowall.url);assert.equal(e.calls[1].opts.language,'es');assert.equal(e.calls[1].opts.times,1);
  e.buttons.videowall.click();assert.equal(e.stops.length,1,'un segundo toque la detiene');assert.equal(e.api.state().active,'');
 });
 
@@ -50,4 +50,9 @@ test('el panorama cablea los dos altavoces sin recuperar los iconos retirados',(
  const source=fs.readFileSync(new URL('../admira-xp/scripts/matrix-panorama.mjs',import.meta.url),'utf8');
  assert.match(source,/mountSpeakerLocutions\(\{altavoz:speakerAnchor,videowall:announcementAnchor\}/);
  assert.match(source,/project\(STARBUCKS_SPEAKER\)/);assert.ok(!source.includes('matrix-speaker'));
+});
+
+test('con el tótem en modo quiosco Matrix no intercepta la apertura del avatar: /avatar best abre su panel',()=>{
+ const source=fs.readFileSync(new URL('../admira-xp/scripts/matrix-panorama.mjs',import.meta.url),'utf8');
+ assert.match(source,/addEventListener\('admira-avatar:open',e=>\{if\(disposed\)return;if\(wallAvatar\.mode==='kiosk'\)return;e\.preventDefault\(\);focusAvatar\(\);\}/);
 });
