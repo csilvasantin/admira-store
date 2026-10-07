@@ -15,8 +15,8 @@ test('cada altavoz tiene su idioma, su audio de Stock y dos lecturas',()=>{
  assert.match(SPEAKER_LOCUTIONS.altavoz.text,/best coffee shop in the world/);assert.match(SPEAKER_LOCUTIONS.videowall.text,/refill de Chai Latte/);
 });
 
-test('el reproductor repite el audio las veces pedidas (2) y por defecto sigue en 3',async()=>{
- for(const [times,expected] of [[2,2],[undefined,3]]){
+test('el reproductor repite el audio las veces pedidas (2) y por defecto lo lee una sola vez',async()=>{
+ for(const [times,expected] of [[2,2],[undefined,1]]){
   const audios=[],states=[];
   class FakeAudio{constructor(url){this.url=url;this.plays=0;audios.push(this);}play(){this.plays++;queueMicrotask(()=>{this.onplaying?.();this.onended?.();});return Promise.resolve();}pause(){}}
   const player=createAnnouncements({Audio:FakeAudio,generate:async()=>({url:'x.mp3'}),onState:s=>states.push(s),schedule:f=>{queueMicrotask(f);return 1;},unschedule(){},...(times?{times}:{})});

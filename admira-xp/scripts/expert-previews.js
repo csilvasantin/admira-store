@@ -2,7 +2,7 @@
    Lo que se crea en Crear contenidos (imagen, música/audio, locución, vídeo) se abre aquí,
    sólo la última creación: previo grande y, debajo, título, Lanzar, Ver en Stock y Reset.
    Crear nunca emite: Lanzar añade y reproduce en los players virtuales de este Xpacio;
-   una locución se emite tres veces sólo al pulsar Emitir. El formulario sigue en el centro.
+   una locución se emite una vez sólo al pulsar Emitir. El formulario sigue en el centro.
    Expert → PREVIEWS (third, far-right slot). Only the latest creation opens here, filling the pane with actions below. */
 (function(root){'use strict';
  const KEY='xpaceos.expert-previews.v1',MAX=1,KINDS=['image','video','music','voice'];
@@ -53,8 +53,8 @@
   card.querySelector('.epc-when').textContent=(item.num?'#'+item.num+' · ':'')+hh;
   const title=card.querySelector('.epc-title');title.textContent=item.title;title.title=item.title;
   const launch=card.querySelector('[data-preview-launch]');
-  launch.textContent=item.kind==='voice'?(playing.has(uid(item))?t('⏹ Detener','⏹ Stop'):t('📢 Emitir ×3','📢 Play ×3')):item.kind==='music'?t('▶ Lanzar al hilo','▶ Launch to music'):t('▶ Lanzar a pantalla','▶ Launch to screen');
-  launch.title=item.kind==='voice'?t('Emitir la locución tres veces en el Xpacio','Play the voiceover three times in the Xpace'):t('Añadir a la playlist y reproducir en el Xpacio','Add to the playlist and play in the Xpace');
+  launch.textContent=item.kind==='voice'?(playing.has(uid(item))?t('⏹ Detener','⏹ Stop'):t('📢 Emitir','📢 Play')):item.kind==='music'?t('▶ Lanzar al hilo','▶ Launch to music'):t('▶ Lanzar a pantalla','▶ Launch to screen');
+  launch.title=item.kind==='voice'?t('Emitir la locución en el Xpacio','Play the voiceover in the Xpace'):t('Añadir a la playlist y reproducir en el Xpacio','Add to the playlist and play in the Xpace');
   const stock=card.querySelector('[data-preview-stock]');stock.textContent=item.kind==='voice'?t('Ver en Stock · Megafonía','Open in Stock · Announcements'):t('Ver en Stock','Open in Stock');
   const reset=card.querySelector('[data-preview-reset]');if(reset){reset.textContent='Reset';reset.title=t('Restaurar la programación inicial de los dispositivos; conservar esta creación en Stock','Restore the initial device schedule; keep this creation in Stock');}
   card.setAttribute('aria-label',t(...LABEL[item.kind])+' · '+item.title);
@@ -71,8 +71,8 @@
    root.XpaceAnnouncements.playStock(item.url,item.title,{language:item.language||(doc.documentElement.lang==='en'?'en':'es'),onState(s){
     if(['done','stopped','error'].includes(s.phase))playing.delete(key);
     if(s.phase==='generating')say(item,'Preparando la locución de Stock…','Loading the Stock voiceover…');
-    else if(['starting','speaking','between'].includes(s.phase))say(item,'Emitiendo locución · '+(s.completed+1)+'/3','Playing voiceover · '+(s.completed+1)+'/3');
-    else if(s.phase==='done')say(item,'Locución completada · 3/3','Voiceover complete · 3/3');
+    else if(['starting','speaking','between'].includes(s.phase))say(item,'Emitiendo locución…','Playing voiceover…');
+    else if(s.phase==='done')say(item,'Locución completada.','Voiceover complete.');
     else if(s.phase==='stopped')say(item,'Locución detenida.','Voiceover stopped.');
     else if(s.phase==='error')say(item,'No se pudo emitir la locución.','Could not play the voiceover.');
     else{const card=cards.get(key);if(card)texts(card,item);}
