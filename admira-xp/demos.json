@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "title": "Demos del gemelo XpaceOS · Starbucks / XpaceOS twin demos",
- "updated_at": "2026-10-07",
+ "updated_at": "2026-10-08",
  "source": "https://www.admira.store/admira-xp/demos.json",
  "mirror": "https://www.xpaceos.com/admira-xp/demos.json",
  "commands": {
@@ -500,6 +500,11 @@
    },
    "owner": "XpaceOS · gemelo Starbucks",
    "link": "https://www.admira.store/admira-xp/help.html#ipad-queue-idle",
+   "preload": [
+    {
+     "ipad": "preload"
+    }
+   ],
    "steps": [
     {
      "mode": "matrix"
@@ -511,7 +516,7 @@
      "cli": "/ipad cola"
     },
     {
-     "wait": 5000
+     "wait": 3000
     },
     {
      "ipad": "open"
