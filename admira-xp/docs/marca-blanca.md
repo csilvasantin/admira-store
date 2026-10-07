@@ -89,3 +89,8 @@ The readability correction is piloted only in Expert: an independent stylesheet 
 ES: Con marca activa, el logo del cliente sustituye al nombre genérico XpaceOS en la barra, tanto en el shell como en el gemelo. /marca starbucks muestra Starbucks; /marca off vuelve a Admira.
 
 EN: With an active brand, the customer logo replaces the generic XpaceOS wordmark in both the shell and twin top bar. /brand starbucks shows Starbucks; /brand off returns to Admira.
+
+
+ES: /ifthendothat ahora permite música, locución, imagen o vídeo con filtro Pixeria editable. Matrix es la calidad inicial. /marca starbucks combina imagotipo y texto blanco STARBUCKS.
+
+EN: /ifthendothat now supports music, voiceover, image or video with an editable Pixeria filter. Matrix is the entry quality. /brand starbucks combines the imago and white STARBUCKS wordmark.

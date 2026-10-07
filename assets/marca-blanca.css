@@ -145,3 +145,8 @@
 
 /* Active customer identity replaces the generic wordmark in every shared top bar. */
 :root[data-mb-marca][data-mb-plataforma="store"] #topBar :is(.xs-brand,.mb-powered){display:none!important}
+
+/* Starbucks lock-up from the historical kiosk: imago plus white wordmark. */
+:root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo.mb-starbucks-lockup{background:#006241;gap:7px;padding:3px 9px 3px 4px;box-sizing:border-box;height:34px;max-width:170px;flex-shrink:0}
+:root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo .mb-starbucks-wordmark{color:#fff;line-height:1;font:800 12px/1 Inter,Arial,sans-serif;letter-spacing:.08em}
+:root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo :is(img,svg){max-width:28px}

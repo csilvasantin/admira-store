@@ -134,7 +134,7 @@
       'border-radius:12px;font:12px -apple-system,Segoe UI,Roboto,sans-serif;display:none;flex-direction:column;',
       'overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.55);backdrop-filter:blur(8px)}',
       '#xpl-composer *{box-sizing:border-box}',
-      '#xpl-composer{overflow-y:auto}#xc-retail{padding:10px;flex:none}#xc-retail h3{font-size:14px;margin:0 0 6px}#xc-retail p{line-height:1.5}#xc-retail fieldset{border:1px solid #5bd6c0;border-radius:10px;margin:10px 0;padding:9px}#xc-retail label{display:block;margin:8px 0;color:#e8eef7;font-size:11px}#xc-retail select{display:block;width:100%;margin-top:5px}#xc-retail button{margin:4px 4px 4px 0}.xc-legacy{padding:10px}',
+      '#xpl-composer{overflow-y:auto}#xc-retail{padding:10px;flex:none}#xc-retail h3{font-size:14px;margin:0 0 6px}#xc-retail p{line-height:1.5}#xc-retail fieldset{border:1px solid #5bd6c0;border-radius:10px;margin:10px 0;padding:9px}#xc-retail label{display:block;margin:8px 0;color:#e8eef7;font-size:11px}#xc-retail a{display:block;color:#5bd6c0;margin:8px 0}#xc-retail input[type=search]{display:block;width:100%;box-sizing:border-box;margin-top:5px}#xc-retail select{display:block;width:100%;margin-top:5px}#xc-retail button{margin:4px 4px 4px 0}.xc-legacy{padding:10px}',
       '#xpl-composer .top{display:flex;align-items:center;gap:5px;padding:7px 8px;border-bottom:1px solid #26303f;background:#131822;flex-wrap:wrap}',
       '#xpl-composer .top b{font-size:12px;letter-spacing:.2px}',
       '#xpl-composer .top .tag{color:#5bd6c0;font-family:ui-monospace,monospace;font-size:10px}',
@@ -184,7 +184,7 @@
       '<section id="xc-retail"></section><details class="xc-legacy"><summary>Reglas del gemelo / Twin rules · <span id="xc-count">0</span></summary><button class="ok" id="xc-add">+ regla / rule</button><button class="lk" id="xc-ex">ejemplos / examples</button><div class="list" id="xc-list"></div></details>' +
       '<div class="ft">● TPV: al coger o entregar / POS: on pickup or delivery</div>';
     document.body.appendChild(panel);
-    import('./retail-rule-composer.mjs?v=retail-rules-2').then(function(m){m.mountRetailRuleComposer(panel.querySelector('#xc-retail'));}).catch(function(){panel.querySelector('#xc-retail').textContent='No se pudieron cargar las reglas TPV / Could not load POS rules';});
+    import('./retail-rule-composer.mjs?v=retail-media-1').then(function(m){m.mountRetailRuleComposer(panel.querySelector('#xc-retail'));}).catch(function(){panel.querySelector('#xc-retail').textContent='No se pudieron cargar las reglas TPV / Could not load POS rules';});
 
     panel.querySelector('#xc-add').onclick = addRule;
     panel.querySelector('#xc-close').onclick = function () { setOpen(false); };

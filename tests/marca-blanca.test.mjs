@@ -63,7 +63,7 @@ const bootMarca = opts => browser(Object.assign({file: 'assets/marca-blanca.js',
 // Única excepción (encargo avatar · 4-oct-2026): el shell inserta el cargador común del
 // avatar de admiranext.com, que decide con la bandera del proyecto (apagada en XpaceOS).
 // Se comprueba aparte que sea exactamente uno y nada más; el resto del contrato sigue igual.
-const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-ctx-2';
+const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-nube-1';
 // Segunda excepción, del mismo tipo (sello con novedades · 6-oct-2026): el cargador común del sello
 // de versión, que solo lee el /version.json de ESTE sitio. Exactamente uno, y nada más.
 const SELLO_LOADER = 'https://www.admiranext.com/assets/sello-novedades.js?v=20261006-options-sello-4';
@@ -265,7 +265,7 @@ test('la hoja local solo actúa bajo una marca store y nunca recolorea medios ni
   // Separa una lista de selectores por las comas de primer nivel (no las de :is()/:not()).
   const split = list => { const out = []; let depth = 0, cur = ''; for (const ch of list) { if (ch === '(') depth++; if (ch === ')') depth--; if (ch === ',' && !depth) { out.push(cur); cur = ''; } else cur += ch; } return [...out, cur]; };
   for (const rule of rules) for (const sel of split(rule.slice(0, rule.indexOf('{')))) {
-    assert.match(sel.trim(), /^:root\[data-mb-marca\]\[data-mb-plataforma="store"\]/, 'selector sin acotar: ' + sel.trim());
+    assert.match(sel.trim(), /^:root\[data-mb-marca(?:="starbucks")?\]\[data-mb-plataforma="store"\]/, 'selector sin acotar: ' + sel.trim());
   }
   assert.ok(!/\bfilter\s*:\s*(?!none)/.test(css), 'sin filtros de color');
   assert.ok(!/mix-blend-mode\s*:\s*(?!normal)/.test(css));

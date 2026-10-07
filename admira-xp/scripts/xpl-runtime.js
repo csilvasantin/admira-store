@@ -136,6 +136,9 @@
   //        'on'   -> solo en el flanco (cuando pasa de falso a verdadero)
   const ACTIONS = [
     {id:'playSong',scope:'retail',mode:'on',es:'reproducir canción de Pixeria',en:'play a Pixeria song',param:{kind:'text'}},
+    {id:'playVoice',scope:'retail',mode:'on',es:'reproducir locución',en:'play voiceover',param:{kind:'text'}},
+    {id:'showImage',scope:'retail',mode:'on',es:'mostrar imagen',en:'show image',param:{kind:'text'}},
+    {id:'playVideo',scope:'retail',mode:'on',es:'reproducir vídeo',en:'play video',param:{kind:'text'}},
     { id: 'equip',      scope: 'npc',   mode: 'while', es: 'darle',          en: 'give them',
       param: { kind: 'enum', es: 'qué', en: 'what', values: [
         { id: 'umbrella', es: 'un paraguas', en: 'an umbrella', icon: '☂️' },

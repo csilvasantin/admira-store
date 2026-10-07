@@ -381,6 +381,11 @@
         root.MarcaBlanca.aplicar(current.id, {objetivo: slot, plataforma: PLATAFORMA, modo: current.modo, favicon: false}).catch(() => {});
       } else slot.textContent = current.nombre;   // marca sin logo
     }
+    let wordmark=slot.querySelector('.mb-starbucks-wordmark');
+    if(current.id==='starbucks'){
+      slot.classList.add('mb-starbucks-lockup');
+      if(!wordmark){wordmark=doc.createElement('span');wordmark.className='mb-starbucks-wordmark';wordmark.textContent='STARBUCKS';slot.append(wordmark);}
+    }else{slot.classList.remove('mb-starbucks-lockup');wordmark?.remove();}
   }
   // ¿Falta algo? (la barra o el panel de Opciones existen, pero sin el logo)
   function chromeMissing() {

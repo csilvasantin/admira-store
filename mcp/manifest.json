@@ -6,7 +6,7 @@
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.64",
+    "version": "2.12.65",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -285,8 +285,8 @@
     "quality_host": "visualQualityOptions",
     "general_controls_host": ".quad-right .expert-primary-actions",
     "menu_routing": {
-      "es": "La barra superior contiene Calidad del Xpacio (Good por defecto): Good (8 bits), Better (16 bits), Best (32 bits) y Matrix (64 bits). El estado seleccionado y las restricciones por local se conservan. Avanzado contiene los botones Enviar, Mostrar/Ocultar Local view, Player y cámara y cerrar Experto. El bloque central de Experto queda exclusivamente para las opciones de la categoría seleccionada a la izquierda; los previos y el estado de la vista permanecen a la derecha. Enter sigue ejecutando el CLI desde el bloque izquierdo. Los tres bloques conservan sus separadores y el resize hacia arriba, anclados al borde inferior. No hay botones ni IDs duplicados; se conservan las conexiones y las acciones originales.",
-      "en": "The top bar contains Xpace quality (Good by default): Good (8-bit), Better (16-bit), Best (32-bit) and Matrix (64-bit). Selection state and venue restrictions are preserved. Advanced contains Send, Show/Hide Local view, Player and camera and Close Expert. The middle Expert pane is exclusively for options of the category selected on the left; previews and view status remain on the right. Enter still runs the CLI in the left pane. All three panes retain their dividers and upward resize, anchored to the bottom edge. Buttons and IDs are not duplicated; original connections and actions are retained."
+      "es": "La barra superior contiene Calidad del Xpacio (Matrix por defecto): Good (8 bits), Better (16 bits), Best (32 bits) y Matrix (64 bits). El estado seleccionado y las restricciones por local se conservan. Avanzado contiene los botones Enviar, Mostrar/Ocultar Local view, Player y cámara y cerrar Experto. El bloque central de Experto queda exclusivamente para las opciones de la categoría seleccionada a la izquierda; los previos y el estado de la vista permanecen a la derecha. Enter sigue ejecutando el CLI desde el bloque izquierdo. Los tres bloques conservan sus separadores y el resize hacia arriba, anclados al borde inferior. No hay botones ni IDs duplicados; se conservan las conexiones y las acciones originales.",
+      "en": "The top bar contains Xpace quality (Matrix by default): Good (8-bit), Better (16-bit), Best (32-bit) and Matrix (64-bit). Selection state and venue restrictions are preserved. Advanced contains Send, Show/Hide Local view, Player and camera and Close Expert. The middle Expert pane is exclusively for options of the category selected on the left; previews and view status remain on the right. Enter still runs the CLI in the left pane. All three panes retain their dividers and upward resize, anchored to the bottom edge. Buttons and IDs are not duplicated; original connections and actions are retained."
     }
   },
   "visual_tiers": {
@@ -1414,8 +1414,8 @@
     "physical_publication": false
   },
   "topbar_core": {
-    "es": "La barra superior contiene Xpacio (proyecto y local) y Calidad (Good, Better, Best y Matrix). Ambos desplegables muestran la selección activa y se abren sin desplegar Opciones. Good es la calidad por defecto al entrar, aunque hubiera otra calidad guardada; los enlaces con quality o visual explícito conservan su elección. La selección mantiene las identidades de proyecto y local, la conexión central con AdmiraNext, permisos, idioma, marca blanca, inventario e historial CLI. Escape o pulsar fuera cierra el desplegable. ☰ abre Opciones, ▤ Avanzado y ⌘ Experto; los paneles entran cerrados. La telemetría continúa conservada y oculta hasta definir los indicadores y verificar IoT.",
-    "en": "The top bar contains Xpace (project and venue) and Quality (Good, Better, Best and Matrix). Both dropdowns show the active selection and open without expanding Options. Good is the default on entry, even when another quality was saved; links with explicit quality or visual retain their choice. Selection preserves project and venue identities, the central AdmiraNext connection, permissions, language, white label, inventory and CLI history. Escape or clicking outside closes the dropdown. ☰ opens Options, ▤ Advanced and ⌘ Expert; panels start closed. Telemetry remains retained and hidden until indicators are defined and IoT is verified.",
+    "es": "La barra superior contiene Xpacio (proyecto y local) y Calidad (Good, Better, Best y Matrix). Ambos desplegables muestran la selección activa y se abren sin desplegar Opciones. Matrix es la calidad por defecto al entrar, aunque hubiera otra calidad guardada; los enlaces con quality o visual explícito conservan su elección. La selección mantiene las identidades de proyecto y local, la conexión central con AdmiraNext, permisos, idioma, marca blanca, inventario e historial CLI. Escape o pulsar fuera cierra el desplegable. ☰ abre Opciones, ▤ Avanzado y ⌘ Experto; los paneles entran cerrados. La telemetría continúa conservada y oculta hasta definir los indicadores y verificar IoT.",
+    "en": "The top bar contains Xpace (project and venue) and Quality (Good, Better, Best and Matrix). Both dropdowns show the active selection and open without expanding Options. Matrix is the default on entry, even when another quality was saved; links with explicit quality or visual retain their choice. Selection preserves project and venue identities, the central AdmiraNext connection, permissions, language, white label, inventory and CLI history. Escape or clicking outside closes the dropdown. ☰ opens Options, ▤ Advanced and ⌘ Expert; panels start closed. Telemetry remains retained and hidden until indicators are defined and IoT is verified.",
     "guide": "https://www.xpaceos.com/admira-xp/docs/topbar-core.md",
     "implementation": "admira-xp/index.html + admira-xp/scripts/topbar-controls.mjs",
     "status": "implemented",
@@ -2339,8 +2339,8 @@
   },
   "ifthendothat": {
     "help_topic": "ifthendothat",
-    "es": "Abre /ifthendothat desde el CLI o IF·THEN·DO THAT en Avanzado. En IF elige Cojo un muffin o Llevo un muffin a la caja; en DO THAT selecciona una canción de Pixeria. La regla se guarda al cambiar un selector. Activa/desactiva, elimina o añade reglas TPV. Por defecto, coger un muffin reproduce Bad Times Deep House. Arrastre manual, Enter/Espacio y /demo tpv usan la misma regla: una vez por gesto; la entrega sólo dispara las reglas de caja. Desactivar o eliminar todas las reglas deja el muffin sin canción; la demo no impone una pista. Detener canción, Escape o /demo off paran el audio y recuperan el volumen anterior del hilo musical. Cambiar una regla no emite: afecta al próximo muffin. El catálogo consulta hasta 200 canciones de Stock de tipo music, además de la pista inicial; Actualizar canciones de Pixeria vuelve a consultarlo, con caché si no responde. Si coinciden varias reglas gana la de mayor prioridad; en empate, la última. Las reglas TPV se conservan en este navegador y dominio, por local y caja; las reglas XPL existentes se mantienen aparte. Es la experiencia del gemelo Matrix de Starbucks Alsea, sin cobro, escrituras MCP ni órdenes a TPV físico. /ifthendothat off cierra el editor. Con /marca starbucks la barra muestra el logo Starbucks como identidad; /marca off recupera la marca genérica.",
-    "en": "Open /ifthendothat from the CLI or IF·THEN·DO THAT in Advanced. Under IF choose I pick up a muffin or I take a muffin to the register; under DO THAT select a Pixeria song. Changing a selector saves the rule. Enable/disable, delete or add POS rules. By default, picking up a muffin plays Bad Times Deep House. Manual drag, Enter/Space and /demo tpv use the same rule once per gesture; delivery only triggers register rules. Disabling or deleting every rule leaves the muffin silent; the demo does not force a track. Stop song, Escape or /demo off stops audio and restores the previous background music volume. Editing a rule does not play it; it applies to the next muffin. The catalogue queries up to 200 Stock music items, plus the initial track; Refresh Pixeria songs queries it again, retaining cached songs if unavailable. If several rules match, higher priority wins; the last rule wins ties. POS rules persist in this browser and domain, scoped to venue and register; existing XPL rules remain separate. This is the Starbucks Alsea Matrix twin experience, with no payment, MCP writes or physical POS commands. /ifthendothat off closes the editor. With /brand starbucks the top bar shows the Starbucks logo as its identity; /brand off restores the generic brand.",
+    "es": "Abre /ifthendothat desde el CLI o IF·THEN·DO THAT en Avanzado. IF elige Cojo un muffin o Llevo un muffin a la caja. DO · reacción elige Música, Locución, Imagen o Vídeo. El filtro de Pixeria se preselecciona como #musica, #locucion, #imagen o #video; puedes cambiarlo por otro hashtag o una búsqueda. DO THAT · contenido permite elegir una pieza compatible del repositorio Pixeria; Abrir repositorio Pixeria abre su ficha. Cambiar reacción conserva el evento y preselecciona el filtro, pero deja el contenido pendiente de escoger. La regla se guarda al editar; seleccionar no reproduce. Arrastre, Enter/Espacio y /demo tpv ejecutan la misma regla una vez por gesto. Música y locuciones suenan en el gemelo; imágenes y vídeos aparecen temporalmente en la pantalla TPV. Detener reacción, Escape o /demo off detienen y recuperan la programación anterior; el vídeo también termina naturalmente, la imagen permanece hasta detener. Desactivar o eliminar todas las reglas no reproduce contenido. El catálogo consulta hasta 200 piezas por tipo music, audio, locucion, image y video, conserva caché y reglas anteriores de canciones (version 1). Prioridad mayor gana; en empate, la última. Las reglas se guardan en este navegador y dominio. El gemelo entra en Matrix por defecto; quality o visual explícito conserva la elección. /marca starbucks muestra el imagotipo y el texto STARBUCKS blanco; /marca off restaura la marca genérica. Sin cobro ni órdenes a TPV físico, escrituras MCP o sincronización multiusuario.",
+    "en": "Open /ifthendothat from the CLI or IF·THEN·DO THAT in Advanced. IF selects I pick up a muffin or I take a muffin to the register. DO · reaction selects Music, Voiceover, Image or Video. The Pixeria filter is preset to #musica, #locucion, #imagen or #video; you can change it to another hashtag or search. DO THAT · content selects a compatible item from the Pixeria repository; Open Pixeria repository opens its entry. Changing reaction keeps the event and presets its filter, but requires choosing content. Editing saves the rule without playing it. Drag, Enter/Space and /demo tpv execute the same rule once per gesture. Music and voiceovers play in the twin; images and videos appear temporarily on the POS display. Stop reaction, Escape or /demo off stops playback and restores the previous schedule; video also ends naturally, images remain until stopped. Disabled or deleted rules play no content. The catalogue queries up to 200 items per type music, audio, locucion, image and video, retaining cache and previous song rules (version 1). Higher priority wins; the last wins ties. Rules persist in this local browser and domain. Matrix is the entry default; explicit quality or visual links retain their choice. /brand starbucks shows the imago and white STARBUCKS wordmark; /brand off restores the generic identity. No payment or physical POS commands, MCP writes or multiuser sync.",
     "commands": [
       "/ifthendothat",
       "/ifthendothat on",
@@ -2351,13 +2351,33 @@
       "muffinPicked",
       "muffinDelivered"
     ],
-    "action": "playSong",
     "storage_key": "xpaceos.xpl.retail.v1:alsea-sbux-021:starbucks-tpv-01",
-    "stock_source": "https://api.admira.store/stock/list?type=music&limit=200",
+    "stock_source": "https://api.admira.store/stock/list?type=<allowed-type>&limit=200",
     "guide": "https://www.admira.store/admira-xp/docs/ifthendothat.md",
     "scope": "local-browser-venue-pos",
     "mcp_tools": false,
     "physical_integration": false,
-    "catalogue_url": "https://www.admira.store/admira-xp/music-catalog"
+    "catalogue_url": "https://www.admira.store/admira-xp/media-catalog",
+    "actions": [
+      "playSong",
+      "playVoice",
+      "showImage",
+      "playVideo"
+    ],
+    "reactions": [
+      "music",
+      "locucion",
+      "image",
+      "video"
+    ],
+    "default_filters": [
+      "#musica",
+      "#locucion",
+      "#imagen",
+      "#video"
+    ],
+    "storage_version": 2,
+    "visual_destination": "starbucks-tpv-01",
+    "entry_default": "matrix"
   }
 }

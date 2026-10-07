@@ -40,12 +40,12 @@ test('explicit visual links override preferences and the former Life URL aliases
   }
 });
 
-test('ordinary entry always starts Good despite saved quality or a Starbucks venue',()=>{
+test('ordinary entry always starts Matrix despite saved quality or a Starbucks venue',()=>{
   assert.equal(TIER_STORAGE_KEY,'xtanco_visual_tier_v2');
   for(const stored of ['good','better','best','matrix','life','unknown']){
     const storage=memoryStorage({[TIER_STORAGE_KEY]:stored});
-    assert.equal(requestedTier('',storage),'good');
-    assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'good');
+    assert.equal(requestedTier('',storage),'matrix');
+    assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'matrix');
     assert.deepEqual(storage.reads,[]);
     assert.equal(requestedTier('?quality=matrix',storage),'matrix');
   }
@@ -331,7 +331,7 @@ test('Options buttons consume game input and update when Better closes',()=>{
 
 test('selector boots safely with denied storage or stale legacy Best and never imports the retired controller',()=>{
   for(const options of [{storageBlocked:true},{storage:memoryStorage({xtanco_visual_quality:'best'})}]){
-    const h=selectorHarness(options);assert.equal(h.body.dataset.xtancoTier,'good');assert.equal(h.life.calls.open,0);
+    const h=selectorHarness(options);assert.equal(h.body.dataset.xtancoTier,'matrix');assert.equal(h.matrix.calls.open,1);assert.equal(h.life.calls.open,0);
   }
   const imports=[...selectorSource.matchAll(/^import .* from ['"]([^'"]+)['"]/gm)].map(match=>match[1].split('?')[0]);
   assert.deepEqual(imports,['./matrix-preview-ui.mjs','./life-ui.mjs','./best-preview-ui.mjs','./xtanco-visual-tiers.mjs','./visual-tier-controls.mjs']);
@@ -372,6 +372,6 @@ test('Matrix stays on the top-bar selector and reports missing initialization ho
   const result=await routerFixture({openMatrix:undefined}).tiers.choose('matrix');
   assert.equal(result.ok,false);assert.equal(result.mode,'good');assert.match(result.error,/Matrix no disponible/);
 });
-test('Starbucks venue starts Good and retains explicit view choices',()=>{
- const storage={getItem:()=> 'better'};assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'good');assert.equal(requestedTier('?loc=alsea-sbux-021&visual=good',storage),'good');assert.equal(requestedTier('?loc=another',storage),'good');assert.equal(requestedTier('?loc=ALSEA-SBUX-021',storage),'good');
+test('Starbucks venue starts Matrix and retains explicit view choices',()=>{
+ const storage={getItem:()=> 'better'};assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'matrix');assert.equal(requestedTier('?loc=alsea-sbux-021&visual=good',storage),'good');assert.equal(requestedTier('?loc=another',storage),'matrix');assert.equal(requestedTier('?loc=ALSEA-SBUX-021',storage),'matrix');
 });

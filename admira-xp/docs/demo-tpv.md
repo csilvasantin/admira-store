@@ -26,3 +26,8 @@ ES: Verificada localmente desde el CLI real de Experto: foco, silueta, recogida,
 EN: Locally verified through the actual Expert CLI: focus, outline, pickup, arrival, basket increment, unmuted song, stop and Escape. The demo uses the available Bad Times Deep House as a provisional track. Pending replacement with Bad Day if Carlos supplies a reference, physical POS integration; muffin → song rules are already editable with /ifthendothat. Browsers may block audio; failures are shown without claiming playback.
 
 [Reglas visuales / Visual rules](ifthendothat.md)
+
+
+ES: /ifthendothat ahora permite música, locución, imagen o vídeo con filtro Pixeria editable. Matrix es la calidad inicial. /marca starbucks combina imagotipo y texto blanco STARBUCKS.
+
+EN: /ifthendothat now supports music, voiceover, image or video with an editable Pixeria filter. Matrix is the entry quality. /brand starbucks combines the imago and white STARBUCKS wordmark.

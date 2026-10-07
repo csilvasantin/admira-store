@@ -3,7 +3,7 @@ export function requestedTier(search='',storage){
   const params=new URLSearchParams(search);
   const requested=params.get('visual')??params.get('quality');
   if(requested!==null)return requested==='life'?'better':['good','better','best','matrix'].includes(requested)?requested:'good';
-  return 'good'; // Every ordinary entry starts in Good; explicit links retain their tier.
+  return 'matrix'; // Default entry opens Matrix; explicit links retain their tier.
 }
 
 /** Presentation router only: never imports a renderer or creates a GPU context.
