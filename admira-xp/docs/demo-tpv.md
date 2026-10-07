@@ -12,7 +12,7 @@ EN: In Expert, /demo shows help and /demo tpv opens Starbucks Alsea Matrix and s
 
 - Orden local / Local command: `/demo` ayuda/help; `/demo tpv` inicio/start; `/demo off` o/or `/demo tpv off` detiene/stops; `/demo estado` o/or `/demo status` consulta/status.
 - API: `window.XpacePOSExperience.demo.start()`, `.stop()`, `.state()`; estado/state: `phase`, `running`, `song`, `error`.
-- Motor / Engine: `scripts/pos-demo.mjs`; presentación / presentation: `scripts/matrix-pos-experience.mjs`; audio / sound: `scripts/pos-demo-sound.mjs`.
+- Motor / Engine: `scripts/pos-demo.mjs`; presentación / presentation: `scripts/matrix-pos-experience.mjs`; reacciones / reactions: `scripts/retail-rules.mjs`, `scripts/retail-media-display.mjs`; `scripts/pos-demo-sound.mjs` adapta cada audio / adapts each audio.
 - Secuencia / Sequence: focus → outline → pick → travel → drop → checkout → completed. Cancelación limpia y sin solapamiento / Clean cancellation, no overlapping runs.
 - Cesta existente / Existing basket: `alsea-sbux-021` / `starbucks-tpv-01` / `muffin`; usa el mismo receptor `addProduct` y evento `xpace:pos-basket` que el arrastre manual / same receiver and event as manual dragging.
 - Audio: `#starbucksPOSDemoSong`, Stock 1308 · Bad Times Deep House; fuente/source `https://stock.admira.store/stock/1790706121644-y5mqrq/asset.mp4?v=35775129`. Se prepara silenciado; la regla decide cuándo suena / Primed muted; the rule determines when it plays. El audio anterior conserva posición y playlist / Existing audio retains position and playlist.
@@ -31,3 +31,9 @@ EN: Locally verified through the actual Expert CLI: focus, outline, pickup, arri
 ES: /ifthendothat ahora permite música, locución, imagen o vídeo con filtro Pixeria editable. Matrix es la calidad inicial. /marca starbucks combina imagotipo y texto blanco STARBUCKS.
 
 EN: /ifthendothat now supports music, voiceover, image or video with an editable Pixeria filter. Matrix is the entry quality. /brand starbucks combines the imago and white STARBUCKS wordmark.
+
+## Compra, varias reacciones y continuidad / Purchase, multiple reactions and continuity
+
+ES: Al entregar, la compra aparece sobre `starbucks-tpv-01` con cantidades, Añadir café y Editar cesta; no se abre sola la cesta flotante. La compra tiene prioridad sobre la publicidad o reacción visual del TPV mientras haya líneas. Para enseñar vídeo y compra juntos, elegir pared o iPad para ese DO. Un recorrido puede disparar hasta ocho reacciones configuradas con /ifthendothat, con los contenidos Pixeria existentes. `song` es el indicador heredado de reacción activa; no prueba audio audible. Consultar la [guía de continuidad y automatización](xtore-demos-continuity.md) y el [catálogo de escenarios](../demos/catalog.json). El tour general y pausa/continuación están pendientes; esta página no añade comandos.
+
+EN: Delivery shows the purchase over `starbucks-tpv-01` with quantities, Add coffee and Edit basket; the floating basket no longer opens automatically. The purchase takes visual priority over POS ads or reactions while nonempty. Choose wall or iPad for a video DO to show video alongside the purchase. A journey can trigger up to eight configured reactions using existing Pixeria content. `song` is a legacy active-reaction indicator, not proof of audible sound. See the [continuity and automation guide](xtore-demos-continuity.md) and [scenario catalogue](../demos/catalog.json). General tour and pause/resume remain pending; this page adds no commands.

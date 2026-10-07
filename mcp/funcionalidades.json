@@ -4471,5 +4471,34 @@
     "pos_id": "starbucks-tpv-01",
     "guide": "https://www.admira.store/admira-xp/docs/advanced-icons-pos-checkout.md",
     "scope": "local UI; no new MCP tools; existing basket schema/storage preserved"
+  },
+  "demo_catalog": {
+    "help_topics": [
+      "demo-catalog",
+      "xtore-continuity"
+    ],
+    "es": "Guía de continuidad para el Consejo y los agentes: avatar Admirito, Matrix/marca, cesta y café en TPV, IF·THEN·DO con hasta ocho reacciones, Pixeria sin corte de catálogo, varias pantallas, toggles, iconos y resumen optativo. La demo guiada automatizada disponible es /demo tpv; /demo estado consulta y /demo off detiene. Navidad y Sincro IA son modos de emisión existentes. El tour general, selector de escenarios y pausa/continuación están pendientes; /demo tour, /demo lista, /demo pausa y /demo continuar son propuestas, no comandos disponibles.",
+    "en": "Continuity guide for the Council and agents: Admirito avatar, Matrix/brand, POS basket and coffee, IF·THEN·DO with up to eight reactions, complete Pixeria catalogue, multiple screens, toggles, icons and optional summary. The available automated guided demo is /demo tpv; /demo status reads its state and /demo off stops it. Christmas and AI sync are existing playback modes. A general tour, scenario selector and pause/resume remain pending; /demo tour, /demo lista, /demo pausa and /demo continuar are proposals, not available commands.",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/xtore-demos-continuity.md",
+    "tutorial": "https://www.xpaceos.com/help/demos/",
+    "catalog_url": "https://www.xpaceos.com/admira-xp/demos/catalog.json",
+    "catalog_schema_version": 1,
+    "guided_runtime_commands": [
+      "/demo",
+      "/demo tpv",
+      "/demo estado",
+      "/demo status",
+      "/demo off",
+      "/demo tpv off"
+    ],
+    "general_tour_status": "pending",
+    "proposed_commands_not_implemented": [
+      "/demo lista",
+      "/demo tour",
+      "/demo pausa",
+      "/demo continuar"
+    ],
+    "remote_mcp_demo_launch": false,
+    "scope": "Documentation of delivered local behavior and pending automation; no new runtime commands or MCP tools"
   }
 }

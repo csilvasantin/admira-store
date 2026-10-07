@@ -1,0 +1,639 @@
+{
+  "schema_version": 1,
+  "id": "xtore-starbucks-demo-catalog",
+  "updated_at": "2026-10-07",
+  "scope": "documentation-only; not loaded by the demo runtime",
+  "context": {
+    "venue": "alsea-sbux-021",
+    "capture": "alsea-starbucks-360",
+    "default_quality": "matrix",
+    "entry_url": "https://www.admira.store/admira-xp/?marca=starbucks&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&lang=es#tpv",
+    "screens": [
+      "starbucks-wall-01",
+      "starbucks-wall-02",
+      "starbucks-wall-03",
+      "starbucks-wall-04",
+      "starbucks-wall-05",
+      "starbucks-wall-06",
+      "starbucks-tpv-01",
+      "starbucks-ipad-01"
+    ],
+    "avatar": "starbucks-avatar-wall"
+  },
+  "guide": "https://www.xpaceos.com/admira-xp/docs/xtore-demos-continuity.md",
+  "runtime": {
+    "guided_commands": [
+      "/demo",
+      "/demo tpv",
+      "/demo estado",
+      "/demo status",
+      "/demo off",
+      "/demo tpv off"
+    ],
+    "api": "window.XpacePOSExperience.demo.start/stop/state",
+    "phases": [
+      "idle",
+      "focus",
+      "outline",
+      "pick",
+      "travel",
+      "drop",
+      "checkout",
+      "completed",
+      "error"
+    ],
+    "nominal_drop_ms": 6400,
+    "remote_mcp_launch_tool": false
+  },
+  "proposed_general_tour": {
+    "status": "pending",
+    "commands_not_implemented": [
+      "/demo lista",
+      "/demo tour",
+      "/demo pausa",
+      "/demo continuar"
+    ],
+    "states": [
+      "idle",
+      "preparing",
+      "running",
+      "paused",
+      "completed",
+      "cancelled",
+      "error"
+    ],
+    "requirements": [
+      "versioned declarative recipes",
+      "single active run and cancellation tokens",
+      "user gesture media priming",
+      "isolated temporary configuration and context snapshot",
+      "per-step real evidence",
+      "restore affected context on stop/error/view change",
+      "no incidental paid generation, Telegram, physical or shared writes"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "matrix-entry",
+      "title": {
+        "es": "Entrada Matrix y marca Starbucks",
+        "en": "Matrix entry and Starbucks brand"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "manual",
+        "current_mode": "manual",
+        "current_commands": [],
+        "general_tour_adapter": "pending",
+        "next_work": "Entry, camera and panel adapters with context snapshot"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Open the canonical entry without quality/visual",
+        "Open Options, Advanced and Expert explicitly"
+      ],
+      "acceptance": [
+        "Matrix selected even after previous Good choice",
+        "Starbucks imago and wordmark",
+        "Pan/zoom and existing panel controls retained"
+      ],
+      "cleanup": [
+        "Close opened panes; retain user settings"
+      ],
+      "side_effects": []
+    },
+    {
+      "id": "avatar-admirito",
+      "title": {
+        "es": "Avatar Good · Admirito",
+        "en": "Good · Admirito avatar"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "manual",
+        "current_mode": "manual",
+        "current_commands": [
+          "/avatar digital good"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Camera focus, conversation and language-state adapters"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Focus the brick-wall avatar",
+        "Open conversation",
+        "Switch site language and close/reopen"
+      ],
+      "acceptance": [
+        "No Starbucks website modal",
+        "Good model and site language inherited",
+        "No music-note/next overlay icons"
+      ],
+      "cleanup": [
+        "Close conversation; stop voice/listening"
+      ],
+      "side_effects": [
+        "Explicit model selection is retained in this tab"
+      ]
+    },
+    {
+      "id": "tpv-muffin",
+      "title": {
+        "es": "Muffin a caja y compra visible",
+        "en": "Muffin to register and visible purchase"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "implemented",
+        "current_mode": "guided",
+        "current_commands": [
+          "/demo tpv",
+          "/demo estado",
+          "/demo off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Reuse createPOSDemo in future tour; isolate basket for reversible presentations"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Snapshot basket quantity",
+        "Run focus/outline/pick/travel/drop/checkout",
+        "Inspect mapped purchase"
+      ],
+      "acceptance": [
+        "Muffin quantity increases by exactly one on complete delivery",
+        "Purchase visible on starbucks-tpv-01",
+        "Floating basket not automatically opened",
+        "Cancellation before drop adds nothing"
+      ],
+      "cleanup": [
+        "/demo off stops temporary reactions",
+        "Use dedicated demo tab; keep basket changes as documented"
+      ],
+      "side_effects": [
+        "Completed run adds one muffin; cancelled after drop retains it",
+        "Expert hides; completed journey keeps register view"
+      ]
+    },
+    {
+      "id": "tpv-coffee",
+      "title": {
+        "es": "Café como venta cruzada",
+        "en": "Coffee cross-selling"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "manual",
+        "current_mode": "manual",
+        "current_commands": [],
+        "general_tour_adapter": "pending",
+        "next_work": "Checkout add/edit adapter with isolated demo basket"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Deliver muffin",
+        "Click Add coffee on mapped POS",
+        "Open Edit basket; remove demo lines only"
+      ],
+      "acceptance": [
+        "Coffee requires explicit choice",
+        "Quantities and purchase update",
+        "Empty basket reveals previous POS content"
+      ],
+      "cleanup": [
+        "Close editor; do not remove real user lines"
+      ],
+      "side_effects": [
+        "Explicit add/remove modifies this tab basket"
+      ]
+    },
+    {
+      "id": "reaction-music",
+      "title": {
+        "es": "Música desde Pixeria",
+        "en": "music from Pixeria"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "partial",
+        "current_mode": "configured-trigger",
+        "current_commands": [
+          "/ifthendothat",
+          "/demo tpv",
+          "/demo off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Temporary rule injection and content preflight adapter; not currently shipped"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Manually select IF and playSong DO",
+        "Select existing Stock asset; edit/clear #musica filter",
+        "Run current TPV demo"
+      ],
+      "acceptance": [
+        "Stored rule does not autoplay",
+        "Clearing filter exposes all items of chosen type",
+        "Selected media really appears/plays; test time/ready/paused and audio where needed"
+      ],
+      "cleanup": [
+        "Stop reaction or /demo off",
+        "Restore original rule configuration manually; do not overwrite during future tour"
+      ],
+      "side_effects": [
+        "Rule edit persists locally",
+        "Completed TPV trigger adds one muffin"
+      ]
+    },
+    {
+      "id": "reaction-locucion",
+      "title": {
+        "es": "Locución desde Pixeria",
+        "en": "locucion from Pixeria"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "partial",
+        "current_mode": "configured-trigger",
+        "current_commands": [
+          "/ifthendothat",
+          "/demo tpv",
+          "/demo off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Temporary rule injection and content preflight adapter; not currently shipped"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Manually select IF and playVoice DO",
+        "Select existing Stock asset; edit/clear #locucion filter",
+        "Run current TPV demo"
+      ],
+      "acceptance": [
+        "Stored rule does not autoplay",
+        "Clearing filter exposes all items of chosen type",
+        "Selected media really appears/plays; test time/ready/paused and audio where needed"
+      ],
+      "cleanup": [
+        "Stop reaction or /demo off",
+        "Restore original rule configuration manually; do not overwrite during future tour"
+      ],
+      "side_effects": [
+        "Rule edit persists locally",
+        "Completed TPV trigger adds one muffin"
+      ]
+    },
+    {
+      "id": "reaction-image",
+      "title": {
+        "es": "Imagen desde Pixeria",
+        "en": "image from Pixeria"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "partial",
+        "current_mode": "configured-trigger",
+        "current_commands": [
+          "/ifthendothat",
+          "/demo tpv",
+          "/demo off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Temporary rule injection and content preflight adapter; not currently shipped"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Manually select IF and showImage DO",
+        "Select existing Stock asset; edit/clear #imagen filter",
+        "Run current TPV demo"
+      ],
+      "acceptance": [
+        "Stored rule does not autoplay",
+        "Clearing filter exposes all items of chosen type",
+        "Selected media really appears/plays; test time/ready/paused and audio where needed"
+      ],
+      "cleanup": [
+        "Stop reaction or /demo off",
+        "Restore original rule configuration manually; do not overwrite during future tour"
+      ],
+      "side_effects": [
+        "Rule edit persists locally",
+        "Completed TPV trigger adds one muffin"
+      ]
+    },
+    {
+      "id": "reaction-video",
+      "title": {
+        "es": "Vídeo desde Pixeria",
+        "en": "video from Pixeria"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "partial",
+        "current_mode": "configured-trigger",
+        "current_commands": [
+          "/ifthendothat",
+          "/demo tpv",
+          "/demo off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Temporary rule injection and content preflight adapter; not currently shipped"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Manually select IF and playVideo DO",
+        "Select existing Stock asset; edit/clear #video filter",
+        "Run current TPV demo"
+      ],
+      "acceptance": [
+        "Stored rule does not autoplay",
+        "Clearing filter exposes all items of chosen type",
+        "Selected media really appears/plays; test time/ready/paused and audio where needed"
+      ],
+      "cleanup": [
+        "Stop reaction or /demo off",
+        "Restore original rule configuration manually; do not overwrite during future tour"
+      ],
+      "side_effects": [
+        "Rule edit persists locally",
+        "Completed TPV trigger adds one muffin"
+      ]
+    },
+    {
+      "id": "nested-do-screens",
+      "title": {
+        "es": "Locución y vídeo en varias pantallas",
+        "en": "Voiceover plus multi-screen video"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "partial",
+        "current_mode": "configured-trigger",
+        "current_commands": [
+          "/ifthendothat",
+          "/demo tpv",
+          "/demo off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Declarative nested-DO recipe adapter and per-destination evidence"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Manually add voiceover and video DO",
+        "Choose wall/iPad to show reaction alongside purchase; optionally POS before delivery",
+        "Run demo"
+      ],
+      "acceptance": [
+        "Voice audible, video muted with audio DO",
+        "Each selected screen shows complete asset",
+        "Last visual wins overlapping targets",
+        "POS purchase owns display while nonempty",
+        "Independent valid targets continue if one fails"
+      ],
+      "cleanup": [
+        "Stop all DOs; restore local rules manually"
+      ],
+      "side_effects": [
+        "Up to 8 DO; up to 8 known visual destinations",
+        "Local parallel playback; no physical frame lock",
+        "Completed TPV demo adds muffin"
+      ]
+    },
+    {
+      "id": "screen-playlists",
+      "title": {
+        "es": "Playlists separadas pared, TPV, iPad e hilo",
+        "en": "Separate wall, POS, iPad and music playlists"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "manual",
+        "current_mode": "manual",
+        "current_commands": [],
+        "general_tour_adapter": "pending",
+        "next_work": "Independent playlist snapshot/restore and preview adapters"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Open Signage/device playlists",
+        "Preview existing asset on chosen virtual screen",
+        "Inspect other channels remain independent"
+      ],
+      "acceptance": [
+        "Retain saved assignments and ordered playlist IDs",
+        "No change to unrelated music or screens"
+      ],
+      "cleanup": [
+        "Stop temporary preview using its existing controls",
+        "Use /reset only if explicit full local base reset is desired"
+      ],
+      "side_effects": [
+        "User playlist edits can persist; prefer preview-only"
+      ]
+    },
+    {
+      "id": "christmas-mode",
+      "title": {
+        "es": "Modo Navidad",
+        "en": "Christmas playback mode"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "implemented",
+        "current_mode": "playback-command",
+        "current_commands": [
+          "/navidad on",
+          "/navidad off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Guided camera/captions and exact prior-mode restoration"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Run existing Christmas playback command",
+        "Inspect seasonal wall content"
+      ],
+      "acceptance": [
+        "Christmas content available on virtual screens",
+        "Mode change is not a guided camera tour"
+      ],
+      "cleanup": [
+        "/navidad off returns linear playback"
+      ],
+      "side_effects": [
+        "Playback mode changes; snapshot prior mode for future tour"
+      ]
+    },
+    {
+      "id": "ai-sync-mode",
+      "title": {
+        "es": "Sincro IA",
+        "en": "AI sync playback mode"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "implemented",
+        "current_mode": "playback-command",
+        "current_commands": [
+          "/sincro ia"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Guided camera/captions, preflight and previous-mode restoration"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Run existing AI sync mode with six available clips",
+        "Inspect virtual wall"
+      ],
+      "acceptance": [
+        "Six virtual clips and common clock exist",
+        "No physical synchronization claim"
+      ],
+      "cleanup": [
+        "/navidad off selects linear mode; it does not restore an arbitrary prior mode"
+      ],
+      "side_effects": [
+        "Changes existing playback mode"
+      ]
+    },
+    {
+      "id": "media-drag-previews",
+      "title": {
+        "es": "Arrastrar medios y ampliar previos",
+        "en": "Drag media and enlarge previews"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "manual",
+        "current_mode": "manual",
+        "current_commands": [],
+        "general_tour_adapter": "pending",
+        "next_work": "Semantic media selection/drag-target adapters; no automatic paid generation"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Use an existing saved preview or Pixeria asset",
+        "Drag by thumbnail centre to mapped screen",
+        "Double-click preview to enlarge; close"
+      ],
+      "acceptance": [
+        "Pointer-centred drag",
+        "Correct target and retained playlist",
+        "Close stops enlarged local media",
+        "Saved history/receipts retained"
+      ],
+      "cleanup": [
+        "Close preview and stop temporary screen media"
+      ],
+      "side_effects": [
+        "Preview playback local; user receipt history retained"
+      ]
+    },
+    {
+      "id": "optional-day-summary",
+      "title": {
+        "es": "Resumen del día optativo",
+        "en": "Optional day summary"
+      },
+      "feature_status": "implemented",
+      "automation": {
+        "status": "manual",
+        "current_mode": "manual",
+        "current_commands": [
+          "/resumen dia estado",
+          "/resumen dia on",
+          "/resumen dia off"
+        ],
+        "general_tour_adapter": "pending",
+        "next_work": "Summary presentation adapter with preserved preference and simulation history"
+      },
+      "preconditions": [
+        "Starbucks Matrix loaded",
+        "available virtual targets",
+        "explicit media gesture when audio is used",
+        "existing resolved Stock assets; no paid generation"
+      ],
+      "steps": [
+        "Read preference",
+        "Enable only for a dedicated summary presentation",
+        "Disable to continue normal store experience"
+      ],
+      "acceptance": [
+        "OFF by default",
+        "ON/OFF preference persists",
+        "Daily history still stored when modal is off"
+      ],
+      "cleanup": [
+        "Restore prior summary preference"
+      ],
+      "side_effects": [
+        "Preference changes locally; do not force day advancement in tour"
+      ]
+    }
+  ]
+}

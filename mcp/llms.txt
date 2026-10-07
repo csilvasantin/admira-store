@@ -1,6 +1,6 @@
 # XpaceOS · MCP — conecta con la red de retail media
 
-> Servidor MCP de XpaceOS (v2.7.0): el puente para que agentes (silicio) y personas (carbono)
+> Servidor MCP de XpaceOS (v2.12.69): el puente para que agentes (silicio) y personas (carbono)
 > se conecten al sistema operativo del comercio físico — la red de pantallas (flota, emisión en
 > vivo, audiencia, proof-of-play, alta, publicar), el catálogo de 8.775 gemelos digitales,
 > XpaceScan (3D desde el móvil), el motor de reglas XPL y la ayuda para humanos.
@@ -811,3 +811,26 @@ ES: La compra se muestra en starbucks-tpv-01 al entregar productos a caja. Tiene
 EN: Delivering products to the register shows the purchase on starbucks-tpv-01. It takes priority over advertising and reactions while lines remain. Edit basket opens details; an empty basket restores the schedule.
 Contract: existing basket version 1 and sessionStorage key preserved; local UI, no new MCP tools, no prices or payment.
 Guide: https://www.admira.store/admira-xp/docs/advanced-icons-pos-checkout.md
+
+## demo-catalog · xtore-continuity
+
+ES: Guía de continuidad para el Consejo y los agentes: avatar Admirito, Matrix/marca, cesta y café en TPV, IF·THEN·DO con hasta ocho reacciones, Pixeria sin corte de catálogo, varias pantallas, toggles, iconos y resumen optativo. La demo guiada automatizada disponible es /demo tpv; /demo estado consulta y /demo off detiene. Navidad y Sincro IA son modos de emisión existentes. El tour general, selector de escenarios y pausa/continuación están pendientes; /demo tour, /demo lista, /demo pausa y /demo continuar son propuestas, no comandos disponibles.
+EN: Continuity guide for the Council and agents: Admirito avatar, Matrix/brand, POS basket and coffee, IF·THEN·DO with up to eight reactions, complete Pixeria catalogue, multiple screens, toggles, icons and optional summary. The available automated guided demo is /demo tpv; /demo status reads its state and /demo off stops it. Christmas and AI sync are existing playback modes. A general tour, scenario selector and pause/resume remain pending; /demo tour, /demo lista, /demo pausa and /demo continuar are proposals, not available commands.
+
+Preparación / Preparation: Starbucks Matrix loaded, layout/geometry closed, POS powered on, resolved existing Stock assets. Use a dedicated demo tab; each completed TPV demo adds exactly one muffin to the existing tab basket. Configure /ifthendothat manually before /demo tpv. Use wall or iPad to show video beside a purchase: the nonempty basket owns the POS display, over ads or visual reactions. Rule edits persist in the browser and domain; basket persists per tab. Stop does not erase a delivered product.
+
+Current local API: window.XpacePOSExperience.demo.start/stop/state. Current phases: idle, focus, outline, pick, travel, drop, checkout, completed, error. Nominal drop timeline: 6400 ms, not a media latency promise. running covers the camera journey; checkout may still await media. song is a legacy active-reaction flag, not acoustic proof. Inspect each DO/destination readiness, paused state and advancing media time; completed is not proof of audible playback. Cancellation before drop adds nothing and restores the camera; after delivery retains the product. Busy prevents concurrent journeys; stale promises are cancelled. No remote MCP tool launches a browser demo.
+
+Seed: Bad Times Deep House, Stock 1308, ID 1790706121644-y5mqrq. Bad Day was not assigned in the initial implementation; resolve a real Pixeria reference before replacement. Existing media only: no incidental paid generation, Telegram messages, shared state or hardware writes.
+
+Automation backlog / Pendiente de automatización: versioned declarative recipes, stable IDs, ES/EN titles, preconditions, camera targets, resolved Stock refs, actions, assertions and cleanup; single run and cancellation token; explicit gesture priming; snapshot and isolated temporary configuration; preserve rules, basket, playlists, preferences/history and summary; restore affected state on Stop/Escape/view change/error. Pause/resume must preserve both media and timeline. Do not use /reset as a context snapshot. Add per-step real evidence and public lifecycle tests before claiming new tours delivered.
+
+Shared IDs: alsea-sbux-021, alsea-starbucks-360; starbucks-wall-01..06, starbucks-tpv-01, starbucks-ipad-01, starbucks-avatar-wall. Visible P1..P6 = wall-06..wall-01. Basket schema1: sessionStorage:xpaceos.pos-basket.v1:alsea-sbux-021:starbucks-tpv-01. Rules schema3 reads1/2: localStorage:xpaceos.xpl.retail.v1:alsea-sbux-021:starbucks-tpv-01. Summary: xpaceos.day-summary.v1, absent=OFF. Local events: xpace:pos-basket, xpace:retail-rules, xpace:retail-song.
+
+Sources: admira-xp/scripts/pos-demo.mjs, matrix-pos-experience.mjs, pos-checkout-display.mjs, retail-rules.mjs, retail-rule-composer.mjs, retail-media-display.mjs, matrix-panorama.mjs, xtanco-visual-command.mjs; assets/expert-toggle.js, assets/day-summary.js. pos-demo-sound.mjs is the per-audio rule adapter. Static playlist JSON is bootstrap; after MCP management live state at https://mcp.admira.store/matrix/starbucks takes precedence. matrix_state reads; authenticated reviewed writes require current revision. Saved is not playback ACK.
+
+Guide: https://www.xpaceos.com/admira-xp/docs/xtore-demos-continuity.md
+Tutorial: https://www.xpaceos.com/help/demos/
+Machine catalogue: https://www.xpaceos.com/admira-xp/demos/catalog.json (schema1, documentation-only; not consumed by the runtime)
+Detailed help topics: demo-tpv, ifthendothat, pos-muffin, expert-toggles-day-summary, advanced-icons-pos-checkout, matrix-wall-avatar, matrix-signage-reset.
+Current verification and pending dependencies are recorded in the guide. Help/tutorial/CLI on admira.store may require a perimeter session; xpaceos.com static equivalents are public. Interactive XpaceOS preserves context when redirecting to admira.store. No new MCP tools or commands in this documentation release.

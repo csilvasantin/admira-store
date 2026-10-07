@@ -203,5 +203,11 @@
     "Matrix arranca por defecto sin una calidad explícita en la URL",
     "La compra aparece en el TPV al entregar productos a caja; editar y añadir café desde la pantalla",
     "Cesta vacía recupera la publicidad; ayudas y MCP actualizados en español e inglés"
+  ],
+  "v.07.10.2026.r12.08:14": [
+    "Guía de continuidad del Consejo: funciones Xtore entregadas y contratos compartidos",
+    "Catálogo de demos para agentes con escenarios, pasos, comprobaciones y limpieza",
+    "Demo TPV disponible; tour general, selector y pausa/continuación especificados como pendientes",
+    "Help web, tutorial, CLI y MCP real actualizados en español e inglés"
   ]
 }
