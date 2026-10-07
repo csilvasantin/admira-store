@@ -2674,5 +2674,26 @@
     "guide": "https://www.admira.store/admira-xp/docs/ipad-queue-idle.md",
     "es": "Sin pedidos en Recibido, En preparación ni Preparado, Admirito ocupa toda la pantalla del iPad. Al llegar un pedido reaparecen las tres fases; al recogerse el último vuelve al avatar completo. Una pérdida de conexión conserva el último estado conocido. /ipad cola activa la cola, /ipad abrir la amplía (también doble clic), /ipad off recupera la playlist. Los previos de Pixeria conservan prioridad. La vista de escena no activa voz propia; la voz ampliada requiere un toque. Las pruebas usan starbucks-qa, sin alterar la cola real de Carlos.",
     "en": "With no Received, Preparing or Ready orders, Admirito fills the iPad screen. Any active order restores all three phases; collecting the last order restores the full avatar. A connection failure retains the last known state. /ipad cola enables the queue, /ipad abrir expands it (also double-click), /ipad off restores its playlist. Pixeria previews retain priority. Scene mode has no independent voice; expanded voice requires a user gesture. Tests use starbucks-qa without changing Carlos’s live queue."
+  },
+  "demo_tour": {
+    "guide": "https://www.admira.store/admira-xp/help.html#demos",
+    "registry": "https://www.admira.store/admira-xp/demos.json",
+    "commands": [
+      "/demo help",
+      "/demo ayuda",
+      "/demo all",
+      "/demo todas",
+      "/demo all --enviar",
+      "/demo <id|n>",
+      "/demo next",
+      "/demo stop"
+    ],
+    "tour_total_s": 316,
+    "es": "Registro único de demos (admira-xp/demos.json): /demo help o /demo ayuda las lista numeradas con descripción y cómo lanzarlas; /demo all o /demo todas enseña seguidas las marcadas para el recorrido con tarjeta «Demo n/N · nombre», cámara y unos segundos; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial. /demo <id|número> lanza una. Las 1–5 son del motor común de la suite (mismos números). La incidencia de demo crea y cierra un ticket CLI nuevo y su informe sólo se envía con --enviar. /demo auto sigue encadenando las cinco del motor.",
+    "en": "Single demo registry (admira-xp/demos.json): /demo help or /demo ayuda lists them numbered with a description and how to run them; /demo all or /demo todas shows the tour demos in a row with a “Demo n/N · name” card, camera moves and a few seconds each; /demo next skips, /demo stop or Esc stops and the twin returns to its initial state. /demo <id|number> runs one. 1–5 belong to the shared suite engine (same numbers). The incident demo creates and closes a new CLI ticket and its report is only sent with --enviar. /demo auto still chains the engine's five.",
+    "mcp": {
+      "es": "Sin herramientas MCP nuevas: el registro es JSON estático y /demo help|all|<id> entra por el canal de órdenes del gemelo (__xtExec / xtAPI.command).",
+      "en": "No new MCP tools: the registry is static JSON and /demo help|all|<id> goes through the twin command channel (__xtExec / xtAPI.command)."
+    }
   }
 }

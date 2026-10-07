@@ -4501,6 +4501,10 @@
       ],
       "origin": "https://digitalavatar.ai",
       "preload_starts_rehearsal": false
+    },
+    "demo_tour": {
+      "es": "/demo help, /demo ayuda, /demo all y /demo todas usan ahora el registro único (demo_tour), que incluye estas cinco con sus números; /demo auto sigue encadenando las cinco.",
+      "en": "/demo help, /demo ayuda, /demo all and /demo todas now use the single registry (demo_tour), which includes these five with their numbers; /demo auto still chains the five."
     }
   },
   "ifthendothat": {
@@ -4631,7 +4635,11 @@
     "remote_mcp_demo_launch": false,
     "scope": "Prepared local management rehearsals and native POS journey; no remote MCP launch tool",
     "local_rehearsal_engine": "https://www.admiranext.com/suite/experto.js",
-    "native_pause_resume": false
+    "native_pause_resume": false,
+    "demo_tour": {
+      "es": "/demo help, /demo ayuda, /demo all y /demo todas usan ahora el registro único (demo_tour), que incluye estas cinco con sus números; /demo auto sigue encadenando las cinco.",
+      "en": "/demo help, /demo ayuda, /demo all and /demo todas now use the single registry (demo_tour), which includes these five with their numbers; /demo auto still chains the five."
+    }
   },
   "browser_demos": {
     "taza": {
@@ -4688,5 +4696,193 @@
     "white_label": "El PDF se viste con la marca del catálogo único admiranext.com/marcablanca (el de /marca): colores (paleta clara), nombre y tipografía (aproximada con Helvetica/Times/Courier) los lee el servidor; el logo SVG lo rasteriza el gemelo a JPEG. Marca = la activa (/marca) o la de la tienda del recurso (starbucks-… → starbucks); sin marca en el catálogo, aspecto Admira.",
     "photos": "Fotos JPEG de la pantalla con su tarjeta ABIERTA (al crear) y CERRADA (al cerrar): el 360° de Matrix pintado en el momento + la tarjeta real deformada sobre las esquinas calibradas (scripts/incident-snapshot.mjs); sin 360°, render del equipo. Son capturas del gemelo, no de una cámara de tienda.",
     "close_scope": "Sin id: la última que abrió la CLI; si no hay, lista todas las abiertas del gemelo con su id (nunca «no hay» si hay una visible). Con id explícito: cualquier incidencia activa de las pantallas de este gemelo (también manuales), mismo flujo visible e informe; 409 del portal (la lleva un técnico) se explica con el enlace a la ficha."
+  },
+  "demo_tour": {
+    "guide": "https://www.admira.store/admira-xp/help.html#demos",
+    "central": "https://www.admira.store/help/demos/#demos",
+    "registry": "https://www.admira.store/admira-xp/demos.json",
+    "mirror": "https://www.xpaceos.com/admira-xp/demos.json",
+    "commands": [
+      "/demo help",
+      "/demo ayuda",
+      "/demo all",
+      "/demo todas",
+      "/demo all --enviar",
+      "/demo <id|n>",
+      "/demo next",
+      "/demo stop"
+    ],
+    "count": 23,
+    "tour_count": 16,
+    "tour_total_s": 316,
+    "demos": [
+      {
+        "n": 1,
+        "id": "voz",
+        "es": "Gestión de locuciones",
+        "en": "Voiceover management",
+        "tour": true
+      },
+      {
+        "n": 2,
+        "id": "musica",
+        "es": "Gestión de música",
+        "en": "Music management",
+        "tour": true
+      },
+      {
+        "n": 3,
+        "id": "imagenes",
+        "es": "Gestión de imágenes",
+        "en": "Image management",
+        "tour": true
+      },
+      {
+        "n": 4,
+        "id": "video",
+        "es": "Gestión de vídeo",
+        "en": "Video management",
+        "tour": true
+      },
+      {
+        "n": 5,
+        "id": "caja",
+        "es": "Gestión del TPV",
+        "en": "POS management",
+        "tour": true
+      },
+      {
+        "n": 6,
+        "id": "tpv",
+        "es": "Muffin al TPV",
+        "en": "Muffin to the POS",
+        "tour": true
+      },
+      {
+        "n": 7,
+        "id": "sincro",
+        "es": "Playlists y sincro IA",
+        "en": "Playlists and AI sync",
+        "tour": true
+      },
+      {
+        "n": 8,
+        "id": "altavoz",
+        "es": "Hilo musical · altavoz",
+        "en": "Background music · speaker",
+        "tour": true
+      },
+      {
+        "n": 9,
+        "id": "aviso",
+        "es": "Aviso de cierre · 2 voces",
+        "en": "Closing announcement · 2 voices",
+        "tour": true
+      },
+      {
+        "n": 10,
+        "id": "avatar",
+        "es": "Admirito en la pared",
+        "en": "Admirito on the wall",
+        "tour": true
+      },
+      {
+        "n": 11,
+        "id": "ipad",
+        "es": "iPad · gestor de colas",
+        "en": "iPad · queue manager",
+        "tour": true
+      },
+      {
+        "n": 12,
+        "id": "panorama",
+        "es": "Panorama 360",
+        "en": "360 panorama",
+        "tour": true
+      },
+      {
+        "n": 13,
+        "id": "inventario",
+        "es": "Inventario ITIL · idIoT",
+        "en": "ITIL inventory · idIoT",
+        "tour": true
+      },
+      {
+        "n": 14,
+        "id": "ifthendothat",
+        "es": "Reglas IF·THEN·DO THAT",
+        "en": "IF·THEN·DO THAT rules",
+        "tour": true
+      },
+      {
+        "n": 15,
+        "id": "incidencia",
+        "es": "Incidencia + informe NASA",
+        "en": "Incident + NASA report",
+        "tour": true
+      },
+      {
+        "n": 16,
+        "id": "calidades",
+        "es": "Calidades Good · Better · Best",
+        "en": "Good · Better · Best qualities",
+        "tour": true
+      },
+      {
+        "n": 17,
+        "id": "marca",
+        "es": "Marca blanca",
+        "en": "White label",
+        "tour": false
+      },
+      {
+        "n": 18,
+        "id": "taza",
+        "es": "PlayerTaza",
+        "en": "PlayerTaza",
+        "tour": false
+      },
+      {
+        "n": 19,
+        "id": "kiosko",
+        "es": "Kiosko de pedidos",
+        "en": "Order kiosk",
+        "tour": false
+      },
+      {
+        "n": 20,
+        "id": "dvr",
+        "es": "DVR del Xpacio",
+        "en": "Xpace DVR",
+        "tour": false
+      },
+      {
+        "n": 21,
+        "id": "mobiliario",
+        "es": "Mobiliario y distribución",
+        "en": "Furniture and layout",
+        "tour": false
+      },
+      {
+        "n": 22,
+        "id": "crear-media",
+        "es": "Crear contenidos (PixerIA)",
+        "en": "Create content (PixerIA)",
+        "tour": false
+      },
+      {
+        "n": 23,
+        "id": "anonimizador",
+        "es": "Percepción y anonimizador",
+        "en": "Perception and anonymizer",
+        "tour": false
+      }
+    ],
+    "es": "Registro único de demos (admira-xp/demos.json): /demo help o /demo ayuda las lista numeradas con descripción y cómo lanzarlas; /demo all o /demo todas enseña seguidas las marcadas para el recorrido con tarjeta «Demo n/N · nombre», cámara y unos segundos; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial. /demo <id|número> lanza una. Las 1–5 son del motor común de la suite (mismos números). La incidencia de demo crea y cierra un ticket CLI nuevo y su informe sólo se envía con --enviar. /demo auto sigue encadenando las cinco del motor.",
+    "en": "Single demo registry (admira-xp/demos.json): /demo help or /demo ayuda lists them numbered with a description and how to run them; /demo all or /demo todas shows the tour demos in a row with a “Demo n/N · name” card, camera moves and a few seconds each; /demo next skips, /demo stop or Esc stops and the twin returns to its initial state. /demo <id|number> runs one. 1–5 belong to the shared suite engine (same numbers). The incident demo creates and closes a new CLI ticket and its report is only sent with --enviar. /demo auto still chains the engine's five.",
+    "mcp": {
+      "es": "Sin herramientas MCP nuevas: el registro es JSON estático y /demo help|all|<id> entra por el canal de órdenes del gemelo (__xtExec / xtAPI.command).",
+      "en": "No new MCP tools: the registry is static JSON and /demo help|all|<id> goes through the twin command channel (__xtExec / xtAPI.command)."
+    }
   }
 }
