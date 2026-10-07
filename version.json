@@ -1,15 +1,16 @@
 {
-  "version": "v.07.10.2026.r24.14:09",
-  "deployedAt": "2026-10-07T12:10:01Z",
-  "deployer": "GrokBot",
+  "version": "v.07.10.2026.r27.15:21",
+  "deployedAt": "2026-10-07T13:24:08Z",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
-  "git": "0b38d0b032e345af4a9cbe5b1b0d5a8e6622013b",
-  "gitShort": "0b38d0b",
-  "gitFull": "0b38d0b032e345af4a9cbe5b1b0d5a8e6622013b",
+  "signature": "OraculoMacMini · MacMini",
+  "git": "6b826940a04c2d1e38fba70dd5e93c66190a3c7f",
+  "gitShort": "6b82694",
+  "gitFull": "6b826940a04c2d1e38fba70dd5e93c66190a3c7f",
   "dirty": false,
   "novedades": [
-    "Entrar al gemelo Starbucks por la calle (Street View) da los mismos ajustes que el selector de proyectos",
-    "Tótem vertical en modo quiosco por defecto en Starbucks; URL completada con project y circuit"
+    "Admirito ocupa toda la pantalla del iPad cuando la cola está vacía",
+    "Recibido, En preparación y Preparado reaparecen al llegar pedidos",
+    "Vista de escena y ampliada sin controles del avatar; ayuda y MCP ES/EN actualizados"
   ]
 }
