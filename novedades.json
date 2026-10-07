@@ -168,5 +168,11 @@
     "Filtro editable con #musica, #locucion, #imagen o #video preseleccionado",
     "Las reacciones visuales se reproducen temporalmente en el TPV del gemelo",
     "Matrix por defecto y Starbucks con imagotipo y texto blanco"
+  ],
+  "v.07.10.2026.r6.07:20": [
+    "IF → reacción → contenido: música, locución, imagen o vídeo de Pixeria",
+    "Filtro editable con #musica, #locucion, #imagen o #video preseleccionado",
+    "Las reacciones visuales se reproducen temporalmente en el TPV del gemelo",
+    "Matrix por defecto y Starbucks con imagotipo y texto blanco"
   ]
 }
