@@ -24,7 +24,13 @@
   // (Starbucks → quiosco de pedido de Paseo de Gracia); OFF = el avatar digital de siempre.
   // Se recuerda en este navegador como los demás interruptores.
   const MODE_KEY='xpace:totem-interactivo', URL_KEY='xpace:totem-url';
-  function stored(){ try{ return localStorage.getItem(MODE_KEY)==='on'; }catch(_){ return false; } }
+  // Starbucks: same defaults whatever the entry route (selector, Street View/admira.biz, direct link).
+  function isSbux(){ try{ return new URLSearchParams(location.search).get('loc')==='alsea-sbux-021'; }catch(_){ return false; } }
+  (function normalizeSbux(){ try{ if(!isSbux()) return; const u=new URL(location.href); let ch=false;
+    if(!u.searchParams.get('project')){ u.searchParams.set('project','starbucks'); ch=true; }
+    if(!u.searchParams.get('circuit')){ u.searchParams.set('circuit','alsea_starbucks'); ch=true; }
+    if(ch) history.replaceState(history.state,'',u.toString()); }catch(_){} })();
+  function stored(){ try{ const v=localStorage.getItem(MODE_KEY); if(v==='on') return true; if(v==='off') return false; return isSbux(); }catch(_){ return isSbux(); } }
   function storedUrl(){ try{ return localStorage.getItem(URL_KEY)||''; }catch(_){ return ''; } }
   function remember(on,url){ try{ localStorage.setItem(MODE_KEY,on?'on':'off'); if(url) localStorage.setItem(URL_KEY,url); else if(!on) localStorage.removeItem(URL_KEY); }catch(_){} }
   function announce(){ try{ window.dispatchEvent(new CustomEvent('xpace:totem-mode',{detail:{on:stored(),url:storedUrl()}})); }catch(_){} }
