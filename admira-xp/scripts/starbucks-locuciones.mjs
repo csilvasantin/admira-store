@@ -26,7 +26,7 @@ export function mountSpeakerLocutions(buttons,{status,onBeforePlay=()=>{},win=gl
   const ticket=++revision;onBeforePlay();active=k;render();
   A.playStock(L.url,L.text,{language:L.language,times:L.times,onState(s){if(disposed||ticket!==revision)return;
    if(['done','stopped','error'].includes(s.phase)){active='';render();}
-   say(s.phase==='error'?t('No se pudo reproducir · ','Playback failed · ')+name(k):s.phase==='done'?t('Locución completada · ','Voiceover complete · ')+name(k)+' · '+L.times+'/'+L.times:s.phase==='stopped'?t('Locución detenida · ','Voiceover stopped · ')+name(k):t('Emitiendo · ','Playing · ')+name(k)+' · '+Math.min(L.times,s.completed+1)+'/'+L.times);}});
+   say(s.phase==='error'&&s.error==='muted'?t('Audio silenciado · /audio unmute','Audio muted · /audio unmute'):s.phase==='error'?t('No se pudo reproducir · ','Playback failed · ')+name(k):s.phase==='done'?t('Locución completada · ','Voiceover complete · ')+name(k)+' · '+L.times+'/'+L.times:s.phase==='stopped'?t('Locución detenida · ','Voiceover stopped · ')+name(k):t('Emitiendo · ','Playing · ')+name(k)+' · '+Math.min(L.times,s.completed+1)+'/'+L.times);}});
   return true;}
  for(const [k,b] of Object.entries(buttons)){if(!b)continue;
   for(const type of ['pointerdown','pointerup'])b.addEventListener(type,e=>e.stopPropagation(),{signal});

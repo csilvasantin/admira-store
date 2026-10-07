@@ -1085,7 +1085,7 @@
 <script src="scripts/media-options.js?v=xtore-ux-3"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
-<script src="scripts/announcements.js?v=altavoces-1"></script>
+<script src="scripts/announcements.js?v=audio-mute-1"></script>
 <script defer src="scripts/image-prompt.js?v=20261005-pixeria-1"></script>
 <script defer src="scripts/video-prompt.js?v=20261006-media-experience-1"></script>
 <script defer src="scripts/voiceover-prompt.js?v=person-voice-1"></script>
@@ -1519,7 +1519,7 @@
 })();
 </script>
 <script src="xtanco-version.js?v=20261007-r31"></script>
-<script src="xtanco-runtime-config.js?r=xtore-ux-3"></script>
+<script src="xtanco-runtime-config.js?r=audio-mute-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
@@ -2771,16 +2771,23 @@ function dsSetSurfaceAudio(id,on){
 }
 try{ window.__dsSetSurfaceAudio=dsSetSurfaceAudio; window.__dsSurfaceAudioOn=dsSurfaceAudioOn; }catch(e){}
 // Guarda los valores previos para restaurar al desactivar el master mute.
-let _dsMutePrev={sfxVolume:null,bgMusicPaused:false,ambientEnabled:null,custVoicesEnabled:null};
+let _dsMutePrev={sfxVolume:null,bgMusicPaused:false,ambientEnabled:null,custVoicesEnabled:null,videos:[]};
 function setMasterMute(on){
   const wasOn=dsMasterMute;
+  // Las locuciones se cortan ANTES de silenciar: así devuelven el hilo musical que tenían parado y el
+  // silencio lo encuentra en su estado real (si no, al reactivar el audio la música no volvía).
+  if(on&&!wasOn){ try{ window.XpaceAnnouncements?.stop(); }catch(e){} }
   dsMasterMute=!!on;
+  // Visible para los módulos (megafonía, Matrix, tótem, locuciones): antes sólo existía como variable
+  // local y los avisos nuevos arrancaban igual con el audio silenciado (Carlos, 7-oct-2026).
+  try{ window.dsMasterMute=dsMasterMute; }catch(e){}
   // Background music: en lugar de solo mutar, pausar (asi tampoco consume).
   try{
     if(typeof bgMusic!=='undefined'){
       bgMusic.muted=dsMasterMute;
       if(dsMasterMute){
-        _dsMutePrev.bgMusicPaused=!!bgMusic.paused;
+        // Parada sólo porque una locución la tiene retenida = estaba sonando: volverá al reactivar.
+        _dsMutePrev.bgMusicPaused=!!bgMusic.paused && !(window.__xpaceMusicHeld&&window.__xpaceMusicHeld.has(bgMusic));
         if(!bgMusic.paused) bgMusic.pause();
       } else if(wasOn && !_dsMutePrev.bgMusicPaused){
         bgMusic.play().catch(()=>{});
@@ -2864,6 +2871,21 @@ function setMasterMute(on){
       if(dsMasterMute){ try{ ANNOUNCE_AUDIO.pause(); }catch(e){} }
     }
   }catch(e){}
+  // TODO lo demás que esté sonando en la página (Carlos, 7-oct-2026: «/audio mute tiene que parar todos
+  // los audios»): cualquier <audio> suelto se pausa y cualquier <vídeo> con sonido se silencia; al
+  // reactivar se devuelve el sonido sólo a los vídeos que lo tenían. bgMusic y el hilo de Starbucks
+  // llevan su propia gestión (arriba y en Matrix), por eso se saltan.
+  try{
+    if(dsMasterMute){
+      document.querySelectorAll('audio').forEach(el=>{ if(el.id==='bgMusic'||el.id==='starbucksMusic') return; try{ if(!el.paused) el.pause(); }catch(e){} });
+      document.querySelectorAll('video').forEach(el=>{ try{ if(!el.muted){ _dsMutePrev.videos.push(el); el.muted=true; } }catch(e){} });
+    } else if(wasOn){
+      _dsMutePrev.videos.splice(0).forEach(el=>{ try{ if(el.isConnected) el.muted=false; }catch(e){} });
+      dsApplyAudioForPins();
+    }
+  }catch(e){}
+  // Aviso a los módulos: Matrix (hilo, aviso de cierre, altavoces), megafonía y voz de Admirito.
+  try{ window.dispatchEvent(new CustomEvent('xpace:master-mute',{detail:{muted:dsMasterMute}})); }catch(e){}
   return dsMasterMute;
 }
 
@@ -30667,6 +30689,8 @@ window.xtAPI = (function(){
         ANNOUNCE_AUDIO=new Audio(URL.createObjectURL(blob));
         // Respeta /audio mute master: si esta activo, queda silenciado.
         try{ ANNOUNCE_AUDIO.muted = !!(typeof dsMasterMute!=='undefined' && dsMasterMute); }catch(e){}
+        // La locución tiene prioridad: para el hilo musical y lo devuelve al terminar.
+        try{ if(!ANNOUNCE_AUDIO.muted&&typeof window.XpaceMusicHold==='function'){ const soltar=window.XpaceMusicHold(); for(const ev of ['ended','error','pause']) ANNOUNCE_AUDIO.addEventListener(ev,soltar,{once:true}); } }catch(e){}
         ANNOUNCE_AUDIO.play().catch(()=>{});
         return {ok:true};
       }catch(e){lastError=e;}
@@ -36225,7 +36249,7 @@ window.xtAPI = (function(){
 <script src="/assets/day-summary.js?v=xtore-ux-3"></script>
 <script src="/assets/expert-toggle.js?v=xtore-ux-2"></script>
 <script src="scripts/expert-category-detail.js?v=kiosko-grande-1"></script>
-<script src="scripts/totem-kiosko.js?v=menus-tocado-1"></script>
+<script src="scripts/totem-kiosko.js?v=audio-mute-1"></script>
 <script src="scripts/ipad-cola.js?v=menus-tocado-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
@@ -36447,7 +36471,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=altavoces-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=audio-mute-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

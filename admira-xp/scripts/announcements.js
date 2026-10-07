@@ -96,22 +96,32 @@
     root.XpaceMedia.link('audio',result.stock);
     const url=root.URL.createObjectURL(result.audioBlob);return {url,release:()=>root.URL.revokeObjectURL(url)};
   },onState:render,duck});
+  // Prioridad de la locución (Carlos, 7-oct-2026): el hilo musical se PARA mientras suena y sigue donde
+  // estaba al terminar, si existía y estaba sonando. Antes sólo bajaba el volumen al 6 %.
+  // En Matrix lo gestiona el reproductor de Starbucks (suppressMusic); fuera, se pausa el elemento.
   function duck(){
     const releaseMatrix=root.XpaceMatrixOptions?.suppressMusic?.();
-    const saved=['bgMusic','starbucksMusic'].map(id=>doc.getElementById(id)).filter(Boolean).map(audio=>({audio,volume:audio.volume,ducked:Math.min(audio.volume,0.06)}));
-    for(const s of saved)s.audio.volume=s.ducked;
-    return ()=>{releaseMatrix?.();for(const s of saved)if(s.audio.volume===s.ducked)s.audio.volume=s.volume;};
+    const held=['bgMusic',...(releaseMatrix?[]:['starbucksMusic'])].map(id=>doc.getElementById(id)).filter(audio=>audio&&audio.paused===false&&typeof audio.pause==='function');
+    // Registro de lo que está parado POR una locución: /audio mute lo consulta para saber que esa música
+    // «estaba sonando» y devolverla al reactivar el audio.
+    const registry=root.__xpaceMusicHeld=root.__xpaceMusicHeld||new Set();
+    for(const audio of held){try{audio.pause();}catch(_){}registry.add(audio);}
+    let released=false;
+    return ()=>{if(released)return;released=true;releaseMatrix?.();for(const audio of held)registry.delete(audio);if(root.dsMasterMute)return;for(const audio of held)if(audio.paused)try{Promise.resolve(audio.play()).catch(()=>{});}catch(_){}};
   }
+  root.XpaceMusicHold=duck; // misma prioridad para /comunicar y megafonía
   // Experto → PREVIOS: una locución ya guardada en Stock se emite sólo al pulsar Emitir,
   // con las mismas tres lecturas y la misma bajada del hilo musical. No genera otra vez.
   let stockPlayer=null;
   function stopStock(){const player=stockPlayer;stockPlayer=null;player?.stop();}
   function playStock(url,text,{language='es',onState=()=>{},times=3}={}){
     api.stop();stopStock();
+    // /audio mute: no arranca ninguna locución mientras el audio esté silenciado.
+    if(root.dsMasterMute){onState({phase:'error',completed:0,total:times,language:language==='en'?'en-US':'es-ES',error:'muted'});return false;}
     const player=createAnnouncements({Audio:root.Audio,generate:async()=>({url}),onState,duck,times});
     stockPlayer=player;return player.play(String(text||'').trim()||'Stock',{voice:'female',language:language==='en'?'en':'es'});
   }
-  root.XpaceAnnouncements={...api,play:(text,opts={})=>{stopStock();return api.play(text,{...opts,voice:opts.voice||selector?.value||'browser'});},stop:()=>{stopStock();api.stop();},playStock,stopStock};
+  root.XpaceAnnouncements={...api,play:(text,opts={})=>{stopStock();return api.play(text,{...opts,muted:!!opts.muted||!!root.dsMasterMute,voice:opts.voice||selector?.value||'browser'});},stop:()=>{stopStock();api.stop();},playStock,stopStock};
   if(input)for(const event of ['keydown','keyup','keypress'])input.addEventListener(event,e=>e.stopPropagation());
   if(root.MutationObserver)new root.MutationObserver(()=>{api.stop();render();}).observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});
   root.addEventListener('xpace:session',()=>render());root.addEventListener('pagehide',()=>{stopStock();api.stop();});render();
