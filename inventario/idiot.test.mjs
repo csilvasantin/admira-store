@@ -136,3 +136,18 @@ test('lo pendiente de guardar sale por posición de superficie, con huecos donde
  const p=pendingNames(buildIdIot({locations:[l],projects}));
  assert.equal(p['altadis-bcn-001'].surfaces.length,2);assert.equal(p['altadis-bcn-001'].surfaces[0],undefined);assert.equal(p['altadis-bcn-001'].surfaces[1],'Altadis_CarrerGrandeGracia_61_Pantalla_1');
 });
+
+// «Que el alta pida el proyecto» (Carlos, 7-oct-2026): el proyecto que declara la ficha manda.
+test('el proyecto declarado en la ficha da el primer tramo del nombre, sea del catálogo o escrito a mano',()=>{
+ const equipo={id:'tablet-barra',name:'Tablet barra',addr:'Paseo de Gracia 103 · Barcelona',kind:'MUPI · Circuito Admira',surfaces:[{name:'MUPI vertical',surface:'pantalla',screen:'tablet-barra-mupi'}]};
+ assert.equal(projectOf(equipo,projects).label,'AdmiraNeXT');
+ assert.equal(projectOf({...equipo,project:'starbucks'},projects).label,'Starbucks');
+ assert.equal(projectOf({...equipo,project:'Starbucks España'},projects).id,'starbucks','un alias del catálogo también vale');
+ assert.deepEqual(projectOf({...equipo,project:'  Café  Nuevo '},projects),{id:'cafe-nuevo',label:'Café Nuevo',circuit:''});
+ assert.equal(projectOf({...equipo,project:'···'},projects).label,'AdmiraNeXT','un proyecto sin letras no cuenta');
+ assert.equal(buildIdIot({locations:[{...equipo,project:'starbucks'}],projects})[0].idIoT,'Starbucks_PaseodeGracia_103_Pantalla_1');
+ assert.equal(buildIdIot({locations:[{...equipo,project:'Café Nuevo'}],projects})[0].idIoT,'CafeNuevo_PaseodeGracia_103_Pantalla_1');
+ // Con el Starbucks real en la misma dirección no repite nombre: el equipo nuevo se distingue por su ficha.
+ const juntos=buildIdIot({locations:[{...pg103,surfaces:[{name:'A',surface:'pantalla',idIoT:'Starbucks_PaseodeGracia_103_Pantalla_1'}]},{...equipo,project:'starbucks'}],projects});
+ assert.equal(new Set(juntos.map(r=>r.idIoT.toLowerCase())).size,2);
+});

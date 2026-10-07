@@ -31,10 +31,16 @@ export function iotType({model,surface,id,name}={}){
 
 // Proyectos que el catálogo del gemelo aún no lista pero la parrilla de admira.tv sí.
 const EXTRA_PROJECTS=[{id:'altadis',circuit:'altadis_bcn',label:'Altadis',aliases:[]}];
-/** Proyecto de un Xpacio del catálogo: por circuito, por su id o alias, por su marca; si nada lo dice, «Sin proyecto». */
+/** Proyecto de un Xpacio del catálogo: el que declara su ficha; si no, por circuito, por su id o alias, por su marca; si nada lo dice, «Sin proyecto». */
 export function projectOf(location,projects=[]){
  const all=[...projects,...EXTRA_PROJECTS],circuit=String(location?.circuit||''),tokens=String(location?.id||'').toLowerCase().split('-').slice(0,2);
  const named=t=>all.find(p=>p.id===t||fold(p.label).replace(/ /g,'')===t||(p.aliases||[]).some(a=>fold(a)===t));
+ // El proyecto que DECLARA la ficha manda (lo elige quien da de alta el equipo en admira.tv/alta): si es uno del
+ // catálogo se usa su nombre; si no, lo escrito tal cual es el proyecto.
+ const declared=String(location?.project||'').replace(/\s+/g,' ').trim().slice(0,40);
+ if(declared){const key=v=>fold(v).replace(/ /g,''),known=all.find(p=>[p.id,p.label,p.circuit,...(p.aliases||[])].some(v=>v&&key(v)===key(declared)));
+  if(known)return {id:known.id,label:known.label,circuit:known.circuit||circuit};
+  if(idPart(declared))return {id:fold(declared).replace(/ /g,'-'),label:declared,circuit};}
  const hit=all.find(p=>circuit&&p.circuit===circuit)||named(tokens[0])||named(tokens[1]||'');
  if(hit)return {id:hit.id,label:hit.label,circuit:hit.circuit||''};
  const brand=String(location?.external?.brand||location?.client||'').trim();
