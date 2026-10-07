@@ -164,10 +164,10 @@
       verb = 'avatardigital'; args = args.replace(/^digital(?:\s+|$)/i, '').trim();
     }
     if (verb === 'cli') {
-      if (/^(good|better|best)?$/i.test(args)) return ('/avatar ' + args.toLowerCase()).trim();
+      if (/^(good|better|best|avatar|human|metahuman)?$/i.test(args)) return ('/avatar ' + args.toLowerCase()).trim();
       if (!/^(ayudante|helper)(?:\s|$)/i.test(args)) return null;
     } else if (!['avatardigital', 'digitalavatar', 'admirito', 'avataron', 'avataroff'].includes(verb)) {
-      if (verb !== 'avatar' || !/^(on|off|reset|status|estado|good|better|best|encender|apagar|mostrar|ocultar|show|hide)?$/i.test(args)) return null;
+      if (verb !== 'avatar' || !/^(on|off|reset|status|estado|good|better|best|avatar|human|metahuman|encender|apagar|mostrar|ocultar|show|hide)?$/i.test(args)) return null;
     }
     if (/^(status|estado)$/i.test(args)) return '/avatar';
     return '/' + verb + (args ? ' ' + args : '');
@@ -503,7 +503,7 @@
   // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
   // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
   // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
-  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261006-avatar-nube-1';
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261007-luna-1';
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }

@@ -759,7 +759,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=retail-rules-2" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261007-luna-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -20668,9 +20668,9 @@ function avatarIdentityFromQuality(){
   if(!q){ try{ q=String((window.__xtancoVisualTiers&&window.__xtancoVisualTiers.mode)||new URLSearchParams(location.search).get('quality')||new URLSearchParams(location.search).get('visual')||'').toLowerCase(); }catch(e){} }
   if(q==='matrix') q='best';
   if(q==='best') return {tier:'best', avatar:'neo'};
-  if(q==='better') return {tier:'better', avatar:'alex'};
+  if(q==='better') return {tier:'better', avatar:'luna'};
   if(q==='good') return {tier:'good', avatar:'admirito'};
-  return {tier:'better', avatar:'alex'};
+  return {tier:'better', avatar:'luna'};
 }
 
 const AVATAR3D={
@@ -20680,7 +20680,7 @@ const AVATAR3D={
   totemFixed:!!(typeof AVATAR3D_CFG.totemUrl==='string'&&AVATAR3D_CFG.totemUrl),
 };
 // Tótem por nivel (06-10-2026): con la calidad Good el tótem y la pared larga muestran a
-// Admirito, la nube animada (nube.html, 2D ligera); Better/Best/Matrix siguen con la chica
+// Admirito, la nube animada (nube.html, 2D ligera); Better/Best/Matrix siguen con Luna
 // (best.html). Una totemUrl fijada en la configuración manda siempre.
 const AVATAR3D_TOTEM_GOOD='https://digitalavatar.ai/nube.html?kiosk=1';
 function avatar3dTotemUrl(){ let lv='';try{ lv=avatar3dVisualLevel(); }catch(_){} return (!AVATAR3D.totemFixed&&lv==='good')?AVATAR3D_TOTEM_GOOD:AVATAR3D.totemUrl; }
@@ -21230,7 +21230,7 @@ function avatar3dContextQS(url){
   let tier=avatar3dTier(url);
   try{ const v=avatar3dVisualLevel(); if(v) tier=v; }catch(_){}
   if(!tier) tier='better';
-  const av=(!avatar3dModel&&{good:'admirito',better:'alex',best:'neo'}[tier])||'';
+  const av=(!avatar3dModel&&{good:'admirito',better:'luna',best:'neo'}[tier])||'';
   return (loc?'loc='+encodeURIComponent(loc)+'&':'')+'sector='+encodeURIComponent(avatar3dSector())+(brand?'&brand='+encodeURIComponent(brand):'')+'&tier='+tier+(av?'&avatar='+av:'');
 }
 // Calidad visual del gemelo → nivel del avatar (06-10-2026): Good 8 bits = good,
@@ -21358,7 +21358,7 @@ function setAvatar3dWall(on){
 }
 window.setAvatar3dWall=setAvatar3dWall;
 // ── /metahuman — Keanu (MetaHuman Pixel Streaming) en la pantalla de la PARED LARGA ──
-// Independiente de /avatar3d (que es la chica del mupi central). Aparece/desaparece.
+// Independiente de /avatar3d (que es Luna, el mupi central). Aparece/desaparece.
 function metahumanWallOn(){ return !!(avatar3dWall && avatar3dWallSrc); }
 function toggleMetahumanWall(arg){
   const en=(typeof lang!=='undefined'&&lang==='en');
