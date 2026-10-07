@@ -1,15 +1,16 @@
 {
   "version": "v.07.10.2026.r31.16:21",
-  "deployedAt": "2026-10-07T14:03:42Z",
+  "deployedAt": "2026-10-07T14:22:08Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "44ef11e5b60c5dae46c4e98adbcd34be6b56b4a3",
-  "gitShort": "44ef11e",
-  "gitFull": "44ef11e5b60c5dae46c4e98adbcd34be6b56b4a3",
+  "git": "37bbabe9a96030f6a8f287cb8bbf7a16ab0486f7",
+  "gitShort": "37bbabe",
+  "gitFull": "37bbabe9a96030f6a8f287cb8bbf7a16ab0486f7",
   "dirty": false,
   "novedades": [
-    "Un toque en el iPad de Starbucks abre el gestor de colas en Good, Better, Best y Matrix",
-    "El sello del menú vuelve a coincidir con la versión publicada"
+    "iPad de Starbucks: un toque abre el gestor de colas también en Matrix (capa táctil sobre el iframe)",
+    "La vista ampliada se abre siempre por encima de la escena y ✕ cierra con un toque",
+    "Diagnóstico del toque en window.__ipadColaDebug"
   ]
 }
