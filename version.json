@@ -1,17 +1,17 @@
 {
-  "version": "v.07.10.2026.r4.07:02",
-  "deployedAt": "2026-10-07T05:02:59Z",
+  "version": "v.07.10.2026.r5.07:15",
+  "deployedAt": "2026-10-07T05:16:05Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "34dc7c4dd62336dc6c62985aad40fa1dda937f63",
-  "gitShort": "34dc7c4",
-  "gitFull": "34dc7c4dd62336dc6c62985aad40fa1dda937f63",
+  "git": "a0cae7bffbd7e7eee173f58c19a1725cb055e86c",
+  "gitShort": "a0cae7b",
+  "gitFull": "a0cae7bffbd7e7eee173f58c19a1725cb055e86c",
   "dirty": false,
   "novedades": [
-    "/ifthendothat: reglas visuales muffin → canción de Pixeria",
-    "Elige canción y disparador: coger el muffin o llevarlo a caja",
-    "Arrastre manual y /demo tpv aplican la misma regla guardada",
-    "La barra con marca Starbucks muestra su logo sin XpaceOS genérico"
+    "IF → reacción → contenido: música, locución, imagen o vídeo de Pixeria",
+    "Filtro editable con #musica, #locucion, #imagen o #video preseleccionado",
+    "Las reacciones visuales se reproducen temporalmente en el TPV del gemelo",
+    "Matrix por defecto y Starbucks con imagotipo y texto blanco"
   ]
 }
