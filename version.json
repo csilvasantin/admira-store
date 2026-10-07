@@ -1,12 +1,12 @@
 {
   "version": "v.07.10.2026.r3.06:56",
-  "deployedAt": "2026-10-07T04:45:47Z",
+  "deployedAt": "2026-10-07T04:59:40Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "476a6fd713b9ac9f1197711121a191e7cc7137bc",
-  "gitShort": "476a6fd",
-  "gitFull": "476a6fd713b9ac9f1197711121a191e7cc7137bc",
+  "git": "31f29d06294e12d7cbbdf37693adf776e005ffb3",
+  "gitShort": "31f29d0",
+  "gitFull": "31f29d06294e12d7cbbdf37693adf776e005ffb3",
   "dirty": false,
   "novedades": [
     "/ifthendothat: reglas visuales muffin → canción de Pixeria",
