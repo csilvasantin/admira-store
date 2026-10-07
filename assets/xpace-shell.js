@@ -48,7 +48,7 @@
     'envivo', 'calendario', 'resetaudiencia', 'ad', 'upgrade', 'aforo', 'visit', 'save',
     'camiseta', 'reloj', 'time', 'tiempo', 'weather', 'lamp', 'hue', 'livecam', 'mocap', 'pixeria',
     'admiralive', 'comunicar', 'admiratube', 'say', 'targetpublicity', 'generovideo', 'impactos',
-    'audienciain', 'audienciaout', 'ds', 'info', 'admiratv', 'tiktok', 'xpl', 'condicional', 'dj',
+    'audienciain', 'audienciaout', 'ds', 'info', 'admiratv', 'tiktok', 'xpl', 'condicional', 'ifthendothat', 'componer', 'dj',
     'ladron', 'guardiacivil', 'opinador', 'robot', 'sponsor', 'socio', 'door', 'subasta', 'socios',
     'heatmap', 'ambiente', 'voces', 'devolucion', 'pedido', 'grok', 'draw', 'metahuman', 'avatar3d',
     'log', 'import', 'importtube', 'money', 'sat', 'fame', 'set', 'music', 'musica', 'song', 'next',

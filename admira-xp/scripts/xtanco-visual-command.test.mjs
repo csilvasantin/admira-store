@@ -291,3 +291,9 @@ test('/demo commands use the shipped Expert dispatcher and never send a bot mess
  globalThis.XpacePOSExperience={demo:{start:()=>({ok:true}),stop(){},state:()=>({phase:'idle'})}};
  try{for(const input of ['/demo','/demo tpv','/demo off','/demo estado','/demo unknown']){const h=consoleHarness();await h.send(input);assert.equal(h.responses.length,1);assert.deepEqual(h.sent,[]);assert.deepEqual(h.sessionCommands,[]);assert.deepEqual(h.logs,[]);assert.equal(h.responses[0][2],'local-visual');}}finally{delete globalThis.XpacePOSExperience;}
 });
+
+
+test('/ifthendothat commands use the shipped dispatcher without bot or session writes',async()=>{
+ globalThis.XPLComposer={open(){},close(){},toggle(){}};
+ try{for(const input of ['/ifthendothat','/ifthendothat on','/ifthendothat off','/ifthendothat typo']){const h=consoleHarness();await h.send(input);assert.equal(h.responses.length,1);assert.deepEqual(h.sent,[]);assert.deepEqual(h.sessionCommands,[]);assert.deepEqual(h.logs,[]);assert.equal(h.responses[0][2],'local-visual');}}finally{delete globalThis.XPLComposer;}
+});

@@ -83,3 +83,9 @@ Los textos son los de admira.app y Pixeria. **Sin navegador** (Telegram, el MCP 
 La corrección de legibilidad se prueba sólo en Experto: una hoja independiente fija superficies opacas oscuras y texto claro, incluidos campos, categorías, Signage y estados Matrix. No depende de que carguen las variables de /marca. Opciones y Avanzados recuperan sus estilos anteriores. La extensión al resto de la interfaz queda pendiente de validar este piloto con Carlos.
 
 The readability correction is piloted only in Expert: an independent stylesheet sets opaque dark surfaces and light text for fields, categories, Signage and Matrix statuses. It does not depend on /marca variables loading. Options and Advanced return to their previous styles. Extending the correction to the rest of the interface is pending Carlos validating this pilot.
+
+## Identidad en barra / Top bar identity
+
+ES: Con marca activa, el logo del cliente sustituye al nombre genérico XpaceOS en la barra, tanto en el shell como en el gemelo. /marca starbucks muestra Starbucks; /marca off vuelve a Admira.
+
+EN: With an active brand, the customer logo replaces the generic XpaceOS wordmark in both the shell and twin top bar. /brand starbucks shows Starbucks; /brand off returns to Admira.

@@ -1,5 +1,5 @@
 {
-  "version": "v.07.10.2026.r2.06:44",
+  "version": "v.07.10.2026.r3.06:56",
   "deployedAt": "2026-10-07T04:45:47Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
@@ -9,8 +9,9 @@
   "gitFull": "476a6fd713b9ac9f1197711121a191e7cc7137bc",
   "dirty": false,
   "novedades": [
-    "/demo tpv en Experto: cámara, silueta y muffin a la caja",
-    "La canción Bad Times Deep House arranca al llegar al TPV",
-    "/demo off y Escape detienen la demo y su canción"
+    "/ifthendothat: reglas visuales muffin → canción de Pixeria",
+    "Elige canción y disparador: coger el muffin o llevarlo a caja",
+    "Arrastre manual y /demo tpv aplican la misma regla guardada",
+    "La barra con marca Starbucks muestra su logo sin XpaceOS genérico"
   ]
 }

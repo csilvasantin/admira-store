@@ -18,6 +18,7 @@
  * ========================================================================== */
 (function (root) {
   'use strict';
+  if(root.XPL)return;
 
   /* --------------------------------------------------------------------------
    * 1) CATÁLOGO DE HECHOS  (lo que el mundo "sabe" — las condiciones del CUANDO)
@@ -26,6 +27,8 @@
   // El adapter resuelve world.fact(id) -> valor actual.
   // 10+ condiciones del mundo del gemelo (clima, gente, tiempo, negocio…).
   const FACTS = [
+    {id:'muffinPicked',type:'bool',scope:'retail',es:'cojo un muffin',en:'I pick up a muffin',icon:'🧁'},
+    {id:'muffinDelivered',type:'bool',scope:'retail',es:'llevo un muffin a la caja',en:'I take a muffin to the register',icon:'🧁'},
     // — clima —
     { id: 'rain',         type: 'bool', es: 'llueve',                 en: 'it rains',            icon: '🌧️' },
     { id: 'temperature',  type: 'num',  es: 'la temperatura',         en: 'temperature',         icon: '🌡️', min: -5, max: 42, unit: '°' },
@@ -132,6 +135,7 @@
   // mode:  'while'-> mientras la condición sea verdad (idempotente)
   //        'on'   -> solo en el flanco (cuando pasa de falso a verdadero)
   const ACTIONS = [
+    {id:'playSong',scope:'retail',mode:'on',es:'reproducir canción de Pixeria',en:'play a Pixeria song',param:{kind:'text'}},
     { id: 'equip',      scope: 'npc',   mode: 'while', es: 'darle',          en: 'give them',
       param: { kind: 'enum', es: 'qué', en: 'what', values: [
         { id: 'umbrella', es: 'un paraguas', en: 'an umbrella', icon: '☂️' },

@@ -142,3 +142,6 @@
 
 /* 5 · Lo que no cambia: el lienzo y los medios del gemelo y de las páginas. */
 :root[data-mb-marca][data-mb-plataforma="store"] :is(canvas,video,img:not(.mb-logo-img),iframe){filter:none;mix-blend-mode:normal}
+
+/* Active customer identity replaces the generic wordmark in every shared top bar. */
+:root[data-mb-marca][data-mb-plataforma="store"] #topBar :is(.xs-brand,.mb-powered){display:none!important}

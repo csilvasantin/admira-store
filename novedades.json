@@ -150,5 +150,11 @@
     "/demo tpv en Experto: cámara, silueta y muffin a la caja",
     "La canción Bad Times Deep House arranca al llegar al TPV",
     "/demo off y Escape detienen la demo y su canción"
+  ],
+  "v.07.10.2026.r3.06:56": [
+    "/ifthendothat: reglas visuales muffin → canción de Pixeria",
+    "Elige canción y disparador: coger el muffin o llevarlo a caja",
+    "Arrastre manual y /demo tpv aplican la misma regla guardada",
+    "La barra con marca Starbucks muestra su logo sin XpaceOS genérico"
   ]
 }
