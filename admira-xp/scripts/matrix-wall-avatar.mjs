@@ -36,7 +36,7 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  const expand=doc.createElement('button');expand.type='button';expand.className='matrix-avatar-expand';expand.setAttribute('aria-label',t('Hablar con el avatar','Talk to the avatar'));expand.title=t('Avatar digital · Admirito','Digital avatar · Admirito');expand.textContent=t('Hablar con el avatar','Talk to the avatar');
  const close=doc.createElement('button');close.type='button';close.className='matrix-avatar-close';close.textContent=t('✕ Cerrar','✕ Close');
  const toolbar=doc.createElement('div');toolbar.className='matrix-avatar-toolbar';
- const model=doc.createElement('select');model.className='matrix-avatar-model';model.setAttribute('aria-label',t('Modelo del avatar','Avatar model'));for(const [value,label]of [['good','Good · Admirito'],['better',t('Better · Chica','Better · Girl')],['best','Best · Neo']]){const option=doc.createElement('option');option.value=value;option.textContent=label;model.append(option);}
+ const model=doc.createElement('select');model.className='matrix-avatar-model';model.setAttribute('aria-label',t('Modelo del avatar','Avatar model'));for(const [value,label]of [['good','Avatar · Admirito'],['better','Human · Luna'],['best','Metahuman · Neo']]){const option=doc.createElement('option');option.value=value;option.textContent=label;model.append(option);}
  toolbar.append(close,model);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
  let disposed=false,expanded=false,source='',releaseMusic=null,mode='avatar',avatarLanguage='',siteLanguage=defaultContext(win).lang,localChoice='';
  function resetConversation(){avatarLanguage='';render();frame.src=source;}
