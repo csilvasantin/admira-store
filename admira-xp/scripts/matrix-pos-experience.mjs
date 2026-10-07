@@ -1,3 +1,4 @@
+import {createPOSCheckoutDisplay} from './pos-checkout-display.mjs?v=pos-checkout-1';
 import {createPOSDemo} from './pos-demo.mjs?v=xtore-ux-3';
 import {retailRulebook,createRetailRulePlayer} from './retail-rules.mjs?v=xtore-ux-3';
 import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
@@ -14,7 +15,7 @@ export function pointInPOSQuad(x,y,points){
  return cross.every(v=>v>=-1e-6)||cross.every(v=>v<=1e-6);
 }
 
-export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visual,visualFactory}={}){
+export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visual,visualFactory,checkoutHost}={}){
  const doc=surface.ownerDocument,win=doc.defaultView,t=(es,en)=>doc.documentElement.lang==='en'?en:es;
  let disposed=false,editing=false,muffinPoints=null,registerPoints=null,basket=restoreBasket(null),offerDismissed=false;
  try{basket=restoreBasket(JSON.parse(win.sessionStorage.getItem(POS_BASKET_KEY)));}catch{}
@@ -27,6 +28,7 @@ export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visua
  const close=element('button','matrix-pos-close');close.type='button';
  const scope=element('p','matrix-pos-scope'),lines=element('ul','matrix-pos-lines'),offer=element('div','matrix-pos-offer'),question=element('p',''),add=element('button',''),skip=element('button',''),empty=element('p',''),status=element('p','matrix-pos-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
  add.type=skip.type='button';header.append(title,close);offer.append(question,add,skip);panel.append(header,scope,lines,empty,offer,status);surface.append(muffin,register,panel);
+ const checkout=createPOSCheckoutDisplay({document:doc,host:checkoutHost,onEdit:open,onCoffee:()=>addProduct('coffee')});
  function render(){
   muffin.title=t('Muffin · mantén pulsado y arrastra a la caja','Muffin · hold and drag to the register');muffin.setAttribute('aria-label',t('Coger muffin y llevarlo a la caja','Pick up muffin and take it to the register'));
   register.setAttribute('aria-label',t('Caja TPV · suelta aquí el muffin','POS register · drop the muffin here'));register.title=t('Caja · cesta del gemelo','Register · twin basket');
@@ -34,12 +36,12 @@ export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visua
   empty.textContent=t('Coge un muffin y llévalo a la caja.','Pick up a muffin and take it to the register.');empty.hidden=!!basket.lines.length;
   lines.replaceChildren();
   for(const line of basket.lines){const row=element('li',''),name=element('span',''),remove=element('button','');name.textContent=line.quantity+' × '+(doc.documentElement.lang==='en'?POS_PRODUCTS[line.id].titleEn||POS_PRODUCTS[line.id].title:POS_PRODUCTS[line.id].title);remove.type='button';remove.textContent=t('Quitar','Remove');remove.setAttribute('aria-label',t('Quitar ','Remove ')+(doc.documentElement.lang==='en'?POS_PRODUCTS[line.id].titleEn||POS_PRODUCTS[line.id].title:POS_PRODUCTS[line.id].title));remove.addEventListener('click',()=>{basket=removeBasketProduct(basket,line.id);save();render();notify('remove',line.id);});row.append(name,remove);lines.append(row);}
-  offer.hidden=offerDismissed||!coffeeSuggestion(basket);question.textContent=t('¿Lo acompañamos con un café?','Would you like a coffee with it?');add.textContent=t('Añadir café','Add coffee');skip.textContent=t('Sólo el muffin','Just the muffin');updateBanner(demo.state());
+  offer.hidden=offerDismissed||!coffeeSuggestion(basket);question.textContent=t('¿Lo acompañamos con un café?','Would you like a coffee with it?');add.textContent=t('Añadir café','Add coffee');skip.textContent=t('Sólo el muffin','Just the muffin');updateBanner(demo.state());checkout.update(basket,{offerDismissed});
  }
  function save(){try{win.sessionStorage.setItem(POS_BASKET_KEY,JSON.stringify(basket));}catch{}}
  function notify(action,id){win.dispatchEvent(new win.CustomEvent('xpace:pos-basket',{detail:{version:1,loc:POS_LOC,posId:POS_ID,quality:'matrix',action,productId:id,basket:restoreBasket(basket)}}));}
  function open(){if(disposed||editing)return;render();panel.hidden=false;}
- function addProduct(id){if(disposed||editing||blocked())return false;try{basket=addBasketProduct(basket,id);}catch{status.textContent=t('No se pudo añadir el producto.','Could not add the product.');return false;}if(id==='muffin')offerDismissed=false;save();render();open();status.textContent=t('Añadido: ','Added: ')+(doc.documentElement.lang==='en'?POS_PRODUCTS[id].titleEn||POS_PRODUCTS[id].title:POS_PRODUCTS[id].title);notify('add',id);if(id==='muffin'&&!demo.state().running)void rulePlayer.fire('muffinDelivered').catch(()=>{});return true;}
+ function addProduct(id){if(disposed||editing||blocked())return false;try{basket=addBasketProduct(basket,id);}catch{status.textContent=t('No se pudo añadir el producto.','Could not add the product.');return false;}if(id==='muffin')offerDismissed=false;save();render();status.textContent=t('Añadido: ','Added: ')+(doc.documentElement.lang==='en'?POS_PRODUCTS[id].titleEn||POS_PRODUCTS[id].title:POS_PRODUCTS[id].title);notify('add',id);if(id==='muffin'&&!demo.state().running)void rulePlayer.fire('muffinDelivered').catch(()=>{});return true;}
  const api={isActive:()=>!disposed&&!editing&&!blocked(),addProduct,targetAt(x,y){if(!this.isActive()||!registerPoints||register.hidden)return false;const r=surface.getBoundingClientRect();return pointInPOSQuad(x-r.left,y-r.top,registerPoints)&&doc.elementFromPoint(x,y)?.closest('[data-pos-register]')===register;},highlight(on){register.classList.toggle('is-pos-drop-target',!!on);},open,get basket(){return restoreBasket(basket);}};
  win.XpacePOSExperience=api;
  const svg=doc.createElementNS('http://www.w3.org/2000/svg','svg');svg.classList.add('matrix-pos-silhouette');svg.setAttribute('viewBox','0 0 80 70');svg.setAttribute('aria-hidden','true');const path=doc.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M4 48 Q0 33 9 24 Q11 14 25 12 Q38 3 52 14 Q71 12 76 31 Q81 44 70 53 L64 66 L15 66 Z');svg.append(path);muffin.append(svg);
@@ -58,5 +60,5 @@ export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visua
  close.addEventListener('click',()=>{panel.hidden=true;register.focus({preventScroll:true});});register.addEventListener('click',open);add.addEventListener('click',()=>addProduct('coffee'));skip.addEventListener('click',()=>{offerDismissed=true;render();});
  for(const node of [muffin,register,panel])for(const type of ['pointerdown','wheel','keydown'])node.addEventListener(type,e=>{if(type==='keydown'&&e.key==='Escape'&&node===panel){panel.hidden=true;register.focus({preventScroll:true});e.preventDefault();}e.stopPropagation();});
  const language=new win.MutationObserver(render);language.observe(doc.documentElement,{attributes:true,attributeFilter:['lang']});render();
- return {open,draw(project,disabled){editing=!!disabled;const configure=(node,corners,w,h)=>{const pts=corners.map(project),matrix=pts.every(Boolean)&&quadTransform(pts,w,h);node.hidden=editing||!matrix;if(matrix)node.style.transform='matrix3d('+matrix.join(',')+')';return matrix?pts:null;};muffinPoints=configure(muffin,POS_MUFFIN_CORNERS,80,70);registerPoints=configure(register,POS_REGISTER_CORNERS,200,180);register.disabled=blocked();if(editing){panel.hidden=true;if(demo.state().running)demo.stop();}present();},dispose(){disposed=true;demo.dispose();rulePlayer.dispose();doc.removeEventListener('keydown',interrupt,true);surface.removeEventListener('pointerdown',interrupt,true);surface.removeEventListener('wheel',interrupt,true);detach?.();language.disconnect();if(win.XpacePOSExperience===api)delete win.XpacePOSExperience;for(const node of [muffin,register,panel,ghost,banner,audio])node.remove();}};
+ return {open,draw(project,disabled){checkout.sync(!!disabled);editing=!!disabled;const configure=(node,corners,w,h)=>{const pts=corners.map(project),matrix=pts.every(Boolean)&&quadTransform(pts,w,h);node.hidden=editing||!matrix;if(matrix)node.style.transform='matrix3d('+matrix.join(',')+')';return matrix?pts:null;};muffinPoints=configure(muffin,POS_MUFFIN_CORNERS,80,70);registerPoints=configure(register,POS_REGISTER_CORNERS,200,180);register.disabled=blocked();if(editing){panel.hidden=true;if(demo.state().running)demo.stop();}present();},dispose(){disposed=true;checkout.dispose();demo.dispose();rulePlayer.dispose();doc.removeEventListener('keydown',interrupt,true);surface.removeEventListener('pointerdown',interrupt,true);surface.removeEventListener('wheel',interrupt,true);detach?.();language.disconnect();if(win.XpacePOSExperience===api)delete win.XpacePOSExperience;for(const node of [muffin,register,panel,ghost,banner,audio])node.remove();}};
 }

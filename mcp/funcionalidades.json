@@ -4344,8 +4344,8 @@
   },
   "pos_muffin": {
     "help_topic": "pos-muffin",
-    "es": "En Matrix de Starbucks Alsea, mantén pulsado el muffin de la vitrina y arrástralo a la caja junto al osito. La miniatura sigue al cursor y la caja se ilumina al aceptar el producto. Al soltarlo aparece la cesta con 1 × Muffin y «¿Lo acompañamos con un café?». Añadir café incorpora el acompañamiento; Sólo el muffin cierra la sugerencia. Quitar elimina una línea completa. Soltar fuera, Escape o perder el foco cancela el arrastre. Con teclado, enfoca el muffin y pulsa Enter o Espacio. TPV / POS y el enlace #tpv encuadran vitrina y caja. La cesta se conserva en esta pestaña al recargar y al cambiar de vista. Es una cesta del gemelo, sin cobro, precios, inventario ni conexión a una caja física; la publicidad del TPV, la pared y la música mantienen su programación. El gesto queda desactivado durante /layout, edición de geometría o una incidencia que apague el TPV. Good, Better y Best conservan su funcionamiento anterior.",
-    "en": "In Starbucks Alsea Matrix, hold the display-case muffin and drag it to the register beside the teddy bear. The thumbnail follows the pointer and the register lights up when it accepts the product. Releasing opens the basket with 1 × Muffin and “Would you like a coffee with it?”. Add coffee adds the companion product; Just the muffin dismisses the suggestion. Remove deletes a whole line. Dropping outside, Escape or losing focus cancels the drag. With a keyboard, focus the muffin and press Enter or Space. TPV / POS and the #tpv link frame the display case and register. The basket survives reloads and view changes in this tab. This is a digital twin basket with no payment, prices, inventory or physical register connection; POS advertising, wall screens and music retain their schedules. The gesture is disabled during /layout, geometry editing or an incident that turns the POS off. Good, Better and Best retain their previous behaviour.",
+    "es": "En Matrix de Starbucks Alsea, mantén pulsado el muffin de la vitrina y arrástralo a la caja junto al osito. La miniatura sigue al cursor y la caja se ilumina al aceptar el producto. Al entregarlo en caja, la compra aparece en la pantalla mapeada del TPV con productos y cantidades. «Añadir café» ofrece el acompañamiento en esa pantalla; «Editar cesta» o pulsar la caja abre los detalles con «¿Lo acompañamos con un café?». La cesta flotante ya no se abre automáticamente. Añadir café incorpora el acompañamiento; Sólo el muffin cierra la sugerencia. Quitar elimina una línea completa. Soltar fuera, Escape o perder el foco cancela el arrastre. Con teclado, enfoca el muffin y pulsa Enter o Espacio. TPV / POS y el enlace #tpv encuadran vitrina y caja. La cesta se conserva en esta pestaña al recargar y al cambiar de vista. Es una cesta del gemelo, sin cobro, precios, inventario ni conexión a una caja física; la compra tiene prioridad visual sobre la publicidad y las reacciones del TPV mientras haya productos. Al quitar la última línea vuelve el contenido programado; la pared y la música mantienen su programación. El gesto queda desactivado durante /layout, edición de geometría o una incidencia que apague el TPV. Good, Better y Best conservan su funcionamiento anterior.",
+    "en": "In Starbucks Alsea Matrix, hold the display-case muffin and drag it to the register beside the teddy bear. The thumbnail follows the pointer and the register lights up when it accepts the product. Delivering it to the register shows the purchase on the mapped POS display with products and quantities. “Add coffee” offers the companion product on that screen; “Edit basket” or clicking the register opens details with “Would you like a coffee with it?”. The floating basket no longer opens automatically. Add coffee adds the companion product; Just the muffin dismisses the suggestion. Remove deletes a whole line. Dropping outside, Escape or losing focus cancels the drag. With a keyboard, focus the muffin and press Enter or Space. TPV / POS and the #tpv link frame the display case and register. The basket survives reloads and view changes in this tab. This is a digital twin basket with no payment, prices, inventory or physical register connection; the purchase takes visual priority over POS advertising and reactions while it contains products. Removing the last line restores scheduled content; wall screens and music retain their schedules. The gesture is disabled during /layout, geometry editing or an incident that turns the POS off. Good, Better and Best retain their previous behaviour.",
     "loc": "alsea-sbux-021",
     "pos_id": "starbucks-tpv-01",
     "products": [
@@ -4358,7 +4358,13 @@
     "guide": "https://www.admira.store/admira-xp/docs/pos-muffin.md",
     "entry": "https://www.admira.store/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks#tpv",
     "physical_integration": false,
-    "mcp_basket_tools": false
+    "mcp_basket_tools": false,
+    "checkout_display": {
+      "id": "starbucks-tpv-01",
+      "priority": "basket over POS visuals while nonempty",
+      "empty": "scheduled media resumes",
+      "floating": "explicit edit/register only"
+    }
   },
   "demo_tpv": {
     "help_topic": "demo-tpv",
@@ -4456,5 +4462,14 @@
     "storage_key": "xpaceos.day-summary.v1",
     "guide": "https://www.admira.store/admira-xp/docs/expert-toggles-day-summary.md",
     "mcp_tools": false
+  },
+  "advanced_icons_pos_checkout": {
+    "help_topic": "advanced-icons-pos-checkout",
+    "es": "Opciones avanzadas → Player y cámara usa tarjetas con iconos para Enviar, Mostrar/Ocultar vista local, IF·THEN·DO, Player y cámara y Cerrar Experto. Mantienen sus acciones y cambian con el idioma. Al entrar sin quality/visual explícito se abre Matrix, incluso si antes se escogió otra calidad; el selector y los enlaces explícitos conservan la elección solicitada.",
+    "en": "Advanced options → Player and camera uses icon cards for Send, Show/Hide local view, IF·THEN·DO, Player and camera and Close Expert. Their actions and language updates are retained. Entering without an explicit quality/visual opens Matrix, even after a previous quality choice; the selector and explicit links retain the requested choice.",
+    "default_quality": "matrix",
+    "pos_id": "starbucks-tpv-01",
+    "guide": "https://www.admira.store/admira-xp/docs/advanced-icons-pos-checkout.md",
+    "scope": "local UI; no new MCP tools; existing basket schema/storage preserved"
   }
 }

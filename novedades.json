@@ -192,5 +192,11 @@
     "IF·THEN·DO THAT: varios DO simultáneos y selección de una o varias pantallas",
     "Catálogo completo de Pixeria; Todos quita el filtro sin limitar vídeos a 200",
     "Resumen del día OFF por defecto; /resumen dia on|off guarda tu elección"
+  ],
+  "v.07.10.2026.r10.07:55": [
+    "Avanzado: tarjetas con iconos y texto legible para Player y cámara",
+    "Matrix arranca por defecto sin una calidad explícita en la URL",
+    "La compra aparece en el TPV al entregar productos a caja; editar y añadir café desde la pantalla",
+    "Cesta vacía recupera la publicidad; ayudas y MCP actualizados en español e inglés"
   ]
 }
