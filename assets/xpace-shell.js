@@ -503,7 +503,7 @@
   // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
   // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
   // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
-  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261007-luna-1';
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261007-pill-1';
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }

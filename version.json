@@ -1,17 +1,15 @@
 {
-  "version": "v.07.10.2026.r12.08:14",
-  "deployedAt": "2026-10-07T06:15:19Z",
-  "deployer": "OraculoMacMini",
+  "version": "v.07.10.2026.r13.09:28",
+  "deployedAt": "2026-10-07T07:28:02Z",
+  "deployer": "GrokBot",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
-  "git": "7435f4d18801bd54bcb735a42543a5471b73923d",
-  "gitShort": "7435f4d",
-  "gitFull": "7435f4d18801bd54bcb735a42543a5471b73923d",
+  "signature": "GrokBot · MacMini",
+  "git": "4d7212378956b8844f73cde393d11bbfa1cf1563",
+  "gitShort": "4d72123",
+  "gitFull": "4d7212378956b8844f73cde393d11bbfa1cf1563",
   "dirty": false,
   "novedades": [
-    "Guía de continuidad del Consejo: funciones Xtore entregadas y contratos compartidos",
-    "Catálogo de demos para agentes con escenarios, pasos, comprobaciones y limpieza",
-    "Demo TPV disponible; tour general, selector y pausa/continuación especificados como pendientes",
-    "Help web, tutorial, CLI y MCP real actualizados en español e inglés"
+    "Pastilla de categoría del avatar: toca AVATAR·Admirito / HUMAN·Luna / METAHUMAN·Neo para cambiar de personalidad",
+    "Cargador del avatar (avatar.js) y ⌘ Experto (suite/experto.js) fijados a la versión 20261007-pill-1"
   ]
 }
