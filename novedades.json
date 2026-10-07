@@ -229,5 +229,11 @@
     "Catálogo de demos para agentes con escenarios, pasos, comprobaciones y limpieza",
     "Demo TPV disponible; tour general, selector y pausa/continuación especificados como pendientes",
     "Help web, tutorial, CLI y MCP real actualizados en español e inglés"
+  ],
+  "v.07.10.2026.r17.12:29": [
+    "Store: /demo 1–5 enseña locución, música, imágenes, vídeo y gestión del TPV",
+    "/demo auto encadena las cinco demos con sus fases y muestras preparadas",
+    "Pausa, reanudar, siguiente y stop controlan el ensayo local",
+    "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados"
   ]
 }

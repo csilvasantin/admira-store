@@ -1,16 +1,17 @@
 {
-  "version": "v.07.10.2026.r16.11:18",
-  "deployedAt": "2026-10-07T09:18:28Z",
-  "deployer": "GrokBot",
-  "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
+  "version": "v.07.10.2026.r17.12:29",
+  "deployedAt": "2026-10-07T10:29:24Z",
+  "deployer": "TrinityMBP16",
+  "machine": "MacBookPro16",
+  "signature": "TrinityMBP16 · MacBookPro16",
   "git": "170bdde55ee218aa5110140e71c6e456fe916d48",
   "gitShort": "170bdde",
   "gitFull": "170bdde55ee218aa5110140e71c6e456fe916d48",
   "dirty": false,
   "novedades": [
-    "El quiosco del tótem en la escena se comporta como el avatar digital: es una vista previa que no recibe toques",
-    "Al tocarlo se abre en grande, en la misma ventana que el avatar, y solo ahí se usa",
-    "Al cerrar vuelve a la vista previa y el pedido sigue donde estaba (con el reinicio por inactividad del quiosco)"
+    "Store: /demo 1–5 enseña locución, música, imágenes, vídeo y gestión del TPV",
+    "/demo auto encadena las cinco demos con sus fases y muestras preparadas",
+    "Pausa, reanudar, siguiente y stop controlan el ensayo local",
+    "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados"
   ]
 }

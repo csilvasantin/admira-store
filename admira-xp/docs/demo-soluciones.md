@@ -1,34 +1,37 @@
-# /demo · Las cinco soluciones / The five solutions
+# Store · demos locales y plataformas / Local demos and platforms
 
-## Uso / Usage
+ES: Abre ⌘ Experto y escribe `/demo help`. Los números 1–5 seleccionan las funciones de Store; los nombres de plataformas siguen abriendo otras soluciones.
 
-ES: Mismo patrón que [/demo tpv](demo-tpv.md), ampliado a las cinco soluciones para la demo de Alsea (Starbucks España y México). En el ⌘ Experto de cualquier web de la suite, `/demo` lista las cinco y `/demo <solución>` abre su demostración. Acepta el número (1…5), el nombre con o sin `admira.` y alias (`/demo yokup`, `/demo tienda`). `/demo siguiente` salta a la siguiente según la web en la que estás. Desde el avatar digital (Admirito, Luna o Neo) escribe o di «/demo store»: el avatar presenta la solución en dos frases y, al terminar de hablar, la página abre la demo. `/demo` a secas en el avatar sigue siendo el pitch de 30 s. En este gemelo, `/demo store` es `/demo tpv` y las demás soluciones abren su URL.
+EN: Open ⌘ Expert and type `/demo help`. Numbers 1–5 select Store functions; platform names still open other solutions.
 
-EN: Same pattern as [/demo tpv](demo-tpv.md), extended to the five solutions for the Alsea demo (Starbucks Spain and Mexico). In the ⌘ Expert of any suite site, `/demo` lists the five and `/demo <solution>` opens its demo. Accepts the number (1…5), the name with or without `admira.` and aliases (`/demo yokup`, `/demo tienda`). `/demo next` jumps to the next one from the current site. From the digital avatar (Admirito, Luna or Neo) type or say "/demo store": the avatar introduces the solution in two sentences and, once it finishes speaking, the page opens the demo. Bare `/demo` in the avatar is still the 30 s pitch. In this twin, `/demo store` is `/demo tpv` and the other solutions open their URL.
+| Número / Number | Comando / Command | Función / Function |
+|---|---|---|
+| 1 | `/demo locucion`, `/demo voz` | Gestión de locuciones / Voiceover management |
+| 2 | `/demo musica`, `/demo playlist` | Gestión de música / Music management |
+| 3 | `/demo imagenes`, `/demo imagen` | Gestión de imágenes / Image management |
+| 4 | `/demo video` | Gestión de vídeo / Video management |
+| 5 | `/demo caja`, `/demo venta` | Gestión del TPV / POS management |
 
-| # | /demo | Solución / Solution | Qué se enseña / What it shows | URL |
-|---|---|---|---|---|
-| 1 | `studio` | admira.studio | Contenidos con IA: locución, música, imagen, vídeo y adaptación de formatos / AI content: voiceover, music, image, video and format adaptation | https://www.admira.studio/ |
-| 2 | `store` | admira.store | Gemelo Starbucks Alsea en Matrix + `/demo tpv` / Alsea Starbucks twin in Matrix + `/demo tpv` | https://www.admira.store/admira-xp/?marca=starbucks&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&lang=es&demo=tpv#tpv |
-| 3 | `tv` | admira.tv | Starbucks Passeig de Gràcia 103 desde la calle → Matrix / street view → Matrix | https://admira.tv/adcelerate/demo/?view=human&site=starbucks |
-| 4 | `app` | admira.app · Yokup | Operación de la red: equipos, incidencias ITIL / Network operations: equipment, ITIL incidents | https://www.yokup.com/retailer?marca=starbucks |
-| 5 | `biz` | admira.biz | Comercialización y retail media / Monetisation and retail media | https://www.admira.biz/ |
+ES: `/demo auto`, `/demo todas`, `/demo todos` o `/demo all` encadenan las cinco demos sin nuevas órdenes. Cada fase muestra el guion, el caso preparado y su muestra. `/demo pausa`, `/demo reanudar`, `/demo siguiente` y `/demo stop` controlan el ensayo; `/demo estado` consulta el activo. También acepta `pause`, `resume`, `continuar`, `next` y `parar`. Detener o Escape liberan los reproductores. Son datos de demostración: no hay alta real, venta, emisión física, edición de playlist compartida ni generación de pago.
 
-## Contrato / Contract
+EN: `/demo auto`, `/demo todas`, `/demo todos` or `/demo all` chain all five demos without further commands. Each phase shows its script, prepared case and sample. `/demo pause`, `/demo resume`, `/demo next` and `/demo stop` control the rehearsal; `/demo status` reads the active one. Spanish aliases are accepted. Stop or Escape releases the players. Prepared data only: no real registration, sale, physical broadcast, shared playlist edit or paid generation.
 
-- `?demo=tpv` en esta página lanza `/demo tpv` como si se escribiera en Experto. Si la pestaña no ha recibido un gesto, espera al primer toque o tecla («Demo TPV lista · toca la pantalla para empezar») para que el navegador deje sonar la canción. El parámetro se retira de la URL al leerlo; recargar no repite la demo. / `?demo=tpv` runs `/demo tpv` as if typed in Expert; without a prior gesture it waits for the first tap or key so audio can play. The parameter is removed on read; reloading does not repeat it.
-- Catálogo / Catalogue: `admiranext.com/suite/experto.js` (`AdmiraExperto.demos()`, `.parseDemo()`); copia en `admira-xp/scripts/xtanco-visual-command.mjs` (`DEMO_SOLUTIONS`), `admiranext.com/assets/avatar.js` y `digitalavatar.ai/assets/da-context.js`. Mantener las cuatro en sync. / Keep the four copies in sync.
-- Avatar: la cara llama a `DAContext.demoAsk()` antes de preguntar y `DAContext.demoDone(answer)` tras la respuesta; manda `postMessage({type:'da-demo', id})` a la página, que lo acepta sólo de `https://digitalavatar.ai`. Sin página madre abre la URL directamente. / The face posts `da-demo` to the embedding page, accepted only from `https://digitalavatar.ai`; standalone it opens the URL itself.
-- Lo que no es una solución (`/demo tpv`, `/demo off`, `/demo estado`) sigue siendo de cada web. Sin cobros, Telegram ni escrituras MCP. / Non-solution arguments stay with each site. No payments, Telegram or MCP writes.
+## TPV nativo conservado / Native POS retained
 
-## Estado / Status
+ES: El comando exacto `/demo tpv` mantiene el recorrido nativo del muffin en Matrix. `/demo tpv estado` consulta y `/demo tpv off` o `/demo tpv stop` detienen ese recorrido explícitamente. Sin ensayo local activo, `/demo estado`, `/demo status`, `/demo off` y `/demo stop` también controlan el TPV nativo. Este recorrido nativo no admite pausa/reanudación. Una compra del gemelo conserva su cesta por pestaña, sin cobro ni conexión física; detener después de entregar el muffin no lo borra. `?demo=tpv` conserva su arranque al primer gesto.
 
-ES: Implementado y probado con tests de unidad (parseo, catálogo, navegación, mensaje del avatar). Pendiente verificar en producción tras desplegar las cuatro webs y actualizar la ayuda del servidor MCP real (`xpaceos-mcp`). Las URL de studio, tv, app y biz son las demos públicas existentes; no se ha añadido autoarranque en ellas.
+EN: The exact `/demo tpv` command retains the native muffin journey in Matrix. `/demo tpv status` reads it; `/demo tpv off` or `/demo tpv stop` explicitly stops it. Without an active local rehearsal, `/demo status`, `/demo estado`, `/demo off` and `/demo stop` also control native POS. This native journey does not support pause/resume. The twin basket remains per tab, without payment or physical connection; stopping after delivery retains its muffin. `?demo=tpv` retains first-gesture startup.
 
-EN: Implemented and unit-tested (parsing, catalogue, navigation, avatar message). Pending production verification after deploying the four sites and updating the real MCP server help (`xpaceos-mcp`). The studio, tv, app and biz URLs are existing public demos; no autostart was added there.
+## Contrato compartido / Shared contract
 
-## Subdemos de admira.studio / Studio subdemos
+- Motor / Engine: `https://www.admiranext.com/suite/experto.js`, cargado al primer comando local con una URL fresca; API `AdmiraExperto.demo(text, logDOM)` y `demoEstado()` / loaded lazily with a fresh URL.
+- Catálogo / Catalog: `https://www.admiranext.com/subdemos/store.subdemos.json`; IDs `store/voz`, `store/musica`, `store/imagenes`, `store/video`, `store/tpv`.
+- Integración / Integration: `admira-xp/scripts/store-demo-bridge.mjs` y `xtanco-visual-command.mjs`; ambos pasan por el compositor original y `__xtExec`. No se registra un segundo CLI, no se borra historial, no se cambia marca ni se envía la orden a Telegram. / Original composer and history remain; no second CLI or Telegram dispatch.
+- Salida por nombre / Named platform exit: `/demo studio`, `/demo store`, `/demo tv`, `/demo app`, `/demo biz` (y los alias del catálogo compartido). Los números nunca seleccionan una plataforma global en Store. / Numbers never select global platforms on Store.
+- Si el motor no carga, el CLI muestra un error local y permite reintentar; no declara una demo ejecutada. / Engine load failures stay local and allow retry without claiming success.
 
-ES: En admira.studio y pixeria.com (misma plataforma), `/demo 1…5` son las subdemos de Studio, no las cinco soluciones: 1 `voz`/`locucion` (crear locución), 2 `musica`, 3 `imagen`, 4 `video`, 5 `adaptar`/`formatos` (adaptar formatos). `/demo help` lista solo esas. Modo muestra por defecto: se enseña el resultado preparado sin generar ni publicar. Manifiesto: https://www.admira.studio/demo/studio.subdemos.json (copia en https://www.admiranext.com/subdemos/studio.subdemos.json); resolución = `resolverDemo` de pixeria `demo/studio-comandos.mjs`. Los nombres (`/demo store`, `/demo biz`…) siguen abriendo las otras plataformas.
+## Verificación y publicación / Verification and release
 
-EN: On admira.studio and pixeria.com, `/demo 1…5` are Studio's subdemos (voice, music, image, video, adapt formats) and `/demo help` lists only those, in sample mode.
+ES: La rama de integración se verifica con pruebas del dispatcher, carga/error del motor, conservación del TPV y previo en navegador. Producción y ayuda del servidor MCP real `xpaceos-mcp` requieren la publicación coordinada del motor y de Store. No se añade una herramienta MCP remota para lanzar demos.
+
+EN: The integration branch is checked with dispatcher, engine load/error, native POS preservation and browser preview tests. Production and the real `xpaceos-mcp` help require coordinated engine and Store publication. No remote MCP demo-launch tool is added.

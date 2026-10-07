@@ -1,3 +1,4 @@
+import {runStoreDemo,hasStoreRehearsal} from './store-demo-bridge.mjs?v=local-autopilot-1';
 import {parseScreenDisplayCommand,setScreenDisplayMode,parseScreenLayoutCommand,setScreenNumbersVisible} from './screen-display.mjs?v=number-layout-1';
 // Visual modes affect only this browser. This command has no bot, network,
 // game-state or legacy /render dependency: the public tier router owns the view.
@@ -8,8 +9,8 @@ const aliases=new Map([
   ['matrix','matrix']
 ]);
 
-// /demo de las cinco soluciones (Carlos, 7-oct-2026, demo Alsea · Starbucks). Mismo catálogo que el
-// ⌘ Experto de la suite (admiranext.com/suite/experto.js) y el avatar digital: store = /demo tpv aquí.
+// Named solutions remain global. Numbers and content names belong to the Store catalog;
+// the exact /demo tpv command and its explicit controls retain the native twin journey.
 export const DEMO_SOLUTIONS=Object.freeze([
   {id:'studio',alias:['pixeria','contenido','contenidos','creatividad'],name:'admira.studio',url:'https://www.admira.studio/',urlEn:'https://www.admira.studio/'},
   {id:'store',alias:['tienda','xpace','xpaceos','gemelo','twin'],name:'admira.store'},
@@ -17,12 +18,21 @@ export const DEMO_SOLUTIONS=Object.freeze([
   {id:'app',alias:['yokup','operaciones','itil','incidencias','retailer'],name:'admira.app · Yokup',url:'https://www.yokup.com/retailer?marca=starbucks'},
   {id:'biz',alias:['negocio','clearchannel','retailmedia','comercial'],name:'admira.biz',url:'https://www.admira.biz/'}
 ]);
-export function demoSolution(arg){const a=String(arg||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^admira\./,'');if(/^[1-5]$/.test(a))return DEMO_SOLUTIONS[+a-1];return DEMO_SOLUTIONS.find(d=>d.id===a||d.alias.includes(a))||null;}
+export function demoSolution(arg){const a=String(arg||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^admira\./,'');return DEMO_SOLUTIONS.find(d=>d.id===a||d.alias.includes(a))||null;}
 
 export function parseVisualCommand(input){
   const text=String(input||'').trim();
   const conditional=text.match(/^\/(?:ifthendothat|componer)(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(conditional){const arg=(conditional[1]||'on').trim().toLowerCase();return {conditional:['on','off','toggle','estado','status','help','ayuda','?'].includes(arg)?arg:'invalid'};}
-  const guided=text.match(/^\/demo(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(guided){const arg=(guided[1]||'').trim().toLowerCase();const solution=demoSolution(arg);if(solution)return solution.id==='store'?{guided:'tpv'}:{guided:'go',solution};return {guided:!arg||['help','ayuda','?'].includes(arg)?'help':['estado','status'].includes(arg)?'status':['off','stop','tpv off','tpv stop'].includes(arg)?'stop':arg==='tpv'?'tpv':'invalid'};}
+  const guided=text.match(/^\/demo(?:@\w+)?(?:\s+([\s\S]*))?$/i);
+  if(guided){
+    const arg=(guided[1]||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(arg==='tpv')return {guided:'tpv'};
+    if(['tpv off','tpv stop'].includes(arg))return {guided:'stop',native:true};
+    if(['tpv estado','tpv status'].includes(arg))return {guided:'status',native:true};
+    if(['off','stop'].includes(arg))return {guided:'stop'};
+    if(['estado','status'].includes(arg))return {guided:'status'};
+    return {guided:'suite',text:'/demo'+(arg?' '+arg:'')};
+  }
   if(/^\/(?:navidad|christmas)(?:\s+(?:on|off))?$/i.test(text))return {demo:/off$/i.test(text)?'linear':'christmas'};
   if(/^\/(?:sincro|sync)\s+(?:ia|ai)$/i.test(text))return {demo:'ia'};
   const labels=parseScreenLayoutCommand(text);if(labels)return labels.legacy?null:{labels};
@@ -52,10 +62,9 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
   const en=lang==='en';
   if(command.conditional){const arg=command.conditional,api=globalThis.XPLComposer;const usage=en?'Visual rules: /ifthendothat opens IF·THEN·DO THAT. Choose pick up a muffin or take it to the register, then Music, Voiceover, Image or Video, its editable Pixeria filter and content. + Add reaction allows multiple simultaneous DO actions; select one or more image/video screens and use All · clear filter for the complete catalogue. /ifthendothat off closes it.':'Reglas visuales: /ifthendothat abre IF·THEN·DO THAT. Elige coger un muffin o llevarlo a la caja y una reacción: música, locución, imagen o vídeo, su filtro editable y contenido de Pixeria. + Añadir reacción permite varios DO simultáneos; marca una o varias pantallas para imágenes/vídeos y usa Todos · quitar filtro para el catálogo completo. /ifthendothat off cierra el editor.';if(['help','ayuda','?','invalid'].includes(arg))return {ok:arg!=='invalid',local:true,message:usage};if(!api)return {ok:false,local:true,message:en?'The rule editor is still loading. Retry in a moment.':'El editor de reglas aún está cargando. Reintenta en un momento.'};if(['estado','status'].includes(arg))return {ok:true,local:true,message:usage};if(arg==='off')api.close();else if(arg==='toggle')api.toggle();else api.open();return {ok:true,local:true,message:arg==='off'?(en?'Rule editor closed.':'Editor de reglas cerrado.'):usage};}
   if(command.guided){
-    const usage=en?'Local demos: /demo tpv focuses a muffin, outlines it, carries it to the register and plays the selected Pixeria content. /demo off or Escape stops it. /demo status.':'Demos locales: /demo tpv enfoca un muffin, marca su silueta, lo lleva a la caja y reproduce el contenido elegido de Pixeria. /demo off o Escape detiene la demo. /demo estado.';
-    const solutions=(en?'\nFive solutions: ':'\nCinco soluciones: ')+DEMO_SOLUTIONS.map((d,i)=>(i+1)+' /demo '+d.id).join(' · ')+(en?' (store = /demo tpv here).':' (store = /demo tpv aquí).');
-    if(['help','invalid'].includes(command.guided))return {ok:command.guided==='help',local:true,message:usage+solutions};
-    if(command.guided==='go'){const d=command.solution,url=en&&d.urlEn?d.urlEn:d.url;globalThis.XpacePOSExperience?.demo?.stop();setTimeout(()=>{try{globalThis.location.assign(url);}catch{}},600);return {ok:true,local:true,message:'Demo '+d.name+' · '+(en?'opening ':'abriendo ')+url};}
+    if(command.guided==='suite'||(!command.native&&hasStoreRehearsal()&&['stop','status'].includes(command.guided)))
+      return runStoreDemo(command.text||('/demo '+(command.guided==='status'?'status':'stop')),{lang});
+    if(command.guided==='tpv'&&hasStoreRehearsal())await runStoreDemo('/demo stop',{lang});
     if(command.guided==='stop'){globalThis.XpacePOSExperience?.demo?.stop();return {ok:true,local:true,message:en?'Demo stopped.':'Demo detenida.'};}
     if(command.guided==='status'){const state=globalThis.XpacePOSExperience?.demo?.state();return {ok:true,local:true,message:'Demo TPV · '+({idle:en?'idle':'en reposo',focus:en?'moving to muffins':'acercándose a los muffins',outline:en?'highlighting muffin':'marcando muffin',pick:en?'picking up':'recogiendo',travel:en?'carrying to register':'llevando a caja',drop:en?'dropping':'soltando',checkout:en?'starting reaction':'preparando reacción',completed:en?'completed':'completada',error:en?'error':'error'}[state?.phase]||(en?'idle':'en reposo'))+(state?.song?' · '+(state.songTitle||''):'' )};}
     try{const outcome=await router?.choose('matrix');if(!router||outcome?.ok===false||outcome?.cancelled||router.mode!=='matrix'||router.error||router.busy)throw Error();const result=globalThis.XpacePOSExperience?.demo?.start();if(!result?.ok)return {ok:false,local:true,message:result?.error==='busy'?(en?'A demo is already running. /demo off stops it.':'Ya hay una demo en curso. /demo off la detiene.'):(en?'POS unavailable. Close /layout or geometry editing and check the POS incident.':'TPV no disponible. Cierra /layout o la edición de geometría y comprueba la incidencia del TPV.')};return {ok:true,local:true,message:en?'POS demo started · muffin to register → editable Pixeria content.':'Demo TPV iniciada · muffin a caja → contenido editable de Pixeria.'};}catch{return {ok:false,local:true,message:en?'Could not open the POS demo. Retry Matrix.':'No se pudo abrir la demo TPV. Reintenta Matrix.'};}
