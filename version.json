@@ -1,16 +1,16 @@
 {
-  "version": "v.07.10.2026.r22.13:45",
-  "deployedAt": "2026-10-07T11:46:11Z",
+  "version": "v.07.10.2026.r23.13:54",
+  "deployedAt": "2026-10-07T11:55:13Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "8a4595a3084890f07cd219be74d413f22ef2e3cf",
-  "gitShort": "8a4595a",
-  "gitFull": "8a4595a3084890f07cd219be74d413f22ef2e3cf",
+  "git": "50c26acfb0621eabfa9083d5aed880860860a7f4",
+  "gitShort": "50c26ac",
+  "gitFull": "50c26acfb0621eabfa9083d5aed880860860a7f4",
   "dirty": false,
   "novedades": [
-    "En Matrix · Starbucks (360) el iPad del mostrador enseña ya el gestor de colas con Admirito: antes seguía en verde con «iPad» porque esa vista no usaba la cola",
-    "Sin pedidos, Admirito hace gracias; con pedidos listos (también los que ya estaban) muestra número, nombre y aviso",
-    "Pulsar el iPad lo abre en grande; un vídeo o imagen de su playlist o arrastrado desde Pixeria sigue mandando"
+    "Doble clic en el iPad del mostrador abre la web de la cola en grande, como el tótem (✕, clic fuera o Escape para cerrar), en Good, Better/Best y Matrix · 360",
+    "El iPad enseña las tres fases del pedido: Recibido, En preparación y ¡Preparado!",
+    "Admirito te llama por tu nombre al pasar a Preparado; sin pedidos preparados vuelve a hacer gracias"
   ]
 }
