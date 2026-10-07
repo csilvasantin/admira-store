@@ -1,16 +1,16 @@
 {
-  "version": "v.07.10.2026.r52.22:20",
-  "deployedAt": "2026-10-07T20:21:17Z",
+  "version": "v.07.10.2026.r53.23:12",
+  "deployedAt": "2026-10-07T21:13:06Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "8f9745cb25fa2cbbcfad29135f3380ac72741e5b",
-  "gitShort": "8f9745c",
-  "gitFull": "8f9745cb25fa2cbbcfad29135f3380ac72741e5b",
+  "git": "a9be4d755a3aea4213ebefeea8b3fa69edb85e0a",
+  "gitShort": "a9be4d7",
+  "gitFull": "a9be4d755a3aea4213ebefeea8b3fa69edb85e0a",
   "dirty": false,
   "novedades": [
-    "Incidencias CLI: la ficha de admira.app se abre encima de todo, a la derecha, y se queda 3 s en «Finalizada»; el menú ☰ se pliega mientras dura",
-    "El CLI ya no borra lo que escribes mientras corre un comando largo",
-    "Informe de misión en PDF estilo NASA con la marca blanca del cliente (colores, logo y tipografía de /marca, p. ej. Starbucks) y fotos de la pantalla al abrir y al cerrar: proyecto, ubicación, pantalla (compra, garantía, fallos y MTBF del ITIL de Yokup), cronología T+, SLA, firmas y resumen por IA; por correo y a tu Telegram"
+    "/cerrar incidencia ya no dice «no hay incidencias» si se ve una: lista las abiertas del gemelo (pantalla, id, gravedad, antigüedad) y cómo cerrarlas",
+    "/cerrar incidencia INC-XXXX cierra cualquier incidencia del gemelo, también las abiertas a mano, con la ficha de admira.app y el informe por correo y Telegram",
+    "Si la lleva un técnico del portal, la CLI lo explica y enlaza su ficha"
   ]
 }
