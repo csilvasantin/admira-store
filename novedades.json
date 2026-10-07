@@ -288,5 +288,9 @@
     "Un toque en el iPad de Starbucks abre el gestor de colas (admira.tv/gestorColas)",
     "Botón visible «Abrir gestor de colas» y enlace al control de barra",
     "ITIL: el iPad starbucks-ipad-01 pasa a contenido web app"
+  ],
+  "v.07.10.2026.r29.15:31": [
+    "El recorrido Store arranca también con la barra integrada del gemelo al entrar desde /demo store.",
+    "Cargadores renovados para las demos; las visitas normales conservan su comportamiento."
   ]
 }

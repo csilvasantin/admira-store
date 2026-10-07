@@ -503,7 +503,19 @@
   // descarga. Sin data-brain: GitHub Pages no ejecuta /avatar-ask, así que las
   // preguntas van al relevo central https://www.admiranext.com/api/avatar-ask.
   // Si el cargador no llega, queda el módulo antiguo /assets/avatar-digital.js.
-  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=20261007-pill-1';
+  // También se usa antes del retorno de la barra inline del gemelo: esa rama
+  // no llega a suiteExperto(). El cargador nuevo arranca el recorrido solicitado.
+  function nativeStoreLaunch() {
+    try {
+      const location = root.location;
+      return root.self === root.top && location.protocol === 'https:' &&
+        /^(?:www\.)?(?:admira\.store|xpaceos\.com)$/.test(location.hostname) &&
+        new URLSearchParams(location.search).getAll('ax_demo').length === 1 &&
+        new URLSearchParams(location.search).get('ax_demo') === 'store';
+    } catch (_) { return false; }
+  }
+  const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=' +
+    (nativeStoreLaunch() ? '20261007-native-demo-control-1' : '20261007-pill-1');
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
