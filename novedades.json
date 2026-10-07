@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r40.19:37": [
+    "/avatar best vuelve a funcionar en Starbucks: con el quiosco en el tótem, Neo se abre en su panel flotante",
+    "Los altavoces de Starbucks emiten su locución una sola vez"
+  ],
   "v.07.10.2026.r39.19:26": [
     "Las locuciones suenan una sola vez (antes tres): Experto, PREVIOS y personas de Matrix",
     "Los altavoces de Starbucks siguen con sus dos lecturas"
