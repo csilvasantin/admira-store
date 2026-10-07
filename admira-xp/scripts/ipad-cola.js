@@ -12,6 +12,7 @@
   const GC='https://admira.tv/gestorColas',salaQ=()=>store()==='starbucks-paseo-de-gracia'?'':'&sala='+store();
   const colasUrl=()=>GC+'/pantalla/?marca=starbucks'+salaQ(),controlUrl=()=>GC+'/?marca=starbucks'+salaQ();
   let on=true;try{on=root.localStorage.getItem(KEY)!=='off';}catch(_){}
+  let down=null,last=0;const dbg=(how,e,x)=>{try{root.__ipadColaDebug={how,x,t:new Date().toISOString(),at:[e&&e.clientX,e&&e.clientY],top:(doc.elementsFromPoint(e.clientX,e.clientY)||[]).slice(0,4).map(n=>n.tagName+'.'+String(n.className).slice(0,40))};}catch(_){}};
   let data=null,nuevos=new Map(),vistos=null,modal=null;
   const active=()=>{try{return on&&(!!(root.XpaceStarbucks&&root.XpaceStarbucks.active())||!!doc.querySelector('.matrix-landscape-ipad'));}catch(_){return false;}};
   async function tic(){if(!active())return;try{const d=await (await fetch(RELAY+'/cola/estado?store='+store(),{cache:'no-store'})).json();
@@ -56,10 +57,10 @@
     M.draw=(ctx,w,h,id)=>draw(ctx,w,h,id)||(id===ID&&active()?drawCola(ctx,w,h):false);M.__cola=true;return true;}
   if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t);},500);}
   function ensure(){if(modal)return;const css=doc.createElement('style');
-    css.textContent='#ipadColaModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9500;display:none;align-items:center;justify-content:center}#ipadColaModal.on{display:flex}#ipadColaModal .wrap{position:relative;width:min(92vw,calc(88vh*4/3));aspect-ratio:4/3;border:14px solid #111;border-radius:30px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#ipadColaModal iframe{width:100%;height:100%;border:0;border-radius:16px;background:#1E3932}#ipadColaModal .bar{position:absolute;left:0;right:0;bottom:-58px;display:flex;gap:10px;justify-content:center}#ipadColaModal .bar a{background:#00704A;color:#fff;font:700 15px system-ui;padding:10px 16px;border-radius:999px;text-decoration:none}#ipadColaModal .bar a.c{background:#fff;color:#1E3932}#ipadColaChip{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:9400;display:none;background:#00704A;color:#fff;border:0;border-radius:999px;padding:9px 16px;font:700 14px system-ui;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#ipadColaChip.on{display:block}#ipadColaModal .x{position:absolute;top:-26px;right:-26px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}';
-    doc.head.appendChild(css);modal=doc.createElement('div');modal.id='ipadColaModal';modal.innerHTML='<div class="wrap"><iframe title="iPad del mostrador · gestor de colas" allow="autoplay"></iframe><button class="x" type="button" aria-label="Cerrar">✕</button><div class="bar"><a class="o" target="_blank" rel="noopener">↗ Abrir gestor de colas</a><a class="c" target="_blank" rel="noopener">🎛️ Control de barra</a></div></div>';
-    modal.addEventListener('click',e=>{if(e.target===modal||e.target.classList.contains('x'))abrir(false);});doc.body.appendChild(modal);}
-  function abrir(v){ensure();const f=modal.querySelector('iframe');if(v){modal.querySelector('.bar .o').href=colasUrl();modal.querySelector('.bar .c').href=controlUrl();f.src=colasUrl();modal.classList.add('on');}else{modal.classList.remove('on');f.src='about:blank';}}
+    css.textContent='#ipadColaModal{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(0,0,0,.6);z-index:2147483000;display:none;align-items:center;justify-content:center}#ipadColaModal.on{display:flex}#ipadColaModal::backdrop{background:transparent}.ipad-cola-hit{position:absolute;inset:0;z-index:50;pointer-events:auto;cursor:pointer;background:transparent}#ipadColaModal .wrap{position:relative;width:min(92vw,calc(88vh*4/3));aspect-ratio:4/3;border:14px solid #111;border-radius:30px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#ipadColaModal iframe{width:100%;height:100%;border:0;border-radius:16px;background:#1E3932}#ipadColaModal .bar{position:absolute;left:0;right:0;bottom:-58px;display:flex;gap:10px;justify-content:center}#ipadColaModal .bar a{background:#00704A;color:#fff;font:700 15px system-ui;padding:10px 16px;border-radius:999px;text-decoration:none}#ipadColaModal .bar a.c{background:#fff;color:#1E3932}#ipadColaChip{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:9400;display:none;background:#00704A;color:#fff;border:0;border-radius:999px;padding:9px 16px;font:700 14px system-ui;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#ipadColaChip.on{display:block}#ipadColaModal .x{position:absolute;top:-26px;right:-26px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}';
+    doc.head.appendChild(css);modal=doc.createElement('dialog');modal.id='ipadColaModal';modal.innerHTML='<div class="wrap"><iframe title="iPad del mostrador · gestor de colas" allow="autoplay"></iframe><button class="x" type="button" aria-label="Cerrar">✕</button><div class="bar"><a class="o" target="_blank" rel="noopener">↗ Abrir gestor de colas</a><a class="c" target="_blank" rel="noopener">🎛️ Control de barra</a></div></div>';
+    const cerrar=e=>{if(Date.now()-last<400)return;if(e.target===modal||e.target.classList.contains('x')){e.stopPropagation();e.preventDefault();abrir(false);}};modal.addEventListener('pointerup',cerrar);modal.addEventListener('click',cerrar);modal.addEventListener('cancel',e=>{e.preventDefault();abrir(false);});doc.body.appendChild(modal);}
+  function abrir(v){ensure();const f=modal.querySelector('iframe');if(v){modal.querySelector('.bar .o').href=colasUrl();modal.querySelector('.bar .c').href=controlUrl();f.src=colasUrl();modal.classList.add('on');try{if(!modal.open)modal.showModal();}catch(_){}}else{modal.classList.remove('on');try{if(modal.open)modal.close();}catch(_){}f.src='about:blank';}}
   // Pulsar el iPad en la escena (clic sin arrastre, fuera de /layout) lo abre en grande.
   const inQuad=(x,y,q)=>{let s=0;for(let i=0;i<4;i++){const a=q[i],b=q[(i+1)%4],c=(b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0]);if(c!==0){if(s&&Math.sign(c)!==s)return false;s=Math.sign(c);}}return true;};
   function hit(e){const cv=doc.getElementById('c');if(!cv||!active())return false;const q=root.XpaceStarbucks.screenQuads&&root.XpaceStarbucks.screenQuads[ID];if(!q)return false;
@@ -71,7 +72,7 @@
   // Hit-test POR COORDENADAS (no por e.target): en Matrix el panorama captura el puntero y en Good/3D
   // hay capas encima del canvas, así que el destino del evento casi nunca es el iPad (r30, Carlos 7-oct).
   function esIpad(e){const x=e.clientX,y=e.clientY;let els=[];try{els=doc.elementsFromPoint(x,y)||[];}catch(_){}
-    if(els[0]&&els[0].closest&&els[0].closest('nav,button,a,input,textarea,select,#xpace-side-left,#xpace-side-right,#telegramDock,#ipadColaChip,[role=dialog]'))return false;
+    if(els[0]&&els[0].closest&&els[0].closest('nav,button,a,input,textarea,select,#ipadColaChip,#ipadColaModal'))return false;
     if(els.some(n=>n.closest&&n.closest('.matrix-landscape-ipad')))return true;
     for(const n of doc.querySelectorAll('.matrix-landscape-ipad')){const r=n.getBoundingClientRect();if(r.width&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&els.some(el=>el===n.parentElement||(el.contains&&el.contains(n))||(n.parentElement&&n.parentElement.contains(el))))return true;}
     const cv=doc.getElementById('c');if(cv&&els.includes(cv)&&hit(e))return true;
@@ -80,7 +81,7 @@
     return false;}
   doc.addEventListener('dblclick',e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on')))return;if(esIpad(e)){e.stopPropagation();e.preventDefault();abrir(true);}},true);
   // Un toque/clic (sin arrastre) basta: Carlos pulsa una vez en el iPad, no hace doble clic.
-  let down=null,last=0;const tap=e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on'))||Date.now()-last<600)return;const d=down;if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>8||Date.now()-d.t>700)return;if(esIpad(e)){last=Date.now();down=null;if(e.type==="click"){e.stopPropagation();e.preventDefault();}abrir(true);}};
+  const tap=e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on'))||Date.now()-last<600)return;const d=down;if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>8||Date.now()-d.t>700)return;const ok=esIpad(e);if(e.type==='pointerup')dbg(ok?'tap-open':'tap-miss',e);if(ok){last=Date.now();down=null;if(e.type==="click"){e.stopPropagation();e.preventDefault();}abrir(true);}};
   root.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,t:Date.now()};},true);
   root.addEventListener('pointerup',tap,true);root.addEventListener('click',e=>{if(Date.now()-last<600){e.stopPropagation();e.preventDefault();return;}tap(e);},true);
   // Botón visible «Abrir gestor de colas» mientras el gemelo Starbucks está en escena.
@@ -95,12 +96,13 @@
     nodes.forEach(node=>{
       let fr=node.querySelector('iframe.ipad-cola-frame');
       const otro=[...node.querySelectorAll('.matrix-player-media')].some(m=>m!==fr&&((m.tagName==='VIDEO'&&(m.currentSrc||m.getAttribute('src')))||m.tagName==='IMG'||(m.tagName==='IFRAME'&&!m.classList.contains('ipad-cola-frame'))));
-      if(!on||otro){ if(fr){fr.remove();node.classList.remove('ipad-cola-on');} return; }
+      if(!on||otro){ if(fr){fr.remove();node.classList.remove('ipad-cola-on');} const hh=node.querySelector('.ipad-cola-hit');if(hh&&!on)hh.remove(); return; }
       if(!fr){ fr=doc.createElement('iframe');fr.className='ipad-cola-frame';fr.title='iPad del mostrador · gestor de colas';fr.setAttribute('tabindex','-1');fr.setAttribute('aria-hidden','true');
         fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#1E3932;pointer-events:none;z-index:1';
         fr.src=pageUrl()+'&escena=1&v=ipad-idle-20261007';node.prepend(fr);node.classList.add('ipad-cola-on');
          }
       node.style.pointerEvents=(doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))?'':'auto';node.style.cursor='pointer';
+      if(on&&!node.querySelector('.ipad-cola-hit')){const h=doc.createElement('div');h.className='ipad-cola-hit';h.title='Toca para abrir el gestor de colas';const go=e=>{if(enLayout())return;e.stopPropagation();e.preventDefault();if(Date.now()-last<600)return;last=Date.now();dbg('matrix-overlay',e);abrir(true);};h.addEventListener('pointerdown',e=>e.stopPropagation());h.addEventListener('pointerup',go);h.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();});node.appendChild(h);}
       const idle=node.querySelector('.matrix-ipad-idle');if(idle)idle.style.display='none';
     });
     try{root.__ipadColaMatrix=nodes.length;}catch(_){}
