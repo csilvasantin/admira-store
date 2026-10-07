@@ -1,12 +1,12 @@
 {
-  "version": "v.07.10.2026.r18.13:01",
-  "deployedAt": "2026-10-07T11:01:27Z",
+  "version": "v.07.10.2026.r19.13:02",
+  "deployedAt": "2026-10-07T11:02:20Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "58020aae12edcba71beb6b459e8d93f64c4e1998",
-  "gitShort": "58020aa",
-  "gitFull": "58020aae12edcba71beb6b459e8d93f64c4e1998",
+  "git": "9a7f68b457f5d38a249ce12db3465356f0acd92a",
+  "gitShort": "9a7f68b",
+  "gitFull": "9a7f68b457f5d38a249ce12db3465356f0acd92a",
   "dirty": false,
   "novedades": [
     "El iPad del mostrador de Starbucks (starbucks-ipad-01) enseña el gestor de colas: Admirito, «¡Listo!» con nombres y «En preparación», adaptado a su formato horizontal",
