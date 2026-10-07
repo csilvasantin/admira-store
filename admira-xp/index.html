@@ -31987,7 +31987,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=xtore-ux-3');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=demo-soluciones-1');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -33785,6 +33785,28 @@ window.xtAPI = (function(){
     composer.addEventListener('blur',function(){ if(!composer.value.length&&_cliPane) _cliPane.classList.remove('typing'); });
   }
 
+
+  // ?demo=tpv (Carlos, 7-oct-2026, demo Alsea): «/demo store» del ⌘ Experto de la suite y del avatar
+  // digital abre esta URL; aquí se lanza /demo tpv igual que escrito en Experto. Si la pestaña aún no
+  // ha recibido un gesto, espera al primer toque (el navegador bloquearía la canción). Ver docs/demo-tpv.md.
+  (function demoFromUrl(){
+    let want='';try{want=String(new URLSearchParams(location.search).get('demo')||'').toLowerCase();}catch{}
+    if(want!=='tpv')return;
+    try{const u=new URL(location.href);u.searchParams.delete('demo');history.replaceState(history.state,'',u.href);}catch{}
+    const en=()=>typeof lang!=='undefined'&&lang==='en';
+    const ready=()=>!!(window.__xtancoVisualTiers&&window.XpacePOSExperience?.demo);
+    let started=false;
+    const run=async()=>{
+      if(started)return;started=true;
+      for(let i=0;i<60&&!ready();i++)await new Promise(r=>setTimeout(r,500));
+      const v=await executeLocalVisualCommand('/demo tpv');
+      if(v)showLastResponse(v.message,v.ok?'ok':'err','local-visual');
+    };
+    if(navigator.userActivation?.hasBeenActive){void run();return;}
+    const go=()=>{window.removeEventListener('pointerdown',go,true);window.removeEventListener('keydown',go,true);void run();};
+    window.addEventListener('pointerdown',go,true);window.addEventListener('keydown',go,true);
+    setTimeout(()=>{if(!started)showLastResponse(en()?'POS demo ready · tap the screen to start':'Demo TPV lista · toca la pantalla para empezar','ok','local-visual');},2500);
+  })();
   setInterval(pollTelegramCommands,2500);
   setInterval(monitorGameForTelegram,3000);
   setInterval(refreshBridgeStatus,4000);

@@ -6,6 +6,8 @@ ES: En Experto, /demo muestra la ayuda y /demo tpv abre Matrix Starbucks Alsea e
 
 EN: In Expert, /demo shows help and /demo tpv opens Starbucks Alsea Matrix and starts a guided demo: the camera moves towards the muffins, outlines one, picks it up, carries it to the register beside the teddy bear and adds one unit to the existing basket. The song and its trigger are editable with /ifthendothat; by default, pickup plays Bad Times Deep House, Stock 1308. Expert hides so you can watch; reopen it with ⌘. Stop demo, Escape or /demo off cancels the journey and stops its song; /demo status reports the phase. A second command cannot overlap a running demo. Cancelling before the register adds no products; stopping afterwards retains the added muffin. The song uses a local player and temporarily lowers background music, which recovers its volume when stopped or finished; its playlist and current track are retained. Repeating a completed demo adds another muffin. Blocked audio reports an error so you can retry. /layout, geometry editing or a powered-off POS prevent the demo. These are digital twin actions with no payment or physical connection; they are not sent to Telegram and do not write shared MCP state. Bad Day was absent from the checked catalog; this version uses the available Bad Times Deep House track.
 
+ES: `/demo store` (y `?demo=tpv` en la URL) lanza esta misma demo; `/demo` lista además las cinco soluciones: ver [demo-soluciones.md](demo-soluciones.md). EN: `/demo store` (and `?demo=tpv`) runs this same demo; `/demo` also lists the five solutions.
+
 [Starbucks TPV](https://www.admira.store/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&lang=es#tpv)
 
 ## Contrato / Contract

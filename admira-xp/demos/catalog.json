@@ -28,7 +28,13 @@
       "/demo estado",
       "/demo status",
       "/demo off",
-      "/demo tpv off"
+      "/demo tpv off",
+      "/demo store",
+      "/demo studio",
+      "/demo tv",
+      "/demo app",
+      "/demo biz",
+      "/demo 1"
     ],
     "api": "window.XpacePOSExperience.demo.start/stop/state",
     "phases": [
@@ -43,7 +49,8 @@
       "error"
     ],
     "nominal_drop_ms": 6400,
-    "remote_mcp_launch_tool": false
+    "remote_mcp_launch_tool": false,
+    "url_autostart": "?demo=tpv (first gesture if the tab has none)"
   },
   "proposed_general_tour": {
     "status": "pending",
@@ -635,5 +642,6 @@
         "Preference changes locally; do not force day advancement in tour"
       ]
     }
-  ]
+  ],
+  "solutions_guide": "https://www.admira.store/admira-xp/docs/demo-soluciones.md"
 }
