@@ -1,15 +1,16 @@
 {
   "version": "v.07.10.2026.r14.10:21",
-  "deployedAt": "2026-10-07T07:28:02Z",
+  "deployedAt": "2026-10-07T08:22:08Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "4d7212378956b8844f73cde393d11bbfa1cf1563",
-  "gitShort": "4d72123",
-  "gitFull": "4d7212378956b8844f73cde393d11bbfa1cf1563",
+  "git": "8a71be34e8ae0ee7f37da801a7e27b13e8284af6",
+  "gitShort": "8a71be3",
+  "gitFull": "8a71be34e8ae0ee7f37da801a7e27b13e8284af6",
   "dirty": false,
   "novedades": [
-    "Pastilla de categoría del avatar: toca AVATAR·Admirito / HUMAN·Luna / METAHUMAN·Neo para cambiar de personalidad",
-    "Cargador del avatar (avatar.js) y ⌘ Experto (suite/experto.js) fijados a la versión 20261007-pill-1"
+    "Tótem con voz: cuando el quiosco o un script Admingo de ainimation.studio pide hablar, el avatar del tótem lo dice en castellano de España",
+    "Solo se aceptan mensajes de ainimation.studio; el gemelo responde con un acuse y, si no lo hay, el quiosco habla con la voz del navegador",
+    "ainimation.studio entra en el registro de la Galaxia con sus 17 herramientas MCP"
   ]
 }
