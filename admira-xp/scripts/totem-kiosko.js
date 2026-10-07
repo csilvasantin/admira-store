@@ -79,10 +79,33 @@
     if(a==='luna'||a==='avatar'){ remember(false); unpin(); announce(); try{ if(typeof setAvatar3dTotem==='function'&&setAvatar3dTotem(true)){ try{emitTotemNow(true);}catch(_){} return {ok:true,message:'🧑‍💻 Luna / Avatar 3D en el tótem.'}; } }catch(_){} return {ok:false,message:'Avatar3D no disponible.'}; }
     if(head==='admiratv'||head==='tv'){ remember(false); unpin(); announce(); try{ return setAdmiraTvCommand(parts.slice(1).join(' ')||'on'); }catch(_){ return {ok:false,message:'admira.tv no disponible.'}; } }
     if(a==='pedidos'||a==='orders'){ panel(true); return {ok:true,message:orders.length+(en()?' orders':' pedidos')}; }
-    return {ok:false,message:'/totem on|off · /totem kiosko · /totem url <https> · /totem luna · /totem admiratv · /totem pedidos'};
+    if(a==='reset'||a==='reiniciar'||a==='cero'){ colaReset(); return {ok:true,message:en()?'↺ Queue reset: open orders closed; Admirito goes back to his demo.':'↺ Cola a cero: pedidos abiertos cerrados; Admirito vuelve a su demo.'}; }
+    if(head==='audio'||head==='voz'||head==='avisos'){ const v=(parts[1]||'toggle').toLowerCase(), on=/^(on|si|sí|1|activar|unmute)$/.test(v)?true:/^(off|no|0|parar|mute|silencio)$/.test(v)?false:!colaAudioOn(); setColaAudio(on); return {ok:true,message:on?(en()?'🔊 Queue announcements ON':'🔊 Avisos de la cola activados'):(en()?'🔇 Queue announcements OFF':'🔇 Avisos de la cola parados')}; }
+    if(a==='menu'||a==='menú'||a==='atajos'){ try{ atajosWin&&atajosWin.open(); }catch(_){} tocado=true; return {ok:true,message:en()?'Queue shortcuts shown.':'Atajos de colas a la vista.'}; }
+    return {ok:false,message:'/totem on|off · /totem kiosko · /totem url <https> · /totem luna · /totem admiratv · /totem pedidos · /totem reset · /totem audio on|off · /totem menu'};
   }
   // ── panel «Pedidos · TPV» ─────────────────────────────────────────────
-  let box=null, btn=null, modal=null, tbtn=null;
+  let box=null, btn=null, modal=null, tbtn=null, atajos=null, atajosWin=null, boxWin=null;
+  // Audios de la gestión de colas (Carlos, 7-oct-2026): se pueden parar y volver a activar por si molestan.
+  // Afecta a los avisos de pedido listo y a lo que el quiosco pide decir en el gemelo, y a la pantalla del
+  // iPad abierta en grande (se le pasa &voz=0). Se recuerda en este navegador. /totem audio on|off.
+  const AUDIO_KEY='xpace:cola-audio';
+  function colaAudioOn(){ try{ return window.localStorage.getItem(AUDIO_KEY)!=='off'; }catch(_){ return true; } }
+  function setColaAudio(on){ on=!!on; try{ if(on) window.localStorage.removeItem(AUDIO_KEY); else window.localStorage.setItem(AUDIO_KEY,'off'); }catch(_){}
+    if(!on){ try{ if(vozAudio) vozAudio.pause(); }catch(_){} try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){} colaPend.length=0; }
+    render(); toast(on?(en()?'🔊 Queue announcements ON':'🔊 Avisos de la cola activados'):(en()?'🔇 Queue announcements OFF':'🔇 Avisos de la cola parados'));
+    try{ window.dispatchEvent(new CustomEvent('xpace:cola-audio',{detail:{on:on}})); }catch(_){} return on; }
+  // Reset de la demo: cierra (recogido) todos los pedidos abiertos de la cola del quiosco y vacía la lista
+  // local; con la cola a cero el iPad vuelve solo a Admirito haciendo su demo. La numeración no vuelve a A001
+  // (eso exige la clave de servicio del relé, que no vive en el navegador).
+  async function colaReset(){ const st=colaStore()||'starbucks-paseo-de-gracia'; let n=0;
+    try{ const d=await (await fetch(COLA_RELAY+'/cola/estado?store='+encodeURIComponent(st),{cache:'no-store'})).json();
+      const todos=[].concat(d.recibido||[],d.preparando||[],d.listo||[]);
+      await Promise.all(todos.map(p=>fetch(COLA_RELAY+'/cola/avanzar?store='+encodeURIComponent(st),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:p.id,numero:p.numero,a:'recogido'})}).then(r=>{ if(r.ok) n++; }).catch(()=>{})));
+    }catch(_){}
+    orders.length=0; colaPend.length=0; try{ window.speechSynthesis&&window.speechSynthesis.cancel(); if(vozAudio) vozAudio.pause(); }catch(_){}
+    render(); toast(en()?'↺ Queue reset · '+n+' orders closed':'↺ Cola a cero · '+n+' pedidos cerrados');
+    try{ window.dispatchEvent(new CustomEvent('xpace:cola-reset',{detail:{store:st,cerrados:n}})); }catch(_){} return n; }
   // Presentación Alsea (Carlos, 7-oct-2026): los botones flotantes del tótem («🛒 Kiosk/Quiosco» y «👆 Tocar el tótem»)
   // no salen por defecto; aparecen cuando ya se ha interactuado con el tótem (toque en escena, abrirlo en grande o /totem).
   let tocado=false;
@@ -94,23 +117,39 @@
   function ensure(){
     if(box) return;
     const css=document.createElement('style');
-    css.textContent='#kioskOrders{position:fixed;right:14px;bottom:86px;width:300px;max-height:46vh;overflow:auto;background:#0f1f1a;color:#f2f5f3;border:2px solid #00a862;border-radius:14px;font:13px/1.35 Inter,system-ui,sans-serif;z-index:9000;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}#kioskOrders.on{display:block}#kioskOrders h4{margin:0;padding:10px 12px;background:#00704a;font-size:14px;display:flex;justify-content:space-between;align-items:center}#kioskOrders h4 small{font-weight:600;opacity:.85}#kioskOrders .o{padding:9px 12px;border-bottom:1px solid #2f4a40}#kioskOrders .o b{font-size:20px;color:#d4b072}#kioskOrders .o i{font-style:normal;float:right;font-size:11px;padding:2px 7px;border-radius:99px;background:#2e5248}#kioskOrders .o i.paid{background:#2f7d4f}#kioskOrders .empty{padding:12px;opacity:.7}#kioskModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9500;display:none;align-items:center;justify-content:center}#kioskModal.on{display:flex}#kioskModal .wrap{position:relative;height:92vh;aspect-ratio:9/16}#kioskModal iframe{width:100%;height:100%;border:0;border-radius:18px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#kioskModal .x{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}#kioskTouch{position:fixed;right:150px;bottom:40px;z-index:9000;background:#d4b072;color:#1e1a12;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;display:none}#kioskBtn{display:none;position:fixed;right:14px;bottom:40px;z-index:9000;background:#00704a;color:#fff;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}';
+    css.textContent='#kioskOrders{position:fixed;right:14px;bottom:86px;width:300px;max-height:46vh;overflow:auto;background:#0f1f1a;color:#f2f5f3;border:2px solid #00a862;border-radius:14px;font:13px/1.35 Inter,system-ui,sans-serif;z-index:9000;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}#kioskOrders.on{display:block}#kioskOrders h4{margin:0;padding:10px 12px;background:#00704a;font-size:14px;display:flex;justify-content:space-between;align-items:center}#kioskOrders h4 small{font-weight:600;opacity:.85}#kioskOrders h4{gap:6px;cursor:move}#kioskOrders h4 .kt{flex:1}#kioskOrders h4 button{font:700 11px Inter,system-ui,sans-serif;border:0;border-radius:99px;padding:3px 8px;cursor:pointer;background:#ffffff26;color:#fff}#kioskOrders h4 button:hover{background:#ffffff44}#kioskOrders h4 .xp-floating-close{background:transparent;font-size:16px;padding:0 4px}#colaAtajos{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:9400;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:0 8px 8px;background:#0f1f1af2;border:1px solid #00a862;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);font:13px Inter,system-ui,sans-serif;color:#f2f5f3}#colaAtajos.vacio,#colaAtajos[hidden]{display:none}#colaAtajos .xp-floating-header{flex:1 0 100%}#colaAtajos>button:not(.xp-floating-close){position:static;transform:none;box-shadow:none}#kioskOrders .o{padding:9px 12px;border-bottom:1px solid #2f4a40}#kioskOrders .o b{font-size:20px;color:#d4b072}#kioskOrders .o i{font-style:normal;float:right;font-size:11px;padding:2px 7px;border-radius:99px;background:#2e5248}#kioskOrders .o i.paid{background:#2f7d4f}#kioskOrders .empty{padding:12px;opacity:.7}#kioskModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9500;display:none;align-items:center;justify-content:center}#kioskModal.on{display:flex}#kioskModal .wrap{position:relative;height:92vh;aspect-ratio:9/16}#kioskModal iframe{width:100%;height:100%;border:0;border-radius:18px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#kioskModal .x{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}#kioskTouch{position:fixed;right:150px;bottom:40px;z-index:9000;background:#d4b072;color:#1e1a12;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;display:none}#kioskBtn{display:none;position:fixed;right:14px;bottom:40px;z-index:9000;background:#00704a;color:#fff;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}';
     document.head.appendChild(css);
-    box=document.createElement('div'); box.id='kioskOrders'; box.setAttribute('aria-live','polite'); document.body.appendChild(box);
+    box=document.createElement('div'); box.id='kioskOrders'; document.body.appendChild(box);
+    box.innerHTML='<h4><span class="kt"></span><small>DEMO</small><button class="kr" type="button"></button><button class="ka" type="button"></button></h4><div class="kb" aria-live="polite"></div>';
+    box.querySelector('.kr').addEventListener('click',e=>{ e.stopPropagation(); colaReset(); });
+    box.querySelector('.ka').addEventListener('click',e=>{ e.stopPropagation(); setColaAudio(!colaAudioOn()); });
+    // Barra de atajos («Abrir gestor de colas», «Quiosco», «Tocar el tótem»): una ventana como las demás.
+    atajos=document.createElement('div'); atajos.id='colaAtajos'; atajos.className='vacio'; document.body.appendChild(atajos);
+    window.XpaceColaAtajos={host:atajos};
     btn=document.createElement('button'); btn.id='kioskBtn'; btn.type='button';
     btn.addEventListener('click',()=>{ const r=kioskOn()?totemCommand('off'):totemCommand('kiosko'); if(r&&!r.ok) toast(r.message); });
-    document.body.appendChild(btn);
+    atajos.appendChild(btn);
     modal=document.createElement('div'); modal.id='kioskModal'; modal.innerHTML='<div class="wrap"><iframe title="Quiosco · tótem" allow="autoplay; fullscreen"></iframe><button class="x" type="button" aria-label="Cerrar">✕</button></div>';
     modal.addEventListener('click',e=>{ if(e.target===modal||e.target.classList.contains('x')) touch(false); });
     document.body.appendChild(modal);
-    tbtn=document.createElement('button'); tbtn.id='kioskTouch'; tbtn.type='button'; tbtn.addEventListener('click',()=>touch(true)); document.body.appendChild(tbtn);
+    tbtn=document.createElement('button'); tbtn.id='kioskTouch'; tbtn.type='button'; tbtn.addEventListener('click',()=>touch(true)); atajos.appendChild(tbtn);
     render();
+    // Movibles, redimensionables y con cierre, como el resto de ventanas del gemelo (y en el menú Ventanas).
+    import('./floating-panels.mjs?v=windows-menu-1').then(F=>{
+      boxWin=F.attachFloatingPanel(box,{label:en()?'Orders · POS':'Pedidos · TPV',handle:box.querySelector('h4'),key:'kiosk-orders',menu:'kiosk-orders',onClose:()=>panel(false),onOpen:()=>panel(true)});
+      atajosWin=F.attachFloatingPanel(atajos,{label:en()?'Queues · Kiosk':'Colas · Quiosco',key:'cola-atajos',menu:'cola-atajos'});
+    }).catch(()=>{});
   }
   function render(){
     if(!box) return;
     tbtn.textContent=en()?'👆 Touch the totem':'👆 Tocar el tótem'; tbtn.style.display=(kioskOn()&&tocado)?'block':'none';
     btn.textContent=kioskOn()?(en()?'🛒 Kiosk · off':'🛒 Quiosco · quitar'):(en()?'🛒 Kiosk':'🛒 Quiosco');
-    box.innerHTML='<h4>'+(en()?'Orders · POS':'Pedidos · TPV')+' <small>DEMO</small></h4>'+(orders.length?orders.slice().reverse().map(o=>{
+    box.querySelector('.kt').textContent=en()?'Orders · POS':'Pedidos · TPV';
+    const kr=box.querySelector('.kr'),ka=box.querySelector('.ka'),audio=colaAudioOn();
+    kr.textContent='↺ Reset'; kr.title=en()?'Reset the kiosk queue to zero (Admirito goes back to his demo)':'Dejar a cero la cola del quiosco (Admirito vuelve a su demo)';
+    ka.textContent=audio?'🔊':'🔇'; ka.title=audio?(en()?'Stop the queue announcements':'Parar los avisos de la cola'):(en()?'Turn the queue announcements on':'Activar los avisos de la cola'); ka.setAttribute('aria-pressed',String(audio));
+    if(atajos) atajos.classList.toggle('vacio',![].some.call(atajos.querySelectorAll('#kioskBtn,#kioskTouch,#ipadColaChip'),b=>b.id==='ipadColaChip'?b.classList.contains('on'):b.style.display==='block'));
+    box.querySelector('.kb').innerHTML=(orders.length?orders.slice().reverse().map(o=>{
       const paid=o.status==='paid-simulated';
       return '<div class="o"><i class="'+(paid?'paid':'')+'">'+(paid?(en()?'paid (sim.)':'pagado (sim.)'):(en()?'pay at counter':'paga en barra'))+'</i><b>'+esc(o.number||'—')+'</b> · '+esc(fmt(o.total,o.currency))+'<br>'+(o.lines||[]).map(l=>esc(l.qty+'× '+l.name+(l.options&&l.options.length?' ('+l.options.join(', ')+')':''))).join('<br>')+'</div>';
     }).join(''):'<div class="empty">'+(en()?'No orders yet. Touch the totem to order.':'Sin pedidos. Toca el tótem para pedir.')+'</div>');
@@ -136,6 +175,7 @@
     let muted=false; try{ muted=(typeof homeMusicMuted!=='undefined')&&homeMusicMuted; }catch(_){}
     // /audio mute manda sobre todo, también sobre la cara viva (Carlos, 7-oct-2026).
     if(window.dsMasterMute) return {spoken:false,via:'muted'};
+    if(!colaAudioOn()) return {spoken:false,via:'cola-audio-off'};
     // 1) la cara viva (MetaHuman en pared/panel): la misma ruta que las respuestas del avatar
     let face=false; try{ face=!!(window.MH_FACE_ENABLED||((typeof metahumanWallOn==='function')&&metahumanWallOn())); }catch(_){}
     if(face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
@@ -203,5 +243,5 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   window.totemKioskCommand=function(a){ tocado=true; return totemCommand(a); }; // /totem tecleado = interacción
   window.XpaceTotem={on:stored,url:()=>storedUrl()||kioskUrl(),kioskUrl:kioskUrl,set:setTotem,formato:formatoDe,key:MODE_KEY};
-  window.XpaceTotemKiosk={touched:()=>tocado,cola:()=>window.__gemeloColaAvisos.slice(),colaTexto:colaTexto,say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
+  window.XpaceTotemKiosk={touched:()=>tocado,reset:colaReset,audio:colaAudioOn,setAudio:setColaAudio,cola:()=>window.__gemeloColaAvisos.slice(),colaTexto:colaTexto,say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
 })();
