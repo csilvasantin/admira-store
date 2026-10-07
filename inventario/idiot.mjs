@@ -3,6 +3,8 @@
 // El prefijo agrupa: «Starbucks_» es el proyecto, «Starbucks_PaseodeGracia_103_» el Xpacio. El nombre se GUARDA en la
 // ficha del Xpacio (surfaces[i].idIoT · iot[]): lo guardado manda y lo nuevo se deriva hasta que se guarda.
 // Módulo puro: lo usan el CLI del gemelo (/inventario idIoT) y cualquier agente que lo importe.
+// OJO: el worker del catálogo (csilvasantin/omnipublicity-api, src/idiot.js) lleva una COPIA para nombrar en el alta.
+// Si cambias la regla aquí, regenérala allí (node tools/sync-idiot.mjs <ruta a xpaceos>) y despliega.
 const plain=s=>String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const fold=s=>plain(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 /** Un tramo del nombre: sin tildes, sin espacios ni signos, primera letra en mayúscula («Paseo de Gracia» → PaseodeGracia). */

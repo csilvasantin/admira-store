@@ -1,9 +1,9 @@
 {
-  "version": "v.07.10.2026.r49.21:36",
+  "version": "v.07.10.2026.r50.21:37",
   "deployedAt": "2026-10-07T19:36:59Z",
-  "deployer": "GrokBot",
-  "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
+  "deployer": "NeoMBP16",
+  "machine": "MacBookPro16",
+  "signature": "NeoMBP16 · MacBookPro16",
   "git": "b4a2861b73277ecb3661b264b59dfe338b04a6bb",
   "gitShort": "b4a2861",
   "gitFull": "b4a2861b73277ecb3661b264b59dfe338b04a6bb",
