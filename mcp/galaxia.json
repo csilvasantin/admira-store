@@ -230,6 +230,45 @@
         "deck_id",
         "audience_url"
       ]
+    },
+    {
+      "id": "ainimation",
+      "name": "AInimation Studio",
+      "verb": "crear_interactivos",
+      "endpoint": "https://mcp-ainimation.admira.store/mcp",
+      "health": "https://mcp-ainimation.admira.store/salud",
+      "auth": "lectura abierta; xperiencia_publicar con clave de flota",
+      "tools": [
+        "quien_soy",
+        "sitio_estado",
+        "xperiencias_listar",
+        "xperiencia_detalle",
+        "xperiencia_canal_item",
+        "stock_animaciones",
+        "xperiencia_publicar",
+        "listar_xperiencias",
+        "plantillas",
+        "crear_proyecto",
+        "validar_admingo",
+        "compilar_admingo",
+        "publicar_xperiencia",
+        "menu_validar",
+        "enviar_a_admiratv",
+        "fijar_en_totem",
+        "marca_aplicar"
+      ],
+      "accepts": [
+        "asset_id",
+        "marca"
+      ],
+      "hands_off": [
+        "xperiencia_slug",
+        "url",
+        "playlist_item",
+        "totem_command"
+      ],
+      "docs": "https://www.ainimation.studio/mcp/",
+      "help": "https://www.ainimation.studio/help/#ecosistema"
     }
   ],
   "hubs": [
