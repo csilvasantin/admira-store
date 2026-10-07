@@ -1,15 +1,16 @@
 {
-  "version": "v.07.10.2026.r46.21:05",
-  "deployedAt": "2026-10-07T19:05:31Z",
+  "version": "v.07.10.2026.r47.21:19",
+  "deployedAt": "2026-10-07T19:19:33Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "cbf008cd342d92a3237ead276ce761d516d24a42",
-  "gitShort": "cbf008c",
-  "gitFull": "cbf008cd342d92a3237ead276ce761d516d24a42",
+  "git": "edf9c4080f5213e26353aad0e6ceec7f4edf0500",
+  "gitShort": "edf9c40",
+  "gitFull": "edf9c4080f5213e26353aad0e6ceec7f4edf0500",
   "dirty": false,
   "novedades": [
-    "Modo experto: /crear incidencia abre una incidencia demo en una pantalla vertical del lineal elegida al azar, con un motivo técnico o circunstancial realista",
-    "/cerrar incidencia va a la pantalla, pulsa el ticket, la finaliza en la ficha de admira.app con una nota acorde y envía el informe PDF a csilvasantin@gmail.com"
+    "Experto → Avatar3D: «Opciones del avatar» pasa a ser tres interruptores con estado ON/OFF: Good · Admirito, Better · Luna y Best · Neo; uno a la vez en el tótem",
+    "Encender uno quita el quiosco del tótem y enseña ese avatar; apagar el activo deja el tótem sin avatar (/totem on vuelve al quiosco)",
+    "CLI: /avatar good|better|best on|off, y a secas alternan; /help los lista en «Avatar de la escena · tótem»"
   ]
 }
