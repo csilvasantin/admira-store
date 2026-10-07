@@ -1,14 +1,16 @@
 {
-  "version": "v.07.10.2026.r34.16:36",
-  "deployedAt": "2026-10-07T14:37:07Z",
+  "version": "v.07.10.2026.r42.20:01",
+  "deployedAt": "2026-10-07T18:01:36Z",
   "deployer": "GrokBot",
-  "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
-  "git": "397ad12517e3ed545988d90cdfc021bac4146ebc",
-  "gitShort": "397ad12",
-  "gitFull": "397ad12517e3ed545988d90cdfc021bac4146ebc",
+  "machine": "MacBookPro16",
+  "signature": "GrokBot · MacBookPro16",
+  "git": "dbac33be068404064cc205eb121b5b6d73baf5a6",
+  "gitShort": "dbac33b",
+  "gitFull": "dbac33be068404064cc205eb121b5b6d73baf5a6",
   "dirty": false,
   "novedades": [
-    "Arreglo: los avisos del gemelo vuelven a sonar con la voz «Santiago» (y con la voz del navegador si ElevenLabs falla)"
+    "Gemelo Starbucks: una incidencia abierta ya se puede cerrar desde la pantalla (✓ Cerrar incidencia) con nota de resolución",
+    "Al cerrarla la pantalla vuelve a OK y el estado muestra quién la cerró, cuándo y la nota",
+    "El cierre se refleja también en Yokup / admira.app (Mi comercio y ficha)"
   ]
 }
