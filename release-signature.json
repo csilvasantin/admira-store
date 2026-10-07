@@ -1,6 +1,6 @@
 {
-  "version": "v.07.10.2026.r27.15:21",
-  "deployer": "OraculoMacMini",
+  "version": "v.07.10.2026.r28.15:27",
+  "deployer": "GrokBot",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini"
+  "signature": "GrokBot · MacMini"
 }

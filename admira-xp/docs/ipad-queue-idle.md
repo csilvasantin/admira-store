@@ -23,3 +23,9 @@ With no Received, Preparing or Ready orders, Admirito fills the iPad screen. Any
 ## handON · 2026-10-07
 
 Recovered current Store main with native Store walkthrough, local demos, kiosk messages, three-phase queue and mug project association. Portable Agora handoff is historical; current repository and live queue page were inspected. Initial defect confirmed in the public page: empty columns consumed 595 of 1280 px and avatar used kiosk console. This change supplies full-screen idle mode in both rendering paths.
+
+## Tocar el iPad / Tap the iPad
+
+ES: Un solo toque en el iPad (o el botón 🧾 Abrir gestor de colas) abre el gestor de colas oficial admira.tv/gestorColas/pantalla, con enlaces a abrirlo en pestaña nueva y al control de barra. En ITIL, starbucks-ipad-01 tiene contenido tipo web app (gestorColas).
+
+EN: A single tap on the iPad (or the 🧾 Abrir gestor de colas button) opens the official queue manager at admira.tv/gestorColas/pantalla, with links to open it in a new tab and to the bar control. In ITIL, starbucks-ipad-01 content type is web app (gestorColas).
