@@ -1,16 +1,16 @@
 {
-  "version": "v.07.10.2026.r53.23:12",
-  "deployedAt": "2026-10-07T21:13:06Z",
+  "version": "v.07.10.2026.r54.00:00",
+  "deployedAt": "2026-10-07T22:00:51Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "a9be4d755a3aea4213ebefeea8b3fa69edb85e0a",
-  "gitShort": "a9be4d7",
-  "gitFull": "a9be4d755a3aea4213ebefeea8b3fa69edb85e0a",
+  "git": "57a97a3c0efe33096bb5929144c5aaf4390a1a9d",
+  "gitShort": "57a97a3",
+  "gitFull": "57a97a3c0efe33096bb5929144c5aaf4390a1a9d",
   "dirty": false,
   "novedades": [
-    "/cerrar incidencia ya no dice «no hay incidencias» si se ve una: lista las abiertas del gemelo (pantalla, id, gravedad, antigüedad) y cómo cerrarlas",
-    "/cerrar incidencia INC-XXXX cierra cualquier incidencia del gemelo, también las abiertas a mano, con la ficha de admira.app y el informe por correo y Telegram",
-    "Si la lleva un técnico del portal, la CLI lo explica y enlaza su ficha"
+    "/demo help (o /demo ayuda) lista todas las demos del gemelo, numeradas, con qué enseñan y cómo lanzarlas",
+    "/demo all (o /demo todas) las enseña seguidas con tarjeta «Demo n/16», cámara y unos segundos; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial",
+    "/demo <id|número> lanza una sola; registro único en admira-xp/demos.json y sección Demos en la ayuda"
   ]
 }
