@@ -31945,7 +31945,7 @@ window.xtAPI = (function(){
   async function executeLocalVisualCommand(rawText){
     const text=String(rawText||'').trim();
     if(/^\/?demo\s+(?:kiosko|quiosco)(?:\s|$)/i.test(text)){
-      try{const {runKioskoDemo}=await import('../assets/kiosko-demo.mjs?v=1');return {ok:true,local:true,message:await runKioskoDemo(text.replace(/^\/?demo\s+\S+\s*/i,''),typeof lang==='undefined'?'es':lang)};}
+      try{const {runKioskoDemo}=await import('../assets/kiosko-demo.mjs?v=2');return {ok:true,local:true,message:await runKioskoDemo(text.replace(/^\/?demo\s+\S+\s*/i,''),typeof lang==='undefined'?'es':lang)};}
       catch(error){return {ok:false,local:true,message:error.message};}
     }
     // The twin owns its CLI; handle the mug before the generic guided-demo router.
