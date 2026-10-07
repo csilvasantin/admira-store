@@ -1,17 +1,17 @@
 {
-  "version": "v.07.10.2026.r18.12:49",
-  "deployedAt": "2026-10-07T10:49:18Z",
-  "deployer": "TrinityMBP16",
-  "machine": "MacBookPro16",
-  "signature": "TrinityMBP16 · MacBookPro16",
-  "git": "170bdde55ee218aa5110140e71c6e456fe916d48",
-  "gitShort": "170bdde",
-  "gitFull": "170bdde55ee218aa5110140e71c6e456fe916d48",
+  "version": "v.07.10.2026.r18.13:01",
+  "deployedAt": "2026-10-07T11:01:27Z",
+  "deployer": "GrokBot",
+  "machine": "MacMini",
+  "signature": "GrokBot · MacMini",
+  "git": "58020aae12edcba71beb6b459e8d93f64c4e1998",
+  "gitShort": "58020aa",
+  "gitFull": "58020aae12edcba71beb6b459e8d93f64c4e1998",
   "dirty": false,
   "novedades": [
-    "Store: /demo 1–5 enseña locución, música, imágenes, vídeo y gestión del TPV",
-    "/demo auto encadena las cinco demos con sus fases y muestras preparadas",
-    "Pausa, reanudar, siguiente y stop controlan el ensayo local",
-    "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados"
+    "El iPad del mostrador de Starbucks (starbucks-ipad-01) enseña el gestor de colas: Admirito, «¡Listo!» con nombres y «En preparación», adaptado a su formato horizontal",
+    "Al pulsar el iPad en la escena se abre en grande la pantalla real de la cola (ainimation.studio/cola/ipad.html), como el avatar y el quiosco",
+    "/ipad cola · /ipad off (vuelve a su playlist de vídeo) · /ipad abrir; un previo arrastrado desde Pixeria sigue mandando sobre la cola",
+    "Pedidos de demostración, pago SIMULADO"
   ]
 }
