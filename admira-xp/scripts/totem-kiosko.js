@@ -96,9 +96,37 @@
     panel(true); toast((en()?'🧾 Order ':'🧾 Pedido ')+(o.number||'')+' · '+fmt(o.total,o.currency));
     try{ window.dispatchEvent(new CustomEvent('xpace:kiosk-order',{detail:o})); }catch(_){}
   });
+  // ── «say» de Admingo/quiosco (7-oct-2026): el avatar del tótem locuta lo que pide la Xperiencia ──
+  // Contrato: {source:'admingo'|'ainimation-xperiencia', type:'say', id, text, lang} SOLO desde ainimation.studio.
+  // Respuesta: {type:'say-ack', id, spoken, via}. Sin ack en 500 ms el quiosco usa la voz de su navegador.
+  const SAY_ORIGIN=/^https:\/\/(www\.)?ainimation\.studio$/;
+  function totemSpeak(text,langTag){
+    const t=String(text||'').replace(/\s+/g,' ').trim().slice(0,400); if(!t) return {spoken:false,via:'none'};
+    try{ if(typeof showEv==='function') showEv('🗣 '+t.slice(0,90),'#00a862'); }catch(_){}
+    let muted=false; try{ muted=(typeof homeMusicMuted!=='undefined')&&homeMusicMuted; }catch(_){}
+    // 1) la cara viva (MetaHuman en pared/panel): la misma ruta que las respuestas del avatar
+    let face=false; try{ face=!!(window.MH_FACE_ENABLED||((typeof metahumanWallOn==='function')&&metahumanWallOn())); }catch(_){}
+    if(face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
+    if(muted) return {spoken:false,via:'muted'};
+    // 2) voz del gemelo: castellano de España (es-ES), como la megafonía local
+    try{
+      const ss=window.speechSynthesis; if(!ss||typeof window.SpeechSynthesisUtterance!=='function') return {spoken:false,via:'none'};
+      const l=/^en/i.test(String(langTag||''))?'en-GB':'es-ES';
+      const u=new window.SpeechSynthesisUtterance(t); u.lang=l; u.rate=0.96; u.pitch=1; u.volume=1;
+      const vs=ss.getVoices()||[]; const v=vs.find(x=>x.lang===l)||vs.find(x=>(x.lang||'').replace('_','-')===l); if(v) u.voice=v;
+      try{ ss.cancel(); }catch(_){} ss.speak(u); return {spoken:true,via:'speech-'+l};
+    }catch(_){ return {spoken:false,via:'none'}; }
+  }
+  window.addEventListener('message',e=>{
+    const d=e.data; if(!d||d.type!=='say'||(d.source!=='admingo'&&d.source!=='ainimation-xperiencia')) return;
+    if(!SAY_ORIGIN.test(e.origin)) return;
+    const r=totemSpeak(d.text,d.lang);
+    (window.__totemSaid=window.__totemSaid||[]).push({text:String(d.text||''),lang:d.lang||'es-ES',via:r.via,at:Date.now()});
+    try{ e.source&&e.source.postMessage({source:'xpaceos-totem',type:'say-ack',id:d.id,spoken:r.spoken,via:r.via},e.origin); }catch(_){}
+  });
   function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t) t.style.zIndex=kioskOn()?'60':'6'; }catch(_){} },1500);
     try{ if(new URLSearchParams(location.search).has('kiosko')) setTimeout(()=>totemCommand('kiosko'),2500); }catch(_){} }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   window.totemKioskCommand=totemCommand;
-  window.XpaceTotemKiosk={touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
+  window.XpaceTotemKiosk={say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
 })();
