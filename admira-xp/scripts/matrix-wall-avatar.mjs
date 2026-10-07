@@ -10,6 +10,14 @@ export const AVATAR_WALL_RENDERERS=Object.freeze({good:'https://digitalavatar.ai
 // so the avatar talks as a coffee shop at every level (persona/chips per tier on digitalavatar.ai).
 export const STARBUCKS_KIOSK_URL=new URL('../kiosk/starbucks/index.html?v=1',import.meta.url).href;
 export const AVATAR_WALL_ORIGIN='https://digitalavatar.ai';
+// Interruptor Tótem (7-oct-2026): ON = este player (la pared junto a la salida) enseña el interactivo
+// de la escena — el quiosco de pedido de ainimation.studio para Starbucks Paseo de Gracia — y recibe toques.
+export const WALL_KIOSK_SIZE=Object.freeze({w:400,h:900});
+export const WALL_KIOSK_BASE='https://www.ainimation.studio/xperiencias/kiosko-pedido/?store=starbucks-paseo-de-gracia&marca=starbucks';
+export function wallKioskUrl({lang='es',url=''}={}){
+ const u=new URL(url||WALL_KIOSK_BASE);if(!url){u.searchParams.set('lang',lang==='en'?'en':'es');u.searchParams.set('host','gemelo');}
+ u.searchParams.set('formato','vertical');u.searchParams.set('w',String(WALL_KIOSK_SIZE.w));u.searchParams.set('h',String(WALL_KIOSK_SIZE.h));return u.href;
+}
 export const AVATAR_WALL_CONTEXT=Object.freeze({loc:'alsea-sbux-021',sector:'cafeteria',site:'Starbucks Paseo de Gracia 103',city:'Barcelona'});
 const CONTEXT_KEYS=['loc','lang','sector','brand','site','city'];
 export function wallAvatarUrl(level,context={}){
@@ -48,8 +56,16 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  function render(){const language=defaultContext(win).lang;if(language!==siteLanguage){siteLanguage=language;avatarLanguage='';}let chosen=localChoice;try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||localChoice;}catch{}const level=wallAvatarLevel({chosen});model.value=level;const next=wallAvatarUrl(level,currentContext());if(next!==source){const previous=source?new URL(source):null;source=next;if(mode==='avatar'){if(previous&&previous.searchParams.get('tier')===level){try{frame.contentWindow?.postMessage({type:'da-context',...currentContext()},AVATAR_WALL_ORIGIN);}catch{}}else frame.src=source;}}else postLive(false);}
  render();
  model.addEventListener('change',()=>{if(!AVATAR_WALL_RENDERERS[model.value])return;localChoice=model.value;try{win.sessionStorage.setItem(AVATAR_WALL_CHOICE_KEY,localChoice);win.localStorage.setItem('admira-avatar:nivel',localChoice);}catch{}render();});
- function collapse(){if(disposed||!expanded)return;expanded=false;frame.inert=true;frame.removeAttribute('allow');frame.src='about:blank';resetConversation();wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
- function enlarge(){if(disposed||expanded)return;frame.allow='microphone; autoplay';resetConversation();win.XpaceMediaExperience?.close();doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.media-ready video,.options-playlist-preview audio,.options-playlist-preview video').forEach(n=>n.pause());win.XpaceAnnouncements?.stopStock?.();expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();releaseMusic=win.XpaceMatrixOptions?.suppressMusic?.();close.focus();}
+ function collapse(){if(disposed||!expanded)return;if(mode==='kiosk'){expanded=false;wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();return;}expanded=false;frame.inert=true;frame.removeAttribute('allow');frame.src='about:blank';resetConversation();wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
+ function enlarge(){if(disposed||expanded)return;if(mode==='kiosk'){expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();close.focus();return;}frame.allow='microphone; autoplay';resetConversation();win.XpaceMediaExperience?.close();doc.querySelectorAll('#expertCreatedPreviews audio,#expertCreatedPreviews video,.media-ready audio,.media-ready video,.options-playlist-preview audio,.options-playlist-preview video').forEach(n=>n.pause());win.XpaceAnnouncements?.stopStock?.();expanded=true;frame.inert=false;wall.hidden=false;wall.close();wall.showModal();releaseMusic=win.XpaceMatrixOptions?.suppressMusic?.();close.focus();}
+ function totemOn(){try{return !!win.XpaceTotem?.on?.();}catch{return false;}}
+ function totemUrl(){let custom='';try{custom=win.localStorage.getItem('xpace:totem-url')||'';}catch{}return wallKioskUrl({lang:defaultContext(win).lang,url:custom});}
+ function setMode(next){next=next==='kiosk'?'kiosk':'avatar';if(next===mode&&!(next==='kiosk'&&frame.src!==totemUrl()))return;const was=expanded;if(was)collapse();mode=next;wall.dataset.mode=mode;
+  if(mode==='kiosk'){frame.removeAttribute('allow');frame.inert=false;frame.src=totemUrl();expand.textContent=t('👆 Tocar el tótem','👆 Touch the totem');expand.setAttribute('aria-label',t('Abrir el quiosco a tamaño real','Open the kiosk full size'));wall.setAttribute('aria-label',t('Tótem · quiosco de pedido','Totem · ordering kiosk'));}
+  else{frame.inert=true;expand.textContent=t('Hablar con el avatar','Talk to the avatar');expand.setAttribute('aria-label',t('Hablar con el avatar','Talk to the avatar'));wall.setAttribute('aria-label',t('Avatar digital · pared Starbucks','Digital avatar · Starbucks wall'));source='';render();}
+  onChange();}
+ const onTotemMode=e=>setMode(e?.detail?.on?'kiosk':'avatar');win.addEventListener('xpace:totem-mode',onTotemMode);
+ if(totemOn())setMode('kiosk');
  expand.addEventListener('click',enlarge);close.addEventListener('click',collapse);
  wall.addEventListener('cancel',e=>{e.preventDefault();collapse();});wall.addEventListener('close',()=>{if(!wall.open)collapse();});
  wall.addEventListener('click',e=>{if(expanded&&e.target===wall)collapse();});
@@ -61,6 +77,6 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  const levelPoll=win.setInterval(render,1000);
  // focus(): the camera already looks at the wall; point keyboard focus at the talk button.
  function focus(){if(disposed)return;expand.classList.add('is-called');expand.focus({preventScroll:true});win.setTimeout(()=>expand.classList.remove('is-called'),2400);}
- return {focus,enlarge,get expanded(){return expanded;},get level(){return (source.match(/[?&]tier=(\w+)/)||[])[1]||'';},draw(project,marking){if(expanded||disposed)return;const points=STARBUCKS_AVATAR_WALL.corners.map(project);const matrix=points.every(Boolean)&&quadTransform(points,400,900);wall.hidden=!!marking||!matrix;if(matrix)wall.style.transform='matrix3d('+matrix.join(',')+')';},
- dispose(){if(disposed)return;disposed=true;win.clearInterval(levelPoll);win.removeEventListener('message',onAvatarMessage);releaseMusic?.();frame.removeAttribute('src');if(wall.open)wall.close();wall.remove();}};
+ return {focus,enlarge,setMode,get mode(){return mode;},get expanded(){return expanded;},get level(){return (source.match(/[?&]tier=(\w+)/)||[])[1]||'';},draw(project,marking){if(expanded||disposed)return;const points=STARBUCKS_AVATAR_WALL.corners.map(project);const matrix=points.every(Boolean)&&quadTransform(points,400,900);wall.hidden=!!marking||!matrix;if(matrix)wall.style.transform='matrix3d('+matrix.join(',')+')';},
+ dispose(){if(disposed)return;disposed=true;win.removeEventListener('xpace:totem-mode',onTotemMode);win.clearInterval(levelPoll);win.removeEventListener('message',onAvatarMessage);releaseMusic?.();frame.removeAttribute('src');if(wall.open)wall.close();wall.remove();}};
 }
