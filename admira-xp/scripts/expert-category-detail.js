@@ -21,6 +21,7 @@
       else if(/^\/envivo$/.test(text))result=window.closeDVRPanel?.();
       else if(/^\/AdmiraLive /.test(text))result=window.XpaceExpertActions.setAdmiraLive(text.slice(12));
       else if(/^\/livecam$/.test(text))result=await window.toggleLiveCam?.();
+      else if(/^\/totem\b/.test(text)&&window.totemKioskCommand)result=window.totemKioskCommand(text.replace(/^\/totem\s*/,''));
       else if(/^\/(avatar3d|impactos)\b/.test(text))result=await window.xtAPI?.command(text);
       else{
         await window.sendComposerText?.(text);
@@ -67,7 +68,8 @@
     if(key==='anonymizer')button(actions,'Abrir Anonymizer en Pixeria','Open Anonymizer in Pixeria',()=>launch(key));
     if(key==='editor')button(actions,'Distribuir muebles','Distribute furniture',()=>command('/cli '+(en()?'distribute':'distribuir')));
     if(key==='avatar3d'){
-      toggle(actions,'Tótem','Totem','totem','/avatar3d');
+      // Tótem ON = interactivo en el player (quiosco); OFF = avatar digital (7-oct-2026)
+      toggle(actions,'Tótem','Totem','totem','/totem');
       toggle(actions,'Avatar digital','Digital avatar','avatar','/avatar digital');
       button(actions,'Opciones del avatar','Avatar options',()=>window.openMetahumanPanel?.());
     }

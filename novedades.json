@@ -1,5 +1,11 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r15.10:57": [
+    "Tótem ON enseña el interactivo en el player: en Starbucks Paseo de Gracia, el quiosco de pedido en la pantalla de la pared junto a la salida; OFF vuelve al avatar digital",
+    "Nuevo /totem on|off (siguen kiosko, url, luna y admiratv) y la elección se recuerda",
+    "El player del tótem recibe toques y «👆 Tocar el tótem» lo abre a tamaño real",
+    "El gemelo pasa el formato del player y el quiosco se reorganiza para él"
+  ],
   "v.07.10.2026.r14.10:21": [
     "Tótem con voz: cuando el quiosco o un script Admingo de ainimation.studio pide hablar, el avatar del tótem lo dice en castellano de España",
     "Solo se aceptan mensajes de ainimation.studio; el gemelo responde con un acuse y, si no lo hay, el quiosco habla con la voz del navegador",

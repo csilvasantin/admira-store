@@ -11,11 +11,29 @@
   const DEFAULT_URL=KIOSK_BASE+'?store=starbucks-paseo-de-gracia&marca=starbucks';
   const en=()=>typeof lang!=='undefined'&&lang==='en';
   const orders=[];
-  function kioskUrl(){
+  // Formato del player (7-oct-2026): el iframe del tótem dice a la pieza su forma y su tamaño.
+  function formatoDe(w,h){ w=Math.round(+w||0); h=Math.round(+h||0); if(!(w>0&&h>0)) return ''; const ar=w/h; return '&formato='+(ar<0.8?'vertical':ar>1.25?'horizontal':'cuadrado')+'&w='+w+'&h='+h; }
+  function kioskUrl(size){
     const l=en()?'en':'es';
     let u=DEFAULT_URL;
-    try{ if(!(window.XpaceStarbucks&&window.XpaceStarbucks.active())) u=KIOSK_BASE+'?store=xpacio&marca=starbucks'; }catch(_){}
-    return u+'&lang='+l+'&host=gemelo';
+    try{ if(!(window.XpaceStarbucks&&window.XpaceStarbucks.active())&&!window.XpaceStarbucksDemo) u=KIOSK_BASE+'?store=xpacio&marca=starbucks'; }catch(_){}
+    let f=''; try{ if(size) f=formatoDe(size.w,size.h); else { const t=document.getElementById('totemAvatar'); const r=t&&t.getBoundingClientRect(); f=r&&r.width?formatoDe(r.width,r.height):'&formato=vertical&w=1080&h=1920'; } }catch(_){}
+    return u+'&lang='+l+'&host=gemelo'+f;
+  }
+  // ── Interruptor Tótem (7-oct-2026, Carlos): ON = el player del tótem enseña el interactivo
+  // (Starbucks → quiosco de pedido de Paseo de Gracia); OFF = el avatar digital de siempre.
+  // Se recuerda en este navegador como los demás interruptores.
+  const MODE_KEY='xpace:totem-interactivo', URL_KEY='xpace:totem-url';
+  function stored(){ try{ return localStorage.getItem(MODE_KEY)==='on'; }catch(_){ return false; } }
+  function storedUrl(){ try{ return localStorage.getItem(URL_KEY)||''; }catch(_){ return ''; } }
+  function remember(on,url){ try{ localStorage.setItem(MODE_KEY,on?'on':'off'); if(url) localStorage.setItem(URL_KEY,url); else if(!on) localStorage.removeItem(URL_KEY); }catch(_){} }
+  function announce(){ try{ window.dispatchEvent(new CustomEvent('xpace:totem-mode',{detail:{on:stored(),url:storedUrl()}})); }catch(_){} }
+  const inMatrix=()=>!!window.XpaceStarbucksDemo;
+  function setTotem(on,url){
+    remember(!!on,on?(url||''):'');
+    // En Matrix · Starbucks el player es la pared junto a la salida (matrix-wall-avatar escucha el evento).
+    if(!inMatrix()){ if(on) pin(url||kioskUrl(),url?'Web':(en()?'Ordering kiosk':'Quiosco de pedido')); else unpin(); }
+    announce(); return on;
   }
   function pin(url,name){
     if(typeof DS_PIN!=='object'||DS_PIN===null) return false;
@@ -39,8 +57,9 @@
   function totemCommand(arg){
     const raw=String(arg||'').trim(), a=raw.toLowerCase();
     const parts=raw.split(/\s+/), head=(parts[0]||'').toLowerCase();
-    if(!a||a==='kiosko'||a==='quiosco'||a==='kiosk'||a==='on'){
-      if(pin(kioskUrl(),en()?'Ordering kiosk':'Quiosco de pedido')){ toast(en()?'🛒 Kiosk ON · totem':'🛒 Quiosco ON · tótem');
+    if(!a||a==='kiosko'||a==='quiosco'||a==='kiosk'||a==='on'||a==='interactivo'){
+      setTotem(true,'');
+      if(inMatrix()||kioskOn()){ toast(en()?'🛒 Kiosk ON · totem':'🛒 Quiosco ON · tótem');
         return {ok:true,message:(en()?'🛒 Ordering kiosk on the totem (simulated demo). Touch it to order. /totem off to remove.':'🛒 Quiosco de pedido en el tótem (demo simulada). Tócalo para pedir. /totem off para quitarlo.')+'\n'+kioskUrl()}; }
       return {ok:false,message:en()?'No totem in this Xpace.':'No hay tótem en este Xpacio.'};
     }
@@ -48,13 +67,13 @@
       const u=parts.slice(1).join(' ');
       let ok=false; try{ ok=new URL(u).protocol==='https:'; }catch(_){}
       if(!ok) return {ok:false,message:en()?'Usage: /totem url https://…':'Uso: /totem url https://…'};
-      pin(u,'Web'); toast('🌐 '+u.slice(0,60)); return {ok:true,message:'🌐 '+(en()?'Totem → ':'Tótem → ')+u};
+      setTotem(true,u); toast('🌐 '+u.slice(0,60)); return {ok:true,message:'🌐 '+(en()?'Totem → ':'Tótem → ')+u};
     }
-    if(a==='off'||a==='stop'||a==='apagar'){ unpin(); return {ok:true,message:en()?'Totem kiosk removed.':'Quiosco retirado del tótem.'}; }
-    if(a==='luna'||a==='avatar'){ unpin(); try{ if(typeof setAvatar3dTotem==='function'&&setAvatar3dTotem(true)){ try{emitTotemNow(true);}catch(_){} return {ok:true,message:'🧑‍💻 Luna / Avatar 3D en el tótem.'}; } }catch(_){} return {ok:false,message:'Avatar3D no disponible.'}; }
-    if(head==='admiratv'||head==='tv'){ unpin(); try{ return setAdmiraTvCommand(parts.slice(1).join(' ')||'on'); }catch(_){ return {ok:false,message:'admira.tv no disponible.'}; } }
+    if(a==='off'||a==='stop'||a==='apagar'||a==='avatar digital'){ setTotem(false); return {ok:true,message:en()?'Totem OFF · the player shows the digital avatar.':'Tótem OFF · el player enseña el avatar digital.'}; }
+    if(a==='luna'||a==='avatar'){ remember(false); unpin(); announce(); try{ if(typeof setAvatar3dTotem==='function'&&setAvatar3dTotem(true)){ try{emitTotemNow(true);}catch(_){} return {ok:true,message:'🧑‍💻 Luna / Avatar 3D en el tótem.'}; } }catch(_){} return {ok:false,message:'Avatar3D no disponible.'}; }
+    if(head==='admiratv'||head==='tv'){ remember(false); unpin(); announce(); try{ return setAdmiraTvCommand(parts.slice(1).join(' ')||'on'); }catch(_){ return {ok:false,message:'admira.tv no disponible.'}; } }
     if(a==='pedidos'||a==='orders'){ panel(true); return {ok:true,message:orders.length+(en()?' orders':' pedidos')}; }
-    return {ok:false,message:'/totem kiosko · /totem url <https> · /totem luna · /totem admiratv · /totem off · /totem pedidos'};
+    return {ok:false,message:'/totem on|off · /totem kiosko · /totem url <https> · /totem luna · /totem admiratv · /totem pedidos'};
   }
   // ── panel «Pedidos · TPV» ─────────────────────────────────────────────
   let box=null, btn=null, modal=null, tbtn=null;
@@ -124,9 +143,10 @@
     (window.__totemSaid=window.__totemSaid||[]).push({text:String(d.text||''),lang:d.lang||'es-ES',via:r.via,at:Date.now()});
     try{ e.source&&e.source.postMessage({source:'xpaceos-totem',type:'say-ack',id:d.id,spoken:r.spoken,via:r.via},e.origin); }catch(_){}
   });
-  function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t) t.style.zIndex=kioskOn()?'60':'6'; }catch(_){} },1500);
-    try{ if(new URLSearchParams(location.search).has('kiosko')) setTimeout(()=>totemCommand('kiosko'),2500); }catch(_){} }
+  function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; t.style.pointerEvents=kioskOn()?'auto':''; } }catch(_){} },1500);
+    try{ const q=new URLSearchParams(location.search); if(q.has('kiosko')) setTimeout(()=>totemCommand('kiosko'),2500); else if(stored()) setTimeout(()=>{ setTotem(true,storedUrl()); },2500); }catch(_){} }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   window.totemKioskCommand=totemCommand;
+  window.XpaceTotem={on:stored,url:()=>storedUrl()||kioskUrl(),kioskUrl:kioskUrl,set:setTotem,formato:formatoDe,key:MODE_KEY};
   window.XpaceTotemKiosk={say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
 })();
