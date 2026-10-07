@@ -1,15 +1,15 @@
 {
-  "version": "v.07.10.2026.r32.16:26",
-  "deployedAt": "2026-10-07T14:27:41Z",
+  "version": "v.07.10.2026.r33.16:33",
+  "deployedAt": "2026-10-07T14:33:40Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "0000b7b686c1e9f45e79b2fd1e58b73e649d8975",
-  "gitShort": "0000b7b",
-  "gitFull": "0000b7b686c1e9f45e79b2fd1e58b73e649d8975",
+  "git": "9a5ab8b64e72df4fcec8d7b7dbcfc37f70e49897",
+  "gitShort": "9a5ab8b",
+  "gitFull": "9a5ab8b64e72df4fcec8d7b7dbcfc37f70e49897",
   "dirty": false,
   "novedades": [
-    "Admirito habla con voz de ElevenLabs en castellano (voz joven y dulce) en los avisos del gemelo y el iPad del mostrador",
-    "Caché de frases frecuentes y respaldo con la voz es-ES del navegador"
+    "Admirito habla por defecto con la voz «Santiago» de ElevenLabs (elegida por Carlos)",
+    "?vozid=daniela o ?vozid=raquel prueban las otras voces"
   ]
 }
