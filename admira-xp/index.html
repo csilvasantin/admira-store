@@ -20661,6 +20661,17 @@ async function askMetahuman(text){
 // Usa el endpoint nuevo POST /metahuman/ask {loc, question} → {answer, audioBase64, mime}.
 // A diferencia del Grok-proxy (solo texto), ESTE además devuelve y reproduce la VOZ.
 const AVATAR3D_CFG=(typeof RUNTIME_CONFIG!=='undefined'&&RUNTIME_CONFIG.avatar3d&&typeof RUNTIME_CONFIG.avatar3d==='object')?RUNTIME_CONFIG.avatar3d:{};
+function avatarIdentityFromQuality(){
+  var q='';
+  try{ q=String(avatar3dVisualLevel&&avatar3dVisualLevel()||''); }catch(e){}
+  if(!q){ try{ q=String((window.__xtancoVisualTiers&&window.__xtancoVisualTiers.mode)||new URLSearchParams(location.search).get('quality')||new URLSearchParams(location.search).get('visual')||'').toLowerCase(); }catch(e){} }
+  if(q==='matrix') q='best';
+  if(q==='best') return {tier:'best', avatar:'neo'};
+  if(q==='better') return {tier:'better', avatar:'alex'};
+  if(q==='good') return {tier:'good', avatar:'admirito'};
+  return {tier:'better', avatar:'alex'};
+}
+
 const AVATAR3D={
   url:(typeof AVATAR3D_CFG.url==='string'&&AVATAR3D_CFG.url)?AVATAR3D_CFG.url.replace(/\/+$/,''):'https://api.admira.store/da',
   loc:(typeof AVATAR3D_CFG.loc==='string'&&AVATAR3D_CFG.loc)?AVATAR3D_CFG.loc:'',
@@ -21214,8 +21225,12 @@ function avatar3dBrand(){ try{ return String(sessionStorage.getItem('mb:marca')|
 function avatar3dTier(url){ const u=String(url||''); return /metahuman\.html/.test(u)?'best':/best\.html/.test(u)?'better':/(nube|better)\.html/.test(u)?'good':''; }
 // Query de contexto (loc, sector, marca, nivel) que entiende digitalavatar.ai/assets/da-context.js.
 function avatar3dContextQS(url){
-  const loc=avatar3dAskLoc(),brand=avatar3dBrand(),tier=avatar3dTier(url);
-  return (loc?'loc='+encodeURIComponent(loc)+'&':'')+'sector='+encodeURIComponent(avatar3dSector())+(brand?'&brand='+encodeURIComponent(brand):'')+(tier?'&tier='+tier:'');
+  const loc=avatar3dAskLoc(),brand=avatar3dBrand();
+  let tier=avatar3dTier(url);
+  try{ const v=avatar3dVisualLevel(); if(v) tier=v; }catch(_){}
+  if(!tier) tier='better';
+  const av=(!avatar3dModel&&{good:'admirito',better:'alex',best:'neo'}[tier])||'';
+  return (loc?'loc='+encodeURIComponent(loc)+'&':'')+'sector='+encodeURIComponent(avatar3dSector())+(brand?'&brand='+encodeURIComponent(brand):'')+'&tier='+tier+(av?'&avatar='+av:'');
 }
 // Calidad visual del gemelo → nivel del avatar (06-10-2026): Good 8 bits = good,
 // Better 16 bits = better, Best 32 bits y Matrix 64 bits = best (Matrix nunca cae a good).
@@ -21228,7 +21243,7 @@ try{ Object.defineProperty(window,'AdmiraAvatarContext',{configurable:true,get()
 // La calidad del Xpacio no cambia el modelo del asistente; su idioma sigue al site.
 // El tótem de la escena conserva su selección visual independiente.
 (function(){ let last=''; setInterval(function(){ const tier=avatar3dVisualLevel(),key=tier+'|'+avatar3dLang(); if(key===last) return; const first=!last; last=key; if(first) return; try{ window.AdmiraAvatar&&typeof window.AdmiraAvatar.setContext==='function'&&window.AdmiraAvatar.setContext({tier:'good',lang:avatar3dLang()}); }catch(_){}
-  // Tótem encendido con el avatar de digitalavatar.ai: si el nivel cambia de cara (Good = nube ↔ chica), se remonta.
+  // Tótem encendido con el avatar de digitalavatar.ai: si el nivel cambia de cara (Good = Admirito ↔ Alex), se remonta.
   try{ const pin=(typeof DS_PIN==='object'&&DS_PIN)?DS_PIN['metahuman']:null; if(pin&&pin.kind==='web'&&/digitalavatar\.ai\/(nube|best)\.html/.test(pin.src||'')&&String(pin.src).indexOf(avatar3dTotemUrl())!==0) setAvatar3dTotem(true); }catch(_){} },1000); })();
 function playAvatar3dVoice(b64,mime){
   if(!b64) return;
@@ -21246,7 +21261,7 @@ async function askAvatar3d(question){
   if(els.answer){ els.answer.classList.add('is-thinking'); els.answer.classList.remove('is-error'); els.answer.textContent=en?'Thinking…':'Pensando…'; }
   if(typeof MH!=='undefined'){ MH.speaking=true; MH.speakUntil=Date.now()+30000; }
   try{
-    const r=await fetch(AVATAR3D.url+'/metahuman/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({loc:avatar3dAskLoc()||undefined,sector:avatar3dSector(),brand:avatar3dBrand()||undefined,tier:'better',question:clean,lang:(en?'en':'es')})});
+    const r=await fetch(AVATAR3D.url+'/metahuman/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({loc:avatar3dAskLoc()||undefined,sector:avatar3dSector(),brand:avatar3dBrand()||undefined,question:clean,lang:(en?'en':'es'),voice:false}, avatarIdentityFromQuality()))});
     const d=await r.json().catch(()=>({}));
     if(!r.ok||d.ok===false||!d.answer) throw new Error(d.error||d.message||('HTTP '+r.status));
     const answer=String(d.answer||'').trim();
