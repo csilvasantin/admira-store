@@ -1,17 +1,16 @@
 {
   "version": "v.07.10.2026.r11.08:09",
-  "deployedAt": "2026-10-07T05:55:48Z",
-  "deployer": "OraculoMacMini",
+  "deployedAt": "2026-10-07T06:10:32Z",
+  "deployer": "GrokBot",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
-  "git": "668e8a42b276696010ba85d22be1c9891419793b",
-  "gitShort": "668e8a4",
-  "gitFull": "668e8a42b276696010ba85d22be1c9891419793b",
+  "signature": "GrokBot · MacMini",
+  "git": "2ccf3783c1f23fa69373b6ba472ab8eeedeba260",
+  "gitShort": "2ccf378",
+  "gitFull": "2ccf3783c1f23fa69373b6ba472ab8eeedeba260",
   "dirty": false,
   "novedades": [
-    "Avanzado: tarjetas con iconos y texto legible para Player y cámara",
-    "Matrix arranca por defecto sin una calidad explícita en la URL",
-    "La compra aparece en el TPV al entregar productos a caja; editar y añadir café desde la pantalla",
-    "Cesta vacía recupera la publicidad; ayudas y MCP actualizados en español e inglés"
+    "Tótem: /totem kiosko (o el botón 🛒 Quiosco) pone el Quiosco de pedido de ainimation.studio en la pantalla vertical",
+    "👆 Tocar el tótem lo abre a tamaño real; los pedidos (demo simulada) llegan al panel Pedidos · TPV",
+    "/totem url <https> para cualquier interactivo; Luna y admira.tv siguen igual (/totem luna · /totem admiratv)"
   ]
 }
