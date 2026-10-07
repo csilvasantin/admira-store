@@ -20,3 +20,12 @@ test('cerrar incidencia desde el gemelo: POST /incident close con id, recurso de
  const m=chipModel({id:'INC-ABC123',stage:'cerrada',priority:'alta',assignee:'Sofía P.',closed_by:'Carlos',resolved_at:Date.now(),resolution:'Cable recolocado',sla:{}},Date.now(),'es');
  assert.ok(m.lines.some(l=>l.startsWith('Cerrada por Carlos')));assert.ok(m.lines.some(l=>l.includes('Cable recolocado')));assert.equal(m.tone,'ok');
 });
+test('cerrada: la pantalla vuelve sola a emitir y el panel no pierde lo que se teclea',async()=>{
+ const m=await import('./starbucks-incidents.mjs?v=ipad-20261005-1'),fs=await import('node:fs');
+ assert.equal(m.CLOSED_RESUME_MS,5000);
+ const lines=m.chipModel({id:'INC-AAAA11',stage:'cerrada',priority:'alta',closed_by:'X',resolved_at:Date.now(),resolution:'ok'},Date.now(),'es').lines;
+ assert.ok(!lines.some(l=>/Pulsa para volver/.test(l)));assert.match(lines.at(-1),/Vuelve a emitir/);
+ const src=fs.readFileSync(new URL('./starbucks-incidents.mjs',import.meta.url),'utf8');
+ assert.match(src,/resumes\.push/);assert.match(src,/v\.muted=true/);assert.match(src,/dataset\.i18nLive/);assert.match(src,/field\.focus\(\{preventScroll:true\}\)/);
+ const lang=fs.readFileSync(new URL('./interface-language.mjs',import.meta.url),'utf8');assert.match(lang,/data-i18n-live/);
+});
