@@ -100,5 +100,45 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
  async function poll(){clearTimeout(pollTimer);if(abort.signal.aborted)return;try{const data=await fetchIncidentStatus([...tracked.keys()],fetcher);statusData=data.incidents||[];if(!panel.hidden&&!busy)refresh();const now=Date.now();for(const inc of statusData)if(inc.stage==='cerrada'&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS&&tracked.delete(inc.id))try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}paint();}catch{}pollTimer=setTimeout(poll,document.hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);}
  tickTimer=setInterval(()=>{if(statusData.length)paint();},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll();},opts);abort.signal.addEventListener('abort',()=>{clearTimeout(pollTimer);clearInterval(tickTimer);for(const d of devices){nodeFor(d.id)?.querySelector(':scope>.matrix-incident-chip')?.remove();nodeFor(d.id)?.querySelector(':scope>.matrix-incident-quickclose')?.remove();}});poll();
  const stopLanguage=copy.observe(panel);
- return {off,paint,open(id=target){target=id;floating.open();},get visible(){return !panel.hidden;},select(id){target=id;refresh();},close(){panel.hidden=true;},remote(id,value){setPower(id,value);},dispose(){stopLanguage();floating.dispose();abort.abort();panel.remove();}};
+ // ── Demo guiada desde la CLI del modo experto (/crear incidencia · /cerrar incidencia, Carlos 7-oct-2026) ──
+ // Todo se ve: el panel se abre, el motivo se escribe letra a letra, se pulsa «Abrir ticket»; al cerrar se pulsa
+ // la tarjeta (el enlace a la ficha), se abre la ficha de admira.app y se finaliza con nota por el carril real.
+ const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ async function typeInto(field,text,total=1800){field.focus({preventScroll:true});field.value='';const step=Math.max(8,Math.min(45,Math.round(total/Math.max(1,text.length))));for(const ch of text){if(abort.signal.aborted)return;field.value+=ch;await wait(step);}field.dispatchEvent(new Event('input',{bubbles:true}));}
+ function press(el){el?.classList.add('is-demo-press');setTimeout(()=>el?.classList.remove('is-demo-press'),700);}
+ let ficha=null;
+ function fichaPanel(){if(ficha&&ficha.isConnected)return ficha;ficha=document.createElement('section');ficha.className='matrix-device-editor matrix-incident-editor matrix-ficha';ficha.dataset.i18nLive='';ficha.setAttribute('role','dialog');ficha.setAttribute('aria-label','admira.app · ficha');
+  for(const ev of ['pointerdown','pointerup','click','keydown','keyup','keypress','input','wheel'])ficha.addEventListener(ev,e=>e.stopPropagation(),opts);root.append(ficha);return ficha;}
+ function paintFicha(inc,{note='',phase=''}={}){const f=fichaPanel(),L=document.documentElement.lang==='en',tt=(es,en)=>L?en:es;const stage={abierta:tt('Abierta','Open'),en_curso:tt('En curso','In progress'),cerrada:tt('Finalizada','Finished'),recuperada:tt('Recuperada','Recovered')}[inc.stage]||inc.stage;const m=chipModel(inc,Date.now(),L?'en':'es');
+  const time=v=>v?new Date(v).toLocaleTimeString(L?'en-GB':'es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+  f.innerHTML=`<header><strong>admira.app · ${tt('Ficha','Ticket')} ${esc(inc.id)}</strong><button type="button" data-ficha="close" aria-label="${tt('Cerrar ficha','Close ticket')}">×</button></header><p class="ficha-url">www.admira.app/ticket?id=${esc(inc.id)}</p><p class="ficha-stage" data-stage="${esc(inc.stage)}">${esc(stage)}</p><dl><dt>${tt('Asunto','Subject')}</dt><dd>${esc(inc.subject||inc.id)}</dd><dt>${tt('Prioridad','Priority')}</dt><dd>${esc(m.lines[1]||'')}</dd><dt>${tt('Técnico','Technician')}</dt><dd>${esc(inc.assignee||'—')}</dd><dt>${tt('Abierta','Opened')}</dt><dd>${time(inc.created_at)}</dd>${inc.stage==='cerrada'?`<dt>${tt('Finalizada','Finished')}</dt><dd>${time(inc.resolved_at)} · ${esc(inc.closed_by||'')}</dd><dt>${tt('Nota','Note')}</dt><dd>«${esc(inc.resolution||'')}»</dd>`:''}</dl>${inc.stage==='cerrada'?'':`<label>${tt('Nota de resolución','Resolution note')}<textarea class="ficha-note" rows="2" readonly>${esc(note)}</textarea></label><div class="ficha-actions"><button type="button" data-ficha="start" ${inc.stage==='abierta'?'':'disabled'}>▶ ${tt('Iniciar','Start')}</button><button type="button" data-ficha="finish">✓ ${tt('Finalizar','Finish')}</button></div>`}<p class="ficha-phase" role="status">${esc(phase)}</p><a href="https://www.admira.app/ticket?id=${encodeURIComponent(inc.id)}" target="_blank" rel="noopener">${tt('Abrir en admira.app ↗','Open in admira.app ↗')}</a>`;
+  f.querySelector('[data-ficha="close"]').addEventListener('click',()=>f.remove(),opts);f.hidden=false;return f;}
+ const findInc=id=>statusData.find(i=>i.id===id)||null;
+ async function freshInc(id){track(id);for(let i=0;i<8;i++){await poll();const inc=findInc(id);if(inc)return inc;await wait(800);}return findInc(id);}
+ const demo={
+  candidates(){return devices.filter(d=>/^pantalla-[2-6]$/.test(d.equipo)&&!off.has(d.id)&&!activeFor(d.id)).map(d=>d.id);},
+  activeFor:id=>activeFor(id),
+  stage:id=>findInc(id)?.stage||null,
+  async open({deviceId,problem:text,severity:sev='alta',uuid=crypto.randomUUID(),step=()=>{}}){
+   const d=devices.find(x=>x.id===deviceId);if(!d)throw Error('Equipo inválido');if(activeFor(d.id))throw Error(t('Esa pantalla ya tiene una incidencia activa','That screen already has an active incident'));
+   target=d.id;floating.open();refresh();step(t('Formulario «Incidencia · Starbucks» abierto en ','“Incident · Starbucks” form opened on ')+d.name);await wait(500);
+   await typeInto(problem,text);severity.value=sev;severity.dispatchEvent(new Event('change',{bubbles:true}));step(t('Motivo escrito · gravedad ','Reason typed · severity ')+sev);await wait(400);
+   const send=panel.querySelector('[data-incident="send"]');press(send);busy=true;for(const b of panel.querySelectorAll('button'))b.disabled=true;result.textContent=t('Enviando…','Sending…');
+   try{const data=await sendIncident({equipo:d.equipo,problema:text,gravedad:sev,demo:false,uuid:'cli-'+uuid});problem.value='';track(data.id);const a=document.createElement('a');a.href=incidentDetailUrl(data.id);a.target='_blank';a.rel='noopener';a.textContent=data.id+' · Yokup';result.replaceChildren(a);step(t('«Abrir ticket» pulsado → ','“Open ticket” pressed → ')+data.id);await freshInc(data.id);return {id:data.id,resource:data.resource,deviceId:d.id,name:d.name};}
+   finally{busy=false;for(const b of panel.querySelectorAll('button'))b.disabled=false;refresh();}
+  },
+  async close({id,note,by='admira.store · XpaceOS Matrix · CLI',step=()=>{}}){
+   let inc=await freshInc(id);if(!inc)throw Error(t('No encuentro ','Cannot find ')+id);if(!/:manual:cli-/.test(String(inc.resource||'')))throw Error(t('sólo se cierran desde la CLI las incidencias que abrió la CLI','the CLI only closes incidents it opened'));const d=devices.find(x=>x.equipo===equipoFromResource(inc.resource));
+   if(inc.stage==='cerrada'||inc.stage==='cancelada')return {inc,already:true,deviceId:d?.id};
+   const chip=d&&nodeFor(d.id)?.querySelector(':scope>.matrix-incident-chip');press(chip);step(t('Pulsada la tarjeta de la pantalla → ficha de ','Screen card pressed → ticket ')+id);await wait(700);
+   let f=paintFicha(inc,{phase:t('Ficha abierta en admira.app','Ticket opened in admira.app')});await wait(900);
+   if(inc.stage==='abierta'){press(f.querySelector('[data-ficha="start"]'));await fetcher('https://api.yokup.com/incident',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start:true,id,by})}).catch(()=>null);inc=await freshInc(id)||inc;f=paintFicha(inc,{phase:t('Iniciada · en curso','Started · in progress')});step(t('Ficha: ▶ Iniciar → EN CURSO','Ticket: ▶ Start → IN PROGRESS'));await wait(700);}
+   const area=f.querySelector('.ficha-note');if(area)await typeInto(area,note,1600);step(t('Nota de resolución escrita','Resolution note typed'));await wait(300);
+   press(f.querySelector('[data-ficha="finish"]'));const data=await closeIncident({id,resource:inc.resource,note,by});if(d&&off.has(d.id))setPower(d.id,false);
+   for(let i=0;i<6;i++){inc=await freshInc(id)||inc;if(inc.stage==='cerrada')break;await wait(700);}
+   paintFicha(inc,{phase:t('✓ Finalizada en admira.app','✓ Finished in admira.app')});step(t('Ficha: ✓ Finalizar → FINALIZADA','Ticket: ✓ Finish → FINISHED'));paint();
+   return {inc,applied:data.applied!==false,deviceId:d?.id};
+  }
+ };
+ return {off,paint,demo,open(id=target){target=id;floating.open();},get visible(){return !panel.hidden;},select(id){target=id;refresh();},close(){panel.hidden=true;},remote(id,value){setPower(id,value);},dispose(){stopLanguage();floating.dispose();abort.abort();panel.remove();}};
 }

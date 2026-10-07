@@ -4618,5 +4618,20 @@
     "retailer": "POST https://data.admira.app/api/retailer/incidents/:id/close {note} (sesión del comercio)",
     "idempotent": true,
     "portal_technician": "409: se cierra en el portal con evidencia"
+  },
+  "incident_cli_demo": {
+    "guide": "https://www.admira.store/admira-xp/help.html#incident-cli-demo",
+    "commands": [
+      "/crear incidencia",
+      "/cerrar incidencia",
+      "/cerrar incidencia INC-XXXX",
+      "/create incident",
+      "/close incident"
+    ],
+    "es": "En el modo experto, /crear incidencia lleva el gemelo a Matrix · Starbucks, elige al azar una pantalla vertical del lineal sin incidencia activa (nunca la 1), escribe un motivo técnico o circunstancial realista y abre el ticket en Yokup. /cerrar incidencia va a la última que abrió la CLI, pulsa su tarjeta, abre la ficha de admira.app, la inicia y la finaliza con una nota acorde al motivo, la pantalla vuelve a emitir y se envía un informe PDF a csilvasantin@gmail.com.",
+    "en": "In expert mode, /create incident moves the twin to Matrix · Starbucks, picks a random vertical shelf screen without an active incident (never screen 1), types a realistic technical or circumstantial reason and opens the ticket in Yokup. /close incident goes to the last one opened from the CLI, presses its card, opens the admira.app ticket, starts it and finishes it with a matching note, the screen resumes and a PDF report is emailed to csilvasantin@gmail.com.",
+    "report_endpoint": "POST https://data.yokup.com/api/demo/incident-report {id,timeline} — destinatario fijo (csilvasantin@gmail.com), sólo incidencias demo cerradas abiertas por la CLI (…:manual:cli-…), 1 por incidencia, 10/hora",
+    "email_provider": "Cloudflare Email Routing (admira.live) · binding send_email de yokup-api",
+    "only_cli_tickets": true
   }
 }
