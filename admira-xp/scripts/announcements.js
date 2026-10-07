@@ -1,15 +1,17 @@
 /* Local PA announcements: one Stock audio asset, three sequential readings. */
 (function(root){
   'use strict';
-  function createAnnouncements({synthesis,Utterance,generate,Audio,onState=()=>{},duck=()=>()=>{},schedule=setTimeout,unschedule=clearTimeout}={}){
+  function createAnnouncements({synthesis,Utterance,generate,Audio,onState=()=>{},duck=()=>()=>{},schedule=setTimeout,unschedule=clearTimeout,times=3}={}){
+    // times = lecturas seguidas del mismo audio (3 por defecto; los altavoces de Starbucks piden 2).
+    const total=Math.max(1,Math.min(9,Math.round(Number(times))||3));
     let revision=0,timer=null,current=null,release=null,audio=null,asset=null,abort=null;
-    let state={phase:'idle',completed:0,total:3,language:'es-ES',error:null};
+    let state={phase:'idle',completed:0,total,language:'es-ES',error:null};
     const emit=()=>onState({...state});
     function cleanup(){if(timer!==null){unschedule(timer);timer=null;}current=null;abort?.abort();abort=null;if(audio){audio.onended=audio.onerror=audio.onplaying=null;audio.pause();audio.removeAttribute?.('src');audio.load?.();audio=null;}asset?.release?.();asset=null;if(release){release();release=null;}}
     function stop(){++revision;cleanup();try{synthesis?.cancel();}catch(_){}state={...state,phase:state.phase==='idle'?'idle':'stopped',error:null};emit();}
     function play(text,{language='es',muted=false,voice='browser'}={}){
       stop();const clean=String(text||'').trim();const token=revision;
-      state={phase:'starting',completed:0,total:3,language:language==='en'?'en-US':'es-ES',voice,error:null};
+      state={phase:'starting',completed:0,total,language:language==='en'?'en-US':'es-ES',voice,error:null};
       const fail=error=>{cleanup();state={...state,phase:'error',error};emit();return false;};
       if(!clean)return fail('empty');
       if(muted)return fail('muted');
@@ -30,7 +32,7 @@
             audio.onended=()=>{
               if(token!==revision||!audio)return;
               state={...state,completed:state.completed+1};
-              if(state.completed===3){cleanup();state={...state,phase:'done'};emit();}
+              if(state.completed>=total){cleanup();state={...state,phase:'done'};emit();}
               else{state={...state,phase:'between'};emit();timer=schedule(()=>{timer=null;replay();},250);}
             };
             Promise.resolve(audio.play()).catch(()=>{if(token===revision)fail('playback');});
@@ -52,7 +54,7 @@
           u.onend=()=>{
             if(token!==revision||current!==u)return;current=null;
             state={...state,completed:state.completed+1};
-            if(state.completed===3){cleanup();state={...state,phase:'done'};emit();}
+            if(state.completed>=total){cleanup();state={...state,phase:'done'};emit();}
             else{state={...state,phase:'between'};emit();timer=schedule(()=>{timer=null;next();},250);}
           };
           u.onerror=event=>{if(token===revision&&current===u)fail(event?.error||'speech');};
@@ -104,9 +106,9 @@
   // con las mismas tres lecturas y la misma bajada del hilo musical. No genera otra vez.
   let stockPlayer=null;
   function stopStock(){const player=stockPlayer;stockPlayer=null;player?.stop();}
-  function playStock(url,text,{language='es',onState=()=>{}}={}){
+  function playStock(url,text,{language='es',onState=()=>{},times=3}={}){
     api.stop();stopStock();
-    const player=createAnnouncements({Audio:root.Audio,generate:async()=>({url}),onState,duck});
+    const player=createAnnouncements({Audio:root.Audio,generate:async()=>({url}),onState,duck,times});
     stockPlayer=player;return player.play(String(text||'').trim()||'Stock',{voice:'female',language:language==='en'?'en':'es'});
   }
   root.XpaceAnnouncements={...api,play:(text,opts={})=>{stopStock();return api.play(text,{...opts,voice:opts.voice||selector?.value||'browser'});},stop:()=>{stopStock();api.stop();},playStock,stopStock};
