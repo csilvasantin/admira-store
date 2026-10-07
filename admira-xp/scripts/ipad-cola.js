@@ -68,15 +68,21 @@
   // con ampliar/cerrar (✕, clic fuera o Escape). Vale en Good 2D (canvas #c), Better/Best 3D (XpaceSceneScreens)
   // y Matrix · 360 (nodo .matrix-landscape-ipad). En /layout no se intercepta.
   const enLayout=()=>doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active');
-  function esIpad(e){
-    if(e.target&&e.target.closest&&e.target.closest('.matrix-landscape-ipad'))return true;
-    if(e.target&&e.target.id==='c'&&hit(e))return true;
-    try{const S=root.XpaceSceneScreens;if(S&&typeof S.screenAt==='function'&&S.screenAt(e.clientX,e.clientY)===ID)return true;}catch(_){}
+  // Hit-test POR COORDENADAS (no por e.target): en Matrix el panorama captura el puntero y en Good/3D
+  // hay capas encima del canvas, así que el destino del evento casi nunca es el iPad (r30, Carlos 7-oct).
+  function esIpad(e){const x=e.clientX,y=e.clientY;let els=[];try{els=doc.elementsFromPoint(x,y)||[];}catch(_){}
+    if(els[0]&&els[0].closest&&els[0].closest('nav,button,a,input,textarea,select,#xpace-side-left,#xpace-side-right,#telegramDock,#ipadColaChip,[role=dialog]'))return false;
+    if(els.some(n=>n.closest&&n.closest('.matrix-landscape-ipad')))return true;
+    for(const n of doc.querySelectorAll('.matrix-landscape-ipad')){const r=n.getBoundingClientRect();if(r.width&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&els.some(el=>el===n.parentElement||(el.contains&&el.contains(n))||(n.parentElement&&n.parentElement.contains(el))))return true;}
+    const cv=doc.getElementById('c');if(cv&&els.includes(cv)&&hit(e))return true;
+    try{const S=root.XpaceSceneScreens;if(S&&typeof S.screenAt==='function'&&S.screenAt(x,y)===ID)return true;}catch(_){}
+    try{const O=root.XpaceOptionsPlayback;if(O&&typeof O.screenAt==='function'&&O.screenAt(x,y)===ID)return true;}catch(_){}
     return false;}
   doc.addEventListener('dblclick',e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on')))return;if(esIpad(e)){e.stopPropagation();e.preventDefault();abrir(true);}},true);
   // Un toque/clic (sin arrastre) basta: Carlos pulsa una vez en el iPad, no hace doble clic.
-  let down=null;doc.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,t:Date.now()};},true);
-  doc.addEventListener('click',e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on')))return;const d=down;if(d&&(Math.hypot(e.clientX-d.x,e.clientY-d.y)>8||Date.now()-d.t>700))return;if(esIpad(e)){e.stopPropagation();e.preventDefault();abrir(true);}},true);
+  let down=null,last=0;const tap=e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on'))||Date.now()-last<600)return;const d=down;if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>8||Date.now()-d.t>700)return;if(esIpad(e)){last=Date.now();down=null;if(e.type==="click"){e.stopPropagation();e.preventDefault();}abrir(true);}};
+  root.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,t:Date.now()};},true);
+  root.addEventListener('pointerup',tap,true);root.addEventListener('click',e=>{if(Date.now()-last<600){e.stopPropagation();e.preventDefault();return;}tap(e);},true);
   // Botón visible «Abrir gestor de colas» mientras el gemelo Starbucks está en escena.
   let chip=null;setInterval(()=>{const a=active()&&!enLayout();if(!chip){if(!a||!doc.body)return;chip=doc.createElement('button');chip.id='ipadColaChip';chip.type='button';chip.textContent='🧾 Abrir gestor de colas';chip.title='iPad del mostrador · admira.tv/gestorColas';chip.addEventListener('click',e=>{e.stopPropagation();abrir(true);});ensure();doc.body.appendChild(chip);}chip.classList.toggle('on',a&&!modal.classList.contains('on'));},1000);
   doc.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal&&modal.classList.contains('on'))abrir(false);});
