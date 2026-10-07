@@ -63,7 +63,7 @@ export function mountExpertWorkspace({panel,shell,config}){
   for(const spec of def.actions||[]){
    const button=el(spec.href?'a':'button',t(spec));button.dataset.shellEs=spec.es;button.dataset.shellEn=spec.en;
    if(spec.href){const context=inventoryContext(doc.location?.href||view.location.href);button.href=spec.href==='/inventario/'&&context.scoped?inventoryURL(doc.location?.href||view.location.href,context).href:spec.href;if(/^https:/.test(spec.href)){button.target='_blank';button.rel='noopener noreferrer';}}
-   else if(spec.toggle){button.type='button';delete button.dataset.shellEs;delete button.dataset.shellEn;view.XpaceToggle.mount(button,{label:()=>t(spec),state:()=>spec.toggle==='avatar'?(view.AdmiraAvatar?.state?.().visible??view.AvatarDigital?.storedOn?.()):view.XpaceExpertControlState?.(spec.toggle),run:on=>shell.run(spec.command+' '+(on?'on':'off'))});}
+   else if(spec.toggle){button.type='button';delete button.dataset.shellEs;delete button.dataset.shellEn;view.XpaceToggle.mount(button,{label:()=>t(spec),state:()=>spec.toggle==='avatar'?view.XpaceToggle.avatarOn(view):view.XpaceExpertControlState?.(spec.toggle),run:on=>shell.run(spec.command+' '+(on?'on':'off'))});}
    else{button.type='button';listen(button,'click',async()=>{
     if(spec.input&&!input?.value.trim())return;
     released=new WeakSet();

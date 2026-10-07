@@ -6,5 +6,6 @@
   button.addEventListener('click',async()=>{if(busy)return;busy=true;button.disabled=true;try{await run(!state());}finally{busy=false;button.disabled=false;sync();}});
   sync();const timer=root.setInterval(sync,400);root.addEventListener('pagehide',()=>root.clearInterval(timer),{once:true});return sync;
  }
- root.XpaceToggle={mount};
+ function avatarOn(view=root){const s=view.AdmiraAvatar?.state?.();return s? s.override==='on'||s.override!=='off'&&!!s.present:!!view.AvatarDigital?.storedOn?.();}
+ root.XpaceToggle={mount,avatarOn};
 })(typeof window==='undefined'?globalThis:window);

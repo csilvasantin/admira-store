@@ -11934,7 +11934,7 @@ function startNewDayFromResults(){
 }
 window.startNewDayFromResults=startNewDayFromResults;
 window.closeDaySummary=()=>{if(G?.dayResultsOpen)startNewDayFromResults();};
-window.XpaceExpertControlState=key=>key==='totem'?!!(DS_PIN?.metahuman?.kind==='web'):key==='avatar'?!!(window.AdmiraAvatar?.state?.().visible??window.AvatarDigital?.storedOn?.()):key==='audience'?!!IMPACTS.on:false;
+window.XpaceExpertControlState=key=>key==='totem'?!!(DS_PIN?.metahuman?.kind==='web'):key==='avatar'?window.XpaceToggle.avatarOn(window):key==='audience'?!!IMPACTS.on:false;
 
 // ── RANDOM EVENTS ────────────────────────────────────────────
 function checkRandomEvents(){
