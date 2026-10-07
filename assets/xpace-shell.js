@@ -826,12 +826,15 @@
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
     const V = '20261005-experto-idioma-1', BASE = 'https://www.admiranext.com/suite/experto';
+    const host = location.hostname.replace(/^www\./, '');
+    const nativeDemo = /^(admira\.store|xpaceos\.com)$/.test(host) && new URLSearchParams(location.search).get('ax_demo') === 'store';
+    if (doc.querySelector('script[src^="' + BASE + '.js"]')) return;
     const css = doc.createElement('link');
     css.rel = 'stylesheet'; css.href = BASE + '.css?v=' + V;
     doc.head.appendChild(css);
     const js = doc.createElement('script');
-    js.src = BASE + '.js?v=' + V; js.defer = true;
-    const host = location.hostname.replace(/^www\./, '');
+    js.src = BASE + '.js?v=' + (nativeDemo ? '20261007-native-demo-control-1' : V); js.defer = true;
+    if (nativeDemo) js.setAttribute('data-admira-demo-engine', '');
     const attrs = {
       panel: '#xsExpert', body: '.expert-workspace', form: '#xsCliForm', input: '#xsCli', log: '#xsLog', hint: '.xs-hint',
       extras: '.expert-category-panel,.expert-controls-pane,.expert-view-pane', extrasLabel: 'vista',
