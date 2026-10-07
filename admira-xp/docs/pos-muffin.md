@@ -25,3 +25,7 @@ EN: In Starbucks Alsea Matrix, hold the display-case muffin and drag it to the r
 ES: Entregado: arrastre de un muffin, cantidades, cesta local, sugerencia de café explícita, teclado y textos ESP/ENG. Pendiente: catálogo y precios reales, reglas comerciales de upselling/crossselling, pago, ticket, inventario, sincronización entre clientes y conexión a TPV físico. La sugerencia inicial es determinista, sin servicio IA ni generación de pago.
 
 EN: Delivered: one draggable muffin, quantities, local basket, explicit coffee suggestion, keyboard and ESP/ENG text. Pending: real catalog and prices, commercial upselling/crossselling rules, payment, receipt, inventory, multiuser sync and physical POS integration. The initial suggestion is deterministic, with no AI service or paid generation.
+
+## Demostración / Demonstration
+
+`/demo tpv` automatiza el recorrido y la canción; `/demo off` lo detiene / automates the journey and song; `/demo off` stops it. [Guía ES/EN / ES/EN guide](https://www.admira.store/admira-xp/docs/demo-tpv.md).

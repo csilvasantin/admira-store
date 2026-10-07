@@ -1,4 +1,4 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=pos-muffin-1';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=demo-tpv-1';
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=ipad-20261005-1';
 import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=ipad-20261005-1';
 import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=topbar-20261005-1';

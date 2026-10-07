@@ -145,5 +145,10 @@
     "Matrix: arrastra el muffin de la vitrina a la caja junto al osito",
     "Cesta del gemelo con cantidades y propuesta explícita de añadir café",
     "Arrastre cancelable, teclado y ayuda bilingüe; cobro físico pendiente"
+  ],
+  "v.07.10.2026.r2.06:44": [
+    "/demo tpv en Experto: cámara, silueta y muffin a la caja",
+    "La canción Bad Times Deep House arranca al llegar al TPV",
+    "/demo off y Escape detienen la demo y su canción"
   ]
 }

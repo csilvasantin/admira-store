@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.07.10.2026.r1.06:33",
+  "version": "v.07.10.2026.r2.06:44",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.61",
+    "version": "2.12.62",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -2308,5 +2308,31 @@
     "entry": "https://www.admira.store/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks#tpv",
     "physical_integration": false,
     "mcp_basket_tools": false
+  },
+  "demo_tpv": {
+    "help_topic": "demo-tpv",
+    "es": "En Experto, /demo muestra la ayuda y /demo tpv abre Matrix Starbucks Alsea e inicia una demostración guiada: acerca la cámara a los muffins, marca la silueta de uno, lo recoge, lo lleva a la caja junto al osito y añade una unidad a la cesta existente. Después reproduce Bad Times Deep House, Stock 1308. Experto se oculta para ver el recorrido; puedes volver a abrirlo con ⌘. Detener demo, Escape o /demo off cancelan el recorrido y paran su canción; /demo estado consulta la fase. Una segunda orden no inicia otra demo mientras hay una en curso. Cancelar antes de la caja no añade productos; detener después conserva el muffin añadido. La canción usa un reproductor local y baja temporalmente el hilo musical, que recupera su volumen al parar o terminar; conserva su playlist y pista. Repetir una demo completa añade otro muffin. Un bloqueo de audio muestra error para reintentar. /layout, la edición de geometría o un TPV apagado impiden la demo. Son acciones del gemelo, sin cobro ni conexión física; no se envían a Telegram ni escriben el estado compartido MCP. Bad Day no aparece en el catálogo consultado; esta versión usa la pista disponible Bad Times Deep House.",
+    "en": "In Expert, /demo shows help and /demo tpv opens Starbucks Alsea Matrix and starts a guided demo: the camera moves towards the muffins, outlines one, picks it up, carries it to the register beside the teddy bear and adds one unit to the existing basket. It then plays Bad Times Deep House, Stock 1308. Expert hides so you can watch; reopen it with ⌘. Stop demo, Escape or /demo off cancels the journey and stops its song; /demo status reports the phase. A second command cannot overlap a running demo. Cancelling before the register adds no products; stopping afterwards retains the added muffin. The song uses a local player and temporarily lowers background music, which recovers its volume when stopped or finished; its playlist and current track are retained. Repeating a completed demo adds another muffin. Blocked audio reports an error so you can retry. /layout, geometry editing or a powered-off POS prevent the demo. These are digital twin actions with no payment or physical connection; they are not sent to Telegram and do not write shared MCP state. Bad Day was absent from the checked catalog; this version uses the available Bad Times Deep House track.",
+    "commands": [
+      "/demo",
+      "/demo tpv",
+      "/demo off",
+      "/demo estado",
+      "/demo status"
+    ],
+    "quality": "matrix",
+    "loc": "alsea-sbux-021",
+    "pos_id": "starbucks-tpv-01",
+    "song": {
+      "id": "1790706121644-y5mqrq",
+      "stockNumber": 1308,
+      "title": "Bad Times Deep House",
+      "url": "https://stock.admira.store/stock/1790706121644-y5mqrq/asset.mp4?v=35775129"
+    },
+    "guide": "https://www.admira.store/admira-xp/docs/demo-tpv.md",
+    "basket_api": "window.XpacePOSExperience.demo",
+    "scope": "local-page",
+    "mcp_tools": false,
+    "physical_integration": false
   }
 }

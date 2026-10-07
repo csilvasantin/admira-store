@@ -42,7 +42,7 @@
   // Verbos que viven en el gemelo (su /help: helpSections() de admira-xp/index.html). Fuera
   // del gemelo se guardan en sessionStorage, se abre el gemelo y se ejecutan allí al cargar.
   const TWIN_VERBS = [
-    'reset',
+    'reset', 'demo',
     'gente', 'people', 'personal', 'staff', 'clientes', 'customers', 'status', 'stock', 'turno',
     'hire', 'train', 'restock', 'nuevomiembro', 'echarmiembro', 'report', 'velocidad', 'dvr',
     'envivo', 'calendario', 'resetaudiencia', 'ad', 'upgrade', 'aforo', 'visit', 'save',

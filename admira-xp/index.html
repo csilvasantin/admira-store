@@ -759,7 +759,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261006-avatar-nube-1" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=demo-tpv-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1081,7 +1081,7 @@
 <script src="scripts/voice-receipts.js?v=person-voice-3"></script>
 <link rel="stylesheet" href="scripts/media-experience.css?v=20261006-media-experience-1">
 <script src="scripts/media-experience.js?v=20261006-media-experience-1"></script>
-<script src="scripts/media-options.js?v=pos-muffin-1"></script>
+<script src="scripts/media-options.js?v=demo-tpv-1"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
 <script src="scripts/announcements.js?v=person-voice-1"></script>
@@ -1516,7 +1516,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-pos-muffin-1"></script>
+<script src="xtanco-version.js?v=20261006-demo-tpv-1"></script>
 <script src="xtanco-runtime-config.js?r=28"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -31382,6 +31382,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Music and layout':'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Distribute · furniture editor · Better 16 bits':'Distribuir / Distribute · editor de muebles · Better 16 bits',items:['/cli distribuir','/cli distribute','/distribuir off']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Local inventory · permanent numbers':'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Guided demos · local twin':'Demos guiadas · gemelo local',items:['/demo','/demo tpv','/demo off','/demo estado']},
       {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Starbucks Alsea',items:['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Classic rendering style':'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Navigation map':'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
@@ -31963,10 +31964,10 @@ window.xtAPI = (function(){
         });
       }catch{return {ok:false,local:true,kind:'inventory',message:'No se pudo cargar el inventario local. Recarga la Xperience y reintenta.'};}
     }
-    if(!/^(?:good|better|best|matrix)$|^\/(?:sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
+    if(!/^(?:good|better|best|matrix)$|^\/(?:demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=aviso-1');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=demo-tpv-1');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -36361,8 +36362,8 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=pos-muffin-1">
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=pos-muffin-1">
+<link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=demo-tpv-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=demo-tpv-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36377,7 +36378,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=pos-muffin-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=demo-tpv-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

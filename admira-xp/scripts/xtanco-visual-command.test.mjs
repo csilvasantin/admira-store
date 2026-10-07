@@ -286,3 +286,8 @@ test('layout composer toggles screen numbers locally and never reaches furniture
  assert.equal(parseVisualCommand('/layout save'),null);assert.equal(parseVisualCommand('/layout factory'),null);
  const f=publicRouter();assert.match((await executeVisualCommand('/layout off',{...f,lang:'en'})).message,/Screen numbers OFF/);
 });
+
+test('/demo commands use the shipped Expert dispatcher and never send a bot message or reset the twin',async()=>{
+ globalThis.XpacePOSExperience={demo:{start:()=>({ok:true}),stop(){},state:()=>({phase:'idle'})}};
+ try{for(const input of ['/demo','/demo tpv','/demo off','/demo estado','/demo unknown']){const h=consoleHarness();await h.send(input);assert.equal(h.responses.length,1);assert.deepEqual(h.sent,[]);assert.deepEqual(h.sessionCommands,[]);assert.deepEqual(h.logs,[]);assert.equal(h.responses[0][2],'local-visual');}}finally{delete globalThis.XpacePOSExperience;}
+});

@@ -10,6 +10,7 @@ const aliases=new Map([
 
 export function parseVisualCommand(input){
   const text=String(input||'').trim();
+  const guided=text.match(/^\/demo(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(guided){const arg=(guided[1]||'').trim().toLowerCase();return {guided:!arg||['help','ayuda','?'].includes(arg)?'help':['estado','status'].includes(arg)?'status':['off','stop','tpv off','tpv stop'].includes(arg)?'stop':arg==='tpv'?'tpv':'invalid'};}
   if(/^\/(?:navidad|christmas)(?:\s+(?:on|off))?$/i.test(text))return {demo:/off$/i.test(text)?'linear':'christmas'};
   if(/^\/(?:sincro|sync)\s+(?:ia|ai)$/i.test(text))return {demo:'ia'};
   const labels=parseScreenLayoutCommand(text);if(labels)return labels.legacy?null:{labels};
@@ -37,6 +38,13 @@ export function parseVisualCommand(input){
 export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
   const command=parseVisualCommand(input);if(!command)return null;
   const en=lang==='en';
+  if(command.guided){
+    const usage=en?'Local demos: /demo tpv focuses a muffin, outlines it, carries it to the register and plays the selected song. /demo off or Escape stops it. /demo status.':'Demos locales: /demo tpv enfoca un muffin, marca su silueta, lo lleva a la caja y reproduce la canción elegida. /demo off o Escape detiene la demo. /demo estado.';
+    if(['help','invalid'].includes(command.guided))return {ok:command.guided==='help',local:true,message:usage};
+    if(command.guided==='stop'){globalThis.XpacePOSExperience?.demo?.stop();return {ok:true,local:true,message:en?'Demo stopped.':'Demo detenida.'};}
+    if(command.guided==='status'){const state=globalThis.XpacePOSExperience?.demo?.state();return {ok:true,local:true,message:'Demo TPV · '+({idle:en?'idle':'en reposo',focus:en?'moving to muffins':'acercándose a los muffins',outline:en?'highlighting muffin':'marcando muffin',pick:en?'picking up':'recogiendo',travel:en?'carrying to register':'llevando a caja',drop:en?'dropping':'soltando',checkout:en?'starting song':'preparando canción',completed:en?'completed':'completada',error:en?'error':'error'}[state?.phase]||(en?'idle':'en reposo'))+(state?.song?' · Bad Times Deep House':'')};}
+    try{const outcome=await router?.choose('matrix');if(!router||outcome?.ok===false||outcome?.cancelled||router.mode!=='matrix'||router.error||router.busy)throw Error();const result=globalThis.XpacePOSExperience?.demo?.start();if(!result?.ok)return {ok:false,local:true,message:result?.error==='busy'?(en?'A demo is already running. /demo off stops it.':'Ya hay una demo en curso. /demo off la detiene.'):(en?'POS unavailable. Close /layout or geometry editing and check the POS incident.':'TPV no disponible. Cierra /layout o la edición de geometría y comprueba la incidencia del TPV.')};return {ok:true,local:true,message:en?'POS demo started · muffin to register → Bad Times Deep House.':'Demo TPV iniciada · muffin a caja → Bad Times Deep House.'};}catch{return {ok:false,local:true,message:en?'Could not open the POS demo. Retry Matrix.':'No se pudo abrir la demo TPV. Reintenta Matrix.'};}
+  }
   if(command.demo){try{await router?.choose('matrix');if(!globalThis.XpaceStarbucksDemo)throw Error();await globalThis.XpaceStarbucksDemo.setMode(command.demo);if(command.demo==='ia')setScreenDisplayMode('groups');return {ok:true,local:true,message:'Matrix · '+({ia:'Sincro IA / AI sync',christmas:'Navidad / Christmas',linear:'Playlist estándar / Standard playlist'}[command.demo])};}catch{return {ok:false,local:true,message:en?'Could not load the demo. Retry.':'No se pudo cargar la demo. Reintenta.'};}}
   if(command.labels){
     if(command.labels.invalid)return {ok:false,local:true,message:en?'Usage: /layout [on|off] shows screen numbers. /layoiut is also accepted.':'Uso: /layout [on|off] muestra los números de pantalla. También se acepta /layoiut.'};
