@@ -31,3 +31,5 @@ ES: Un solo toque en el iPad (o el botón 🧾 Abrir gestor de colas) abre el ge
 EN: A single tap on the iPad (or the 🧾 Abrir gestor de colas button) opens the official queue manager at admira.tv/gestorColas/pantalla, with links to open it in a new tab and to the bar control. In ITIL, starbucks-ipad-01 content type is web app (gestorColas).
 
 ES: El toque funciona en Good, Better, Best y Matrix (detección por coordenadas). EN: Tap works in Good, Better, Best and Matrix (coordinate hit-test).
+
+ES: Matrix usa una capa táctil transparente sobre el iframe; la vista ampliada es un <dialog> modal (capa superior) y ✕ cierra con un toque. Diagnóstico: window.__ipadColaDebug. EN: Matrix uses a transparent tap layer over the iframe; the enlarged view is a modal <dialog> (top layer) and ✕ closes on one tap. Debug: window.__ipadColaDebug.
