@@ -4579,8 +4579,8 @@
   },
   "browser_demos": {
     "taza": {
-      "es": "/demo taza: portada y gemelo Starbucks, cámara en esquina; × o /demo taza cerrar libera la cámara. Sin envío IoT.",
-      "en": "/demo taza: homepage and Starbucks twin, corner camera; × or /demo taza close releases camera. No IoT write."
+      "es": "/demo taza: portada y gemelo Starbucks, cámara en esquina; × o /demo taza cerrar libera la cámara. En Starbucks activa starbucks-queue; mantener PlayerTaza abierto.",
+      "en": "/demo taza: homepage and Starbucks twin, corner camera; × or /demo taza close releases camera. In Starbucks selects starbucks-queue; keep PlayerTaza open."
     }
   }
 }
