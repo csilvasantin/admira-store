@@ -32010,7 +32010,7 @@ window.xtAPI = (function(){
     // /inventario idIoT · nombre único de cada elemento IoT (Proyecto_Xpacio_Tipo_n) · Carlos, 7-oct-2026.
     if(/^\/?(?:inventario|inventory)(?:@\w+)?\s+id[\s_-]?iot(?:\s|$)/i.test(text)){
       try{
-        const {runIdIot}=await import('../inventario/idiot-command.mjs?v=idiot-1');
+        const {runIdIot}=await import('../inventario/idiot-command.mjs?v=idiot-2');
         return await runIdIot(text,{
           lang:typeof lang==='undefined'?'es':lang,
           source:window.XpaceInventorySource?.read?.(),storeCfg:window.STORE_CFG||null,starbucks:isStarbucksVenue(),

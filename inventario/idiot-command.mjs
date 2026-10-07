@@ -1,9 +1,9 @@
 // /inventario idIoT — el CLI de Experto enseña el nombre único de cada elemento IoT (ver idiot.mjs).
 // Una sola fuente por Xpacio, siempre la misma, para que un idIoT no nombre dos cosas distintas según desde dónde
-// se pregunte: (1) Starbucks Pg. Gràcia 103 → su registro del gemelo (pared, TPV, iPad, altavoz);
-// (2) cualquier otro Xpacio del catálogo → sus superficies; (3) una escena de demostración sin Xpacio del
+// se pregunte: (1) Starbucks Pg. Gràcia 103 → su registro del gemelo (pared, TPV, iPad, altavoz), guardado ya en su
+// ficha como iot[]; (2) cualquier otro Xpacio del catálogo → sus superficies, con el idIoT guardado en cada una; (3) una escena de demostración sin Xpacio del
 // catálogo → el IoT colocado en su inventario local.
-import {buildIdIot,buildTwinOnly,twinElements,parseIdIotCommand,selectRows,formatIdIot,formatProjects,toCsv,iotType,IDIOT_HELP} from './idiot.mjs?v=idiot-1';
+import {buildIdIot,buildTwinOnly,twinElements,parseIdIotCommand,selectRows,formatIdIot,formatProjects,toCsv,iotType,IDIOT_HELP} from './idiot.mjs?v=idiot-2';
 export const CATALOG_URL='https://api.admira.store/da/locations';
 export const STARBUCKS_LOCATION='alsea-sbux-021';
 const here=file=>new URL(file,import.meta.url).href;
