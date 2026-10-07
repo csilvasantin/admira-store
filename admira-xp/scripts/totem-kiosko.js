@@ -83,13 +83,18 @@
   }
   // ── panel «Pedidos · TPV» ─────────────────────────────────────────────
   let box=null, btn=null, modal=null, tbtn=null;
+  // Presentación Alsea (Carlos, 7-oct-2026): los botones flotantes del tótem («🛒 Kiosk/Quiosco» y «👆 Tocar el tótem»)
+  // no salen por defecto; aparecen cuando ya se ha interactuado con el tótem (toque en escena, abrirlo en grande o /totem).
+  let tocado=false;
+  const esTotem=n=>!!(n&&n.closest&&n.closest('#totemAvatar,.matrix-wall-avatar'));
+  document.addEventListener('pointerdown',e=>{ if(esTotem(e.target)) tocado=true; },true);
   // Vista táctil: el tótem del gemelo mide ~60 px; para TOCARLO se abre a tamaño de pantalla real (9:16).
   function touch(on){ ensure(); const f=modal.querySelector('iframe'); const p=(typeof DS_PIN==='object'&&DS_PIN)?DS_PIN['metahuman']:null;
-    if(on&&p&&p.src){ f.src=p.src; modal.classList.add('on'); } else { modal.classList.remove('on'); f.src='about:blank'; } }
+    if(on&&p&&p.src){ tocado=true; f.src=p.src; modal.classList.add('on'); } else { modal.classList.remove('on'); f.src='about:blank'; } }
   function ensure(){
     if(box) return;
     const css=document.createElement('style');
-    css.textContent='#kioskOrders{position:fixed;right:14px;bottom:86px;width:300px;max-height:46vh;overflow:auto;background:#0f1f1a;color:#f2f5f3;border:2px solid #00a862;border-radius:14px;font:13px/1.35 Inter,system-ui,sans-serif;z-index:9000;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}#kioskOrders.on{display:block}#kioskOrders h4{margin:0;padding:10px 12px;background:#00704a;font-size:14px;display:flex;justify-content:space-between;align-items:center}#kioskOrders h4 small{font-weight:600;opacity:.85}#kioskOrders .o{padding:9px 12px;border-bottom:1px solid #2f4a40}#kioskOrders .o b{font-size:20px;color:#d4b072}#kioskOrders .o i{font-style:normal;float:right;font-size:11px;padding:2px 7px;border-radius:99px;background:#2e5248}#kioskOrders .o i.paid{background:#2f7d4f}#kioskOrders .empty{padding:12px;opacity:.7}#kioskModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9500;display:none;align-items:center;justify-content:center}#kioskModal.on{display:flex}#kioskModal .wrap{position:relative;height:92vh;aspect-ratio:9/16}#kioskModal iframe{width:100%;height:100%;border:0;border-radius:18px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#kioskModal .x{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}#kioskTouch{position:fixed;right:150px;bottom:40px;z-index:9000;background:#d4b072;color:#1e1a12;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;display:none}#kioskBtn{position:fixed;right:14px;bottom:40px;z-index:9000;background:#00704a;color:#fff;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}';
+    css.textContent='#kioskOrders{position:fixed;right:14px;bottom:86px;width:300px;max-height:46vh;overflow:auto;background:#0f1f1a;color:#f2f5f3;border:2px solid #00a862;border-radius:14px;font:13px/1.35 Inter,system-ui,sans-serif;z-index:9000;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}#kioskOrders.on{display:block}#kioskOrders h4{margin:0;padding:10px 12px;background:#00704a;font-size:14px;display:flex;justify-content:space-between;align-items:center}#kioskOrders h4 small{font-weight:600;opacity:.85}#kioskOrders .o{padding:9px 12px;border-bottom:1px solid #2f4a40}#kioskOrders .o b{font-size:20px;color:#d4b072}#kioskOrders .o i{font-style:normal;float:right;font-size:11px;padding:2px 7px;border-radius:99px;background:#2e5248}#kioskOrders .o i.paid{background:#2f7d4f}#kioskOrders .empty{padding:12px;opacity:.7}#kioskModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9500;display:none;align-items:center;justify-content:center}#kioskModal.on{display:flex}#kioskModal .wrap{position:relative;height:92vh;aspect-ratio:9/16}#kioskModal iframe{width:100%;height:100%;border:0;border-radius:18px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#kioskModal .x{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}#kioskTouch{position:fixed;right:150px;bottom:40px;z-index:9000;background:#d4b072;color:#1e1a12;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;display:none}#kioskBtn{display:none;position:fixed;right:14px;bottom:40px;z-index:9000;background:#00704a;color:#fff;border:0;border-radius:99px;padding:8px 14px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}';
     document.head.appendChild(css);
     box=document.createElement('div'); box.id='kioskOrders'; box.setAttribute('aria-live','polite'); document.body.appendChild(box);
     btn=document.createElement('button'); btn.id='kioskBtn'; btn.type='button';
@@ -103,7 +108,7 @@
   }
   function render(){
     if(!box) return;
-    tbtn.textContent=en()?'👆 Touch the totem':'👆 Tocar el tótem'; tbtn.style.display=kioskOn()?'block':'none';
+    tbtn.textContent=en()?'👆 Touch the totem':'👆 Tocar el tótem'; tbtn.style.display=(kioskOn()&&tocado)?'block':'none';
     btn.textContent=kioskOn()?(en()?'🛒 Kiosk · off':'🛒 Quiosco · quitar'):(en()?'🛒 Kiosk':'🛒 Quiosco');
     box.innerHTML='<h4>'+(en()?'Orders · POS':'Pedidos · TPV')+' <small>DEMO</small></h4>'+(orders.length?orders.slice().reverse().map(o=>{
       const paid=o.status==='paid-simulated';
@@ -190,10 +195,10 @@
       (d.listo||[]).forEach(p=>{ if(!colaVistos.has(p.numero)){ colaVistos.add(p.numero); if(!colaPrimera) colaPend.push(p); } });
       colaPrimera=false; colaSiguiente(); }catch(_){} }
   setInterval(colaTic,3000);
-  function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; } }catch(_){} },1500);
+  function boot(){ ensure(); setInterval(()=>{ try{ if(!tocado&&esTotem(document.activeElement)) tocado=true; /* clic dentro del iframe del tótem = foco */ btn.style.display=(tocado&&(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko')))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; } }catch(_){} },1500);
     try{ const q=new URLSearchParams(location.search); if(q.has('kiosko')) setTimeout(()=>totemCommand('kiosko'),2500); else if(stored()) setTimeout(()=>{ setTotem(true,storedUrl()); },2500); }catch(_){} }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
-  window.totemKioskCommand=totemCommand;
+  window.totemKioskCommand=function(a){ tocado=true; return totemCommand(a); }; // /totem tecleado = interacción
   window.XpaceTotem={on:stored,url:()=>storedUrl()||kioskUrl(),kioskUrl:kioskUrl,set:setTotem,formato:formatoDe,key:MODE_KEY};
-  window.XpaceTotemKiosk={cola:()=>window.__gemeloColaAvisos.slice(),colaTexto:colaTexto,say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
+  window.XpaceTotemKiosk={touched:()=>tocado,cola:()=>window.__gemeloColaAvisos.slice(),colaTexto:colaTexto,say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
 })();
