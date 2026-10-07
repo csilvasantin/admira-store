@@ -143,10 +143,32 @@
     (window.__totemSaid=window.__totemSaid||[]).push({text:String(d.text||''),lang:d.lang||'es-ES',via:r.via,at:Date.now()});
     try{ e.source&&e.source.postMessage({source:'xpaceos-totem',type:'say-ack',id:d.id,spoken:r.spoken,via:r.via},e.origin); }catch(_){}
   });
+  // ── Cola de pedidos → Admirito del gemelo (7-oct-2026, Carlos) ──
+  // Con Starbucks en escena (o ?cola=<store>) lee /cola/estado del relé de ainimation cada 3 s y, cuando un
+  // pedido pasa a «listo», el avatar lo dice UNA vez: «NOMBRE, tu pedido Starbucks está preparado»
+  // (sin nombre: «Pedido A015, …»). Habla con totemSpeak (cara MetaHuman si está viva; si no, voz es-ES).
+  // Los listos que ya había al abrir no se anuncian. Demo: pago SIMULADO. Rastro: window.__gemeloColaAvisos.
+  const COLA_RELAY='https://mcp-ainimation.admira.store';
+  const colaVistos=new Set(),colaPend=[];let colaPrimera=true,colaHablando=false,colaStoreActual='';
+  window.__gemeloColaAvisos=window.__gemeloColaAvisos||[];
+  function colaStore(){ try{ const q=new URLSearchParams(location.search).get('cola'); if(q) return q.replace(/[^a-z0-9-]/g,'').slice(0,80); }catch(_){}
+    try{ if(window.XpaceStarbucks&&window.XpaceStarbucks.active()) return 'starbucks-paseo-de-gracia'; }catch(_){} return ''; }
+  function colaTexto(p){ const n=String(p.nombre||'').replace(/[^\p{L} '\-]/gu,'').trim().slice(0,24);
+    return n?(en()?n+', your Starbucks order is ready':n+', tu pedido Starbucks está preparado'):(en()?'Order '+p.numero+', your Starbucks order is ready':'Pedido '+p.numero+', tu pedido Starbucks está preparado'); }
+  function colaSiguiente(){ if(colaHablando||!colaPend.length) return; colaHablando=true; const p=colaPend.shift(),t=colaTexto(p);
+    const r=totemSpeak(t,en()?'en-GB':'es-ES'); toast('☕ '+t);
+    window.__gemeloColaAvisos.push({numero:p.numero,nombre:p.nombre||null,text:t,via:r.via,at:Date.now()});
+    setTimeout(()=>{ colaHablando=false; colaSiguiente(); },6000); }
+  async function colaTic(){ const st=colaStore(); if(!st){ colaStoreActual=''; return; }
+    if(st!==colaStoreActual){ colaStoreActual=st; colaVistos.clear(); colaPrimera=true; }
+    try{ const d=await (await fetch(COLA_RELAY+'/cola/estado?store='+encodeURIComponent(st),{cache:'no-store'})).json();
+      (d.listo||[]).forEach(p=>{ if(!colaVistos.has(p.numero)){ colaVistos.add(p.numero); if(!colaPrimera) colaPend.push(p); } });
+      colaPrimera=false; colaSiguiente(); }catch(_){} }
+  setInterval(colaTic,3000);
   function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; } }catch(_){} },1500);
     try{ const q=new URLSearchParams(location.search); if(q.has('kiosko')) setTimeout(()=>totemCommand('kiosko'),2500); else if(stored()) setTimeout(()=>{ setTotem(true,storedUrl()); },2500); }catch(_){} }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   window.totemKioskCommand=totemCommand;
   window.XpaceTotem={on:stored,url:()=>storedUrl()||kioskUrl(),kioskUrl:kioskUrl,set:setTotem,formato:formatoDe,key:MODE_KEY};
-  window.XpaceTotemKiosk={say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
+  window.XpaceTotemKiosk={cola:()=>window.__gemeloColaAvisos.slice(),colaTexto:colaTexto,say:totemSpeak,touch:touch,on:()=>totemCommand('kiosko'),off:()=>totemCommand('off'),orders:()=>orders.slice(),url:kioskUrl};
 })();
