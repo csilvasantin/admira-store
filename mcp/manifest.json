@@ -2343,6 +2343,26 @@
     "mcp_tools": false,
     "physical_integration": false
   },
+  "demo_soluciones": {
+    "help_topic": "demo-soluciones",
+    "es": "/demo lista las cinco soluciones (studio, store, tv, app, biz) y /demo <solución|1-5> abre su demo, en el ⌘ Experto de toda la suite y desde el avatar digital (que la presenta y luego la abre). En este gemelo /demo store = /demo tpv; ?demo=tpv en la URL la lanza al primer toque.",
+    "en": "/demo lists the five solutions (studio, store, tv, app, biz) and /demo <solution|1-5> opens its demo, in the ⌘ Expert of the whole suite and from the digital avatar (which introduces it, then opens it). In this twin /demo store = /demo tpv; ?demo=tpv in the URL starts it on first tap.",
+    "commands": [
+      "/demo",
+      "/demo studio",
+      "/demo store",
+      "/demo tv",
+      "/demo app",
+      "/demo biz",
+      "/demo siguiente"
+    ],
+    "avatar_message": {
+      "type": "da-demo",
+      "id": "studio|store|tv|app|biz",
+      "origin": "https://digitalavatar.ai"
+    },
+    "guide": "https://www.admira.store/admira-xp/docs/demo-soluciones.md"
+  },
   "ifthendothat": {
     "help_topic": "ifthendothat",
     "es": "Abre /ifthendothat en Experto o Avanzado. IF elige Cojo un muffin o Llevo un muffin a la caja. Cada DO elige una reacción (Música, Locución, Imagen o Vídeo), su filtro y el contenido de Pixeria. Se preseleccionan #musica, #locucion, #imagen y #video; Todos · quitar filtro o borrar la búsqueda muestra todo el tipo elegido. El catálogo usa el índice público completo de Pixeria, sin el límite anterior de 200. Pulsa la cabecera de cada DO para editarlo; las reacciones elegidas se resumen para ahorrar espacio. + Añadir reacción anida hasta ocho DO en la misma regla: por ejemplo, locución y vídeo simultáneos. Para cada imagen o vídeo marca una o varias pantallas: pared 1–6, TPV e iPad. Por defecto se elige TPV. Si dos DO usan la misma pantalla, el último visual ocupa ese destino. Con música o locución, el vídeo se muestra sin audio; sin ellas, sólo una pantalla de vídeo emite audio para evitar ecos. Escoger contenido guarda la regla sin emitir. Arrastre, Enter/Espacio y /demo tpv ejecutan la regla una vez por gesto. Detener reacción, Escape o /demo off detienen todos sus DO y recuperan el contenido y volumen programados. El vídeo termina naturalmente; las imágenes permanecen hasta detener. Si un contenido no está disponible, las otras reacciones válidas siguen funcionando. La prioridad mayor gana; en empate, la última regla. Se conservan reglas antiguas, IDs e historial. Las reglas son locales en este navegador y dominio; no cambian playlists compartidas ni ordenan TPV o pantallas físicos. Matrix sigue siendo el modo inicial salvo quality o visual explícito; /marca starbucks conserva el imagotipo y el texto STARBUCKS blanco.",

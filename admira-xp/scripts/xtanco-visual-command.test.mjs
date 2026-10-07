@@ -297,3 +297,24 @@ test('/ifthendothat commands use the shipped dispatcher without bot or session w
  globalThis.XPLComposer={open(){},close(){},toggle(){}};
  try{for(const input of ['/ifthendothat','/ifthendothat on','/ifthendothat off','/ifthendothat typo']){const h=consoleHarness();await h.send(input);assert.equal(h.responses.length,1);assert.deepEqual(h.sent,[]);assert.deepEqual(h.sessionCommands,[]);assert.deepEqual(h.logs,[]);assert.equal(h.responses[0][2],'local-visual');}}finally{delete globalThis.XPLComposer;}
 });
+
+// /demo de las cinco soluciones (7-oct-2026, demo Alsea): store = /demo tpv; el resto abre su demo.
+test('/demo <solución>: store es la demo TPV y las demás abren su URL', async () => {
+  const m = await import('./xtanco-visual-command.mjs');
+  assert.deepEqual(m.parseVisualCommand('/demo store'), {guided: 'tpv'});
+  assert.equal(m.parseVisualCommand('/demo 1').solution.id, 'studio');
+  assert.equal(m.parseVisualCommand('/demo admira.biz').solution.id, 'biz');
+  assert.deepEqual(m.parseVisualCommand('/demo tpv'), {guided: 'tpv'});
+  assert.deepEqual(m.parseVisualCommand('/demo off'), {guided: 'stop'});
+  const help = await m.executeVisualCommand('/demo', {lang: 'es'});
+  assert.match(help.message, /Cinco soluciones: 1 \/demo studio · 2 \/demo store/);
+  const went = [];
+  const prev = globalThis.location;
+  globalThis.location = {assign: (u) => went.push(u)};
+  try {
+    const r = await m.executeVisualCommand('/demo tv', {lang: 'es'});
+    assert.equal(r.ok, true);
+    await new Promise((res) => setTimeout(res, 700));
+    assert.match(went[0], /admira\.tv\/adcelerate\/demo/);
+  } finally { globalThis.location = prev; }
+});
