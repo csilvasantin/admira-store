@@ -10,7 +10,7 @@
   const pageUrl=()=>'https://www.ainimation.studio/cola/ipad.html?store='+store();
   let on=true;try{on=root.localStorage.getItem(KEY)!=='off';}catch(_){}
   let data=null,nuevos=new Map(),vistos=null,modal=null;
-  const active=()=>{try{return on&&!!(root.XpaceStarbucks&&root.XpaceStarbucks.active());}catch(_){return false;}};
+  const active=()=>{try{return on&&(!!(root.XpaceStarbucks&&root.XpaceStarbucks.active())||!!doc.querySelector('.matrix-landscape-ipad'));}catch(_){return false;}};
   async function tic(){if(!active())return;try{const d=await (await fetch(RELAY+'/cola/estado?store='+store(),{cache:'no-store'})).json();
     const ls=(d.listo||[]).map(p=>p.numero);if(vistos){ls.forEach(n=>{if(!vistos.has(n))nuevos.set(n,Date.now());});}vistos=new Set(ls);data=d;}catch(_){}}
   setInterval(tic,3000);setTimeout(tic,800);
@@ -60,8 +60,28 @@
     const r=cv.getBoundingClientRect();return inQuad((e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height,q);}
   let down=null;doc.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};},true);
   doc.addEventListener('click',e=>{if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)return;if((doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))||e.target.id!=='c')return;if(hit(e)){e.stopPropagation();e.preventDefault();abrir(true);}},true);
+
+  // ── Matrix · 360 (7-oct-2026): ahí el iPad es un <div class="matrix-mapped-player matrix-landscape-ipad"> deformado
+  // sobre la foto, que no pasa por XpaceScreenMedia (por eso seguía en verde con «iPad»). Si no hay vídeo/imagen de
+  // playlist o previo dentro, le metemos la página real de la cola (&escena=1: sin voz propia, habla el gemelo).
+  function matrixIpad(){
+    const nodes=doc.querySelectorAll('.matrix-landscape-ipad');
+    nodes.forEach(node=>{
+      let fr=node.querySelector('iframe.ipad-cola-frame');
+      const otro=[...node.querySelectorAll('.matrix-player-media')].some(m=>m!==fr&&((m.tagName==='VIDEO'&&(m.currentSrc||m.getAttribute('src')))||m.tagName==='IMG'||(m.tagName==='IFRAME'&&!m.classList.contains('ipad-cola-frame'))));
+      if(!on||otro){ if(fr){fr.remove();node.classList.remove('ipad-cola-on');} return; }
+      if(!fr){ fr=doc.createElement('iframe');fr.className='ipad-cola-frame';fr.title='iPad del mostrador · gestor de colas';fr.setAttribute('tabindex','-1');fr.setAttribute('aria-hidden','true');
+        fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#1E3932;pointer-events:none;z-index:1';
+        fr.src=pageUrl()+'&escena=1';node.prepend(fr);node.classList.add('ipad-cola-on');
+        if(!node.__colaClick){node.__colaClick=true;node.addEventListener('click',e=>{if(!on||doc.documentElement.classList.contains('device-layout-active')||doc.body.classList.contains('device-layout-active'))return;if(!node.querySelector('iframe.ipad-cola-frame'))return;e.stopPropagation();abrir(true);},true);} }
+      node.style.pointerEvents=(doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))?'':'auto';node.style.cursor='pointer';
+      const idle=node.querySelector('.matrix-ipad-idle');if(idle)idle.style.display='none';
+    });
+    try{root.__ipadColaMatrix=nodes.length;}catch(_){}
+  }
+  setInterval(matrixIpad,1500);
   function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → gestor de colas (Admirito). Tócalo para abrirlo en grande.'};}
-    if(a==='off'||a==='playlist'){on=false;try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
+    if(a==='off'||a==='playlist'){on=false;setTimeout(matrixIpad,0);try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
     if(a==='abrir'||a==='open'){abrir(true);return {ok:true,message:pageUrl()};}return {ok:false,message:'/ipad cola · /ipad off · /ipad abrir'};}
   root.XpaceIpadCola={id:ID,url:pageUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !((d.listo||[]).length||(d.preparando||[]).length);},frases:FRASES};
 })(typeof window!=='undefined'?window:globalThis);
