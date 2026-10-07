@@ -197,3 +197,12 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-wall-avatar[data-mode=kiosk] .matrix-avatar-model{display:none}
 .matrix-incident-quickclose{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:4;font:800 clamp(10px,1.2vw,15px)/1 system-ui,sans-serif;padding:.5em .9em;border-radius:999px;border:2px solid #fff;background:#0a4d2c;color:#fff;cursor:pointer;white-space:nowrap;pointer-events:auto}
 .matrix-incident-editor .incident-close{border-top:1px solid #ffffff33;margin-top:10px;padding-top:8px}.matrix-incident-editor .incident-current{font-weight:700}
+/* Demo CLI /crear incidencia · /cerrar incidencia: pulsación visible y ficha de admira.app dentro del gemelo. */
+.is-demo-press{outline:3px solid #ffd866!important;outline-offset:2px;box-shadow:0 0 0 6px #ffd86655!important;transition:outline-color .2s}
+.matrix-ficha{z-index:9;top:56px;right:auto;left:16px;width:360px}.matrix-ficha header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.matrix-ficha .ficha-url{font:600 11px/1.2 ui-monospace,monospace;color:#9dffcf;margin:4px 0 8px;overflow-wrap:anywhere}
+.matrix-ficha .ficha-stage{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;font-weight:800;background:#5c0a0e;border:1px solid #ff5a5f}
+.matrix-ficha .ficha-stage[data-stage=en_curso]{background:#5a3a00;border-color:#ffb020}.matrix-ficha .ficha-stage[data-stage=cerrada]{background:#0a4d2c;border-color:#3ddc84}
+.matrix-ficha dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0 0 8px;font-size:13px}.matrix-ficha dt{opacity:.75}.matrix-ficha dd{margin:0;overflow-wrap:anywhere}
+.matrix-ficha .ficha-actions{display:flex;gap:8px;margin:8px 0}.matrix-ficha .ficha-phase{font-weight:700;color:#9dffcf;min-height:1.2em}
+@media(max-width:650px){.matrix-ficha{left:8px;width:290px}}

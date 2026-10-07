@@ -33,5 +33,5 @@ test('la tarjeta de incidencia cabe en cualquier pantalla (letra por contenedor,
  const fs=await import('node:fs');const css=fs.readFileSync(new URL('./matrix-panorama.css',import.meta.url),'utf8'),src=fs.readFileSync(new URL('./starbucks-incidents.mjs',import.meta.url),'utf8');
  assert.match(css,/\.matrix-incident-chip\{--fit:1;[^}]*justify-content:safe center/);assert.match(css,/\.matrix-incident-chip span\{[^}]*-webkit-line-clamp:2/);assert.match(css,/\.matrix-incident-chip strong\{[^}]*text-overflow:ellipsis/);
  assert.match(src,/function fitChip\(chip\)/);assert.match(src,/fitShape/);
- assert.match(fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),/matrix-panorama\.css\?v=incident-card-fit-1/);
+ assert.match(fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),/matrix-panorama\.css\?v=cli-incidencia-1/);
 });

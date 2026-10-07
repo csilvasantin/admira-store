@@ -56,6 +56,7 @@
     'layout', 'cli', 'distribuir', 'distribute', 'inventario', 'eliminar', 'good', 'better', 'best',
     'matrix', 'sincro', 'sincrototal', 'sync', 'synctotal', 'mudanza', 'modo', 'render', 'xpacio',
     'mapa', 'map', 'red', 'equipo', 'streamdeck', 'sd', 'debug', 'present', 'aviso', 'navidad',
+    'crear', 'create', 'cerrar', 'close',
   ];
   // Las vistas del gemelo se escriben sin barra (good, better, best, matrix).
   const BARE_TWIN = ['good', 'better', 'best', 'matrix'];

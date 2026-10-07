@@ -1518,7 +1518,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261007-r44"></script>
+<script src="xtanco-version.js?v=20261007-r46"></script>
 <script src="xtanco-runtime-config.js?r=audio-mute-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -31402,6 +31402,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Interface language':'Idioma de la interfaz',items:['/idioma ESP','/idioma ENG']},
       {title:typeof lang!=='undefined'&&lang==='en'?'People visibility · ES / EN':'Personas visibles · ES / EN',items:['/gente on','/gente off','/people on','/people off','/personal on','/personal off','/staff on','/staff off','/clientes on','/clientes off','/customers on','/customers off']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Queries':'Consulta',items:['/status','/staff','/stock','/turno']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Incidents (Matrix · Starbucks demo)':'Incidencias (demo Matrix · Starbucks)',items:['/crear incidencia','/cerrar incidencia','/cerrar incidencia INC-XXXX','/create incident','/close incident']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Queue (long wall screen)':'Turnos (pantalla pared larga)',items:['/turno on','/turno off','/turno next','/turno previous','/turno 15','/turno auto']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Staff and stock':'Equipo y stock',items:['/hire 1','/hire dj','/hire all','/train 1','/train all','/restock 2','/restock all','/restock prensa']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Venue staff (twin)':'Equipo del punto (gemelo)',items:['/nuevoMiembro Laura azafata','/nuevoMiembro Pedro cajero','/echarMiembro Laura','/report Marta']},
@@ -32067,6 +32068,12 @@ window.xtAPI = (function(){
 
     try{
       if(cmd==='start'||cmd==='help') return commandHelp();
+      // /crear incidencia · /cerrar incidencia [INC-…] (/create incident · /close incident): demo guiada en Matrix ·
+      // Starbucks con ticket real en Yokup, ficha de admira.app e informe PDF a Carlos (scripts/incident-demo.mjs).
+      if(['crear','create','cerrar','close'].includes(cmd)&&/^(incidencia|incident)(\s|$)/i.test(arg)){
+        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-1');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:typeof lang==='undefined'?'es':lang,progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
+        catch(e){return (typeof lang!=='undefined'&&lang==='en'?'Incident demo error: ':'Error en la demo de incidencias: ')+(e&&e.message||e);}
+      }
       // /marca <id|off|web> (FLT-101337). Aquí llega de Telegram, el MCP o /twin/cmd: no hay
       // un navegador que vestir, así que responde con el enlace que abre la marca. En la
       // consola local la aplica sendComposerText (XpaceShell.marca) antes de llegar aquí.
@@ -36468,7 +36475,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
 <link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=xtore-ux-3">
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=incident-card-fit-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=cli-incidencia-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">

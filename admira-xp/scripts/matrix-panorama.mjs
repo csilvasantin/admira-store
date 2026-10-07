@@ -119,8 +119,13 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  // Excepción (Carlos, 7-oct-2026): con el tótem en modo quiosco (Starbucks) la pared enseña el quiosco, no al
  // avatar, y /avatar best «no hacía nada». En ese caso no se intercepta y Neo se abre en su panel flotante.
  window.addEventListener('admira-avatar:open',e=>{if(disposed)return;if(wallAvatar.mode==='kiosk')return;e.preventDefault();focusAvatar();},options);
+ // Cámara a una pantalla (demo /crear incidencia): centro de sus esquinas calibradas, con giro suave.
+ function focusScreen(id,{fov:to=38,ms=900}={}){const p=model.players.find(x=>x.id===id);if(disposed||!p?.corners?.length)return Promise.resolve(false);
+  const ty=p.corners.reduce((a,c)=>a+c.yaw,0)/p.corners.length,tp=p.corners.reduce((a,c)=>a+c.pitch,0)/p.corners.length,y0=yaw,p0=pitch,f0=fov,dy=((ty-y0+540)%360)-180,t0=performance.now();
+  return new Promise(resolve=>{const tick=now=>{if(disposed)return resolve(false);const k=Math.min(1,(now-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;yaw=y0+dy*e;pitch=p0+(tp-p0)*e;fov=f0+(to-f0)*e;renderKey='';if(k<1)requestAnimationFrame(tick);else resolve(true);};requestAnimationFrame(tick);});}
  window.XpaceMatrixOptions={
   isActive:()=>!disposed,
+  incidentDemo:{candidates:()=>incidents.demo.candidates(),focus:(id,o)=>focusScreen(id,o),open:o=>incidents.demo.open(o),close:o=>incidents.demo.close(o),stage:id=>incidents.demo.stage(id),name:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),home:()=>{yaw=STARBUCKS_WALL_VIEW.yaw;pitch=STARBUCKS_WALL_VIEW.pitch;fov=STARBUCKS_WALL_VIEW.fov;renderKey='';}},
   focusAvatar:o=>focusAvatar(o),
   avatarState:()=>({level:wallAvatar.level,expanded:wallAvatar.expanded}),
   devices:()=>DEVICE_IDS.filter(id=>nodes.has(id)).map(id=>({id,label:playerName(model.players.find(p=>p.id===id)||{id,name:id})})),
