@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r53.23:12": [
+    "/cerrar incidencia ya no dice «no hay incidencias» si se ve una: lista las abiertas del gemelo (pantalla, id, gravedad, antigüedad) y cómo cerrarlas",
+    "/cerrar incidencia INC-XXXX cierra cualquier incidencia del gemelo, también las abiertas a mano, con la ficha de admira.app y el informe por correo y Telegram",
+    "Si la lleva un técnico del portal, la CLI lo explica y enlaza su ficha"
+  ],
   "v.07.10.2026.r52.22:20": [
     "Incidencias CLI: la ficha de admira.app se abre encima de todo, a la derecha, y se queda 3 s en «Finalizada»; el menú ☰ se pliega mientras dura",
     "El CLI ya no borra lo que escribes mientras corre un comando largo",

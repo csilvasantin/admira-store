@@ -33,6 +33,17 @@ export function parseIncidentCommand(text){const m=/^\/(crear|create|cerrar|clos
 function loadList(store){try{const l=JSON.parse(store?.getItem(STORE_KEY)||'[]');return Array.isArray(l)?l.filter(x=>x&&ID_RE.test(x.id)):[];}catch{return [];}}
 function saveList(store,list){try{store?.setItem(STORE_KEY,JSON.stringify(list.slice(-20)));}catch{}}
 const clock=()=>new Date().toTimeString().slice(0,8);
+// Sin id y sin incidencias de la CLI: nunca «no hay incidencias» si se ve una en pantalla (Carlos 23:06). Se listan
+// TODAS las activas de las pantallas del gemelo con el id para cerrarlas con /cerrar incidencia INC-XXXX.
+const SEV_EN={urgente:'urgent',alta:'high',normal:'normal',baja:'low'};
+export function screenLabel(o,en=false){const m=/^pantalla-(\d+)$/.exec(o?.equipo||'');return m?(en?'screen ':'pantalla ')+m[1]:(o?.equipo==='tpv'?'TPV':/IPAD/i.test(o?.equipo||'')?'iPad':(o?.name||o?.equipo||'—'));}
+const hhmm=ms=>{try{return new Intl.DateTimeFormat('es-ES',{timeZone:'Europe/Madrid',hour:'2-digit',minute:'2-digit'}).format(new Date(ms));}catch{return new Date(ms).toTimeString().slice(0,5);}};
+const age=(ms,now)=>{const m=Math.max(0,Math.round((now-ms)/60000));return m<60?m+' min':m<2880?Math.floor(m/60)+' h '+(m%60)+' min':Math.floor(m/1440)+' d';};
+export function describeOpen(open,{en=false,now=Date.now()}={}){const t=(es,e)=>en?e:es,list=Array.isArray(open)?open:[];
+ if(!list.length)return t('No hay incidencias abiertas en las pantallas del gemelo. Crea una con /crear incidencia.','There are no open incidents on the twin’s screens. Create one with /create incident.');
+ const sev=o=>en?(SEV_EN[o.priority]||o.priority||'—'):(o.priority||'—'),via=o=>({cli:t('abierta desde la CLI','opened from the CLI'),manual:t('abierta manualmente','opened manually'),auto:t('abierta automáticamente','opened automatically')}[o.via]||t('abierta','opened'));
+ if(list.length===1){const o=list[0];return t('Hay 1 incidencia abierta en ','There is 1 open incident on ')+screenLabel(o,en)+': '+o.id+' ('+sev(o)+', '+via(o)+(o.created_at?t(' a las ',' at ')+hhmm(o.created_at):'')+(o.stage==='en_curso'?t(', en curso',', in progress'):'')+(o.assignee?t(', técnico ',', technician ')+o.assignee:'')+'). '+(o.via==='cli'?t('La abrió la CLI desde otro navegador','The CLI opened it from another browser'):t('No la abrió la CLI','The CLI did not open it'))+t('; para cerrarla escribe /cerrar incidencia ','; to close it type /close incident ')+o.id;}
+ return t('Hay ','There are ')+list.length+t(' incidencias abiertas en las pantallas del gemelo:',' open incidents on the twin’s screens:')+'\n'+list.map(o=>'• '+screenLabel(o,en)+' · '+o.id+' · '+sev(o)+' · '+t('hace ','')+(o.created_at?age(o.created_at,now):'—')+(en?' ago':'')+' · '+via(o)).join('\n')+'\n'+t('Para cerrar una: /cerrar incidencia INC-XXXX (ninguna la abrió la CLI de este navegador).','To close one: /close incident INC-XXXX (none was opened by this browser’s CLI).');}
 // Mientras corre la demo se pliega el menú ☰ Opciones (columna izquierda) y al acabar se deja como estaba.
 export function collapseLeftMenu(doc=globalThis.document){try{const panel=doc?.querySelector?.('.quad-left:not(.is-collapsed)'),btn=doc?.getElementById?.('pfOptions');if(!panel||!btn)return ()=>{};btn.click();return ()=>{try{if(panel.classList.contains('is-collapsed'))btn.click();}catch{}};}catch{return ()=>{};}}
 async function matrixDemo(router,timeout=25000){let api=globalThis.XpaceMatrixOptions;if(!api?.isActive?.()||!api.incidentDemo){await router?.choose?.('matrix');}const t0=Date.now();while(Date.now()-t0<timeout){api=globalThis.XpaceMatrixOptions;if(api?.isActive?.()&&api.incidentDemo)return api.incidentDemo;await new Promise(r=>setTimeout(r,250));}return null;}
@@ -55,10 +66,14 @@ export async function runIncidentDemo(text,{router,lang='es',store=globalThis.lo
  }
  let entry=cmd.id?list.find(x=>x.id===cmd.id)||{id:cmd.id,cause:-1,steps:[]}:null;
  if(!entry){for(const x of [...list].reverse()){const st=demo.stage(x.id);if(st&&!['cerrada','cancelada'].includes(st)){entry=x;break;}}}
- if(!entry)return {ok:false,local:true,message:t('No hay incidencias abiertas por la CLI. Crea una con /crear incidencia.','No incidents opened from the CLI. Create one with /create incident.')};
+ const listOpen=async()=>{try{return (await demo.listOpen?.())||[];}catch{return [];}};
+ if(!entry)return {ok:false,local:true,message:describeOpen(await listOpen(),{en})};
+ // Con id explícito vale cualquier incidencia activa de este gemelo (también las abiertas a mano): se busca su pantalla.
+ if(cmd.id&&!entry.deviceId){const info=(await listOpen()).find(x=>x.id===cmd.id);if(info?.deviceId)entry={...entry,deviceId:info.deviceId};}
  const cause=CAUSES[entry.cause],note=cause?(en?cause.fix_en:cause.fix_es):t('Revisión in situ: equipo verificado y emitiendo con normalidad.','On-site check: device verified and playing normally.');
  const steps=[...(entry.steps||[]),{at:clock(),text:t('CLI: /cerrar incidencia ','CLI: /close incident ')+entry.id}],step=s=>{steps.push({at:clock(),text:s});try{progress('🛠 '+s);}catch{}};
- try{if(entry.deviceId){await demo.focus(entry.deviceId);step(t('Cámara en la pantalla','Camera on the screen'));}
+ try{if(entry.deviceId){await demo.focus(entry.deviceId);step(t('Cámara en la pantalla','Camera on the screen'));
+   if(!loadPhotos(store)[entry.id]){const s=await captureIncidentPhoto(demo,entry.deviceId,{stage:'abierta',wait:2500,text:entry.id+' · '+demo.name(entry.deviceId)+' · '+t('ACTIVA','ACTIVE')+' · '+clock(),lines:[entry.id,t('ABIERTA','OPEN')]});if(s){savePhoto(store,entry.id,s);step(t('Foto de la pantalla con la incidencia activa','Photo of the screen with the active incident'));}}}
   const r=await demo.close({id:entry.id,note,step});if(r.deviceId&&!entry.deviceId)await demo.focus(r.deviceId);
   if(r.inc?.stage!=='cerrada')return {ok:false,local:true,message:t('La incidencia no quedó cerrada (¿la lleva un técnico del portal?).','The incident was not closed (held by a portal technician?).')};
   const devId=entry.deviceId||r.deviceId,closedShot=await captureIncidentPhoto(demo,devId,{stage:'cerrada',wait:6000,text:entry.id+' · '+demo.name(devId)+' · '+t('CERRADA','CLOSED')+' · '+clock(),lines:[entry.id,t('CERRADA','CLOSED'),'«'+(r.inc.resolution||note)+'»']});
@@ -69,6 +84,6 @@ export async function runIncidentDemo(text,{router,lang='es',store=globalThis.lo
    report=res.ok&&(d.sent||d.telegram?.sent)?(d.sent?'📧 '+t('Informe enviado a ','Report sent to ')+REPORT_TO+(d.message_id?' · '+d.message_id:''):'⚠ '+t('Correo no enviado: ','Email not sent: ')+(d.mail_error||''))+tg+(d.pages?' · '+d.pages+' '+t('págs.','pages')+(d.ai&&d.ai!=='plantilla'?' · IA':'')+(d.photos?' · '+d.photos+' '+t('fotos','photos'):'')+(d.brand&&d.brand!=='admira'?' · '+t('marca ','brand ')+d.brand:''):''):d.already?'📧 '+t('El informe ya se había enviado a ','Report already sent to ')+REPORT_TO:'⚠ '+t('Informe no enviado: ','Report not sent: ')+(d.error||('HTTP '+res.status));}catch(e){report='⚠ '+t('Informe no enviado: ','Report not sent: ')+e.message;}
   saveList(store,list.filter(x=>x.id!==entry.id));dropPhoto(store,entry.id);
   return {ok:true,local:true,id:entry.id,message:'✓ '+entry.id+' '+t('cerrada · Finalizada en admira.app','closed · Finished in admira.app')+(r.already?t(' (ya lo estaba)',' (already closed)'):'')+' · «'+(r.inc.resolution||note)+'»\n'+report};}
- catch(e){return {ok:false,local:true,message:t('No se pudo cerrar: ','Could not close: ')+e.message};}
+ catch(e){if(e.code==='portal_assigned')return {ok:false,local:true,id:entry.id,message:'⚠ '+entry.id+t(' no se ha cerrado: ',' was not closed: ')+e.message+t('. Se cierra desde su ficha, con evidencia: ','. Close it from its ticket, with evidence: ')+e.url};return {ok:false,local:true,message:t('No se pudo cerrar: ','Could not close: ')+e.message};}
  }
 }
