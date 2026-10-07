@@ -1,16 +1,16 @@
 {
-  "version": "v.06.10.2026.r27.22:36",
-  "deployedAt": "2026-10-06T20:05:36Z",
+  "version": "v.07.10.2026.r1.06:33",
+  "deployedAt": "2026-10-07T04:34:12Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "f70129bd72d8164d975ef30cb56d977f55c3f974",
-  "gitShort": "f70129b",
-  "gitFull": "f70129bd72d8164d975ef30cb56d977f55c3f974",
+  "git": "1b9c8ceaf81949fad3c4a5e5436fc7b8aa91ab0c",
+  "gitShort": "1b9c8ce",
+  "gitFull": "1b9c8ceaf81949fad3c4a5e5436fc7b8aa91ab0c",
   "dirty": false,
   "novedades": [
-    "El avatar hereda el idioma del site al abrir: ESP o ENG",
-    "Good · Admirito por defecto, independiente de la calidad Matrix",
-    "Selector de modelo: Good · Admirito, Better · Chica, Best · Neo"
+    "Matrix: arrastra el muffin de la vitrina a la caja junto al osito",
+    "Cesta del gemelo con cantidades y propuesta explícita de añadir café",
+    "Arrastre cancelable, teclado y ayuda bilingüe; cobro físico pendiente"
   ]
 }
