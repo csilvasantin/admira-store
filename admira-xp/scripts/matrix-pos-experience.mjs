@@ -1,5 +1,5 @@
-import {createPOSDemo} from './pos-demo.mjs?v=retail-media-2';
-import {retailRulebook,createRetailRulePlayer} from './retail-rules.mjs?v=retail-media-2';
+import {createPOSDemo} from './pos-demo.mjs?v=retail-media-3';
+import {retailRulebook,createRetailRulePlayer} from './retail-rules.mjs?v=retail-media-3';
 import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
 import {POS_ID,POS_LOC,POS_BASKET_KEY,POS_PRODUCTS,restoreBasket,addBasketProduct,removeBasketProduct,coffeeSuggestion} from './pos-basket.mjs?v=pos-muffin-1';
 

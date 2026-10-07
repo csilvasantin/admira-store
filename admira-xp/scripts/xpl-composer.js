@@ -184,7 +184,7 @@
       '<section id="xc-retail"></section><details class="xc-legacy"><summary>Reglas del gemelo / Twin rules · <span id="xc-count">0</span></summary><button class="ok" id="xc-add">+ regla / rule</button><button class="lk" id="xc-ex">ejemplos / examples</button><div class="list" id="xc-list"></div></details>' +
       '<div class="ft">● TPV: al coger o entregar / POS: on pickup or delivery</div>';
     document.body.appendChild(panel);
-    import('./retail-rule-composer.mjs?v=retail-media-2').then(function(m){m.mountRetailRuleComposer(panel.querySelector('#xc-retail'));}).catch(function(){panel.querySelector('#xc-retail').textContent='No se pudieron cargar las reglas TPV / Could not load POS rules';});
+    import('./retail-rule-composer.mjs?v=retail-media-3').then(function(m){m.mountRetailRuleComposer(panel.querySelector('#xc-retail'));}).catch(function(){panel.querySelector('#xc-retail').textContent='No se pudieron cargar las reglas TPV / Could not load POS rules';});
 
     panel.querySelector('#xc-add').onclick = addRule;
     panel.querySelector('#xc-close').onclick = function () { setOpen(false); };

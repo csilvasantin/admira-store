@@ -1,5 +1,5 @@
-import {createRetailMediaDisplay} from './retail-media-display.mjs?v=retail-media-2';
-import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=retail-media-2';
+import {createRetailMediaDisplay} from './retail-media-display.mjs?v=retail-media-3';
+import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=retail-media-3';
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=person-voice-1';
 import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=avatar-direct-1';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';

@@ -1,5 +1,5 @@
-import './xpl-runtime.js?v=retail-media-2';
-import {POS_DEMO_SONG,createPOSDemoSound} from './pos-demo-sound.mjs?v=retail-media-2';
+import './xpl-runtime.js?v=retail-media-3';
+import {POS_DEMO_SONG,createPOSDemoSound} from './pos-demo-sound.mjs?v=retail-media-3';
 export const RETAIL_RULES_KEY='xpaceos.xpl.retail.v1:alsea-sbux-021:starbucks-tpv-01';
 export const RETAIL_STOCK_URL='https://api.admira.store/stock/list?type=music&limit=200';
 export const RETAIL_CATALOG_URL='https://www.admira.store/admira-xp/media-catalog';
@@ -27,10 +27,10 @@ export function defaultRetailRule(){return {id:'muffin-song',enabled:true,priori
 export function validRetailRule(r){return r&&typeof r.id==='string'&&r.when?.conds?.length===1&&RETAIL_EVENTS.includes(r.when.conds[0].fact)&&r.when.conds[0].value===true&&r.do?.length===1&&!!reactionFor(r)&&typeof r.do[0].value==='string'&&(r.do[0].filter===undefined||typeof r.do[0].filter==='string');}
 export function createRetailRulebook({storage=globalThis.localStorage,XPL=globalThis.XPL,fetcher=globalThis.fetch,onChange=()=>{}}={}){
  let rules=[defaultRetailRule()],songs=[mediaAsset(POS_DEMO_SONG)],loading=false,error='',loaded=false,inflight;
- try{const raw=storage.getItem(RETAIL_RULES_KEY);if(raw!==null){const d=JSON.parse(raw);if([1,2].includes(d.version)&&Array.isArray(d.rules)){rules=d.rules.filter(validRetailRule);songs=[...new Map([mediaAsset(POS_DEMO_SONG),...(d.media||d.songs||[]).map(mediaAsset).filter(Boolean)].map(s=>[s.id,s])).values()];}}}catch{}
+ try{const raw=storage.getItem(RETAIL_RULES_KEY);if(raw!==null){const d=JSON.parse(raw);if([1,2].includes(d.version)&&Array.isArray(d.rules)){rules=d.rules.filter(validRetailRule);songs=[...new Map([mediaAsset(POS_DEMO_SONG),...(d.media||d.songs||[]).map(mediaAsset).filter(Boolean)].map(s=>[s.kind+':'+s.id,s])).values()];}}}catch{}
  const state=()=>({rules:structuredClone(rules),media:structuredClone(songs),songs:structuredClone(songs.filter(a=>a.kind==='music')),loading,error});
  function save(next){if(!Array.isArray(next)||next.some(r=>!validRetailRule(r)))throw Error('rule');const copy=structuredClone(next);storage.setItem(RETAIL_RULES_KEY,JSON.stringify({version:2,rules:copy,media:songs}));rules=copy;onChange(state());}
- async function refresh(){if(inflight)return inflight;loading=true;error='';onChange(state());inflight=(async()=>{try{const res=await fetcher(RETAIL_CATALOG_URL,{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(65000)});if(!res.ok)throw Error('stock');const d=await res.json();const items=(d.items||[]).map(mediaAsset).filter(Boolean);songs=[...new Map([...songs,...items].map(s=>[s.id,s])).values()];loaded=true;try{storage.setItem(RETAIL_RULES_KEY,JSON.stringify({version:2,rules,media:songs}));}catch{error='storage';}}catch{error='stock';}finally{loading=false;inflight=null;onChange(state());}return state();})();return inflight;}
+ async function refresh(){if(inflight)return inflight;loading=true;error='';onChange(state());inflight=(async()=>{try{const res=await fetcher(RETAIL_CATALOG_URL,{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(65000)});if(!res.ok)throw Error('stock');const d=await res.json();const items=(d.items||[]).map(mediaAsset).filter(Boolean);songs=[...new Map([...songs,...items].map(s=>[s.kind+':'+s.id,s])).values()];loaded=true;try{storage.setItem(RETAIL_RULES_KEY,JSON.stringify({version:2,rules,media:songs}));}catch{error='storage';}}catch{error='stock';}finally{loading=false;inflight=null;onChange(state());}return state();})();return inflight;}
  function select(event,snapshot=rules){if(!RETAIL_EVENTS.includes(event))return null;const facts={muffinPicked:false,muffinDelivered:false,[event]:true};const matches=snapshot.filter(r=>r.enabled!==false&&validRetailRule(r)&&XPL.evalCondition(r.when,{fact:id=>facts[id]}));matches.sort((a,b)=>(a.priority||0)-(b.priority||0));const rule=matches.at(-1);if(!rule)return null;return songs.find(s=>s.id===rule.do[0].value&&s.kind===reactionFor(rule).kind)||null;}
  return {state,save,refresh,ensure:()=>loaded?Promise.resolve(state()):refresh(),select};
 }
