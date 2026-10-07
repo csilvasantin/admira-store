@@ -1,17 +1,16 @@
 {
   "version": "v.07.10.2026.r16.11:18",
-  "deployedAt": "2026-10-07T08:57:17Z",
+  "deployedAt": "2026-10-07T09:18:28Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "55b523f4ac0445b06abb0ca6c18441e62e27a397",
-  "gitShort": "55b523f",
-  "gitFull": "55b523f4ac0445b06abb0ca6c18441e62e27a397",
+  "git": "170bdde55ee218aa5110140e71c6e456fe916d48",
+  "gitShort": "170bdde",
+  "gitFull": "170bdde55ee218aa5110140e71c6e456fe916d48",
   "dirty": false,
   "novedades": [
-    "Tótem ON enseña el interactivo en el player: en Starbucks Paseo de Gracia, el quiosco de pedido en la pantalla de la pared junto a la salida; OFF vuelve al avatar digital",
-    "Nuevo /totem on|off (siguen kiosko, url, luna y admiratv) y la elección se recuerda",
-    "El player del tótem recibe toques y «👆 Tocar el tótem» lo abre a tamaño real",
-    "El gemelo pasa el formato del player y el quiosco se reorganiza para él"
+    "El quiosco del tótem en la escena se comporta como el avatar digital: es una vista previa que no recibe toques",
+    "Al tocarlo se abre en grande, en la misma ventana que el avatar, y solo ahí se usa",
+    "Al cerrar vuelve a la vista previa y el pedido sigue donde estaba (con el reinicio por inactividad del quiosco)"
   ]
 }
