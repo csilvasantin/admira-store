@@ -1,9 +1,9 @@
 // idIoT · nombre único de cada elemento IoT dado de alta en un Xpacio de un Proyecto (Carlos, 7-oct-2026).
 //   Proyecto_Xpacio_Tipo_n  →  Starbucks_PaseodeGracia_103_Pantalla_1
-// El prefijo agrupa: «Starbucks_» es el proyecto, «Starbucks_PaseodeGracia_103_» el Xpacio. El nombre se DERIVA
-// (no se guarda todavía en el catálogo central): mismo catálogo → mismo nombre, en cualquier navegador.
+// El prefijo agrupa: «Starbucks_» es el proyecto, «Starbucks_PaseodeGracia_103_» el Xpacio. El nombre se GUARDA en la
+// ficha del Xpacio (surfaces[i].idIoT · iot[]): lo guardado manda y lo nuevo se deriva hasta que se guarda.
 // Módulo puro: lo usan el CLI del gemelo (/inventario idIoT) y cualquier agente que lo importe.
-const plain=s=>String(s==null?'':s).normalize('NFD').replace(/[̀-ͯ]/g,'');
+const plain=s=>String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const fold=s=>plain(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 /** Un tramo del nombre: sin tildes, sin espacios ni signos, primera letra en mayúscula («Paseo de Gracia» → PaseodeGracia). */
 export function idPart(text){const s=plain(text).replace(/[^A-Za-z0-9]+/g,'');return s?s[0].toUpperCase()+s.slice(1):'';}
@@ -76,17 +76,25 @@ export function uniqueXpaceLabels(locations,projectLabel=''){
 }
 
 /** Numera los elementos de UN Xpacio por tipo. El número declarado (pantalla 6 de la pared) manda sobre el orden. */
-export function nameElements(projectLabel,xpace,elements){
- const prefix=idPart(projectLabel)+'_'+xpace,used=new Map(),n=new Array(elements.length).fill(0);
+// Un nombre GUARDADO en la ficha manda: no se recalcula aunque cambie la dirección o el orden de las superficies.
+// Los que faltan se numeran sin pisar a los guardados; `taken` (en minúsculas) evita repetir nombre en toda la red.
+const STORED=/^[A-Za-z0-9]+(?:_[A-Za-z0-9]+){2,7}$/;
+export const validIdIot=v=>typeof v==='string'&&v.length<=140&&STORED.test(v);
+export function nameElements(projectLabel,xpace,elements,taken=new Set()){
+ const prefix=idPart(projectLabel)+'_'+xpace,used=new Map(),n=new Array(elements.length).fill(0),name=new Array(elements.length).fill('');
  const of=type=>{if(!used.has(type))used.set(type,new Set());return used.get(type);};
- elements.forEach((e,i)=>{const d=Number.isInteger(e.number)&&e.number>0?e.number:0;if(d&&!of(e.type).has(d)){of(e.type).add(d);n[i]=d;}});
- elements.forEach((e,i)=>{if(n[i])return;let k=1;while(of(e.type).has(k))k+=1;of(e.type).add(k);n[i]=k;});
- return elements.map((e,i)=>({...e,n:n[i],idIoT:prefix+'_'+e.type+'_'+n[i]}));
+ elements.forEach((e,i)=>{if(!validIdIot(e.stored))return;const m=/^(.*)_([A-Za-z0-9]+)_(\d+)$/.exec(e.stored);name[i]=e.stored;n[i]=m?Number(m[3]):0;taken.add(e.stored.toLowerCase());if(m&&m[1].toLowerCase()===prefix.toLowerCase())of(m[2]).add(Number(m[3]));});
+ elements.forEach((e,i)=>{if(name[i])return;const d=Number.isInteger(e.number)&&e.number>0?e.number:0;if(d&&!of(e.type).has(d)&&!taken.has((prefix+'_'+e.type+'_'+d).toLowerCase())){of(e.type).add(d);n[i]=d;}});
+ elements.forEach((e,i)=>{if(name[i])return;if(!n[i]){let k=1;while(of(e.type).has(k)||taken.has((prefix+'_'+e.type+'_'+k).toLowerCase()))k+=1;of(e.type).add(k);n[i]=k;}name[i]=prefix+'_'+e.type+'_'+n[i];taken.add(name[i].toLowerCase());});
+ return elements.map((e,i)=>({...e,n:n[i],idIoT:name[i],stored:validIdIot(e.stored)}));
 }
 
 /** Elementos IoT de un Xpacio del catálogo central: una fila por superficie dada de alta. */
 export function catalogElements(location){
- return (Array.isArray(location?.surfaces)?location.surfaces:[]).filter(Boolean).map(s=>({type:iotType({surface:s.surface,name:s.name}),name:String(s.name||s.surface||''),player:String(s.screen||''),status:String(s.status||''),source:'catalogo'}));
+ // `iot[]` es el registro fino de un Xpacio (el del gemelo de Starbucks Pg. Gràcia 103, ya guardado en su ficha).
+ const iot=(Array.isArray(location?.iot)?location.iot:[]).filter(e=>e&&validIdIot(e.idIoT));
+ if(iot.length)return iot.map(e=>({type:String(e.type||iotType({id:e.instance,name:e.name})),name:String(e.name||''),instance:String(e.instance||''),code:String(e.code||''),player:String(e.player||''),number:Number(e.n)||0,stored:e.idIoT,source:'ficha'}));
+ return (Array.isArray(location?.surfaces)?location.surfaces:[]).map((s,i)=>s&&({type:iotType({surface:s.surface,name:s.name}),name:String(s.name||s.surface||''),player:String(s.screen||''),status:String(s.status||''),surfaceIndex:i,stored:validIdIot(s.idIoT)?s.idIoT:'',source:'catalogo'})).filter(Boolean);
 }
 /** Elementos IoT del inventario del gemelo abierto: filas de Inventario/ITIL cuya categoría es IoT. */
 export function twinElements(rows,{numbers={}}={}){
@@ -98,17 +106,35 @@ export function twinElements(rows,{numbers={}}={}){
  * catálogo por el inventario real del gemelo ({locationId, elements}).
  */
 export function buildIdIot({locations=[],projects=[],twin=null}={}){
- const groups=new Map();
- for(const l of locations){if(!l||!l.id)continue;const p=projectOf(l,projects);if(!groups.has(p.id))groups.set(p.id,{project:p,locations:[]});groups.get(p.id).locations.push(l);}
+ const groups=new Map(),taken=new Set(),own=new Map();
+ for(const l of locations){
+  if(!l||!l.id)continue;
+  const hasIot=Array.isArray(l.iot)&&l.iot.some(e=>e&&validIdIot(e.idIoT));
+  const elements=twin&&twin.locationId===l.id&&!hasIot?twin.elements:catalogElements(l);
+  for(const e of elements)if(validIdIot(e.stored))taken.add(e.stored.toLowerCase()); // lo guardado se reserva antes de nombrar nada
+  own.set(l.id,elements);
+  const p=projectOf(l,projects);if(!groups.has(p.id))groups.set(p.id,{project:p,locations:[]});groups.get(p.id).locations.push(l);
+ }
  const rows=[];
  for(const {project,locations:list} of groups.values()){
   const labels=uniqueXpaceLabels(list,project.label);
-  for(const l of list){
-   const own=twin&&twin.locationId===l.id?twin.elements:catalogElements(l);
-   for(const e of nameElements(project.label,labels.get(l.id),own))rows.push({...e,projectId:project.id,project:project.label,xpaceId:String(l.id),xpaceName:String(l.name||l.id),addr:String(l.addr||'')});
-  }
+  for(const l of list)for(const e of nameElements(project.label,labels.get(l.id),own.get(l.id),taken))rows.push({...e,projectId:project.id,project:project.label,xpaceId:String(l.id),xpaceName:String(l.name||l.id),addr:String(l.addr||'')});
  }
  return rows;
+}
+/**
+ * Lo que falta por guardar, en la forma que acepta POST /locations/iot del catálogo:
+ * {<id de Xpacio>: {surfaces:[idIoT|null…]} | {iot:[…]}}. Sólo Xpacios con algún nombre sin guardar.
+ */
+export function pendingNames(rows){
+ const out={};
+ for(const r of rows){
+  if(r.stored)continue;
+  const e=out[r.xpaceId]||(out[r.xpaceId]={});
+  if(Number.isInteger(r.surfaceIndex)){(e.surfaces||(e.surfaces=[]))[r.surfaceIndex]=r.idIoT;}
+  else (e.iot||(e.iot=[])).push({idIoT:r.idIoT,type:r.type,n:r.n,name:r.name,instance:r.instance||'',code:r.code||'',player:r.player||''});
+ }
+ return out;
 }
 /** El Xpacio abierto en el gemelo cuando no está en el catálogo (escena de demostración). */
 export function buildTwinOnly({projectId,projectLabel,xpaceId='',xpaceName='',addr='',elements=[]}){
@@ -143,7 +169,7 @@ export const IDIOT_HELP={
  es:'idIoT · nombre único de cada elemento IoT: Proyecto_Xpacio_Tipo_n. /inventario idIoT (este Xpacio) · /inventario idIoT starbucks (un proyecto, o un id de Xpacio, o un texto) · /inventario idIoT proyectos (resumen de la red) · añade «csv» al final para descargar la lista completa.',
  en:'idIoT · unique name of every IoT element: Project_Xpace_Type_n. /inventario idIoT (this Xpace) · /inventario idIoT starbucks (a project, an Xpace id or any text) · /inventario idIoT proyectos (network summary) · append "csv" to download the full list.'
 };
-const detail=(r,en)=>[r.name,r.code,r.player?(en?'player ':'player ')+r.player:(en?'no player bound':'sin player vinculado')].filter(Boolean).join(' · ');
+const detail=(r,en)=>[r.name,r.code,r.player?'player '+r.player:(en?'no player bound':'sin player vinculado'),r.stored?'':(en?'not saved yet':'sin guardar')].filter(Boolean).join(' · ');
 /** Texto para el CLI: agrupado por Xpacio, con tope de líneas para que quepa en la consola. */
 export function formatIdIot(rows,{lang='es',title='',limit=60}={}){
  const en=lang==='en',xpaces=new Set(rows.map(r=>r.projectId+'|'+r.xpaceId)).size;
@@ -170,6 +196,6 @@ export function formatProjects(rows,{lang='es',limit=40}={}){
 }
 const cell=v=>{const s=String(v==null?'':v);return /[",;\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
 export function toCsv(rows){
- const cols=['idIoT','project','xpaceName','addr','xpaceId','type','n','name','code','player','source'];
+ const cols=['idIoT','project','xpaceName','addr','xpaceId','type','n','name','code','player','source','stored'];
  return [cols.join(';'),...rows.map(r=>cols.map(c=>cell(r[c])).join(';'))].join('\n')+'\n';
 }

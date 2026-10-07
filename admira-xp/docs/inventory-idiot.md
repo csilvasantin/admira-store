@@ -3,9 +3,9 @@
 Carlos, 7-oct-2026: cada elemento IoT dado de alta en un Xpacio de un Proyecto necesita un nombre único para
 identificarlo y agruparlo. Formato: **`Proyecto_Xpacio_Tipo_n`** → `Starbucks_PaseodeGracia_103_Pantalla_1`.
 
-ES: En ⌘ Experto, /inventario idIoT enseña el nombre único de cada elemento IoT dado de alta: Proyecto_Xpacio_Tipo_n, por ejemplo Starbucks_PaseodeGracia_103_Pantalla_1. El prefijo agrupa: «Starbucks_» es el proyecto y «Starbucks_PaseodeGracia_103_» el Xpacio. Sin argumento lista el Xpacio abierto; /inventario idIoT starbucks lista un proyecto (vale su nombre, un alias, un id de Xpacio como alsea-sbux-021 o cualquier texto del nombre); /inventario idIoT proyectos resume la red con Xpacios y elementos por proyecto; añadir «csv» al final descarga la lista completa. El Xpacio se nombra por calle y número; si la ficha no trae calle, por su nombre, y si dos centros coincidieran, por su número del catálogo: nunca hay dos idIoT iguales. Cada tipo se numera aparte (Pantalla, Escaparate, TPV, iPad, Altavoz, LED, Tablet, Mupi…). Cada línea dice qué elemento es, su código ITIL si lo tiene y el player vinculado, o «sin player vinculado». El Starbucks de Paseo de Gracia 103 usa su registro del gemelo: pantallas 1–6 de la pared, TPV, iPad y altavoz. El resto usa las superficies del catálogo de Xpacios. Una escena de demostración sin Xpacio del catálogo nombra el IoT de su inventario local y lo avisa. /marca limita lo que se ve al cliente activo. Los nombres se derivan del catálogo; todavía no se guardan en él ni cambian nada en equipos físicos.
+ES: En ⌘ Experto, /inventario idIoT enseña el nombre único de cada elemento IoT dado de alta: Proyecto_Xpacio_Tipo_n, por ejemplo Starbucks_PaseodeGracia_103_Pantalla_1. El prefijo agrupa: «Starbucks_» es el proyecto y «Starbucks_PaseodeGracia_103_» el Xpacio. Sin argumento lista el Xpacio abierto; /inventario idIoT starbucks lista un proyecto (vale su nombre, un alias, un id de Xpacio como alsea-sbux-021 o cualquier texto del nombre); /inventario idIoT proyectos resume la red con Xpacios y elementos por proyecto; añadir «csv» al final descarga la lista completa. El Xpacio se nombra por calle y número; si la ficha no trae calle, por su nombre, y si dos centros coincidieran, por su número del catálogo: nunca hay dos idIoT iguales. Cada tipo se numera aparte (Pantalla, Escaparate, TPV, iPad, Altavoz, LED, Tablet, Mupi…). Cada línea dice qué elemento es, su código ITIL si lo tiene y el player vinculado, o «sin player vinculado». El Starbucks de Paseo de Gracia 103 usa su registro del gemelo: pantallas 1–6 de la pared, TPV, iPad y altavoz. El resto usa las superficies del catálogo de Xpacios. Una escena de demostración sin Xpacio del catálogo nombra el IoT de su inventario local y lo avisa. /marca limita lo que se ve al cliente activo. Los nombres están guardados en la ficha de cada Xpacio del catálogo central y ya no cambian aunque cambie su dirección o el orden de sus pantallas; un elemento nuevo aparece «sin guardar» hasta que se guarda. admira.tv los acepta como destino de una playlist. No cambian nada en equipos físicos.
 
-EN: In ⌘ Expert, /inventario idIoT shows the unique name of every registered IoT element: Project_Xpace_Type_n, for example Starbucks_PaseodeGracia_103_Pantalla_1. The prefix groups: “Starbucks_” is the project and “Starbucks_PaseodeGracia_103_” the Xpace. With no argument it lists the open Xpace; /inventario idIoT starbucks lists a project (its name, an alias, an Xpace id such as alsea-sbux-021 or any text of the name); /inventario idIoT proyectos summarises the network with Xpaces and elements per project; appending “csv” downloads the full list. The Xpace is named after street and number; without a street, after its name, and if two venues would match, after its registry number: no two idIoT are ever equal. Each type is numbered separately (Pantalla, Escaparate, TPV, iPad, Altavoz, LED, Tablet, Mupi…). Each line states which element it is, its ITIL code when it has one and the bound player, or “no player bound”. Starbucks Paseo de Gracia 103 uses its twin registry: wall screens 1–6, POS, iPad and speaker. Every other Xpace uses the surfaces of the Xpace registry. A demo scene with no registry Xpace names the IoT of its local inventory and says so. /marca limits the view to the active client. Names are derived from the registry; they are not stored there yet and change nothing on physical devices.
+EN: In ⌘ Expert, /inventario idIoT shows the unique name of every registered IoT element: Project_Xpace_Type_n, for example Starbucks_PaseodeGracia_103_Pantalla_1. The prefix groups: “Starbucks_” is the project and “Starbucks_PaseodeGracia_103_” the Xpace. With no argument it lists the open Xpace; /inventario idIoT starbucks lists a project (its name, an alias, an Xpace id such as alsea-sbux-021 or any text of the name); /inventario idIoT proyectos summarises the network with Xpaces and elements per project; appending “csv” downloads the full list. The Xpace is named after street and number; without a street, after its name, and if two venues would match, after its registry number: no two idIoT are ever equal. Each type is numbered separately (Pantalla, Escaparate, TPV, iPad, Altavoz, LED, Tablet, Mupi…). Each line states which element it is, its ITIL code when it has one and the bound player, or “no player bound”. Starbucks Paseo de Gracia 103 uses its twin registry: wall screens 1–6, POS, iPad and speaker. Every other Xpace uses the surfaces of the Xpace registry. A demo scene with no registry Xpace names the IoT of its local inventory and says so. /marca limits the view to the active client. Names are stored in each Xpace record of the central registry and no longer change when its address or screen order changes; a new element shows “not saved yet” until it is saved. admira.tv accepts them as a playlist destination. They change nothing on physical devices.
 
 ## Comandos / Commands (⌘ Experto · admira.store y xpaceos.com)
 
@@ -47,12 +47,29 @@ Una sola, siempre la misma, para que un idIoT no nombre dos cosas según desde d
 - Cada fila / each row: `idIoT, project, projectId, xpaceId, xpaceName, addr, type, n, name, code, player, source`.
 - `xpaceId` es el id del catálogo: el mismo que usa admira.tv como destino de playlist (`xpacio:<id>`).
 
+## Guardado en la ficha / Stored in the record
+
+Desde el 7-oct-2026 el idIoT **se guarda** en el catálogo central de Xpacios (worker `omnipublicity-api`):
+
+- `surfaces[i].idIoT` en cada superficie; en Starbucks Paseo de Gracia 103, `iot[]` con sus nueve elementos
+  (`idIoT, type, n, name, instance, code, player`).
+- Leer / read: `GET https://api.admira.store/locations/<id>`.
+- Resolver un nombre / resolve a name: `GET https://api.admira.store/locations/iot/<idIoT>` →
+  `{idIoT, element, location:{id,name,addr,circuit,brand}}`. No distingue mayúsculas.
+- Guardar / write: `POST https://brain.digitalavatar.ai/locations/iot` con credencial (`Authorization: Bearer`),
+  cuerpo `{names:{<id>:{surfaces:[idIoT|null…]}|{iot:[…]}}}`. Sólo **añade** nombres: no toca ningún otro campo de
+  la ficha, no cambia un nombre ya guardado (salvo `force`) y rechaza el lote entero si dejara dos idIoT iguales.
+- Herramienta / tool: `node inventario/tools/idiot-guardar.mjs` (ensayo) · `--aplicar` con `OMNIP_ADMIN_TOKEN`.
+- El nombre guardado manda sobre el calculado. Volver a registrar un equipo conserva el idIoT de su pantalla.
+- Un elemento nuevo (superficie añadida, equipo recién dado de alta) aparece «sin guardar» con su nombre
+  provisional hasta que se ejecuta la herramienta.
+
 ## Estado / Status
 
-Entregado / delivered: comando, búsqueda, resumen y CSV; nombres únicos comprobados contra el catálogo real
-(24.879 elementos de 9.119 Xpacios, ninguno repetido). Pruebas: `inventario/idiot.test.mjs`.
+Entregado / delivered: comando, búsqueda, resumen y CSV; **24.885 nombres guardados en 9.119 fichas**, ninguno
+repetido, sin tocar ningún otro campo (catálogo comparado antes y después). admira.tv acepta el idIoT como destino de
+pantalla. Pruebas: `inventario/idiot.test.mjs`.
 
-Pendiente / pending: los nombres se **derivan** en el navegador; no se guardan en el catálogo central. Si cambia la
-dirección o el orden de las superficies de una ficha, su idIoT cambia. Para que sea un alta definitiva hay que
-guardarlo en la ficha del Xpacio. Ningún elemento del Starbucks de Pg. Gràcia 103 tiene player real vinculado. No hay
-herramienta MCP propia: los agentes importan el módulo.
+Pendiente / pending: el alta de un equipo nuevo no le pone nombre sola; hay que ejecutar la herramienta. Ningún
+elemento del Starbucks de Pg. Gràcia 103 tiene player real vinculado. No hay herramienta MCP propia: los agentes
+importan el módulo o leen la ficha.

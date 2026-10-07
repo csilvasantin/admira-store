@@ -1,7 +1,7 @@
 // /inventario idIoT (Carlos, 7-oct-2026): cada elemento IoT dado de alta en un Xpacio de un Proyecto tiene un
 // nombre único Proyecto_Xpacio_Tipo_n que lo identifica y lo agrupa por su prefijo.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {idPart,iotType,projectOf,xpaceLabel,uniqueXpaceLabels,nameElements,catalogElements,twinElements,buildIdIot,parseIdIotCommand,selectRows,formatIdIot,formatProjects,toCsv} from './idiot.mjs';
+import {idPart,iotType,projectOf,xpaceLabel,uniqueXpaceLabels,nameElements,catalogElements,twinElements,buildIdIot,pendingNames,parseIdIotCommand,selectRows,formatIdIot,formatProjects,toCsv} from './idiot.mjs';
 import {executeIdIotCommand,runIdIot,starbucksRegistry,STARBUCKS_LOCATION} from './idiot-command.mjs';
 const projects=JSON.parse(fs.readFileSync(new URL('../admira-xp/scripts/project-catalog.json',import.meta.url))).projects;
 const pg103={id:'alsea-sbux-021',name:'Starbucks Paseo de Gracia',addr:'Paseo de Gracia 103 · Barcelona · 08008',circuit:'alsea_starbucks',external:{brand:'Starbucks'},
@@ -94,7 +94,7 @@ test('el cliente activo (/marca) limita lo que se ve y «csv» descarga la lista
  assert.match(solo.message,/1 proyectos/);assert.doesNotMatch(solo.message,/BBVA/);
  let file;const csv=await runIdIot('/inventario idIoT starbucks csv',ctx({download:(name,text)=>{file={name,text};}}));
  assert.equal(csv.ok,true);assert.equal(file.name,'idIoT-starbucks.csv');assert.equal(file.text.trim().split('\n').length,11);
- assert.match(file.text,/^idIoT;project;xpaceName;addr;xpaceId;type;n;name;code;player;source\n/);assert.match(toCsv([{idIoT:'a;b'}]),/"a;b"/);
+ assert.match(file.text,/^idIoT;project;xpaceName;addr;xpaceId;type;n;name;code;player;source;stored\n/);assert.match(toCsv([{idIoT:'a;b'}]),/"a;b"/);
 });
 test('una escena de demostración sin Xpacio del catálogo se nombra sola y avisa de que no es central',async()=>{
  const demo=await runIdIot('/inventario idIoT',{source:{space:'xtanco',project:'estancos',layout:[{id:'led',type:'led'},{id:'counter',type:'counter'}],removed:{}},
@@ -106,4 +106,33 @@ test('sin red no inventa nombres: lo dice',async()=>{
  assert.equal(r.ok,false);assert.match(r.message,/No se pudo cargar el catálogo de Xpacios/);
  const vacio=await runIdIot('/inventario idIoT zzz',ctx());assert.match(vacio.message,/Ningún elemento IoT dado de alta coincide/);
  assert.match(formatProjects([]),/0 proyectos/);assert.match(formatIdIot([]),/Ningún elemento/);
+});
+
+// «Guárdalo en la ficha» (Carlos, 7-oct-2026): el nombre guardado manda sobre el calculado.
+test('un idIoT guardado en la ficha no cambia aunque cambien la dirección o el orden de las superficies',()=>{
+ const mudado={...pg103,addr:'Rambla de Catalunya 5 · Barcelona',surfaces:[{name:'Pantalla nueva',surface:'pantalla'},{name:'Pantalla recogida',surface:'pantalla',idIoT:'Starbucks_PaseodeGracia_103_Pantalla_2'},{name:'Menu board digital',surface:'pantalla',idIoT:'Starbucks_PaseodeGracia_103_Pantalla_1'}]};
+ const rows=buildIdIot({locations:[mudado],projects});
+ assert.deepEqual(rows.map(r=>r.idIoT),['Starbucks_RambladeCatalunya_5_Pantalla_1','Starbucks_PaseodeGracia_103_Pantalla_2','Starbucks_PaseodeGracia_103_Pantalla_1']);
+ assert.deepEqual(rows.map(r=>r.stored),[false,true,true]);
+ assert.match(formatIdIot(rows),/Starbucks_RambladeCatalunya_5_Pantalla_1 — Pantalla nueva · sin player vinculado · sin guardar/);
+ assert.doesNotMatch(formatIdIot(rows.slice(1)),/sin guardar/);
+});
+test('lo nuevo se numera sin pisar lo guardado, ni en su Xpacio ni en otro de la red',()=>{
+ const a={...pg103,surfaces:[{name:'A',surface:'pantalla',idIoT:'Starbucks_PaseodeGracia_103_Pantalla_1'},{name:'B',surface:'pantalla'}]};
+ const b={...pg103,id:'alsea-sbux-900',addr:'Otra 1',surfaces:[{name:'Ocupa',surface:'pantalla',idIoT:'Starbucks_PaseodeGracia_103_Pantalla_2'}]};
+ const rows=buildIdIot({locations:[a,b],projects});
+ assert.equal(new Set(rows.map(r=>r.idIoT.toLowerCase())).size,3);assert.equal(rows.find(r=>r.name==='B').idIoT,'Starbucks_PaseodeGracia_103_Pantalla_3');
+});
+test('el registro fino guardado en la ficha (iot[]) sustituye a sus superficies genéricas y al gemelo',async()=>{
+ const registry=await starbucksRegistry(),antes=buildIdIot({locations:[pg103],projects,twin:{locationId:STARBUCKS_LOCATION,elements:registry}});
+ const guardar=pendingNames(antes);
+ assert.deepEqual(Object.keys(guardar),[STARBUCKS_LOCATION]);assert.equal(guardar[STARBUCKS_LOCATION].iot.length,9);assert.equal(guardar[STARBUCKS_LOCATION].surfaces,undefined);
+ const ficha={...pg103,iot:guardar[STARBUCKS_LOCATION].iot},despues=buildIdIot({locations:[ficha],projects});
+ assert.deepEqual(despues.map(r=>r.idIoT),antes.map(r=>r.idIoT));assert.ok(despues.every(r=>r.stored&&r.source==='ficha'));
+ assert.deepEqual(pendingNames(despues),{});
+});
+test('lo pendiente de guardar sale por posición de superficie, con huecos donde ya hay nombre',()=>{
+ const l={...otros[3],surfaces:[{name:'P1',surface:'escaparate',idIoT:'Altadis_CarrerGrandeGracia_61_Escaparate_1'},{name:'P2',surface:'pantalla'}]};
+ const p=pendingNames(buildIdIot({locations:[l],projects}));
+ assert.equal(p['altadis-bcn-001'].surfaces.length,2);assert.equal(p['altadis-bcn-001'].surfaces[0],undefined);assert.equal(p['altadis-bcn-001'].surfaces[1],'Altadis_CarrerGrandeGracia_61_Pantalla_1');
 });
