@@ -23,7 +23,7 @@ const CONTEXT_KEYS=['loc','lang','sector','brand','site','city'];
 export function wallAvatarUrl(level,context={}){
  const tier=AVATAR_WALL_RENDERERS[level]?level:'good',url=new URL(AVATAR_WALL_RENDERERS[tier]);
  for(const key of CONTEXT_KEYS){const value=String(context?.[key]??'').trim().slice(0,120);if(value)url.searchParams.set(key,value);}
- url.searchParams.set('tier',tier);return url.href;
+ url.searchParams.set('tier',tier);url.searchParams.set('langui','host');return url.href;
 }
 function defaultContext(win){
  let brand='';try{brand=String(win.sessionStorage.getItem('mb:marca')||'').replace(/[^a-z0-9_-]/gi,'').slice(0,60);}catch{}
@@ -47,7 +47,8 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  const close=doc.createElement('button');close.type='button';close.className='matrix-avatar-close';close.textContent=t('✕ Cerrar','✕ Close');
  const toolbar=doc.createElement('div');toolbar.className='matrix-avatar-toolbar';
  const model=doc.createElement('select');model.className='matrix-avatar-model';model.setAttribute('aria-label',t('Modelo del avatar','Avatar model'));for(const [value,label]of [['good','Avatar · Admirito'],['better','Human · Luna'],['best','Metahuman · Neo']]){const option=doc.createElement('option');option.value=value;option.textContent=label;model.append(option);}
- toolbar.append(close,model);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
+ const langs=doc.createElement('div');langs.className='matrix-avatar-lang';langs.setAttribute('role','group');langs.setAttribute('aria-label',t('Idioma del avatar','Avatar language'));const langButtons=[['es','ESP'],['en','ENG']].map(([value,label])=>{const b=doc.createElement('button');b.type='button';b.dataset.lang=value;b.textContent=label;b.setAttribute('aria-pressed','false');langs.append(b);return b;});
+ toolbar.append(close,model,langs);wall.append(toolbar,frame,expand);surface.append(wall);wall.show();
  let disposed=false,expanded=false,sceneOff=false,source='',releaseMusic=null,mode='avatar',avatarLanguage='',siteLanguage=defaultContext(win).lang,localChoice='';
  function resetConversation(){avatarLanguage='';render();frame.src=source;}
  wall.dataset.mode='avatar';
@@ -57,7 +58,9 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  frame.addEventListener('load',()=>postLive(true));
  // Avatar OFF en la escena (Carlos, 7-oct-2026): Experto → Avatar3D Good/Better/Best y /avatar <nivel> off dejan la pared sin avatar.
  function sceneHidden(){try{return win.localStorage.getItem(AVATAR_SCENE_OFF_KEY)==='off';}catch{return false;}}
- function render(){if(mode==='avatar'){if(sceneHidden()){if(expanded){expanded=false;frame.inert=true;frame.removeAttribute('allow');wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();}if(!sceneOff){sceneOff=true;onChange();}wall.dataset.mode='none';expand.hidden=true;if(frame.src!=='about:blank')frame.src='about:blank';source='';return;}if(sceneOff){sceneOff=false;source='';onChange();}wall.dataset.mode='avatar';expand.hidden=false;}const language=defaultContext(win).lang;if(language!==siteLanguage){siteLanguage=language;avatarLanguage='';}let chosen=localChoice;try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||localChoice;}catch{}const level=wallAvatarLevel({chosen});model.value=level;const next=wallAvatarUrl(level,currentContext());if(next!==source){const previous=source?new URL(source):null;source=next;if(mode==='avatar'){if(previous&&previous.searchParams.get('tier')===level){try{frame.contentWindow?.postMessage({type:'da-context',...currentContext()},AVATAR_WALL_ORIGIN);}catch{}}else frame.src=source;}}else postLive(false);}
+ function paintLang(){const current=currentContext().lang;for(const b of langButtons)b.setAttribute('aria-pressed',String(b.dataset.lang===current));}
+ langs.addEventListener('click',e=>{const b=e.target.closest?.('button[data-lang]');if(!b||!['es','en'].includes(b.dataset.lang))return;avatarLanguage=b.dataset.lang;render();paintLang();});
+ function render(){if(mode==='avatar'){if(sceneHidden()){if(expanded){expanded=false;frame.inert=true;frame.removeAttribute('allow');wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();}if(!sceneOff){sceneOff=true;onChange();}wall.dataset.mode='none';expand.hidden=true;if(frame.src!=='about:blank')frame.src='about:blank';source='';return;}if(sceneOff){sceneOff=false;source='';onChange();}wall.dataset.mode='avatar';expand.hidden=false;}const language=defaultContext(win).lang;if(language!==siteLanguage){siteLanguage=language;avatarLanguage='';}let chosen=localChoice;try{chosen=win.sessionStorage.getItem(AVATAR_WALL_CHOICE_KEY)||localChoice;}catch{}const level=wallAvatarLevel({chosen});model.value=level;paintLang();const next=wallAvatarUrl(level,currentContext());if(next!==source){const previous=source?new URL(source):null;source=next;if(mode==='avatar'){if(previous&&previous.searchParams.get('tier')===level){try{frame.contentWindow?.postMessage({type:'da-context',...currentContext()},AVATAR_WALL_ORIGIN);}catch{}}else frame.src=source;}}else postLive(false);}
  render();
  model.addEventListener('change',()=>{if(!AVATAR_WALL_RENDERERS[model.value])return;localChoice=model.value;try{win.sessionStorage.setItem(AVATAR_WALL_CHOICE_KEY,localChoice);win.localStorage.setItem('admira-avatar:nivel',localChoice);}catch{}render();});
  function collapse(){if(disposed||!expanded)return;if(mode==='kiosk'){expanded=false;frame.inert=true;wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});return;}expanded=false;frame.inert=true;frame.removeAttribute('allow');frame.src='about:blank';resetConversation();wall.close();wall.show();releaseMusic?.();releaseMusic=null;onChange();expand.focus({preventScroll:true});}
@@ -77,7 +80,7 @@ export function mountWallAvatar(surface,{t=(es)=>es,onChange=()=>{},context=null
  for(const name of ['pointerdown','wheel','keydown'])wall.addEventListener(name,e=>e.stopPropagation());
  // A same-tab model command updates localStorage without a storage event; the same poll
  // follows language/brand changes and pushes the now-playing track (best tier uses it).
- function onAvatarMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){avatarLanguage=e.data.lang;source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());return;}}
+ function onAvatarMessage(e){if(mode==='avatar'&&expanded&&e.source===frame.contentWindow&&e.origin===AVATAR_WALL_ORIGIN&&e.data?.type==='da-language-selected'&&['es','en'].includes(e.data.lang)){avatarLanguage=e.data.lang;source=wallAvatarUrl((source.match(/[?&]tier=(\w+)/)||[])[1],currentContext());paintLang();return;}}
  win.addEventListener('message',onAvatarMessage);
  const levelPoll=win.setInterval(render,1000);
  // focus(): the camera already looks at the wall; point keyboard focus at the talk button.
