@@ -40,3 +40,7 @@ The scene totem is a single screen (in Matrix · Starbucks, the wall beside the 
 - Classic twin: `avatar3dTotemUrl()` honours the explicit choice (`AVATAR3D_TOTEM_BY_TIER`) over the twin quality; `setAvatar3dTotem(true|false)`.
 - Stored per browser: localStorage `xpace:avatar-escena-nivel`, `xpace:avatar-escena`.
 - No new MCP tool, no remote switch. Neo depends on the existing MetaHuman render host (owned by digitalavatar.ai).
+
+## Idioma en el avatar ampliado
+
+En el modal del avatar (Matrix), el selector ESP/ENG vive en la barra superior junto al desplegable del modelo. El gemelo carga el renderer con `langui=host`, y digitalavatar.ai oculta entonces sus propias pastillas de idioma. El cambio se envía al iframe con `da-context` (`lang`), sin recargarlo.
