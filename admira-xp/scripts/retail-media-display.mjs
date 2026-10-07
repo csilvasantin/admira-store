@@ -1,5 +1,5 @@
 // Temporary reaction on the POS display. Scheduled content underneath is retained.
-export function createRetailMediaDisplay({host,document:doc,music}){
+export function createRetailMediaDisplay({host,document:doc,music,muted=false}){
  let element=null,primed=Promise.resolve(),generation=0,release=null,cancelReady=null;
  const listeners=new Set(),notify=value=>listeners.forEach(fn=>fn(value));
  function stop(){generation++;cancelReady?.();cancelReady=null;release?.();release=null;if(element){if(element.tagName==='VIDEO'){element.pause();element.muted=true;element.removeAttribute('src');element.load();}element.remove();element=null;}}
@@ -8,7 +8,7 @@ export function createRetailMediaDisplay({host,document:doc,music}){
   else{node.src=asset.url;primed=Promise.resolve();}
  }
  async function play(){const token=generation,node=element,destination=host();if(!node||!destination)throw Error('display');await primed;if(token!==generation)throw Error('cancelled');destination.append(node);
-  if(node.tagName==='VIDEO'){node.currentTime=0;node.muted=false;release=music.suppress();try{await node.play();}catch(e){if(token===generation)stop();throw e;}}
+  if(node.tagName==='VIDEO'){node.currentTime=0;node.muted=muted;if(!muted)release=music.suppress();try{await node.play();}catch(e){if(token===generation)stop();throw e;}}
   else if(!(node.complete&&node.naturalWidth)){await new Promise((resolve,reject)=>{const finish=e=>{clearTimeout(timer);node.removeEventListener('load',done);node.removeEventListener('error',bad);cancelReady=null;e?reject(e):resolve();},done=()=>finish(),bad=()=>finish(Error('image')),timer=setTimeout(()=>bad(),20000);cancelReady=()=>finish(Error('cancelled'));node.addEventListener('load',done);node.addEventListener('error',bad);});}
   if(token!==generation)throw Error('cancelled');
  }

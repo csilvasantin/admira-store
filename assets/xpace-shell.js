@@ -42,7 +42,7 @@
   // Verbos que viven en el gemelo (su /help: helpSections() de admira-xp/index.html). Fuera
   // del gemelo se guardan en sessionStorage, se abre el gemelo y se ejecutan allí al cargar.
   const TWIN_VERBS = [
-    'reset', 'demo',
+    'reset', 'demo', 'resumen', 'summary', 'day',
     'gente', 'people', 'personal', 'staff', 'clientes', 'customers', 'status', 'stock', 'turno',
     'hire', 'train', 'restock', 'nuevomiembro', 'echarmiembro', 'report', 'velocidad', 'dvr',
     'envivo', 'calendario', 'resetaudiencia', 'ad', 'upgrade', 'aforo', 'visit', 'save',
@@ -960,7 +960,7 @@
       toggle: name => setPanel(name, !state[name]), state: () => Object.assign({}, state),
       run, print: log, registerVerb, handoff,
     });
-    import(new URL('./expert-workspace.mjs?v=windows-menu-1',script.src).href).then(({mountExpertWorkspace})=>{
+    import(new URL('./expert-workspace.mjs?v=xtore-ux-1',script.src).href).then(({mountExpertWorkspace})=>{
       shared.expertWorkspace=mountExpertWorkspace({panel:parts.expert,shell:shared,config:cfg});
       doc.dispatchEvent(new CustomEvent('xpace:expert-ready'));
     }).catch(error=>console.warn('xpace-shell expert',error));

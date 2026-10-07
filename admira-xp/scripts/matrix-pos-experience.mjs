@@ -1,5 +1,5 @@
-import {createPOSDemo} from './pos-demo.mjs?v=retail-media-3';
-import {retailRulebook,createRetailRulePlayer} from './retail-rules.mjs?v=retail-media-3';
+import {createPOSDemo} from './pos-demo.mjs?v=xtore-ux-1';
+import {retailRulebook,createRetailRulePlayer} from './retail-rules.mjs?v=xtore-ux-1';
 import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
 import {POS_ID,POS_LOC,POS_BASKET_KEY,POS_PRODUCTS,restoreBasket,addBasketProduct,removeBasketProduct,coffeeSuggestion} from './pos-basket.mjs?v=pos-muffin-1';
 
@@ -14,7 +14,7 @@ export function pointInPOSQuad(x,y,points){
  return cross.every(v=>v>=-1e-6)||cross.every(v=>v<=1e-6);
 }
 
-export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visual}={}){
+export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visual,visualFactory}={}){
  const doc=surface.ownerDocument,win=doc.defaultView,t=(es,en)=>doc.documentElement.lang==='en'?en:es;
  let disposed=false,editing=false,muffinPoints=null,registerPoints=null,basket=restoreBasket(null),offerDismissed=false;
  try{basket=restoreBasket(JSON.parse(win.sessionStorage.getItem(POS_BASKET_KEY)));}catch{}
@@ -46,7 +46,7 @@ export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visua
  const ghost=element('div','matrix-pos-demo-ghost');ghost.hidden=true;ghost.setAttribute('aria-hidden','true');const held=picture.cloneNode();ghost.append(held);surface.append(ghost);
  const banner=element('div','matrix-pos-demo-banner'),caption=element('span',''),stop=element('button','');banner.hidden=true;caption.setAttribute('role','status');caption.setAttribute('aria-live','polite');stop.type='button';banner.append(caption,stop);surface.append(banner);
  const audio=doc.createElement('audio');audio.id='starbucksPOSDemoSong';audio.hidden=true;surface.append(audio);
- const book=retailRulebook();const rulePlayer=createRetailRulePlayer({book,audio,music,visual,onState(value){win.dispatchEvent(new win.CustomEvent('xpace:retail-song',{detail:value}));if(value.playing)demo.songStarted();else demo.songEnded();updateBanner(demo.state());}});const sound={prepare:()=>rulePlayer.prepare(),play:async()=>{const value=await rulePlayer.fire('muffinDelivered');if(value.error)throw Error(value.error);return value;},stop:()=>rulePlayer.stop(),isPlaying:()=>rulePlayer.state().playing};let demoVisual=null,lastPhase='';
+ const book=retailRulebook();const rulePlayer=createRetailRulePlayer({book,audio,audioFactory:()=>{const node=doc.createElement('audio');node.hidden=true;node.dataset.retailAudio='true';surface.append(node);return node;},music,visual,visualFactory,onState(value){win.dispatchEvent(new win.CustomEvent('xpace:retail-song',{detail:value}));if(value.playing)demo.songStarted();else demo.songEnded();updateBanner(demo.state());}});const sound={prepare:()=>rulePlayer.prepare(),play:async()=>{const value=await rulePlayer.fire('muffinDelivered');if(value.error)throw Error(value.error);return value;},stop:()=>rulePlayer.stop(),isPlaying:()=>rulePlayer.state().playing};let demoVisual=null,lastPhase='';
  function present(){if(!demoVisual)return;const {phase,progress=0,lift=0}=demoVisual;surface.dataset.posDemoPhase=phase;muffin.classList.toggle('is-demo-outline',phase==='outline');muffin.classList.toggle('is-demo-picked',['pick','travel','drop'].includes(phase));register.classList.toggle('is-pos-drop-target',phase==='drop');ghost.hidden=!['pick','travel','drop'].includes(phase);if(ghost.hidden||!muffinPoints||!registerPoints)return;const center=points=>({x:points.reduce((sum,p)=>sum+p.x,0)/4,y:points.reduce((sum,p)=>sum+p.y,0)/4}),from=center(muffinPoints),to=center(registerPoints);ghost.style.left=(from.x+(to.x-from.x)*progress)+'px';ghost.style.top=(from.y+(to.y-from.y)*progress-18*lift*Math.sin(Math.PI*(.5+.5*progress)))+'px';}
  function clear(){demoVisual=null;ghost.hidden=true;muffin.classList.remove('is-demo-outline','is-demo-picked');register.classList.remove('is-pos-drop-target');delete surface.dataset.posDemoPhase;}
  const demo=createPOSDemo({camera,checkout:POS_EXPERIENCE_VIEW,isAvailable:()=>!disposed&&!editing&&!blocked()&&(basket.lines.find(l=>l.id==='muffin')?.quantity||0)<99,presentation:{begin(){panel.hidden=true;const expert=doc.getElementById('pfExpert');if(expert?.getAttribute('aria-pressed')==='true')expert.click();},show(value){demoVisual=value;present();},clear},drop:()=>addProduct('muffin'),sound,onPick:()=>{void rulePlayer.fire('muffinPicked').catch(()=>{});},onState:updateBanner});

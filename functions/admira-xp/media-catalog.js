@@ -7,10 +7,11 @@ export async function onRequest({request},fetchImpl=fetch){
  const requested=new URL(request.url).searchParams.get('type')||'all';
  if(requested!=='all'&&!TYPES.includes(requested))return Response.json({error:'invalid_type'},{status:400,headers});
  try{
-  const pages=await Promise.all((requested==='all'?TYPES:requested==='music'?['music','audio']:[requested]).map(async type=>{
-   const res=await fetchImpl('https://api.admira.store/stock/list?type='+type+'&limit=200',{headers:{Accept:'application/json'},signal:AbortSignal.timeout(60000)});
-   if(!res.ok)throw Error('stock');const data=await res.json();return (data.items||[]).filter(i=>i.type===type);
-  }));
+  // Pixeria's complete published index avoids the 200-item /stock/list cap.
+  const res=await fetchImpl('https://stock.admira.store/stock/index.json',{headers:{Accept:'application/json'},signal:AbortSignal.timeout(60000)});
+  if(!res.ok)throw Error('stock');const data=await res.json();
+  const types=requested==='all'?TYPES:requested==='music'?['music','audio']:[requested];
+  const pages=[(data.items||[]).filter(i=>types.includes(i.type))];
   const items=[];
   for(const item of pages.flat()){
    if(item.oculto||!/^[-\w]{1,120}$/.test(item.id||''))continue;

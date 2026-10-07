@@ -1,3 +1,4 @@
+import './expert-toggle.js?v=xtore-ux-1';
 import {inventoryContext,inventoryURL} from '../inventario/context.mjs?v=scope-20261004-1';
 import '../admira-xp/scripts/expert-categories.js?v=windows-menu-1';
 import '../admira-xp/scripts/expert-dock.js?v=20261003-expert-1';
@@ -10,8 +11,8 @@ export const EXPERT_CATEGORIES=[
  {id:'dvr',es:'DVR',en:'DVR',detail:{es:'rebobinar',en:'rewind'},actions:[action('Abrir reproducción','Open replay','/dvr'),action('Volver al directo','Return to live','/envivo')]},
  {id:'anonymizer',es:'Anonymizer',en:'Anonymizer',detail:{es:'Píxeles ↔ humanos',en:'Pixels ↔ humans'},actions:[{es:'Abrir Anonymizer en Pixeria',en:'Open Anonymizer in Pixeria',href:'https://www.pixeria.com/anonimizador'}]},
  {id:'editor',es:'Mobiliario',en:'Furniture',detail:{es:'editor',en:'editor'},actions:[action('Distribuir muebles','Distribute furniture','/distribuir')]},
- {id:'avatar3d',es:'Avatar3D',en:'Avatar3D',detail:{es:'en vivo',en:'live'},actions:[action('Encender tótem en el gemelo','Turn on twin totem','/avatar3d on'),action('Apagar tótem en el gemelo','Turn off twin totem','/avatar3d off'),action('Avatar digital · on','Digital avatar · on','/avatardigital on'),action('Avatar digital · off','Digital avatar · off','/avatardigital off')]},
- {id:'impactos',es:'Audiencia',en:'Audience',detail:{es:'impactos · CPM',en:'impacts · CPM'},actions:[action('Mostrar audiencia','Show audience','/impactos on'),action('Ocultar audiencia','Hide audience','/impactos off')]},
+ {id:'avatar3d',es:'Avatar3D',en:'Avatar3D',detail:{es:'en vivo',en:'live'},actions:[{...action('Tótem','Totem','/avatar3d'),toggle:'totem'},{...action('Avatar digital','Digital avatar','/avatardigital'),toggle:'avatar'}]},
+ {id:'impactos',es:'Audiencia',en:'Audience',detail:{es:'impactos · CPM',en:'impacts · CPM'},actions:[{...action('Audiencia','Audience','/impactos'),toggle:'audience'}]},
  {id:'inventory',es:'Inventario/ITIL',en:'Inventory/ITIL',detail:{es:'… elementos',en:'… items'},actions:[action('Consultar inventario','View inventory','/inventario')]},
  {id:'perception',es:'Percepción',en:'Perception',detail:{es:'La pantalla te ve',en:'The screen sees you'},actions:[{es:'Abrir el gemelo · categoría Percepción',en:'Open the twin · Perception category',href:'/admira-xp/?autostart=xtanco&quality=better'}]},
 ];
@@ -62,6 +63,7 @@ export function mountExpertWorkspace({panel,shell,config}){
   for(const spec of def.actions||[]){
    const button=el(spec.href?'a':'button',t(spec));button.dataset.shellEs=spec.es;button.dataset.shellEn=spec.en;
    if(spec.href){const context=inventoryContext(doc.location?.href||view.location.href);button.href=spec.href==='/inventario/'&&context.scoped?inventoryURL(doc.location?.href||view.location.href,context).href:spec.href;if(/^https:/.test(spec.href)){button.target='_blank';button.rel='noopener noreferrer';}}
+   else if(spec.toggle){button.type='button';delete button.dataset.shellEs;delete button.dataset.shellEn;view.XpaceToggle.mount(button,{label:()=>t(spec),state:()=>spec.toggle==='avatar'?(view.AdmiraAvatar?.state?.().visible??view.AvatarDigital?.storedOn?.()):view.XpaceExpertControlState?.(spec.toggle),run:on=>shell.run(spec.command+' '+(on?'on':'off'))});}
    else{button.type='button';listen(button,'click',async()=>{
     if(spec.input&&!input?.value.trim())return;
     released=new WeakSet();

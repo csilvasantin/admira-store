@@ -2339,8 +2339,8 @@
   },
   "ifthendothat": {
     "help_topic": "ifthendothat",
-    "es": "Abre /ifthendothat desde el CLI o IF·THEN·DO THAT en Avanzado. IF elige Cojo un muffin o Llevo un muffin a la caja. DO · reacción elige Música, Locución, Imagen o Vídeo. El filtro de Pixeria se preselecciona como #musica, #locucion, #imagen o #video; puedes cambiarlo por otro hashtag o una búsqueda. DO THAT · contenido permite elegir una pieza compatible del repositorio Pixeria; Abrir repositorio Pixeria abre su ficha. Cambiar reacción conserva el evento y preselecciona el filtro, pero deja el contenido pendiente de escoger. La regla se guarda al editar; seleccionar no reproduce. Arrastre, Enter/Espacio y /demo tpv ejecutan la misma regla una vez por gesto. Música y locuciones suenan en el gemelo; imágenes y vídeos aparecen temporalmente en la pantalla TPV. Detener reacción, Escape o /demo off detienen y recuperan la programación anterior; el vídeo también termina naturalmente, la imagen permanece hasta detener. Desactivar o eliminar todas las reglas no reproduce contenido. El catálogo consulta hasta 200 piezas por tipo music, audio, locucion, image y video, conserva caché y reglas anteriores de canciones (version 1). Prioridad mayor gana; en empate, la última. Las reglas se guardan en este navegador y dominio. El gemelo entra en Matrix por defecto; quality o visual explícito conserva la elección. /marca starbucks muestra el imagotipo y el texto STARBUCKS blanco; /marca off restaura la marca genérica. Sin cobro ni órdenes a TPV físico, escrituras MCP o sincronización multiusuario.",
-    "en": "Open /ifthendothat from the CLI or IF·THEN·DO THAT in Advanced. IF selects I pick up a muffin or I take a muffin to the register. DO · reaction selects Music, Voiceover, Image or Video. The Pixeria filter is preset to #musica, #locucion, #imagen or #video; you can change it to another hashtag or search. DO THAT · content selects a compatible item from the Pixeria repository; Open Pixeria repository opens its entry. Changing reaction keeps the event and presets its filter, but requires choosing content. Editing saves the rule without playing it. Drag, Enter/Space and /demo tpv execute the same rule once per gesture. Music and voiceovers play in the twin; images and videos appear temporarily on the POS display. Stop reaction, Escape or /demo off stops playback and restores the previous schedule; video also ends naturally, images remain until stopped. Disabled or deleted rules play no content. The catalogue queries up to 200 items per type music, audio, locucion, image and video, retaining cache and previous song rules (version 1). Higher priority wins; the last wins ties. Rules persist in this local browser and domain. Matrix is the entry default; explicit quality or visual links retain their choice. /brand starbucks shows the imago and white STARBUCKS wordmark; /brand off restores the generic identity. No payment or physical POS commands, MCP writes or multiuser sync.",
+    "es": "Abre /ifthendothat en Experto o Avanzado. IF elige Cojo un muffin o Llevo un muffin a la caja. Cada DO elige una reacción (Música, Locución, Imagen o Vídeo), su filtro y el contenido de Pixeria. Se preseleccionan #musica, #locucion, #imagen y #video; Todos · quitar filtro o borrar la búsqueda muestra todo el tipo elegido. El catálogo usa el índice público completo de Pixeria, sin el límite anterior de 200. + Añadir reacción anida hasta ocho DO en la misma regla: por ejemplo, locución y vídeo simultáneos. Para cada imagen o vídeo marca una o varias pantallas: pared 1–6, TPV e iPad. Por defecto se elige TPV. Si dos DO usan la misma pantalla, el último visual ocupa ese destino. Con música o locución, el vídeo se muestra sin audio; sin ellas, sólo una pantalla de vídeo emite audio para evitar ecos. Escoger contenido guarda la regla sin emitir. Arrastre, Enter/Espacio y /demo tpv ejecutan la regla una vez por gesto. Detener reacción, Escape o /demo off detienen todos sus DO y recuperan el contenido y volumen programados. El vídeo termina naturalmente; las imágenes permanecen hasta detener. Si un contenido no está disponible, las otras reacciones válidas siguen funcionando. La prioridad mayor gana; en empate, la última regla. Se conservan reglas antiguas, IDs e historial. Las reglas son locales en este navegador y dominio; no cambian playlists compartidas ni ordenan TPV o pantallas físicos. Matrix sigue siendo el modo inicial salvo quality o visual explícito; /marca starbucks conserva el imagotipo y el texto STARBUCKS blanco.",
+    "en": "Open /ifthendothat in Expert or Advanced. IF selects I pick up a muffin or I take a muffin to the register. Each DO chooses a reaction (Music, Voiceover, Image or Video), its filter and Pixeria content. #musica, #locucion, #imagen and #video are preset; All · clear filter or clearing the search lists every item of that type. The catalogue reads the complete public Pixeria index without the previous 200-item cap. + Add reaction nests up to eight DO actions in one rule, for example simultaneous voiceover and video. Each image or video can target one or more screens: wall 1–6, POS and iPad. POS is the default. When DO actions overlap a screen, the final visual action owns that destination. With music or voiceover, videos play muted; otherwise only one video screen plays audio to avoid echoes. Choosing content saves without playing. Drag, Enter/Space and /demo tpv run the rule once per gesture. Stop reaction, Escape or /demo off stops every DO and restores scheduled content and volume. Videos finish naturally; images remain until stopped. Unavailable content does not prevent other valid reactions from playing. Higher priority wins; the last rule wins ties. Previous rules, IDs and history are retained. Rules stay in this local browser and domain, without shared playlist changes or physical POS/screen commands. Matrix remains the entry default unless quality or visual is explicit; /brand starbucks retains the imago and white STARBUCKS wordmark.",
     "commands": [
       "/ifthendothat",
       "/ifthendothat on",
@@ -2352,7 +2352,7 @@
       "muffinDelivered"
     ],
     "storage_key": "xpaceos.xpl.retail.v1:alsea-sbux-021:starbucks-tpv-01",
-    "stock_source": "https://api.admira.store/stock/list?type=<allowed-type>&limit=200",
+    "stock_source": "https://stock.admira.store/stock/index.json",
     "guide": "https://www.admira.store/admira-xp/docs/ifthendothat.md",
     "scope": "local-browser-venue-pos",
     "mcp_tools": false,
@@ -2376,8 +2376,34 @@
       "#imagen",
       "#video"
     ],
-    "storage_version": 2,
-    "visual_destination": "starbucks-tpv-01",
-    "entry_default": "matrix"
+    "storage_version": 3,
+    "entry_default": "matrix",
+    "max_actions": 8,
+    "visual_destinations": [
+      "starbucks-wall-01",
+      "starbucks-wall-02",
+      "starbucks-wall-03",
+      "starbucks-wall-04",
+      "starbucks-wall-05",
+      "starbucks-wall-06",
+      "starbucks-tpv-01",
+      "starbucks-ipad-01"
+    ],
+    "visual_default": "starbucks-tpv-01",
+    "simultaneous": true
+  },
+  "expert_toggles_day_summary": {
+    "es": "Experto usa un solo botón para Tótem, Avatar digital y Audiencia: luz verde y ON cuando está activo, luz roja y OFF cuando está apagado. Pulsar aplica el estado contrario y el indicador sigue los cambios del CLI. El resumen del día está OFF por defecto: /resumen dia on lo activa, /resumen dia off lo desactiva y cierra un resumen ya abierto. /resumen dia estado consulta la preferencia. La elección se conserva en este navegador. Sin resumen visible, el cierre guarda el histórico y avanza al siguiente día sin detener la experiencia.",
+    "en": "Expert uses one button for Totem, Digital avatar and Audience: green light and ON when active, red light and OFF when inactive. Clicking applies the opposite state; indicators also follow CLI changes. The end-of-day summary defaults OFF: /summary day on enables it, /summary day off disables it and dismisses an open summary. /summary day status reads the preference. The choice persists in this browser. With the summary hidden, daily closing still saves history and advances to the next day without interrupting the experience.",
+    "commands": [
+      "/resumen dia on",
+      "/resumen dia off",
+      "/summary day on",
+      "/summary day off"
+    ],
+    "summary_default": false,
+    "storage_key": "xpaceos.day-summary.v1",
+    "guide": "https://www.admira.store/admira-xp/docs/expert-toggles-day-summary.md",
+    "mcp_tools": false
   }
 }

@@ -24,3 +24,5 @@ body.expert-signage-docked #telegramDock.compose-start .send.signage-open .exper
 .expert-media-form a{color:#8ae6ff}
 #expertMediaGeneration[hidden]{display:none!important}
 #advQuickIcons [data-category-id=creation]{display:none}
+
+.expert-state-toggle::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#f36d76;box-shadow:0 0 4px #f36d7680;margin-right:6px;vertical-align:middle}.expert-state-toggle[data-state="on"]::before{background:#62eda2;box-shadow:0 0 4px #62eda280}

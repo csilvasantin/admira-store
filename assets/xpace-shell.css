@@ -145,3 +145,5 @@ html.xs-no-anim .xs-panel,html.xs-no-anim .xs-expert{transition:none!important}
 #xsExpert .xs-expert-docked .xp-floating-grip{display:none}
 #xsExpert .xs-expert-docked .xs-tool-detach{margin-left:auto;padding:2px 6px;min-height:20px;cursor:pointer}
 @media(max-width:600px){#xsExpert .expert-workspace{min-width:540px}#xsExpert{overflow-x:auto}.xs-expert .xs-hint{display:none}}
+
+.expert-state-toggle::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#f36d76;box-shadow:0 0 4px #f36d7680;margin-right:6px;vertical-align:middle}.expert-state-toggle[data-state="on"]::before{background:#62eda2;box-shadow:0 0 4px #62eda280}

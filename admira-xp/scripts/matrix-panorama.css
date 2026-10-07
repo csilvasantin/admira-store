@@ -175,3 +175,4 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-wall-avatar:modal .matrix-avatar-close{margin:0}
 
 .matrix-avatar-toolbar .matrix-avatar-model{flex:1 1 220px;min-width:180px;max-width:100%;min-height:34px;padding:6px 10px;border:1px solid #72958d;border-radius:8px;background:#0b201a;color:#effff5;font:13px system-ui}
+.retail-targets{display:grid;grid-template-columns:1fr 1fr;gap:2px}.retail-rule-composer .retail-targets label{display:flex;align-items:center;gap:5px;margin:2px 0;text-transform:none}.retail-rule-composer [data-retail-action]{margin:10px 0;padding:10px;border-color:#354c60!important}.retail-rule-composer [data-retail-action]>legend{color:#9cead1}

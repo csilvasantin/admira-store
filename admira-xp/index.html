@@ -759,7 +759,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=retail-media-3" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=xtore-ux-1" data-shell="inline"></script>
 </head>
 <body>
 <!-- ── Modal Guardar como Plantilla (sustituye prompt() nativo) ── -->
@@ -1081,7 +1081,7 @@
 <script src="scripts/voice-receipts.js?v=person-voice-3"></script>
 <link rel="stylesheet" href="scripts/media-experience.css?v=20261006-media-experience-1">
 <script src="scripts/media-experience.js?v=20261006-media-experience-1"></script>
-<script src="scripts/media-options.js?v=retail-media-3"></script>
+<script src="scripts/media-options.js?v=xtore-ux-1"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
 <script src="scripts/announcements.js?v=person-voice-1"></script>
@@ -1517,8 +1517,8 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261006-retail-media-3"></script>
-<script src="xtanco-runtime-config.js?r=retail-media-3"></script>
+<script src="xtanco-version.js?v=20261006-xtore-ux-1"></script>
+<script src="xtanco-runtime-config.js?r=xtore-ux-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
 <script src="xtanco-marketplace-client.js"></script>
@@ -11835,6 +11835,7 @@ function showDayEndResults(){
     } }catch(e){}
     fetch('https://api.admira.store/day/save',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({loc,date:dstr,summary})}).catch(()=>{});
   }catch(e){}
+  if(!window.XpaceDaySummary?.enabled()){startNewDayFromResults();return;}
   let ov=document.getElementById('dayEndOverlay');
   if(!ov){
     ov=document.createElement('div'); ov.id='dayEndOverlay';
@@ -11932,6 +11933,8 @@ function startNewDayFromResults(){
   G.weekTimer=CFG.WEEK_TICKS;   // dispara el rollover (endWeek) → nuevo día (o fin de año si toca)
 }
 window.startNewDayFromResults=startNewDayFromResults;
+window.closeDaySummary=()=>{if(G?.dayResultsOpen)startNewDayFromResults();};
+window.XpaceExpertControlState=key=>key==='totem'?!!(DS_PIN?.metahuman?.kind==='web'):key==='avatar'?!!(window.AdmiraAvatar?.state?.().visible??window.AvatarDigital?.storedOn?.()):key==='audience'?!!IMPACTS.on:false;
 
 // ── RANDOM EVENTS ────────────────────────────────────────────
 function checkRandomEvents(){
@@ -31392,7 +31395,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Atmosphere':'Atmósfera',items:['/ambiente','/ambiente vol 50','/voces']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Real operations':'Operativa real',items:['/devolucion','/pedido']},
       {title:typeof lang!=='undefined'&&lang==='en'?'AdmiraNext integration':'Integración AdmiraNext',items:['/socios export']},
-      {title:typeof lang!=='undefined'&&lang==='en'?'Digital assistant (local)':'Asistente digital (local)',items:['/avatar digital on','/avatar digital off','/avatar digital good','/avatar digital better','/avatar digital best','/avatarDigital on','/avatarDigital off','/avatarON','/avatarOFF','/avatar','/avatar reset']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Digital assistant (local)':'Asistente digital (local)',items:['/resumen dia on','/resumen dia off','/summary day on','/summary day off','/avatar digital on','/avatar digital off','/avatar digital good','/avatar digital better','/avatar digital best','/avatarDigital on','/avatarDigital off','/avatarON','/avatarOFF','/avatar','/avatar reset']},
       {title:typeof lang!=='undefined'&&lang==='en'?'AI and content':'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Quick settings':'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Music and layout':'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
@@ -31942,6 +31945,7 @@ window.xtAPI = (function(){
     const text=String(rawText||'').trim();
     const languageResult=window.XpaceShell?.language(text,next=>setLanguage(next));
     if(languageResult)return languageResult;
+    const summaryResult=window.XpaceDaySummary?.handle(text);if(summaryResult)return summaryResult;
     const avatarResult=await window.XpaceShell?.avatarCommand?.(text);
     if(avatarResult)return avatarResult;
     if(/^\/?(?:cli\s+)?(?:distribuir|distribute|distribuit)(?:\s+(?:off|close|cerrar|salir|on))?$/i.test(text)){
@@ -31983,7 +31987,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=retail-media-help-4');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=xtore-ux-1');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -36172,8 +36176,10 @@ window.xtAPI = (function(){
 <script src="scripts/expert-dock.js?v=bottom-workspace-2"></script>
 <link rel="stylesheet" href="scripts/expert-categories.css?v=windows-menu-1">
 <script src="scripts/expert-categories.js?v=pixeria-screens-3"></script>
-<link rel="stylesheet" href="scripts/expert-category-detail.css?v=pixeria-screens-3">
-<script src="scripts/expert-category-detail.js?v=pixeria-screens-3"></script>
+<link rel="stylesheet" href="scripts/expert-category-detail.css?v=xtore-ux-1">
+<script src="/assets/day-summary.js?v=xtore-ux-1"></script>
+<script src="/assets/expert-toggle.js?v=xtore-ux-1"></script>
+<script src="scripts/expert-category-detail.js?v=xtore-ux-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">
@@ -36378,8 +36384,8 @@ window.xtAPI = (function(){
 <script type="module" src="scripts/real-traffic.mjs?v=advanced-status-1"></script>
 <link rel="stylesheet" href="scripts/avatar-audience.css?v=controls-1">
 <script type="module" src="scripts/avatar-audience.mjs?v=controls-1"></script>
-<link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=retail-media-3">
-<link rel="stylesheet" href="scripts/matrix-panorama.css?v=retail-media-3">
+<link rel="stylesheet" href="scripts/matrix-pos-experience.css?v=xtore-ux-1">
+<link rel="stylesheet" href="scripts/matrix-panorama.css?v=xtore-ux-1">
 <link rel="stylesheet" href="scripts/xtanco-premium.css?v=panel-scene-1">
 <link rel="stylesheet" href="scripts/life-ui.css?v=floating-panels-1">
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
@@ -36394,7 +36400,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=retail-media-3"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=xtore-ux-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

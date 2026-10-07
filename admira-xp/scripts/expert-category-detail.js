@@ -38,6 +38,10 @@
     const b=document.createElement('button');b.type='button';b.textContent=t(es,english);b.dataset.itilEs=es;b.dataset.itilEn=english;
     b.addEventListener('click',run);parent.append(b);return b;
   }
+  function toggle(parent,es,english,key,base){
+    const b=button(parent,es,english,()=>{});delete b.dataset.itilEs;delete b.dataset.itilEn;
+    window.XpaceToggle.mount(b,{label:()=>t(es,english),state:()=>window.XpaceExpertControlState?.(key),run:on=>command(base+' '+(on?'on':'off'))});
+  }
   function field(parent,es,english){
     const l=document.createElement('label');const text=document.createElement('span');text.textContent=t(es,english);text.dataset.itilEs=es;text.dataset.itilEn=english;l.append(text);
     const input=document.createElement('input');input.type='text';l.append(input);parent.append(l);return input;
@@ -63,15 +67,12 @@
     if(key==='anonymizer')button(actions,'Abrir Anonymizer en Pixeria','Open Anonymizer in Pixeria',()=>launch(key));
     if(key==='editor')button(actions,'Distribuir muebles','Distribute furniture',()=>command('/cli '+(en()?'distribute':'distribuir')));
     if(key==='avatar3d'){
-      button(actions,'Encender tótem','Turn on totem',()=>command('/avatar3d on'));
-      button(actions,'Apagar tótem','Turn off totem',()=>command('/avatar3d off'));
-      button(actions,'Avatar digital · on','Digital avatar · on',()=>command('/avatar digital on'));
-      button(actions,'Avatar digital · off','Digital avatar · off',()=>command('/avatar digital off'));
+      toggle(actions,'Tótem','Totem','totem','/avatar3d');
+      toggle(actions,'Avatar digital','Digital avatar','avatar','/avatar digital');
       button(actions,'Opciones del avatar','Avatar options',()=>window.openMetahumanPanel?.());
     }
     if(key==='impactos'){
-      button(actions,'Mostrar audiencia','Show audience',()=>command('/impactos on'));
-      button(actions,'Ocultar audiencia','Hide audience',()=>command('/impactos off'));
+      toggle(actions,'Audiencia','Audience','audience','/impactos');
     }
     if(key==='inventory'){
       button(actions,'Consultar inventario','View inventory',()=>command('/inventario'));
