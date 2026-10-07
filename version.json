@@ -1,16 +1,15 @@
 {
-  "version": "v.07.10.2026.r42.20:01",
-  "deployedAt": "2026-10-07T18:01:36Z",
+  "version": "v.07.10.2026.r43.20:13",
+  "deployedAt": "2026-10-07T18:13:51Z",
   "deployer": "GrokBot",
   "machine": "MacBookPro16",
   "signature": "GrokBot · MacBookPro16",
-  "git": "dbac33be068404064cc205eb121b5b6d73baf5a6",
-  "gitShort": "dbac33b",
-  "gitFull": "dbac33be068404064cc205eb121b5b6d73baf5a6",
+  "git": "7d8c830c02082d0d8ea3cb21364cc7992bbc945b",
+  "gitShort": "7d8c830",
+  "gitFull": "7d8c830c02082d0d8ea3cb21364cc7992bbc945b",
   "dirty": false,
   "novedades": [
-    "Gemelo Starbucks: una incidencia abierta ya se puede cerrar desde la pantalla (✓ Cerrar incidencia) con nota de resolución",
-    "Al cerrarla la pantalla vuelve a OK y el estado muestra quién la cerró, cuándo y la nota",
-    "El cierre se refleja también en Yokup / admira.app (Mi comercio y ficha)"
+    "Incidencias del gemelo: tras CERRADA, la pantalla vuelve sola a emitir a los ~5 s (en silencio si el navegador bloquea el sonido)",
+    "Los campos del panel de incidencia ya no van a saltos ni pierden letras al escribir"
   ]
 }
