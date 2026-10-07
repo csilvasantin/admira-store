@@ -29,3 +29,5 @@ Recovered current Store main with native Store walkthrough, local demos, kiosk m
 ES: Un solo toque en el iPad (o el botón 🧾 Abrir gestor de colas) abre el gestor de colas oficial admira.tv/gestorColas/pantalla, con enlaces a abrirlo en pestaña nueva y al control de barra. En ITIL, starbucks-ipad-01 tiene contenido tipo web app (gestorColas).
 
 EN: A single tap on the iPad (or the 🧾 Abrir gestor de colas button) opens the official queue manager at admira.tv/gestorColas/pantalla, with links to open it in a new tab and to the bar control. In ITIL, starbucks-ipad-01 content type is web app (gestorColas).
+
+ES: El toque funciona en Good, Better, Best y Matrix (detección por coordenadas). EN: Tap works in Good, Better, Best and Matrix (coordinate hit-test).
