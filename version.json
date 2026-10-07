@@ -1,17 +1,16 @@
 {
-  "version": "v.07.10.2026.r19.13:02",
-  "deployedAt": "2026-10-07T11:02:20Z",
+  "version": "v.07.10.2026.r20.13:23",
+  "deployedAt": "2026-10-07T11:24:00Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "9a7f68b457f5d38a249ce12db3465356f0acd92a",
-  "gitShort": "9a7f68b",
-  "gitFull": "9a7f68b457f5d38a249ce12db3465356f0acd92a",
+  "git": "3a8cdadf5e289c718314b2b75a123f69ecfcd8f3",
+  "gitShort": "3a8cdad",
+  "gitFull": "3a8cdadf5e289c718314b2b75a123f69ecfcd8f3",
   "dirty": false,
   "novedades": [
-    "El iPad del mostrador de Starbucks (starbucks-ipad-01) enseña el gestor de colas: Admirito, «¡Listo!» con nombres y «En preparación», adaptado a su formato horizontal",
-    "Al pulsar el iPad en la escena se abre en grande la pantalla real de la cola (ainimation.studio/cola/ipad.html), como el avatar y el quiosco",
-    "/ipad cola · /ipad off (vuelve a su playlist de vídeo) · /ipad abrir; un previo arrastrado desde Pixeria sigue mandando sobre la cola",
-    "Pedidos de demostración, pago SIMULADO"
+    "Sin pedidos pendientes, el Admirito del iPad del mostrador hace gracias en la escena (saltos, giros, latidos, bailes) e invita a pedir en el quiosco con frases simpáticas",
+    "Cuando un pedido pasa a «listo», deja la demo y enseña el aviso por nombre",
+    "El quiosco del tótem, abierto en grande, pide ahora el nombre en una pantalla propia y obligatoria antes de pagar"
   ]
 }
