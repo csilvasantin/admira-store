@@ -121,8 +121,11 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 @media(max-width:700px){body:has(.matrix-playlist-editor:not([hidden])) #topBar #bbFunnel{visibility:hidden}}
 
 .matrix-playlist-editor .device-loop-label{display:flex;align-items:center;gap:6px;color:#c0ffdf}.matrix-playlist-editor .device-loop-help{font-size:10px;margin-bottom:7px;color:#9dbfb1}
-.matrix-incident-chip{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:6% 5%;box-sizing:border-box;container-type:size;font:600 34px/1.18 system-ui,sans-serif;color:#fff;text-decoration:none;background:#5c0a0ef2;border:6px solid #ff5a5f;pointer-events:auto;cursor:pointer;overflow:hidden}
-.matrix-incident-chip strong{font:800 min(16cqw,20cqh)/1.05 ui-monospace,monospace;white-space:nowrap;letter-spacing:-.02em}.matrix-incident-chip span:nth-of-type(1){font-weight:800}.matrix-incident-chip span{overflow-wrap:anywhere;font-size:min(12cqw,6.5cqh);line-height:1.12}
+.matrix-incident-chip{--fit:1;position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:safe center;gap:max(2px,1.6cqh);padding:5% 5%;box-sizing:border-box;container-type:size;font:600 34px/1.18 system-ui,sans-serif;color:#fff;text-decoration:none;background:#5c0a0ef2;border:clamp(2px,2.2cqmin,6px) solid #ff5a5f;pointer-events:auto;cursor:pointer;overflow:hidden;min-width:0}
+.matrix-incident-chip strong{flex:none;max-width:100%;font:800 calc(var(--fit) * min(14cqw,11cqh))/1.05 ui-monospace,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.02em}.matrix-incident-chip span:nth-of-type(1){font-weight:800}.matrix-incident-chip span{flex:none;max-width:100%;font-size:calc(var(--fit) * min(9.5cqw,6.4cqh));line-height:1.12;overflow-wrap:anywhere;hyphens:auto;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+/* Tarjeta de incidencia (Carlos, 7-oct-2026): cabe en cualquier pantalla — letra según el contenedor (cqw/cqh) y --fit que
+   ajusta starbucks-incidents.mjs si aún desborda; nota y líneas largas a 2 líneas con elipsis; hueco abajo para «✓ Cerrar incidencia». */
+.matrix-incident-chip:not([data-stage=cerrada]){padding-bottom:30px}.matrix-incident-chip span.matrix-incident-note{font-style:italic}
 .matrix-incident-chip[data-tone=warn]{background:#5a3a00f2;border-color:#ffb020}.matrix-incident-chip[data-tone=ok]{background:#0a4d2cf2;border-color:#3ddc84}
 .matrix-incident-chip[data-tone=alert]{animation:matrix-incident-pulse 1.6s ease-in-out infinite}@keyframes matrix-incident-pulse{50%{border-color:#ffd0d1}}
 @media (prefers-reduced-motion:reduce){.matrix-incident-chip[data-tone=alert]{animation:none}}
