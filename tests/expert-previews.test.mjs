@@ -87,7 +87,7 @@ test('PREVIOS habla el idioma de la interfaz',()=>{
  const {root,doc,view}=dom();doc.documentElement.lang='en';load(root);
  root.XpaceExpertPreviews.add('voice',stock('voice',9,{title:'Closing soon'}));
  const card=view.querySelector('.expert-preview-card');
- assert.equal(card.querySelector('.epc-kind').textContent,'VOICEOVER');assert.equal(card.querySelector('[data-preview-launch]').textContent,'📢 Play ×3');assert.equal(card.querySelector('[data-preview-stock]').textContent,'Open in Stock · Announcements');
+ assert.equal(card.querySelector('.epc-kind').textContent,'VOICEOVER');assert.equal(card.querySelector('[data-preview-launch]').textContent,'📢 Play');assert.equal(card.querySelector('[data-preview-stock]').textContent,'Open in Stock · Announcements');
 });
 
 test('media-options: stage(created) avisa a PREVIOS y launch() lanza cualquier pieza de Stock al canal correcto',async()=>{
@@ -105,14 +105,14 @@ test('media-options: stage(created) avisa a PREVIOS y launch() lanza cualquier p
  await assert.rejects(root.XpaceMediaOptions.launch('video',{id:'x',url:'https://evil.example/x'}));
 });
 
-test('una locución de Stock se emite tres veces sólo al pulsar Emitir, sin volver a generarla',async()=>{
+test('una locución de Stock se emite UNA vez sólo al pulsar Emitir, sin volver a generarla',async()=>{
  const played=[];class FakeAudio{constructor(url){this.url=url;played.push(this);this.currentTime=0;}play(){setTimeout(()=>{this.onplaying?.();setTimeout(()=>this.onended?.(),1);},1);return Promise.resolve();}pause(){}load(){}removeAttribute(){}}
  const doc={documentElement:{lang:'es'},getElementById:()=>null,querySelector:()=>null};
  const root={document:doc,Audio:FakeAudio,localStorage:{getItem:()=>null,setItem(){}},sessionStorage:{getItem:()=>null,setItem(){},removeItem(){}},addEventListener(){},URL,XpaceMedia:{generate:async()=>{throw Error('no debe generar');}}};
  vm.runInNewContext(read('admira-xp/scripts/announcements.js'),{window:root,setTimeout,clearTimeout,Promise,AbortController});
  const states=[];await new Promise(resolve=>{root.XpaceAnnouncements.playStock('https://api.admira.store/stock/asset/voice-1','Cerramos a las 21 h',{onState(s){states.push(s.phase);if(s.phase==='done')resolve();}});});
  assert.equal(new Set(played.map(a=>a.url)).size,1);assert.equal(played[0].url,'https://api.admira.store/stock/asset/voice-1');
- assert.equal(states.filter(s=>s==='speaking').length,3);assert.equal(states.at(-1),'done');
+ assert.equal(states.filter(s=>s==='speaking').length,1);assert.equal(states.at(-1),'done');
 });
 
 test('Crear contenidos incluye Crear locución y los creadores marcan sus piezas como creadas',()=>{

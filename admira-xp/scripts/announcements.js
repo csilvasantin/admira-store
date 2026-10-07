@@ -1,9 +1,10 @@
-/* Local PA announcements: one Stock audio asset, three sequential readings. */
+/* Local PA announcements: one Stock audio asset, read once (Carlos, 7-oct-2026; it used to be three readings). `times` repeats it. */
 (function(root){
   'use strict';
-  function createAnnouncements({synthesis,Utterance,generate,Audio,onState=()=>{},duck=()=>()=>{},schedule=setTimeout,unschedule=clearTimeout,times=3}={}){
-    // times = lecturas seguidas del mismo audio (3 por defecto; los altavoces de Starbucks piden 2).
-    const total=Math.max(1,Math.min(9,Math.round(Number(times))||3));
+  function createAnnouncements({synthesis,Utterance,generate,Audio,onState=()=>{},duck=()=>()=>{},schedule=setTimeout,unschedule=clearTimeout,times=1}={}){
+    // times = lecturas seguidas del mismo audio. Una por defecto (Carlos, 7-oct-2026: «no se tienen que
+    // reproducir 3 veces, solo una»); los altavoces de Starbucks piden 2.
+    const total=Math.max(1,Math.min(9,Math.round(Number(times))||1));
     let revision=0,timer=null,current=null,release=null,audio=null,asset=null,abort=null;
     let state={phase:'idle',completed:0,total,language:'es-ES',error:null};
     const emit=()=>onState({...state});
@@ -74,17 +75,17 @@
   try{const draft=root.sessionStorage.getItem('xpace-announcement-login-draft');if(input&&draft)input.value=draft;root.sessionStorage.removeItem('xpace-announcement-login-draft');}catch(_){}
   login?.addEventListener('click',()=>{try{root.sessionStorage.setItem('xpace-announcement-login-draft',input?.value||'');}catch(_){}});
   selector?.addEventListener('change',()=>{api.stop();try{root.localStorage.setItem(preference,selector.value);}catch(_){}render();});
-  let latest={phase:'idle',completed:0,total:3};
+  let latest={phase:'idle',completed:0,total:1};
   function render(s=latest){
     latest=s;if(!status)return;
     const en=doc.documentElement.lang==='en';
     if(selector){
       const label=doc.getElementById('announcementVoiceLabel');if(label)label.textContent=en?'Announcement voice':'Voz de la locución';
       for(const o of selector.options)o.textContent=o.value==='male'?(en?'Male · James (English)':'Masculina · David Martín (España)'):o.value==='female'?(en?'Female · Cassidy (English)':'Femenina · Sara Martín (España)'):(en?'Local browser voice · free':'Voz local del navegador · gratuita');
-      const note=doc.getElementById('announcementVoiceNote');if(note){const active=root.XpaceAccess?.active();note.textContent=en?'ElevenLabs · Stock · high quality. One paid generation, three readings. '+(active?'Session active.':'Connect your Admira account.'):'ElevenLabs · Stock · alta calidad. Una generación de pago, tres lecturas. '+(active?'Sesión activa.':'Conecta tu cuenta de Admira.');}
+      const note=doc.getElementById('announcementVoiceNote');if(note){const active=root.XpaceAccess?.active();note.textContent=en?'ElevenLabs · Stock · high quality. One paid generation, one reading. '+(active?'Session active.':'Connect your Admira account.'):'ElevenLabs · Stock · alta calidad. Una generación de pago, una lectura. '+(active?'Sesión activa.':'Conecta tu cuenta de Admira.');}
     }
     const errors={empty:en?'Write the announcement first.':'Escribe primero el texto de la locución.',muted:en?'Audio is muted. Enable audio and try again.':'El audio está silenciado. Actívalo y vuelve a emitir.',unsupported:en?'Voice playback is unavailable in this browser.':'Este navegador no dispone de lectura por voz.'};
-    status.textContent=s.phase==='error'?(errors[s.error]||(en?'Could not play the announcement. Try again.':'No se pudo emitir la locución. Vuelve a intentarlo.')):s.phase==='done'?(en?'Announcement complete · 3/3':'Locución completada · 3/3'):s.phase==='stopped'?(en?'Announcement stopped':'Locución detenida'):['starting','speaking','between'].includes(s.phase)?(en?'Playing announcement · ':'Emitiendo locución · ')+(s.completed+1)+'/3':(en?'Your text will play three times.':'Tu texto sonará tres veces.');
+    status.textContent=s.phase==='error'?(errors[s.error]||(en?'Could not play the announcement. Try again.':'No se pudo emitir la locución. Vuelve a intentarlo.')):s.phase==='done'?(en?'Announcement complete':'Locución completada')+(s.total>1?' · '+s.total+'/'+s.total:''):s.phase==='stopped'?(en?'Announcement stopped':'Locución detenida'):['starting','speaking','between'].includes(s.phase)?(en?'Playing announcement':'Emitiendo locución')+(s.total>1?' · '+(s.completed+1)+'/'+s.total:''):(en?'Your text will play once.':'Tu texto sonará una vez.');
     status.dataset.phase=s.phase;status.dataset.completed=String(s.completed);
     if(s.phase==='generating')status.textContent=en?'Preparing ElevenLabs voice…':'Preparando voz ElevenLabs…';
     if(s.phase==='error'&&s.error==='auth')status.textContent=en?'Sign in to generate with ElevenLabs.':'Inicia sesión para generar con ElevenLabs.';
@@ -111,10 +112,10 @@
   }
   root.XpaceMusicHold=duck; // misma prioridad para /comunicar y megafonía
   // Experto → PREVIOS: una locución ya guardada en Stock se emite sólo al pulsar Emitir,
-  // con las mismas tres lecturas y la misma bajada del hilo musical. No genera otra vez.
+  // una vez (antes eran tres lecturas) y parando el hilo musical mientras suena. No genera otra vez.
   let stockPlayer=null;
   function stopStock(){const player=stockPlayer;stockPlayer=null;player?.stop();}
-  function playStock(url,text,{language='es',onState=()=>{},times=3}={}){
+  function playStock(url,text,{language='es',onState=()=>{},times=1}={}){
     api.stop();stopStock();
     // /audio mute: no arranca ninguna locución mientras el audio esté silenciado.
     if(root.dsMasterMute){onState({phase:'error',completed:0,total:times,language:language==='en'?'en-US':'es-ES',error:'muted'});return false;}

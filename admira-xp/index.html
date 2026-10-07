@@ -1018,14 +1018,14 @@
     <div class="qm-acc-body">
       <label id="announcementVoiceLabel" for="announcementVoice">Voz de la locución</label>
       <select id="announcementVoice" aria-describedby="announcementVoiceNote"><option value="female">Femenina · Sara Martín (España)</option><option value="male">Masculina · David Martín (España)</option><option value="browser">Voz local del navegador · gratuita</option></select>
-      <span id="announcementVoiceNote">ElevenLabs · alta calidad. Una generación de pago, tres lecturas. Inicia sesión para generar.</span>
+      <span id="announcementVoiceNote">ElevenLabs · alta calidad. Una generación de pago, una lectura. Inicia sesión para generar.</span>
       <label id="announcementTextLabel" for="announcementText">Texto de la locución</label>
       <textarea id="announcementText" rows="4" maxlength="1500" placeholder="Escribe el texto que sonará en la tienda…" aria-describedby="announcementStatus"></textarea>
-      <button type="button" data-xp-do="mega" title="Emitir el texto tres veces por voz">📢 Emitir locución</button>
+      <button type="button" data-xp-do="mega" title="Emitir el texto por voz">📢 Emitir locución</button>
       <button type="button" data-xp-do="megaStop" title="Detener el aviso en curso">⏹ Detener</button>
       <a id="announcementLogin" href="/auth/login" hidden>Iniciar sesión</a>
       <a id="audioStockLink" data-media-stock hidden target="_blank" rel="noopener">Ver en Stock</a>
-      <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará tres veces.</span>
+      <span id="announcementStatus" role="status" aria-live="polite">Tu texto sonará una vez.</span>
     </div>
   </div>
   <div class="qm-acc" data-acc>
@@ -1085,13 +1085,13 @@
 <script src="scripts/media-options.js?v=xtore-ux-3"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
-<script src="scripts/announcements.js?v=audio-mute-1"></script>
+<script src="scripts/announcements.js?v=una-lectura-1"></script>
 <script defer src="scripts/image-prompt.js?v=20261005-pixeria-1"></script>
 <script defer src="scripts/video-prompt.js?v=20261006-media-experience-1"></script>
 <script defer src="scripts/voiceover-prompt.js?v=person-voice-1"></script>
 <!-- Experto → PREVIOS (3.ª columna): lo creado en Crear contenidos se previsualiza aquí, el último primero. -->
 <link rel="stylesheet" href="scripts/expert-previews.css?v=preview-reset-1">
-<script defer src="scripts/expert-previews.js?v=preview-reset-1"></script>
+<script defer src="scripts/expert-previews.js?v=una-lectura-1"></script>
 <!-- Sello flotante «v.… NUEVO» por encima del menú inferior del Experto: no tapa las categorías (Crear contenidos). -->
 <script defer src="scripts/sello-chip-dock.js?v=20261006-store-previews-1"></script>
 <nav class="quad-menu quad-right is-collapsed" aria-label="Opciones Avanzadas">
@@ -36471,7 +36471,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=audio-mute-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=una-lectura-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>
