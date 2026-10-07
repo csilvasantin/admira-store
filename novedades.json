@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r33.16:33": [
+    "Admirito habla por defecto con la voz «Santiago» de ElevenLabs (elegida por Carlos)",
+    "?vozid=daniela o ?vozid=raquel prueban las otras voces"
+  ],
   "v.07.10.2026.r32.16:26": [
     "Admirito habla con voz de ElevenLabs en castellano (voz joven y dulce) en los avisos del gemelo y el iPad del mostrador",
     "Caché de frases frecuentes y respaldo con la voz es-ES del navegador"
