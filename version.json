@@ -1,15 +1,14 @@
 {
-  "version": "v.07.10.2026.r43.20:13",
-  "deployedAt": "2026-10-07T18:13:51Z",
+  "version": "v.07.10.2026.r44.20:38",
+  "deployedAt": "2026-10-07T18:38:35Z",
   "deployer": "GrokBot",
   "machine": "MacBookPro16",
   "signature": "GrokBot · MacBookPro16",
-  "git": "7d8c830c02082d0d8ea3cb21364cc7992bbc945b",
-  "gitShort": "7d8c830",
-  "gitFull": "7d8c830c02082d0d8ea3cb21364cc7992bbc945b",
+  "git": "493c0958ba42c5a98581be614ac9ae002b53190d",
+  "gitShort": "493c095",
+  "gitFull": "493c0958ba42c5a98581be614ac9ae002b53190d",
   "dirty": false,
   "novedades": [
-    "Incidencias del gemelo: tras CERRADA, la pantalla vuelve sola a emitir a los ~5 s (en silencio si el navegador bloquea el sonido)",
-    "Los campos del panel de incidencia ya no van a saltos ni pierden letras al escribir"
+    "Matrix · incidencias: la tarjeta CERRADA/ABIERTA cabe siempre en el marco de la pantalla (la letra se ajusta al tamaño, nota y líneas largas a 2 líneas con «…»)"
   ]
 }
