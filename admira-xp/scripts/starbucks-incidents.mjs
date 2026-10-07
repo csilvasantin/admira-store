@@ -55,6 +55,8 @@ const refresh=()=>{if(doc0().activeElement!==select)select.value=target;power.te
   }catch(error){result.textContent=t('No enviado: ','Not sent: ')+error.message;}finally{busy=false;for(const b of panel.querySelectorAll('button'))b.disabled=false;refresh();}
  },opts);refresh();
 function doc0(){return root.ownerDocument||document;}
+ // La tarjeta nunca se sale del marco: si el texto desborda se reduce --fit hasta que quepa (mínimo 45 %).
+ function fitChip(chip){if(!chip.isConnected||!chip.clientHeight)return false;let fit=1;chip.style.setProperty('--fit','1');while(fit>0.45&&(chip.scrollHeight>chip.clientHeight+1||chip.scrollWidth>chip.clientWidth+1)){fit=Math.round((fit-0.07)*100)/100;chip.style.setProperty('--fit',String(fit));}return true;}
  // Volver a emitir: si el navegador bloquea el autoplay con sonido, la pantalla sigue en silencio.
  function resumeMedia(node){if(!node)return;setTimeout(()=>{for(const v of node.querySelectorAll('video')){if(!v.paused||!(v.currentSrc||v.getAttribute('src')))continue;const p=v.play();if(p&&p.catch)p.catch(()=>{v.muted=true;v.play()?.catch?.(()=>{});});}},400);}
  function track(id){if(!id)return;tracked.set(id,Date.now());while(tracked.size>20)tracked.delete(tracked.keys().next().value);try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}}
@@ -90,6 +92,9 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
   // Sólo se toca el DOM si cambia algo (antes se reescribía cada segundo y el panel iba a saltos al teclear).
   const prev=chipKey.get(chip)||[];if(prev.length!==model.lines.length||chip.children.length!==model.lines.length){chip.replaceChildren(...model.lines.map((line,i)=>{const el=document.createElement(i?'span':'strong');el.textContent=line;return el;}));}
   else model.lines.forEach((line,i)=>{if(prev[i]!==line)chip.children[i].textContent=line;});chipKey.set(chip,model.lines);
+  const note=inc.resolution?'«'+String(inc.resolution).slice(0,80)+'»':'';for(const el of chip.children)el.classList.toggle('matrix-incident-note',!!note&&el.textContent===note);
+  // Encaje: sólo se recalcula si cambia la forma del texto (no cada segundo de la cuenta atrás).
+  const shape=model.lines.map(l=>l.replace(/\d/g,'0')).join('\n');if(chip.dataset.fitShape!==shape&&fitChip(chip))chip.dataset.fitShape=shape;
  }
  for(const [id,inc] of resumes)resumeClosed(id,inc);}
  async function poll(){clearTimeout(pollTimer);if(abort.signal.aborted)return;try{const data=await fetchIncidentStatus([...tracked.keys()],fetcher);statusData=data.incidents||[];if(!panel.hidden&&!busy)refresh();const now=Date.now();for(const inc of statusData)if(inc.stage==='cerrada'&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS&&tracked.delete(inc.id))try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}paint();}catch{}pollTimer=setTimeout(poll,document.hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);}
