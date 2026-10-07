@@ -32184,6 +32184,7 @@ window.xtAPI = (function(){
       if(cmd==='dj'||cmd==='djnovah'||cmd==='novah') return setDJCommand(arg);
       if(cmd==='pixeria'||cmd==='pixerfeed'||cmd==='pixer') return setPixerFeedCommand(arg);
       if(cmd==='admiratv'||cmd==='admira-tv'||cmd==='canaltv') return setAdmiraTvCommand(arg);
+      if(cmd==='ipad'&&window.XpaceIpadCola) return window.XpaceIpadCola.command(arg);
       if(cmd==='totem'||cmd==='tótem'||cmd==='quiosco'||cmd==='kiosko'||cmd==='kiosk') return totemKioskCommand(cmd==='totem'||cmd==='tótem'?arg:(arg||'kiosko'));
       if(cmd==='tiktok'||cmd==='campanatiktok'||cmd==='campañatiktok') return setTiktokCommand(arg);
       if(cmd==='tarjetafidelidad'||cmd==='fidelidad'||cmd==='loyaltycard') return setLoyaltyCardCommand();
@@ -36206,6 +36207,7 @@ window.xtAPI = (function(){
 <script src="/assets/expert-toggle.js?v=xtore-ux-2"></script>
 <script src="scripts/expert-category-detail.js?v=kiosko-grande-1"></script>
 <script src="scripts/totem-kiosko.js?v=admirito-cola-1"></script>
+<script src="scripts/ipad-cola.js?v=ipad-mostrador-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
 <link rel="stylesheet" href="../inventario/workspace.css?v=inventory-lang-20261004-1">

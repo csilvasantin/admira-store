@@ -1,5 +1,11 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r18.13:01": [
+    "El iPad del mostrador de Starbucks (starbucks-ipad-01) enseña el gestor de colas: Admirito, «¡Listo!» con nombres y «En preparación», adaptado a su formato horizontal",
+    "Al pulsar el iPad en la escena se abre en grande la pantalla real de la cola (ainimation.studio/cola/ipad.html), como el avatar y el quiosco",
+    "/ipad cola · /ipad off (vuelve a su playlist de vídeo) · /ipad abrir; un previo arrastrado desde Pixeria sigue mandando sobre la cola",
+    "Pedidos de demostración, pago SIMULADO"
+  ],
   "v.07.10.2026.r17.12:30": [
     "El Admirito del gemelo de Starbucks lee la cola de pedidos de Paseo de Gracia y anuncia cada pedido listo una sola vez",
     "Llama por el nombre que diste en el quiosco: «Carlos, tu pedido Starbucks está preparado»; sin nombre, dice el número",
