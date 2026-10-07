@@ -1,16 +1,16 @@
 {
-  "version": "v.07.10.2026.r51.21:51",
-  "deployedAt": "2026-10-07T19:36:59Z",
-  "deployer": "NeoMBP16",
-  "machine": "MacBookPro16",
-  "signature": "NeoMBP16 · MacBookPro16",
-  "git": "b4a2861b73277ecb3661b264b59dfe338b04a6bb",
-  "gitShort": "b4a2861",
-  "gitFull": "b4a2861b73277ecb3661b264b59dfe338b04a6bb",
+  "version": "v.07.10.2026.r52.22:20",
+  "deployedAt": "2026-10-07T20:21:17Z",
+  "deployer": "GrokBot",
+  "machine": "MacMini",
+  "signature": "GrokBot · MacMini",
+  "git": "8f9745cb25fa2cbbcfad29135f3380ac72741e5b",
+  "gitShort": "8f9745c",
+  "gitFull": "8f9745cb25fa2cbbcfad29135f3380ac72741e5b",
   "dirty": false,
   "novedades": [
-    "Avatar ampliado (Matrix): el idioma ESP/ENG sube a la barra superior, junto al desplegable del avatar, en Good · Admirito, Better · Luna y Best · Neo",
-    "Cambiar el idioma ya no recarga el avatar: se le pasa al momento y la barra de chat queda limpia",
-    "Neo vuelve a hablar en el stream: sus respuestas llegan a la sala que locuta el render (digitalavatar.ai r21)"
+    "Incidencias CLI: la ficha de admira.app se abre encima de todo, a la derecha, y se queda 3 s en «Finalizada»; el menú ☰ se pliega mientras dura",
+    "El CLI ya no borra lo que escribes mientras corre un comando largo",
+    "Informe de misión en PDF estilo NASA con la marca blanca del cliente (colores, logo y tipografía de /marca, p. ej. Starbucks) y fotos de la pantalla al abrir y al cerrar: proyecto, ubicación, pantalla (compra, garantía, fallos y MTBF del ITIL de Yokup), cronología T+, SLA, firmas y resumen por IA; por correo y a tu Telegram"
   ]
 }
