@@ -1,16 +1,15 @@
 {
-  "version": "v.07.10.2026.r31.16:21",
-  "deployedAt": "2026-10-07T14:22:08Z",
+  "version": "v.07.10.2026.r32.16:26",
+  "deployedAt": "2026-10-07T14:26:58Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "37bbabe9a96030f6a8f287cb8bbf7a16ab0486f7",
-  "gitShort": "37bbabe",
-  "gitFull": "37bbabe9a96030f6a8f287cb8bbf7a16ab0486f7",
+  "git": "f3204ea2e1264c8475bd758af5706942c4c0ffb1",
+  "gitShort": "f3204ea",
+  "gitFull": "f3204ea2e1264c8475bd758af5706942c4c0ffb1",
   "dirty": false,
   "novedades": [
-    "iPad de Starbucks: un toque abre el gestor de colas también en Matrix (capa táctil sobre el iframe)",
-    "La vista ampliada se abre siempre por encima de la escena y ✕ cierra con un toque",
-    "Diagnóstico del toque en window.__ipadColaDebug"
+    "Admirito habla con voz de ElevenLabs en castellano (voz joven y dulce) en los avisos del gemelo y el iPad del mostrador",
+    "Caché de frases frecuentes y respaldo con la voz es-ES del navegador"
   ]
 }
