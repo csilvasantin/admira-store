@@ -1,4 +1,4 @@
-import {retailRulebook,defaultRetailRule,RETAIL_RULES_KEY} from './retail-rules.mjs?v=retail-rules-1';
+import {retailRulebook,defaultRetailRule,RETAIL_RULES_KEY} from './retail-rules.mjs?v=retail-rules-2';
 export function mountRetailRuleComposer(host){
  const doc=host.ownerDocument,win=doc.defaultView,book=retailRulebook(),t=(es,en)=>doc.documentElement.lang==='en'?en:es;
  const node=(tag,text)=>{const e=doc.createElement(tag);if(text)e.textContent=text;return e;};
