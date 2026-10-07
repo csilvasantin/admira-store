@@ -2627,8 +2627,8 @@
     "guide": "https://www.xpaceos.com/admira-xp/docs/starbucks-playlist.md"
   },
   "starbucks_tpv": {
-    "es": "En Matrix · Starbucks, Experto → TPV / POS centra la cámara en la pantalla del terminal orientada al cliente. Reproduce la playlist de publicidad local: Stock 1329, «Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2» (30 s), en bucle y sin audio. Pausar/Reproducir TPV actúa solo sobre ese player. Las seis pantallas de pared, /sincro, /sincrototal y el hilo musical son independientes. /layout identifica el terminal como TPV, sin cambiar los números 1–6. Editor de geometría permite recalibrar y guardar las cuatro esquinas.",
-    "en": "In Matrix · Starbucks, Expert → TPV / POS centers the camera on the customer-facing terminal screen. It plays the local advertising playlist: Stock 1329, “Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2” (30 s), looping without audio. Pause/Play POS affects only that player. The six wall screens, /sync, /synctotal and speaker music remain independent. /layout labels the terminal as TPV without changing numbers 1–6. Geometry editor allows recalibrating and saving its four corners.",
+    "es": "En Matrix · Starbucks, Experto → TPV / POS encuadra la vitrina y la caja; el muffin se puede arrastrar a la caja para abrir su cesta local. Reproduce la playlist de publicidad local: Stock 1329, «Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2» (30 s), en bucle y sin audio. Pausar/Reproducir TPV actúa solo sobre ese player. Las seis pantallas de pared, /sincro, /sincrototal y el hilo musical son independientes. /layout identifica el terminal como TPV, sin cambiar los números 1–6. Editor de geometría permite recalibrar y guardar las cuatro esquinas.",
+    "en": "In Matrix · Starbucks, Expert → TPV / POS frames the display case and register; drag the muffin to the register to open its local basket. It plays the local advertising playlist: Stock 1329, “Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2” (30 s), looping without audio. Pause/Play POS affects only that player. The six wall screens, /sync, /synctotal and speaker music remain independent. /layout labels the terminal as TPV without changing numbers 1–6. Geometry editor allows recalibrating and saving its four corners.",
     "playlist_id": "starbucks-alsea-paseo-de-gracia-tpv",
     "virtual_player_id": "starbucks-tpv-01",
     "playlist": "https://www.xpaceos.com/admira-xp/starbucks-tpv-playlist.json",
@@ -4341,5 +4341,23 @@
     "generation_on_click": false,
     "historical_recovery": "published XpaceOS Stock audio with explicit voice/language metadata",
     "recovery_endpoint": "/admira-xp/voice-receipts"
+  },
+  "pos_muffin": {
+    "help_topic": "pos-muffin",
+    "es": "En Matrix de Starbucks Alsea, mantén pulsado el muffin de la vitrina y arrástralo a la caja junto al osito. La miniatura sigue al cursor y la caja se ilumina al aceptar el producto. Al soltarlo aparece la cesta con 1 × Muffin y «¿Lo acompañamos con un café?». Añadir café incorpora el acompañamiento; Sólo el muffin cierra la sugerencia. Quitar elimina una línea completa. Soltar fuera, Escape o perder el foco cancela el arrastre. Con teclado, enfoca el muffin y pulsa Enter o Espacio. TPV / POS y el enlace #tpv encuadran vitrina y caja. La cesta se conserva en esta pestaña al recargar y al cambiar de vista. Es una cesta del gemelo, sin cobro, precios, inventario ni conexión a una caja física; la publicidad del TPV, la pared y la música mantienen su programación. El gesto queda desactivado durante /layout, edición de geometría o una incidencia que apague el TPV. Good, Better y Best conservan su funcionamiento anterior.",
+    "en": "In Starbucks Alsea Matrix, hold the display-case muffin and drag it to the register beside the teddy bear. The thumbnail follows the pointer and the register lights up when it accepts the product. Releasing opens the basket with 1 × Muffin and “Would you like a coffee with it?”. Add coffee adds the companion product; Just the muffin dismisses the suggestion. Remove deletes a whole line. Dropping outside, Escape or losing focus cancels the drag. With a keyboard, focus the muffin and press Enter or Space. TPV / POS and the #tpv link frame the display case and register. The basket survives reloads and view changes in this tab. This is a digital twin basket with no payment, prices, inventory or physical register connection; POS advertising, wall screens and music retain their schedules. The gesture is disabled during /layout, geometry editing or an incident that turns the POS off. Good, Better and Best retain their previous behaviour.",
+    "loc": "alsea-sbux-021",
+    "pos_id": "starbucks-tpv-01",
+    "products": [
+      "muffin",
+      "coffee"
+    ],
+    "quality": "matrix",
+    "storage": "sessionStorage:xpaceos.pos-basket.v1:alsea-sbux-021:starbucks-tpv-01",
+    "event": "xpace:pos-basket",
+    "guide": "https://www.admira.store/admira-xp/docs/pos-muffin.md",
+    "entry": "https://www.admira.store/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks#tpv",
+    "physical_integration": false,
+    "mcp_basket_tools": false
   }
 }

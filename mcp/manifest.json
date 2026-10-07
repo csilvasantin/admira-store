@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.06.10.2026.r11.19:33",
+  "version": "v.07.10.2026.r1.06:33",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.49",
+    "version": "2.12.61",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -2290,5 +2290,23 @@
     "position": "after Open in Stock",
     "help_topic": "matrix-signage-reset",
     "guide": "/admira-xp/docs/matrix-signage-reset.md"
+  },
+  "pos_muffin": {
+    "help_topic": "pos-muffin",
+    "es": "En Matrix de Starbucks Alsea, mantén pulsado el muffin de la vitrina y arrástralo a la caja junto al osito. La miniatura sigue al cursor y la caja se ilumina al aceptar el producto. Al soltarlo aparece la cesta con 1 × Muffin y «¿Lo acompañamos con un café?». Añadir café incorpora el acompañamiento; Sólo el muffin cierra la sugerencia. Quitar elimina una línea completa. Soltar fuera, Escape o perder el foco cancela el arrastre. Con teclado, enfoca el muffin y pulsa Enter o Espacio. TPV / POS y el enlace #tpv encuadran vitrina y caja. La cesta se conserva en esta pestaña al recargar y al cambiar de vista. Es una cesta del gemelo, sin cobro, precios, inventario ni conexión a una caja física; la publicidad del TPV, la pared y la música mantienen su programación. El gesto queda desactivado durante /layout, edición de geometría o una incidencia que apague el TPV. Good, Better y Best conservan su funcionamiento anterior.",
+    "en": "In Starbucks Alsea Matrix, hold the display-case muffin and drag it to the register beside the teddy bear. The thumbnail follows the pointer and the register lights up when it accepts the product. Releasing opens the basket with 1 × Muffin and “Would you like a coffee with it?”. Add coffee adds the companion product; Just the muffin dismisses the suggestion. Remove deletes a whole line. Dropping outside, Escape or losing focus cancels the drag. With a keyboard, focus the muffin and press Enter or Space. TPV / POS and the #tpv link frame the display case and register. The basket survives reloads and view changes in this tab. This is a digital twin basket with no payment, prices, inventory or physical register connection; POS advertising, wall screens and music retain their schedules. The gesture is disabled during /layout, geometry editing or an incident that turns the POS off. Good, Better and Best retain their previous behaviour.",
+    "loc": "alsea-sbux-021",
+    "pos_id": "starbucks-tpv-01",
+    "products": [
+      "muffin",
+      "coffee"
+    ],
+    "quality": "matrix",
+    "storage": "sessionStorage:xpaceos.pos-basket.v1:alsea-sbux-021:starbucks-tpv-01",
+    "event": "xpace:pos-basket",
+    "guide": "https://www.admira.store/admira-xp/docs/pos-muffin.md",
+    "entry": "https://www.admira.store/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks#tpv",
+    "physical_integration": false,
+    "mcp_basket_tools": false
   }
 }

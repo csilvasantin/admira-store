@@ -59,3 +59,23 @@ test('Signage uses the held graphic, preserves its identity through pointer rele
  row.fire('pointerdown',h.event(30,60));h.move(200,220);assert.equal(h.ghost().querySelector('img').src,picture.src);assert.equal(h.ghost().querySelector('strong').textContent,'My Signage clip');h.up(200,220);await new Promise(setImmediate);assert.deepEqual(calls,[['active',true],['active',false],['drop','My Signage clip',destination]]);assert.equal(h.calls.filter(c=>c[0]==='insert'||c[0]==='play'||c[0]==='preview').length,0);assert.equal(h.ghost(),null);}
 });
 test('a Matrix loading surface never falls back to Good for a screen drop',()=>{const h=setup();h.doc.body.classList.add('xpace-matrix-active');h.root.XpaceOptionsPlayback=h.root.XpaceMatrixOptions;delete h.root.XpaceMatrixOptions;h.down();h.move(640,300);h.up(640,300);assert.equal(h.calls.filter(c=>c[0]==='preview').length,0);});
+
+test('a held muffin goes only to an active POS, never a screen or playlist, and cancellation makes no basket write',async()=>{
+ for(const scenario of ['register','outside','escape','blur','disabled','playlist']){
+  const h=setup(),muffin=h.doc.createElement('button'),picture=h.doc.createElement('img'),added=[];picture.src='muffin.png';h.doc.body.append(muffin);muffin.dataset.posProduct='muffin';
+  h.root.XpacePOSExperience={isActive:()=>scenario!=='disabled',targetAt:x=>x>=500,highlight(){},addProduct:id=>added.push(id)};
+  h.root.XpaceMediaOptions.attachProduct(muffin,{id:'muffin',title:'Muffin'},picture);
+  muffin.fire('pointerdown',h.event(30,60));h.move(640,270);assert.equal(h.ghost().querySelector('img').src,picture.src);
+  if(scenario==='escape')h.doc.fire('keydown',h.event(0,0,{key:'Escape'}));
+  else if(scenario==='blur')h.doc.fire('window:blur');
+  else{if(scenario==='playlist')h.doc.hit=h.playlist.querySelector('ol');h.up(['outside','playlist'].includes(scenario)?100:640,270);}
+  await new Promise(setImmediate);assert.deepEqual(added,scenario==='register'?['muffin']:[]);assert.equal(h.calls.some(c=>['preview','insert','play'].includes(c[0])),false);assert.equal(h.ghost(),null);
+ }
+});
+test('product keyboard activation and disposal use the same receiver without a stale pointer',()=>{
+ const h=setup(),muffin=h.doc.createElement('button'),picture=h.doc.createElement('img'),added=[];h.doc.body.append(muffin);
+ h.root.XpacePOSExperience={isActive:()=>true,addProduct:id=>added.push(id),highlight(){},targetAt:()=>true};
+ const dispose=h.root.XpaceMediaOptions.attachProduct(muffin,{id:'muffin',title:'Muffin'},picture);
+ muffin.fire('keydown',h.event(0,0,{key:'Enter'}));muffin.fire('keydown',h.event(0,0,{key:' '}));assert.deepEqual(added,['muffin','muffin']);
+ muffin.fire('pointerdown',h.event(30,60));h.move(100,120);dispose();h.up(640,270);assert.equal(h.ghost(),null);assert.deepEqual(added,['muffin','muffin']);
+});

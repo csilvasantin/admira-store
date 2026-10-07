@@ -10,9 +10,9 @@ Starbucks demo: outside /layout, click screen 1 for Unplug/Plug in; it turns bla
 
 # Starbucks · TPV / POS · Publicidad local / Local advertising
 
-En Matrix · Starbucks, Experto → TPV / POS centra la cámara en la pantalla del terminal orientada al cliente. Reproduce la playlist de publicidad local: Stock 1329, «Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2» (30 s), en bucle y sin audio. Pausar/Reproducir TPV actúa solo sobre ese player. Las seis pantallas de pared, /sincro, /sincrototal y el hilo musical son independientes. /layout identifica el terminal como TPV, sin cambiar los números 1–6. Editor de geometría permite recalibrar y guardar las cuatro esquinas.
+En Matrix · Starbucks, Experto → TPV / POS encuadra la vitrina y la caja para arrastrar el muffin. Reproduce la playlist de publicidad local: Stock 1329, «Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2» (30 s), en bucle y sin audio. Pausar/Reproducir TPV actúa solo sobre ese player. Las seis pantallas de pared, /sincro, /sincrototal y el hilo musical son independientes. /layout identifica el terminal como TPV, sin cambiar los números 1–6. Editor de geometría permite recalibrar y guardar las cuatro esquinas.
 
-In Matrix · Starbucks, Expert → TPV / POS centers the camera on the customer-facing terminal screen. It plays the local advertising playlist: Stock 1329, “Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2” (30 s), looping without audio. Pause/Play POS affects only that player. The six wall screens, /sync, /synctotal and speaker music remain independent. /layout labels the terminal as TPV without changing numbers 1–6. Geometry editor allows recalibrating and saving its four corners.
+In Matrix · Starbucks, Expert → TPV / POS frames the display case and register for dragging the muffin. It plays the local advertising playlist: Stock 1329, “Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2” (30 s), looping without audio. Pause/Play POS affects only that player. The six wall screens, /sync, /synctotal and speaker music remain independent. /layout labels the terminal as TPV without changing numbers 1–6. Geometry editor allows recalibrating and saving its four corners.
 
 Playlist JSON: https://www.xpaceos.com/admira-xp/starbucks-tpv-playlist.json
 
@@ -30,3 +30,7 @@ Fuente canónica / Canonical source: `admira-xp/scripts/starbucks-tpv.mjs`. Rege
 ## Gestión compartida / Shared management
 
 MCP `matrix_state` y `matrix_playlist_update` gestionan esta playlist. El JSON estático es la semilla; al gestionar el canal vía MCP prevalece el estado compartido / Static JSON is bootstrap; after managing the channel via MCP the shared state takes precedence. Guía / Guide: https://www.xpaceos.com/admira-xp/docs/matrix-mcp.md
+
+## Experiencia de cesta / Basket experience
+
+[Muffin a la caja / Muffin to the register](https://www.admira.store/admira-xp/docs/pos-muffin.md) · cesta local y sugerencia explícita de café / local basket and explicit coffee suggestion.
