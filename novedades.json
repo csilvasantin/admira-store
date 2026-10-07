@@ -278,5 +278,10 @@
   "v.07.10.2026.r26.15:02": [
     "El enlace del recorrido Store carga directamente una única instancia del motor compartido, sin esperar a abrir el avatar.",
     "El shell conserva la consola local y sus controles; las visitas habituales mantienen el motor anterior."
+  ],
+  "v.07.10.2026.r27.15:21": [
+    "Admirito ocupa toda la pantalla del iPad cuando la cola está vacía",
+    "Recibido, En preparación y Preparado reaparecen al llegar pedidos",
+    "Vista de escena y ampliada sin controles del avatar; ayuda y MCP ES/EN actualizados"
   ]
 }

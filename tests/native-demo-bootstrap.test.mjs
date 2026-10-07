@@ -75,5 +75,5 @@ test('both native entry pages invalidate cached shell code, and next seal carrie
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   const seal = html.match(/name="admiranext-version" content="([^"]+)"/)[1];
   const news = JSON.parse(readFileSync(new URL('../novedades.json', import.meta.url), 'utf8'));
-  assert.match(seal, /^v\.07\.10\.2026\.r26\./); assert.ok(news[seal].length >= 2);
+  assert.match(seal, /^v\.07\.10\.2026\.r\d+\./); assert.ok(Number(seal.match(/\.r(\d+)\./)[1]) >= 26); assert.ok(news[seal].length >= 2);
 });

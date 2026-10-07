@@ -19,22 +19,24 @@
   const nom=s=>String(s||'').replace(/[^\p{L} '\-]/gu,'').trim().slice(0,14);
   function drawCola(ctx,w,h){
     ctx.save();ctx.fillStyle='#1E3932';ctx.fillRect(0,0,w,h);
-    ctx.fillStyle='#0f2620';ctx.fillRect(0,0,w,70);ctx.fillStyle='#fff';ctx.font='bold 38px Inter,system-ui,sans-serif';ctx.textBaseline='middle';ctx.fillText('☁️ ADMIRITO · COLA',24,36);
+    ctx.textBaseline='middle';
     // Admirito (nube) a la izquierda; sin pedidos pendientes hace gracias (modo demo)
-    const d0=data||{listo:[],preparando:[]},demo=!(d0.listo||[]).length,tt=Date.now()/1000,gr=Math.floor(tt/6)%4;
+    const d0=data||{},demo=!['recibido','preparando','listo'].some(k=>Array.isArray(d0[k])&&d0[k].length),tt=Date.now()/1000,gr=Math.floor(tt/6)%4;
+    if(!demo){ctx.fillStyle='#0f2620';ctx.fillRect(0,0,w,70);ctx.fillStyle='#fff';ctx.font='bold 38px Inter,system-ui,sans-serif';ctx.textBaseline='middle';ctx.fillText('☁️ ADMIRITO · COLA',24,36);}
+    // The idle canvas uses the complete screen, matching the embedded queue page.
+    ctx.save();if(demo){ctx.translate(w*.5,h*.5);const fit=Math.min(w/460,h/430);ctx.scale(fit,fit);ctx.translate(-w*.25,-h*.52);}
     const dy=demo?(gr===0?-Math.abs(Math.sin(tt*4))*40:gr===3?Math.sin(tt*6)*10:0):0,dx=demo&&gr===3?Math.sin(tt*3)*22:0,rot=demo&&gr===1?Math.sin(tt*3)*.14:0,sc=demo&&gr===2?1+Math.abs(Math.sin(tt*4))*.07:1;
     ctx.save();ctx.translate(w*.25+dx,h*.52+dy);ctx.rotate(rot);ctx.scale(sc,sc);ctx.translate(-w*.25,-h*.52);
     const cx=w*.25,cy=h*.52;ctx.fillStyle='#6a9e3f';[[0,0,120],[-95,30,80],[95,30,80],[-50,-60,80],[55,-55,85]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(cx+x,cy+y,r+14,0,7);ctx.fill();});
     ctx.fillStyle='#f3f8ec';[[0,0,120],[-95,30,80],[95,30,80],[-50,-60,80],[55,-55,85]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(cx+x,cy+y,r,0,7);ctx.fill();});
     ctx.fillStyle='#1d2a17';[-45,45].forEach(x=>{ctx.beginPath();ctx.arc(cx+x,cy-5,18,0,7);ctx.fill();});
-    ctx.strokeStyle='#1d2a17';ctx.lineWidth=8;ctx.beginPath();ctx.arc(cx,cy+30,demo?36:30,.15*Math.PI,.85*Math.PI);ctx.stroke();ctx.restore();
+    ctx.strokeStyle='#1d2a17';ctx.lineWidth=8;ctx.beginPath();ctx.arc(cx,cy+30,demo?36:30,.15*Math.PI,.85*Math.PI);ctx.stroke();ctx.restore();ctx.restore();
+    if(demo){const f=FRASES[Math.floor(tt/7)%FRASES.length],size=Math.max(16,Math.min(27,w/32));ctx.font='bold '+size+'px Inter,system-ui,sans-serif';const lines=[];let line='';for(const word of f.split(' ')){const next=line?line+' '+word:word;if(line&&ctx.measureText(next).width>w*.8){lines.push(line);line=word;}else line=next;}lines.push(line);const lh=size*1.3,bh=lines.length*lh+24,by=h-bh-34;ctx.fillStyle='#F2F0EB';ctx.fillRect(w*.08,by,w*.84,bh);ctx.fillStyle='#1E3932';lines.forEach((l,i)=>ctx.fillText(l,w*.1,by+18+lh*(i+.5)));ctx.fillStyle='#FFE58A';ctx.fillRect(0,h-26,w,26);ctx.fillStyle='#3A2E00';ctx.font='bold 17px Inter,system-ui,sans-serif';ctx.fillText('DEMO · pago SIMULADO · doble clic para abrir',24,h-13,w-48);ctx.restore();return true;}
     const d=data||{listo:[],preparando:[]},now=Date.now();
     // aviso reciente (12 s)
     const rec=(d.listo||[]).find(p=>nuevos.has(p.numero)&&now-nuevos.get(p.numero)<12000);
     if(rec){ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect?ctx.roundRect(20,h-170,w*.5-30,140,24):ctx.rect(20,h-170,w*.5-30,140);ctx.fill();ctx.fillStyle='#00704A';ctx.font='bold 34px Inter,system-ui,sans-serif';
       ctx.fillText((nom(rec.nombre)||('Pedido '+rec.numero))+',',40,h-128,w*.5-70);ctx.fillStyle='#1E3932';ctx.font='bold 28px Inter,system-ui,sans-serif';ctx.fillText('tu pedido Starbucks',40,h-88,w*.5-70);ctx.fillText('está preparado ☕',40,h-54,w*.5-70);}
-    else if(demo){const f=FRASES[Math.floor(tt/7)%FRASES.length];ctx.fillStyle='#F2F0EB';ctx.beginPath();ctx.roundRect?ctx.roundRect(20,h-190,w*.5-30,160,24):ctx.rect(20,h-190,w*.5-30,160);ctx.fill();
-      ctx.fillStyle='#1E3932';ctx.font='bold 27px Inter,system-ui,sans-serif';const ws=f.split(' ');let ln='',yy=h-152;for(const wd of ws){const tst=ln?ln+' '+wd:wd;if(ctx.measureText(tst).width>w*.5-80&&ln){ctx.fillText(ln,40,yy);ln=wd;yy+=36;}else ln=tst;}ctx.fillText(ln,40,yy);}
     // columnas
     const x0=w*.52;ctx.fillStyle='#9EE6C4';ctx.font='bold 36px Inter,system-ui,sans-serif';ctx.fillText('✅ ¡Preparado!',x0,115);
     let y=170;(d.listo||[]).slice(0,4).forEach(p=>{const nu=nuevos.has(p.numero)&&now-nuevos.get(p.numero)<12000;ctx.fillStyle=nu?'#00A862':'#fff';ctx.fillRect(x0,y-34,w-x0-24,68);
@@ -54,7 +56,7 @@
     css.textContent='#ipadColaModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9500;display:none;align-items:center;justify-content:center}#ipadColaModal.on{display:flex}#ipadColaModal .wrap{position:relative;width:min(92vw,calc(88vh*4/3));aspect-ratio:4/3;border:14px solid #111;border-radius:30px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#ipadColaModal iframe{width:100%;height:100%;border:0;border-radius:16px;background:#1E3932}#ipadColaModal .x{position:absolute;top:-26px;right:-26px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}';
     doc.head.appendChild(css);modal=doc.createElement('div');modal.id='ipadColaModal';modal.innerHTML='<div class="wrap"><iframe title="iPad del mostrador · gestor de colas" allow="autoplay"></iframe><button class="x" type="button" aria-label="Cerrar">✕</button></div>';
     modal.addEventListener('click',e=>{if(e.target===modal||e.target.classList.contains('x'))abrir(false);});doc.body.appendChild(modal);}
-  function abrir(v){ensure();const f=modal.querySelector('iframe');if(v){f.src=pageUrl();modal.classList.add('on');}else{modal.classList.remove('on');f.src='about:blank';}}
+  function abrir(v){ensure();const f=modal.querySelector('iframe');if(v){f.src=pageUrl()+'&v=ipad-idle-20261007';modal.classList.add('on');}else{modal.classList.remove('on');f.src='about:blank';}}
   // Pulsar el iPad en la escena (clic sin arrastre, fuera de /layout) lo abre en grande.
   const inQuad=(x,y,q)=>{let s=0;for(let i=0;i<4;i++){const a=q[i],b=q[(i+1)%4],c=(b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0]);if(c!==0){if(s&&Math.sign(c)!==s)return false;s=Math.sign(c);}}return true;};
   function hit(e){const cv=doc.getElementById('c');if(!cv||!active())return false;const q=root.XpaceStarbucks.screenQuads&&root.XpaceStarbucks.screenQuads[ID];if(!q)return false;
@@ -82,7 +84,7 @@
       if(!on||otro){ if(fr){fr.remove();node.classList.remove('ipad-cola-on');} return; }
       if(!fr){ fr=doc.createElement('iframe');fr.className='ipad-cola-frame';fr.title='iPad del mostrador · gestor de colas';fr.setAttribute('tabindex','-1');fr.setAttribute('aria-hidden','true');
         fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#1E3932;pointer-events:none;z-index:1';
-        fr.src=pageUrl()+'&escena=1';node.prepend(fr);node.classList.add('ipad-cola-on');
+        fr.src=pageUrl()+'&escena=1&v=ipad-idle-20261007';node.prepend(fr);node.classList.add('ipad-cola-on');
          }
       node.style.pointerEvents=(doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))?'':'auto';node.style.cursor='pointer';
       const idle=node.querySelector('.matrix-ipad-idle');if(idle)idle.style.display='none';
@@ -93,5 +95,5 @@
   function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → gestor de colas (Admirito). Tócalo para abrirlo en grande.'};}
     if(a==='off'||a==='playlist'){on=false;setTimeout(matrixIpad,0);try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
     if(a==='abrir'||a==='open'){abrir(true);return {ok:true,message:pageUrl()};}return {ok:false,message:'/ipad cola · /ipad off · /ipad abrir'};}
-  root.XpaceIpadCola={id:ID,url:pageUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !(d.listo||[]).length;},frases:FRASES};
+  root.XpaceIpadCola={id:ID,url:pageUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
 })(typeof window!=='undefined'?window:globalThis);
