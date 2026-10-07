@@ -34,6 +34,11 @@
     "Recuperación de locuciones desde el servidor; segundo clic detiene",
     "El avatar conserva el contexto del local; ayuda y MCP en español e inglés"
   ],
+  "v.07.10.2026.r11.08:09": [
+    "Tótem: /totem kiosko (o el botón 🛒 Quiosco) pone el Quiosco de pedido de ainimation.studio en la pantalla vertical",
+    "👆 Tocar el tótem lo abre a tamaño real; los pedidos (demo simulada) llegan al panel Pedidos · TPV",
+    "/totem url <https> para cualquier interactivo; Luna y admira.tv siguen igual (/totem luna · /totem admiratv)"
+  ],
   "v.06.10.2026.r2.13:14": [
     "⌘ Experto cerrado por defecto: quien entra por primera vez no lo ve; se abre con el ⌘ de la barra",
     "Abierto o cerrado se recuerda solo en la pestaña: ya no se reabre solo en cada visita"
