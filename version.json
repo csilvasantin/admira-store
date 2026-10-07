@@ -1,16 +1,16 @@
 {
-  "version": "v.07.10.2026.r21.13:35",
-  "deployedAt": "2026-10-07T11:24:00Z",
+  "version": "v.07.10.2026.r22.13:45",
+  "deployedAt": "2026-10-07T11:46:11Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "3a8cdadf5e289c718314b2b75a123f69ecfcd8f3",
-  "gitShort": "3a8cdad",
-  "gitFull": "3a8cdadf5e289c718314b2b75a123f69ecfcd8f3",
+  "git": "8a4595a3084890f07cd219be74d413f22ef2e3cf",
+  "gitShort": "8a4595a",
+  "gitFull": "8a4595a3084890f07cd219be74d413f22ef2e3cf",
   "dirty": false,
   "novedades": [
-    "Sin pedidos pendientes, el Admirito del iPad del mostrador hace gracias en la escena (saltos, giros, latidos, bailes) e invita a pedir en el quiosco con frases simpáticas",
-    "Cuando un pedido pasa a «listo», deja la demo y enseña el aviso por nombre",
-    "El quiosco del tótem, abierto en grande, pide ahora el nombre en una pantalla propia y obligatoria antes de pagar"
+    "En Matrix · Starbucks (360) el iPad del mostrador enseña ya el gestor de colas con Admirito: antes seguía en verde con «iPad» porque esa vista no usaba la cola",
+    "Sin pedidos, Admirito hace gracias; con pedidos listos (también los que ya estaban) muestra número, nombre y aviso",
+    "Pulsar el iPad lo abre en grande; un vídeo o imagen de su playlist o arrastrado desde Pixeria sigue mandando"
   ]
 }
