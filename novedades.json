@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r35.16:40": [
+    "Starbucks: los botones «Abrir gestor de colas» y «Kiosk» ya no salen por defecto; aparecen al tocar el iPad o el tótem",
+    "Al recargar vuelven a estar ocultos: la escena arranca limpia para presentar"
+  ],
   "v.07.10.2026.r34.16:36": [
     "Arreglo: los avisos del gemelo vuelven a sonar con la voz «Santiago» (y con la voz del navegador si ElevenLabs falla)"
   ],
