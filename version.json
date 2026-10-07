@@ -1,12 +1,12 @@
 {
-  "version": "v.07.10.2026.r5.07:15",
-  "deployedAt": "2026-10-07T05:16:05Z",
+  "version": "v.07.10.2026.r6.07:20",
+  "deployedAt": "2026-10-07T05:18:30Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "a0cae7bffbd7e7eee173f58c19a1725cb055e86c",
-  "gitShort": "a0cae7b",
-  "gitFull": "a0cae7bffbd7e7eee173f58c19a1725cb055e86c",
+  "git": "4bf219bbed445d92af9c48b01c705f67f1efcdce",
+  "gitShort": "4bf219b",
+  "gitFull": "4bf219bbed445d92af9c48b01c705f67f1efcdce",
   "dirty": false,
   "novedades": [
     "IF → reacción → contenido: música, locución, imagen o vídeo de Pixeria",
