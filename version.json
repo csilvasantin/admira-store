@@ -1,9 +1,9 @@
 {
-  "version": "v.07.10.2026.r27.15:21",
+  "version": "v.07.10.2026.r28.15:27",
   "deployedAt": "2026-10-07T13:24:08Z",
-  "deployer": "OraculoMacMini",
+  "deployer": "GrokBot",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
+  "signature": "GrokBot · MacMini",
   "git": "6b826940a04c2d1e38fba70dd5e93c66190a3c7f",
   "gitShort": "6b82694",
   "gitFull": "6b826940a04c2d1e38fba70dd5e93c66190a3c7f",

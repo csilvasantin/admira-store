@@ -283,5 +283,10 @@
     "Admirito ocupa toda la pantalla del iPad cuando la cola está vacía",
     "Recibido, En preparación y Preparado reaparecen al llegar pedidos",
     "Vista de escena y ampliada sin controles del avatar; ayuda y MCP ES/EN actualizados"
+  ],
+  "v.07.10.2026.r28.15:27": [
+    "Un toque en el iPad de Starbucks abre el gestor de colas (admira.tv/gestorColas)",
+    "Botón visible «Abrir gestor de colas» y enlace al control de barra",
+    "ITIL: el iPad starbucks-ipad-01 pasa a contenido web app"
   ]
 }
