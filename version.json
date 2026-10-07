@@ -1,12 +1,12 @@
 {
   "version": "v.07.10.2026.r9.07:37",
-  "deployedAt": "2026-10-07T05:39:55Z",
+  "deployedAt": "2026-10-07T05:43:09Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "5722f381f380f412f90c1397a503446329b118e5",
-  "gitShort": "5722f38",
-  "gitFull": "5722f381f380f412f90c1397a503446329b118e5",
+  "git": "0230cc21f9315b9e5abd9c2b8856cfeddee4e43b",
+  "gitShort": "0230cc2",
+  "gitFull": "0230cc21f9315b9e5abd9c2b8856cfeddee4e43b",
   "dirty": false,
   "novedades": [
     "Experto: un botón ON/OFF con luz verde o roja para tótem, avatar y audiencia",
