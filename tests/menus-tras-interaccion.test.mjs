@@ -77,3 +77,34 @@ test('teclear /totem cuenta como interacción; el arranque automático no', () =
   m.w.totemKioskCommand('pedidos'); m.tick();
   assert.equal(m.w.XpaceTotemKiosk.touched(), true);
 });
+
+// Carlos, 7-oct-2026: los audios de la gestión de colas se pueden parar y reactivar, y hay Reset junto a DEMO.
+test('/totem audio off para los avisos de la cola y se recuerda; on los devuelve', () => {
+  const m = mundo(), mem = new Map();
+  m.w.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
+  m.w.speechSynthesis = { cancel() {}, getVoices: () => [], speak() {} };
+  vm.runInContext(read('totem-kiosko.js'), m.ctx);
+  assert.equal(m.w.XpaceTotemKiosk.audio(), true, 'activados por defecto');
+  assert.equal(m.w.totemKioskCommand('audio off').ok, true);
+  assert.equal(mem.get('xpace:cola-audio'), 'off');
+  assert.equal(m.w.XpaceTotemKiosk.say('Pedido A001 listo', 'es-ES').via, 'cola-audio-off');
+  assert.equal(m.w.totemKioskCommand('audio on').ok, true);
+  assert.equal(m.w.XpaceTotemKiosk.audio(), true);
+  assert.notEqual(m.w.XpaceTotemKiosk.say('Pedido A001 listo', 'es-ES').via, 'cola-audio-off');
+});
+
+test('Reset cierra los pedidos abiertos de la cola del quiosco (recogido) sin clave de servicio', async () => {
+  const m = mundo(), llamadas = [];
+  m.w.XpaceStarbucks = { active: () => true, screenQuads: {} };
+  const fetchFalso = async (url, opts) => { llamadas.push({ url: String(url), opts });
+    if (/\/cola\/estado/.test(url)) return { ok: true, json: async () => ({ ok: true, recibido: [{ id: 'a', numero: 'A001' }], preparando: [{ id: 'b', numero: 'A002' }], listo: [{ id: 'c', numero: 'A003' }] }) };
+    return { ok: true, json: async () => ({ ok: true }) }; };
+  m.ctx.fetch = fetchFalso; m.w.fetch = fetchFalso;
+  vm.runInContext(read('totem-kiosko.js'), m.ctx);
+  const cerrados = await m.w.XpaceTotemKiosk.reset();
+  assert.equal(cerrados, 3);
+  const avances = llamadas.filter((l) => /\/cola\/avanzar\?store=starbucks-paseo-de-gracia/.test(l.url));
+  assert.equal(avances.length, 3);
+  assert.deepEqual(avances.map((l) => JSON.parse(l.opts.body).a), ['recogido', 'recogido', 'recogido']);
+  assert.ok(!llamadas.some((l) => /reiniciar/.test(l.url)), 'no usa la operación protegida');
+});

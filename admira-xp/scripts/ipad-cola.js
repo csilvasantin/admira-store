@@ -10,7 +10,8 @@
   const pageUrl=()=>'https://www.ainimation.studio/cola/ipad.html?store='+store();
   // Gestor de colas oficial (Carlos, 7-oct-2026): al tocar el iPad se abre admira.tv/gestorColas (pantalla del iPad + control de barra).
   const GC='https://admira.tv/gestorColas',salaQ=()=>store()==='starbucks-paseo-de-gracia'?'':'&sala='+store();
-  const colasUrl=()=>GC+'/pantalla/?marca=starbucks'+salaQ(),controlUrl=()=>GC+'/?marca=starbucks'+salaQ();
+  const audioOff=()=>{try{return root.localStorage.getItem('xpace:cola-audio')==='off';}catch(_){return false;}};
+  const colasUrl=()=>GC+'/pantalla/?marca=starbucks'+salaQ()+(audioOff()?'&voz=0':''),controlUrl=()=>GC+'/?marca=starbucks'+salaQ();
   let on=true;try{on=root.localStorage.getItem(KEY)!=='off';}catch(_){}
   let down=null,last=0;const dbg=(how,e,x)=>{try{root.__ipadColaDebug={how,x,t:new Date().toISOString(),at:[e&&e.clientX,e&&e.clientY],top:(doc.elementsFromPoint(e.clientX,e.clientY)||[]).slice(0,4).map(n=>n.tagName+'.'+String(n.className).slice(0,40))};}catch(_){}};
   let data=null,nuevos=new Map(),vistos=null,modal=null;
@@ -88,8 +89,10 @@
   root.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,t:Date.now()};},true);
   root.addEventListener('pointerup',tap,true);root.addEventListener('click',e=>{if(Date.now()-last<600){e.stopPropagation();e.preventDefault();return;}tap(e);},true);
   // Botón «Abrir gestor de colas»: oculto hasta la primera interacción con el iPad (tocado); luego queda como atajo.
-  let chip=null;setInterval(()=>{const a=active()&&!enLayout();if(!chip){if(!a||!doc.body)return;chip=doc.createElement('button');chip.id='ipadColaChip';chip.type='button';chip.textContent='🧾 Abrir gestor de colas';chip.title='iPad del mostrador · admira.tv/gestorColas';chip.addEventListener('click',e=>{e.stopPropagation();abrir(true);});ensure();doc.body.appendChild(chip);}chip.classList.toggle('on',a&&tocado&&!modal.classList.contains('on'));},1000);
+  let chip=null;setInterval(()=>{const a=active()&&!enLayout();if(!chip){if(!a||!doc.body)return;chip=doc.createElement('button');chip.id='ipadColaChip';chip.type='button';chip.textContent='🧾 Abrir gestor de colas';chip.title='iPad del mostrador · admira.tv/gestorColas';chip.addEventListener('click',e=>{e.stopPropagation();abrir(true);});ensure();(root.XpaceColaAtajos&&root.XpaceColaAtajos.host||doc.body).appendChild(chip);}chip.classList.toggle('on',a&&tocado&&!modal.classList.contains('on'));},1000);
   doc.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal&&modal.classList.contains('on'))abrir(false);});
+  // Audios de la gestión de colas parados/activados (/totem audio · botón 🔊 de Pedidos · TPV): la pantalla abierta se recarga con o sin voz.
+  root.addEventListener('xpace:cola-audio',()=>{if(modal&&modal.classList.contains('on')){const f=modal.querySelector('iframe');if(f)f.src=colasUrl();}});
 
   // ── Matrix · 360 (7-oct-2026): ahí el iPad es un <div class="matrix-mapped-player matrix-landscape-ipad"> deformado
   // sobre la foto, que no pasa por XpaceScreenMedia (por eso seguía en verde con «iPad»). Si no hay vídeo/imagen de

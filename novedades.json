@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.07.10.2026.r38.17:34": [
+    "Gestión de colas: los atajos y Pedidos · TPV son ventanas que se mueven, se cierran y se reabren",
+    "↺ Reset junto a DEMO deja la cola del quiosco a cero y Admirito vuelve a su demo",
+    "🔊/🔇 para o activa los avisos de la cola (/totem audio on|off)"
+  ],
   "v.07.10.2026.r37.17:20": [
     "/audio mute para todo el sonido del gemelo, también en Matrix: hilo de Starbucks, locuciones, avisos, megafonía y voz de Admirito",
     "Las locuciones tienen prioridad: paran el hilo musical y, al terminar, la música sigue donde estaba",
