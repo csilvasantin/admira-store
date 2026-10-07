@@ -31425,7 +31425,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Quick settings':'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Music and layout':'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Distribute · furniture editor · Better 16 bits':'Distribuir / Distribute · editor de muebles · Better 16 bits',items:['/cli distribuir','/cli distribute','/distribuir off']},
-      {title:typeof lang!=='undefined'&&lang==='en'?'Local inventory · permanent numbers':'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Local inventory · permanent numbers':'Inventario local · números permanentes',items:['/inventario','/inventario idIoT','eliminar el 1','/inventario deshacer']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Guided demos · local twin':'Demos guiadas · gemelo local',items:['/demo','/demo tpv','/demo taza','/demo taza cerrar','/demo kiosko','/demo kiosko cerrar','/demo off','/demo estado']},
       {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Starbucks Alsea',items:['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Classic rendering style':'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
@@ -32001,6 +32001,18 @@ window.xtAPI = (function(){
     }
     const visibility=executePeopleVisibilityCommand(text);
     if(visibility)return visibility;
+    // /inventario idIoT · nombre único de cada elemento IoT (Proyecto_Xpacio_Tipo_n) · Carlos, 7-oct-2026.
+    if(/^\/?(?:inventario|inventory)(?:@\w+)?\s+id[\s_-]?iot(?:\s|$)/i.test(text)){
+      try{
+        const {runIdIot}=await import('../inventario/idiot-command.mjs?v=idiot-1');
+        return await runIdIot(text,{
+          lang:typeof lang==='undefined'?'es':lang,
+          source:window.XpaceInventorySource?.read?.(),storeCfg:window.STORE_CFG||null,starbucks:isStarbucksVenue(),
+          filter:window.XpaceCliente?.filtrar?list=>window.XpaceCliente.filtrar(list):null,
+          download(name,body){const a=document.createElement('a'),url=URL.createObjectURL(new Blob(['\ufeff'+body],{type:'text/csv;charset=utf-8'}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);}
+        });
+      }catch{return {ok:false,local:true,kind:'inventory',message:typeof lang!=='undefined'&&lang==='en'?'idIoT unavailable. Reload the Xperience and retry.':'idIoT no disponible. Recarga la Xperience y reintenta.'};}
+    }
     if(/^\/?(?:inventario|eliminar|añadir|anadir)(?:@\w+)?(?:\s|$)/i.test(text)){
       try{
         const {executeInventoryCommand}=await import('../inventario/command.mjs?v=scope-20261004-1');
