@@ -23,7 +23,7 @@ export async function runKioskoDemo(args='',lang='es'){
   const r=await fetch(RELAY+'/cola/avanzar?store='+STORE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:order.id,a})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||'Queue unavailable');
   status.textContent=order.number+' · '+(order.customerName||'')+' · '+(a==='listo'?(en?'Ready. Check your name + LISTO on the physical mug. Keep PlayerTaza open.':'Listo. Comprueba tu nombre + LISTO en la taza física. Mantén PlayerTaza abierto.'):(en?'Preparing. Press Ready when finished.':'En preparación. Pulsa Listo al terminar.'));ready.disabled=a==='listo';
  }catch(e){status.textContent=e.message;prep.disabled=ready.disabled=false;}}
- const receive=e=>{const d=e.data;if(!alive||e.source!==frame.contentWindow||e.origin!=='https://www.ainimation.studio'||d?.source!=='ainimation-xperiencia'||d.event!=='order'||!d.order?.id)return;
+ const receive=e=>{const d=e.data;if(!alive||e.source!==frame.contentWindow||!['https://www.ainimation.studio','https://ainimation.studio'].includes(e.origin)||d?.source!=='ainimation-xperiencia'||d.event!=='order'||!d.order?.id)return;
   order=d.order;status.textContent=(en?'Order received: ':'Pedido recibido: ')+order.number+' · '+(order.customerName||'')+(en?'. Check the queue manager, then Prepare.':'. Comprueba el gestor de colas y pulsa Preparar.');prep.disabled=false;ready.disabled=true;};
  window.addEventListener('message',receive);prep.onclick=()=>advance('preparando');ready.onclick=()=>advance('listo');
  cleanup=()=>{alive=false;window.removeEventListener('message',receive);box.remove();cleanup=null;};close.onclick=cleanup;
