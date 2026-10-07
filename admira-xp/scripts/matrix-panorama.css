@@ -192,3 +192,5 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 
 /* Tótem ON (7-oct-2026): el player de la pared es el quiosco y recibe toques; el botón queda abajo */
 .matrix-wall-avatar[data-mode=kiosk] .matrix-avatar-model{display:none}
+.matrix-incident-quickclose{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:4;font:800 clamp(10px,1.2vw,15px)/1 system-ui,sans-serif;padding:.5em .9em;border-radius:999px;border:2px solid #fff;background:#0a4d2c;color:#fff;cursor:pointer;white-space:nowrap;pointer-events:auto}
+.matrix-incident-editor .incident-close{border-top:1px solid #ffffff33;margin-top:10px;padding-top:8px}.matrix-incident-editor .incident-current{font-weight:700}

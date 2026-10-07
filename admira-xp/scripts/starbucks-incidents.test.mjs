@@ -11,3 +11,12 @@ test('estado: consulta la tienda y los ids conocidos; error de Yokup no inventa 
 import {incidentDetailUrl,YOKUP_INCIDENTS_URL} from './starbucks-incidents.mjs?v=ipad-20261005-1';
 test('pantalla averiada → ficha de SU incidencia en Yokup; sin id, el listado',()=>{assert.equal(incidentDetailUrl('INC-7KPSC2'),'https://www.yokup.com/ticket?id=INC-7KPSC2');assert.equal(incidentDetailUrl(' SVC-5FSKZH '),'https://www.yokup.com/ticket?id=SVC-5FSKZH');for(const bad of [undefined,'',null,'inc-7kpsc2','INC-7KPSC2"><x','../ticket'])assert.equal(incidentDetailUrl(bad),YOKUP_INCIDENTS_URL);
  const R2='demo:'+STARBUCKS_STORE+':',picked=pickIncidentPerDevice([{id:'INC-OLDER1',resource:R2+'pantalla-2',stage:'abierta',created_at:1},{id:'INC-NEWER1',resource:R2+'pantalla-2:manual:x',stage:'en_curso',created_at:2},{id:'INC-DONE02',resource:R2+'pantalla-2',stage:'cerrada',created_at:3,resolved_at:Date.now()}]);assert.equal(incidentDetailUrl(picked.get('pantalla-2').id),'https://www.yokup.com/ticket?id=INC-NEWER1');});
+import {closeIncident} from './starbucks-incidents.mjs?v=ipad-20261005-1';
+test('cerrar incidencia desde el gemelo: POST /incident close con id, recurso demo y nota; error legible',async()=>{
+ let sent;const ok=await closeIncident({id:'INC-ABC123',resource:'demo:starbucks-alsea-paseo-de-gracia:pantalla-2:manual:x',note:'Cable recolocado'},async(url,init)=>{sent={url,body:JSON.parse(init.body)};return new Response(JSON.stringify({ok:true,id:'INC-ABC123',stage:'cerrada',applied:true}),{status:200});});
+ assert.equal(sent.url,'https://api.yokup.com/incident');assert.equal(sent.body.close,true);assert.equal(sent.body.note,'Cable recolocado');assert.equal(ok.stage,'cerrada');
+ await assert.rejects(closeIncident({id:'INC-ABC123'},async()=>new Response(JSON.stringify({ok:false,error:'La lleva un técnico'}),{status:409})),/técnico/);
+ await assert.rejects(closeIncident({resource:'svc:x'},async()=>{throw Error('no debe llamar');}),/inválida/);
+ const m=chipModel({id:'INC-ABC123',stage:'cerrada',priority:'alta',assignee:'Sofía P.',closed_by:'Carlos',resolved_at:Date.now(),resolution:'Cable recolocado',sla:{}},Date.now(),'es');
+ assert.ok(m.lines.some(l=>l.startsWith('Cerrada por Carlos')));assert.ok(m.lines.some(l=>l.includes('Cable recolocado')));assert.equal(m.tone,'ok');
+});
