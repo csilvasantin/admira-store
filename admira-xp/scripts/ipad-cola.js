@@ -1,4 +1,4 @@
-/* iPad del mostrador de Starbucks = gestor de colas (7-oct-2026, Carlos).
+/* iPad del mostrador de Starbucks = gestor de colas (7-oct-2026, Carlos). Tres fases: recibido → en preparación → preparado.
  * El dispositivo virtual starbucks-ipad-01 (horizontal, 1024×768) pinta en la escena la pantalla de la cola
  * de ainimation (Admirito + «¡Listo para recoger!» con nombres + «En preparación»). Es una vista previa:
  * al pulsarla se abre en grande la página real https://www.ainimation.studio/cola/ipad.html (4:3), como el
@@ -21,7 +21,7 @@
     ctx.save();ctx.fillStyle='#1E3932';ctx.fillRect(0,0,w,h);
     ctx.fillStyle='#0f2620';ctx.fillRect(0,0,w,70);ctx.fillStyle='#fff';ctx.font='bold 38px Inter,system-ui,sans-serif';ctx.textBaseline='middle';ctx.fillText('☁️ ADMIRITO · COLA',24,36);
     // Admirito (nube) a la izquierda; sin pedidos pendientes hace gracias (modo demo)
-    const d0=data||{listo:[],preparando:[]},demo=!((d0.listo||[]).length||(d0.preparando||[]).length),tt=Date.now()/1000,gr=Math.floor(tt/6)%4;
+    const d0=data||{listo:[],preparando:[]},demo=!(d0.listo||[]).length,tt=Date.now()/1000,gr=Math.floor(tt/6)%4;
     const dy=demo?(gr===0?-Math.abs(Math.sin(tt*4))*40:gr===3?Math.sin(tt*6)*10:0):0,dx=demo&&gr===3?Math.sin(tt*3)*22:0,rot=demo&&gr===1?Math.sin(tt*3)*.14:0,sc=demo&&gr===2?1+Math.abs(Math.sin(tt*4))*.07:1;
     ctx.save();ctx.translate(w*.25+dx,h*.52+dy);ctx.rotate(rot);ctx.scale(sc,sc);ctx.translate(-w*.25,-h*.52);
     const cx=w*.25,cy=h*.52;ctx.fillStyle='#6a9e3f';[[0,0,120],[-95,30,80],[95,30,80],[-50,-60,80],[55,-55,85]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(cx+x,cy+y,r+14,0,7);ctx.fill();});
@@ -36,13 +36,14 @@
     else if(demo){const f=FRASES[Math.floor(tt/7)%FRASES.length];ctx.fillStyle='#F2F0EB';ctx.beginPath();ctx.roundRect?ctx.roundRect(20,h-190,w*.5-30,160,24):ctx.rect(20,h-190,w*.5-30,160);ctx.fill();
       ctx.fillStyle='#1E3932';ctx.font='bold 27px Inter,system-ui,sans-serif';const ws=f.split(' ');let ln='',yy=h-152;for(const wd of ws){const tst=ln?ln+' '+wd:wd;if(ctx.measureText(tst).width>w*.5-80&&ln){ctx.fillText(ln,40,yy);ln=wd;yy+=36;}else ln=tst;}ctx.fillText(ln,40,yy);}
     // columnas
-    const x0=w*.52;ctx.fillStyle='#9EE6C4';ctx.font='bold 36px Inter,system-ui,sans-serif';ctx.fillText('✅ ¡Listo!',x0,115);
+    const x0=w*.52;ctx.fillStyle='#9EE6C4';ctx.font='bold 36px Inter,system-ui,sans-serif';ctx.fillText('✅ ¡Preparado!',x0,115);
     let y=170;(d.listo||[]).slice(0,4).forEach(p=>{const nu=nuevos.has(p.numero)&&now-nuevos.get(p.numero)<12000;ctx.fillStyle=nu?'#00A862':'#fff';ctx.fillRect(x0,y-34,w-x0-24,68);
       ctx.fillStyle=nu?'#fff':'#1E3932';ctx.font='900 48px Inter,system-ui,sans-serif';ctx.fillText(p.numero,x0+14,y);ctx.font='bold 30px Inter,system-ui,sans-serif';ctx.fillText(nom(p.nombre),x0+150,y,w-x0-190);y+=82;});
     if(!(d.listo||[]).length){ctx.fillStyle='#ffffff88';ctx.font='28px Inter,system-ui,sans-serif';ctx.fillText('—',x0,170);y=250;}
     ctx.fillStyle='#fff';ctx.font='bold 30px Inter,system-ui,sans-serif';ctx.fillText('⏳ En preparación',x0,Math.max(y,250)+10);
     ctx.font='bold 34px Inter,system-ui,sans-serif';ctx.fillText((d.preparando||[]).slice(0,5).map(p=>p.numero).join('  ')||'—',x0,Math.max(y,250)+62,w-x0-24);
-    ctx.fillStyle='#FFE58A';ctx.fillRect(0,h-26,w,26);ctx.fillStyle='#3A2E00';ctx.font='bold 17px Inter,system-ui,sans-serif';ctx.fillText('DEMO · pago SIMULADO · toca para abrir',w*.52,h-13);
+    ctx.fillStyle='#ffffffaa';ctx.font='bold 26px Inter,system-ui,sans-serif';ctx.fillText('🧾 Recibido',x0,Math.max(y,250)+120);ctx.font='bold 30px Inter,system-ui,sans-serif';ctx.fillText((d.recibido||[]).slice(0,5).map(p=>p.numero).join('  ')||'—',x0,Math.max(y,250)+164,w-x0-24);
+    ctx.fillStyle='#FFE58A';ctx.fillRect(0,h-26,w,26);ctx.fillStyle='#3A2E00';ctx.font='bold 17px Inter,system-ui,sans-serif';ctx.fillText('DEMO · pago SIMULADO · doble clic para abrir',w*.52,h-13);
     ctx.restore();return true;}
   // Engancha el pintado de pantallas: el previo de Pixeria (si lo hay) manda; si no, la cola.
   function hook(){const M=root.XpaceScreenMedia;if(!M||M.__cola)return !!M;const get=M.get,draw=M.draw;
@@ -58,8 +59,17 @@
   const inQuad=(x,y,q)=>{let s=0;for(let i=0;i<4;i++){const a=q[i],b=q[(i+1)%4],c=(b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0]);if(c!==0){if(s&&Math.sign(c)!==s)return false;s=Math.sign(c);}}return true;};
   function hit(e){const cv=doc.getElementById('c');if(!cv||!active())return false;const q=root.XpaceStarbucks.screenQuads&&root.XpaceStarbucks.screenQuads[ID];if(!q)return false;
     const r=cv.getBoundingClientRect();return inQuad((e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height,q);}
-  let down=null;doc.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};},true);
-  doc.addEventListener('click',e=>{if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)return;if((doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))||e.target.id!=='c')return;if(hit(e)){e.stopPropagation();e.preventDefault();abrir(true);}},true);
+  // Doble clic en el iPad del mostrador = lo mismo que el tótem: abre la web real (cola/ipad.html) en grande
+  // con ampliar/cerrar (✕, clic fuera o Escape). Vale en Good 2D (canvas #c), Better/Best 3D (XpaceSceneScreens)
+  // y Matrix · 360 (nodo .matrix-landscape-ipad). En /layout no se intercepta.
+  const enLayout=()=>doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active');
+  function esIpad(e){
+    if(e.target&&e.target.closest&&e.target.closest('.matrix-landscape-ipad'))return true;
+    if(e.target&&e.target.id==='c'&&hit(e))return true;
+    try{const S=root.XpaceSceneScreens;if(S&&typeof S.screenAt==='function'&&S.screenAt(e.clientX,e.clientY)===ID)return true;}catch(_){}
+    return false;}
+  doc.addEventListener('dblclick',e=>{if(!on||enLayout()||(modal&&modal.classList.contains('on')))return;if(esIpad(e)){e.stopPropagation();e.preventDefault();abrir(true);}},true);
+  doc.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal&&modal.classList.contains('on'))abrir(false);});
 
   // ── Matrix · 360 (7-oct-2026): ahí el iPad es un <div class="matrix-mapped-player matrix-landscape-ipad"> deformado
   // sobre la foto, que no pasa por XpaceScreenMedia (por eso seguía en verde con «iPad»). Si no hay vídeo/imagen de
@@ -73,7 +83,7 @@
       if(!fr){ fr=doc.createElement('iframe');fr.className='ipad-cola-frame';fr.title='iPad del mostrador · gestor de colas';fr.setAttribute('tabindex','-1');fr.setAttribute('aria-hidden','true');
         fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#1E3932;pointer-events:none;z-index:1';
         fr.src=pageUrl()+'&escena=1';node.prepend(fr);node.classList.add('ipad-cola-on');
-        if(!node.__colaClick){node.__colaClick=true;node.addEventListener('click',e=>{if(!on||doc.documentElement.classList.contains('device-layout-active')||doc.body.classList.contains('device-layout-active'))return;if(!node.querySelector('iframe.ipad-cola-frame'))return;e.stopPropagation();abrir(true);},true);} }
+         }
       node.style.pointerEvents=(doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))?'':'auto';node.style.cursor='pointer';
       const idle=node.querySelector('.matrix-ipad-idle');if(idle)idle.style.display='none';
     });
@@ -83,5 +93,5 @@
   function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → gestor de colas (Admirito). Tócalo para abrirlo en grande.'};}
     if(a==='off'||a==='playlist'){on=false;setTimeout(matrixIpad,0);try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
     if(a==='abrir'||a==='open'){abrir(true);return {ok:true,message:pageUrl()};}return {ok:false,message:'/ipad cola · /ipad off · /ipad abrir'};}
-  root.XpaceIpadCola={id:ID,url:pageUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !((d.listo||[]).length||(d.preparando||[]).length);},frases:FRASES};
+  root.XpaceIpadCola={id:ID,url:pageUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !(d.listo||[]).length;},frases:FRASES};
 })(typeof window!=='undefined'?window:globalThis);
