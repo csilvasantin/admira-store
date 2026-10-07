@@ -1,5 +1,7 @@
 # Avatar · avatar, human y metahuman / Avatar categories
 
+**7-oct-2026 (noche):** en el gemelo, `/avatar good|better|best [on|off]` (y avatar/human/metahuman) encienden o apagan ese avatar en el tótem de la escena, uno a la vez, igual que los interruptores Good/Better/Best de Experto → Avatar3D. Ver [avatar-tiers](avatar-tiers.md). Fuera del gemelo siguen abriendo la cara del asistente flotante. / In the twin these commands now switch the scene totem avatar (one at a time); elsewhere they still open the floating assistant face.
+
 **7-oct-2026:** las categorías se llaman `avatar` (Admirito), `human` (Luna, antes «la chica») y `metahuman` (Neo). `/avatar avatar|human|metahuman` y `/cli avatar|human|metahuman`; `good`, `better` y `best` siguen como alias. Las calidades del gemelo (Good 8 bits, Better 16, Best 32, Matrix 64) no cambian de nombre: Good→avatar, Better→human, Best y Matrix→metahuman.
 
 **7 Oct 2026:** categories are `avatar` (Admirito), `human` (Luna, formerly “the girl”) and `metahuman` (Neo). good/better/best remain aliases. Twin quality names are unchanged.

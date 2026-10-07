@@ -1518,7 +1518,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261007-r46"></script>
+<script src="xtanco-version.js?v=20261007-r47"></script>
 <script src="xtanco-runtime-config.js?r=audio-mute-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -20709,7 +20709,10 @@ const AVATAR3D={
 // Admirito, la nube animada (nube.html, 2D ligera); Better/Best/Matrix siguen con Luna
 // (best.html). Una totemUrl fijada en la configuración manda siempre.
 const AVATAR3D_TOTEM_GOOD='https://digitalavatar.ai/nube.html?kiosk=1';
-function avatar3dTotemUrl(){ let lv='';try{ lv=avatar3dVisualLevel(); }catch(_){} return (!AVATAR3D.totemFixed&&lv==='good')?AVATAR3D_TOTEM_GOOD:AVATAR3D.totemUrl; }
+// Good/Better/Best elegido en Experto → Avatar3D o con /avatar good|better|best (7-oct-2026): manda sobre la calidad.
+const AVATAR3D_TOTEM_BY_TIER={good:AVATAR3D_TOTEM_GOOD,better:'https://digitalavatar.ai/best.html?kiosk=1',best:'https://digitalavatar.ai/metahuman.html?dock=1'};
+function avatar3dTierChoice(){ try{ const c=window.XpaceAvatarTiers&&window.XpaceAvatarTiers.chosen(); return AVATAR3D_TOTEM_BY_TIER[c]?c:''; }catch(_){ return ''; } }
+function avatar3dTotemUrl(){ const pick=avatar3dTierChoice(); if(pick) return AVATAR3D_TOTEM_BY_TIER[pick]; let lv='';try{ lv=avatar3dVisualLevel(); }catch(_){} return (!AVATAR3D.totemFixed&&lv==='good')?AVATAR3D_TOTEM_GOOD:AVATAR3D.totemUrl; }
 // Silencio del avatar del tótem (/avatar3d audio off|on). Se aplica en vivo por
 // postMessage y se añade a la URL (&audio=off) para que un montaje nuevo nazca mudo.
 let avatar3dMuted=false;
@@ -21255,6 +21258,7 @@ function avatar3dContextQS(url){
   const loc=avatar3dAskLoc(),brand=avatar3dBrand();
   let tier=avatar3dTier(url);
   try{ const v=avatar3dVisualLevel(); if(v) tier=v; }catch(_){}
+  try{ const c=avatar3dTierChoice(); if(c) tier=c; }catch(_){}
   if(!tier) tier='better';
   const av=(!avatar3dModel&&{good:'admirito',better:'luna',best:'neo'}[tier])||'';
   return (loc?'loc='+encodeURIComponent(loc)+'&':'')+'sector='+encodeURIComponent(avatar3dSector())+(brand?'&brand='+encodeURIComponent(brand):'')+'&tier='+tier+(av?'&avatar='+av:'');
@@ -31421,6 +31425,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Atmosphere':'Atmósfera',items:['/ambiente','/ambiente vol 50','/voces']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Real operations':'Operativa real',items:['/devolucion','/pedido']},
       {title:typeof lang!=='undefined'&&lang==='en'?'AdmiraNext integration':'Integración AdmiraNext',items:['/socios export']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Scene avatar · totem (Good Admirito / Better Luna / Best Neo · one at a time)':'Avatar de la escena · tótem (Good Admirito / Better Luna / Best Neo · uno a la vez)',items:['/avatar good','/avatar good on','/avatar good off','/avatar better','/avatar better on','/avatar better off','/avatar best','/avatar best on','/avatar best off','/totem on','/totem off','/totem kiosko']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Digital assistant (local)':'Asistente digital (local)',items:['/resumen dia on','/resumen dia off','/summary day on','/summary day off','/avatar digital on','/avatar digital off','/avatar digital good','/avatar digital better','/avatar digital best','/avatarDigital on','/avatarDigital off','/avatarON','/avatarOFF','/avatar','/avatar reset']},
       {title:typeof lang!=='undefined'&&lang==='en'?'AI and content':'IA y contenido',items:['/grok pregunta','/draw dibujo','/metahuman pregunta','/avatar3d on|off','/avatar3d ds on|off','/avatar3d audio on|off','/avatar3d models','/avatar3d preset <nombre> <url RPM>','/avatar3d model <nombre|id>','/avatar3d pregunta','/log','/log thief','/log customer','/import','/import list','/import remove 1','/importTube https://youtu.be/...']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Quick settings':'Ajustes rápidos',items:['/money 12000','/sat 90','/fame 80','/set week 12','/set year 2','/set revenue 5000','/set storeLevel 2','/set customers 30']},
@@ -36267,8 +36272,9 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="scripts/expert-category-detail.css?v=xtore-ux-3">
 <script src="/assets/day-summary.js?v=xtore-ux-3"></script>
 <script src="/assets/expert-toggle.js?v=xtore-ux-2"></script>
-<script src="scripts/expert-category-detail.js?v=kiosko-grande-1"></script>
-<script src="scripts/totem-kiosko.js?v=colas-ventanas-1"></script>
+<script src="scripts/expert-category-detail.js?v=avatar-tiers-1"></script>
+<script src="scripts/totem-kiosko.js?v=avatar-tiers-1"></script>
+<script src="scripts/avatar-tiers.js?v=avatar-tiers-1"></script>
 <script src="scripts/ipad-cola.js?v=colas-ventanas-1"></script>
 <link rel="stylesheet" href="scripts/side-console.css?v=options-language-1">
 <script type="module" src="scripts/project-selector.mjs?v=topbar-20261005-1"></script>
@@ -36490,7 +36496,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=avatar-panel-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=avatar-tiers-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>

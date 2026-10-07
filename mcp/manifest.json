@@ -1788,6 +1788,57 @@
       "scene_data"
     ]
   },
+  "avatar_tiers": {
+    "es": "En Experto → Avatar3D, «Opciones del avatar» pasa a ser tres interruptores con estado ON/OFF: Good · Admirito (la nube verde de digitalavatar.ai), Better · Luna y Best · Neo (MetaHuman). Encienden o apagan ese avatar en el tótem de la escena. Son exclusivos: el tótem es una sola pantalla, así que encender uno apaga el anterior y, si el tótem estaba en modo interactivo (quiosco), lo pasa a avatar (Tótem · OFF). Apagar el que está ON deja el tótem sin avatar; /totem on vuelve al quiosco y /totem off (o encender cualquier nivel) devuelve el avatar. CLI de Control Xtore: /avatar good on|off, /avatar better on|off, /avatar best on|off; /avatar good, /avatar better y /avatar best a secas alternan ON↔OFF. Alias: avatar/admirito, human/luna, metahuman/neo. En Matrix · Starbucks la cámara mira al tótem al encender uno. El nivel elegido manda sobre la calidad del gemelo y se recuerda en este navegador. «Avatar digital · ON/OFF» (el asistente flotante) es independiente. /help los lista. Comandos locales: no van a Telegram ni al MCP.",
+    "en": "In Expert → Avatar3D, “Avatar options” becomes three toggles with ON/OFF state: Good · Admirito (the green cloud from digitalavatar.ai), Better · Luna and Best · Neo (MetaHuman). They switch that avatar on or off on the scene totem. They are exclusive: the totem is a single screen, so turning one on turns the previous one off and, if the totem was in interactive (kiosk) mode, switches it to avatar (Totem · OFF). Turning off the active one leaves the totem without an avatar; /totem on brings back the kiosk and /totem off (or turning any level on) brings back the avatar. Control Xtore CLI: /avatar good on|off, /avatar better on|off, /avatar best on|off; bare /avatar good, /avatar better and /avatar best toggle ON↔OFF. Aliases: avatar/admirito, human/luna, metahuman/neo. In Matrix · Starbucks the camera looks at the totem when one is turned on. The chosen level overrides the twin quality and is remembered in this browser. “Digital avatar · ON/OFF” (the floating assistant) is independent. /help lists them. Local commands: never sent to Telegram or MCP.",
+    "local": true,
+    "new_remote_tool": false,
+    "commands": [
+      "/avatar good on",
+      "/avatar good off",
+      "/avatar good",
+      "/avatar better on",
+      "/avatar better off",
+      "/avatar better",
+      "/avatar best on",
+      "/avatar best off",
+      "/avatar best"
+    ],
+    "aliases": {
+      "good": [
+        "avatar",
+        "admirito"
+      ],
+      "better": [
+        "human",
+        "luna"
+      ],
+      "best": [
+        "metahuman",
+        "neo"
+      ]
+    },
+    "exclusive": true,
+    "expert_panel": "Experto → Avatar3D: Good · Admirito / Better · Luna / Best · Neo (sustituyen a «Opciones del avatar»)",
+    "api": "window.XpaceAvatarTiers {active(), chosen(), off(), set(tier,on), toggle(tier), command(text)} · evento xpace:avatar-tier",
+    "storage": {
+      "localStorage": [
+        "xpace:avatar-escena (off)",
+        "xpace:avatar-escena-nivel"
+      ],
+      "sessionStorage": [
+        "admira-avatar:nivel-elegido"
+      ]
+    },
+    "renderers": {
+      "good": "https://digitalavatar.ai/nube.html",
+      "better": "https://digitalavatar.ai/best.html",
+      "best": "https://digitalavatar.ai/metahuman.html"
+    },
+    "source": "admira-xp/scripts/avatar-tiers.js",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/avatar-tiers.md",
+    "updated_at": "2026-10-07"
+  },
   "windows_menu": {
     "es": "Opciones deja de mostrar «Volver a Admira»: utiliza el acceso del proyecto en la barra superior; /marca off y /brand off siguen disponibles en Experto. En Avanzados → Ventanas, DVR, MetaHuman, Unitree, Pixeria, Plantillas de Xpacio, Guardar plantilla y Presentación del gemelo usan tarjetas e iconos SVG del mismo sistema gráfico que las demás opciones. Los nombres permanecen visibles y cambian con /idioma ESP o /idioma ENG. Cada botón conserva la apertura de su herramienta original; no cambia el inventario, la escena, la marca blanca ni el historial CLI.",
     "en": "Options no longer shows “Back to Admira”: use the project entry in the top bar; /marca off and /brand off remain available in Expert. In Advanced → Windows, DVR, MetaHuman, Unitree, Pixeria, Xpace templates, Save template and Twin presentation use cards and SVG icons from the same graphic system as the other options. Names remain visible and change with /idioma ESP or /idioma ENG. Each button retains its original tool opener; inventory, scene, white label and CLI history are unchanged.",
