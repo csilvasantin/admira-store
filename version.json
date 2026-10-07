@@ -1,16 +1,16 @@
 {
-  "version": "v.07.10.2026.r1.06:33",
-  "deployedAt": "2026-10-07T04:34:12Z",
+  "version": "v.07.10.2026.r2.06:44",
+  "deployedAt": "2026-10-07T04:45:47Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "1b9c8ceaf81949fad3c4a5e5436fc7b8aa91ab0c",
-  "gitShort": "1b9c8ce",
-  "gitFull": "1b9c8ceaf81949fad3c4a5e5436fc7b8aa91ab0c",
+  "git": "476a6fd713b9ac9f1197711121a191e7cc7137bc",
+  "gitShort": "476a6fd",
+  "gitFull": "476a6fd713b9ac9f1197711121a191e7cc7137bc",
   "dirty": false,
   "novedades": [
-    "Matrix: arrastra el muffin de la vitrina a la caja junto al osito",
-    "Cesta del gemelo con cantidades y propuesta explícita de añadir café",
-    "Arrastre cancelable, teclado y ayuda bilingüe; cobro físico pendiente"
+    "/demo tpv en Experto: cámara, silueta y muffin a la caja",
+    "La canción Bad Times Deep House arranca al llegar al TPV",
+    "/demo off y Escape detienen la demo y su canción"
   ]
 }
