@@ -191,7 +191,4 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-pos-checkout [hidden]{display:none}
 
 /* Tótem ON (7-oct-2026): el player de la pared es el quiosco y recibe toques; el botón queda abajo */
-.matrix-wall-avatar[data-mode=kiosk] iframe{pointer-events:auto}
-.matrix-wall-avatar[data-mode=kiosk] .matrix-avatar-expand{inset:auto 0 0 0;height:auto;padding:10px 6px;background:#000c;font-size:22px}
-.matrix-wall-avatar[data-mode=kiosk]:modal{width:min(520px,92vw);height:min(924px,92dvh)}
 .matrix-wall-avatar[data-mode=kiosk] .matrix-avatar-model{display:none}

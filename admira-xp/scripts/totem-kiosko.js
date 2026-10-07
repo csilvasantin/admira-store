@@ -143,7 +143,7 @@
     (window.__totemSaid=window.__totemSaid||[]).push({text:String(d.text||''),lang:d.lang||'es-ES',via:r.via,at:Date.now()});
     try{ e.source&&e.source.postMessage({source:'xpaceos-totem',type:'say-ack',id:d.id,spoken:r.spoken,via:r.via},e.origin); }catch(_){}
   });
-  function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; t.style.pointerEvents=kioskOn()?'auto':''; } }catch(_){} },1500);
+  function boot(){ ensure(); setInterval(()=>{ try{ btn.style.display=(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko'))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; } }catch(_){} },1500);
     try{ const q=new URLSearchParams(location.search); if(q.has('kiosko')) setTimeout(()=>totemCommand('kiosko'),2500); else if(stored()) setTimeout(()=>{ setTotem(true,storedUrl()); },2500); }catch(_){} }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   window.totemKioskCommand=totemCommand;

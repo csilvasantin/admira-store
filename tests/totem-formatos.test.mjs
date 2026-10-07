@@ -21,17 +21,17 @@ test('Tótem ON recordado: quiosco Starbucks Paseo de Gracia con formato del pla
  assert.equal(u.origin+u.pathname,'https://www.ainimation.studio/xperiencias/kiosko-pedido/');
  assert.equal(u.searchParams.get('store'),'starbucks-paseo-de-gracia');assert.equal(u.searchParams.get('formato'),'vertical');
  assert.equal(u.searchParams.get('w'),String(WALL_KIOSK_SIZE.w));assert.equal(u.searchParams.get('h'),String(WALL_KIOSK_SIZE.h));
- assert.equal(x.frame.inert,false);assert.equal(x.frame.allow,undefined);assert.match(x.expand.textContent,/Tocar el tótem/);
+ assert.equal(x.frame.inert,true);assert.equal(x.frame.allow,undefined);assert.match(x.expand.textContent,/Tocar el tótem/);
 });
 test('el interruptor cambia en vivo; 👆 abre a tamaño real y cerrar no vuelve al avatar',()=>{
  const x=harness(false);x.api.setMode('kiosk');assert.equal(x.api.mode,'kiosk');const k=x.frame.src;
- x.expand.emit('click');assert.equal(x.api.expanded,true);assert.equal(x.frame.src,k);
- x.close.emit('click');assert.equal(x.api.expanded,false);assert.equal(x.frame.src,k);assert.equal(x.frame.inert,false);
+ x.expand.emit('click');assert.equal(x.api.expanded,true);assert.equal(x.frame.src,k);assert.equal(x.frame.inert,false);
+ x.close.emit('click');assert.equal(x.api.expanded,false);assert.equal(x.frame.src,k);assert.equal(x.frame.inert,true);
  x.api.setMode('avatar');assert.match(x.frame.src,/nube\.html/);assert.equal(x.frame.inert,true);
 });
 test('/totem on|off persiste y el interruptor de Experto usa /totem',()=>{
  const tk=fs.readFileSync(new URL('../admira-xp/scripts/totem-kiosko.js',import.meta.url),'utf8');
- assert.match(tk,/MODE_KEY='xpace:totem-interactivo'/);assert.match(tk,/a==='on'/);assert.match(tk,/xpace:totem-mode/);assert.match(tk,/pointerEvents=kioskOn\(\)\?'auto'/);
+ assert.match(tk,/MODE_KEY='xpace:totem-interactivo'/);assert.match(tk,/a==='on'/);assert.match(tk,/xpace:totem-mode/);assert.doesNotMatch(tk,/pointerEvents=kioskOn/);
  const ex=fs.readFileSync(new URL('../admira-xp/scripts/expert-category-detail.js',import.meta.url),'utf8');
  assert.match(ex,/toggle\(actions,'Tótem','Totem','totem','\/totem'\)/);
  assert.equal(new URL(wallKioskUrl({lang:'en'})).searchParams.get('lang'),'en');
