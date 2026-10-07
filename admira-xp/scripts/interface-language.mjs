@@ -18,7 +18,7 @@ export function interfaceTranslator(pairs = []) {
       };
       function visit(node) {
         if (node.nodeType === 3) {const next = copy(node.nodeValue); if (next !== node.nodeValue) node.nodeValue = next; return;}
-        if (node.nodeType !== 1 || node.matches('script,style,[contenteditable],.matrix-current-track')) return;
+        if (node.nodeType !== 1 || node.matches('script,style,[contenteditable],.matrix-current-track,[data-i18n-live]')) return;
         for (const attr of ['aria-label', 'title', 'placeholder']) if (node.hasAttribute(attr)) {
           const value = node.getAttribute(attr), next = copy(value);
           if (value !== next) node.setAttribute(attr, next);
@@ -29,7 +29,10 @@ export function interfaceTranslator(pairs = []) {
       hosts.filter(Boolean).forEach(visit);
     };
     sync();
-    const observer = typeof MutationObserver === 'function' ? new MutationObserver(sync) : null;
+    // Live widgets (e.g. Matrix incident cards with a 1 s SLA countdown) mark themselves with
+    // data-i18n-live: their own mutations must not re-walk the whole tree every second (typing lag).
+    const live = node => !!(node && (node.nodeType === 1 ? node : node.parentElement)?.closest?.('[data-i18n-live]'));
+    const observer = typeof MutationObserver === 'function' ? new MutationObserver(records => {if (records.every(r => r.type !== 'attributes' && live(r.target))) return; sync();}) : null;
     observer?.observe(doc.documentElement, {attributes:true, attributeFilter:['lang']});
     for (const root of hosts.filter(Boolean)) observer?.observe(root, {childList:true, subtree:true, characterData:true});
     return () => observer?.disconnect();
