@@ -37,7 +37,7 @@ test('twin avatar takes the sector from the project, not xtanco-generic',()=>{
   assert.match(html,/\/\(nube\|better\)\\\.html\/\.test\(u\)\?'good'/);
   assert.match(html,/sector:avatar3dSector\(\),brand:avatar3dBrand\(\)\|\|undefined,question:clean/);
   assert.match(html,/avatarIdentityFromQuality\(\)\)\)\}/);
-  assert.match(html,/if\(q==='better'\) return \{tier:'better', avatar:'alex'\}/);
+  assert.match(html,/if\(q==='better'\) return \{tier:'better', avatar:'luna'\}/);
   assert.match(html,/defineProperty\(window,'AdmiraAvatarContext'/);
   const panorama=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
   assert.match(panorama,/mountWallAvatar\(surface,\{t,onChange:[^\n]*live:\(\)=>/,'the wall avatar receives the now-playing track');
