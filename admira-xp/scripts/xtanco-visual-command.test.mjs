@@ -155,7 +155,7 @@ function consoleHarness({failLoad=false,lang='es'}={}){
   vm.runInContext(section('function peopleGroupVisible(group){','const MAX_RESET_AUDIENCE=')+helperSource+dispatcherSource+composerSource,context);
   const exported=html.match(/window\.__xtExec=executeTelegramText;/)?.[0];assert.ok(exported);vm.runInContext(exported,context);
   return {...f,context,composer,sent,memory,logs,sessionCommands,responses,loads,
-    get renders(){return renders;},get helpClosed(){return helpClosed;},get moving(){return moving;},send:input=>context.sendComposerText(input),exec:input=>window.__xtExec(input)};
+    get renders(){return renders;},get helpClosed(){return helpClosed;},get moving(){return moving;},send:input=>{composer.value=input;return context.sendComposerText(input);},sendTyped:(input,typed)=>{composer.value=typed;return context.sendComposerText(input);},exec:input=>window.__xtExec(input)};
 }
 
 test('the real composer handles every visual mode and typo before Telegram, AI/session logging or remote fallback',async()=>{
@@ -313,4 +313,9 @@ test('Store numbers and names use the shared local engine, named platforms remai
     assert.match((await executeVisualCommand('/demo estado')).message,/llevando a caja.*Prepared music/);
     assert.equal((await executeVisualCommand('/demo stop')).ok,true);assert.equal(stops,1);
   }finally{globalThis.XpacePOSExperience=previous;}
+});
+
+test('the composer only clears the command it sent, never newer text typed while a long command ran',async()=>{
+  const h=consoleHarness();await h.send('/modo matrix');assert.equal(h.composer.value,'');
+  const k=consoleHarness();await k.sendTyped('/modo matrix','/cerrar incidencia');assert.equal(k.composer.value,'/cerrar incidencia');
 });
