@@ -274,5 +274,9 @@
     "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados",
     "Avatar: catálogo desde la primera apertura, respuesta local confirmada y ayuda visible",
     "El espejo diario conserva el runtime y detiene fuentes sin el contrato Store publicado"
+  ],
+  "v.07.10.2026.r26.15:02": [
+    "El enlace del recorrido Store carga directamente una única instancia del motor compartido, sin esperar a abrir el avatar.",
+    "El shell conserva la consola local y sus controles; las visitas habituales mantienen el motor anterior."
   ]
 }
