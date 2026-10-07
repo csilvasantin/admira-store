@@ -137,3 +137,7 @@ ES: /demo help lista las cinco demos locales de Store: 1 locución, 2 música, 3
 EN: /demo help lists Store’s five local demos: 1 voiceover, 2 music, 3 images, 4 video and 5 POS management (/demo caja). /demo auto or /demo todas chains prepared phases and results; /demo pause, /demo resume, /demo next and /demo stop control the rehearsal. /demo status reads the active rehearsal; without one it reads the native POS journey. /demo tpv keeps the native muffin journey, with status and stop and without pause/resume. /demo studio, store, tv, app and biz open named platforms. No real registrations, sales, physical broadcasts or paid generation.
 
 El tour general de todos los escenarios físicos sigue pendiente; sus propuestas anteriores de pausa/continuación no describen el motor local de gestión. / The general physical-scenario tour remains pending; its older pause/resume proposals do not describe the local management engine.
+
+ES: La entrada `?ax_demo=store` en los dominios oficiales Store/XpaceOS carga el motor común también con la barra integrada del gemelo. Se renuevan los pins del shell y del cargador para evitar código retenido en caché; las visitas normales conservan su cargador. El recorrido opera la interfaz de ensayo, sin ventas ni emisión física.
+
+EN: The `?ax_demo=store` entry on official Store/XpaceOS domains loads the shared engine with the twin’s inline toolbar too. Shell and loader pins are renewed to avoid cached code; normal visits keep their loader. The walkthrough operates the rehearsal interface, without sales or physical broadcasts.
