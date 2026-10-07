@@ -298,23 +298,19 @@ test('/ifthendothat commands use the shipped dispatcher without bot or session w
  try{for(const input of ['/ifthendothat','/ifthendothat on','/ifthendothat off','/ifthendothat typo']){const h=consoleHarness();await h.send(input);assert.equal(h.responses.length,1);assert.deepEqual(h.sent,[]);assert.deepEqual(h.sessionCommands,[]);assert.deepEqual(h.logs,[]);assert.equal(h.responses[0][2],'local-visual');}}finally{delete globalThis.XPLComposer;}
 });
 
-// /demo de las cinco soluciones (7-oct-2026, demo Alsea): store = /demo tpv; el resto abre su demo.
-test('/demo <solución>: store es la demo TPV y las demás abren su URL', async () => {
-  const m = await import('./xtanco-visual-command.mjs');
-  assert.deepEqual(m.parseVisualCommand('/demo store'), {guided: 'tpv'});
-  assert.equal(m.parseVisualCommand('/demo 1').solution.id, 'studio');
-  assert.equal(m.parseVisualCommand('/demo admira.biz').solution.id, 'biz');
-  assert.deepEqual(m.parseVisualCommand('/demo tpv'), {guided: 'tpv'});
-  assert.deepEqual(m.parseVisualCommand('/demo off'), {guided: 'stop'});
-  const help = await m.executeVisualCommand('/demo', {lang: 'es'});
-  assert.match(help.message, /Cinco soluciones: 1 \/demo studio · 2 \/demo store/);
-  const went = [];
-  const prev = globalThis.location;
-  globalThis.location = {assign: (u) => went.push(u)};
-  try {
-    const r = await m.executeVisualCommand('/demo tv', {lang: 'es'});
-    assert.equal(r.ok, true);
-    await new Promise((res) => setTimeout(res, 700));
-    assert.match(went[0], /admira\.tv\/adcelerate\/demo/);
-  } finally { globalThis.location = prev; }
+test('Store numbers and names use the shared local engine, named platforms remain explicit, native TPV stays native',async()=>{
+  for(const arg of ['help','1','2','3','4','5','locucion','musica','imagenes','video','caja','auto','todas','pausa','resume','siguiente','studio','store','tv','app','admira.biz'])
+    assert.deepEqual(parseVisualCommand('/demo '+arg),{guided:'suite',text:'/demo '+arg});
+  assert.deepEqual(parseVisualCommand('/DEMO@AdmiraXPBot MÚSICA'),{guided:'suite',text:'/demo musica'});
+  assert.deepEqual(parseVisualCommand('/demo tpv'),{guided:'tpv'});
+  assert.deepEqual(parseVisualCommand('/demo off'),{guided:'stop'});
+  assert.deepEqual(parseVisualCommand('/demo tpv stop'),{guided:'stop',native:true});
+  assert.deepEqual(parseVisualCommand('/demo tpv estado'),{guided:'status',native:true});
+  const previous=globalThis.XpacePOSExperience;let starts=0,stops=0;
+  globalThis.XpacePOSExperience={demo:{start(){starts++;return {ok:true};},stop(){stops++;},state(){return {phase:'travel',song:true,songTitle:'Prepared music'};}}};
+  try{
+    const f=publicRouter();const started=await executeVisualCommand('/demo tpv',f);assert.equal(started.ok,true);assert.equal(starts,1);
+    assert.match((await executeVisualCommand('/demo estado')).message,/llevando a caja.*Prepared music/);
+    assert.equal((await executeVisualCommand('/demo stop')).ok,true);assert.equal(stops,1);
+  }finally{globalThis.XpacePOSExperience=previous;}
 });

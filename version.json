@@ -1,17 +1,17 @@
 {
-  "version": "v.07.10.2026.r17.12:30",
-  "deployedAt": "2026-10-07T10:30:44Z",
-  "deployer": "GrokBot",
-  "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
-  "git": "22d68383cc82e10ffdce25099ff25cfb30fc6163",
-  "gitShort": "22d6838",
-  "gitFull": "22d68383cc82e10ffdce25099ff25cfb30fc6163",
+  "version": "v.07.10.2026.r18.12:49",
+  "deployedAt": "2026-10-07T10:49:18Z",
+  "deployer": "TrinityMBP16",
+  "machine": "MacBookPro16",
+  "signature": "TrinityMBP16 · MacBookPro16",
+  "git": "170bdde55ee218aa5110140e71c6e456fe916d48",
+  "gitShort": "170bdde",
+  "gitFull": "170bdde55ee218aa5110140e71c6e456fe916d48",
   "dirty": false,
   "novedades": [
-    "El Admirito del gemelo de Starbucks lee la cola de pedidos de Paseo de Gracia y anuncia cada pedido listo una sola vez",
-    "Llama por el nombre que diste en el quiosco: «Carlos, tu pedido Starbucks está preparado»; sin nombre, dice el número",
-    "Habla con la cara del avatar si está activa y, si no, con la voz del navegador en castellano (es-ES); el aviso también sale en pantalla",
-    "Con ?cola=<tienda> se puede escuchar la cola de otra tienda"
+    "Store: /demo 1–5 enseña locución, música, imágenes, vídeo y gestión del TPV",
+    "/demo auto encadena las cinco demos con sus fases y muestras preparadas",
+    "Pausa, reanudar, siguiente y stop controlan el ensayo local",
+    "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados"
   ]
 }

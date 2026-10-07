@@ -7,7 +7,7 @@ const catalog=JSON.parse(readFileSync(new URL('../admira-xp/demos/catalog.json',
 test('agent catalogue names actual guided commands and keeps proposed tour commands unavailable',()=>{
  assert.equal(catalog.schema_version,1);assert.equal(catalog.runtime.nominal_drop_ms,POS_DEMO_STEPS.drop);
  for(const command of catalog.runtime.guided_commands)assert.notEqual(parseVisualCommand(command)?.guided,'invalid',command);
- for(const command of catalog.proposed_general_tour.commands_not_implemented)assert.equal(parseVisualCommand(command)?.guided,'invalid',command);
+ for(const command of catalog.proposed_general_tour.commands_not_implemented)assert.ok(!catalog.runtime.guided_commands.includes(command),command);
  assert.equal(catalog.runtime.remote_mcp_launch_tool,false);assert.match(catalog.scope,/documentation-only/);
 });
 test('scenario IDs are unique with bilingual labels, real controls, evidence and cleanup',()=>{
@@ -20,4 +20,14 @@ test('continuity guides reference existing local sources rather than nonexistent
  const doc=readFileSync(new URL('../admira-xp/docs/xtore-demos-continuity.md',import.meta.url),'utf8');
  for(const file of ['pos-demo.mjs','matrix-pos-experience.mjs','pos-checkout-display.mjs','retail-rules.mjs','retail-rule-composer.mjs','retail-media-display.mjs','matrix-panorama.mjs','xtanco-visual-command.mjs']){assert.ok(doc.includes(file));assert.ok(existsSync(new URL('../admira-xp/scripts/'+file,import.meta.url)));}
  for(const file of ['../admira-xp/help.html','../help/index.html','../help/cli/index.html','../mcp/index.html'])assert.ok(readFileSync(new URL(file,import.meta.url),'utf8').includes('id="demo-catalog"'),file);
+});
+
+test('local Store rehearsal contract exposes five management IDs, explicit native TPV and no remote launch',()=>{
+ const local=catalog.runtime.local_management;
+ assert.deepEqual(local.ids,['store/voz','store/musica','store/imagenes','store/video','store/tpv']);assert.equal(local.native_tpv_command,'/demo tpv');assert.equal(local.native_pause_resume,false);assert.equal(local.prepared_data_only,true);
+ for(const command of ['/demo help','/demo 1','/demo 5','/demo caja','/demo auto','/demo pausa','/demo resume','/demo next','/demo stop'])assert.ok(catalog.runtime.guided_commands.includes(command),command);
+ const manifest=JSON.parse(readFileSync(new URL('../mcp/manifest.json',import.meta.url),'utf8'));
+ assert.equal(manifest.demo_catalog.remote_mcp_demo_launch,false);assert.deepEqual(manifest.demo_soluciones.commands,catalog.runtime.guided_commands);
+ assert.match(manifest.demo_soluciones.es,/sin pausa/);assert.match(manifest.demo_soluciones.en,/without pause/);
+ for(const file of ['../admira-xp/help.html','../help/index.html','../help/cli/index.html','../mcp/index.html'])assert.ok(readFileSync(new URL(file,import.meta.url),'utf8').includes('id="store-local-demos"'),file);
 });
