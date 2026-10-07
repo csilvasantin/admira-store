@@ -133,11 +133,29 @@
     let face=false; try{ face=!!(window.MH_FACE_ENABLED||((typeof metahumanWallOn==='function')&&metahumanWallOn())); }catch(_){}
     if(face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
     if(muted) return {spoken:false,via:'muted'};
-    // 2) voz del gemelo: castellano de España (es-ES), como la megafonía local
+    // 2) voz de Admirito (Carlos, 7-oct-2026): ElevenLabs en castellano vía el proxy mcp-ainimation /voz
+    //    (caché por frase, la clave nunca llega aquí). Si falla o tarda >6 s → voz del navegador es-ES.
+    if(!/^en/i.test(String(langTag||''))&&elOn()){ elSpeak(t,()=>browserSpeak(t,langTag)); return {spoken:true,via:'elevenlabs'}; }
+    return browserSpeak(t,langTag);
+  }
+  const VOZ_URL='https://mcp-ainimation.admira.store/voz'; let vozAudio=null; window.__admiritoVoz=window.__admiritoVoz||[];
+  function elOn(){ try{ const q=new URLSearchParams(location.search); if(q.get('voz_el')==='0') return false; return localStorage.getItem('xpace:voz-admirito')!=='navegador'; }catch(_){ return true; } }
+  function elSpeak(t,fallback){
+    let done=false; const fin=(ok,why)=>{ if(done) return; done=true; window.__admiritoVoz.push({texto:t,via:ok?'elevenlabs':'respaldo',why:why||'',at:Date.now()}); if(!ok) fallback(); };
+    try{ if(vozAudio) vozAudio.pause(); try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){}
+      let id=''; try{ id=new URLSearchParams(location.search).get('vozid')||''; }catch(_){}
+      const a=vozAudio=new Audio(VOZ_URL+'?texto='+encodeURIComponent(t.slice(0,240))+(id?'&voz='+encodeURIComponent(id):''));
+      const tm=setTimeout(()=>{ try{ a.pause(); }catch(_){} fin(false,'timeout'); },6000);
+      a.onplaying=()=>{ clearTimeout(tm); window.__admiritoVoz.push({texto:t,via:'elevenlabs-sonando',at:Date.now()}); }; a.onended=()=>fin(true); a.onerror=()=>{ clearTimeout(tm); fin(false,'error'); };
+      a.play().catch(e=>{ clearTimeout(tm); fin(false,'play:'+(e&&e.name)); });
+    }catch(_){ fin(false,'excepcion'); }
+  }
+  function browserSpeak(t,langTag){
+    // voz del gemelo: castellano de España (es-ES), como la megafonía local
     try{
       const ss=window.speechSynthesis; if(!ss||typeof window.SpeechSynthesisUtterance!=='function') return {spoken:false,via:'none'};
       const l=/^en/i.test(String(langTag||''))?'en-GB':'es-ES';
-      const u=new window.SpeechSynthesisUtterance(t); u.lang=l; u.rate=0.96; u.pitch=1; u.volume=1;
+      const u=new window.SpeechSynthesisUtterance(t); u.lang=l; u.rate=0.98; u.pitch=1.3; u.volume=1;
       const vs=ss.getVoices()||[]; const v=vs.find(x=>x.lang===l)||vs.find(x=>(x.lang||'').replace('_','-')===l); if(v) u.voice=v;
       try{ ss.cancel(); }catch(_){} ss.speak(u); return {spoken:true,via:'speech-'+l};
     }catch(_){ return {spoken:false,via:'none'}; }
