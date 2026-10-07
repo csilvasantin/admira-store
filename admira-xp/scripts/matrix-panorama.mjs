@@ -123,10 +123,15 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function focusScreen(id,{fov:to=38,ms=900}={}){const p=model.players.find(x=>x.id===id);if(disposed||!p?.corners?.length)return Promise.resolve(false);
   const ty=p.corners.reduce((a,c)=>a+c.yaw,0)/p.corners.length,tp=p.corners.reduce((a,c)=>a+c.pitch,0)/p.corners.length,y0=yaw,p0=pitch,f0=fov,dy=((ty-y0+540)%360)-180,t0=performance.now();
   return new Promise(resolve=>{const tick=now=>{if(disposed)return resolve(false);const k=Math.min(1,(now-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;yaw=y0+dy*e;pitch=p0+(tp-p0)*e;fov=f0+(to-f0)*e;renderKey='';if(k<1)requestAnimationFrame(tick);else resolve(true);};requestAnimationFrame(tick);});}
+ // Cámara del recorrido /demo all (scripts/demo-tour.mjs): mirar a un punto con nombre o {yaw,pitch,fov}, con giro suave.
+ const CAMERA_SPOTS={home:STARBUCKS_WALL_VIEW,wall:STARBUCKS_WALL_VIEW,speaker:{...STARBUCKS_SPEAKER,fov:75},announcement:{...ANNOUNCEMENT_SPEAKER,fov:45}};
+ function lookAt(v,{ms=1100}={}){const to=typeof v==='string'?CAMERA_SPOTS[v]:v;if(disposed||!to||!Number.isFinite(+to.yaw))return Promise.resolve(false);const ty=+to.yaw,tp=Number.isFinite(+to.pitch)?+to.pitch:pitch,tf=Number.isFinite(+to.fov)?+to.fov:fov,y0=yaw,p0=pitch,f0=fov,dy=((ty-y0+540)%360)-180,t0=performance.now();
+  return new Promise(resolve=>{const tick=now=>{if(disposed)return resolve(false);const k=Math.min(1,(now-t0)/Math.max(1,ms)),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;yaw=y0+dy*e;pitch=p0+(tp-p0)*e;fov=f0+(tf-f0)*e;renderKey='';if(k<1)requestAnimationFrame(tick);else resolve(true);};requestAnimationFrame(tick);});}
  window.XpaceMatrixOptions={
   isActive:()=>!disposed,
   incidentDemo:{candidates:()=>incidents.demo.candidates(),focus:(id,o)=>focusScreen(id,o),open:o=>incidents.demo.open(o),close:o=>incidents.demo.close(o),stage:id=>incidents.demo.stage(id),listOpen:()=>incidents.demo.listOpen(),name:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),snapshot:id=>snapshotFn?snapshotFn(id):null,home:()=>{yaw=STARBUCKS_WALL_VIEW.yaw;pitch=STARBUCKS_WALL_VIEW.pitch;fov=STARBUCKS_WALL_VIEW.fov;renderKey='';}},
   focusAvatar:o=>focusAvatar(o),
+  camera:{get:()=>({yaw,pitch,fov}),look:(v,o)=>lookAt(v,o),spots:()=>Object.keys(CAMERA_SPOTS)},
   avatarState:()=>({level:wallAvatar.level,expanded:wallAvatar.expanded,mode:wallAvatar.mode,off:wallAvatar.off}),
   devices:()=>DEVICE_IDS.filter(id=>nodes.has(id)).map(id=>({id,label:playerName(model.players.find(p=>p.id===id)||{id,name:id})})),
   screenState(id){const active=runtime.nowPlaying([id])[0];const track=active?.preview?signagePreviews.get(id):playlistValue(active?.playlistId)?.tracks.find(t=>(t.id||t.stockId)===active?.trackId);return {...active,title:track?.title||''};},

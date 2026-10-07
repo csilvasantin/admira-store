@@ -1,0 +1,1019 @@
+{
+ "schema_version": 1,
+ "title": "Demos del gemelo XpaceOS · Starbucks / XpaceOS twin demos",
+ "updated_at": "2026-10-07",
+ "source": "https://www.admira.store/admira-xp/demos.json",
+ "mirror": "https://www.xpaceos.com/admira-xp/demos.json",
+ "commands": {
+  "help": "/demo help · /demo ayuda",
+  "all": "/demo all · /demo todas [--enviar]",
+  "one": "/demo <id|número>",
+  "next": "/demo next · /demo siguiente (durante el recorrido)",
+  "stop": "/demo stop · Esc"
+ },
+ "tour": {
+  "title_card_s": 2,
+  "count": 16,
+  "total_s": 316,
+  "restores": [
+   "vista (good/better/best/matrix)",
+   "cámara",
+   "agrupación de pantallas",
+   "playlist estándar",
+   "iPad",
+   "calidad del aviso",
+   "música"
+  ]
+ },
+ "note": {
+  "es": "Fuente única: /demo help, /demo all, help.html, /help/demos y funcionalidades.json se generan o leen desde aquí. Las demos 1–5 son del motor común de la suite y se lanzan con su mismo número.",
+  "en": "Single source: /demo help, /demo all, help.html, /help/demos and funcionalidades.json are generated from or read this file. Demos 1–5 belong to the shared suite engine and keep their numbers."
+ },
+ "demos": [
+  {
+   "n": 1,
+   "id": "voz",
+   "aliases": [
+    "locucion",
+    "locuciones"
+   ],
+   "name": {
+    "es": "Gestión de locuciones",
+    "en": "Voiceover management"
+   },
+   "shows": {
+    "es": "Elige una locución, la asigna a una zona y prepara su horario.",
+    "en": "Picks a voiceover, assigns it to a zone and schedules it."
+   },
+   "command": "/demo 1 · /demo voz",
+   "duration_s": 14,
+   "tour": true,
+   "kind": "suite",
+   "side_effects": {
+    "es": "Ensayo con datos de demostración; no crea altas reales.",
+    "en": "Rehearsal with demo data; no real changes."
+   },
+   "owner": "Motor común de la suite (admiranext.com/suite/experto.js · store.subdemos.json)",
+   "link": "https://www.admira.store/admira-xp/help.html#store-local-demos",
+   "steps": [
+    {
+     "suite": "/demo 1"
+    },
+    {
+     "wait": 13000
+    }
+   ],
+   "cleanup": [
+    {
+     "suite": "/demo stop"
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "id": "musica",
+   "aliases": [
+    "playlist",
+    "hilo musical"
+   ],
+   "name": {
+    "es": "Gestión de música",
+    "en": "Music management"
+   },
+   "shows": {
+    "es": "Playlist del local, zonas, volumen y franjas horarias.",
+    "en": "Store playlist, zones, volume and time slots."
+   },
+   "command": "/demo 2 · /demo musica",
+   "duration_s": 14,
+   "tour": true,
+   "kind": "suite",
+   "side_effects": {
+    "es": "Ensayo con datos de demostración; no crea altas reales.",
+    "en": "Rehearsal with demo data; no real changes."
+   },
+   "owner": "Motor común de la suite (admiranext.com/suite/experto.js · store.subdemos.json)",
+   "link": "https://www.admira.store/admira-xp/help.html#store-local-demos",
+   "steps": [
+    {
+     "suite": "/demo 2"
+    },
+    {
+     "wait": 13000
+    }
+   ],
+   "cleanup": [
+    {
+     "suite": "/demo stop"
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "id": "imagenes",
+   "aliases": [
+    "imagen",
+    "creatividades"
+   ],
+   "name": {
+    "es": "Gestión de imágenes",
+    "en": "Image management"
+   },
+   "shows": {
+    "es": "Creatividades en playlist y asignación a pantallas.",
+    "en": "Creatives in a playlist, assigned to screens."
+   },
+   "command": "/demo 3 · /demo imagenes",
+   "duration_s": 14,
+   "tour": true,
+   "kind": "suite",
+   "side_effects": {
+    "es": "Ensayo con datos de demostración; no crea altas reales.",
+    "en": "Rehearsal with demo data; no real changes."
+   },
+   "owner": "Motor común de la suite (admiranext.com/suite/experto.js · store.subdemos.json)",
+   "link": "https://www.admira.store/admira-xp/help.html#store-local-demos",
+   "steps": [
+    {
+     "suite": "/demo 3"
+    },
+    {
+     "wait": 13000
+    }
+   ],
+   "cleanup": [
+    {
+     "suite": "/demo stop"
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "id": "video",
+   "aliases": [
+    "videos",
+    "clip"
+   ],
+   "name": {
+    "es": "Gestión de vídeo",
+    "en": "Video management"
+   },
+   "shows": {
+    "es": "Clips en playlist, destinos y comprobación de reproducción.",
+    "en": "Clips in a playlist, destinations and playback check."
+   },
+   "command": "/demo 4 · /demo video",
+   "duration_s": 14,
+   "tour": true,
+   "kind": "suite",
+   "side_effects": {
+    "es": "Ensayo con datos de demostración; no crea altas reales.",
+    "en": "Rehearsal with demo data; no real changes."
+   },
+   "owner": "Motor común de la suite (admiranext.com/suite/experto.js · store.subdemos.json)",
+   "link": "https://www.admira.store/admira-xp/help.html#store-local-demos",
+   "steps": [
+    {
+     "suite": "/demo 4"
+    },
+    {
+     "wait": 13000
+    }
+   ],
+   "cleanup": [
+    {
+     "suite": "/demo stop"
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "id": "caja",
+   "aliases": [
+    "venta"
+   ],
+   "name": {
+    "es": "Gestión del TPV",
+    "en": "POS management"
+   },
+   "shows": {
+    "es": "Un producto y su relación con audio, pantallas y reglas del local.",
+    "en": "A product and its link to audio, screens and store rules."
+   },
+   "command": "/demo 5 · /demo caja",
+   "duration_s": 14,
+   "tour": true,
+   "kind": "suite",
+   "side_effects": {
+    "es": "Ensayo con datos de demostración; no crea altas reales.",
+    "en": "Rehearsal with demo data; no real changes."
+   },
+   "owner": "Motor común de la suite (admiranext.com/suite/experto.js · store.subdemos.json)",
+   "link": "https://www.admira.store/admira-xp/help.html#store-local-demos",
+   "steps": [
+    {
+     "suite": "/demo 5"
+    },
+    {
+     "wait": 13000
+    }
+   ],
+   "cleanup": [
+    {
+     "suite": "/demo stop"
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "id": "tpv",
+   "aliases": [
+    "muffin",
+    "pos"
+   ],
+   "name": {
+    "es": "Muffin al TPV",
+    "en": "Muffin to the POS"
+   },
+   "shows": {
+    "es": "La cámara coge un muffin, lo lleva a la caja y suena la canción de la regla.",
+    "en": "The camera picks a muffin, takes it to the register and the rule song plays."
+   },
+   "command": "/demo tpv",
+   "duration_s": 32,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Suena música local; añade una unidad a la cesta de demo de este navegador.",
+    "en": "Local music plays; adds one unit to this browser's demo basket."
+   },
+   "owner": "XpaceOS · TPV nativo (pos-demo.mjs)",
+   "link": "https://www.admira.store/admira-xp/help.html#demo-tpv",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "cli": "/demo tpv"
+    },
+    {
+     "waitPos": 28000
+    },
+    {
+     "wait": 3000
+    }
+   ],
+   "cleanup": [
+    {
+     "cli": "/demo tpv off"
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "id": "sincro",
+   "aliases": [
+    "sync",
+    "navidad",
+    "playlists",
+    "signage"
+   ],
+   "name": {
+    "es": "Playlists y sincro IA",
+    "en": "Playlists and AI sync"
+   },
+   "shows": {
+    "es": "Las 6 pantallas cambian a Sincro IA por grupos y luego a la playlist de Navidad.",
+    "en": "The 6 screens switch to AI sync by groups, then to the Christmas playlist."
+   },
+   "command": "/sincro ia · /navidad",
+   "duration_s": 20,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#starbucks-sync",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "look": "wall"
+    },
+    {
+     "cli": "/sincro ia"
+    },
+    {
+     "wait": 10000
+    },
+    {
+     "cli": "/navidad"
+    },
+    {
+     "wait": 9000
+    }
+   ],
+   "cleanup": [
+    {
+     "cli": "/navidad off"
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "id": "altavoz",
+   "aliases": [
+    "hilomusical",
+    "musica-local",
+    "speaker"
+   ],
+   "name": {
+    "es": "Hilo musical · altavoz",
+    "en": "Background music · speaker"
+   },
+   "shows": {
+    "es": "Cámara al altavoz: suena la playlist Starbucks y EXIT pasa a la siguiente canción.",
+    "en": "Camera to the speaker: the Starbucks playlist plays and EXIT skips to the next song."
+   },
+   "command": "Experto → Altavoz",
+   "duration_s": 14,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Suena audio en este navegador.",
+    "en": "Audio plays in this browser."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#starbucks-music",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "look": "speaker"
+    },
+    {
+     "music": "on"
+    },
+    {
+     "wait": 6000
+    },
+    {
+     "music": "next"
+    },
+    {
+     "wait": 7000
+    }
+   ],
+   "cleanup": [
+    {
+     "music": "restore"
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "id": "aviso",
+   "aliases": [
+    "locucion-cierre",
+    "announcement",
+    "cierre"
+   ],
+   "name": {
+    "es": "Aviso de cierre · 2 voces",
+    "en": "Closing announcement · 2 voices"
+   },
+   "shows": {
+    "es": "El aviso de cierre con voz estándar (Mónica) y con ElevenLabs; la música baja y vuelve.",
+    "en": "The closing announcement with the standard voice (Mónica) and ElevenLabs; music ducks and returns."
+   },
+   "command": "/aviso estandar · /aviso elevenlabs · /aviso",
+   "duration_s": 18,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Audio ya generado (no gasta créditos).",
+    "en": "Pre-generated audio (no credits used)."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#closing-announcement",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "look": "announcement"
+    },
+    {
+     "cli": "/aviso estandar"
+    },
+    {
+     "cli": "/aviso"
+    },
+    {
+     "wait": 8000
+    },
+    {
+     "cli": "/aviso elevenlabs"
+    },
+    {
+     "cli": "/aviso"
+    },
+    {
+     "wait": 9000
+    }
+   ],
+   "cleanup": [
+    {
+     "announcement": "stop"
+    }
+   ]
+  },
+  {
+   "n": 10,
+   "id": "avatar",
+   "aliases": [
+    "admirito"
+   ],
+   "name": {
+    "es": "Admirito en la pared",
+    "en": "Admirito on the wall"
+   },
+   "shows": {
+    "es": "La cámara va a la pantalla de ladrillo con Admirito, el avatar de la cafetería.",
+    "en": "The camera goes to the brick-wall screen with Admirito, the café avatar."
+   },
+   "command": "/avatar digital good",
+   "duration_s": 9,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#matrix-wall-avatar",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "avatar": true
+    },
+    {
+     "wait": 8000
+    }
+   ],
+   "cleanup": [
+    {
+     "look": "home"
+    }
+   ]
+  },
+  {
+   "n": 11,
+   "id": "ipad",
+   "aliases": [
+    "colas",
+    "cola",
+    "gestor-colas",
+    "queue"
+   ],
+   "name": {
+    "es": "iPad · gestor de colas",
+    "en": "iPad · queue manager"
+   },
+   "shows": {
+    "es": "El iPad del mostrador con la cola de pedidos (Admirito si está vacía) y el gestor abierto en grande.",
+    "en": "The counter iPad with the order queue (Admirito when empty) and the manager opened large."
+   },
+   "command": "/ipad cola · /ipad abrir",
+   "duration_s": 15,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Solo lectura de la cola de demo.",
+    "en": "Reads the demo queue only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#ipad-queue-idle",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "focus": "starbucks-ipad-01"
+    },
+    {
+     "cli": "/ipad cola"
+    },
+    {
+     "wait": 5000
+    },
+    {
+     "ipad": "open"
+    },
+    {
+     "wait": 9000
+    }
+   ],
+   "cleanup": [
+    {
+     "ipad": "close"
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "id": "panorama",
+   "aliases": [
+    "360",
+    "matrix"
+   ],
+   "name": {
+    "es": "Panorama 360",
+    "en": "360 panorama"
+   },
+   "shows": {
+    "es": "Giro completo de cámara por la tienda real de Paseo de Gracia en 360°.",
+    "en": "Full camera turn around the real Paseo de Gracia store in 360°."
+   },
+   "command": "Matrix · arrastrar",
+   "duration_s": 13,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#starbucks-real-room",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "pan": 360,
+     "ms": 12000
+    }
+   ],
+   "cleanup": [
+    {
+     "look": "home"
+    }
+   ]
+  },
+  {
+   "n": 13,
+   "id": "inventario",
+   "aliases": [
+    "idiot",
+    "inventory"
+   ],
+   "name": {
+    "es": "Inventario ITIL · idIoT",
+    "en": "ITIL inventory · idIoT"
+   },
+   "shows": {
+    "es": "Inventario del local con números permanentes e idIoT (equipos, pantallas y mobiliario).",
+    "en": "Store inventory with permanent numbers and idIoT (devices, screens and furniture)."
+   },
+   "command": "/inventario idIoT",
+   "duration_s": 9,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#inventory-idiot",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "cli": "/inventario idIoT"
+    },
+    {
+     "wait": 8000
+    }
+   ]
+  },
+  {
+   "n": 14,
+   "id": "ifthendothat",
+   "aliases": [
+    "reglas",
+    "condicional",
+    "xpl"
+   ],
+   "name": {
+    "es": "Reglas IF·THEN·DO THAT",
+    "en": "IF·THEN·DO THAT rules"
+   },
+   "shows": {
+    "es": "El compositor de reglas: coger un muffin o llevarlo a caja dispara música, voz, imagen o vídeo.",
+    "en": "The rule composer: picking a muffin or taking it to the register triggers music, voice, image or video."
+   },
+   "command": "/ifthendothat",
+   "duration_s": 9,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#ifthendothat",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "cli": "/ifthendothat"
+    },
+    {
+     "wait": 8000
+    }
+   ],
+   "cleanup": [
+    {
+     "cli": "/ifthendothat off"
+    }
+   ]
+  },
+  {
+   "n": 15,
+   "id": "incidencia",
+   "aliases": [
+    "incident",
+    "itsm",
+    "informe"
+   ],
+   "name": {
+    "es": "Incidencia + informe NASA",
+    "en": "Incident + NASA report"
+   },
+   "shows": {
+    "es": "Abre una incidencia CLI en una pantalla libre, la cierra en la ficha de admira.app y prepara el informe PDF con marca y fotos.",
+    "en": "Opens a CLI incident on a free screen, closes it in the admira.app ticket and prepares the branded PDF report with photos."
+   },
+   "command": "/crear incidencia · /cerrar incidencia",
+   "duration_s": 45,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Crea y cierra un ticket CLI de demo en Yokup (nunca toca incidencias reales). En /demo all el informe NO se envía salvo con --enviar (correo + Telegram de Carlos).",
+    "en": "Creates and closes a CLI demo ticket in Yokup (never touches real incidents). In /demo all the report is NOT sent unless --send (Carlos's email + Telegram)."
+   },
+   "owner": "GrokBot · incident-demo.mjs + yokup-api",
+   "link": "https://www.admira.store/admira-xp/help.html#incident-cli-demo",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "incident": true
+    }
+   ]
+  },
+  {
+   "n": 16,
+   "id": "calidades",
+   "aliases": [
+    "good",
+    "better",
+    "best",
+    "modos",
+    "quality"
+   ],
+   "name": {
+    "es": "Calidades Good · Better · Best",
+    "en": "Good · Better · Best qualities"
+   },
+   "shows": {
+    "es": "El mismo local en 8 bits, 16 bits y 32 bits hiperrealista, y vuelta a Matrix.",
+    "en": "The same store in 8-bit, 16-bit and hyper-realistic 32-bit, then back to Matrix."
+   },
+   "command": "good · better · best · matrix",
+   "duration_s": 30,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#expert-layout",
+   "steps": [
+    {
+     "cli": "good"
+    },
+    {
+     "wait": 8000
+    },
+    {
+     "cli": "better"
+    },
+    {
+     "wait": 9000
+    },
+    {
+     "cli": "best"
+    },
+    {
+     "wait": 10000
+    },
+    {
+     "cli": "matrix"
+    }
+   ]
+  },
+  {
+   "n": 17,
+   "id": "marca",
+   "aliases": [
+    "brand",
+    "marcablanca",
+    "white-label"
+   ],
+   "name": {
+    "es": "Marca blanca",
+    "en": "White label"
+   },
+   "shows": {
+    "es": "Catálogo de marcas blancas: el gemelo y sus documentos se visten con logo, colores y tipografía del cliente.",
+    "en": "White-label catalogue: the twin and its documents take the client logo, colours and typography."
+   },
+   "command": "/marca · /marca starbucks · /marca off",
+   "duration_s": 8,
+   "tour": false,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "Suite · marca blanca (admiranext.com/marcablanca)",
+   "link": "https://www.admira.store/admira-xp/help.html#marca-blanca",
+   "tour_skip_reason": {
+    "es": "cambia la marca de este navegador",
+    "en": "changes this browser's brand"
+   },
+   "steps": [
+    {
+     "cli": "/marca"
+    },
+    {
+     "wait": 7000
+    }
+   ]
+  },
+  {
+   "n": 18,
+   "id": "taza",
+   "aliases": [],
+   "name": {
+    "es": "PlayerTaza",
+    "en": "PlayerTaza"
+   },
+   "shows": {
+    "es": "Abre la cámara de PlayerTaza en una esquina, vinculada al gestor de colas; se cierra con /demo taza cerrar.",
+    "en": "Opens the PlayerTaza camera in a corner, bound to the queue manager; close with /demo taza cerrar."
+   },
+   "command": "/demo taza · /demo taza cerrar",
+   "duration_s": 5,
+   "tour": false,
+   "kind": "twin",
+   "only": "admira.store",
+   "side_effects": {
+    "es": "Pide la cámara y vincula la taza al gestor de colas.",
+    "en": "Requests the camera and binds the mug to the queue manager."
+   },
+   "owner": "Ainimation · taza-demo.mjs",
+   "link": "https://www.admira.store/admira-xp/help.html#demo-taza",
+   "tour_skip_reason": {
+    "es": "usa la cámara y la taza física",
+    "en": "uses the camera and the physical mug"
+   },
+   "steps": [
+    {
+     "cli": "/demo taza"
+    },
+    {
+     "wait": 4000
+    }
+   ]
+  },
+  {
+   "n": 19,
+   "id": "kiosko",
+   "aliases": [],
+   "name": {
+    "es": "Kiosko de pedidos",
+    "en": "Order kiosk"
+   },
+   "shows": {
+    "es": "Abre el kiosko: pides una bebida, pago simulado, Preparar y Listo en el gestor; se cierra con /demo kiosko cerrar.",
+    "en": "Opens the kiosk: order a drink, simulated payment, Prepare and Ready in the manager; close with /demo kiosko cerrar."
+   },
+   "command": "/demo kiosko · /demo kiosko cerrar",
+   "duration_s": 5,
+   "tour": false,
+   "kind": "twin",
+   "only": "admira.store",
+   "side_effects": {
+    "es": "Crea un pedido de demo (pago simulado) en la cola compartida.",
+    "en": "Creates a demo order (simulated payment) in the shared queue."
+   },
+   "owner": "Ainimation · kiosko-demo.mjs",
+   "link": "https://www.admira.store/admira-xp/help.html#demo-kiosko",
+   "tour_skip_reason": {
+    "es": "es interactivo y crea un pedido de demo en la cola compartida",
+    "en": "it is interactive and creates a demo order in the shared queue"
+   },
+   "steps": [
+    {
+     "cli": "/demo kiosko"
+    },
+    {
+     "wait": 4000
+    }
+   ]
+  },
+  {
+   "n": 20,
+   "id": "dvr",
+   "aliases": [
+    "replay"
+   ],
+   "name": {
+    "es": "DVR del Xpacio",
+    "en": "Xpace DVR"
+   },
+   "shows": {
+    "es": "Grabación, velocidad y replay de la jornada del Xpacio.",
+    "en": "Recording, speed and replay of the Xpace day."
+   },
+   "command": "/dvr · /envivo · /velocidad 4",
+   "duration_s": 12,
+   "tour": false,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#mapa",
+   "tour_skip_reason": {
+    "es": "solo en las vistas Good/Better del Xtanco",
+    "en": "only in the Xtanco Good/Better views"
+   },
+   "steps": [
+    {
+     "cli": "better"
+    },
+    {
+     "cli": "/dvr"
+    },
+    {
+     "wait": 10000
+    }
+   ],
+   "cleanup": [
+    {
+     "cli": "/envivo"
+    },
+    {
+     "cli": "matrix"
+    }
+   ]
+  },
+  {
+   "n": 21,
+   "id": "mobiliario",
+   "aliases": [
+    "muebles",
+    "furniture",
+    "distribuir"
+   ],
+   "name": {
+    "es": "Mobiliario y distribución",
+    "en": "Furniture and layout"
+   },
+   "shows": {
+    "es": "Editor de muebles: mover, girar, escalar y guardar el layout.",
+    "en": "Furniture editor: move, rotate, scale and save the layout."
+   },
+   "command": "/mobiliario · /cli distribuir",
+   "duration_s": 10,
+   "tour": false,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "XpaceOS · gemelo Starbucks",
+   "link": "https://www.admira.store/admira-xp/help.html#distribuit",
+   "tour_skip_reason": {
+    "es": "abre un editor que guarda cambios",
+    "en": "opens an editor that saves changes"
+   },
+   "steps": [
+    {
+     "cli": "/mobiliario"
+    },
+    {
+     "wait": 9000
+    }
+   ]
+  },
+  {
+   "n": 22,
+   "id": "crear-media",
+   "aliases": [
+    "crear-imagen",
+    "media"
+   ],
+   "name": {
+    "es": "Crear contenidos (PixerIA)",
+    "en": "Create content (PixerIA)"
+   },
+   "shows": {
+    "es": "Experto → Crear contenidos: imagen, vídeo o música en Pixeria, a Stock y a la playlist.",
+    "en": "Expert → Create content: image, video or music in Pixeria, to Stock and the playlist."
+   },
+   "command": "Experto → Crear contenidos",
+   "duration_s": 8,
+   "tour": false,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Cada generación consume créditos.",
+    "en": "Each generation uses credits."
+   },
+   "owner": "Pixeria · PixerIA",
+   "link": "https://www.admira.store/admira-xp/help.html#media-creation-experience",
+   "tour_skip_reason": {
+    "es": "cada generación tiene coste",
+    "en": "each generation is paid"
+   },
+   "steps": [
+    {
+     "say": {
+      "es": "Abre Experto → Crear contenidos → Crear imagen y pulsa Generar imagen.",
+      "en": "Open Expert → Create content → Create image and press Generate image."
+     }
+    },
+    {
+     "wait": 7000
+    }
+   ]
+  },
+  {
+   "n": 23,
+   "id": "anonimizador",
+   "aliases": [
+    "percepcion",
+    "audiencia",
+    "anonymizer",
+    "aforo"
+   ],
+   "name": {
+    "es": "Percepción y anonimizador",
+    "en": "Perception and anonymizer"
+   },
+   "shows": {
+    "es": "Visitantes anonimizados en verde (8/16/32 bits) y audiencia sin datos personales.",
+    "en": "Visitors anonymized in green (8/16/32-bit) and audience without personal data."
+   },
+   "command": "MCP pixeria · anonymizer_demo",
+   "duration_s": 8,
+   "tour": false,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador.",
+    "en": "None: this browser only."
+   },
+   "owner": "Pixeria · anonymizer_demo",
+   "link": "https://www.pixeria.com/docs/anonymizer-demo.md",
+   "tour_skip_reason": {
+    "es": "se ejecuta en Pixeria, fuera del gemelo",
+    "en": "runs in Pixeria, outside the twin"
+   },
+   "steps": [
+    {
+     "say": {
+      "es": "Demo del anonimizador en Pixeria (MCP anonymizer_demo).",
+      "en": "Anonymizer demo in Pixeria (MCP anonymizer_demo)."
+     }
+    },
+    {
+     "wait": 7000
+    }
+   ]
+  }
+ ]
+}

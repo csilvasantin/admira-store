@@ -1,4 +1,5 @@
 import {runStoreDemo,hasStoreRehearsal} from './store-demo-bridge.mjs?v=local-autopilot-1';
+import {parseTourArg} from './demo-tour-args.mjs?v=demos-1';
 import {parseScreenDisplayCommand,setScreenDisplayMode,parseScreenLayoutCommand,setScreenNumbersVisible} from './screen-display.mjs?v=number-layout-1';
 // Visual modes affect only this browser. This command has no bot, network,
 // game-state or legacy /render dependency: the public tier router owns the view.
@@ -26,6 +27,8 @@ export function parseVisualCommand(input){
   const guided=text.match(/^\/demo(?:@\w+)?(?:\s+([\s\S]*))?$/i);
   if(guided){
     const arg=(guided[1]||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    // Registro único de demos (demos.json · demo-tour.mjs): help/ayuda, all/todas [--enviar] y next son del recorrido.
+    const tour=parseTourArg(arg);if(tour)return {guided:'tour',...tour};
     if(arg==='tpv')return {guided:'tpv'};
     if(['tpv off','tpv stop'].includes(arg))return {guided:'stop',native:true};
     if(['tpv estado','tpv status'].includes(arg))return {guided:'status',native:true};
@@ -62,6 +65,18 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
   const en=lang==='en';
   if(command.conditional){const arg=command.conditional,api=globalThis.XPLComposer;const usage=en?'Visual rules: /ifthendothat opens IF·THEN·DO THAT. Choose pick up a muffin or take it to the register, then Music, Voiceover, Image or Video, its editable Pixeria filter and content. + Add reaction allows multiple simultaneous DO actions; select one or more image/video screens and use All · clear filter for the complete catalogue. /ifthendothat off closes it.':'Reglas visuales: /ifthendothat abre IF·THEN·DO THAT. Elige coger un muffin o llevarlo a la caja y una reacción: música, locución, imagen o vídeo, su filtro editable y contenido de Pixeria. + Añadir reacción permite varios DO simultáneos; marca una o varias pantallas para imágenes/vídeos y usa Todos · quitar filtro para el catálogo completo. /ifthendothat off cierra el editor.';if(['help','ayuda','?','invalid'].includes(arg))return {ok:arg!=='invalid',local:true,message:usage};if(!api)return {ok:false,local:true,message:en?'The rule editor is still loading. Retry in a moment.':'El editor de reglas aún está cargando. Reintenta en un momento.'};if(['estado','status'].includes(arg))return {ok:true,local:true,message:usage};if(arg==='off')api.close();else if(arg==='toggle')api.toggle();else api.open();return {ok:true,local:true,message:arg==='off'?(en?'Rule editor closed.':'Editor de reglas cerrado.'):usage};}
   if(command.guided){
+    // /demo help · /demo all · /demo <id|n> del registro; durante un recorrido, stop/estado/siguiente son suyos.
+    const tourActive=!!globalThis.XpaceDemoTour?.active?.(),arg=String(command.text||'').replace(/^\/demo\s*/,'');
+    if(command.guided==='tour'||(tourActive&&(['stop','status'].includes(command.guided)&&!command.native||arg==='siguiente'))){
+      const {handleDemoTour}=await import('./demo-tour.mjs?v=demos-1');
+      const action=command.guided==='tour'?command.action:command.guided==='stop'?'stop':command.guided==='status'?'status':'next';
+      const out=await handleDemoTour({...command,action},{lang,router});if(out)return out;
+      if(command.guided==='tour'&&action==='next')return runStoreDemo('/demo siguiente',{lang}); // sin recorrido: el ensayo de la suite conserva «siguiente».
+    }
+    if(command.guided==='suite'&&!demoSolution(arg.replace(/\s+--?(enviar|send)$/,''))){
+      try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=demos-1');const d=findDemo(await loadDemoRegistry(),arg);
+        if(d&&d.kind!=='suite'){const out=await handleDemoTour({action:'run',id:d.id,send:/--?(enviar|send)$/.test(arg)},{lang,router});if(out)return out;}}catch{}
+    }
     if(command.guided==='suite'||(!command.native&&hasStoreRehearsal()&&['stop','status'].includes(command.guided)))
       return runStoreDemo(command.text||('/demo '+(command.guided==='status'?'status':'stop')),{lang});
     if(command.guided==='tpv'&&hasStoreRehearsal())await runStoreDemo('/demo stop',{lang});

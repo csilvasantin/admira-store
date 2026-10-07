@@ -22,7 +22,8 @@ function engineFixture(){
 
 test('local content commands delegate exact normalized text and do not choose global numbered solutions',async()=>{
   const f=engineFixture();
-  for(const cmd of ['/demo 1','/demo 2','/demo 3','/demo 4','/demo 5','/demo locucion','/demo musica','/demo imagenes','/demo video','/demo caja','/demo auto','/demo todas']){
+  // /demo todas y /demo help pasan al registro único (demo-tour.mjs, Carlos 7-oct 23:24); /demo auto sigue en el motor.
+  for(const cmd of ['/demo 1','/demo 2','/demo 3','/demo 4','/demo 5','/demo locucion','/demo musica','/demo imagenes','/demo video','/demo caja','/demo auto','/demo AUTO']){
     const parsed=parseVisualCommand(cmd);assert.equal(parsed.guided,'suite');
     const answer=await runStoreDemo(parsed.text,{root:f.root});assert.equal(answer.ok,true);assert.equal(answer.local,true);assert.equal(answer.message,'Local result');
   }

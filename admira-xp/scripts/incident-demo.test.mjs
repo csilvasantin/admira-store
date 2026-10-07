@@ -19,7 +19,7 @@ test('crea en una candidata al azar y cierra la última de la CLI enviando el in
 });
 test('cableado: CLI, ayuda, panel (nunca la pantalla 1, sólo tickets de la CLI), cámara y documentación',()=>{
  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),panel=fs.readFileSync(new URL('./starbucks-incidents.mjs',import.meta.url),'utf8'),pano=fs.readFileSync(new URL('./matrix-panorama.mjs',import.meta.url),'utf8');
- assert.match(html,/\['crear','create','cerrar','close'\]\.includes\(cmd\)/);assert.match(html,/incident-demo\.mjs\?v=cli-incidencia-4/);assert.match(html,/'\/crear incidencia','\/cerrar incidencia'/);
+ assert.match(html,/\['crear','create','cerrar','close'\]\.includes\(cmd\)/);assert.match(html,/incident-demo\.mjs\?v=cli-incidencia-5/);assert.match(html,/'\/crear incidencia','\/cerrar incidencia'/);
  assert.match(panel,/\/\^pantalla-\[2-6\]\$\//);assert.match(panel,/:manual:cli-/);assert.match(panel,/uuid:'cli-'\+uuid/);assert.match(pano,/function focusScreen\(id/);assert.match(pano,/incidentDemo:\{/);
  assert.match(fs.readFileSync(new URL('../help.html',import.meta.url),'utf8'),/id="incident-cli-demo"/);assert.ok(JSON.parse(fs.readFileSync(new URL('../../mcp/funcionalidades.json',import.meta.url),'utf8')).incident_cli_demo);
 });
