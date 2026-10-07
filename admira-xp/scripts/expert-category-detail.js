@@ -71,7 +71,12 @@
       // Tótem ON = interactivo en el player (quiosco); OFF = avatar digital (7-oct-2026)
       toggle(actions,'Tótem','Totem','totem','/totem');
       toggle(actions,'Avatar digital','Digital avatar','avatar','/avatar digital');
-      button(actions,'Opciones del avatar','Avatar options',()=>window.openMetahumanPanel?.());
+      // Good / Better / Best (Carlos, 7-oct-2026): sustituyen a «Opciones del avatar». Uno a la vez en el tótem
+      // (scripts/avatar-tiers.js); mismos comandos que la CLI: /avatar good|better|best on|off.
+      for(const [id,es,english] of [['good','Good · Admirito','Good · Admirito'],['better','Better · Luna','Better · Luna'],['best','Best · Neo','Best · Neo']]){
+        const b=button(actions,es,english,()=>{});delete b.dataset.itilEs;delete b.dataset.itilEn;b.dataset.avatarTier=id;
+        window.XpaceToggle.mount(b,{label:()=>t(es,english),state:()=>window.XpaceAvatarTiers?.active?.()===id,run:on=>command('/avatar '+id+' '+(on?'on':'off'))});
+      }
     }
     if(key==='impactos'){
       toggle(actions,'Audiencia','Audience','audience','/impactos');

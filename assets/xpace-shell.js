@@ -50,7 +50,7 @@
     'admiralive', 'comunicar', 'admiratube', 'say', 'targetpublicity', 'generovideo', 'impactos',
     'audienciain', 'audienciaout', 'ds', 'info', 'admiratv', 'tiktok', 'xpl', 'condicional', 'ifthendothat', 'componer', 'dj',
     'ladron', 'guardiacivil', 'opinador', 'robot', 'sponsor', 'socio', 'door', 'subasta', 'socios',
-    'heatmap', 'ambiente', 'voces', 'devolucion', 'pedido', 'grok', 'draw', 'metahuman', 'avatar3d',
+    'heatmap', 'ambiente', 'voces', 'devolucion', 'pedido', 'grok', 'draw', 'metahuman', 'avatar3d', 'totem',
     'log', 'import', 'importtube', 'money', 'sat', 'fame', 'set', 'music', 'musica', 'song', 'next',
     'prev', 'seoul2026', 'seul', 'seultrap', 'seultecno', 'catalogo', 'importar', 'mobiliario',
     'layout', 'cli', 'distribuir', 'distribute', 'inventario', 'eliminar', 'good', 'better', 'best',

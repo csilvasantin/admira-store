@@ -1,7 +1,7 @@
 import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3';
 import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=pos-checkout-1';
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=una-lectura-1';
-import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=kiosko-grande-1';
+import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=avatar-tiers-1';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
@@ -127,7 +127,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
   isActive:()=>!disposed,
   incidentDemo:{candidates:()=>incidents.demo.candidates(),focus:(id,o)=>focusScreen(id,o),open:o=>incidents.demo.open(o),close:o=>incidents.demo.close(o),stage:id=>incidents.demo.stage(id),name:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),home:()=>{yaw=STARBUCKS_WALL_VIEW.yaw;pitch=STARBUCKS_WALL_VIEW.pitch;fov=STARBUCKS_WALL_VIEW.fov;renderKey='';}},
   focusAvatar:o=>focusAvatar(o),
-  avatarState:()=>({level:wallAvatar.level,expanded:wallAvatar.expanded}),
+  avatarState:()=>({level:wallAvatar.level,expanded:wallAvatar.expanded,mode:wallAvatar.mode,off:wallAvatar.off}),
   devices:()=>DEVICE_IDS.filter(id=>nodes.has(id)).map(id=>({id,label:playerName(model.players.find(p=>p.id===id)||{id,name:id})})),
   screenState(id){const active=runtime.nowPlaying([id])[0];const track=active?.preview?signagePreviews.get(id):playlistValue(active?.playlistId)?.tracks.find(t=>(t.id||t.stockId)===active?.trackId);return {...active,title:track?.title||''};},
   screenPreview:id=>runtime.nowPlaying([id])[0]?.preview?signagePreviews.get(id)||null:null,
