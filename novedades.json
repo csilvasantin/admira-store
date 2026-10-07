@@ -1,6 +1,6 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
-  "v.07.10.2026.r20.13:23": [
+  "v.07.10.2026.r21.13:35": [
     "Sin pedidos pendientes, el Admirito del iPad del mostrador hace gracias en la escena (saltos, giros, latidos, bailes) e invita a pedir en el quiosco con frases simpáticas",
     "Cuando un pedido pasa a «listo», deja la demo y enseña el aviso por nombre",
     "El quiosco del tótem, abierto en grande, pide ahora el nombre en una pantalla propia y obligatoria antes de pagar"

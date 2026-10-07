@@ -4576,5 +4576,11 @@
     "scope": "Prepared local management rehearsals and native POS journey; no remote MCP launch tool",
     "local_rehearsal_engine": "https://www.admiranext.com/suite/experto.js",
     "native_pause_resume": false
+  },
+  "browser_demos": {
+    "taza": {
+      "es": "/demo taza: cámara en esquina; × o /demo taza cerrar libera la cámara. Sin envío IoT.",
+      "en": "/demo taza: corner camera; × or /demo taza close releases camera. No IoT write."
+    }
   }
 }

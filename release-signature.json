@@ -1,6 +1,8 @@
 {
-  "version": "v.07.10.2026.r20.13:23",
-  "deployer": "GrokBot",
-  "machine": "MacMini",
-  "signature": "GrokBot · MacMini"
+  "version": "v.07.10.2026.r21.13:35",
+  "deployer": "Codex",
+  "agent": "Codex",
+  "machine": "MacBookAirAzul",
+  "signature": "Codex · MacBookAirAzul",
+  "evidence": "/demo taza: cámara pública en esquina, cierre, ayuda ES/EN."
 }

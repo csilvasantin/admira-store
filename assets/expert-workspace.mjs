@@ -7,7 +7,7 @@ const action=(es,en,command)=>({es,en,command});
 export const EXPERT_CATEGORIES=[
  {id:'signage',es:'Signage',en:'Signage',detail:{es:'playlist',en:'playlist'},actions:[action('Abrir Signage en el gemelo','Open Signage in the twin','/ds')]},
  {id:'admiralive',es:'AdmiraLive',en:'AdmiraLive',detail:{es:'Texto LED',en:'LED text'},input:{es:'Texto LED',en:'LED text'},actions:[{...action('Aplicar texto','Apply text','/admiralive'),input:true},action('Apagar','Turn off','/admiralive off')]},
- {id:'livecam',es:'LiveCam',en:'LiveCam',detail:{es:'cámara',en:'camera'},actions:[action('Activar / desactivar cámara','Toggle camera','/livecam')]},
+ {id:'livecam',es:'LiveCam',en:'LiveCam',detail:{es:'cámara',en:'camera'},actions:[action('Activar / desactivar cámara','Toggle camera','/livecam'),action('Demo taza · abrir cámara','Mug demo · open camera','/demo taza'),action('Demo taza · cerrar cámara','Mug demo · close camera','/demo taza cerrar')]},
  {id:'dvr',es:'DVR',en:'DVR',detail:{es:'rebobinar',en:'rewind'},actions:[action('Abrir reproducción','Open replay','/dvr'),action('Volver al directo','Return to live','/envivo')]},
  {id:'anonymizer',es:'Anonymizer',en:'Anonymizer',detail:{es:'Píxeles ↔ humanos',en:'Pixels ↔ humans'},actions:[{es:'Abrir Anonymizer en Pixeria',en:'Open Anonymizer in Pixeria',href:'https://www.pixeria.com/anonimizador'}]},
  {id:'editor',es:'Mobiliario',en:'Furniture',detail:{es:'editor',en:'editor'},actions:[action('Distribuir muebles','Distribute furniture','/distribuir')]},

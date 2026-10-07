@@ -912,6 +912,7 @@
         root.addEventListener('pagehide',()=>resize.dispose(),{once:true});
       }
     }).catch(error=>console.warn('xpace-shell resize',error));
+    registerVerb({id:'demo',es:'/demo taza abre la cámara en una esquina; /demo taza cerrar la cierra.',en:'/demo taza opens the corner camera; /demo taza close closes it.',run:async args=>(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
     wireCli();
     suiteExperto();
     registerVerb({
@@ -960,7 +961,7 @@
       toggle: name => setPanel(name, !state[name]), state: () => Object.assign({}, state),
       run, print: log, registerVerb, handoff,
     });
-    import(new URL('./expert-workspace.mjs?v=xtore-ux-2',script.src).href).then(({mountExpertWorkspace})=>{
+    import(new URL('./expert-workspace.mjs?v=taza-20261007',script.src).href).then(({mountExpertWorkspace})=>{
       shared.expertWorkspace=mountExpertWorkspace({panel:parts.expert,shell:shared,config:cfg});
       doc.dispatchEvent(new CustomEvent('xpace:expert-ready'));
     }).catch(error=>console.warn('xpace-shell expert',error));
