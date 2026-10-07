@@ -1,16 +1,15 @@
 {
   "version": "v.07.10.2026.r30.16:03",
-  "deployedAt": "2026-10-07T13:28:39Z",
+  "deployedAt": "2026-10-07T14:03:42Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "93c3002a984289602cb62cf374298dc01d0d2642",
-  "gitShort": "93c3002",
-  "gitFull": "93c3002a984289602cb62cf374298dc01d0d2642",
+  "git": "44ef11e5b60c5dae46c4e98adbcd34be6b56b4a3",
+  "gitShort": "44ef11e",
+  "gitFull": "44ef11e5b60c5dae46c4e98adbcd34be6b56b4a3",
   "dirty": false,
   "novedades": [
-    "Un toque en el iPad de Starbucks abre el gestor de colas (admira.tv/gestorColas)",
-    "Botón visible «Abrir gestor de colas» y enlace al control de barra",
-    "ITIL: el iPad starbucks-ipad-01 pasa a contenido web app"
+    "Un toque en el iPad de Starbucks abre el gestor de colas en Good, Better, Best y Matrix",
+    "El sello del menú vuelve a coincidir con la versión publicada"
   ]
 }
