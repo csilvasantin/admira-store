@@ -31402,7 +31402,7 @@ window.xtAPI = (function(){
       {title:typeof lang!=='undefined'&&lang==='en'?'Music and layout':'Musica y layout',items:['/music on','/music off','/music next','/music previous','/music 3','/song 1','/song bad bunny','/next','/prev','/seoul2026','/seul','/seultrap','/seultecno','/equipo inicio ana 3 4','/equipo zona dj 12 2 2','/catalogo','/catalogo pared','/importar catalogo','/importar 1','/importar lista','/importar quitar 1','/mobiliario','/mobiliario inicio','/layout save','/layout factory','/layout xpacio','/layout xpacio load']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Distribute · furniture editor · Better 16 bits':'Distribuir / Distribute · editor de muebles · Better 16 bits',items:['/cli distribuir','/cli distribute','/distribuir off']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Local inventory · permanent numbers':'Inventario local · números permanentes',items:['/inventario','eliminar el 1','/inventario deshacer']},
-      {title:typeof lang!=='undefined'&&lang==='en'?'Guided demos · local twin':'Demos guiadas · gemelo local',items:['/demo','/demo tpv','/demo taza','/demo taza cerrar','/demo off','/demo estado']},
+      {title:typeof lang!=='undefined'&&lang==='en'?'Guided demos · local twin':'Demos guiadas · gemelo local',items:['/demo','/demo tpv','/demo taza','/demo taza cerrar','/demo kiosko','/demo kiosko cerrar','/demo off','/demo estado']},
       {title:'Vista local (CLI experto / __xtExec) · Good 8-bit / Better 16-bit / Best 32-bit / Matrix Starbucks Alsea',items:['good','better','best','matrix','/layout','/layout off','/sincro','/sincrototal','/sincro off','/sync','/synctotal','/sync off','/mudanza','/modo estado']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Classic rendering style':'Estilo del render clásico',items:['/render 8bit','/render 16bit','/render habbo','/render real']},
       {title:typeof lang!=='undefined'&&lang==='en'?'Navigation map':'Mapa de navegacion',items:['/xpacio','/mapa','/map','/red','/sd list','/streamdeck','/help','/debug']},
@@ -31944,6 +31944,10 @@ window.xtAPI = (function(){
 
   async function executeLocalVisualCommand(rawText){
     const text=String(rawText||'').trim();
+    if(/^\/?demo\s+(?:kiosko|quiosco)(?:\s|$)/i.test(text)){
+      try{const {runKioskoDemo}=await import('../assets/kiosko-demo.mjs?v=1');return {ok:true,local:true,message:await runKioskoDemo(text.replace(/^\/?demo\s+\S+\s*/i,''),typeof lang==='undefined'?'es':lang)};}
+      catch(error){return {ok:false,local:true,message:error.message};}
+    }
     // The twin owns its CLI; handle the mug before the generic guided-demo router.
     if(/^\/?demo\s+taza(?:\s|$)/i.test(text)){
       try{

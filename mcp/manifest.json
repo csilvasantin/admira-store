@@ -2554,10 +2554,21 @@
   "browser_demos": {
     "taza": {
       "command": "/demo taza",
-      "surfaces": ["/", "/admira-xp/"],
+      "surfaces": [
+        "/",
+        "/admira-xp/"
+      ],
       "close": "/demo taza cerrar",
       "camera": "https://ainimation.studio/taza/camera",
       "hardware_write": false
+    },
+    "kiosko": {
+      "command": "/demo kiosko",
+      "close": "/demo kiosko cerrar",
+      "store": "starbucks-paseo-de-gracia",
+      "project": "starbucks-queue",
+      "payment": "simulated",
+      "guide": "/admira-xp/docs/demo-kiosko.md"
     }
   }
 }

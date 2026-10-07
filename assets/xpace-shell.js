@@ -783,7 +783,7 @@
   function wireCli() {
     const form = doc.getElementById('xsCliForm');
     const input = doc.getElementById('xsCli');
-    doc.addEventListener('submit',e=>{if(e.target===form && /^\/demo\s+taza(?:\s|$)/i.test(input.value.trim()))input.value=input.value.trim().slice(1);},true);
+    doc.addEventListener('submit',e=>{if(e.target===form && /^\/demo\s+(?:taza|kiosko|quiosco)(?:\s|$)/i.test(input.value.trim()))input.value=input.value.trim().slice(1);},true);
     let history = [];
     try { history = JSON.parse(local.getItem(HISTORY_KEY) || '[]').filter(x => typeof x === 'string').slice(-50); } catch (_) {}
     let cursor = history.length, draft = '';
@@ -913,7 +913,7 @@
         root.addEventListener('pagehide',()=>resize.dispose(),{once:true});
       }
     }).catch(error=>console.warn('xpace-shell resize',error));
-    registerVerb({id:'demo',es:'/demo taza abre la cámara en una esquina; /demo taza cerrar la cierra.',en:'/demo taza opens the corner camera; /demo taza close closes it.',run:async args=>(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
+    registerVerb({id:'demo',es:'/demo taza abre la cámara en una esquina; /demo taza cerrar la cierra.',en:'/demo taza opens the corner camera; /demo taza close closes it.',run:async args=>/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=1')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
     wireCli();
     suiteExperto();
     registerVerb({
