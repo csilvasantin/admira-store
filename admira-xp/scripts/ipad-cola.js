@@ -117,5 +117,5 @@
   function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → gestor de colas (Admirito). Tócalo para abrirlo en grande.'};}
     if(a==='off'||a==='playlist'){on=false;setTimeout(matrixIpad,0);try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
     if(a==='abrir'||a==='open'){abrir(true);return {ok:true,message:colasUrl()};}return {ok:false,message:'/ipad cola · /ipad off · /ipad abrir'};}
-  root.XpaceIpadCola={id:ID,url:colasUrl,sceneUrl:pageUrl,controlUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),touched:()=>tocado,command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
+  root.XpaceIpadCola={id:ID,url:colasUrl,sceneUrl:pageUrl,controlUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),touched:()=>tocado,untouch:()=>{tocado=false;},command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
 })(typeof window!=='undefined'?window:globalThis);

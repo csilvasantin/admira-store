@@ -55,3 +55,13 @@ test('executeVisualCommand: /demo help answers from the registry, /demo 6 runs t
  while(globalThis.XpaceDemoTour.active())await new Promise(s=>setTimeout(s,10));
  assert.equal(await handleDemoTour({action:'next'},{}),null);
 });
+
+test('demo 15 always closes its own ticket (retries a failed close) and restore hides the iPad shortcut it caused',async()=>{
+ const r=fast(reg);let mode='matrix',closes=0,untouched=0,touched=false;const router={get mode(){return mode;},async choose(m){mode=m;}};
+ const incident=async(text)=>{if(/crear/.test(text))return {ok:true,id:'INC-TEST03',message:'x'};closes++;if(closes===1)throw Error('red caída');return {ok:true,message:'✓ cerrada'};};
+ globalThis.XpaceIpadCola={on:()=>true,touched:()=>touched,untouch(){untouched++;touched=false;},open(){touched=true;},close(){},command(){},url:()=>'about:blank'};
+ try{const out=await runTour({reg:r,ids:['incidencia','ipad'],router,exec:async()=>{},incident,doc:null,show:null});
+  assert.equal(closes,2);assert.match(out.message,/cerrada/);assert.equal(untouched,1);assert.equal(touched,false);
+  const ipad=reg.demos.find(d=>d.id==='ipad');assert.deepEqual(ipad.preload,[{ipad:'preload'}]);
+ }finally{delete globalThis.XpaceIpadCola;}
+});

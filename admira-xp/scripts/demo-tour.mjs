@@ -56,12 +56,12 @@ function paint(doc,{kicker,title,sub,cmd,big,ms,en}){const el=card(doc);if(!el)r
 function unpaint(){try{S.card?.hidePopover?.();}catch{}S.card?.remove?.();S.card=null;}
 
 function snapshot(ctx){const g=globalThis,m=g.XpaceMatrixOptions;let quality=null;try{quality=g.localStorage?.getItem(QUALITY_KEY)??null;}catch{}
- return {mode:ctx.router?.mode||null,display:(()=>{try{return getScreenDisplayMode();}catch{return null;}})(),ipad:g.XpaceIpadCola?.on?.()??null,quality,camera:m?.isActive?.()?m.camera?.get?.()||null:null,music:m?.isActive?.()?!!m.state?.('music')?.playing:null};}
+ return {mode:ctx.router?.mode||null,display:(()=>{try{return getScreenDisplayMode();}catch{return null;}})(),ipad:g.XpaceIpadCola?.on?.()??null,ipadTouched:g.XpaceIpadCola?.touched?.()??null,quality,camera:m?.isActive?.()?m.camera?.get?.()||null:null,music:m?.isActive?.()?!!m.state?.('music')?.playing:null};}
 async function restore(ctx,snap){const g=globalThis,errors=[];const tryIt=async(f)=>{try{await f();}catch(e){errors.push(e?.message||String(e));}};
  await tryIt(async()=>{const st=g.XpaceMatrixOptions?.isActive?.()&&g.XpaceStarbucksDemo;if(ctx.changedDemoMode&&st)await g.XpaceStarbucksDemo.setMode('linear');});
  await tryIt(async()=>{if(snap.mode&&ctx.router&&ctx.router.mode!==snap.mode)await ctx.router.choose(snap.mode);});
  await tryIt(()=>{if(snap.display&&getScreenDisplayMode()!==snap.display)setScreenDisplayMode(snap.display);});
- await tryIt(()=>{const c=g.XpaceIpadCola;if(c&&snap.ipad!=null&&c.on?.()!==snap.ipad)c.command(snap.ipad?'cola':'off');c?.close?.();});
+ await tryIt(()=>{const c=g.XpaceIpadCola;if(c&&snap.ipad!=null&&c.on?.()!==snap.ipad)c.command(snap.ipad?'cola':'off');c?.close?.();if(snap.ipadTouched===false)c?.untouch?.();g.document?.getElementById?.('xpaceDemoIpadPreload')?.remove();});
  await tryIt(async()=>{let now=null;try{now=g.localStorage?.getItem(QUALITY_KEY)??null;}catch{}if(now!==snap.quality){if(snap.quality)await ctx.exec('/aviso '+snap.quality);else g.localStorage?.removeItem(QUALITY_KEY);}});
  await tryIt(async()=>{const m=g.XpaceMatrixOptions;if(m?.isActive?.()&&snap.camera)await m.camera?.look?.(snap.camera,{ms:900});});
  return errors;}
@@ -81,7 +81,13 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
   else if(s.music==='next')api.control('musicNext');
   else if(s.music==='restore'){if(ctx.musicBefore===false&&playing)api.control('musicToggle');ctx.musicBefore=null;}return;}
  if(s.announcement==='stop'){const st=g.document?.querySelector?.('.matrix-announcement-status[data-playing="true"]');if(st)await ctx.exec('/aviso');return;}
- if(s.ipad){const c=g.XpaceIpadCola;if(s.ipad==='open')c?.open?.();else c?.close?.();return;}
+ if(s.ipad){const c=g.XpaceIpadCola,doc=g.document;
+  if(s.ipad==='preload'){if(!doc?.body||!c?.url||doc.getElementById('xpaceDemoIpadPreload'))return;const f=doc.createElement('iframe');f.id='xpaceDemoIpadPreload';f.setAttribute('aria-hidden','true');f.tabIndex=-1;f.style.cssText='position:fixed;left:-9999px;top:0;width:1024px;height:768px;opacity:0;pointer-events:none';f.src=c.url();doc.body.append(f);return;}
+  if(s.ipad==='open'){c?.open?.();const f=doc?.getElementById?.('ipadColaModal')?.querySelector?.('iframe');ctx.sub(en?'Loading the queue manager…':'Cargando el gestor de colas…');
+   if(f)await race(new Promise(res=>{const t=setTimeout(res,9000);f.addEventListener('load',()=>{clearTimeout(t);res();},{once:true});}),cancelled);
+   try{S.card?.hidePopover?.();S.card?.showPopover?.();}catch{} // la tarjeta vuelve por encima de la ventana del iPad
+   await sleep(1500,cancelled);ctx.sub(L(ctx.demo?.shows,en));return;}
+  c?.close?.();doc?.getElementById?.('xpaceDemoIpadPreload')?.remove();return;}
  if(s.waitPos){const t0=Date.now();while(Date.now()-t0<s.waitPos&&!cancelled()){const p=g.XpacePOSExperience?.demo?.state?.()?.phase;if(['completed','error'].includes(p))break;await sleep(400,cancelled);}return;}
  if(s.incident){await incidentStep(ctx,cancelled);return;}}
 
@@ -92,7 +98,9 @@ async function incidentStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es;const run
  ctx.created.push(r.id);ctx.sub(r.message.split('\n')[0]);await sleep(4000,cancelled);await closeCreated(ctx);}
 async function closeCreated(ctx){const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-5')).runIncidentDemo(text,o));
  while(ctx.created.length){const id=ctx.created.shift();if(PROTECTED.test(id))continue;ctx.cmd('/cerrar incidencia '+id);
-  const r=await run('/cerrar incidencia '+id,{router:ctx.router,lang:ctx.lang,send:ctx.send,progress:m=>ctx.sub(m)});ctx.results.push(r?.message||'');if(r?.message)ctx.sub(r.message.split('\n').slice(-1)[0]);}}
+  // Siempre se cierra la incidencia que abrió la demo: si el primer intento falla (red, ficha ocupada), se reintenta hasta 2 veces.
+  let r=null;for(let k=0;k<3;k++){r=await run('/cerrar incidencia '+id,{router:ctx.router,lang:ctx.lang,send:ctx.send,progress:m=>ctx.sub(m)}).catch(e=>({ok:false,message:String(e?.message||e)}));if(r?.ok||/portal|técnico|technician/i.test(r?.message||''))break;await sleep(3000,()=>false);}
+  ctx.results.push(r?.message||'');if(r?.message)ctx.sub(r.message.split('\n').slice(-1)[0]);}}
 
 export async function runTour({ids=null,send=false,lang='es',router=globalThis.__xtancoVisualTiers,exec=globalThis.__xtExec,suite=runStoreDemo,incident=null,doc=globalThis.document,show=globalThis.XpaceShowResponse,reg=null}={}){
  if(S.active)return {ok:false,busy:true};reg=reg||await loadDemoRegistry();const en=lang==='en',t=(es,e)=>en?e:es;
@@ -106,6 +114,7 @@ export async function runTour({ids=null,send=false,lang='es',router=globalThis._
  const shown=[];let resolveDone;S.done=new Promise(r=>resolveDone=r);
  try{for(let i=0;i<list.length&&!S.stop;i++){const d=list[i];S.index=i+1;S.demo=d;const epoch=++S.epoch,cancelled=skipSignal(epoch);
    const kicker=list.length>1?'Demo '+(i+1)+'/'+list.length:'Demo '+d.n;
+   ctx.demo=d;for(const s of d.preload||[]){try{await step(s,ctx,()=>false);}catch{}} // p. ej. el gestor de colas del iPad carga mientras se ve la tarjeta
    paint(doc,{kicker,title:L(d.name,en),sub:L(d.shows,en),cmd:d.command,big:true,ms:card_s*1000,en});
    try{show?.(kicker+' · '+L(d.name,en),'ok','local-visual');}catch{}
    await sleep(card_s*1000,cancelled);paint(doc,{kicker,title:L(d.name,en),sub:L(d.shows,en),cmd:d.command,big:false,en});
