@@ -4581,6 +4581,10 @@
     "taza": {
       "es": "/demo taza: portada y gemelo Starbucks, cámara en esquina; × o /demo taza cerrar libera la cámara. En Starbucks activa starbucks-queue; mantener PlayerTaza abierto.",
       "en": "/demo taza: homepage and Starbucks twin, corner camera; × or /demo taza close releases camera. In Starbucks selects starbucks-queue; keep PlayerTaza open."
+    },
+    "kiosko": {
+      "es": "/demo kiosko: pedido real de demo, pago simulado, Preparar y Listo. Cámara de taza y enlace al gestor. /demo kiosko cerrar.",
+      "en": "/demo kiosko: real demo order, simulated payment, Prepare and Ready. Mug camera and queue link. /demo kiosko close."
     }
   }
 }
