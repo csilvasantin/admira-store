@@ -1,16 +1,15 @@
 {
-  "version": "v.07.10.2026.r23.13:54",
-  "deployedAt": "2026-10-07T11:55:13Z",
+  "version": "v.07.10.2026.r24.14:09",
+  "deployedAt": "2026-10-07T12:10:01Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "50c26acfb0621eabfa9083d5aed880860860a7f4",
-  "gitShort": "50c26ac",
-  "gitFull": "50c26acfb0621eabfa9083d5aed880860860a7f4",
+  "git": "0b38d0b032e345af4a9cbe5b1b0d5a8e6622013b",
+  "gitShort": "0b38d0b",
+  "gitFull": "0b38d0b032e345af4a9cbe5b1b0d5a8e6622013b",
   "dirty": false,
   "novedades": [
-    "Doble clic en el iPad del mostrador abre la web de la cola en grande, como el tótem (✕, clic fuera o Escape para cerrar), en Good, Better/Best y Matrix · 360",
-    "El iPad enseña las tres fases del pedido: Recibido, En preparación y ¡Preparado!",
-    "Admirito te llama por tu nombre al pasar a Preparado; sin pedidos preparados vuelve a hacer gracias"
+    "Entrar al gemelo Starbucks por la calle (Street View) da los mismos ajustes que el selector de proyectos",
+    "Tótem vertical en modo quiosco por defecto en Starbucks; URL completada con project y circuit"
   ]
 }
