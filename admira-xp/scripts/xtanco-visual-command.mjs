@@ -11,7 +11,7 @@ const aliases=new Map([
 // /demo de las cinco soluciones (Carlos, 7-oct-2026, demo Alsea · Starbucks). Mismo catálogo que el
 // ⌘ Experto de la suite (admiranext.com/suite/experto.js) y el avatar digital: store = /demo tpv aquí.
 export const DEMO_SOLUTIONS=Object.freeze([
-  {id:'studio',alias:['pixeria','contenido','contenidos','creatividad','anonimizador'],name:'admira.studio',url:'https://www.admira.studio/anonimizador',urlEn:'https://www.admira.studio/en/anonimizador.html'},
+  {id:'studio',alias:['pixeria','contenido','contenidos','creatividad'],name:'admira.studio',url:'https://www.admira.studio/',urlEn:'https://www.admira.studio/'},
   {id:'store',alias:['tienda','xpace','xpaceos','gemelo','twin'],name:'admira.store'},
   {id:'tv',alias:['canal','adcelerate','calle','videoanalytics'],name:'admira.tv',url:'https://admira.tv/adcelerate/demo/?view=human&site=starbucks'},
   {id:'app',alias:['yokup','operaciones','itil','incidencias','retailer'],name:'admira.app · Yokup',url:'https://www.yokup.com/retailer?marca=starbucks'},

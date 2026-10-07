@@ -8,7 +8,7 @@ EN: Same pattern as [/demo tpv](demo-tpv.md), extended to the five solutions for
 
 | # | /demo | Solución / Solution | Qué se enseña / What it shows | URL |
 |---|---|---|---|---|
-| 1 | `studio` | admira.studio | Anonimizador: visitante → personaje 8/16/32 bits / Anonymizer: visitor → 8/16/32-bit character | https://www.admira.studio/anonimizador |
+| 1 | `studio` | admira.studio | Contenidos con IA: locución, música, imagen, vídeo y adaptación de formatos / AI content: voiceover, music, image, video and format adaptation | https://www.admira.studio/ |
 | 2 | `store` | admira.store | Gemelo Starbucks Alsea en Matrix + `/demo tpv` / Alsea Starbucks twin in Matrix + `/demo tpv` | https://www.admira.store/admira-xp/?marca=starbucks&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&lang=es&demo=tpv#tpv |
 | 3 | `tv` | admira.tv | Starbucks Passeig de Gràcia 103 desde la calle → Matrix / street view → Matrix | https://admira.tv/adcelerate/demo/?view=human&site=starbucks |
 | 4 | `app` | admira.app · Yokup | Operación de la red: equipos, incidencias ITIL / Network operations: equipment, ITIL incidents | https://www.yokup.com/retailer?marca=starbucks |
@@ -26,3 +26,9 @@ EN: Same pattern as [/demo tpv](demo-tpv.md), extended to the five solutions for
 ES: Implementado y probado con tests de unidad (parseo, catálogo, navegación, mensaje del avatar). Pendiente verificar en producción tras desplegar las cuatro webs y actualizar la ayuda del servidor MCP real (`xpaceos-mcp`). Las URL de studio, tv, app y biz son las demos públicas existentes; no se ha añadido autoarranque en ellas.
 
 EN: Implemented and unit-tested (parsing, catalogue, navigation, avatar message). Pending production verification after deploying the four sites and updating the real MCP server help (`xpaceos-mcp`). The studio, tv, app and biz URLs are existing public demos; no autostart was added there.
+
+## Subdemos de admira.studio / Studio subdemos
+
+ES: En admira.studio y pixeria.com (misma plataforma), `/demo 1…5` son las subdemos de Studio, no las cinco soluciones: 1 `voz`/`locucion` (crear locución), 2 `musica`, 3 `imagen`, 4 `video`, 5 `adaptar`/`formatos` (adaptar formatos). `/demo help` lista solo esas. Modo muestra por defecto: se enseña el resultado preparado sin generar ni publicar. Manifiesto: https://www.admira.studio/demo/studio.subdemos.json (copia en https://www.admiranext.com/subdemos/studio.subdemos.json); resolución = `resolverDemo` de pixeria `demo/studio-comandos.mjs`. Los nombres (`/demo store`, `/demo biz`…) siguen abriendo las otras plataformas.
+
+EN: On admira.studio and pixeria.com, `/demo 1…5` are Studio's subdemos (voice, music, image, video, adapt formats) and `/demo help` lists only those, in sample mode.
