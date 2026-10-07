@@ -73,3 +73,9 @@ test('selecting a prepared management demo does not reset an idle native journey
  const f=engineFixture();f.root.XpacePOSExperience.demo.state=()=>({phase:'idle',running:false,song:false});
  await runStoreDemo('/demo 1',{root:f.root});assert.deepEqual(f.native,[]);
 });
+
+ test('first Expert command waits for the definitive manifest before selecting a local number',async()=>{
+ const f=engineFixture();let ready;f.root.AdmiraExperto.listo=()=>new Promise(resolve=>{ready=resolve;});
+ const pending=runStoreDemo('/demo 1',{root:f.root});await new Promise(setImmediate);assert.deepEqual(f.calls,[]);assert.deepEqual(f.native,[]);ready();
+ assert.equal((await pending).ok,true);assert.deepEqual(f.calls,['/demo 1']);
+});

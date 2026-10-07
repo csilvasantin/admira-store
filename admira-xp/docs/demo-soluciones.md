@@ -35,3 +35,18 @@ EN: The exact `/demo tpv` command retains the native muffin journey in Matrix. `
 ES: La rama de integración se verifica con pruebas del dispatcher, carga/error del motor, conservación del TPV y previo en navegador. Producción y ayuda del servidor MCP real `xpaceos-mcp` requieren la publicación coordinada del motor y de Store. No se añade una herramienta MCP remota para lanzar demos.
 
 EN: The integration branch is checked with dispatcher, engine load/error, native POS preservation and browser preview tests. Production and the real `xpaceos-mcp` help require coordinated engine and Store publication. No remote MCP demo-launch tool is added.
+
+
+## Primer uso del avatar y espejo / First avatar use and mirroring
+
+ES: Al abrir el avatar, Store precarga el motor y envía el catálogo local a su iframe; no ejecuta un ensayo. Frames propios / Owned frames: `#da-suite-frame` y `#starbucks-avatar-wall[data-mode="avatar"] iframe`; la vista previa inerte de pared no precarga. Los mensajes `da-demo` del iframe propio, con origen exacto `https://digitalavatar.ai`, usan el mismo dispatcher nativo de Experto y evitan una segunda ejecución del cargador central. Si el mensaje llega antes de precargar, la orden carga el motor. Experto sigue cargándolo al primer `/demo`.
+
+EN: Opening the avatar preloads the engine and sends the local catalog to its iframe without starting a rehearsal. `da-demo` messages from the owned iframe at the exact `https://digitalavatar.ai` origin use the native Expert dispatcher and prevent duplicate central-loader dispatch. An early command can load the engine itself. Expert still loads it on its first `/demo`.
+
+ES: El espejo diario valida `mcp/manifest.json.store_demo_contract` antes de `rsync --delete`. Si XpaceOS publicado no conserva runtime, bootstrap y ayuda equivalentes, el sync se detiene antes de modificar Store. Hay que publicar ese contrato en XpaceOS antes de reanudar el espejo; no se retiran los controles de acceso ni se modifican datos del origen.
+
+EN: Daily mirroring validates `mcp/manifest.json.store_demo_contract` before `rsync --delete`. If published XpaceOS lacks equivalent runtime, bootstrap or help, sync stops before changing Store. Publish that contract in XpaceOS before resuming mirroring; access controls and source data are retained.
+
+El iframe propio puede incluir `requestId` en `da-demo`; Store responde `da-demo-result` después de ejecutar la orden local, con `ok`, `message`, `estado` y `result`. Los IDs usan `^[a-zA-Z0-9_.:-]{1,128}$`; se conservan 128 por iframe sin expulsar antiguos. Repetir un ID con la misma orden devuelve su resultado sin ejecutarla de nuevo; reutilizarlo para otra orden se rechaza. Al límite hay que recargar la página. Ayuda, estado y errores permanecen visibles en la conversación. Las respuestas limitan el mensaje a 4.000 caracteres y el resultado serializado a 8.192 bytes UTF-8.
+
+The owned iframe may include `requestId` in `da-demo`; Store returns `da-demo-result` after local execution with `ok`, `message`, `estado` and `result`. IDs use `^[a-zA-Z0-9_.:-]{1,128}$`; 128 are retained per iframe without eviction. Repeating the same ID/command returns the prior result without another execution; reuse for a different command is rejected. Reload at the limit. Help, status and errors remain visible in the conversation. Messages are limited to 4,000 characters and serialized results to 8,192 UTF-8 bytes.

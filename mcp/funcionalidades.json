@@ -4435,7 +4435,17 @@
       "id": "studio|store|tv|app|biz",
       "origin": "https://digitalavatar.ai"
     },
-    "guide": "https://www.admira.store/admira-xp/docs/demo-soluciones.md"
+    "guide": "https://www.admira.store/admira-xp/docs/demo-soluciones.md",
+    "avatar_first_use": {
+      "es": "El avatar ofrece las mismas demos locales desde su primera apertura; el catálogo se prepara sin iniciar un ensayo hasta recibir /demo.",
+      "en": "The avatar offers the same local demos from its first opening; its catalog is prepared without starting a rehearsal until /demo is requested.",
+      "owned_frames": [
+        "#da-suite-frame",
+        "#starbucks-avatar-wall[data-mode=\"avatar\"] iframe"
+      ],
+      "origin": "https://digitalavatar.ai",
+      "preload_starts_rehearsal": false
+    }
   },
   "ifthendothat": {
     "help_topic": "ifthendothat",

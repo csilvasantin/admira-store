@@ -49,6 +49,7 @@ git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 #  · CNAME     — o el dominio se lo queda xpaceos.com y esta web se cae
 #  · gate.js   — la verja de acceso de admira.studio/store/app
 #  · deploy.sh y este script — herramientas del repo, no contenido
+# Fail before deleting a Store-specific demo integration not yet published in XpaceOS.
 node "$AQUI/scripts/validate-mirror-contract.mjs" "$ORIGEN_LIMPIO" "$AQUI"
 
 echo "→ Espejando contenido…"

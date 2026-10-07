@@ -26,7 +26,7 @@ export function loadStoreDemoEngine(root=globalThis){
 export async function runStoreDemo(text,{lang='es',root=globalThis}={}){
   const en=lang==='en';
   try{
-    const api=await loadStoreDemoEngine(root);
+    const api=await loadStoreDemoEngine(root);await api.listo?.();
     // Switching to a management rehearsal stops any native muffin journey.
     const controls=/^\/demo\s+(?:pausa|pause|reanudar|resume|continuar|siguiente|next|parar|stop|off|estado|status)$/i;
     if(/\/(?:demo)\s+(?:pausa|pause|reanudar|resume|continuar)$/i.test(text)&&!hasStoreRehearsal(root))
