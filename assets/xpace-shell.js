@@ -960,7 +960,7 @@
       toggle: name => setPanel(name, !state[name]), state: () => Object.assign({}, state),
       run, print: log, registerVerb, handoff,
     });
-    import(new URL('./expert-workspace.mjs?v=xtore-ux-1',script.src).href).then(({mountExpertWorkspace})=>{
+    import(new URL('./expert-workspace.mjs?v=xtore-ux-2',script.src).href).then(({mountExpertWorkspace})=>{
       shared.expertWorkspace=mountExpertWorkspace({panel:parts.expert,shell:shared,config:cfg});
       doc.dispatchEvent(new CustomEvent('xpace:expert-ready'));
     }).catch(error=>console.warn('xpace-shell expert',error));
