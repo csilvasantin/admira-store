@@ -1,12 +1,12 @@
 {
   "version": "v.07.10.2026.r49.21:36",
-  "deployedAt": "2026-10-07T19:36:36Z",
+  "deployedAt": "2026-10-07T19:36:59Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "56a8b79d83a3ec27fe4243507b30133522b492fe",
-  "gitShort": "56a8b79",
-  "gitFull": "56a8b79d83a3ec27fe4243507b30133522b492fe",
+  "git": "b4a2861b73277ecb3661b264b59dfe338b04a6bb",
+  "gitShort": "b4a2861",
+  "gitFull": "b4a2861b73277ecb3661b264b59dfe338b04a6bb",
   "dirty": false,
   "novedades": [
     "Avatar ampliado (Matrix): el idioma ESP/ENG sube a la barra superior, junto al desplegable del avatar, en Good · Admirito, Better · Luna y Best · Neo",
