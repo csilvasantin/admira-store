@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r31.23:56",
-  "deployedAt": "2026-10-08T21:57:28Z",
+  "version": "v.09.10.2026.r1.00:06",
+  "deployedAt": "2026-10-08T22:07:03Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "0b804477df535c5cc4db031d40f50f3f9ba14da9",
-  "gitShort": "0b80447",
-  "gitFull": "0b804477df535c5cc4db031d40f50f3f9ba14da9",
+  "git": "7ca870c7cb6314dff964f771236485634c906983",
+  "gitShort": "7ca870c",
+  "gitFull": "7ca870c7cb6314dff964f771236485634c906983",
   "dirty": false,
   "novedades": [
-    "SneakerStore: contenido horizontal en la LCD y vertical en la pantalla de entrada, con playlists separadas.",
-    "Tags Pixeria y dimensiones reales del vídeo se comprueban antes de reproducir; se bloquean formatos incompatibles.",
-    "Selector de pantalla y ayuda ES/EN, tutorial y MCP actualizados."
+    "SneakerStore: fondo con pantalla LED y puerta central; mesa de caja pegada a la pared derecha.",
+    "El LED comparte el canal horizontal validado; nueva vista Fondo LED y migración conservando las ediciones.",
+    "Guía ES/EN, tutorial y contratos MCP actualizados."
   ]
 }
