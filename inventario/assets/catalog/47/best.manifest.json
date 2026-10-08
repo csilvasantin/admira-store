@@ -2,7 +2,17 @@
   "number": 47,
   "name": "Estantería de tazas y café Starbucks",
   "tier": "best",
-  "geometry_basis": "interpretive",
+  "geometry_basis": "photo_interpretation",
   "measured": false,
-  "mesh_count": 121
+  "instance_id": "sb-mugs",
+  "itil_code": "PDG103-EST-01",
+  "mesh_count": 536,
+  "shelf_count": 5,
+  "bay_count": 2,
+  "independent_products": 115,
+  "product_references": 26,
+  "parts": "./best.parts.json",
+  "collection": "./collection/preview/",
+  "composition_only": true,
+  "source": "./collection/source/build_scene.py"
 }

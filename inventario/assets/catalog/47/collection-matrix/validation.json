@@ -1,0 +1,32 @@
+{
+  "profile": "matrix",
+  "all_texture_uv_indices_valid": true,
+  "pbr_materials_with_normals": 35,
+  "volume_materials": 2,
+  "clearcoat_materials": 22,
+  "status": "passed",
+  "instance_count": 115,
+  "sku_count": 26,
+  "shelves": 5,
+  "bays": 2,
+  "assembly_bytes": 20808056,
+  "catalog_bytes": 20809136,
+  "embedded_textures": 18,
+  "mesh_count": 692,
+  "node_count": 2177,
+  "verified": [
+    "GLB structure",
+    "embedded buffers and textures",
+    "independent named product roots",
+    "unique component IDs",
+    "transform coordinates match manifest",
+    "26 standalone centered GLBs",
+    "existing ITIL identity preserved",
+    "empty cabinet contains no products"
+  ],
+  "limitations": [
+    "Photo proportions are nominal and unmeasured",
+    "Visual quantities are not real stock",
+    "Product components are not new patrimonial CIs"
+  ]
+}

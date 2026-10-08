@@ -1,0 +1,953 @@
+{
+  "schema": "xpaceos.matrix47.unreal-verification/1",
+  "engine": "5.8.0-55116800+++UE5+Release-5.8",
+  "source_sha256": "67d77bce24536d513ae36a8c33a9d7eb5aab154bdb0fc80c1fb06df91164fa42",
+  "inventory_id": 47,
+  "parent_ci": "PDG103-EST-01",
+  "native_scene": "/Game/Matrix47/Matrix47",
+  "native_sequence": "/Game/Matrix47/Matrix47Studio",
+  "native_camera": "Studio47 · Matrix hero camera",
+  "independent_products": 115,
+  "sku_count": 26,
+  "static_mesh_actors": 2061,
+  "glass_material_slots": 40,
+  "lighting": "Unreal Engine 5.8 · Lumen software tracing · area lights · virtual shadows",
+  "hardware_ray_tracing": false,
+  "stock_verified": false,
+  "dimensions_basis": "nominal_unmeasured",
+  "render_verified": true,
+  "items": [
+    {
+      "id": "47-P001",
+      "numeric_id": 1,
+      "sku": "coffee-kati",
+      "node": "CI_001_coffee_kati",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_65",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P002",
+      "numeric_id": 2,
+      "sku": "coffee-pike",
+      "node": "CI_002_coffee_pike",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_123",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P003",
+      "numeric_id": 3,
+      "sku": "coffee-kati",
+      "node": "CI_003_coffee_kati",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_189",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P004",
+      "numeric_id": 4,
+      "sku": "coffee-guatemala",
+      "node": "CI_004_coffee_guatemala",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_247",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P005",
+      "numeric_id": 5,
+      "sku": "coffee-guatemala",
+      "node": "CI_005_coffee_guatemala",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_305",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P006",
+      "numeric_id": 6,
+      "sku": "coffee-guatemala",
+      "node": "CI_006_coffee_guatemala",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_363",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P007",
+      "numeric_id": 7,
+      "sku": "coffee-ethiopia",
+      "node": "CI_007_coffee_ethiopia",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_421",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P008",
+      "numeric_id": 8,
+      "sku": "coffee-verona",
+      "node": "CI_008_coffee_verona",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_479",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P009",
+      "numeric_id": 9,
+      "sku": "coffee-verona",
+      "node": "CI_009_coffee_verona",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_537",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P010",
+      "numeric_id": 10,
+      "sku": "coffee-iced",
+      "node": "CI_010_coffee_iced",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_598",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P011",
+      "numeric_id": 11,
+      "sku": "coffee-iced",
+      "node": "CI_011_coffee_iced",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_659",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P012",
+      "numeric_id": 12,
+      "sku": "coffee_box-red",
+      "node": "CI_012_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_675",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P013",
+      "numeric_id": 13,
+      "sku": "coffee_box-red",
+      "node": "CI_013_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_691",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P014",
+      "numeric_id": 14,
+      "sku": "coffee_box-red",
+      "node": "CI_014_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_707",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P015",
+      "numeric_id": 15,
+      "sku": "coffee_box-red",
+      "node": "CI_015_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_723",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P016",
+      "numeric_id": 16,
+      "sku": "coffee_box-red",
+      "node": "CI_016_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_739",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P017",
+      "numeric_id": 17,
+      "sku": "coffee_box-red",
+      "node": "CI_017_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_755",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P018",
+      "numeric_id": 18,
+      "sku": "coffee_box-red",
+      "node": "CI_018_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_771",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P019",
+      "numeric_id": 19,
+      "sku": "coffee_box-red",
+      "node": "CI_019_coffee_box_red",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_787",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P020",
+      "numeric_id": 20,
+      "sku": "coffee_box-yellow",
+      "node": "CI_020_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_803",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P021",
+      "numeric_id": 21,
+      "sku": "coffee_box-yellow",
+      "node": "CI_021_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_819",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P022",
+      "numeric_id": 22,
+      "sku": "coffee_box-yellow",
+      "node": "CI_022_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_835",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P023",
+      "numeric_id": 23,
+      "sku": "coffee_box-yellow",
+      "node": "CI_023_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_851",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P024",
+      "numeric_id": 24,
+      "sku": "coffee_box-yellow",
+      "node": "CI_024_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_867",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P025",
+      "numeric_id": 25,
+      "sku": "coffee_box-yellow",
+      "node": "CI_025_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_883",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P026",
+      "numeric_id": 26,
+      "sku": "coffee_box-yellow",
+      "node": "CI_026_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_899",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P027",
+      "numeric_id": 27,
+      "sku": "coffee_box-yellow",
+      "node": "CI_027_coffee_box_yellow",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_915",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P028",
+      "numeric_id": 28,
+      "sku": "coffee_box-black",
+      "node": "CI_028_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_931",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P029",
+      "numeric_id": 29,
+      "sku": "coffee_box-black",
+      "node": "CI_029_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_947",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P030",
+      "numeric_id": 30,
+      "sku": "coffee_box-black",
+      "node": "CI_030_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_963",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P031",
+      "numeric_id": 31,
+      "sku": "coffee_box-black",
+      "node": "CI_031_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_979",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P032",
+      "numeric_id": 32,
+      "sku": "coffee_box-black",
+      "node": "CI_032_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_995",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P033",
+      "numeric_id": 33,
+      "sku": "coffee_box-black",
+      "node": "CI_033_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1011",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P034",
+      "numeric_id": 34,
+      "sku": "coffee_box-black",
+      "node": "CI_034_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1027",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P035",
+      "numeric_id": 35,
+      "sku": "coffee_box-black",
+      "node": "CI_035_coffee_box_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1043",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P036",
+      "numeric_id": 36,
+      "sku": "cold_cup-crimson",
+      "node": "CI_036_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1051",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P037",
+      "numeric_id": 37,
+      "sku": "cold_cup-crimson",
+      "node": "CI_037_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1059",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P038",
+      "numeric_id": 38,
+      "sku": "cold_cup-crimson",
+      "node": "CI_038_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1067",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P039",
+      "numeric_id": 39,
+      "sku": "cold_cup-crimson",
+      "node": "CI_039_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1075",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P040",
+      "numeric_id": 40,
+      "sku": "cold_cup-crimson",
+      "node": "CI_040_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1083",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P041",
+      "numeric_id": 41,
+      "sku": "cold_cup-crimson",
+      "node": "CI_041_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1091",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P042",
+      "numeric_id": 42,
+      "sku": "cold_cup-crimson",
+      "node": "CI_042_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1099",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P043",
+      "numeric_id": 43,
+      "sku": "cold_cup-crimson",
+      "node": "CI_043_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1107",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P044",
+      "numeric_id": 44,
+      "sku": "cold_cup-crimson",
+      "node": "CI_044_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1115",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P045",
+      "numeric_id": 45,
+      "sku": "cold_cup-crimson",
+      "node": "CI_045_cold_cup_crimson",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1123",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P046",
+      "numeric_id": 46,
+      "sku": "mug-city_box",
+      "node": "CI_046_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1137",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P047",
+      "numeric_id": 47,
+      "sku": "mug-city_box",
+      "node": "CI_047_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1151",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P048",
+      "numeric_id": 48,
+      "sku": "mug-city_box",
+      "node": "CI_048_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1165",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P049",
+      "numeric_id": 49,
+      "sku": "mug-city_box",
+      "node": "CI_049_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1179",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P050",
+      "numeric_id": 50,
+      "sku": "mug-city_box",
+      "node": "CI_050_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1193",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P051",
+      "numeric_id": 51,
+      "sku": "mug-city_box",
+      "node": "CI_051_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1207",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P052",
+      "numeric_id": 52,
+      "sku": "mug-city_box",
+      "node": "CI_052_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1221",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P053",
+      "numeric_id": 53,
+      "sku": "mug-city_box",
+      "node": "CI_053_mug_city_box",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1235",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P054",
+      "numeric_id": 54,
+      "sku": "mug-pumpkin",
+      "node": "CI_054_mug_pumpkin",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1250",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P055",
+      "numeric_id": 55,
+      "sku": "mug-pumpkin",
+      "node": "CI_055_mug_pumpkin",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1265",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P056",
+      "numeric_id": 56,
+      "sku": "mug-pumpkin",
+      "node": "CI_056_mug_pumpkin",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1280",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P057",
+      "numeric_id": 57,
+      "sku": "mug-pumpkin",
+      "node": "CI_057_mug_pumpkin",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1295",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P058",
+      "numeric_id": 58,
+      "sku": "mug-pumpkin",
+      "node": "CI_058_mug_pumpkin",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1310",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P059",
+      "numeric_id": 59,
+      "sku": "thermos-emerald",
+      "node": "CI_059_thermos_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1319",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P060",
+      "numeric_id": 60,
+      "sku": "thermos-ribbed",
+      "node": "CI_060_thermos_ribbed",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1328",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P061",
+      "numeric_id": 61,
+      "sku": "thermos-emerald",
+      "node": "CI_061_thermos_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1337",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P062",
+      "numeric_id": 62,
+      "sku": "cold_cup-emerald",
+      "node": "CI_062_cold_cup_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1353",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P063",
+      "numeric_id": 63,
+      "sku": "cold_cup-emerald",
+      "node": "CI_063_cold_cup_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1369",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P064",
+      "numeric_id": 64,
+      "sku": "thermos-emerald",
+      "node": "CI_064_thermos_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1378",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P065",
+      "numeric_id": 65,
+      "sku": "thermos-emerald",
+      "node": "CI_065_thermos_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1387",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P066",
+      "numeric_id": 66,
+      "sku": "thermos-ribbed",
+      "node": "CI_066_thermos_ribbed",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1396",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P067",
+      "numeric_id": 67,
+      "sku": "thermos-gold_rim",
+      "node": "CI_067_thermos_gold_rim",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1405",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P068",
+      "numeric_id": 68,
+      "sku": "thermos-gold_rim",
+      "node": "CI_068_thermos_gold_rim",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1414",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P069",
+      "numeric_id": 69,
+      "sku": "thermos-emerald",
+      "node": "CI_069_thermos_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1423",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P070",
+      "numeric_id": 70,
+      "sku": "mug-scale_green",
+      "node": "CI_070_mug_scale_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1429",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P071",
+      "numeric_id": 71,
+      "sku": "mug-scale_green",
+      "node": "CI_071_mug_scale_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1435",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P072",
+      "numeric_id": 72,
+      "sku": "cold_cup-emerald",
+      "node": "CI_072_cold_cup_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1451",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P073",
+      "numeric_id": 73,
+      "sku": "cold_cup-emerald",
+      "node": "CI_073_cold_cup_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1467",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P074",
+      "numeric_id": 74,
+      "sku": "cold_cup-emerald",
+      "node": "CI_074_cold_cup_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1483",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P075",
+      "numeric_id": 75,
+      "sku": "cold_cup-emerald",
+      "node": "CI_075_cold_cup_emerald",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1499",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P076",
+      "numeric_id": 76,
+      "sku": "cold_cup-confetti",
+      "node": "CI_076_cold_cup_confetti",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1506",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P077",
+      "numeric_id": 77,
+      "sku": "cold_cup-checker",
+      "node": "CI_077_cold_cup_checker",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1522",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P078",
+      "numeric_id": 78,
+      "sku": "cold_cup-wave",
+      "node": "CI_078_cold_cup_wave",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1530",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P079",
+      "numeric_id": 79,
+      "sku": "cold_cup-clear",
+      "node": "CI_079_cold_cup_clear",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1546",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P080",
+      "numeric_id": 80,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_080_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1562",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P081",
+      "numeric_id": 81,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_081_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1578",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P082",
+      "numeric_id": 82,
+      "sku": "mug-scale_green",
+      "node": "CI_082_mug_scale_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1584",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P083",
+      "numeric_id": 83,
+      "sku": "travel_mug-band_green",
+      "node": "CI_083_travel_mug_band_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1606",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P084",
+      "numeric_id": 84,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_084_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1622",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P085",
+      "numeric_id": 85,
+      "sku": "thermos-blackgreen",
+      "node": "CI_085_thermos_blackgreen",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1640",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P086",
+      "numeric_id": 86,
+      "sku": "cold_cup-clear",
+      "node": "CI_086_cold_cup_clear",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1656",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P087",
+      "numeric_id": 87,
+      "sku": "cold_cup-confetti",
+      "node": "CI_087_cold_cup_confetti",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1663",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P088",
+      "numeric_id": 88,
+      "sku": "cold_cup-checker",
+      "node": "CI_088_cold_cup_checker",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1679",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P089",
+      "numeric_id": 89,
+      "sku": "cold_cup-checker",
+      "node": "CI_089_cold_cup_checker",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1695",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P090",
+      "numeric_id": 90,
+      "sku": "mug-white_green",
+      "node": "CI_090_mug_white_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1710",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P091",
+      "numeric_id": 91,
+      "sku": "mug-white_green",
+      "node": "CI_091_mug_white_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1725",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P092",
+      "numeric_id": 92,
+      "sku": "mug-black",
+      "node": "CI_092_mug_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1730",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P093",
+      "numeric_id": 93,
+      "sku": "travel_mug-band_green",
+      "node": "CI_093_travel_mug_band_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1752",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P094",
+      "numeric_id": 94,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_094_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1768",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P095",
+      "numeric_id": 95,
+      "sku": "thermos-blackgreen",
+      "node": "CI_095_thermos_blackgreen",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1786",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P096",
+      "numeric_id": 96,
+      "sku": "cold_cup-confetti",
+      "node": "CI_096_cold_cup_confetti",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1793",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P097",
+      "numeric_id": 97,
+      "sku": "cold_cup-checker",
+      "node": "CI_097_cold_cup_checker",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1809",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P098",
+      "numeric_id": 98,
+      "sku": "cold_cup-wave",
+      "node": "CI_098_cold_cup_wave",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1817",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P099",
+      "numeric_id": 99,
+      "sku": "cold_cup-clear",
+      "node": "CI_099_cold_cup_clear",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1833",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P100",
+      "numeric_id": 100,
+      "sku": "mug-white_green",
+      "node": "CI_100_mug_white_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1848",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P101",
+      "numeric_id": 101,
+      "sku": "mug-white_green",
+      "node": "CI_101_mug_white_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1863",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P102",
+      "numeric_id": 102,
+      "sku": "mug-scale_green",
+      "node": "CI_102_mug_scale_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1869",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P103",
+      "numeric_id": 103,
+      "sku": "travel_mug-band_green",
+      "node": "CI_103_travel_mug_band_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1891",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P104",
+      "numeric_id": 104,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_104_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1907",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P105",
+      "numeric_id": 105,
+      "sku": "thermos-blackgreen",
+      "node": "CI_105_thermos_blackgreen",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1925",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P106",
+      "numeric_id": 106,
+      "sku": "cold_cup-clear",
+      "node": "CI_106_cold_cup_clear",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1941",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P107",
+      "numeric_id": 107,
+      "sku": "cold_cup-confetti",
+      "node": "CI_107_cold_cup_confetti",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1948",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P108",
+      "numeric_id": 108,
+      "sku": "cold_cup-checker",
+      "node": "CI_108_cold_cup_checker",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1964",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P109",
+      "numeric_id": 109,
+      "sku": "cold_cup-checker",
+      "node": "CI_109_cold_cup_checker",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1980",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P110",
+      "numeric_id": 110,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_110_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_1996",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P111",
+      "numeric_id": 111,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_111_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_2012",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P112",
+      "numeric_id": 112,
+      "sku": "mug-black",
+      "node": "CI_112_mug_black",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_2017",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P113",
+      "numeric_id": 113,
+      "sku": "travel_mug-band_green",
+      "node": "CI_113_travel_mug_band_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_2039",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P114",
+      "numeric_id": 114,
+      "sku": "travel_mug-lid_green",
+      "node": "CI_114_travel_mug_lid_green",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_2055",
+      "stock_verified": false
+    },
+    {
+      "id": "47-P115",
+      "numeric_id": 115,
+      "sku": "thermos-blackgreen",
+      "node": "CI_115_thermos_blackgreen",
+      "actor_path": "/Game/Matrix47/Matrix47.Matrix47:PersistentLevel.coffee-display_node_2073",
+      "stock_verified": false
+    }
+  ],
+  "render_seconds": 26.47,
+  "render_resolution": [
+    1920,
+    1600
+  ],
+  "render_samples": 8,
+  "render_files": [
+    "Renders/unreal-studio.0000.png"
+  ],
+  "render_sha256": "022dbde996029883a2be6e0ea8f21b834df9855706945846db08280e524cff77",
+  "glass_shader": "Thin Translucent · Surface ForwardShading",
+  "manual_exposure_bias": -8
+}

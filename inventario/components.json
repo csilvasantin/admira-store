@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "components-20261002-1",
+  "revision": "components-20261008-coffee47-1",
   "assets": [
     {
       "id": "native:counter",
@@ -4898,103 +4898,72 @@
       "basis": "model",
       "source": [
         "inventario/assets/catalog/47/best.blend",
-        "admira-xp/tools/xpacios-blender/build_starbucks.py",
-        "admira-xp/tools/xpacios-blender/starbucks-parts.json"
+        "inventario/assets/catalog/47/collection/source/build_scene.py",
+        "inventario/assets/catalog/47/best.parts.json"
       ],
       "note": {
-        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
-        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+        "es": "Mueble interpretado desde la fotografía de Carlos: cinco niveles y 26 referencias visuales separadas. Las cantidades corresponden al modelo; no acreditan existencias, SKU comerciales ni altas patrimoniales de productos.",
+        "en": "Cabinet interpreted from Carlos’s photograph: five levels and 26 separate visual references. Quantities describe the model; they do not establish stock, commercial SKUs or product lifecycle registration."
       },
       "groups": [
         {
-          "id": "shelves",
+          "id": "cabinet",
           "label": {
             "es": "Mueble expositor",
-            "en": "Display furniture"
+            "en": "Display cabinet"
           },
           "components": [
             {
-              "id": "base",
+              "id": "structure",
               "label": {
-                "es": "Mueble inferior",
-                "en": "Lower cabinet"
-              },
-              "quantity": 1
-            },
-            {
-              "id": "back",
-              "label": {
-                "es": "Panel posterior",
-                "en": "Back panel"
+                "es": "Estructura metálica independiente",
+                "en": "Independent metal frame"
               },
               "quantity": 1
             },
             {
               "id": "shelves",
               "label": {
-                "es": "Baldas",
-                "en": "Shelves"
+                "es": "Niveles de baldas de madera",
+                "en": "Wood shelf levels"
               },
-              "quantity": 6
+              "quantity": 5
             },
             {
-              "id": "uprights",
+              "id": "bays",
               "label": {
-                "es": "Montantes metálicos",
-                "en": "Metal uprights"
+                "es": "Bahías de exposición",
+                "en": "Display bays"
               },
-              "quantity": 3
+              "quantity": 2
             }
           ]
         },
         {
-          "id": "products",
+          "id": "contents",
           "label": {
-            "es": "Productos representativos",
-            "en": "Representative products"
+            "es": "Vasos, termos, tazas y café independientes",
+            "en": "Independent cups, tumblers, mugs and coffee"
           },
           "components": [
             {
-              "id": "cup-containers",
+              "id": "visual-designs",
               "label": {
-                "es": "Recipientes cilíndricos con tapa",
-                "en": "Cylindrical containers with lids"
+                "es": "Referencias visuales con GLB independiente",
+                "en": "Visual references with separate GLB"
               },
-              "quantity": 50,
-              "note": {
-                "es": "Representación visual; no es una cantidad de stock confirmada.",
-                "en": "Visual representation; not a confirmed stock quantity."
-              },
-              "components": [
-                {
-                  "id": "body",
-                  "label": {
-                    "es": "Cuerpo del recipiente",
-                    "en": "Container body"
-                  },
-                  "quantity": 1
-                },
-                {
-                  "id": "lid",
-                  "label": {
-                    "es": "Tapa",
-                    "en": "Lid"
-                  },
-                  "quantity": 1
-                }
-              ],
-              "quantity_scope": "per_parent_unit"
+              "quantity": 26
             },
             {
-              "id": "coffee-packs",
+              "id": "product-instances",
               "label": {
-                "es": "Paquetes de café representados",
-                "en": "Represented coffee packs"
+                "es": "Instancias visuales colocadas",
+                "en": "Placed visual instances"
               },
-              "quantity": 10,
+              "quantity": 115,
               "note": {
-                "es": "Representación visual; no es una cantidad de stock confirmada.",
-                "en": "Visual representation; not a confirmed stock quantity."
+                "es": "Instancias de la composición visual; no es stock físico.",
+                "en": "Instances in the visual composition; not physical stock."
               }
             }
           ]

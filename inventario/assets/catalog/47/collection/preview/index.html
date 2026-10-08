@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2f0e9">
+  <title>Coffee Collection — Inventario 3D ITIL</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand-group"><a class="brand" href="./" aria-label="Inicio del inventario ITIL"><span class="brand-mark">i.</span><span>ITIL<span class="brand-sub">ASSET LIBRARY</span></span></a><a id="back-to-inventory" class="inventory-back" href="/inventario/?asset=47&amp;quality=best#mostrador" hidden>← <span data-i18n="back">Inventario</span></a></div>
+    <div class="collection-title"><span class="eyebrow" data-i18n="collection">COLECCIÓN 001</span><h1>Coffee Collection<span class="title-dot">.</span></h1></div>
+    <div class="header-tools"><span class="local-status"><span></span><span data-i18n="modelFormat">MODELO 3D · GLB</span></span><div class="lang-switch" aria-label="Language"><button id="lang-es" aria-pressed="true">ES</button><button id="lang-en" aria-pressed="false">EN</button></div></div>
+  </header>
+  <main class="workspace">
+    <section class="studio" aria-label="Visor 3D interactivo">
+      <div class="studio-top">
+        <div><span class="eyebrow" data-i18n="displayType">EXPOSITOR MODULAR</span><h2 data-i18n="studioHeadline">Una colección.<br>Cada pieza, independiente.</h2></div>
+        <div class="dimensions" id="cabinet-dimensions">2,12 × 2,16 × 0,46 m<span data-i18n="dimensionOrder">ANCHO × ALTO × FONDO</span></div>
+      </div>
+      <div id="canvas-container" class="canvas-container"></div>
+      <div class="loading" id="loading" role="status"><span class="loading-ring"></span><strong data-i18n="loadingTitle">Cargando la colección</strong><span id="loading-message" data-i18n="loadingMessage">Preparando el modelo y su inventario…</span></div>
+      <div class="selection-tag" id="selection-tag" hidden><span class="tag-dot"></span><span id="selection-label"></span><button id="clear-selection" aria-label="Quitar selección">×</button></div>
+      <div class="studio-bottom">
+        <div class="view-controls" aria-label="Controles de vista">
+          <button id="view-perspective" class="view-btn is-active" title="Vista perspectiva" aria-label="Vista perspectiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z M4 7.5l8 4.5 8-4.5 M12 12v9"/></svg><span data-i18n="perspective">Perspectiva</span></button>
+          <button id="view-front" class="view-btn" title="Vista frontal" aria-label="Vista frontal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z M12 4v16 M4 9h16 M4 14h16"/></svg><span data-i18n="front">Frontal</span></button>
+          <button id="rotate" class="view-btn" title="Activar giro automático" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0 0 4 M20 4v6h-6"/></svg><span data-i18n="rotate">Girar</span></button>
+          <button id="reset" class="view-btn" title="Restaurar colección y cámara"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8 M3 4v6h6"/></svg><span data-i18n="reset">Restaurar</span></button>
+        </div>
+        <span class="interaction-hint" data-i18n="hint">ARRASTRA PARA GIRAR · SCROLL PARA ACERCAR</span>
+        <div class="explode-control"><label for="explode"><span data-i18n="explode">Vista despiece</span><output id="explode-value">0 %</output></label><input id="explode" type="range" min="0" max="100" value="0" aria-label="Separar piezas del expositor"></div>
+      </div>
+      <div class="studio-footnote"><span class="corner-plus">+</span><span data-i18n="studioFooter">ESTUDIO DE ACTIVOS / ESCALA EN METROS</span><span class="corner-plus">+</span></div>
+    </section>
+    <aside class="library" aria-label="Catálogo de activos">
+      <div class="library-header"><div><span class="eyebrow" data-i18n="inventoryEyebrow">INVENTARIO DE LA COLECCIÓN</span><h2 data-i18n="explore">Explora las piezas</h2></div><span class="library-icon">↗</span></div>
+      <div class="stats"><div><strong id="stat-items">—</strong><span data-i18n="pieces">PIEZAS</span></div><div><strong id="stat-skus">—</strong><span data-i18n="models">MODELOS</span></div><div><strong id="stat-shelves">5</strong><span data-i18n="shelves">BALDAS</span></div></div>
+      <div class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Buscar taza, termo, café…" aria-label="Buscar activos"></div>
+      <div class="filters" id="filters" aria-label="Filtrar por categoría"></div>
+      <div class="list-top"><span id="list-count">MODELOS DISPONIBLES</span><button id="clear-filter" data-i18n="showAll" hidden>Ver todo</button></div>
+      <div class="catalog" id="catalog" aria-live="polite"></div>
+      <section class="detail" id="detail" hidden aria-label="Detalle de pieza seleccionada">
+        <div class="detail-heading"><span class="eyebrow" data-i18n="selectedPiece">PIEZA SELECCIONADA</span><button id="close-detail" aria-label="Cerrar detalle">×</button></div>
+        <h3 id="detail-label"></h3><span class="detail-category" id="detail-category"></span>
+        <dl id="detail-fields"></dl>
+        <div class="detail-actions"><button id="isolate" class="secondary-btn" data-i18n="isolate">Aislar pieza</button><a id="download-piece" class="primary-btn" download><span data-i18n="downloadPiece">Descargar pieza</span> <span>↓</span></a></div>
+      </section>
+      <div class="library-footer"><a id="download-collection" class="primary-btn full" href="../assets/coffee-display.glb" download><span data-i18n="downloadCollection">Descargar colección GLB</span> <span>↓</span></a><a class="manifest-link" href="../inventory.json" target="_blank" rel="noopener"><span data-i18n="consultManifest">Consultar inventario JSON</span> <span>↗</span></a><div class="source-links"><a href="../coffee-display-itil.zip" download><span data-i18n="downloadPack">Pack completo ZIP</span> ↓</a><a href="../assets/coffee-display.blend" download><span data-i18n="blenderSource">Fuente Blender</span> ↓</a></div><p data-i18n="inventoryFooter">Cada pieza tiene un ID único y un modelo propio para incorporarla a tu inventario.</p></div>
+    </aside>
+  </main>
+  <script type="module" src="viewer.js"></script>
+</body>
+</html>

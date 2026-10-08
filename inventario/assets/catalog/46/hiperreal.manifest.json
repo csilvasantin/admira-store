@@ -1,0 +1,77 @@
+{
+  "number": 46,
+  "name": "Vitrina Starbucks",
+  "tier": "hiperreal",
+  "based_on": "best",
+  "batch": 1,
+  "geometry_basis": "interpretive",
+  "measured": false,
+  "material_classes": {
+    "#181c1c": "powder",
+    "#745640": "wood_dark",
+    "#754f36": "pastry",
+    "#8f9693": "metal",
+    "#9eccc6": "glass",
+    "#ad855b": "wood",
+    "#b8783c": "pastry",
+    "#ca9852": "pastry",
+    "#d3c7ae": "stone",
+    "#d9b46c": "pastry",
+    "#e6dbc5": "ceramic",
+    "#f2dab0": "paper",
+    "#ffe2a0": "led"
+  },
+  "jittered_items": 108,
+  "bevel": "procedural bevel applied to geometry",
+  "lods": {
+    "web": "./hiperreal.glb",
+    "hd_unreal_nanite": "./hiperreal/hiperreal-hd.glb",
+    "blender": "./hiperreal.blend"
+  },
+  "bytes": {
+    "web": 2678128,
+    "hd": 18401064,
+    "best": 2407980
+  },
+  "shared_textures": "../../hiperreal-tex/",
+  "textures": [
+    "cardboard_normal_2k.jpg",
+    "ceramic_orm.jpg",
+    "concrete_floor_02_nor_gl_2k.jpg",
+    "metal_orm.jpg",
+    "oak_745640_4096.jpg",
+    "oak_ad855b_4096.jpg",
+    "oak_arm_2048.jpg",
+    "oak_normal_2048.jpg",
+    "paper_orm.jpg",
+    "pastry_754f36_1024.jpg",
+    "pastry_b8783c_1024.jpg",
+    "pastry_ca9852_1024.jpg",
+    "pastry_d9b46c_1024.jpg",
+    "pastry_normal_1024.jpg",
+    "pastry_orm_1024.jpg",
+    "powder_normal_1024.jpg",
+    "powder_orm_1024.jpg",
+    "stone_d3c7ae_2048.jpg",
+    "stone_orm_2048.jpg"
+  ],
+  "lighting": {
+    "web_hdri": "../47/hiperreal/comfy_cafe_1k.hdr",
+    "cycles_hdri": "Poly Haven comfy_cafe 2K"
+  },
+  "texture_sources_cc0": [
+    "polyhaven:oak_veneer_01",
+    "polyhaven:concrete_floor_02",
+    "polyhaven:plaster_grey_04",
+    "polyhaven:comfy_cafe",
+    "ambientcg:Metal049A",
+    "ambientcg:Cardboard004",
+    "ambientcg:Fingerprints002",
+    "ambientcg:Smear007",
+    "procedural:pastry,powder (XpaceOS)"
+  ],
+  "renders": "./hiperreal/preview/",
+  "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
+  "guide": "/admira-xp/docs/hiperreal-pipeline.md",
+  "twin_instance": "sb-pastry"
+}

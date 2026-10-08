@@ -28,6 +28,10 @@ function normalizeLifeSnapshot(raw={}){
 
 // A presentation of Xtanco's live snapshot. This module owns neither a clock,
 // simulation, media player nor animation loop. All dimensions are grid units.
+// Starbucks fixtures whose catalog model (44 barra, 45 caja, 46 vitrina) reproduces the first N
+// procedural parts of XpaceStarbucks.build in Best: body, slats, worktop and rail. Machines, cups
+// and the TPV screen (device 'pos') follow them and remain procedural and live.
+export const STARBUCKS_CATALOG_BODY=Object.freeze({'sb-backbar':10,'sb-pos':43,'sb-pastry':Infinity});
 export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,surroundings=false,exteriorY=0,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
   let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',poseSignature='',lighting='day',disposed=false,lastAnimationTime=null;
   let customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});
@@ -380,9 +384,10 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     return root;
   }
 
+  const starbucksFinish={};
   function starbucksRoom(){
     const colors=new Map();
-    const finish=part=>{
+    const finish=starbucksFinish.finish=part=>{
       const key=part.color+(part.glass?'glass':'');if(colors.has(key))return colors.get(key);
       const detailed=assetQuality==='best';
       const m=material(part.color,{name:part.color,roughness:part.glass?.12:detailed?.62:.9,
@@ -391,15 +396,45 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         ...(part.color==='#ffe2a0'?{emissive:part.color,emissiveIntensity:.7}:{} )},worldResources);
       colors.set(key,m);return m;
     };
-    for(const fixture of globalThis.XpaceStarbucks.build(snapshot.layout.filter(i=>i.source!=='PixerIA'&&i.hidden!==true&&i.presentationExcluded!==true),{quality:assetQuality,moving:snapshot.moving})){
-      const root=group(world);root.name='starbucks:'+fixture.id;
+    const fixtures=globalThis.XpaceStarbucks.build(snapshot.layout.filter(i=>i.source!=='PixerIA'&&i.hidden!==true&&i.presentationExcluded!==true),{quality:assetQuality,moving:snapshot.moving});
+    const built=new Set(fixtures.map(fixture=>fixture.item?.id).filter(Boolean));
+    for(const fixture of fixtures){
+      // The photographed merchandise cabinet uses its registered Blender model.
+      // furniture() retains the procedural fallback, placement and late-load guard.
+      if(fixture.item?.id==='sb-mugs'&&loadFurniture){
+        const cabinet=furniture(fixture.item);cabinet.name='starbucks:'+fixture.id;continue;
+      }
+      // Best: the catalog body (Hiperreal GLB, then Matrix/Best) replaces the procedural body
+      // parts once loaded; machines, cups and the TPV screen stay procedural on their own root.
+      const catalogParts=assetQuality==='best'&&loadFurniture&&fixture.item?STARBUCKS_CATALOG_BODY[fixture.item.id]:undefined;
+      if(catalogParts!==undefined){
+        const body=starbucksParts(fixture,fixture.parts.slice(0,catalogParts),'');body.userData.assetStatus='loading';
+        Promise.resolve().then(()=>loadFurniture(fixture.item)).then(asset=>{
+          if(disposed||body.parent!==world)return;
+          if(!asset){body.userData.assetStatus='unregistered';return;}
+          body.traverse(o=>{if(o.isInstancedMesh)o.dispose();});body.clear();body.add(asset);bindSurfaces(asset,fixture.id);
+          body.userData.assetStatus='ready';body.userData.assetSource='Blender';
+        }).catch(()=>{if(!disposed&&body.parent===world)body.userData.assetStatus='fallback';});
+        if(fixture.parts.length>catalogParts)starbucksParts(fixture,fixture.parts.slice(catalogParts),':equipo');
+        continue;
+      }
+      starbucksParts(fixture,fixture.parts,'');
+    }
+    // PixerIA pieces and catalog pieces the Starbucks fixtures do not draw (/inventario añadir <n>,
+    // the water rack) use the shared catalog loader: Best places Hiperreal → Matrix → Best.
+    for(const item of snapshot.layout)if(item.source==='PixerIA'||(!snapshot.moving&&!built.has(item.id)))furniture(item);
+  }
+  function starbucksParts(fixture,parts,suffix){
+    const {finish}=starbucksFinish;
+    {
+      const root=group(world);root.name='starbucks:'+fixture.id+suffix;
       if(fixture.item){
         const item=fixture.item;root.userData={item,layoutId:fixture.id,selectable:true};
         root.position.set(item.col,0,item.row);root.rotation.y=-(item.rot??0)*Math.PI/2;
         root.scale.set((item.flipX?-1:1)*(item.sx??1),item.sy??1,item.sx??1);
       }
       const editableGroups=new Map();
-      for(const part of fixture.parts){
+      for(const part of parts){
         const {y,w,h,d}=part,x=part.x-(fixture.item?.col||0),z=part.z-(fixture.item?.row||0);
         const instance=fixture.item?.type==='cafeTable'?part.appearanceInstance:fixture.id;
         const identity=appearanceIdentity(snapshot.venue,instance);let parent=root;
@@ -408,11 +443,11 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         else {const partMesh=box(parent,x+w/2,y+h/2,z+d/2,w,h,d,finish(part),assetQuality==='best'&&Math.max(w,h,d)<2.5);if(part.device){partMesh.userData={dynamic:true,screenTarget:globalThis.XpaceStarbucks.screenId(part.device)};}}
         if(part.text)label(root,part.text,x+w/2,y+h/2,z+d+.006,w*.96,h*.96,{bg:part.color,fg:'#f5eed9',font:40});
       }
-      for(const part of fixture.parts.filter(part=>part.device)){const {x,y,z,w,h,d}=part,id=globalThis.XpaceStarbucks.screenId(part.device),display=surface(root,null,x+w/2-(fixture.item?.col||0),y+h/2,z+d+(['pos','ipad'].includes(part.device)?.012:.20)-(fixture.item?.row||0),w*.94,h*.94,0,palette.black);display.userData={liveMedia:true,dynamic:true,surfaceId:id,previewOnly:true};display.visible=false;}
+      for(const part of parts.filter(part=>part.device)){const {x,y,z,w,h,d}=part,id=globalThis.XpaceStarbucks.screenId(part.device),display=surface(root,null,x+w/2-(fixture.item?.col||0),y+h/2,z+d+(['pos','ipad'].includes(part.device)?.012:.20)-(fixture.item?.row||0),w*.94,h*.94,0,palette.black);display.userData={liveMedia:true,dynamic:true,surfaceId:id,previewOnly:true};display.visible=false;}
       for(const [instance,g]of editableGroups){bindSurfaces(g,instance);batch(g);}
       batch(root);
+      return root;
     }
-    for(const item of snapshot.layout)if(item.source==='PixerIA')furniture(item);
   }
   function architecture(){
     const {cols:c,rows:r,wallHeight:h}=snapshot;

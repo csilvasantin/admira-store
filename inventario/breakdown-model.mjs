@@ -1,5 +1,5 @@
 // Model composition, separate from placed instances and verified stock.
-export const COMPONENTS_URL=new URL('./components.json?v=components-20261002-1',import.meta.url);
+export const COMPONENTS_URL=new URL('./components.json?v=components-20261008-coffee47-1',import.meta.url);
 export function componentLabel(value,lang='es'){
  return value?.[lang]||value?.es||value?.en||'';
 }

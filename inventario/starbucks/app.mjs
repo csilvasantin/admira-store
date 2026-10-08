@@ -1,3 +1,4 @@
+import {coffeeCollectionURL} from '../coffee-collection.mjs?v=coffee47-20261008-1';
 import {mountSurfaceEditor} from '../surface-editor.mjs?v=surfaces-1';
 import {recordFor, recordURL, recordFields} from './ci-record.mjs?v=ipad-20261005-1';
 import {mountCounterStage} from '../counter-stage.mjs?v=windows-menu-1';
@@ -87,6 +88,8 @@ function showReferenceDetails(reference, unit) {
   $('#selected-status').replaceChildren(node('span', copy[reference.status], 'status ' + reference.status));
   $('#selected-identity').textContent = reference.reference_id + (unit ? ' · ' + unit.itil_code + ' · ' + copy.asset + ' ' + unit.asset_number : '');
   renderCIRecord(reference);
+  document.querySelector('[data-coffee-collection]')?.remove();
+  if(unit?.asset_number===47){const collection=node('a',en?'Separated cups, tumblers and coffee collection ↗':'Colección separada de vasos, termos, tazas y café ↗');collection.href=coffeeCollectionURL(location.href).href;collection.dataset.coffeeCollection='';$('#selected-identity').after(collection);}
   const image = $('#selected-photo'); image.hidden = false; image.src = referencePhotoURL(reference, location.href); image.alt = copy.photo + ': ' + name;
   image.onerror = () => { image.hidden = true; $('#photo-caption').textContent = copy.unavailable + ' · ' + label; };
   $('#photo-caption').textContent = copy.photo + ' · ' + label + '. ' + (copy[reference.photo_scope] || copy.element) + '. ' + (field(reference, 'photo_basis') || (unit ? field(unit, 'photo_basis') : '') || '');

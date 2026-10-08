@@ -1,16 +1,19 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
 import {createSurfaceBinding} from '../admira-xp/scripts/surface-materials.mjs?v=surfaces-1';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=ipad-20261005-1';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=hiperreal-tanda1-20261008-1';
 import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
-import {pixelFinish,pixelLayout,preciseTextureSampling} from './finish-rendering.mjs?v=shelf-products-1';
+import {pixelFinish,pixelLayout,preciseTextureSampling} from './finish-rendering.mjs?v=hiperreal-tanda1-20261008-1';
 import {createPartHighlight,numericPartForHit} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-products-1';
+import {createMatrixStudio,createHiperrealStudio} from './matrix-rendering.mjs?v=hiperreal-tanda1-20261008-1';
+import {catalogFrontAngle,isPhotoreal} from './quality-model.mjs?v=hiperreal-tanda1-20261008-1';
 
 export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{controlsHost=host,onReady=()=>{},quality='best',cameraState}={}){
  const canvas=host.querySelector('canvas'),status=host.querySelector('[data-status]');
  const en=document.documentElement.lang==='en',t=(es,enText)=>en?enText:es;
  const homeZoom=asset.number===50?1.12:1;
+ const matrix=isPhotoreal(asset.number,quality),hiperreal=matrix&&quality==='hiperreal',frontAngle=catalogFrontAngle(asset.number);
  const pixel=quality==='good',state=cameraState||stageCamera(homeZoom),output=pixel?canvas.getContext('2d'):null;
- let renderer,object,binding,editorDispose,finishDispose,partHighlight,disposed=false,drag=null;
+ let renderer,object,binding,editorDispose,finishDispose,partHighlight,studio,disposed=false,drag=null;
  const owned=new Set(),events=[];
  const on=(element,type,fn)=>{element.addEventListener(type,fn);events.push(()=>element.removeEventListener(type,fn));};
  try{
@@ -18,9 +21,10 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
   renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=pixel?T.NoToneMapping:T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
   renderer.shadowMap.enabled=!pixel;renderer.shadowMap.type=T.PCFSoftShadowMap;
   const scene=new T.Scene();scene.background=new T.Color('#edf0e7');
-  const ambient=pixel?new T.AmbientLight('#ffffff',.9):new T.HemisphereLight('#ffffff','#80927f',2.5);scene.add(ambient);
-  const key=new T.DirectionalLight(pixel?'#ffffff':'#fff3dc',pixel?.8:3.5);key.position.set(3,7,4);key.castShadow=!pixel;key.shadow.mapSize.set(1024,1024);key.shadow.bias=-.0003;scene.add(key);
-  const fill=new T.DirectionalLight('#d9e8f3',pixel?0:1.5);fill.position.set(-4,3,-3);scene.add(fill);
+  const ambient=pixel?new T.AmbientLight('#ffffff',.9):new T.HemisphereLight('#ffffff','#80927f',2.5);
+  const key=new T.DirectionalLight(pixel?'#ffffff':'#fff3dc',pixel?.8:3.5);key.position.set(3,7,4);key.castShadow=!pixel;key.shadow.mapSize.set(1024,1024);key.shadow.bias=-.0003;
+  const fill=new T.DirectionalLight('#d9e8f3',pixel?0:1.5);fill.position.set(-4,3,-3);
+  if(matrix)studio=hiperreal?await createHiperrealStudio(renderer,scene):createMatrixStudio(renderer,scene);else scene.add(ambient,key,fill);
   if(asset.number===50&&!pixel){
    // Reflection panels let blue PET and thin black wire show their PBR finish.
    renderer.toneMappingExposure=.9;ambient.intensity=.75;key.intensity=2.6;fill.intensity=.65;
@@ -34,9 +38,9 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
    const pmrem=new T.PMREMGenerator(renderer),environment=pmrem.fromScene(room,.04);
    scene.environment=environment.texture;owned.add(environment);pmrem.dispose();panelResources.forEach(r=>r.dispose());room.clear();
   }
-  const floor=new T.Mesh(new T.PlaneGeometry(200,200),pixel?new T.MeshBasicMaterial({color:'#edf0e7'}):new T.MeshStandardMaterial({color:'#edf0e7',roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.012;floor.receiveShadow=!pixel;scene.add(floor);owned.add(floor.geometry);owned.add(floor.material);
+  if(!matrix){const floor=new T.Mesh(new T.PlaneGeometry(200,200),pixel?new T.MeshBasicMaterial({color:'#edf0e7'}):new T.MeshStandardMaterial({color:'#edf0e7',roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.012;floor.receiveShadow=!pixel;scene.add(floor);owned.add(floor.geometry);owned.add(floor.material);}
   object=await cloneFurniture(asset.number,quality);if(disposed)return;
-  finishDispose=pixel?pixelFinish(object):preciseTextureSampling(object,renderer.capabilities.getMaxAnisotropy());binding=createSurfaceBinding(object);const materials=new Map();object.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.set(m,m);});scene.add(object);
+  finishDispose=pixel?pixelFinish(object):preciseTextureSampling(object,renderer.capabilities.getMaxAnisotropy(),{physical:matrix});binding=createSurfaceBinding(object);const materials=new Map();object.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.set(m,m);});scene.add(object);studio?.ground?.(object);host.dataset.assetStatus='ready';
   const camera=new T.PerspectiveCamera(36,1,.01,100),bounds=new T.Box3().setFromObject(object),center=bounds.getCenter(new T.Vector3()),span=bounds.getSize(new T.Vector3()),extent=Math.max(span.x,span.y,span.z,.2);
   partHighlight=createPartHighlight(object,scene);
   function draw(){
@@ -49,9 +53,9 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
    canvas.dataset.camera=JSON.stringify(state.get());
   }
   const setView=(a,e,label)=>{state.update({angle:a,elevation:e,zoom:homeZoom});status.textContent=asset.number+'. '+asset.name+' · '+label+' · '+quality.toUpperCase()+t(' · modelo 3D completo',' · complete 3D model');draw();};
-  for(const button of controlsHost.querySelectorAll('button[data-view]'))on(button,'click',()=>{const name=button.dataset.view;setView(...({front:[asset.number===2?Math.PI/2:0,.25,'frontal'],back:[asset.number===2?-Math.PI/2:Math.PI,.25,'parte posterior'],side:[asset.number===2?0:Math.PI/2,.25,'lateral'],home:[Math.PI/4,.38,'perspectiva']}[name]));});
+  for(const button of controlsHost.querySelectorAll('button[data-view]'))on(button,'click',()=>{const name=button.dataset.view;setView(...({front:[frontAngle,.25,'frontal'],back:[frontAngle?frontAngle-Math.PI:Math.PI,.25,'parte posterior'],side:[frontAngle?0:Math.PI/2,.25,'lateral'],home:[Math.PI/4,.38,'perspectiva']}[name]));});
   for(const button of controlsHost.querySelectorAll('button[data-zoom]'))on(button,'click',()=>state.update({zoom:state.get().zoom+(button.dataset.zoom==='in'?.15:-.15)}));
-  const api={root:object,canvas,scene,camera,binding,draw,pick:(x,y,objects)=>{const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),camera);scene.updateMatrixWorld(true);return ray.intersectObjects(objects,true);},frameObject:()=>{state.update({angle:0,elevation:.05,zoom:1.15});draw();return true;},clearClip:()=>{},invalidateShadows:draw,preset:()=>state.update({angle:Math.PI/4,elevation:.38,zoom:1}),onPick:null,onPartPick:null,setPartSelection:id=>{partHighlight.select(id);canvas.dataset.selectedPart=id||'';draw();},view:name=>{const values={home:[Math.PI/4,.38,'perspectiva'],front:[asset.number===2?Math.PI/2:0,.25,'frontal'],top:[0,1.35,'planta']};if(values[name])setView(...values[name]);},zoom:delta=>state.update({zoom:state.get().zoom+delta})};let press=null;
+  const api={root:object,canvas,scene,camera,binding,draw,pick:(x,y,objects)=>{const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),camera);scene.updateMatrixWorld(true);return ray.intersectObjects(objects,true);},frameObject:()=>{state.update({angle:asset.number===47?frontAngle:0,elevation:.05,zoom:1.15});draw();return true;},clearClip:()=>{},invalidateShadows:draw,preset:()=>state.update({angle:Math.PI/4,elevation:.38,zoom:1}),onPick:null,onPartPick:null,setPartSelection:id=>{partHighlight.select(id);canvas.dataset.selectedPart=id||'';draw();},view:name=>{const values={home:[Math.PI/4,.38,'perspectiva'],front:[frontAngle,.25,'frontal'],top:[0,1.35,'planta']};if(values[name])setView(...values[name]);},zoom:delta=>state.update({zoom:state.get().zoom+delta})};let press=null;
   on(canvas,'pointerdown',e=>{press={x:e.clientX,y:e.clientY};});
   on(canvas,'pointerup',e=>{if(!press||Math.hypot(e.clientX-press.x,e.clientY-press.y)>5)return;const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);scene.updateMatrixWorld(true);const hit=ray.intersectObject(object,true)[0];if(hit){api.onPick?.(binding.keyFor(hit.object,hit.face?.materialIndex||0));api.onPartPick?.(numericPartForHit(hit));}});
   on(canvas,'pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
@@ -64,6 +68,6 @@ export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{
   const observer=new ResizeObserver(draw);observer.observe(canvas);events.push(()=>observer.disconnect());
   status.textContent=asset.number+'. '+asset.name+' · '+quality.toUpperCase()+t(' · modelo 3D completo · arrastra para girar',' · complete 3D model · drag to orbit');draw();
   editorDispose=await onReady(api);
-  return ()=>{editorDispose?.();disposed=true;partHighlight?.dispose();binding?.dispose();finishDispose?.();events.forEach(off=>off());owned.forEach(r=>r.dispose());key.shadow.dispose();scene.clear();renderer.dispose();renderer.forceContextLoss();};
- }catch(error){editorDispose?.();partHighlight?.dispose();binding?.dispose();finishDispose?.();renderer?.dispose();renderer?.forceContextLoss();status.textContent=t('No se pudo abrir la vista 3D. Recarga para reintentar; el archivo GLB sigue disponible para descargar.','The 3D view could not open. Reload to retry; the GLB file is still available to download.');return ()=>{disposed=true;events.forEach(off=>off());owned.forEach(r=>r.dispose());};}
+  return ()=>{editorDispose?.();disposed=true;partHighlight?.dispose();binding?.dispose();finishDispose?.();studio?.dispose();events.forEach(off=>off());owned.forEach(r=>r.dispose());key.shadow.dispose();scene.clear();renderer.dispose();renderer.forceContextLoss();};
+ }catch(error){host.dataset.assetStatus='error';editorDispose?.();partHighlight?.dispose();binding?.dispose();finishDispose?.();studio?.dispose();renderer?.dispose();renderer?.forceContextLoss();status.textContent=hiperreal?t('Hiperreal no disponible. Elige otro perfil o recarga para reintentar.','Hiperreal is unavailable. Choose another profile or reload to retry.'):matrix?t('Matrix no disponible. Elige otro perfil o recarga para reintentar.','Matrix is unavailable. Choose another profile or reload to retry.'):t('No se pudo abrir la vista 3D. Recarga para reintentar; el archivo GLB sigue disponible para descargar.','The 3D view could not open. Reload to retry; the GLB file is still available to download.');return ()=>{disposed=true;events.forEach(off=>off());owned.forEach(r=>r.dispose());};}
 }

@@ -1,0 +1,26 @@
+{
+  "number": 47,
+  "name": "Estantería de tazas y café Starbucks",
+  "tier": "hiperreal",
+  "based_on": "matrix",
+  "geometry_basis": "photo_interpretation",
+  "measured": false,
+  "instance_id": "sb-mugs",
+  "itil_code": "PDG103-EST-01",
+  "independent_products": 115,
+  "product_references": 26,
+  "product_uniform_scale": 1.3,
+  "parts": "./matrix.parts.json",
+  "collection": "./collection-matrix/preview/",
+  "composition_only": true,
+  "lods": {
+    "web": "./hiperreal.glb",
+    "hd_unreal_nanite": "./hiperreal/hiperreal-hd.glb",
+    "blender": "./hiperreal.blend"
+  },
+  "lighting": {"web_hdri": "./hiperreal/comfy_cafe_1k.hdr", "cycles_hdri": "Poly Haven comfy_cafe 4K"},
+  "texture_sources_cc0": ["polyhaven:oak_veneer_01", "polyhaven:concrete_floor_02", "polyhaven:plaster_grey_04", "polyhaven:comfy_cafe", "ambientcg:Metal049A", "ambientcg:Cardboard004", "ambientcg:Fingerprints002", "ambientcg:Smear007"],
+  "renders": "./hiperreal/preview/",
+  "source": "./hiperreal/source/build_hiperreal.py",
+  "phase2_scanning": "/admira-xp/docs/escaneo-productos-reales.md"
+}

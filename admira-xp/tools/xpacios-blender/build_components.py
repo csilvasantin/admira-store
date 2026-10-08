@@ -1,4 +1,4 @@
-"""Publish semantic composition of the 50 existing Best inventory models.
+"""Publish semantic composition of the registered Best inventory models.
 
 Run from the repository root: python3 admira-xp/tools/xpacios-blender/build_components.py
 Use --check to verify that the published JSON matches this semantic source.
@@ -327,14 +327,20 @@ model(46, STARBUCKS,
       c('top-rails', 'Perfiles superiores', 'Top rails', 2)),
     g('products', 'Exposición representativa', 'Representative display', c('trays', 'Bandejas de producto', 'Product trays', 36, VISUAL),
       c('pastries', 'Piezas de pastelería con detalle superior', 'Pastry pieces with top detail', 36, VISUAL)))
-model(47, STARBUCKS,
-    g('shelves', 'Mueble expositor', 'Display furniture', c('base', 'Mueble inferior', 'Lower cabinet'),
-      c('back', 'Panel posterior', 'Back panel'), c('shelves', 'Baldas', 'Shelves', 6),
-      c('uprights', 'Montantes metálicos', 'Metal uprights', 3)),
-    g('products', 'Productos representativos', 'Representative products',
-      c('cup-containers', 'Recipientes cilíndricos con tapa', 'Cylindrical containers with lids', 50, VISUAL,
-        [c('body', 'Cuerpo del recipiente', 'Container body'), c('lid', 'Tapa', 'Lid')]),
-      c('coffee-packs', 'Paquetes de café representados', 'Represented coffee packs', 10, VISUAL)))
+model(47, ['inventario/assets/catalog/47/collection/source/build_scene.py',
+           'inventario/assets/catalog/47/best.parts.json'],
+    g('cabinet', 'Mueble expositor', 'Display cabinet',
+      c('structure', 'Estructura metálica independiente', 'Independent metal frame'),
+      c('shelves', 'Niveles de baldas de madera', 'Wood shelf levels', 5),
+      c('bays', 'Bahías de exposición', 'Display bays', 2)),
+    g('contents', 'Vasos, termos, tazas y café independientes', 'Independent cups, tumblers, mugs and coffee',
+      c('visual-designs', 'Referencias visuales con GLB independiente', 'Visual references with separate GLB', 26),
+      c('product-instances', 'Instancias visuales colocadas', 'Placed visual instances', 115,
+        ('Instancias de la composición visual; no es stock físico.',
+         'Instances in the visual composition; not physical stock.'))))
+MODELS[47]['note'] = label(
+    'Mueble interpretado desde la fotografía de Carlos: cinco niveles y 26 referencias visuales separadas. Las cantidades corresponden al modelo; no acreditan existencias, SKU comerciales ni altas patrimoniales de productos.',
+    'Cabinet interpreted from Carlos’s photograph: five levels and 26 separate visual references. Quantities describe the model; they do not establish stock, commercial SKUs or product lifecycle registration.')
 model(48, STARBUCKS, g('table', 'Mesa', 'Table', c('base', 'Base circular', 'Circular base'),
       c('pedestal', 'Pedestal central', 'Center pedestal'), c('top', 'Tablero redondo de madera', 'Round wood top')))
 model(49, STARBUCKS, g('chair', 'Silla', 'Chair', c('seat', 'Asiento de madera', 'Wood seat'),
@@ -355,10 +361,74 @@ model(50, [TOOLS + 'build_water_rack.py', 'inventario/assets/catalog/50/best.man
           c('cap-ribs', 'Estrías del tapón', 'Cap grip ribs', 36)])))
 
 
+# Preserve additive permanent models 51 and 52 when regenerating composition.
+MODELS.update({51: {'id': 'native:cafebreriaLibrary',
+      'number': 51,
+      'profile': 'best',
+      'basis': 'model',
+      'source': ['admira-xp/tools/xpacios-blender/build_cafebreria_library.py',
+                 'inventario/cafebreria/library.package.json'],
+      'note': {'es': 'Pieza original confirmada. Composición de una plantilla visual, no existencias '
+                     'físicas. Libros y vinilos interactivos se actualizan desde Stock; las seis '
+                     'portadas del GLB son la composición inicial.',
+               'en': 'Confirmed original piece. Composition of one visual template, not physical stock. '
+                     'Interactive books and records refresh from Stock; the six GLB covers are the '
+                     'initial composition.'},
+      'groups': [{'id': 'structure',
+                  'label': {'es': 'Estructura de nogal', 'en': 'Walnut structure'},
+                  'components': [{'id': 'sides',
+                                  'label': {'es': 'Laterales', 'en': 'Sides'},
+                                  'quantity': 2},
+                                 {'id': 'boards',
+                                  'label': {'es': 'Tableros horizontales', 'en': 'Horizontal boards'},
+                                  'quantity': 4},
+                                 {'id': 'back', 'label': {'es': 'Trasera', 'en': 'Back'}, 'quantity': 1},
+                                 {'id': 'brass',
+                                  'label': {'es': 'Listón de latón', 'en': 'Brass trim'},
+                                  'quantity': 1}]},
+                 {'id': 'contents',
+                  'label': {'es': 'Contenidos independientes', 'en': 'Independent contents'},
+                  'components': [{'id': 'tv',
+                                  'label': {'es': 'Tele retro', 'en': 'Retro TV'},
+                                  'quantity': 1},
+                                 {'id': 'books',
+                                  'label': {'es': 'Libros iniciales del GLB', 'en': 'Initial GLB books'},
+                                  'quantity': 6},
+                                 {'id': 'records',
+                                  'label': {'es': 'Vinilos iniciales', 'en': 'Initial records'},
+                                  'quantity': 6}]}]},
+ 52: {'id': 'native:ipadLandscape',
+      'number': 52,
+      'profile': 'best',
+      'basis': 'model',
+      'source': ['admira-xp/tools/xpacios-blender/build_ipad.py'],
+      'note': {'es': 'iPad virtual previsto. Proporciones nominales; no son medidas de un equipo '
+                     'instalado. Componentes del modelo, no stock.',
+               'en': 'Planned virtual iPad. Nominal proportions, not measurements of installed '
+                     'hardware. Model components, not stock.'},
+      'groups': [{'id': 'ipad',
+                  'label': {'es': 'iPad horizontal', 'en': 'Landscape iPad'},
+                  'components': [{'id': 'body',
+                                  'label': {'es': 'Carcasa', 'en': 'Body'},
+                                  'quantity': 1,
+                                  'unit': 'piece'},
+                                 {'id': 'bezel',
+                                  'label': {'es': 'Marco', 'en': 'Bezel'},
+                                  'quantity': 1,
+                                  'unit': 'piece'},
+                                 {'id': 'display',
+                                  'label': {'es': 'Pantalla 4:3', 'en': '4:3 display'},
+                                  'quantity': 1,
+                                  'unit': 'piece'},
+                                 {'id': 'stand',
+                                  'label': {'es': 'Soporte de sobremesa', 'en': 'Counter stand'},
+                                  'quantity': 1,
+                                  'unit': 'piece'}]}]}})
+
 def validate(data):
-    assert len(data['assets']) == len(REGISTRY) == 50
+    assert len(data['assets']) == len(REGISTRY)
     assert {a['id']: a['number'] for a in data['assets']} == REGISTRY
-    assert [a['number'] for a in data['assets']] == list(range(1, 51))
+    assert [a['number'] for a in data['assets']] == sorted(REGISTRY.values())
     for a in data['assets']:
         assert all((ROOT / source).is_file() for source in a['source']), a['id']
         assert a['groups']
@@ -385,7 +455,7 @@ def validate(data):
     assert water['groups'][1]['components'][0]['quantity'] == 19
 
 
-data = {'schema_version': 1, 'revision': 'components-20261002-1',
+data = {'schema_version': 1, 'revision': 'components-20261008-coffee47-1',
         'assets': [MODELS[n] for n in sorted(MODELS)]}
 validate(data)
 content = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
@@ -397,4 +467,4 @@ if args.check:
     assert destination.read_text() == content, 'Regenerate inventario/components.json'
 else:
     destination.write_text(content)
-print('50 semantic model breakdowns verified; shelf 45 products, water rack 19 bottles; stock remains unverified.')
+print(f'{len(MODELS)} semantic model breakdowns verified; Starbucks shelf: five levels, 26 visual references; stock remains unverified.')
