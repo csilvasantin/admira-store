@@ -5353,5 +5353,25 @@
       "23": "faro"
     },
     "untouched": "vitrina 46 (cristal grande), PET 50 y piloto 47 (cristal de autor)"
+  },
+  "hiperreal_piezas_manuales": {
+    "status": "implemented",
+    "revision": "r23",
+    "pieces": {
+      "4": "barra reposapiés de latón, terminal de lotería con pantalla, ranura de boletos y boleto",
+      "6": "tres varillas de latón con postes que sujetan las revistas",
+      "17": "barra reposapiés de latón, 8 potenciómetros y 2 faders en el mezclador",
+      "18": "dispensador de tiques con botón rojo, ranura y tique; brida del poste con 4 tornillos"
+    },
+    "how": "pieces.json → add_parts (nombres 'Hiperreal …', coordenadas de mundo, clase de material, color y rugosidad por pieza)",
+    "viewer": "https://www.xpaceos.com/inventario/?asset=4&quality=hiperreal#mostrador",
+    "ids": "inventoryNumber y nodos de Best conservados; GLB web 0,26–2,4 MB, sin cristal"
+  },
+  "hiperreal_etiquetas_planas": {
+    "status": "implemented",
+    "revision": "r23",
+    "rule": "La variación (jitter) no mueve objetos planos de menos de 1,5 mm (etiquetas impresas, pegatinas; ajustable con decal_max_m) y gira cada objeto sobre el centro de su geometría, no sobre su origen",
+    "fixed": "estantería 2: las etiquetas frontales de los paquetes se salían del frente en Hiperreal (visibles en Best)",
+    "viewer": "https://www.xpaceos.com/inventario/?asset=2&quality=hiperreal#mostrador"
   }
 }

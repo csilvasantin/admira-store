@@ -344,13 +344,19 @@ def build():
             seen.add(o.data.name); box_uv(o,tile_for)
     # 4. jitter loose items (seeded by object name: reproducible)
     J=PC.get('jitter',{}); maxs=PC.get('jitter_max_size_m',.5)
+    # Flat decals (printed labels, stickers: thinner than decal_max_m) never move: they belong to the face they
+    # are printed on (labels of piece 2 slid off their packs). Rotation pivots on the object's own geometry centre,
+    # not on its origin (labels/products whose origin sits at the shelf origin swung several cm).
+    dmax=PC.get('decal_max_m',.0015); log['decals_kept']=0
     for o in meshes():
         cls=primary_class(o)
         if cls not in J or max(o.dimensions)>maxs: continue
+        if min(o.dimensions)<dmax: log['decals_kept']+=1; continue
         j=J[cls]; r=rng(o.name)
-        o.location.x+=r.uniform(-j['pos'],j['pos']); o.location.y+=r.uniform(-j['pos'],j['pos'])
-        o.rotation_euler.z+=math.radians(r.uniform(-j['rot'],j['rot']))
-        if j.get('scale'): k=1+r.uniform(-j['scale'],j['scale']); o.scale=(o.scale.x*k,o.scale.y*k,o.scale.z*k)
+        dx=r.uniform(-j['pos'],j['pos']); dy=r.uniform(-j['pos'],j['pos']); a=math.radians(r.uniform(-j['rot'],j['rot']))
+        k=1+r.uniform(-j['scale'],j['scale']) if j.get('scale') else 1
+        c=sum((Vector(v) for v in o.bound_box),Vector())/8; p=o.matrix_basis@c
+        o.matrix_basis=Matrix.Translation(p+Vector((dx,dy,0)))@Matrix.Rotation(a,4,'Z')@Matrix.Scale(k,4)@Matrix.Translation(-p)@o.matrix_basis
         o['hiperreal_variation']=True; log['jittered']+=1
     for o in B.objects:
         if o.parent is None and o.type in ('MESH','EMPTY'): o['quality']='hiperreal'

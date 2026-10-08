@@ -68,6 +68,6 @@ test('Starbucks contract still resolves through shared module', () => {
   const sb = JSON.parse(readFileSync(new URL('../starbucks/manifest.json', import.meta.url), 'utf8'));
   const refs = JSON.parse(readFileSync(new URL('../starbucks/references.json', import.meta.url), 'utf8'));
   const registered = refs.items.filter(r => r.status === 'registered');
-  assert.equal(registered.length, 11);
+  assert.equal(registered.length, 12); // 44–50 + iPad horizontal 52 (12 registros: 2 mesas, 4 sillas)
   assert.equal(recordFor(sb, registered[0]).code, registered[0].itil_code);
 });

@@ -8,8 +8,8 @@ const glb=url=>{const bytes=fs.readFileSync(url);assert.equal(bytes.toString('as
 
 test('Hiperreal is the fifth finish of piece 47 with its own versioned GLB and Blender source',()=>{
  assert.deepEqual(qualityProfiles(47),['good','better','best','matrix','hiperreal']);
- assert.equal(selectedQuality(47,'hiperreal'),'hiperreal');assert.equal(selectedQuality(12,'hiperreal'),'best');
- assert.equal(isPhotoreal(47,'hiperreal'),true);assert.equal(isPhotoreal(47,'matrix'),true);assert.equal(isPhotoreal(47,'best'),false);assert.equal(isPhotoreal(3,'hiperreal'),false);
+ assert.equal(selectedQuality(47,'hiperreal'),'hiperreal');assert.equal(selectedQuality(99,'hiperreal'),'best');// every catalog piece 1–52 has Hiperreal now; 99 does not exist
+ assert.equal(isPhotoreal(47,'hiperreal'),true);assert.equal(isPhotoreal(47,'matrix'),true);assert.equal(isPhotoreal(47,'best'),false);assert.equal(isPhotoreal(99,'hiperreal'),false);
  for(const extension of ['glb','blend']){const url=new URL(furnitureURL(47,'hiperreal',extension));assert.match(url.pathname,new RegExp('/47/hiperreal\\.'+extension+'$'));assert.equal(url.searchParams.get('v'),'coffee47-hiperreal-20261008-1');assert.ok(fs.existsSync(url),url.pathname+' missing');}
 });
 

@@ -94,6 +94,6 @@ test('download resolution rejects remote URLs and files outside the published pi
 
 test('documented Blender script paths resolve from repository root',()=>{
   const readme=fs.readFileSync(new URL('admira-xp/tools/xpacios-blender/README.md',root),'utf8');
-  const commands=[...readme.matchAll(/--python ([^ ]+\.py)/g)];assert.equal(commands.length,2);
+  const commands=[...readme.matchAll(/--python ([^ ]+\.py)/g)];assert.equal(commands.length,3);// build_counter, verify_counter, build_water_rack
   for(const [,path]of commands){assert.ok(path.startsWith('admira-xp/tools/xpacios-blender/'));assert.ok(fs.existsSync(new URL(path,root)));}
 });

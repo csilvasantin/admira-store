@@ -25,8 +25,8 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 2371576,
-    "hd": 13563564,
+    "web": 2387532,
+    "hd": 13601068,
     "best": 933692
   },
   "shared_textures": "../../hiperreal-tex/",
@@ -56,7 +56,6 @@
   "renders": "./hiperreal/preview/",
   "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
   "guide": "/admira-xp/docs/hiperreal-pipeline.md",
-  "twin_instance": "sb-backbar",
   "geometry_detail": {
     "bevel": 0,
     "band": 0,
@@ -64,6 +63,18 @@
     "handle": 0,
     "kick": 0
   },
-  "added_parts": [],
-  "placed_on_front": []
+  "added_parts": [
+    "varilla retención 0",
+    "poste varilla 0 izq",
+    "poste varilla 0 der",
+    "varilla retención 1",
+    "poste varilla 1 izq",
+    "poste varilla 1 der",
+    "varilla retención 2",
+    "poste varilla 2 izq",
+    "poste varilla 2 der"
+  ],
+  "placed_on_front": [],
+  "object_classes": {},
+  "twin_instance": "sb-backbar"
 }

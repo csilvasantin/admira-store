@@ -10,6 +10,7 @@ Hiperreal es el acabado fotorrealista del catálogo: texturas PBR CC0 reales, im
 | 1 · Starbucks | 44 Barra de preparación, 45 Mostrador de caja, 46 Vitrina, 48 Mesa redonda, 49 Silla, 50 Botellero Solán de Cabras, 52 iPad horizontal | 08-10-2026 |
 | 2–6 · nativas y Pixeria | 2–43 y 51 (ver cada tanda abajo) | 08-10-2026 |
 | 7 · Mostrador | 1 (fuera del catálogo, `assets/mostrador/`) | 08-10-2026 |
+| r23 · manuales | piezas a mano en 4, 6, 17, 18; etiquetas de 2 | 08-10-2026 |
 
 Las piezas con Hiperreal están en `HIPERREAL_BATCHES` de `inventario/quality-model.mjs`.
 
@@ -38,7 +39,7 @@ Se conservan los nombres de objeto y todas las propiedades de inventario (`inven
    - Clasifica cada material por nombre (palabras clave), por color de la paleta Starbucks o por color/metalicidad, y le asigna un juego PBR CC0: `wood`, `wood_dark`, `wood_stained`, `stone`, `metal`, `metal_dark`, `powder`, `glass`, `led`, `ceramic`, `paper`, `cardboard`, `plastic`, `pastry`, `rubber`, `screen`, `gloss_black`, `keep`.
    - `texlib.py` tiñe la veta real (roble Poly Haven 4K, piedra) al color de diseño de cada material y genera ORM con huellas y manchas (ambientCG).
    - UV a escala física (veta a lo largo de la tabla).
-   - Variación sembrada por nombre en objetos sueltos (bollería, platos, etiquetas).
+   - Variación sembrada por nombre en objetos sueltos (bollería, platos, tiques), girando sobre el centro de cada objeto. Las calcomanías planas (< 1,5 mm, `decal_max_m`: etiquetas impresas) no se mueven nunca.
    - Exporta el HD y guarda el máster.
 2. `lod.sh <n>` · `gltf-transform`: dedup → resize 2K/1K → WebP q84 (→ quantize si pasa de 5 MB).
 3. `pipeline.py --mode before|after` · render rápido en Cycles (32 muestras): estudio Matrix neutro frente a tienda (HDRI comfy_cafe, focos cálidos, suelo de hormigón, pared de yeso, polvo y bisel de sombreado sólo en render).
@@ -81,7 +82,7 @@ Overrides nuevos en `pieces.json` para piezas de formas redondeadas o triangulad
 - `place_on_front`: coloca objetos con nombre (letreros 3D) sobre el frente de la pieza: `[dx, dz, escala, plano]`. Arregla los letreros de 13 y 14, que en Best estaban 2,4 m bajo el suelo.
 - `material_classes` → `powder` en la alfombra 11 para el relieve fino del tejido.
 
-Pendiente: la pieza 1 (Mostrador) usa `assets/mostrador/counter-interpreted-*.glb` y `counterURL`, fuera del catálogo; necesita soporte propio en `counter-asset.mjs` antes de tener Hiperreal. Las piezas 4, 6, 17, 18 y 11 mejoran solo por materiales.
+Pendiente: la pieza 1 (Mostrador) usa `assets/mostrador/counter-interpreted-*.glb` y `counterURL`, fuera del catálogo; necesita soporte propio en `counter-asset.mjs` antes de tener Hiperreal. La alfombra 11 mejora solo por materiales; 4, 6, 17 y 18 recibieron piezas manuales en r23 (ver abajo).
 
 ## Tanda 4 · primeras Pixeria (19–27)
 
@@ -130,3 +131,15 @@ Piezas: 36 Mesa casco espacial, 37 Mesa ogro, 38 Sillón gorila, 39 Sofá verde,
 
 **Comprobación en el visor**: `visor_shot.py BASE OUT n:calidad[:vista+zoom]` (Chromium sin cabeza, WebGL por SwiftShader) guarda capturas del visor publicado, p. ej. `python3 visor_shot.py https://www.xpaceos.com shots 1:hiperreal 19:hiperreal 2:hiperreal:front+4`.
 
+## r23 · piezas manuales (4, 6, 17, 18) y etiquetas de la estantería 2
+
+**Piezas manuales** (`add_parts` en `pieces.json`, nombres `Hiperreal …`, se biselan solas):
+- 4 Lotería: barra reposapiés de latón con dos soportes; terminal de lotería sobre la encimera (cuerpo, pantalla inclinada 20° clase `screen`, ranura y boleto impreso).
+- 6 Revistero: una varilla de latón Ø 1 cm con dos postes delante de las revistas de cada grada (z 0,29 / 0,61 / 0,93).
+- 17 Mesa DJ: la misma barra reposapiés que la Lotería (comparten bajo de mostrador), 8 potenciómetros negros a los lados del canal del mezclador y 2 faders.
+- 18 Gestor de turnos: dispensador de tiques en el poste (cuerpo, botón rojo, ranura y tique) y brida de anclaje con 4 tornillos.
+- Sin cristal (regla del visor web). Web 0,26 MB (18) – 2,4 MB (4); se conservan nombres de nodo e `inventoryNumber`. `HIPERREAL_REVISION` → 2.
+
+**Etiquetas de la estantería 2**: las etiquetas impresas de los paquetes son mallas planas cuyo origen está en el origen de la estantería. La variación de papel (3 mm, 3°) las giraba sobre ese origen y las desplazaba varios centímetros: se metían en el paquete o en el de al lado. Ahora `pipeline.py` no aplica variación a objetos de grosor < `decal_max_m` (1,5 mm por defecto) y el giro de los demás es sobre el centro de su geometría. Estantería 2 reconstruida (`jittered_items` 0, `decals_kept` 90), `HIPERREAL_REVISION` 2 → 4.
+
+**Revisados sin cambios en r23**: la estantería de tazas 47 (cristal de autor) y el PET azul del botellero 50 se ven bien en el visor web publicado, al nivel de Best.

@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r23.20:25": [
+    "Piezas hechas a mano en Hiperreal: la Lotería 4 y la Mesa DJ 17 estrenan barra reposapiés de latón. La Lotería suma un terminal con pantalla y boleto, y la Mesa DJ potenciómetros y faders.",
+    "El Revistero 6 sujeta sus revistas con varillas de latón. El Gestor de turnos 18 suma un dispensador de tiques con botón rojo y una brida atornillada al pie.",
+    "Estantería 2 en Hiperreal: las etiquetas frontales de los paquetes vuelven a verse; el pipeline ya no mueve las etiquetas impresas."
+  ],
   "v.08.10.2026.r22.19:53": [
     "Mostrador (pieza 1) con acabado Hiperreal: terrazo, roble, laca petróleo y latón con materiales reales; en el gemelo Best se carga solo (si falla, Best).",
     "Los faros de las motos 19, 20 y 23 y las botellas ámbar de la estantería 2 vuelven a verse en el visor web: el cristal pequeño pasa a laca brillante (el HD para Unreal conserva el cristal).",

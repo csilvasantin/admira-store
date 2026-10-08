@@ -13,7 +13,7 @@
     "Native finish.003": "plastic",
     "Native finish.004": "plastic"
   },
-  "jittered_items": 0,
+  "jittered_items": 1,
   "bevel": "procedural bevel applied to geometry",
   "lods": {
     "web": "./hiperreal.glb",
@@ -21,13 +21,16 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 175600,
-    "hd": 1039080,
+    "web": 262068,
+    "hd": 2696364,
     "best": 135356
   },
   "shared_textures": "../../hiperreal-tex/",
   "textures": [
+    "cardboard_normal_2k.jpg",
+    "metal_dark_orm.jpg",
     "metal_orm.jpg",
+    "paper_orm.jpg",
     "plastic_orm.jpg"
   ],
   "lighting": {
@@ -48,14 +51,25 @@
   "renders": "./hiperreal/preview/",
   "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
   "guide": "/admira-xp/docs/hiperreal-pipeline.md",
-  "twin_instance": "sb-backbar",
   "geometry_detail": {
-    "bevel": 0,
+    "bevel": 1,
     "band": 0,
     "panel": 0,
     "handle": 0,
     "kick": 0
   },
-  "added_parts": [],
-  "placed_on_front": []
+  "added_parts": [
+    "dispensador de tiques",
+    "botón de tique",
+    "ranura de tiques",
+    "tique",
+    "brida del poste",
+    "tornillo brida 0",
+    "tornillo brida 1",
+    "tornillo brida 2",
+    "tornillo brida 3"
+  ],
+  "placed_on_front": [],
+  "object_classes": {},
+  "twin_instance": "sb-backbar"
 }

@@ -26,8 +26,8 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 1670836,
-    "hd": 13705520,
+    "web": 1703676,
+    "hd": 13775776,
     "best": 486572
   },
   "shared_textures": "../../hiperreal-tex/",
@@ -58,14 +58,29 @@
   "renders": "./hiperreal/preview/",
   "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
   "guide": "/admira-xp/docs/hiperreal-pipeline.md",
-  "twin_instance": "sb-backbar",
   "geometry_detail": {
-    "bevel": 0,
+    "bevel": 4,
     "band": 0,
     "panel": 0,
     "handle": 0,
     "kick": 0
   },
-  "added_parts": [],
-  "placed_on_front": []
+  "added_parts": [
+    "barra reposapiés",
+    "soporte reposapiés izq",
+    "soporte reposapiés der",
+    "potenciómetro izq 0",
+    "potenciómetro izq 1",
+    "potenciómetro izq 2",
+    "potenciómetro izq 3",
+    "potenciómetro der 0",
+    "potenciómetro der 1",
+    "potenciómetro der 2",
+    "potenciómetro der 3",
+    "fader canal 1",
+    "fader canal 2"
+  ],
+  "placed_on_front": [],
+  "object_classes": {},
+  "twin_instance": "sb-backbar"
 }

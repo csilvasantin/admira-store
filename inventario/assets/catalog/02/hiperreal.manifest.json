@@ -22,7 +22,7 @@
     "Teal · satin lacquer": "plastic",
     "Walnut · recessed plinth": "wood"
   },
-  "jittered_items": 90,
+  "jittered_items": 0,
   "bevel": "procedural bevel applied to geometry",
   "lods": {
     "web": "./hiperreal.glb",
@@ -30,8 +30,8 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 3653628,
-    "hd": 25099804,
+    "web": 3640516,
+    "hd": 25086692,
     "best": 8774364
   },
   "shared_textures": "../../hiperreal-tex/",
@@ -75,12 +75,5 @@
   "added_parts": [],
   "placed_on_front": [],
   "object_classes": {},
-  "twin_instance": "sb-backbar",
-  "web_glass": {
-    "rule": "LOD web: cristal pequeño (≤ 0,35 m) -> laca opaca brillante con su tinte (webglass.py); el HD conserva el cristal",
-    "materials": [
-      "Amber glass · bottles"
-    ],
-    "revision": "r22"
-  }
+  "twin_instance": "sb-backbar"
 }

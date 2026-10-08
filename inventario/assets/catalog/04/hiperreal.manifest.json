@@ -20,7 +20,7 @@
     "Native finish.010": "wood",
     "Native finish.011": "wood"
   },
-  "jittered_items": 0,
+  "jittered_items": 1,
   "bevel": "procedural bevel applied to geometry",
   "lods": {
     "web": "./hiperreal.glb",
@@ -28,12 +28,13 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 2360628,
-    "hd": 20260640,
+    "web": 2425864,
+    "hd": 21324504,
     "best": 461976
   },
   "shared_textures": "../../hiperreal-tex/",
   "textures": [
+    "cardboard_normal_2k.jpg",
     "metal_orm.jpg",
     "oak_4a3b2f_4096.jpg",
     "oak_a4774b_4096.jpg",
@@ -41,6 +42,7 @@
     "oak_ba8a59_4096.jpg",
     "oak_c87459_4096.jpg",
     "oak_normal_2048.jpg",
+    "paper_orm.jpg",
     "plastic_orm.jpg"
   ],
   "lighting": {
@@ -61,14 +63,23 @@
   "renders": "./hiperreal/preview/",
   "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
   "guide": "/admira-xp/docs/hiperreal-pipeline.md",
-  "twin_instance": "sb-backbar",
   "geometry_detail": {
-    "bevel": 0,
+    "bevel": 3,
     "band": 0,
     "panel": 0,
     "handle": 0,
     "kick": 0
   },
-  "added_parts": [],
-  "placed_on_front": []
+  "added_parts": [
+    "barra reposapiés",
+    "soporte reposapiés izq",
+    "soporte reposapiés der",
+    "terminal de lotería",
+    "pantalla del terminal",
+    "ranura de boletos",
+    "boleto impreso"
+  ],
+  "placed_on_front": [],
+  "object_classes": {},
+  "twin_instance": "sb-backbar"
 }

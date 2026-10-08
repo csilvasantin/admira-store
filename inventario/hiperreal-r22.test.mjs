@@ -34,7 +34,7 @@ test('r22 · Mostrador (pieza 1) gains Hiperreal: allowed quality, twin Best cha
 });
 
 test('r22 · small glass in the web LOD becomes opaque gloss (2 bottles, 19/20/23 lamps); HD keeps real glass; big glass (46) untouched',()=>{
- for(const n of [2,19,20,23])assert.equal(HIPERREAL_REVISION[n],n===2?3:2);
+ for(const n of [2,19,20,23])assert.ok(HIPERREAL_REVISION[n]>=(n===2?3:2));
  const pad=n=>String(n).padStart(2,'0');
  for(const n of [2,19,20,23]){
   const web=glb(local(furnitureURL(n,'hiperreal'))).doc,hd=glb(new URL(`./assets/catalog/${pad(n)}/hiperreal/hiperreal-hd.glb`,import.meta.url)).doc;
