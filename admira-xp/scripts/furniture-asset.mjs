@@ -1,7 +1,7 @@
 import {GLTFLoader} from './vendor/GLTFLoader.mjs';
 import {cloneCounter,counterURL} from './counter-asset.mjs';
 import {assetForInstance} from '../../inventario/model.mjs?v=ipad-20261005-1';
-import {supportsQuality,twinQualityChain,hiperrealBatch,HIPERREAL_REVISION} from '../../inventario/quality-model.mjs?v=hiperreal-tanda5-20261008-1';
+import {supportsQuality,twinQualityChain,hiperrealBatch,HIPERREAL_REVISION} from '../../inventario/quality-model.mjs?v=hiperreal-tanda6-20261008-1';
 const cache=new Map();let registryPromise;
 export const inventoryIdFor=assetForInstance;
 export function furnitureURL(number,tier='best',extension='glb'){

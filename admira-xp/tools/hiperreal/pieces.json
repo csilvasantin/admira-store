@@ -1003,6 +1003,86 @@
     "gold": "metal",
     "dark": "powder"
    }
+  },
+  "36": {
+   "name": "Mesa casco espacial",
+   "material_classes": {
+    "black": "gloss_black",
+    "dark": "powder",
+    "grey": "screen"
+   },
+   "object_classes": {
+    "Leg": "metal_dark"
+   }
+  },
+  "37": {
+   "name": "Mesa ogro",
+   "material_classes": {
+    "skin": "plastic",
+    "white": "ceramic",
+    "black": "gloss_black"
+   },
+   "jitter": {}
+  },
+  "38": {
+   "name": "Sillón gorila",
+   "material_classes": {
+    "purple": "fabric",
+    "brown": "fabric",
+    "grey": "leather",
+    "red": "plastic"
+   },
+   "object_classes": {
+    "Seat": "fabric"
+   }
+  },
+  "39": {
+   "name": "Sofá verde",
+   "material_classes": {
+    "green": "fabric",
+    "dark": "leather"
+   },
+   "object_classes": {
+    "Sofa foot": "wood_dark"
+   }
+  },
+  "40": {
+   "name": "Chanclas azules",
+   "material_classes": {
+    "blue": "plastic",
+    "white": "plastic"
+   },
+   "object_classes": {
+    "Flip-flop sole": "rubber"
+   }
+  },
+  "41": {
+   "name": "Máquina arcade",
+   "material_classes": {
+    "yellow": "plastic",
+    "blue": "screen",
+    "black": "gloss_black",
+    "dark": "powder",
+    "red": "plastic",
+    "chrome": "metal"
+   },
+   "object_classes": {
+    "Coin door": "metal_dark"
+   }
+  },
+  "42": {
+   "name": "Caballo de madera",
+   "material_classes": {
+    "wood": "wood",
+    "brown": "fabric",
+    "black": "gloss_black"
+   }
+  },
+  "43": {
+   "name": "Silla de madera",
+   "material_classes": {
+    "wood": "wood"
+   }
   }
  }
 }

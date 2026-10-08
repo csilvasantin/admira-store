@@ -1,9 +1,9 @@
 import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1';
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=hiperreal-tanda5-20261008-1';
-import {createMatrixEnvironmentRoom} from '../../inventario/matrix-rendering.mjs?v=hiperreal-tanda5-20261008-1';
+import {createLifeScene} from './life-scene.mjs?v=hiperreal-tanda6-20261008-1';
+import {createMatrixEnvironmentRoom} from '../../inventario/matrix-rendering.mjs?v=hiperreal-tanda6-20261008-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
-import {inventoryIdFor} from './furniture-asset.mjs?v=hiperreal-tanda5-20261008-1';
+import {inventoryIdFor} from './furniture-asset.mjs?v=hiperreal-tanda6-20261008-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
 import {appendPassageOverlay} from './passage-overlay.mjs?v=check-passage-1';
@@ -27,7 +27,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   let model;
   try{model=sceneFactory(snapshot,{
     assetQuality,
-    loadFurniture:item=>import('./furniture-asset.mjs?v=hiperreal-tanda5-20261008-1').then(m=>m.loadFurniture(item,assetQuality)).then(preparePhotoreal),
+    loadFurniture:item=>import('./furniture-asset.mjs?v=hiperreal-tanda6-20261008-1').then(m=>m.loadFurniture(item,assetQuality)).then(preparePhotoreal),
     loadPerson:assetQuality==='best'?actor=>import('./best-person-asset.mjs?v=visitors-24').then(m=>m.loadBestPerson(actor)):null
   });}catch(error){renderer.dispose();renderer.forceContextLoss();throw error;}
   const camera=new T.OrthographicCamera(-15,15,10,-10,.1,200);

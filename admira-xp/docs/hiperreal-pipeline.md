@@ -8,6 +8,7 @@ Hiperreal es el acabado fotorrealista del catálogo: texturas PBR CC0 reales, im
 |---|---|---|
 | 0 · piloto | 47 Estantería de tazas y café Starbucks | 08-10-2026 |
 | 1 · Starbucks | 44 Barra de preparación, 45 Mostrador de caja, 46 Vitrina, 48 Mesa redonda, 49 Silla, 50 Botellero Solán de Cabras, 52 iPad horizontal | 08-10-2026 |
+| 2–6 · nativas y Pixeria | 2–43 y 51 (ver cada tanda abajo) | 08-10-2026 |
 
 Las piezas con Hiperreal están en `HIPERREAL_BATCHES` de `inventario/quality-model.mjs`.
 
@@ -94,3 +95,17 @@ Pendiente: la pieza 1 (Mostrador) usa `assets/mostrador/counter-interpreted-*.gl
 - `metal_dark` se neutraliza (85 % hacia gris) antes de subir la luminancia: el hierro no hereda el tinte del color original (correas azuladas del 27).
 - Pinball 30: `add_parts` con lanzador y botones de flipper. El cristal sobre el tablero se quitó: el visor web no tiene transmisión y lo pintaba como una losa gris opaca.
 - Cloudflare Pages (xpaceos.pages.dev): el workflow quita del paquete todo archivo de más de 25 MiB y lo redirige (302) a `raw.githubusercontent.com/<repo>/<commit>/…`, la copia fija del mismo commit. No hace falta tocar `.gitattributes` al añadir piezas pesadas.
+
+## Tanda 6 · Pixeria 36–43 (catálogo completo)
+
+Piezas: 36 Mesa casco espacial, 37 Mesa ogro, 38 Sillón gorila, 39 Sofá verde, 40 Chanclas azules, 41 Máquina arcade, 42 Caballo de madera, 43 Silla de madera. Con ellas todas las piezas del catálogo (2–52) tienen Hiperreal; la pieza 1 (Mostrador) sigue fuera del catálogo.
+
+- Sin clases nuevas: sólo `material_classes` y `object_classes` en `pieces.json` (patas de hierro en 36, asiento de tela en 38, patas de madera oscura en 39, suela de goma en 40, puerta de monedas metálica en 41).
+- **Nada de `glass` sobre superficies**: el visor web no tiene transmisión y lo pinta como una losa gris opaca (lección del pinball 30). Visera del casco 36 y pantalla de la arcade 41 usan `screen` (laca brillante), no cristal.
+- `jitter: {}` en la mesa ogro 37: ojos y sonrisa son piezas pequeñas de cerámica y la variación por defecto los despegaba de la cara.
+- Todas son mallas redondeadas: `detail()` no añade geometría y mejoran por materiales y luz. Web 0,05–0,97 MB, HD 0,35–7,0 MB.
+- Comprobación: además de cargar el GLB, captura de cada pieza en el visor web publicado (`/inventario/?asset=<n>&quality=hiperreal#mostrador`).
+
+## Despliegue de admira-store (Cloudflare Pages)
+
+`.github/cloudflare-grandes.sh` (lo llaman el flujo `cloudflare-pages.yml` y `deploy.sh`) quita del paquete todo archivo de más de 25 MiB y antepone en `_redirects` un 302 a la copia de XpaceOS: primero `raw.githubusercontent.com/csilvasantin/xpaceos/<commit espejado>/…` (de `version.json.mirrorOf`), si no `www.xpaceos.com/…`, y como último recurso la copia de la propia tienda en GitHub. Sólo acepta un destino que responda 200 con el mismo tamaño y nunca apunta a admira.store: sin bucles. Ya no hay entradas a mano en `.gitattributes` ni en `_redirects`.

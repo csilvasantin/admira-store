@@ -1,5 +1,5 @@
 import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=starbucks-defaults-1';
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=hiperreal-tanda5-20261008-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=hiperreal-tanda6-20261008-1';
 import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=ipad-20261005-1';
 import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=xtore-ux-3';
 import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=options-language-1';

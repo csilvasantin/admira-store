@@ -3,7 +3,7 @@
   // Version format: v.DD.MM.YYYY.rN.HH:MM (R restarts at 1 each day).
   root.XTANCO_APP = Object.freeze({
     name: 'Admira XP // The Xpace OS',
-    version: 'v.08.10.2026.r19.19:07',
+    version: 'v.08.10.2026.r20.19:20',
     build: '20261007-0702',
     cacheName: 'xpaceos-player-blob-20261007-r4',
   });
