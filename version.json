@@ -1,13 +1,16 @@
 {
-  "version": "v.08.10.2026.r23.20:25",
-  "deployer": "GrokBot",
+  "version": "v.08.10.2026.r24.22:20",
+  "deployedAt": "2026-10-08T20:23:26Z",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
-  "deployedAt": "2026-10-08T18:31:17.549124+00:00",
-  "git": "631e0cf33be670d55886df298c1df853969e199b",
-  "gitFull": "631e0cf33be670d55886df298c1df853969e199b",
-  "gitShort": "631e0cf",
+  "signature": "OraculoMacMini · MacMini",
+  "git": "2a08465d774f4b6dedc3f85ad6cc3baa448c5c92",
+  "gitShort": "2a08465",
+  "gitFull": "2a08465d774f4b6dedc3f85ad6cc3baa448c5c92",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "novedades": [
+    "SneakerStore: nueva categoría y tienda 3D editable en Santa Rosa 19.",
+    "/demo global: proyecto, Xpacio, playlist Pixeria y gemelo en una guía reutilizable.",
+    "Playlist compartida en la pantalla virtual y ayuda ES/EN; cámara IEU con preparación manual."
+  ]
 }
