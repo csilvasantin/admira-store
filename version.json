@@ -1,16 +1,16 @@
 {
-  "version": "v.09.10.2026.r3.00:10",
-  "deployedAt": "2026-10-08T22:10:53Z",
+  "version": "v.09.10.2026.r4.00:12",
+  "deployedAt": "2026-10-08T22:12:37Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "19f649a0a8a9c8bb1ea366772dd566c4206fea75",
-  "gitShort": "19f649a",
-  "gitFull": "19f649a0a8a9c8bb1ea366772dd566c4206fea75",
+  "git": "b96fc4f7fc2af107d764e2b0e70188706650876a",
+  "gitShort": "b96fc4f",
+  "gitFull": "b96fc4f7fc2af107d764e2b0e70188706650876a",
   "dirty": false,
   "novedades": [
-    "SneakerStore: fondo con pantalla LED y puerta central; mesa de caja pegada a la pared derecha.",
-    "El LED comparte el canal horizontal validado; nueva vista Fondo LED y migración conservando las ediciones.",
-    "Guía ES/EN, tutorial y contratos MCP actualizados."
+    "SneakerStore: fondo con LED continuo alrededor de puerta central oscura y mesa de caja a la derecha.",
+    "Vídeo del LED sin inversión horizontal y con proporciones originales; migración conserva las ediciones.",
+    "Guía, tutorial, ayuda ES/EN y contrato MCP actualizados."
   ]
 }
