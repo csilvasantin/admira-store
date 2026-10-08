@@ -104,6 +104,8 @@ Piezas: 36 Mesa casco espacial, 37 Mesa ogro, 38 Sillón gorila, 39 Sofá verde,
 - **Nada de `glass` sobre superficies**: el visor web no tiene transmisión y lo pinta como una losa gris opaca (lección del pinball 30). Visera del casco 36 y pantalla de la arcade 41 usan `screen` (laca brillante), no cristal.
 - `jitter: {}` en la mesa ogro 37: ojos y sonrisa son piezas pequeñas de cerámica y la variación por defecto los despegaba de la cara.
 - Todas son mallas redondeadas: `detail()` no añade geometría y mejoran por materiales y luz. Web 0,05–0,97 MB, HD 0,35–7,0 MB.
+- Coche 29 (revisión 2): la sirena del techo y los faros pasan de `glass` a `plastic` brillante. En el visor web el cristal perdía el rojo de la sirena; se vio al revisar 28–35 en el visor publicado.
+- Siguen con `glass` (sin revisar en esta tanda): botellas ámbar de 2, faros/parabrisas de 19, 20 y 23 y la vitrina 46.
 - Comprobación: además de cargar el GLB, captura de cada pieza en el visor web publicado (`/inventario/?asset=<n>&quality=hiperreal#mostrador`).
 
 ## Despliegue de admira-store (Cloudflare Pages)

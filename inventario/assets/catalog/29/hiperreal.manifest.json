@@ -12,9 +12,9 @@
     "chrome": "metal",
     "dark": "metal_dark",
     "red": "carpaint",
-    "red · glass": "glass",
+    "red · plastic": "plastic",
     "white": "carpaint",
-    "white · glass": "glass",
+    "white · plastic": "plastic",
     "yellow": "powder"
   },
   "jittered_items": 0,
@@ -25,8 +25,8 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 509444,
-    "hd": 2320076,
+    "web": 515200,
+    "hd": 2321916,
     "best": 340464
   },
   "shared_textures": "../../hiperreal-tex/",
@@ -68,7 +68,7 @@
     "Rear window": "gloss_black",
     "Windows": "gloss_black",
     "Windscreen": "gloss_black",
-    "Headlamp": "glass",
-    "Roof beacon": "glass"
+    "Headlamp": "plastic",
+    "Roof beacon": "plastic"
   }
 }

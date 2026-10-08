@@ -1,12 +1,12 @@
 {
-  "version": "v.08.10.2026.r20.19:20",
+  "version": "v.08.10.2026.r21.19:31",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "deployedAt": "2026-10-08T17:25:51.822424+00:00",
-  "git": "34b2fd55f17cc50c709c822c509029751c77ea76",
-  "gitFull": "34b2fd55f17cc50c709c822c509029751c77ea76",
-  "gitShort": "34b2fd5",
+  "deployedAt": "2026-10-08T17:34:44.761766+00:00",
+  "git": "80444f4319f97d457efe55276b8456105a50e33c",
+  "gitFull": "80444f4319f97d457efe55276b8456105a50e33c",
+  "gitShort": "80444f4",
   "dirty": false,
   "mirrorOf": "https://www.xpaceos.com/",
   "locale": "es"

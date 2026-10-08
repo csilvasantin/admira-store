@@ -6,8 +6,8 @@ export const MATRIX_ASSET_NUMBER=47;
 // (4, 5, 6, 8, 11, 12, 14, 16, 17, 18) con piezas añadidas a mano por pieza.
 export const PHOTOREAL_PROFILES=Object.freeze(['matrix','hiperreal']);
 export const HIPERREAL_BATCHES=Object.freeze({0:Object.freeze([47]),1:Object.freeze([44,45,46,48,49,50,52]),2:Object.freeze([2,3,7,9,10,13,15,51]),3:Object.freeze([4,5,6,8,11,12,14,16,17,18]),4:Object.freeze([19,20,21,22,23,24,25,26,27]),5:Object.freeze([28,29,30,31,32,33,34,35]),6:Object.freeze([36,37,38,39,40,41,42,43])});
-// Cache revision per piece when a published Hiperreal GLB is rebuilt (2 and 51: authored wood textures keep their own UVs; 27: neutral iron instead of teal).
-export const HIPERREAL_REVISION=Object.freeze({2:2,51:2,27:2,30:2});
+// Cache revision per piece when a published Hiperreal GLB is rebuilt (2 and 51: authored wood textures keep their own UVs; 27: neutral iron instead of teal; 29: beacon and headlamps as glossy plastic, not glass).
+export const HIPERREAL_REVISION=Object.freeze({2:2,51:2,27:2,29:2,30:2});
 export const HIPERREAL_ASSET_NUMBERS=Object.freeze(Object.values(HIPERREAL_BATCHES).flat().sort((a,b)=>a-b));
 export function hasHiperreal(number){return HIPERREAL_ASSET_NUMBERS.includes(number);}
 export function hiperrealBatch(number){const entry=Object.entries(HIPERREAL_BATCHES).find(([,numbers])=>numbers.includes(number));return entry?Number(entry[0]):null;}

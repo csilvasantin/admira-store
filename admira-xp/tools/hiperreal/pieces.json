@@ -883,8 +883,8 @@
     "Rear window": "gloss_black",
     "Windows": "gloss_black",
     "Windscreen": "gloss_black",
-    "Headlamp": "glass",
-    "Roof beacon": "glass"
+    "Headlamp": "plastic",
+    "Roof beacon": "plastic"
    }
   },
   "30": {

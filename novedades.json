@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r21.19:31": [
+    "Coche Cazafantasmas 29: la sirena del techo y los faros pasan de cristal a plástico brillante; la sirena vuelve a verse roja en el visor web.",
+    "Hiperreal tanda 6 (Pixeria 36–43): todo el catálogo, de la 2 a la 52, ya tiene Hiperreal.",
+    "admira.store publica sola los archivos de más de 25 MiB con redirección a XpaceOS."
+  ],
   "v.08.10.2026.r20.19:20": [
     "Hiperreal tanda 6: Pixeria 36–43 (mesa casco espacial, mesa ogro, sillón gorila, sofá verde, chanclas, máquina arcade, caballo y silla de madera).",
     "Con esta tanda todo el catálogo, de la pieza 2 a la 52, tiene acabado Hiperreal.",
