@@ -5392,6 +5392,24 @@
     "playlist": "https://mcp.admira.store/playlists/playlist-be8a1e99-1cce-4818-a796-da3372216d1e",
     "virtual_screen": "sneakers-store-santa-rosa-19-screen",
     "camera": "manual IEU Puerta Cam; 2-point camera crop; optional iPad/screen corners",
-    "physical_control": false
+    "physical_control": false,
+    "representation": {
+      "default": "photographic-360",
+      "scenes": [
+        "entrada",
+        "centro",
+        "fondo"
+      ],
+      "source": "IEU Store · 2026-10-08",
+      "editable_model": "?view=model",
+      "measurements": "approximate, not surveyed",
+      "photo_screens": "captured content; active playlist in View screen / 3D side display",
+      "layout_revision": "real-store-v2; previous browser layout retained",
+      "scene_links": {
+        "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
+        "centro": "https://www.admira.store/xpacios/sneakerstore/?scene=centro",
+        "fondo": "https://www.admira.store/xpacios/sneakerstore/?scene=fondo"
+      }
+    }
   }
 }

@@ -1,0 +1,25 @@
+{
+  "source": "IEU Store",
+  "observed_at": "2026-10-08",
+  "kind": "original 360 photographs; no live camera footage",
+  "assets": [
+    {
+      "scene": "entrada",
+      "file": "./panoramas/entrada.jpg",
+      "source": "https://digitaltwin.ieu.ai/s/store/static/scenes/e962065f7298.jpg",
+      "sha256": "451a221b277bf216329e1cef7500349faaff839c4accdeb1282397ba5771f8a4"
+    },
+    {
+      "scene": "centro",
+      "file": "./panoramas/centro.jpg",
+      "source": "https://digitaltwin.ieu.ai/s/store/static/scenes/77ca7bbd408b.jpg",
+      "sha256": "5fc92671f9b2f2775fcc0bf95db93906416228a83a2536a171fe6ad79b1898c1"
+    },
+    {
+      "scene": "fondo",
+      "file": "./panoramas/fondo.jpg",
+      "source": "https://digitaltwin.ieu.ai/s/store/static/scenes/407b2be5fd77.jpg",
+      "sha256": "4bf44c3d7a1525b2d5e8ce891c9cb4ef9d6ce9780f547abbd3654d0a0d856f3b"
+    }
+  ]
+}

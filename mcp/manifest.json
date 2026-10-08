@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.08.10.2026.r26.22:45",
+  "version": "v.08.10.2026.r27.23:15",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.84",
+    "version": "2.12.85",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -2897,6 +2897,24 @@
     "playlist": "https://mcp.admira.store/playlists/playlist-be8a1e99-1cce-4818-a796-da3372216d1e",
     "virtual_screen": "sneakers-store-santa-rosa-19-screen",
     "camera": "manual IEU Puerta Cam; 2-point camera crop; optional iPad/screen corners",
-    "physical_control": false
+    "physical_control": false,
+    "representation": {
+      "default": "photographic-360",
+      "scenes": [
+        "entrada",
+        "centro",
+        "fondo"
+      ],
+      "source": "IEU Store · 2026-10-08",
+      "editable_model": "?view=model",
+      "measurements": "approximate, not surveyed",
+      "photo_screens": "captured content; active playlist in View screen / 3D side display",
+      "layout_revision": "real-store-v2; previous browser layout retained",
+      "scene_links": {
+        "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
+        "centro": "https://www.admira.store/xpacios/sneakerstore/?scene=centro",
+        "fondo": "https://www.admira.store/xpacios/sneakerstore/?scene=fondo"
+      }
+    }
   }
 }
