@@ -25,14 +25,16 @@
   // Se recuerda en este navegador como los demás interruptores.
   const MODE_KEY='xpace:totem-interactivo', URL_KEY='xpace:totem-url';
   // Starbucks: same defaults whatever the entry route (selector, Street View/admira.biz, direct link).
-  function isSbux(){ try{ return new URLSearchParams(location.search).get('loc')==='alsea-sbux-021'; }catch(_){ return false; } }
+  function isSbux(){ try{ const q=new URLSearchParams(location.search); return q.get('loc')==='alsea-sbux-021'||q.get('project')==='starbucks'||q.get('circuit')==='alsea_starbucks'||!!window.XpaceStarbucks?.active?.(); }catch(_){ return false; } }
   (function normalizeSbux(){ try{ if(!isSbux()) return; const u=new URL(location.href); let ch=false;
     if(!u.searchParams.get('project')){ u.searchParams.set('project','starbucks'); ch=true; }
     if(!u.searchParams.get('circuit')){ u.searchParams.set('circuit','alsea_starbucks'); ch=true; }
     if(ch) history.replaceState(history.state,'',u.toString()); }catch(_){} })();
-  function stored(){ try{ const v=localStorage.getItem(MODE_KEY); if(v==='on') return true; if(v==='off') return false; return isSbux(); }catch(_){ return isSbux(); } }
+  // Cada entrada Starbucks empieza en quiosco; el avatar elegido se conserva para activarlo manualmente.
+  let starbucksMode=null;
+  function stored(){ if(isSbux()) return starbucksMode!==false; try{ const v=localStorage.getItem(MODE_KEY); if(v==='on') return true; if(v==='off') return false; return isSbux(); }catch(_){ return isSbux(); } }
   function storedUrl(){ try{ return localStorage.getItem(URL_KEY)||''; }catch(_){ return ''; } }
-  function remember(on,url){ try{ localStorage.setItem(MODE_KEY,on?'on':'off'); if(url) localStorage.setItem(URL_KEY,url); else if(!on) localStorage.removeItem(URL_KEY); }catch(_){} }
+  function remember(on,url){ if(isSbux()) starbucksMode=!!on; try{ localStorage.setItem(MODE_KEY,on?'on':'off'); if(url) localStorage.setItem(URL_KEY,url); else if(!on) localStorage.removeItem(URL_KEY); }catch(_){} }
   function announce(){ try{ window.dispatchEvent(new CustomEvent('xpace:totem-mode',{detail:{on:stored(),url:storedUrl()}})); }catch(_){} }
   const inMatrix=()=>!!window.XpaceStarbucksDemo;
   function setTotem(on,url){
@@ -92,7 +94,7 @@
   const AUDIO_KEY='xpace:cola-audio';
   function colaAudioOn(){ try{ return window.localStorage.getItem(AUDIO_KEY)!=='off'; }catch(_){ return true; } }
   function setColaAudio(on){ on=!!on; try{ if(on) window.localStorage.removeItem(AUDIO_KEY); else window.localStorage.setItem(AUDIO_KEY,'off'); }catch(_){}
-    if(!on){ try{ if(vozAudio) vozAudio.pause(); }catch(_){} try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){} colaPend.length=0; }
+    if(!on){ try{ if(vozAudio) vozAudio.pause(); }catch(_){} try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){} colaPend.length=0;colaGeneration++; }
     render(); toast(on?(en()?'🔊 Queue announcements ON':'🔊 Avisos de la cola activados'):(en()?'🔇 Queue announcements OFF':'🔇 Avisos de la cola parados'));
     try{ window.dispatchEvent(new CustomEvent('xpace:cola-audio',{detail:{on:on}})); }catch(_){} return on; }
   // Reset de la demo: cierra (recogido) todos los pedidos abiertos de la cola del quiosco y vacía la lista
@@ -103,7 +105,7 @@
       const todos=[].concat(d.recibido||[],d.preparando||[],d.listo||[]);
       await Promise.all(todos.map(p=>fetch(COLA_RELAY+'/cola/avanzar?store='+encodeURIComponent(st),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:p.id,numero:p.numero,a:'recogido'})}).then(r=>{ if(r.ok) n++; }).catch(()=>{})));
     }catch(_){}
-    orders.length=0; colaPend.length=0; try{ window.speechSynthesis&&window.speechSynthesis.cancel(); if(vozAudio) vozAudio.pause(); }catch(_){}
+    orders.length=0; colaPend.length=0;colaGeneration++; try{ window.speechSynthesis&&window.speechSynthesis.cancel(); if(vozAudio) vozAudio.pause(); }catch(_){}
     render(); toast(en()?'↺ Queue reset · '+n+' orders closed':'↺ Cola a cero · '+n+' pedidos cerrados');
     try{ window.dispatchEvent(new CustomEvent('xpace:cola-reset',{detail:{store:st,cerrados:n}})); }catch(_){} return n; }
   // Presentación Alsea (Carlos, 7-oct-2026): los botones flotantes del tótem («🛒 Kiosk/Quiosco» y «👆 Tocar el tótem»)
@@ -169,7 +171,7 @@
   // Contrato: {source:'admingo'|'ainimation-xperiencia', type:'say', id, text, lang} SOLO desde ainimation.studio.
   // Respuesta: {type:'say-ack', id, spoken, via}. Sin ack en 500 ms el quiosco usa la voz de su navegador.
   const SAY_ORIGIN=/^https:\/\/(www\.)?ainimation\.studio$/;
-  function totemSpeak(text,langTag){
+  function totemSpeak(text,langTag,{queue=false}={}){
     const t=String(text||'').replace(/\s+/g,' ').trim().slice(0,400); if(!t) return {spoken:false,via:'none'};
     try{ if(typeof showEv==='function') showEv('🗣 '+t.slice(0,90),'#00a862'); }catch(_){}
     let muted=false; try{ muted=(typeof homeMusicMuted!=='undefined')&&homeMusicMuted; }catch(_){}
@@ -178,26 +180,28 @@
     if(!colaAudioOn()) return {spoken:false,via:'cola-audio-off'};
     // 1) la cara viva (MetaHuman en pared/panel): la misma ruta que las respuestas del avatar
     let face=false; try{ face=!!(window.MH_FACE_ENABLED||((typeof metahumanWallOn==='function')&&metahumanWallOn())); }catch(_){}
-    if(face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
+    if(!queue&&face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
     if(muted) return {spoken:false,via:'muted'};
     // 2) voz de Admirito (Carlos, 7-oct-2026): ElevenLabs en castellano vía el proxy mcp-ainimation /voz
     //    (caché por frase, la clave nunca llega aquí). Si falla o tarda >6 s → voz del navegador es-ES.
-    if(!/^en/i.test(String(langTag||''))&&elOn()){ elSpeak(t,()=>browserSpeak(t,langTag)); return {spoken:true,via:'elevenlabs'}; }
+    if(!/^en/i.test(String(langTag||''))&&elOn()){ const done=elSpeak(t,()=>browserSpeak(t,langTag)); return {spoken:true,via:'elevenlabs',done}; }
     return browserSpeak(t,langTag);
   }
   // Voz por defecto: Santiago (nuzVc5hpXBWZjFEe4izg), la fija el worker /voz.
   const VOZ_URL='https://mcp-ainimation.admira.store/voz'; let vozAudio=null; window.__admiritoVoz=window.__admiritoVoz||[];
-  window.addEventListener('xpace:master-mute',e=>{ if(e&&e.detail&&e.detail.muted){ try{ if(vozAudio) vozAudio.pause(); }catch(_){} try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){} } });
+  window.addEventListener('xpace:master-mute',e=>{ if(e&&e.detail&&e.detail.muted){ colaGeneration++;colaPend.length=0; try{ if(vozAudio) vozAudio.pause(); }catch(_){} try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){} } });
   function elOn(){ try{ const q=new URLSearchParams(location.search); if(q.get('voz_el')==='0') return false; return localStorage.getItem('xpace:voz-admirito')!=='navegador'; }catch(_){ return true; } }
   function elSpeak(t,fallback){
-    let done=false; const fin=(ok,why)=>{ if(done) return; done=true; window.__admiritoVoz.push({texto:t,via:ok?'elevenlabs':'respaldo',why:why||'',at:Date.now()}); if(!ok) fallback(); };
-    try{ if(vozAudio) vozAudio.pause(); try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(_){}
-      let id=''; try{ id=new URLSearchParams(location.search).get('vozid')||''; }catch(_){}
-      const a=vozAudio=new Audio(VOZ_URL+'?texto='+encodeURIComponent(t.slice(0,240))+(id?'&voz='+encodeURIComponent(id):''));
-      const tm=setTimeout(()=>{ try{ a.pause(); }catch(_){} fin(false,'timeout'); },6000);
-      a.onplaying=()=>{ clearTimeout(tm); window.__admiritoVoz.push({texto:t,via:'elevenlabs-sonando',at:Date.now()}); }; a.onended=()=>fin(true); a.onerror=()=>{ clearTimeout(tm); fin(false,'error'); };
-      a.play().catch(e=>{ clearTimeout(tm); fin(false,'play:'+(e&&e.name)); });
-    }catch(_){ fin(false,'excepcion'); }
+    return new Promise(resolve=>{
+      let done=false,tm;const fin=(ok,why)=>{if(done)return;done=true;clearTimeout(tm);window.__admiritoVoz.push({texto:t,via:ok?'elevenlabs':'respaldo',why:why||'',at:Date.now()});if(ok)resolve();else Promise.resolve(fallback()?.done).then(resolve);};
+      try{if(vozAudio)vozAudio.pause();try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(_){}
+        let id='';try{id=new URLSearchParams(location.search).get('vozid')||'';}catch(_){}
+        const a=vozAudio=new Audio(VOZ_URL+'?texto='+encodeURIComponent(t.slice(0,240))+(id?'&voz='+encodeURIComponent(id):''));
+        tm=setTimeout(()=>{a.pause();fin(false,'timeout');},6000);
+        a.onplaying=()=>{clearTimeout(tm);window.__admiritoVoz.push({texto:t,via:'elevenlabs-sonando',at:Date.now()});tm=setTimeout(()=>{a.pause();if(!done){done=true;resolve();}},20000);};
+        a.onended=()=>fin(true);a.onerror=()=>fin(false,'error');a.play().catch(e=>fin(false,'play:'+(e&&e.name)));
+      }catch(_){fin(false,'excepcion');}
+    });
   }
   function browserSpeak(t,langTag){
     // voz del gemelo: castellano de España (es-ES), como la megafonía local
@@ -206,36 +210,39 @@
       const l=/^en/i.test(String(langTag||''))?'en-GB':'es-ES';
       const u=new window.SpeechSynthesisUtterance(t); u.lang=l; u.rate=0.98; u.pitch=1.3; u.volume=1;
       const vs=ss.getVoices()||[]; const v=vs.find(x=>x.lang===l)||vs.find(x=>(x.lang||'').replace('_','-')===l); if(v) u.voice=v;
-      try{ ss.cancel(); }catch(_){} ss.speak(u); return {spoken:true,via:'speech-'+l};
+      let finish;const done=new Promise(resolve=>{finish=resolve;});const tm=setTimeout(()=>{try{ss.cancel();}catch(_){}finish();},20000);u.onend=u.onerror=()=>{clearTimeout(tm);finish();};
+      try{ ss.cancel(); }catch(_){} ss.speak(u); return {spoken:true,via:'speech-'+l,done};
     }catch(_){ return {spoken:false,via:'none'}; }
   }
   window.addEventListener('message',e=>{
     const d=e.data; if(!d||d.type!=='say'||(d.source!=='admingo'&&d.source!=='ainimation-xperiencia')) return;
     if(!SAY_ORIGIN.test(e.origin)) return;
-    const r=totemSpeak(d.text,d.lang);
+    // La cola del gemelo es el único emisor del aviso listo, incluso con el iPad abierto.
+    const owned=!!colaStore()&&/(?:pedido Starbucks est[áa] preparado|Starbucks order is ready)/i.test(String(d.text||''));
+    const r=owned?{spoken:true,via:'queue-owner'}:totemSpeak(d.text,d.lang);
     (window.__totemSaid=window.__totemSaid||[]).push({text:String(d.text||''),lang:d.lang||'es-ES',via:r.via,at:Date.now()});
     try{ e.source&&e.source.postMessage({source:'xpaceos-totem',type:'say-ack',id:d.id,spoken:r.spoken,via:r.via},e.origin); }catch(_){}
   });
   // ── Cola de pedidos → Admirito del gemelo (7-oct-2026, Carlos) ──
   // Con Starbucks en escena (o ?cola=<store>) lee /cola/estado del relé de ainimation cada 3 s y, cuando un
-  // pedido pasa a «listo», el avatar lo dice UNA vez: «NOMBRE, tu pedido Starbucks está preparado»
-  // (sin nombre: «Pedido A015, …»). Habla con totemSpeak (cara MetaHuman si está viva; si no, voz es-ES).
+  // pedido pasa a «listo», se anuncia una vez en castellano y después una vez en inglés: «NOMBRE, tu pedido Starbucks está preparado»
+  // (sin nombre: «Pedido A015, …»). Un único emisor espera el final real de cada voz antes de la siguiente.
   // Los listos que ya había al abrir no se anuncian. Demo: pago SIMULADO. Rastro: window.__gemeloColaAvisos.
   const COLA_RELAY='https://mcp-ainimation.admira.store';
-  const colaVistos=new Set(),colaPend=[];let colaPrimera=true,colaHablando=false,colaStoreActual='';
+  const colaVistos=new Set(),colaPend=[];let colaPrimera=true,colaHablando=false,colaStoreActual='',colaGeneration=0;
   window.__gemeloColaAvisos=window.__gemeloColaAvisos||[];
   function colaStore(){ try{ const q=new URLSearchParams(location.search).get('cola'); if(q) return q.replace(/[^a-z0-9-]/g,'').slice(0,80); }catch(_){}
-    try{ if(window.XpaceStarbucks&&window.XpaceStarbucks.active()) return 'starbucks-paseo-de-gracia'; }catch(_){} return ''; }
-  function colaTexto(p){ const n=String(p.nombre||'').replace(/[^\p{L} '\-]/gu,'').trim().slice(0,24);
-    return n?(en()?n+', your Starbucks order is ready':n+', tu pedido Starbucks está preparado'):(en()?'Order '+p.numero+', your Starbucks order is ready':'Pedido '+p.numero+', tu pedido Starbucks está preparado'); }
-  function colaSiguiente(){ if(colaHablando||!colaPend.length) return; colaHablando=true; const p=colaPend.shift(),t=colaTexto(p);
-    const r=totemSpeak(t,en()?'en-GB':'es-ES'); toast('☕ '+t);
-    window.__gemeloColaAvisos.push({numero:p.numero,nombre:p.nombre||null,text:t,via:r.via,at:Date.now()});
-    setTimeout(()=>{ colaHablando=false; colaSiguiente(); },6000); }
+    if(isSbux())return 'starbucks-paseo-de-gracia';return ''; }
+  function colaTexto(p,language=en()?'en':'es'){const n=String(p.nombre||'').replace(/[^\p{L} '\-]/gu,'').trim().slice(0,24),english=language==='en';
+    return n?(english?n+', your Starbucks order is ready':n+', tu pedido Starbucks está preparado'):(english?'Order '+p.numero+', your Starbucks order is ready':'Pedido '+p.numero+', tu pedido Starbucks está preparado');}
+  async function colaSiguiente(){if(colaHablando||!colaPend.length)return;colaHablando=true;const generation=colaGeneration;
+    try{while(colaPend.length&&generation===colaGeneration){const p=colaPend.shift();for(const language of ['es','en']){if(generation!==colaGeneration||!colaAudioOn()||window.dsMasterMute)break;const t=colaTexto(p,language),langTag=language==='en'?'en-GB':'es-ES';
+      const r=totemSpeak(t,langTag,{queue:true});toast('☕ '+t);window.__gemeloColaAvisos.push({id:p.id||p.numero,numero:p.numero,nombre:p.nombre||null,text:t,lang:langTag,via:r.via,at:Date.now()});await r.done;
+    }}}finally{colaHablando=false;if(colaPend.length)void colaSiguiente();}}
   async function colaTic(){ const st=colaStore(); if(!st){ colaStoreActual=''; return; }
-    if(st!==colaStoreActual){ colaStoreActual=st; colaVistos.clear(); colaPrimera=true; }
+    if(st!==colaStoreActual){ colaStoreActual=st; colaGeneration++;colaPend.length=0;colaVistos.clear(); colaPrimera=true; }
     try{ const d=await (await fetch(COLA_RELAY+'/cola/estado?store='+encodeURIComponent(st),{cache:'no-store'})).json();
-      (d.listo||[]).forEach(p=>{ if(!colaVistos.has(p.numero)){ colaVistos.add(p.numero); if(!colaPrimera) colaPend.push(p); } });
+      (d.listo||[]).forEach(p=>{ const key=p.id||p.numero;if(!colaVistos.has(key)){ colaVistos.add(key); if(!colaPrimera) colaPend.push(p); } });
       colaPrimera=false; colaSiguiente(); }catch(_){} }
   setInterval(colaTic,3000);
   function boot(){ ensure(); setInterval(()=>{ try{ if(!tocado&&esTotem(document.activeElement)) tocado=true; /* clic dentro del iframe del tótem = foco */ btn.style.display=(tocado&&(kioskOn()||(window.XpaceStarbucks&&window.XpaceStarbucks.active())||new URLSearchParams(location.search).has('kiosko')))?'block':'none'; render(); const t=document.getElementById('totemAvatar'); if(t){ t.style.zIndex=kioskOn()?'60':'6'; } }catch(_){} },1500);

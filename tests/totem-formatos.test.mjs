@@ -13,7 +13,7 @@ function harness(on=false){
  return {api,wall,frame,expand,close,model,win,storage,poll:()=>poll(),message:e=>events.message?.(e),released:()=>released,posts};
 }
 
-test('Tótem OFF (por defecto): el player enseña el avatar digital y no recibe toques',()=>{
+test('Tótem OFF explícito: el player enseña el avatar digital y no recibe toques',()=>{
  const x=harness(false);assert.equal(x.wall.dataset.mode,'avatar');assert.match(x.frame.src,/nube\.html/);assert.equal(x.frame.inert,true);
 });
 test('Tótem ON recordado: quiosco Starbucks Paseo de Gracia con formato del player y toques',()=>{

@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.08.10.2026.r7.08:04",
+  "version": "v.08.10.2026.r8.08:24",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.78",
+    "version": "2.12.79",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -2768,5 +2768,34 @@
     },
     "help_es": "Experto: /convertir 2da3d abre la foto original del botellero y su modelo 3D ITIL interactivo, compuesto con 13 botellas. Arrastra para girar; rueda o +/− para zoom; flechas para rotar. Reutiliza la conversión existente, sin regenerarla. En PREVIOS, una imagen muestra Crear vídeo · 10 s. También puedes elegirla en Crear contenidos → Crear vídeo → Imagen de origen; describe los detalles y mensajes que debe ampliar y elige horizontal (iPad) o vertical (pantallas). Generar usa esa imagen de Stock y crea 10 segundos a 720p. La barra refleja Preparar → Crear → Stock → Listo, sin porcentajes estimados del proveedor. Reintentar recupera el mismo trabajo; cambiar texto, imagen, idioma o formato inicia otro. El vídeo conserva la referencia de la imagen y se guarda en Stock antes del previo; crear no emite. Sin imagen sigue disponible el vídeo desde texto de 8 s. La oferta del agua se compone en vertical 720×1280 para starbucks-wall-01–06 y horizontal 1280×720 para starbucks-ipad-01, con la cantidad actual y el 10 % hasta agotarse.",
     "help_en": "Expert: /convertir 2da3d opens the original rack photograph beside its interactive ITIL 3D model composed with 13 bottles. Drag to rotate; scroll or +/− to zoom; arrow keys rotate. It reuses the existing conversion without regenerating it. An image in PREVIEWS offers Create video · 10 s. You can also select it under Create media → Create video → Source image; describe the details and messages to expand, then choose landscape (iPad) or portrait (screens). Generate uses that Stock image and creates 10 seconds at 720p. The bar shows Prepare → Create → Stock → Ready, without estimated provider percentages. Retry recovers the same job; changing the brief, source image, language or format starts another. The video retains source-image provenance and is saved to Stock before preview; creating does not broadcast. Text-only 8-second video remains available. The water offer is composed as portrait 720×1280 for starbucks-wall-01–06 and landscape 1280×720 for starbucks-ipad-01, with current quantity and 10% off until sold out."
+  },
+  "starbucks_defaults": {
+    "es": "Cada entrada a Starbucks empieza con el tótem en modo quiosco de pedido y las seis pantallas de pared reproduciendo su playlist Starbucks. Un avatar elegido anteriormente no cambia ese arranque: /avatar good|better|best on o /totem off permite activarlo durante la visita; /totem on vuelve al quiosco. Se conserva el nivel elegido. La cesta y las botellas retiradas se conservan al recargar, pero la oferta del agua solo aparece tras una entrega en la visita actual; Recargar playlist o Reset la retira y recupera la programación. Cada pedido nuevo que pasa a Preparado se anuncia una vez en castellano (es-ES) y después una vez en inglés (en-GB), independientemente del idioma de la interfaz, esperando el final de cada voz. Se deduplica por ID del pedido; los que ya estaban listos al abrir no se anuncian. Sin nombre se usa el número. El gemelo es el emisor único: el iPad integrado usa voz=0 y los mensajes de aviso listo de experiencias incrustadas se acusan sin volver a locutarlos. /totem audio off y /audio mute paran los avisos; al reactivar no se repiten los pedidos ya vistos. No cambia la cola ni el contenido publicado por MCP, las reglas del agua, el stock comercial ni dispositivos físicos.",
+    "en": "Each Starbucks entry starts with the totem in ordering-kiosk mode and all six wall screens playing their Starbucks playlist. A previously selected avatar does not change this startup: /avatar good|better|best on or /totem off enables it during the visit; /totem on restores the kiosk. The selected tier is retained. The basket and removed bottles survive reloads, but the water offer appears only after a delivery in the current visit; Reload playlist or Reset removes it and restores the schedule. Each newly ready order is announced once in Spanish (es-ES), then once in English (en-GB), regardless of interface language, waiting for each voice to finish. Orders are deduplicated by order ID; orders already ready on entry are not announced. Without a name, the order number is used. The twin is the single announcer: the embedded iPad uses voz=0 and ready-order speech requests from embedded experiences are acknowledged without speaking again. /totem audio off and /audio mute stop announcements; enabling audio does not repeat seen orders. Shared MCP queues/content, water rules, commercial stock and physical devices are preserved.",
+    "guide": "https://www.admira.store/admira-xp/docs/starbucks-defaults.md",
+    "commands": [
+      "/totem on",
+      "/totem off",
+      "/totem audio on|off",
+      "/avatar good|better|best on",
+      "/audio mute",
+      "/audio unmute"
+    ],
+    "ids": [
+      "starbucks-avatar-wall",
+      "starbucks-wall-01",
+      "starbucks-wall-02",
+      "starbucks-wall-03",
+      "starbucks-wall-04",
+      "starbucks-wall-05",
+      "starbucks-wall-06",
+      "starbucks-ipad-01"
+    ],
+    "queue_store": "starbucks-paseo-de-gracia",
+    "languages": [
+      "es-ES",
+      "en-GB"
+    ],
+    "scope": "local digital twin; one announcer per page"
   }
 }

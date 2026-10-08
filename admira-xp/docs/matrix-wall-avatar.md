@@ -1,28 +1,16 @@
 # Avatar en pared y Create Media / Wall avatar and Create Media
 
-ES: En Matrix de Starbucks Alsea, la pantalla de la pared de ladrillo muestra por defecto Good · Admirito, la nube animada. Pulsa la pantalla para abrir directamente la conversación con el idioma del site y el contexto de la cafetería. El selector de modelo y las órdenes /avatar digital good|better|best conservan la elección explícita de esta pestaña. Cerrar o Escape detiene la conversación, devuelve el avatar a la pared y recupera el hilo musical. El clic no abre la web Starbucks ni su demo. Se retiran los iconos de nota musical y siguiente situados sobre la pantalla del avatar; Escuchar/Silenciar y Siguiente canción siguen disponibles en Opciones → Hilo Musical. Se conservan Create Media en Experto, el previo único grande, Reset, las voces, el arrastre y el estado MCP compartido.
+ES: Starbucks arranca con el quiosco de pedido en la pared de ladrillo. /avatar good|better|best on o /totem off activa manualmente el avatar, conservando el nivel elegido; /totem on recupera el quiosco. Cerrar o Escape devuelve la pantalla a la pared y recupera el hilo musical. Al recargar, Starbucks vuelve al kiosco. Crear contenidos, previos, Reset, voces y arrastre se conservan.
 
-EN: In Starbucks Alsea Matrix, the brick-wall screen defaults to Good · Admirito, the animated cloud. Click the screen to open the conversation directly with the site language and coffee-shop context. The model selector and /avatar digital good|better|best commands retain this tab’s explicit choice. Close or Escape stops the conversation, restores the wall avatar and resumes background music. Clicking does not open the Starbucks website or its demo. The music-note and next-track icons above the avatar screen are removed; Listen/Mute and Next track remain in Options → Background Music. Create Media in Expert, the latest large preview, Reset, voices, dragging and shared MCP state are retained.
+EN: Starbucks starts with the ordering kiosk on the brick-wall screen. /avatar good|better|best on or /totem off enables the avatar manually while retaining its chosen tier; /totem on restores the kiosk. Close or Escape restores the wall screen and background music. Reload starts Starbucks in kiosk mode. Create media, previews, Reset, voices and dragging remain available.
 
-## Tutorial ES
-
-1. Abre ⌘ Experto. Crear contenidos está en la primera columna, tercera casilla; selecciona música, locución, imagen o vídeo en los formularios centrales.
-2. Pulsa Avatar digital en los controles de Matrix para mirar hacia la pared marcada. Si el dock tapa la escena, pliégalo con ⌘.
-3. Pulsa la pantalla para ampliar el kiosko. Explora su menú o pulsa Hablar con el avatar para conversar.
-4. Cerrar o Escape detiene la voz y vuelve a la portada del kiosko en la pared. La música recupera su volumen previo.
-
-## Tutorial EN
-
-1. Open ⌘ Expert. Create Media is the first column’s third tile; choose music, voiceover, image or video in the central forms.
-2. Press Digital avatar in Matrix controls to face the marked wall. Collapse Expert with ⌘ if it covers the scene.
-3. Click the wall screen to enlarge the kiosk. Explore its menu or press Talk to the avatar to converse.
-4. Close or Escape stops speech and restores the kiosk home page on the wall. Music returns to its prior volume.
+Tutorial ES/EN: [Arranque y avisos / Startup and announcements](starbucks-defaults.md).
 
 ## Contrato compartido / Shared contract
 
 - Module: `admira-xp/scripts/matrix-wall-avatar.mjs`; stable local ID `starbucks-avatar-wall`. Four spherical corners in `STARBUCKS_AVATAR_WALL` refer to capture `alsea-starbucks-360`, independent of playlist and mapping seeds. Projection reuses `quadTransform`; perspective follows camera pan, zoom and resize. Hidden behind the camera or during screen calibration.
 - Existing shared renderer URLs: Good `https://digitalavatar.ai/nube.html?dock=1` (Admirito, la nube animada), Better `https://digitalavatar.ai/best.html?dock=1&kiosk=0`, Best `https://digitalavatar.ai/metahuman.html?dock=1`. Read-only existing `admira-avatar:nivel` preference; no writes to the central on/off override. Unknown level falls back to Good. Renderer/model/brain availability belongs to DigitalAvatar.ai; this placement does not certify new Woz models or a new brain integration.
-- The wall is a scene preview, separate from the floating assistant: existing `/avatar digital on|off`, `/avatarDigital`, `/avatar good|better|best`, mascot, and totem commands remain unchanged. Single wall iframe; modal expansion changes the native dialog’s top-layer status without moving or duplicating the iframe. Closing loads the local kiosk, cancelling conversation playback. Matrix disposal removes it and its level subscription.
+- The wall is a scene preview, separate from the floating assistant: existing `/avatar digital on|off`, `/avatarDigital`, `/avatar good|better|best`, mascot, and totem commands remain unchanged. Single wall iframe; modal expansion changes the native dialog’s top-layer status without moving or duplicating the iframe. Closing preserves the kiosk iframe in kiosk mode and resets conversation playback in avatar mode. Matrix disposal removes it and its level subscription.
 - `expertQuickIcons` lists category `creation` in the previous `livecam` position, exactly once. `advQuickIcons` retains LiveCam. Creation forms, category selection, IDs, inputs and callbacks are retained; no new provider API.
 - Stable demo: https://www.admira.store/admira-xp/?loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&quality=matrix&lang=es (use `lang=en` for English).
 - MCP: help topic `matrix-wall-avatar`, existing help resource `xpaceos://help`; public https://mcp.admira.store/help. No new tool, remote player or Matrix-state mutation.

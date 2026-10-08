@@ -8,14 +8,14 @@ const code = fs.readFileSync(new URL('../admira-xp/scripts/totem-kiosko.js', imp
 function gemelo({ muted = false } = {}) {
   const listeners = {}, spoken = [], acks = [];
   const el = () => ({ style: {}, classList: { toggle() {}, add() {} }, appendChild() {}, addEventListener() {}, setAttribute() {}, querySelector: () => null, querySelectorAll: () => [], innerHTML: '' });
-  const w = {
+  const w = {localStorage:{getItem:k=>k==='xpace:voz-admirito'?'navegador':null},
     addEventListener: (t, f) => { (listeners[t] = listeners[t] || []).push(f); }, dispatchEvent() {},
     speechSynthesis: { getVoices: () => [{ lang: 'es-ES', name: 'Mónica' }, { lang: 'en-GB', name: 'Daniel' }], cancel() {}, speak: (u) => spoken.push(u) },
     SpeechSynthesisUtterance: function (t) { this.text = t; }, location: { search: '' }, setInterval() {}, setTimeout() {},
   };
   w.window = w;
   const doc = { readyState: 'loading', addEventListener() {}, createElement: el, getElementById: () => null, body: el(), head: el(), querySelector: () => null };
-  const ctx = vm.createContext({ window: w, document: doc, homeMusicMuted: muted, showEv() {}, URLSearchParams, URL, CustomEvent: function () {}, Intl, console, setInterval() {}, setTimeout() {}, lang: 'es' });
+  const ctx = vm.createContext({ window: w, localStorage:w.localStorage, location:w.location, document: doc, homeMusicMuted: muted, showEv() {}, URLSearchParams, URL, CustomEvent: function () {}, Intl, console, setInterval() {}, setTimeout() {}, clearTimeout() {}, lang: 'es' });
   vm.runInContext(code, ctx);
   const send = (origin, data) => (listeners.message || []).forEach((f) => f({ origin, data, source: { postMessage: (m, o) => acks.push({ m, o }) } }));
   return { send, spoken, acks };

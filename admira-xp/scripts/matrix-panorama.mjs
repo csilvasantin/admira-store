@@ -1,8 +1,8 @@
 import {WATER_VIEW} from './pos-water.mjs?v=water-finish-3';
 import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3';
-import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=water-finish-3';
+import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=starbucks-defaults-1';
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=una-lectura-1';
-import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=avatar-lang-1';
+import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=starbucks-defaults-1';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
@@ -91,7 +91,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function updateRuntime(){ensurePlaylistMedia();runtime.update({devices:[...previews].filter(([id,v])=>DEVICE_IDS.includes(id)&&!incidents?.off.has(id)&&!(demoMode==='ia'&&wallIds.has(id))&&v.tagName==='VIDEO'&&(v.dataset.wallVideo||v.dataset.tpvVideo)).map(([id,video])=>({id,video})),config:deviceEditor?.config||emptyDeviceLayout(),catalog:catalog()});applyScreenLayout();}
  function updateDeviceLabels(){for(const [id,badge] of numberNodes){const pid=assignedPlaylist(deviceEditor.config,id);badge.querySelector('small').textContent=deviceEditor.config.playlists[pid]?.title||(pid==='ipad'?t('Horizontal','Landscape'):pid==='tpv'?t('Publicidad local','Local advertising'):screenGroup(screenNumber(id))?t('Grupo ','Group ')+screenGroup(screenNumber(id)):t('Sola','Standalone'));}}
  async function previewDevices(ids,track){if(demoMode==='ia')await setDemoMode('linear');for(const id of ids){const p=model.players.find(p=>p.id===id);if(p&&nodes.has(id)&&!previews.get(id)?.dataset[[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo'])mediaFor(p,[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo');}updateRuntime();const result=await runtime.preview(ids,track);applyScreenLayout();return result;}
- async function reloadDevices(ids){if(demoMode==='ia')await setDemoMode('linear');updateRuntime();const result=await runtime.reload(ids);applyScreenLayout();return result;}
+ async function reloadDevices(ids){posExperience.clearWaterOffer();if(demoMode==='ia')await setDemoMode('linear');updateRuntime();const result=await runtime.reload(ids);applyScreenLayout();return result;}
  deviceEditor=mountDeviceEditor({root,surface,lang,onOpen:()=>setScreenNumbersVisible(true),getPlayback:ids=>runtime.nowPlaying(ids),nameFor:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),catalog,onPlay:async(pid,track)=>{if(demoMode==='ia')await setDemoMode('linear');ensurePlaylistMedia(pid);updateRuntime();const result=await runtime.jump(pid,track);applyScreenLayout();return result;},onPreview:previewDevices,onReload:reloadDevices,onChange:()=>{updateRuntime();updateDeviceLabels();}});deviceEditor.enable(getScreenNumbersVisible());
  const controller=ids=>({play(){if(demoMode==='ia'&&ids.length>1)void iaPlayback?.play();runtime.setPlaying(ids,true);},pause(){if(demoMode==='ia'&&ids.length>1)iaPlayback?.pause();runtime.setPlaying(ids,false);},state:()=>demoMode==='ia'&&ids.length>1?iaPlayback?.state()||{playing:false}:runtime.state(ids),replaceTracks(){updateRuntime();}});
  function stopWall(){runtime.setPlaying([...wallIds],false);wallPlayback=null;}
@@ -137,7 +137,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
   devices:()=>DEVICE_IDS.filter(id=>nodes.has(id)).map(id=>({id,label:playerName(model.players.find(p=>p.id===id)||{id,name:id})})),
   screenState(id){const active=runtime.nowPlaying([id])[0];const track=active?.preview?signagePreviews.get(id):playlistValue(active?.playlistId)?.tracks.find(t=>(t.id||t.stockId)===active?.trackId);return {...active,title:track?.title||''};},
   screenPreview:id=>runtime.nowPlaying([id])[0]?.preview?signagePreviews.get(id)||null:null,
-  async reset(){await setDemoMode('linear');for(const id of DEVICE_IDS){const p=model.players.find(p=>p.id===id);if(p&&nodes.has(id)&&previews.get(id)?.tagName!=='VIDEO')mediaFor(p,[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo');}signagePreviews.clear();const result=await deviceEditor.reset();if(result.error)throw Error(t('No se pudo restaurar la reproducción','Playback could not be restored'));return result;},
+  async reset(){posExperience.clearWaterOffer();await setDemoMode('linear');for(const id of DEVICE_IDS){const p=model.players.find(p=>p.id===id);if(p&&nodes.has(id)&&previews.get(id)?.tagName!=='VIDEO')mediaFor(p,[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo');}signagePreviews.clear();const result=await deviceEditor.reset();if(result.error)throw Error(t('No se pudo restaurar la reproducción','Playback could not be restored'));return result;},
   screenAt(x,y){for(const n of nodes.values())if(n.dataset.deviceId)n.style.pointerEvents='auto';const id=document.elementFromPoint(x,y)?.closest('[data-device-id]')?.dataset.deviceId;return DEVICE_IDS.includes(id)?id:null;},
   screenTitle:id=>playerName(model.players.find(p=>p.id===id)||{id,name:id}),
   screenHighlight(id){for(const n of nodes.values())if(!id)n.style.pointerEvents='';for(const n of root.querySelectorAll('[data-device-id]'))n.classList.toggle('device-drop-target',n.dataset.deviceId===id);},

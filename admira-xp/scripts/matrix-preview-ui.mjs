@@ -1,4 +1,4 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=water-finish-3';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=starbucks-defaults-1';
 import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
 const listeners=new Set();
 let dialog,dispose,controller,hud,requestId,lastFocus,busy=false,viewError='';
