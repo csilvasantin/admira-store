@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const code=fs.readFileSync(new URL('../admira-xp/scripts/totem-kiosko.js',import.meta.url),'utf8');
-function boot({search='?project=starbucks&voz_el=0',siteLang='es',legacy='off',eleven=false}={}){
+function boot({search='?project=starbucks&voz_el=0',siteLang='es',legacy='off',eleven=false,backgroundMuted=false}={}){
  const listeners={},intervals=[],spoken=[],acks=[],audios=[],timers=new Map(),values=new Map([['xpace:totem-interactivo',legacy],['xpace:avatar-escena-nivel','best']]);let state={listo:[]},timer=0;
  const localStorage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)};
  const win={localStorage,addEventListener:(n,f)=>(listeners[n]??=[]).push(f),dispatchEvent:e=>(listeners[e.type]||[]).forEach(f=>f(e)),speechSynthesis:{getVoices:()=>[{lang:'es-ES'},{lang:'en-GB'}],cancel(){},speak:u=>spoken.push(u)},SpeechSynthesisUtterance:class{constructor(t){this.text=t;}}};
  if(eleven)search=search.replace('&voz_el=0','');
  const location={search,href:'https://www.admira.store/admira-xp/'+search};
- const context={window:win,localStorage,location,history:{replaceState(){}},lang:siteLang,document:{readyState:'loading',addEventListener(){}},URL,URLSearchParams,Intl,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail;}},setInterval:f=>(intervals.push(f),intervals.length),setTimeout:f=>(timers.set(++timer,f),timer),clearTimeout:id=>timers.delete(id),Audio:class{constructor(url){this.src=url;audios.push(this);}pause(){}play(){return Promise.resolve();}},fetch:async()=>({json:async()=>state})};
+ const context={homeMusicMuted:backgroundMuted,window:win,localStorage,location,history:{replaceState(){}},lang:siteLang,document:{readyState:'loading',addEventListener(){}},URL,URLSearchParams,Intl,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail;}},setInterval:f=>(intervals.push(f),intervals.length),setTimeout:f=>(timers.set(++timer,f),timer),clearTimeout:id=>timers.delete(id),Audio:class{constructor(url){this.src=url;audios.push(this);}pause(){}play(){return Promise.resolve();}},fetch:async()=>({json:async()=>state})};
  vm.runInNewContext(code,context);
  const poll=()=>intervals[0]();
  const settle=async()=>{for(let i=0;i<6;i++)await Promise.resolve();};
@@ -42,4 +42,8 @@ test('ElevenLabs Spanish finishes before English, and audio failure falls back o
   if(fail){h.audios[0].onerror();await h.settle();assert.equal(h.spoken[0].lang,'es-ES');await h.finish();}else{h.audios[0].onplaying();assert.equal(h.spoken.length,0);h.audios[0].onended();await h.settle();}
   assert.equal(h.spoken.at(-1).lang,'en-GB');await h.finish();await h.poll();assert.equal(h.audios.length,1);assert.equal(h.spoken.length,fail?2:1);
  }
+});
+
+test('muted background music does not mute the dedicated bilingual queue',async()=>{
+ const h=boot({backgroundMuted:true});await h.poll();h.set({listo:[{id:'quiet-music',numero:'A006',nombre:'Ana'}]});await h.poll();assert.equal(h.spoken[0].lang,'es-ES');await h.finish();assert.equal(h.spoken[1].lang,'en-GB');await h.finish();
 });

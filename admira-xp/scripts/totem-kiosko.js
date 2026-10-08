@@ -181,7 +181,7 @@
     // 1) la cara viva (MetaHuman en pared/panel): la misma ruta que las respuestas del avatar
     let face=false; try{ face=!!(window.MH_FACE_ENABLED||((typeof metahumanWallOn==='function')&&metahumanWallOn())); }catch(_){}
     if(!queue&&face&&typeof mhSayToFace==='function'){ try{ mhSayToFace(t); return {spoken:true,via:'metahuman'}; }catch(_){} }
-    if(muted) return {spoken:false,via:'muted'};
+    if(muted&&!queue) return {spoken:false,via:'muted'};
     // 2) voz de Admirito (Carlos, 7-oct-2026): ElevenLabs en castellano vía el proxy mcp-ainimation /voz
     //    (caché por frase, la clave nunca llega aquí). Si falla o tarda >6 s → voz del navegador es-ES.
     if(!/^en/i.test(String(langTag||''))&&elOn()){ const done=elSpeak(t,()=>browserSpeak(t,langTag)); return {spoken:true,via:'elevenlabs',done}; }
