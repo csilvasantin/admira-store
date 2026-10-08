@@ -1,2 +1,2 @@
-/inventario/assets/catalog/47/hiperreal.blend https://www.xpaceos.com/inventario/assets/catalog/47/hiperreal.blend 302
-/inventario/assets/catalog/47/hiperreal/hiperreal-hd.glb https://www.xpaceos.com/inventario/assets/catalog/47/hiperreal/hiperreal-hd.glb 302
+# Los archivos de más de 25 MiB (maestros .blend, GLB HD…) no se listan a mano: al publicar,
+# .github/cloudflare-grandes.sh los quita del paquete y antepone aquí su 302 a la copia de XpaceOS.

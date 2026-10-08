@@ -55,6 +55,9 @@ jobs:
             novedades="$(jq -c --arg v "$release" '(if type=="object" then (.[$v] // .default // .novedades // []) elif type=="array" then . else [] end) | if type=="array" then . else [] end | map(tostring) | map(select(length>0)) | .[0:4]' novedades.json 2>/dev/null || echo '[]')"
           fi
           [ -n "$novedades" ] || novedades='[]'
+          # Cloudflare Pages solo admite archivos de hasta 25 MiB: los más grandes salen del paquete
+          # y _redirects los manda (302) a la copia de XpaceOS. Automático, sin listas a mano.
+          bash .github/cloudflare-grandes.sh _site "$sha"
           jq -n --argjson novedades "$novedades" --arg version "$release" --arg deployedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --arg deployer "$deployer" --arg machine "$machine" --arg git "$sha" \
             '{version:$version,deployedAt:$deployedAt,deployer:$deployer,machine:$machine,signature:($deployer+" · "+$machine),git:$git,gitShort:($git[0:7]),gitFull:$git,dirty:false,novedades:$novedades,origin:"cloudflare-pages"}' \

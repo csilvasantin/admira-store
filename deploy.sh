@@ -54,6 +54,8 @@ git push origin main 2>&1 | tail -1 || echo "  (nada que pushear)"
 echo "→ Cloudflare Pages (ORIGEN de producción)…"
 export CLOUDFLARE_API_TOKEN="$(bash ~/Claude/admira-vault/vault-get.sh CLOUDFLARE_API_TOKEN)"
 TMP="$(mktemp -d)"; git archive main | tar -x -C "$TMP"
+# Archivos de más de 25 MiB: fuera del paquete y 302 a la copia de XpaceOS (igual que el flujo de CI).
+bash .github/cloudflare-grandes.sh "$TMP" "$(git rev-parse main)"
 npx --yes wrangler@latest pages deploy "$TMP" --project-name admira-store --branch main
 rm -rf "$TMP"
 echo "✓ https://www.admira.store (Cloudflare Pages) · mirror https://admira-store.pages.dev"
