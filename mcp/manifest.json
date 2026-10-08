@@ -2649,7 +2649,7 @@
     ],
     "bootstrap_markers": [
       "scripts/store-demo-avatar.mjs?v=local-autopilot-1",
-      "xtanco-visual-command.mjs?v=store-local-autopilot-1"
+      "scripts/xtanco-visual-command.mjs?v="
     ],
     "help_files": [
       "admira-xp/help.html",
