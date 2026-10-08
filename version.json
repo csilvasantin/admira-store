@@ -1,17 +1,13 @@
 {
-  "version": "v.08.10.2026.r13.17:20",
-  "deployedAt": "2026-10-08T15:22:21Z",
+  "version": "v.08.10.2026.r14.17:46",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "6b5382507a2521a0e85a121cf75dec3c3779f53b",
-  "gitShort": "6b53825",
-  "gitFull": "6b5382507a2521a0e85a121cf75dec3c3779f53b",
+  "deployedAt": "2026-10-08T15:51:38.628194+00:00",
+  "git": "7e42b16320b37377cacd5b3e652d7ba72631fb24",
+  "gitFull": "7e42b16320b37377cacd5b3e652d7ba72631fb24",
+  "gitShort": "7e42b16",
   "dirty": false,
-  "novedades": [
-    "Hiperreal llega al conjunto Starbucks: barra, caja, vitrina, mesa, silla, botellero e iPad con madera de veta real, piedra, acero, bollería y vidrio físicos",
-    "El gemelo en Best coloca Hiperreal con /inventario añadir y en la escena Starbucks (si falla, Matrix y después Best); el TPV sigue en vivo",
-    "GLB web ligeros de 0,3 a 2,7 MB (el botellero baja de 5 MB a 1 MB) y un GLB HD por pieza para Unreal",
-    "Comparativas antes/después en Cycles y pipeline Hiperreal reutilizable; la estantería 47 también estrena Hiperreal con texturas PBR reales"
-  ]
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }

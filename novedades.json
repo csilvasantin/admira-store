@@ -1,145 +1,163 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
-  "v.08.10.2026.r13.17:20": [
+  "v.08.10.2026.r14.17:46": [
+    "En el Starbucks, la vista Better vuelve a ser la de antes: los muebles añadidos y el botellero solo aparecen en Best",
+    "Las demos de la tienda (/demo taza, /demo kiosko y el arranque ?ax_demo=store) se publican también en XpaceOS",
+    "El espejo nocturno de admira.store vuelve a funcionar sin copias a mano y sin borrar lo propio de la tienda"
+  ],
+  "v.08.10.2026.r13.17:06": [
     "Hiperreal llega al conjunto Starbucks: barra, caja, vitrina, mesa, silla, botellero e iPad con madera de veta real, piedra, acero, bollería y vidrio físicos",
     "El gemelo en Best coloca Hiperreal con /inventario añadir y en la escena Starbucks (si falla, Matrix y después Best); el TPV sigue en vivo",
     "GLB web ligeros de 0,3 a 2,7 MB (el botellero baja de 5 MB a 1 MB) y un GLB HD por pieza para Unreal",
-    "Comparativas antes/después en Cycles y pipeline Hiperreal reutilizable; la estantería 47 también estrena Hiperreal con texturas PBR reales"
+    "Comparativas antes/después en Cycles y pipeline Hiperreal reutilizable para las próximas tandas"
   ],
-  "v.08.10.2026.r11.10:04": [
+  "v.08.10.2026.r12.15:42": [
+    "Estantería Starbucks 47: nuevo acabado Hiperreal con texturas PBR reales de 2K a 4K, esmalte cerámico con reflejos, huellas sutiles y tazas redondas",
+    "Hiperreal se ilumina con un HDRI de cafetería y sombras de contacto; Todos compara ya los cinco acabados",
+    "Dos versiones del mismo modelo: GLB web de 4,6 MB (Matrix pesaba 20,8 MB) y GLB HD de 26,5 MB para Unreal con Nanite",
+    "Render antes/después en Cycles y guía para escanear tazas reales con el móvil (fase 2)"
+  ],
+  "v.08.10.2026.r11.10:05": [
     "Demo 14: el aviso de la locución se centra sobre el 360° y, si toca la tarjeta del recorrido, se aparta a su lado libre o por encima",
     "El botón Detener de la tarjeta responde al primer toque, también entre pasos"
   ],
-  "v.08.10.2026.r10.09:48": [
+  "v.08.10.2026.r10.09:49": [
     "Modo experto con el 360°: desaparece el rectángulo oscuro arriba al centro (el panel Opciones de categoría ya no lo provoca y sigue desplazándose con rueda, dedo o teclado)",
     "Al detener el recorrido con el botón de la tarjeta, la línea de cierre sale en el idioma restaurado («■ Recorrido detenido · 7/16 · gemelo restaurado»)",
     "Demo 14: el aviso de la locución se queda al menos 4,5 s y hasta que avanza la demo"
   ],
-  "v.08.10.2026.r9.08:57": [
+  "v.08.10.2026.r9.08:58": [
     "/demo all en: la ventana de los ensayos 1–5 sale en inglés (título, fases, campos y valores) y con el mismo estilo de cristal que la tarjeta, debajo de ella",
     "Tarjeta del recorrido: la línea del comando va en el idioma del recorrido, corta y en dos líneas como mucho",
     "Locución del agua: se ve al sonar (aviso con el texto, pulso en el altavoz de avisos y línea «🔊 Locución: «…»» en el CLI)"
   ],
-  "v.08.10.2026.r5.07:56": [
+  "v.08.10.2026.r5.07:57": [
     "IF·THEN·DO THAT: al dejar una botella de agua en la caja, además de la oferta en el iPad suena «Gracias por comprar agua de proximidad» (o «Thank you for buying locally sourced water»)",
     "La locución es un segundo DO editable (texto en castellano e inglés) con idioma según /idioma, castellano, inglés o las dos; ▶ Probar locución",
     "/demo 14 entrega una botella de demo para verlo y oírlo, y la devuelve al terminar"
   ],
-  "v.08.10.2026.r4.07:42": [
+  "v.08.10.2026.r4.07:45": [
     "/demo all es|en (también ESP/ENG o --idioma): el recorrido elige idioma para la tarjeta, la CLI y los contenidos; sin argumento sigue /idioma y al acabar vuelve el de antes",
     "Tarjeta flotante de cristal con los colores de la marca: se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic la recoloca), icono animado por demo con anillo de pasos, píldora ES/EN, Pausa · Siguiente · Detener",
     "/demo pausa y /demo reanudar; /help/demos enseña también los iconos"
   ],
-  "v.08.10.2026.r1.00:22": [
+  "v.08.10.2026.r2.00:29": [
+    "Tótem segmentado: /totem segmentado on — la cámara de este equipo cuenta personas, género, edad e individuo/grupo y el quiosco Starbucks elige la carta",
+    "Solo recuentos anónimos, nunca imágenes ni huellas faciales; aviso «Cámara en uso»; reglas y audiencia en admira.tv/audiencia",
+    "Ayuda ES/EN y atajo en la lista de comandos de la cola"
+  ],
+  "v.08.10.2026.r1.00:25": [
     "/demo all: la demo de incidencia siempre cierra el ticket que abre (reintenta si falla el cierre)",
     "iPad: el gestor de colas se precarga durante la tarjeta y la demo espera a que cargue; al terminar desaparece el botón «Abrir gestor de colas» si no estaba",
     "Sello con la fecha del día en Madrid (v.DD.MM.AAAA tras medianoche)"
   ],
-  "v.07.10.2026.r54.00:00": [
+  "v.07.10.2026.r54.00:02": [
     "/demo help (o /demo ayuda) lista todas las demos del gemelo, numeradas, con qué enseñan y cómo lanzarlas",
     "/demo all (o /demo todas) las enseña seguidas con tarjeta «Demo n/16», cámara y unos segundos; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial",
     "/demo <id|número> lanza una sola; registro único en admira-xp/demos.json y sección Demos en la ayuda"
   ],
-  "v.07.10.2026.r53.23:12": [
+  "v.07.10.2026.r52.23:13": [
     "/cerrar incidencia ya no dice «no hay incidencias» si se ve una: lista las abiertas del gemelo (pantalla, id, gravedad, antigüedad) y cómo cerrarlas",
     "/cerrar incidencia INC-XXXX cierra cualquier incidencia del gemelo, también las abiertas a mano, con la ficha de admira.app y el informe por correo y Telegram",
     "Si la lleva un técnico del portal, la CLI lo explica y enlaza su ficha"
   ],
-  "v.07.10.2026.r52.22:20": [
+  "v.07.10.2026.r51.22:22": [
     "Incidencias CLI: la ficha de admira.app se abre encima de todo, a la derecha, y se queda 3 s en «Finalizada»; el menú ☰ se pliega mientras dura",
     "El CLI ya no borra lo que escribes mientras corre un comando largo",
     "Informe de misión en PDF estilo NASA con la marca blanca del cliente (colores, logo y tipografía de /marca, p. ej. Starbucks) y fotos de la pantalla al abrir y al cerrar: proyecto, ubicación, pantalla (compra, garantía, fallos y MTBF del ITIL de Yokup), cronología T+, SLA, firmas y resumen por IA; por correo y a tu Telegram"
   ],
-  "v.07.10.2026.r51.21:51": [
+  "v.07.10.2026.r50.21:51": [
     "idIoT: el alta de un equipo pide el proyecto y ese proyecto es el primer tramo de su nombre (Starbucks_…)",
     "Vale un proyecto del catálogo o uno escrito a mano"
   ],
-  "v.07.10.2026.r50.21:37": [
+  "v.07.10.2026.r49.21:37": [
     "idIoT: un equipo nuevo recibe su nombre único solo al darse de alta (admira.tv/alta)",
     "Publicar el catálogo nombra las superficies nuevas y conserva los nombres ya guardados"
   ],
-  "v.07.10.2026.r49.21:36": [
+  "v.07.10.2026.r48.21:35": [
     "Avatar ampliado (Matrix): el idioma ESP/ENG sube a la barra superior, junto al desplegable del avatar, en Good · Admirito, Better · Luna y Best · Neo",
     "Cambiar el idioma ya no recarga el avatar: se le pasa al momento y la barra de chat queda limpia",
     "Neo vuelve a hablar en el stream: sus respuestas llegan a la sala que locuta el render (digitalavatar.ai r21)"
   ],
-  "v.07.10.2026.r48.21:20": [
+  "v.07.10.2026.r47.21:20": [
     "idIoT: los nombres únicos ya están guardados en la ficha de cada Xpacio y no cambian aunque cambie su dirección",
     "/inventario idIoT enseña el nombre guardado; un elemento nuevo aparece «sin guardar» hasta que se guarda",
     "admira.tv acepta el idIoT como destino de una playlist"
   ],
-  "v.07.10.2026.r47.21:19": [
+  "v.07.10.2026.r46.21:18": [
     "Experto → Avatar3D: «Opciones del avatar» pasa a ser tres interruptores con estado ON/OFF: Good · Admirito, Better · Luna y Best · Neo; uno a la vez en el tótem",
     "Encender uno quita el quiosco del tótem y enseña ese avatar; apagar el activo deja el tótem sin avatar (/totem on vuelve al quiosco)",
     "CLI: /avatar good|better|best on|off, y a secas alternan; /help los lista en «Avatar de la escena · tótem»"
   ],
-  "v.07.10.2026.r46.21:05": [
+  "v.07.10.2026.r45.21:06": [
     "Modo experto: /crear incidencia abre una incidencia demo en una pantalla vertical del lineal elegida al azar, con un motivo técnico o circunstancial realista",
     "/cerrar incidencia va a la pantalla, pulsa el ticket, la finaliza en la ficha de admira.app con una nota acorde y envía el informe PDF a csilvasantin@gmail.com"
   ],
-  "v.07.10.2026.r45.20:55": [
+  "v.07.10.2026.r44.20:53": [
     "Experto: /inventario idIoT enseña el nombre único de cada elemento IoT — Proyecto_Xpacio_Tipo_n, p. ej. Starbucks_PaseodeGracia_103_Pantalla_1",
     "Sin argumento, el Xpacio abierto; con un proyecto (/inventario idIoT starbucks), todos sus Xpacios; «proyectos» resume la red",
     "Añade «csv» al final para descargar la lista completa y agruparla"
   ],
-  "v.07.10.2026.r44.20:38": [
+  "v.07.10.2026.r43.20:38": [
     "Matrix · incidencias: la tarjeta CERRADA/ABIERTA cabe siempre en el marco de la pantalla (la letra se ajusta al tamaño, nota y líneas largas a 2 líneas con «…»)"
   ],
-  "v.07.10.2026.r43.20:13": [
+  "v.07.10.2026.r42.20:26": [
     "Incidencias del gemelo: tras CERRADA, la pantalla vuelve sola a emitir a los ~5 s (en silencio si el navegador bloquea el sonido)",
     "Los campos del panel de incidencia ya no van a saltos ni pierden letras al escribir"
   ],
-  "v.07.10.2026.r42.20:01": [
+  "v.07.10.2026.r41.20:03": [
     "Gemelo Starbucks: una incidencia abierta ya se puede cerrar desde la pantalla (✓ Cerrar incidencia) con nota de resolución",
     "Al cerrarla la pantalla vuelve a OK y el estado muestra quién la cerró, cuándo y la nota",
     "El cierre se refleja también en Yokup / admira.app (Mi comercio y ficha)"
   ],
-  "v.07.10.2026.r41.19:43": [
-    "/avatar best vuelve a funcionar en Starbucks: con el quiosco en el tótem, Neo se abre en su panel flotante",
-    "Los altavoces de Starbucks emiten su locución una sola vez",
-    "La versión anterior llevaba este anuncio pero no el cambio; ahora sí"
+  "v.07.10.2026.r40.20:01": [
+    "Gemelo Starbucks: una incidencia abierta ya se puede cerrar desde la pantalla (✓ Cerrar incidencia) con nota de resolución",
+    "Al cerrarla la pantalla vuelve a OK y el estado muestra quién la cerró, cuándo y la nota",
+    "El cierre se refleja también en Yokup / admira.app (Mi comercio y ficha)"
   ],
-  "v.07.10.2026.r40.19:37": [
+  "v.07.10.2026.r39.19:36": [
     "/avatar best vuelve a funcionar en Starbucks: con el quiosco en el tótem, Neo se abre en su panel flotante",
     "Los altavoces de Starbucks emiten su locución una sola vez"
   ],
-  "v.07.10.2026.r39.19:26": [
+  "v.07.10.2026.r38.19:25": [
     "Las locuciones suenan una sola vez (antes tres): Experto, PREVIOS y personas de Matrix",
     "Los altavoces de Starbucks siguen con sus dos lecturas"
   ],
-  "v.07.10.2026.r38.17:34": [
+  "v.07.10.2026.r37.17:33": [
     "Gestión de colas: los atajos y Pedidos · TPV son ventanas que se mueven, se cierran y se reabren",
     "↺ Reset junto a DEMO deja la cola del quiosco a cero y Admirito vuelve a su demo",
     "🔊/🔇 para o activa los avisos de la cola (/totem audio on|off)"
   ],
-  "v.07.10.2026.r37.17:20": [
+  "v.07.10.2026.r36.17:19": [
     "/audio mute para todo el sonido del gemelo, también en Matrix: hilo de Starbucks, locuciones, avisos, megafonía y voz de Admirito",
     "Las locuciones tienen prioridad: paran el hilo musical y, al terminar, la música sigue donde estaba",
     "Con el audio silenciado no arranca ninguna locución hasta /audio unmute"
   ],
-  "v.07.10.2026.r36.16:46": [
+  "v.07.10.2026.r35.16:46": [
     "Starbucks · Matrix: el altavoz junto al EXIT emite la locución en inglés a máxima calidad, dos veces",
     "El altavoz de la pared del videowall emite la de castellano, también dos veces",
     "Se pulsan en la escena; el aviso de cierre de las 22 h sigue en la línea Avisos"
   ],
-  "v.07.10.2026.r35.16:40": [
+  "v.07.10.2026.r34.16:37": [
     "Starbucks: los botones «Abrir gestor de colas» y «Kiosk» ya no salen por defecto; aparecen al tocar el iPad o el tótem",
     "Al recargar vuelven a estar ocultos: la escena arranca limpia para presentar"
   ],
-  "v.07.10.2026.r34.16:36": [
+  "v.07.10.2026.r33.16:36": [
     "Arreglo: los avisos del gemelo vuelven a sonar con la voz «Santiago» (y con la voz del navegador si ElevenLabs falla)"
   ],
-  "v.07.10.2026.r33.16:33": [
-    "Admirito habla por defecto con la voz «Santiago» de ElevenLabs (elegida por Carlos)",
+  "v.07.10.2026.r32.16:33": [
+    "Admirito habla por defecto con la voz «Santiago» de ElevenLabs (elegida por Carlos) en los avisos del gemelo y el iPad",
     "?vozid=daniela o ?vozid=raquel prueban las otras voces"
   ],
-  "v.07.10.2026.r32.16:26": [
-    "Admirito habla con voz de ElevenLabs en castellano (voz joven y dulce) en los avisos del gemelo y el iPad del mostrador",
-    "Caché de frases frecuentes y respaldo con la voz es-ES del navegador"
+  "v.07.10.2026.r31.16:26": [
+    "Admirito habla con voz de ElevenLabs en castellano (voz joven y dulce) en los avisos del gemelo y en el iPad del mostrador",
+    "Las frases frecuentes salen de caché; si ElevenLabs no responde se usa la voz es-ES del navegador",
+    "Ayuda: sección Voz de Admirito (?voz_el=0 para desactivarla)"
   ],
-  "v.07.10.2026.r24.14:09": [
-    "Entrar al gemelo Starbucks por la calle (Street View) da los mismos ajustes que el selector de proyectos",
-    "Tótem vertical en modo quiosco por defecto en Starbucks; URL completada con project y circuit"
+  "v.07.10.2026.r24.14:08": [
+    "Entrar al gemelo Starbucks «por la calle» (Street View de admira.biz, enlace Gemelo Digital) da los mismos ajustes que el selector de proyectos",
+    "El tótem vertical arranca en modo quiosco por defecto en Starbucks (salvo que lo apagues)",
+    "La URL se completa sola con project=starbucks y circuit=alsea_starbucks"
   ],
   "v.07.10.2026.r23.13:54": [
     "Doble clic en el iPad del mostrador abre la web de la cola en grande, como el tótem (✕, clic fuera o Escape para cerrar), en Good, Better/Best y Matrix · 360",
@@ -151,40 +169,46 @@
     "Sin pedidos, Admirito hace gracias; con pedidos listos (también los que ya estaban) muestra número, nombre y aviso",
     "Pulsar el iPad lo abre en grande; un vídeo o imagen de su playlist o arrastrado desde Pixeria sigue mandando"
   ],
-  "v.07.10.2026.r21.13:35": [
+  "v.07.10.2026.r21.13:23": [
     "Sin pedidos pendientes, el Admirito del iPad del mostrador hace gracias en la escena (saltos, giros, latidos, bailes) e invita a pedir en el quiosco con frases simpáticas",
     "Cuando un pedido pasa a «listo», deja la demo y enseña el aviso por nombre",
     "El quiosco del tótem, abierto en grande, pide ahora el nombre en una pantalla propia y obligatoria antes de pagar"
   ],
-  "v.07.10.2026.r19.13:02": [
+  "v.07.10.2026.r20.13:05": [
+    "XpaceOS publica el contrato de demos locales de Store: /demo 1–5, /demo auto, pausa, reanudar, siguiente y stop, con /demo tpv como recorrido nativo del muffin",
+    "Mismo puente, avatar de primer uso, guía y ayuda bilingüe que admira.store, para que el espejo diario no los borre",
+    "Catálogo y manifiesto MCP con demo_soluciones, demo_catalog y store_demo_contract (store-local-autopilot-1)",
+    "Ensayos con datos preparados: sin altas, ventas ni emisiones reales"
+  ],
+  "v.07.10.2026.r18.13:00": [
     "El iPad del mostrador de Starbucks (starbucks-ipad-01) enseña el gestor de colas: Admirito, «¡Listo!» con nombres y «En preparación», adaptado a su formato horizontal",
     "Al pulsar el iPad en la escena se abre en grande la pantalla real de la cola (ainimation.studio/cola/ipad.html), como el avatar y el quiosco",
     "/ipad cola · /ipad off (vuelve a su playlist de vídeo) · /ipad abrir; un previo arrastrado desde Pixeria sigue mandando sobre la cola",
     "Pedidos de demostración, pago SIMULADO"
   ],
-  "v.07.10.2026.r17.12:30": [
+  "v.07.10.2026.r17.12:28": [
     "El Admirito del gemelo de Starbucks lee la cola de pedidos de Paseo de Gracia y anuncia cada pedido listo una sola vez",
     "Llama por el nombre que diste en el quiosco: «Carlos, tu pedido Starbucks está preparado»; sin nombre, dice el número",
     "Habla con la cara del avatar si está activa y, si no, con la voz del navegador en castellano (es-ES); el aviso también sale en pantalla",
     "Con ?cola=<tienda> se puede escuchar la cola de otra tienda"
   ],
-  "v.07.10.2026.r16.11:18": [
+  "v.07.10.2026.r16.11:17": [
     "El quiosco del tótem en la escena se comporta como el avatar digital: es una vista previa que no recibe toques",
     "Al tocarlo se abre en grande, en la misma ventana que el avatar, y solo ahí se usa",
     "Al cerrar vuelve a la vista previa y el pedido sigue donde estaba (con el reinicio por inactividad del quiosco)"
   ],
-  "v.07.10.2026.r15.10:57": [
+  "v.07.10.2026.r15.10:55": [
     "Tótem ON enseña el interactivo en el player: en Starbucks Paseo de Gracia, el quiosco de pedido en la pantalla de la pared junto a la salida; OFF vuelve al avatar digital",
-    "Nuevo /totem on|off (siguen kiosko, url, luna y admiratv) y la elección se recuerda",
-    "El player del tótem recibe toques y «👆 Tocar el tótem» lo abre a tamaño real",
-    "El gemelo pasa el formato del player y el quiosco se reorganiza para él"
+    "Nuevo /totem on|off (siguen /totem kiosko, url, luna y admiratv) y la elección se recuerda en el navegador",
+    "El player del tótem recibe toques en la escena y «👆 Tocar el tótem» lo abre a tamaño real",
+    "El gemelo pasa el formato del player (?formato=vertical&w=&h=) y el quiosco se reorganiza para él"
   ],
-  "v.07.10.2026.r14.10:21": [
+  "v.07.10.2026.r14.10:20": [
     "Tótem con voz: cuando el quiosco o un script Admingo de ainimation.studio pide hablar, el avatar del tótem lo dice en castellano de España",
     "Solo se aceptan mensajes de ainimation.studio; el gemelo responde con un acuse y, si no lo hay, el quiosco habla con la voz del navegador",
-    "ainimation.studio entra en el registro de la Galaxia con sus 17 herramientas MCP"
+    "ainimation.studio entra en el registro de la Galaxia (mcp/galaxia.json) con sus 17 herramientas MCP"
   ],
-  "v.07.10.2026.r13.09:28": [
+  "v.07.10.2026.r13.09:27": [
     "Pastilla de categoría del avatar: toca AVATAR·Admirito / HUMAN·Luna / METAHUMAN·Neo para cambiar de personalidad",
     "Cargador del avatar (avatar.js) y ⌘ Experto (suite/experto.js) fijados a la versión 20261007-pill-1"
   ],
@@ -222,7 +246,7 @@
     "Recuperación de locuciones desde el servidor; segundo clic detiene",
     "El avatar conserva el contexto del local; ayuda y MCP en español e inglés"
   ],
-  "v.07.10.2026.r11.08:09": [
+  "v.07.10.2026.r11.08:07": [
     "Tótem: /totem kiosko (o el botón 🛒 Quiosco) pone el Quiosco de pedido de ainimation.studio en la pantalla vertical",
     "👆 Tocar el tótem lo abre a tamaño real; los pedidos (demo simulada) llegan al panel Pedidos · TPV",
     "/totem url <https> para cualquier interactivo; Luna y admira.tv siguen igual (/totem luna · /totem admiratv)"
@@ -398,24 +422,6 @@
     "Demo TPV disponible; tour general, selector y pausa/continuación especificados como pendientes",
     "Help web, tutorial, CLI y MCP real actualizados en español e inglés"
   ],
-  "v.07.10.2026.r17.12:29": [
-    "Store: /demo 1–5 enseña locución, música, imágenes, vídeo y gestión del TPV",
-    "/demo auto encadena las cinco demos con sus fases y muestras preparadas",
-    "Pausa, reanudar, siguiente y stop controlan el ensayo local",
-    "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados"
-  ],
-  "v.07.10.2026.r18.12:49": [
-    "Store: /demo 1–5 enseña locución, música, imágenes, vídeo y gestión del TPV",
-    "/demo auto encadena las cinco demos con sus fases y muestras preparadas",
-    "Pausa, reanudar, siguiente y stop controlan el ensayo local",
-    "/demo tpv conserva el recorrido nativo del muffin; ayuda y MCP bilingües actualizados",
-    "Avatar: catálogo desde la primera apertura, respuesta local confirmada y ayuda visible",
-    "El espejo diario conserva el runtime y detiene fuentes sin el contrato Store publicado"
-  ],
-  "v.07.10.2026.r26.15:02": [
-    "El enlace del recorrido Store carga directamente una única instancia del motor compartido, sin esperar a abrir el avatar.",
-    "El shell conserva la consola local y sus controles; las visitas habituales mantienen el motor anterior."
-  ],
   "v.07.10.2026.r27.15:21": [
     "Admirito ocupa toda la pantalla del iPad cuando la cola está vacía",
     "Recibido, En preparación y Preparado reaparecen al llegar pedidos",
@@ -426,18 +432,18 @@
     "Botón visible «Abrir gestor de colas» y enlace al control de barra",
     "ITIL: el iPad starbucks-ipad-01 pasa a contenido web app"
   ],
-  "v.07.10.2026.r29.15:31": [
-    "El recorrido Store arranca también con la barra integrada del gemelo al entrar desde /demo store.",
-    "Cargadores renovados para las demos; las visitas normales conservan su comportamiento."
-  ],
-  "v.07.10.2026.r30.16:03": [
+  "v.07.10.2026.r29.16:05": [
     "Un toque en el iPad de Starbucks abre el gestor de colas en Good, Better, Best y Matrix",
     "El sello del menú vuelve a coincidir con la versión publicada"
   ],
-  "v.07.10.2026.r31.16:21": [
-    "iPad de Starbucks: un toque abre el gestor de colas también en Matrix (capa táctil sobre el iframe)",
-    "La vista ampliada se abre siempre por encima de la escena y ✕ cierra con un toque",
-    "Diagnóstico del toque en window.__ipadColaDebug"
+  "v.07.10.2026.r30.16:22": [
+    "iPad de Starbucks: un toque abre el gestor de colas también en Matrix",
+    "La vista ampliada se abre por encima de la escena y ✕ cierra con un toque"
+  ],
+  "v.07.10.2026.r53.23:28": [
+    "Gemelo: el ↺ Reset de la cola del tótem vuelve a funcionar con la barra cerrada",
+    "/totem clave guarda la clave de barra en el dispositivo (o el campo del aviso, o #cola-barra=)",
+    "Si falta la clave, el tótem lo explica en vez de fallar en silencio"
   ],
   "v.08.10.2026.r3.07:32": [
     "TPV: 13 botellas de agua del modelo ITIL, seleccionables y arrastrables a caja",

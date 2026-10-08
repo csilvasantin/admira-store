@@ -422,7 +422,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     }
     // PixerIA pieces and catalog pieces the Starbucks fixtures do not draw (/inventario añadir <n>,
     // the water rack) use the shared catalog loader: Best places Hiperreal → Matrix → Best.
-    for(const item of snapshot.layout)if(item.source==='PixerIA'||(!snapshot.moving&&!built.has(item.id)))furniture(item);
+    for(const item of snapshot.layout)if(item.source==='PixerIA'||(assetQuality==='best'&&loadFurniture&&!snapshot.moving&&!built.has(item.id)))furniture(item);
   }
   function starbucksParts(fixture,parts,suffix){
     const {finish}=starbucksFinish;

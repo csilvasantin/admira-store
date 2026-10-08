@@ -54,3 +54,12 @@ test('/inventario añadir in the Starbucks venue places the catalog model throug
  assert.ok(asked.includes('inv-50-a'));const root=model.scene.getObjectByName('furniture:inv-50-a');assert.ok(root);assert.equal(root.userData.assetStatus,'ready');
  model.dispose();
 });
+
+test('Better in the Starbucks venue behaves as before: no added catalog items or water rack, only PixerIA extras',async()=>{
+ const raw=snapshot();raw.layout=[...raw.layout,{id:'inv-50-b',type:'starbucksWaterRack',label:'Botellero',fp:[.44,.46],col:12,row:5,sx:1,sy:1,rot:0}];
+ const asked=[];const model=createLifeScene(raw,{assetQuality:'better',canvasFactory:()=>null,loadFurniture:async item=>{asked.push(item.id);return new T.Group();}});
+ await flush();await flush();
+ assert.equal(model.scene.getObjectByName('furniture:inv-50-b'),undefined,'added catalog item not drawn in Better');
+ assert.equal(model.scene.getObjectByName('furniture:sb-water-rack'),undefined,'water rack not drawn in Better');
+ assert.deepEqual(asked.filter(id=>id!=='sb-mugs'),[],'only the photographed mug cabinet uses the loader, as before');model.dispose();
+});
