@@ -51,6 +51,7 @@ git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 #  · deploy.sh y este script — herramientas del repo, no contenido
 #  · .gitattributes y _redirects — Cloudflare Pages no admite ficheros >25 MiB: los
 #    maestros grandes van con export-ignore y _redirects los sirve desde xpaceos
+#  · release-preflight.test.mjs — prueba de los flujos CI propios de la tienda
 # Fail before deleting a Store-specific demo integration not yet published in XpaceOS.
 node "$AQUI/scripts/validate-mirror-contract.mjs" "$ORIGEN_LIMPIO" "$AQUI"
 
@@ -71,6 +72,7 @@ rsync -a --delete \
   --exclude 'tests/' \
   --exclude '.gitattributes' \
   --exclude '_redirects' \
+  --exclude 'release-preflight.test.mjs' \
   "$ORIGEN_LIMPIO"/ ./
 
 # La portada de admira.store ES la portada de xpaceos.com, en castellano (Carlos,
