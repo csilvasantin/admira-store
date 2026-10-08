@@ -23,6 +23,8 @@ export function migrateReferenceLayout(saved,defaults){
     const pose=(saved.layoutRevision==='jordan-wall-v4'?V4_POSES:saved.layoutRevision==='door-to-rear-v3'?V3_POSES:CORRECTED_POSES)[item?.id];
     if(pose&&Math.abs(item.col-pose.from[0])<1e-8&&Math.abs(item.row-pose.from[1])<1e-8&&!(item.rot||0)&&(item.sx??1)===1&&(item.sy??1)===1){item.col=pose.to[0];item.row=pose.to[1];}
     if(item?.id==='rack-rear-right'&&item.col===.04&&item.row===10.2&&!(item.rot||0)&&(item.sx??1)===1&&(item.sy??1)===1&&item.fp?.[0]===.5&&item.fp?.[1]===3.1)item.fp=[.5,1.5];
+    const previousLabels={'back-wall':['Fondo · mural IOT Gallery','Rear · IOT Gallery mural'],counter:['Caja del fondo · frente metálico','Rear checkout · metal front']};
+    if(previousLabels[item?.id]?.includes(item.label)){const fresh=defaults.find(d=>d.id===item.id);if(fresh)item.label=fresh.label;}
     return item;
   };
   next.layout.forEach(correct);

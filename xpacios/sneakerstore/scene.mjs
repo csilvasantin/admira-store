@@ -1,6 +1,6 @@
 import {measuredFormat} from './screen-format.mjs';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import {CORRECTED_POSES} from './layout-reference.mjs?v=rear-6';
+import {CORRECTED_POSES} from './layout-reference.mjs?v=rear-7';
 import {JORDAN_PANELS,JORDAN_SOURCE} from './jordan-reference.mjs?v=jordan-4';
 
 // Interpreted geometry from IEU Entrada/Centro/Fondo, not a measured survey.
