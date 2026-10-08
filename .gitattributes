@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Cloudflare Pages solo acepta ficheros de hasta 25 MiB: deploy.sh publica con
+# `git archive`, así que estos maestros grandes quedan fuera y _redirects los sirve desde xpaceos.
+inventario/assets/catalog/47/hiperreal.blend export-ignore
+inventario/assets/catalog/47/hiperreal/hiperreal-hd.glb export-ignore
