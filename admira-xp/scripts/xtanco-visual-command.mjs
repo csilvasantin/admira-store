@@ -67,17 +67,19 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
   if(command.conversion!==undefined){if(command.conversion!=='2da3d')return {ok:false,local:true,message:en?'Usage: /convertir 2da3d · compare the water rack photo and interactive ITIL model.':'Uso: /convertir 2da3d · compara la foto del botellero y el modelo ITIL interactivo.'};const {openWaterConversion}=await import('./water-conversion.mjs?v=water-2');await openWaterConversion({lang});return {ok:true,local:true,message:en?'Water rack: original photo and interactive 3D model, 13 bottles.':'Botellero: fotografía original y modelo 3D interactivo, 13 botellas.'};}
   if(command.conditional){const arg=command.conditional,api=globalThis.XPLComposer;const usage=en?'Visual rules: /ifthendothat opens IF·THEN·DO THAT. Choose pick up a muffin or take it to the register, then Music, Voiceover, Image or Video, its editable Pixeria filter and content. + Add reaction allows multiple simultaneous DO actions; select one or more image/video screens and use All · clear filter for the complete catalogue. /ifthendothat off closes it.':'Reglas visuales: /ifthendothat abre IF·THEN·DO THAT. Elige coger un muffin o llevarlo a la caja y una reacción: música, locución, imagen o vídeo, su filtro editable y contenido de Pixeria. + Añadir reacción permite varios DO simultáneos; marca una o varias pantallas para imágenes/vídeos y usa Todos · quitar filtro para el catálogo completo. /ifthendothat off cierra el editor.';if(['help','ayuda','?','invalid'].includes(arg))return {ok:arg!=='invalid',local:true,message:usage};if(!api)return {ok:false,local:true,message:en?'The rule editor is still loading. Retry in a moment.':'El editor de reglas aún está cargando. Reintenta en un momento.'};if(['estado','status'].includes(arg))return {ok:true,local:true,message:usage};if(arg==='off')api.close();else if(arg==='toggle')api.toggle();else api.open();return {ok:true,local:true,message:arg==='off'?(en?'Rule editor closed.':'Editor de reglas cerrado.'):usage};}
   if(command.guided){
+    // Ensayos 1–5 del motor común: misma estética que la tarjeta y textos de catálogo en inglés con /idioma ENG.
+    try{(await import('./store-demo-skin.mjs?v=demos-3')).installStoreDemoSkin(globalThis.document);}catch{}
     // /demo help · /demo all · /demo <id|n> del registro; durante un recorrido, stop/estado/siguiente son suyos.
     const tourActive=!!globalThis.XpaceDemoTour?.active?.(),arg=String(command.text||'').replace(/^\/demo\s*/,'');
     const live=tourActive?(['stop','status'].includes(command.guided)&&!command.native?command.guided:arg==='siguiente'?'next':['pausa','pause'].includes(arg)?'pause':['reanudar','resume','continuar','seguir'].includes(arg)?'resume':langToken(arg)?'language':null):null;
     if(command.guided==='tour'||live){
-      const {handleDemoTour}=await import('./demo-tour.mjs?v=demos-2');
+      const {handleDemoTour}=await import('./demo-tour.mjs?v=demos-3');
       const action=command.guided==='tour'?command.action:live;
       const out=await handleDemoTour({...command,action,...(live==='language'?{lang:langToken(arg)}:{})},{lang,router});if(out)return out;
       if(command.guided==='tour'&&action==='next')return runStoreDemo('/demo siguiente',{lang}); // sin recorrido: el ensayo de la suite conserva «siguiente».
     }
     if(command.guided==='suite'){const f=splitFlags(arg);
-      if(!demoSolution(f.rest))try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=demos-2');const d=findDemo(await loadDemoRegistry(),arg);
+      if(!demoSolution(f.rest))try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=demos-3');const d=findDemo(await loadDemoRegistry(),arg);
         if(d&&d.kind!=='suite'){const out=await handleDemoTour({action:'run',id:d.id,send:f.send,...(f.lang?{lang:f.lang}:{})},{lang,router});if(out)return out;}
         // /demo 3 en · /demo musica es: la demo de la suite en ese idioma, sin pasar el idioma como texto al motor.
         if(d&&d.kind==='suite'&&f.lang)return runStoreDemo('/demo '+f.rest,{lang:f.lang});}catch{}
