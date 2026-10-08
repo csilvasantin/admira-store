@@ -2,13 +2,17 @@
 
 ## Español
 
-Ejecuta /demo global en Experto o abre admira.biz/demo/. Recorre Proyecto → Xpacio → Playlist → Gemelo → Cámara y tutorial. Sneakers Store utiliza el proyecto sneakers-store y el Xpacio sneakers-store-santa-rosa-19, Santa Rosa 19, Barcelona. La playlist compartida contiene piezas publicadas de Pixeria (Stock 990 y 964); se crea una sola vez al pulsar Crear playlist con una sesión autorizada y vuelve a leerse al repetir la guía. SneakerStore abre la tienda real en un recorrido fotográfico 360 con Entrada, Centro y Fondo, recuperados de IEU el 8 de octubre de 2026. Arrastra o usa las flechas para mirar alrededor. Planta 3D abre la distribución editable, adaptada al pasillo estrecho, la chapa acanalada, los expositores negros, las recreativas, la puerta IOT Gallery y la caja del fondo; Ver pantalla reproduce la playlist Pixeria conectada. Las pantallas de la fotografía conservan el contenido de la captura; la playlist activa se ve en Ver pantalla y en la pantalla lateral del modelo 3D. Opciones queda a la izquierda, Avanzado a la derecha y Experto abajo. /distribuir edita el mobiliario en este navegador; /inventario lo consulta. La guía permite detener, avanzar y exportar una plantilla sin credenciales para el siguiente proyecto. IEU se abre manualmente: Store → Entrada → Puerta Cam → Ver stream; vuelve a Xtore, comparte esa pestaña y marca dos puntos para encuadrar la cámara. iPad y pantalla son opcionales. Jordan + LCD abre una vista frontal de la pared: el videowall Jordan de cinco paneles queda a la izquierda y la LCD gigante a su derecha, separados. Jordan utiliza la imagen capturada en Entrada de IEU; la LCD reproduce la playlist activa. También está en Avanzado → Pared · Jordan + LCD y en ?view=jordan. Desde la puerta hacia la caja, ambos están en el lateral izquierdo; las recreativas están enfrente. La revisión jordan-wall-v4 respalda el estado anterior de real-store-v2 y corrige sólo las posiciones predeterminadas, conservando las ubicaciones modificadas expresamente, fichas, bloqueos, visibilidad y borrados. La geometría 3D es aproximada, pendiente de medición; no activa dispositivos físicos ni crea una cámara IEU.
+Ejecuta /demo global en Experto o abre admira.biz/demo/. Recorre Proyecto → Xpacio → Playlist → Gemelo → Cámara y tutorial. Sneakers Store utiliza el proyecto sneakers-store y el Xpacio sneakers-store-santa-rosa-19, Santa Rosa 19, Barcelona. Las playlists por formato contienen piezas publicadas de Pixeria (Stock 665 horizontal; 990 y 964 verticales); Preparar playlists por formato conserva sus IDs al repetir con una sesión autorizada. SneakerStore abre la tienda real en un recorrido fotográfico 360 con Entrada, Centro y Fondo, recuperados de IEU el 8 de octubre de 2026. Arrastra o usa las flechas para mirar alrededor. Planta 3D abre la distribución editable, adaptada al pasillo estrecho, la chapa acanalada, los expositores negros, las recreativas, la puerta IOT Gallery y la caja del fondo; Ver pantalla reproduce la playlist Pixeria conectada. Las pantallas de la fotografía conservan el contenido de la captura; la playlist activa se ve en Ver pantalla y en la pantalla lateral del modelo 3D. Opciones queda a la izquierda, Avanzado a la derecha y Experto abajo. /distribuir edita el mobiliario en este navegador; /inventario lo consulta. La guía permite detener, avanzar y exportar una plantilla sin credenciales para el siguiente proyecto. IEU se abre manualmente: Store → Entrada → Puerta Cam → Ver stream; vuelve a Xtore, comparte esa pestaña y marca dos puntos para encuadrar la cámara. iPad y pantalla son opcionales. Jordan + LCD abre una vista frontal de la pared: el videowall Jordan de cinco paneles queda a la izquierda y la LCD gigante a su derecha, separados. Jordan utiliza la imagen capturada en Entrada de IEU; la LCD reproduce la playlist activa. También está en Avanzado → Pared · Jordan + LCD y en ?view=jordan. Desde la puerta hacia la caja, ambos están en el lateral izquierdo; las recreativas están enfrente. La revisión jordan-wall-v4 respalda el estado anterior de real-store-v2 y corrige sólo las posiciones predeterminadas, conservando las ubicaciones modificadas expresamente, fichas, bloqueos, visibilidad y borrados. La geometría 3D es aproximada, pendiente de medición; no activa dispositivos físicos ni crea una cámara IEU.
 
 ## English
 
-Run /demo global in Expert or open admira.biz/demo/. Follow Project → Xpace → Playlist → Twin → Camera and tutorial. Sneakers Store uses project sneakers-store and venue sneakers-store-santa-rosa-19 at Santa Rosa 19, Barcelona. Its shared playlist contains published Pixeria pieces (Stock 990 and 964); an authorized user creates it once with Create playlist, and repeating the guide only reads it. SneakerStore opens the real store as a photographic 360 tour with Entrance, Centre and Rear, recovered from IEU on 8 October 2026. Drag or use the arrow keys to look around. 3D floor plan opens an editable layout adapted to the narrow aisle, corrugated metal, black displays, arcade machines, IOT Gallery door and rear checkout; View screen plays the connected Pixeria playlist. Screens in the photograph retain the captured content; the active playlist appears in View screen and on the 3D model side display. Options is on the left, Advanced on the right and Expert below. /distribuir edits furniture in this browser; /inventario lists it. Pause, next and a credential-free template export support the next project. Open IEU manually: Store → Entrance → Puerta Cam → View stream; return to Xtore, share that tab and mark two points for the camera crop. iPad and screen are optional. Jordan + LCD opens a frontal wall view: the five-panel Jordan videowall is on the left and the giant LCD to its right, with space between them. Jordan uses the captured IEU Entrance image; the LCD plays the active playlist. It is also available in Advanced → Wall · Jordan + LCD and at ?view=jordan. From the door towards checkout, both are on the left side; the arcades are opposite. Revision jordan-wall-v4 backs up the previous real-store-v2 state and corrects only default positions, preserving explicitly edited placements, records, locks, visibility and deletions. The 3D geometry is approximate, awaiting measurements; it does not activate physical devices or create an IEU camera.
+Run /demo global in Expert or open admira.biz/demo/. Follow Project → Xpace → Playlist → Twin → Camera and tutorial. Sneakers Store uses project sneakers-store and venue sneakers-store-santa-rosa-19 at Santa Rosa 19, Barcelona. Its playlists by format contain published Pixeria pieces (Stock 665 landscape; 990 and 964 portrait); Prepare playlists by format retains their IDs on repeat with an authorized session. SneakerStore opens the real store as a photographic 360 tour with Entrance, Centre and Rear, recovered from IEU on 8 October 2026. Drag or use the arrow keys to look around. 3D floor plan opens an editable layout adapted to the narrow aisle, corrugated metal, black displays, arcade machines, IOT Gallery door and rear checkout; View screen plays the connected Pixeria playlist. Screens in the photograph retain the captured content; the active playlist appears in View screen and on the 3D model side display. Options is on the left, Advanced on the right and Expert below. /distribuir edits furniture in this browser; /inventario lists it. Pause, next and a credential-free template export support the next project. Open IEU manually: Store → Entrance → Puerta Cam → View stream; return to Xtore, share that tab and mark two points for the camera crop. iPad and screen are optional. Jordan + LCD opens a frontal wall view: the five-panel Jordan videowall is on the left and the giant LCD to its right, with space between them. Jordan uses the captured IEU Entrance image; the LCD plays the active playlist. It is also available in Advanced → Wall · Jordan + LCD and at ?view=jordan. From the door towards checkout, both are on the left side; the arcades are opposite. Revision jordan-wall-v4 backs up the previous real-store-v2 state and corrects only default positions, preserving explicitly edited placements, records, locks, visibility and deletions. The 3D geometry is approximate, awaiting measurements; it does not activate physical devices or create an IEU camera.
 
 ## Contrato compartido / Shared contract
+
+Formatos de pantalla: la LCD horizontal usa Stock 665 (1280×720, horizontal/landscape/16:9); la pantalla vertical de entrada usa Stock 990 (1080×1920) y 964 (360×640), vertical/portrait/9:16. En el paso Playlist, Preparar playlists por formato crea o actualiza cada canal con sesión autorizada y conserva sus IDs. El servidor consulta los tags actuales de Pixeria y rechaza formatos incompatibles, ausentes o contradictorios. El reproductor comprueba también las dimensiones reales antes de reproducir; no estira ni recorta una pieza vertical para llenar la LCD. Ver pantalla permite elegir LCD horizontal o Entrada vertical. Jordan sigue siendo la captura fija de cinco paneles y las panorámicas conservan la fotografía original.
+
+Screen formats: the landscape LCD uses Stock 665 (1280×720, horizontal/landscape/16:9); the entrance portrait screen uses Stock 990 (1080×1920) and 964 (360×640), vertical/portrait/9:16. In the Playlist step, Prepare playlists by format creates or updates each channel with an authorized session and retains its IDs. The server checks current Pixeria tags and rejects incompatible, missing or conflicting formats. The player also checks actual media dimensions before playback; it does not stretch or crop a portrait piece to fill the LCD. View screen lets you select landscape LCD or portrait entrance. Jordan remains the captured five-panel still and panoramas retain the original photograph.
 
 ```json
 {
@@ -71,6 +75,44 @@ Run /demo global in Expert or open admira.biz/demo/. Follow Project → Xpace �
       "right": "giant LCD; active Pixeria playlist",
       "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
     }
+  },
+  "screen_formats": {
+    "horizontal": {
+      "screen_id": "sneakers-store-santa-rosa-19-screen",
+      "playlist_id": "playlist-be8a1e99-1cce-4818-a796-da3372216d1e",
+      "stock_numbers": [
+        665
+      ],
+      "verified_dimensions": [
+        [
+          1280,
+          720
+        ]
+      ],
+      "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=horizontal"
+    },
+    "vertical": {
+      "screen_id": "sneakers-store-santa-rosa-19-entry-display",
+      "stock_numbers": [
+        990,
+        964
+      ],
+      "verified_dimensions": [
+        [
+          1080,
+          1920
+        ],
+        [
+          360,
+          640
+        ]
+      ],
+      "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=vertical",
+      "playlist_id": "playlist-cadea3fa-89fe-40f9-828f-bd37ce4720db",
+      "playlist": "https://mcp.admira.store/playlists/playlist-cadea3fa-89fe-40f9-828f-bd37ce4720db"
+    },
+    "validation": "Current Pixeria orientation tags required; actual decoded dimensions checked before playback; incompatible/unknown/conflicting formats blocked; square assets blocked on both channels",
+    "jordan": "captured still across five portrait panels; not a live playlist"
   }
 }
 ```

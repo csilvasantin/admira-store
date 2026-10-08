@@ -1,7 +1,7 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.08.10.2026.r30.23:44",
+  "version": "v.08.10.2026.r31.23:56",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
@@ -2945,6 +2945,44 @@
         "right": "giant LCD; active Pixeria playlist",
         "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
       }
+    },
+    "screen_formats": {
+      "horizontal": {
+        "screen_id": "sneakers-store-santa-rosa-19-screen",
+        "playlist_id": "playlist-be8a1e99-1cce-4818-a796-da3372216d1e",
+        "stock_numbers": [
+          665
+        ],
+        "verified_dimensions": [
+          [
+            1280,
+            720
+          ]
+        ],
+        "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=horizontal"
+      },
+      "vertical": {
+        "screen_id": "sneakers-store-santa-rosa-19-entry-display",
+        "stock_numbers": [
+          990,
+          964
+        ],
+        "verified_dimensions": [
+          [
+            1080,
+            1920
+          ],
+          [
+            360,
+            640
+          ]
+        ],
+        "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=vertical",
+        "playlist_id": "playlist-cadea3fa-89fe-40f9-828f-bd37ce4720db",
+        "playlist": "https://mcp.admira.store/playlists/playlist-cadea3fa-89fe-40f9-828f-bd37ce4720db"
+      },
+      "validation": "Current Pixeria orientation tags required; actual decoded dimensions checked before playback; incompatible/unknown/conflicting formats blocked; square assets blocked on both channels",
+      "jordan": "captured still across five portrait panels; not a live playlist"
     }
   }
 }
