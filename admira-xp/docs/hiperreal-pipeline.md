@@ -92,5 +92,5 @@ Pendiente: la pieza 1 (Mostrador) usa `assets/mostrador/counter-interpreted-*.gl
 ## Tanda 5 · Pixeria 28–35
 
 - `metal_dark` se neutraliza (85 % hacia gris) antes de subir la luminancia: el hierro no hereda el tinte del color original (correas azuladas del 27).
-- Pinball 30: `add_parts` con cristal inclinado sobre el tablero (misma rotación que el tablero), lanzador y botones de flipper.
+- Pinball 30: `add_parts` con lanzador y botones de flipper. El cristal sobre el tablero se quitó: el visor web no tiene transmisión y lo pintaba como una losa gris opaca.
 - Cloudflare Pages (xpaceos.pages.dev): el workflow quita del paquete todo archivo de más de 25 MiB y lo redirige (302) a `raw.githubusercontent.com/<repo>/<commit>/…`, la copia fija del mismo commit. No hace falta tocar `.gitattributes` al añadir piezas pesadas.

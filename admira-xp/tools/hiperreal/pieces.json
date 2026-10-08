@@ -903,26 +903,6 @@
    },
    "add_parts": [
     {
-     "name": "cristal del tablero",
-     "at": [
-      0.276,
-      -0.5965,
-      0.732
-     ],
-     "size": [
-      0.47,
-      0.75,
-      0.006
-     ],
-     "rot": [
-      -5.73,
-      0,
-      0
-     ],
-     "cls": "glass",
-     "hex": "#dfe8ea"
-    },
-    {
      "name": "lanzador",
      "at": [
       0.48,

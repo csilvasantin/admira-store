@@ -24,8 +24,8 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 427372,
-    "hd": 1649168,
+    "web": 425332,
+    "hd": 1647012,
     "best": 249604
   },
   "shared_textures": "../../hiperreal-tex/",
@@ -61,7 +61,6 @@
     "kick": 0
   },
   "added_parts": [
-    "cristal del tablero",
     "lanzador",
     "botón flipper izq",
     "botón flipper der"
