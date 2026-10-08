@@ -5,6 +5,7 @@ import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),en=params.get('lang')==='en',t=(es,english)=>en?english:es;
 if(params.get('embed')==='1')document.documentElement.classList.add('embed');
 document.documentElement.lang=en?'en':'es';
+$('store-stage').querySelector('canvas').setAttribute('aria-label',t('Sneakers Store 3D · arrastra para girar y rueda para ampliar','Sneakers Store 3D · drag to orbit and scroll to zoom'));$('inventory-edit').textContent=t('Distribuir','Distribute');$('manage-playlist').textContent=t('Gestionar en admira.biz ↗','Manage in admira.biz ↗');$('manage-playlist').href='https://www.admira.biz/demo/?lang='+(en?'en':'es');
 $('scene-kind').textContent=t('Escena 3D de demostración','Demonstration 3D scene');$('show-playlist').textContent=t('Ver pantalla','View screen');$('close-playlist').setAttribute('aria-label',t('Cerrar','Close'));$('close-inventory').setAttribute('aria-label',t('Cerrar inventario','Close inventory'));$('inventory-title').textContent=t('Inventario','Inventory');$('inventory-note').textContent=t('Mobiliario de demostración. Distribución editable guardada en este navegador; dimensiones interpretativas, pendientes de medición.','Demonstration furniture. Editable layout saved in this browser; interpretative dimensions awaiting measurement.');
 const root=new T.Group(),actors=new T.Group(),scene=new T.Scene(),resources=new Set(),objects=new Map();
 scene.background=new T.Color('#0d1920');scene.add(root,actors);
