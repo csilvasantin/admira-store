@@ -209,7 +209,9 @@ export async function runTour({ids=null,send=false,lang='es',router=globalThis._
  }finally{
   const errors=await restore(ctx,snap);try{doc?.defaultView?.removeEventListener?.('keydown',S.onKey,true);}catch{}unpaint();
   const stopped=S.stop;S.active=false;S.stop=false;S.paused=false;S.demo=null;S.index=0;S.ctx=null;
-  const msg=(stopped?t('■ Recorrido detenido · ','■ Tour stopped · '):'✓ '+t('Recorrido completo · ','Tour complete · '))+shown.length+'/'+list.length+' · '+t('gemelo restaurado','twin restored')+(errors.length?' ('+errors.length+' ⚠)':'')+(ctx.results.length?'\n'+ctx.results.join('\n'):'');
+  // El cierre se escribe ya en el idioma restaurado (no en el del recorrido): «■ Recorrido detenido · 7/16 · gemelo restaurado».
+  const en=(pageLang(doc)||snap?.lang||ctx.lang)==='en',tr=(es,e)=>en?e:es;
+  const msg=(stopped?tr('■ Recorrido detenido · ','■ Tour stopped · '):'✓ '+tr('Recorrido completo · ','Tour complete · '))+shown.length+'/'+list.length+' · '+tr('gemelo restaurado','twin restored')+(errors.length?' ('+errors.length+' ⚠)':'')+(ctx.results.length?'\n'+ctx.results.join('\n'):'');
   try{show?.(msg,'ok','local-visual');}catch{}const out={ok:true,stopped,shown,errors,lang:ctx.lang,message:msg};resolveDone(out);}
  return S.done;}
 

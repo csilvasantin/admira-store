@@ -44,15 +44,20 @@ const VOICE_CSS='#xpaceVoiceToast{position:fixed;left:50%;bottom:118px;transform
  +'@media (prefers-reduced-motion:reduce){#xpaceVoiceToast{transition:none}#xpaceVoiceToast .sp::before,#xpaceVoiceToast .sp::after,.matrix-announcement[data-voice-pulse]::after{animation:none}}';
 const SPK='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
 export function voiceLogLine(p){return (p.language==='en'?'🔊 Voiceover: “':'🔊 Locución: «')+p.text+(p.language==='en'?'”':'»');}
-export function createVoiceIndicator(win=globalThis){
- const doc=win.document;let timer=0;
+// El aviso se queda al menos VOICE_TOAST_MIN_MS y, dentro de un recorrido /demo, hasta que avanza la demo (máx. 12 s).
+export const VOICE_TOAST_MIN_MS=4500;
+export function createVoiceIndicator(win=globalThis,{minMs=VOICE_TOAST_MIN_MS,maxTourMs=12000}={}){
+ const doc=win.document;let timer=0,shownAt=0;
  function el(){if(!doc?.body)return null;if(!doc.getElementById('xpaceVoiceCSS')){const st=doc.createElement('style');st.id='xpaceVoiceCSS';st.textContent=VOICE_CSS;doc.head.append(st);}
   let t=doc.getElementById('xpaceVoiceToast');if(!t){t=doc.createElement('div');t.id='xpaceVoiceToast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');t.innerHTML='<span class="sp">'+SPK+'</span><span class="tx"><small></small><span class="q"></span></span>';doc.body.append(t);}return t;}
  return {show(p){const line=voiceLogLine(p);try{win.XpaceAppendLog?.('bot','AdmiraXPBot',line);}catch{}try{win.XpaceShowResponse?.(line,'ok','local-visual');}catch{}try{win.dispatchEvent?.(new win.CustomEvent('xpace:voiceover',{detail:{phase:'start',...p,line}}));}catch{}
-   const t=el();if(t){clearTimeout(timer);t.querySelector('small').textContent=p.language==='en'?'Voiceover · announcement speaker':'Locución · altavoz de avisos';t.querySelector('.q').textContent=(p.language==='en'?'“':'«')+p.text+(p.language==='en'?'”':'»');t.classList.add('on');}
+   const t=el();if(t){clearTimeout(timer);t.querySelector('small').textContent=p.language==='en'?'Voiceover · announcement speaker':'Locución · altavoz de avisos';t.querySelector('.q').textContent=(p.language==='en'?'“':'«')+p.text+(p.language==='en'?'”':'»');t.classList.add('on');shownAt=Date.now();}
    for(const b of doc?.querySelectorAll?.('.matrix-announcement[data-announcement]')||[])b.setAttribute('data-voice-pulse','');},
-  hide(){try{win.dispatchEvent?.(new win.CustomEvent('xpace:voiceover',{detail:{phase:'end'}}));}catch{}const t=doc?.getElementById?.('xpaceVoiceToast');if(t){clearTimeout(timer);timer=setTimeout(()=>t.classList.remove('on'),900);}
-   for(const b of doc?.querySelectorAll?.('[data-voice-pulse]')||[])b.removeAttribute('data-voice-pulse');}};
+  hide(){try{win.dispatchEvent?.(new win.CustomEvent('xpace:voiceover',{detail:{phase:'end'}}));}catch{}
+   const tour=()=>{try{return win.XpaceDemoTour?.state?.()||null;}catch{return null;}},s0=tour(),idx=s0?.active?s0.index:null,t0=Date.now();
+   const off=()=>{const t=doc?.getElementById?.('xpaceVoiceToast');t?.classList.remove('on');for(const b of doc?.querySelectorAll?.('[data-voice-pulse]')||[])b.removeAttribute('data-voice-pulse');};
+   const tick=()=>{const now=Date.now(),s=tour(),same=idx!=null&&s?.active&&s.index===idx;if(now<shownAt+minMs||now<t0+900||(same&&now<t0+maxTourMs)){timer=setTimeout(tick,250);return;}off();};
+   clearTimeout(timer);timer=setTimeout(tick,250);}};
 }
 // Devuelve {play:()=>Promise, stop()} para el reproductor de reglas.
 export function createVoiceSpeaker(action,{win=globalThis,lang=()=>win.document?.documentElement?.lang,timeoutMs=20000,indicator=createVoiceIndicator(win)}={}){

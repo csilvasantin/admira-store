@@ -4934,6 +4934,10 @@
     "rehearsal_window": {
       "es": "Ensayos 1–5 (/demo all en): la ventana del ensayo usa el mismo estilo de cristal que la tarjeta y traduce al inglés título, descripción, fases, campos y valores; al volver al castellano se restauran. La narración de los vídeos de ensayo sigue en castellano (motor común).",
       "en": "Rehearsals 1–5 (/demo all en): the rehearsal window uses the card’s glass style and translates title, description, phases, fields and values into English; they are restored when going back to Spanish. The rehearsal videos’ narration stays in Spanish (shared engine)."
+    },
+    "stop_language": {
+      "es": "Al detener el recorrido, la línea de cierre sale en el idioma restaurado («■ Recorrido detenido · 7/16 · gemelo restaurado»).",
+      "en": "When the tour is stopped, the closing line uses the restored language (“■ Tour stopped · 7/16 · twin restored” in English)."
     }
   },
   "pos_water": {
@@ -4996,6 +5000,10 @@
     "indicator": {
       "es": "Al sonar, la locución se ve: aviso con el texto hablado abajo al centro, pulso en el altavoz de avisos del gemelo y línea en el CLI «🔊 Locución: «…»» (en inglés «🔊 Voiceover: “…”»).",
       "en": "When it plays, the voiceover is visible: a toast with the spoken text at the bottom centre, a pulse on the twin’s announcement speaker and a CLI line “🔊 Voiceover: “…”” (Spanish: «🔊 Locución: «…»»)."
+    },
+    "indicator_hold": {
+      "es": "El aviso de la locución se queda al menos 4,5 s y, en /demo, hasta que avanza la demo.",
+      "en": "The voiceover toast stays at least 4.5 s and, in /demo, until the demo advances."
     }
   },
   "water_conversion": {
@@ -5067,5 +5075,10 @@
       "en-GB"
     ],
     "scope": "local digital twin; one announcer per page"
+  },
+  "dock_scroll_guard": {
+    "es": "Modo experto con el 360° (Matrix): el panel «Opciones de categoría» del dock ya no deja un rectángulo oscuro arriba al centro del panorama; se desplaza con la rueda, el dedo o el teclado y una sombra indica que hay más botones.",
+    "en": "Expert mode with the 360° (Matrix) view: the dock’s “Category options” pane no longer leaves a dark rectangle at the top centre of the panorama; it scrolls with the wheel, touch or keyboard and a shadow shows there are more buttons.",
+    "source": "admira-xp/scripts/dock-scroll-guard.mjs"
   }
 }
