@@ -1,15 +1,17 @@
 {
-  "version": "v.08.10.2026.r11.10:04",
-  "deployedAt": "2026-10-08T08:04:30Z",
+  "version": "v.08.10.2026.r13.17:20",
+  "deployedAt": "2026-10-08T15:21:19Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "55bf7c634132aaa77fe8c9bdc863cd23bbeda2c3",
-  "gitShort": "55bf7c6",
-  "gitFull": "55bf7c634132aaa77fe8c9bdc863cd23bbeda2c3",
+  "git": "7e56911bef95d94f8df70d52ea93a0b2ff817754",
+  "gitShort": "7e56911",
+  "gitFull": "7e56911bef95d94f8df70d52ea93a0b2ff817754",
   "dirty": false,
   "novedades": [
-    "Demo 14: el aviso de la locución se centra sobre el 360° y, si toca la tarjeta del recorrido, se aparta a su lado libre o por encima",
-    "El botón Detener de la tarjeta responde al primer toque, también entre pasos"
+    "Hiperreal llega al conjunto Starbucks: barra, caja, vitrina, mesa, silla, botellero e iPad con madera de veta real, piedra, acero, bollería y vidrio físicos",
+    "El gemelo en Best coloca Hiperreal con /inventario añadir y en la escena Starbucks (si falla, Matrix y después Best); el TPV sigue en vivo",
+    "GLB web ligeros de 0,3 a 2,7 MB (el botellero baja de 5 MB a 1 MB) y un GLB HD por pieza para Unreal",
+    "Comparativas antes/después en Cycles y pipeline Hiperreal reutilizable; la estantería 47 también estrena Hiperreal con texturas PBR reales"
   ]
 }
