@@ -1,12 +1,12 @@
 {
   "version": "v.08.10.2026.r13.17:20",
-  "deployedAt": "2026-10-08T15:21:19Z",
+  "deployedAt": "2026-10-08T15:22:21Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "7e56911bef95d94f8df70d52ea93a0b2ff817754",
-  "gitShort": "7e56911",
-  "gitFull": "7e56911bef95d94f8df70d52ea93a0b2ff817754",
+  "git": "6b5382507a2521a0e85a121cf75dec3c3779f53b",
+  "gitShort": "6b53825",
+  "gitFull": "6b5382507a2521a0e85a121cf75dec3c3779f53b",
   "dirty": false,
   "novedades": [
     "Hiperreal llega al conjunto Starbucks: barra, caja, vitrina, mesa, silla, botellero e iPad con madera de veta real, piedra, acero, bollería y vidrio físicos",
