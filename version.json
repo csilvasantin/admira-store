@@ -1,13 +1,16 @@
 {
-  "version": "v.08.10.2026.r26.22:45",
-  "deployer": "GrokBot",
+  "version": "v.08.10.2026.r27.23:15",
+  "deployedAt": "2026-10-08T21:16:11Z",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
-  "deployedAt": "2026-10-08T20:49:44.082033+00:00",
-  "git": "b0a2a28476716f7336428c777d8ac6656425dbc5",
-  "gitFull": "b0a2a28476716f7336428c777d8ac6656425dbc5",
-  "gitShort": "b0a2a28",
+  "signature": "OraculoMacMini · MacMini",
+  "git": "6b1d0d0338e08df33fb0154209cbd92463a0c306",
+  "gitShort": "6b1d0d0",
+  "gitFull": "6b1d0d0338e08df33fb0154209cbd92463a0c306",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "locale": "es"
+  "novedades": [
+    "Sneakers Store: recorrido 360 con las fotografías reales de Entrada, Centro y Fondo de Santa Rosa 19.",
+    "Planta editable adaptada al pasillo, chapa metálica, expositores negros, recreativas y caja del local.",
+    "Playlist Pixeria conectada, accesos a Puerta Cam y Xtore, ayuda y MCP en español e inglés."
+  ]
 }
