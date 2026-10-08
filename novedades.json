@@ -1,5 +1,20 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r26.22:45": [
+    "SneakerStore queda publicado en XpaceOS (contrato, gemelo y ayuda) para que admira.store pueda espejarlo.",
+    "La portada sigue abriendo el gemelo en Hiperreal.",
+    "/demo global: proyecto, Xpacio, playlist Pixeria y gemelo en una guía reutilizable."
+  ],
+  "v.08.10.2026.r25.22:40": [
+    "Los enlaces de la portada (Prueba el gemelo y Supervisar un espacio) abren el gemelo en Hiperreal.",
+    "visual=hiperreal entra en Best, que carga el acabado Hiperreal de los muebles y, si falta, Best.",
+    "La ayuda deja de decir que Prueba el gemelo abre Better."
+  ],
+  "v.08.10.2026.r24.21:01": [
+    "Las personas vuelven a caminar: todos los Xpacios abren con /gente ON (personal, clientes, viandantes y personajes especiales).",
+    "Las partidas guardadas sin elección explícita vuelven a ON; /gente off, /personal y /clientes siguen funcionando igual y quedan marcados en la partida.",
+    "Ayuda, tutorial, manual y MCP explican el nuevo arranque en castellano e inglés."
+  ],
   "v.08.10.2026.r23.20:25": [
     "Piezas hechas a mano en Hiperreal: la Lotería 4 y la Mesa DJ 17 estrenan barra reposapiés de latón. La Lotería suma un terminal con pantalla y boleto, y la Mesa DJ potenciómetros y faders.",
     "El Revistero 6 sujeta sus revistas con varillas de latón. El Gestor de turnos 18 suma un dispensador de tiques con botón rojo y una brida atornillada al pie.",
@@ -513,15 +528,5 @@
     "Starbucks arranca en kiosco y reproduce la playlist de sus seis pantallas",
     "Cesta conservada; la oferta del agua se activa al entregar y no tapa la playlist al recargar",
     "Pedido preparado: una locución en castellano y otra en inglés, sin duplicados"
-  ],
-  "v.08.10.2026.r24.22:20": [
-    "SneakerStore: nueva categoría y tienda 3D editable en Santa Rosa 19.",
-    "/demo global: proyecto, Xpacio, playlist Pixeria y gemelo en una guía reutilizable.",
-    "Playlist compartida en la pantalla virtual y ayuda ES/EN; cámara IEU con preparación manual."
-  ],
-  "v.08.10.2026.r25.22:34": [
-    "SneakerStore: gemelo editable y playlist Pixeria conectada.",
-    "Demo global con proyecto Santa Rosa 19 y tutorial reutilizable.",
-    "Controles y accesibilidad de la nueva tienda en español e inglés."
   ]
 }

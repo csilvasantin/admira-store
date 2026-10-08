@@ -1,6 +1,6 @@
 # El Xtanco · immersive 3D
 
-Open `/admira-xp/?autostart=xtanco&visual=better` or choose **Avanzado (▤) → Better · 16 bits**. The same selector is available inside the views: **Good · 8 bits**, **Better · 16 bits**, **Best · 32 bits**, **Matrix · Avenida Admira**. The homepage's **Try the twin** uses Better; `visual=life` remains an alias. Escape / **Volver al gemelo** returns to Good and its operational tools without starting another game.
+Open `/admira-xp/?autostart=xtanco&visual=better` or choose **Avanzado (▤) → Better · 16 bits**. The same selector is available inside the views: **Good · 8 bits**, **Better · 16 bits**, **Best · 32 bits**, **Matrix · Avenida Admira**. The homepage's **Try the twin** uses Hiperreal (`visual=hiperreal`, which opens Best so furniture loads the Hiperreal finish first); `visual=life` remains an alias of Better. Escape / **Volver al gemelo** returns to Good and its operational tools without starting another game.
 
 This is a stylized, procedural representation of the running layout, not a scan or a claim of photorealism. Customers are the existing game actors, not newly inferred camera detections. Camera-owned exterior traffic is not replaced with synthetic pedestrians.
 

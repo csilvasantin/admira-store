@@ -114,9 +114,19 @@ test('people visibility hides each group across tiers without mutating actors or
 });
 
 
-test('all Xpaces default to no human actors, preserving robots, people and audience counts',()=>{
- const input=fixture();delete input.game.peopleVisibility;for(const kind of ['saca','thief','guardiaCivil','opinador','unitreeBot'])input.game[kind]={...at(4,1),phase:'walk'};const before=JSON.stringify(input);
- const scene=createLifeSnapshot()(input);assert.deepEqual(scene.actors.map(a=>a.kind),['unitreeBot']);assert.equal(scene.inside,1);assert.equal(scene.entries,17);assert.equal(JSON.stringify(input),before);
+test('all Xpaces default to every human actor (People ON, 8 Oct 2026), preserving robots, people and audience counts',()=>{
+ const all=['staff','customer','passerby','saca','thief','guardiaCivil','opinador','unitreeBot'];
+ for(const visibility of [undefined,null,{},{staff:true,customers:true}]){
+  const input=fixture();if(visibility===undefined)delete input.game.peopleVisibility;else input.game.peopleVisibility=visibility;
+  for(const kind of ['saca','thief','guardiaCivil','opinador','unitreeBot'])input.game[kind]={...at(4,1),phase:'walk'};const before=JSON.stringify(input);
+  const scene=createLifeSnapshot()(input);assert.deepEqual(scene.actors.map(a=>a.kind),all,JSON.stringify(visibility));assert.equal(scene.inside,1);assert.equal(scene.entries,17);assert.equal(JSON.stringify(input),before);
+ }
+});
+
+test('an explicit /gente off then /personal on reaches Better, Best and Matrix as staff only plus robots',()=>{
+ const input=fixture();for(const kind of ['thief','unitreeBot'])input.game[kind]={...at(4,1),phase:'walk'};
+ input.game.peopleVisibility={staff:true,customers:false,passersby:false,specials:false,elegido:true};
+ assert.deepEqual(createLifeSnapshot()(input).actors.map(a=>a.kind),['staff','unitreeBot']);
 });
 
 test('people OFF hides passersby and special humans; explicit ON restores the same identities',()=>{

@@ -2,6 +2,8 @@ export const TIER_STORAGE_KEY='xtanco_visual_tier_v2';
 export function requestedTier(search='',storage){
   const params=new URLSearchParams(search);
   const requested=params.get('visual')??params.get('quality');
+  // Portada: visual=hiperreal abre Best, y Best carga el acabado Hiperreal primero.
+  if(requested==='hiperreal')return 'best';
   if(requested!==null)return requested==='life'?'better':['good','better','best','matrix'].includes(requested)?requested:'good';
   return 'matrix'; // Default entry opens Matrix; explicit links retain their tier.
 }
@@ -55,7 +57,7 @@ export function createVisualTiers({openBetter,closeBetter,subscribeBetter,openBe
   }
   const subscriptions=[subscribeBetter?.(state=>receive('better',state)),subscribeBest?.(state=>receive('best',state)),subscribeMatrix?.(state=>receive('matrix',state))];
   function choose(value,options={}){
-    const next=value==='life'?'better':['good','better','best','matrix'].includes(value)?value:'good';
+    const next=value==='life'?'better':value==='hiperreal'?'best':['good','better','best','matrix'].includes(value)?value:'good';
     if(disposed)return Promise.resolve(result(next,false,true));
     if(active?.tier===next){publish();return active.settled?Promise.resolve(result(next,!error)):active.promise;}
     const previous=active;mode='good';busy=false;error='';notice='';

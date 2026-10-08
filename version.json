@@ -1,16 +1,13 @@
 {
-  "version": "v.08.10.2026.r25.22:34",
-  "deployedAt": "2026-10-08T20:34:44Z",
-  "deployer": "OraculoMacMini",
+  "version": "v.08.10.2026.r26.22:45",
+  "deployer": "GrokBot",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
-  "git": "44e81596c6caff141eff6b06981a9edf94ef86e9",
-  "gitShort": "44e8159",
-  "gitFull": "44e81596c6caff141eff6b06981a9edf94ef86e9",
+  "signature": "GrokBot · MacMini",
+  "deployedAt": "2026-10-08T20:49:44.082033+00:00",
+  "git": "b0a2a28476716f7336428c777d8ac6656425dbc5",
+  "gitFull": "b0a2a28476716f7336428c777d8ac6656425dbc5",
+  "gitShort": "b0a2a28",
   "dirty": false,
-  "novedades": [
-    "SneakerStore: gemelo editable y playlist Pixeria conectada.",
-    "Demo global con proyecto Santa Rosa 19 y tutorial reutilizable.",
-    "Controles y accesibilidad de la nueva tienda en español e inglés."
-  ]
+  "mirrorOf": "https://www.xpaceos.com/",
+  "locale": "es"
 }

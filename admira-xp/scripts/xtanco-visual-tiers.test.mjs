@@ -32,7 +32,7 @@ function routerFixture(options={}){
 }
 
 test('explicit visual links override preferences and the former Life URL aliases Better',()=>{
-  const matrix=[['good','good'],['better','better'],['life','better'],['best','best'],['matrix','matrix'],['','good'],['wireframe','good'],['hybridBest','good'],['BEST','good']];
+  const matrix=[['good','good'],['better','better'],['life','better'],['best','best'],['hiperreal','best'],['matrix','matrix'],['','good'],['wireframe','good'],['hybridBest','good'],['BEST','good']];
   for(const stored of [undefined,'good','better','best','matrix','life'])for(const [input,expected]of matrix){
     const storage=memoryStorage({[TIER_STORAGE_KEY]:stored,xtanco_visual_quality:'best'});
     assert.equal(requestedTier(`?from=portada&visual=${input}`,storage),expected,`${input} with stored ${stored}`);

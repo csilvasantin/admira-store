@@ -225,19 +225,20 @@ test('embedded help lists local visual commands separately from all existing leg
 
 test('expert composer and __xtExec keep people controls local and independently reversible',async()=>{
  const h=consoleHarness();
+ // Every explicit command records `elegido:true` so the choice survives save/load (8 Oct 2026 contract).
  for(const [command,expected] of [
-  ['/gente OFF',{staff:false,customers:false,passersby:false,specials:false}],
-  ['/personal ON',{staff:true,customers:false,passersby:false,specials:false}],
-  ['/clientes On',{staff:true,customers:true,passersby:false,specials:false}],
-  ['/personal off',{staff:false,customers:true,passersby:false,specials:false}],
-  ['/gente on',{staff:true,customers:true,passersby:true,specials:true}]
+  ['/gente OFF',{staff:false,customers:false,passersby:false,specials:false,elegido:true}],
+  ['/personal ON',{staff:true,customers:false,passersby:false,specials:false,elegido:true}],
+  ['/clientes On',{staff:true,customers:true,passersby:false,specials:false,elegido:true}],
+  ['/personal off',{staff:false,customers:true,passersby:false,specials:false,elegido:true}],
+  ['/gente on',{staff:true,customers:true,passersby:true,specials:true,elegido:true}]
  ]){
   await h.send(command);
   assert.deepEqual({...h.context.G.peopleVisibility},expected);
   assert.equal(h.responses.at(-1)[2],'local-visual');
  }
  assert.match(await h.exec('/CLIENTES@AdmiraXPBot OFF'),/Clientes OFF/);
- assert.deepEqual({...h.context.G.peopleVisibility},{staff:true,customers:false,passersby:true,specials:true});
+ assert.deepEqual({...h.context.G.peopleVisibility},{staff:true,customers:false,passersby:true,specials:true,elegido:true});
  assert.deepEqual(h.sent,[]);assert.deepEqual(h.memory,[]);assert.deepEqual(h.sessionCommands,[]);
  assert.equal(h.context.G.staff.length,1);assert.equal(h.context.G.custs.length,1);
  assert.deepEqual(Object.keys(h.context.BTNS),['furniture']);
@@ -249,7 +250,7 @@ test('English people aliases share Spanish state, localized replies and local ro
  for(const lang of ['es','en']){
   const h=consoleHarness({lang});
   for(const [command,staff,customers] of [['/PEOPLE off',false,false],['/STAFF@AdmiraXPBot ON',true,false],['/customers on',true,true],['/personal off',false,true]]){
-   await h.send(command);assert.deepEqual({...h.context.G.peopleVisibility},{staff,customers,passersby:false,specials:false});
+   await h.send(command);assert.deepEqual({...h.context.G.peopleVisibility},{staff,customers,passersby:false,specials:false,elegido:true});
   }
   assert.match(await h.exec('/customers OFF'),lang==='en'?/Customers OFF/:/Clientes OFF/);
   assert.match(await h.exec('/people off extra'),lang==='en'?/Usage:/:/Uso:/);
@@ -258,10 +259,16 @@ test('English people aliases share Spanish state, localized replies and local ro
  }
 });
 
-test('new games default to nobody visible and staff can be enabled independently',async()=>{
- const h=consoleHarness({lang:'en'});assert.equal(h.context.peopleGroupVisible('staff'),false);assert.equal(h.context.peopleGroupVisible('customers'),false);
- await h.send('/staff ON');assert.deepEqual({...h.context.G.peopleVisibility},{staff:true,customers:false,passersby:false,specials:false});
- const saved={staff:true,customers:false};assert.deepEqual({...h.context.defaultPeopleVisibility(saved)},{staff:true,customers:false,passersby:false,specials:false});assert.deepEqual(saved,{staff:true,customers:false});
+test('new games default to everyone visible and staff can be hidden independently',async()=>{
+ const h=consoleHarness({lang:'en'});
+ for(const group of ['staff','customers','passersby','specials'])assert.equal(h.context.peopleGroupVisible(group),true,group);
+ assert.deepEqual({...h.context.defaultPeopleVisibility()},{staff:true,customers:true,passersby:true,specials:true});
+ assert.match(await h.exec('/staff OFF'),/Staff OFF/);
+ assert.deepEqual({...h.context.G.peopleVisibility},{staff:false,customers:true,passersby:true,specials:true,elegido:true});
+ assert.deepEqual(Object.keys(h.context.BTNS),['custClick0','furniture']);
+ // Unmarked saves (3–8 Oct stored an implicit false) migrate to ON; a marked choice is kept verbatim.
+ const implicit={staff:true,customers:false};assert.deepEqual({...h.context.defaultPeopleVisibility(implicit)},{staff:true,customers:true,passersby:true,specials:true});assert.deepEqual(implicit,{staff:true,customers:false});
+ const chosen={staff:true,customers:false,elegido:true};assert.deepEqual({...h.context.defaultPeopleVisibility(chosen)},{staff:true,customers:false,passersby:false,specials:false,elegido:true});assert.deepEqual(chosen,{staff:true,customers:false,elegido:true});
 });
 
 test('sync commands stay local in the Expert composer, open Matrix and preserve aliases',async()=>{

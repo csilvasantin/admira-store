@@ -21,7 +21,7 @@ Enter the Xpace and venue → press Inventory/ITIL → check the count → searc
 - Stable catalogue numbers never derive from array positions. Unnumbered objects retain their instance/source IDs and appear as pending numbered models.
 - Starbucks virtual screen/POS IDs come from `starbucks-screens.mjs` and `starbucks-tpv.mjs`; speaker owner is `starbucks-alsea-paseo-de-gracia`. Physical player IDs remain unbound. No remote inventory write is added.
 - Direct foreign-model links, unknown/mismatched project scopes and empty layouts do not expose the global inventory. The explicit unscoped template catalogue remains unchanged.
-- Display selection and visibility do not switch off real hardware or modify collision maps. People remains OFF by default; completion of hardness maps and physical IoT binding remains pending.
+- Display selection and visibility do not switch off real hardware or modify collision maps. People is ON by default since 8 Oct 2026, with hardness maps validated (actor-collision.md); physical IoT binding remains pending.
 
 ## Verificación / Verification
 

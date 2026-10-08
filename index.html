@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.08.10.2026.r25.22:34"/>
-  <!-- Espejo de www.xpaceos.com (631e0cf), sincronizado con
+  <meta name="admiranext-version" content="v.08.10.2026.r26.22:45"/>
+  <!-- Espejo de www.xpaceos.com (b0a2a28), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
@@ -472,7 +472,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
       <a href="https://www.clearchannel.tv/" rel="noopener" data-i18n="nav.ads">Publicidad</a>
       <a href="/robot/">Robot</a>
       <a href="/help/" data-i18n="nav.help">Ayuda</a>
-      <a href="/admira-xp/?autostart=xtanco&amp;from=portada&amp;visual=good" class="live" data-i18n="nav.demo">Prueba el gemelo</a>
+      <a href="/admira-xp/?autostart=xtanco&amp;from=portada&amp;visual=hiperreal" class="live" data-i18n="nav.demo">Prueba el gemelo</a>
       <span class="language-switcher" aria-label="Language selection">
         <button type="button" class="lang-toggle" id="lang-toggle" data-lang-target="es" aria-label="Switch to Spanish">ESP</button>
       </span>
@@ -491,7 +491,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
       <h1 data-i18n-html="hero.title">Ahorra dinero<br>supervisando el <span class="grad">IoT del espacio</span>.</h1>
       <p class="lede" data-i18n-html="hero.lede">XpaceOS vigila y mantiene las pantallas, el hilo musical, los aromas y el wifi. Un solo sitio para ver que el espacio sigue encendido y en orden.</p>
       <div class="ctas">
-        <a class="cta event" href="/admira-xp/?autostart=xtanco&amp;from=portada&amp;visual=good" data-i18n="hero.tryCta">Supervisar un espacio →</a>
+        <a class="cta event" href="/admira-xp/?autostart=xtanco&amp;from=portada&amp;visual=hiperreal" data-i18n="hero.tryCta">Supervisar un espacio →</a>
         <button type="button" class="cta secondary" data-admira-contact data-lead-source="xpaceos-hero" data-i18n="hero.demoCta">Hablar del mantenimiento</button>
         <a class="cta secondary" href="#capas" data-i18n="hero.howCta">Cómo funciona</a>
       </div>
@@ -510,7 +510,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
       <div class="pr-stage" id="pr-stage">
         <div class="pr-stage-hd">
           <span class="gm-badge"><span class="gm-dot"></span><span id="pr-now" data-i18n="prueba.now">Xtanco · gemelo de referencia</span></span>
-          <a class="pr-open" id="pr-open" href="/admira-xp/?from=portada" target="_blank" rel="noopener" data-i18n="prueba.open">Abrir a pantalla completa ↗</a>
+          <a class="pr-open" id="pr-open" href="/admira-xp/?autostart=xtanco&amp;from=portada&amp;visual=hiperreal" target="_blank" rel="noopener" data-i18n="prueba.open">Abrir a pantalla completa ↗</a>
         </div>
         <div class="pr-frame-wrap">
           <button type="button" class="pr-cover" id="pr-cover"><span class="pr-play">▶</span><span data-i18n="prueba.load">Cargar el gemelo en vivo</span><small data-i18n="prueba.loadHint">~3 MB · corre en tu navegador · sin instalar nada</small></button>
@@ -1365,7 +1365,7 @@ const PR_PAGE = 24;
 const PR_SURFS = ['pantalla','escaparate','mostrador','pwa','atm','pudo','vending','robot'];
 const prState = { q:'', brand:'', surf:'', page:1, sel:'', selName:'' };
 function prBrand(kind){ return String(kind || '').split('·')[0].trim(); }
-function prTwinUrl(id){ return '/admira-xp/?' + (id ? 'loc=' + encodeURIComponent(id) + '&' : '') + 'from=portada'; }
+function prTwinUrl(id){ return '/admira-xp/?' + (id ? 'loc=' + encodeURIComponent(id) + '&' : '') + 'autostart=xtanco&from=portada&visual=hiperreal'; }
 function prFiltered(){
   if (!Array.isArray(gemelosData)) return [];
   const q = prState.q.trim().toLowerCase();

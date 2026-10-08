@@ -29,16 +29,19 @@ componente accesible anterior, también si ha tenido que ocultarse temporalmente
 Si ese componente queda lleno, reaparece cuando vuelve a existir una posición
 válida. La presentación 3D no escribe estados comerciales ni destinos del juego.
 
-People continúa OFF por defecto. `/gente on|off` = `/people on|off`,
+People está ON por defecto desde el 8-oct-2026: personal, clientes, viandantes y
+personajes especiales caminan al abrir cualquier Xpacio (antes OFF hasta validar
+estas durezas). `/gente on|off` = `/people on|off`,
 `/personal on|off` = `/staff on|off` y `/clientes on|off` = `/customers on|off`
 conservan identidades, personas, aforo y elecciones guardadas. Unitree mantiene
 sus controles de simulación. La conexión con un robot físico, el stock real y
 la telemetría IoT sigue pendiente; una colisión correcta del gemelo no verifica
 esas conexiones.
 
-Para comprobarlo: abre Experto, activa el grupo deseado, alterna Good/Better/Best
-y observa sus recorridos. En Mobiliario → Distribuir puedes mover un mueble
-editable; al cerrar el editor se actualiza la navegación. Una distribución
+Para comprobarlo: abre un Xpacio (las personas ya caminan), alterna
+Good/Better/Best y observa sus recorridos; en Experto puedes dejar sólo un grupo.
+En Mobiliario → Distribuir puedes mover un mueble editable; al cerrar el editor
+se actualiza la navegación. Una distribución
 cerrada produce espera, no una entrada o salida ficticia.
 
 ## English
@@ -69,15 +72,17 @@ previous reachable component, including while temporarily hidden. If that
 component is full, it reappears when a valid position becomes available. The 3D
 presentation does not write the game's commercial states or destinations.
 
-People remains OFF by default. `/people on|off` = `/gente on|off`,
+People is ON by default since 8 Oct 2026: staff, customers, passersby and special
+characters walk as soon as any Xpace opens (previously OFF until these hardness maps
+were validated). `/people on|off` = `/gente on|off`,
 `/staff on|off` = `/personal on|off` and `/customers on|off` = `/clientes on|off`
 retain identities, people, audience counts and saved choices. Unitree retains
 its simulation controls. Connection to a physical robot, real stock and IoT
 telemetry remains pending; correct twin collisions do not establish those links.
 
-To check: open Expert, enable the desired group, switch Good/Better/Best and
-observe its routes. Under Furniture → Distribute, move an editable object;
-closing the editor updates navigation. A closed layout produces waiting, not
+To check: open an Xpace (people already walk), switch Good/Better/Best and
+observe their routes; in Expert you can keep a single group. Under Furniture →
+Distribute, move an editable object; closing the editor updates navigation. A closed layout produces waiting, not
 a fictional entry or exit.
 
 ## Contrato compartido / Shared contract

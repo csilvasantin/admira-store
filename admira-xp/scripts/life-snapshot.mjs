@@ -111,12 +111,15 @@ export function createLifeSnapshot(){
       };
     }
     const actors=[];
+    // People ON by default (8 Oct 2026): only an explicit false hides a group, exactly
+    // like peopleGroupVisible() in Good. The game normalizes saves before they reach here.
+    const visible=group=>game.peopleVisibility?.[group]!==false;
     if(!editor&&!input.moving){
-      for(const value of list(game.staff))if(value?.hired&&game.peopleVisibility?.staff===true)actors.push(actor(value,'staff'));
-      for(const value of list(game.custs))if(game.peopleVisibility?.customers===true)actors.push(actor(value,'customer'));
-      if(game.peopleVisibility?.passersby===true&&!realTrafficActive)for(const value of list(game.passersby))actors.push(actor(value,'passerby'));
+      for(const value of list(game.staff))if(value?.hired&&visible('staff'))actors.push(actor(value,'staff'));
+      for(const value of list(game.custs))if(visible('customers'))actors.push(actor(value,'customer'));
+      if(visible('passersby')&&!realTrafficActive)for(const value of list(game.passersby))actors.push(actor(value,'passerby'));
       for(const kind of Object.keys(SPECIAL_NAMES)){
-        const value=game[kind];if((kind==='unitreeBot'||game.peopleVisibility?.specials===true)&&value&&value.phase!=='idle')actors.push(actor(value,kind));
+        const value=game[kind];if((kind==='unitreeBot'||visible('specials'))&&value&&value.phase!=='idle')actors.push(actor(value,kind));
       }
     }
     return {

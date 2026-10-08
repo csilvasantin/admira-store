@@ -20,7 +20,7 @@ Enter the Xpace and venue → press Inventory/ITIL → check the count → searc
 - Identity: stable unit ID in `data-inventory-id`; model number remains independent. Starbucks models 44–50 retain PG103 references. `starbucks-wall-01`…`06`, `starbucks-tpv-01` and `starbucks-alsea-paseo-de-gracia` identify virtual channels with physical binding pending.
 - Cafebrería retains all 96 initial scene records, existing scene focus and saved fields, visibility, Distribute editing and JSON/CSV export. Its existing record form is moved to the third column, preserving handlers and node identity. Explicit imports increase its own count.
 - Optional model link: same-origin `/inventario/?space=<space>&project=<project>&asset=<stable-number>` publishes the active layout and retains venue, brand and language. Ownership filtering remains documented in `inventory-scope.md`.
-- Existing `/inventario añadir`, `/inventario eliminar`, undo, CLI history, brand and identities remain available. No physical IoT state or remote lifecycle asset is changed. Shared actor collisions are documented in actor-collision.md. People stays OFF by default.
+- Existing `/inventario añadir`, `/inventario eliminar`, undo, CLI history, brand and identities remain available. No physical IoT state or remote lifecycle asset is changed. Shared actor collisions are documented in actor-collision.md. People is ON by default since 8 Oct 2026 (see people-visibility.md).
 
 ## Verificación / Verification
 

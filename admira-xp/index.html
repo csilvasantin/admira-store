@@ -5695,11 +5695,22 @@ const CAM={
   connected:false, occupancy:0, enter:0, leave:0, peak:0, lastApplied:null,
 };
 // Visibility is presentation only: preserve roster, visitors, sales and camera counts.
+// Contrato 8-oct-2026 · People ON por defecto / People ON by default (docs/people-visibility.md).
+// ES: toda partida nueva arranca con personal, clientes, viandantes y personajes especiales
+//     visibles. Sólo una elección explícita con /gente|/personal|/clientes on|off (o sus alias
+//     /people|/staff|/customers) marca `elegido:true` y se conserva tal cual al guardar y cargar.
+//     Una partida guardada sin esa marca (las del 3 al 8-oct guardaban false implícito) vuelve a ON.
+// EN: every new game starts with staff, customers, passersby and special characters visible.
+//     Only an explicit /people|/staff|/customers on|off choice sets `elegido:true`, kept verbatim
+//     across save/load. Saves without the marker (3–8 Oct saves stored an implicit false) return to ON.
 function peopleGroupVisible(group){
-  return !!G&&G.peopleVisibility?.[group]===true;
+  return !!G&&G.peopleVisibility?.[group]!==false;
 }
-function defaultPeopleVisibility(saved={}){
-  return Object.fromEntries(['staff','customers','passersby','specials'].map(group=>[group,saved?.[group]===true]));
+function defaultPeopleVisibility(saved){
+  const chosen=!!saved&&typeof saved==='object'&&saved.elegido===true;
+  const next=Object.fromEntries(['staff','customers','passersby','specials'].map(group=>[group,chosen?saved[group]===true:true]));
+  if(chosen)next.elegido=true;
+  return next;
 }
 function executePeopleVisibilityCommand(raw){
   const match=String(raw||'').trim().match(/^\/?(gente|people|personal|staff|clientes|customers)(?:@\w+)?\s+(on|off)(.*)$/i);
@@ -5709,10 +5720,12 @@ function executePeopleVisibilityCommand(raw){
   if(!G)return {ok:false,local:true,message:en?'Open an Xpace to show or hide its people.':'Abre un Xpacio para mostrar u ocultar sus personas.'};
   const aliases={people:'gente',staff:'personal',customers:'clientes'};
   const name=match[1].toLowerCase(),group=aliases[name]||name,on=match[2].toLowerCase()==='on';
-  const next=defaultPeopleVisibility(G.peopleVisibility);
+  // Start from what is shown now; the result is an explicit choice that survives save/load.
+  const next=Object.fromEntries(['staff','customers','passersby','specials'].map(key=>[key,peopleGroupVisible(key)]));
   if(group==='gente'){next.passersby=on;next.specials=on;}
   if(group==='gente'||group==='personal')next.staff=on;
   if(group==='gente'||group==='clientes')next.customers=on;
+  next.elegido=true;
   G.peopleVisibility=next;
   // Drop stale click targets immediately, even while the canvas awaits its next frame.
   if(typeof BTNS!=='undefined')for(const key of Object.keys(BTNS)){
@@ -5724,7 +5737,8 @@ function executePeopleVisibilityCommand(raw){
   const label=group==='gente'?(en?'People':'Personas'):
     group==='personal'?(en?'Staff':'Personal'):(en?'Customers':'Clientes');
   return {ok:true,local:true,message:label+' '+(on?'ON':'OFF')+' · '+
-    (en?(on?'visible':'hidden'):(on?'visibles':group==='gente'?'ocultas':'ocultos')),data:{...next}};
+    (en?(on?'visible':'hidden'):(on?'visibles':group==='gente'?'ocultas':'ocultos')),
+    data:{staff:next.staff,customers:next.customers,passersby:next.passersby,specials:next.specials}};
 }
 
 // Manual demo population is separate from measured camera passages.
@@ -7038,7 +7052,7 @@ const LANGS={
       {title:'GESTIÓN DE PERSONAL',lines:['Contrata empleados en la pestaña PERSONAL.','Cada empleado genera ventas automáticamente.','Fórmalos para subir su nivel (máx. 5)','y aumentar su productividad y salario.']},
       {title:'EVENTOS ESPECIALES',lines:['⚡ HORA PUNTA: ventas x2.4 durante un tiempo.','🔍 INSPECCIÓN: mantén stock y personal o penalización.','📦 Repón stock regularmente (pestaña STOCK).','👁 Vigila la barra de OBJETIVO del año en el HUD.']},
       {"title": "BEST Y MATRIX", "lines": ["Best: Avenida Admira, muebles y personas.", "Matrix: captura 360° del Starbucks Alsea.", "Abrir incidencia: informa de un problema.", "Asignar contenidos: elige pantalla y playlist.", "Guardar mapa no publica en players reales."]},
-      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Todos los Xpacios: people OFF por defecto.", "Good/Better/Best: cuerpos y recorridos respetan paredes y muebles.", "/gente = /people: todas las personas.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
+      {"title": "PERSONAS · MODO EXPERTO", "lines": ["Todos los Xpacios: people ON por defecto.", "Good/Better/Best: cuerpos y recorridos respetan paredes y muebles.", "/gente = /people: todas las personas.", "/personal = /staff: solo trabajadores.", "/clientes = /customers: solo clientes.", "Aceptan ON/OFF en ambos idiomas."]},
       {"title": "AJUSTA EL MODO EXPERTO", "lines": ["Arrastra arriba para cambiar la altura.", "Separa comandos, calidad y Local view.", "Arrastra los dos separadores verticales.", "Las medidas se guardan en el navegador.", "Doble clic en separador: anchos iniciales."]},
       {"title": "PRUEBA LOS GRUPOS", "lines": ["/gente off: oculta todas las personas.", "/personal on: muestra solo trabajadores.", "/clientes on: vuelve a mostrar clientes.", "/gente on: muestra todas las personas.", "No borra personas ni cambia el aforo."]},
     ],
@@ -7128,7 +7142,7 @@ const LANGS={
       {title:'STAFF MANAGEMENT',lines:['Hire employees in the STAFF tab.','Each employee generates sales automatically.','Train them to raise their level (max 5)','and increase their productivity and salary.']},
       {title:'SPECIAL EVENTS',lines:['⚡ RUSH HOUR: sales x2.4 for a period.','🔍 INSPECTION: keep stock & staff or get fined.','📦 Restock products regularly (STOCK tab).','👁 Watch the OBJECTIVE bar in the HUD.']},
       {"title": "BEST AND MATRIX", "lines": ["Best: Avenida Admira, furniture and people.", "Matrix: Starbucks Alsea 360° capture.", "Open incident: report a device problem.", "Assign content: select a screen and playlist.", "Saving a map does not publish to devices."]},
-      {"title": "PEOPLE · EXPERT MODE", "lines": ["All Xpaces: people OFF by default.", "Good/Better/Best: bodies and swept routes respect walls and furniture.", "/people = /gente: all people.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
+      {"title": "PEOPLE · EXPERT MODE", "lines": ["All Xpaces: people ON by default.", "Good/Better/Best: bodies and swept routes respect walls and furniture.", "/people = /gente: all people.", "/staff = /personal: workers only.", "/customers = /clientes: customers only.", "Uppercase ON/OFF works in both languages."]},
       {"title": "RESIZE EXPERT MODE", "lines": ["Drag the top handle to change height.", "Split commands, quality and Local view.", "Drag the two vertical dividers.", "Sizes are saved in this browser.", "Double-click a divider to reset widths."]},
       {"title": "TRY THE GROUPS", "lines": ["/people off: hide all people.", "/staff on: show workers only.", "/customers on: show customers again.", "/people on: show all people.", "People and audience counts are preserved."]},
     ],
@@ -9854,6 +9868,7 @@ function initGame(){
   CFG.ADVERT=M.ADVERT;
 
   G={
+    // People ON por defecto (8-oct-2026): personal, clientes, viandantes y especiales caminan al abrir.
     peopleVisibility:defaultPeopleVisibility(),
     money:CFG.START_MONEY, week:1, year:1, weekTimer:0,
     yearRevenue:0, weekRevenue:0, weekExpenses:0,
@@ -10175,7 +10190,7 @@ function loadGame(){
       clientSel=activeClient;
       activeModel=p.activeModel||0;
       modelSel=activeModel;
-      // Missing flags default OFF; retain every explicit saved visibility choice.
+      // Unmarked saves (incl. the implicit all-OFF of 3–8 Oct) return to ON; `elegido` choices are kept verbatim.
       G.peopleVisibility=defaultPeopleVisibility(G.peopleVisibility);
       // Migrate old saves — add missing fields
       if(!G.weekHistory) G.weekHistory=[];
@@ -17628,7 +17643,7 @@ function drawEraClientMiniMap(originX,originY,w,h){
 const HELP_PAGES={
   es:[
   {"title": "PANEL EXPERTO AJUSTABLE", "lines": ["Arrastra el tirador superior: altura.", "Dos separadores: comandos, calidad, Local view.", "Las medidas se guardan en este navegador.", "Flechas: ajustar. Doble clic: anchos iniciales.", "Ocultar/Mostrar controla Local view."]},
-  {"title": "PERSONAS VISIBLES · EXPERTO", "lines": ["Inicio: /gente OFF. Actívalo en Experto (⌘).", "/gente on|off = /people on|off", "/personal on|off = /staff on|off", "/clientes on|off = /customers on|off", "on muestra; off oculta. Acepta ON/OFF.", "/gente off → /personal on: solo personal.", "/gente on: vuelven todas las personas.", "Visibilidad local; conserva personas y aforo."]},
+  {"title": "PERSONAS VISIBLES · EXPERTO", "lines": ["Inicio: /gente ON, todas caminan. Experto (⌘).", "/gente on|off = /people on|off", "/personal on|off = /staff on|off", "/clientes on|off = /customers on|off", "on muestra; off oculta. Acepta ON/OFF.", "/gente off → /personal on: solo personal.", "/gente on: vuelven todas las personas.", "Visibilidad local; conserva personas y aforo."]},
   { title:'ADMIRA XP // THE XPACE OS — XTANCO', lines:[
     '','Bienvenido a Admira XP // The Xpace OS,',
     'la plataforma viva de experiencias operativas.','',
@@ -17756,7 +17771,7 @@ const HELP_PAGES={
     '  xtAPI.command("/pantallateve")  → momento «LA PANTALLA TE VE»: audiencia (real o simulada) → creativo se adapta en vivo · demo-proof · →/espacio siguiente · L cámara real · off',
     '  xtAPI.command("/targetPublicity aforo|genero")  → publicidad segmentada (genero=sexo+edad por LiveCam on-device) · off para parar',
     '  xtAPI.command("/generovideo")  → las 2 pantallas siguen el sexo de la cámara: 👨→Money For Nothing · 👩→Take On Me · off para parar',
-    '  xtAPI.command("/gente on|off"), /personal on|off, /clientes on|off → visibilidad de ambos grupos o de cada uno',
+    '  xtAPI.command("/gente on|off"), /personal on|off, /clientes on|off → todas las personas o cada grupo (ON al abrir cada Xpacio)',
     '  xtAPI.command("/resetaudiencia 0|100|auto") → fija visitantes virtuales (0–100); auto devuelve control a la cámara/juego',
     '  xtAPI.command("/aforo real")  → la cámara Hikvision (ieu.ai) marca el objetivo de clientes (ambiente)',
     '  xtAPI.command("/aforo exacto")  → espejo ESTRICTO 1:1: la tienda = exactamente lo que dice la cámara; cada entrada/salida entra/sale',
@@ -17766,7 +17781,7 @@ const HELP_PAGES={
   ],
   en:[
   {"title":"RESIZABLE EXPERT PANEL","lines":["Drag the top handle to change height.","Drag the dividers between commands, quality","and Local view to distribute the width.","Sizes are saved in this browser.","Arrow keys resize; double-click resets widths."]},
-  {"title": "PEOPLE VISIBILITY · EXPERT", "lines": ["Default: /people OFF. Enable in Expert (⌘).", "/people on|off = /gente on|off", "/staff on|off = /personal on|off", "/customers on|off = /clientes on|off", "on shows; off hides. ON/OFF also works.", "/people off → /staff on: workers only.", "/people on: all people are visible again.", "Local visibility; keeps people and counts."]},
+  {"title": "PEOPLE VISIBILITY · EXPERT", "lines": ["Default: /people ON, everyone walks. Expert (⌘).", "/people on|off = /gente on|off", "/staff on|off = /personal on|off", "/customers on|off = /clientes on|off", "on shows; off hides. ON/OFF also works.", "/people off → /staff on: workers only.", "/people on: all people are visible again.", "Local visibility; keeps people and counts."]},
   { title:'ADMIRA XP // THE XPACE OS — XTANCO', lines:[
     '','Welcome to Admira XP // The Xpace OS,',
     'the living platform for operational experiences.','',

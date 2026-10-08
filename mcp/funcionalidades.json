@@ -2490,14 +2490,20 @@
     "help_topic": "people",
     "tutorial": "https://www.xpaceos.com/help/#people-tutorial",
     "default": {
-      "staff": false,
-      "customers": false,
-      "passersby": false,
-      "specials": false
+      "staff": true,
+      "customers": true,
+      "passersby": true,
+      "specials": true
+    },
+    "explicit_choice": {
+      "marker": "peopleVisibility.elegido = true",
+      "set_by": "/gente|/people|/personal|/staff|/clientes|/customers on|off",
+      "load": "marked saves keep their exact values; unmarked saves (3–8 Oct 2026 stored an implicit false) return to ON",
+      "since": "2026-10-08"
     },
     "startup": {
-      "es": "Todos los Xpacios empiezan con /people OFF (/gente OFF): personal, clientes, viandantes y personajes especiales humanos ocultos. /people on los activa; /personal y /clientes permiten activar sólo su grupo. Se conservan personas, aforo, simulación y elecciones explícitas guardadas. Los robots y los equipos IoT mantienen sus controles. Good, Better y Best comparten colisiones físicas de personas y robots; una ruta cerrada espera. La vinculación con equipos físicos y la telemetría IoT sigue pendiente.",
-      "en": "All Xpaces default to /people OFF (/gente OFF): staff, customers, passersby and special human characters stay hidden. /people on enables them; /staff and /customers enable only their own group. People, audience counts, simulation and explicit saved choices are retained. Robots and IoT devices keep their controls. Good, Better and Best share physical collisions for people and robots; a closed route waits. Physical equipment binding and IoT telemetry remain pending."
+      "es": "Desde el 8-oct-2026 todos los Xpacios empiezan con /people ON (/gente ON): personal, clientes, viandantes y personajes especiales humanos caminan al abrir cualquier Xpacio. /people off los oculta; /personal y /clientes cambian sólo su grupo. Una elección explícita on|off se aplica al Xpacio abierto y se guarda marcada en su partida; las partidas guardadas sin esa marca vuelven a ON y abrir de nuevo un Xpacio arranca en ON. Se conservan personas, aforo y simulación. Los robots y los equipos IoT mantienen sus controles. Good, Better y Best comparten colisiones físicas de personas y robots; una ruta cerrada espera. La vinculación con equipos físicos y la telemetría IoT sigue pendiente.",
+      "en": "Since 8 Oct 2026 all Xpaces default to /people ON (/gente ON): staff, customers, passersby and special human characters walk as soon as any Xpace opens. /people off hides them; /staff and /customers change only their own group. An explicit on|off choice applies to the open Xpace and is stored, marked, in its save; saves without that marker return to ON, and opening an Xpace again starts ON. People, audience counts and simulation are retained. Robots and IoT devices keep their controls. Good, Better and Best share physical collisions for people and robots; a closed route waits. Physical equipment binding and IoT telemetry remain pending."
     },
     "pending": "physical robot binding, real Stock and IoT telemetry",
     "guide": "https://www.xpaceos.com/admira-xp/docs/people-visibility.md",
@@ -3656,8 +3662,8 @@
     "new_remote_tools": false
   },
   "actor_collision": {
-    "es": "En Good, Better y Best, las personas y robots del interior usan el mismo mapa físico: perímetro, puertas, arquitectura y envolventes de las mallas de los muebles. Se comprueba el cuerpo completo y cada tramo del recorrido. Una ruta cerrada espera y se recalcula cuando cambia el espacio; no atraviesa el obstáculo ni registra entrada o salida sin llegar al destino correcto. La recuperación de una partida o de un actor cubierto por un mueble conserva su componente accesible; si queda lleno, se oculta temporalmente y reaparece al existir una posición válida. People sigue OFF por defecto y conserva elecciones guardadas. Matrix aplica este mapa a sus actores heredados conservando fotografía y proyección. La conexión con robots físicos, stock real y telemetría IoT sigue pendiente.",
-    "en": "In Good, Better and Best, interior people and robots use the same physical map: perimeter, doors, architecture and furniture mesh envelopes. The full body and every swept movement segment are checked. A closed route waits and is recalculated when the space changes; it cannot bypass an obstacle or complete an entry or exit without reaching the correct destination. Save recovery or furniture covering an actor retains its reachable component; if full, the actor stays temporarily hidden and reappears when a valid position exists. People remains OFF by default and retains saved choices. Matrix applies this map to its legacy actors while preserving its photograph and projection. Connection to physical robots, real stock and IoT telemetry remains pending.",
+    "es": "En Good, Better y Best, las personas y robots del interior usan el mismo mapa físico: perímetro, puertas, arquitectura y envolventes de las mallas de los muebles. Se comprueba el cuerpo completo y cada tramo del recorrido. Una ruta cerrada espera y se recalcula cuando cambia el espacio; no atraviesa el obstáculo ni registra entrada o salida sin llegar al destino correcto. La recuperación de una partida o de un actor cubierto por un mueble conserva su componente accesible; si queda lleno, se oculta temporalmente y reaparece al existir una posición válida. People está ON por defecto desde el 8-oct-2026 y respeta las elecciones explícitas. Matrix aplica este mapa a sus actores heredados conservando fotografía y proyección. La conexión con robots físicos, stock real y telemetría IoT sigue pendiente.",
+    "en": "In Good, Better and Best, interior people and robots use the same physical map: perimeter, doors, architecture and furniture mesh envelopes. The full body and every swept movement segment are checked. A closed route waits and is recalculated when the space changes; it cannot bypass an obstacle or complete an entry or exit without reaching the correct destination. Save recovery or furniture covering an actor retains its reachable component; if full, the actor stays temporarily hidden and reappears when a valid position exists. People is ON by default since 8 Oct 2026 and respects explicit choices. Matrix applies this map to its legacy actors while preserving its photograph and projection. Connection to physical robots, real stock and IoT telemetry remains pending.",
     "status": "implemented",
     "help_topic": "actor-collision",
     "qualities": [
@@ -3678,7 +3684,7 @@
     ],
     "route_contract": "full swept body; preserve destination region; exact valid exit; blocked paths wait and replan",
     "recovery": "previous reachable component retained while temporarily hidden; resume when valid space exists",
-    "people_default": "OFF; explicit saved visibility retained",
+    "people_default": "ON since 2026-10-08; explicit marked choice (elegido) retained",
     "source": [
       "admira-xp/scripts/customer-navigation.mjs",
       "admira-xp/scripts/customer-motion.mjs",
