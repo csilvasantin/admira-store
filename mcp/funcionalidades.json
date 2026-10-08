@@ -4708,18 +4708,42 @@
       "/demo ayuda",
       "/demo all",
       "/demo todas",
+      "/demo all es|en",
+      "/demo all ESP|ENG",
+      "/demo all --idioma es",
       "/demo all --enviar",
-      "/demo <id|n>",
+      "/demo <id|n> [es|en]",
+      "/demo pausa",
+      "/demo reanudar",
       "/demo next",
       "/demo stop"
     ],
     "count": 23,
     "tour_count": 16,
     "tour_total_s": 316,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "card": {
+      "draggable": true,
+      "position_key": "xpaceos.demoTour.cardPos.v1",
+      "reset": "doble clic en el asa / double-click the grip",
+      "controls": [
+        "pause",
+        "next",
+        "stop",
+        "ES/EN"
+      ],
+      "icons": "inline SVG (Lucide-style) · demos.json icon",
+      "brand": "--mbx-brand/--mbx-accent (marca blanca)",
+      "reduced_motion": true
+    },
     "demos": [
       {
         "n": 1,
         "id": "voz",
+        "icon": "mic",
         "es": "Gestión de locuciones",
         "en": "Voiceover management",
         "tour": true
@@ -4727,6 +4751,7 @@
       {
         "n": 2,
         "id": "musica",
+        "icon": "music",
         "es": "Gestión de música",
         "en": "Music management",
         "tour": true
@@ -4734,6 +4759,7 @@
       {
         "n": 3,
         "id": "imagenes",
+        "icon": "image",
         "es": "Gestión de imágenes",
         "en": "Image management",
         "tour": true
@@ -4741,6 +4767,7 @@
       {
         "n": 4,
         "id": "video",
+        "icon": "film",
         "es": "Gestión de vídeo",
         "en": "Video management",
         "tour": true
@@ -4748,6 +4775,7 @@
       {
         "n": 5,
         "id": "caja",
+        "icon": "register",
         "es": "Gestión del TPV",
         "en": "POS management",
         "tour": true
@@ -4755,6 +4783,7 @@
       {
         "n": 6,
         "id": "tpv",
+        "icon": "receipt",
         "es": "Muffin al TPV",
         "en": "Muffin to the POS",
         "tour": true
@@ -4762,6 +4791,7 @@
       {
         "n": 7,
         "id": "sincro",
+        "icon": "sync",
         "es": "Playlists y sincro IA",
         "en": "Playlists and AI sync",
         "tour": true
@@ -4769,6 +4799,7 @@
       {
         "n": 8,
         "id": "altavoz",
+        "icon": "speaker",
         "es": "Hilo musical · altavoz",
         "en": "Background music · speaker",
         "tour": true
@@ -4776,6 +4807,7 @@
       {
         "n": 9,
         "id": "aviso",
+        "icon": "megaphone",
         "es": "Aviso de cierre · 2 voces",
         "en": "Closing announcement · 2 voices",
         "tour": true
@@ -4783,6 +4815,7 @@
       {
         "n": 10,
         "id": "avatar",
+        "icon": "cloud",
         "es": "Admirito en la pared",
         "en": "Admirito on the wall",
         "tour": true
@@ -4790,6 +4823,7 @@
       {
         "n": 11,
         "id": "ipad",
+        "icon": "tablet",
         "es": "iPad · gestor de colas",
         "en": "iPad · queue manager",
         "tour": true
@@ -4797,6 +4831,7 @@
       {
         "n": 12,
         "id": "panorama",
+        "icon": "globe",
         "es": "Panorama 360",
         "en": "360 panorama",
         "tour": true
@@ -4804,6 +4839,7 @@
       {
         "n": 13,
         "id": "inventario",
+        "icon": "boxes",
         "es": "Inventario ITIL · idIoT",
         "en": "ITIL inventory · idIoT",
         "tour": true
@@ -4811,6 +4847,7 @@
       {
         "n": 14,
         "id": "ifthendothat",
+        "icon": "branch",
         "es": "Reglas IF·THEN·DO THAT",
         "en": "IF·THEN·DO THAT rules",
         "tour": true
@@ -4818,6 +4855,7 @@
       {
         "n": 15,
         "id": "incidencia",
+        "icon": "alert",
         "es": "Incidencia + informe NASA",
         "en": "Incident + NASA report",
         "tour": true
@@ -4825,6 +4863,7 @@
       {
         "n": 16,
         "id": "calidades",
+        "icon": "layers",
         "es": "Calidades Good · Better · Best",
         "en": "Good · Better · Best qualities",
         "tour": true
@@ -4832,6 +4871,7 @@
       {
         "n": 17,
         "id": "marca",
+        "icon": "palette",
         "es": "Marca blanca",
         "en": "White label",
         "tour": false
@@ -4839,6 +4879,7 @@
       {
         "n": 18,
         "id": "taza",
+        "icon": "coffee",
         "es": "PlayerTaza",
         "en": "PlayerTaza",
         "tour": false
@@ -4846,6 +4887,7 @@
       {
         "n": 19,
         "id": "kiosko",
+        "icon": "bag",
         "es": "Kiosko de pedidos",
         "en": "Order kiosk",
         "tour": false
@@ -4853,6 +4895,7 @@
       {
         "n": 20,
         "id": "dvr",
+        "icon": "history",
         "es": "DVR del Xpacio",
         "en": "Xpace DVR",
         "tour": false
@@ -4860,6 +4903,7 @@
       {
         "n": 21,
         "id": "mobiliario",
+        "icon": "armchair",
         "es": "Mobiliario y distribución",
         "en": "Furniture and layout",
         "tour": false
@@ -4867,6 +4911,7 @@
       {
         "n": 22,
         "id": "crear-media",
+        "icon": "sparkles",
         "es": "Crear contenidos (PixerIA)",
         "en": "Create content (PixerIA)",
         "tour": false
@@ -4874,13 +4919,14 @@
       {
         "n": 23,
         "id": "anonimizador",
+        "icon": "eyeoff",
         "es": "Percepción y anonimizador",
         "en": "Perception and anonymizer",
         "tour": false
       }
     ],
-    "es": "Registro único de demos (admira-xp/demos.json): /demo help o /demo ayuda las lista numeradas con descripción y cómo lanzarlas; /demo all o /demo todas enseña seguidas las marcadas para el recorrido con tarjeta «Demo n/N · nombre», cámara y unos segundos; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial. /demo <id|número> lanza una. Las 1–5 son del motor común de la suite (mismos números). La incidencia de demo crea y cierra un ticket CLI nuevo y su informe sólo se envía con --enviar. /demo auto sigue encadenando las cinco del motor.",
-    "en": "Single demo registry (admira-xp/demos.json): /demo help or /demo ayuda lists them numbered with a description and how to run them; /demo all or /demo todas shows the tour demos in a row with a “Demo n/N · name” card, camera moves and a few seconds each; /demo next skips, /demo stop or Esc stops and the twin returns to its initial state. /demo <id|number> runs one. 1–5 belong to the shared suite engine (same numbers). The incident demo creates and closes a new CLI ticket and its report is only sent with --enviar. /demo auto still chains the engine's five.",
+    "es": "Registro único de demos (admira-xp/demos.json): /demo help o /demo ayuda las lista numeradas; /demo all o /demo todas enseña seguidas las del recorrido. /demo all es|en (ESP/ENG, --idioma) elige el idioma de la tarjeta, la CLI y los contenidos (causas y notas de la incidencia, ensayos de la suite); sin argumento sigue /idioma y al terminar vuelve el anterior. Tarjeta flotante de cristal con los colores de la marca blanca, icono animado por demo con anillo de pasos, Pausa/Siguiente/Detener, píldora ES/EN y barra con brillo; se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic: arriba al centro) y respeta prefers-reduced-motion. /demo pausa y /demo reanudar; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial. Las 1–5 son del motor común de la suite. La incidencia de demo crea y cierra un ticket CLI nuevo y su informe sólo se envía con --enviar.",
+    "en": "Single demo registry (admira-xp/demos.json): /demo help or /demo ayuda lists them numbered; /demo all or /demo todas shows the tour demos in a row. /demo all es|en (ESP/ENG, --idioma) picks the language of the card, CLI and contents (incident causes and notes, suite rehearsals); without it, it follows /idioma and the previous language returns at the end. Floating glass card in the white-label colours, animated icon per demo with a step ring, Pause/Next/Stop, ES/EN pill and shimmer bar; drag it by the grip (mouse or touch, position remembered; double-click: top centre); respects prefers-reduced-motion. /demo pausa and /demo reanudar; /demo next skips, /demo stop or Esc stops and the twin returns to its initial state. 1–5 belong to the shared suite engine. The incident demo creates and closes a new CLI ticket and its report is only sent with --enviar.",
     "mcp": {
       "es": "Sin herramientas MCP nuevas: el registro es JSON estático y /demo help|all|<id> entra por el canal de órdenes del gemelo (__xtExec / xtAPI.command).",
       "en": "No new MCP tools: the registry is static JSON and /demo help|all|<id> goes through the twin command channel (__xtExec / xtAPI.command)."

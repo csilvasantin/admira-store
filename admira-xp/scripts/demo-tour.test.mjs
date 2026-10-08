@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {parseTourArg,findDemo,demoHelp,tourTotal,runTour,handleDemoTour,loadDemoRegistry,nextDemo,stopTour,tourState} from './demo-tour.mjs?v=demos-1';
+import {parseTourArg,findDemo,demoHelp,tourTotal,runTour,handleDemoTour,loadDemoRegistry,nextDemo,stopTour,tourState} from './demo-tour.mjs?v=demos-2';
 import {parseVisualCommand,executeVisualCommand,DEMO_SOLUTIONS} from './xtanco-visual-command.mjs';
 const reg=JSON.parse(readFileSync(new URL('../demos.json',import.meta.url),'utf8'));
 const fast=r=>({...r,tour:{...r.tour,title_card_s:0},demos:r.demos.map(d=>({...d,steps:(d.steps||[]).map(s=>s.wait!=null?{wait:1}:s.waitPos?{waitPos:5}:s)}))});
@@ -64,4 +64,30 @@ test('demo 15 always closes its own ticket (retries a failed close) and restore 
   assert.equal(closes,2);assert.match(out.message,/cerrada/);assert.equal(untouched,1);assert.equal(touched,false);
   const ipad=reg.demos.find(d=>d.id==='ipad');assert.deepEqual(ipad.preload,[{ipad:'preload'}]);
  }finally{delete globalThis.XpaceIpadCola;}
+});
+
+import {splitFlags,pauseTour,clampPos,applyPageLang,setTourLanguage} from './demo-tour.mjs?v=demos-2';
+import {DEMO_ICONS,demoIconSvg} from './demo-icons.mjs?v=demos-2';
+test('language: /demo all es|en|ESP|ENG|--idioma, /demo <id> en, and every demo has a Lucide-style icon',()=>{
+ assert.deepEqual(parseVisualCommand('/demo all en'),{guided:'tour',action:'all',send:false,lang:'en'});
+ assert.deepEqual(parseVisualCommand('/demo todas ESP --enviar'),{guided:'tour',action:'all',send:true,lang:'es'});
+ assert.deepEqual(parseVisualCommand('/demo all --idioma en'),{guided:'tour',action:'all',send:false,lang:'en'});
+ assert.deepEqual(parseVisualCommand('/demo ayuda eng'),{guided:'tour',action:'help',lang:'en'});
+ assert.deepEqual(splitFlags('ipad es'),{rest:'ipad',send:false,lang:'es'});assert.equal(findDemo(reg,'ipad en').id,'ipad');
+ assert.deepEqual(parseVisualCommand('/demo es'),{guided:'suite',text:'/demo es'});
+ for(const d of reg.demos){assert.ok(DEMO_ICONS[d.icon],d.id+' icon');assert.match(demoIconSvg(d.icon),/^<svg [^>]*viewBox="0 0 24 24"/);}
+ assert.equal(new Set(reg.demos.map(d=>d.icon)).size,reg.demos.length,'one icon per demo');
+});
+test('tour language switches the page via /idioma ESP|ENG and restores it; the ES/EN pill switches mid-tour; pause freezes the clock',async()=>{
+ const calls=[];const doc={documentElement:{lang:'en'},body:null,defaultView:null};
+ globalThis.XpaceShell={language(cmd){calls.push(cmd);doc.documentElement.lang=/ENG/.test(cmd)?'en':'es';}};
+ try{const r={...fast(reg),demos:reg.demos.map(d=>({...d,steps:[{wait:400}],cleanup:[]}))};
+  const p=runTour({reg:r,ids:['avatar','panorama'],lang:'es',router:null,exec:async()=>'',doc,show:null});
+  await new Promise(s=>setTimeout(s,50));assert.equal(doc.documentElement.lang,'es');assert.equal(setTourLanguage('en'),true);assert.equal(tourState().lang,'en');
+  assert.equal(pauseTour(true),true);await new Promise(s=>setTimeout(s,700));assert.equal(tourState().active,true);assert.equal(tourState().index,1);
+  pauseTour(false);const out=await p;assert.equal(out.lang,'en');
+  assert.deepEqual(calls,['/idioma ESP','/idioma ENG']);assert.equal(doc.documentElement.lang,'en');
+ }finally{delete globalThis.XpaceShell;}
+ assert.deepEqual(clampPos({x:-50,y:9999},{w:600,h:200,vw:1440,vh:900}),{x:8,y:692});
+ assert.equal(applyPageLang(null,'en'),false);
 });

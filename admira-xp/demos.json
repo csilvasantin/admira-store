@@ -5,13 +5,22 @@
  "source": "https://www.admira.store/admira-xp/demos.json",
  "mirror": "https://www.xpaceos.com/admira-xp/demos.json",
  "commands": {
-  "help": "/demo help · /demo ayuda",
-  "all": "/demo all · /demo todas [--enviar]",
-  "one": "/demo <id|número>",
+  "help": "/demo help · /demo ayuda [es|en]",
+  "all": "/demo all · /demo todas [es|en|ESP|ENG|--idioma es] [--enviar]",
+  "pause": "/demo pausa · /demo reanudar (durante el recorrido)",
+  "one": "/demo <id|número> [es|en]",
   "next": "/demo next · /demo siguiente (durante el recorrido)",
   "stop": "/demo stop · Esc"
  },
  "tour": {
+  "languages": [
+   "es",
+   "en"
+  ],
+  "language_note": {
+   "es": "/demo all es|en (ESP/ENG, --idioma) fija el idioma de la tarjeta, la CLI y los contenidos durante el recorrido; sin argumento sigue /idioma. La píldora ES/EN de la tarjeta lo cambia en marcha. Al terminar vuelve el idioma anterior.",
+   "en": "/demo all es|en (ESP/ENG, --idioma) sets the language of the card, CLI and contents during the tour; without it, it follows /idioma. The ES/EN pill on the card switches it mid-tour. The previous language returns at the end."
+  },
   "title_card_s": 2,
   "count": 16,
   "total_s": 316,
@@ -33,6 +42,7 @@
   {
    "n": 1,
    "id": "voz",
+   "icon": "mic",
    "aliases": [
     "locucion",
     "locuciones"
@@ -72,6 +82,7 @@
   {
    "n": 2,
    "id": "musica",
+   "icon": "music",
    "aliases": [
     "playlist",
     "hilo musical"
@@ -111,6 +122,7 @@
   {
    "n": 3,
    "id": "imagenes",
+   "icon": "image",
    "aliases": [
     "imagen",
     "creatividades"
@@ -150,6 +162,7 @@
   {
    "n": 4,
    "id": "video",
+   "icon": "film",
    "aliases": [
     "videos",
     "clip"
@@ -189,6 +202,7 @@
   {
    "n": 5,
    "id": "caja",
+   "icon": "register",
    "aliases": [
     "venta"
    ],
@@ -227,6 +241,7 @@
   {
    "n": 6,
    "id": "tpv",
+   "icon": "receipt",
    "aliases": [
     "muffin",
     "pos"
@@ -272,6 +287,7 @@
   {
    "n": 7,
    "id": "sincro",
+   "icon": "sync",
    "aliases": [
     "sync",
     "navidad",
@@ -325,6 +341,7 @@
   {
    "n": 8,
    "id": "altavoz",
+   "icon": "speaker",
    "aliases": [
     "hilomusical",
     "musica-local",
@@ -377,6 +394,7 @@
   {
    "n": 9,
    "id": "aviso",
+   "icon": "megaphone",
    "aliases": [
     "locucion-cierre",
     "announcement",
@@ -435,6 +453,7 @@
   {
    "n": 10,
    "id": "avatar",
+   "icon": "cloud",
    "aliases": [
     "admirito"
    ],
@@ -476,6 +495,7 @@
   {
    "n": 11,
    "id": "ipad",
+   "icon": "tablet",
    "aliases": [
     "colas",
     "cola",
@@ -534,6 +554,7 @@
   {
    "n": 12,
    "id": "panorama",
+   "icon": "globe",
    "aliases": [
     "360",
     "matrix"
@@ -574,6 +595,7 @@
   {
    "n": 13,
    "id": "inventario",
+   "icon": "boxes",
    "aliases": [
     "idiot",
     "inventory"
@@ -611,6 +633,7 @@
   {
    "n": 14,
    "id": "ifthendothat",
+   "icon": "branch",
    "aliases": [
     "reglas",
     "condicional",
@@ -654,6 +677,7 @@
   {
    "n": 15,
    "id": "incidencia",
+   "icon": "alert",
    "aliases": [
     "incident",
     "itsm",
@@ -689,6 +713,7 @@
   {
    "n": 16,
    "id": "calidades",
+   "icon": "layers",
    "aliases": [
     "good",
     "better",
@@ -741,6 +766,7 @@
   {
    "n": 17,
    "id": "marca",
+   "icon": "palette",
    "aliases": [
     "brand",
     "marcablanca",
@@ -780,6 +806,7 @@
   {
    "n": 18,
    "id": "taza",
+   "icon": "coffee",
    "aliases": [],
    "name": {
     "es": "PlayerTaza",
@@ -816,6 +843,7 @@
   {
    "n": 19,
    "id": "kiosko",
+   "icon": "bag",
    "aliases": [],
    "name": {
     "es": "Kiosko de pedidos",
@@ -852,6 +880,7 @@
   {
    "n": 20,
    "id": "dvr",
+   "icon": "history",
    "aliases": [
     "replay"
    ],
@@ -900,6 +929,7 @@
   {
    "n": 21,
    "id": "mobiliario",
+   "icon": "armchair",
    "aliases": [
     "muebles",
     "furniture",
@@ -939,6 +969,7 @@
   {
    "n": 22,
    "id": "crear-media",
+   "icon": "sparkles",
    "aliases": [
     "crear-imagen",
     "media"
@@ -980,6 +1011,7 @@
   {
    "n": 23,
    "id": "anonimizador",
+   "icon": "eyeoff",
    "aliases": [
     "percepcion",
     "audiencia",

@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r4.07:42": [
+    "/demo all es|en (también ESP/ENG o --idioma): el recorrido elige idioma para la tarjeta, la CLI y los contenidos; sin argumento sigue /idioma y al acabar vuelve el de antes",
+    "Tarjeta flotante de cristal con los colores de la marca: se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic la recoloca), icono animado por demo con anillo de pasos, píldora ES/EN, Pausa · Siguiente · Detener",
+    "/demo pausa y /demo reanudar; /help/demos enseña también los iconos"
+  ],
   "v.08.10.2026.r1.00:22": [
     "/demo all: la demo de incidencia siempre cierra el ticket que abre (reintenta si falla el cierre)",
     "iPad: el gestor de colas se precarga durante la tarjeta y la demo espera a que cargue; al terminar desaparece el botón «Abrir gestor de colas» si no estaba",
