@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "instance_count": 115,
+  "sku_count": 26,
+  "shelves": 5,
+  "bays": 2,
+  "assembly_bytes": 5069872,
+  "catalog_bytes": 5070952,
+  "embedded_textures": 6,
+  "mesh_count": 536,
+  "node_count": 1891,
+  "verified": [
+    "GLB structure",
+    "embedded buffers and textures",
+    "independent named product roots",
+    "unique component IDs",
+    "transform coordinates match manifest",
+    "26 standalone centered GLBs",
+    "existing ITIL identity preserved",
+    "empty cabinet contains no products"
+  ],
+  "limitations": [
+    "Photo proportions are nominal and unmeasured",
+    "Visual quantities are not real stock",
+    "Product components are not new patrimonial CIs"
+  ]
+}

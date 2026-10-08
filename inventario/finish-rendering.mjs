@@ -20,9 +20,19 @@ export function pixelFinish(root){
  });
  return ()=>{materials.forEach(material=>material.dispose());textures.forEach(texture=>texture.dispose());gradient.dispose();};
 }
-export function preciseTextureSampling(root,maxAnisotropy){
+export function preciseTextureSampling(root,maxAnisotropy,{physical=false}={}){
  const maps=new Map(),materials=new Map();
- root.traverse(mesh=>{if(!mesh.isMesh)return;const copy=source=>{if(!materials.has(source)){const material=source.clone();for(const key of ['map','normalMap','roughnessMap','metalnessMap'])if(source[key]){if(!maps.has(source[key])){const map=source[key].clone();map.anisotropy=Math.min(16,maxAnisotropy);map.needsUpdate=true;maps.set(source[key],map);}material[key]=maps.get(source[key]);}materials.set(source,material);}return materials.get(source);};mesh.material=Array.isArray(mesh.material)?mesh.material.map(copy):copy(mesh.material);});
+ root.traverse(mesh=>{if(!mesh.isMesh)return;const copy=source=>{
+  if(!materials.has(source)){
+   let material;
+   if(physical&&source.isMeshStandardMaterial&&!source.isMeshPhysicalMaterial){material=new T.MeshPhysicalMaterial();T.MeshStandardMaterial.prototype.copy.call(material,source);material.defines={STANDARD:'',PHYSICAL:''};}else material=source.clone();
+   for(const key of ['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','alphaMap','clearcoatMap','clearcoatNormalMap','clearcoatRoughnessMap','transmissionMap','thicknessMap','specularIntensityMap','specularColorMap'])if(source[key]){
+    if(!maps.has(source[key])){const map=source[key].clone();map.anisotropy=Math.min(16,maxAnisotropy);map.needsUpdate=true;maps.set(source[key],map);}material[key]=maps.get(source[key]);
+   }
+   if(physical)material.envMapIntensity=1.05;materials.set(source,material);
+  }
+  return materials.get(source);
+ };mesh.material=Array.isArray(mesh.material)?mesh.material.map(copy):copy(mesh.material);});
  return ()=>{materials.forEach(material=>material.dispose());maps.forEach(map=>map.dispose());};
 }
 export function drawPixels(context,source,width,height){

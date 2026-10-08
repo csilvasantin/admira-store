@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "independent_roots": 115,
+  "blend_source_reopened": true,
+  "assembly_glb_reimported": true,
+  "catalog_glb_reimported": true,
+  "no_cameras_or_lights": true,
+  "catalog_bounds_blender": [
+    [
+      -2.6557563614915125e-07,
+      0.9300002455711365
+    ],
+    [
+      -3.0400004386901855,
+      2.136205701219751e-08
+    ],
+    [
+      0.0,
+      2.5300002098083496
+    ]
+  ],
+  "catalog_dimensions_gltf": [
+    0.9300005111467726,
+    2.5300002098083496,
+    3.0400004600522426
+  ],
+  "catalog_front": "+X",
+  "units": "original scene grid",
+  "measurement_status": "unmeasured"
+}

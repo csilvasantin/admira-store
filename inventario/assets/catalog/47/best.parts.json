@@ -1,0 +1,3387 @@
+{
+  "schema": "xpaceos.starbucks.shelf-parts/1",
+  "inventoryId": "native:starbucksShelves",
+  "inventoryNumber": 47,
+  "number": 47,
+  "profile": "best",
+  "parent_ci": "PDG103-EST-01",
+  "instance_id": "sb-mugs",
+  "reference_id": "PG103-004",
+  "composition_only": true,
+  "measured": false,
+  "shelf_count": 5,
+  "bay_count": 2,
+  "instance_count": 115,
+  "product_reference_count": 26,
+  "collection": "./collection/preview/",
+  "inventory": "./collection/inventory.json",
+  "assembly": "./collection/assets/coffee-display.glb",
+  "cabinet": "./collection/assets/cabinet-empty.glb",
+  "nominal_dimensions": {
+    "width": 2.12,
+    "height": 2.18,
+    "depth": 0.46,
+    "unit": "m",
+    "basis": "nominal_unmeasured"
+  },
+  "catalog_bounds_nominal": {
+    "x": [
+      0,
+      0.93
+    ],
+    "y": [
+      0,
+      2.53
+    ],
+    "z": [
+      0,
+      3.04
+    ],
+    "unit": "scene_grid"
+  },
+  "parts": [
+    {
+      "id": "47-P001",
+      "numeric_id": 1,
+      "node": "CI_001_coffee_kati",
+      "sku": "coffee-kati",
+      "label": "Café Kati Kati Blend",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.935,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-kati.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Kati Kati Blend",
+      "source_object": "CI_001_coffee_kati",
+      "product_reference": "coffee-kati",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        2.8576
+      ]
+    },
+    {
+      "id": "47-P002",
+      "numeric_id": 2,
+      "node": "CI_002_coffee_pike",
+      "sku": "coffee-pike",
+      "label": "Café Pike Place Roast",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.8,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-pike.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Pike Place Roast",
+      "source_object": "CI_002_coffee_pike",
+      "product_reference": "coffee-pike",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        2.664470588235294
+      ]
+    },
+    {
+      "id": "47-P003",
+      "numeric_id": 3,
+      "node": "CI_003_coffee_kati",
+      "sku": "coffee-kati",
+      "label": "Café Kati Kati Blend",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.665,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-kati.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Kati Kati Blend",
+      "source_object": "CI_003_coffee_kati",
+      "product_reference": "coffee-kati",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        2.471341176470588
+      ]
+    },
+    {
+      "id": "47-P004",
+      "numeric_id": 4,
+      "node": "CI_004_coffee_guatemala",
+      "sku": "coffee-guatemala",
+      "label": "Café Guatemala Antigua",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.53,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-guatemala.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Guatemala Antigua",
+      "source_object": "CI_004_coffee_guatemala",
+      "product_reference": "coffee-guatemala",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        2.2782117647058824
+      ]
+    },
+    {
+      "id": "47-P005",
+      "numeric_id": 5,
+      "node": "CI_005_coffee_guatemala",
+      "sku": "coffee-guatemala",
+      "label": "Café Guatemala Antigua",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.395,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-guatemala.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Guatemala Antigua",
+      "source_object": "CI_005_coffee_guatemala",
+      "product_reference": "coffee-guatemala",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        2.0850823529411766
+      ]
+    },
+    {
+      "id": "47-P006",
+      "numeric_id": 6,
+      "node": "CI_006_coffee_guatemala",
+      "sku": "coffee-guatemala",
+      "label": "Café Guatemala Antigua",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.26,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-guatemala.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Guatemala Antigua",
+      "source_object": "CI_006_coffee_guatemala",
+      "product_reference": "coffee-guatemala",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        1.8919529411764706
+      ]
+    },
+    {
+      "id": "47-P007",
+      "numeric_id": 7,
+      "node": "CI_007_coffee_ethiopia",
+      "sku": "coffee-ethiopia",
+      "label": "Café Ethiopia",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 1,
+      "position": [
+        -0.125,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-ethiopia.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Ethiopia",
+      "source_object": "CI_007_coffee_ethiopia",
+      "product_reference": "coffee-ethiopia",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        1.6988235294117646
+      ]
+    },
+    {
+      "id": "47-P008",
+      "numeric_id": 8,
+      "node": "CI_008_coffee_verona",
+      "sku": "coffee-verona",
+      "label": "Café Caffè Verona",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.125,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-verona.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Caffè Verona",
+      "source_object": "CI_008_coffee_verona",
+      "product_reference": "coffee-verona",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        1.3411764705882354
+      ]
+    },
+    {
+      "id": "47-P009",
+      "numeric_id": 9,
+      "node": "CI_009_coffee_verona",
+      "sku": "coffee-verona",
+      "label": "Café Caffè Verona",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.26,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-verona.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Caffè Verona",
+      "source_object": "CI_009_coffee_verona",
+      "product_reference": "coffee-verona",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        1.1480470588235294
+      ]
+    },
+    {
+      "id": "47-P010",
+      "numeric_id": 10,
+      "node": "CI_010_coffee_iced",
+      "sku": "coffee-iced",
+      "label": "Café Iced Coffee Blend",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.395,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-iced.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Iced Coffee Blend",
+      "source_object": "CI_010_coffee_iced",
+      "product_reference": "coffee-iced",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        0.9549176470588235
+      ]
+    },
+    {
+      "id": "47-P011",
+      "numeric_id": 11,
+      "node": "CI_011_coffee_iced",
+      "sku": "coffee-iced",
+      "label": "Café Iced Coffee Blend",
+      "category": "Café en bolsa",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.53,
+        1.765,
+        -0.005
+      ],
+      "asset": "assets/products/coffee-iced.glb",
+      "stock_verified": false,
+      "kind": "coffee",
+      "family": "Café en bolsa",
+      "name_es": "Café Iced Coffee Blend",
+      "source_object": "CI_011_coffee_iced",
+      "product_reference": "coffee-iced",
+      "position_catalog_gltf": [
+        0.45201656079599756,
+        2.0483714969066282,
+        0.7617882352941175
+      ]
+    },
+    {
+      "id": "47-P012",
+      "numeric_id": 12,
+      "node": "CI_012_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.632,
+        1.765,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_012_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.0483714969066282,
+        0.6158682352941176
+      ]
+    },
+    {
+      "id": "47-P013",
+      "numeric_id": 13,
+      "node": "CI_013_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.632,
+        1.8319999999999999,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_013_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.1261283752594577,
+        0.6158682352941176
+      ]
+    },
+    {
+      "id": "47-P014",
+      "numeric_id": 14,
+      "node": "CI_014_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.632,
+        1.899,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_014_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.2038852536122873,
+        0.6158682352941176
+      ]
+    },
+    {
+      "id": "47-P015",
+      "numeric_id": 15,
+      "node": "CI_015_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.632,
+        1.966,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_015_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.281642131965117,
+        0.6158682352941176
+      ]
+    },
+    {
+      "id": "47-P016",
+      "numeric_id": 16,
+      "node": "CI_016_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.6950000000000001,
+        1.765,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_016_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.0483714969066282,
+        0.5257411764705882
+      ]
+    },
+    {
+      "id": "47-P017",
+      "numeric_id": 17,
+      "node": "CI_017_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.6950000000000001,
+        1.8319999999999999,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_017_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.1261283752594577,
+        0.5257411764705882
+      ]
+    },
+    {
+      "id": "47-P018",
+      "numeric_id": 18,
+      "node": "CI_018_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.6950000000000001,
+        1.899,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_018_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.2038852536122873,
+        0.5257411764705882
+      ]
+    },
+    {
+      "id": "47-P019",
+      "numeric_id": 19,
+      "node": "CI_019_coffee_box_red",
+      "sku": "coffee_box-red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.6950000000000001,
+        1.966,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-red.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Espresso Roast",
+      "source_object": "CI_019_coffee_box_red",
+      "product_reference": "coffee_box-red",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.281642131965117,
+        0.5257411764705882
+      ]
+    },
+    {
+      "id": "47-P020",
+      "numeric_id": 20,
+      "node": "CI_020_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.758,
+        1.765,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_020_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.0483714969066282,
+        0.4356141176470587
+      ]
+    },
+    {
+      "id": "47-P021",
+      "numeric_id": 21,
+      "node": "CI_021_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.758,
+        1.8319999999999999,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_021_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.1261283752594577,
+        0.4356141176470587
+      ]
+    },
+    {
+      "id": "47-P022",
+      "numeric_id": 22,
+      "node": "CI_022_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.758,
+        1.899,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_022_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.2038852536122873,
+        0.4356141176470587
+      ]
+    },
+    {
+      "id": "47-P023",
+      "numeric_id": 23,
+      "node": "CI_023_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.758,
+        1.966,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_023_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.281642131965117,
+        0.4356141176470587
+      ]
+    },
+    {
+      "id": "47-P024",
+      "numeric_id": 24,
+      "node": "CI_024_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.821,
+        1.765,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_024_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.0483714969066282,
+        0.3454870588235295
+      ]
+    },
+    {
+      "id": "47-P025",
+      "numeric_id": 25,
+      "node": "CI_025_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.821,
+        1.8319999999999999,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_025_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.1261283752594577,
+        0.3454870588235295
+      ]
+    },
+    {
+      "id": "47-P026",
+      "numeric_id": 26,
+      "node": "CI_026_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.821,
+        1.899,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_026_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.2038852536122873,
+        0.3454870588235295
+      ]
+    },
+    {
+      "id": "47-P027",
+      "numeric_id": 27,
+      "node": "CI_027_coffee_box_yellow",
+      "sku": "coffee_box-yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.821,
+        1.966,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Blonde Roast",
+      "source_object": "CI_027_coffee_box_yellow",
+      "product_reference": "coffee_box-yellow",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.281642131965117,
+        0.3454870588235295
+      ]
+    },
+    {
+      "id": "47-P028",
+      "numeric_id": 28,
+      "node": "CI_028_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.884,
+        1.765,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_028_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.0483714969066282,
+        0.25536000000000003
+      ]
+    },
+    {
+      "id": "47-P029",
+      "numeric_id": 29,
+      "node": "CI_029_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.884,
+        1.8319999999999999,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_029_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.1261283752594577,
+        0.25536000000000003
+      ]
+    },
+    {
+      "id": "47-P030",
+      "numeric_id": 30,
+      "node": "CI_030_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.884,
+        1.899,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_030_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.2038852536122873,
+        0.25536000000000003
+      ]
+    },
+    {
+      "id": "47-P031",
+      "numeric_id": 31,
+      "node": "CI_031_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.884,
+        1.966,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_031_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.281642131965117,
+        0.25536000000000003
+      ]
+    },
+    {
+      "id": "47-P032",
+      "numeric_id": 32,
+      "node": "CI_032_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.9470000000000001,
+        1.765,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_032_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.0483714969066282,
+        0.16523294117647036
+      ]
+    },
+    {
+      "id": "47-P033",
+      "numeric_id": 33,
+      "node": "CI_033_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.9470000000000001,
+        1.8319999999999999,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_033_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.1261283752594577,
+        0.16523294117647036
+      ]
+    },
+    {
+      "id": "47-P034",
+      "numeric_id": 34,
+      "node": "CI_034_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.9470000000000001,
+        1.899,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_034_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.2038852536122873,
+        0.16523294117647036
+      ]
+    },
+    {
+      "id": "47-P035",
+      "numeric_id": 35,
+      "node": "CI_035_coffee_box_black",
+      "sku": "coffee_box-black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "shelf": 5,
+      "bay": 2,
+      "position": [
+        0.9470000000000001,
+        1.966,
+        0.11
+      ],
+      "asset": "assets/products/coffee_box-black.glb",
+      "stock_verified": false,
+      "kind": "coffee_box",
+      "family": "Café en caja",
+      "name_es": "Café monodosis Dark Roast",
+      "source_object": "CI_035_coffee_box_black",
+      "product_reference": "coffee_box-black",
+      "position_catalog_gltf": [
+        0.6732161454003214,
+        2.281642131965117,
+        0.16523294117647036
+      ]
+    },
+    {
+      "id": "47-P036",
+      "numeric_id": 36,
+      "node": "CI_036_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.935,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_036_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        2.8576
+      ]
+    },
+    {
+      "id": "47-P037",
+      "numeric_id": 37,
+      "node": "CI_037_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.825,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_037_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        2.700235294117647
+      ]
+    },
+    {
+      "id": "47-P038",
+      "numeric_id": 38,
+      "node": "CI_038_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.715,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_038_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        2.542870588235294
+      ]
+    },
+    {
+      "id": "47-P039",
+      "numeric_id": 39,
+      "node": "CI_039_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.235,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_039_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        1.8561882352941177
+      ]
+    },
+    {
+      "id": "47-P040",
+      "numeric_id": 40,
+      "node": "CI_040_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.125,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_040_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        1.6988235294117646
+      ]
+    },
+    {
+      "id": "47-P041",
+      "numeric_id": 41,
+      "node": "CI_041_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.125,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_041_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        1.3411764705882354
+      ]
+    },
+    {
+      "id": "47-P042",
+      "numeric_id": 42,
+      "node": "CI_042_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.235,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_042_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        1.1838117647058823
+      ]
+    },
+    {
+      "id": "47-P043",
+      "numeric_id": 43,
+      "node": "CI_043_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.345,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_043_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        1.0264470588235295
+      ]
+    },
+    {
+      "id": "47-P044",
+      "numeric_id": 44,
+      "node": "CI_044_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.825,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_044_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        0.33976470588235297
+      ]
+    },
+    {
+      "id": "47-P045",
+      "numeric_id": 45,
+      "node": "CI_045_cold_cup_crimson",
+      "sku": "cold_cup-crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.935,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente tapa roja",
+      "source_object": "CI_045_cold_cup_crimson",
+      "product_reference": "cold_cup-crimson",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        0.1823999999999999
+      ]
+    },
+    {
+      "id": "47-P046",
+      "numeric_id": 46,
+      "node": "CI_046_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.55,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_046_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        2.3068235294117647
+      ]
+    },
+    {
+      "id": "47-P047",
+      "numeric_id": 47,
+      "node": "CI_047_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.55,
+        1.48,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_047_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.7176146263013088,
+        2.3068235294117647
+      ]
+    },
+    {
+      "id": "47-P048",
+      "numeric_id": 48,
+      "node": "CI_048_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.39,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_048_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        2.077929411764706
+      ]
+    },
+    {
+      "id": "47-P049",
+      "numeric_id": 49,
+      "node": "CI_049_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 1,
+      "position": [
+        -0.39,
+        1.48,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_049_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.7176146263013088,
+        2.077929411764706
+      ]
+    },
+    {
+      "id": "47-P050",
+      "numeric_id": 50,
+      "node": "CI_050_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.51,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_050_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        0.7904
+      ]
+    },
+    {
+      "id": "47-P051",
+      "numeric_id": 51,
+      "node": "CI_051_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.51,
+        1.48,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_051_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.7176146263013088,
+        0.7904
+      ]
+    },
+    {
+      "id": "47-P052",
+      "numeric_id": 52,
+      "node": "CI_052_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.67,
+        1.355,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_052_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.5725458234042387,
+        0.5615058823529411
+      ]
+    },
+    {
+      "id": "47-P053",
+      "numeric_id": 53,
+      "node": "CI_053_mug_city_box",
+      "sku": "mug-city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "shelf": 4,
+      "bay": 2,
+      "position": [
+        0.67,
+        1.48,
+        0.09
+      ],
+      "asset": "assets/products/mug-city_box.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas en caja",
+      "name_es": "Taza colección ciudad en caja",
+      "source_object": "CI_053_mug_city_box",
+      "product_reference": "mug-city_box",
+      "position_catalog_gltf": [
+        0.6347466524256563,
+        1.7176146263013088,
+        0.5615058823529411
+      ]
+    },
+    {
+      "id": "47-P054",
+      "numeric_id": 54,
+      "node": "CI_054_mug_pumpkin",
+      "sku": "mug-pumpkin",
+      "label": "Taza cerámica naranja ancha",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.88,
+        0.945,
+        0.115
+      ],
+      "asset": "assets/products/mug-pumpkin.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica naranja ancha",
+      "source_object": "CI_054_mug_pumpkin",
+      "product_reference": "mug-pumpkin",
+      "position_catalog_gltf": [
+        0.6828335186439876,
+        1.096720149901849,
+        2.7789176470588237
+      ]
+    },
+    {
+      "id": "47-P055",
+      "numeric_id": 55,
+      "node": "CI_055_mug_pumpkin",
+      "sku": "mug-pumpkin",
+      "label": "Taza cerámica naranja ancha",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.7,
+        0.945,
+        0.115
+      ],
+      "asset": "assets/products/mug-pumpkin.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica naranja ancha",
+      "source_object": "CI_055_mug_pumpkin",
+      "product_reference": "mug-pumpkin",
+      "position_catalog_gltf": [
+        0.6828335186439876,
+        1.096720149901849,
+        2.5214117647058822
+      ]
+    },
+    {
+      "id": "47-P056",
+      "numeric_id": 56,
+      "node": "CI_056_mug_pumpkin",
+      "sku": "mug-pumpkin",
+      "label": "Taza cerámica naranja ancha",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.52,
+        0.945,
+        0.115
+      ],
+      "asset": "assets/products/mug-pumpkin.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica naranja ancha",
+      "source_object": "CI_056_mug_pumpkin",
+      "product_reference": "mug-pumpkin",
+      "position_catalog_gltf": [
+        0.6828335186439876,
+        1.096720149901849,
+        2.263905882352941
+      ]
+    },
+    {
+      "id": "47-P057",
+      "numeric_id": 57,
+      "node": "CI_057_mug_pumpkin",
+      "sku": "mug-pumpkin",
+      "label": "Taza cerámica naranja ancha",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.86,
+        0.945,
+        -0.075
+      ],
+      "asset": "assets/products/mug-pumpkin.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica naranja ancha",
+      "source_object": "CI_057_mug_pumpkin",
+      "product_reference": "mug-pumpkin",
+      "position_catalog_gltf": [
+        0.31737333538467005,
+        1.096720149901849,
+        2.750305882352941
+      ]
+    },
+    {
+      "id": "47-P058",
+      "numeric_id": 58,
+      "node": "CI_058_mug_pumpkin",
+      "sku": "mug-pumpkin",
+      "label": "Taza cerámica naranja ancha",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.67,
+        0.945,
+        -0.075
+      ],
+      "asset": "assets/products/mug-pumpkin.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica naranja ancha",
+      "source_object": "CI_058_mug_pumpkin",
+      "product_reference": "mug-pumpkin",
+      "position_catalog_gltf": [
+        0.31737333538467005,
+        1.096720149901849,
+        2.4784941176470587
+      ]
+    },
+    {
+      "id": "47-P059",
+      "numeric_id": 59,
+      "node": "CI_059_thermos_emerald",
+      "sku": "thermos-emerald",
+      "label": "Termo metálico esmeralda",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.32,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-emerald.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo metálico esmeralda",
+      "source_object": "CI_059_thermos_emerald",
+      "product_reference": "thermos-emerald",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        1.9777882352941176
+      ]
+    },
+    {
+      "id": "47-P060",
+      "numeric_id": 60,
+      "node": "CI_060_thermos_ribbed",
+      "sku": "thermos-ribbed",
+      "label": "Termo acanalado verde",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.19,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-ribbed.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo acanalado verde",
+      "source_object": "CI_060_thermos_ribbed",
+      "product_reference": "thermos-ribbed",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        1.7918117647058824
+      ]
+    },
+    {
+      "id": "47-P061",
+      "numeric_id": 61,
+      "node": "CI_061_thermos_emerald",
+      "sku": "thermos-emerald",
+      "label": "Termo metálico esmeralda",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.06,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-emerald.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo metálico esmeralda",
+      "source_object": "CI_061_thermos_emerald",
+      "product_reference": "thermos-emerald",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        1.605835294117647
+      ]
+    },
+    {
+      "id": "47-P062",
+      "numeric_id": 62,
+      "node": "CI_062_cold_cup_emerald",
+      "sku": "cold_cup-emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.32,
+        0.945,
+        -0.055
+      ],
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso frío esmeralda con pajita",
+      "source_object": "CI_062_cold_cup_emerald",
+      "product_reference": "cold_cup-emerald",
+      "position_catalog_gltf": [
+        0.355842828359335,
+        1.096720149901849,
+        1.9777882352941176
+      ]
+    },
+    {
+      "id": "47-P063",
+      "numeric_id": 63,
+      "node": "CI_063_cold_cup_emerald",
+      "sku": "cold_cup-emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "shelf": 3,
+      "bay": 1,
+      "position": [
+        -0.15,
+        0.945,
+        -0.055
+      ],
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso frío esmeralda con pajita",
+      "source_object": "CI_063_cold_cup_emerald",
+      "product_reference": "cold_cup-emerald",
+      "position_catalog_gltf": [
+        0.355842828359335,
+        1.096720149901849,
+        1.7345882352941178
+      ]
+    },
+    {
+      "id": "47-P064",
+      "numeric_id": 64,
+      "node": "CI_064_thermos_emerald",
+      "sku": "thermos-emerald",
+      "label": "Termo metálico esmeralda",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.12,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-emerald.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo metálico esmeralda",
+      "source_object": "CI_064_thermos_emerald",
+      "product_reference": "thermos-emerald",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        1.348329411764706
+      ]
+    },
+    {
+      "id": "47-P065",
+      "numeric_id": 65,
+      "node": "CI_065_thermos_emerald",
+      "sku": "thermos-emerald",
+      "label": "Termo metálico esmeralda",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.25,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-emerald.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo metálico esmeralda",
+      "source_object": "CI_065_thermos_emerald",
+      "product_reference": "thermos-emerald",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        1.1623529411764706
+      ]
+    },
+    {
+      "id": "47-P066",
+      "numeric_id": 66,
+      "node": "CI_066_thermos_ribbed",
+      "sku": "thermos-ribbed",
+      "label": "Termo acanalado verde",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.38,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-ribbed.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo acanalado verde",
+      "source_object": "CI_066_thermos_ribbed",
+      "product_reference": "thermos-ribbed",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        0.9763764705882353
+      ]
+    },
+    {
+      "id": "47-P067",
+      "numeric_id": 67,
+      "node": "CI_067_thermos_gold_rim",
+      "sku": "thermos-gold_rim",
+      "label": "Termo verde borde dorado",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.7,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-gold_rim.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo verde borde dorado",
+      "source_object": "CI_067_thermos_gold_rim",
+      "product_reference": "thermos-gold_rim",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        0.5185882352941176
+      ]
+    },
+    {
+      "id": "47-P068",
+      "numeric_id": 68,
+      "node": "CI_068_thermos_gold_rim",
+      "sku": "thermos-gold_rim",
+      "label": "Termo verde borde dorado",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.83,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-gold_rim.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo verde borde dorado",
+      "source_object": "CI_068_thermos_gold_rim",
+      "product_reference": "thermos-gold_rim",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        0.3326117647058824
+      ]
+    },
+    {
+      "id": "47-P069",
+      "numeric_id": 69,
+      "node": "CI_069_thermos_emerald",
+      "sku": "thermos-emerald",
+      "label": "Termo metálico esmeralda",
+      "category": "Termos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.95,
+        0.945,
+        0.1
+      ],
+      "asset": "assets/products/thermos-emerald.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo metálico esmeralda",
+      "source_object": "CI_069_thermos_emerald",
+      "product_reference": "thermos-emerald",
+      "position_catalog_gltf": [
+        0.6539813989129888,
+        1.096720149901849,
+        0.16094117647058814
+      ]
+    },
+    {
+      "id": "47-P070",
+      "numeric_id": 70,
+      "node": "CI_070_mug_scale_green",
+      "sku": "mug-scale_green",
+      "label": "Taza verde relieve escamas",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.52,
+        0.945,
+        0.125
+      ],
+      "asset": "assets/products/mug-scale_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza verde relieve escamas",
+      "source_object": "CI_070_mug_scale_green",
+      "product_reference": "mug-scale_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        1.096720149901849,
+        0.7760941176470588
+      ]
+    },
+    {
+      "id": "47-P071",
+      "numeric_id": 71,
+      "node": "CI_071_mug_scale_green",
+      "sku": "mug-scale_green",
+      "label": "Taza verde relieve escamas",
+      "category": "Tazas",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.52,
+        1.029,
+        0.125
+      ],
+      "asset": "assets/products/mug-scale_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza verde relieve escamas",
+      "source_object": "CI_071_mug_scale_green",
+      "product_reference": "mug-scale_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        1.1942063854486802,
+        0.7760941176470588
+      ]
+    },
+    {
+      "id": "47-P072",
+      "numeric_id": 72,
+      "node": "CI_072_cold_cup_emerald",
+      "sku": "cold_cup-emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.15,
+        0.945,
+        -0.07
+      ],
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso frío esmeralda con pajita",
+      "source_object": "CI_072_cold_cup_emerald",
+      "product_reference": "cold_cup-emerald",
+      "position_catalog_gltf": [
+        0.32699070862833624,
+        1.096720149901849,
+        1.3054117647058823
+      ]
+    },
+    {
+      "id": "47-P073",
+      "numeric_id": 73,
+      "node": "CI_073_cold_cup_emerald",
+      "sku": "cold_cup-emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.36,
+        0.945,
+        -0.07
+      ],
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso frío esmeralda con pajita",
+      "source_object": "CI_073_cold_cup_emerald",
+      "product_reference": "cold_cup-emerald",
+      "position_catalog_gltf": [
+        0.32699070862833624,
+        1.096720149901849,
+        1.0049882352941175
+      ]
+    },
+    {
+      "id": "47-P074",
+      "numeric_id": 74,
+      "node": "CI_074_cold_cup_emerald",
+      "sku": "cold_cup-emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.73,
+        0.945,
+        -0.07
+      ],
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso frío esmeralda con pajita",
+      "source_object": "CI_074_cold_cup_emerald",
+      "product_reference": "cold_cup-emerald",
+      "position_catalog_gltf": [
+        0.32699070862833624,
+        1.096720149901849,
+        0.47567058823529407
+      ]
+    },
+    {
+      "id": "47-P075",
+      "numeric_id": 75,
+      "node": "CI_075_cold_cup_emerald",
+      "sku": "cold_cup-emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "shelf": 3,
+      "bay": 2,
+      "position": [
+        0.93,
+        0.945,
+        -0.07
+      ],
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso frío esmeralda con pajita",
+      "source_object": "CI_075_cold_cup_emerald",
+      "product_reference": "cold_cup-emerald",
+      "position_catalog_gltf": [
+        0.32699070862833624,
+        1.096720149901849,
+        0.18955294117647048
+      ]
+    },
+    {
+      "id": "47-P076",
+      "numeric_id": 76,
+      "node": "CI_076_cold_cup_confetti",
+      "sku": "cold_cup-confetti",
+      "label": "Vaso salpicado blanco y negro",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.91,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-confetti.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso salpicado blanco y negro",
+      "source_object": "CI_076_cold_cup_confetti",
+      "product_reference": "cold_cup-confetti",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        2.821835294117647
+      ]
+    },
+    {
+      "id": "47-P077",
+      "numeric_id": 77,
+      "node": "CI_077_cold_cup_checker",
+      "sku": "cold_cup-checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.665,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-checker.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso damero verde y crema",
+      "source_object": "CI_077_cold_cup_checker",
+      "product_reference": "cold_cup-checker",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        2.471341176470588
+      ]
+    },
+    {
+      "id": "47-P078",
+      "numeric_id": 78,
+      "node": "CI_078_cold_cup_wave",
+      "sku": "cold_cup-wave",
+      "label": "Vaso ondas verdes",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.42000000000000004,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-wave.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso ondas verdes",
+      "source_object": "CI_078_cold_cup_wave",
+      "product_reference": "cold_cup-wave",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        2.1208470588235295
+      ]
+    },
+    {
+      "id": "47-P079",
+      "numeric_id": 79,
+      "node": "CI_079_cold_cup_clear",
+      "sku": "cold_cup-clear",
+      "label": "Vaso transparente con pajita",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.17500000000000004,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-clear.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente con pajita",
+      "source_object": "CI_079_cold_cup_clear",
+      "product_reference": "cold_cup-clear",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        1.7703529411764707
+      ]
+    },
+    {
+      "id": "47-P080",
+      "numeric_id": 80,
+      "node": "CI_080_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.91,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_080_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        2.821835294117647
+      ]
+    },
+    {
+      "id": "47-P081",
+      "numeric_id": 81,
+      "node": "CI_081_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.7250000000000001,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_081_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        2.557176470588235
+      ]
+    },
+    {
+      "id": "47-P082",
+      "numeric_id": 82,
+      "node": "CI_082_mug_scale_green",
+      "sku": "mug-scale_green",
+      "label": "Taza verde relieve escamas",
+      "category": "Tazas",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.54,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/mug-scale_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza verde relieve escamas",
+      "source_object": "CI_082_mug_scale_green",
+      "product_reference": "mug-scale_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        2.2925176470588235
+      ]
+    },
+    {
+      "id": "47-P083",
+      "numeric_id": 83,
+      "node": "CI_083_travel_mug_band_green",
+      "sku": "travel_mug-band_green",
+      "label": "Vaso térmico negro banda verde",
+      "category": "Vasos térmicos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.3550000000000001,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-band_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro banda verde",
+      "source_object": "CI_083_travel_mug_band_green",
+      "product_reference": "travel_mug-band_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        2.027858823529412
+      ]
+    },
+    {
+      "id": "47-P084",
+      "numeric_id": 84,
+      "node": "CI_084_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.17000000000000004,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_084_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        1.7632
+      ]
+    },
+    {
+      "id": "47-P085",
+      "numeric_id": 85,
+      "node": "CI_085_thermos_blackgreen",
+      "sku": "thermos-blackgreen",
+      "label": "Termo negro banda verde",
+      "category": "Termos",
+      "shelf": 1,
+      "bay": 1,
+      "position": [
+        -0.42000000000000004,
+        0.125,
+        -0.015
+      ],
+      "asset": "assets/products/thermos-blackgreen.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo negro banda verde",
+      "source_object": "CI_085_thermos_blackgreen",
+      "product_reference": "thermos-blackgreen",
+      "position_catalog_gltf": [
+        0.432781814308665,
+        0.14506880289707,
+        2.1208470588235295
+      ]
+    },
+    {
+      "id": "47-P086",
+      "numeric_id": 86,
+      "node": "CI_086_cold_cup_clear",
+      "sku": "cold_cup-clear",
+      "label": "Vaso transparente con pajita",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.13,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-clear.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente con pajita",
+      "source_object": "CI_086_cold_cup_clear",
+      "product_reference": "cold_cup-clear",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        1.3340235294117648
+      ]
+    },
+    {
+      "id": "47-P087",
+      "numeric_id": 87,
+      "node": "CI_087_cold_cup_confetti",
+      "sku": "cold_cup-confetti",
+      "label": "Vaso salpicado blanco y negro",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.375,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-confetti.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso salpicado blanco y negro",
+      "source_object": "CI_087_cold_cup_confetti",
+      "product_reference": "cold_cup-confetti",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        0.9835294117647059
+      ]
+    },
+    {
+      "id": "47-P088",
+      "numeric_id": 88,
+      "node": "CI_088_cold_cup_checker",
+      "sku": "cold_cup-checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.62,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-checker.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso damero verde y crema",
+      "source_object": "CI_088_cold_cup_checker",
+      "product_reference": "cold_cup-checker",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        0.633035294117647
+      ]
+    },
+    {
+      "id": "47-P089",
+      "numeric_id": 89,
+      "node": "CI_089_cold_cup_checker",
+      "sku": "cold_cup-checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.865,
+        0.125,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-checker.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso damero verde y crema",
+      "source_object": "CI_089_cold_cup_checker",
+      "product_reference": "cold_cup-checker",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.14506880289707,
+        0.2825411764705883
+      ]
+    },
+    {
+      "id": "47-P090",
+      "numeric_id": 90,
+      "node": "CI_090_mug_white_green",
+      "sku": "mug-white_green",
+      "label": "Taza blanca interior verde",
+      "category": "Tazas",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.13,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/mug-white_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza blanca interior verde",
+      "source_object": "CI_090_mug_white_green",
+      "product_reference": "mug-white_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        1.3340235294117648
+      ]
+    },
+    {
+      "id": "47-P091",
+      "numeric_id": 91,
+      "node": "CI_091_mug_white_green",
+      "sku": "mug-white_green",
+      "label": "Taza blanca interior verde",
+      "category": "Tazas",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.315,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/mug-white_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza blanca interior verde",
+      "source_object": "CI_091_mug_white_green",
+      "product_reference": "mug-white_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        1.069364705882353
+      ]
+    },
+    {
+      "id": "47-P092",
+      "numeric_id": 92,
+      "node": "CI_092_mug_black",
+      "sku": "mug-black",
+      "label": "Taza cerámica negra",
+      "category": "Tazas",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.5,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/mug-black.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica negra",
+      "source_object": "CI_092_mug_black",
+      "product_reference": "mug-black",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        0.8047058823529412
+      ]
+    },
+    {
+      "id": "47-P093",
+      "numeric_id": 93,
+      "node": "CI_093_travel_mug_band_green",
+      "sku": "travel_mug-band_green",
+      "label": "Vaso térmico negro banda verde",
+      "category": "Vasos térmicos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.6849999999999999,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-band_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro banda verde",
+      "source_object": "CI_093_travel_mug_band_green",
+      "product_reference": "travel_mug-band_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        0.5400470588235294
+      ]
+    },
+    {
+      "id": "47-P094",
+      "numeric_id": 94,
+      "node": "CI_094_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.87,
+        0.125,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_094_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.14506880289707,
+        0.2753882352941177
+      ]
+    },
+    {
+      "id": "47-P095",
+      "numeric_id": 95,
+      "node": "CI_095_thermos_blackgreen",
+      "sku": "thermos-blackgreen",
+      "label": "Termo negro banda verde",
+      "category": "Termos",
+      "shelf": 1,
+      "bay": 2,
+      "position": [
+        0.62,
+        0.125,
+        -0.015
+      ],
+      "asset": "assets/products/thermos-blackgreen.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo negro banda verde",
+      "source_object": "CI_095_thermos_blackgreen",
+      "product_reference": "thermos-blackgreen",
+      "position_catalog_gltf": [
+        0.432781814308665,
+        0.14506880289707,
+        0.633035294117647
+      ]
+    },
+    {
+      "id": "47-P096",
+      "numeric_id": 96,
+      "node": "CI_096_cold_cup_confetti",
+      "sku": "cold_cup-confetti",
+      "label": "Vaso salpicado blanco y negro",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.91,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-confetti.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso salpicado blanco y negro",
+      "source_object": "CI_096_cold_cup_confetti",
+      "product_reference": "cold_cup-confetti",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        2.821835294117647
+      ]
+    },
+    {
+      "id": "47-P097",
+      "numeric_id": 97,
+      "node": "CI_097_cold_cup_checker",
+      "sku": "cold_cup-checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.665,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-checker.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso damero verde y crema",
+      "source_object": "CI_097_cold_cup_checker",
+      "product_reference": "cold_cup-checker",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        2.471341176470588
+      ]
+    },
+    {
+      "id": "47-P098",
+      "numeric_id": 98,
+      "node": "CI_098_cold_cup_wave",
+      "sku": "cold_cup-wave",
+      "label": "Vaso ondas verdes",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.42000000000000004,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-wave.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso ondas verdes",
+      "source_object": "CI_098_cold_cup_wave",
+      "product_reference": "cold_cup-wave",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        2.1208470588235295
+      ]
+    },
+    {
+      "id": "47-P099",
+      "numeric_id": 99,
+      "node": "CI_099_cold_cup_clear",
+      "sku": "cold_cup-clear",
+      "label": "Vaso transparente con pajita",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.17500000000000004,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-clear.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente con pajita",
+      "source_object": "CI_099_cold_cup_clear",
+      "product_reference": "cold_cup-clear",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        1.7703529411764707
+      ]
+    },
+    {
+      "id": "47-P100",
+      "numeric_id": 100,
+      "node": "CI_100_mug_white_green",
+      "sku": "mug-white_green",
+      "label": "Taza blanca interior verde",
+      "category": "Tazas",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.91,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/mug-white_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza blanca interior verde",
+      "source_object": "CI_100_mug_white_green",
+      "product_reference": "mug-white_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        2.821835294117647
+      ]
+    },
+    {
+      "id": "47-P101",
+      "numeric_id": 101,
+      "node": "CI_101_mug_white_green",
+      "sku": "mug-white_green",
+      "label": "Taza blanca interior verde",
+      "category": "Tazas",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.7250000000000001,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/mug-white_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza blanca interior verde",
+      "source_object": "CI_101_mug_white_green",
+      "product_reference": "mug-white_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        2.557176470588235
+      ]
+    },
+    {
+      "id": "47-P102",
+      "numeric_id": 102,
+      "node": "CI_102_mug_scale_green",
+      "sku": "mug-scale_green",
+      "label": "Taza verde relieve escamas",
+      "category": "Tazas",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.54,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/mug-scale_green.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza verde relieve escamas",
+      "source_object": "CI_102_mug_scale_green",
+      "product_reference": "mug-scale_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        2.2925176470588235
+      ]
+    },
+    {
+      "id": "47-P103",
+      "numeric_id": 103,
+      "node": "CI_103_travel_mug_band_green",
+      "sku": "travel_mug-band_green",
+      "label": "Vaso térmico negro banda verde",
+      "category": "Vasos térmicos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.3550000000000001,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-band_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro banda verde",
+      "source_object": "CI_103_travel_mug_band_green",
+      "product_reference": "travel_mug-band_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        2.027858823529412
+      ]
+    },
+    {
+      "id": "47-P104",
+      "numeric_id": 104,
+      "node": "CI_104_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.17000000000000004,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_104_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        1.7632
+      ]
+    },
+    {
+      "id": "47-P105",
+      "numeric_id": 105,
+      "node": "CI_105_thermos_blackgreen",
+      "sku": "thermos-blackgreen",
+      "label": "Termo negro banda verde",
+      "category": "Termos",
+      "shelf": 2,
+      "bay": 1,
+      "position": [
+        -0.42000000000000004,
+        0.535,
+        -0.015
+      ],
+      "asset": "assets/products/thermos-blackgreen.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo negro banda verde",
+      "source_object": "CI_105_thermos_blackgreen",
+      "product_reference": "thermos-blackgreen",
+      "position_catalog_gltf": [
+        0.432781814308665,
+        0.6208944763994596,
+        2.1208470588235295
+      ]
+    },
+    {
+      "id": "47-P106",
+      "numeric_id": 106,
+      "node": "CI_106_cold_cup_clear",
+      "sku": "cold_cup-clear",
+      "label": "Vaso transparente con pajita",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.13,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-clear.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso transparente con pajita",
+      "source_object": "CI_106_cold_cup_clear",
+      "product_reference": "cold_cup-clear",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        1.3340235294117648
+      ]
+    },
+    {
+      "id": "47-P107",
+      "numeric_id": 107,
+      "node": "CI_107_cold_cup_confetti",
+      "sku": "cold_cup-confetti",
+      "label": "Vaso salpicado blanco y negro",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.375,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-confetti.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso salpicado blanco y negro",
+      "source_object": "CI_107_cold_cup_confetti",
+      "product_reference": "cold_cup-confetti",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        0.9835294117647059
+      ]
+    },
+    {
+      "id": "47-P108",
+      "numeric_id": 108,
+      "node": "CI_108_cold_cup_checker",
+      "sku": "cold_cup-checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.62,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-checker.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso damero verde y crema",
+      "source_object": "CI_108_cold_cup_checker",
+      "product_reference": "cold_cup-checker",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        0.633035294117647
+      ]
+    },
+    {
+      "id": "47-P109",
+      "numeric_id": 109,
+      "node": "CI_109_cold_cup_checker",
+      "sku": "cold_cup-checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.865,
+        0.535,
+        -0.08
+      ],
+      "asset": "assets/products/cold_cup-checker.glb",
+      "stock_verified": false,
+      "kind": "cold_cup",
+      "family": "Vasos",
+      "name_es": "Vaso damero verde y crema",
+      "source_object": "CI_109_cold_cup_checker",
+      "product_reference": "cold_cup-checker",
+      "position_catalog_gltf": [
+        0.30775596214100376,
+        0.6208944763994596,
+        0.2825411764705883
+      ]
+    },
+    {
+      "id": "47-P110",
+      "numeric_id": 110,
+      "node": "CI_110_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.13,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_110_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        1.3340235294117648
+      ]
+    },
+    {
+      "id": "47-P111",
+      "numeric_id": 111,
+      "node": "CI_111_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.315,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_111_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        1.069364705882353
+      ]
+    },
+    {
+      "id": "47-P112",
+      "numeric_id": 112,
+      "node": "CI_112_mug_black",
+      "sku": "mug-black",
+      "label": "Taza cerámica negra",
+      "category": "Tazas",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.5,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/mug-black.glb",
+      "stock_verified": false,
+      "kind": "mug",
+      "family": "Tazas",
+      "name_es": "Taza cerámica negra",
+      "source_object": "CI_112_mug_black",
+      "product_reference": "mug-black",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        0.8047058823529412
+      ]
+    },
+    {
+      "id": "47-P113",
+      "numeric_id": 113,
+      "node": "CI_113_travel_mug_band_green",
+      "sku": "travel_mug-band_green",
+      "label": "Vaso térmico negro banda verde",
+      "category": "Vasos térmicos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.6849999999999999,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-band_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro banda verde",
+      "source_object": "CI_113_travel_mug_band_green",
+      "product_reference": "travel_mug-band_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        0.5400470588235294
+      ]
+    },
+    {
+      "id": "47-P114",
+      "numeric_id": 114,
+      "node": "CI_114_travel_mug_lid_green",
+      "sku": "travel_mug-lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.87,
+        0.535,
+        0.125
+      ],
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "stock_verified": false,
+      "kind": "travel_mug",
+      "family": "Vasos térmicos",
+      "name_es": "Vaso térmico negro tapa verde",
+      "source_object": "CI_114_travel_mug_lid_green",
+      "product_reference": "travel_mug-lid_green",
+      "position_catalog_gltf": [
+        0.7020682651313201,
+        0.6208944763994596,
+        0.2753882352941177
+      ]
+    },
+    {
+      "id": "47-P115",
+      "numeric_id": 115,
+      "node": "CI_115_thermos_blackgreen",
+      "sku": "thermos-blackgreen",
+      "label": "Termo negro banda verde",
+      "category": "Termos",
+      "shelf": 2,
+      "bay": 2,
+      "position": [
+        0.62,
+        0.535,
+        -0.015
+      ],
+      "asset": "assets/products/thermos-blackgreen.glb",
+      "stock_verified": false,
+      "kind": "thermos",
+      "family": "Termos",
+      "name_es": "Termo negro banda verde",
+      "source_object": "CI_115_thermos_blackgreen",
+      "product_reference": "thermos-blackgreen",
+      "position_catalog_gltf": [
+        0.432781814308665,
+        0.6208944763994596,
+        0.633035294117647
+      ]
+    }
+  ],
+  "product_references": [
+    {
+      "sku": "coffee-kati",
+      "kind": "coffee",
+      "variant": "kati",
+      "label": "Café Kati Kati Blend",
+      "category": "Café en bolsa",
+      "asset": "assets/products/coffee-kati.glb",
+      "count": 2
+    },
+    {
+      "sku": "coffee-pike",
+      "kind": "coffee",
+      "variant": "pike",
+      "label": "Café Pike Place Roast",
+      "category": "Café en bolsa",
+      "asset": "assets/products/coffee-pike.glb",
+      "count": 1
+    },
+    {
+      "sku": "coffee-guatemala",
+      "kind": "coffee",
+      "variant": "guatemala",
+      "label": "Café Guatemala Antigua",
+      "category": "Café en bolsa",
+      "asset": "assets/products/coffee-guatemala.glb",
+      "count": 3
+    },
+    {
+      "sku": "coffee-ethiopia",
+      "kind": "coffee",
+      "variant": "ethiopia",
+      "label": "Café Ethiopia",
+      "category": "Café en bolsa",
+      "asset": "assets/products/coffee-ethiopia.glb",
+      "count": 1
+    },
+    {
+      "sku": "coffee-verona",
+      "kind": "coffee",
+      "variant": "verona",
+      "label": "Café Caffè Verona",
+      "category": "Café en bolsa",
+      "asset": "assets/products/coffee-verona.glb",
+      "count": 2
+    },
+    {
+      "sku": "coffee-iced",
+      "kind": "coffee",
+      "variant": "iced",
+      "label": "Café Iced Coffee Blend",
+      "category": "Café en bolsa",
+      "asset": "assets/products/coffee-iced.glb",
+      "count": 2
+    },
+    {
+      "sku": "coffee_box-red",
+      "kind": "coffee_box",
+      "variant": "red",
+      "label": "Café monodosis Espresso Roast",
+      "category": "Café en caja",
+      "asset": "assets/products/coffee_box-red.glb",
+      "count": 8
+    },
+    {
+      "sku": "coffee_box-yellow",
+      "kind": "coffee_box",
+      "variant": "yellow",
+      "label": "Café monodosis Blonde Roast",
+      "category": "Café en caja",
+      "asset": "assets/products/coffee_box-yellow.glb",
+      "count": 8
+    },
+    {
+      "sku": "coffee_box-black",
+      "kind": "coffee_box",
+      "variant": "black",
+      "label": "Café monodosis Dark Roast",
+      "category": "Café en caja",
+      "asset": "assets/products/coffee_box-black.glb",
+      "count": 8
+    },
+    {
+      "sku": "cold_cup-crimson",
+      "kind": "cold_cup",
+      "variant": "crimson",
+      "label": "Vaso transparente tapa roja",
+      "category": "Vasos",
+      "asset": "assets/products/cold_cup-crimson.glb",
+      "count": 10
+    },
+    {
+      "sku": "mug-city_box",
+      "kind": "mug",
+      "variant": "city_box",
+      "label": "Taza colección ciudad en caja",
+      "category": "Tazas en caja",
+      "asset": "assets/products/mug-city_box.glb",
+      "count": 8
+    },
+    {
+      "sku": "mug-pumpkin",
+      "kind": "mug",
+      "variant": "pumpkin",
+      "label": "Taza cerámica naranja ancha",
+      "category": "Tazas",
+      "asset": "assets/products/mug-pumpkin.glb",
+      "count": 5
+    },
+    {
+      "sku": "thermos-emerald",
+      "kind": "thermos",
+      "variant": "emerald",
+      "label": "Termo metálico esmeralda",
+      "category": "Termos",
+      "asset": "assets/products/thermos-emerald.glb",
+      "count": 5
+    },
+    {
+      "sku": "thermos-ribbed",
+      "kind": "thermos",
+      "variant": "ribbed",
+      "label": "Termo acanalado verde",
+      "category": "Termos",
+      "asset": "assets/products/thermos-ribbed.glb",
+      "count": 2
+    },
+    {
+      "sku": "cold_cup-emerald",
+      "kind": "cold_cup",
+      "variant": "emerald",
+      "label": "Vaso frío esmeralda con pajita",
+      "category": "Vasos",
+      "asset": "assets/products/cold_cup-emerald.glb",
+      "count": 6
+    },
+    {
+      "sku": "thermos-gold_rim",
+      "kind": "thermos",
+      "variant": "gold_rim",
+      "label": "Termo verde borde dorado",
+      "category": "Termos",
+      "asset": "assets/products/thermos-gold_rim.glb",
+      "count": 2
+    },
+    {
+      "sku": "mug-scale_green",
+      "kind": "mug",
+      "variant": "scale_green",
+      "label": "Taza verde relieve escamas",
+      "category": "Tazas",
+      "asset": "assets/products/mug-scale_green.glb",
+      "count": 4
+    },
+    {
+      "sku": "cold_cup-confetti",
+      "kind": "cold_cup",
+      "variant": "confetti",
+      "label": "Vaso salpicado blanco y negro",
+      "category": "Vasos",
+      "asset": "assets/products/cold_cup-confetti.glb",
+      "count": 4
+    },
+    {
+      "sku": "cold_cup-checker",
+      "kind": "cold_cup",
+      "variant": "checker",
+      "label": "Vaso damero verde y crema",
+      "category": "Vasos",
+      "asset": "assets/products/cold_cup-checker.glb",
+      "count": 6
+    },
+    {
+      "sku": "cold_cup-wave",
+      "kind": "cold_cup",
+      "variant": "wave",
+      "label": "Vaso ondas verdes",
+      "category": "Vasos",
+      "asset": "assets/products/cold_cup-wave.glb",
+      "count": 2
+    },
+    {
+      "sku": "cold_cup-clear",
+      "kind": "cold_cup",
+      "variant": "clear",
+      "label": "Vaso transparente con pajita",
+      "category": "Vasos",
+      "asset": "assets/products/cold_cup-clear.glb",
+      "count": 4
+    },
+    {
+      "sku": "travel_mug-lid_green",
+      "kind": "travel_mug",
+      "variant": "lid_green",
+      "label": "Vaso térmico negro tapa verde",
+      "category": "Vasos térmicos",
+      "asset": "assets/products/travel_mug-lid_green.glb",
+      "count": 8
+    },
+    {
+      "sku": "travel_mug-band_green",
+      "kind": "travel_mug",
+      "variant": "band_green",
+      "label": "Vaso térmico negro banda verde",
+      "category": "Vasos térmicos",
+      "asset": "assets/products/travel_mug-band_green.glb",
+      "count": 4
+    },
+    {
+      "sku": "thermos-blackgreen",
+      "kind": "thermos",
+      "variant": "blackgreen",
+      "label": "Termo negro banda verde",
+      "category": "Termos",
+      "asset": "assets/products/thermos-blackgreen.glb",
+      "count": 4
+    },
+    {
+      "sku": "mug-white_green",
+      "kind": "mug",
+      "variant": "white_green",
+      "label": "Taza blanca interior verde",
+      "category": "Tazas",
+      "asset": "assets/products/mug-white_green.glb",
+      "count": 4
+    },
+    {
+      "sku": "mug-black",
+      "kind": "mug",
+      "variant": "black",
+      "label": "Taza cerámica negra",
+      "category": "Tazas",
+      "asset": "assets/products/mug-black.glb",
+      "count": 2
+    }
+  ],
+  "note_es": "Las cantidades representan la composición visual, no stock real ni nuevas altas ITIL.",
+  "note_en": "Counts describe the visual composition, not verified stock or new ITIL registrations."
+}

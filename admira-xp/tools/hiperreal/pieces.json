@@ -1,0 +1,166 @@
+{
+ "_doc": "Hiperreal pipeline config. defaults apply to every piece; pieces.<n> overrides. material_classes maps a material base name (sin sufijo .00N) or hex to a class. Clases: wood, wood_dark, wood_stained, stone, metal, metal_dark, powder, glass, led, ceramic, paper, cardboard, plastic, pastry, rubber, screen, gloss_black, keep.",
+ "defaults": {
+  "source": "best",
+  "tile_m": {
+   "wood": 1.25,
+   "wood_dark": 1.25,
+   "wood_stained": 1.25,
+   "stone": 1.1,
+   "powder": 0.6,
+   "metal": 0.8,
+   "metal_dark": 0.8,
+   "pastry": 0.22,
+   "ceramic": 0.5,
+   "paper": 0.35,
+   "cardboard": 0.6,
+   "plastic": 0.5
+  },
+  "jitter": {
+   "pastry": {
+    "pos": 0.008,
+    "rot": 9,
+    "scale": 0.05
+   },
+   "ceramic": {
+    "pos": 0.004,
+    "rot": 2.5,
+    "scale": 0
+   },
+   "paper": {
+    "pos": 0.003,
+    "rot": 3,
+    "scale": 0
+   }
+  },
+  "jitter_max_size_m": 0.5,
+  "front": "-Y",
+  "hdri_rot": 120
+ },
+ "palette": {
+  "#ad855b": "wood",
+  "#745640": "wood_dark",
+  "#61544b": "wood_stained",
+  "#d3c7ae": "stone",
+  "#8f9693": "metal",
+  "#181c1c": "powder",
+  "#9eccc6": "glass",
+  "#ffe2a0": "led",
+  "#e6dbc5": "ceramic",
+  "#f2dab0": "paper",
+  "#ca9852": "pastry",
+  "#b8783c": "pastry",
+  "#d9b46c": "pastry",
+  "#754f36": "pastry",
+  "#006241": "powder",
+  "#488e75": "plastic",
+  "#965333": "cardboard",
+  "#ccb183": "cardboard",
+  "#c07c37": "ceramic"
+ },
+ "keywords": [
+  [
+   "glass|transparent|vidrio|cristal",
+   "glass"
+  ],
+  [
+   "bezel",
+   "gloss_black"
+  ],
+  [
+   "display|screen|pantalla",
+   "screen"
+  ],
+  [
+   "rubber|silicone|goma|feet",
+   "rubber"
+  ],
+  [
+   "oak|wood|madera|walnut|veneer|roble",
+   "wood"
+  ],
+  [
+   "marble|stone|quartz|granite|piedra|m[aá]rmol",
+   "stone"
+  ],
+  [
+   "alumin|steel|metal|chrome|acero|wire",
+   "metal"
+  ],
+  [
+   "ceramic|porcelain|glaze|cer[aá]mica",
+   "ceramic"
+  ],
+  [
+   "cardboard|carton|cart[oó]n",
+   "cardboard"
+  ],
+  [
+   "paper|papel|label|etiqueta|print",
+   "paper"
+  ],
+  [
+   "plastic|pl[aá]stico|pet|polypropylene|cap|tapa",
+   "plastic"
+  ],
+  [
+   "led|light|luz|emissive",
+   "led"
+  ]
+ ],
+ "pieces": {
+  "44": {
+   "name": "Barra de preparación Starbucks"
+  },
+  "45": {
+   "name": "Mostrador de caja Starbucks"
+  },
+  "46": {
+   "name": "Vitrina Starbucks",
+   "lod_quantize": true,
+   "expo": 0.1,
+   "led_render": 45
+  },
+  "48": {
+   "name": "Mesa redonda Starbucks"
+  },
+  "49": {
+   "name": "Silla Starbucks",
+   "front": "+Y"
+  },
+  "50": {
+   "name": "Botellero Solán de Cabras Starbucks",
+   "keep_uvs": true,
+   "material_classes": {
+    "Black powder-coated wire · PBR": "keep",
+    "Cobalt blue PET · interpreted print": "keep",
+    "Solán de Cabras · interpreted white neck print": "keep",
+    "AGUA MINERAL · reference sign": "keep",
+    "Black sign support": "powder",
+    "Black rubber feet": "rubber",
+    "White ribbed polypropylene cap": "plastic",
+    "White tamper band": "plastic"
+   },
+   "coat": {
+    "Cobalt blue PET · interpreted print": [
+     0.6,
+     0.04
+    ],
+    "Black powder-coated wire · PBR": [
+     0.1,
+     0.35
+    ]
+   }
+  },
+  "52": {
+   "name": "iPad horizontal · Starbucks",
+   "keep_uvs": true,
+   "material_classes": {
+    "Dark aluminium enclosure": "metal_dark",
+    "Black rounded bezel": "gloss_black",
+    "Landscape display · 4:3": "screen",
+    "Stand rubber": "rubber"
+   }
+  }
+ }
+}

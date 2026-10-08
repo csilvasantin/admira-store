@@ -53,3 +53,12 @@ ES: Implementación: acción junto a Ver pieza, diálogo de grupos y componentes
 EN: Implementation: action beside View item, groups and components dialog, ES/EN, provenance links and direct link. It depends on the catalogue registry and geometry sources. Composition comes from the represented design; verifying stock, materials and dimensions of physical units requires inventory evidence.
 
 [Tutorial ES/EN](https://www.xpaceos.com/help/#inventory-breakdown) · [Ayuda MCP / MCP help](https://mcp.admira.store/help)
+
+
+## Estantería Starbucks 47 / Starbucks shelf 47
+
+La estantería Starbucks 47 conserva native:starbucksShelves, la instancia sb-mugs y el CI PDG103-EST-01. Best muestra el mueble de cinco niveles interpretado desde la foto de Carlos. Despiece y productos abre una colección 3D con vasos, termos, tazas y café independientes y 26 referencias visuales descargables. Cada objeto conserva su identidad de componente. Los productos son una composición visual: no son SKU comerciales ni fichas CI nuevas y las cantidades no acreditan stock. El maestro patrimonial sigue en Yokup.
+
+Starbucks shelf 47 retains native:starbucksShelves, instance sb-mugs and CI PDG103-EST-01. Best shows the five-level cabinet interpreted from Carlos’s photograph. Separated parts and products opens a 3D collection of independent cups, tumblers, mugs and coffee with 26 downloadable visual references. Each object keeps its component identity. Products form a visual composition: they are not commercial SKUs or new CI records, and quantities do not establish stock. Yokup remains the lifecycle master.
+
+[Guía ES/EN / ES/EN guide](https://www.xpaceos.com/admira-xp/docs/starbucks-coffee-display.md) · [Colección 3D / 3D collection](/inventario/assets/catalog/47/collection/preview/)

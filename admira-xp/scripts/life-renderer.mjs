@@ -1,8 +1,9 @@
 import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1';
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=ipad-20261005-1';
+import {createLifeScene} from './life-scene.mjs?v=hiperreal-tanda1-20261008-1';
+import {createMatrixEnvironmentRoom} from '../../inventario/matrix-rendering.mjs?v=hiperreal-tanda1-20261008-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
-import {inventoryIdFor} from './furniture-asset.mjs?v=ipad-20261005-1';
+import {inventoryIdFor} from './furniture-asset.mjs?v=hiperreal-tanda1-20261008-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
 import {appendPassageOverlay} from './passage-overlay.mjs?v=check-passage-1';
@@ -14,10 +15,19 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
   renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
   renderer.setClearColor('#e7e8dc');renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+  // Hiperreal/Matrix catalog models are PBR (metal, clearcoat): give only their materials studio
+  // reflections from a local light-panel room, so the rest of the twin keeps its look and cost.
+  let photorealEnv=null;
+  function preparePhotoreal(asset){
+    if(!asset||!['hiperreal','matrix'].includes(asset.userData?.assetQuality))return asset;
+    if(!photorealEnv){const {room,dispose:disposeRoom}=createMatrixEnvironmentRoom(),pmrem=new T.PMREMGenerator(renderer);try{photorealEnv=pmrem.fromScene(room,.04);}finally{pmrem.dispose();disposeRoom();}}
+    asset.traverse(o=>{if(!o.isMesh)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m&&'envMap' in m){m.envMap=photorealEnv.texture;m.envMapIntensity=.55;m.needsUpdate=true;}});
+    return asset;
+  }
   let model;
   try{model=sceneFactory(snapshot,{
     assetQuality,
-    loadFurniture:item=>import('./furniture-asset.mjs?v=ipad-20261005-1').then(m=>m.loadFurniture(item,assetQuality)),
+    loadFurniture:item=>import('./furniture-asset.mjs?v=hiperreal-tanda1-20261008-1').then(m=>m.loadFurniture(item,assetQuality)).then(preparePhotoreal),
     loadPerson:assetQuality==='best'?actor=>import('./best-person-asset.mjs?v=visitors-24').then(m=>m.loadBestPerson(actor)):null
   });}catch(error){renderer.dispose();renderer.forceContextLoss();throw error;}
   const camera=new T.OrthographicCamera(-15,15,10,-10,.1,200);
@@ -193,7 +203,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
     for(const actor of model.actors.children){const status=actor.userData.personAssetStatus;if(status&&Object.hasOwn(result,status)){result[status]++;result.total++;}}
     return result;
   }
-  function dispose(){if(disposed)return;disposed=true;clearDropOutline();for(const [event,handler]of Object.entries(handlers))canvas.removeEventListener(event,handler);pointers.clear();libraries.dispose();clearPart();clearOverlay();overlay.removeFromParent();haloGeometry.dispose();haloMaterial.dispose();halo.removeFromParent();model.dispose();renderer.dispose();renderer.forceContextLoss();}
+  function dispose(){if(disposed)return;disposed=true;photorealEnv?.dispose();photorealEnv=null;clearDropOutline();for(const [event,handler]of Object.entries(handlers))canvas.removeEventListener(event,handler);pointers.clear();libraries.dispose();clearPart();clearOverlay();overlay.removeFromParent();haloGeometry.dispose();haloMaterial.dispose();halo.removeFromParent();model.dispose();renderer.dispose();renderer.forceContextLoss();}
   const libraryViewer={frameObject,pick,clearClip,project,preset,invalidateShadows:()=>{renderer.shadowMap.needsUpdate=true;}};
   const libraries=createLibraryRuntime({canvas,scene:model.scene,viewer:libraryViewer,isEditing:()=>!!editor});
   resize(canvas.clientWidth||1000,canvas.clientHeight||700);

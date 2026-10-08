@@ -6,7 +6,7 @@
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.79",
+    "version": "2.12.81",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -990,7 +990,7 @@
   "inventory_breakdown": {
     "status": "implemented",
     "scope": "catalogue_components_read_only",
-    "assets": 50,
+    "assets": 52,
     "action": {
       "es": "Desglose",
       "en": "Breakdown",
@@ -999,7 +999,7 @@
     "url": "https://www.xpaceos.com/inventario/?asset=2&quality=best&view=breakdown#catalog",
     "dataset": "https://www.xpaceos.com/inventario/components.json",
     "schema_version": 1,
-    "revision": "components-20261002-1",
+    "revision": "components-20261008-coffee47-1",
     "model_profile": "best",
     "quantity_basis": "model",
     "quantity_unknown": null,
@@ -2797,5 +2797,86 @@
       "en-GB"
     ],
     "scope": "local digital twin; one announcer per page"
+  },
+  "starbucks_coffee_display": {
+    "status": "implemented",
+    "inventory_id": "native:starbucksShelves",
+    "inventory_number": 47,
+    "instance_id": "sb-mugs",
+    "itil_code": "PDG103-EST-01",
+    "levels": 5,
+    "visual_references": 26,
+    "visual_instance_count": 115,
+    "viewer": "https://www.xpaceos.com/inventario/assets/catalog/47/collection/preview/",
+    "parts": "https://www.xpaceos.com/inventario/assets/catalog/47/best.parts.json",
+    "collection_manifest": "https://www.xpaceos.com/inventario/assets/catalog/47/collection/inventory.json",
+    "profile": "best",
+    "quantity_basis": "visual_model_not_stock",
+    "product_ci_registration": false,
+    "new_remote_tools": false,
+    "commands": [
+      "/inventario añadir 47",
+      "/inventario eliminar 47",
+      "/inventario deshacer"
+    ],
+    "docs": "https://www.xpaceos.com/admira-xp/docs/starbucks-coffee-display.md",
+    "tutorial": "https://www.xpaceos.com/help/#starbucks-coffee-display",
+    "es": "La estantería Starbucks 47 conserva native:starbucksShelves, la instancia sb-mugs y el CI PDG103-EST-01. Good, Better y Best mantienen sus acabados; Matrix añade un cuarto nivel para este mueble. En el navegador, Matrix es 3D real en WebGL/Three.js con materiales PBR e iluminación mejorados. La escena nativa se construyó, guardó y reabrió en Unreal Engine 5.8 con Lumen por software; su render cinematográfico de 1920 × 1600 con 8 muestras espaciales está verificado. El proyecto Unreal y su render se entregan por separado del visor web. Todos compara los cuatro niveles de la pieza 47. Despiece y productos mantiene 115 objetos independientes y 26 referencias visuales descargables, con sus IDs estables. Los productos son una composición visual: no son SKU comerciales ni fichas CI nuevas y las cantidades no acreditan stock. El maestro patrimonial sigue en Yokup.",
+    "en": "Starbucks shelf 47 retains native:starbucksShelves, instance sb-mugs and CI PDG103-EST-01. Good, Better and Best retain their finishes; Matrix adds a fourth level for this cabinet. In the browser, Matrix remains real 3D in WebGL/Three.js with enhanced PBR materials and lighting. The native scene was built, saved and reopened in Unreal Engine 5.8 with software Lumen; its 1920 × 1600 cinematic render with 8 spatial samples is verified. The Unreal project and its render are delivered separately from the web viewer. All compares the four levels of piece 47. Separated parts and products retains 115 independent objects and 26 downloadable visual references with stable IDs. Products form a visual composition: they are not commercial SKUs or new CI records, and quantities do not establish stock. Yokup remains the lifecycle master.",
+    "profiles": [
+      "good",
+      "better",
+      "best",
+      "matrix"
+    ],
+    "matrix_viewer": "https://www.xpaceos.com/inventario/?asset=47&quality=matrix#mostrador",
+    "all_viewer": "https://www.xpaceos.com/inventario/?asset=47&quality=all#mostrador",
+    "matrix_collection_viewer": "https://www.xpaceos.com/inventario/assets/catalog/47/collection-matrix/preview/",
+    "updated_at": "2026-10-08",
+    "matrix": {
+      "scope": "inventory_asset_47_only",
+      "browser_runtime": "WebGL / Three.js",
+      "browser_materials": "enhanced PBR materials and portable lighting",
+      "web_delivery_status": "verified",
+      "native_engine": "Unreal Engine 5.8",
+      "native_lighting": "Lumen",
+      "native_project": "Matrix47.uproject",
+      "native_delivery_status": "verified",
+      "native_download": "https://github.com/csilvasantin/xpaceos/releases/download/matrix47-20261008/matrix47-unreal.zip",
+      "native_render": "https://www.xpaceos.com/inventario/assets/catalog/47/collection-matrix/preview/unreal-studio.png",
+      "portable_download": "https://github.com/csilvasantin/xpaceos/releases/download/matrix47-20261008/coffee-display-matrix-itil.zip",
+      "independent_product_instances": 115,
+      "visual_references": 26,
+      "stable_component_ids": true,
+      "native_map": "/Game/Matrix47/Matrix47",
+      "native_camera": "Studio47 · Matrix hero camera",
+      "native_lighting_mode": "software ray tracing",
+      "native_import_status": "verified",
+      "native_product_root_actor_count": 115,
+      "native_readme": "https://www.xpaceos.com/admira-xp/docs/starbucks-coffee-display-unreal.md",
+      "native_engine_build": "5.8.0-55116800+++UE5+Release-5.8",
+      "native_sequence": "/Game/Matrix47/Matrix47Studio",
+      "native_static_mesh_actor_count": 2061,
+      "native_glass_material_slots": 40,
+      "native_render_resolution": [
+        1920,
+        1600
+      ],
+      "native_render_spatial_samples": 8,
+      "native_scene_status": "built_saved_reopened_verified",
+      "verification_scope": "local_artifacts_and_frontend",
+      "native_project_directories": [
+        "Content",
+        "Config",
+        "Scripts",
+        "SourceAssets"
+      ],
+      "package_delivery": {
+        "provider": "github_release",
+        "repository": "csilvasantin/xpaceos",
+        "tag": "matrix47-20261008"
+      }
+    },
+    "matrix_collection_manifest": "https://www.xpaceos.com/inventario/assets/catalog/47/collection-matrix/inventory.json"
   }
 }

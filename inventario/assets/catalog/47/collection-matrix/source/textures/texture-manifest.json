@@ -1,0 +1,121 @@
+{
+  "quality": "matrix",
+  "generation": "deterministic procedural baked PBR",
+  "maps": [
+    {
+      "file": "ceramic_glaze_normal.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "normal"
+    },
+    {
+      "file": "ceramic_glaze_roughness.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "roughness"
+    },
+    {
+      "file": "emerald_metal_normal.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "normal"
+    },
+    {
+      "file": "emerald_metal_roughness.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "roughness"
+    },
+    {
+      "file": "graphite_steel_albedo.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "albedo"
+    },
+    {
+      "file": "graphite_steel_normal.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "normal"
+    },
+    {
+      "file": "graphite_steel_roughness.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "roughness"
+    },
+    {
+      "file": "honey_oak_albedo.png",
+      "size": [
+        2048,
+        2048
+      ],
+      "usage": "albedo"
+    },
+    {
+      "file": "honey_oak_normal.png",
+      "size": [
+        2048,
+        2048
+      ],
+      "usage": "normal"
+    },
+    {
+      "file": "honey_oak_roughness.png",
+      "size": [
+        2048,
+        2048
+      ],
+      "usage": "roughness"
+    },
+    {
+      "file": "kraft_paper_albedo.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "albedo"
+    },
+    {
+      "file": "kraft_paper_normal.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "normal"
+    },
+    {
+      "file": "kraft_paper_roughness.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "usage": "roughness"
+    }
+  ],
+  "normal_convention": "OpenGL tangent space +Y",
+  "albedo_space": "sRGB",
+  "normal_roughness_space": "linear",
+  "wood_grain": "longitudinal U; oak tray UVs cover physical board length",
+  "print_albedos": [
+    "ITIL_procedural_checker.png",
+    "ITIL_procedural_wave.png",
+    "ITIL_procedural_city.png",
+    "ITIL_procedural_confetti.png",
+    "ITIL_procedural_diamond.png"
+  ]
+}

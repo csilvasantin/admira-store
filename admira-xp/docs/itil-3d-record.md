@@ -44,3 +44,12 @@ Tutorial ES: 1. Inventario → Cafebrería (o `/xpacios/cafebreria/?inventory=1`
 Tutorial EN: 1. Inventory → Cafebrería (or `/xpacios/cafebreria/?inventory=1`). 2. Open a registered unit (e.g. bar). 3. Read “ITIL and 3D record” and open Yokup. 4. Confirm PG103 `/inventario/starbucks/` is unchanged.
 
 Contrato compartido: `inventario/ci-record.mjs` (Starbucks reexporta desde `inventario/starbucks/ci-record.mjs`).
+
+
+## Estantería Starbucks 47 / Starbucks shelf 47
+
+La estantería Starbucks 47 conserva native:starbucksShelves, la instancia sb-mugs y el CI PDG103-EST-01. Best muestra el mueble de cinco niveles interpretado desde la foto de Carlos. Despiece y productos abre una colección 3D con vasos, termos, tazas y café independientes y 26 referencias visuales descargables. Cada objeto conserva su identidad de componente. Los productos son una composición visual: no son SKU comerciales ni fichas CI nuevas y las cantidades no acreditan stock. El maestro patrimonial sigue en Yokup.
+
+Starbucks shelf 47 retains native:starbucksShelves, instance sb-mugs and CI PDG103-EST-01. Best shows the five-level cabinet interpreted from Carlos’s photograph. Separated parts and products opens a 3D collection of independent cups, tumblers, mugs and coffee with 26 downloadable visual references. Each object keeps its component identity. Products form a visual composition: they are not commercial SKUs or new CI records, and quantities do not establish stock. Yokup remains the lifecycle master.
+
+[Guía ES/EN / ES/EN guide](https://www.xpaceos.com/admira-xp/docs/starbucks-coffee-display.md) · [Colección 3D / 3D collection](/inventario/assets/catalog/47/collection/preview/)
