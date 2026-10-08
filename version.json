@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r30.23:44",
-  "deployedAt": "2026-10-08T21:44:48Z",
+  "version": "v.08.10.2026.r31.23:56",
+  "deployedAt": "2026-10-08T21:57:28Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "164ca77a13e503a1f0b29c0910f6d06ab8a87618",
-  "gitShort": "164ca77",
-  "gitFull": "164ca77a13e503a1f0b29c0910f6d06ab8a87618",
+  "git": "0b804477df535c5cc4db031d40f50f3f9ba14da9",
+  "gitShort": "0b80447",
+  "gitFull": "0b804477df535c5cc4db031d40f50f3f9ba14da9",
   "dirty": false,
   "novedades": [
-    "SneakerStore: el videowall Jordan muestra su imagen en cinco paneles a partir de la fotografía original de IEU.",
-    "Jordan + LCD abre la pared de frente, con la pantalla gigante a la derecha de Jordan y la playlist Pixeria activa.",
-    "Tutorial, ayuda ES/EN y contratos actualizados; las distribuciones guardadas conservan las ediciones explícitas."
+    "SneakerStore: contenido horizontal en la LCD y vertical en la pantalla de entrada, con playlists separadas.",
+    "Tags Pixeria y dimensiones reales del vídeo se comprueban antes de reproducir; se bloquean formatos incompatibles.",
+    "Selector de pantalla y ayuda ES/EN, tutorial y MCP actualizados."
   ]
 }
