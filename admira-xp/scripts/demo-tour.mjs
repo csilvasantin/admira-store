@@ -127,6 +127,7 @@ function unpaint(){try{S.card?.hidePopover?.();}catch{}try{S.card?._xdtOff?.();}
 function snapshot(ctx){const g=globalThis,m=g.XpaceMatrixOptions;let quality=null;try{quality=g.localStorage?.getItem(QUALITY_KEY)??null;}catch{}
  return {lang:pageLang(ctx.doc),mode:ctx.router?.mode||null,display:(()=>{try{return getScreenDisplayMode();}catch{return null;}})(),ipad:g.XpaceIpadCola?.on?.()??null,ipadTouched:g.XpaceIpadCola?.touched?.()??null,quality,camera:m?.isActive?.()?m.camera?.get?.()||null:null,music:m?.isActive?.()?!!m.state?.('music')?.playing:null};}
 async function restore(ctx,snap){const g=globalThis,errors=[];const tryIt=async(f)=>{try{await f();}catch(e){errors.push(e?.message||String(e));}};
+ await tryIt(()=>{while((ctx.waterGiven||0)>0){ctx.waterGiven--;g.XpacePOSExperience?.water?.giveBack?.();}});
  await tryIt(async()=>{const st=g.XpaceMatrixOptions?.isActive?.()&&g.XpaceStarbucksDemo;if(ctx.changedDemoMode&&st)await g.XpaceStarbucksDemo.setMode('linear');});
  await tryIt(async()=>{if(snap.mode&&ctx.router&&ctx.router.mode!==snap.mode)await ctx.router.choose(snap.mode);});
  await tryIt(()=>{if(snap.display&&getScreenDisplayMode()!==snap.display)setScreenDisplayMode(snap.display);});
@@ -150,6 +151,11 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
   if(s.music==='on'){if(ctx.musicBefore==null)ctx.musicBefore=playing;if(!playing)api.control('musicToggle');}
   else if(s.music==='next')api.control('musicNext');
   else if(s.music==='restore'){if(ctx.musicBefore===false&&playing)api.control('musicToggle');ctx.musicBefore=null;}return;}
+ // /demo 14: una botella de agua a la caja dispara la regla del agua (oferta en iPad y pared + locución); después se devuelve.
+ if(s.water){const w=g.XpacePOSExperience?.water;if(!w)return;
+  if(s.water==='focus'){w.focus?.();return;}
+  if(s.water==='deliver'){if(w.deliver?.()){ctx.waterGiven=(ctx.waterGiven||0)+1;ctx.sub(en?'Water at the register → offer on the iPad + voiceover':'Agua en la caja → oferta en el iPad + locución');}return;}
+  if(s.water==='giveback'){while((ctx.waterGiven||0)>0){ctx.waterGiven--;w.giveBack?.();}return;}return;}
  if(s.announcement==='stop'){const st=g.document?.querySelector?.('.matrix-announcement-status[data-playing="true"]');if(st)await ctx.exec('/aviso');return;}
  if(s.ipad){const c=g.XpaceIpadCola,doc=g.document;
   if(s.ipad==='preload'){if(!doc?.body||!c?.url||doc.getElementById('xpaceDemoIpadPreload'))return;const f=doc.createElement('iframe');f.id='xpaceDemoIpadPreload';f.setAttribute('aria-hidden','true');f.tabIndex=-1;f.style.cssText='position:fixed;left:-9999px;top:0;width:1024px;height:768px;opacity:0;pointer-events:none';f.src=c.url();doc.body.append(f);return;}

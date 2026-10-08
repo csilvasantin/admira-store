@@ -23,7 +23,7 @@
   },
   "title_card_s": 2,
   "count": 16,
-  "total_s": 316,
+  "total_s": 324,
   "restores": [
    "vista (good/better/best/matrix)",
    "cámara",
@@ -644,16 +644,16 @@
     "en": "IF·THEN·DO THAT rules"
    },
    "shows": {
-    "es": "El compositor de reglas: coger un muffin o llevarlo a caja dispara música, voz, imagen o vídeo.",
-    "en": "The rule composer: picking a muffin or taking it to the register triggers music, voice, image or video."
+    "es": "El compositor de reglas: coger un muffin o llevarlo a caja dispara música, voz, imagen o vídeo; dejar una botella de agua en la caja pone la oferta en el iPad y suena «Gracias por comprar agua de proximidad».",
+    "en": "The rule composer: picking a muffin or taking it to the register triggers music, voice, image or video; leaving a water bottle at the register puts the offer on the iPad and plays “Thank you for buying locally sourced water”."
    },
    "command": "/ifthendothat",
-   "duration_s": 9,
+   "duration_s": 17,
    "tour": true,
    "kind": "twin",
    "side_effects": {
-    "es": "Ninguno: solo este navegador.",
-    "en": "None: this browser only."
+    "es": "Entrega una botella de agua de demo (la cesta del gemelo, no stock real) y la devuelve al terminar.",
+    "en": "Delivers one demo water bottle (twin basket, not real stock) and gives it back at the end."
    },
    "owner": "XpaceOS · gemelo Starbucks",
    "link": "https://www.admira.store/admira-xp/help.html#ifthendothat",
@@ -665,10 +665,25 @@
      "cli": "/ifthendothat"
     },
     {
+     "say": {
+      "es": "Regla del agua: IF dejo una botella en la caja → DO oferta en el iPad + 🔊 locución.",
+      "en": "Water rule: IF I leave a bottle at the register → DO offer on the iPad + 🔊 voiceover."
+     }
+    },
+    {
+     "wait": 4500
+    },
+    {
+     "water": "deliver"
+    },
+    {
      "wait": 8000
     }
    ],
    "cleanup": [
+    {
+     "water": "giveback"
+    },
     {
      "cli": "/ifthendothat off"
     }
