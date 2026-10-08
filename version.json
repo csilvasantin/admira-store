@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r27.23:15",
-  "deployedAt": "2026-10-08T21:16:11Z",
+  "version": "v.08.10.2026.r28.23:17",
+  "deployedAt": "2026-10-08T21:17:32Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "6b1d0d0338e08df33fb0154209cbd92463a0c306",
-  "gitShort": "6b1d0d0",
-  "gitFull": "6b1d0d0338e08df33fb0154209cbd92463a0c306",
+  "git": "c8c8f5814ecfb8de83227aa70cbe2e9d9096c750",
+  "gitShort": "c8c8f58",
+  "gitFull": "c8c8f5814ecfb8de83227aa70cbe2e9d9096c750",
   "dirty": false,
   "novedades": [
-    "Sneakers Store: recorrido 360 con las fotografías reales de Entrada, Centro y Fondo de Santa Rosa 19.",
-    "Planta editable adaptada al pasillo, chapa metálica, expositores negros, recreativas y caja del local.",
-    "Playlist Pixeria conectada, accesos a Puerta Cam y Xtore, ayuda y MCP en español e inglés."
+    "Sneakers Store: Entrada, Centro y Fondo reales en 360, con planta editable adaptada a Santa Rosa 19.",
+    "Controles nuevos del recorrido disponibles al abrir la demo; playlist Pixeria y acceso a segmentación Xtore.",
+    "Tutorial global y ayuda MCP publicados en español e inglés."
   ]
 }
