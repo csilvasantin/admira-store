@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r3.07:32",
-  "deployedAt": "2026-10-07T22:22:56Z",
-  "deployer": "OraculoMacMini",
+  "version": "v.08.10.2026.r4.07:42",
+  "deployedAt": "2026-10-08T05:44:01Z",
+  "deployer": "GrokBot",
   "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
-  "git": "9d577e8be2fafd451377a49d78d51aae85b08f10",
-  "gitShort": "9d577e8",
-  "gitFull": "9d577e8be2fafd451377a49d78d51aae85b08f10",
+  "signature": "GrokBot · MacMini",
+  "git": "8e88465c43ca583a8c6bc4bd5c2e6b5761cf9291",
+  "gitShort": "8e88465",
+  "gitFull": "8e88465c43ca583a8c6bc4bd5c2e6b5761cf9291",
   "dirty": false,
   "novedades": [
-    "TPV: 13 botellas de agua del modelo ITIL, seleccionables y arrastrables a caja",
-    "La primera botella deja 12 y activa la oferta del 10 % en las seis pantallas y el iPad",
-    "La cantidad, los huecos de la pila y la oferta se conservan en la pestaña; ayuda ES/EN actualizada"
+    "/demo all es|en (también ESP/ENG o --idioma): el recorrido elige idioma para la tarjeta, la CLI y los contenidos; sin argumento sigue /idioma y al acabar vuelve el de antes",
+    "Tarjeta flotante de cristal con los colores de la marca: se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic la recoloca), icono animado por demo con anillo de pasos, píldora ES/EN, Pausa · Siguiente · Detener",
+    "/demo pausa y /demo reanudar; /help/demos enseña también los iconos"
   ]
 }
