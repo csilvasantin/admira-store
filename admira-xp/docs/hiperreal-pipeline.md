@@ -9,6 +9,7 @@ Hiperreal es el acabado fotorrealista del catálogo: texturas PBR CC0 reales, im
 | 0 · piloto | 47 Estantería de tazas y café Starbucks | 08-10-2026 |
 | 1 · Starbucks | 44 Barra de preparación, 45 Mostrador de caja, 46 Vitrina, 48 Mesa redonda, 49 Silla, 50 Botellero Solán de Cabras, 52 iPad horizontal | 08-10-2026 |
 | 2–6 · nativas y Pixeria | 2–43 y 51 (ver cada tanda abajo) | 08-10-2026 |
+| 7 · Mostrador | 1 (fuera del catálogo, `assets/mostrador/`) | 08-10-2026 |
 
 Las piezas con Hiperreal están en `HIPERREAL_BATCHES` de `inventario/quality-model.mjs`.
 
@@ -41,6 +42,7 @@ Se conservan los nombres de objeto y todas las propiedades de inventario (`inven
    - Exporta el HD y guarda el máster.
 2. `lod.sh <n>` · `gltf-transform`: dedup → resize 2K/1K → WebP q84 (→ quantize si pasa de 5 MB).
 3. `pipeline.py --mode before|after` · render rápido en Cycles (32 muestras): estudio Matrix neutro frente a tienda (HDRI comfy_cafe, focos cálidos, suelo de hormigón, pared de yeso, polvo y bisel de sombreado sólo en render).
+3b. `webglass.py` (dentro de `lod.sh`) · regla del LOD web para el cristal, ver tanda 7.
 4. `compose.py <tanda> "<piezas>"` · `/workspace/uploads/hiperreal-tanda<N>-comparativa.png` y JPG por pieza.
 
 `run_batch.sh "<piezas>" [muestras]` encadena build + before + after. Los ajustes por pieza van en `pieces.json` (`material_classes`, `coat`, `front`, `expo`, `led_render`, `keep_uvs`, `jitter`…).
@@ -105,9 +107,26 @@ Piezas: 36 Mesa casco espacial, 37 Mesa ogro, 38 Sillón gorila, 39 Sofá verde,
 - `jitter: {}` en la mesa ogro 37: ojos y sonrisa son piezas pequeñas de cerámica y la variación por defecto los despegaba de la cara.
 - Todas son mallas redondeadas: `detail()` no añade geometría y mejoran por materiales y luz. Web 0,05–0,97 MB, HD 0,35–7,0 MB.
 - Coche 29 (revisión 2): la sirena del techo y los faros pasan de `glass` a `plastic` brillante. En el visor web el cristal perdía el rojo de la sirena; se vio al revisar 28–35 en el visor publicado.
-- Siguen con `glass` (sin revisar en esta tanda): botellas ámbar de 2, faros/parabrisas de 19, 20 y 23 y la vitrina 46.
+- ~~Siguen con `glass`: botellas ámbar de 2, faros/parabrisas de 19, 20 y 23 y la vitrina 46.~~ Resuelto en la tanda 7 (r22) con `webglass.py`; la vitrina 46 conserva su cristal.
 - Comprobación: además de cargar el GLB, captura de cada pieza en el visor web publicado (`/inventario/?asset=<n>&quality=hiperreal#mostrador`).
 
 ## Despliegue de admira-store (Cloudflare Pages)
 
 `.github/cloudflare-grandes.sh` (lo llaman el flujo `cloudflare-pages.yml` y `deploy.sh`) quita del paquete todo archivo de más de 25 MiB y antepone en `_redirects` un 302 a la copia de XpaceOS: primero `raw.githubusercontent.com/csilvasantin/xpaceos/<commit espejado>/…` (de `version.json.mirrorOf`), si no `www.xpaceos.com/…`, y como último recurso la copia de la propia tienda en GitHub. Sólo acepta un destino que responda 200 con el mismo tamaño y nunca apunta a admira.store: sin bucles. Ya no hay entradas a mano en `.gitattributes` ni en `_redirects`.
+
+## Tanda 7 · Mostrador (pieza 1) y cristal en el LOD web (r22)
+
+**Mostrador (pieza 1)**. No está en `catalog/`: sus perfiles son `inventario/assets/mostrador/counter-interpreted-<perfil>.{glb,blend,manifest.json}`.
+- `pieces.json` → `"1"` con `source: counter-interpreted-best` (el `.blend` se pasa a mano; `run_batch.sh` sólo conoce `catalog/<nn>/`), clases por material (terrazo → `stone`, roble aceitado → `wood` con su textura de autor, laca petróleo → `plastic` con capa 0,45, latón satinado → `metal`, luz de estado → `led`, pantalla del TPV → `keep`) y `jitter: {}`.
+- `pipeline.py` quita del `.blend` los objetos de estudio que nunca forman parte del asset (`exclude_re`, por defecto `not_exported`: el `studio_ground_not_exported` del Mostrador).
+- Instalación: `counter-interpreted-hiperreal.glb` (web, 1,9 MB), `mostrador/hiperreal/hiperreal-hd.glb` (HD, 11,9 MB), `counter-interpreted-hiperreal.blend` (máster; `remap_tex.py` reescribe las texturas a `//../hiperreal-tex/`), `counter-interpreted-hiperreal.manifest.json` y `mostrador/hiperreal/preview/hiperreal-1-comparativa.jpg`.
+- Código: `counter-asset.mjs` admite `hiperreal` (`COUNTER_TIERS`, caché `COUNTER_HIPERREAL_VERSION`) y `hiperrealExtrasBase(n)` da la carpeta del render y del HD (catálogo o mostrador). `HIPERREAL_BATCHES[7]=[1]`: el inventario ofrece Hiperreal y el gemelo Best carga Hiperreal → Best (la pieza 1 no tiene Matrix). Se conservan nombres de nodo, `componentId`, `inventoryNumber 1`, `inventoryId native:counter` y la superficie `existing_shared_player` del TPV.
+- Límite honesto: el Mostrador ya venía biselado (4 segmentos), así que `detail()` no añade geometría; mejora por materiales, imperfección y luz.
+
+**Cristal en el LOD web** (`webglass.py`, último paso de `lod.sh`). El visor web no tiene transmisión fiable: el cristal pequeño desaparecía (faros de 19, 20 y 23) o se veía como una losa (pinball 30). Regla por defecto: un material que el pipeline clasificó como `glass` (`extras.hiperreal_class`) y cuyas mallas miden ≤ 0,35 m en su lado mayor pasa, sólo en el LOD web, a laca opaca brillante con su tinte original (se deshace el aclarado del 78 %), capa 1/0,03 y un brillo suave si es una lente blanca (faro). El HD para Unreal conserva el cristal real.
+- Aplicado a 2 (botellas ámbar), 19 (faro y parabrisas), 20 (faro y parabrisas ahumado) y 23 (faro); `HIPERREAL_REVISION` sube su caché (2 → 3; 19, 20, 23 → 2).
+- No se toca: la vitrina 46 (cristal grande, 6 m), el PET azul de 50 y el piloto 47 (cristal de autor, clase `keep`).
+- `webglass.py <glb> --dry` lista los cristales de un GLB y si son pequeños o grandes; `--max` cambia el umbral.
+
+**Comprobación en el visor**: `visor_shot.py BASE OUT n:calidad[:vista+zoom]` (Chromium sin cabeza, WebGL por SwiftShader) guarda capturas del visor publicado, p. ej. `python3 visor_shot.py https://www.xpaceos.com shots 1:hiperreal 19:hiperreal 2:hiperreal:front+4`.
+

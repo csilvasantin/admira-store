@@ -1,11 +1,11 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
 import {createSurfaceBinding} from '../admira-xp/scripts/surface-materials.mjs?v=surfaces-1';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=hiperreal-tanda6-20261008-1';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=hiperreal-r22-20261008-1';
 import {stageCamera} from './stage-camera.mjs?v=shelf-products-1';
-import {pixelFinish,pixelLayout,preciseTextureSampling} from './finish-rendering.mjs?v=hiperreal-tanda6-20261008-1';
+import {pixelFinish,pixelLayout,preciseTextureSampling} from './finish-rendering.mjs?v=hiperreal-r22-20261008-1';
 import {createPartHighlight,numericPartForHit} from '../admira-xp/scripts/shelf-parts.mjs?v=shelf-products-1';
-import {createMatrixStudio,createHiperrealStudio} from './matrix-rendering.mjs?v=hiperreal-tanda6-20261008-1';
-import {catalogFrontAngle,isPhotoreal} from './quality-model.mjs?v=hiperreal-tanda6-20261008-1';
+import {createMatrixStudio,createHiperrealStudio} from './matrix-rendering.mjs?v=hiperreal-r22-20261008-1';
+import {catalogFrontAngle,isPhotoreal} from './quality-model.mjs?v=hiperreal-r22-20261008-1';
 
 export async function mountCounterStage(host,asset={number:1,name:'Mostrador'},{controlsHost=host,onReady=()=>{},quality='best',cameraState}={}){
  const canvas=host.querySelector('canvas'),status=host.querySelector('[data-status]');

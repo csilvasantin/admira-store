@@ -16,6 +16,8 @@ N=int(arg('piece')); OUT=arg('out'); MODE=arg('mode','build'); SAMPLES=int(arg('
 os.makedirs(OUT,exist_ok=True)
 CFG=json.load(open(HERE+'/pieces.json')); PC={**CFG['defaults'],**CFG['pieces'].get(str(N),{})}
 B=bpy.data; sc=bpy.context.scene
+# Studio helpers saved in a source .blend but never part of the asset (the Mostrador's 'studio_ground_not_exported')
+for _o in [o for o in B.objects if re.search(PC.get('exclude_re','not_exported'),o.name)]: B.objects.remove(_o,do_unlink=True)
 def rng(key): return random.Random(int(hashlib.sha256(str(key).encode()).hexdigest()[:12],16))
 def base_name(n): return re.sub(r'\.\d{3}$','',n)
 def bsdf(m): return m.node_tree.nodes.get('Principled BSDF') if m and m.use_nodes else None

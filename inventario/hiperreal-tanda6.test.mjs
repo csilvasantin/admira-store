@@ -10,8 +10,8 @@ const TANDA1=[36,37,38,39,40,41,42,43];
 test('batch 6 adds Hiperreal to Pixeria pieces 36–43 (whole catalog 2–52 covered); Matrix stays exclusive to 47',()=>{
  assert.deepEqual([...HIPERREAL_BATCHES[6]],TANDA1);for(const n of [44,45,46,47,48,49,50,52])assert.ok(HIPERREAL_ASSET_NUMBERS.includes(n));
  for(const n of TANDA1){assert.deepEqual(qualityProfiles(n),['good','better','best','hiperreal']);assert.equal(isPhotoreal(n,'hiperreal'),true);assert.equal(isPhotoreal(n,'matrix'),false);assert.deepEqual(twinQualityChain(n),['hiperreal','best']);}
- assert.deepEqual(twinQualityChain(47),['hiperreal','matrix','best']);assert.deepEqual(twinQualityChain(1),['best']);assert.deepEqual(twinQualityChain(44,'better'),['better']);
- assert.equal(hasHiperreal(1),false);for(let n=2;n<=52;n++)assert.ok(hasHiperreal(n),n+' has Hiperreal');
+ assert.deepEqual(twinQualityChain(47),['hiperreal','matrix','best']);assert.deepEqual(twinQualityChain(1),['hiperreal','best']);assert.deepEqual(twinQualityChain(44,'better'),['better']);
+ assert.equal(hasHiperreal(1),true);for(let n=2;n<=52;n++)assert.ok(hasHiperreal(n),n+' has Hiperreal');
 });
 
 test('batch 6 web GLBs are light WebP LODs that keep every node and inventory identity of Best',()=>{

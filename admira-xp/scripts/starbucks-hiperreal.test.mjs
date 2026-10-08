@@ -43,7 +43,7 @@ test('twin Best prefers Hiperreal, then Matrix, then Best when a download fails'
  let root=await cloneTwinFurniture(44,'best',clone('best'));assert.deepEqual(tried,['44:hiperreal','44:best']);assert.equal(root.userData.assetQuality,'best');
  tried.length=0;root=await cloneTwinFurniture(47,'best',clone('matrix'));assert.deepEqual(tried,['47:hiperreal','47:matrix']);assert.equal(root.userData.assetQuality,'matrix');
  tried.length=0;root=await cloneTwinFurniture(46,'best',clone('hiperreal'));assert.deepEqual(tried,['46:hiperreal']);
- tried.length=0;root=await cloneTwinFurniture(1,'best',clone('best'));assert.deepEqual(tried,['1:best']);
+ tried.length=0;root=await cloneTwinFurniture(1,'best',clone('best'));assert.deepEqual(tried,['1:hiperreal','1:best']);
  tried.length=0;root=await cloneTwinFurniture(44,'better',clone('better'));assert.deepEqual(tried,['44:better']);
 });
 

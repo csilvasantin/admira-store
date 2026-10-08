@@ -1,8 +1,8 @@
 import * as T from '../admira-xp/scripts/premium-three.mjs';
-import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=hiperreal-tanda6-20261008-1';
-import {pixelFinish,preciseTextureSampling} from './finish-rendering.mjs?v=hiperreal-tanda6-20261008-1';
-import {createMatrixStudio,createHiperrealStudio} from './matrix-rendering.mjs?v=hiperreal-tanda6-20261008-1';
-import {isPhotoreal} from './quality-model.mjs?v=hiperreal-tanda6-20261008-1';
+import {cloneFurniture} from '../admira-xp/scripts/furniture-asset.mjs?v=hiperreal-r22-20261008-1';
+import {pixelFinish,preciseTextureSampling} from './finish-rendering.mjs?v=hiperreal-r22-20261008-1';
+import {createMatrixStudio,createHiperrealStudio} from './matrix-rendering.mjs?v=hiperreal-r22-20261008-1';
+import {isPhotoreal} from './quality-model.mjs?v=hiperreal-r22-20261008-1';
 let renderers=new Map(),queue=Promise.resolve();
 export function preview(asset,tier,angle=0){const task=queue.then(()=>render(asset,tier,angle));queue=task.catch(()=>{});return task;}
 async function render(asset,tier,angle){

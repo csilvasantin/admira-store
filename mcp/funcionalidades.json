@@ -5321,6 +5321,37 @@
       14
     ],
     "twin": "Best: Hiperreal → Best",
-    "pending": "pieza 1 Mostrador (assets/mostrador, fuera del catálogo)"
+    "pending": "ninguna: el Mostrador (pieza 1) tiene Hiperreal desde r22 (ver hiperreal_mostrador)"
+  },
+  "hiperreal_mostrador": {
+    "status": "implemented",
+    "batch": 7,
+    "inventory_numbers": [
+      1
+    ],
+    "viewer": "https://www.xpaceos.com/inventario/?asset=1&quality=hiperreal#mostrador",
+    "glb_web": "https://www.xpaceos.com/inventario/assets/mostrador/counter-interpreted-hiperreal.glb",
+    "glb_hd_unreal": "https://www.xpaceos.com/inventario/assets/mostrador/hiperreal/hiperreal-hd.glb",
+    "blend": "https://www.xpaceos.com/inventario/assets/mostrador/counter-interpreted-hiperreal.blend",
+    "qualities": [
+      "good",
+      "better",
+      "best",
+      "hiperreal"
+    ],
+    "twin": "Best: Hiperreal → Best (sin Matrix en la pieza 1)",
+    "ids": "inventoryNumber 1, inventoryId native:counter, componentId y superficie de vídeo del TPV conservados"
+  },
+  "hiperreal_cristal_web": {
+    "status": "implemented",
+    "rule": "LOD web: el cristal del pipeline en piezas pequeñas (≤ 0,35 m) pasa a laca opaca brillante con su tinte; el HD conserva el cristal real",
+    "tool": "admira-xp/tools/hiperreal/webglass.py (lo llama lod.sh)",
+    "pieces": {
+      "2": "botellas ámbar",
+      "19": "faro y parabrisas",
+      "20": "faro y parabrisas",
+      "23": "faro"
+    },
+    "untouched": "vitrina 46 (cristal grande), PET 50 y piloto 47 (cristal de autor)"
   }
 }

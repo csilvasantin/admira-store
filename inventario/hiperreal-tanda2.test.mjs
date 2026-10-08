@@ -10,13 +10,13 @@ const TANDA1=[2,3,7,9,10,13,15,51];
 test('batch 2 adds Hiperreal to the native demo pieces; Matrix stays exclusive to 47',()=>{
  assert.deepEqual([...HIPERREAL_BATCHES[2]],TANDA1);for(const n of [44,45,46,47,48,49,50,52])assert.ok(HIPERREAL_ASSET_NUMBERS.includes(n));
  for(const n of TANDA1){assert.deepEqual(qualityProfiles(n),['good','better','best','hiperreal']);assert.equal(isPhotoreal(n,'hiperreal'),true);assert.equal(isPhotoreal(n,'matrix'),false);assert.deepEqual(twinQualityChain(n),['hiperreal','best']);}
- assert.deepEqual(twinQualityChain(47),['hiperreal','matrix','best']);assert.deepEqual(twinQualityChain(1),['best']);assert.deepEqual(twinQualityChain(44,'better'),['better']);
- assert.equal(hasHiperreal(1),false);
+ assert.deepEqual(twinQualityChain(47),['hiperreal','matrix','best']);assert.deepEqual(twinQualityChain(1),['hiperreal','best']);assert.deepEqual(twinQualityChain(44,'better'),['better']);
+ assert.equal(hasHiperreal(1),true);
 });
 
 test('batch 2 web GLBs are light WebP LODs that keep every node and inventory identity of Best',()=>{
  for(const n of TANDA1){
-  const url=new URL(furnitureURL(n,'hiperreal'));assert.equal(url.searchParams.get('v'),'hiperreal-tanda2-20261008-'+([2,51].includes(n)?2:1));
+  const url=new URL(furnitureURL(n,'hiperreal'));assert.equal(url.searchParams.get('v'),'hiperreal-tanda2-20261008-'+({2:3,51:2}[n]||1));
   const web=glb(url),hd=glb(new URL(`./assets/catalog/${String(n).padStart(2,"0")}/hiperreal/hiperreal-hd.glb`,import.meta.url)),best=glb(new URL(furnitureURL(n,'best')));
   assert.ok(web.bytes.length<=5e6,n+' web GLB ≤ 5 MB');assert.ok(hd.bytes.length>web.bytes.length,n+' HD heavier than web');
   assert.ok(web.doc.extensionsUsed.includes('EXT_texture_webp'));assert.ok(web.doc.images.every(image=>'bufferView' in image&&!image.uri));

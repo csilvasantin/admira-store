@@ -1083,6 +1083,32 @@
    "material_classes": {
     "wood": "wood"
    }
+  },
+  "1": {
+   "name": "Mostrador",
+   "source": "counter-interpreted-best",
+   "material_classes": {
+    "PBR · Brushed steel": "metal",
+    "PBR · Terminal polymer": "plastic",
+    "PBR · Soft rubber": "rubber",
+    "PBR · Cream keys": "plastic",
+    "PBR · Oiled oak": "wood",
+    "PBR · Dark plinth": "wood_dark",
+    "PBR · Satin brass": "metal",
+    "PBR · Petrol lacquer": "plastic",
+    "PBR · Receipt paper": "paper",
+    "PBR · Warm terrazzo": "stone",
+    "PBR · Status light": "led",
+    "Media · replace with existing player": "keep"
+   },
+   "coat": {
+    "PBR · Petrol lacquer": [
+     0.45,
+     0.12
+    ]
+   },
+   "jitter": {},
+   "expo": -0.55
   }
  }
 }

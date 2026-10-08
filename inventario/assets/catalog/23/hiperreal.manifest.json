@@ -24,7 +24,7 @@
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 429468,
+    "web": 429576,
     "hd": 2150832,
     "best": 191360
   },
@@ -69,5 +69,12 @@
   "object_classes": {
     "Saddle": "leather",
     "Fuel tank": "carpaint"
+  },
+  "web_glass": {
+    "rule": "LOD web: cristal pequeño (≤ 0,35 m) -> laca opaca brillante con su tinte (webglass.py); el HD conserva el cristal",
+    "materials": [
+      "white"
+    ],
+    "revision": "r22"
   }
 }
