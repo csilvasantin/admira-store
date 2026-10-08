@@ -1,12 +1,12 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.08.10.2026.r3.07:32",
+  "version": "v.08.10.2026.r6.07:59",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.77",
+    "version": "2.12.78",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -440,25 +440,47 @@
     "en": "In ⌘ Expert, /inventario idIoT shows the unique name of every registered IoT element: Project_Xpace_Type_n, for example Starbucks_PaseodeGracia_103_Pantalla_1. The prefix groups: “Starbucks_” is the project and “Starbucks_PaseodeGracia_103_” the Xpace. With no argument it lists the open Xpace; /inventario idIoT starbucks lists a project (its name, an alias, an Xpace id such as alsea-sbux-021 or any text of the name); /inventario idIoT proyectos summarises the network with Xpaces and elements per project; appending “csv” downloads the full list. The Xpace is named after street and number; without a street, after its name, and if two venues would match, after its registry number: no two idIoT are ever equal. Each type is numbered separately (Pantalla, Escaparate, TPV, iPad, Altavoz, LED, Tablet, Mupi…). Each line states which element it is, its ITIL code when it has one and the bound player, or “no player bound”. Starbucks Paseo de Gracia 103 uses its twin registry: wall screens 1–6, POS, iPad and speaker. Every other Xpace uses the surfaces of the Xpace registry. A demo scene with no registry Xpace names the IoT of its local inventory and says so. /marca limits the view to the active client. Names are stored in each Xpace record of the central registry and no longer change when its address or screen order changes; a new device gets its name automatically when it is registered, under the project chosen there. admira.tv accepts them as a playlist destination. They change nothing on physical devices.",
     "format": "Proyecto_Xpacio_Tipo_n",
     "example": "Starbucks_PaseodeGracia_103_Pantalla_1",
-    "cli": ["/inventario idIoT", "/inventario idIoT <proyecto|id de Xpacio|texto>", "/inventario idIoT proyectos", "/inventario idIoT <…> csv"],
+    "cli": [
+      "/inventario idIoT",
+      "/inventario idIoT <proyecto|id de Xpacio|texto>",
+      "/inventario idIoT proyectos",
+      "/inventario idIoT <…> csv"
+    ],
     "shared_module": "https://www.xpaceos.com/inventario/idiot.mjs",
-    "sources": ["https://api.admira.store/da/locations", "https://www.xpaceos.com/admira-xp/scripts/project-catalog.json"],
+    "sources": [
+      "https://api.admira.store/da/locations",
+      "https://www.xpaceos.com/admira-xp/scripts/project-catalog.json"
+    ],
     "docs": "https://www.xpaceos.com/admira-xp/docs/inventory-idiot.md",
     "status": "implemented: names stored in the central registry (surfaces[i].idIoT, iot[]); registering a device or publishing the registry names new elements automatically",
-    "registry": {"read": "https://api.admira.store/locations/<id> → location.surfaces[i].idIoT | location.iot[]", "resolve": "https://api.admira.store/locations/iot/<idIoT>", "write": "POST https://brain.digitalavatar.ai/locations/iot (Bearer; adds names only)", "tool": "inventario/tools/idiot-guardar.mjs"},
+    "registry": {
+      "read": "https://api.admira.store/locations/<id> → location.surfaces[i].idIoT | location.iot[]",
+      "resolve": "https://api.admira.store/locations/iot/<idIoT>",
+      "write": "POST https://brain.digitalavatar.ai/locations/iot (Bearer; adds names only)",
+      "tool": "inventario/tools/idiot-guardar.mjs"
+    },
     "mcp_tool": null
   },
   "queue_windows_reset_audio": {
     "es": "En Starbucks, las dos piezas flotantes de la gestión de colas son ventanas como las demás: «Colas · Quiosco» (los atajos Abrir gestor de colas, Quiosco y Tocar el tótem) y «Pedidos · TPV». Se mueven por la cabecera, se redimensionan, se cierran con × y se reabren desde el menú Ventanas o con /totem menu y /totem pedidos. Junto a DEMO hay «↺ Reset» (/totem reset): cierra los pedidos abiertos de la cola del quiosco y, con la cola a cero, el iPad vuelve a Admirito haciendo su demo; la numeración no vuelve a A001. El botón 🔊/🔇 (/totem audio on|off) para o activa los audios de la gestión de colas: los avisos de pedido listo, lo que el quiosco pide decir y la voz de la pantalla del iPad abierta en grande. Se recuerda en este navegador.",
     "en": "In Starbucks, the two floating pieces of queue management are windows like the rest: “Queues · Kiosk” (the Open queue manager, Kiosk and Touch the totem shortcuts) and “Orders · POS”. Drag them by the header, resize them, close them with × and reopen them from the Windows menu or with /totem menu and /totem pedidos. Next to DEMO there is “↺ Reset” (/totem reset): it closes the open orders of the kiosk queue and, with the queue at zero, the iPad goes back to Admirito doing his demo; numbering does not go back to A001. The 🔊/🔇 button (/totem audio on|off) stops or enables queue-management audio: ready-order announcements, what the kiosk asks to say and the voice of the iPad display opened full size. Remembered in this browser.",
-    "cli": ["/totem reset", "/totem audio on|off", "/totem menu", "/totem pedidos"],
+    "cli": [
+      "/totem reset",
+      "/totem audio on|off",
+      "/totem menu",
+      "/totem pedidos"
+    ],
     "mcp_tool": null
   },
   "audio_mute_priority": {
     "es": "/audio mute para TODO el sonido del gemelo: hilo musical (también el de Starbucks en Matrix), locuciones, aviso de cierre, altavoces, megafonía de pixeria, voz de Admirito, /comunicar, efectos, ambiente y el sonido de los vídeos. Con el audio silenciado no arranca ninguna locución ni el botón Escuchar («Audio silenciado · /audio unmute»). /audio unmute devuelve la música que estaba sonando; las locuciones cortadas no se reanudan. Las locuciones tienen prioridad sobre el hilo musical: al empezar una (Experto, PREVIOS, personas y altavoces de Matrix, aviso de cierre, megafonía, /comunicar con ElevenLabs) la música se PARA, y al terminar sigue en el mismo punto si existía y estaba sonando. Antes sólo bajaba al 6 % o seguía avanzando a volumen cero. Límite: las experiencias incrustadas de otros dominios (quiosco, avatar digital y gestor de colas abiertos en grande) llevan su propio audio y no obedecen a /audio mute.",
     "en": "/audio mute stops ALL sound in the twin: background music (including the Starbucks player in Matrix), voiceovers, closing announcement, speakers, pixeria PA, Admirito's voice, /comunicar, effects, ambience and video sound. While muted, no voiceover and no Listen button will start (“Audio muted · /audio unmute”). /audio unmute brings back the music that was playing; interrupted voiceovers are not resumed. Voiceovers take priority over background music: when one starts (Expert, PREVIEWS, Matrix people and speakers, closing announcement, PA, /comunicar with ElevenLabs) the music is PAUSED, and when it ends the music resumes at the same position if there was any and it was playing. It used to drop to 6 % or keep advancing at zero volume. Limit: embedded experiences from other domains (kiosk, digital avatar and queue manager opened full size) carry their own audio and do not obey /audio mute.",
     "docs": "https://www.xpaceos.com/admira-xp/docs/announcements.md",
-    "cli": ["/audio mute", "/audio unmute", "/audio toggle"],
+    "cli": [
+      "/audio mute",
+      "/audio unmute",
+      "/audio toggle"
+    ],
     "mcp_tool": null
   },
   "speaker_locutions": {
@@ -2705,5 +2727,46 @@
       "es": "Sin herramientas MCP nuevas: el registro es JSON estático y /demo help|all|<id> entra por el canal de órdenes del gemelo (__xtExec / xtAPI.command).",
       "en": "No new MCP tools: the registry is static JSON and /demo help|all|<id> goes through the twin command channel (__xtExec / xtAPI.command)."
     }
+  },
+  "water_conversion": {
+    "command": "/convertir 2da3d",
+    "itil": "PDG103-BOT-01",
+    "photo": "/inventario/starbucks/photos/sb-water-rack.webp",
+    "model": "/inventario/assets/catalog/50/good.glb",
+    "composition": 13,
+    "wall": {
+      "aspect": "9:16",
+      "width": 720,
+      "height": 1280
+    },
+    "ipad": {
+      "aspect": "16:9",
+      "width": 1280,
+      "height": 720
+    },
+    "image_video": {
+      "endpoint": "POST /admira-xp/advertising-video",
+      "fields": [
+        "text",
+        "language",
+        "requestId",
+        "imageId",
+        "aspect"
+      ],
+      "duration": 10,
+      "resolution": "720p",
+      "source": "Stock image ID, validated in R2",
+      "progress": [
+        "preparing",
+        "pending",
+        "archiving",
+        "done"
+      ],
+      "recover": "GET /admira-xp/media-job?requestId=<UUID>",
+      "paid": true,
+      "broadcast": false
+    },
+    "help_es": "Experto: /convertir 2da3d abre la foto original del botellero y su modelo 3D ITIL interactivo, compuesto con 13 botellas. Arrastra para girar; rueda o +/− para zoom; flechas para rotar. Reutiliza la conversión existente, sin regenerarla. En PREVIOS, una imagen muestra Crear vídeo · 10 s. También puedes elegirla en Crear contenidos → Crear vídeo → Imagen de origen; describe los detalles y mensajes que debe ampliar y elige horizontal (iPad) o vertical (pantallas). Generar usa esa imagen de Stock y crea 10 segundos a 720p. La barra refleja Preparar → Crear → Stock → Listo, sin porcentajes estimados del proveedor. Reintentar recupera el mismo trabajo; cambiar texto, imagen, idioma o formato inicia otro. El vídeo conserva la referencia de la imagen y se guarda en Stock antes del previo; crear no emite. Sin imagen sigue disponible el vídeo desde texto de 8 s. La oferta del agua se compone en vertical 720×1280 para starbucks-wall-01–06 y horizontal 1280×720 para starbucks-ipad-01, con la cantidad actual y el 10 % hasta agotarse.",
+    "help_en": "Expert: /convertir 2da3d opens the original rack photograph beside its interactive ITIL 3D model composed with 13 bottles. Drag to rotate; scroll or +/− to zoom; arrow keys rotate. It reuses the existing conversion without regenerating it. An image in PREVIEWS offers Create video · 10 s. You can also select it under Create media → Create video → Source image; describe the details and messages to expand, then choose landscape (iPad) or portrait (screens). Generate uses that Stock image and creates 10 seconds at 720p. The bar shows Prepare → Create → Stock → Ready, without estimated provider percentages. Retry recovers the same job; changing the brief, source image, language or format starts another. The video retains source-image provenance and is saved to Stock before preview; creating does not broadcast. Text-only 8-second video remains available. The water offer is composed as portrait 720×1280 for starbucks-wall-01–06 and landscape 1280×720 for starbucks-ipad-01, with current quantity and 10% off until sold out."
   }
 }

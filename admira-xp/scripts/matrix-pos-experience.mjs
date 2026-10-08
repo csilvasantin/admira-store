@@ -1,10 +1,10 @@
-import {mountWaterRack} from './matrix-water-rack.mjs?v=water-1';
-import {WATER_VIEW,WATER_CORNERS,waterRemaining,occupiedWaterSlots,waterOfferURL} from './pos-water.mjs?v=water-1';
-import {createPOSCheckoutDisplay} from './pos-checkout-display.mjs?v=water-1';
+import {mountWaterRack} from './matrix-water-rack.mjs?v=water-finish-3';
+import {WATER_VIEW,WATER_CORNERS,waterRemaining,occupiedWaterSlots,waterOfferURL,waterOfferOrientation} from './pos-water.mjs?v=water-finish-3';
+import {createPOSCheckoutDisplay} from './pos-checkout-display.mjs?v=water-finish-3';
 import {createPOSDemo} from './pos-demo.mjs?v=xtore-ux-3';
-import {retailRulebook,createRetailRulePlayer,waterOfferScreens} from './retail-rules.mjs?v=agua-voz-1';
+import {retailRulebook,createRetailRulePlayer,waterOfferScreens} from './retail-rules.mjs?v=water-finish-3';
 import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
-import {POS_ID,POS_LOC,POS_BASKET_KEY,POS_PRODUCTS,restoreBasket,addBasketProduct,removeBasketProduct,coffeeSuggestion} from './pos-basket.mjs?v=water-1';
+import {POS_ID,POS_LOC,POS_BASKET_KEY,POS_PRODUCTS,restoreBasket,addBasketProduct,removeBasketProduct,coffeeSuggestion} from './pos-basket.mjs?v=water-finish-3';
 
 // One photographed muffin and the physical register (not the advertising display).
 // TL/TR/BR/BL calibrated in the Starbucks Alsea capture supplied by Carlos.
@@ -35,7 +35,7 @@ export function mountPOSExperience(surface,{blocked=()=>false,camera,music,visua
  // Las pantallas de la oferta salen de la regla IF·THEN·DO THAT del agua (por defecto: iPad + 6 de pared).
  const offerImages=new Map();let offerKey='',offerScreens=waterOfferScreens(retailRulebook().state().rules);
  win.addEventListener('xpace:retail-rules',()=>{if(disposed)return;offerScreens=waterOfferScreens(retailRulebook().state().rules);syncWater();});
- function syncWater(){water.sync(basket,heldWater,editing||blocked());const remaining=waterRemaining(basket),en=doc.documentElement.lang==='en';waterNav.textContent=(en?'Water · ':'Agua · ')+remaining+' / 13';waterNav.disabled=editing||blocked();const key=remaining+':'+en;if(key!==offerKey){offerKey=key;for(const img of offerImages.values()){img.src=waterOfferURL(remaining<13?remaining:12,en?'en':'es');img.alt=remaining===0?t('Agua agotada','Water sold out'):t('Solo nos quedan '+remaining+' botellas. Por eso, un 10% de descuento.','Only '+remaining+' bottles left. So enjoy 10% off.');}}for(const id of ['starbucks-ipad-01',...Array.from({length:6},(_,i)=>'starbucks-wall-0'+(i+1))]){let image=offerImages.get(id);const host=remaining<13&&!editing&&offerScreens.includes(id)?offerHost(id):null;if(!host){image?.remove();continue;}if(!image){image=element('img','matrix-water-offer matrix-player-media');image.dataset.waterOffer=id;image.src=waterOfferURL(remaining,en?'en':'es');image.alt=remaining===0?t('Agua agotada','Water sold out'):t('Solo nos quedan '+remaining+' botellas. Por eso, un 10% de descuento.','Only '+remaining+' bottles left. So enjoy 10% off.');offerImages.set(id,image);}if(image.parentNode!==host)host.append(image);}}
+ function syncWater(){water.sync(basket,heldWater,editing||blocked());const remaining=waterRemaining(basket),en=doc.documentElement.lang==='en';waterNav.textContent=(en?'Water · ':'Agua · ')+remaining+' / 13';waterNav.disabled=editing||blocked();const key=remaining+':'+en;if(key!==offerKey){offerKey=key;for(const [id,img] of offerImages){img.src=waterOfferURL(remaining<13?remaining:12,en?'en':'es',waterOfferOrientation(id));img.alt=remaining===0?t('Agua agotada','Water sold out'):t('Solo nos quedan '+remaining+' botellas. Por eso, un 10% de descuento.','Only '+remaining+' bottles left. So enjoy 10% off.');}}for(const id of ['starbucks-ipad-01',...Array.from({length:6},(_,i)=>'starbucks-wall-0'+(i+1))]){let image=offerImages.get(id);const host=remaining<13&&!editing&&offerScreens.includes(id)?offerHost(id):null;if(!host){image?.remove();continue;}if(!image){image=element('img','matrix-water-offer matrix-player-media');image.dataset.waterOffer=id;image.src=waterOfferURL(remaining,en?'en':'es',waterOfferOrientation(id));image.alt=remaining===0?t('Agua agotada','Water sold out'):t('Solo nos quedan '+remaining+' botellas. Por eso, un 10% de descuento.','Only '+remaining+' bottles left. So enjoy 10% off.');offerImages.set(id,image);}if(image.parentNode!==host)host.append(image);}}
  const checkout=createPOSCheckoutDisplay({document:doc,host:checkoutHost,onEdit:open,onCoffee:()=>addProduct('coffee')});
  function render(){
   muffin.title=t('Muffin · mantén pulsado y arrastra a la caja','Muffin · hold and drag to the register');muffin.setAttribute('aria-label',t('Coger muffin y llevarlo a la caja','Pick up muffin and take it to the register'));

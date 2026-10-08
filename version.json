@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r5.07:56",
-  "deployedAt": "2026-10-08T05:56:51Z",
-  "deployer": "GrokBot",
+  "version": "v.08.10.2026.r6.07:59",
+  "deployedAt": "2026-10-08T07:59:56.765664+02:00",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
+  "signature": "OraculoMacMini · MacMini",
   "git": "b556394561d171f1d7942c81d26d8248558b59f3",
   "gitShort": "b556394",
   "gitFull": "b556394561d171f1d7942c81d26d8248558b59f3",
   "dirty": false,
   "novedades": [
-    "IF·THEN·DO THAT: al dejar una botella de agua en la caja, además de la oferta en el iPad suena «Gracias por comprar agua de proximidad» (o «Thank you for buying locally sourced water»)",
-    "La locución es un segundo DO editable (texto en castellano e inglés) con idioma según /idioma, castellano, inglés o las dos; ▶ Probar locución",
-    "/demo 14 entrega una botella de demo para verlo y oírlo, y la devuelve al terminar"
+    "/convertir 2da3d: foto original y modelo ITIL interactivo de 13 botellas",
+    "Vídeo desde imagen Stock: 10 segundos, formato elegible y barra de etapas reales",
+    "Oferta de agua vertical en seis pantallas; iPad horizontal; regla de agua conservada"
   ]
 }

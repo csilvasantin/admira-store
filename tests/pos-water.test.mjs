@@ -15,3 +15,4 @@ test('13-bottle supply cannot underflow, overfill or restore duplicate/invalid s
 test('offer follows remaining quantity in both languages and stops discount at sold-out',()=>{
  assert.match(waterOfferSVG(12),/Solo nos quedan 12 botellas/);assert.match(waterOfferSVG(12),/10% de descuento/);assert.match(waterOfferSVG(11,'en'),/Only 11 bottles left/);assert.match(waterOfferSVG(0),/Agua agotada/);assert.doesNotMatch(waterOfferSVG(0),/10%/);assert.throws(()=>waterOfferSVG(13));assert.throws(()=>waterOfferSVG(-1));
 });
+test('wall creatives are natively portrait and iPad stays landscape in both languages',()=>{for(const lang of ['es','en']){const portrait=waterOfferSVG(12,lang,'portrait');assert.match(portrait,/width="720" height="1280"/);assert.match(portrait,lang==='es'?/12 botellas/:/Only 12 bottles left/);assert.match(waterOfferSVG(12,lang),/width="1280" height="720"/);assert.doesNotMatch(waterOfferSVG(0,lang,'portrait'),/10%/);}});

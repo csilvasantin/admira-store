@@ -861,3 +861,5 @@ EN: In Starbucks Matrix, click Water or open #water. The ITIL PDG103-BOT-01 rack
 Guide: https://www.admira.store/admira-xp/docs/pos-water.md
 Demos · idioma / language: /demo all es|en (ESP/ENG, --idioma) fija el idioma del recorrido; tarjeta flotante arrastrable con Pausa/Siguiente/Detener y píldora ES/EN.
 IF·THEN·DO THAT · agua: dejar una botella en la caja → oferta en iPad + locución «Gracias por comprar agua de proximidad» / «Thank you for buying locally sourced water» (según /idioma o las dos).
+
+/convertir 2da3d · photo and 13-bottle interactive ITIL model; imageId → 10-second video with real stage progress; wall portrait 720x1280, iPad landscape 1280x720. Guide: https://www.admira.store/admira-xp/docs/water-conversion.md

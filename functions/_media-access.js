@@ -15,7 +15,9 @@ export async function mediaPost({request,env},kind,fetchImpl=fetch){
  let body;try{body=await request.json();}catch(_){return mediaJson('invalid_json',400);}
  const text=typeof body?.text==='string'?body.text.trim():'',language=body?.language===undefined?'es':body.language,id=requestId(body);
  if(!text||text.length>1500||!['es','en'].includes(language)||!id)return mediaJson('invalid_media_request',400);
+ const imageId=kind==='video'&&body.imageId!==undefined?body.imageId:null;
+ if(imageId!==null&&(typeof imageId!=='string'||!/^[A-Za-z0-9-]{4,80}$/.test(imageId)||!['16:9','9:16'].includes(body.aspect||'16:9')))return mediaJson('invalid_image_video_request',400);
  const method=kind==='video'?'startVideo':'generateImage';
  if(!env.ANNOUNCEMENT_TTS?.[method])return mediaJson('media_unavailable',503);
- try{const res=await env.ANNOUNCEMENT_TTS[method]({text,language,owner:access.owner,requestId:id});return new Response(res.body,{status:res.status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});}catch(_){return mediaJson('media_generation_failed',502);}
+ try{const res=await env.ANNOUNCEMENT_TTS[method]({text,language,owner:access.owner,requestId:id,...(imageId!==null?{imageId,duration:10,aspect:body.aspect||'16:9'}:{})});return new Response(res.body,{status:res.status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});}catch(_){return mediaJson('media_generation_failed',502);}
 }

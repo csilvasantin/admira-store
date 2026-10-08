@@ -23,6 +23,7 @@ export function demoSolution(arg){const a=String(arg||'').trim().toLowerCase().n
 
 export function parseVisualCommand(input){
   const text=String(input||'').trim();
+  const conversion=text.match(/^\/(?:convertir|convert)(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(conversion)return {conversion:(conversion[1]||'').trim().toLowerCase()};
   const conditional=text.match(/^\/(?:ifthendothat|componer)(?:@\w+)?(?:\s+([\s\S]*))?$/i);if(conditional){const arg=(conditional[1]||'on').trim().toLowerCase();return {conditional:['on','off','toggle','estado','status','help','ayuda','?'].includes(arg)?arg:'invalid'};}
   const guided=text.match(/^\/demo(?:@\w+)?(?:\s+([\s\S]*))?$/i);
   if(guided){
@@ -63,6 +64,7 @@ export function parseVisualCommand(input){
 export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
   const command=parseVisualCommand(input);if(!command)return null;
   const en=lang==='en';
+  if(command.conversion!==undefined){if(command.conversion!=='2da3d')return {ok:false,local:true,message:en?'Usage: /convertir 2da3d · compare the water rack photo and interactive ITIL model.':'Uso: /convertir 2da3d · compara la foto del botellero y el modelo ITIL interactivo.'};const {openWaterConversion}=await import('./water-conversion.mjs?v=water-2');await openWaterConversion({lang});return {ok:true,local:true,message:en?'Water rack: original photo and interactive 3D model, 13 bottles.':'Botellero: fotografía original y modelo 3D interactivo, 13 botellas.'};}
   if(command.conditional){const arg=command.conditional,api=globalThis.XPLComposer;const usage=en?'Visual rules: /ifthendothat opens IF·THEN·DO THAT. Choose pick up a muffin or take it to the register, then Music, Voiceover, Image or Video, its editable Pixeria filter and content. + Add reaction allows multiple simultaneous DO actions; select one or more image/video screens and use All · clear filter for the complete catalogue. /ifthendothat off closes it.':'Reglas visuales: /ifthendothat abre IF·THEN·DO THAT. Elige coger un muffin o llevarlo a la caja y una reacción: música, locución, imagen o vídeo, su filtro editable y contenido de Pixeria. + Añadir reacción permite varios DO simultáneos; marca una o varias pantallas para imágenes/vídeos y usa Todos · quitar filtro para el catálogo completo. /ifthendothat off cierra el editor.';if(['help','ayuda','?','invalid'].includes(arg))return {ok:arg!=='invalid',local:true,message:usage};if(!api)return {ok:false,local:true,message:en?'The rule editor is still loading. Retry in a moment.':'El editor de reglas aún está cargando. Reintenta en un momento.'};if(['estado','status'].includes(arg))return {ok:true,local:true,message:usage};if(arg==='off')api.close();else if(arg==='toggle')api.toggle();else api.open();return {ok:true,local:true,message:arg==='off'?(en?'Rule editor closed.':'Editor de reglas cerrado.'):usage};}
   if(command.guided){
     // /demo help · /demo all · /demo <id|n> del registro; durante un recorrido, stop/estado/siguiente son suyos.

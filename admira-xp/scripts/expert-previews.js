@@ -60,6 +60,7 @@
   card.setAttribute('aria-label',t(...LABEL[item.kind])+' · '+item.title);
   for(const node of card.querySelectorAll('.epc-media,.epc-audio,[data-media-expand]'))root.XpaceMediaExperience?.bind(node,item);
   const media=card.querySelector('.epc-media img');if(media)media.alt=item.title;
+  const video=card.querySelector('[data-preview-image-video]');if(video)video.textContent=t('Crear vídeo · 10 s','Create video · 10 s');
   const note=card.querySelector('.epc-status');const n=notes.get(uid(item));note.textContent=n?t(n[0],n[1]):'';note.hidden=!n;
  }
  function say(item,es,en){notes.set(uid(item),[es,en]);const card=cards.get(uid(item));if(card)texts(card,item);}
@@ -100,7 +101,7 @@
   const meta=el('div','epc-meta'),tag=el('p','epc-tag');tag.append(el('b','epc-kind'),el('span','epc-when'));
   const actions=el('div','epc-actions'),launch=el('button');launch.type='button';launch.dataset.previewLaunch=item.kind;launch.addEventListener('click',()=>launchItem(item,launch));
   const stock=el('a');stock.dataset.previewStock=item.kind;stock.href=stockHref(item);stock.target='_blank';stock.rel='noopener';
-  actions.append(launch,stock);if(item.kind==='image'||item.kind==='video'){const reset=el('button');reset.type='button';reset.dataset.previewReset=item.kind;reset.addEventListener('click',()=>resetItem(item,reset));actions.append(reset);}const status=el('p','epc-status');status.setAttribute('role','status');status.hidden=true;
+  actions.append(launch);if(item.kind==='image'){const video=el('button');video.type='button';video.dataset.previewImageVideo=item.id;video.addEventListener('click',()=>root.XpaceVideoPrompt?.useImage(item));actions.append(video);}actions.append(stock);if(item.kind==='image'||item.kind==='video'){const reset=el('button');reset.type='button';reset.dataset.previewReset=item.kind;reset.addEventListener('click',()=>resetItem(item,reset));actions.append(reset);}const status=el('p','epc-status');status.setAttribute('role','status');status.hidden=true;
   meta.append(tag,el('p','epc-title'),actions,status);c.append(media,meta);
   if(item.kind==='music'||item.kind==='voice'){const audio=el('div','epc-audio');audio.append(player(item));root.XpaceMediaExperience?.bind(audio,item);c.append(audio);}
   texts(c,item);return c;
