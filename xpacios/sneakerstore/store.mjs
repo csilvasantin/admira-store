@@ -1,7 +1,7 @@
 import {compatibleTrack,measuredFormat} from './screen-format.mjs';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import {referenceStorage} from './layout-reference.mjs?v=rear-7';
-import {createStoreScene} from './scene.mjs?v=rear-7';
+import {referenceStorage} from './layout-reference.mjs?v=rear-8';
+import {createStoreScene} from './scene.mjs?v=rear-8';
 import {createPanorama,SCENES} from './panorama.mjs';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs';
 import {createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs';

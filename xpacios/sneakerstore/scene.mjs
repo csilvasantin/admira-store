@@ -1,6 +1,6 @@
 import {measuredFormat} from './screen-format.mjs';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import {CORRECTED_POSES} from './layout-reference.mjs?v=rear-7';
+import {CORRECTED_POSES} from './layout-reference.mjs?v=rear-8';
 import {JORDAN_PANELS,JORDAN_SOURCE} from './jordan-reference.mjs?v=jordan-4';
 
 // Interpreted geometry from IEU Entrada/Centro/Fondo, not a measured survey.
@@ -34,7 +34,7 @@ export function createStoreScene({t,video,portraitVideo}){
     g.add(box(.94,2.1,.07,black,.5,1.05,0));
     for(const x of [.015,.985])g.add(box(.03,2.15,.12,metal,x,1.075,-.01));
     g.add(box(1,.035,.12,metal,.5,2.15,-.01),box(.035,.18,.06,tan,.84,1,-.08));
-    for(let y=.15;y<2.05;y+=.09)g.add(box(.86,.012,.012,metal,.5,y,-.045));
+    // IEU rear photograph: dark plain door, not the corrugated side wall.
   },{locked:true});
   function fitRearVideo(){
     const valid=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal',ratio=video.videoWidth/video.videoHeight;
@@ -43,8 +43,8 @@ export function createStoreScene({t,video,portraitVideo}){
       const {x,y,w,h}=mesh.userData.rearRect,x0=Math.max(x,left),x1=Math.min(x+w,left+imageW),y0=Math.max(y,bottom),y1=Math.min(y+h,bottom+imageH);
       mesh.visible=x1>x0&&y1>y0;if(!mesh.visible)continue;
       mesh.scale.set((x1-x0)/w,(y1-y0)/h,1);mesh.position.set((x0+x1)/2,(y0+y1)/2,-.035);
-      // Facing -z: local plane left maps to increasing world x.
-      mesh.geometry.setAttribute('uv',new T.Float32BufferAttribute([(x1-left)/imageW,(y1-bottom)/imageH,(x0-left)/imageW,(y1-bottom)/imageH,(x1-left)/imageW,(y0-bottom)/imageH,(x0-left)/imageW,(y0-bottom)/imageH],2));
+      // From the entrance, +x is the viewer's left. Preserve source orientation.
+      mesh.geometry.setAttribute('uv',new T.Float32BufferAttribute([1-(x1-left)/imageW,(y1-bottom)/imageH,1-(x0-left)/imageW,(y1-bottom)/imageH,1-(x1-left)/imageW,(y0-bottom)/imageH,1-(x0-left)/imageW,(y0-bottom)/imageH],2));
     }
   }
   video.addEventListener('loadedmetadata',fitRearVideo);fitRearVideo();
