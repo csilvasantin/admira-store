@@ -1,5 +1,11 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r18.19:00": [
+    "Hiperreal tanda 5: Pixeria 28–35 (cactus, coche Cazafantasmas, pinball espacial, sofá murciélago, cuadro familia ogro, mesa sándwich, sofá familia amarilla y sofá amarillo).",
+    "Pinball con cristal sobre el tablero, lanzador y botones de flipper añadidos a mano; coche con carrocería lacada y cristales tintados.",
+    "Las correas de hierro del sofá bárbaro 27 ya no se ven azuladas.",
+    "xpaceos.pages.dev vuelve a publicarse: los archivos de más de 25 MiB se sirven con redirección."
+  ],
   "v.08.10.2026.r17.18:46": [
     "Hiperreal tanda 4: primeras piezas Pixeria (scooter 19, moto verde 20, sofá Cazafantasmas 21, sofá Matrix 22, moto custom 23, televisor de piedra 24, sofá futurista 25, sofá dragón 26 y sofá bárbaro 27).",
     "Nuevos acabados: tela con trama y brillo de terciopelo, cuero con grano, pintura lacada en carrocerías, cristal en parabrisas y faros, piedra en el televisor.",

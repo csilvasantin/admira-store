@@ -861,6 +861,168 @@
      "rough": 0.3
     }
    ]
+  },
+  "28": {
+   "name": "Cactus",
+   "material_classes": {
+    "green": "leather",
+    "yellow": "plastic"
+   }
+  },
+  "29": {
+   "name": "Coche Cazafantasmas",
+   "material_classes": {
+    "white": "carpaint",
+    "red": "carpaint",
+    "chrome": "metal",
+    "dark": "metal_dark",
+    "black": "rubber",
+    "yellow": "powder"
+   },
+   "object_classes": {
+    "Rear window": "gloss_black",
+    "Windows": "gloss_black",
+    "Windscreen": "gloss_black",
+    "Headlamp": "glass",
+    "Roof beacon": "glass"
+   }
+  },
+  "30": {
+   "name": "Pinball espacial",
+   "material_classes": {
+    "blue": "carpaint",
+    "grey": "powder",
+    "black": "gloss_black",
+    "dark": "gloss_black",
+    "gold": "metal",
+    "chrome": "metal",
+    "red": "plastic"
+   },
+   "object_classes": {
+    "Planet": "plastic"
+   },
+   "add_parts": [
+    {
+     "name": "cristal del tablero",
+     "at": [
+      0.276,
+      -0.5965,
+      0.732
+     ],
+     "size": [
+      0.47,
+      0.75,
+      0.006
+     ],
+     "rot": [
+      -5.73,
+      0,
+      0
+     ],
+     "cls": "glass",
+     "hex": "#dfe8ea"
+    },
+    {
+     "name": "lanzador",
+     "at": [
+      0.48,
+      -1.025,
+      0.6
+     ],
+     "size": [
+      0.02,
+      0.02,
+      0.05
+     ],
+     "rot": [
+      90,
+      0,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#c9ccd0",
+     "rough": 0.2
+    },
+    {
+     "name": "botón flipper izq",
+     "at": [
+      -0.006,
+      -0.9,
+      0.62
+     ],
+     "size": [
+      0.028,
+      0.028,
+      0.012
+     ],
+     "rot": [
+      0,
+      90,
+      0
+     ],
+     "cyl": true,
+     "cls": "plastic",
+     "hex": "#d02a22"
+    },
+    {
+     "name": "botón flipper der",
+     "at": [
+      0.558,
+      -0.9,
+      0.62
+     ],
+     "size": [
+      0.028,
+      0.028,
+      0.012
+     ],
+     "rot": [
+      0,
+      90,
+      0
+     ],
+     "cyl": true,
+     "cls": "plastic",
+     "hex": "#d02a22"
+    }
+   ]
+  },
+  "31": {
+   "name": "Sofá murciélago",
+   "material_classes": {
+    "black": "leather",
+    "yellow": "fabric",
+    "dark": "powder"
+   }
+  },
+  "32": {
+   "name": "Cuadro familia ogro",
+   "material_classes": {
+    "gold": "metal",
+    "wood": "wood_dark"
+   }
+  },
+  "33": {
+   "name": "Mesa sándwich",
+   "material_classes": {
+    "wood": "wood"
+   }
+  },
+  "34": {
+   "name": "Sofá familia amarilla",
+   "material_classes": {
+    "yellow": "fabric",
+    "dark": "powder"
+   }
+  },
+  "35": {
+   "name": "Sofá amarillo",
+   "material_classes": {
+    "yellow": "fabric",
+    "gold": "metal",
+    "dark": "powder"
+   }
   }
  }
 }

@@ -22,7 +22,7 @@ export function mountInventoryBest(container,onReady=()=>{}){
  canvas.addEventListener('keydown',onKey);
  function onContextLost(event){event.preventDefault();fail();}canvas.addEventListener('webglcontextlost',onContextLost);
  async function start(){try{
-  const {createLifeRenderer}=await import('./life-renderer.mjs?v=hiperreal-tanda4-20261008-1');if(disposed)return;
+  const {createLifeRenderer}=await import('./life-renderer.mjs?v=hiperreal-tanda5-20261008-1');if(disposed)return;
   function tick(now){if(disposed||failed)return;try{if(!document.hidden){
    if(now-last>=100||!viewer){started??=now;const next=snapshot(window.__xtancoVisualState?.());
     if(!next){label.textContent='Esperando al Xtanco para abrir Best 3D…';if(now-started>30000)fail();else frame=requestAnimationFrame(tick);return;}

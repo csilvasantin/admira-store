@@ -88,3 +88,9 @@ Pendiente: la pieza 1 (Mostrador) usa `assets/mostrador/counter-interpreted-*.gl
 - Texturas de autor: si un material ya trae su propia imagen de color base, el pipeline ya no le reescribe las UV con proyección de caja (era la causa de la madera a rayas en la estantería 2 y la librería 51 en el visor web).
 - `install.py TANDA "n …"` copia LOD web, HD y .blend al catálogo y escribe `hiperreal.manifest.json`.
 - Caché por pieza: `HIPERREAL_REVISION` en `inventario/quality-model.mjs` sube la revisión de una pieza ya publicada cuando se reconstruye.
+
+## Tanda 5 · Pixeria 28–35
+
+- `metal_dark` se neutraliza (85 % hacia gris) antes de subir la luminancia: el hierro no hereda el tinte del color original (correas azuladas del 27).
+- Pinball 30: `add_parts` con cristal inclinado sobre el tablero (misma rotación que el tablero), lanzador y botones de flipper.
+- Cloudflare Pages (xpaceos.pages.dev): el workflow quita del paquete todo archivo de más de 25 MiB y lo redirige (302) a `raw.githubusercontent.com/<repo>/<commit>/…`, la copia fija del mismo commit. No hace falta tocar `.gitattributes` al añadir piezas pesadas.

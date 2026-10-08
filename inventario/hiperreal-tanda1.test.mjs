@@ -10,8 +10,8 @@ const TANDA1=[44,45,46,48,49,50,52];
 test('batch 1 adds Hiperreal to every Starbucks piece; Matrix stays exclusive to 47',()=>{
  assert.deepEqual([...HIPERREAL_BATCHES[1]],TANDA1);for(const n of [44,45,46,47,48,49,50,52])assert.ok(HIPERREAL_ASSET_NUMBERS.includes(n));
  for(const n of TANDA1){assert.deepEqual(qualityProfiles(n),['good','better','best','hiperreal']);assert.equal(isPhotoreal(n,'hiperreal'),true);assert.equal(isPhotoreal(n,'matrix'),false);assert.deepEqual(twinQualityChain(n),['hiperreal','best']);}
- assert.deepEqual(twinQualityChain(47),['hiperreal','matrix','best']);assert.deepEqual(twinQualityChain(28),['best']);assert.deepEqual(twinQualityChain(44,'better'),['better']);
- assert.equal(hasHiperreal(28),false);assert.equal(hasHiperreal(1),false);
+ assert.deepEqual(twinQualityChain(47),['hiperreal','matrix','best']);assert.deepEqual(twinQualityChain(36),['best']);assert.deepEqual(twinQualityChain(44,'better'),['better']);
+ assert.equal(hasHiperreal(36),false);assert.equal(hasHiperreal(1),false);
 });
 
 test('batch 1 web GLBs are light WebP LODs that keep every node and inventory identity of Best',()=>{

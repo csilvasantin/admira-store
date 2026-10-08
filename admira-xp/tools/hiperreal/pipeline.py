@@ -100,6 +100,8 @@ def upgrade(m,cls):
     if cls in ('metal','metal_dark') and not keep_tex:
         c=Vector(p.inputs['Base Color'].default_value[:3]); lum=c.dot(Vector((.2126,.7152,.0722)))
         target=.42 if cls=='metal' else .12
+        if cls=='metal_dark':  # iron/steel is neutral: drop the source tint (27's teal straps read blue)
+            g=c.dot(Vector((.2126,.7152,.0722))); c=Vector((g,g,g)).lerp(c,.15)
         if lum<target: c=c*(target/max(lum,1e-3))
         p.inputs['Base Color'].default_value=(*c,1)
     if cls=='glass':
