@@ -1,12 +1,12 @@
 {
   "version": "v.09.10.2026.r2.00:08",
-  "deployedAt": "2026-10-08T22:08:14Z",
+  "deployedAt": "2026-10-08T22:08:30Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "0d0713c94d52a2641732752652526ddabc00dc38",
-  "gitShort": "0d0713c",
-  "gitFull": "0d0713c94d52a2641732752652526ddabc00dc38",
+  "git": "cecd979ffb0fe48a55a2327837a87822a163dbcd",
+  "gitShort": "cecd979",
+  "gitFull": "cecd979ffb0fe48a55a2327837a87822a163dbcd",
   "dirty": false,
   "novedades": [
     "SneakerStore: fondo con pantalla LED y puerta central; mesa de caja pegada a la pared derecha.",
