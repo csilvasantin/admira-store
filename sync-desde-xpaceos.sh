@@ -49,8 +49,8 @@ git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 #  · CNAME     — o el dominio se lo queda xpaceos.com y esta web se cae
 #  · gate.js   — la verja de acceso de admira.studio/store/app
 #  · deploy.sh y este script — herramientas del repo, no contenido
-#  · .gitattributes y _redirects — Cloudflare Pages no admite ficheros >25 MiB: los
-#    maestros grandes van con export-ignore y _redirects los sirve desde xpaceos
+#  · .gitattributes y _redirects — propios de la tienda. Los ficheros >25 MiB que Cloudflare
+#    Pages no admite los quita y redirige a xpaceos .github/cloudflare-grandes.sh al publicar
 #  · release-preflight.test.mjs — prueba de los flujos CI propios de la tienda
 # Fail before deleting a Store-specific demo integration not yet published in XpaceOS.
 node "$AQUI/scripts/validate-mirror-contract.mjs" "$ORIGEN_LIMPIO" "$AQUI"
