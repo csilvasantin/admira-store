@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r5.07:56": [
+    "IF·THEN·DO THAT: al dejar una botella de agua en la caja, además de la oferta en el iPad suena «Gracias por comprar agua de proximidad» (o «Thank you for buying locally sourced water»)",
+    "La locución es un segundo DO editable (texto en castellano e inglés) con idioma según /idioma, castellano, inglés o las dos; ▶ Probar locución",
+    "/demo 14 entrega una botella de demo para verlo y oírlo, y la devuelve al terminar"
+  ],
   "v.08.10.2026.r4.07:42": [
     "/demo all es|en (también ESP/ENG o --idioma): el recorrido elige idioma para la tarjeta, la CLI y los contenidos; sin argumento sigue /idioma y al acabar vuelve el de antes",
     "Tarjeta flotante de cristal con los colores de la marca: se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic la recoloca), icono animado por demo con anillo de pasos, píldora ES/EN, Pausa · Siguiente · Detener",
