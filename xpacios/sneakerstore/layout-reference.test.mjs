@@ -7,7 +7,7 @@ const rear={id:'rack-rear-right',col:.04,row:10.2,rot:0,sx:1,sy:1};
 test('existing browser defaults move LCD to left wall with visibility and records intact',()=>{
   const saved={version:1,layout:[screen],records:{screen:{nombre:'Mi LCD'}},ledger:{removed:{},added:{screen},undo:null}};
   const next=migrateReferenceLayout(saved,[rear]);
-  assert.equal(next.layout[0].col,3.77);assert.equal(next.layout[0].row,4.25);
+  assert.equal(next.layout[0].col,3.77);assert.equal(next.layout[0].row,6.45);
   assert.equal(next.layout[0].hidden,true);assert.equal(next.layout[0].locked,true);
   assert.deepEqual(next.records,saved.records);assert.equal(next.ledger.added.screen.col,3.77);
   assert.equal(next.layout[1].id,rear.id);assert.equal(saved.layout[0].col,.09);
@@ -33,4 +33,12 @@ test('malformed saved data is left untouched for bridge recovery',()=>{
   const map=new Map([['room:real-store-v2','invalid']]);
   const storage=referenceStorage({getItem:key=>map.get(key)??null,setItem:(key,v)=>map.set(key,v)},[]);
   assert.equal(storage.getItem('room'),'invalid');assert.equal(map.size,1);
+});
+
+test('v3 migration separates Jordan and LCD without reverting deliberate placements',()=>{
+  const saved={version:1,layoutRevision:'door-to-rear-v3',layout:[{...screen,col:3.77},{id:'rack-1',col:3.46,row:8.1,rot:0,sx:1,sy:1}]};
+  const next=migrateReferenceLayout(saved,[]);
+  assert.equal(next.layout[0].row,6.45);assert.equal(next.layout[1].row,10.05);
+  const edited=migrateReferenceLayout({...saved,layout:[{...screen,col:3.77,row:5.5}]},[]);
+  assert.equal(edited.layout[0].row,5.5);
 });

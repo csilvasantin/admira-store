@@ -553,5 +553,10 @@
     "Sneakers Store: LCD gigante corregida al lado izquierdo desde la puerta hacia la caja; recreativas y expositor largo en el derecho.",
     "Banco del fondo y pantallas de entrada recolocados según las tres panorámicas originales de IEU.",
     "Las posiciones predeterminadas guardadas se corrigen con respaldo, conservando fichas y ediciones explícitas. Ayuda y tutorial ES/EN actualizados."
+  ],
+  "v.08.10.2026.r30.23:44": [
+    "SneakerStore: el videowall Jordan muestra su imagen en cinco paneles a partir de la fotografía original de IEU.",
+    "Jordan + LCD abre la pared de frente, con la pantalla gigante a la derecha de Jordan y la playlist Pixeria activa.",
+    "Tutorial, ayuda ES/EN y contratos actualizados; las distribuciones guardadas conservan las ediciones explícitas."
   ]
 }

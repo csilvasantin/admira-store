@@ -22,7 +22,7 @@
     "editable_model": "?view=model",
     "measurements": "approximate, not surveyed",
     "photo_screens": "captured content; active playlist in View screen / 3D side display",
-    "layout_revision": "door-to-rear-v3; real-store-v2 backed up once; untouched defaults corrected; explicit edits retained",
+    "layout_revision": "jordan-wall-v4; previous real-store-v2 state backed up once; untouched defaults corrected; explicit edits retained",
     "scene_links": {
       "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
       "centro": "https://www.admira.store/xpacios/sneakerstore/?scene=centro",
@@ -31,6 +31,7 @@
     "orientation": {
       "basis": "street door towards rear checkout",
       "left": [
+        "Jordan videowall, five panels",
         "giant LCD",
         "entrance portrait display",
         "iPad",
@@ -49,6 +50,13 @@
         "right_x": 0
       },
       "dimensions": "interpreted units, not measured metres"
+    },
+    "wall_view": {
+      "url": "https://www.admira.store/xpacios/sneakerstore/?view=jordan",
+      "basis": "facing the display wall",
+      "left": "Jordan videowall, five panels; captured IEU Entrada still",
+      "right": "giant LCD; active Pixeria playlist",
+      "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
     }
   }
 }

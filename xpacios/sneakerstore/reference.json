@@ -25,6 +25,7 @@
   "orientation": {
     "basis": "street door towards rear checkout",
     "left": [
+      "Jordan videowall, five panels",
       "giant LCD",
       "entrance portrait display",
       "iPad",
@@ -44,5 +45,12 @@
     },
     "dimensions": "interpreted units, not measured metres"
   },
-  "layout_revision": "door-to-rear-v3"
+  "layout_revision": "jordan-wall-v4",
+  "wall_view": {
+    "url": "https://www.admira.store/xpacios/sneakerstore/?view=jordan",
+    "basis": "facing the display wall",
+    "left": "Jordan videowall, five panels; captured IEU Entrada still",
+    "right": "giant LCD; active Pixeria playlist",
+    "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
+  }
 }
