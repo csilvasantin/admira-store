@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>if(new URLSearchParams(location.search).get('autostart')==='sneakerstore'){location.replace('/xpacios/sneakerstore/'+location.search);}</script>
   <link rel="stylesheet" href="scripts/media-drag.css?v=20261006-alsea-repair-2">
   <link rel="stylesheet" data-expert-legibility href="/assets/expert-legibility.css?v=20261006-alsea-repair-1">
   <script src="/admira-xp/scripts/session-access.js?v=20261005-session-1"></script>
@@ -6896,6 +6897,7 @@ const CLIENTS=[
   {id:'creator', available:true, accent:'#ffd866', bg:'#1f1a0a', models:[], quickModels:XTANCO_MODELS, creator:true},
   // Cafebrería: cafetería + librería de demo, neutra (sin marca). Mismo motor Xtanco.
   {id:'cafeteria', available:true, accent:'#5fae83', bg:'#12201a', models:[], quickModels:XTANCO_MODELS},
+  {id:'sneakerstore', available:true, accent:'#35ed88', bg:'#0b1915', models:[], quickModels:[]},
 ];
 let activeClient=0;
 let activeModel=0;
@@ -7018,10 +7020,10 @@ const LANGS={
     clientLocked:'PRÓXIMAMENTE',
     clientStateLive:'LIVE',
     clientStatePipeline:'PIPELINE',
-    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05','XP-06'],
-    clientTracks:['ESTANCOS','LOTERIAS','SUPERMERCADO','EVENTOS','CREATOR','CAFETERÍA'],
-    clientNames:['XTANCO / ESTANCOS','ADMIRA LOTERÍAS','ADMIRA SUPERMERCADO','STAND SHOPTALK EU 2026','XPACE CREATOR','CAFEBRERÍA'],
-    clientBadges:['Disponible ahora','En producción','Disponible ahora','9-11 jun · Fira Barcelona','Define tu Xpacio','Disponible ahora'],
+    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05','XP-06','XP-07'],
+    clientTracks:['ESTANCOS','LOTERIAS','SUPERMERCADO','EVENTOS','CREATOR','CAFETERÍA','ZAPATILLAS'],
+    clientNames:['XTANCO / ESTANCOS','ADMIRA LOTERÍAS','ADMIRA SUPERMERCADO','STAND SHOPTALK EU 2026','XPACE CREATOR','CAFEBRERÍA','SNEAKERSTORE'],
+    clientBadges:['Disponible ahora','En producción','Disponible ahora','9-11 jun · Fira Barcelona','Define tu Xpacio','Disponible ahora','Disponible ahora'],
     clientBlurbs:[
       'Gestión de estancos, staff, stock, signage y operaciones de tienda.\n4 layouts jugables hoy.',
       'Sorteos, campañas, estacionalidad y operativa de terminal.\nPróximo simulador en esta colección.',
@@ -7029,6 +7031,7 @@ const LANGS={
       'Stand Lenovo × Nvidia controlado por el Gemelo Digital.\nPantallas, audio multi-zona, Hue, aroma y lead scan QR.',
       'Crea un Xpacio nuevo desde cero — booth, oficina, sala…\nLienzo en blanco + editor de surfaces (signage, audio, Hue).',
       'Barra de café, bollería, recogida y rincón de libros.\nMismo motor XP con layout de cafetería.',
+      'Sneakers Store · Santa Rosa 19.\nTienda de zapatillas editable y playlist Pixeria.',
     ],
     tut:[
       {title:'BIENVENIDO A XTANCO',lines:['Gestiona tu estanco durante 5 años.','Alcanza el objetivo de ventas cada año','para avanzar y construir tu negocio.','¡Contrata personal, repón stock y fideliza clientes!']},
@@ -7107,10 +7110,10 @@ const LANGS={
     clientLocked:'COMING SOON',
     clientStateLive:'LIVE',
     clientStatePipeline:'PIPELINE',
-    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05','XP-06'],
-    clientTracks:['TOBACCO','LOTTERY','SUPERMARKET','EVENTS','CREATOR','COFFEE SHOP'],
-    clientNames:['XTANCO / TOBACCO','ADMIRA LOTTERY','ADMIRA SUPERMARKET','SHOPTALK EU 2026 BOOTH','XPACE CREATOR','CAFEBRERÍA'],
-    clientBadges:['Available now','In production','Available now','Jun 9-11 · Fira Barcelona','Define your Xpace','Available now'],
+    clientCodes:['XP-01','XP-02','XP-03','XP-04','XP-05','XP-06','XP-07'],
+    clientTracks:['TOBACCO','LOTTERY','SUPERMARKET','EVENTS','CREATOR','COFFEE SHOP','SNEAKERS'],
+    clientNames:['XTANCO / TOBACCO','ADMIRA LOTTERY','ADMIRA SUPERMARKET','SHOPTALK EU 2026 BOOTH','XPACE CREATOR','CAFEBRERÍA','SNEAKERSTORE'],
+    clientBadges:['Available now','In production','Available now','Jun 9-11 · Fira Barcelona','Define your Xpace','Available now','Available now'],
     clientBlurbs:[
       'Tobacco shop operations, staff, stock, signage and store gameplay.\n4 playable layouts today.',
       'Draw campaigns, seasonality and terminal operations.\nNext simulator in this collection.',
@@ -7118,6 +7121,7 @@ const LANGS={
       'Lenovo × Nvidia booth fully controlled by the Digital Twin.\nScreens, multi-zone audio, Hue, aroma and lead-scan QR.',
       'Build a new Xpace from scratch — booth, office, room…\nBlank canvas + surfaces editor (signage, audio, Hue).',
       'Coffee bar, pastries, pick-up and a book corner.\nSame XP engine with coffee-shop layout.',
+      'Sneakers Store · Santa Rosa 19.\nEditable sneaker store and Pixeria playlist.',
     ],
     tut:[
       {title:'WELCOME TO XTANCO',lines:['Manage your shop for 5 years.','Reach the annual sales target','to progress and grow your business.','Hire staff, restock and keep customers happy!']},
@@ -10381,6 +10385,7 @@ document.addEventListener('keydown',e=>{
     if(e.code==='ArrowLeft'||e.code==='ArrowUp')   clientSel=(clientSel-1+count)%count;
     if(e.code==='ArrowRight'||e.code==='ArrowDown') clientSel=(clientSel+1)%count;
     if((e.code==='Enter'||e.code==='Space')&&getSelectedClient().available){
+      if(getSelectedClient().id==='sneakerstore'){ location.assign('/xpacios/sneakerstore/?lang='+lang); return; }
       if(getSelectedClient().creator){ enterXpaceCreator(); return; }
       modelSel=0;startTransition(S.MODEL_SEL);
     }
@@ -11284,7 +11289,8 @@ function doAction(id){
     if(!Number.isNaN(ci)&&ci>=0&&ci<CLIENTS.length) clientSel=ci;
     if(state===S.MENU){
       if(getSelectedClient().available){
-        if(getSelectedClient().creator){ enterXpaceCreator(); return; }
+        if(getSelectedClient().id==='sneakerstore'){ location.assign('/xpacios/sneakerstore/?lang='+lang); return; }
+      if(getSelectedClient().creator){ enterXpaceCreator(); return; }
         modelSel=0;
         startTransition(S.MODEL_SEL);
       }
@@ -11294,6 +11300,7 @@ function doAction(id){
   }
   if(id==='clientConfirm'){
     if(getSelectedClient().available){
+      if(getSelectedClient().id==='sneakerstore'){ location.assign('/xpacios/sneakerstore/?lang='+lang); return; }
       if(getSelectedClient().creator){ enterXpaceCreator(); return; }
       modelSel=0;startTransition(S.MODEL_SEL);
     }

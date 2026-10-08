@@ -1,0 +1,14 @@
+{
+  "project_id": "sneakers-store",
+  "circuit": "sneakerstore",
+  "location_id": "sneakers-store-santa-rosa-19",
+  "category": "SneakerStore",
+  "guide": "https://www.admira.biz/demo/",
+  "twin": "https://www.admira.store/xpacios/sneakerstore/",
+  "state": "https://www.admira.biz/api/demo-global?project=sneakers-store",
+  "playlist_id": "playlist-be8a1e99-1cce-4818-a796-da3372216d1e",
+  "playlist": "https://mcp.admira.store/playlists/playlist-be8a1e99-1cce-4818-a796-da3372216d1e",
+  "virtual_screen": "sneakers-store-santa-rosa-19-screen",
+  "camera": "manual IEU Puerta Cam; 2-point camera crop; optional iPad/screen corners",
+  "physical_control": false
+}

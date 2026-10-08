@@ -23,4 +23,10 @@ if(demos){
   for(const key of ['demo_soluciones','demo_catalog'])if(JSON.stringify(from[key])!==JSON.stringify(to[key]))throw Error('Mirror stopped: Store demo catalog differs: '+path+'#'+key);
  }
 }
+if(current.global_demo){
+ if(JSON.stringify(incoming.global_demo)!==JSON.stringify(current.global_demo))throw Error('Mirror stopped: publish the Sneakers Store global demo contract in XpaceOS before syncing.');
+ for(const path of ['xpacios/sneakerstore/index.html','xpacios/sneakerstore/store.mjs','xpacios/sneakerstore/store.css','xpacios/sneakerstore/contract.json']){
+  if(!existsSync(join(source,path))||readFileSync(join(source,path),'utf8')!==readFileSync(join(target,path),'utf8'))throw Error('Mirror stopped: Sneakers Store source differs: '+path);
+ }
+}
 console.log('Retained UI and Store demo contracts verified before mirroring.');

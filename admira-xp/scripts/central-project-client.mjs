@@ -11,8 +11,9 @@ export class ProjectClient {
 }
 export function venueUrl(href,venue,project,quality,{publicDemo=false,language}={}){
  const source=new URL(venue.xpace_url),current=new URL(href);
+ const sneakers=project.id==='sneakers-store'&&project.circuit==='sneakerstore'&&source.pathname==='/xpacios/sneakerstore/';
  const cafeDemo=publicDemo&&venue.demo===true&&venue.id==='demo-cafebreria'&&project.id==='cafebreria'&&project.circuit==='cafebreria';
- if(!['https://www.xpaceos.com','https://www.admira.store'].includes(source.origin)||!(source.pathname==='/admira-xp/'||cafeDemo&&source.pathname==='/xpacios/cafebreria/')||source.username||source.password||venue.project_id!==project.id)throw Error('Invalid venue');
+ if(!['https://www.xpaceos.com','https://www.admira.store'].includes(source.origin)||!(source.pathname==='/admira-xp/'||sneakers||cafeDemo&&source.pathname==='/xpacios/cafebreria/')||source.username||source.password||venue.project_id!==project.id)throw Error('Invalid venue');
  // The two language domains serve the same renderer; the central association
  // supplies the venue. Quality, language and browser layout remain local.
  source.host=current.host;source.protocol=current.protocol;

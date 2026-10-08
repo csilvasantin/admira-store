@@ -33,6 +33,8 @@
   const COMMON_OPTIONS = [
     {href: '/', es: 'Inicio', en: 'Home'},
     {href: '/admira-xp/?autostart=xtanco&visual=better', es: 'Gemelo digital', en: 'Digital twin'},
+    {href: '/xpacios/sneakerstore/', es: 'SneakerStore · zapatillas', en: 'SneakerStore · sneakers'},
+    {href:'https://www.admira.biz/demo/',es:'Demo global · Sneakers Store',en:'Global demo · Sneakers Store'},
     {href: '/inventario/', es: 'Inventario', en: 'Inventory'},
     {href: 'https://www.yokup.com/retailer#itil', es: 'Inventario ITIL · Yokup', en: 'ITIL inventory · Yokup'},
     {href: '/help/', es: 'Ayuda', en: 'Help'},
@@ -929,7 +931,7 @@
         root.addEventListener('pagehide',()=>resize.dispose(),{once:true});
       }
     }).catch(error=>console.warn('xpace-shell resize',error));
-    registerVerb({id:'demo',es:'/demo taza: cámara; /demo kiosko: pedido, pago simulado, cola y taza.',en:'/demo taza: camera; /demo kiosko: order, simulated payment, queue and mug.',run:async args=>/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=2')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
+    registerVerb({id:'demo',es:'/demo taza: cámara; /demo kiosko: pedido, pago simulado, cola y taza.',en:'/demo taza: camera; /demo kiosko: order, simulated payment, queue and mug.',run:async args=>/^global(?:\s|$)/i.test(args)?(location.assign('https://www.admira.biz/demo/?lang='+lang()),'Demo global · Sneakers Store'):/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=2')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
     wireCli();
     suiteExperto();
     registerVerb({

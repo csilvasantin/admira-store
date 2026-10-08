@@ -1,7 +1,7 @@
 {
   "source": "https://www.clearchannel.tv/expert-commands.js?v=20261001-shell-2",
   "source_sha256": "3dee9acc2dda9fba2f5f23646cf0f7d12856a55b16544fa257797ddc30b7b22c",
-  "checked_at": "2026-10-01",
+  "checked_at": "2026-10-08",
   "projects": [
     {
       "id": "cafebreria",
@@ -220,6 +220,18 @@
         "metro bcn",
         "metro barcelona"
       ]
+    },
+    {
+      "id": "sneakers-store",
+      "circuit": "sneakerstore",
+      "label": "Sneakers Store",
+      "es": "Sneakers Store · zapatillas",
+      "en": "Sneakers Store · sneakers",
+      "aliases": [
+        "sneakerstore",
+        "sneakers"
+      ],
+      "featured": true
     }
   ]
 }

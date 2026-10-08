@@ -1,6 +1,7 @@
 // Project/circuit IDs belong to admira.app; scene verticals are rendering adapters.
 export const STARBUCKS_LOCATION = 'alsea-sbux-021';
 export const ADAPTERS = Object.freeze({
+  'sneakers-store': {circuit:'sneakerstore',vertical:'sneakerstore',label:'Sneakers Store',venueEs:'Santa Rosa 19 · Barcelona',venueEn:'Santa Rosa 19 · Barcelona',loc:'sneakers-store-santa-rosa-19',linked:true},
   estancos: {circuit:'estancos',vertical:'xtanco',label:'Xtanco',venueEs:'Gran de Gràcia · escena de demostración',venueEn:'Gran de Gràcia · demo scene',linked:false},
   cafebreria: {circuit:'cafebreria',vertical:'cafeteria',label:'Cafebrería',venueEs:'Cafebrería · escena de demostración',venueEn:'Cafebrería · demo scene',linked:false},
   starbucks: {circuit:'alsea_starbucks',vertical:'cafeteria',label:'Starbucks',venueEs:'Paseo de Gracia 103 · Barcelona',venueEn:'Paseo de Gracia 103 · Barcelona',loc:STARBUCKS_LOCATION,linked:true}
@@ -11,6 +12,7 @@ export function projectContext(href,vertical){
   const requested=url.searchParams.get('project');
   if(requested && (!ADAPTERS[requested] || requested==='starbucks'))return {id:'',unavailable:requested};
   const scene=vertical||url.searchParams.get('autostart');
+  if((requested==='sneakers-store'&&!scene)||scene==='sneakerstore')return {id:'sneakers-store',...ADAPTERS['sneakers-store']};
   const id=scene==='cafeteria'?'cafebreria':scene==='xtanco'?'estancos':scene?'':requested||'estancos';
   return id?{id,...ADAPTERS[id]}:{id:''};
 }
@@ -25,5 +27,6 @@ export function projectUrl(href,id,currentQuality){
   p.set('quality',['good','better','best','matrix'].includes(quality)?quality:'better');
   if(adapter.loc)p.set('loc',adapter.loc);
   if(id==='cafebreria')url.pathname='/xpacios/cafebreria/';
+  if(id==='sneakers-store')url.pathname='/xpacios/sneakerstore/';
   return url.href;
 }
