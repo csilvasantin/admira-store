@@ -29,3 +29,10 @@ EN: Delivered: one draggable muffin, quantities, local basket, explicit coffee s
 ## Demostración / Demonstration
 
 `/demo tpv` automatiza el recorrido y la canción; `/demo off` lo detiene / automates the journey and song; `/demo off` stops it. [Guía ES/EN / ES/EN guide](https://www.admira.store/admira-xp/docs/demo-tpv.md).
+
+
+## Agua / Water
+
+ES: El TPV incorpora ahora botellas de agua del botellero ITIL, 13 → 12 y oferta del 10 % en pared e iPad. [Guía agua](pos-water.md).
+
+EN: The POS now accepts water bottles from the ITIL rack, 13 → 12 and a 10% offer on wall screens and iPad. [Water guide](pos-water.md).

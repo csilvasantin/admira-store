@@ -1,4 +1,4 @@
-import {POS_PRODUCTS,restoreBasket,coffeeSuggestion} from './pos-basket.mjs?v=pos-muffin-1';
+import {POS_PRODUCTS,restoreBasket,coffeeSuggestion} from './pos-basket.mjs?v=water-1';
 // A local basket layer on the mapped display; scheduled media is never replaced.
 export function createPOSCheckoutDisplay({document:doc,host,onEdit,onCoffee}={}){
  const make=(tag,cls)=>{const node=doc.createElement(tag);node.className=cls;return node;};

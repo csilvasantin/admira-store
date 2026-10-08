@@ -34,3 +34,10 @@ MCP `matrix_state` y `matrix_playlist_update` gestionan esta playlist. El JSON e
 ## Experiencia de cesta / Basket experience
 
 [Muffin a la caja / Muffin to the register](https://www.admira.store/admira-xp/docs/pos-muffin.md) · cesta local y sugerencia explícita de café / local basket and explicit coffee suggestion.
+
+
+## Agua / Water
+
+ES: El TPV incorpora ahora botellas de agua del botellero ITIL, 13 → 12 y oferta del 10 % en pared e iPad. [Guía agua](pos-water.md).
+
+EN: The POS now accepts water bottles from the ITIL rack, 13 → 12 and a 10% offer on wall screens and iPad. [Water guide](pos-water.md).

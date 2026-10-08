@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r1.00:22",
+  "version": "v.08.10.2026.r3.07:32",
   "deployedAt": "2026-10-07T22:22:56Z",
-  "deployer": "GrokBot",
+  "deployer": "OraculoMacMini",
   "machine": "MacMini",
-  "signature": "GrokBot · MacMini",
+  "signature": "OraculoMacMini · MacMini",
   "git": "9d577e8be2fafd451377a49d78d51aae85b08f10",
   "gitShort": "9d577e8",
   "gitFull": "9d577e8be2fafd451377a49d78d51aae85b08f10",
   "dirty": false,
   "novedades": [
-    "/demo all: la demo de incidencia siempre cierra el ticket que abre (reintenta si falla el cierre)",
-    "iPad: el gestor de colas se precarga durante la tarjeta y la demo espera a que cargue; al terminar desaparece el botón «Abrir gestor de colas» si no estaba",
-    "Sello con la fecha del día en Madrid (v.DD.MM.AAAA tras medianoche)"
+    "TPV: 13 botellas de agua del modelo ITIL, seleccionables y arrastrables a caja",
+    "La primera botella deja 12 y activa la oferta del 10 % en las seis pantallas y el iPad",
+    "La cantidad, los huecos de la pila y la oferta se conservan en la pestaña; ayuda ES/EN actualizada"
   ]
 }

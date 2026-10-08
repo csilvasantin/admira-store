@@ -408,5 +408,10 @@
     "iPad de Starbucks: un toque abre el gestor de colas también en Matrix (capa táctil sobre el iframe)",
     "La vista ampliada se abre siempre por encima de la escena y ✕ cierra con un toque",
     "Diagnóstico del toque en window.__ipadColaDebug"
+  ],
+  "v.08.10.2026.r3.07:32": [
+    "TPV: 13 botellas de agua del modelo ITIL, seleccionables y arrastrables a caja",
+    "La primera botella deja 12 y activa la oferta del 10 % en las seis pantallas y el iPad",
+    "La cantidad, los huecos de la pila y la oferta se conservan en la pestaña; ayuda ES/EN actualizada"
   ]
 }

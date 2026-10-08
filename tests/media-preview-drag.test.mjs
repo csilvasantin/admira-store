@@ -79,3 +79,13 @@ test('product keyboard activation and disposal use the same receiver without a s
  muffin.fire('keydown',h.event(0,0,{key:'Enter'}));muffin.fire('keydown',h.event(0,0,{key:' '}));assert.deepEqual(added,['muffin','muffin']);
  muffin.fire('pointerdown',h.event(30,60));h.move(100,120);dispose();h.up(640,270);assert.equal(h.ghost(),null);assert.deepEqual(added,['muffin','muffin']);
 });
+
+test('water gesture carries the exact ITIL slot and always releases the lifted bottle on cancellation',async()=>{
+ for(const scenario of ['register','outside','escape','blur','capture','rejected']){
+  const h=setup(),bottle=h.doc.createElement('button'),picture=h.doc.createElement('img'),calls=[];h.doc.body.append(bottle);picture.src='water-bottle.png';const product={id:'water',title:'Water',slot:7};
+  h.root.XpacePOSExperience={isActive:()=>true,targetAt:x=>x>=500,highlight(){},pickProduct:(id,p)=>calls.push(['pick',id,p.slot]),addProduct:(id,p)=>{calls.push(['add',id,p.slot]);return scenario!=='rejected';},finishProduct:(id,ok)=>calls.push(['finish',id,ok])};h.root.XpaceMediaOptions.attachProduct(bottle,product,picture);
+  bottle.fire('pointerdown',h.event(30,60));h.move(100,120);assert.equal(h.ghost().querySelector('img').src,picture.src);
+  if(scenario==='escape')h.doc.fire('keydown',h.event(0,0,{key:'Escape'}));else if(scenario==='blur')h.doc.fire('window:blur');else if(scenario==='capture')bottle.releasePointerCapture();else h.up(scenario==='outside'?100:640,270);
+  await new Promise(setImmediate);assert.deepEqual(calls[0],['pick','water',7]);assert.deepEqual(calls.at(-1),['finish','water',scenario==='register']);assert.equal(calls.filter(x=>x[0]==='add').length,['register','rejected'].includes(scenario)?1:0);assert.equal(h.ghost(),null);
+ }
+});

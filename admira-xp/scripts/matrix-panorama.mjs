@@ -1,5 +1,6 @@
+import {WATER_VIEW} from './pos-water.mjs?v=water-1';
 import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3';
-import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=pos-checkout-1';
+import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=water-1';
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=una-lectura-1';
 import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=avatar-lang-1';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
@@ -27,7 +28,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  let disposed=false,renderer,texture,geometry,material,frame=0,drag=null,marking=null,selected='',dirty=false;
  let deviceEditor=null,incidents=null,iaPlayback=null,demoMode='linear',iaTracks=DEMO_IA;
  let recalibrating='',mapRevision=0,renderKey='';
- const initialView=location.hash==='#tpv'?POS_EXPERIENCE_VIEW:STARBUCKS_WALL_VIEW;
+ const initialView=location.hash==='#agua'||location.hash==='#water'?WATER_VIEW:location.hash==='#tpv'?POS_EXPERIENCE_VIEW:STARBUCKS_WALL_VIEW;
  let yaw=initialView.yaw,pitch=initialView.pitch,fov=initialView.fov;
  let model=validateMapping(STARBUCKS_WALL_MAPPING);
  try{const saved=localStorage.getItem(MAPPING_KEY);if(saved)model=validateMapping(JSON.parse(saved));}catch{}
@@ -52,7 +53,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  const surface=root.querySelector('.matrix-panorama'),layer=root.querySelector('.matrix-player-layer'),markers=root.querySelector('.matrix-markers'),panel=root.querySelector('.matrix-map-panel'),status=root.querySelector('.matrix-map-status'),list=root.querySelector('.matrix-map-list'),form=root.querySelector('form');
  const controls=new AbortController(),options={signal:controls.signal},previews=new Map(),nodes=new Map();
  const wallAvatar=mountWallAvatar(surface,{t,onChange:()=>{renderKey='';},live:()=>{const state=music.state(),track=music.getTracks().find(x=>x.url===state.url);return state.playing&&track?.title?t('Suena ahora en el hilo musical: ','Now playing on the background music: ')+track.title:'';}});
- const posExperience=mountPOSExperience(surface,{blocked:()=>incidents?.off.has('starbucks-tpv-01')||false,camera:{get:()=>({yaw,pitch,fov}),set:v=>{if(disposed)return;({yaw,pitch,fov}=v);renderKey='';}},music:starbucksMusic(),checkoutHost:()=>incidents?.off.has('starbucks-tpv-01')?null:nodes.get('starbucks-tpv-01'),visualFactory:(id,{muted})=>createRetailMediaDisplay({host:()=>incidents?.off.has(id)?null:nodes.get(id),document,music:starbucksMusic(),muted})});
+ const posExperience=mountPOSExperience(surface,{onChange:()=>{renderKey='';},offerHost:id=>incidents?.off.has(id)?null:nodes.get(id),blocked:()=>incidents?.off.has('starbucks-tpv-01')||false,camera:{get:()=>({yaw,pitch,fov}),set:v=>{if(disposed)return;({yaw,pitch,fov}=v);renderKey='';}},music:starbucksMusic(),checkoutHost:()=>incidents?.off.has('starbucks-tpv-01')?null:nodes.get('starbucks-tpv-01'),visualFactory:(id,{muted})=>createRetailMediaDisplay({host:()=>incidents?.off.has(id)?null:nodes.get(id),document,music:starbucksMusic(),muted})});
  const mappingWindow=attachFloatingPanel(panel,{label:t('Mapeo de players','Player mapping'),handle:panel.querySelector('header'),closeButton:panel.querySelector('[data-map="close"]'),bounds:surface,key:'xpaceos.window.matrix-map.v1',menu:'matrix-map',onOpen:()=>{if(disposed)return;incidents?.close();cancel();panel.hidden=false;}});
  const numberLayer=root.querySelector('.matrix-screen-numbers'),numberButton=root.querySelector('[data-screen-numbers]'),numberNodes=new Map();
  const numberLabel=n=>n+' · '+(screenGroup(n)?t('Grupo ','Group ')+screenGroup(n):t('Sola','Standalone'));
