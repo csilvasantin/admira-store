@@ -4938,6 +4938,10 @@
     "stop_language": {
       "es": "Al detener el recorrido, la línea de cierre sale en el idioma restaurado («■ Recorrido detenido · 7/16 · gemelo restaurado»).",
       "en": "When the tour is stopped, the closing line uses the restored language (“■ Tour stopped · 7/16 · twin restored” in English)."
+    },
+    "stop_button": {
+      "es": "Detener responde al primer toque, también entre pasos.",
+      "en": "Stop responds on the first press, also between steps."
     }
   },
   "pos_water": {
@@ -5004,6 +5008,10 @@
     "indicator_hold": {
       "es": "El aviso de la locución se queda al menos 4,5 s y, en /demo, hasta que avanza la demo.",
       "en": "The voiceover toast stays at least 4.5 s and, in /demo, until the demo advances."
+    },
+    "indicator_place": {
+      "es": "El aviso se centra sobre el 360° encima del dock y, si toca la tarjeta del recorrido, pasa al lado libre o por encima.",
+      "en": "The toast centres over the 360° view above the dock and, if it touches the tour card, moves to the free side or above it."
     }
   },
   "water_conversion": {
