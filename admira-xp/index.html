@@ -1518,7 +1518,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261008-r5"></script>
+<script src="xtanco-version.js?v=20261008-r9"></script>
 <script src="xtanco-runtime-config.js?r=agua-voz-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -30226,6 +30226,8 @@ window.xtAPI = (function(){
     logEl.scrollTop=logEl.scrollHeight;
   }
 
+  // Línea propia en el registro del CLI (p. ej. «🔊 Locución: …» de las reglas IF·THEN·DO THAT).
+  window.XpaceAppendLog=(kind,label,text)=>appendTelegramLog(kind||'bot',label||'AdmiraXPBot',String(text??''));
   const originalShowEv=showEv;
   showEv=function(msg,col){
     rememberMemory('events',msg);

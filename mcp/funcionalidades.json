@@ -4930,6 +4930,10 @@
     "mcp": {
       "es": "Sin herramientas MCP nuevas: el registro es JSON estático y /demo help|all|<id> entra por el canal de órdenes del gemelo (__xtExec / xtAPI.command).",
       "en": "No new MCP tools: the registry is static JSON and /demo help|all|<id> goes through the twin command channel (__xtExec / xtAPI.command)."
+    },
+    "rehearsal_window": {
+      "es": "Ensayos 1–5 (/demo all en): la ventana del ensayo usa el mismo estilo de cristal que la tarjeta y traduce al inglés título, descripción, fases, campos y valores; al volver al castellano se restauran. La narración de los vídeos de ensayo sigue en castellano (motor común).",
+      "en": "Rehearsals 1–5 (/demo all en): the rehearsal window uses the card’s glass style and translates title, description, phases, fields and values into English; they are restored when going back to Spanish. The rehearsal videos’ narration stays in Spanish (shared engine)."
     }
   },
   "pos_water": {
@@ -4988,6 +4992,10 @@
     "mcp": {
       "es": "Sin herramientas MCP nuevas: regla local del navegador (localStorage del TPV).",
       "en": "No new MCP tools: local browser rule (POS localStorage)."
+    },
+    "indicator": {
+      "es": "Al sonar, la locución se ve: aviso con el texto hablado abajo al centro, pulso en el altavoz de avisos del gemelo y línea en el CLI «🔊 Locución: «…»» (en inglés «🔊 Voiceover: “…”»).",
+      "en": "When it plays, the voiceover is visible: a toast with the spoken text at the bottom centre, a pulse on the twin’s announcement speaker and a CLI line “🔊 Voiceover: “…”” (Spanish: «🔊 Locución: «…»»)."
     }
   },
   "water_conversion": {

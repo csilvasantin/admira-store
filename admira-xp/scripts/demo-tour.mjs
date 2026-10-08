@@ -18,6 +18,7 @@ export async function loadDemoRegistry({fetcher=(...a)=>fetch(...a)}={}){
 if(!Array.isArray(r?.demos)||!r.demos.length)throw Error('demos.json vacío');registry=r;return r;}
 import {norm,parseTourArg,splitFlags,langToken} from './demo-tour-args.mjs?v=demos-2';
 import {demoIconSvg} from './demo-icons.mjs?v=demos-2';
+import {installStoreDemoSkin,translateDemoText} from './store-demo-skin.mjs?v=demos-3';
 export {norm,parseTourArg,splitFlags,langToken};
 export function findDemo(reg,arg){const a=splitFlags(arg).rest;if(!a)return null;const list=reg?.demos||[];
  if(/^\d+$/.test(a))return list.find(d=>d.n===+a)||null;return list.find(d=>d.id===a||(d.aliases||[]).map(norm).includes(a))||null;}
@@ -75,7 +76,7 @@ const CSS='#xpaceDemoTourCard{--xb:var(--mbx-brand,#00704A);--xa0:var(--mbx-acce
  +'#xpaceDemoTourCard .main{display:flex;gap:16px;align-items:center}'
  +'#xpaceDemoTourCard .ico{position:relative;flex:0 0 auto;width:88px;height:88px;display:grid;place-items:center}#xpaceDemoTourCard .ring{position:absolute;inset:0;transform:rotate(-90deg)}#xpaceDemoTourCard .ring circle{fill:none;stroke-width:5}#xpaceDemoTourCard .ring .rt{stroke:rgba(255,255,255,.14)}#xpaceDemoTourCard .ring .rp{stroke:var(--xa);stroke-linecap:round;stroke-dasharray:'+RING.toFixed(2)+';stroke-dashoffset:'+RING.toFixed(2)+';transition:stroke-dashoffset .6s ease;filter:drop-shadow(0 0 6px var(--xa))}'
  +'#xpaceDemoTourCard .ig{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.28),color-mix(in srgb,var(--xb) 70%,#000) 70%);box-shadow:0 0 22px color-mix(in srgb,var(--xa) 45%,transparent),inset 0 0 0 1px rgba(255,255,255,.2);animation:xdtFloat 3.2s ease-in-out infinite}#xpaceDemoTourCard .ig svg{width:36px;height:36px;color:#fff;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}'
- +'#xpaceDemoTourCard .txt{min-width:0;flex:1}#xpaceDemoTourCard h3{margin:0 0 4px;font-size:21px;line-height:1.2;font-weight:750;letter-spacing:-.01em}#xpaceDemoTourCard .s{margin:0;font-size:14px;opacity:.9}#xpaceDemoTourCard .c{margin:6px 0 0;font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+ +'#xpaceDemoTourCard .txt{min-width:0;flex:1}#xpaceDemoTourCard h3{margin:0 0 4px;font-size:21px;line-height:1.2;font-weight:750;letter-spacing:-.01em}#xpaceDemoTourCard .s{margin:0;font-size:14px;opacity:.9}#xpaceDemoTourCard .c{margin:6px 0 0;font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.75;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere}'
  +'#xpaceDemoTourCard .bar{position:relative;height:4px;margin:12px 0 10px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}#xpaceDemoTourCard .bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:4px;background:linear-gradient(90deg,var(--xa),#fff 50%,var(--xa));background-size:220% 100%;animation:xdtShim 1.8s linear infinite;box-shadow:0 0 10px var(--xa)}'
  +'#xpaceDemoTourCard .b{display:flex;gap:8px;justify-content:flex-end}#xpaceDemoTourCard .b button{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:inherit;font:600 13px/1 system-ui;padding:7px 12px;border-radius:999px;cursor:pointer}#xpaceDemoTourCard .b button:hover{background:rgba(255,255,255,.2)}#xpaceDemoTourCard .b button[data-a="next"]{background:var(--xa);color:#06231b;border-color:transparent}#xpaceDemoTourCard .b svg{width:14px;height:14px}'
  +'#xpaceDemoTourCard.paused .bar i,#xpaceDemoTourCard.paused .ig{animation-play-state:paused}#xpaceDemoTourCard.paused .k::after{content:" · II"}'
@@ -141,7 +142,9 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
  if(s.say){ctx.sub(L(s.say,en),true);return;}
  if(s.wait!=null)return sleep(s.wait,cancelled,bar);
  if(s.cli){ctx.cmd(s.cli);if(/^\/(navidad|sincro\s+ia)/i.test(s.cli))ctx.changedDemoMode=true;const out=await race(ctx.exec(s.cli),cancelled);if(typeof out==='string'&&out)ctx.sub(out.split('\n')[0].slice(0,160));return;}
- if(s.suite){ctx.cmd(s.suite);const r=await race(ctx.suite(s.suite,{lang:ctx.lang}),cancelled);if(r?.message)ctx.sub(String(r.message).split('\n')[0].slice(0,160));return;}
+ if(s.suite){ctx.cmd(s.suite);try{installStoreDemoSkin(g.document);}catch{}const r=await race(ctx.suite(s.suite,{lang:ctx.lang}),cancelled);
+  // Etiqueta corta y en el idioma del recorrido: «Demo 2 · Music management» (la descripción ya está en la tarjeta).
+  if(r?.message){const first=String(r.message).split('\n')[0];ctx.sub((ctx.en?translateDemoText(first):first).split(' — ')[0].slice(0,120));}return;}
  if(s.mode){if(ctx.router&&ctx.router.mode!==s.mode)await race(ctx.router.choose(s.mode),cancelled);const t0=Date.now();while(s.mode==='matrix'&&ctx.doc&&!m()?.isActive?.()&&Date.now()-t0<20000&&!cancelled())await sleep(250,cancelled);return;}
  if(s.look){await race(m()?.camera?.look?.(s.look,{ms:1200}),cancelled);return;}
  if(s.pan){const cam=m()?.camera;const v=cam?.get?.();if(!v)return;const n=Math.max(1,Math.round(s.pan/90)),each=(s.ms||12000)/n;for(let i=1;i<=n&&!cancelled();i++)await race(cam.look({yaw:v.yaw+90*i,pitch:v.pitch,fov:Math.max(v.fov,70)},{ms:each}),cancelled);return;}
