@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r24.22:20",
-  "deployedAt": "2026-10-08T20:23:26Z",
+  "version": "v.08.10.2026.r25.22:34",
+  "deployedAt": "2026-10-08T20:34:44Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "2a08465d774f4b6dedc3f85ad6cc3baa448c5c92",
-  "gitShort": "2a08465",
-  "gitFull": "2a08465d774f4b6dedc3f85ad6cc3baa448c5c92",
+  "git": "44e81596c6caff141eff6b06981a9edf94ef86e9",
+  "gitShort": "44e8159",
+  "gitFull": "44e81596c6caff141eff6b06981a9edf94ef86e9",
   "dirty": false,
   "novedades": [
-    "SneakerStore: nueva categoría y tienda 3D editable en Santa Rosa 19.",
-    "/demo global: proyecto, Xpacio, playlist Pixeria y gemelo en una guía reutilizable.",
-    "Playlist compartida en la pantalla virtual y ayuda ES/EN; cámara IEU con preparación manual."
+    "SneakerStore: gemelo editable y playlist Pixeria conectada.",
+    "Demo global con proyecto Santa Rosa 19 y tutorial reutilizable.",
+    "Controles y accesibilidad de la nueva tienda en español e inglés."
   ]
 }
