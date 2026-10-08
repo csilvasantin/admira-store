@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r28.23:17",
-  "deployedAt": "2026-10-08T21:17:32Z",
+  "version": "v.08.10.2026.r29.23:31",
+  "deployedAt": "2026-10-08T21:31:31Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "c8c8f5814ecfb8de83227aa70cbe2e9d9096c750",
-  "gitShort": "c8c8f58",
-  "gitFull": "c8c8f5814ecfb8de83227aa70cbe2e9d9096c750",
+  "git": "3f5138d7c5ba81aff1185c9dde94192f48fd6510",
+  "gitShort": "3f5138d",
+  "gitFull": "3f5138d7c5ba81aff1185c9dde94192f48fd6510",
   "dirty": false,
   "novedades": [
-    "Sneakers Store: Entrada, Centro y Fondo reales en 360, con planta editable adaptada a Santa Rosa 19.",
-    "Controles nuevos del recorrido disponibles al abrir la demo; playlist Pixeria y acceso a segmentación Xtore.",
-    "Tutorial global y ayuda MCP publicados en español e inglés."
+    "Sneakers Store: LCD gigante corregida al lado izquierdo desde la puerta hacia la caja; recreativas y expositor largo en el derecho.",
+    "Banco del fondo y pantallas de entrada recolocados según las tres panorámicas originales de IEU.",
+    "Las posiciones predeterminadas guardadas se corrigen con respaldo, conservando fichas y ediciones explícitas. Ayuda y tutorial ES/EN actualizados."
   ]
 }
