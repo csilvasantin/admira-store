@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r9.08:57",
-  "deployedAt": "2026-10-08T06:57:36Z",
+  "version": "v.08.10.2026.r10.09:48",
+  "deployedAt": "2026-10-08T07:48:14Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "e3d620b9a74f92facdb275d849e3bca236ebb203",
-  "gitShort": "e3d620b",
-  "gitFull": "e3d620b9a74f92facdb275d849e3bca236ebb203",
+  "git": "2c5d02a9d6406dd54d4a05a07779b911d1f167fe",
+  "gitShort": "2c5d02a",
+  "gitFull": "2c5d02a9d6406dd54d4a05a07779b911d1f167fe",
   "dirty": false,
   "novedades": [
-    "/demo all en: la ventana de los ensayos 1–5 sale en inglés (título, fases, campos y valores) y con el mismo estilo de cristal que la tarjeta, debajo de ella",
-    "Tarjeta del recorrido: la línea del comando va en el idioma del recorrido, corta y en dos líneas como mucho",
-    "Locución del agua: se ve al sonar (aviso con el texto, pulso en el altavoz de avisos y línea «🔊 Locución: «…»» en el CLI)"
+    "Modo experto con el 360°: desaparece el rectángulo oscuro arriba al centro (el panel Opciones de categoría ya no lo provoca y sigue desplazándose con rueda, dedo o teclado)",
+    "Al detener el recorrido con el botón de la tarjeta, la línea de cierre sale en el idioma restaurado («■ Recorrido detenido · 7/16 · gemelo restaurado»)",
+    "Demo 14: el aviso de la locución se queda al menos 4,5 s y hasta que avanza la demo"
   ]
 }
