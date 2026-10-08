@@ -1,5 +1,23 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.08.10.2026.r17.18:46": [
+    "Hiperreal tanda 4: primeras piezas Pixeria (scooter 19, moto verde 20, sofá Cazafantasmas 21, sofá Matrix 22, moto custom 23, televisor de piedra 24, sofá futurista 25, sofá dragón 26 y sofá bárbaro 27).",
+    "Nuevos acabados: tela con trama y brillo de terciopelo, cuero con grano, pintura lacada en carrocerías, cristal en parabrisas y faros, piedra en el televisor.",
+    "Piezas añadidas a mano: discos y pinzas de freno en las motos y antena de cuernos en el televisor.",
+    "Corregida la madera a rayas del lateral de la estantería 2 (y de la librería 51) en el visor web."
+  ],
+  "v.08.10.2026.r16.18:27": [
+    "Hiperreal tanda 3: lotería, vending, revistero, puerta, alfombra, banner LED, mupi, aroma, mesa DJ y gestor de turnos",
+    "Piezas reales añadidas a mano: trampilla y zócalo en la vending, bisagras y placa en la puerta, soportes en el banner, rejilla en el aroma y tirador en el escritorio",
+    "Los letreros de la pantalla TFT y del mupi aparecen sobre la pantalla (antes quedaban bajo el suelo)",
+    "Comparativas en fondo neutro; GLB web de 0,1 a 2,4 MB y GLB HD para Unreal"
+  ],
+  "v.08.10.2026.r15.18:01": [
+    "Hiperreal tanda 2: estantería, botellero, escritorio, planta, lámpara, pantalla TFT, tablet de satisfacción y librería con materiales PBR reales",
+    "Detalle geométrico real en las piezas de cajas: biseles, cantos de ABS, paneles con ranura y zócalo empotrado",
+    "Comparativas sobre un fondo de cafetería neutro y limpio; GLB web de 0,07 a 3,4 MB y GLB HD para Unreal",
+    "En el gemelo, con Best, /inventario añadir coloca estas piezas en Hiperreal (si falla, Best)"
+  ],
   "v.08.10.2026.r14.17:46": [
     "En el Starbucks, la vista Better vuelve a ser la de antes: los muebles añadidos y el botellero solo aparecen en Best",
     "Las demos de la tienda (/demo taza, /demo kiosko y el arranque ?ax_demo=store) se publican también en XpaceOS",

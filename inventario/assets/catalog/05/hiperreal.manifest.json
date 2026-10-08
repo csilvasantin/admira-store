@@ -1,0 +1,73 @@
+{
+  "number": 5,
+  "name": "Vending",
+  "tier": "hiperreal",
+  "based_on": "best",
+  "batch": 3,
+  "geometry_basis": "interpretive",
+  "measured": false,
+  "material_classes": {
+    "Native finish": "plastic",
+    "Native finish.001": "plastic",
+    "Native finish.002": "plastic",
+    "Native finish.003": "plastic",
+    "Native finish.004": "metal",
+    "Native finish.005": "wood",
+    "Native finish.006": "plastic",
+    "Native finish.007": "plastic",
+    "Native finish.008": "plastic"
+  },
+  "jittered_items": 0,
+  "bevel": "procedural bevel applied to geometry",
+  "lods": {
+    "web": "./hiperreal.glb",
+    "hd_unreal_nanite": "./hiperreal/hiperreal-hd.glb",
+    "blender": "./hiperreal.blend"
+  },
+  "bytes": {
+    "web": 1139060,
+    "hd": 8632900,
+    "best": 297624
+  },
+  "shared_textures": "../../hiperreal-tex/",
+  "textures": [
+    "metal_dark_orm.jpg",
+    "metal_orm.jpg",
+    "oak_arm_2048.jpg",
+    "oak_c87459_4096.jpg",
+    "oak_normal_2048.jpg",
+    "plastic_orm.jpg"
+  ],
+  "lighting": {
+    "web_hdri": "../47/hiperreal/comfy_cafe_1k.hdr",
+    "cycles_hdri": "Poly Haven comfy_cafe 2K"
+  },
+  "texture_sources_cc0": [
+    "polyhaven:oak_veneer_01",
+    "polyhaven:concrete_floor_02",
+    "polyhaven:plaster_grey_04",
+    "polyhaven:comfy_cafe",
+    "ambientcg:Metal049A",
+    "ambientcg:Cardboard004",
+    "ambientcg:Fingerprints002",
+    "ambientcg:Smear007",
+    "procedural:pastry,powder (XpaceOS)"
+  ],
+  "renders": "./hiperreal/preview/",
+  "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
+  "guide": "/admira-xp/docs/hiperreal-pipeline.md",
+  "twin_instance": "sb-backbar",
+  "geometry_detail": {
+    "bevel": 3,
+    "band": 0,
+    "panel": 0,
+    "handle": 0,
+    "kick": 0
+  },
+  "added_parts": [
+    "trampilla de recogida",
+    "tirador trampilla",
+    "zócalo"
+  ],
+  "placed_on_front": []
+}

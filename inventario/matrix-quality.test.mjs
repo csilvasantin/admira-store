@@ -10,7 +10,7 @@ import {createMatrixEnvironmentRoom,configureMatrixRenderer} from './matrix-rend
 import {stageCamera} from './stage-camera.mjs';
 
 test('Matrix is exclusive to model 47; Hiperreal only exists for published batches; other model URLs reject them',()=>{
- const hiperreal=new Set([44,45,46,47,48,49,50,52]);
+ const hiperreal=new Set([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,44,45,46,47,48,49,50,51,52]);
  for(let number=1;number<=52;number++){
   assert.deepEqual(comparisonProfiles(number,'all'),['good','better','best',...(number===47?['matrix']:[]),...(hiperreal.has(number)?['hiperreal']:[])]);
   assert.equal(selectedQuality(number,'matrix'),number===47?'matrix':'best');

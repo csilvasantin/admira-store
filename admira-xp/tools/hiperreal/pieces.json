@@ -1,5 +1,5 @@
 {
- "_doc": "Hiperreal pipeline config. defaults apply to every piece; pieces.<n> overrides. material_classes maps a material base name (sin sufijo .00N) or hex to a class. Clases: wood, wood_dark, wood_stained, stone, metal, metal_dark, powder, glass, led, ceramic, paper, cardboard, plastic, pastry, rubber, screen, gloss_black, keep.",
+ "_doc": "Hiperreal pipeline config. defaults apply to every piece; pieces.<n> overrides. material_classes maps a material base name (sin sufijo .00N) or hex to a class. Clases: wood, wood_dark, wood_stained, stone, metal, metal_dark, powder, glass, led, ceramic, paper, cardboard, plastic, pastry, rubber, screen, gloss_black, fabric, leather, carpaint, keep. object_classes splits a shared material per object name.",
  "defaults": {
   "source": "best",
   "tile_m": {
@@ -14,7 +14,10 @@
    "ceramic": 0.5,
    "paper": 0.35,
    "cardboard": 0.6,
-   "plastic": 0.5
+   "plastic": 0.5,
+   "fabric": 0.12,
+   "leather": 0.35,
+   "carpaint": 0.5
   },
   "jitter": {
    "pastry": {
@@ -161,6 +164,703 @@
     "Landscape display · 4:3": "screen",
     "Stand rubber": "rubber"
    }
+  },
+  "2": {
+   "name": "Estantería",
+   "front": "+X",
+   "kick_plate": {
+    "h": 0.07,
+    "inset": 0.03
+   }
+  },
+  "3": {
+   "name": "Botellero"
+  },
+  "7": {
+   "name": "Escritorio",
+   "detail": {
+    "handles": true
+   },
+   "add_parts": [
+    {
+     "name": "tirador cajón",
+     "at": [
+      1.55,
+      -0.962,
+      0.765
+     ],
+     "size": [
+      0.16,
+      0.014,
+      0.014
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "rough": 0.3
+    },
+    {
+     "name": "tirador soporte izq",
+     "at": [
+      1.49,
+      -0.948,
+      0.765
+     ],
+     "size": [
+      0.012,
+      0.03,
+      0.012
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0"
+    },
+    {
+     "name": "tirador soporte der",
+     "at": [
+      1.61,
+      -0.948,
+      0.765
+     ],
+     "size": [
+      0.012,
+      0.03,
+      0.012
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0"
+    }
+   ]
+  },
+  "9": {
+   "name": "Planta"
+  },
+  "10": {
+   "name": "Lámpara"
+  },
+  "13": {
+   "name": "Pantalla TFT",
+   "place_on_front": {
+    "Sign ADMIRA": [
+     0,
+     0.05,
+     0.75,
+     -0.076
+    ],
+    "Sign UN ESPACIO CON VIDA": [
+     0,
+     -0.17,
+     0.75,
+     -0.076
+    ]
+   }
+  },
+  "15": {
+   "name": "Tablet Satisf."
+  },
+  "51": {
+   "name": "Librería"
+  },
+  "4": {
+   "name": "Lotería"
+  },
+  "5": {
+   "name": "Vending",
+   "add_parts": [
+    {
+     "name": "trampilla de recogida",
+     "at": [
+      0.42,
+      -1.068,
+      0.24
+     ],
+     "size": [
+      0.52,
+      0.016,
+      0.16
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30",
+     "rough": 0.35
+    },
+    {
+     "name": "tirador trampilla",
+     "at": [
+      0.42,
+      -1.08,
+      0.31
+     ],
+     "size": [
+      0.3,
+      0.012,
+      0.012
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0"
+    },
+    {
+     "name": "zócalo",
+     "at": [
+      0.5,
+      -1.0,
+      0.05
+     ],
+     "size": [
+      0.98,
+      0.012,
+      0.09
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    }
+   ]
+  },
+  "6": {
+   "name": "Revistero"
+  },
+  "8": {
+   "name": "Puerta",
+   "add_parts": [
+    {
+     "name": "bisagra alta",
+     "at": [
+      0.075,
+      -0.055,
+      2.05
+     ],
+     "size": [
+      0.022,
+      0.022,
+      0.11
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "cyl": true
+    },
+    {
+     "name": "bisagra media",
+     "at": [
+      0.075,
+      -0.055,
+      1.2
+     ],
+     "size": [
+      0.022,
+      0.022,
+      0.11
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "cyl": true
+    },
+    {
+     "name": "bisagra baja",
+     "at": [
+      0.075,
+      -0.055,
+      0.35
+     ],
+     "size": [
+      0.022,
+      0.022,
+      0.11
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "cyl": true
+    },
+    {
+     "name": "placa de patada",
+     "at": [
+      0.5,
+      -0.053,
+      0.15
+     ],
+     "size": [
+      0.82,
+      0.004,
+      0.18
+     ],
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "rough": 0.25
+    }
+   ]
+  },
+  "11": {
+   "name": "Alfombra",
+   "material_classes": {
+    "Native finish": "powder",
+    "Native finish.001": "powder",
+    "Native finish.002": "powder"
+   }
+  },
+  "12": {
+   "name": "LED Banner",
+   "add_parts": [
+    {
+     "name": "soporte izq",
+     "at": [
+      0.6,
+      0.07,
+      0
+     ],
+     "size": [
+      0.06,
+      0.07,
+      0.08
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "soporte der",
+     "at": [
+      4.9,
+      0.07,
+      0
+     ],
+     "size": [
+      0.06,
+      0.07,
+      0.08
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "cable",
+     "at": [
+      5.48,
+      0.02,
+      -0.4
+     ],
+     "size": [
+      0.008,
+      0.008,
+      0.6
+     ],
+     "cls": "rubber",
+     "hex": "#1a1a1a",
+     "cyl": true
+    }
+   ]
+  },
+  "14": {
+   "name": "Mupi Metahuman",
+   "place_on_front": {
+    "Sign ADMIRA": [
+     0,
+     0.35,
+     1.0,
+     -0.578
+    ],
+    "Sign UN ESPACIO CON VIDA": [
+     0,
+     0.17,
+     1.0,
+     -0.578
+    ]
+   }
+  },
+  "16": {
+   "name": "Aroma",
+   "add_parts": [
+    {
+     "name": "rejilla 0",
+     "at": [
+      0.38,
+      -0.268,
+      -0.2
+     ],
+     "size": [
+      0.34,
+      0.004,
+      0.008
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "rejilla 1",
+     "at": [
+      0.38,
+      -0.268,
+      -0.23
+     ],
+     "size": [
+      0.34,
+      0.004,
+      0.008
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "rejilla 2",
+     "at": [
+      0.38,
+      -0.268,
+      -0.26
+     ],
+     "size": [
+      0.34,
+      0.004,
+      0.008
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "rejilla 3",
+     "at": [
+      0.38,
+      -0.268,
+      -0.29000000000000004
+     ],
+     "size": [
+      0.34,
+      0.004,
+      0.008
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "rejilla 4",
+     "at": [
+      0.38,
+      -0.268,
+      -0.32
+     ],
+     "size": [
+      0.34,
+      0.004,
+      0.008
+     ],
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    }
+   ]
+  },
+  "17": {
+   "name": "Mesa DJ · Audio"
+  },
+  "18": {
+   "name": "Gestor Turnos"
+  },
+  "19": {
+   "name": "Scooter retro",
+   "material_classes": {
+    "chrome": "metal",
+    "dark": "metal_dark",
+    "black": "rubber",
+    "red": "plastic",
+    "blue": "carpaint",
+    "white": "carpaint",
+    "grey": "glass"
+   },
+   "object_classes": {
+    "Saddle": "leather",
+    "Headlight": "glass"
+   },
+   "add_parts": [
+    {
+     "name": "disco de freno",
+     "at": [
+      0.336,
+      -0.8,
+      0.1715
+     ],
+     "size": [
+      0.15,
+      0.15,
+      0.006
+     ],
+     "rot": [
+      0,
+      90,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#a9adb2",
+     "rough": 0.28
+    },
+    {
+     "name": "pinza de freno",
+     "at": [
+      0.343,
+      -0.75,
+      0.23
+     ],
+     "size": [
+      0.016,
+      0.045,
+      0.05
+     ],
+     "cls": "carpaint",
+     "hex": "#b3261e"
+    }
+   ]
+  },
+  "20": {
+   "name": "Moto deportiva verde",
+   "material_classes": {
+    "chrome": "metal",
+    "dark": "metal_dark",
+    "black": "rubber",
+    "red": "plastic",
+    "green": "carpaint",
+    "white": "glass"
+   },
+   "object_classes": {
+    "Saddle": "leather",
+    "Windshield": "glass"
+   },
+   "add_parts": [
+    {
+     "name": "disco de freno",
+     "at": [
+      0.336,
+      -0.8,
+      0.1715
+     ],
+     "size": [
+      0.15,
+      0.15,
+      0.006
+     ],
+     "rot": [
+      0,
+      90,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#a9adb2",
+     "rough": 0.28
+    },
+    {
+     "name": "pinza de freno",
+     "at": [
+      0.343,
+      -0.75,
+      0.23
+     ],
+     "size": [
+      0.016,
+      0.045,
+      0.05
+     ],
+     "cls": "carpaint",
+     "hex": "#b3261e"
+    },
+    {
+     "name": "disco de freno",
+     "at": [
+      0.336,
+      -0.17,
+      0.1715
+     ],
+     "size": [
+      0.15,
+      0.15,
+      0.006
+     ],
+     "rot": [
+      0,
+      90,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#a9adb2",
+     "rough": 0.28
+    },
+    {
+     "name": "pinza de freno",
+     "at": [
+      0.343,
+      -0.12000000000000001,
+      0.23
+     ],
+     "size": [
+      0.016,
+      0.045,
+      0.05
+     ],
+     "cls": "carpaint",
+     "hex": "#b3261e"
+    }
+   ]
+  },
+  "23": {
+   "name": "Moto custom",
+   "material_classes": {
+    "chrome": "metal",
+    "dark": "metal_dark",
+    "black": "rubber",
+    "red": "plastic",
+    "white": "glass",
+    "brown": "leather"
+   },
+   "object_classes": {
+    "Saddle": "leather",
+    "Fuel tank": "carpaint"
+   },
+   "add_parts": [
+    {
+     "name": "disco de freno",
+     "at": [
+      0.336,
+      -0.8,
+      0.1715
+     ],
+     "size": [
+      0.15,
+      0.15,
+      0.006
+     ],
+     "rot": [
+      0,
+      90,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#a9adb2",
+     "rough": 0.28
+    },
+    {
+     "name": "pinza de freno",
+     "at": [
+      0.343,
+      -0.75,
+      0.23
+     ],
+     "size": [
+      0.016,
+      0.045,
+      0.05
+     ],
+     "cls": "carpaint",
+     "hex": "#b3261e"
+    }
+   ]
+  },
+  "21": {
+   "name": "Sofá Cazafantasmas",
+   "material_classes": {
+    "grey": "fabric",
+    "red": "fabric",
+    "white": "fabric",
+    "dark": "powder"
+   }
+  },
+  "22": {
+   "name": "Sofá modular verde Matrix",
+   "material_classes": {
+    "black": "leather",
+    "lime": "leather",
+    "dark": "powder"
+   }
+  },
+  "25": {
+   "name": "Sofá futurista rojo",
+   "material_classes": {
+    "red": "leather",
+    "chrome": "metal",
+    "blue": "led",
+    "dark": "powder"
+   }
+  },
+  "26": {
+   "name": "Sofá dragón",
+   "material_classes": {
+    "green": "leather",
+    "gold": "metal",
+    "dark": "powder"
+   }
+  },
+  "27": {
+   "name": "Sofá bárbaro",
+   "material_classes": {
+    "brown": "leather",
+    "sand": "fabric",
+    "dark": "metal_dark",
+    "wood": "wood_dark"
+   }
+  },
+  "24": {
+   "name": "Televisor de piedra",
+   "material_classes": {
+    "sand": "stone",
+    "brown": "stone",
+    "grey": "screen",
+    "dark": "gloss_black",
+    "wood": "wood"
+   },
+   "add_parts": [
+    {
+     "name": "base antena",
+     "at": [
+      0.5,
+      -0.27,
+      1.179
+     ],
+     "size": [
+      0.07,
+      0.07,
+      0.03
+     ],
+     "cyl": true,
+     "cls": "metal_dark",
+     "hex": "#2b2d30"
+    },
+    {
+     "name": "antena izq",
+     "at": [
+      0.4125,
+      -0.27,
+      1.316
+     ],
+     "size": [
+      0.008,
+      0.008,
+      0.35
+     ],
+     "rot": [
+      0,
+      -30,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "rough": 0.3
+    },
+    {
+     "name": "antena der",
+     "at": [
+      0.5875,
+      -0.27,
+      1.316
+     ],
+     "size": [
+      0.008,
+      0.008,
+      0.35
+     ],
+     "rot": [
+      0,
+      30,
+      0
+     ],
+     "cyl": true,
+     "cls": "metal",
+     "hex": "#b8bcc0",
+     "rough": 0.3
+    }
+   ]
   }
  }
 }

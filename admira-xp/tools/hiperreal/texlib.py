@@ -88,6 +88,17 @@ def build(kind,hexc,size):
         nout=f'{LIB}powder_normal_1024.jpg'
         if not os.path.exists(nout): save(normal_from(noise(1024,23,3,96),6),nout,92)
         r['normal']=nout
+    elif kind=='fabric':
+        s=1024; y,x=np.mgrid[0:s,0:s].astype(np.float32); k=2*np.pi*48/s
+        weave=.5+.25*np.sin(k*x)*np.sign(np.sin(k*y/2+1e-3))+.25*np.sin(k*y)*np.sign(np.sin(k*x/2+1e-3))
+        nout=f'{LIB}fabric_normal_1024.jpg'
+        if not os.path.exists(nout): save(normal_from(weave*.8+.2*noise(s,31,4,64),5),nout,92)
+        r['normal']=nout; r['orm']=orm('fabric',.86+.08*noise(s,33,3,24),0,s)
+    elif kind=='leather':
+        s=1024; nout=f'{LIB}leather_normal_1024.jpg'
+        if not os.path.exists(nout): save(normal_from(noise(s,41,5,48)**1.5,9),nout,92)
+        r['normal']=nout; r['orm']=orm('leather',.42+.16*noise(s,43,4,16),0,s)
+    elif kind=='carpaint': r['orm']=GEN+'plastic_orm.jpg'
     elif kind=='metal': r['orm']=GEN+'metal_orm.jpg'
     elif kind=='metal_dark': r['orm']=GEN+'metal_dark_orm.jpg'
     elif kind=='ceramic': r['orm']=GEN+'ceramic_orm.jpg'

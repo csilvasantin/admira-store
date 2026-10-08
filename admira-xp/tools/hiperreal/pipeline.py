@@ -84,14 +84,15 @@ def hex_of(m):
     if re.fullmatch(r'#[0-9a-f]{6}',n): return n
     c=bsdf(m).inputs['Base Color'].default_value
     return '#'+''.join('%02x'%round(255*(max(0,x)**(1/2.2))) for x in c[:3])
-NORMAL_K={'wood':.9,'wood_dark':.9,'wood_stained':.7,'stone':.45,'pastry':.8,'powder':.25,'paper':.25,'cardboard':.5}
+NORMAL_K={'fabric':.7,'leather':.5,'wood':.9,'wood_dark':.9,'wood_stained':.7,'stone':.45,'pastry':.8,'powder':.25,'paper':.25,'cardboard':.5}
 def upgrade(m,cls):
     p=bsdf(m)
     if not p or cls=='keep':
         if p and base_name(m.name) in PC.get('coat',{}): coat(m,*PC['coat'][base_name(m.name)])
         return
     keep_tex=has_tex(m,'Base Color'); hx=hex_of(m)
-    if cls in ('wood','wood_dark','wood_stained','stone','pastry','powder') or cls in ('metal','metal_dark','ceramic','plastic','paper','cardboard'):
+    if keep_tex: m['hiperreal_source_tex']=True  # authored texture: keep its own UVs (piece 2 stripes)
+    if cls in ('wood','wood_dark','wood_stained','stone','pastry','powder') or cls in ('metal','metal_dark','ceramic','plastic','paper','cardboard','fabric','leather','carpaint'):
         t=texlib(cls,hx)
         if 'basecolor' in t and not keep_tex: set_base(m,t['basecolor'])
         if 'orm' in t and not has_tex(m,'Roughness'): set_orm(m,t['orm'],ao=cls in ('wood','wood_dark','wood_stained','stone'))
@@ -108,9 +109,10 @@ def upgrade(m,cls):
     elif cls=='led':
         c=p.inputs['Base Color'].default_value; p.inputs['Emission Color'].default_value=c; p.inputs['Emission Strength'].default_value=4
     elif cls=='rubber': p.inputs['Roughness'].default_value=.86; p.inputs['Metallic'].default_value=0
+    elif cls=='fabric': p.inputs['Sheen Weight'].default_value=.6; p.inputs['Sheen Roughness'].default_value=.45; p.inputs['Sheen Tint'].default_value=(*p.inputs['Base Color'].default_value[:3],1)
     elif cls=='screen': p.inputs['Roughness'].default_value=.06; coat(m,1,.02)
     elif cls=='gloss_black': p.inputs['Roughness'].default_value=.1; p.inputs['Metallic'].default_value=0; coat(m,.8,.04)
-    coats={'wood':(.2,.3),'wood_dark':(.22,.28),'wood_stained':(.3,.22),'stone':(.35,.14),'metal':(.06,.3),'metal_dark':(.25,.12),'ceramic':(.7,.03),'plastic':(.2,.1),'pastry':(.12,.35),'powder':(.05,.4)}
+    coats={'wood':(.2,.3),'wood_dark':(.22,.28),'wood_stained':(.3,.22),'stone':(.35,.14),'metal':(.06,.3),'metal_dark':(.25,.12),'ceramic':(.7,.03),'plastic':(.2,.1),'pastry':(.12,.35),'powder':(.05,.4),'leather':(.15,.4),'carpaint':(1,.03)}
     if cls in coats: coat(m,*coats[cls])
     if base_name(m.name) in PC.get('coat',{}): coat(m,*PC['coat'][base_name(m.name)])
     m['quality']='hiperreal'; m['hiperreal_class']=cls
@@ -134,6 +136,152 @@ def box_uv(o,tile_for):
         for li in poly.loop_indices:
             co=me.vertices[me.loops[li].vertex_index].co
             uv.data[li].uv=(co[b]*S[b]/tile+ov, co[a]*S[a]/tile+ou)  # grain along V = longest side of the board
+
+FRONTS={'-Y':Vector((0,-1,0)),'+Y':Vector((0,1,0)),'+X':Vector((1,0,0)),'-X':Vector((-1,0,0))}
+DETAIL_CLASSES=('wood','wood_dark','wood_stained','powder','metal','metal_dark','plastic','stone')
+def mat_for(name,cls,hexc=None,rough=None):
+    m=B.materials.get(name)
+    if m: return m
+    m=B.materials.new(name); m.use_nodes=True; p=bsdf(m)
+    if hexc: p.inputs['Base Color'].default_value=(*[(int(hexc[i:i+2],16)/255)**2.2 for i in (1,3,5)],1)
+    if rough is not None: p.inputs['Roughness'].default_value=rough
+    upgrade(m,cls); return m
+def slot(me,m):
+    for i,x in enumerate(me.materials):
+        if x==m: return i
+    me.materials.append(m); return len(me.materials)-1
+def detail(log):
+    """Real geometry detail for simple boxy parts (batch-1 lesson): every sharp box gets a real bevel; thin wood
+    panels get ABS edge banding on their edges; large vertical panels get a recessed field (frame-and-panel seam);
+    optional bar handles on drawer/door fronts and an optional recessed kick plate (per-piece overrides)."""
+    import bmesh
+    D=PC.get('detail',{})
+    if D is False: return
+    st={'bevel':0,'band':0,'panel':0,'handle':0,'kick':0}; fv=FRONTS[PC.get('front','-Y')]
+    for o in meshes():
+        me=o.data
+        if len(me.polygons)>40000 or o.get('mediaSurface'): continue
+        if me.users>1: o.data=me=me.copy()
+        S=Matrix.Diagonal(o.matrix_world.to_scale()).to_4x4(); Rw=o.matrix_world.to_quaternion()
+        bm=bmesh.new(); bm.from_mesh(me); bm.transform(S)
+        bmesh.ops.remove_doubles(bm,verts=bm.verts,dist=1e-5); bm.verts.ensure_lookup_table(); bm.faces.ensure_lookup_table()
+        seen=set(); comps=[]
+        for v in bm.verts:
+            if v.index in seen: continue
+            stack=[v]; comp=[]; seen.add(v.index)
+            while stack:
+                x=stack.pop(); comp.append(x)
+                for e in x.link_edges:
+                    y=e.other_vert(x)
+                    if y.index not in seen: seen.add(y.index); stack.append(y)
+            comps.append(comp)
+        jobs=[]; before_st=dict(st)
+        for comp in comps:
+            if len(comp)>120: continue
+            faces=list({f for v in comp for f in v.link_faces})
+            mi=faces[0].material_index; mat=me.materials[mi] if mi<len(me.materials) else None
+            cls=mat.get('hiperreal_class') if mat else None
+            if cls not in DETAIL_CLASSES: continue
+            lo=Vector([min(v.co[a] for v in comp) for a in range(3)]); hi=Vector([max(v.co[a] for v in comp) for a in range(3)]); ext=hi-lo
+            sharp=len(comp)==8 and len(faces)==6 and all(len(f.verts)==4 for f in faces)
+            th={}
+            for f in faces:
+                ax=max(range(3),key=lambda a:abs(f.normal[a]))
+                if abs(f.normal[ax])<.999: continue
+                plane=hi[ax] if f.normal[ax]>0 else lo[ax]
+                if abs(f.calc_center_median()[ax]-plane)>1e-4: continue
+                o2=[a for a in range(3) if a!=ax]
+                if f.calc_area()>.5*ext[o2[0]]*ext[o2[1]]: th[f]=ext[ax]
+            if not th: continue
+            dims=sorted(ext); thin,mid,big=dims
+            if big<.02: continue
+            jobs.append((comp,faces,mat,cls,th,thin,mid,big,sharp))
+        for comp,faces,mat,cls,th,thin,mid,big,sharp in jobs:
+            edges=list({e for f in faces for e in f.edges})
+            bigf=[f for f in th if abs(th[f]-thin)<1e-4]
+            panel=cls.startswith('wood') and thin<.06 and thin<.35*mid
+            if panel and sharp and D.get('banding',True):
+                h=hex_of(mat); c='#%02x%02x%02x'%tuple(int(int(h[i:i+2],16)*.84) for i in (1,3,5))
+                bi=slot(me,mat_for(base_name(mat.name)+' · canto ABS','plastic',c,.36))
+                for f in faces:
+                    if f not in bigf: f.material_index=bi
+                st['band']+=1
+            if panel and D.get('panels',True) and mid>.35 and big>.35:
+                vert=[f for f in bigf if abs((Rw@f.normal).z)<.3 and f.calc_area()>.12]
+                if vert:
+                    bmesh.ops.inset_individual(bm,faces=vert,thickness=min(.04,mid*.1),depth=-min(.003,thin*.15),use_even_offset=True)
+                    st['panel']+=len(vert)
+            if D.get('handles') and cls in DETAIL_CLASSES:
+                for f in list(th):
+                    if (Rw@f.normal).dot(fv)<.9 or len(f.verts)!=4: continue
+                    vs=[v.co for v in f.verts]; cen=f.calc_center_median(); n=f.normal.normalized()
+                    axes=[(vs[1]-vs[0]),(vs[3]-vs[0])]
+                    hz=max(axes,key=lambda a:abs((Rw@a.normalized()).z)<.3 and a.length or 0); up=[a for a in axes if a is not hz][0]
+                    W,Hh=hz.length,up.length
+                    if (Rw@up).z<0: up=-up
+                    if not (.25<W<1.0 and .12<Hh<.9 and th[f]>.3): continue
+                    hzn,upn=hz.normalized(),up.normalized(); L=min(.18,W*.45); c0=cen+upn*(Hh/2-min(.06,Hh*.2))
+                    if not panel: bmesh.ops.inset_individual(bm,faces=[f],thickness=.014,depth=-.003,use_even_offset=True)
+                    hm=slot(me,mat_for('Tirador acero cepillado','metal','#b8bcc0',.3))
+                    def cube(center,a,b,cc):
+                        r=bmesh.ops.create_cube(bm,size=1)
+                        M=Matrix(((a.x,b.x,cc.x,center.x),(a.y,b.y,cc.y,center.y),(a.z,b.z,cc.z,center.z),(0,0,0,1)))
+                        bmesh.ops.transform(bm,matrix=M,verts=r['verts'])
+                        for ff in {ff for v in r['verts'] for ff in v.link_faces}: ff.material_index=hm
+                    cube(c0+n*.03,hzn*L,upn*.012,n*.012)
+                    for s in (-1,1): cube(c0+hzn*(s*L*.4)+n*.015,hzn*.012,upn*.012,n*.03)
+                    st['handle']+=1
+            if sharp and thin>=.004:
+                bmesh.ops.bevel(bm,geom=edges,offset=min(float(D.get('bevel',.004)),thin*.3),segments=2,profile=.5,affect='EDGES',clamp_overlap=True)
+                st['bevel']+=1
+        if not jobs or not any(st.values()) or st==before_st: bm.free(); continue
+        bm.transform(S.inverted()); bm.normal_update(); bm.to_mesh(me); bm.free(); me.update()
+    kp=PC.get('kick_plate')
+    if kp:
+        mn,mx=bounds(); c=(mn+mx)/2; size=mx-mn; side=Vector((-fv.y,fv.x,0))
+        w=abs(size.dot(side))-2*kp.get('inset',.03); half=abs(size.dot(fv))/2
+        bpy.ops.mesh.primitive_cube_add(size=1); k=bpy.context.object; k.name='Hiperreal kick plate'
+        k.location=c+fv*(half-kp.get('inset',.03))+Vector((0,0,mn.z-c.z+kp.get('h',.07)/2))
+        k.location.z=mn.z+kp.get('h',.07)/2
+        k.rotation_euler.z=math.atan2(side.y,side.x); k.scale=(w,.012,kp.get('h',.07))
+        k.data.materials.append(mat_for('Zócalo aluminio oscuro','metal_dark','#3a3c3f',.35)); st['kick']=1
+    log['detail']=st; print('DETAIL',st,flush=True)
+
+def place_on_front(log):
+    """Per-piece override: put named objects (e.g. 3D text signs) flat on the front face of the piece."""
+    spec=PC.get('place_on_front')
+    if not spec: return
+    names=set(spec); body=[o for o in meshes() if o.name not in names]
+    mn,mx=bounds(body); c=(mn+mx)/2; fv=FRONTS[PC.get('front','-Y')]
+    for name,vals in spec.items():
+        dx,dz,k=vals[:3]; plane=vals[3] if len(vals)>3 else None
+        o=B.objects.get(name)
+        if not o: continue
+        bpy.context.view_layer.update(); mw=o.matrix_world.copy(); sc0=mw.to_scale(); o.parent=None; o.matrix_world=mw
+        side=Vector((-fv.y,fv.x,0)); half=abs((mx-mn).dot(fv))/2
+        loc=c+fv*(half+.004)+side*dx+Vector((0,0,dz))
+        if plane is not None:
+            if abs(fv.y)>.5: loc.y=plane
+            else: loc.x=plane
+        o.location=loc; o.rotation_euler=(math.pi/2,0,math.atan2(fv.y,fv.x)+math.pi/2); o.scale=(sc0.x*k,sc0.y*k,sc0.z*k)
+    log['placed_on_front']=sorted(spec)
+
+def add_parts(log):
+    """Per-piece override: cheap hand-tuned real parts (handles, hinges, kick plates, vents, brackets).
+    Each part: {name, at:[x,y,z] world metres (centre), size:[sx,sy,sz], cls, hex, cyl:bool}. Names start with 'Hiperreal '."""
+    parts=PC.get('add_parts') or []
+    root=next((o for o in B.objects if o.parent is None and o.type=='EMPTY'),None)
+    for i,sp in enumerate(parts):
+        if sp.get('cyl'): bpy.ops.mesh.primitive_cylinder_add(vertices=24,radius=.5,depth=1)
+        else: bpy.ops.mesh.primitive_cube_add(size=1)
+        o=bpy.context.object; o.name='Hiperreal '+sp.get('name','pieza %d'%i); o.location=sp['at']; o.scale=sp['size']
+        if sp.get('rot'): o.rotation_euler=[math.radians(a) for a in sp['rot']]
+        if sp.get('cyl'):
+            for f in o.data.polygons: f.use_smooth=True
+        o.data.materials.append(mat_for('Hiperreal · '+sp.get('cls','metal')+' '+sp.get('hex','#b8bcc0'),sp.get('cls','metal'),sp.get('hex','#b8bcc0'),sp.get('rough')))
+        if root:
+            bpy.context.view_layer.update(); mw=o.matrix_world.copy(); o.parent=root; o.matrix_world=mw
+    if parts: log['added_parts']=[p.get('name') for p in parts]
 def build():
     log={'piece':N,'materials':{},'jittered':0,'objects':len(meshes())}
     # 0. uniform product scale (pilot 47 problem): products under a non-uniformly scaled parent
@@ -155,15 +303,34 @@ def build():
                     for md in list(o.modifiers):
                         try: bpy.ops.object.modifier_apply(modifier=md.name)
                         except Exception as e: print('modifier',o.name,md.name,e)
+    # 1b. object_classes: per-object material split (e.g. a saddle sharing "black" with the tyres becomes leather)
+    oc=PC.get('object_classes',{})
+    if oc:
+        mc=PC.setdefault('material_classes',{}); made={}
+        for o in meshes():
+            cls=oc.get(base_name(o.name))
+            if not cls: continue
+            for s in o.material_slots:
+                if not s.material: continue
+                key=(s.material.name,cls)
+                if key not in made:
+                    nm=s.material.copy(); nm.name=base_name(s.material.name)+' · '+cls; made[key]=nm; mc[base_name(nm.name)]=cls
+                s.material=made[key]
+        log['object_classes']=len(made)
     # 2. materials
     for m in list(B.materials):
         users=sum(1 for o in meshes() for s in o.material_slots if s.material==m)
         if not users or not bsdf(m): continue
         cls=classify(m); upgrade(m,cls); log['materials'][m.name]=cls
+    place_on_front(log)
+    add_parts(log)
+    # 2b. real geometry detail (bevels, banding, panel seams, handles, kick plate)
+    detail(log)
     # 3. physical-scale UVs for tiling classes
     tiles=PC['tile_m']
     def tile_for(mat):
         if not mat: return None
+        if mat.get('hiperreal_source_tex'): return None
         c=mat.get('hiperreal_class'); return tiles.get(c) if c else None
     if not PC.get('keep_uvs'):
         seen=set()
@@ -186,7 +353,7 @@ def build():
     # 5. export HD + master blend
     bpy.ops.object.select_all(action='DESELECT')
     for o in B.objects:
-        if o.type in ('MESH','EMPTY'): o.select_set(True)
+        if o.type in ('MESH','EMPTY','FONT','CURVE','SURFACE','META'): o.select_set(True)  # text signs too
     hd=OUT+'/hiperreal-hd.glb'
     bpy.ops.export_scene.gltf(filepath=hd,export_format='GLB',use_selection=True,export_extras=True,export_yup=True,export_apply=True,
         export_cameras=False,export_lights=False,export_animations=False,export_materials='EXPORT',export_image_format='AUTO')
@@ -212,7 +379,7 @@ def cycles(samples):
     sc.render.threads_mode='FIXED'; sc.render.threads=8; sc.render.image_settings.file_format='PNG'; sc.view_settings.view_transform='AgX'
 def camera(res):
     mn,mx=bounds(); c=(mn+mx)/2; size=mx-mn
-    front={'-Y':Vector((0,-1,0)),'+Y':Vector((0,1,0)),'+X':Vector((1,0,0))}[PC.get('front','-Y')]
+    front=FRONTS[PC.get('front','-Y')]
     side=Vector((-front.y,front.x,0))
     wide=max(size.x,size.y)/max(size.z,1e-3)>3
     d=(front*1.0+side*(.3 if wide else .55)+Vector((0,0,.42))).normalized()
@@ -274,7 +441,7 @@ def after():
             geo=nt.nodes.new('ShaderNodeNewGeometry'); sz=nt.nodes.new('ShaderNodeSeparateXYZ'); nt.links.new(geo.outputs['Normal'],sz.inputs[0])
             noise=nt.nodes.new('ShaderNodeTexNoise'); noise.inputs['Scale'].default_value=7; noise.inputs['Detail'].default_value=8
             mm=nt.nodes.new('ShaderNodeMath'); mm.operation='MULTIPLY'; nt.links.new(sz.outputs['Z'],mm.inputs[0]); nt.links.new(noise.outputs['Fac'],mm.inputs[1])
-            cr=nt.nodes.new('ShaderNodeMapRange'); cr.inputs[1].default_value=.45; cr.inputs[2].default_value=.8; cr.inputs[4].default_value=.16; nt.links.new(mm.outputs[0],cr.inputs[0])
+            cr=nt.nodes.new('ShaderNodeMapRange'); cr.inputs[1].default_value=.45; cr.inputs[2].default_value=.8; cr.inputs[4].default_value=.07; nt.links.new(mm.outputs[0],cr.inputs[0])
             mix=nt.nodes.new('ShaderNodeMix'); mix.data_type='RGBA'; nt.links.new(cr.outputs[0],mix.inputs['Factor'])
             if src: nt.links.new(src,mix.inputs['A'])
             else: mix.inputs['A'].default_value=p.inputs['Base Color'].default_value
@@ -283,26 +450,30 @@ def after():
             nm=next((l.from_node for l in nt.links if l.to_socket==p.inputs['Normal']),None)
             if not nm: nt.links.new(bv.outputs['Normal'],p.inputs['Normal'])
     cam,c,size=camera(res); mn,mx=bounds([o for o in meshes()]); R=max(size.x,size.y,size.z)
+    fv=FRONTS[PC.get('front','-Y')]; side=Vector((-fv.y,fv.x,0)); half=abs(size.dot(fv))/2; span=abs(size.dot(side))
+    # Clean neutral cafe/studio set (batch 2): smooth warm microcement floor, matte off-white wall, no grunge maps.
     bpy.ops.mesh.primitive_plane_add(size=1,location=(c.x,c.y,0)); fl=bpy.context.object; fl.name='Set_floor'; fl.scale=(max(14,R*5),)*2+(1,)
-    fm,_=pbr_set('Polished concrete','concrete_floor_02',max(14,R*5)/1.3); coat(fm,.35,.18); fl.data.materials.append(fm)
-    F=1 if PC.get('front','-Y')=='+Y' else -1
-    back=mx.y+.02 if F<0 else mn.y-.02
-    bpy.ops.mesh.primitive_plane_add(size=1,location=(c.x,back,max(1.75,mx.z*1.1)),rotation=(math.pi/2,0,0)); wl=bpy.context.object; wl.name='Set_wall'; wl.scale=(max(9,R*4),max(3.5,mx.z*2.4),1)
-    wm,wp=pbr_set('Warm plaster','plaster_grey_04',(wl.scale.x/2.6,wl.scale.y/2.6)); wl.data.materials.append(wm)
-    hsv=wm.node_tree.nodes.new('ShaderNodeHueSaturation'); s=next(l.from_socket for l in wm.node_tree.links if l.to_socket==wp.inputs['Base Color'])
-    wm.node_tree.links.new(s,hsv.inputs['Color']); hsv.inputs['Hue'].default_value=.53; hsv.inputs['Saturation'].default_value=1.25; hsv.inputs['Value'].default_value=.62; wm.node_tree.links.new(hsv.outputs['Color'],wp.inputs['Base Color'])
+    fm=B.materials.new('Set microcement'); fm.use_nodes=True; fp=bsdf(fm); fp.inputs['Base Color'].default_value=(.46,.43,.40,1); fp.inputs['Roughness'].default_value=.38
+    nz=fm.node_tree.nodes.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value=1.6; nz.inputs['Detail'].default_value=3
+    rr=fm.node_tree.nodes.new('ShaderNodeMapRange'); rr.inputs[3].default_value=.32; rr.inputs[4].default_value=.46
+    fm.node_tree.links.new(nz.outputs['Fac'],rr.inputs[0]); fm.node_tree.links.new(rr.outputs[0],fp.inputs['Roughness']); coat(fm,.25,.12); fl.data.materials.append(fm)
+    wpos=c-fv*(half+.03); wpos.z=max(1.75,mx.z*1.1)
+    bpy.ops.mesh.primitive_plane_add(size=1,location=wpos,rotation=(math.pi/2,0,math.atan2(fv.y,fv.x)+math.pi/2)); wl=bpy.context.object; wl.name='Set_wall'; wl.scale=(max(9,R*4),max(3.5,mx.z*2.4),1)
+    wm=B.materials.new('Set painted wall'); wm.use_nodes=True; wp=bsdf(wm); wp.inputs['Base Color'].default_value=(.62,.58,.53,1); wp.inputs['Roughness'].default_value=.82; wl.data.materials.append(wm)
+    bpy.ops.mesh.primitive_cube_add(size=1); sk=bpy.context.object; sk.name='Set_skirting'; sk.location=c-fv*(half+.025); sk.location.z=.04
+    sk.rotation_euler.z=math.atan2(side.y,side.x); sk.scale=(wl.scale.x,.012,.08); sk.data.materials.append(wm)
     w=B.worlds.new('ComfyCafe'); sc.world=w; w.use_nodes=True; nt=w.node_tree
     env=nt.nodes.new('ShaderNodeTexEnvironment'); env.image=B.images.load(T+'comfy_cafe_2k.hdr'); mp=nt.nodes.new('ShaderNodeMapping'); tc=nt.nodes.new('ShaderNodeTexCoord')
     mp.inputs['Rotation'].default_value=(0,0,math.radians(float(PC.get('hdri_rot',120)))); nt.links.new(tc.outputs['Generated'],mp.inputs[0]); nt.links.new(mp.outputs[0],env.inputs[0])
-    nt.links.new(env.outputs['Color'],nt.nodes['Background'].inputs['Color']); nt.nodes['Background'].inputs['Strength'].default_value=float(PC.get('hdri_str',1.25))
-    warm=(1.0,.86,.70); H=max(3.2,mx.z+1.6); k=max(1,R/3)
-    n=max(1,round(size.x/2.2))
+    nt.links.new(env.outputs['Color'],nt.nodes['Background'].inputs['Color']); nt.nodes['Background'].inputs['Strength'].default_value=float(PC.get('hdri_str',1.1))
+    warm=(1.0,.88,.74); H=max(3.2,mx.z+1.6); k=max(1,R/3)
+    n=max(1,round(span/2.2))
     for i in range(n):
-        x=mn.x+(i+.5)*size.x/n
-        ld=B.lights.new('Downlight','SPOT'); ld.energy=float(PC.get('spot_w',340))*k; ld.color=warm; ld.spot_size=math.radians(70); ld.spot_blend=.6; ld.shadow_soft_size=.06
-        ob=B.objects.new('Downlight',ld); sc.collection.objects.link(ob); ob.location=(x,(mn.y-1.0) if F<0 else (mx.y+1.0),H); look(ob,(x,c.y,mx.z*.5))
-    ld=B.lights.new('Ceiling panel','AREA'); ld.energy=float(PC.get('panel_w',300))*k*k; ld.color=(1.0,.93,.85); ld.shape='RECTANGLE'; ld.size=1.6*k; ld.size_y=.4*k
-    ob=B.objects.new('Ceiling panel',ld); sc.collection.objects.link(ob); ob.location=(c.x,(mn.y-2.2*k) if F<0 else (mx.y+2.2*k),H); look(ob,(c.x,c.y,mx.z*.4))
+        p0=c+side*((i+.5)*span/n-span/2)
+        ld=B.lights.new('Downlight','SPOT'); ld.energy=float(PC.get('spot_w',300))*k; ld.color=warm; ld.spot_size=math.radians(75); ld.spot_blend=.7; ld.shadow_soft_size=.08
+        ob=B.objects.new('Downlight',ld); sc.collection.objects.link(ob); ob.location=p0+fv*(half+1.0); ob.location.z=H; look(ob,(p0.x,p0.y,mx.z*.5))
+    ld=B.lights.new('Ceiling panel','AREA'); ld.energy=float(PC.get('panel_w',340))*k*k; ld.color=(1.0,.95,.88); ld.shape='RECTANGLE'; ld.size=1.8*k; ld.size_y=.5*k
+    ob=B.objects.new('Ceiling panel',ld); sc.collection.objects.link(ob); ob.location=c+fv*(half+2.2*k); ob.location.z=H; look(ob,(c.x,c.y,mx.z*.4))
     try: sc.view_settings.look='AgX - Punchy'
     except Exception: pass
     sc.view_settings.exposure=float(PC.get('expo',-0.2))

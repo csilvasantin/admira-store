@@ -1,7 +1,7 @@
 """compose.py TANDA "44 45 ..." -> /workspace/uploads/hiperreal-tanda<N>-comparativa.png + per-piece JPGs in catalog/<nn>/hiperreal/preview"""
 import sys, os, json, shutil
 from PIL import Image, ImageDraw, ImageFont
-H=os.path.dirname(os.path.abspath(__file__)); N=sys.argv[1]; pieces=sys.argv[2].split(); CAT=os.environ.get('CAT','/tmp/xpz/inventario/assets/catalog')
+H=os.path.dirname(os.path.abspath(__file__)); N=sys.argv[1]; pieces=sys.argv[2].split(); CAT=os.environ.get('CAT','/workspace/grokbot-xpaceos/inventario/assets/catalog')
 cfg=json.load(open(H+'/pieces.json'))['pieces']; U='/workspace/uploads/'
 F=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',26); f2=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',22)
 W=760; rows=[]
@@ -19,6 +19,6 @@ for n in pieces:
     Image.open(f'{H}/out/{n}/after.png').convert('RGB').save(pv+'despues.jpg',quality=88)
 Ht=sum(r.height for r in rows)+10*(len(rows)-1)+64
 c=Image.new('RGB',(2*W+10,Ht),(18,18,18)); d=ImageDraw.Draw(c)
-d.text((16,16),f'Hiperreal · tanda {N} · Best → Hiperreal · Cycles (vista previa rápida, 32 muestras)',font=F,fill=(255,255,255)); y=64
+d.text((16,16),f'Hiperreal · tanda {N} · Best → Hiperreal · Cycles (vista previa rápida, {os.environ.get('SAMPLES','16')} muestras)',font=F,fill=(255,255,255)); y=64
 for r in rows: c.paste(r,(0,y)); y+=r.height+10
 c.save(U+f'hiperreal-tanda{N}-comparativa.png',optimize=True); print(c.size, os.path.getsize(U+f'hiperreal-tanda{N}-comparativa.png'))

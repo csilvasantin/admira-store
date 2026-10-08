@@ -1,0 +1,62 @@
+{
+  "number": 21,
+  "name": "Sofá Cazafantasmas",
+  "tier": "hiperreal",
+  "based_on": "best",
+  "batch": 4,
+  "geometry_basis": "interpretive",
+  "measured": false,
+  "material_classes": {
+    "dark": "powder",
+    "grey": "fabric",
+    "red": "fabric",
+    "white": "fabric"
+  },
+  "jittered_items": 0,
+  "bevel": "procedural bevel applied to geometry",
+  "lods": {
+    "web": "./hiperreal.glb",
+    "hd_unreal_nanite": "./hiperreal/hiperreal-hd.glb",
+    "blender": "./hiperreal.blend"
+  },
+  "bytes": {
+    "web": 669152,
+    "hd": 1313256,
+    "best": 350456
+  },
+  "shared_textures": "../../hiperreal-tex/",
+  "textures": [
+    "fabric_normal_1024.jpg",
+    "fabric_orm_1024.jpg",
+    "powder_normal_1024.jpg",
+    "powder_orm_1024.jpg"
+  ],
+  "lighting": {
+    "web_hdri": "../47/hiperreal/comfy_cafe_1k.hdr",
+    "cycles_hdri": "Poly Haven comfy_cafe 2K"
+  },
+  "texture_sources_cc0": [
+    "polyhaven:oak_veneer_01",
+    "polyhaven:concrete_floor_02",
+    "polyhaven:plaster_grey_04",
+    "polyhaven:comfy_cafe",
+    "ambientcg:Metal049A",
+    "ambientcg:Cardboard004",
+    "ambientcg:Fingerprints002",
+    "ambientcg:Smear007",
+    "procedural:pastry,powder (XpaceOS)"
+  ],
+  "renders": "./hiperreal/preview/",
+  "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
+  "guide": "/admira-xp/docs/hiperreal-pipeline.md",
+  "geometry_detail": {
+    "bevel": 0,
+    "band": 0,
+    "panel": 0,
+    "handle": 0,
+    "kick": 0
+  },
+  "added_parts": [],
+  "placed_on_front": [],
+  "object_classes": {}
+}

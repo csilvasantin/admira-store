@@ -216,7 +216,7 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=hiperreal-tanda1-20261008-1');if(ticket!==generation)return;
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=hiperreal-tanda4-20261008-1');if(ticket!==generation)return;
       viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,getScreenPreview:()=>window.XpaceScreenMedia?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';

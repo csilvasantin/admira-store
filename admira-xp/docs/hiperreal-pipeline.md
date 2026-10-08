@@ -49,3 +49,42 @@ Se conservan los nombres de objeto y todas las propiedades de inventario (`inven
 - Hiperreal mejora materiales, luz e imperfección; no remodela. Las piezas de geometría muy simple (silla 49, mesa 48, cajas de la barra) siguen siendo cajas bien acabadas.
 - El botellero 50 ya era PBR: gana sobre todo peso web (4,96 MB → 1,0 MB) y la luz Hiperreal.
 - Las medidas siguen siendo interpretativas, no un levantamiento.
+
+## Tanda 2 · piezas nativas de demo (08-10-2026)
+
+Piezas: 2 Estantería, 3 Botellero, 7 Escritorio, 9 Planta, 10 Lámpara, 13 Pantalla TFT, 15 Tablet de satisfacción, 51 Librería
+(no existe `catalog/01`). `admira-xp/demos/catalog.json` solo tiene escenarios Starbucks: no hay escena 365/Lenovo con piezas del catálogo que priorizar.
+
+**Detalle geométrico real** (`detail()` en `pipeline.py`, tras los materiales y antes de las UV):
+- cajas de 8 vértices (madera, lacado, metal, plástico, piedra): bisel real de hasta 4 mm (2 segmentos);
+- tableros finos de madera: cantos de ABS (material propio, un 16 % más oscuro y satinado);
+- tableros verticales grandes (>35 cm): panel con ranura perimetral (inset 4 cm, 3 mm de fondo);
+- por pieza: `kick_plate` (zócalo empotrado de aluminio oscuro) y `detail.handles` (tirador de barra en frentes de cajón/puerta);
+- las cajas ya redondeadas de las piezas nativas (98 vértices) y las mallas trianguladas no se tocan.
+- los textos 3D (letreros) se exportan también (tipo FONT) para no perder la identidad visual.
+
+**Encuadre**: `front` admite `-Y`, `+Y`, `+X`, `-X` (la estantería 2 mira a `+X`). La pared, el zócalo de pared y las luces se colocan según ese frente.
+
+**Fondo de las comparativas**: microcemento cálido liso y pared pintada mate con rodapié; sin texturas de hormigón ni yeso. El polvo de las superficies superiores baja a la mitad.
+
+**Límites honestos**: las piezas nativas 3, 7, 9, 10, 13 y 15 están hechas con cajas ya redondeadas o mallas trianguladas, así que el detalle geométrico automático no les añade nada; mejoran solo por materiales. El escritorio 7 no recibió tirador (su cajonera no es una caja simple). Donde más se nota el detalle es en la librería 51 (biseles, cantos y panel trasero) y en la estantería 2 (paneles laterales y zócalo).
+
+## Tanda 3 · resto de nativas (08-10-2026)
+
+Piezas: 4 Lotería, 5 Vending, 6 Revistero, 8 Puerta, 11 Alfombra, 12 LED Banner, 14 Mupi Metahuman, 16 Aroma, 17 Mesa DJ, 18 Gestor de turnos.
+
+Overrides nuevos en `pieces.json` para piezas de formas redondeadas o trianguladas (donde `detail()` no actúa):
+- `add_parts`: piezas reales con nombre `Hiperreal …` en coordenadas de mundo (caja o cilindro, clase de material y color). Usado en 5 (trampilla, tirador, zócalo), 7 (tirador del cajón), 8 (bisagras, placa de patada), 12 (soportes, cable) y 16 (rejilla). Pasan después por el bisel automático.
+- `place_on_front`: coloca objetos con nombre (letreros 3D) sobre el frente de la pieza: `[dx, dz, escala, plano]`. Arregla los letreros de 13 y 14, que en Best estaban 2,4 m bajo el suelo.
+- `material_classes` → `powder` en la alfombra 11 para el relieve fino del tejido.
+
+Pendiente: la pieza 1 (Mostrador) usa `assets/mostrador/counter-interpreted-*.glb` y `counterURL`, fuera del catálogo; necesita soporte propio en `counter-asset.mjs` antes de tener Hiperreal. Las piezas 4, 6, 17, 18 y 11 mejoran solo por materiales.
+
+## Tanda 4 · primeras Pixeria (19–27)
+
+- Nuevas clases de material: `fabric` (trama tejida en normal + sheen de terciopelo, sin laca), `leather` (grano y laca suave) y `carpaint` (laca 1.0 / rugosidad 0.03). Mosaico en `tile_m`: tela 0,12 m, cuero 0,35 m.
+- `object_classes` en `pieces.json`: separa un material compartido por nombre de objeto (p. ej. el `black` del sillín pasa a cuero mientras los neumáticos siguen siendo goma).
+- `add_parts` admite `rot` (grados) para discos de freno y antenas inclinadas.
+- Texturas de autor: si un material ya trae su propia imagen de color base, el pipeline ya no le reescribe las UV con proyección de caja (era la causa de la madera a rayas en la estantería 2 y la librería 51 en el visor web).
+- `install.py TANDA "n …"` copia LOD web, HD y .blend al catálogo y escribe `hiperreal.manifest.json`.
+- Caché por pieza: `HIPERREAL_REVISION` en `inventario/quality-model.mjs` sube la revisión de una pieza ya publicada cuando se reconstruye.

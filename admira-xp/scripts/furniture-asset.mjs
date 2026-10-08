@@ -1,7 +1,7 @@
 import {GLTFLoader} from './vendor/GLTFLoader.mjs';
 import {cloneCounter,counterURL} from './counter-asset.mjs';
 import {assetForInstance} from '../../inventario/model.mjs?v=ipad-20261005-1';
-import {supportsQuality,twinQualityChain,hiperrealBatch} from '../../inventario/quality-model.mjs?v=hiperreal-tanda1-20261008-1';
+import {supportsQuality,twinQualityChain,hiperrealBatch,HIPERREAL_REVISION} from '../../inventario/quality-model.mjs?v=hiperreal-tanda4-20261008-1';
 const cache=new Map();let registryPromise;
 export const inventoryIdFor=assetForInstance;
 export function furnitureURL(number,tier='best',extension='glb'){
@@ -12,7 +12,7 @@ export function furnitureURL(number,tier='best',extension='glb'){
  if(number===47&&tier==='best')url.searchParams.set('v','coffee47-photo-20261008-1');
  if(number===47&&tier==='matrix')url.searchParams.set('v','coffee47-matrix-20261008-1');
  if(number===47&&tier==='hiperreal')url.searchParams.set('v','coffee47-hiperreal-20261008-1');
- else if(tier==='hiperreal')url.searchParams.set('v','hiperreal-tanda'+hiperrealBatch(number)+'-20261008-1');
+ else if(tier==='hiperreal')url.searchParams.set('v','hiperreal-tanda'+hiperrealBatch(number)+'-20261008-'+(HIPERREAL_REVISION[number]||1));
  return url.href;
 }
 export async function cloneFurniture(number,tier='best'){
