@@ -290,10 +290,9 @@
     "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
   ],
   "default": [
-    "El CLI conserva /avatar digital good, better y best al escribir",
-    "Chica: Sara Martín o Cassidy; chico: David Martín o James, según idioma",
-    "Recuperación de locuciones desde el servidor; segundo clic detiene",
-    "El avatar conserva el contexto del local; ayuda y MCP en español e inglés"
+    "SneakerStore: fondo con pantalla LED y puerta central; mesa de caja pegada a la pared derecha.",
+    "El LED comparte el canal horizontal validado; nueva vista Fondo LED y migración conservando las ediciones.",
+    "Guía ES/EN, tutorial y contratos MCP actualizados."
   ],
   "v.07.10.2026.r11.08:07": [
     "Tótem: /totem kiosko (o el botón 🛒 Quiosco) pone el Quiosco de pedido de ainimation.studio en la pantalla vertical",
@@ -563,5 +562,10 @@
     "SneakerStore: contenido horizontal en la LCD y vertical en la pantalla de entrada, con playlists separadas.",
     "Tags Pixeria y dimensiones reales del vídeo se comprueban antes de reproducir; se bloquean formatos incompatibles.",
     "Selector de pantalla y ayuda ES/EN, tutorial y MCP actualizados."
+  ],
+  "v.09.10.2026.r1.00:06": [
+    "SneakerStore: fondo con pantalla LED y puerta central; mesa de caja pegada a la pared derecha.",
+    "El LED comparte el canal horizontal validado; nueva vista Fondo LED y migración conservando las ediciones.",
+    "Guía ES/EN, tutorial y contratos MCP actualizados."
   ]
 }

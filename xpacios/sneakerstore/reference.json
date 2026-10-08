@@ -45,12 +45,20 @@
     },
     "dimensions": "interpreted units, not measured metres"
   },
-  "layout_revision": "jordan-wall-v4",
+  "layout_revision": "rear-led-door-v5",
   "wall_view": {
     "url": "https://www.admira.store/xpacios/sneakerstore/?view=jordan",
     "basis": "facing the display wall",
     "left": "Jordan videowall, five panels; captured IEU Entrada still",
     "right": "giant LCD; active Pixeria playlist",
     "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
+  },
+  "rear_view": {
+    "url": "https://www.admira.store/xpacios/sneakerstore/?view=rear",
+    "basis": "street entrance towards rear; right is x=0",
+    "led": "back-wall; one landscape video canvas split around central doorway; same validated playlist as LCD",
+    "door": "rear-door; central physical model door, not painted into video",
+    "counter": "counter; right wall, countertop edge x=0; only default pose migrated",
+    "measurements": "approximate, not surveyed"
   }
 }

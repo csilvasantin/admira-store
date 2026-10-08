@@ -1,6 +1,6 @@
 import {measuredFormat} from './screen-format.mjs';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import {CORRECTED_POSES} from './layout-reference.mjs?v=jordan-4';
+import {CORRECTED_POSES} from './layout-reference.mjs?v=rear-6';
 import {JORDAN_PANELS,JORDAN_SOURCE} from './jordan-reference.mjs?v=jordan-4';
 
 // Interpreted geometry from IEU Entrada/Centro/Fondo, not a measured survey.
@@ -16,7 +16,38 @@ export function createStoreScene({t,video,portraitVideo}){
   item('floor',t('Baldosa gris · pasillo central','Grey tile · central aisle'),0,0,4,14,g=>{g.add(box(4,.12,14,floor,2,-.06,7));for(let z=0;z<=14;z+=1)g.add(box(4,.004,.015,black,2,.005,z));for(let x=1;x<4;x++)g.add(box(.015,.004,14,black,x,.005,7));},{locked:true});
   item('side-wall',t('Derecha desde entrada · chapa acanalada','Right from entrance · corrugated metal'),0,0,.1,14,g=>{const wall=new T.Mesh(own(new T.PlaneGeometry(14,3.2)),metal);wall.rotation.y=Math.PI/2;wall.position.set(0,1.6,7);g.add(wall);ribs(g,0,7,14);},{locked:true});
   item('right-wall',t('Izquierda desde entrada · chapa acanalada','Left from entrance · corrugated metal'),3.95,0,.05,14,g=>{const wall=new T.Mesh(own(new T.PlaneGeometry(14,3.2)),metal);wall.rotation.y=-Math.PI/2;wall.position.set(.05,1.6,7);g.add(wall);ribs(g,.05,7,14);},{locked:true});
-  item('back-wall',t('Fondo · mural IOT Gallery','Rear · IOT Gallery mural'),0,13.94,4,.06,g=>{g.add(box(4,3.2,.06,metal,2,1.6,0));const l=label('IOT  GALLERY',3.35,2.55);l.rotation.y=Math.PI;l.position.set(2,1.75,-.04);g.add(l);for(let x=.35;x<3.8;x+=.35)g.add(box(.012,2.4,.012,mint,x,1.6,-.055));},{locked:true});
+  // One continuous landscape video canvas, interrupted by the physical door.
+  // Three surface pieces share UVs; this is not three portrait playlists.
+  const videoTexture=own(new T.VideoTexture(video));videoTexture.colorSpace=T.SRGBColorSpace;
+  const rearVideoPlanes=[];
+  item('back-wall',t('Fondo · pantalla LED con puerta central','Rear · LED screen with central door'),0,13.94,4,.06,g=>{
+    const w=4,h=3.2,doorLeft=1.5,doorRight=2.5,doorTop=2.15;
+    for(const [x,y,pw,ph]of [[0,0,doorLeft,h],[doorRight,0,w-doorRight,h],[doorLeft,doorTop,doorRight-doorLeft,h-doorTop]]){
+      g.add(box(pw,ph,.06,black,x+pw/2,y+ph/2,0));
+      const geometry=own(new T.PlaneGeometry(pw,ph));
+      const mesh=new T.Mesh(geometry,own(new T.MeshBasicMaterial({map:videoTexture,toneMapped:false})));
+      mesh.rotation.y=Math.PI;mesh.position.set(x+pw/2,y+ph/2,-.035);
+      mesh.userData.screenTarget='sneakers-store-santa-rosa-19-rear-led';mesh.userData.rearRect={x,y,w:pw,h:ph};rearVideoPlanes.push(mesh);g.add(mesh);
+    }
+  },{locked:true});
+  item('rear-door',t('Puerta central · hueco del LED del fondo','Central door · rear LED opening'),1.5,13.86,1,.12,g=>{
+    g.add(box(.94,2.1,.07,black,.5,1.05,0));
+    for(const x of [.015,.985])g.add(box(.03,2.15,.12,metal,x,1.075,-.01));
+    g.add(box(1,.035,.12,metal,.5,2.15,-.01),box(.035,.18,.06,tan,.84,1,-.08));
+    for(let y=.15;y<2.05;y+=.09)g.add(box(.86,.012,.012,metal,.5,y,-.045));
+  },{locked:true});
+  function fitRearVideo(){
+    const valid=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal',ratio=video.videoWidth/video.videoHeight;
+    const imageW=Math.min(4,3.2*ratio),imageH=imageW/ratio,left=(4-imageW)/2,bottom=(3.2-imageH)/2;
+    for(const mesh of rearVideoPlanes){mesh.visible=valid;if(!valid)continue;
+      const {x,y,w,h}=mesh.userData.rearRect,x0=Math.max(x,left),x1=Math.min(x+w,left+imageW),y0=Math.max(y,bottom),y1=Math.min(y+h,bottom+imageH);
+      mesh.visible=x1>x0&&y1>y0;if(!mesh.visible)continue;
+      mesh.scale.set((x1-x0)/w,(y1-y0)/h,1);mesh.position.set((x0+x1)/2,(y0+y1)/2,-.035);
+      // Facing -z: local plane left maps to increasing world x.
+      mesh.geometry.setAttribute('uv',new T.Float32BufferAttribute([(x1-left)/imageW,(y1-bottom)/imageH,(x0-left)/imageW,(y1-bottom)/imageH,(x1-left)/imageW,(y0-bottom)/imageH,(x0-left)/imageW,(y0-bottom)/imageH],2));
+    }
+  }
+  video.addEventListener('loadedmetadata',fitRearVideo);fitRearVideo();
   item('entrance-door',t('Entrada · puerta IOT Gallery','Entrance · IOT Gallery door'),.8,0,2.4,.13,g=>{const glass=mat('#15332e',{transparent:true,opacity:.48,metalness:.3});g.add(box(2.4,2.65,.06,glass,1.2,1.325,0));for(const x of [0,1.2,2.4])g.add(box(.035,2.65,.08,metal,x,1.325,0));g.add(box(2.4,.045,.1,metal,1.2,2.65,0),box(.018,2.55,.02,tan,1.2,1.28,.055));const top=label('WWW.IOT.GALLERY',2.4,.3,'#d9e7dc');top.position.set(1.2,2.85,.04);g.add(top);const logo=label('IOT  GALLERY',1.6,.65);logo.position.set(1.2,1,.04);g.add(logo);},{locked:true});
   item('entrance-ac',t('Aire acondicionado de entrada','Entrance air conditioner'),1.35,.1,1.3,.25,g=>{g.add(box(1.3,.4,.23,white,.65,2.98,.12),box(1.12,.08,.015,black,.65,2.88,.25));},{locked:true});
   item('puerta-cam',t('Puerta Cam · cámara exterior en IEU','Puerta Cam · exterior camera in IEU'),3.35,.2,.25,.3,g=>{g.add(box(.12,.13,.15,white,.06,2.65,.07),box(.065,.065,.04,black,.06,2.64,.16));},{locked:true});
@@ -26,9 +57,9 @@ export function createStoreScene({t,video,portraitVideo}){
   function rack(id,x,z,length,face){return item(id,t('Expositor negro · zapatillas ','Black shoe display ')+id,x,z,.5,length,g=>{const board=new T.Mesh(own(new T.PlaneGeometry(length,2.45)),black);board.rotation.y=face>0?Math.PI/2:-Math.PI/2;board.position.set(face>0?.025:.475,1.225,length/2);g.add(board);for(let r=0;r<(id==='rack-right-0'?3:4);r++){g.add(box(.48,.035,length,black,.25,.35+r*.52,length/2),box(.01,.012,length,r%2?mint:violet,face>.0?.48:.02,.32+r*.52,length/2));for(let j=0;j<4;j++){const zz=.25+j*(length-.5)/3;shoe(g,.25,.37+r*.52,zz,[white,red,tan,blue][(j+r)%4],Math.PI/2);if((r+j)%3===0)g.add(box(.26,.16,.28,black,.24,.27+r*.52,zz));}}});}
   rack('rack-0',.04,.7,2.5,1);rack('rack-1',.04,8.1,.75,-1);rack('rack-2',.04,10.8,1.5,-1);
   rack('rack-right-0',3.46,3.5,2.2,-1);rack('rack-right-1',3.46,6.1,2.4,1);rack('rack-right-2',3.46,8.7,2.4,1);
-  rack('rack-rear-right',.04,10.2,3.1,1);
+  rack('rack-rear-right',.04,10.2,1.5,1);
   item('bench',t('Banco lateral de prueba','Side fitting bench'),.08,12.6,.65,1.1,g=>g.add(box(.65,.43,1.1,tan,.325,.215,.55),box(.65,.08,1.1,black,.325,.45,.55)));
-  item('counter',t('Caja del fondo · frente metálico','Rear checkout · metal front'),1.1,12,1.9,.75,g=>{g.add(box(1.9,.95,.75,metal,.95,.475,.375),box(2,.06,.85,black,.95,.98,.375));for(let y=.1;y<.9;y+=.08)g.add(box(1.9,.02,.025,white,.95,y,-.015));g.add(box(.35,.25,.045,black,1.45,1.2,.4),box(.22,.025,.16,black,1.45,1.05,.4));shoe(g,.4,1.02,.4,red);});
+  item('counter',t('Mesa de caja · pegada a pared derecha','Checkout table · against right wall'),1.1,12,1.9,.75,g=>{g.add(box(1.9,.95,.75,metal,.95,.475,.375),box(2,.06,.85,black,.95,.98,.375));for(let y=.1;y<.9;y+=.08)g.add(box(1.9,.02,.025,white,.95,y,-.015));g.add(box(.35,.25,.045,black,1.45,1.2,.4),box(.22,.025,.16,black,1.45,1.05,.4));shoe(g,.4,1.02,.4,red);});
   function arcade(id,x,z,color,title){item(id,title,x,z,.6,.55,g=>{const cabinet=new T.Group();g.add(cabinet);cabinet.position.set(.6,0,0);cabinet.rotation.y=-Math.PI/2;g=cabinet;g.add(box(.55,.6,.6,black,.275,.3,.3),box(.55,.5,.3,color,.275,.85,.45),box(.55,.055,.6,black,.275,.64,.3));const l=label(title,.45,.33,'#eff5dc');l.position.set(.275,.9,.285);l.rotation.y=Math.PI;g.add(l);for(let i=0;i<4;i++)g.add(box(.045,.018,.045,[mint,red,blue,tan][i],.12+i*.1,.68,.2));});}
   arcade('arcade-star-wars',.12,3.25,black,'STAR WARS');arcade('arcade-mario',3.3,5.1,blue,'SUPER MARIO');
   const portraitTexture=own(new T.VideoTexture(portraitVideo));portraitTexture.colorSpace=T.SRGBColorSpace;
@@ -64,7 +95,6 @@ export function createStoreScene({t,video,portraitVideo}){
       panel.rotation.y=-Math.PI/2;panel.position.set(-.005,y,z);g.add(panel);
     });
   });
-  const videoTexture=own(new T.VideoTexture(video));videoTexture.colorSpace=T.SRGBColorSpace;
   let videoPlane;
   item('screen',t('LCD gigante · derecha de Jordan · playlist Pixeria','Giant LCD · right of Jordan · Pixeria playlist'),.09,4.25,.14,3.5,g=>{g.add(box(.12,1.97,3.5,black,.06,1.65,1.75));const mesh=videoPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:videoTexture,toneMapped:false})));mesh.rotation.y=-Math.PI/2;mesh.position.set(-.005,1.65,1.75);mesh.userData.screenTarget='sneakers-store-santa-rosa-19-screen';g.add(mesh);});
   function fitVideo(){videoPlane.visible=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal';const ratio=(video.videoWidth||16)/(video.videoHeight||9),height=Math.min(1.88,3.34/ratio);videoPlane.scale.set(height*ratio,height,1);}
@@ -72,5 +102,5 @@ export function createStoreScene({t,video,portraitVideo}){
   item('upper-displays',t('Pantallas superiores de exposición','Upper exhibition displays'),0,0,4,14,g=>{for(let z=3;z<12;z+=3){for(const x of [.1,3.9]){const l=label('SNEAKERS / IOT',1.2,.42,'#dce8ed');l.rotation.y=x<2?Math.PI/2:-Math.PI/2;l.position.set(x,2.8,z);g.add(l);}}},{locked:true});
   const hemisphere=new T.HemisphereLight('#d2e8ef','#1b1c28',2.4),sun=new T.DirectionalLight('#ffffff',3.2);sun.position.set(4,10,4);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-10;sun.shadow.camera.right=10;sun.shadow.camera.top=16;sun.shadow.camera.bottom=-16;scene.add(hemisphere,sun);
   for(const [color,x,z]of [['#31ee84',2,12.8],['#b340ef',3.2,2],['#327cff',.8,8]]){const light=new T.PointLight(color,9,7,2);light.position.set(x,.7,z);scene.add(light);}
-  return {root,actors,scene,resources,objects,layout,hemisphere,sun,cols:4,rows:14,disposeMedia:()=>{disposedReference=true;referenceImage.onload=null;video.removeEventListener('loadedmetadata',fitVideo);portraitVideo.removeEventListener('loadedmetadata',fitPortrait);}};
+  return {root,actors,scene,resources,objects,layout,hemisphere,sun,cols:4,rows:14,disposeMedia:()=>{disposedReference=true;referenceImage.onload=null;video.removeEventListener('loadedmetadata',fitVideo);video.removeEventListener('loadedmetadata',fitRearVideo);portraitVideo.removeEventListener('loadedmetadata',fitPortrait);}};
 }

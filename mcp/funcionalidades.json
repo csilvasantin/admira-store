@@ -5404,7 +5404,7 @@
       "editable_model": "?view=model",
       "measurements": "approximate, not surveyed",
       "photo_screens": "captured content; active playlist in View screen / 3D side display",
-      "layout_revision": "jordan-wall-v4; previous real-store-v2 state backed up once; untouched defaults corrected; explicit edits retained",
+      "layout_revision": "rear-led-door-v5; previous jordan-wall-v4 backed up once; only default counter corrected; explicit edits retained",
       "scene_links": {
         "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
         "centro": "https://www.admira.store/xpacios/sneakerstore/?scene=centro",
@@ -5439,6 +5439,14 @@
         "left": "Jordan videowall, five panels; captured IEU Entrada still",
         "right": "giant LCD; active Pixeria playlist",
         "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
+      },
+      "rear_view": {
+        "url": "https://www.admira.store/xpacios/sneakerstore/?view=rear",
+        "basis": "street entrance towards rear; right is x=0",
+        "led": "back-wall; one landscape video canvas split around central doorway; same validated playlist as LCD",
+        "door": "rear-door; central physical model door, not painted into video",
+        "counter": "counter; right wall, countertop edge x=0; only default pose migrated",
+        "measurements": "approximate, not surveyed"
       }
     },
     "screen_formats": {
@@ -5454,7 +5462,10 @@
             720
           ]
         ],
-        "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=horizontal"
+        "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=horizontal",
+        "additional_screen_ids": [
+          "sneakers-store-santa-rosa-19-rear-led"
+        ]
       },
       "vertical": {
         "screen_id": "sneakers-store-santa-rosa-19-entry-display",

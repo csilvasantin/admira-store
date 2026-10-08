@@ -39,7 +39,7 @@ Screen formats: the landscape LCD uses Stock 665 (1280×720, horizontal/landscap
     "editable_model": "?view=model",
     "measurements": "approximate, not surveyed",
     "photo_screens": "captured content; active playlist in View screen / 3D side display",
-    "layout_revision": "jordan-wall-v4; previous real-store-v2 state backed up once; untouched defaults corrected; explicit edits retained",
+    "layout_revision": "rear-led-door-v5; previous jordan-wall-v4 backed up once; only default counter corrected; explicit edits retained",
     "scene_links": {
       "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
       "centro": "https://www.admira.store/xpacios/sneakerstore/?scene=centro",
@@ -74,6 +74,14 @@ Screen formats: the landscape LCD uses Stock 665 (1280×720, horizontal/landscap
       "left": "Jordan videowall, five panels; captured IEU Entrada still",
       "right": "giant LCD; active Pixeria playlist",
       "source": "jordan-reference.mjs; UV quadrilaterals from original entrada.jpg"
+    },
+    "rear_view": {
+      "url": "https://www.admira.store/xpacios/sneakerstore/?view=rear",
+      "basis": "street entrance towards rear; right is x=0",
+      "led": "back-wall; one landscape video canvas split around central doorway; same validated playlist as LCD",
+      "door": "rear-door; central physical model door, not painted into video",
+      "counter": "counter; right wall, countertop edge x=0; only default pose migrated",
+      "measurements": "approximate, not surveyed"
     }
   },
   "screen_formats": {
@@ -89,7 +97,10 @@ Screen formats: the landscape LCD uses Stock 665 (1280×720, horizontal/landscap
           720
         ]
       ],
-      "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=horizontal"
+      "state": "https://www.admira.biz/api/demo-global?project=sneakers-store&channel=horizontal",
+      "additional_screen_ids": [
+        "sneakers-store-santa-rosa-19-rear-led"
+      ]
     },
     "vertical": {
       "screen_id": "sneakers-store-santa-rosa-19-entry-display",
@@ -136,3 +147,10 @@ Jordan + LCD abre una vista frontal de la pared: el videowall Jordan de cinco pa
 Jordan + LCD opens a frontal wall view: the five-panel Jordan videowall is on the left and the giant LCD to its right, with space between them. Jordan uses the captured IEU Entrance image; the LCD plays the active playlist. It is also available in Advanced → Wall · Jordan + LCD and at ?view=jordan. From the door towards checkout, both are on the left side; the arcades are opposite. Revision jordan-wall-v4 backs up the previous real-store-v2 state and corrects only default positions, preserving explicitly edited placements, records, locks, visibility and deletions.
 
 La revisión mantiene el identificador de pantalla y la playlist compartida. Las dimensiones siguen siendo interpretativas; las panorámicas originales no se modifican. / Screen identity and shared playlist are retained. Dimensions remain interpreted; original panoramas are unchanged.
+
+
+## Fondo LED, puerta y mesa / Rear LED, door and table
+
+Fondo LED abre el fondo 3D con una pantalla LED continua interrumpida por una puerta central real del modelo y la mesa de caja pegada a la pared derecha, mirando desde la entrada. Está también en Avanzado → Fondo · LED, puerta y mesa y en ?view=rear. El LED comparte la playlist horizontal de la LCD; tres superficies conservan un único lienzo y sus proporciones, con el hueco físico de la puerta. rear-led-door-v5 respalda una vez el estado jordan-wall-v4 y mueve sólo la mesa que conserva su posición predeterminada; mantiene ediciones, historial, bloqueos, visibilidad y borrados. La geometría sigue siendo aproximada, pendiente de medidas.
+
+Rear LED opens the 3D rear with a continuous LED screen interrupted by a central model door and the checkout table against the right wall, looking from the entrance. It is also in Advanced → Rear · LED, door and table and at ?view=rear. The LED shares the LCD landscape playlist; three surfaces preserve one canvas and its aspect ratio around the physical door opening. rear-led-door-v5 backs up jordan-wall-v4 once and moves only a checkout table still at its default position; edits, history, locks, visibility and deletions are retained. Geometry remains approximate, awaiting measurements.
