@@ -22,11 +22,33 @@
     "editable_model": "?view=model",
     "measurements": "approximate, not surveyed",
     "photo_screens": "captured content; active playlist in View screen / 3D side display",
-    "layout_revision": "real-store-v2; previous browser layout retained",
+    "layout_revision": "door-to-rear-v3; real-store-v2 backed up once; untouched defaults corrected; explicit edits retained",
     "scene_links": {
       "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
       "centro": "https://www.admira.store/xpacios/sneakerstore/?scene=centro",
       "fondo": "https://www.admira.store/xpacios/sneakerstore/?scene=fondo"
+    },
+    "orientation": {
+      "basis": "street door towards rear checkout",
+      "left": [
+        "giant LCD",
+        "entrance portrait display",
+        "iPad",
+        "rear bench"
+      ],
+      "right": [
+        "long shoe display",
+        "vertical LED column",
+        "Star Wars arcade",
+        "Super Mario arcade"
+      ],
+      "coordinates": {
+        "entrance_z": 0,
+        "checkout_z": 14,
+        "left_x": 4,
+        "right_x": 0
+      },
+      "dimensions": "interpreted units, not measured metres"
     }
   }
 }

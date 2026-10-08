@@ -21,5 +21,28 @@
       "source": "https://digitaltwin.ieu.ai/s/store/static/scenes/407b2be5fd77.jpg",
       "sha256": "4bf44c3d7a1525b2d5e8ce891c9cb4ef9d6ce9780f547abbd3654d0a0d856f3b"
     }
-  ]
+  ],
+  "orientation": {
+    "basis": "street door towards rear checkout",
+    "left": [
+      "giant LCD",
+      "entrance portrait display",
+      "iPad",
+      "rear bench"
+    ],
+    "right": [
+      "long shoe display",
+      "vertical LED column",
+      "Star Wars arcade",
+      "Super Mario arcade"
+    ],
+    "coordinates": {
+      "entrance_z": 0,
+      "checkout_z": 14,
+      "left_x": 4,
+      "right_x": 0
+    },
+    "dimensions": "interpreted units, not measured metres"
+  },
+  "layout_revision": "door-to-rear-v3"
 }
