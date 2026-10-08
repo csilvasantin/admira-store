@@ -1,16 +1,16 @@
 {
-  "version": "v.08.10.2026.r4.07:42",
-  "deployedAt": "2026-10-08T05:44:01Z",
+  "version": "v.08.10.2026.r5.07:56",
+  "deployedAt": "2026-10-08T05:56:51Z",
   "deployer": "GrokBot",
   "machine": "MacMini",
   "signature": "GrokBot · MacMini",
-  "git": "8e88465c43ca583a8c6bc4bd5c2e6b5761cf9291",
-  "gitShort": "8e88465",
-  "gitFull": "8e88465c43ca583a8c6bc4bd5c2e6b5761cf9291",
+  "git": "b556394561d171f1d7942c81d26d8248558b59f3",
+  "gitShort": "b556394",
+  "gitFull": "b556394561d171f1d7942c81d26d8248558b59f3",
   "dirty": false,
   "novedades": [
-    "/demo all es|en (también ESP/ENG o --idioma): el recorrido elige idioma para la tarjeta, la CLI y los contenidos; sin argumento sigue /idioma y al acabar vuelve el de antes",
-    "Tarjeta flotante de cristal con los colores de la marca: se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic la recoloca), icono animado por demo con anillo de pasos, píldora ES/EN, Pausa · Siguiente · Detener",
-    "/demo pausa y /demo reanudar; /help/demos enseña también los iconos"
+    "IF·THEN·DO THAT: al dejar una botella de agua en la caja, además de la oferta en el iPad suena «Gracias por comprar agua de proximidad» (o «Thank you for buying locally sourced water»)",
+    "La locución es un segundo DO editable (texto en castellano e inglés) con idioma según /idioma, castellano, inglés o las dos; ▶ Probar locución",
+    "/demo 14 entrega una botella de demo para verlo y oírlo, y la devuelve al terminar"
   ]
 }
