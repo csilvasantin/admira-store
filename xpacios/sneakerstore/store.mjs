@@ -6,6 +6,7 @@ import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),en=params.get('lang')==='en',t=(es,english)=>en?english:es;
 if(params.get('embed')==='1')document.documentElement.classList.add('embed');
 document.documentElement.lang=en?'en':'es';
+$('global-demo-link').href='https://www.admira.biz/demo/?lang='+(en?'en':'es');
 $('model-canvas').setAttribute('aria-label',t('Sneakers Store 3D · arrastra para girar y rueda para ampliar','Sneakers Store 3D · drag to orbit and scroll to zoom'));$('inventory-edit').textContent=t('Distribuir','Distribute');$('manage-playlist').textContent=t('Gestionar en admira.biz ↗','Manage in admira.biz ↗');$('manage-playlist').href='https://www.admira.biz/demo/?lang='+(en?'en':'es');
 $('scene-kind').textContent=t('Tienda real · recorrido 360','Real store · 360 tour');$('show-playlist').textContent=t('Ver pantalla','View screen');$('close-playlist').setAttribute('aria-label',t('Cerrar','Close'));$('close-inventory').setAttribute('aria-label',t('Cerrar inventario','Close inventory'));$('inventory-title').textContent=t('Inventario','Inventory');$('inventory-note').textContent=t('Planta 3D adaptada a Entrada, Centro y Fondo de IEU. Distribución editable guardada en este navegador; proporciones aproximadas, pendientes de medición.','3D floor plan adapted to IEU Entrance, Centre and Rear. Editable layout saved in this browser; approximate proportions awaiting measurement.');
 const video=$('store-video');
