@@ -3,7 +3,7 @@ import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collisi
 import {assetForInstance} from '../../inventario/model.mjs?v=ipad-20261005-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_ARCHITECTURE_DETAILS,photoPieceFor} from './matrix-photo-pieces.mjs?v=customer-motion-1';
-import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
+import {quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 
 const MANIFEST_URL=new URL('../assets/matrix-furniture/catalog/manifest.json',import.meta.url);
 const SVG='http://www.w3.org/2000/svg';

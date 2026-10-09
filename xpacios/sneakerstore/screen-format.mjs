@@ -7,3 +7,13 @@ export function taggedFormat(tags=[]){
 }
 export function measuredFormat(width,height){return width>0&&height>0?(width===height?'square':width>height?'horizontal':'vertical'):'unknown';}
 export function compatibleTrack(track,format){return taggedFormat(track.tags)===format;}
+
+// Physical active-area bounds, in the plane's local units. Invalid dimensions
+// fail closed rather than expanding the player or stretching source content.
+export function fitScreenAperture(aperture,width,height){
+ const values=[aperture?.w,aperture?.h,width,height];
+ if(!values.every(value=>Number.isFinite(value)&&value>0))return null;
+ const scale=Math.min(aperture.w/width,aperture.h/height);
+ const fit={w:Math.min(aperture.w,width*scale),h:Math.min(aperture.h,height*scale)};
+ return Number.isFinite(scale)&&scale>0&&fit.w>0&&fit.h>0?fit:null;
+}

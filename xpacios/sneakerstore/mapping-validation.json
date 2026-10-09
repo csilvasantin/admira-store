@@ -1,0 +1,917 @@
+{
+  "revision": "angular-aperture-v1",
+  "capturedAt": "2026-10-09T16:08:43.355651+00:00",
+  "method": "native browser renderer; PNG GPU export; independent per-pixel angular validator",
+  "boundaryTolerancePixels": 1,
+  "shaderGuardReferencePixels": 0.2,
+  "rearGuardReferencePixels": 0,
+  "sourcePhotographs": {
+    "centro.jpg": "5fc92671f9b2f2775fcc0bf95db93906416228a83a2536a171fe6ad79b1898c1",
+    "entrada.jpg": "451a221b277bf216329e1cef7500349faaff839c4accdeb1282397ba5771f8a4",
+    "fondo.jpg": "4bf44c3d7a1525b2d5e8ce891c9cb4ef9d6ce9780f547abbd3654d0a0d856f3b"
+  },
+  "cases": [
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "centro",
+      "yaw": 0.43773846205414424,
+      "pitch": 0.21752699783767215,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 71414,
+      "solid_magenta_pixels": 71413,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 67103,
+      "missing_interior_pixels": 42,
+      "interior_coverage": 0.9993740965381578,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 43042,
+          "magenta_pixels": 43042,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 4,
+          "interior_pixels": 977,
+          "magenta_pixels": 977,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 3,
+          "interior_pixels": 2815,
+          "magenta_pixels": 2815,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 2,
+          "interior_pixels": 8273,
+          "magenta_pixels": 8273,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 1,
+          "interior_pixels": 7841,
+          "magenta_pixels": 7841,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 0,
+          "interior_pixels": 3841,
+          "magenta_pixels": 3841,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "centro",
+      "yaw": 2.0401603594259496,
+      "pitch": -0.09110141456943058,
+      "fov": 95,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 112227,
+      "solid_magenta_pixels": 112227,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 107587,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 67219,
+          "magenta_pixels": 67219,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 13230,
+          "magenta_pixels": 13230,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 10125,
+          "magenta_pixels": 10125,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 16457,
+          "magenta_pixels": 16457,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "centro",
+      "yaw": 2.9907256431012406,
+      "pitch": -0.02454369260617026,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 296867,
+      "solid_magenta_pixels": 296867,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 292400,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 217718,
+          "magenta_pixels": 217718,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 31472,
+          "magenta_pixels": 31472,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 12690,
+          "magenta_pixels": 12690,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 29660,
+          "magenta_pixels": 29660,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 4.373924641653211,
+      "pitch": -0.039849412023073655,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 152344,
+      "solid_magenta_pixels": 152344,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 148819,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "column",
+          "screen": null,
+          "interior_pixels": 133802,
+          "magenta_pixels": 133802,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 9937,
+          "magenta_pixels": 9937,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 5080,
+          "magenta_pixels": 5080,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 4.496097689292814,
+      "pitch": -0.17947575218262,
+      "fov": 95,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 46512,
+      "solid_magenta_pixels": 46512,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 42333,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "column",
+          "screen": null,
+          "interior_pixels": 28006,
+          "magenta_pixels": 28006,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 6993,
+          "magenta_pixels": 6993,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 5878,
+          "magenta_pixels": 5878,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 723,
+          "magenta_pixels": 723,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 307,
+          "magenta_pixels": 307,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 426,
+          "magenta_pixels": 426,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 3.053005263089397,
+      "pitch": -0.0483203948183977,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 80333,
+      "solid_magenta_pixels": 80333,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 76105,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "jordan",
+          "screen": 2,
+          "interior_pixels": 24237,
+          "magenta_pixels": 24237,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 3,
+          "interior_pixels": 16346,
+          "magenta_pixels": 16346,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 4,
+          "interior_pixels": 9598,
+          "magenta_pixels": 9598,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 3980,
+          "magenta_pixels": 3980,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 8378,
+          "magenta_pixels": 8378,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 5524,
+          "magenta_pixels": 5524,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 7706,
+          "magenta_pixels": 7706,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "fondo",
+      "yaw": 2.5260317297577504,
+      "pitch": -0.191977695603888,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 140415,
+      "solid_magenta_pixels": 140415,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 137249,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 121751,
+          "magenta_pixels": 121751,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 15262,
+          "magenta_pixels": 15262,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "fondo",
+      "yaw": 3.033830503240827,
+      "pitch": 0.21590779589490397,
+      "fov": 65,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 122654,
+      "solid_magenta_pixels": 122654,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 119052,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 46059,
+          "magenta_pixels": 46059,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 17947,
+          "magenta_pixels": 17947,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 53864,
+          "magenta_pixels": 53864,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "fondo",
+      "yaw": 1.2333205534600555,
+      "pitch": 0.029912625363770002,
+      "fov": 45,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 41720,
+      "solid_magenta_pixels": 41720,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 37966,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 30248,
+          "magenta_pixels": 30248,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 3845,
+          "magenta_pixels": 3845,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 3873,
+          "magenta_pixels": 3873,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 2.588209084360048,
+      "pitch": 0.124993867866215,
+      "fov": 45,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 148459,
+      "solid_magenta_pixels": 148459,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 140642,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "jordan",
+          "screen": 0,
+          "interior_pixels": 31903,
+          "magenta_pixels": 31903,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 1,
+          "interior_pixels": 36455,
+          "magenta_pixels": 36455,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 2,
+          "interior_pixels": 35918,
+          "magenta_pixels": 35918,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 3,
+          "interior_pixels": 9094,
+          "magenta_pixels": 9094,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 4,
+          "interior_pixels": 4136,
+          "magenta_pixels": 4136,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 2382,
+          "magenta_pixels": 2382,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 7067,
+          "magenta_pixels": 7067,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 5075,
+          "magenta_pixels": 5075,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 8251,
+          "magenta_pixels": 8251,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 3.8222966282140463,
+      "pitch": 0.5476311412751739,
+      "fov": 65,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 85375,
+      "solid_magenta_pixels": 85375,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 80250,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 590,
+          "magenta_pixels": 590,
+          "coverage": 1.0
+        },
+        {
+          "installation": "column",
+          "screen": null,
+          "interior_pixels": 57296,
+          "magenta_pixels": 57296,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 9161,
+          "magenta_pixels": 9161,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 1788,
+          "magenta_pixels": 1788,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 2427,
+          "magenta_pixels": 2427,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 2920,
+          "magenta_pixels": 2920,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 3643,
+          "magenta_pixels": 3643,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 2061,
+          "magenta_pixels": 2061,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "centro",
+      "yaw": 3.113214009013909,
+      "pitch": 0.0855194289246245,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        480,
+        628
+      ],
+      "changed_pixels": 99340,
+      "solid_magenta_pixels": 99340,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 95460,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "rear",
+          "screen": 0,
+          "interior_pixels": 42659,
+          "magenta_pixels": 42659,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 1,
+          "interior_pixels": 15814,
+          "magenta_pixels": 15814,
+          "coverage": 1.0
+        },
+        {
+          "installation": "rear",
+          "screen": 2,
+          "interior_pixels": 36038,
+          "magenta_pixels": 36038,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 4.583364151892531,
+      "pitch": -0.12711587462279014,
+      "fov": 95,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        480,
+        628
+      ],
+      "changed_pixels": 43308,
+      "solid_magenta_pixels": 43308,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 39760,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "column",
+          "screen": null,
+          "interior_pixels": 36965,
+          "magenta_pixels": 36965,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 735,
+          "magenta_pixels": 735,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 1104,
+          "magenta_pixels": 1104,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 176,
+          "magenta_pixels": 176,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 780,
+          "magenta_pixels": 780,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 0.9863496466104673,
+      "pitch": -0.2926068352891861,
+      "fov": 85,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        480,
+        628
+      ],
+      "changed_pixels": 46060,
+      "solid_magenta_pixels": 46060,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 43888,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "portrait",
+          "screen": null,
+          "interior_pixels": 41343,
+          "magenta_pixels": 41343,
+          "coverage": 1.0
+        },
+        {
+          "installation": "tablet",
+          "screen": null,
+          "interior_pixels": 2545,
+          "magenta_pixels": 2545,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 0.9863496466104673,
+      "pitch": -0.2926068352891861,
+      "fov": 35,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 227996,
+      "solid_magenta_pixels": 227996,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 225401,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "portrait",
+          "screen": null,
+          "interior_pixels": 206881,
+          "magenta_pixels": 206881,
+          "coverage": 1.0
+        },
+        {
+          "installation": "tablet",
+          "screen": null,
+          "interior_pixels": 18520,
+          "magenta_pixels": 18520,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 0.9863496466104673,
+      "pitch": -0.2926068352891861,
+      "fov": 95,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 40242,
+      "solid_magenta_pixels": 40242,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 37996,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "portrait",
+          "screen": null,
+          "interior_pixels": 22227,
+          "magenta_pixels": 22227,
+          "coverage": 1.0
+        },
+        {
+          "installation": "tablet",
+          "screen": null,
+          "interior_pixels": 1305,
+          "magenta_pixels": 1305,
+          "coverage": 1.0
+        },
+        {
+          "installation": "jordan",
+          "screen": 0,
+          "interior_pixels": 14464,
+          "magenta_pixels": 14464,
+          "coverage": 1.0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "capture": "gpu-canvas-lossless",
+      "scene": "entrada",
+      "yaw": 4.11413647310929,
+      "pitch": 0.16950487706136336,
+      "fov": 45,
+      "screenshot_scale": 1.0,
+      "canvas_pixels": [
+        1280,
+        553
+      ],
+      "changed_pixels": 143866,
+      "solid_magenta_pixels": 143866,
+      "bleed_pixels": 0,
+      "stable_aperture_pixels": 138985,
+      "missing_interior_pixels": 0,
+      "interior_coverage": 1.0,
+      "tolerance_pixels": 1,
+      "surfaces": [
+        {
+          "installation": "column",
+          "screen": null,
+          "interior_pixels": 110348,
+          "magenta_pixels": 110348,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 14792,
+          "magenta_pixels": 14792,
+          "coverage": 1.0
+        },
+        {
+          "installation": "landscape",
+          "screen": null,
+          "interior_pixels": 7159,
+          "magenta_pixels": 7159,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 4467,
+          "magenta_pixels": 4467,
+          "coverage": 1.0
+        },
+        {
+          "installation": "strip",
+          "screen": null,
+          "interior_pixels": 2219,
+          "magenta_pixels": 2219,
+          "coverage": 1.0
+        }
+      ]
+    }
+  ],
+  "testTool": "tests/validate-panorama-fit.py",
+  "fixture": "tests/fixtures/sneaker-surface-fit.html",
+  "physicalSurvey": false
+}

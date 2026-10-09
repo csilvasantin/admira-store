@@ -21,7 +21,7 @@
     "source": "IEU Store · 2026-10-08",
     "editable_model": "?view=model",
     "measurements": "approximate, not surveyed",
-    "photo_screens": "captured content; active playlist in View screen / 3D side display",
+    "photo_screens": "captured photograph by default; calibrated campaign overlays in all three photo views; validated playlist in View screen / 3D",
     "layout_revision": "rear-led-door-v5; previous jordan-wall-v4 backed up once; only default counter corrected; explicit edits retained",
     "scene_links": {
       "entrada": "https://www.admira.store/xpacios/sneakerstore/?scene=entrada",
@@ -134,6 +134,33 @@
       "fondo"
     ],
     "originalPhotosUnchanged": true,
-    "physicalControl": false
+    "physicalControl": false,
+    "surfaceMapping": {
+      "revision": "angular-aperture-v1",
+      "grid": [
+        2048,
+        1024
+      ],
+      "renderer": "https://www.admira.store/admira-xp/scripts/panorama-surface.mjs",
+      "calibration": "https://www.admira.store/xpacios/sneakerstore/next-step/panorama-map.mjs",
+      "aperture": "clockwise inner photographed polygon; source homography TL/TR/BL/BR",
+      "guardReferencePixels": 0.2,
+      "rearGuardReferencePixels": 0,
+      "rearZones": [
+        0,
+        1,
+        2
+      ],
+      "sceneSurfaceCounts": {
+        "entrada": 18,
+        "centro": 19,
+        "fondo": 13
+      },
+      "camera": "fixed capture origin; yaw/pitch and vertical FOV35–95; no translation",
+      "originalPhotosUnchanged": true,
+      "calibrationAccuracy": "photographic, approximately0.5–1referencepx nearby and1–2distant; not surveyed",
+      "validation": "lossless GPU aperture containment and native visual review",
+      "guide": "https://www.admira.store/admira-xp/docs/surface-mapping.md"
+    }
   }
 }

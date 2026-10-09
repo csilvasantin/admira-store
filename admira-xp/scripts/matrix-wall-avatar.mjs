@@ -1,4 +1,4 @@
-import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
+import {quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 
 // Alsea brick wall beside the exit. TL/TR/BR/BL, calibrated in the original capture.
 export const STARBUCKS_AVATAR_WALL=Object.freeze({id:'starbucks-avatar-wall',width:400,height:900,

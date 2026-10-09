@@ -5507,10 +5507,28 @@
   "next_step_360": {
     "id": "sneakers-next-step",
     "scope": "SneakerStore · Santa Rosa 19",
-    "es": "Campaña animada superpuesta a pantallas visibles en Entrada, Centro y Fondo 360; reloj compartido con 3D; pausa/reiniciar/parar; originales y estado local conservados. Ajuste visual aproximado.",
-    "en": "Animated campaign over visible screens in Entrance, Centre and Rear 360; shared clock with 3D; pause/restart/stop; original photographs and local state preserved. Approximate visual alignment.",
+    "es": "Modo 360: NEXT STEP y las campañas de Creador se proyectan dentro del área activa de cada pantalla de Entrada, Centro y Fondo. La fotografía y los contenidos usan los mismos rayos de cámara al girar o ampliar; los marcos quedan fuera del contenido. Jordan conserva cinco áreas independientes; el LED del fondo conserva sus tres zonas y el hueco de puerta, con el mostrador delante. Un mapa inválido oculta la proyección. Aplicar una campaña cambia su textura y ajusta el contenido dentro del área activa del soporte; en 3D conserva su aspecto con bandas cuando las proporciones difieren. Arrastra, usa las flechas o +/−; pausa, reiniciar y parar comparten reloj con 3D. Parar recupera las texturas y playlists originales. La fotografía 360 permite giro y zoom desde un punto fijo; no añade desplazamiento ni paralaje medido. La geometría 3D sigue siendo interpretativa, pendiente de medición.",
+    "en": "360 mode: NEXT STEP and Creator campaigns project inside the active aperture of each Entrance, Centre and Rear screen. Photograph and content use the same camera rays during rotation and zoom; bezels stay outside the content. Jordan retains five independent apertures; the rear LED retains its three zones and doorway, with the counter in front. Invalid maps hide the projection. Applying a campaign changes its texture and fits content inside the support’s active area; 3D retains the source aspect with letterboxing when proportions differ. Drag, use arrow keys or +/−; pause, restart and stop share the 3D clock. Stop restores original textures and playlists. Photographic 360 supports rotation and zoom from one fixed point; it adds no translation or measured parallax. The 3D geometry remains interpretive and awaits measurement.",
     "url": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada",
-    "physical_control": false
+    "physical_control": false,
+    "surfaceMapping": {
+      "guide": "https://www.admira.store/admira-xp/docs/surface-mapping.md",
+      "camera": "single-position angular photograph; yaw/pitch/FOV; no measured translational parallax",
+      "photographSampling": "canonical angular ray shared with projected apertures",
+      "aperture": "calibrated inner active area; bezel excluded; invalid geometry hidden",
+      "campaignApplication": "source crop and bounded contain fit inside fixed active-area metadata; support geometry retained",
+      "jordan": "five separate physical apertures sharing master crops",
+      "rear": "three LED zones in entrada/centro/fondo; doorway and foreground protected",
+      "matrix": "outer mapped player clips child paint to aperture",
+      "verification": "calibrated-apertures-gpu-tested; public URL review required per release",
+      "physicalCalibration": false,
+      "measured3DGeometry": false,
+      "sharedPhotographRenderer": "/admira-xp/scripts/panorama-surface.mjs",
+      "sharedProjectionValidation": "/admira-xp/scripts/surface-projection.mjs",
+      "aperturePolygon": "optional surface.aperture: clockwise 2048x1024 source-photo polygon; fallback quad corners [0,1,3,2]",
+      "safetyInsetReferencePixels": 0.2,
+      "physicalScreenFit": "scene plane userData.aperture {w,h}; screen-format.mjs fitScreenAperture; exact original state restored on stop"
+    }
   },
   "creator_demo_contract": {
     "id": "demo-creador",

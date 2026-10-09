@@ -1,10 +1,10 @@
 import {createCreatorCampaign,applyCreatorPresentation} from './next-step/creator-core.mjs?v=creator-tools-2';
-import {mountNextStep} from './next-step/twin.mjs?v=creator-tools-2';
-import {compatibleTrack,measuredFormat} from './screen-format.mjs';
+import {mountNextStep} from './next-step/twin.mjs?v=surface-fit-1';
+import {compatibleTrack,measuredFormat} from './screen-format.mjs?v=surface-fit-1';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {referenceStorage} from './layout-reference.mjs?v=rear-8';
-import {createStoreScene} from './scene.mjs?v=next-step-1';
-import {createPanorama,SCENES} from './panorama.mjs?v=creator-tools-2';
+import {createStoreScene} from './scene.mjs?v=surface-fit-1';
+import {createPanorama,SCENES} from './panorama.mjs?v=surface-fit-1';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs';
 import {createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs';
 import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs';

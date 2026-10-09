@@ -1,4 +1,4 @@
-import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
+import {quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 // Body zones calibrated in the same 360° capture as the wall players; TL/TR/BR/BL.
 export const PEOPLE=Object.freeze([
  {voice:'male',corners:[{yaw:57.221129,pitch:5.718988},{yaw:49.532582,pitch:6.322304},{yaw:48.584135,pitch:-3.070109},{yaw:56.190591,pitch:-2.788450}]},

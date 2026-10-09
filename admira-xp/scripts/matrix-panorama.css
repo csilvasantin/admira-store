@@ -3,7 +3,7 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 .matrix-panorama{position:absolute;inset:0;touch-action:none;outline-offset:-3px;cursor:grab}
 .matrix-panorama.is-mapping{cursor:crosshair}.matrix-panorama canvas{display:block;width:100%;height:100%}
 .matrix-player-layer,.matrix-markers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}.matrix-markers circle{fill:#78f3ff;stroke:#03151b;stroke-width:2}
-.matrix-mapped-player{position:absolute;left:0;top:0;transform-origin:0 0;background:#000;border:4px solid #000;box-sizing:border-box;box-shadow:0 0 0 12px #000;pointer-events:none;overflow:hidden;backface-visibility:hidden}
+.matrix-mapped-player{position:absolute;left:0;top:0;transform-origin:0 0;background:#000;border:4px solid #000;box-sizing:border-box;box-shadow:none;pointer-events:none;overflow:hidden;clip-path:inset(0);contain:paint;backface-visibility:hidden}
 .matrix-player-label{position:absolute;left:0;bottom:0;max-width:100%;font:22px/1.4 monospace;padding:8px 12px;background:#032d2ded;color:white;border:0;pointer-events:auto;cursor:pointer;text-align:left;overflow-wrap:anywhere}
 .matrix-player-media{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:fill;pointer-events:none}
 .matrix-map-toolbar{position:absolute;z-index:5;top:100px;left:16px;right:16px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;pointer-events:none}
@@ -146,7 +146,7 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 #telegramDock .matrix-current-track{font:10px/1.4 monospace}
 
 /* Landscape counter iPad, mapped over the old printed sign. */
-.matrix-mapped-player.matrix-landscape-ipad{border:26px solid #161a1d;border-radius:40px;box-shadow:0 0 0 8px #070a0c;background:#063d30}
+.matrix-mapped-player.matrix-landscape-ipad{border:26px solid #161a1d;border-radius:40px;clip-path:inset(0 round 40px);background:#063d30}
 .matrix-mapped-player.matrix-landscape-ipad.has-preview{border:26px solid #161a1d;background:#063d30}
 .matrix-ipad-idle{position:absolute;inset:0;display:grid;place-items:center;color:#b5d6c7;font:50px monospace;letter-spacing:4px}
 .matrix-landscape-ipad .matrix-player-media{background:transparent;object-fit:contain}
@@ -155,6 +155,7 @@ dialog.matrix-panorama-dialog{left:0!important;top:38px!important;width:100vw!im
 
 /* The avatar shares the capture perspective. The same iframe expands into the top layer. */
 .matrix-wall-avatar{position:absolute;left:0;top:0;margin:0;padding:0;width:400px;height:900px;max-width:none;max-height:none;box-sizing:border-box;transform-origin:0 0;border:12px solid #101817;border-radius:10px;background:#05080f;color:#eafff4;overflow:hidden;z-index:2;pointer-events:auto;backface-visibility:hidden}
+.matrix-wall-avatar:not(:modal){clip-path:inset(0 round 10px);contain:paint}
 .matrix-wall-avatar[hidden]{display:none}.matrix-wall-avatar iframe{display:block;width:100%;height:100%;border:0;pointer-events:none}
 .matrix-avatar-expand{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding:18px 5px;background:transparent;border:0;color:#fff;font:600 24px/1.3 system-ui;cursor:pointer;text-shadow:0 1px 4px #000}
 .matrix-avatar-expand:focus-visible{outline:8px solid #78f3ff;outline-offset:-8px}.matrix-avatar-expand.is-called{outline:8px solid #78f3ff;outline-offset:-8px;animation:matrix-avatar-call .8s ease-in-out 3}@keyframes matrix-avatar-call{50%{outline-color:rgba(120,243,255,.2)}}@media (prefers-reduced-motion:reduce){.matrix-avatar-expand.is-called{animation:none}}.matrix-avatar-close{display:none}

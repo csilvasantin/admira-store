@@ -1,17 +1,14 @@
 {
-  "version": "v.09.10.2026.r16.08:48",
-  "deployedAt": "2026-10-09T06:49:02Z",
+  "version": "v.09.10.2026.r19.18:08",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "c741b5731ec713df74cb091a413a753ff9149404",
-  "gitShort": "c741b57",
-  "gitFull": "c741b5731ec713df74cb091a413a753ff9149404",
-  "dirty": false,
+  "deployedAt": "2026-10-09T16:08:43.392828+00:00",
   "novedades": [
-    "Demo Creador todo: imagen y vídeo IA originales bajo petición.",
-    "Proceso visible con estados reales y recuperación sin repetir solicitudes.",
-    "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
-    "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
-  ]
+    "Pantallas recalibradas dentro de sus soportes: retrato de entrada, LG, Jordan, LCD y tiras.",
+    "Foto y players comparten el mismo rayo de cámara; el ajuste se mantiene al girar y ampliar.",
+    "LED del fondo completo en tres zonas con puerta y mostrador protegidos.",
+    "Recorte compartido y ajuste 3D por apertura; 17 pruebas GPU y ayuda MCP ES/EN."
+  ],
+  "origin": "release source; deployed SHA filled by native publisher"
 }

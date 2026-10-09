@@ -1,7 +1,7 @@
-import {measuredFormat} from './screen-format.mjs';
+import {measuredFormat,fitScreenAperture} from './screen-format.mjs?v=surface-fit-1';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {CORRECTED_POSES} from './layout-reference.mjs?v=rear-8';
-import {JORDAN_PANELS,JORDAN_SOURCE} from './jordan-reference.mjs?v=jordan-4';
+import {JORDAN_PANELS,JORDAN_SOURCE} from './jordan-reference.mjs?v=surface-fit-1';
 
 // Interpreted geometry from IEU Entrada/Centro/Fondo, not a measured survey.
 export function createStoreScene({t,video,portraitVideo}){
@@ -12,6 +12,7 @@ export function createStoreScene({t,video,portraitVideo}){
   const metal=mat('#89989d',{metalness:.7,roughness:.4}),black=mat('#11141a'),floor=mat('#8c908a'),white=mat('#e0e2dc'),mint=mat('#32ee88',{emissive:'#22d672',emissiveIntensity:.8}),violet=mat('#b530e7',{emissive:'#9c13d7',emissiveIntensity:1}),blue=mat('#347cca'),red=mat('#b83637'),tan=mat('#cba986');
   function box(w,h,d,m,x=0,y=0,z=0){const mesh=new T.Mesh(own(new T.BoxGeometry(w,h,d)),m);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;return mesh;}
   function label(text,w,h,color='#35ed88'){const c=document.createElement('canvas');c.width=1024;c.height=256;const ctx=c.getContext('2d');ctx.fillStyle='#10171d';ctx.fillRect(0,0,1024,256);ctx.fillStyle=color;ctx.font='bold 90px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,512,128,980);const texture=own(new T.CanvasTexture(c));texture.colorSpace=T.SRGBColorSpace;return new T.Mesh(own(new T.PlaneGeometry(w,h)),own(new T.MeshBasicMaterial({map:texture,side:T.FrontSide,toneMapped:false})));}
+  function aperture(mesh,w,h){mesh.userData.aperture=Object.freeze({w,h});mesh.userData.apertureCenter=mesh.position.clone();return mesh;}
   function item(id,name,col,row,w,d,builder,{locked=false}={}){const pose=CORRECTED_POSES[id]?.to;if(pose)[col,row]=pose;const g=new T.Group();builder(g);const data={id,type:'custom',source:'SneakerStore',label:name,col,row,rot:0,sx:1,sy:1,fp:[w,d],locked,nativeFixed:locked,solid:!locked,inventoryId:'sneakerstore:'+id};g.userData.item=data;g.userData.baseY=0;g.position.set(col,0,row);root.add(g);objects.set(id,g);layout.push(data);return g;}
   function ribs(g,x,z,length,across=false){for(let y=.1;y<3.2;y+=.085)g.add(box(across?length:.045,.025,across?.045:length,metal,x,y,z));}
   item('floor',t('Baldosa gris · pasillo central','Grey tile · central aisle'),0,0,4,14,g=>{g.add(box(4,.12,14,floor,2,-.06,7));for(let z=0;z<=14;z+=1)g.add(box(4,.004,.015,black,2,.005,z));for(let x=1;x<4;x++)g.add(box(.015,.004,14,black,x,.005,7));},{locked:true});
@@ -22,13 +23,13 @@ export function createStoreScene({t,video,portraitVideo}){
   const videoTexture=own(new T.VideoTexture(video));videoTexture.colorSpace=T.SRGBColorSpace;
   const rearVideoPlanes=[];
   item('back-wall',t('Fondo · pantalla LED con puerta central','Rear · LED screen with central door'),0,13.94,4,.06,g=>{
-    const w=4,h=3.2,doorLeft=1.5,doorRight=2.5,doorTop=2.15;
+    const w=4,h=3.2,doorLeft=1.5,doorRight=2.5,doorTop=2.15;g.userData.aperture=Object.freeze({w,h});
     for(const [x,y,pw,ph]of [[0,0,doorLeft,h],[doorRight,0,w-doorRight,h],[doorLeft,doorTop,doorRight-doorLeft,h-doorTop]]){
       g.add(box(pw,ph,.06,black,x+pw/2,y+ph/2,0));
       const geometry=own(new T.PlaneGeometry(pw,ph));
       const mesh=new T.Mesh(geometry,own(new T.MeshBasicMaterial({map:videoTexture,toneMapped:false})));
       mesh.rotation.y=Math.PI;mesh.position.set(x+pw/2,y+ph/2,-.035);
-      mesh.userData.screenTarget='sneakers-store-santa-rosa-19-rear-led';mesh.userData.rearRect={x,y,w:pw,h:ph};rearVideoPlanes.push(mesh);g.add(mesh);
+      mesh.userData.screenTarget='sneakers-store-santa-rosa-19-rear-led';mesh.userData.rearRect={x,y,w:pw,h:ph};aperture(mesh,pw,ph);rearVideoPlanes.push(mesh);g.add(mesh);
     }
   },{locked:true});
   item('rear-door',t('Puerta central · hueco del LED del fondo','Central door · rear LED opening'),1.5,13.86,1,.12,g=>{
@@ -38,8 +39,8 @@ export function createStoreScene({t,video,portraitVideo}){
     // IEU rear photograph: dark plain door, not the corrugated side wall.
   },{locked:true});
   function fitRearVideo(){if(campaignMode)return;
-    const valid=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal',ratio=video.videoWidth/video.videoHeight;
-    const imageW=Math.min(4,3.2*ratio),imageH=imageW/ratio,left=(4-imageW)/2,bottom=(3.2-imageH)/2;
+    const valid=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal',fit=fitScreenAperture(objects.get('back-wall').userData.aperture,video.videoWidth,video.videoHeight);
+    const imageW=fit?.w||0,imageH=fit?.h||0,left=(4-imageW)/2,bottom=(3.2-imageH)/2;
     for(const mesh of rearVideoPlanes){mesh.visible=valid;if(!valid)continue;
       const {x,y,w,h}=mesh.userData.rearRect,x0=Math.max(x,left),x1=Math.min(x+w,left+imageW),y0=Math.max(y,bottom),y1=Math.min(y+h,bottom+imageH);
       mesh.visible=x1>x0&&y1>y0;if(!mesh.visible)continue;
@@ -65,11 +66,11 @@ export function createStoreScene({t,video,portraitVideo}){
   arcade('arcade-star-wars',.12,3.25,black,'STAR WARS');arcade('arcade-mario',3.3,5.1,blue,'SUPER MARIO');
   const portraitTexture=own(new T.VideoTexture(portraitVideo));portraitTexture.colorSpace=T.SRGBColorSpace;
   let portraitPlane;
-  item('entry-display',t('Pantalla vertical de entrada · playlist vertical','Entrance portrait display · portrait playlist'),3.8,.85,.16,1.15,g=>{g.add(box(.12,1.9,1.12,black,.06,1.3,.56));portraitPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:portraitTexture,toneMapped:false})));portraitPlane.rotation.y=-Math.PI/2;portraitPlane.position.set(-.012,1.3,.56);g.add(portraitPlane);});
-  function fitPortrait(){if(campaignMode)return;const ratio=portraitVideo.videoWidth/portraitVideo.videoHeight,height=Math.min(1.78,1.03/ratio);portraitPlane.visible=measuredFormat(portraitVideo.videoWidth,portraitVideo.videoHeight)==='vertical';if(portraitPlane.visible)portraitPlane.scale.set(height*ratio,height,1);}
+  item('entry-display',t('Pantalla vertical de entrada · playlist vertical','Entrance portrait display · portrait playlist'),3.8,.85,.16,1.15,g=>{g.add(box(.12,1.9,1.12,black,.06,1.3,.56));portraitPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:portraitTexture,toneMapped:false})));portraitPlane.rotation.y=-Math.PI/2;portraitPlane.position.set(-.012,1.3,.56);aperture(portraitPlane,1.03,1.78);g.add(portraitPlane);});
+  function fitPortrait(){if(campaignMode)return;const fit=fitScreenAperture(portraitPlane.userData.aperture,portraitVideo.videoWidth,portraitVideo.videoHeight);portraitPlane.visible=!!fit&&measuredFormat(portraitVideo.videoWidth,portraitVideo.videoHeight)==='vertical';if(portraitPlane.visible)portraitPlane.scale.set(fit.w,fit.h,1);}
   portraitVideo.addEventListener('loadedmetadata',fitPortrait);fitPortrait();
-  item('tablet',t('iPad junto a la entrada · referencia','iPad by entrance · reference'),3.8,2.25,.16,.3,g=>{g.add(box(.1,.4,.28,black,.05,1.5,.14));const l=label('Admira',.24,.34);l.rotation.y=-Math.PI/2;l.position.set(-.006,1.5,.14);g.add(l);});
-  item('narrow-led',t('Columna LED vertical · derecha desde entrada','Vertical LED column · right from entrance'),.56,2.15,.06,.35,g=>{g.add(box(.04,2.2,.35,black,.02,1.25,.175));const l=label('SNEAKERS',.3,2.05,'#7cd8ff');l.rotation.y=Math.PI/2;l.position.set(.045,1.25,.175);g.add(l);});
+  item('tablet',t('iPad junto a la entrada · referencia','iPad by entrance · reference'),3.8,2.25,.16,.3,g=>{g.add(box(.1,.4,.28,black,.05,1.5,.14));const l=label('Admira',.24,.34);l.rotation.y=-Math.PI/2;l.position.set(-.006,1.5,.14);aperture(l,.24,.34);g.add(l);});
+  item('narrow-led',t('Columna LED vertical · derecha desde entrada','Vertical LED column · right from entrance'),.56,2.15,.06,.35,g=>{g.add(box(.04,2.2,.35,black,.02,1.25,.175));const l=label('SNEAKERS',.3,2.05,'#7cd8ff');l.rotation.y=Math.PI/2;l.position.set(.045,1.25,.175);aperture(l,.3,2.05);g.add(l);});
   item('rear-ac',t('Aire acondicionado del fondo','Rear air conditioner'),3.7,11.15,.25,1.1,g=>{g.add(box(.23,.38,1.1,white,.12,2.72,.55),box(.015,.075,.94,black,-.005,2.62,.55));},{locked:true});
   item('rear-portrait',t('Cuadro junto al banco · fondo izquierdo','Picture by bench · rear left'),3.94,12.5,.05,.7,g=>{const l=label('MONA LISA',.65,.95,'#9db39a');l.rotation.y=-Math.PI/2;l.position.set(-.01,1.9,.35);g.add(l);});
   // Recover each panel's captured image from the original, without re-creating
@@ -93,14 +94,14 @@ export function createStoreScene({t,video,portraitVideo}){
       const geometry=own(new T.PlaneGeometry(.405,height));
       geometry.setAttribute('uv',new T.Float32BufferAttribute(quad.flatMap(([x,y])=>[(x-625)/265,1-(y-325)/200]),2));
       const panel=new T.Mesh(geometry,own(new T.MeshBasicMaterial({map:jordanTexture,toneMapped:false})));
-      panel.rotation.y=-Math.PI/2;panel.position.set(-.005,y,z);g.add(panel);
+      panel.rotation.y=-Math.PI/2;panel.position.set(-.005,y,z);aperture(panel,.405,height);g.add(panel);
     });
   });
   let videoPlane;
-  item('screen',t('LCD gigante · derecha de Jordan · playlist Pixeria','Giant LCD · right of Jordan · Pixeria playlist'),.09,4.25,.14,3.5,g=>{g.add(box(.12,1.97,3.5,black,.06,1.65,1.75));const mesh=videoPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:videoTexture,toneMapped:false})));mesh.rotation.y=-Math.PI/2;mesh.position.set(-.005,1.65,1.75);mesh.userData.screenTarget='sneakers-store-santa-rosa-19-screen';g.add(mesh);});
-  function fitVideo(){if(campaignMode)return;videoPlane.visible=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal';const ratio=(video.videoWidth||16)/(video.videoHeight||9),height=Math.min(1.88,3.34/ratio);videoPlane.scale.set(height*ratio,height,1);}
+  item('screen',t('LCD gigante · derecha de Jordan · playlist Pixeria','Giant LCD · right of Jordan · Pixeria playlist'),.09,4.25,.14,3.5,g=>{g.add(box(.12,1.97,3.5,black,.06,1.65,1.75));const mesh=videoPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:videoTexture,toneMapped:false})));mesh.rotation.y=-Math.PI/2;mesh.position.set(-.005,1.65,1.75);mesh.userData.screenTarget='sneakers-store-santa-rosa-19-screen';aperture(mesh,3.34,1.88);g.add(mesh);});
+  function fitVideo(){if(campaignMode)return;const fit=fitScreenAperture(videoPlane.userData.aperture,video.videoWidth,video.videoHeight);videoPlane.visible=!!fit&&measuredFormat(video.videoWidth,video.videoHeight)==='horizontal';if(fit)videoPlane.scale.set(fit.w,fit.h,1);}
   video.addEventListener('loadedmetadata',fitVideo);fitVideo();
-  item('upper-displays',t('Pantallas superiores de exposición','Upper exhibition displays'),0,0,4,14,g=>{for(let z=3;z<12;z+=3){for(const x of [.1,3.9]){const l=label('SNEAKERS / IOT',1.2,.42,'#dce8ed');l.rotation.y=x<2?Math.PI/2:-Math.PI/2;l.position.set(x,2.8,z);g.add(l);}}},{locked:true});
+  item('upper-displays',t('Pantallas superiores de exposición','Upper exhibition displays'),0,0,4,14,g=>{for(let z=3;z<12;z+=3){for(const x of [.1,3.9]){const l=label('SNEAKERS / IOT',1.2,.42,'#dce8ed');l.rotation.y=x<2?Math.PI/2:-Math.PI/2;l.position.set(x,2.8,z);aperture(l,1.2,.42);g.add(l);}}},{locked:true});
   const hemisphere=new T.HemisphereLight('#d2e8ef','#1b1c28',2.4),sun=new T.DirectionalLight('#ffffff',3.2);sun.position.set(4,10,4);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-10;sun.shadow.camera.right=10;sun.shadow.camera.top=16;sun.shadow.camera.bottom=-16;scene.add(hemisphere,sun);
   for(const [color,x,z]of [['#31ee84',2,12.8],['#b340ef',3.2,2],['#327cff',.8,8]]){const light=new T.PointLight(color,9,7,2);light.position.set(x,.7,z);scene.add(light);}
   return {root,actors,scene,resources,objects,layout,hemisphere,sun,cols:4,rows:14,setCampaignMode:value=>{campaignMode=value;if(!value){fitVideo();fitRearVideo();fitPortrait();}},disposeMedia:()=>{disposedReference=true;referenceImage.onload=null;video.removeEventListener('loadedmetadata',fitVideo);video.removeEventListener('loadedmetadata',fitRearVideo);portraitVideo.removeEventListener('loadedmetadata',fitPortrait);}};

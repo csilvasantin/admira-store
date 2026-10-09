@@ -3,7 +3,7 @@ import {WATER_VIEW,WATER_CORNERS,waterRemaining,occupiedWaterSlots,waterOfferURL
 import {createPOSCheckoutDisplay} from './pos-checkout-display.mjs?v=water-finish-3';
 import {createPOSDemo} from './pos-demo.mjs?v=xtore-ux-3';
 import {retailRulebook,createRetailRulePlayer,waterOfferScreens} from './retail-rules.mjs?v=water-finish-3';
-import {quadTransform} from './matrix-mapping.mjs?v=wall-1';
+import {quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 import {POS_ID,POS_LOC,POS_BASKET_KEY,POS_PRODUCTS,restoreBasket,addBasketProduct,removeBasketProduct,coffeeSuggestion} from './pos-basket.mjs?v=water-finish-3';
 
 // One photographed muffin and the physical register (not the advertising display).

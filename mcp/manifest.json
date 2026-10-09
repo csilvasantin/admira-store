@@ -3036,7 +3036,25 @@
       "sharedClock": true,
       "photographChanges": false,
       "foregroundOcclusion": true,
-      "physicalCalibration": false
+      "physicalCalibration": false,
+      "surfaceMapping": {
+        "guide": "https://www.admira.store/admira-xp/docs/surface-mapping.md",
+        "camera": "single-position angular photograph; yaw/pitch/FOV; no measured translational parallax",
+        "photographSampling": "canonical angular ray shared with projected apertures",
+        "aperture": "calibrated inner active area; bezel excluded; invalid geometry hidden",
+        "campaignApplication": "source crop and bounded contain fit inside fixed active-area metadata; support geometry retained",
+        "jordan": "five separate physical apertures sharing master crops",
+        "rear": "three LED zones in entrada/centro/fondo; doorway and foreground protected",
+        "matrix": "outer mapped player clips child paint to aperture",
+        "verification": "calibrated-apertures-gpu-tested; public URL review required per release",
+        "physicalCalibration": false,
+        "measured3DGeometry": false,
+        "sharedPhotographRenderer": "/admira-xp/scripts/panorama-surface.mjs",
+        "sharedProjectionValidation": "/admira-xp/scripts/surface-projection.mjs",
+        "aperturePolygon": "optional surface.aperture: clockwise 2048x1024 source-photo polygon; fallback quad corners [0,1,3,2]",
+        "safetyInsetReferencePixels": 0.2,
+        "physicalScreenFit": "scene plane userData.aperture {w,h}; screen-format.mjs fitScreenAperture; exact original state restored on stop"
+      }
     }
   },
   "creator_demo_contract": {

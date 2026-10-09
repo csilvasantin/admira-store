@@ -1,11 +1,11 @@
-// Quadrilaterals of the five visible panels in the original Entrada panorama.
-// Pixel coordinates use a 2048 x 1024 reference grid; the source stays unchanged.
-// The central portrait and its flanking portions are photographic stills.
+// Inner apertures of the five visible panels in the original Entrada photograph.
+// Reference grid: 2048 × 1024. Corners: TL, TR, BL, BR; aperture: clockwise.
+// Fractional coordinates retain the photographic calibration; no inventory changes.
 export const JORDAN_PANELS=[
-  {height:1.02,quad:[[639,343],[696,355],[633,446],[690,454]]},
-  {height:1.28,quad:[[703,345],[764,365],[694,475],[753,482]]},
-  {height:1.55,quad:[[770,353],[828,380],[756,507],[815,510]]},
-  {height:1.28,quad:[[830,398],[857,414],[820,491],[848,495]]},
-  {height:1.02,quad:[[859,425],[878,434],[851,485],[873,488]]}
+  {height:1.02,quad:[[639.4,343.4],[695.7,355.3],[633.5,445.3],[689.8,453.4]],aperture:[[639.4,343.4],[667.7,348.2],[695.7,355.3],[693.5,404.7],[689.8,453.4],[661.7,449.8],[633.5,445.3],[635.4,394.5]]},
+  {height:1.28,quad:[[703.7,345.6],[763.8,365.1],[694.3,474.3],[752.7,481.7]],aperture:[[703.7,345.6],[734.0,353.8],[763.8,365.1],[759.2,424.1],[752.7,481.7],[723.5,478.8],[694.3,474.3],[698.3,410.1]]},
+  {height:1.55,quad:[[770.7,353.1],[828.0,379.4],[756.3,506.5],[814.7,509.5]],aperture:[[770.7,353.1],[799.9,365.0],[828.0,379.4],[823.0,445.0],[814.7,509.5],[785.5,508.9],[756.3,506.5],[763.1,430.4]]},
+  {height:1.28,quad:[[830.7,398.6],[856.5,414.5],[820.5,490.4],[847.6,494.4]],aperture:[[830.7,398.6],[843.8,406.5],[856.5,414.5],[853.0,454.8],[847.6,494.4],[834.0,492.8],[820.5,490.4],[825.1,444.8]]},
+  {height:1.02,quad:[[859.5,425.5],[877.5,434.5],[851.8,484.6],[872.5,487.6]],aperture:[[859.5,425.5],[868.6,429.6],[877.5,434.5],[875.5,461.3],[872.5,487.6],[862.1,486.3],[851.8,484.6],[855.3,455.1]]}
 ];
 export const JORDAN_SOURCE='./panoramas/entrada.jpg';
