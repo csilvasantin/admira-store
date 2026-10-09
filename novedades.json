@@ -606,5 +606,11 @@
     "Foto y players comparten el mismo rayo de cámara; el ajuste se mantiene al girar y ampliar.",
     "LED del fondo completo en tres zonas con puerta y mostrador protegidos.",
     "Recorte compartido y ajuste 3D por apertura; 17 pruebas GPU y ayuda MCP ES/EN."
+  ],
+  "v.09.10.2026.r20.18:41": [
+    "H oculta toda la interfaz del gemelo; otra H recupera menús y paneles anteriores.",
+    "Vista limpia en 360 y 3D con cámara, encaje y reproducción conservados.",
+    "Botón H bilingüe; los campos de texto conservan su escritura.",
+    "Pantallas calibradas y ayuda web, tutorial, CLI y MCP actualizados ES/EN."
   ]
 }

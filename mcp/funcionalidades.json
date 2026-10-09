@@ -5528,6 +5528,28 @@
       "aperturePolygon": "optional surface.aperture: clockwise 2048x1024 source-photo polygon; fallback quad corners [0,1,3,2]",
       "safetyInsetReferencePixels": 0.2,
       "physicalScreenFit": "scene plane userData.aperture {w,h}; screen-format.mjs fitScreenAperture; exact original state restored on stop"
+    },
+    "presentationShortcut": {
+      "key": "H",
+      "acceptedKeys": [
+        "h",
+        "H"
+      ],
+      "scope": "current SneakerStore document; photographic 360 and 3D",
+      "behavior": "toggle all twin interface; restore prior UI state; preserve camera, canvas bounds and campaign playback state",
+      "embeddedFocus": "click inside embedded Store before H; parent Creator chrome is outside this scope",
+      "ignored": "editable fields while interface visible; IME composition; Ctrl/Alt/Meta; held-key repetition",
+      "guide": "https://www.admira.store/admira-xp/docs/surface-mapping.md",
+      "es": "Vista limpia de SneakerStore: pulsa H para ocultar toda la interfaz del gemelo 360 o 3D y vuelve a pulsar H para recuperarla con sus paneles en el estado anterior. Conserva la cámara, el encuadre, el tamaño del canvas y el estado de reproducción de la campaña. Los diálogos modales se suspenden temporalmente para que puedas mover la escena limpia; al restaurar la interfaz recuperan sus datos, desplazamiento y foco, sin reiniciar su contenido. Si está incrustado en Creador, haz clic dentro del propio gemelo antes de pulsar H; el atajo actúa en ese frame. También puedes activarla con el botón H · Ocultar interfaz. H y Mayús+H sirven para ocultar o restaurar. Con la interfaz visible no se activa mientras escribes en un campo editable; al estar oculta, H permite recuperarla aunque el foco anterior fuese un campo. Se ignoran Ctrl/Alt/⌘, la composición IME y la repetición de una tecla mantenida.",
+      "en": "SneakerStore clean view: press H to hide the entire 360 or 3D twin interface, then press H again to restore it with panels in their previous state. Camera, framing, canvas dimensions and campaign playback state are retained. Modal dialogs are temporarily suspended so you can move the clean scene; restoring the interface restores their data, scroll position and focus without restarting their content. When embedded in Creator, click inside the twin before pressing H; the shortcut acts within that frame. You can also activate it with H · Hide interface. H and Shift+H hide or restore the interface. While the interface is visible, typing in an editable field does not trigger it; once hidden, H restores it even if the previous focus was a field. Ctrl/Alt/Meta, IME composition and a held key repeating are ignored.",
+      "verification": "local-browser-verified; public URL review required per release",
+      "shiftKey": "accepted; Shift+H toggles",
+      "restoreKey": "H restores hidden UI even after previous editable focus",
+      "button": {
+        "es": "H · Ocultar interfaz",
+        "en": "H · Hide interface"
+      },
+      "modalDialogs": "temporarily suspend native dialog:modal with cleanup suppressed; preserve same nodes, values, scroll, returnValue, modal order and focus; scene remains movable while UI hidden"
     }
   },
   "creator_demo_contract": {

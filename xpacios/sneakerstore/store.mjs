@@ -8,12 +8,15 @@ import {createPanorama,SCENES} from './panorama.mjs?v=surface-fit-1';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs';
 import {createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs';
 import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs';
+import {mountTwinPresentation} from './presentation-ui.mjs';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),en=params.get('lang')==='en',t=(es,english)=>en?english:es;
 let creatorCampaign=null;try{if(params.has('creator'))creatorCampaign=applyCreatorPresentation(createCreatorCampaign(params.get('creator'),en),params);}catch{params.delete('creator');}
 let fullInvalid=false;if(params.get('mode')==='full'){const image=params.get('image'),video=params.get('video');if(creatorCampaign&&/^[a-zA-Z0-9_-]{6,100}$/.test(image||'')&&/^[a-zA-Z0-9_-]{6,100}$/.test(video||'')){creatorCampaign={...creatorCampaign,mode:'full',image:{id:image,url:'https://api.admira.store/stock/asset/'+image},video:{id:video,url:'https://api.admira.store/stock/asset/'+video},generatedBy:'Grok Imagine Image + Grok Imagine Video'};}else{fullInvalid=true;creatorCampaign=null;}}
 const campaignName=creatorCampaign?.name||'NEXT STEP';
 if(params.get('embed')==='1')document.documentElement.classList.add('embed');
 document.documentElement.lang=en?'en':'es';
+const presentation=mountTwinPresentation({document,canvases:[$('model-canvas'),$('photo-canvas')],controlHost:document.querySelector('.store-caption div'),lang:en?'en':'es'});
+window.addEventListener('pagehide',()=>presentation.dispose(),{once:true});
 $('global-demo-link').href='https://www.admira.biz/demo/?lang='+(en?'en':'es');
 $('model-canvas').setAttribute('aria-label',t('Sneakers Store 3D · arrastra para girar y rueda para ampliar','Sneakers Store 3D · drag to orbit and scroll to zoom'));$('inventory-edit').textContent=t('Distribuir','Distribute');$('manage-playlist').textContent=t('Gestionar en admira.biz ↗','Manage in admira.biz ↗');$('manage-playlist').href='https://www.admira.biz/demo/?lang='+(en?'en':'es');
 $('scene-kind').textContent=t('Tienda real · recorrido 360','Real store · 360 tour');$('show-playlist').textContent=t('Ver pantalla','View screen');$('close-playlist').setAttribute('aria-label',t('Cerrar','Close'));$('close-inventory').setAttribute('aria-label',t('Cerrar inventario','Close inventory'));$('inventory-title').textContent=t('Inventario','Inventory');$('inventory-note').textContent=t('Planta 3D adaptada a Entrada, Centro y Fondo de IEU. Distribución editable guardada en este navegador; proporciones aproximadas, pendientes de medición.','3D floor plan adapted to IEU Entrance, Centre and Rear. Editable layout saved in this browser; approximate proportions awaiting measurement.');

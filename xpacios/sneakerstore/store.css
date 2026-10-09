@@ -3,3 +3,11 @@
 canvas[hidden]{display:none!important}#photo-canvas{position:absolute;inset:0}#tour-controls{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:#071015ec;padding:6px;border:1px solid #315444;border-radius:5px;white-space:nowrap}#tour-controls button{background:transparent;border-color:transparent}#tour-controls button[aria-pressed=true]{background:#245137;border-color:#35ed88}.camera-actions{position:absolute;right:25px;bottom:75px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 20px;max-width:520px;padding:10px 14px;background:#071015df;border:1px solid #284338;border-radius:5px}.camera-actions a{font-size:12px}.camera-actions small{flex-basis:100%;text-align:right;color:#b3c7bc;font-size:11px}.embed #tour-controls{bottom:125px}.embed .camera-actions{bottom:45px;right:12px;max-width:80%}.embed .store-caption{max-width:320px}.embed .store-caption p{font-size:11px}.embed .store-caption h1{font-size:22px}@media(max-width:600px){#tour-controls{bottom:145px;width:max-content;max-width:calc(100% - 20px)}#tour-controls button{font-size:11px;padding:8px}.camera-actions{right:12px;left:12px;bottom:65px;max-width:none}.store-caption{max-width:calc(100% - 24px)}}
 
 #tour-controls{max-width:calc(100% - 20px);overflow-x:auto}#tour-controls button{flex-shrink:0}
+
+/* H hides presentation chrome without reflowing the calibrated scene; UI state restores. */
+.store-caption #hud-toggle{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:28px;height:28px;margin:0;padding:0;font:700 12px/1 ui-monospace,monospace}
+html.store-hud-hidden body *{visibility:hidden!important;pointer-events:none!important}
+html.store-hud-hidden #store-stage,html.store-hud-hidden #model-canvas,html.store-hud-hidden #photo-canvas{visibility:visible!important;pointer-events:auto!important}
+html.store-hud-hidden #store-stage{border-color:transparent!important;box-shadow:none!important;outline:none!important}
+html.store-hud-hidden #model-canvas,html.store-hud-hidden #photo-canvas{outline:none!important}
+html.store-hud-hidden dialog::backdrop{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
