@@ -171,3 +171,8 @@ Modo 360: NEXT STEP se proyecta sobre las pantallas visibles de Entrada, Centro 
 360 mode: NEXT STEP is projected onto visible screens in Entrance, Centre and Rear, with each photograph’s perspective and the same clock as the 3D floor plan. Drag or use arrow keys to look around; pause, restart and stop control both modes. The door and counter remain in front. Stop restores the original photograph; images, playlists, furniture and hardware remain unchanged. Approximate visual alignment, not physical calibration.
 
 Contrato visual / Visual contract: `xpacios/sneakerstore/next-step/panorama-map.mjs`, cuadriláteros en rejilla equirectangular 2048 × 1024 / quadrilaterals on a 2048 × 1024 equirectangular grid; tres fotografías / three photographs; recortes del maestro Jordan y tres segmentos LED / Jordan master crops and three LED segments. Mismo reloj y texturas de sesión / same clock and session textures. Restauración por capas, sin reescribir JPEG ni estado local / layer restoration without rewriting JPEGs or local state. Cada vista sólo proyecta las caras visibles / each view projects only visible faces.
+
+
+## Demo Creador / Creator demo
+
+/demo creador crea otra campaña Sneaker Xtore y muestra todos los pasos hasta el gemelo 360/3D. /demo creator makes a new Sneaker Xtore campaign and shows the full process. [Tutorial y contrato ES/EN](https://admira.studio/docs/demo-creador.md).

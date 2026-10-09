@@ -50,3 +50,8 @@ EN: Daily mirroring validates `mcp/manifest.json.store_demo_contract` before `rs
 El iframe propio puede incluir `requestId` en `da-demo`; Store responde `da-demo-result` después de ejecutar la orden local, con `ok`, `message`, `estado` y `result`. Los IDs usan `^[a-zA-Z0-9_.:-]{1,128}$`; se conservan 128 por iframe sin expulsar antiguos. Repetir un ID con la misma orden devuelve su resultado sin ejecutarla de nuevo; reutilizarlo para otra orden se rechaza. Al límite hay que recargar la página. Ayuda, estado y errores permanecen visibles en la conversación. Las respuestas limitan el mensaje a 4.000 caracteres y el resultado serializado a 8.192 bytes UTF-8.
 
 The owned iframe may include `requestId` in `da-demo`; Store returns `da-demo-result` after local execution with `ok`, `message`, `estado` and `result`. IDs use `^[a-zA-Z0-9_.:-]{1,128}$`; 128 are retained per iframe without eviction. Repeating the same ID/command returns the prior result without another execution; reuse for a different command is rejected. Reload at the limit. Help, status and errors remain visible in the conversation. Messages are limited to 4,000 characters and serialized results to 8,192 UTF-8 bytes.
+
+
+## Demo Creador / Creator demo
+
+/demo creador crea otra campaña Sneaker Xtore y muestra todos los pasos hasta el gemelo 360/3D. /demo creator makes a new Sneaker Xtore campaign and shows the full process. [Tutorial y contrato ES/EN](https://admira.studio/docs/demo-creador.md).

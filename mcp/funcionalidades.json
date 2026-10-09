@@ -5511,5 +5511,20 @@
     "en": "Animated campaign over visible screens in Entrance, Centre and Rear 360; shared clock with 3D; pause/restart/stop; original photographs and local state preserved. Approximate visual alignment.",
     "url": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada",
     "physical_control": false
+  },
+  "creator_demo_contract": {
+    "id": "demo-creador",
+    "titulo": {
+      "es": "Demo Creador · Sneaker Xtore",
+      "en": "Creator demo · Sneaker Xtore"
+    },
+    "estado": "implementado",
+    "url": "https://admira.studio/creador/?demo=creador",
+    "documentacion": "https://admira.studio/docs/demo-creador.md",
+    "commands": [
+      "/demo creador",
+      "/demo creator"
+    ],
+    "description": "New local campaign per run; visible five-step process, separate history, same seeded 360/3D twin; 13 PNGs/JSON, reused product artwork, no AI spend or physical publication."
   }
 }
