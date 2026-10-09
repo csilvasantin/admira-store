@@ -6,7 +6,7 @@
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.90",
+    "version": "2.12.91",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -2999,8 +2999,8 @@
   "installation_campaign": {
     "schema": "pixeria.installation-campaign.v1",
     "source": "https://www.pixeria.com/adaptaciones/campanas/sneakers-store.json",
-    "editor": "https://www.pixeria.com/adaptaciones/?lang=es&taller=sneakers-store",
-    "studio": "https://admira.studio/adaptaciones/?taller=sneakers-store",
+    "editor": "https://www.pixeria.com/creador/?lang=es&demo=sneakers-store",
+    "studio": "https://admira.studio/creador/?demo=sneakers-store",
     "guide": "https://www.pixeria.com/docs/campanas-instalacion.md",
     "mcp": "https://mcp-pixeria.admira.store/mcp",
     "tool": "campana_instalacion",
