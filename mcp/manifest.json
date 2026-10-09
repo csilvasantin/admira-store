@@ -3121,5 +3121,11 @@
         "clip_estado"
       ]
     }
+  },
+  "creatorTools": {
+    "guide": "https://www.admira.store/admira-xp/docs/creator-tools.md",
+    "presentation": "validated art fields",
+    "cloud": "authenticated Creator web session",
+    "physicalDelivery": false
   }
 }

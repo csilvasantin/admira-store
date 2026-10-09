@@ -1,15 +1,15 @@
-import {createCreatorCampaign} from './next-step/creator-core.mjs?v=creator-full-3';
-import {mountNextStep} from './next-step/twin.mjs?v=creator-full-3';
+import {createCreatorCampaign,applyCreatorPresentation} from './next-step/creator-core.mjs?v=creator-tools-1';
+import {mountNextStep} from './next-step/twin.mjs?v=creator-tools-1';
 import {compatibleTrack,measuredFormat} from './screen-format.mjs';
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {referenceStorage} from './layout-reference.mjs?v=rear-8';
 import {createStoreScene} from './scene.mjs?v=next-step-1';
-import {createPanorama,SCENES} from './panorama.mjs?v=creator-full-3';
+import {createPanorama,SCENES} from './panorama.mjs?v=creator-tools-1';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs';
 import {createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs';
 import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),en=params.get('lang')==='en',t=(es,english)=>en?english:es;
-let creatorCampaign=null;try{if(params.has('creator'))creatorCampaign=createCreatorCampaign(params.get('creator'),en);}catch{params.delete('creator');}
+let creatorCampaign=null;try{if(params.has('creator'))creatorCampaign=applyCreatorPresentation(createCreatorCampaign(params.get('creator'),en),params);}catch{params.delete('creator');}
 let fullInvalid=false;if(params.get('mode')==='full'){const image=params.get('image'),video=params.get('video');if(creatorCampaign&&/^[a-zA-Z0-9_-]{6,100}$/.test(image||'')&&/^[a-zA-Z0-9_-]{6,100}$/.test(video||'')){creatorCampaign={...creatorCampaign,mode:'full',image:{id:image,url:'https://api.admira.store/stock/asset/'+image},video:{id:video,url:'https://api.admira.store/stock/asset/'+video},generatedBy:'Grok Imagine Image + Grok Imagine Video'};}else{fullInvalid=true;creatorCampaign=null;}}
 const campaignName=creatorCampaign?.name||'NEXT STEP';
 if(params.get('embed')==='1')document.documentElement.classList.add('embed');
