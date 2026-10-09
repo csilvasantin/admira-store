@@ -5,8 +5,7 @@ name: Espejo XpaceOS publicado en castellano
 # edición sin publicar. El sello y el castellano los pone sello-y-verja.py.
 
 on:
-  schedule:
-    - cron: "20 4 * * *"   # 06:20 Madrid (UTC+2 en septiembre)
+  # Solo a mano: gh workflow run sync-xpaceos-minus-1d.yml -R csilvasantin/admira-store
   workflow_dispatch:
 
 permissions:
