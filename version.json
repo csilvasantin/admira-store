@@ -1,16 +1,15 @@
 {
-  "version": "v.09.10.2026.r6.06:32",
-  "deployedAt": "2026-10-09T04:35:35Z",
+  "version": "v.09.10.2026.r7.06:45",
+  "deployedAt": "2026-10-09T04:46:29Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "603d2feaaf8d2945f9483a55a81175ac94ef81ee",
-  "gitShort": "603d2fe",
-  "gitFull": "603d2feaaf8d2945f9483a55a81175ac94ef81ee",
+  "git": "8e070d17d312cea5baa813d572bfed5088d8f1b9",
+  "gitShort": "8e070d1",
+  "gitFull": "8e070d17d312cea5baa813d572bfed5088d8f1b9",
   "dirty": false,
   "novedades": [
-    "Creador en Pixeria y Studio: campañas desde cero para instalaciones.",
-    "Adaptador transforma contenidos existentes o de terceros.",
-    "Ayuda, tutorial y contratos MCP ES/EN actualizados."
+    "Ayuda de navegación Pixeria/Studio con Creador y Adaptador al principio.",
+    "Ocho categorías principales y herramientas adicionales en Opciones."
   ]
 }
