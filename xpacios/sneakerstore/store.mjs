@@ -66,7 +66,7 @@ function play(format,i){const c=channels[format],p=c.playlist;c.valid=false;c.vi
 for(const [format,c] of Object.entries(channels)){
  c.video.addEventListener('loadedmetadata',()=>{if(campaignDemo||campaignStarting)return;const actual=measuredFormat(c.video.videoWidth,c.video.videoHeight),track=c.playlist?.tracks[c.index];
   if(actual!==format){if(track)c.rejected.add(track.id);status(t('Bloqueado: dimensiones incompatibles · ','Blocked: incompatible dimensions · ')+format);play(format,c.index+1);return;}
-  c.valid=true;c.video.play().then(()=>{if(format==='horizontal')status(t('LCD horizontal conectada · ','Landscape LCD connected · ')+track.title);}).catch(()=>status(t('Pulsa Ver pantalla para reproducir','Click View screen to play')));
+  c.valid=true;c.video.play().then(()=>{if(format==='horizontal'&&!campaignDemo&&!campaignStarting)status(t('LCD horizontal conectada · ','Landscape LCD connected · ')+track.title);}).catch(()=>{if(!campaignDemo&&!campaignStarting)status(t('Pulsa Ver pantalla para reproducir','Click View screen to play'));});
  });
  c.video.addEventListener('ended',()=>{const next=c.index+1;if(next<c.playlist.tracks.length)play(format,next);else if(c.playlist.loop)play(format,0);});
  c.video.addEventListener('error',()=>{if(c.video.getAttribute('src'))status(t('Error de vídeo · ','Video error · ')+format);});
