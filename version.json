@@ -1,12 +1,12 @@
 {
-  "version": "v.09.10.2026.r10.07:18",
-  "deployedAt": "2026-10-09T05:18:03Z",
+  "version": "v.09.10.2026.r11.07:22",
+  "deployedAt": "2026-10-09T05:23:07Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "e119e7c434e9e902ebac59cd79b129bad8b7ca97",
-  "gitShort": "e119e7c",
-  "gitFull": "e119e7c434e9e902ebac59cd79b129bad8b7ca97",
+  "git": "90694add9850a77e662cf137a60f31c6b1c1fbaf",
+  "gitShort": "90694ad",
+  "gitFull": "90694add9850a77e662cf137a60f31c6b1c1fbaf",
   "dirty": false,
   "novedades": [
     "NEXT STEP anima todas las superficies del gemelo de SneakerStore.",
