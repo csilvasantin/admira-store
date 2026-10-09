@@ -78,3 +78,14 @@ EN: Creator → Adapter → Audio → Music → Images → Video → Assets → 
 ES: Creador → NEXT STEP · Demo en tienda, o /demo en Creador; /demo sneakers desde otras páginas. Campaña animada de 32 s para siete configuraciones y 13 salidas nativas. Ver en la tienda aplica todas las composiciones al gemelo de SneakerStore. Pausa/reiniciar/parar; detener restaura las playlists y texturas anteriores. Sin cambios de borradores, Stock o hardware físico. Tutorial https://admira.studio/docs/next-step.md.
 
 EN: Creator → NEXT STEP · Store demo, or /demo in Creator; /demo sneakers elsewhere. A 32-second animated campaign, seven configurations and 13 native outputs. View in the store applies every composition to the SneakerStore twin. Pause/restart/stop; stop restores prior playlists/textures. No draft, Stock or physical hardware changes. Tutorial https://admira.studio/docs/next-step.md.
+
+
+## NEXT STEP en 360 / NEXT STEP in 360
+
+Modo 360: NEXT STEP se proyecta sobre las pantallas visibles de Entrada, Centro y Fondo, con la perspectiva de cada fotografía y el mismo reloj que la planta 3D. Arrastra o usa las flechas para mirar; pausa, reiniciar y parar actúan en ambos modos. La puerta y el mostrador permanecen delante. Al detener se recupera la fotografía original; no se modifican imágenes, playlists, mobiliario ni hardware. Ajuste visual aproximado, no calibración física.
+
+[Abrir 360 / Open 360](https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada&lang=es)
+
+360 mode: NEXT STEP is projected onto visible screens in Entrance, Centre and Rear, with each photograph’s perspective and the same clock as the 3D floor plan. Drag or use arrow keys to look around; pause, restart and stop control both modes. The door and counter remain in front. Stop restores the original photograph; images, playlists, furniture and hardware remain unchanged. Approximate visual alignment, not physical calibration.
+
+Contrato visual / Visual contract: `xpacios/sneakerstore/next-step/panorama-map.mjs`, cuadriláteros en rejilla equirectangular 2048 × 1024 / quadrilaterals on a 2048 × 1024 equirectangular grid; tres fotografías / three photographs; recortes del maestro Jordan y tres segmentos LED / Jordan master crops and three LED segments. Mismo reloj y texturas de sesión / same clock and session textures. Restauración por capas, sin reescribir JPEG ni estado local / layer restoration without rewriting JPEGs or local state. Cada vista sólo proyecta las caras visibles / each view projects only visible faces.

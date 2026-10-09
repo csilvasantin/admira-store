@@ -3024,6 +3024,19 @@
     "outputs": 13,
     "physicalControl": false,
     "draftChanges": false,
-    "playlistChanges": false
+    "playlistChanges": false,
+    "panorama": {
+      "url": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada&lang=es",
+      "scenes": [
+        "entrada",
+        "centro",
+        "fondo"
+      ],
+      "map": "/xpacios/sneakerstore/next-step/panorama-map.mjs",
+      "sharedClock": true,
+      "photographChanges": false,
+      "foregroundOcclusion": true,
+      "physicalCalibration": false
+    }
   }
 }

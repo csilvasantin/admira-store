@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "title": "Catálogo funcional del Xpacio · Good / Better / Best",
-  "updated_at": "2026-10-05",
+  "updated_at": "2026-10-09",
   "audit": {
     "basis": "Revisión estática del código del gemelo; inventario MCP contrastado con tools/list y resources/list públicos. No se ejecutaron operaciones físicas, envíos, compras ni generación de pago.",
     "source_commit": "a7b8d62eacfcbb166d2ddc1e3a6758bec0fdc178",
@@ -5503,5 +5503,13 @@
     "hardwareVerified": false,
     "measuredGeometry": false,
     "stockPublication": "explicit; no playlist activation"
+  },
+  "next_step_360": {
+    "id": "sneakers-next-step",
+    "scope": "SneakerStore · Santa Rosa 19",
+    "es": "Campaña animada superpuesta a pantallas visibles en Entrada, Centro y Fondo 360; reloj compartido con 3D; pausa/reiniciar/parar; originales y estado local conservados. Ajuste visual aproximado.",
+    "en": "Animated campaign over visible screens in Entrance, Centre and Rear 360; shared clock with 3D; pause/restart/stop; original photographs and local state preserved. Approximate visual alignment.",
+    "url": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada",
+    "physical_control": false
   }
 }

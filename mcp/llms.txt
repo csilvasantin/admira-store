@@ -883,3 +883,7 @@ Native still: https://www.xpaceos.com/inventario/assets/catalog/47/collection-ma
 Guide ES/EN: https://www.xpaceos.com/admira-xp/docs/starbucks-coffee-display.md
 Native README ES/EN: https://www.xpaceos.com/admira-xp/docs/starbucks-coffee-display-unreal.md
 Actual MCP help: help({topic:"coffee-display-47"}), help({topic:"starbucks-display"}) or help({topic:"matrix-coffee-display-47"}); xpaceos://help. MCP 2.12.81 retains all 35 tools; no new write tool or CLI command. Local artifacts are verified; public deployment is checked separately at delivery.
+
+NEXT STEP 360: https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada&lang=es
+ES: Modo 360: NEXT STEP se proyecta sobre las pantallas visibles de Entrada, Centro y Fondo, con la perspectiva de cada fotografía y el mismo reloj que la planta 3D. Arrastra o usa las flechas para mirar; pausa, reiniciar y parar actúan en ambos modos. La puerta y el mostrador permanecen delante. Al detener se recupera la fotografía original; no se modifican imágenes, playlists, mobiliario ni hardware. Ajuste visual aproximado, no calibración física.
+EN: 360 mode: NEXT STEP is projected onto visible screens in Entrance, Centre and Rear, with each photograph’s perspective and the same clock as the 3D floor plan. Drag or use arrow keys to look around; pause, restart and stop control both modes. The door and counter remain in front. Stop restores the original photograph; images, playlists, furniture and hardware remain unchanged. Approximate visual alignment, not physical calibration.

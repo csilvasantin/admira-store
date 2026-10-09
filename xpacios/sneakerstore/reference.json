@@ -60,5 +60,12 @@
     "door": "rear-door; central physical model door, not painted into video",
     "counter": "counter; right wall, countertop edge x=0; only default pose migrated",
     "measurements": "approximate, not surveyed"
+  },
+  "campaign_360": {
+    "id": "sneakers-next-step",
+    "map": "./next-step/panorama-map.mjs",
+    "sourceImagesUnchanged": true,
+    "alignment": "approximate photographic perspective; foreground masks",
+    "sharedClockWith3D": true
   }
 }

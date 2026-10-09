@@ -1,4 +1,6 @@
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
+import {createCampaignOverlay} from './next-step/panorama-overlay.mjs';
+import {PANORAMA_MAP} from './next-step/panorama-map.mjs';
 
 // Store-owned IEU photographs only. Camera streams and credentials stay in IEU.
 export const SCENES = {
@@ -16,6 +18,8 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{}}) {
   scene.add(sphere);scene.background=new T.Color('#080f14');
   const cache=new Map(),pending=new Map(),loader=new T.TextureLoader();
   let active=false,disposed=false,current='',request=0,yaw=0,pitch=0,drag=null;
+  let campaign=null,overlay=null;
+  function refreshOverlay(){if(overlay){scene.remove(overlay.group);overlay.dispose();overlay=null;}if(campaign&&current&&material.map){overlay=createCampaignOverlay(current,campaign,material.map);scene.add(overlay.group);}canvas.dataset.campaign=campaign?'next-step':'';}
   function render(){if(!active||disposed)return;camera.lookAt(Math.cos(pitch)*Math.cos(yaw),Math.sin(pitch),Math.cos(pitch)*Math.sin(yaw));renderer.render(scene,camera);}
   function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();render();}
   function textureFor(id){
@@ -35,7 +39,7 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{}}) {
     onState({id,loading:true});
     try {
       const texture=await textureFor(id);if(disposed||serial!==request||!active)return;
-      material.map=texture;material.needsUpdate=true;current=id;yaw=SCENES[id].yaw;pitch=0;camera.fov=85;camera.updateProjectionMatrix();resize();onState({id,loading:false});
+      material.map=texture;material.needsUpdate=true;current=id;yaw=campaign?PANORAMA_MAP[id].yaw:SCENES[id].yaw;pitch=0;camera.fov=85;camera.updateProjectionMatrix();refreshOverlay();resize();onState({id,loading:false});
     } catch(error){if(serial===request&&!disposed)onError(error);}
   }
   function zoom(factor){camera.fov=T.MathUtils.clamp(camera.fov/factor,35,95);camera.updateProjectionMatrix();render();}
@@ -48,5 +52,5 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{}}) {
   };
   for(const [name,fn]of Object.entries(handlers))canvas.addEventListener(name,fn,{passive:false});
   const observer=new ResizeObserver(resize);observer.observe(canvas);
-  return {show,zoom,get current(){return current;},hide(){active=false;++request;canvas.hidden=true;drag=null;},dispose(){disposed=true;active=false;++request;observer.disconnect();for(const[name,fn]of Object.entries(handlers))canvas.removeEventListener(name,fn);for(const texture of cache.values())texture.dispose();geometry.dispose();material.dispose();renderer.dispose();renderer.forceContextLoss();}};
+  return {show,zoom,render,setCampaign(next){const changed=next!==campaign;campaign=next;if(changed&&campaign&&current){yaw=PANORAMA_MAP[current].yaw;pitch=0;}if(changed)refreshOverlay();render();},get current(){return current;},hide(){active=false;++request;canvas.hidden=true;drag=null;},dispose(){disposed=true;active=false;++request;overlay?.dispose();observer.disconnect();for(const[name,fn]of Object.entries(handlers))canvas.removeEventListener(name,fn);for(const texture of cache.values())texture.dispose();geometry.dispose();material.dispose();renderer.dispose();renderer.forceContextLoss();}};
 }

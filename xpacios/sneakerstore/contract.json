@@ -124,5 +124,16 @@
       "playlistChanges": false,
       "draftChanges": false
     }
+  },
+  "campaign_360": {
+    "id": "sneakers-next-step",
+    "url": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&scene=entrada&lang=es",
+    "scenes": [
+      "entrada",
+      "centro",
+      "fondo"
+    ],
+    "originalPhotosUnchanged": true,
+    "physicalControl": false
   }
 }
