@@ -1,12 +1,12 @@
 {
-  "version": "v.09.10.2026.r15.08:40",
-  "deployedAt": "2026-10-09T06:40:38Z",
+  "version": "v.09.10.2026.r16.08:48",
+  "deployedAt": "2026-10-09T06:49:02Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "5a46d3b31419f4322a49b4a7cc2e37619dd4fd81",
-  "gitShort": "5a46d3b",
-  "gitFull": "5a46d3b31419f4322a49b4a7cc2e37619dd4fd81",
+  "git": "c741b5731ec713df74cb091a413a753ff9149404",
+  "gitShort": "c741b57",
+  "gitFull": "c741b5731ec713df74cb091a413a753ff9149404",
   "dirty": false,
   "novedades": [
     "Demo Creador todo: imagen y vídeo IA originales bajo petición.",
