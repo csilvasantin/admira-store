@@ -1,6 +1,6 @@
-import {loadCreatorMedia} from './creator-media.mjs?v=creator-tools-1';
+import {loadCreatorMedia} from './creator-media.mjs?v=creator-tools-2';
 import * as T from '../../../admira-xp/scripts/premium-three.mjs';
-import {drawCreatorCampaign} from './creator-render.mjs?v=creator-tools-1';
+import {drawCreatorCampaign} from './creator-render.mjs?v=creator-tools-2';
 import {INSTALLATIONS,drawNextStep,loadNextStepAssets,createClock} from './render.mjs';
 // Replacement textures are session-only. Original geometry/material state restores on stop.
 export async function mountNextStep({objects,en=false,creator=null}){
