@@ -5490,5 +5490,18 @@
       "validation": "Current Pixeria orientation tags required; actual decoded dimensions checked before playback; incompatible/unknown/conflicting formats blocked; square assets blocked on both channels",
       "jordan": "captured still across five portrait panels; not a live playlist"
     }
+  },
+  "installation_campaign": {
+    "schema": "pixeria.installation-campaign.v1",
+    "source": "https://www.pixeria.com/adaptaciones/campanas/sneakers-store.json",
+    "editor": "https://www.pixeria.com/adaptaciones/?lang=es&taller=sneakers-store",
+    "studio": "https://admira.studio/adaptaciones/?taller=sneakers-store",
+    "guide": "https://www.pixeria.com/docs/campanas-instalacion.md",
+    "mcp": "https://mcp-pixeria.admira.store/mcp",
+    "tool": "campana_instalacion",
+    "toolExecution": "plan_only",
+    "hardwareVerified": false,
+    "measuredGeometry": false,
+    "stockPublication": "explicit; no playlist activation"
   }
 }

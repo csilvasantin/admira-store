@@ -572,5 +572,10 @@
     "SneakerStore: fondo con LED continuo alrededor de puerta central oscura y mesa de caja a la derecha.",
     "Vídeo del LED sin inversión horizontal y con proporciones originales; migración conserva las ediciones.",
     "Guía, tutorial, ayuda ES/EN y contrato MCP actualizados."
+  ],
+  "v.09.10.2026.r5.06:12": [
+    "Sneakers Store: acceso al nuevo taller de campañas por instalación en Pixeria y Studio.",
+    "Tutorial, ayuda CLI y contratos ES/EN: tres composiciones, selección de destinos y exportación por pantalla.",
+    "Los mapas aproximados y los MP4 fijos no certifican sincronización ni activan playlists."
   ]
 }
