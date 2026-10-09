@@ -798,7 +798,15 @@
   function wireCli() {
     const form = doc.getElementById('xsCliForm');
     const input = doc.getElementById('xsCli');
-    doc.addEventListener('submit',e=>{if(e.target===form && /^\/demo\s+(?:taza|kiosko|quiosco)(?:\s|$)/i.test(input.value.trim()))input.value=input.value.trim().slice(1);},true);
+    // Las demos propias conservan su controlador antes de la consola de la suite.
+    doc.addEventListener('submit', e => {
+      if (e.target !== form) return;
+      const command = input.value.trim();
+      const ownDemo = /^\/demo\s+(?:taza|kiosko|quiosco)(?:\s|$)/i.test(command);
+      const sneakerDemo = /\/xpacios\/sneakerstore(?:\/|$)/.test(root.location.pathname) &&
+        /^\/demo(?:\s+(?:sneakers?|next-step|nextstep)(?:\s|$)|\s*$)/i.test(command);
+      if (ownDemo || sneakerDemo) input.value = command.slice(1);
+    }, true);
     let history = [];
     try { history = JSON.parse(local.getItem(HISTORY_KEY) || '[]').filter(x => typeof x === 'string').slice(-50); } catch (_) {}
     let cursor = history.length, draft = '';
