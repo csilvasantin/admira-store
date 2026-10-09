@@ -5,6 +5,7 @@ import {JORDAN_PANELS,JORDAN_SOURCE} from './jordan-reference.mjs?v=jordan-4';
 
 // Interpreted geometry from IEU Entrada/Centro/Fondo, not a measured survey.
 export function createStoreScene({t,video,portraitVideo}){
+  let campaignMode=false;
   const root=new T.Group(),actors=new T.Group(),scene=new T.Scene(),resources=new Set(),objects=new Map(),layout=[];
   scene.background=new T.Color('#10171d');scene.add(root,actors);
   const own=x=>(resources.add(x),x),mat=(color,extra={})=>own(new T.MeshStandardMaterial({color,roughness:.5,metalness:.15,...extra}));
@@ -36,7 +37,7 @@ export function createStoreScene({t,video,portraitVideo}){
     g.add(box(1,.035,.12,metal,.5,2.15,-.01),box(.035,.18,.06,tan,.84,1,-.08));
     // IEU rear photograph: dark plain door, not the corrugated side wall.
   },{locked:true});
-  function fitRearVideo(){
+  function fitRearVideo(){if(campaignMode)return;
     const valid=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal',ratio=video.videoWidth/video.videoHeight;
     const imageW=Math.min(4,3.2*ratio),imageH=imageW/ratio,left=(4-imageW)/2,bottom=(3.2-imageH)/2;
     for(const mesh of rearVideoPlanes){mesh.visible=valid;if(!valid)continue;
@@ -65,7 +66,7 @@ export function createStoreScene({t,video,portraitVideo}){
   const portraitTexture=own(new T.VideoTexture(portraitVideo));portraitTexture.colorSpace=T.SRGBColorSpace;
   let portraitPlane;
   item('entry-display',t('Pantalla vertical de entrada · playlist vertical','Entrance portrait display · portrait playlist'),3.8,.85,.16,1.15,g=>{g.add(box(.12,1.9,1.12,black,.06,1.3,.56));portraitPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:portraitTexture,toneMapped:false})));portraitPlane.rotation.y=-Math.PI/2;portraitPlane.position.set(-.012,1.3,.56);g.add(portraitPlane);});
-  function fitPortrait(){const ratio=portraitVideo.videoWidth/portraitVideo.videoHeight,height=Math.min(1.78,1.03/ratio);portraitPlane.visible=measuredFormat(portraitVideo.videoWidth,portraitVideo.videoHeight)==='vertical';if(portraitPlane.visible)portraitPlane.scale.set(height*ratio,height,1);}
+  function fitPortrait(){if(campaignMode)return;const ratio=portraitVideo.videoWidth/portraitVideo.videoHeight,height=Math.min(1.78,1.03/ratio);portraitPlane.visible=measuredFormat(portraitVideo.videoWidth,portraitVideo.videoHeight)==='vertical';if(portraitPlane.visible)portraitPlane.scale.set(height*ratio,height,1);}
   portraitVideo.addEventListener('loadedmetadata',fitPortrait);fitPortrait();
   item('tablet',t('iPad junto a la entrada · referencia','iPad by entrance · reference'),3.8,2.25,.16,.3,g=>{g.add(box(.1,.4,.28,black,.05,1.5,.14));const l=label('Admira',.24,.34);l.rotation.y=-Math.PI/2;l.position.set(-.006,1.5,.14);g.add(l);});
   item('narrow-led',t('Columna LED vertical · derecha desde entrada','Vertical LED column · right from entrance'),.56,2.15,.06,.35,g=>{g.add(box(.04,2.2,.35,black,.02,1.25,.175));const l=label('SNEAKERS',.3,2.05,'#7cd8ff');l.rotation.y=Math.PI/2;l.position.set(.045,1.25,.175);g.add(l);});
@@ -97,10 +98,10 @@ export function createStoreScene({t,video,portraitVideo}){
   });
   let videoPlane;
   item('screen',t('LCD gigante · derecha de Jordan · playlist Pixeria','Giant LCD · right of Jordan · Pixeria playlist'),.09,4.25,.14,3.5,g=>{g.add(box(.12,1.97,3.5,black,.06,1.65,1.75));const mesh=videoPlane=new T.Mesh(own(new T.PlaneGeometry(1,1)),own(new T.MeshBasicMaterial({map:videoTexture,toneMapped:false})));mesh.rotation.y=-Math.PI/2;mesh.position.set(-.005,1.65,1.75);mesh.userData.screenTarget='sneakers-store-santa-rosa-19-screen';g.add(mesh);});
-  function fitVideo(){videoPlane.visible=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal';const ratio=(video.videoWidth||16)/(video.videoHeight||9),height=Math.min(1.88,3.34/ratio);videoPlane.scale.set(height*ratio,height,1);}
+  function fitVideo(){if(campaignMode)return;videoPlane.visible=measuredFormat(video.videoWidth,video.videoHeight)==='horizontal';const ratio=(video.videoWidth||16)/(video.videoHeight||9),height=Math.min(1.88,3.34/ratio);videoPlane.scale.set(height*ratio,height,1);}
   video.addEventListener('loadedmetadata',fitVideo);fitVideo();
   item('upper-displays',t('Pantallas superiores de exposición','Upper exhibition displays'),0,0,4,14,g=>{for(let z=3;z<12;z+=3){for(const x of [.1,3.9]){const l=label('SNEAKERS / IOT',1.2,.42,'#dce8ed');l.rotation.y=x<2?Math.PI/2:-Math.PI/2;l.position.set(x,2.8,z);g.add(l);}}},{locked:true});
   const hemisphere=new T.HemisphereLight('#d2e8ef','#1b1c28',2.4),sun=new T.DirectionalLight('#ffffff',3.2);sun.position.set(4,10,4);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-10;sun.shadow.camera.right=10;sun.shadow.camera.top=16;sun.shadow.camera.bottom=-16;scene.add(hemisphere,sun);
   for(const [color,x,z]of [['#31ee84',2,12.8],['#b340ef',3.2,2],['#327cff',.8,8]]){const light=new T.PointLight(color,9,7,2);light.position.set(x,.7,z);scene.add(light);}
-  return {root,actors,scene,resources,objects,layout,hemisphere,sun,cols:4,rows:14,disposeMedia:()=>{disposedReference=true;referenceImage.onload=null;video.removeEventListener('loadedmetadata',fitVideo);video.removeEventListener('loadedmetadata',fitRearVideo);portraitVideo.removeEventListener('loadedmetadata',fitPortrait);}};
+  return {root,actors,scene,resources,objects,layout,hemisphere,sun,cols:4,rows:14,setCampaignMode:value=>{campaignMode=value;if(!value){fitVideo();fitRearVideo();fitPortrait();}},disposeMedia:()=>{disposedReference=true;referenceImage.onload=null;video.removeEventListener('loadedmetadata',fitVideo);video.removeEventListener('loadedmetadata',fitRearVideo);portraitVideo.removeEventListener('loadedmetadata',fitPortrait);}};
 }

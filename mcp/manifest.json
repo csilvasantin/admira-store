@@ -6,7 +6,7 @@
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.92",
+    "version": "2.12.93",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -3008,5 +3008,22 @@
     "hardwareVerified": false,
     "measuredGeometry": false,
     "stockPublication": "explicit; no playlist activation"
+  },
+  "nextStepCampaign": {
+    "id": "sneakers-next-step",
+    "demo": "/campanas/next-step/",
+    "command": "/demo sneakers",
+    "creatorCommand": "/demo",
+    "contract": "/campanas/next-step/campaign.json",
+    "delivery": "/campanas/next-step/delivery.json",
+    "guide": "/docs/next-step.md",
+    "twin": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&view=jordan",
+    "duration": 32,
+    "fps": 25,
+    "configurations": 7,
+    "outputs": 13,
+    "physicalControl": false,
+    "draftChanges": false,
+    "playlistChanges": false
   }
 }

@@ -107,5 +107,22 @@
     },
     "validation": "Current Pixeria orientation tags required; actual decoded dimensions checked before playback; incompatible/unknown/conflicting formats blocked; square assets blocked on both channels",
     "jordan": "captured still across five portrait panels; not a live playlist"
+  },
+  "campaigns": {
+    "nextStep": {
+      "id": "sneakers-next-step",
+      "command": "/demo sneakers",
+      "preview": "https://www.admira.store/xpacios/sneakerstore/?campaign=next-step&view=jordan",
+      "contract": "https://www.pixeria.com/campanas/next-step/campaign.json",
+      "delivery": "https://www.pixeria.com/campanas/next-step/delivery.json",
+      "configurations": 7,
+      "outputs": 13,
+      "duration": 32,
+      "fps": 25,
+      "physicalControl": false,
+      "stockRecordsCreated": false,
+      "playlistChanges": false,
+      "draftChanges": false
+    }
   }
 }
