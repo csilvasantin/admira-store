@@ -1,16 +1,16 @@
 {
-  "version": "v.09.10.2026.r4.00:12",
-  "deployedAt": "2026-10-08T22:12:37Z",
+  "version": "v.09.10.2026.r5.06:12",
+  "deployedAt": "2026-10-09T04:14:43Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "b96fc4f7fc2af107d764e2b0e70188706650876a",
-  "gitShort": "b96fc4f",
-  "gitFull": "b96fc4f7fc2af107d764e2b0e70188706650876a",
+  "git": "b92f383113e5c67d012771916df3d172b43beace",
+  "gitShort": "b92f383",
+  "gitFull": "b92f383113e5c67d012771916df3d172b43beace",
   "dirty": false,
   "novedades": [
-    "SneakerStore: fondo con LED continuo alrededor de puerta central oscura y mesa de caja a la derecha.",
-    "Vídeo del LED sin inversión horizontal y con proporciones originales; migración conserva las ediciones.",
-    "Guía, tutorial, ayuda ES/EN y contrato MCP actualizados."
+    "Sneakers Store: acceso al nuevo taller de campañas por instalación en Pixeria y Studio.",
+    "Tutorial, ayuda CLI y contratos ES/EN: tres composiciones, selección de destinos y exportación por pantalla.",
+    "Los mapas aproximados y los MP4 fijos no certifican sincronización ni activan playlists."
   ]
 }
