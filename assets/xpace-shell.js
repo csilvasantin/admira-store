@@ -939,7 +939,7 @@
         root.addEventListener('pagehide',()=>resize.dispose(),{once:true});
       }
     }).catch(error=>console.warn('xpace-shell resize',error));
-    registerVerb({id:'demo',es:'/demo taza: cámara; /demo kiosko: pedido, pago simulado, cola y taza.',en:'/demo taza: camera; /demo kiosko: order, simulated payment, queue and mug.',run:async args=>/^(?:creador|creator)(?:\s|$)/i.test(args)?(location.assign('https://admira.studio/creador/?demo=creador&lang='+lang()),'Demo Creador · Sneaker Xtore'):/^global(?:\s|$)/i.test(args)?(location.assign('https://www.admira.biz/demo/?lang='+lang()),'Demo global · Sneakers Store'):/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=2')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
+    registerVerb({id:'demo',es:'/demo taza: cámara; /demo kiosko: pedido, pago simulado, cola y taza.',en:'/demo taza: camera; /demo kiosko: order, simulated payment, queue and mug.',run:async args=>/^(?:creador|creator)(?:\s|$)/i.test(args)?(location.assign('https://admira.studio/creador/?demo=creador&lang='+lang()+(/(?:^|\s)(todo|full)$/.test(args)?'&mode=full&intent=full':'')),'Demo Creador · Sneaker Xtore'):/^global(?:\s|$)/i.test(args)?(location.assign('https://www.admira.biz/demo/?lang='+lang()),'Demo global · Sneakers Store'):/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=2')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
     wireCli();
     suiteExperto();
     registerVerb({
