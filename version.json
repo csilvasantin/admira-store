@@ -1,15 +1,17 @@
 {
-  "version": "v.09.10.2026.r7.06:45",
-  "deployedAt": "2026-10-09T04:46:29Z",
+  "version": "v.09.10.2026.r8.07:09",
+  "deployedAt": "2026-10-09T05:11:55Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "8e070d17d312cea5baa813d572bfed5088d8f1b9",
-  "gitShort": "8e070d1",
-  "gitFull": "8e070d17d312cea5baa813d572bfed5088d8f1b9",
+  "git": "1ec9ff684da2cb7d7af9e0c5acdb623f0f0c4107",
+  "gitShort": "1ec9ff6",
+  "gitFull": "1ec9ff684da2cb7d7af9e0c5acdb623f0f0c4107",
   "dirty": false,
   "novedades": [
-    "Ayuda de navegación Pixeria/Studio con Creador y Adaptador al principio.",
-    "Ocho categorías principales y herramientas adicionales en Opciones."
+    "NEXT STEP anima todas las superficies del gemelo de SneakerStore.",
+    "Videowall Jordan, LCD y LED con puerta conservan su configuración.",
+    "Experto /demo sneakers: iniciar, pausar, reiniciar y detener.",
+    "Al detener se recuperan las playlists y texturas anteriores."
   ]
 }
