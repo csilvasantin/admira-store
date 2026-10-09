@@ -1,17 +1,17 @@
 {
-  "version": "v.09.10.2026.r12.07:40",
-  "deployedAt": "2026-10-09T05:41:35Z",
+  "version": "v.09.10.2026.r13.08:07",
+  "deployedAt": "2026-10-09T06:07:15Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "f7971b99f808021d90ea4b371a0f2df8471a20e3",
-  "gitShort": "f7971b9",
-  "gitFull": "f7971b99f808021d90ea4b371a0f2df8471a20e3",
+  "git": "7de7aeed03af9b47cf914f8689b58a2e49fc1015",
+  "gitShort": "7de7aee",
+  "gitFull": "7de7aeed03af9b47cf914f8689b58a2e49fc1015",
   "dirty": false,
   "novedades": [
-    "NEXT STEP se aplica a las pantallas reales de Entrada, Centro y Fondo en modo 360.",
-    "Las creatividades siguen la perspectiva al girar y comparten reloj con la planta 3D.",
-    "Puerta, mostrador y objetos permanecen delante; parar recupera la fotografía original.",
-    "Ayuda, tutorial y contratos MCP actualizados en español e inglés."
+    "Demo Creador: campañas Sneaker Xtore nuevas por ejecución.",
+    "La misma semilla reproduce composición y textos en 360 y 3D.",
+    "Pausa compartida del gemelo y proceso visible desde Studio.",
+    "Ayuda, tutorial y contratos actualizados en español e inglés."
   ]
 }
