@@ -1,16 +1,16 @@
 {
-  "version": "v.09.10.2026.r5.06:12",
-  "deployedAt": "2026-10-09T04:14:43Z",
+  "version": "v.09.10.2026.r6.06:32",
+  "deployedAt": "2026-10-09T04:35:35Z",
   "deployer": "OraculoMacMini",
   "machine": "MacMini",
   "signature": "OraculoMacMini · MacMini",
-  "git": "b92f383113e5c67d012771916df3d172b43beace",
-  "gitShort": "b92f383",
-  "gitFull": "b92f383113e5c67d012771916df3d172b43beace",
+  "git": "603d2feaaf8d2945f9483a55a81175ac94ef81ee",
+  "gitShort": "603d2fe",
+  "gitFull": "603d2feaaf8d2945f9483a55a81175ac94ef81ee",
   "dirty": false,
   "novedades": [
-    "Sneakers Store: acceso al nuevo taller de campañas por instalación en Pixeria y Studio.",
-    "Tutorial, ayuda CLI y contratos ES/EN: tres composiciones, selección de destinos y exportación por pantalla.",
-    "Los mapas aproximados y los MP4 fijos no certifican sincronización ni activan playlists."
+    "Creador en Pixeria y Studio: campañas desde cero para instalaciones.",
+    "Adaptador transforma contenidos existentes o de terceros.",
+    "Ayuda, tutorial y contratos MCP ES/EN actualizados."
   ]
 }
