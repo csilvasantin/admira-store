@@ -6,7 +6,7 @@
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.91",
+    "version": "2.12.92",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
