@@ -1,12 +1,12 @@
 {
   "version": "v.10.10.2026.r1.16:54",
-  "deployedAt": "2026-10-10T14:54:34Z",
+  "deployedAt": "2026-10-10T14:54:49Z",
   "deployer": "GrokBot",
   "machine": "MacBookPro16",
   "signature": "GrokBot · MacBookPro16",
-  "git": "333599a2f84d5cf9580929684577082f5c6bd173",
-  "gitShort": "333599a",
-  "gitFull": "333599a2f84d5cf9580929684577082f5c6bd173",
+  "git": "35cddb6ad01f15a857b19a5e3fc4581addb77483",
+  "gitShort": "35cddb6",
+  "gitFull": "35cddb6ad01f15a857b19a5e3fc4581addb77483",
   "dirty": false,
   "novedades": [
     "/demo capsula <tipología> <calidad>: cápsula «¿Sabías que…?» de una página en el modo experto.",
