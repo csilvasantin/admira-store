@@ -1,17 +1,17 @@
 {
-  "version": "v.10.10.2026.r2.17:09",
-  "deployedAt": "2026-10-10T15:09:41Z",
+  "version": "v.10.10.2026.r3.17:28",
+  "deployedAt": "2026-10-10T15:29:53Z",
   "deployer": "GrokBot",
   "machine": "MacBookPro16",
   "signature": "GrokBot · MacBookPro16",
-  "git": "33e55819e69ff15b40f5e40b0cf29924c3353afc",
-  "gitShort": "33e5581",
-  "gitFull": "33e55819e69ff15b40f5e40b0cf29924c3353afc",
+  "git": "b30c1277ca5112aa84e42b670d34669f4bca620b",
+  "gitShort": "b30c127",
+  "gitFull": "b30c1277ca5112aa84e42b670d34669f4bca620b",
   "dirty": false,
   "novedades": [
-    "Cápsulas: la pantalla vertical del gemelo ya muestra la cápsula (PNG en blob: del sitio) en vez del icono de imagen rota.",
-    "Si una pantalla no acepta la imagen, recupera su contenido; la imagen se libera al cerrar o cambiar.",
-    "El sello visible del gemelo (xtanco-version.js) se actualiza en cada publicación y coincide con el del tooltip.",
-    "Locución «Escuchar» comprobada: 200 audios Mónica/Daniel disponibles."
+    "Cápsulas en Good, Better y Best/Hiperreal (no sólo Matrix): la cápsula sale en el tótem vertical «Metahuman AI» junto a la mesa DJ.",
+    "El tótem ya no enseña el marcador gris que parecía una imagen rota: pinta una pantalla en reposo hasta que recibe contenido.",
+    "Esc con la tarjeta abierta sólo la cierra: ya no abre el EDITOR DE LAYOUT ni cierra Best (que devolvía la Calidad a Good).",
+    "Las pantallas aceptan PNG blob: sólo del propio sitio; un blob de otro origen o un data: se rechazan."
   ]
 }
