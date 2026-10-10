@@ -4722,11 +4722,13 @@
       "/demo pausa",
       "/demo reanudar",
       "/demo next",
-      "/demo stop"
+      "/demo stop",
+      "/demo capsula <tipología> <good|better|best>",
+      "/demo capsula help"
     ],
-    "count": 23,
-    "tour_count": 16,
-    "tour_total_s": 324,
+    "count": 24,
+    "tour_count": 17,
+    "tour_total_s": 342,
     "languages": [
       "es",
       "en"
@@ -4929,6 +4931,14 @@
         "es": "Percepción y anonimizador",
         "en": "Perception and anonymizer",
         "tour": false
+      },
+      {
+        "n": 24,
+        "id": "capsula",
+        "icon": "lightbulb",
+        "es": "Cápsula «¿Sabías que…?»",
+        "en": "“Did you know…?” capsule",
+        "tour": true
       }
     ],
     "es": "Registro único de demos (admira-xp/demos.json): /demo help o /demo ayuda las lista numeradas; /demo all o /demo todas enseña seguidas las del recorrido. /demo all es|en (ESP/ENG, --idioma) elige el idioma de la tarjeta, la CLI y los contenidos (causas y notas de la incidencia, ensayos de la suite); sin argumento sigue /idioma y al terminar vuelve el anterior. Tarjeta flotante de cristal con los colores de la marca blanca, icono animado por demo con anillo de pasos, Pausa/Siguiente/Detener, píldora ES/EN y barra con brillo; se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic: arriba al centro) y respeta prefers-reduced-motion. /demo pausa y /demo reanudar; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial. Las 1–5 son del motor común de la suite. La incidencia de demo crea y cierra un ticket CLI nuevo y su informe sólo se envía con --enviar.",
@@ -5602,5 +5612,52 @@
         "clip_estado"
       ]
     }
+  },
+  "capsulas_sabias_que": {
+    "since": "2026-10-10",
+    "command": "/demo capsula <tipología> <calidad> [muda] · /demo capsula help · /demo 24",
+    "examples": [
+      "/demo capsula musica good",
+      "/demo capsula tecnologia good en",
+      "/demo capsula historia better",
+      "/demo capsula help"
+    ],
+    "bank": "https://www.admira.store/admira-xp/capsulas/capsulas-good.json",
+    "generator": "admira-xp/tools/capsulas-good.py (offline, NVIDIA_API_KEY de la bóveda, nunca en el navegador)",
+    "typologies": [
+      "musica",
+      "tecnologia",
+      "sociedad",
+      "ciencia",
+      "deporte",
+      "arte",
+      "gastronomia",
+      "naturaleza",
+      "historia",
+      "cine"
+    ],
+    "per_typology": 10,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "qualities": {
+      "good": "modelo abierto gratuito NVIDIA Nemotron 3 Ultra (integrate.api.nvidia.com) + voces Mac Mónica/Daniel · 0 € · operativo",
+      "better": "modelo frontera de pago · próximamente / requiere encargo",
+      "best": "hecho por personas (admira.studio) · requiere encargo"
+    },
+    "format": {
+      "canvas": "480×800",
+      "palette": [
+        "#000000",
+        "#ffffff",
+        "#ffd400",
+        "#d40000"
+      ],
+      "eink": "vale tal cual para la tinta electrónica BWRY 480×800 (botón PNG 480×800)"
+    },
+    "render": "tarjeta flotante a la derecha + pantalla vertical aleatoria del gemelo (Matrix) que se restaura al cerrar; idioma = el de la CLI o del recorrido",
+    "es": "Cápsulas de conocimiento «¿Sabías que…?» de una página. GOOD lee una batería pregenerada y verificada con Nemotron 3 Ultra (10 tipologías × 10, ES/EN): instantáneo y sin coste. Elige al azar una que no haya salido hace poco, la pinta en 480×800 con los 4 colores de la tinta electrónica y la locuta con Mónica (ES) o Daniel (EN). better y best responden «próximamente / requiere encargo».",
+    "en": "One-page “Did you know…?” knowledge capsules. GOOD reads a pre-generated, fact-checked bank made with Nemotron 3 Ultra (10 typologies × 10, ES/EN): instant and free. It picks a random one not shown recently, paints it at 480×800 in the e-ink's 4 colours and voices it with Mónica (ES) or Daniel (EN). better and best answer “coming soon / requires a commission”."
   }
 }

@@ -1,0 +1,1817 @@
+{
+ "schema_version": 1,
+ "title": "Cápsulas «¿Sabías que…?» · GOOD / “Did you know…?” capsules · GOOD",
+ "generated_at": "2026-10-10T16:45:58+02:00",
+ "quality": "good",
+ "model": "nvidia/nemotron-3-ultra-550b-a55b",
+ "provider": "NVIDIA integrate.api.nvidia.com (gratuito / free)",
+ "voices": {
+  "es": "Mónica",
+  "en": "Daniel"
+ },
+ "cost_eur": 0,
+ "usage": {
+  "prompt_tokens": 10261,
+  "completion_tokens": 61149,
+  "total_tokens": 71410,
+  "calls": 28
+ },
+ "format": {
+  "eink": "480x800 BWRY (negro, blanco, amarillo, rojo)",
+  "max_chars": 230
+ },
+ "tipologias": [
+  {
+   "id": "musica",
+   "name": {
+    "es": "Música",
+    "en": "Music"
+   },
+   "icon": "music",
+   "count": 10
+  },
+  {
+   "id": "tecnologia",
+   "name": {
+    "es": "Tecnología",
+    "en": "Technology"
+   },
+   "icon": "cpu",
+   "count": 10
+  },
+  {
+   "id": "sociedad",
+   "name": {
+    "es": "Sociedad",
+    "en": "Society"
+   },
+   "icon": "users",
+   "count": 10
+  },
+  {
+   "id": "ciencia",
+   "name": {
+    "es": "Ciencia",
+    "en": "Science"
+   },
+   "icon": "flask",
+   "count": 10
+  },
+  {
+   "id": "deporte",
+   "name": {
+    "es": "Deporte",
+    "en": "Sport"
+   },
+   "icon": "trophy",
+   "count": 10
+  },
+  {
+   "id": "arte",
+   "name": {
+    "es": "Arte",
+    "en": "Art"
+   },
+   "icon": "palette",
+   "count": 10
+  },
+  {
+   "id": "gastronomia",
+   "name": {
+    "es": "Gastronomía",
+    "en": "Food"
+   },
+   "icon": "utensils",
+   "count": 10
+  },
+  {
+   "id": "naturaleza",
+   "name": {
+    "es": "Naturaleza",
+    "en": "Nature"
+   },
+   "icon": "leaf",
+   "count": 10
+  },
+  {
+   "id": "historia",
+   "name": {
+    "es": "Historia",
+    "en": "History"
+   },
+   "icon": "landmark",
+   "count": 10
+  },
+  {
+   "id": "cine",
+   "name": {
+    "es": "Cine",
+    "en": "Cinema"
+   },
+   "icon": "clapper",
+   "count": 10
+  }
+ ],
+ "capsulas": [
+  {
+   "id": "musica-01",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "La afinación estándar",
+    "en": "Standard pitch"
+   },
+   "texto": {
+    "es": "…la nota La central vibra a 440 hercios.",
+    "en": "…the note A above middle C vibrates at 440 hertz."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El La4 a 440 Hz es el estándar de afinación internacional (ISO 16) desde 1955, adoptado ampliamente en la música occidental."
+   }
+  },
+  {
+   "id": "musica-02",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Teclas del piano",
+    "en": "Piano keys"
+   },
+   "texto": {
+    "es": "…un piano estándar tiene 88 teclas.",
+    "en": "…a standard piano has 88 keys."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El piano moderno estándar (de cola o vertical) tiene 88 teclas (52 blancas, 36 negras) desde finales del siglo XIX."
+   }
+  },
+  {
+   "id": "musica-03",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Escala diatónica",
+    "en": "Diatonic scale"
+   },
+   "texto": {
+    "es": "…la escala diatónica consta de siete notas distintas.",
+    "en": "…the diatonic scale consists of seven distinct notes."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Por definición, la escala diatónica (mayor o menor natural) contiene siete grados o notas distintas por octava."
+   }
+  },
+  {
+   "id": "musica-04",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Medida del tempo",
+    "en": "Tempo measurement"
+   },
+   "texto": {
+    "es": "…el tempo musical se expresa en pulsos por minuto (BPM).",
+    "en": "…musical tempo is expressed in beats per minute (BPM)."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La convención universal para indicar tempo metronómico es pulsos por minuto (BPM o MM)."
+   }
+  },
+  {
+   "id": "musica-05",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Cuerdas del violín",
+    "en": "Violin strings"
+   },
+   "texto": {
+    "es": "…un violín estándar posee cuatro cuerdas afinadas en quintas.",
+    "en": "…a standard violin has four strings tuned in fifths."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El violín estándar tiene 4 cuerdas (Sol, Re, La, Mi) afinadas en intervalos de quinta justa."
+   }
+  },
+  {
+   "id": "musica-06",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Invención del metrónomo",
+    "en": "Metronome invention"
+   },
+   "texto": {
+    "es": "…el metrónomo mecánico fue patentado por Johann Maelzel en 1815.",
+    "en": "…the mechanical metronome was patented by Johann Maelzel in 1815."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Johann Maelzel patentó el metrónomo mecánico en 1815 (basado en el invento de Dietrich Nikolaus Winkel), comercializándolo con éxito."
+   }
+  },
+  {
+   "id": "musica-07",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Doce semitonos",
+    "en": "Twelve semitones"
+   },
+   "texto": {
+    "es": "…la escala cromática occidental divide la octava en doce semitonos iguales.",
+    "en": "…the Western chromatic scale divides the octave into twelve equal semitones."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El sistema de temperamento igual (12-TET) divide la octava en 12 semitonos de 100 centavos cada uno, estándar en Occidente."
+   }
+  },
+  {
+   "id": "musica-08",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Origen del jazz",
+    "en": "Jazz origin"
+   },
+   "texto": {
+    "es": "…la palabra 'jazz' se documenta por primera vez en prensa estadounidense en 1912.",
+    "en": "…the word 'jazz' first appears in American newspapers in 1912."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La primera aparición impresa documentada de 'jazz' (como 'jas' o 'jazz' significando energía/pep) es en el 'Los Angeles Times' el 2 de abril de 1912."
+   }
+  },
+  {
+   "id": "musica-09",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Cuerdas de guitarra",
+    "en": "Guitar strings"
+   },
+   "texto": {
+    "es": "…la guitarra clásica estándar tiene seis cuerdas de nailon.",
+    "en": "…the standard classical guitar has six nylon strings."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La guitarra clásica moderna (estándar Torres/ Ramírez) tiene 6 cuerdas: 3 agudos de nailon monofilamento y 3 graves entorchados con nailon."
+   }
+  },
+  {
+   "id": "musica-10",
+   "tipo": "musica",
+   "calidad": "good",
+   "titulo": {
+    "es": "Compás cuatro por cuatro",
+    "en": "Four‑four time"
+   },
+   "texto": {
+    "es": "…el compás 4/4, llamado 'tiempo común', es el más usado en la música occidental.",
+    "en": "…the 4/4 time signature, called 'common time', is the most used in Western music."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El compás 4/4 (tiempo común, símbolo 'C') es estadísticamente el más frecuente en la música tonal occidental."
+   }
+  },
+  {
+   "id": "tecnologia-01",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer ordenador programable",
+    "en": "First programmable computer"
+   },
+   "texto": {
+    "es": "…el primer ordenador programable, la Z3, funcionó en 1941.",
+    "en": "…the first programmable computer, the Z3, operated in 1941."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La Z3 de Konrad Zuse estuvo operativa en 1941 y es reconocida como el primer ordenador programable electromecánico."
+   }
+  },
+  {
+   "id": "tecnologia-02",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer correo electrónico",
+    "en": "First email"
+   },
+   "texto": {
+    "es": "…el primer correo electrónico se envió en 1971 usando el símbolo @.",
+    "en": "…the first email was sent in 1971 using the @ symbol."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Ray Tomlinson envió el primer correo electrónico en red en 1971 y utilizó el símbolo @ para separar usuario y host."
+   }
+  },
+  {
+   "id": "tecnologia-03",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Invención de la Web",
+    "en": "Invention of the Web"
+   },
+   "texto": {
+    "es": "…la World Wide Web fue propuesta por Tim Berners‑Lee en 1989 en el CERN.",
+    "en": "…the World Wide Web was proposed by Tim Berners‑Lee in 1989 at CERN."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Tim Berners‑Lee presentó su propuesta de la World Wide Web en marzo de 1989 mientras trabajaba en el CERN."
+   }
+  },
+  {
+   "id": "tecnologia-04",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primera llamada móvil",
+    "en": "First mobile call"
+   },
+   "texto": {
+    "es": "…la primera llamada móvil se realizó en 1973 desde un prototipo portátil.",
+    "en": "…the first mobile phone call was made in 1973 from a handheld prototype."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Martin Cooper realizó la primera llamada desde un teléfono móvil portátil (prototipo Motorola DynaTAC) el 3 de abril de 1973."
+   }
+  },
+  {
+   "id": "tecnologia-05",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primera cámara digital",
+    "en": "First digital camera"
+   },
+   "texto": {
+    "es": "…la primera cámara digital se construyó en 1975 y grababa imágenes en cinta.",
+    "en": "…the first digital camera was built in 1975 and recorded images on tape."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Steven Sasson construyó en 1975 la primera cámara digital en Kodak, que grababa imágenes en cinta magnética."
+   }
+  },
+  {
+   "id": "tecnologia-06",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer videojuego interactivo",
+    "en": "First interactive video game"
+   },
+   "texto": {
+    "es": "…el primer videojuego interactivo, Spacewar!, se creó en 1962 en el MIT.",
+    "en": "…the first interactive video game, Spacewar!, was created in 1962 at MIT."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Spacewar! fue desarrollado en 1962 en el MIT para el PDP‑1 y es considerado el primer videojuego interactivo."
+   }
+  },
+  {
+   "id": "tecnologia-07",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer ratón de computadora",
+    "en": "First computer mouse"
+   },
+   "texto": {
+    "es": "…el primer ratón de computadora se mostró públicamente en 1968.",
+    "en": "…the first computer mouse was publicly demonstrated in 1968."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Douglas Engelbart mostró públicamente el ratón en la \"Mother of All Demos\" el 9 de diciembre de 1968."
+   }
+  },
+  {
+   "id": "tecnologia-08",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer microprocesador de un chip",
+    "en": "First single‑chip microprocessor"
+   },
+   "texto": {
+    "es": "…el primer microprocesador de un solo chip apareció en 1971.",
+    "en": "…the first single‑chip microprocessor appeared in 1971."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El Intel 4004, lanzado en 1971, fue el primer microprocesador de un solo chip."
+   }
+  },
+  {
+   "id": "tecnologia-09",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer sitio web público",
+    "en": "First public website"
+   },
+   "texto": {
+    "es": "…el primer sitio web público entró en línea en 1991.",
+    "en": "…the first public website went online in 1991."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El primer sitio web público (info.cern.ch) entró en línea en agosto de 1991."
+   }
+  },
+  {
+   "id": "tecnologia-10",
+   "tipo": "tecnologia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer virus informático",
+    "en": "First computer virus"
+   },
+   "texto": {
+    "es": "…el primer virus informático, Creeper, apareció en 1971 en ARPANET.",
+    "en": "…the first computer virus, Creeper, appeared in 1971 on ARPANET."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Creeper, un programa auto‑replicante, apareció en ARPANET en 1971 y es citado como el primer virus/gusano informático."
+   }
+  },
+  {
+   "id": "sociedad-01",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Estados miembros de la ONU",
+    "en": "UN member states"
+   },
+   "texto": {
+    "es": "…la ONU tiene 193 estados miembros.",
+    "en": "…the UN has 193 member states."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La ONU cuenta actualmente con 193 Estados miembros (más 2 observadores)."
+   }
+  },
+  {
+   "id": "sociedad-02",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Declaración Derechos Humanos",
+    "en": "Universal Declaration of Human Rights"
+   },
+   "texto": {
+    "es": "…la Declaración Universal de los Derechos Humanos fue adoptada en 1948.",
+    "en": "…the Universal Declaration of Human Rights was adopted in 1948."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La Declaración Universal de los Derechos Humanos fue adoptada por la Asamblea General el 10 de diciembre de 1948."
+   }
+  },
+  {
+   "id": "sociedad-03",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Día Internacional de la Mujer",
+    "en": "International Women's Day"
+   },
+   "texto": {
+    "es": "…el Día Internacional de la Mujer se celebra el 8 de marzo.",
+    "en": "…International Women's Day is celebrated on March 8."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El Día Internacional de la Mujer se celebra oficialmente el 8 de marzo desde 1975 (ONU)."
+   }
+  },
+  {
+   "id": "sociedad-04",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Educación primaria obligatoria",
+    "en": "Compulsory primary education"
+   },
+   "texto": {
+    "es": "…la mayoría de los países tienen educación primaria obligatoria.",
+    "en": "…most countries have compulsory primary education."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Según la UNESCO, más del 80 % de los países tienen educación primaria obligatoria."
+   }
+  },
+  {
+   "id": "sociedad-05",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Idioma más hablado nativamente",
+    "en": "Most spoken native language"
+   },
+   "texto": {
+    "es": "…el idioma más hablado por número de hablantes nativos es el chino mandarín.",
+    "en": "…the language with the most native speakers is Mandarin Chinese."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El chino mandarín tiene el mayor número de hablantes nativos (≈ 920 millones)."
+   }
+  },
+  {
+   "id": "sociedad-06",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "OMS y pandemias",
+    "en": "WHO and pandemics"
+   },
+   "texto": {
+    "es": "…la Organización Mundial de la Salud coordina la respuesta global a pandemias.",
+    "en": "…the World Health Organization coordinates the global response to pandemics."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La OMS es la agencia de la ONU encargada de coordinar la respuesta global a pandemias."
+   }
+  },
+  {
+   "id": "sociedad-07",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Día Internacional de la Alfabetización",
+    "en": "International Literacy Day"
+   },
+   "texto": {
+    "es": "…el 8 de septiembre es el Día Internacional de la Alfabetización.",
+    "en": "…September 8 is International Literacy Day."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La UNESCO proclamó el 8 de septiembre como Día Internacional de la Alfabetización en 1966."
+   }
+  },
+  {
+   "id": "sociedad-08",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Convención Derechos del Niño",
+    "en": "Convention on the Rights of the Child"
+   },
+   "texto": {
+    "es": "…la Convención sobre los Derechos del Niño es el tratado de derechos humanos más ratificado.",
+    "en": "…the Convention on the Rights of the Child is the most widely ratified human rights treaty."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La Convención sobre los Derechos del Niño cuenta con 196 partes, el tratado de DDHH más ratificado."
+   }
+  },
+  {
+   "id": "sociedad-09",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Día Internacional de los Trabajadores",
+    "en": "International Workers' Day"
+   },
+   "texto": {
+    "es": "…el 1 de mayo se conmemora el Día Internacional de los Trabajadores.",
+    "en": "…May 1 marks International Workers' Day."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El 1 de mayo es reconocido internacionalmente como Día Internacional de los Trabajadores."
+   }
+  },
+  {
+   "id": "sociedad-10",
+   "tipo": "sociedad",
+   "calidad": "good",
+   "titulo": {
+    "es": "Libertad de expresión en constituciones",
+    "en": "Freedom of expression in constitutions"
+   },
+   "texto": {
+    "es": "…la mayoría de las constituciones modernas garantizan la libertad de expresión.",
+    "en": "…most modern constitutions guarantee freedom of expression."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La gran mayoría de constituciones contemporáneas (≈ 150 de 193) incluyen garantías explícitas de libertad de expresión."
+   }
+  },
+  {
+   "id": "ciencia-01",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Punto de ebullición del agua",
+    "en": "Water boiling point"
+   },
+   "texto": {
+    "es": "…el agua hierve a 100 °C a nivel del mar.",
+    "en": "…water boils at 100 °C at sea level."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Punto de ebullición del agua a presión estándar (1 atm), definición base de la escala Celsius."
+   }
+  },
+  {
+   "id": "ciencia-02",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Velocidad de la luz",
+    "en": "Speed of light"
+   },
+   "texto": {
+    "es": "…la luz viaja a 299 792 km/s en el vacío.",
+    "en": "…light travels at 299 792 km/s in a vacuum."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Valor definido exactamente en 299 792,458 km/s; 299 792 km/s es la aproximación entera universalmente usada."
+   }
+  },
+  {
+   "id": "ciencia-03",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Número de huesos adultos",
+    "en": "Adult bone count"
+   },
+   "texto": {
+    "es": "…un adulto tiene 206 huesos.",
+    "en": "…an adult has 206 bones."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Consenso anatómico estándar para un esqueleto humano adulto típico."
+   }
+  },
+  {
+   "id": "ciencia-04",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Carga del electrón",
+    "en": "Electron charge"
+   },
+   "texto": {
+    "es": "…los electrones tienen carga negativa.",
+    "en": "…electrons carry a negative charge."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Propiedad fundamental del electrón establecida desde Millikan (1909) y el Modelo Estándar."
+   }
+  },
+  {
+   "id": "ciencia-05",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Porcentaje de oxígeno atmosférico",
+    "en": "Atmospheric oxygen percentage"
+   },
+   "texto": {
+    "es": "…el oxígeno constituye el 21 % de la atmósfera.",
+    "en": "…oxygen makes up 21 % of the atmosphere."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Fracción molar del O₂ en aire seco ≈ 20,95 %; 21 % es el valor de referencia aceptado."
+   }
+  },
+  {
+   "id": "ciencia-06",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Fotosíntesis y clorofila",
+    "en": "Photosynthesis and chlorophyll"
+   },
+   "texto": {
+    "es": "…las plantas realizan fotosíntesis usando clorofila.",
+    "en": "…plants perform photosynthesis using chlorophyll."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La clorofila a (y b) es el pigmento fotosintético principal en todas las plantas (Viridiplantae)."
+   }
+  },
+  {
+   "id": "ciencia-07",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Sonido en el vacío",
+    "en": "Sound in vacuum"
+   },
+   "texto": {
+    "es": "…el sonido no viaja en el vacío.",
+    "en": "…sound cannot travel in a vacuum."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El sonido es onda mecánica que requiere medio material; en el vacío no hay propagación."
+   }
+  },
+  {
+   "id": "ciencia-08",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Composición del átomo",
+    "en": "Atom composition"
+   },
+   "texto": {
+    "es": "…los átomos están formados por protones, neutrones y electrones.",
+    "en": "…atoms consist of protons, neutrons, and electrons."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Modelo atómico estándar (protón, neutrón, electrón); el H‑1 carece de neutrón pero es caso particular aceptado."
+   }
+  },
+  {
+   "id": "ciencia-09",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Gravedad lunar versus terrestre",
+    "en": "Moon vs Earth gravity"
+   },
+   "texto": {
+    "es": "…la gravedad en la Luna es 1/6 de la Tierra.",
+    "en": "…gravity on the Moon is 1/6 of Earth's."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Gravedad lunar ≈ 1,62 m/s² frente a 9,81 m/s² terrestre; ratio ≈ 1/6,06, redondeado universalmente a 1/6."
+   }
+  },
+  {
+   "id": "ciencia-10",
+   "tipo": "ciencia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Elemento más abundante universo",
+    "en": "Most abundant element universe"
+   },
+   "texto": {
+    "es": "…el hidrógeno es el elemento más abundante del universo.",
+    "en": "…hydrogen is the most abundant element in the universe."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Hidrógeno ~74 % masa y ~90 % átomos del universo observable (nucleosíntesis primordial)."
+   }
+  },
+  {
+   "id": "deporte-01",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Fútbol once jugadores",
+    "en": "Football eleven players"
+   },
+   "texto": {
+    "es": "…el fútbol se juega con once jugadores por equipo.",
+    "en": "…football is played with eleven players per team."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Regla oficial FIFA: 11 jugadores por equipo en el terreno de juego."
+   }
+  },
+  {
+   "id": "deporte-02",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Juegos Olímpicos 1896",
+    "en": "Modern Olympics 1896"
+   },
+   "texto": {
+    "es": "…los primeros Juegos Olímpicos modernos se celebraron en Atenas en 1896.",
+    "en": "…the first modern Olympic Games were held in Athens in 1896."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Hecho histórico consensuado: Atenas 1896 fue la sede de la I Olimpiada moderna."
+   }
+  },
+  {
+   "id": "deporte-03",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Baloncesto invención Naismith",
+    "en": "Basketball invented by Naismith"
+   },
+   "texto": {
+    "es": "…el baloncesto fue creado en 1891 por el profesor James Naismith.",
+    "en": "…basketball was created in 1891 by instructor James Naismith."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Documentado históricamente: James Naismith inventó el baloncesto en diciembre de 1891 en Springfield."
+   }
+  },
+  {
+   "id": "deporte-04",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Maratón distancia oficial",
+    "en": "Marathon official distance"
+   },
+   "texto": {
+    "es": "…la distancia oficial del maratón es de 42,195 kilómetros.",
+    "en": "…the official marathon distance is 42.195 kilometres."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Distancia estandarizada por la IAAF (World Athletics) desde 1921: 42,195 km exactos."
+   }
+  },
+  {
+   "id": "deporte-05",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Tenis sets seis juegos",
+    "en": "Tennis sets six games"
+   },
+   "texto": {
+    "es": "…un set de tenis se gana al alcanzar seis juegos con dos de ventaja.",
+    "en": "…a tennis set is won by reaching six games with a two‑game lead."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Regla ITF: set se gana con 6 juegos y diferencia de 2 (salvo tie-break en 6-6)."
+   }
+  },
+  {
+   "id": "deporte-06",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Rugby balón ovalado",
+    "en": "Rugby oval ball"
+   },
+   "texto": {
+    "es": "…el rugby se juega con un balón de forma ovalada.",
+    "en": "…rugby is played with an oval‑shaped ball."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El balón de rugby (union y league) es un elipsoide prolato (ovalado) por reglamento World Rugby."
+   }
+  },
+  {
+   "id": "deporte-07",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Natación estilo libre rápida",
+    "en": "Freestyle swimming fastest"
+   },
+   "texto": {
+    "es": "…el estilo libre es la modalidad de natación más veloz en competición.",
+    "en": "…freestyle is the fastest swimming stroke in competition."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El estilo libre (crol) registra los récords mundiales más rápidos en todas las distancias."
+   }
+  },
+  {
+   "id": "deporte-08",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Béisbol nueve entradas",
+    "en": "Baseball nine innings"
+   },
+   "texto": {
+    "es": "…un partido de béisbol consta de nueve entradas por equipo.",
+    "en": "…a baseball game consists of nine innings per team."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Regla oficial MLB y WBSC: 9 entradas (innings) por equipo en partido estándar."
+   }
+  },
+  {
+   "id": "deporte-09",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Ciclismo etapas montaña",
+    "en": "Road cycling mountain stages"
+   },
+   "texto": {
+    "es": "…las grandes vueltas ciclistas incluyen etapas de alta montaña.",
+    "en": "…grand tours in cycling feature high‑mountain stages."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Tour, Giro y Vuelta incluyen sistemáticamente etapas de alta montaña (puertos HC/1ª categoría)."
+   }
+  },
+  {
+   "id": "deporte-10",
+   "tipo": "deporte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Voleibol seis jugadores",
+    "en": "Volleyball six players"
+   },
+   "texto": {
+    "es": "…cada equipo de voleibol tiene seis jugadores en la cancha.",
+    "en": "…each volleyball team has six players on the court."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Reglamento FIVB: 6 jugadores en cancha por equipo (incluido líbero)."
+   }
+  },
+  {
+   "id": "arte-01",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Mona Lisa Leonardo",
+    "en": "Mona Lisa Leonardo"
+   },
+   "texto": {
+    "es": "…la Mona Lisa fue pintada por Leonardo da Vinci a principios del siglo XVI.",
+    "en": "…the Mona Lisa was painted by Leonardo da Vinci in the early 16th century."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Hecho histórico consensuado: Leonardo da Vinci pintó la Mona Lisa circa 1503-1519."
+   }
+  },
+  {
+   "id": "arte-02",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Capilla Sixtina Miguel",
+    "en": "Sistine Chapel Michelangelo"
+   },
+   "texto": {
+    "es": "…el techo de la Capilla Sixtina fue pintado por Miguel Ángel entre 1508 y 1512.",
+    "en": "…the Sistine Chapel ceiling was painted by Michelangelo between 1508 and 1512."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Documentado exhaustivamente: Miguel Ángel pintó la bóveda de la Capilla Sixtina entre 1508 y 1512."
+   }
+  },
+  {
+   "id": "arte-03",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Noche Estrellada Van Gogh",
+    "en": "Starry Night Van Gogh"
+   },
+   "texto": {
+    "es": "…la Noche Estrellada fue pintada por Van Gogh en 1889 mientras estaba en un asilo.",
+    "en": "…the Starry Night was painted by Van Gogh in 1889 while he was in an asylum."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Van Gogh pintó La Noche Estrellada en junio de 1889 durante su estancia en el asilo de Saint-Rémy-de-Provence."
+   }
+  },
+  {
+   "id": "arte-04",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "David Miguel Ángel",
+    "en": "David Michelangelo"
+   },
+   "texto": {
+    "es": "…el David de Miguel Ángel fue tallado en un solo bloque de mármol.",
+    "en": "…Michelangelo's David was carved from a single block of marble."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El David fue esculpido por Miguel Ángel (1501-1504) a partir de un único bloque de mármol de Carrara."
+   }
+  },
+  {
+   "id": "arte-05",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Persistencia Memoria Dalí",
+    "en": "Persistence Memory Dalí"
+   },
+   "texto": {
+    "es": "…la Persistencia de la Memoria de Dalí muestra relojes derretidos en un paisaje onírico.",
+    "en": "…Dalí's The Persistence of Memory shows melting clocks in a dreamlike landscape."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Descripción exacta de la obra cumbre del surrealismo de Dalí (1931), conservada en el MoMA."
+   }
+  },
+  {
+   "id": "arte-06",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Muchacha Perla Vermeer",
+    "en": "Girl Pearl Vermeer"
+   },
+   "texto": {
+    "es": "…la Muchacha de la Perla de Vermeer data de alrededor de 1665.",
+    "en": "…Vermeer's Girl with a Pearl Earring dates from around 1665."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Datación aceptada por la crítica (h. 1665) para La Muchacha de la Perla de Vermeer."
+   }
+  },
+  {
+   "id": "arte-07",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Última Cena Leonardo",
+    "en": "Last Supper Leonardo"
+   },
+   "texto": {
+    "es": "…la Última Cena de Leonardo da Vinci es un mural en el convento de Santa Maria delle Grazie en Milán.",
+    "en": "…Leonardo da Vinci's The Last Supper is a mural in the convent of Santa Maria delle Grazie in Milan."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La Última Cena es un mural al temple sobre yeso en el refectorio de Santa Maria delle Grazie (Milán), ejecutado 1495-1498."
+   }
+  },
+  {
+   "id": "arte-08",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Nacimiento Venus Botticelli",
+    "en": "Birth Venus Botticelli"
+   },
+   "texto": {
+    "es": "…el Nacimiento de Venus de Botticelli fue pintado en la década de 1480.",
+    "en": "…Botticelli's The Birth of Venus was painted in the 1480s."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El Nacimiento de Venus de Botticelli se fecha habitualmente en la década de 1480 (h. 1484-1486)."
+   }
+  },
+  {
+   "id": "arte-09",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Gran Ola Hokusai",
+    "en": "Great Wave Hokusai"
+   },
+   "texto": {
+    "es": "…la Gran Ola de Kanagawa de Hokusai es una xilografía de la década de 1830.",
+    "en": "…Hokusai's The Great Wave off Kanagawa is a woodblock print from the 1830s."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La Gran Ola de Kanagawa es una xilografía (ukiyo-e) de Hokusai, publicada hacia 1831 (era Tenpō)."
+   }
+  },
+  {
+   "id": "arte-10",
+   "tipo": "arte",
+   "calidad": "good",
+   "titulo": {
+    "es": "Pensador Rodin",
+    "en": "Thinker Rodin"
+   },
+   "texto": {
+    "es": "…el Pensador de Rodin fue concebido originalmente como parte de La Puerta del Infierno.",
+    "en": "…Rodin's The Thinker was originally conceived as part of The Gates of Hell."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El Pensador fue concebido hacia 1880 como «El Poeta» (Dante) en el tímpano de La Puerta del Infierno de Rodin."
+   }
+  },
+  {
+   "id": "gastronomia-01",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Tomate fruta botánica",
+    "en": "Tomato botanical fruit"
+   },
+   "texto": {
+    "es": "…el tomate es una fruta desde el punto de vista botánico.",
+    "en": "…the tomato is a fruit botanically."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Botánicamente, el tomate es un fruto (baya) porque se desarrolla a partir del ovario de la flor y contiene semillas, aunque culinariamente se trata como verdura."
+   }
+  },
+  {
+   "id": "gastronomia-02",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Miel nunca caduca",
+    "en": "Honey never spoils"
+   },
+   "texto": {
+    "es": "…la miel puede conservarse indefinidamente sin echarse a perder.",
+    "en": "…honey can keep indefinitely without spoiling."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La miel tiene bajo contenido de agua, alta acidez y peróxido de hidrógeno natural, lo que impide el crecimiento microbiano; se han encontrado vasijas de miel comestible en tumbas egipcias de miles de años."
+   }
+  },
+  {
+   "id": "gastronomia-03",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Chocolate bebida original",
+    "en": "Chocolate original drink"
+   },
+   "texto": {
+    "es": "…el chocolate se consumía originalmente como bebida amarga en Mesoamérica.",
+    "en": "…chocolate was originally consumed as a bitter drink in Mesoamerica."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Evidencia arqueológica e histórica confirma que mayas y aztecas consumían cacao como bebida espumosa, amarga, con especias (chile, vainilla) y sin azúcar."
+   }
+  },
+  {
+   "id": "gastronomia-04",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Queso más antiguo",
+    "en": "Oldest known cheese"
+   },
+   "texto": {
+    "es": "…el queso más antiguo conocido tiene unos 7.000 años de antigüedad.",
+    "en": "…the oldest known cheese is about 7,000 years old."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Restos de queso de ~7.200 años hallados en cerámicas con poros (cuencos de strainer) en Polonia (cultura Linearbandkeramik) son la evidencia directa más antigua aceptada."
+   }
+  },
+  {
+   "id": "gastronomia-05",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Sushi método conservación",
+    "en": "Sushi preservation method"
+   },
+   "texto": {
+    "es": "…el sushi comenzó como técnica de fermentar pescado con arroz para conservarlo.",
+    "en": "…sushi began as a method of fermenting fish with rice to preserve it."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El narezushi (pescado fermentado con arroz y sal) se documenta en el sudeste asiático y Japón desde el s. VIII como método de conservación; el arroz se desechaba y solo se comía el pescado."
+   }
+  },
+  {
+   "id": "gastronomia-06",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Patata domesticación Andes",
+    "en": "Potato domestication Andes"
+   },
+   "texto": {
+    "es": "…la patata se domesticó por primera vez en la región andina hace unos 8.000 años.",
+    "en": "…the potato was first domesticated in the Andean region about 8,000 years ago."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Evidencia genética y arqueológica (microfósiles de almidón, fitolitos) sitúa la domesticación de *Solanum tuberosum* en la zona del lago Titicaca (Altiplano andino) hace 7.000-10.000 años."
+   }
+  },
+  {
+   "id": "gastronomia-07",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Pan masa madre",
+    "en": "Sourdough bread"
+   },
+   "texto": {
+    "es": "…el pan de masa madre se elabora con levadura y bacterias presentes en el ambiente.",
+    "en": "…sourdough bread is made with wild yeast and bacteria from the environment."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La masa madre es una cultura simbiótica de levaduras silvestres (*Saccharomyces exiguus*, *Candida* spp.) y bacterias lácticas (*Lactobacillus* spp.) capturadas del ambiente y la harina."
+   }
+  },
+  {
+   "id": "gastronomia-08",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Arroz alimento principal",
+    "en": "Rice staple food"
+   },
+   "texto": {
+    "es": "…el arroz es el alimento principal para más de la mitad de la población mundial.",
+    "en": "…rice is the staple food for more than half of the world’s population."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Datos de FAO y OMS indican que el arroz aporta >20 % de las calorías globales y es el alimento base de ~3.500 millones de personas (casi la mitad); «más de la mitad» es una cifra redondeada aceptada en divulgación."
+   }
+  },
+  {
+   "id": "gastronomia-09",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Sal moneda antigua",
+    "en": "Salt ancient currency"
+   },
+   "texto": {
+    "es": "…la sal llegó a usarse como forma de pago en varias civilizaciones antiguas.",
+    "en": "…salt was once used as currency in several ancient civilizations."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La sal fue moneda de cambio, salario (*salarium* romano) y tributo en Roma, China, Egipto, África occidental y Mesoamérica; su uso como «dinero» está ampliamente documentado."
+   }
+  },
+  {
+   "id": "gastronomia-10",
+   "tipo": "gastronomia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Aguacate baya botánica",
+    "en": "Avocado botanical berry"
+   },
+   "texto": {
+    "es": "…el aguacate se clasifica botánicamente como una baya de una sola semilla.",
+    "en": "…the avocado is botanically classified as a single‑seeded berry."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Botánicamente, el aguacate (*Persea americana*) es una baya drupácea (fruto carnoso con una sola semilla grande), no una drupa propiamente dicha."
+   }
+  },
+  {
+   "id": "naturaleza-01",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los árboles producen oxígeno",
+    "en": "Trees produce oxygen"
+   },
+   "texto": {
+    "es": "…los árboles liberan oxígeno durante la fotosíntesis.",
+    "en": "…trees release oxygen during photosynthesis."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La fotosíntesis de los árboles libera oxígeno como subproducto, hecho comprobado."
+   }
+  },
+  {
+   "id": "naturaleza-02",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los océanos cubren la mayor parte",
+    "en": "Oceans cover most of Earth"
+   },
+   "texto": {
+    "es": "…los océanos cubren alrededor del 71 % de la superficie terrestre.",
+    "en": "…the oceans cover about 71 % of Earth's surface."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los océanos cubren aproximadamente el 71 % de la superficie terrestre según mediciones geodésicas."
+   }
+  },
+  {
+   "id": "naturaleza-03",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los pingüinos no pueden volar",
+    "en": "Penguins cannot fly"
+   },
+   "texto": {
+    "es": "…los pingüinos han perdido la capacidad de volar y nadan con sus alas.",
+    "en": "…penguins have lost the ability to fly and swim with their wings."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los pingüinos son aves no voladoras cuyas alas se han transformado en aletas para nadar."
+   }
+  },
+  {
+   "id": "naturaleza-04",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los corales son animales no plantas",
+    "en": "Corals are animals not plants"
+   },
+   "texto": {
+    "es": "…los corales son colonias de pequeños animales llamados pólipos.",
+    "en": "…corals are colonies of tiny animals called polyps."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los corales son colonias de pólipos, pequeños animales cnidarios."
+   }
+  },
+  {
+   "id": "naturaleza-05",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Murciélagos únicos mamíferos voladores",
+    "en": "Bats unique flying mammals"
+   },
+   "texto": {
+    "es": "…los murciélagos son los únicos mamíferos capaces de vuelo verdadero.",
+    "en": "…bats are the only mammals capable of true flight."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los murciélagos son los únicos mamíferos con vuelo activo (batido de alas)."
+   }
+  },
+  {
+   "id": "naturaleza-06",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los ríos transportan sedimentos al mar",
+    "en": "Rivers carry sediments to sea"
+   },
+   "texto": {
+    "es": "…los ríos llevan sedimentos que forman deltas en la costa.",
+    "en": "…rivers carry sediments that form deltas at the coast."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los ríos transportan sedimentos que se depositan formando deltas en la costa."
+   }
+  },
+  {
+   "id": "naturaleza-07",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Las ballenas cantan para comunicarse",
+    "en": "Whales sing to communicate"
+   },
+   "texto": {
+    "es": "…las ballenas emiten cantos complejos que viajan kilómetros bajo el agua.",
+    "en": "…whales emit complex songs that travel kilometers underwater."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Especies como la ballena jorobada emiten cantos complejos que se propagan kilómetros bajo el agua."
+   }
+  },
+  {
+   "id": "naturaleza-08",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los hongos descomponen materia orgánica",
+    "en": "Fungi decompose organic matter"
+   },
+   "texto": {
+    "es": "…los hongos reciclan nutrientes descomponiendo materia muerta en el suelo.",
+    "en": "…fungi recycle nutrients by decomposing dead matter in soil."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los hongos son descomponedores clave que reciclan nutrientes al descomponer materia orgánica muerta."
+   }
+  },
+  {
+   "id": "naturaleza-09",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Los camaleones cambian color por temperatura",
+    "en": "Chameleons change color for temperature"
+   },
+   "texto": {
+    "es": "…los camaleones alteran su color para regular temperatura y comunicarse.",
+    "en": "…chameleons change color to regulate temperature and communicate."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Los camaleones cambian de color principalmente para comunicación y termorregulación, además de camuflaje."
+   }
+  },
+  {
+   "id": "naturaleza-10",
+   "tipo": "naturaleza",
+   "calidad": "good",
+   "titulo": {
+    "es": "Glaciares guardan mucha agua dulce",
+    "en": "Glaciers store much fresh water"
+   },
+   "texto": {
+    "es": "…los glaciares contienen cerca del 69 % del agua dulce del planeta.",
+    "en": "…glaciers hold about 69 % of the planet's fresh water."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Aproximadamente el 69 % del agua dulce del planeta está almacenada en glaciares y casquetes polares."
+   }
+  },
+  {
+   "id": "historia-01",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Invención de la imprenta",
+    "en": "Invention of the printing press"
+   },
+   "texto": {
+    "es": "…Gutenberg inventó la imprenta de tipos móviles hacia 1440, revolucionando la difusión del conocimiento.",
+    "en": "…Gutenberg invented the movable‑type printing press around 1440, revolutionizing the spread of knowledge."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Consenso histórico: Johannes Gutenberg desarrolló la imprenta de tipos móviles en Europa hacia 1440 (Biblia de 42 líneas, c. 1455)."
+   }
+  },
+  {
+   "id": "historia-02",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Caída del Imperio Romano",
+    "en": "Fall of the Roman Empire"
+   },
+   "texto": {
+    "es": "…el Imperio Romano de Occidente cayó en el año 476 d. C., marcando el fin de la antigüedad.",
+    "en": "…the Western Roman Empire fell in 476 AD, marking the end of antiquity."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Fecha convencional aceptada: deposición de Rómulo Augústulo en 476 d. C. marca el fin del Imperio Romano de Occidente y de la Antigüedad."
+   }
+  },
+  {
+   "id": "historia-03",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Revolución Francesa inicio",
+    "en": "French Revolution begins"
+   },
+   "texto": {
+    "es": "…la Revolución Francesa comenzó en 1789 con la toma de la Bastilla, transformando Francia y Europa.",
+    "en": "…the French Revolution began in 1789 with the storming of the Bastille, transforming France and Europe."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Hecho comprobado: la toma de la Bastilla el 14 de julio de 1789 inicia la Revolución Francesa con impacto europeo."
+   }
+  },
+  {
+   "id": "historia-04",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primera Guerra Mundial",
+    "en": "World War I"
+   },
+   "texto": {
+    "es": "…la Primera Guerra Mundial duró de 1914 a 1918 y envolvió a las principales potencias mundiales.",
+    "en": "…World War I lasted from 1914 to 1918 and involved the major world powers."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Cronología estándar: 28 julio 1914 – 11 noviembre 1918, conflicto global entre las grandes potencias."
+   }
+  },
+  {
+   "id": "historia-05",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Segunda Guerra Mundial fin",
+    "en": "World War II ends"
+   },
+   "texto": {
+    "es": "…la Segunda Guerra Mundial terminó en 1945 tras la rendición de Alemania y Japón.",
+    "en": "…World War II ended in 1945 after the surrender of Germany and Japan."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Rendición incondicional de Alemania (mayo 1945) y Japón (septiembre 1945) cierran la Segunda Guerra Mundial."
+   }
+  },
+  {
+   "id": "historia-06",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Declaración Independencia EEUU",
+    "en": "US Declaration of Independence"
+   },
+   "texto": {
+    "es": "…la Declaración de Independencia de EE. UU. se adoptó el 4 de julio de 1776.",
+    "en": "…the United States Declaration of Independence was adopted on July 4, 1776."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El Congreso Continental adoptó el texto el 4 de julio de 1776 (firmas mayoritarias en agosto)."
+   }
+  },
+  {
+   "id": "historia-07",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Pirámides de Giza construcción",
+    "en": "Giza pyramids construction"
+   },
+   "texto": {
+    "es": "…las pirámides de Giza se construyeron alrededor del 2560 a. C. como tumbas reales.",
+    "en": "…the Giza pyramids were built around 2560 BC as royal tombs."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Datación arqueológica y egiptológica consensuada: Gran Pirámide (Keops) c. 2560 a. C., función funeraria real."
+   }
+  },
+  {
+   "id": "historia-08",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Invención de la rueda",
+    "en": "Invention of the wheel"
+   },
+   "texto": {
+    "es": "…la rueda se inventó en Mesopotamia hacia el 3500 a. C., facilitando el transporte.",
+    "en": "…the wheel was invented in Mesopotamia around 3500 BC, facilitating transport."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Evidencia arqueológica más antigua de rueda para transporte en Mesopotamia (Uruk) c. 3500-3300 a. C."
+   }
+  },
+  {
+   "id": "historia-09",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Ruta de la Seda",
+    "en": "Silk Road"
+   },
+   "texto": {
+    "es": "…la Ruta de la Seda conectó Asia y Europa, permitiendo el intercambio de bienes e ideas.",
+    "en": "…the Silk Road linked Asia and Europe, enabling the exchange of goods and ideas."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Red de rutas comerciales documentada entre Asia y Europa (siglos II a. C.–XV d. C.), intercambio de bienes, tecnologías e ideas."
+   }
+  },
+  {
+   "id": "historia-10",
+   "tipo": "historia",
+   "calidad": "good",
+   "titulo": {
+    "es": "Magna Carta firma",
+    "en": "Magna Carta sealed"
+   },
+   "texto": {
+    "es": "…la Magna Carta fue firmada en 1215, limitando el poder real en Inglaterra.",
+    "en": "…the Magna Carta was sealed in 1215, limiting royal power in England."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Documento sellado por Juan Sin Tierra el 15 junio 1215, base del constitucionalismo inglés limitando la monarquía."
+   }
+  },
+  {
+   "id": "cine-01",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primera proyección pública",
+    "en": "First public screening"
+   },
+   "texto": {
+    "es": "…los hermanos Lumière realizaron la primera proyección pública de cine el 28 de diciembre de 1895 en París.",
+    "en": "…the Lumière brothers held the first public film screening on 28 December 1895 in Paris."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "La primera proyección pública de los hermanos Lumière tuvo lugar el 28 de diciembre de 1895 en el Salón Indien del Grand Café de París, hecho documentado y consensuado por la historiografía del cine."
+   }
+  },
+  {
+   "id": "cine-02",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer largometraje narrativo",
+    "en": "First narrative feature"
+   },
+   "texto": {
+    "es": "…«The Story of the Kelly Gang» (1906) es considerado el primer largometraje narrativo de la historia.",
+    "en": "…“The Story of the Kelly Gang” (1906) is regarded as the first narrative feature film."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«The Story of the Kelly Gang» (1906), de unos 60‑70 minutos, es reconocida como el primer largometraje narrativo de la historia del cine."
+   }
+  },
+  {
+   "id": "cine-03",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer sonido sincronizado",
+    "en": "First synchronized sound"
+   },
+   "texto": {
+    "es": "…«The Jazz Singer» (1927) fue la primera película con sonido sincronizado comercialmente estrenada.",
+    "en": "…“The Jazz Singer” (1927) was the first commercially released feature with synchronized sound."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«The Jazz Singer» (1927) fue el primer largometraje comercial con diálogos sincronizados (Vitaphone), marcando el inicio del cine sonoro."
+   }
+  },
+  {
+   "id": "cine-04",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer largometraje animado",
+    "en": "First animated feature"
+   },
+   "texto": {
+    "es": "…«Blancanieves y los siete enanitos» (1937) es el primer largometraje de animación tradicional de Disney.",
+    "en": "…“Snow White and the Seven Dwarfs” (1937) is the first full‑length traditionally animated feature."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«Blancanieves y los siete enanitos» (1937) es el primer largometraje de animación tradicional (cel) producido por Disney."
+   }
+  },
+  {
+   "id": "cine-05",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primera película ganadora Oscar",
+    "en": "First Oscar Best Picture"
+   },
+   "texto": {
+    "es": "…«Alas» (1927/28) ganó el primer Óscar a la mejor película en la historia de la Academia.",
+    "en": "…“Wings” (1927/28) won the first Academy Award for Best Picture."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«Alas» (Wings, 1927/28) recibió el primer Óscar a la Mejor Película en la 1.ª ceremonia de la Academia (1929)."
+   }
+  },
+  {
+   "id": "cine-06",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer nickelodeon abierto",
+    "en": "First nickelodeon opened"
+   },
+   "texto": {
+    "es": "…el primer nickelodeon abrió sus puertas en Pittsburgh en 1905, popularizando el cine de bajo coste.",
+    "en": "…the first nickelodeon opened in Pittsburgh in 1905, popularizing low‑cost cinema."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "El primer nickelodeon abrió en Pittsburgh en 1905 (propietario Harry Davis), popularizando el cine de bajo coste."
+   }
+  },
+  {
+   "id": "cine-07",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primera directora de cine",
+    "en": "First female film director"
+   },
+   "texto": {
+    "es": "…Alice Guy‑Blaché dirigió «La fée aux choux» en 1896, convirtiéndose en la primera directora de cine.",
+    "en": "…Alice Guy‑Blaché directed “La Fée aux Choux” in 1896, becoming the first female film director."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "Alice Guy‑Blaché dirigió «La fée aux choux» en 1896, siendo reconocida como la primera directora de cine de la historia."
+   }
+  },
+  {
+   "id": "cine-08",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer uso de CGI",
+    "en": "First CGI use"
+   },
+   "texto": {
+    "es": "…«Westworld» (1973) incluyó las primeras imágenes generadas por ordenador en un largometraje.",
+    "en": "…“Westworld” (1973) featured the first computer‑generated imagery in a feature film."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«Westworld» (1973) incluyó la primera imagen generada por ordenador (2‑D CGI) en un largometraje (la visión pixelada del robot)."
+   }
+  },
+  {
+   "id": "cine-09",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer uso de Steadicam",
+    "en": "First Steadicam use"
+   },
+   "texto": {
+    "es": "…«Bound for Glory» (1976) estrenó el Steadicam, revolucionando los movimientos de cámara.",
+    "en": "…“Bound for Glory” (1976) debuted the Steadicam, revolutionizing camera movement."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«Bound for Glory» (1976) fue el primer largometraje en emplear el Steadicam, revolucionando los movimientos de cámara."
+   }
+  },
+  {
+   "id": "cine-10",
+   "tipo": "cine",
+   "calidad": "good",
+   "titulo": {
+    "es": "Primer filme digital",
+    "en": "First digital feature"
+   },
+   "texto": {
+    "es": "…«Star Wars: Episodio II – El ataque de los clones» (2002) fue el primer gran estreno rodado íntegramente en digital.",
+    "en": "…“Star Wars: Episode II – Attack of the Clones” (2002) was the first major release shot entirely on digital video."
+   },
+   "verificacion": {
+    "veredicto": "seguro",
+    "motivo": "«Star Wars: Episodio II – El ataque de los clones» (2002) fue el primer gran estreno de Hollywood rodado completamente en formato digital (HD)."
+   }
+  }
+ ]
+}

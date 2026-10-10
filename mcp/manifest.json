@@ -2720,9 +2720,11 @@
       "/demo pausa",
       "/demo reanudar",
       "/demo next",
-      "/demo stop"
+      "/demo stop",
+      "/demo capsula <tipología> <good|better|best>",
+      "/demo capsula help"
     ],
-    "tour_total_s": 324,
+    "tour_total_s": 342,
     "languages": [
       "es",
       "en"
@@ -3167,5 +3169,50 @@
     "presentation": "validated art fields",
     "cloud": "authenticated Creator web session",
     "physicalDelivery": false
+  },
+  "capsulas_sabias_que": {
+    "since": "2026-10-10",
+    "command": "/demo capsula <tipología> <calidad> [muda] · /demo capsula help · /demo 24",
+    "examples": [
+      "/demo capsula musica good",
+      "/demo capsula tecnologia good en",
+      "/demo capsula historia better",
+      "/demo capsula help"
+    ],
+    "bank": "https://www.admira.store/admira-xp/capsulas/capsulas-good.json",
+    "typologies": [
+      "musica",
+      "tecnologia",
+      "sociedad",
+      "ciencia",
+      "deporte",
+      "arte",
+      "gastronomia",
+      "naturaleza",
+      "historia",
+      "cine"
+    ],
+    "per_typology": 10,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "qualities": {
+      "good": "modelo abierto gratuito NVIDIA Nemotron 3 Ultra (integrate.api.nvidia.com) + voces Mac Mónica/Daniel · 0 € · operativo",
+      "better": "modelo frontera de pago · próximamente / requiere encargo",
+      "best": "hecho por personas (admira.studio) · requiere encargo"
+    },
+    "format": {
+      "canvas": "480×800",
+      "palette": [
+        "#000000",
+        "#ffffff",
+        "#ffd400",
+        "#d40000"
+      ],
+      "eink": "vale tal cual para la tinta electrónica BWRY 480×800 (botón PNG 480×800)"
+    },
+    "es": "Cápsulas de conocimiento «¿Sabías que…?» de una página. GOOD lee una batería pregenerada y verificada con Nemotron 3 Ultra (10 tipologías × 10, ES/EN): instantáneo y sin coste. Elige al azar una que no haya salido hace poco, la pinta en 480×800 con los 4 colores de la tinta electrónica y la locuta con Mónica (ES) o Daniel (EN). better y best responden «próximamente / requiere encargo».",
+    "en": "One-page “Did you know…?” knowledge capsules. GOOD reads a pre-generated, fact-checked bank made with Nemotron 3 Ultra (10 typologies × 10, ES/EN): instant and free. It picks a random one not shown recently, paints it at 480×800 in the e-ink's 4 colours and voices it with Mónica (ES) or Daniel (EN). better and best answer “coming soon / requires a commission”."
   }
 }

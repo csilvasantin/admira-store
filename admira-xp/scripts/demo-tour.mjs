@@ -8,6 +8,7 @@ import {runStoreDemo} from './store-demo-bridge.mjs?v=local-autopilot-1';
 import {getScreenDisplayMode,setScreenDisplayMode} from './screen-display.mjs?v=number-layout-1';
 export const REGISTRY_URL=new URL('../demos.json',import.meta.url).href;
 export const QUALITY_KEY='xpaceos.starbucks.announcementQuality';
+const CAPSULA_MOD='./capsula-demo.mjs?v=capsula-1';
 const PROTECTED=/^INC-CFHI7Z$/i; // incidencia real abierta: el recorrido nunca la toca.
 let registry=null;
 export function setDemoRegistry(r){registry=r;}
@@ -16,8 +17,8 @@ export async function loadDemoRegistry({fetcher=(...a)=>fetch(...a)}={}){
  if(REGISTRY_URL.startsWith('file:')){const fs=await import('node:fs/promises');r=JSON.parse(await fs.readFile(new URL(REGISTRY_URL),'utf8'));}
  else{const res=await fetcher(REGISTRY_URL,{cache:'no-cache'});if(!res.ok)throw Error('demos.json HTTP '+res.status);r=await res.json();}
 if(!Array.isArray(r?.demos)||!r.demos.length)throw Error('demos.json vacío');registry=r;return r;}
-import {norm,parseTourArg,splitFlags,langToken} from './demo-tour-args.mjs?v=demos-2';
-import {demoIconSvg} from './demo-icons.mjs?v=demos-2';
+import {norm,parseTourArg,splitFlags,langToken} from './demo-tour-args.mjs?v=capsula-1';
+import {demoIconSvg} from './demo-icons.mjs?v=capsula-1';
 import {installStoreDemoSkin,translateDemoText} from './store-demo-skin.mjs?v=demos-3';
 export {norm,parseTourArg,splitFlags,langToken};
 export function findDemo(reg,arg){const a=splitFlags(arg).rest;if(!a)return null;const list=reg?.demos||[];
@@ -30,6 +31,7 @@ export function demoHelp(reg,{en=false}={}){const list=reg.demos,tour=list.filte
  for(const d of list){const ids=['/demo '+d.n,...(d.kind==='suite'||d.id!==String(d.n)?['/demo '+d.id]:[])].join(' · ');
   lines.push(String(d.n).padStart(w,' ')+'. '+L(d.name,en)+' — '+L(d.shows,en)+' · '+ids+' · '+fmt(d.duration_s,en)+(d.tour?'':' · '+t('solo individual: ','single only: ')+L(d.tour_skip_reason,en))+(d.only?' · '+t('solo en ','only on ')+d.only:''));}
  lines.push(t('▶ /demo all (o /demo todas) las enseña seguidas · /demo all es|en (ESP/ENG) elige idioma · /demo pausa · /demo next salta · /demo stop o Esc detiene · el informe de incidencia no se envía salvo con /demo all --enviar.','▶ /demo all (or /demo todas) shows them in a row · /demo all es|en (ESP/ENG) picks the language · /demo pausa · /demo next skips · /demo stop or Esc stops · the incident report is not sent unless /demo all --enviar.'));
+ lines.push(t('◆ /demo capsula <tipología> <calidad> (ej. /demo capsula musica good) · /demo capsula help lista tipologías y calidades.','◆ /demo capsula <typology> <quality> (e.g. /demo capsula musica good) · /demo capsula help lists typologies and qualities.'));
  lines.push(t('Detalle: help.html#demos · registro: admira-xp/demos.json','Details: help.html#demos · registry: admira-xp/demos.json'));
  return lines.join('\n');}
 
@@ -171,7 +173,11 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
    await sleep(1500,cancelled);ctx.subLocked=false;paintTexts();return;}
   c?.close?.();doc?.getElementById?.('xpaceDemoIpadPreload')?.remove();return;}
  if(s.waitPos){const t0=Date.now();while(Date.now()-t0<s.waitPos&&!cancelled()){const p=g.XpacePOSExperience?.demo?.state?.()?.phase;if(['completed','error'].includes(p))break;await sleep(400,cancelled);}return;}
- if(s.incident){await incidentStep(ctx,cancelled);return;}}
+ if(s.incident){await incidentStep(ctx,cancelled);return;}
+ // /demo 24: una cápsula «¿Sabías que…?» GOOD al azar en la tarjeta 480×800 y en una pantalla vertical, con locución.
+ if(s.capsula){const m=await import(CAPSULA_MOD);if(s.capsula==='close'){m.closeCapsula();return;}
+  const c=await race(m.showCapsule({tipo:s.capsula==='random'?'random':s.capsula,lang:ctx.lang,voice:s.voice!==false,doc:ctx.doc}),cancelled);
+  if(c)ctx.sub((ctx.en?'Did you know…? · ':'¿Sabías que…? · ')+c.id+' · GOOD · Nemotron 3 Ultra · 0 €');return;}}
 
 async function incidentStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es;const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-5')).runIncidentDemo(text,o));
  ctx.cmd('/crear incidencia');const r=await run('/crear incidencia',{router:ctx.router,lang:ctx.lang,progress:m=>ctx.sub(m)});
@@ -225,6 +231,7 @@ export async function handleDemoTour(command,{lang='es',router,exec,reg}={}){if(
  if(command.action==='next'){return nextDemo()?{ok:true,local:true,message:t('⏭ Siguiente demo','⏭ Next demo')}:null;}
  if(command.action==='stop'){return stopTour()?{ok:true,local:true,message:t('■ Deteniendo el recorrido y restaurando el gemelo…','■ Stopping the tour and restoring the twin…')}:null;}
  if(command.action==='status'){const st=tourState();return st.active?{ok:true,local:true,message:'Demo '+st.index+'/'+st.total+' · '+st.demo}:null;}
+ if(command.action==='capsula'){const {handleCapsula}=await import(CAPSULA_MOD);return handleCapsula(command.arg||'',{lang});}
  try{reg=reg||await loadDemoRegistry();}catch(e){return {ok:false,local:true,message:t('No se pudo cargar el registro de demos: ','Could not load the demo registry: ')+e.message};}
  if(command.action==='help')return {ok:true,local:true,message:demoHelp(reg,{en})};
  if(S.active)return {ok:false,local:true,message:t('Ya hay un recorrido en curso (/demo next salta · /demo stop detiene).','A tour is already running (/demo next skips · /demo stop stops).')};

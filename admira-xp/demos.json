@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "title": "Demos del gemelo XpaceOS · Starbucks / XpaceOS twin demos",
- "updated_at": "2026-10-08",
+ "updated_at": "2026-10-10",
  "source": "https://www.admira.store/admira-xp/demos.json",
  "mirror": "https://www.xpaceos.com/admira-xp/demos.json",
  "commands": {
@@ -10,7 +10,8 @@
   "pause": "/demo pausa · /demo reanudar (durante el recorrido)",
   "one": "/demo <id|número> [es|en]",
   "next": "/demo next · /demo siguiente (durante el recorrido)",
-  "stop": "/demo stop · Esc"
+  "stop": "/demo stop · Esc",
+  "capsula": "/demo capsula <tipología> <good|better|best> [muda] · /demo capsula help"
  },
  "tour": {
   "languages": [
@@ -22,8 +23,8 @@
    "en": "/demo all es|en (ESP/ENG, --idioma) sets the language of the card, CLI and contents during the tour; without it, it follows /idioma. The ES/EN pill on the card switches it mid-tour. The previous language returns at the end."
   },
   "title_card_s": 2,
-  "count": 16,
-  "total_s": 324,
+  "count": 17,
+  "total_s": 342,
   "restores": [
    "vista (good/better/best/matrix)",
    "cámara",
@@ -1064,6 +1065,52 @@
     },
     {
      "wait": 7000
+    }
+   ]
+  },
+  {
+   "n": 24,
+   "id": "capsula",
+   "icon": "lightbulb",
+   "aliases": [
+    "capsulas",
+    "sabias",
+    "sabias-que",
+    "didyouknow",
+    "capsule"
+   ],
+   "name": {
+    "es": "Cápsula «¿Sabías que…?»",
+    "en": "“Did you know…?” capsule"
+   },
+   "shows": {
+    "es": "Cápsula de conocimiento de una página (GOOD, Nemotron gratis) en tarjeta 480×800 y en una pantalla vertical, con voz Mónica/Daniel.",
+    "en": "One-page knowledge capsule (GOOD, free Nemotron) on a 480×800 card and a vertical screen, with Mónica/Daniel voice."
+   },
+   "command": "/demo capsula <tipología> <good|better|best> · /demo capsula help",
+   "duration_s": 16,
+   "tour": true,
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: solo este navegador; la pantalla vertical vuelve a su contenido al cerrar.",
+    "en": "None: this browser only; the vertical screen returns to its content on close."
+   },
+   "owner": "XpaceOS · gemelo Starbucks · batería GOOD (Nemotron 3 Ultra)",
+   "link": "https://www.admira.store/admira-xp/help.html#capsulas",
+   "steps": [
+    {
+     "mode": "matrix"
+    },
+    {
+     "capsula": "random"
+    },
+    {
+     "wait": 14000
+    }
+   ],
+   "cleanup": [
+    {
+     "capsula": "close"
     }
    ]
   }

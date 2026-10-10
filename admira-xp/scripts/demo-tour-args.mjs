@@ -15,6 +15,8 @@ export function splitFlags(arg){const words=norm(arg).split(/\s+/).filter(Boolea
 export function parseTourArg(arg){const {rest:a,send,lang}=splitFlags(arg);const extra=o=>lang?{...o,lang}:o;
  if(!a&&!lang&&!send)return {action:'help'};
  if(!a||['help','ayuda','?','lista','list','menu'].includes(a))return send?null:extra({action:'help'});
+ // /demo capsula <tipología> <calidad> (10-oct-2026): cápsulas «¿Sabías que…?» (scripts/capsula-demo.mjs).
+ const cap=/^(capsulas?|capsules?|sabias(?:\s+que)?|didyouknow)(?:\s+(.*))?$/.exec(a);if(cap&&!send)return extra({action:'capsula',arg:cap[2]||''});
  if(['all','todas','todo','tour','recorrido'].includes(a))return extra({action:'all',send});
  if(['next','skip','saltar'].includes(a))return {action:'next'};
  return null;}
