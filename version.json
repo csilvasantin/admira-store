@@ -1,14 +1,17 @@
 {
-  "version": "v.09.10.2026.r20.18:41",
-  "deployer": "OraculoMacMini",
-  "machine": "MacMini",
-  "signature": "OraculoMacMini · MacMini",
-  "deployedAt": "2026-10-09T16:41:18.838834+00:00",
+  "version": "v.10.10.2026.r1.16:54",
+  "deployedAt": "2026-10-10T14:54:34Z",
+  "deployer": "GrokBot",
+  "machine": "MacBookPro16",
+  "signature": "GrokBot · MacBookPro16",
+  "git": "333599a2f84d5cf9580929684577082f5c6bd173",
+  "gitShort": "333599a",
+  "gitFull": "333599a2f84d5cf9580929684577082f5c6bd173",
+  "dirty": false,
   "novedades": [
-    "H oculta toda la interfaz del gemelo; otra H recupera menús y paneles anteriores.",
-    "Vista limpia en 360 y 3D con cámara, encaje y reproducción conservados.",
-    "Botón H bilingüe; los campos de texto conservan su escritura.",
-    "Pantallas calibradas y ayuda web, tutorial, CLI y MCP actualizados ES/EN."
-  ],
-  "origin": "release source; deployed SHA filled by native publisher"
+    "/demo capsula <tipología> <calidad>: cápsula «¿Sabías que…?» de una página en el modo experto.",
+    "GOOD gratis: 100 cápsulas verificadas con Nemotron 3 Ultra, 10 tipologías, ES/EN y voz Mónica/Daniel.",
+    "Tarjeta 480×800 en 4 colores, lista para la tinta electrónica (PNG) y en una pantalla vertical.",
+    "better/best: próximamente con encargo · /demo capsula help · demo 24 en /demo all."
+  ]
 }
