@@ -131,6 +131,12 @@ export function placementZone(p){
   // describe a camera view, not the area occupied on the shop floor.
   return p.floorZone||null;
 }
+// Tótem «14. Metahuman AI» en Best/Hiperreal (fix 10-oct-2026 r3): el sprite del atlas trae un marcador gris (sol + monte)
+// que en el local parecía una imagen rota. Sin contenido propio se pinta una pantalla en reposo; cualquier preview
+// (cápsulas, arrastrar medios) la sustituye y al restaurar vuelve aquí.
+function drawIdleTotem(ctx){const g=ctx.createLinearGradient(0,0,0,768);g.addColorStop(0,'#071a2b');g.addColorStop(1,'#02060c');ctx.fillStyle=g;ctx.fillRect(0,0,512,768);
+  ctx.fillStyle='rgba(120,243,255,.16)';ctx.beginPath();ctx.arc(256,300,118,0,Math.PI*2);ctx.fill();ctx.fillStyle='#78f3ff';ctx.beginPath();ctx.arc(256,300,64,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#e9fbff';ctx.textAlign='center';ctx.font='bold 54px system-ui,sans-serif';ctx.fillText('Metahuman AI',256,520);ctx.fillStyle='#6ce6a2';ctx.font='32px system-ui,sans-serif';ctx.fillText('admira',256,580);}
 function photoContent(photo,box,prefix){
   const svg=document.createElementNS(SVG,'svg');svg.setAttribute('viewBox',`${box.x} ${box.y} ${box.width} ${box.height}`);svg.setAttribute('aria-hidden','true');
   const defs=document.createElementNS(SVG,'defs'),clip=document.createElementNS(SVG,'clipPath');clip.id=prefix;
@@ -196,7 +202,7 @@ export function mountMatrixFurniture(container,{getState=()=>window.__xtancoVisu
         const aperture=p.kind==='sprite'?(p.view.rotation===0?[[125,35],[247,75],[247,170],[124,128]]:[[135,78],[256,36],[256,125],[135,169]]):p.item.type==='metahuman'?[[692,392],[755,414],[755,565],[690,540]]:[[410,129],[475,106],[475,264],[410,286]];
         const box=p.kind==='photo'?p.box:{x:0,y:0,width:p.view.width,height:p.view.height};const points=aperture.map(([x,y])=>({x:(x-box.x)/box.width*entry.node.clientWidth,y:(y-box.y)/box.height*entry.node.clientHeight})),matrix=quadTransform(points,512,768);
         if(matrix)entry.screen.style.transform='matrix3d('+matrix.join(',')+')';
-        const ctx=entry.screen.getContext?.('2d');if(ctx){ctx.clearRect(0,0,512,768);globalThis.XpaceScreenMedia?.draw(ctx,512,768,screenId);}
+        const ctx=entry.screen.getContext?.('2d');if(ctx){ctx.clearRect(0,0,512,768);if(!globalThis.XpaceScreenMedia?.draw(ctx,512,768,screenId)&&screenId==='metahuman')drawIdleTotem(ctx);}
       }
     }
     if(!decorators.length){

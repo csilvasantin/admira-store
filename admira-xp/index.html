@@ -1078,7 +1078,7 @@
   </div>
   <span class="qm-version" id="quadOptVersion" role="button" tabindex="0" title="Ayuda · funcionalidades"></span>
 </nav>
-<script src="scripts/screen-media.js?v=20261005-pixeria-1"></script>
+<script src="scripts/screen-media.js?v=20261010-capsula-3"></script>
 <script src="scripts/created-media-history.js?v=20261006-alsea-repair-1"></script>
 <script src="scripts/voice-receipts.js?v=person-voice-3"></script>
 <link rel="stylesheet" href="scripts/media-experience.css?v=water-finish-4">
@@ -32073,7 +32073,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:convertir|convert|ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=capsula-2');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=capsula-3');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -36524,7 +36524,7 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=starbucks-defaults-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=capsula-3"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <script type="module" src="scripts/dock-scroll-guard.mjs?v=hueco-360-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">

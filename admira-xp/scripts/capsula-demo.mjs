@@ -97,8 +97,8 @@ const CSS='#xpaceCapsula{--xb:var(--mbx-brand,#00704A);--xa:var(--mbx-accent,#00
  +'#xpaceCapsula .b{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}#xpaceCapsula .b button{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:inherit;font:600 12.5px/1 system-ui;padding:7px 11px;border-radius:999px;cursor:pointer}#xpaceCapsula .b button:hover{background:rgba(255,255,255,.2)}#xpaceCapsula .b button[data-a="next"]{background:var(--xa);color:#06231b;border-color:transparent}'
  +'#xpaceCapsula .x{border:0;background:transparent;color:inherit;font:700 16px/1 system-ui;cursor:pointer;opacity:.8;padding:2px 4px}'
  +'@keyframes xcpIn{from{opacity:0;transform:translate(30px,-50%) scale(.95);filter:blur(4px)}to{opacity:1;transform:translateY(-50%);filter:none}}@media (prefers-reduced-motion:reduce){#xpaceCapsula{animation:none}}';
-const C={el:null,cap:null,lang:'es',tipo:'random',screen:null,timer:0,audio:null,voice:true,onKey:null,imageURL:null,lastScreenError:null};
-export function capsulaState(){return {open:!!C.el?.isConnected,id:C.cap?.id||null,lang:C.lang,screen:C.screen,image:C.imageURL||null,screenError:C.lastScreenError||null};}
+const C={el:null,cap:null,lang:'es',tipo:'random',screen:null,screenBackend:null,screenApi:null,timer:0,audio:null,voice:true,onKey:null,imageURL:null,lastScreenError:null};
+export function capsulaState(){return {open:!!C.el?.isConnected,id:C.cap?.id||null,lang:C.lang,screen:C.screen,backend:C.screenBackend,image:C.imageURL||null,screenError:C.lastScreenError||null};}
 export function audioURL(c,lang){return AUDIO_BASE+c.id+'-'+(lang==='en'?'en':'es')+'.m4a';}
 function stopVoice(){try{C.audio?.pause();}catch{}C.audio=null;try{globalThis.XpaceAnnouncements?.stopStock?.();}catch{}try{globalThis.speechSynthesis?.cancel();}catch{}}
 export function speakCapsule(c,lang,{win=globalThis}={}){stopVoice();if(win.dsMasterMute)return 'muted';const text=spokenText(c,lang),url=audioURL(c,lang);
@@ -112,21 +112,37 @@ export function speakCapsule(c,lang,{win=globalThis}={}){stopVoice();if(win.dsMa
 export function canvasBlob(cv){return new Promise((res,rej)=>{try{cv.toBlob(b=>b?res(b):rej(Error('PNG vacío')),'image/png');}catch(e){rej(e);}});}
 export async function capsuleImageURL(cv,{win=globalThis}={}){const blob=await canvasBlob(cv);return win.URL.createObjectURL(blob);}
 function revokeImage(){if(C.imageURL){try{globalThis.URL.revokeObjectURL(C.imageURL);}catch{}C.imageURL=null;}}
-async function putOnScreen(cv){const m=globalThis.XpaceMatrixOptions;if(!m?.isActive?.()||!m.previewScreen)return null;let id=null;
- try{const ids=m.incidentDemo?.candidates?.()||[];id=C.screen||ids[Math.floor(Math.random()*ids.length)];if(!id)return null;
-  const old=C.imageURL,url=await capsuleImageURL(cv);C.imageURL=url;
-  await m.previewScreen(id,{kind:'image',url,title:'¿Sabías que…? · '+C.cap.id,id:'capsula-'+C.cap.id+'-'+C.lang+'-'+Date.now()});
-  if(old)setTimeout(()=>{try{globalThis.URL.revokeObjectURL(old);}catch{}},5000);
-  C.screen=id;try{m.incidentDemo?.focus?.(id);}catch{}return id;}
- catch(e){C.lastScreenError=String(e?.message||e);if(id&&C.screen!==id){try{m.restoreScreen?.(id);}catch{}}return null;}}
-function restoreScreen(){const m=globalThis.XpaceMatrixOptions,id=C.screen;C.screen=null;if(id){try{m?.restoreScreen?.(id);}catch{}}setTimeout(revokeImage,1500);}
+// Fix 10-oct-2026 17:3x (r3): en Good/Better/Best/Hiperreal (no Matrix) la cápsula no llegaba a ninguna pantalla —sólo se
+// probaba XpaceMatrixOptions— y XpaceScreenMedia sólo admitía https:. Ahora se prueba, por este orden, Matrix → escena
+// Best/Hiperreal (XpaceSceneScreens; la pantalla vertical junto a la mesa DJ es el tótem «14. Metahuman AI», id
+// 'metahuman') → Good 2D (XpaceOptionsPlayback). El blob se crea con el URL de la MISMA ventana que posee el
+// reproductor (nunca en otro realm/iframe) y screen-media.js acepta blob: sólo de su propio origen.
+const PORTRAIT=/metahuman|totem|t[oó]tem|vertical|portrait/i;
+function screenBackends(){const w=globalThis,out=[];
+ const m=w.XpaceMatrixOptions;if(m?.isActive?.()&&m.previewScreen)out.push({name:'matrix',api:m,ids:()=>m.incidentDemo?.candidates?.()||[],focus:id=>m.incidentDemo?.focus?.(id)});
+ const s=w.XpaceSceneScreens;if(s?.previewScreen&&w.XpaceScreenMedia){const ids=()=>{const dom=[...(w.document?.querySelectorAll?.('[data-media-screen]')||[])].filter(n=>n.isConnected&&n.getClientRects().length).map(n=>n.dataset.mediaScreen);return [...new Set(dom.length?dom:['metahuman','escaparate'])];};out.push({name:'scene',api:s,ids});}
+ const o=w.XpaceOptionsPlayback;if(o?.previewScreen&&typeof w.dsActiveSurfaces==='function')out.push({name:'good',api:o,ids:()=>{try{return w.dsActiveSurfaces().map(x=>x.id).filter(Boolean);}catch{return [];}}});
+ return out;}
+export function preferPortrait(ids){const p=ids.filter(id=>PORTRAIT.test(id));return p.length?p:ids;}
+async function putOnScreen(cv){const backs=screenBackends();C.lastScreenError=backs.length?null:'sin pantallas en esta escena';
+ for(const bk of backs){let id=null;
+  try{const ids=preferPortrait(bk.ids());id=(C.screenBackend===bk.name&&C.screen)||ids[Math.floor(Math.random()*ids.length)];if(!id)continue;
+   const old=C.imageURL,url=await capsuleImageURL(cv);C.imageURL=url;
+   await bk.api.previewScreen(id,{kind:'image',url,title:'¿Sabías que…? · '+C.cap.id,id:'capsula-'+C.cap.id+'-'+C.lang+'-'+Date.now()});
+   if(old)setTimeout(()=>{try{globalThis.URL.revokeObjectURL(old);}catch{}},5000);
+   C.screen=id;C.screenBackend=bk.name;C.screenApi=bk.api;try{bk.focus?.(id);}catch{}return id;}
+  catch(e){C.lastScreenError=bk.name+': '+String(e?.message||e);if(id&&C.screen!==id){try{bk.api.restoreScreen?.(id);}catch{}}}}
+ return null;}
+function restoreScreen(){const api=C.screenApi,id=C.screen;C.screen=null;C.screenApi=null;C.screenBackend=null;if(id){try{api?.restoreScreen?.(id);}catch{}}setTimeout(revokeImage,1500);}
 export function closeCapsula(){clearTimeout(C.timer);stopVoice();restoreScreen();try{C.el?.ownerDocument?.defaultView?.removeEventListener('keydown',C.onKey,true);}catch{}C.el?.remove();C.el=null;C.cap=null;return true;}
 function downloadPng(cv){try{const a=cv.ownerDocument.createElement('a');a.href=cv.toDataURL('image/png');a.download='capsula-'+C.cap.id+'-'+C.lang+'-480x800.png';a.click();}catch{}}
 async function paint(doc){const en=C.lang==='en',t=(es,e)=>en?e:es;let el=C.el;
  if(!el?.isConnected){el=doc.createElement('div');el.id='xpaceCapsula';el.setAttribute('role','dialog');el.setAttribute('aria-label','¿Sabías que…?');
   el.innerHTML='<style>'+CSS+'</style><div class="hd">'+demoIconSvg('lightbulb',{size:16})+'<span></span><button type="button" class="x" data-a="close" aria-label="Cerrar">×</button></div><canvas width="480" height="800"></canvas><div class="b"><button type="button" data-a="next"></button><button type="button" data-a="voice"></button><button type="button" data-a="png"></button><button type="button" data-a="lang"></button></div>';
   el.addEventListener('click',e=>{const a=e.target?.closest?.('button')?.dataset?.a;if(!a)return;if(a==='close')closeCapsula();else if(a==='next')showCapsule({tipo:C.tipo,lang:C.lang,voice:C.voice,doc});else if(a==='voice'&&C.cap)speakCapsule(C.cap,C.lang);else if(a==='png')downloadPng(el.querySelector('canvas'));else if(a==='lang'&&C.cap){C.lang=en?'es':'en';paint(doc).then(()=>C.voice&&speakCapsule(C.cap,C.lang));}});
-  C.onKey=e=>{if(e.key==='Escape'&&C.el&&!globalThis.XpaceDemoTour?.active?.())closeCapsula();};doc.defaultView?.addEventListener('keydown',C.onKey,true);doc.body.append(el);C.el=el;}
+  // Esc (fix r3): sólo cierra la tarjeta. Escucha en captura de window (lo primero que corre) y corta la propagación para
+  // que no llegue al juego (EDITOR DE LAYOUT) ni al diálogo Best (que al cerrarse volvía a Calidad Good).
+  C.onKey=e=>{if(e.key!=='Escape'||!C.el?.isConnected||globalThis.XpaceDemoTour?.active?.())return;e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();closeCapsula();};doc.defaultView?.addEventListener('keydown',C.onKey,true);doc.body.append(el);C.el=el;}
  const q=s=>el.querySelector(s);q('.hd span').textContent=t('¿Sabías que…? · ','Did you know…? · ')+L(tipoMeta(bank,C.cap.tipo).name,en)+' · GOOD';
  q('[data-a="next"]').textContent=t('Otra','Another');q('[data-a="voice"]').textContent=t('Escuchar','Listen');q('[data-a="png"]').textContent='PNG 480×800';q('[data-a="lang"]').textContent=en?'ES':'EN';q('.x').setAttribute('aria-label',t('Cerrar','Close'));
  el.dataset.capsula=C.cap.id;el.dataset.lang=C.lang;const cv=await renderCapsule(C.cap,{lang:C.lang,doc,canvas:q('canvas')});await putOnScreen(cv);return el;}
