@@ -1,17 +1,17 @@
 {
-  "version": "v.10.10.2026.r1.16:54",
-  "deployedAt": "2026-10-10T14:54:49Z",
+  "version": "v.10.10.2026.r2.17:09",
+  "deployedAt": "2026-10-10T15:09:41Z",
   "deployer": "GrokBot",
   "machine": "MacBookPro16",
   "signature": "GrokBot · MacBookPro16",
-  "git": "35cddb6ad01f15a857b19a5e3fc4581addb77483",
-  "gitShort": "35cddb6",
-  "gitFull": "35cddb6ad01f15a857b19a5e3fc4581addb77483",
+  "git": "33e55819e69ff15b40f5e40b0cf29924c3353afc",
+  "gitShort": "33e5581",
+  "gitFull": "33e55819e69ff15b40f5e40b0cf29924c3353afc",
   "dirty": false,
   "novedades": [
-    "/demo capsula <tipología> <calidad>: cápsula «¿Sabías que…?» de una página en el modo experto.",
-    "GOOD gratis: 100 cápsulas verificadas con Nemotron 3 Ultra, 10 tipologías, ES/EN y voz Mónica/Daniel.",
-    "Tarjeta 480×800 en 4 colores, lista para la tinta electrónica (PNG) y en una pantalla vertical.",
-    "better/best: próximamente con encargo · /demo capsula help · demo 24 en /demo all."
+    "Cápsulas: la pantalla vertical del gemelo ya muestra la cápsula (PNG en blob: del sitio) en vez del icono de imagen rota.",
+    "Si una pantalla no acepta la imagen, recupera su contenido; la imagen se libera al cerrar o cambiar.",
+    "El sello visible del gemelo (xtanco-version.js) se actualiza en cada publicación y coincide con el del tooltip.",
+    "Locución «Escuchar» comprobada: 200 audios Mónica/Daniel disponibles."
   ]
 }
