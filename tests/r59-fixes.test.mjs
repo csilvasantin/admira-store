@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {runTour,stopTour} from '../admira-xp/scripts/demo-tour.mjs?v=capsula-1';
+import {runTour,stopTour} from '../admira-xp/scripts/demo-tour.mjs?v=capsula-2';
 import {GUARD_CSS,DOCK_SCROLL_SELECTOR,scrollPane,markPane} from '../admira-xp/scripts/dock-scroll-guard.mjs';
 import {createVoiceIndicator,VOICE_TOAST_MIN_MS} from '../admira-xp/scripts/retail-voice.mjs';
 const reg=JSON.parse(readFileSync(new URL('../admira-xp/demos.json',import.meta.url),'utf8'));

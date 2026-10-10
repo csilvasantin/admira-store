@@ -24,6 +24,20 @@ GIT="$(git rev-parse HEAD)"
 jq -n --arg v "$SELLO" --arg a "$ADMIRA_RELEASE_AGENT" --arg m "$ADMIRA_RELEASE_MACHINE" \
       '{version:$v,deployer:$a,machine:$m,signature:($a+" · "+$m)}' \
       > release-signature.json
+# SELLO VISIBLE DEL GEMELO (GrokBot, 10-oct-2026): admira-xp/xtanco-version.js sólo lo tocaba el espejo de
+# XpaceOS; con los clones congelados el gemelo seguía pintando v.08.10.2026.r26.22:45 mientras el tooltip ya
+# leía version.json. Se sincroniza aquí con el sello canónico (versión, build y caché del <script>).
+python3 - "$SELLO" <<'PYV'
+import re,sys
+s=sys.argv[1];m=re.match(r'v\.(\d\d)\.(\d\d)\.(\d{4})\.r(\d+)\.(\d\d):(\d\d)$',s)
+if m:
+    d,mo,y,r,h,mi=m.groups();build=f"{y}{mo}{d}-{h}{mi}"
+    p='admira-xp/xtanco-version.js';t=open(p).read()
+    t=re.sub(r"version: '[^']*'","version: '"+s+"'",t);t=re.sub(r"build: '[^']*'","build: '"+build+"'",t);open(p,'w').write(t)
+    p='admira-xp/index.html';t=open(p).read()
+    t=re.sub(r'xtanco-version\.js\?v=[^"]*"','xtanco-version.js?v='+build+'-r'+r+'"',t);open(p,'w').write(t)
+PYV
+git add admira-xp/xtanco-version.js admira-xp/index.html
 # NOVEDADES DEL SELLO (Merovingio, 06-10-2026 · sello con novedades en toda la suite).
 # novedades.json[sello] o .default → version.json.novedades[] (2-4 líneas en español). Las
 # pinta al pasar el ratón el cargador compartido https://www.admiranext.com/assets/sello-novedades.js

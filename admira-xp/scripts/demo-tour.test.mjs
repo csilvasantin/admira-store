@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-import {parseTourArg,findDemo,demoHelp,tourTotal,runTour,handleDemoTour,loadDemoRegistry,nextDemo,stopTour,tourState} from './demo-tour.mjs?v=capsula-1';
+import {parseTourArg,findDemo,demoHelp,tourTotal,runTour,handleDemoTour,loadDemoRegistry,nextDemo,stopTour,tourState} from './demo-tour.mjs?v=capsula-2';
 import {parseVisualCommand,executeVisualCommand,DEMO_SOLUTIONS} from './xtanco-visual-command.mjs';
 const reg=JSON.parse(readFileSync(new URL('../demos.json',import.meta.url),'utf8'));
 const fast=r=>({...r,tour:{...r.tour,title_card_s:0},demos:r.demos.map(d=>({...d,steps:(d.steps||[]).map(s=>s.wait!=null?{wait:1}:s.waitPos?{waitPos:5}:s)}))});
@@ -66,7 +66,7 @@ test('demo 15 always closes its own ticket (retries a failed close) and restore 
  }finally{delete globalThis.XpaceIpadCola;}
 });
 
-import {splitFlags,pauseTour,clampPos,applyPageLang,setTourLanguage} from './demo-tour.mjs?v=capsula-1';
+import {splitFlags,pauseTour,clampPos,applyPageLang,setTourLanguage} from './demo-tour.mjs?v=capsula-2';
 import {DEMO_ICONS,demoIconSvg} from './demo-icons.mjs?v=demos-2';
 test('language: /demo all es|en|ESP|ENG|--idioma, /demo <id> en, and every demo has a Lucide-style icon',()=>{
  assert.deepEqual(parseVisualCommand('/demo all en'),{guided:'tour',action:'all',send:false,lang:'en'});

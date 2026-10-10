@@ -73,13 +73,13 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
     const tourActive=!!globalThis.XpaceDemoTour?.active?.(),arg=String(command.text||'').replace(/^\/demo\s*/,'');
     const live=tourActive?(['stop','status'].includes(command.guided)&&!command.native?command.guided:arg==='siguiente'?'next':['pausa','pause'].includes(arg)?'pause':['reanudar','resume','continuar','seguir'].includes(arg)?'resume':langToken(arg)?'language':null):null;
     if(command.guided==='tour'||live){
-      const {handleDemoTour}=await import('./demo-tour.mjs?v=capsula-1');
+      const {handleDemoTour}=await import('./demo-tour.mjs?v=capsula-2');
       const action=command.guided==='tour'?command.action:live;
       const out=await handleDemoTour({...command,action,...(live==='language'?{lang:langToken(arg)}:{})},{lang,router});if(out)return out;
       if(command.guided==='tour'&&action==='next')return runStoreDemo('/demo siguiente',{lang}); // sin recorrido: el ensayo de la suite conserva «siguiente».
     }
     if(command.guided==='suite'){const f=splitFlags(arg);
-      if(!demoSolution(f.rest))try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=capsula-1');const d=findDemo(await loadDemoRegistry(),arg);
+      if(!demoSolution(f.rest))try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=capsula-2');const d=findDemo(await loadDemoRegistry(),arg);
         if(d&&d.kind!=='suite'){const out=await handleDemoTour({action:'run',id:d.id,send:f.send,...(f.lang?{lang:f.lang}:{})},{lang,router});if(out)return out;}
         // /demo 3 en · /demo musica es: la demo de la suite en ese idioma, sin pasar el idioma como texto al motor.
         if(d&&d.kind==='suite'&&f.lang)return runStoreDemo('/demo '+f.rest,{lang:f.lang});}catch{}

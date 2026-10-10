@@ -32073,7 +32073,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:convertir|convert|ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=capsula-1');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=capsula-2');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};

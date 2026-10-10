@@ -8,7 +8,7 @@ import {runStoreDemo} from './store-demo-bridge.mjs?v=local-autopilot-1';
 import {getScreenDisplayMode,setScreenDisplayMode} from './screen-display.mjs?v=number-layout-1';
 export const REGISTRY_URL=new URL('../demos.json',import.meta.url).href;
 export const QUALITY_KEY='xpaceos.starbucks.announcementQuality';
-const CAPSULA_MOD='./capsula-demo.mjs?v=capsula-1';
+const CAPSULA_MOD='./capsula-demo.mjs?v=capsula-2';
 const PROTECTED=/^INC-CFHI7Z$/i; // incidencia real abierta: el recorrido nunca la toca.
 let registry=null;
 export function setDemoRegistry(r){registry=r;}

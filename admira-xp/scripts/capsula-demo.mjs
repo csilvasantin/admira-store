@@ -97,17 +97,29 @@ const CSS='#xpaceCapsula{--xb:var(--mbx-brand,#00704A);--xa:var(--mbx-accent,#00
  +'#xpaceCapsula .b{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}#xpaceCapsula .b button{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:inherit;font:600 12.5px/1 system-ui;padding:7px 11px;border-radius:999px;cursor:pointer}#xpaceCapsula .b button:hover{background:rgba(255,255,255,.2)}#xpaceCapsula .b button[data-a="next"]{background:var(--xa);color:#06231b;border-color:transparent}'
  +'#xpaceCapsula .x{border:0;background:transparent;color:inherit;font:700 16px/1 system-ui;cursor:pointer;opacity:.8;padding:2px 4px}'
  +'@keyframes xcpIn{from{opacity:0;transform:translate(30px,-50%) scale(.95);filter:blur(4px)}to{opacity:1;transform:translateY(-50%);filter:none}}@media (prefers-reduced-motion:reduce){#xpaceCapsula{animation:none}}';
-const C={el:null,cap:null,lang:'es',tipo:'random',screen:null,timer:0,audio:null,voice:true,onKey:null};
-export function capsulaState(){return {open:!!C.el?.isConnected,id:C.cap?.id||null,lang:C.lang,screen:C.screen};}
+const C={el:null,cap:null,lang:'es',tipo:'random',screen:null,timer:0,audio:null,voice:true,onKey:null,imageURL:null,lastScreenError:null};
+export function capsulaState(){return {open:!!C.el?.isConnected,id:C.cap?.id||null,lang:C.lang,screen:C.screen,image:C.imageURL||null,screenError:C.lastScreenError||null};}
+export function audioURL(c,lang){return AUDIO_BASE+c.id+'-'+(lang==='en'?'en':'es')+'.m4a';}
 function stopVoice(){try{C.audio?.pause();}catch{}C.audio=null;try{globalThis.XpaceAnnouncements?.stopStock?.();}catch{}try{globalThis.speechSynthesis?.cancel();}catch{}}
-export function speakCapsule(c,lang,{win=globalThis}={}){stopVoice();if(win.dsMasterMute)return 'muted';const text=spokenText(c,lang),url=AUDIO_BASE+c.id+'-'+(lang==='en'?'en':'es')+'.m4a';
+export function speakCapsule(c,lang,{win=globalThis}={}){stopVoice();if(win.dsMasterMute)return 'muted';const text=spokenText(c,lang),url=audioURL(c,lang);
  try{const A=win.XpaceAnnouncements;if(A?.playStock){A.playStock(url,text,{language:lang});return 'stock';}}catch{}
  try{const a=new win.Audio(url);C.audio=a;const fallback=()=>{if(C.audio!==a)return;C.audio=null;const S=win.speechSynthesis,U=win.SpeechSynthesisUtterance;if(!S||typeof U!=='function')return;const u=new U(text);u.lang=lang==='en'?'en-GB':'es-ES';
    const v=(S.getVoices()||[]).find(v=>(lang==='en'?/^daniel/i:/^m[oó]nica/i).test(v.name));if(v)u.voice=v;S.cancel();S.speak(u);};a.onerror=fallback;a.play()?.catch?.(fallback);return 'file';}catch{return 'error';}}
-async function putOnScreen(cv){const m=globalThis.XpaceMatrixOptions;if(!m?.isActive?.()||!m.previewScreen)return null;
- try{const ids=m.incidentDemo?.candidates?.()||[];const id=C.screen||ids[Math.floor(Math.random()*ids.length)];if(!id)return null;
-  const url=cv.toDataURL('image/png');await m.previewScreen(id,{kind:'image',url,title:'¿Sabías que…? · '+C.cap.id,id:'capsula-'+C.cap.id});C.screen=id;try{m.incidentDemo?.focus?.(id);}catch{}return id;}catch{return null;}}
-function restoreScreen(){const m=globalThis.XpaceMatrixOptions,id=C.screen;C.screen=null;if(!id)return;try{m?.restoreScreen?.(id);}catch{}}
+// Pantalla vertical (fix 10-oct-2026 17:06): el reproductor del gemelo (device-playback.preview) sólo admite https: o
+// blob: del mismo origen; un data: URL se rechazaba y la pantalla se quedaba con el icono de imagen rota. Ahora el
+// lienzo 480×800 se exporta como PNG en un blob: del propio sitio, se revoca al cambiar/cerrar, y si la pantalla
+// no acepta la imagen se restaura su contenido en vez de dejarla rota.
+export function canvasBlob(cv){return new Promise((res,rej)=>{try{cv.toBlob(b=>b?res(b):rej(Error('PNG vacío')),'image/png');}catch(e){rej(e);}});}
+export async function capsuleImageURL(cv,{win=globalThis}={}){const blob=await canvasBlob(cv);return win.URL.createObjectURL(blob);}
+function revokeImage(){if(C.imageURL){try{globalThis.URL.revokeObjectURL(C.imageURL);}catch{}C.imageURL=null;}}
+async function putOnScreen(cv){const m=globalThis.XpaceMatrixOptions;if(!m?.isActive?.()||!m.previewScreen)return null;let id=null;
+ try{const ids=m.incidentDemo?.candidates?.()||[];id=C.screen||ids[Math.floor(Math.random()*ids.length)];if(!id)return null;
+  const old=C.imageURL,url=await capsuleImageURL(cv);C.imageURL=url;
+  await m.previewScreen(id,{kind:'image',url,title:'¿Sabías que…? · '+C.cap.id,id:'capsula-'+C.cap.id+'-'+C.lang+'-'+Date.now()});
+  if(old)setTimeout(()=>{try{globalThis.URL.revokeObjectURL(old);}catch{}},5000);
+  C.screen=id;try{m.incidentDemo?.focus?.(id);}catch{}return id;}
+ catch(e){C.lastScreenError=String(e?.message||e);if(id&&C.screen!==id){try{m.restoreScreen?.(id);}catch{}}return null;}}
+function restoreScreen(){const m=globalThis.XpaceMatrixOptions,id=C.screen;C.screen=null;if(id){try{m?.restoreScreen?.(id);}catch{}}setTimeout(revokeImage,1500);}
 export function closeCapsula(){clearTimeout(C.timer);stopVoice();restoreScreen();try{C.el?.ownerDocument?.defaultView?.removeEventListener('keydown',C.onKey,true);}catch{}C.el?.remove();C.el=null;C.cap=null;return true;}
 function downloadPng(cv){try{const a=cv.ownerDocument.createElement('a');a.href=cv.toDataURL('image/png');a.download='capsula-'+C.cap.id+'-'+C.lang+'-480x800.png';a.click();}catch{}}
 async function paint(doc){const en=C.lang==='en',t=(es,e)=>en?e:es;let el=C.el;
