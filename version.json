@@ -1,17 +1,15 @@
 {
-  "version": "v.10.10.2026.r3.17:28",
-  "deployedAt": "2026-10-10T15:30:05Z",
-  "deployer": "GrokBot",
+  "version": "v.11.10.2026.r1.13:33",
+  "deployedAt": "2026-10-11T11:39:17Z",
+  "deployer": "Morfeo",
   "machine": "MacBookPro16",
-  "signature": "GrokBot · MacBookPro16",
-  "git": "983d4e258b23acc7703b494b56951233beb85b4a",
-  "gitShort": "983d4e2",
-  "gitFull": "983d4e258b23acc7703b494b56951233beb85b4a",
+  "signature": "Morfeo · MacBookPro16",
+  "git": "b2517d7f9b6d3ec09e64794e72be72c69e9f21fb",
+  "gitShort": "b2517d7",
+  "gitFull": "b2517d7f9b6d3ec09e64794e72be72c69e9f21fb",
   "dirty": false,
   "novedades": [
-    "Cápsulas en Good, Better y Best/Hiperreal (no sólo Matrix): la cápsula sale en el tótem vertical «Metahuman AI» junto a la mesa DJ.",
-    "El tótem ya no enseña el marcador gris que parecía una imagen rota: pinta una pantalla en reposo hasta que recibe contenido.",
-    "Esc con la tarjeta abierta sólo la cierra: ya no abre el EDITOR DE LAYOUT ni cierra Best (que devolvía la Calidad a Good).",
-    "Las pantallas aceptan PNG blob: sólo del propio sitio; un blob de otro origen o un data: se rechazan."
+    "Las 38 páginas con barra (portada, ayuda, MCP, inventario, mobiliario, scan, xpacios…) cargaban xpace-shell con sellos de caché viejos (taza-2/kiosko-1): ahora todas piden la versión vigente y no sirven el shell anterior.",
+    "Test de marca blanca alineado con el cargador del avatar vigente (pill-1)."
   ]
 }
