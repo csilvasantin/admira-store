@@ -1,15 +1,15 @@
 {
-  "version": "v.11.10.2026.r1.13:33",
-  "deployedAt": "2026-10-11T11:39:17Z",
-  "deployer": "Morfeo",
-  "machine": "MacBookPro16",
-  "signature": "Morfeo · MacBookPro16",
-  "git": "b2517d7f9b6d3ec09e64794e72be72c69e9f21fb",
-  "gitShort": "b2517d7",
-  "gitFull": "b2517d7f9b6d3ec09e64794e72be72c69e9f21fb",
+  "version": "v.12.10.2026.r1.13:01",
+  "deployedAt": "2026-10-12T11:01:42Z",
+  "deployer": "MorfeoMBA16",
+  "machine": "MacBookAir16plata",
+  "signature": "MorfeoMBA16 · MacBookAir16plata",
+  "git": "75e0b6548df4b85f4bcdd5f01fc6fc6b4a6365b8",
+  "gitShort": "75e0b65",
+  "gitFull": "75e0b6548df4b85f4bcdd5f01fc6fc6b4a6365b8",
   "dirty": false,
   "novedades": [
-    "Las 38 páginas con barra (portada, ayuda, MCP, inventario, mobiliario, scan, xpacios…) cargaban xpace-shell con sellos de caché viejos (taza-2/kiosko-1): ahora todas piden la versión vigente y no sirven el shell anterior.",
-    "Test de marca blanca alineado con el cargador del avatar vigente (pill-1)."
+    "El gemelo ya no pide «acceder a otros dispositivos de tu red local» al cargar: el aviso de sesión a Telegram dejó de caer al Mac Mini por Tailscale (100.x, que Chrome trata como red local).",
+    "El resumen de sesión al cerrar tampoco usa ya ese respaldo: sólo el bridge público."
   ]
 }
