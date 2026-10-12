@@ -760,7 +760,7 @@
 <script src="../inventario/store.js?v=inventory-cli-3"></script>
 <!-- Shell común (FLT-101337): con la barra en línea solo deja su API (CLI, /marca) y la
      marca blanca; sin ?marca= ni marca recordada no carga nada más ni habla con admiranext.com. -->
-<script defer src="/assets/xpace-shell.js?v=20261007-native-demo-control-2" data-shell="inline"></script>
+<script defer src="/assets/xpace-shell.js?v=20261012-unified-1" data-shell="inline"></script>
 <script type="module" src="scripts/store-demo-avatar.mjs?v=local-autopilot-1"></script>
 </head>
 <body>
@@ -32080,7 +32080,7 @@ window.xtAPI = (function(){
     }
   }
 
-  async function executeTelegramText(rawText){
+  async function executeTelegramText(rawText, command){
     const text=String(rawText||'').trim();
     if(!text) return 'Comando vacio';
     const visual=await executeLocalVisualCommand(text);
@@ -32090,9 +32090,9 @@ window.xtAPI = (function(){
     const _ac = text.match(/^admira[,:]?\s+crea\s+imagen\s*(.*)$/i);
     if (_ac) return admiraCreaImagen(_ac[1]);
     try { if(window.AdmiraXP_SessionLog) window.AdmiraXP_SessionLog.logCommand(text); } catch(_){}
-    const parts=text.replace(/^\/([a-zA-Z0-9_]+)@\w+/,'/$1').split(/\s+/);
-    const cmd=parts.shift().replace(/^\//,'').toLowerCase();
-    const arg=parts.join(' ').trim();
+    const parts=command?[]:text.replace(/^\/([a-zA-Z0-9_]+)@\w+/,'/$1').split(/\s+/);
+    const cmd=command?command.name:parts.shift().replace(/^\//,'').toLowerCase();
+    const arg=command?command.args:parts.join(' ').trim();
     const api=window.xtAPI;
 
     try{
@@ -33230,6 +33230,11 @@ window.xtAPI = (function(){
   };
 
   // Exponer al global para que el modo Demo (fuera del IIFE) pueda invocar
+  function connectStoreCommands(engine){
+    engine.registerAdapter({id:'store-gemelo',demos:['capsula','capsule','tpv','taza','kiosko','quiosco','pantallas','screens'].map(name=>({name,run:async args=>{const answer=await executeTelegramText('/demo '+name+' '+args.join(' '),{name:'demo',args:[name,...args].join(' ')});showLastResponse(answer,'ok','local-command');return answer;}})),verbs: ['16', '16bits', '8', '8bits', 'ad', 'addmember', 'admira-tv', 'admiralive', 'admiratube', 'admiratv', 'advertise', 'aforo', 'altamiembro', 'ambient', 'ambiente', 'announce', 'ano', 'ask', 'atmosfera', 'auction', 'audienciain', 'audienciaout', 'audin', 'audio', 'audout', 'avatar-3d', 'avatar3d', 'avatar3ddetalle', 'avatarhd', 'badges', 'bajamiembro', 'best', 'better', 'bot', 'caja', 'calendar', 'calendario', 'cam', 'camara', 'camaramupi', 'camera', 'camgenero', 'camiseta', 'camisetas', 'campanatiktok', 'canaltv', 'carrete', 'cash', 'catalog', 'catalogo', 'cerrar', 'clientes', 'clock', 'close', 'club', 'compon', 'componer', 'compose', 'comunicado', 'comunicar', 'condtoggle', 'cpm', 'creaimagen', 'creaimg', 'crear', 'crearimagen', 'crearimg', 'create', 'customers', 'custvoice', 'debug', 'debugger', 'despedir', 'destino-seul', 'destinoseul', 'detalleavatar', 'devolucion', 'diag', 'diagnostico', 'dias', 'dibuja', 'digitalavatar', 'digitalsignage', 'directo', 'distrib', 'distribucion', 'distribuciones', 'distro', 'dj', 'djnovah', 'donde', 'door', 'dorsal', 'dorsales', 'draw', 'ds', 'dsaudio', 'dump', 'dvr', 'echar', 'echarmiembro', 'entran', 'enviva', 'envivo', 'equipo', 'estilo', 'explainer', 'fama', 'fame', 'ficha', 'fichas', 'fidelidad', 'firemember', 'fotos', 'furniture', 'galleon', 'game', 'gc', 'generovideo', 'gente', 'genvideo', 'gilito', 'good', 'grabacion', 'grok', 'guardia', 'guardia-civil', 'guardiacivil', 'heat', 'heatmap', 'hire', 'historico', 'hora', 'identidad', 'impactos', 'impacts', 'import', 'importar', 'importelemento', 'importfurni', 'importmueble', 'importtube', 'impresiones', 'info', 'ingresos', 'ipad', 'kiosk', 'kiosko', 'ladron', 'lamp', 'layout', 'led', 'level', 'live', 'livecam', 'lluvia', 'log', 'loyaltycard', 'luz', 'map', 'mapa', 'mapacalor', 'matrix', 'megafonia', 'member', 'members', 'menu', 'metahuman', 'metahumandetalle', 'mh', 'mhdetalle', 'miembro', 'mobiliario', 'mocap', 'money', 'monitoraudio', 'motioncap', 'motioncapture', 'muebleria', 'muebles', 'mupicam', 'music', 'musica', 'nav', 'newmember', 'next', 'nivel', 'notif', 'novah', 'novahmocap', 'nuevomember', 'nuevomiembro', 'occupancy', 'opinador', 'opinion', 'ordena', 'ordenar', 'paint', 'pantallas', 'parte', 'pasan', 'pause', 'pedido', 'pedidoespecial', 'people', 'personal', 'personas', 'pinta', 'pixer', 'pixerfeed', 'pixeria', 'play', 'pregunta', 'present', 'presenta', 'presentacion', 'prev', 'publicoin', 'publicoout', 'puerta', 'quien', 'quiosco', 'rain', 'rebobinar', 'reclamacion', 'registro', 'reloj', 'removemember', 'render', 'renderizado', 'replay', 'report', 'reportar', 'reporte', 'reserva', 'reset', 'resetaudiencia', 'resetlayout', 'rest', 'restock', 'resume', 'return', 'revenue', 'rewind', 'robot', 'sat', 'satisfaccion', 'satisfaction', 'save', 'say', 'screens', 'scrooge', 'sd', 'semana', 'seoul', 'seoul-2026', 'seoul-tecno', 'seoul-trap', 'seoul2026', 'seoultechno', 'seoultecno', 'seoultrap', 'set', 'seul', 'seul-2026', 'seul-tecno', 'seul-trap', 'seul2026', 'seultechno', 'seultecno', 'seultrap', 'sexovideo', 'signage', 'socio', 'socios', 'song', 'specialorder', 'speed', 'sponsor', 'staff', 'staff-notif', 'staffzone', 'start', 'status', 'stock', 'store', 'storelevel', 'streamdeck', 'style', 'subasta', 'subastar', 'targetpub', 'targetpublicity', 'targetpubliticy', 'tarjetafidelidad', 'team-add', 'team-remove', 'thief', 'ticket', 'tiempo', 'tienda', 'tiktok', 'time', 'tio-gilito', 'totem', 'track', 'train', 'tube', 'turn', 'turno', 'unitree', 'unitreebot', 'upgrade', 'vel', 'velocidad', 'viandantes', 'video', 'videogenero', 'visit', 'voces', 'voices', 'voz', 'weather', 'webcam', 'week', 'whoami', 'xpace', 'xpacio', 'xpl', 'xpltoggle', 'xtanco', 'xtore', 'year', 'youtube', 'zonaequipo'].map(function(name){return {name:name,desc:[name,name],run:async function(args,log,command){var answer=await executeTelegramText(command.raw,command);if(answer){var line=document.createElement('li');line.textContent=String(answer);log.appendChild(line);showLastResponse(answer,'ok','local-command');}return answer;}};}).concat([{name:'marca',alias:['brand','marcablanca'],desc:['Marca blanca','White label'],run:function(args,log){return window.XpaceShell.marca(args.join(' '),function(t){var li=document.createElement('li');li.textContent=t;log.appendChild(li);});}}])});
+  }
+  (window.AdmiraCommandAdapters=window.AdmiraCommandAdapters||[]).push(connectStoreCommands);
+  if(window.AdmiraExperto)connectStoreCommands(window.AdmiraExperto);
   window.sendComposerText = sendComposerText;
   // /demo all (scripts/demo-tour.mjs) pinta su progreso y el resumen final en la respuesta del CLI.
   window.XpaceShowResponse = (text,kind,origin)=>showLastResponse(text,kind,origin);
@@ -33301,6 +33306,16 @@ window.xtAPI = (function(){
   };
 
   async function sendComposerText(text){
+    const clean=String(text||'').trim();if(!clean)return;
+    if(clean.startsWith('/')){
+      if(!window.AdmiraExperto){showLastResponse('Motor de comandos cargando. Inténtalo de nuevo.','err','local-command');return;}
+      const output=document.getElementById('admira-command-log');
+      const result=await window.AdmiraExperto.exec(clean,output);
+      if(composer&&composer.value.trim()===clean)composer.value='';return result;
+    }
+    return sendComposerChat(text);
+  }
+  async function sendComposerChat(text){
     // Sólo se vacía el CLI si aún contiene el comando enviado: los comandos largos (/crear incidencia ~30 s)
     // ya no borran lo que el usuario haya empezado a escribir mientras tanto.
     const clean=String(text||'').trim();
@@ -36531,5 +36546,6 @@ window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)instal
 <script type="module" src="scripts/side-panel-resize.mjs?v=20261006-alsea-repair-1"></script>
 <script type="module" src="scripts/side-panel-bounds.mjs?v=2"></script>
 <script type="module" src="scripts/topbar-controls.mjs?v=topbar-20261005-1"></script>
+<script defer src="https://www.admiranext.com/suite/loader.js?v=20261012-unified-1"></script>
 </body>
 </html>

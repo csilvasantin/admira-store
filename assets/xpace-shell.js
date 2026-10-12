@@ -518,7 +518,7 @@
     } catch (_) { return false; }
   }
   const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=' +
-    (nativeStoreLaunch() ? '20261007-native-demo-control-1' : '20261007-pill-1');
+    (nativeStoreLaunch() ? '20261012-unified-1' : '20261007-pill-1');
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
@@ -599,7 +599,7 @@
     root.XpaceShell = Object.assign(shared, {inline: true});
     let enIframe = false;
     try { enIframe = root.self !== root.top; } catch (_) { enIframe = true; }
-    if (!enIframe) cargarCargador();
+    if (!enIframe) {cargarCargador();const engine=doc.createElement('script');engine.src='https://www.admiranext.com/suite/loader.js?v=20261012-unified-1';doc.head.appendChild(engine);}
     return;
   }
   if (root.XpaceShell) return;
@@ -731,6 +731,7 @@
   function registerVerb(def) {
     if (!def || typeof def.run !== 'function' || !/^[a-z0-9-]+$/i.test(def.id || '')) throw new Error('xpace-shell: verbo no válido');
     for (const name of [def.id, ...(def.aliases || [])]) pageVerbs.set(String(name).toLowerCase(), def);
+    if(root.AdmiraExperto)suiteAction(root.AdmiraExperto,def);
   }
   const allVerbs = () => [...new Set([...SHELL_VERBS, ...pageVerbs.keys(), ...TWIN_VERBS])];
 
@@ -766,47 +767,25 @@
   }
 
   async function run(text) {
-    const p = parseCommand(text);
-    if (!p) return;
-    echo(p.raw);
-    const verb = p.verb;
-    try {
-      const languageResult = shared.language(text);
-      if (languageResult) {translate(); log(languageResult.message); return;}
-      const avatarResult = await shared.avatarCommand(text);
-      if (avatarResult) { log(avatarResult.message); return; }
-      if (verb === 'help' || verb === 'ayuda' || verb === '?') { log(helpText()); return; }
-      if (verb === 'limpiar' || verb === 'clear' || verb === 'cls') { const ol = doc.getElementById('xsLog'); if (ol) ol.replaceChildren(); return; }
-      if (verb === 'gemelo' || verb === 'twin') {
-        if (!p.args) { log(T('Abriendo el gemelo…', 'Opening the twin…')); setTimeout(() => root.location.assign(TWIN_HOME), 250); return; }
-        handoff(p.args); return;
-      }
-      if (MARCA_VERB.test(verb)) { await shared.marca(p.args, log); return; }
-      if (pageVerbs.has(verb)) {
-        const out = await pageVerbs.get(verb).run(p.args, {log, lang: lang(), shell: root.XpaceShell}, lang());
-        if (out != null && out !== '') log(typeof out === 'string' ? out : JSON.stringify(out));
-        return;
-      }
-      if (isTwinVerb(verb)) { handoff(twinCommand(p)); return; }
-      log(T('Verbo desconocido: ' + p.raw.split(/\s+/)[0] + '. /help lista los verbos; /gemelo <orden> la ejecuta en el gemelo.',
-        'Unknown verb: ' + p.raw.split(/\s+/)[0] + '. /help lists the verbs; /gemelo <command> runs it in the twin.'));
-    } catch (error) {
-      log('Error: ' + ((error && error.message) || error));
-    }
+    if(root.AdmiraExperto)return root.AdmiraExperto.exec(text,doc.getElementById('xsLog'));
+    log(T('Motor de comandos cargando. Inténtalo de nuevo.','Command engine loading. Try again.'));
   }
+  function suiteAction(engine,def){
+    if(def.id==='demo'){
+      engine.registerAdapter({id:'store-local-demos',demos:['taza','kiosko','quiosco','creador','creator'].map(name=>({name,run:args=>def.run([name,...args].join(' '),{log,lang:lang(),shell:root.XpaceShell},lang())}))});return;
+    }
+    engine.registerAdapter({id:'store-action-'+def.id,verbs:[{name:def.id,alias:def.aliases||[],desc:[def.es||def.id,def.en||def.es||def.id],run:async args=>{const out=await def.run(args.join(' '),{log,lang:lang(),shell:root.XpaceShell},lang());if(out!=null&&out!=='')log(typeof out==='string'?out:JSON.stringify(out));return out;}}]});
+  }
+  function connectSuiteCommands(engine){
+    engine.registerAdapter({id:'store-shell',verbs:[{name:'marca',alias:['brand','marcablanca'],desc:['Marca blanca','White label'],run:args=>shared.marca(args.join(' '),log)},{name:'gemelo',alias:['twin'],desc:['Abre el gemelo','Open the twin'],run:args=>args.length?handoff(args.join(' ')):root.location.assign(TWIN_HOME)}]});
+    [...new Set(pageVerbs.values())].forEach(def=>suiteAction(engine,def));
+  }
+  (root.AdmiraCommandAdapters=root.AdmiraCommandAdapters||[]).push(connectSuiteCommands);
+  if(root.AdmiraExperto)connectSuiteCommands(root.AdmiraExperto);
 
   function wireCli() {
     const form = doc.getElementById('xsCliForm');
     const input = doc.getElementById('xsCli');
-    // Las demos propias conservan su controlador antes de la consola de la suite.
-    doc.addEventListener('submit', e => {
-      if (e.target !== form) return;
-      const command = input.value.trim();
-      const ownDemo = /^\/demo\s+(?:taza|creador|creator|kiosko|quiosco)(?:\s|$)/i.test(command);
-      const sneakerDemo = /\/xpacios\/sneakerstore(?:\/|$)/.test(root.location.pathname) &&
-        /^\/demo(?:\s+(?:sneakers?|next-step|nextstep)(?:\s|$)|\s*$)/i.test(command);
-      if (ownDemo || sneakerDemo) input.value = command.slice(1);
-    }, true);
     let history = [];
     try { history = JSON.parse(local.getItem(HISTORY_KEY) || '[]').filter(x => typeof x === 'string').slice(-50); } catch (_) {}
     let cursor = history.length, draft = '';
@@ -848,7 +827,7 @@
   // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
-    const V = '20261005-experto-idioma-1', BASE = 'https://www.admiranext.com/suite/experto';
+    const V = '20261012-unified-1', BASE = 'https://www.admiranext.com/suite/experto';
     const host = location.hostname.replace(/^www\./, '');
     const nativeDemo = /^(admira\.store|xpaceos\.com)$/.test(host) && new URLSearchParams(location.search).get('ax_demo') === 'store';
     if (doc.querySelector('script[src^="' + BASE + '.js"]')) return;
@@ -856,7 +835,7 @@
     css.rel = 'stylesheet'; css.href = BASE + '.css?v=' + V;
     doc.head.appendChild(css);
     const js = doc.createElement('script');
-    js.src = BASE + '.js?v=' + (nativeDemo ? '20261007-native-demo-control-1' : V); js.defer = true;
+    js.src = BASE + '.js?v=' + (nativeDemo ? '20261012-unified-1' : V); js.defer = true;
     if (nativeDemo) js.setAttribute('data-admira-demo-engine', '');
     const attrs = {
       panel: '#xsExpert', body: '.expert-workspace', form: '#xsCliForm', input: '#xsCli', log: '#xsLog', hint: '.xs-hint',
