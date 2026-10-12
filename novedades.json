@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.12.10.2026.r1.13:01": [
+    "El gemelo ya no pide «acceder a otros dispositivos de tu red local» al cargar: el aviso de sesión a Telegram dejó de caer al Mac Mini por Tailscale (100.x, que Chrome trata como red local).",
+    "El resumen de sesión al cerrar tampoco usa ya ese respaldo: sólo el bridge público."
+  ],
   "v.11.10.2026.r1.13:33": [
     "Las 38 páginas con barra (portada, ayuda, MCP, inventario, mobiliario, scan, xpacios…) cargaban xpace-shell con sellos de caché viejos (taza-2/kiosko-1): ahora todas piden la versión vigente y no sirven el shell anterior.",
     "Test de marca blanca alineado con el cargador del avatar vigente (pill-1)."

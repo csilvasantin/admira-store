@@ -6,7 +6,7 @@
 //   3. Salta si origin es localhost (entorno de desarrollo)
 //   4. Captura UA, browser/OS, resolución, viewport, timezone, idioma
 //   5. Fetcha https://www.cloudflare.com/cdn-cgi/trace para IP + país + colo
-//   6. POSTea a /telegram/send (admira-telegram-bridge worker o Mac Mini fallback)
+//   6. POSTea a /telegram/send (admira-telegram-bridge worker; sin respaldo por Tailscale)
 //   7. Marca sessionStorage para no repetir
 //
 // No incluye datos PII más allá de IP pública (que Cloudflare ya ve igualmente).
@@ -69,10 +69,14 @@
   }
 
   async function sendTelegram(text){
+    // Sólo el bridge público. El respaldo macmini.tail48b61c.ts.net se quitó (Carlos,
+    // 12-oct-2026): en los Mac con Tailscale ese nombre resuelve a 100.x y Chrome lo
+    // trata como red local → «www.admira.store quiere acceder a otros dispositivos de tu
+    // red local» en cada carga, porque si el bridge fallaba el aviso nunca se marcaba
+    // como enviado y se reintentaba al abrir la siguiente pestaña.
     const endpoints=[
       // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
       'https://bridge.admira.store/telegram/send',
-      'https://macmini.tail48b61c.ts.net/admira/telegram/send',
     ];
     for(const url of endpoints){
       try {

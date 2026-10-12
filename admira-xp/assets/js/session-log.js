@@ -131,11 +131,11 @@
     // espera a un fetch pero SI a sendBeacon (queue + send con prioridad).
     const blob=new Blob([payload],{type:'application/json'});
     try {
-      // Primero worker, despues fallback Mac Mini
+      // Sólo el worker: el respaldo macmini.tail48b61c.ts.net resuelve a 100.x en los Mac
+      // con Tailscale y Chrome pedía permiso de red local (ver session-ping.js, 12-oct-2026).
       const endpoints=[
         // Dominio propio: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633).
         'https://bridge.admira.store/telegram/send',
-        'https://macmini.tail48b61c.ts.net/admira/telegram/send',
       ];
       let sent=false;
       for(const ep of endpoints){
