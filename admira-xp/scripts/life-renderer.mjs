@@ -127,7 +127,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
     if(disposed)return;
     for(const key of Object.keys(current))current[key]+=(desired[key]-current[key])*.16;
     frameCamera();model.animate(now);libraries.reconcile(model.world);
-    if(now-lastMedia>125){model.refreshMedia(getPlayer(),getSurfacePreview(),getScreenPreview());canvas.dataset.screenPreviewIds=model.screenPreviewIds.join(',');lastMedia=now;}
+    if(now-lastMedia>(canvas.dataset.screenPreviewIds?66:125)){model.refreshMedia(getPlayer(),getSurfacePreview(),getScreenPreview());canvas.dataset.screenPreviewIds=model.screenPreviewIds.join(',');lastMedia=now;}
     if(selected){if(!selected.parent){selected=null;halo.visible=false;}else{const item=selected.userData.item,p=item?new T.Vector3(item.col,0,item.row):selected.getWorldPosition(new T.Vector3());halo.position.set(p.x,.04,p.z);}}
     refreshPart();renderer.render(model.scene,camera);
   }

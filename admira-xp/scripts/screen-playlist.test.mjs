@@ -45,3 +45,14 @@ test('an explicitly launched image uses a muted 30-second poster, pauses and adv
  try{await control.jump('photo');assert.equal(control.state().playing,true);assert.ok(videos.every(v=>v.poster==='https://stock.example/photo.jpg'&&v.playCalls===0&&v.muted));await control.play();assert.equal(pending.size,1);control.pause();assert.equal(pending.size,0);await control.play();assert.equal(pending.size,1);[...pending.values()][0]();await flush();assert.equal(control.state().index,1);assert.ok(videos.every(v=>v.src==='https://stock.example/video.mp4'&&v.playCalls===1&&v.poster===''));}finally{control.dispose();}
 });
 test('an unavailable image exposes an error without advancing or reporting playback',async()=>{class PosterVideo extends Video{removeAttribute(n){this[n]='';}}const control=createScreenPlaylist({videos:[new PosterVideo()],tracks:[{id:'photo',kind:'image',url:'https://stock.example/missing.jpg'}],loadImage:async()=>{throw Error('unavailable');}});try{await control.play();assert.equal(control.state().error,true);assert.equal(control.state().playing,false);}finally{control.dispose();}});
+test('a schedule replaced while its first item is still loading starts playing instead of staying paused',async()=>{
+ const video=new Video();video.readyState=0;const a={id:'a',url:'https://example.com/a.mp4'},b={id:'b',url:'https://example.com/b.mp4'};
+ const player=createScreenPlaylist({videos:[video],tracks:[a]});
+ try{
+  void player.play();await flush();assert.equal(player.state().playing,false,'still waiting for canplay');
+  player.replaceTracks([b]);assert.equal(video.src,b.url);
+  video.readyState=4;video.dispatchEvent(new Event('canplay'));await flush();await flush();
+  assert.equal(player.state().playing,true);assert.equal(video.paused,false);
+  player.pause();player.replaceTracks([a]);await flush();assert.equal(player.state().playing,false,'an explicit pause is kept');assert.equal(video.paused,true);
+ }finally{player.dispose();}
+});

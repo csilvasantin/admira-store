@@ -1,15 +1,17 @@
 {
-  "version": "v.12.10.2026.r1.13:01",
-  "deployedAt": "2026-10-12T11:01:42Z",
-  "deployer": "MorfeoMBA16",
-  "machine": "MacBookAir16plata",
-  "signature": "MorfeoMBA16 · MacBookAir16plata",
-  "git": "75e0b6548df4b85f4bcdd5f01fc6fc6b4a6365b8",
-  "gitShort": "75e0b65",
-  "gitFull": "75e0b6548df4b85f4bcdd5f01fc6fc6b4a6365b8",
+  "version": "v.13.10.2026.r1.19:27",
+  "deployedAt": "2026-10-13T17:27:58Z",
+  "deployer": "NeoMacStudio",
+  "machine": "MacStudio",
+  "signature": "NeoMacStudio · MacStudio",
+  "git": "bc0c86e6fa6bd3e9cdf57761a20795bdce2cf1ff",
+  "gitShort": "bc0c86e",
+  "gitFull": "bc0c86e6fa6bd3e9cdf57761a20795bdce2cf1ff",
   "dirty": false,
   "novedades": [
-    "El gemelo ya no pide «acceder a otros dispositivos de tu red local» al cargar: el aviso de sesión a Telegram dejó de caer al Mac Mini por Tailscale (100.x, que Chrome trata como red local).",
-    "El resumen de sesión al cerrar tampoco usa ya ese respaldo: sólo el bridge público."
+    "Starbucks · Matrix: cada pantalla arroja sobre la sala la luz de su contenido; fundido entre piezas.",
+    "Ficha «En emisión» al pasar el ratón por una pantalla; doble clic acerca la cámara.",
+    "Good, Better y Best reproducen las mismas playlists que Matrix: pared, TPV e iPad.",
+    "Corregido: el TPV se quedaba en pausa en Matrix. Nuevo: /emision y /emision escena."
   ]
 }

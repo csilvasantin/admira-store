@@ -638,5 +638,11 @@
     "Vista limpia en 360 y 3D con cámara, encaje y reproducción conservados.",
     "Botón H bilingüe; los campos de texto conservan su escritura.",
     "Pantallas calibradas y ayuda web, tutorial, CLI y MCP actualizados ES/EN."
+  ],
+  "v.13.10.2026.r1.19:27": [
+    "Starbucks · Matrix: cada pantalla arroja sobre la sala la luz de su contenido; fundido entre piezas.",
+    "Ficha «En emisión» al pasar el ratón por una pantalla; doble clic acerca la cámara.",
+    "Good, Better y Best reproducen las mismas playlists que Matrix: pared, TPV e iPad.",
+    "Corregido: el TPV se quedaba en pausa en Matrix. Nuevo: /emision y /emision escena."
   ]
 }

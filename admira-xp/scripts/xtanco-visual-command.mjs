@@ -39,6 +39,14 @@ export function parseVisualCommand(input){
   }
   if(/^\/(?:navidad|christmas)(?:\s+(?:on|off))?$/i.test(text))return {demo:/off$/i.test(text)?'linear':'christmas'};
   if(/^\/(?:sincro|sync)\s+(?:ia|ai)$/i.test(text))return {demo:'ia'};
+  // Pantallas vivas: /emision [on|off|estado] muestra la ficha «En emisión»; /emision luz [on|off] la luz de las pantallas.
+  // Playlists en escena: /emision escena [on|off] hace que Good, Better y Best reproduzcan la programación.
+  const onAir=text.match(/^\/(?:emision|emisión|enemision|onair)(?:@\w+)?(?:\s+([\s\S]*))?$/i);
+  if(onAir){const arg=(onAir[1]||'').trim().toLowerCase().replace(/\s+/g,' '),value={on:true,off:false}[arg.split(' ').pop()];
+   if(!arg)return {onAir:{key:'onAir',value:null}};if(['estado','status'].includes(arg))return {onAir:{status:true}};
+   if(/^(?:luz|light)(?: (?:on|off))?$/.test(arg))return {onAir:{key:'light',value:value??null}};
+   if(/^(?:escena|scene)(?: (?:on|off))?$/.test(arg))return {onAir:{scene:true,value:value??null}};
+   return ['on','off'].includes(arg)?{onAir:{key:'onAir',value}}:{onAir:{invalid:true}};}
   const labels=parseScreenLayoutCommand(text);if(labels)return labels.legacy?null:{labels};
   const screen=parseScreenDisplayCommand(text);if(screen)return {screen};
   const aviso=text.match(/^\/(?:aviso|announcement)(?:@\w+)?(?:\s+([\s\S]*))?$/i);
@@ -92,6 +100,21 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
     try{const outcome=await router?.choose('matrix');if(!router||outcome?.ok===false||outcome?.cancelled||router.mode!=='matrix'||router.error||router.busy)throw Error();const result=globalThis.XpacePOSExperience?.demo?.start();if(!result?.ok)return {ok:false,local:true,message:result?.error==='busy'?(en?'A demo is already running. /demo off stops it.':'Ya hay una demo en curso. /demo off la detiene.'):(en?'POS unavailable. Close /layout or geometry editing and check the POS incident.':'TPV no disponible. Cierra /layout o la edición de geometría y comprueba la incidencia del TPV.')};return {ok:true,local:true,message:en?'POS demo started · muffin to register → editable Pixeria content.':'Demo TPV iniciada · muffin a caja → contenido editable de Pixeria.'};}catch{return {ok:false,local:true,message:en?'Could not open the POS demo. Retry Matrix.':'No se pudo abrir la demo TPV. Reintenta Matrix.'};}
   }
   if(command.demo){try{await router?.choose('matrix');if(!globalThis.XpaceStarbucksDemo)throw Error();await globalThis.XpaceStarbucksDemo.setMode(command.demo);if(command.demo==='ia')setScreenDisplayMode('groups');return {ok:true,local:true,message:'Matrix · '+({ia:'Sincro IA / AI sync',christmas:'Navidad / Christmas',linear:'Playlist estándar / Standard playlist'}[command.demo])};}catch{return {ok:false,local:true,message:en?'Could not load the demo. Retry.':'No se pudo cargar la demo. Reintenta.'};}}
+  if(command.onAir){
+    const a=command.onAir;
+    if(a.invalid)return {ok:false,local:true,message:en?'Usage: /onair [on|off] shows what each screen is playing; /onair light [on|off] toggles the light screens cast on the room; /onair scene [on|off] plays the schedule in Good, Better and Best; /onair status.':'Uso: /emision [on|off] muestra qué emite cada pantalla; /emision luz [on|off] alterna la luz que las pantallas arrojan sobre la sala; /emision escena [on|off] reproduce la programación en Good, Better y Best; /emision estado.'};
+    // La programación en escena no es de Matrix: se cambia sin salir de la vista actual.
+    if(a.scene){const scene=globalThis.XpaceScenePlaylists;if(!scene)return {ok:false,local:true,message:en?'Scene playlists are not ready. Reload the twin.':'Las playlists en escena no están listas. Recarga el gemelo.'};
+      const on=scene.set(a.value===null?!scene.enabled:a.value);
+      return {ok:true,local:true,scenePlaylists:on,message:'Starbucks · Good/Better/Best: '+(en?'schedule on the scene screens ':'programación en las pantallas de la escena ')+(on?'ON':'OFF')+'. '+(on?(en?'Wall, POS and iPad play the same playlists as Matrix.':'Pared, TPV e iPad reproducen las mismas playlists que Matrix.'):(en?'Screens return to their illustrative menus; previews still work.':'Las pantallas vuelven a sus menús ilustrativos; las vistas previas siguen funcionando.'))+' '+(en?'Saved in this browser.':'Guardado en este navegador.')};}
+    try{
+      const outcome=await router?.choose('matrix');
+      if(!router||outcome?.ok===false||outcome?.cancelled||router.mode!=='matrix'||router.error||router.busy)throw Error();
+      const api=globalThis.XpaceMatrixOptions?.screenLight;if(!api)throw Error();
+      const before=api.state(),state=a.status?before:api.set({[a.key]:a.value===null?!before[a.key]:a.value});
+      return {ok:true,local:true,mode:'matrix',screenLight:{light:state.light,onAir:state.onAir},message:'Matrix · Starbucks: '+(en?'On air cards ':'Fichas «En emisión» ')+(state.onAir?'ON':'OFF')+' · '+(en?'screen light ':'luz de pantallas ')+(state.light?'ON':'OFF')+'. '+(en?'Hover a screen to see its content; double-click to move in. Saved in this browser; playback is unchanged.':'Pasa el ratón por una pantalla para ver su contenido; doble clic para acercarte. Guardado en este navegador; la reproducción no cambia.')};
+    }catch{return {ok:false,local:true,message:en?'Could not open Matrix. Retry.':'No se pudo abrir Matrix. Reintenta.'};}
+  }
   if(command.labels){
     if(command.labels.invalid)return {ok:false,local:true,message:en?'Usage: /layout [on|off] shows screen numbers. /layoiut is also accepted.':'Uso: /layout [on|off] muestra los números de pantalla. También se acepta /layoiut.'};
     try{
