@@ -650,5 +650,10 @@
     "Emiten lo que Good tiene fijado, el contenido del Stock con su etiqueta XT-GRACIA-… o la parrilla de la casa; fichas «En emisión».",
     "Los muebles se levantan: arrastrar, girar con R y soltar; huella verde o roja, imán al hueco libre y Ctrl/⌘+Z.",
     "Los 43 muebles renderizados de nuevo en Blender, con sombra de suelo; el quiosco del tótem se ve en perspectiva."
+  ],
+  "v.13.10.2026.r3.22:41": [
+    "Estanco · Good: pared 1, pared 2 y escaparate vuelven a emitir el contenido del Stock que lleva su etiqueta (XT-GRACIA-P1, -P2 y -ESC).",
+    "Corregido: la descarga llegaba al 100 % y la pieza no se fijaba en la pantalla.",
+    "Best · Hiperreal enseña ese mismo vídeo en las pantallas que comparte con Good."
   ]
 }

@@ -1,17 +1,16 @@
 {
-  "version": "v.13.10.2026.r2.22:09",
-  "deployedAt": "2026-10-13T20:09:53Z",
+  "version": "v.13.10.2026.r3.22:41",
+  "deployedAt": "2026-10-13T20:41:04Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "9f7b1c6badfbc815d3eb7b84ba0e738e12edaf82",
-  "gitShort": "9f7b1c6",
-  "gitFull": "9f7b1c6badfbc815d3eb7b84ba0e738e12edaf82",
+  "git": "d6e276eea4bea09f71400b6f1ed419e6570c5c6d",
+  "gitShort": "d6e276e",
+  "gitFull": "d6e276eea4bea09f71400b6f1ed419e6570c5c6d",
   "dirty": false,
   "novedades": [
-    "Estanco · Best Hiperreal: cada pantalla de la sala es un player virtual (tótem, pared, LED, portátil, lotería, turnos y tablet).",
-    "Emiten lo que Good tiene fijado, el contenido del Stock con su etiqueta XT-GRACIA-… o la parrilla de la casa; fichas «En emisión».",
-    "Los muebles se levantan: arrastrar, girar con R y soltar; huella verde o roja, imán al hueco libre y Ctrl/⌘+Z.",
-    "Los 43 muebles renderizados de nuevo en Blender, con sombra de suelo; el quiosco del tótem se ve en perspectiva."
+    "Estanco · Good: pared 1, pared 2 y escaparate vuelven a emitir el contenido del Stock que lleva su etiqueta (XT-GRACIA-P1, -P2 y -ESC).",
+    "Corregido: la descarga llegaba al 100 % y la pieza no se fijaba en la pantalla.",
+    "Best · Hiperreal enseña ese mismo vídeo en las pantallas que comparte con Good."
   ]
 }
