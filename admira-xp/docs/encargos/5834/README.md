@@ -7,3 +7,7 @@ EN: `preview-jordan-es.png` is a real Chrome capture with the local URL visible.
 Preview: http://127.0.0.1:8482/xpacios/sneakerstore/?campaign=next-step&view=jordan&lang=es .
 
 Campaign/MCP evidence and remaining Admira.live assignment-state lookup are recorded in Pixeria `docs/encargos/5834/README.md`. The XpaceOS help preview runs locally at http://127.0.0.1:8483/mcp; production help remains unchanged.
+
+Pages review / Revisión publicada: https://5834-next-step-preview.admira-store.pages.dev/xpacios/sneakerstore/?campaign=next-step&view=jordan&lang=es . `pages-preview-jordan-es.png` captures the deployed branch with its URL visible. Initial deployment https://8730dccb.admira-store.pages.dev; workflow https://github.com/csilvasantin/admira-store/actions/runs/38413686711 passed and confirmed the canonical production deployment ID unchanged.
+
+The published review exposed an engine-first loading race: the shared engine deduplicates adapter IDs, so the demo adapter must resolve the current page verb on each command. A regression test now registers the shell handler first and the scene handler afterwards; every alias reaches the scene. Options → NEXT STEP uses the paired preview destination too.
