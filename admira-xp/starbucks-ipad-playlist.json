@@ -5,5 +5,28 @@
   "purpose": "counter-landscape-advertising",
   "muted": true,
   "repeat": "all",
-  "tracks": []
+  "tracks": [
+    {
+      "id": "sbux-5839-tu-momento-es-1920x1080",
+      "title": "Starbucks · Tu momento · ES · horizontal",
+      "url": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-tu-momento-es-1920x1080.mp4",
+      "poster": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-tu-momento-es-1920x1080.png",
+      "duration": 10,
+      "mimeType": "video/mp4",
+      "orientation": "landscape",
+      "language": "es",
+      "source": "admira-studio#5839"
+    },
+    {
+      "id": "sbux-5839-your-moment-en-1920x1080",
+      "title": "Starbucks · Your moment · EN · horizontal",
+      "url": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-your-moment-en-1920x1080.mp4",
+      "poster": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-your-moment-en-1920x1080.png",
+      "duration": 10,
+      "mimeType": "video/mp4",
+      "orientation": "landscape",
+      "language": "en",
+      "source": "admira-studio#5839"
+    }
+  ]
 }

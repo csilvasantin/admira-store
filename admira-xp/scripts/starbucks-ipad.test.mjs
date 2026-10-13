@@ -8,9 +8,10 @@ import {inventoryRows} from '../../inventario/workspace-model.mjs';
 import {numberedCatalog} from '../../inventario/model.mjs';
 import './starbucks-room.js';
 const json=file=>JSON.parse(readFileSync(new URL(file,import.meta.url)));
-test('empty landscape surface seeds once without replacing saved calibration or other players',()=>{
+test('landscape surface seeds once without replacing saved calibration or other players',()=>{
  assert.equal(DEVICE_IDS.length,8);assert.equal(assignedPlaylist(emptyDeviceLayout(),id),'ipad');
- assert.deepEqual(STARBUCKS_IPAD_PLAYLIST.tracks,[]);
+ // #5840: el iPad (único apaisado) abre con la campaña horizontal ES/EN de admira-studio #5839.
+ assert.deepEqual(STARBUCKS_IPAD_PLAYLIST.tracks.map(t=>t.id),['sbux-5839-tu-momento-es-1920x1080','sbux-5839-your-moment-en-1920x1080']);assert.ok(STARBUCKS_IPAD_PLAYLIST.tracks.every(t=>t.orientation==='landscape'&&new URL(t.url).protocol==='https:'));
  const original={version:1,capture:'alsea-starbucks-360',players:[]},next=withStarbucksIPad(original);
  assert.equal(original.players.length,0);assert.equal(next.players[0].playerId,'');assert.equal(next.players[0].width/next.players[0].height,4/3);
  next.players[0].corners[0].yaw=31;assert.equal(withStarbucksIPad(next),next);assert.equal(STARBUCKS_IPAD_MAPPING.players[0].corners[0].yaw,19.564034);validateMapping(next);
