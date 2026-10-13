@@ -1,4 +1,4 @@
-import {furnitureBounds,isSolidFurniture,isWallFurniture} from './furniture-geometry.mjs?v=imported-space-1';
+import {furnitureBounds,isSolidFurniture,isWallFurniture,hangsOnWall,standsOnFloor} from './furniture-geometry.mjs?v=hiperreal-vivo-1';
 const EPS=1e-7;
 export const SCALE_LIMITS=Object.freeze({min:.25,max:3});
 export const furniturePose=item=>({col:item.col,row:item.row,rot:item.rot??0,sx:item.sx??1,sy:item.sy??1});
@@ -71,6 +71,31 @@ export function validateFurnitureMove(scene,id,destination,{from,swept=true}={})
       &&(end.minRow-start.minRow)*(start.minRow+start.maxRow-obstacle.minRow-obstacle.maxRow)>=-EPS;
     const crosses=turned?rotationCrosses(startItem,scene.footprints,lo,hi,obstacle):scaled?overlap(envelope,obstacle):sweptOverlap(start,end,obstacle);
     if(swept&&crosses&&!escaping)return {ok:false,reason:'path',obstacle:obstacle.id,bounds:end};
+  }
+  return {ok:true,position,bounds:end};
+}
+// A lifted piece is carried over the others, so only where it lands matters: no swept path, and position and
+// quarter turn may change in the same gesture. Scale never changes here. Locked pieces and those that hang on
+// a wall stay put; the room limits and occupied floor refuse the landing as they do for a piece pushed along it.
+// The Mupi and the feedback tablet stand on the floor here: they can be carried and they occupy their tile.
+export function validateFurniturePlacement(scene,id,destination,{from}={}){
+  const item=scene?.layout?.find(value=>String(value.id)===String(id));
+  if(!item)return {ok:false,reason:'missing'};
+  if(hangsOnWall(item)||item.locked===true)return {ok:false,reason:'fixed'};
+  if(!destination||typeof destination!=='object')return {ok:false,reason:'invalid'};
+  const start=furniturePose({...item,...from}),position=furniturePose({...start,col:destination.col??start.col,row:destination.row??start.row,rot:destination.rot??start.rot});
+  if(!Object.values(position).every(Number.isFinite)||!Number.isInteger(position.rot))return {ok:false,reason:'invalid'};
+  position.rot=((position.rot%4)+4)%4;
+  const end=furnitureBounds({...item,...position},scene.footprints);
+  if(outside(end,scene))return {ok:false,reason:'bounds',bounds:end};
+  for(const other of scene.layout){
+    if(String(other.id)===String(id)||!standsOnFloor(other))continue;
+    const obstacle=furnitureBounds(other,scene.footprints);
+    if(overlap(end,obstacle))return {ok:false,reason:'occupied',obstacle:obstacle.id,bounds:end};
+  }
+  for(const cell of scene.hardness?.fixed||[]){
+    const [col,row]=String(cell).split(',').map(Number);
+    if(Number.isFinite(col)&&Number.isFinite(row)&&overlap(end,{minCol:col,maxCol:col+1,minRow:row,maxRow:row+1}))return {ok:false,reason:'occupied',obstacle:'hardness:'+cell,bounds:end};
   }
   return {ok:true,position,bounds:end};
 }

@@ -1,25 +1,32 @@
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=hiperreal-r23-20261008-1';
 import {createBestPeopleLayer} from './best-live-people.mjs?v=actor-collision-20261004-1';
-import {mountMatrixFurniture} from './matrix-furniture.mjs?v=capsula-3';
+import {mountMatrixFurniture} from './matrix-furniture.mjs?v=hiperreal-vivo-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
+import {mountFurnitureLift} from './furniture-lift.mjs?v=hiperreal-vivo-1';
+import {createXtancoPlayers} from './xtanco-players.mjs?v=hiperreal-vivo-1';
+import {mountBestOnAir} from './best-onair.mjs?v=hiperreal-vivo-1';
 import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 
 // Best keeps the Avenida Admira room as its backdrop. Furniture and visitors
 // are separate, depth-sorted layers driven by the shared Xtanco inventory.
+// Hiperreal vivo (docs/hiperreal-vivo.md): every screen in the room is a
+// virtual player, and a piece can be lifted, carried, turned and set down.
 const listeners=new Set();
 let starbucksDelegate=false;
 subscribeLifeView(state=>{if(starbucksDelegate)for(const listener of listeners)listener(state);});
-let dialog,people,furniture,exterior,lastFocus,requestId,removeAbort,hud,errorWindow,busy=false,viewError='';
+let dialog,people,furniture,exterior,lift,players,onAir,lastFocus,requestId,removeAbort,hud,errorWindow,busy=false,viewError='';
 const announce=(reason='')=>{for(const fn of listeners)fn({open:!!dialog,busy,error:viewError,reason,requestId});};
 export function subscribeBestView(fn){listeners.add(fn);return ()=>listeners.delete(fn);}
 
 export function closeBestView(reason=''){
   if(starbucksDelegate){closeLifeView(reason);starbucksDelegate=false;return;}
   if(!dialog)return;
-  delete window.XpaceSceneScreens;
+  delete window.XpaceSceneScreens;delete window.XpaceHiperreal;
   const current=dialog;dialog=null;
+  // The hand ends its edit and the players stop before the pieces they belong to are removed.
+  lift?.dispose();lift=null;onAir?.dispose();onAir=null;players?.dispose();players=null;
   removeAbort?.();removeAbort=null;errorWindow?.dispose();errorWindow=null;people?.dispose();people=null;furniture?.dispose();furniture=null;exterior?.dispose();exterior=null;hud?.dispose();hud=null;
   const image=current.querySelector('.matrix-reference-clean');image.onload=null;image.onerror=null;
   current.close();current.remove();busy=false;viewError='';lastFocus?.focus?.();
@@ -43,7 +50,7 @@ export function openBestView(options={}){
     <section class="best-image-error" role="alert" hidden><p class="best-image-error-message">No se ha podido cargar Best. Puedes cambiar de vista desde el menú avanzado o el CLI.</p></section>
   </figure>`;
   const current=dialog,image=current.querySelector('.matrix-reference-clean');
-  window.XpaceSceneScreens={screenAt(x,y){const node=document.elementFromPoint(x,y)?.closest('[data-media-screen]');return node&&current.contains(node)?node.dataset.mediaScreen:null;},screenHighlight(id){for(const node of current.querySelectorAll('[data-media-screen]'))node.classList.toggle('media-drop-over',node.dataset.mediaScreen===id);},previewScreen:(id,track)=>window.XpaceScreenMedia.preview(id,track),restoreScreen:id=>window.XpaceScreenMedia.restore(id)};
+  window.XpaceSceneScreens={screenAt(x,y){const own=furniture?.screenAt?.(x,y);if(own)return own;const node=document.elementFromPoint(x,y)?.closest('[data-media-screen]');return node&&current.contains(node)?node.dataset.mediaScreen:null;},screenHighlight(id){for(const node of current.querySelectorAll('[data-media-screen]'))node.classList.toggle('media-drop-over',node.dataset.mediaScreen===id);},previewScreen:(id,track)=>window.XpaceScreenMedia.preview(id,track),restoreScreen:id=>window.XpaceScreenMedia.restore(id)};
   const errorPanel=current.querySelector('.best-image-error');
   errorWindow=attachFloatingPanel(errorPanel,{label:document.documentElement?.lang==='en'?'Best loading error':'Error al cargar Best',bounds:current.querySelector('.best-stage'),key:'xpaceos.window.best-error.v1',menu:'best-error',onOpen:()=>{if(dialog===current&&viewError)errorPanel.hidden=false;}});
   hud=mountTierHud(current,{mode:'best',stage:current.querySelector('.best-stage')});
@@ -63,8 +70,18 @@ export function openBestView(options={}){
     const container=current.querySelector('.best-live-scene');
     // Street, grass, city and rain outside the room: presentation only, never blocks Best.
     try{exterior=mountMatrixExterior(container);}catch{exterior=null;}
+    const webScreen=screen=>window.XpaceScreenMedia?.previewed?.(screen.id)?null:window.__xtancoSurfaceWeb?.(screen.id)||null;
+    // Virtual players of the tobacconist: Good's own four screens plus every screen on a piece of furniture.
+    try{if(window.__xtancoVisualState?.()?.vertical==='xtanco')players=createXtancoPlayers({win:window});}catch{players=null;}
     try{
       furniture=mountMatrixFurniture(container,{
+        // The hand (furniture-lift.mjs) mounts after the pieces and may be absent: these read it late.
+        decorate:scene=>lift?lift.decorate(scene):scene,present:placement=>lift?lift.present(placement):null,live:()=>!!lift?.live(),
+        // A preview always wins; then what Good pins there, its tagged channel, and the house schedule.
+        // A web pin (ordering kiosk, admira.tv channel) is a page, not a picture: the piece frames it itself.
+        paintScreen:(ctx,w,h,screen)=>!!window.XpaceScreenMedia?.draw(ctx,w,h,screen.id)||(!webScreen(screen)&&!!players?.draw(ctx,w,h,screen.id,screen)),
+        webScreen,
+        light:()=>onAir?onAir.light():true,
         onReady(error=''){
           if(dialog!==current)return;
           if(error){showError(`No se pudo cargar el mobiliario de Best. ${String(error)}`);return;}
@@ -80,6 +97,16 @@ export function openBestView(options={}){
     }catch{showError('No se pudo cargar el mobiliario de Best. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
     try{people=createBestPeopleLayer({container,projectFloor:projectMatrixFloor,walkSprites:true,getOccluders:()=>furniture?.occluders||[]});container.querySelector('.best-people-status')?.style?.setProperty('display','none');}
     catch{showError('No se pudieron cargar los visitantes de Best. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
+    // Lifting furniture and the on-air cards are presentation: neither ever blocks Best.
+    try{const bridge=window.__xtancoFurnitureEditor;if(bridge?.place)lift=mountFurnitureLift({container,furniture,bridge});}catch{lift=null;}
+    try{onAir=mountBestOnAir({stage:container,furniture,players,web:id=>webScreen({id}),busy:()=>!!lift?.state().holding});}catch{onAir=null;}
+    // A page on a screen is shown, not touched, in the room: a double click opens it at touch size (totem-kiosko.js).
+    container.addEventListener('dblclick',event=>{
+      if(dialog!==current||lift?.state().holding)return;
+      const id=furniture?.screenAt?.(event.clientX,event.clientY);
+      if(id==='metahuman'&&webScreen({id}))window.XpaceTotemKiosk?.touch?.(true);
+    });
+    window.XpaceHiperreal={players,screens:onAir,lift,furniture};
     finish();
   };
   image.onerror=()=>showError('No se ha podido cargar la escena de Avenida Admira. Puedes cambiar de vista desde el menú avanzado o el CLI.');

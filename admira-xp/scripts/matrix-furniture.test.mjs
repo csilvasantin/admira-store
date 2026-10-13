@@ -4,8 +4,9 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
-import {mountMatrixFurniture,planMatrixFurniture,placementZone} from './matrix-furniture.mjs';
-import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_PHOTO_PIECES} from './matrix-photo-pieces.mjs';
+import {mountMatrixFurniture,planMatrixFurniture,placementZone,withHiperreal,screenIdFor,screenSize,screenPool,FLOOR_Z,SHADOW_Z,POOL_Z,HELD_Z} from './matrix-furniture.mjs';
+import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_PHOTO_PIECES,MATRIX_ARCHITECTURE_DETAILS} from './matrix-photo-pieces.mjs';
+import {quadTransform} from './matrix-mapping.mjs';
 import {isBestWalkable} from './best-live-people.mjs';
 import {buildCustomerNavigation} from './customer-navigation.mjs';
 import {projectMatrixFloor,MATRIX_FLOOR_POLYGON} from './matrix-floor.mjs';
@@ -37,6 +38,12 @@ class Element{
   addEventListener(type,listener){this.events.set(type,listener);}
   click(){this.events.get('click')?.({stopPropagation(){}});}
   querySelector(selector){return this.children.find(child=>child.tagName===selector)||this.children.map(child=>child.querySelector(selector)).find(Boolean)||null;}
+  // What the Hiperreal screens and the pointer need from a page: a canvas that records, a box and ancestry.
+  getContext(){if(this.tagName!=='canvas')return null;this.calls??=[];const calls=this.calls;return this.context??=new Proxy({},{get:(target,key)=>key in target?target[key]:(...args)=>{calls.push([key,...args]);return {addColorStop(){}};},set:(target,key,value)=>{target[key]=value;return true;}});}
+  getBoundingClientRect(){return this.rect||{left:0,top:0,width:0,height:0};}
+  closest(selector){for(let node=this;node;node=node.parent)if(selector.includes('data-instance-id')?String(node.className||'').split(' ').includes('matrix-furniture-item')&&node.dataset.instanceId!==undefined:false)return node;return null;}
+  contains(other){for(let node=other;node;node=node.parent)if(node===this)return true;return false;}
+  get clientWidth(){return this.className==='matrix-furniture-layer'?1600:undefined;}get clientHeight(){return this.className==='matrix-furniture-layer'?1000:undefined;}
 }
 function harness(initial=state([counter]),options={}){
   const previousDocument=globalThis.document,container=new Element('scene'),frames=new Map(),ready=[],selections=[],cancelled=[];let nextFrame=0,current=initial;
@@ -292,4 +299,247 @@ test('published Matrix catalog covers all 43 stable identities and four real tra
     const source=fs.readFileSync(new URL('../../'+item.source,import.meta.url));assert.equal(createHash('sha256').update(source).digest('hex'),item.sourceSha256);
   }
   assert.equal(paths.size,172);assert.ok(fs.statSync(fileURLToPath(MATRIX_ATLAS_URL)).size>0);
+});
+
+// ── Best · Hiperreal vivo ───────────────────────────────────────────────────────────────────────
+const readJSON=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url),'utf8'));
+const baseCatalog=()=>readJSON('../assets/matrix-furniture/catalog/manifest.json'),hiperrealManifest=()=>readJSON('../assets/matrix-furniture/hiperreal/manifest.json');
+const SCREENED={1:1,4:1,7:1,12:1,13:1,14:1,15:1,18:1,30:1,41:1};
+const near=(actual,expected,eps)=>assert.ok(Math.abs(actual-expected)<eps,`${actual} != ${expected}`);
+
+test('the Hiperreal renders cover the 43 models in four turns, each with its floor shadow and measured screens',()=>{
+  const manifest=hiperrealManifest(),base=baseCatalog(),byNumber=new Map(base.items.map(item=>[item.number,item]));
+  assert.equal(manifest.items.length,43);assert.deepEqual(manifest.items.map(item=>item.inventoryId),base.items.map(item=>item.inventoryId));
+  assert.match(manifest.generator,/render_hiperreal_sprites\.py$/);assert.ok(fs.existsSync(new URL('../../'+manifest.generator,import.meta.url)));
+  const paths=new Set();let bytes=0;
+  const webp=(url,width,height,sha256)=>{
+    assert.ok(!paths.has(url),url);paths.add(url);
+    const file=fs.readFileSync(new URL('../'+url,import.meta.url));bytes+=file.length;
+    assert.equal(file.subarray(0,4).toString(),'RIFF');assert.equal(file.subarray(8,12).toString(),'WEBP');
+    // Lossy with alpha: the extended header carries the canvas size and the alpha flag.
+    assert.equal(file.subarray(12,16).toString(),'VP8X');assert.ok(file[20]&0x10,'alpha channel');
+    assert.equal(1+file.readUIntLE(24,3),width);assert.equal(1+file.readUIntLE(27,3),height);
+    assert.equal(createHash('sha256').update(file).digest('hex'),sha256);assert.ok(file.length<220*1024,`${url} weighs ${file.length}`);
+  };
+  for(const item of manifest.items){
+    const reference=byNumber.get(item.number);assert.equal(item.inventoryId,reference.inventoryId);assert.deepEqual(item.footprint,reference.footprint);
+    assert.deepEqual(item.views.map(view=>view.rotation),[0,1,2,3]);
+    const source=fs.readFileSync(new URL('../../'+item.source,import.meta.url));assert.equal(createHash('sha256').update(source).digest('hex'),item.sourceSha256);
+    for(const view of item.views){
+      const number=String(item.number).padStart(2,'0'),old=reference.views.find(value=>value.rotation===view.rotation);
+      assert.equal(view.url,`assets/matrix-furniture/hiperreal/${number}-r${view.rotation}.webp`);webp(view.url,view.width,view.height,view.sha256);
+      assert.equal(view.width,1024);assert.ok(view.anchor.every(Number.isFinite)&&view.floorCenter.every(Number.isFinite));
+      // Same camera as the base catalog, each model framed to its own bounds: the scale on the floor travels with the view.
+      assert.ok(view.pixelsPerGridUnit>0&&old.pixelsPerGridUnit>0);
+      const shadow=view.shadow;assert.equal(shadow.url,`assets/matrix-furniture/hiperreal/${number}-r${view.rotation}-s.webp`);webp(shadow.url,shadow.width,shadow.height,shadow.sha256);
+      assert.ok(shadow.pixelsPerGridUnit>0&&shadow.pixelsPerGridUnit<view.pixelsPerGridUnit,'a wider frame, so the shadow has room');assert.ok(shadow.anchor.every(Number.isFinite));
+      assert.ok(Array.isArray(view.screens));
+      for(const screen of view.screens){
+        assert.ok(SCREENED[item.number],`${item.number} has no screen`);assert.ok(screen.aspect>0&&screen.facing>.12);assert.equal(screen.quad.length,4);
+        for(const [x,y] of screen.quad){assert.ok(x>=0&&x<=view.width&&y>=0&&y<=view.height);}
+        assert.ok(quadTransform(screen.quad.map(([x,y])=>({x,y})),384,216),'a convex aperture a picture can be mapped onto');
+        // Read as a visitor reads it: the top edge above the bottom one, left before right.
+        assert.ok(screen.quad[0][0]<screen.quad[1][0]&&screen.quad[3][0]<screen.quad[2][0]&&screen.quad[0][1]<screen.quad[3][1]&&screen.quad[1][1]<screen.quad[2][1]);
+      }
+    }
+    // A screen faces the camera in the two turns that show the front of the piece, and never in the other two.
+    assert.deepEqual(item.views.map(view=>view.screens.length),SCREENED[item.number]?[1,0,0,1]:[0,0,0,0],`${item.number} ${item.name}`);
+  }
+  assert.equal(paths.size,344);assert.ok(bytes<16*1024*1024,`${bytes} bytes`);
+  assert.deepEqual(fs.readdirSync(new URL('../assets/matrix-furniture/hiperreal/',import.meta.url)).filter(name=>name.endsWith('.webp')).length,344,'no stray renders');
+});
+
+test('the plan draws turned pieces from the Hiperreal renders, with their shadow and screens, and keeps the photographs',()=>{
+  const rich=withHiperreal(baseCatalog(),hiperrealManifest()),plain=baseCatalog();
+  assert.equal(rich.hiperreal.size,43);assert.equal(rich.items,plain.items.length&&rich.items);
+  const at=(item,catalog=rich)=>planMatrixFurniture(scene([item]),catalog)[0];
+  for(const rot of [1,2,3]){
+    const p=at({...counter,col:6,row:3,rot});
+    assert.equal(p.kind,'sprite');assert.match(p.url,new RegExp(`/assets/matrix-furniture/hiperreal/01-r${rot}\\.webp$`));assert.match(p.shadow.url,new RegExp(`/hiperreal/01-r${rot}-s\\.webp$`));
+    close(p.left+p.width*p.origin[0],p.anchor.x);close(p.top+p.height*p.origin[1],p.anchor.y);
+    // The shadow hangs from the same floor origin, at the same scale on the floor.
+    close(p.shadow.left+p.shadow.width*p.shadow.origin[0],p.anchor.x);close(p.shadow.top+p.shadow.height*p.shadow.origin[1],p.anchor.y);
+    near(p.shadow.width/p.width,(p.view.shadow.width/p.view.shadow.pixelsPerGridUnit)/(p.view.width/p.view.pixelsPerGridUnit),1e-9);
+    // Same size on the floor as the base catalog draws it.
+    const old=at({...counter,col:6,row:3,rot},plain);near(p.width,old.width,1e-6);near(p.left,old.left,2e-3);near(p.top,old.top,2e-3);assert.equal(old.shadow,null);assert.match(old.url,/catalog\/01-r\d\.png$/);
+    assert.equal(p.screens.length,rot===3?1:0);
+  }
+  const screen=at({...counter,col:6,row:3,rot:3}).screens[0];
+  assert.equal(screen.id,'inventory:counter');near(screen.aspect,1.8168,1e-3);assert.ok(screen.quad.flat().every(value=>value>0&&value<1));
+  // Photographs stay at the original turn; they borrow the shadow of their model and bring their own screens.
+  const photo=at(counter);assert.equal(photo.kind,'photo');assert.match(photo.shadow.url,/hiperreal\/01-r0-s\.webp$/);assert.deepEqual(photo.screens,[]);
+  const origin=projectMatrixFloor(counter.col,counter.row);close(photo.shadow.left+photo.shadow.width*photo.shadow.origin[0],origin.x);close(photo.shadow.top+photo.shadow.height*photo.shadow.origin[1],origin.y);
+  for(const [type,id,aspect] of [['metahuman','metahuman',9/16],['manager','inventory:piece',16/10],['lottery','inventory:piece',1.3],['turnKiosk','inventory:piece',2/3],['led','inventory:piece',9/16]]){
+    const p=at({id:'piece',type,col:6,row:3,rot:0});assert.equal(p.kind,'photo',type);assert.equal(p.screens.length,1);assert.equal(p.screens[0].id,id);close(p.screens[0].aspect,aspect);
+    assert.ok(p.screens[0].quad.flat().every(value=>value>=0&&value<=1),type);assert.ok(quadTransform(p.screens[0].quad.map(([x,y])=>({x:x*100,y:y*100})),216,384));
+  }
+  assert.equal(at({id:'tv',type:'tft',col:4,row:0,rot:0}).screens[0].id,'escaparate');assert.equal(at({id:'tv',type:'tft',col:4,row:0,rot:1}).screens.length,0);
+  assert.equal(screenIdFor({id:'a',type:'metahuman'}),'metahuman');assert.equal(screenIdFor({id:'a',type:'tft'}),'escaparate');assert.equal(screenIdFor({id:'a',type:'counter'}),'inventory:a');assert.equal(screenIdFor({id:'a',type:'custom'},'side'),'inventory:a:side');
+  // What hangs on a wall or lies on the floor casts no rendered shadow; a rug is painted under everything.
+  for(const type of ['led','tft','aroma'])assert.equal(at({id:'w',type,col:3,row:0}).shadow,null,type);
+  const rugs=withHiperreal({...plain,items:plain.items},hiperrealManifest()),rug=at({id:'rug',type:'rug',col:4,row:4,fp:[2,2]},rugs);assert.equal(rug.floor,true);assert.equal(rug.shadow,null);assert.equal(at(counter).floor,false);
+  // The shadow follows the floor footprint: mirror and width scale it, height never does.
+  const wide=at({...chair(),rot:1,sx:1.5,sy:2,flipX:true});assert.deepEqual([wide.shadow.sx,wide.shadow.sy],[-1.5,1.5]);assert.equal(wide.sy,2);
+  const tall=at({...chair(),rot:1,ph:4}),short=at({...chair(),rot:1,ph:2});close(tall.shadow.width,short.shadow.width*2);
+  // Without the renders the old catalog still works, wall screen included.
+  const legacy=at({id:'tv',type:'tft',col:4,row:0,rot:0},plain);assert.match(legacy.url,/catalog\/13-r0\.png$/);assert.equal(legacy.screens.length,1);assert.equal(legacy.screens[0].id,'escaparate');close(legacy.screens[0].quad[0][0],125/384);
+  for(const broken of [null,{},{items:'x'},{items:[{inventoryId:'native:counter',views:[{rotation:0}]},{inventoryId:7,views:[]},null]}])assert.equal(withHiperreal(plain,broken).hiperreal.size,0);
+  assert.equal(at({...counter,rot:1},withHiperreal(plain,{items:[]})).shadow,null);
+});
+
+test('a screen is as long as any other and as wide as its panel; its light pools one tile in front, inside the room',()=>{
+  assert.deepEqual(screenSize(9/16),[216,384]);assert.deepEqual(screenSize(16/9),[384,216]);assert.deepEqual(screenSize(1),[384,384]);assert.deepEqual(screenSize(24.3),[384,16]);assert.deepEqual(screenSize(.01),[8,384]);assert.deepEqual(screenSize(NaN),[216,384]);
+  assert.ok(FLOOR_Z<SHADOW_Z&&SHADOW_Z<POOL_Z&&POOL_Z<10&&HELD_Z>1100,'rug, shadow and light under every piece; a carried piece over the room');
+  const room={cols:14,rows:8},box={minCol:5,maxCol:6,minRow:3,maxRow:4};
+  // A top edge that falls to the right is a panel facing the left of the picture: the light goes towards +row.
+  const left=screenPool({footprint:box,flip:false,wall:false},[[.2,.2],[.8,.4],[.8,.9],[.2,.7]],room),centre=projectMatrixFloor(5.5,4.85);close(left.x,centre.x);close(left.y,centre.y);
+  const right=screenPool({footprint:box,flip:false,wall:false},[[.2,.4],[.8,.2],[.8,.7],[.2,.9]],room),other=projectMatrixFloor(6.85,3.5);close(right.x,other.x);close(right.y,other.y);
+  // A mirrored piece shows the other side: the pool changes side with it.
+  close(screenPool({footprint:box,flip:true,wall:false},[[.2,.2],[.8,.4],[.8,.9],[.2,.7]],room).x,other.x);
+  // The floor axes of the disc are those of the room, measured where the projection is not clamped.
+  const u=projectMatrixFloor(6.5,4.85),v=projectMatrixFloor(5.5,5.85);close(left.u[0],u.x-centre.x);close(left.u[1],u.y-centre.y);close(left.v[0],v.x-centre.x);close(left.v[1],v.y-centre.y);
+  const edge=screenPool({footprint:{minCol:5,maxCol:6,minRow:6.1,maxRow:7.1},flip:false,wall:false},[[.2,.2],[.8,.4],[.8,.9],[.2,.7]],room);
+  assert.ok(Math.hypot(...edge.u)>.01&&Math.hypot(...edge.v)>.01,'never a collapsed disc by the wall');
+  // Facing the open side of the room, on a wall, or without a footprint: no pool.
+  assert.equal(screenPool({footprint:{minCol:5,maxCol:6,minRow:7,maxRow:8},flip:false,wall:false},[[.2,.2],[.8,.4],[.8,.9],[.2,.7]],room),null);
+  assert.equal(screenPool({footprint:{minCol:13,maxCol:14,minRow:3,maxRow:4},flip:false,wall:false},[[.2,.4],[.8,.2],[.8,.7],[.2,.9]],room),null);
+  assert.equal(screenPool({footprint:box,flip:false,wall:true},[[.2,.2],[.8,.4],[.8,.9],[.2,.7]],room),null);assert.equal(screenPool({footprint:null,flip:false,wall:false},[[.2,.2],[.8,.4],[.8,.9],[.2,.7]],room),null);
+});
+
+test('the two framed prints are the wall players of Good and every measured screen sits inside its own cut-out',()=>{
+  const framed=MATRIX_ARCHITECTURE_DETAILS.filter(detail=>detail.screens);
+  assert.deepEqual(framed.map(detail=>[detail.screens[0].id,detail.screens[0].aspect]),[['ds1',9/16],['ds2',4/5]]);
+  const inside=(polygon,[x,y])=>{let hit=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const [xi,yi]=polygon[i],[xj,yj]=polygon[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)hit=!hit;}return hit;};
+  const pieces=[...framed,...Object.values(MATRIX_PHOTO_PIECES).filter(piece=>piece.screens)];assert.equal(pieces.length,7);
+  for(const piece of pieces)for(const screen of piece.screens){
+    assert.equal(screen.quad.length,4);assert.ok(Object.isFrozen(screen)&&Object.isFrozen(screen.quad));
+    for(const point of screen.quad)assert.ok(piece.polygons.some(polygon=>inside(polygon,point)),`${piece.number??screen.id} ${point}`);
+    assert.ok(quadTransform(screen.quad.map(([x,y])=>({x,y})),216,384));
+    // Top-left, top-right, bottom-right, bottom-left as a visitor reads the panel.
+    assert.ok(screen.quad[0][0]<screen.quad[1][0]&&screen.quad[0][1]<screen.quad[3][1]&&screen.quad[1][1]<screen.quad[2][1]);
+  }
+  // The left print hangs clear of the door at the canonical layout, still on the green wall.
+  const left=framed[0];assert.ok(left.target[0]>.15&&left.target[0]<.2&&left.target[1]<.37);
+});
+
+function screenStage(layout,options={}){
+  const rich=withHiperreal(baseCatalog(),hiperrealManifest()),painted=[];
+  const h=harness(state(layout),{load:async()=>rich,paintScreen:(ctx,w,h,screen)=>{painted.push({...screen,w,h});return options.lit?options.lit(screen):true;},...options.mount});
+  const canvases=()=>{const out=[];const walk=node=>{for(const child of node.children){if(child.tagName==='canvas'&&child.dataset.mediaScreen)out.push(child);walk(child);}};walk(h.layer);return out;};
+  const frame=now=>{const [id,callback]=[...h.frames][0];h.frames.delete(id);callback(now);};
+  return {h,painted,canvases,frame,find:name=>h.layer.children.filter(node=>String(node.className).split(' ').includes(name))};
+}
+const mupi={id:'metahuman',type:'metahuman',col:5,row:3,rot:0,sx:1,sy:1,label:'Metahuman AI'};
+
+test('every screen is a canvas on the aperture of its piece, painted each frame by the room players, with glow and pool',async()=>{
+  const s=screenStage([mupi,{...counter,rot:3},{id:'led',type:'led',col:0,row:0},{id:'rug',type:'rug',col:9,row:5,fp:[2,2]}]);
+  try{
+    await flush();s.h.loaded();s.h.furniture.update();
+    assert.deepEqual(s.canvases().map(canvas=>canvas.dataset.mediaScreen).sort(),['ds1','ds2','inventory:counter','inventory:led','metahuman']);
+    const totem=s.canvases().find(canvas=>canvas.dataset.mediaScreen==='metahuman');
+    assert.deepEqual([totem.width,totem.height],[216,384]);assert.equal(totem.className,'matrix-furniture-screen');assert.match(totem.style.cssText,/pointer-events:auto/);assert.equal(totem.parent.dataset.instanceId,'metahuman');
+    assert.match(totem.style.transform,/^matrix3d\(/,'mapped onto the aperture at the size of the room');
+    const wide=s.canvases().find(canvas=>canvas.dataset.mediaScreen==='inventory:counter');assert.equal(wide.width,384);assert.ok(wide.height<wide.width);
+    // Behind each one, a blurred copy of its own picture; in front of standing pieces, a pool on the floor.
+    assert.equal(totem.parent.children.filter(node=>node.className==='matrix-screen-glow').length,1);
+    assert.equal(s.find('matrix-screen-pool').length,2,'the totem and the counter stand on the floor; wall screens light no floor');
+    for(const pool of s.find('matrix-screen-pool')){assert.equal(pool.style.zIndex,String(POOL_Z));assert.match(pool.style.transform,/^translate\(-50%,-50%\) matrix\(/);}
+    // Rendered shadows under every standing piece; the rug under them all.
+    assert.deepEqual(s.find('matrix-furniture-shadow').map(node=>node.src.split('/').pop()).sort(),['01-r3-s.webp','14-r0-s.webp']);
+    for(const shadow of s.find('matrix-furniture-shadow')){assert.equal(shadow.style.zIndex,String(SHADOW_Z));assert.equal(shadow.getAttribute('aria-hidden'),'true');}
+    assert.equal(s.h.buttons.find(node=>node.dataset.instanceId==='rug').style.zIndex,String(FLOOR_Z));assert.equal(s.h.buttons.find(node=>node.dataset.instanceId==='led').dataset.wall,'1');
+    assert.deepEqual(s.h.furniture.screens().map(screen=>screen.id).sort(),['ds1','ds2','inventory:counter','inventory:led','metahuman']);
+    assert.equal(s.h.furniture.screens().find(screen=>screen.id==='metahuman').pieceId,'metahuman');assert.equal(s.h.furniture.screens().find(screen=>screen.id==='ds1').pieceId,null);
+    // One frame: the layout is read and every screen is offered to the painter with its identity and shape.
+    s.frame(1000);
+    assert.deepEqual(s.painted.map(screen=>screen.id).sort(),['ds1','ds2','inventory:counter','inventory:led','metahuman']);
+    const asked=s.painted.find(screen=>screen.id==='metahuman');assert.deepEqual([asked.w,asked.h,asked.aspect,asked.item.type,asked.label],[216,384,9/16,'metahuman','Metahuman AI']);
+    assert.equal(s.painted.find(screen=>screen.id==='ds2').aspect,4/5);assert.equal(s.painted.find(screen=>screen.id==='ds1').item,null);
+    for(const canvas of s.canvases()){assert.equal(canvas.dataset.lit,'1');assert.equal(canvas.calls[0][0],'clearRect');assert.equal(canvas.calls.at(-1)[0],'drawImage','the pane of glass goes over the picture');}
+    assert.ok(totem.parent.children.find(node=>node.className==='matrix-screen-glow').dataset.lit==='1');assert.ok(s.find('matrix-screen-pool').every(pool=>pool.dataset.lit==='1'));
+    // Screens are painted at the pace of video, the layout at the pace of the shop.
+    const before=s.painted.length;s.frame(1010);assert.equal(s.painted.length,before,'not twice within a video frame');s.frame(1040);assert.equal(s.painted.length,before+5);
+    s.h.furniture.dispose();assert.equal(s.h.container.children.length,0);
+  }finally{s.h.cleanup();}
+});
+
+test('a dark screen shows the drawing of its own piece, the totem rests, and the light can be switched off',async()=>{
+  let light=true;const s=screenStage([mupi,{id:'desk',type:'manager',col:5,row:6,rot:0,label:'Escritorio'}],{lit:()=>false,mount:{light:()=>light}});
+  try{
+    await flush();s.h.loaded();s.h.furniture.update();s.frame(1000);
+    const [desk,totem]=['inventory:desk','metahuman'].map(id=>s.canvases().find(canvas=>canvas.dataset.mediaScreen===id));
+    assert.equal(desk.dataset.lit,'0','transparent: the photograph shows through');assert.deepEqual(desk.calls.map(call=>call[0]),['clearRect']);
+    assert.equal(totem.dataset.lit,'1','the totem never shows the grey placeholder of its photograph');assert.ok(totem.calls.some(call=>call[0]==='fillText'&&call[1]==='Metahuman AI'));
+    assert.equal(s.canvases().find(canvas=>canvas.dataset.mediaScreen==='ds1').dataset.lit,'0','the framed print stays a print');
+    light=false;s.frame(1100);
+    assert.equal(totem.parent.children.find(node=>node.className==='matrix-screen-glow').dataset.lit,'0');assert.ok(s.find('matrix-screen-pool').every(pool=>pool.dataset.lit==='0'));assert.equal(totem.dataset.lit,'1');
+  }finally{s.h.cleanup();}
+});
+
+test('a page pinned on a screen is an inert frame on the same aperture, sized as it is seen, and leaves with its pin',async()=>{
+  let page={src:'https://example.com/kiosk?lang=es',title:'Quiosco de pedido'};const asked=[];
+  const s=screenStage([mupi],{mount:{webScreen:screen=>{asked.push(screen);return screen.id==='metahuman'?page:null;}}});
+  try{
+    await flush();s.h.furniture.update();
+    const node=s.h.buttons[0],frame=()=>node.children.find(child=>child.tagName==='iframe');
+    assert.ok(frame());assert.equal(frame().src,page.src);assert.equal(frame().title,'Quiosco de pedido');assert.equal(frame().inert,true);assert.equal(frame().tabIndex,-1);assert.equal(frame().className,'matrix-furniture-web');
+    assert.match(frame().style.cssText,/pointer-events:none/);assert.equal(frame().getAttribute('allow'),'autoplay','shown, not given a microphone or a camera');assert.equal(frame().dataset.ready,'0');
+    assert.match(frame().style.transform,/^matrix3d\(/);assert.ok(Number(frame().width)>=24&&Number(frame().height)>Number(frame().width),'a portrait panel at the size it is seen');
+    assert.equal(node.children.indexOf(frame())>node.children.findIndex(child=>child.tagName==='canvas'),true,'over its own canvas');
+    assert.equal(s.h.furniture.screens().find(screen=>screen.id==='metahuman').web,true);assert.ok(asked.some(screen=>screen.id==='metahuman'&&screen.aspect===9/16));
+    frame().events.get('load')();assert.equal(frame().dataset.ready,'1');
+    const same=frame();s.h.furniture.update();assert.equal(frame(),same,'the page is not reloaded by a layout pass');
+    page={src:'https://example.com/canal',title:'Canal'};s.h.furniture.update();assert.equal(frame(),same);assert.equal(frame().src,'https://example.com/canal');assert.equal(frame().dataset.ready,'0');
+    // Only https pages; anything else is not framed.
+    for(const src of ['http://example.com','javascript:alert(1)','blob:https://x/y','']){page={src,title:'x'};s.h.furniture.update();assert.equal(frame(),undefined,src);}
+    page={src:'https://example.com/kiosk',title:'Quiosco'};s.h.furniture.update();assert.ok(frame());page=null;s.h.furniture.update();assert.equal(frame(),undefined);
+    assert.equal(s.h.furniture.screens().find(screen=>screen.id==='metahuman').web,false);
+  }finally{s.h.cleanup();}
+});
+
+test('a carried piece is drawn where the hand says, over the room, with its shadow left on the floor',async()=>{
+  let draft=null,view=null,live=false;const seen=[];
+  const s=screenStage([{...counter,rot:1},chair()],{mount:{decorate:scene=>{seen.push(scene.layout.length);return draft?{...scene,layout:scene.layout.map(item=>item.id==='counter'?{...item,...draft}:item)}:scene;},present:p=>p.id==='counter'?view:p.id==='chair-1'?{state:'blocking'}:null,live:()=>live}});
+  try{
+    await flush();s.h.loaded();s.h.furniture.update();
+    const node=s.h.buttons.find(button=>button.dataset.instanceId==='counter'),shadow=s.find('matrix-furniture-shadow').find(image=>/01-r1-s/.test(image.src)),rest=node.style.zIndex,left=node.style.left;
+    assert.equal(node.dataset.lift,'');assert.equal(node.style.translate,'');assert.equal(s.h.buttons.find(button=>button.dataset.instanceId==='chair-1').dataset.lift,'blocking');
+    draft={col:9.4,row:4.2};view={state:'held',pose:{x:0,y:-40,floorY:0,tilt:-2.5,sx:1.03,sy:1.03,lift:1,front:true}};s.h.furniture.update();
+    assert.notEqual(node.style.left,left,'the plan follows the piece before anything is saved');assert.equal(node.style.zIndex,String(HELD_Z));assert.equal(node.dataset.lift,'held');
+    assert.equal(node.style.translate,'0.00px -40.00px');assert.equal(node.style.rotate,'-2.500deg');assert.equal(node.style.scale,'1.0300 1.0300');assert.match(node.style.transform,/^scale\(/,'its own mirror and size are untouched');
+    assert.equal(shadow.style.translate,'0.00px 0.00px','the shadow follows sideways, never up');assert.equal(shadow.dataset.lift,'held');assert.equal(shadow.style.zIndex,String(SHADOW_Z));
+    // A quarter turn in the air swaps the picture and its shadow; the hand keeps hold of the new one.
+    draft={col:9.4,row:4.2,rot:2};s.h.furniture.update();
+    const turned=s.h.buttons.find(button=>button.dataset.instanceId==='counter');assert.notEqual(turned,node);assert.match(turned.querySelector('img').src,/01-r2\.webp$/);assert.equal(turned.dataset.lift,'held');assert.equal(turned.style.zIndex,String(HELD_Z));
+    assert.deepEqual(s.find('matrix-furniture-shadow').map(image=>image.src.split('/').pop()).sort(),['01-r2-s.webp','43-r0-s.webp']);
+    // Settling: back in the order of the room for the last instants, then released.
+    view={state:'settling',pose:{x:3,y:0,floorY:0,tilt:0,sx:1.02,sy:.96,lift:0,front:false}};s.h.furniture.update();assert.notEqual(turned.style.zIndex,String(HELD_Z));assert.equal(turned.dataset.lift,'settling');
+    draft=null;view=null;s.h.furniture.update();
+    const back=s.h.buttons.find(button=>button.dataset.instanceId==='counter');assert.equal(back.style.zIndex,rest);assert.equal(back.style.left,left);assert.equal(back.style.translate,'');assert.equal(back.style.scale,'');assert.equal(back.dataset.lift,'');
+    // While the hand is busy the layout is read every frame; otherwise ten times a second.
+    const passes=()=>seen.length;let count=passes();s.frame(5000);assert.equal(passes(),count+1);count=passes();s.frame(5016);assert.equal(passes(),count,'idle: not yet');
+    live=true;s.frame(5032);s.frame(5048);assert.equal(passes(),count+2);
+    assert.equal(s.h.furniture.piece('counter').placement.id,'counter');assert.equal(s.h.furniture.piece('nobody'),null);assert.equal(s.h.furniture.scene.cols,14);
+  }finally{s.h.cleanup();}
+});
+
+test('the pointer chooses by what is really drawn: the cut-out of a photograph, never the empty corner of its box',async()=>{
+  const s=screenStage([mupi,{...counter,col:4,row:3}]);
+  try{
+    await flush();s.h.furniture.update();
+    const [totem,desk]=['metahuman','counter'].map(id=>s.h.buttons.find(button=>button.dataset.instanceId===id));
+    totem.rect={left:100,top:100,width:100,height:200};desk.rect={left:100,top:100,width:200,height:200};
+    const stack=[];globalThis.document.elementsFromPoint=()=>stack;
+    const box=s.h.furniture.piece('metahuman').placement.box,inside=([x,y])=>[100+(x-box.x)/box.width*100,100+(y-box.y)/box.height*200];
+    // The centre of the totem photograph is totem; its top-right corner is empty.
+    stack.push(totem,desk);const [cx,cy]=inside([730,480]);assert.equal(s.h.furniture.pick(cx,cy),'metahuman');
+    const [ex,ey]=inside([box.x+box.width-1,box.y+1]);assert.notEqual(s.h.furniture.pick(ex,ey),'metahuman','through the transparent corner to whatever is behind');
+    assert.equal(s.h.furniture.pick(5,5),null);stack.length=0;assert.equal(s.h.furniture.pick(cx,cy),null);
+    // A screen answers for itself unless a nearer piece really covers that point.
+    const canvas=s.canvases().find(node=>node.dataset.mediaScreen==='metahuman');
+    stack.push(canvas,totem);assert.equal(s.h.furniture.screenAt(cx,cy),'metahuman');
+    stack.length=0;stack.push(totem,canvas);assert.equal(s.h.furniture.screenAt(cx,cy),null,'covered by the piece in front');
+    stack.length=0;stack.push(totem,canvas);assert.equal(s.h.furniture.screenAt(ex,ey),'metahuman','seen through its empty corner');
+    assert.deepEqual(s.h.furniture.piece('metahuman').rect,{left:100,right:200,top:100,bottom:300});
+  }finally{delete globalThis.document?.elementsFromPoint;s.h.cleanup();}
 });

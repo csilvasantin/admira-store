@@ -5,9 +5,9 @@ import vm from 'node:vm';
 import {projectMatrixFloor,MATRIX_FLOOR_POLYGON} from './matrix-floor.mjs';
 
 const source=fs.readFileSync(new URL('./best-preview-ui.mjs?v=ipad-20261005-1',import.meta.url),'utf8');
-function harness({cached=false,broken=false,showFailure=false,peopleFailure=false,furnitureFailure=false,furniturePending=false,search='',vertical='xtanco',starbucks=false}={}){
+function harness({cached=false,broken=false,showFailure=false,peopleFailure=false,furnitureFailure=false,furniturePending=false,search='',vertical='xtanco',starbucks=false,editor=null,alive=true}={}){
   let document,releases=0;
-  const layers=[],furnitureLayers=[],floating=[];
+  const layers=[],furnitureLayers=[],floating=[],lifts=[],playerSets=[],cards=[],order=[];
   class Element{
     constructor(tag){this.tag=tag;this.children=[];this.queries=new Map();this.listeners={};this.attrs={};const classes=new Set();this.classList={add:name=>classes.add(name),contains:name=>classes.has(name)};}
     setAttribute(name,value){this.attrs[name]=String(value);}
@@ -39,16 +39,22 @@ function harness({cached=false,broken=false,showFailure=false,peopleFailure=fals
     if(peopleFailure)throw Error('people failure');
     const layer={container,getFurnitureZones,projectFloor,floorPolygon,disposed:false,dispose(){this.disposed=true;}};layers.push(layer);return layer;
   };
-  const mountMatrixFurniture=(container,{onReady,onSelect})=>{
+  const mountMatrixFurniture=(container,options)=>{
+    const {onReady,onSelect}=options;
     if(furnitureFailure)throw Error('furniture failure');
-    const layer={container,onReady,onSelect,zones:[],count:43,disposed:false,dispose(){this.disposed=true;}};
+    const layer={container,onReady,onSelect,options,zones:[],count:43,disposed:false,screenAt:()=>layer.under||null,dispose(){this.disposed=true;order.push('furniture');}};
     furnitureLayers.push(layer);if(!furniturePending)onReady();return layer;
   };
+  // Hiperreal vivo: the hand, the room players and the on-air cards. `alive:false` is a page without them.
+  const mountFurnitureLift=options=>{const lift={options,holding:null,disposed:false,decorate:scene=>({...scene,decorated:true}),present:placement=>({state:'hover',id:placement.id}),live:()=>true,state:()=>({holding:lift.holding}),dispose(){this.disposed=true;order.push('lift');}};lifts.push(lift);return lift;};
+  const createXtancoPlayers=options=>{const players={options,drawn:[],disposed:false,draw(ctx,w,h,id,meta){this.drawn.push({id,w,h,meta});return id!=='dark';},dispose(){this.disposed=true;order.push('players');}};playerSets.push(players);return players;};
+  const mountBestOnAir=options=>{const onAir={options,lit:true,disposed:false,light(){return this.lit;},dispose(){this.disposed=true;order.push('cards');}};cards.push(onAir);return onAir;};
+  if(editor)window.__xtancoFurnitureEditor=editor;
   const lifeCalls=[];let lifeListener;
   const attachFloatingPanel=(panel,options)=>{const tool={panel,options,disposed:false,open(){if(!this.disposed)options.onOpen?.();},close(){if(!this.disposed)panel.hidden=true;},dispose(){this.disposed=true;}};floating.push(tool);return tool;};
-  const context=vm.createContext({XpaceStarbucks:{active:()=>starbucks},URLSearchParams,location:{search},subscribeLifeView:fn=>{lifeListener=fn;return()=>{};},openLifeView:options=>{lifeCalls.push({action:'open',options});},closeLifeView:reason=>lifeCalls.push({action:'close',reason}),mountTierHud:()=>({setStatus(){},dispose(){}}),attachFloatingPanel,document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON});
+  const context=vm.createContext({XpaceStarbucks:{active:()=>starbucks},URLSearchParams,location:{search},subscribeLifeView:fn=>{lifeListener=fn;return()=>{};},openLifeView:options=>{lifeCalls.push({action:'open',options});},closeLifeView:reason=>lifeCalls.push({action:'close',reason}),mountTierHud:()=>({setStatus(){},dispose(){}}),attachFloatingPanel,document,window,createBestPeopleLayer,mountMatrixFurniture,projectMatrixFloor,MATRIX_FLOOR_POLYGON,...(alive?{mountFurnitureLift,createXtancoPlayers,mountBestOnAir}:{})});
   vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.audit={openBestView,closeBestView,subscribeBestView,get dialog(){return dialog;}};',context);
-  return {body,window,document,previous,layers,furnitureLayers,floating,lifeCalls,lifeState:state=>lifeListener(state),get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
+  return {body,window,document,previous,layers,furnitureLayers,floating,lifts,playerSets,cards,order,lifeCalls,lifeState:state=>lifeListener(state),get releases(){return releases;},get dialog(){return context.audit.dialog;},open:options=>context.audit.openBestView(options),close:reason=>context.audit.closeBestView(reason),subscribe:fn=>context.audit.subscribeBestView(fn)};
 }
 
 test('component deep link delegates Xtanco Best to the live scene and forwards its lifecycle',()=>{
@@ -170,4 +176,56 @@ test('selecting a piece shows its inventory number and safe command hint without
   assert.equal(selection.hidden,false);assert.equal(selection.textContent,'1 · Mostrador <b>retail</b> · /inventario eliminar 1');
   assert.equal(selection.innerHTML,undefined);
   h.furnitureLayers[0].onSelect(null);assert.equal(selection.hidden,true);assert.equal(selection.textContent,'');
+});
+
+test('Hiperreal vivo: the tobacconist gets its players, its on-air cards and the hand, and loses them in order',()=>{
+  const editor={place(){},read(){},begin(){},end(){}},h=harness({cached:true,editor});h.open({requestId:21});
+  const furniture=h.furnitureLayers[0],container=furniture.container;
+  assert.equal(h.playerSets.length,1);assert.equal(h.playerSets[0].options.win,h.window);
+  assert.equal(h.lifts.length,1);assert.equal(h.lifts[0].options.container,container);assert.equal(h.lifts[0].options.furniture,furniture);assert.equal(h.lifts[0].options.bridge,editor);
+  assert.equal(h.cards.length,1);assert.equal(h.cards[0].options.stage,container);assert.equal(h.cards[0].options.players,h.playerSets[0]);
+  const stage=h.window.XpaceHiperreal;assert.deepEqual(Object.keys(stage).sort(),['furniture','lift','players','screens']);
+  assert.ok(stage.players===h.playerSets[0]&&stage.screens===h.cards[0]&&stage.lift===h.lifts[0]&&stage.furniture===furniture);
+  // The pieces ask the hand late: it is mounted after them.
+  const scene={layout:[]};assert.equal(furniture.options.decorate(scene).decorated,true);assert.deepEqual(furniture.options.present({id:'a'}),{state:'hover',id:'a'});assert.equal(furniture.options.live(),true);
+  assert.equal(furniture.options.light(),true);h.cards[0].lit=false;assert.equal(furniture.options.light(),false);
+  // A preview wins; then the room players; a screen showing a page paints nothing of its own.
+  const drawn=[];h.window.XpaceScreenMedia={draw:(ctx,w,h,id)=>{drawn.push(id);return id==='previewed';},previewed:id=>id==='previewed'};
+  const screen=id=>({id,aspect:9/16,item:{type:'metahuman'},label:'Tótem'}),paint=id=>furniture.options.paintScreen({},216,384,screen(id));
+  assert.equal(paint('previewed'),true);assert.equal(h.playerSets[0].drawn.length,0);
+  assert.equal(paint('metahuman'),true);assert.deepEqual(h.playerSets[0].drawn.map(entry=>[entry.id,entry.w,entry.h,entry.meta.aspect]),[['metahuman',216,384,9/16]]);
+  assert.equal(paint('dark'),false);assert.deepEqual(drawn,['previewed','metahuman','dark']);
+  h.window.__xtancoSurfaceWeb=id=>id==='metahuman'?{src:'https://example.com/kiosk',title:'Quiosco'}:null;
+  assert.deepEqual(furniture.options.webScreen(screen('metahuman')),{src:'https://example.com/kiosk',title:'Quiosco'});assert.equal(furniture.options.webScreen(screen('ds1')),null);
+  const before=h.playerSets[0].drawn.length;assert.equal(paint('metahuman'),false);assert.equal(h.playerSets[0].drawn.length,before,'no second video under a page');
+  assert.equal(furniture.options.webScreen(screen('previewed')),null,'a preview also wins over the page');
+  assert.deepEqual(h.cards[0].options.web('metahuman'),{src:'https://example.com/kiosk',title:'Quiosco'});
+  // The cards keep quiet while a piece is in the hand.
+  assert.equal(h.cards[0].options.busy(),false);h.lifts[0].holding='counter';assert.equal(h.cards[0].options.busy(),true);
+  // A page on the totem is touched apart: double click opens it at touch size, never while carrying.
+  const touched=[];h.window.XpaceTotemKiosk={touch:on=>touched.push(on)};furniture.under='metahuman';
+  container.emit('dblclick',{clientX:5,clientY:5});assert.deepEqual(touched,[],'not with a piece in the hand');
+  h.lifts[0].holding=null;container.emit('dblclick',{clientX:5,clientY:5});assert.deepEqual(touched,[true]);
+  furniture.under='ds1';container.emit('dblclick',{clientX:5,clientY:5});assert.deepEqual(touched,[true]);
+  // Media dropped on the room finds the screen the pieces say is there.
+  furniture.under='inventory:led';assert.equal(h.window.XpaceSceneScreens.screenAt(3,4),'inventory:led');
+  h.close();
+  assert.deepEqual(h.order,['lift','cards','players','furniture'],'the hand closes its edit and the players stop before the pieces go');
+  assert.equal(h.window.XpaceHiperreal,undefined);assert.equal(h.window.XpaceSceneScreens,undefined);assert.ok(h.lifts[0].disposed&&h.cards[0].disposed&&h.playerSets[0].disposed);
+});
+
+test('Hiperreal vivo never blocks Best: no editor, another vertical or a page without the new modules still open the room',()=>{
+  const bare=harness({cached:true}),states=[];bare.subscribe(state=>states.push({...state}));bare.open();
+  assert.equal(bare.lifts.length,0,'without the editing bridge there is no hand');assert.equal(bare.playerSets.length,1);assert.equal(bare.cards.length,1);assert.equal(bare.window.XpaceHiperreal.lift,undefined);
+  assert.equal(states.at(-1).busy,false);assert.equal(states.at(-1).error,'');
+  const scene={layout:[]};assert.equal(bare.furnitureLayers[0].options.decorate(scene),scene);assert.equal(bare.furnitureLayers[0].options.present({id:'a'}),null);assert.equal(bare.furnitureLayers[0].options.live(),false);
+  assert.equal(bare.cards[0].options.busy(),false);bare.close();
+  const old={read(){},begin(){},end(){}},legacy=harness({cached:true,editor:old});legacy.open();assert.equal(legacy.lifts.length,0,'an editor that cannot place a lifted piece is not used');legacy.close();
+  const cafe=harness({cached:true,vertical:'cafeteria',editor:{place(){}}});cafe.open();
+  assert.equal(cafe.playerSets.length,0,'the tobacconist tags and house schedule belong to the tobacconist');assert.equal(cafe.lifts.length,1);assert.equal(cafe.cards[0].options.players,undefined);
+  assert.equal(cafe.furnitureLayers[0].options.paintScreen({},10,10,{id:'metahuman'}),false);cafe.close();
+  const plain=harness({cached:true,alive:false,editor:{place(){}}}),seen=[];plain.subscribe(state=>seen.push({...state}));plain.open();
+  assert.equal(seen.at(-1).busy,false);assert.equal(seen.at(-1).error,'');assert.equal(plain.layers.length,1);assert.equal(plain.window.XpaceHiperreal.furniture,plain.furnitureLayers[0]);
+  for(const part of ['players','screens','lift'])assert.ok(plain.window.XpaceHiperreal[part]==null,part);
+  plain.close();assert.equal(plain.furnitureLayers[0].disposed,true);
 });

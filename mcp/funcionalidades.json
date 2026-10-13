@@ -2773,6 +2773,87 @@
     "es": "Good/Better/Best · Starbucks: pared, TPV e iPad reproducen la misma programación que Matrix, con el estado vivo de MCP y el reparto /sincro. Solo lectura y local.",
     "en": "Good/Better/Best · Starbucks: wall, POS and iPad play the same schedule as Matrix, with live MCP state and the /sync layout. Read-only and local."
   },
+  "hiperreal_live": {
+    "view": "best",
+    "vertical": "xtanco",
+    "url": "https://www.xpaceos.com/admira-xp/?autostart=xtanco&from=portada&visual=hiperreal",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/hiperreal-vivo.md",
+    "features": [
+      "virtual players on every screen of the room",
+      "screen glow and light on the floor",
+      "on-air card with the player tag on hover",
+      "lift, carry, turn and set down furniture",
+      "rendered floor shadows",
+      "43 models re-rendered in Blender in four turns"
+    ],
+    "precedence": [
+      "preview",
+      "what Good pins on that same screen (same video; a web pin is projected onto the totem)",
+      "Stock content tagged for the screen",
+      "house schedule in the closest shape",
+      "the drawing of the piece itself"
+    ],
+    "tags": {
+      "metahuman": "XT-GRACIA-MH",
+      "ds1": "XT-GRACIA-P1",
+      "ds2": "XT-GRACIA-P2",
+      "escaparate": "XT-GRACIA-ESC",
+      "led": "XT-GRACIA-LED",
+      "manager": "XT-GRACIA-OFICINA",
+      "lottery": "XT-GRACIA-LOTERIA",
+      "turnKiosk": "XT-GRACIA-TURNOS",
+      "tablet": "XT-GRACIA-TABLET",
+      "counter": "XT-GRACIA-TPV"
+    },
+    "commands": {
+      "es": [
+        "/emision",
+        "/emision on|off",
+        "/emision luz on|off",
+        "/emision escena on|off",
+        "/emision estado"
+      ],
+      "en": [
+        "/onair",
+        "/onair on|off",
+        "/onair light on|off",
+        "/onair scene on|off",
+        "/onair status"
+      ]
+    },
+    "gestures": [
+      "drag: lift and carry",
+      "release: set down on a quarter tile, or on the nearest free one",
+      "R or wheel while carrying: quarter turn",
+      "Esc: cancel or let go",
+      "click: choose a piece",
+      "arrows: quarter tile",
+      "R with a piece chosen: turn in place",
+      "Ctrl/Cmd+Z: undo"
+    ],
+    "fixed_pieces": "pieces hanging on a wall (led, tft, aroma, door) and locked ones; the totem and the tablet stand on the floor and move",
+    "browser_api": "window.XpaceHiperreal — players.state() / players.set(true|false) · screens.state() / screens.set({onAir,light}) · lift.state() / lift.select(id) / lift.move(id,col,row,rot) / lift.nudge(dc,dr) / lift.turn() / lift.undo() · furniture.screens()",
+    "storage": [
+      "xpaceos.xtanco-players.v1",
+      "xpaceos.best.screens.v1"
+    ],
+    "defaults": {
+      "players": true,
+      "light": true,
+      "onAir": false
+    },
+    "assets": "admira-xp/assets/matrix-furniture/hiperreal/ (per piece and turn: picture, floor shadow and screen corners in manifest.json), made by admira-xp/tools/xpacios-blender/render_hiperreal_sprites.py",
+    "media_route": "https://api.admira.store/stock/asset/<id> (cross-origin readable; required by canvas)",
+    "scope": "Players are a read-only local representation: no Stock, pin, playlist or MCP change, no physical-device acknowledgement; one hidden muted video per channel in use; the Stock index is read every 60 s only while the view paints. Releasing a piece saves through the shared layout editor bridge after validating the destination; the simulation pauses while a piece is carried.",
+    "out_of_scope": [
+      "a layout that survives a reload (the Xtanco restores the repository layout, as before)",
+      "players in other verticals",
+      "touching the totem page inside the room (double-click opens the existing touch view)"
+    ],
+    "observed": "In Good the tagged channel downloads its content but never pins it (the pin arrives as a blob: address and is rejected); this view plays the channel by itself.",
+    "es": "Best · Hiperreal · Xtanco: cada pantalla de la sala es un player virtual con su etiqueta y los muebles se levantan, se llevan, se giran y se posan. Players de solo lectura y locales; mover guarda por el puente de Distribuir.",
+    "en": "Best · Hiperreal · Xtanco: every screen in the room is a virtual player with its tag, and furniture is lifted, carried, turned and set down. Players are read-only and local; moving saves through the Distribuir bridge."
+  },
   "playlist_capsules": {
     "highlight": "actual local playback on selected devices",
     "compact_header": true,
