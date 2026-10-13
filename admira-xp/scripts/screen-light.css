@@ -1,0 +1,48 @@
+/* Pantallas vivas · Matrix. Todo lo que desborda la pantalla vive en .matrix-halo-layer, hermana de la capa de players:
+   el player sigue recortado a su apertura calibrada. Guía: admira-xp/docs/pantallas-vivas.md */
+.matrix-halo-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;mix-blend-mode:screen}
+.matrix-halo{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;backface-visibility:hidden}
+.matrix-halo[hidden]{display:none}
+/* La luz es el propio contenido, muy reducido, desenfocado en el plano de la pantalla y apagándose hacia fuera. */
+.matrix-halo-light canvas{display:block;width:100%;height:100%;image-rendering:auto}
+.matrix-halo-light{position:absolute;left:calc(var(--halo-x)*-100%);top:calc(var(--halo-y)*-100%);width:calc(100% + var(--halo-x)*200%);height:calc(100% + var(--halo-y)*200%);opacity:0;filter:blur(var(--halo-blur)) saturate(1.4);-webkit-mask-image:radial-gradient(closest-side,#000 40%,#0000 100%);mask-image:radial-gradient(closest-side,#000 40%,#0000 100%);transition:opacity .7s ease}
+.matrix-halo.is-lit .matrix-halo-light{opacity:var(--halo-gain)}
+.matrix-halo.is-pulse .matrix-halo-light{animation:screen-light-pulse .9s ease-out}
+@keyframes screen-light-pulse{0%{opacity:var(--halo-gain)}22%{opacity:1}100%{opacity:var(--halo-gain)}}
+/* Cerco de las pantallas que comparten pieza con la que está bajo el puntero. */
+.matrix-halo-ring{position:absolute;inset:-22px;border:5px solid #9dffcf;border-radius:10px;opacity:0;transition:opacity .18s ease}
+.matrix-halo.is-hover .matrix-halo-ring{opacity:.85}
+
+/* Cristal: un reflejo tenue y una viñeta dentro de la apertura, bajo incidencias (z 3), reacciones (z 10) y cesta (z 20). */
+.matrix-panorama.screen-light .matrix-mapped-player[data-device-id].has-preview:not(.device-off)::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(118deg,#ffffff24 0%,#ffffff0a 17%,#fff0 33%,#fff0 68%,#ffffff0d 100%);box-shadow:inset 0 0 44px #0000005c}
+/* Último fotograma de la pieza saliente: se funde con la entrante en vez de cortar a negro. */
+.matrix-mapped-player .matrix-screen-freeze{position:absolute;inset:0;width:100%;height:100%;z-index:1;image-rendering:auto;filter:none;opacity:0;visibility:hidden;pointer-events:none;object-fit:contain}
+.matrix-mapped-player .matrix-screen-freeze.is-holding{opacity:1;visibility:visible}
+.matrix-mapped-player .matrix-screen-freeze.is-fading{opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
+
+/* Ficha «En emisión»: qué pieza, de qué playlist, en qué pantallas y qué viene después. No intercepta el ratón. */
+.matrix-onair-layer{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none}
+.matrix-onair-card{position:absolute;left:0;top:0;box-sizing:border-box;display:grid;gap:3px;width:max-content;min-width:176px;max-width:min(264px,calc(100% - 16px));padding:9px 12px 10px;border:1px solid #9dffcf4d;border-radius:10px;background:#06191cdb;-webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3);color:#eafff6;font:12px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 12px 34px #0009;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility 0s linear .22s}
+.matrix-onair-card.is-visible{opacity:1;visibility:visible;transition:opacity .22s ease}
+.matrix-onair-card::before{content:"";position:absolute;left:var(--caret,50%);top:-6px;width:10px;height:10px;margin-left:-5px;transform:rotate(45deg);background:#06191c;border:1px solid #9dffcf4d;border-right:0;border-bottom:0}
+.matrix-onair-card[data-side=above]::before{top:auto;bottom:-6px;transform:rotate(225deg)}
+.matrix-onair-card [hidden]{display:none}
+.onair-kicker{display:flex;align-items:center;gap:6px;font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em;text-transform:uppercase;color:#9dffcf}
+.onair-kicker i{flex:none;width:7px;height:7px;border-radius:50%;background:currentColor}
+.onair-kicker b{margin-left:auto;padding-left:10px;font-weight:600;letter-spacing:.02em;text-transform:none;color:#c9e6dc;white-space:nowrap}
+.matrix-onair-card[data-state=live] .onair-kicker i{animation:onair-dot 1.6s ease-in-out infinite}
+@keyframes onair-dot{50%{opacity:.25}}
+.matrix-onair-card[data-state=preview] .onair-kicker,.matrix-onair-card[data-state=reaction] .onair-kicker{color:#ffd45f}
+.matrix-onair-card[data-state=app] .onair-kicker{color:#8fd8ff}
+.matrix-onair-card[data-state=paused] .onair-kicker,.matrix-onair-card[data-state=empty] .onair-kicker{color:#a9c3ba}
+.matrix-onair-card[data-state=error] .onair-kicker,.matrix-onair-card[data-state=off] .onair-kicker,.matrix-onair-card[data-state=incident] .onair-kicker{color:#ff8f8f}
+.onair-title{font-size:13px;font-weight:650;line-height:1.3;color:#fff;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.onair-meta,.onair-next{font-size:11px;color:#b5d1c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.onair-progress{display:flex;align-items:center;gap:8px;margin-top:2px}
+.onair-bar{flex:1;min-width:70px;height:3px;border-radius:2px;background:#ffffff26;overflow:hidden}
+.onair-bar i{display:block;width:100%;height:100%;border-radius:2px;background:#9dffcf;transform:scaleX(0);transform-origin:0 50%;transition:transform .2s linear}
+.matrix-onair-card[data-state=preview] .onair-bar i{background:#ffd45f}
+.onair-time{flex:none;font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;color:#c9e6dc}
+[data-screen-light][aria-pressed="true"]{background:#9dffcf!important;color:#032b28!important}
+@media(max-width:650px){.matrix-onair-card{min-width:150px;max-width:min(220px,calc(100% - 12px));padding:7px 9px;font-size:11px}.onair-title{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.matrix-halo-light,.matrix-halo-ring,.matrix-onair-card,.matrix-screen-freeze.is-fading,.onair-bar i{transition:none}.matrix-halo.is-pulse .matrix-halo-light,.matrix-onair-card[data-state=live] .onair-kicker i{animation:none}}

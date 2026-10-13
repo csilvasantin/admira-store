@@ -2686,6 +2686,47 @@
     },
     "guide": "https://www.xpaceos.com/admira-xp/docs/matrix-entry.md"
   },
+  "live_screens": {
+    "view": "matrix",
+    "location_id": "alsea-sbux-021",
+    "url": "https://www.xpaceos.com/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/pantallas-vivas.md",
+    "features": [
+      "content light on the room",
+      "glass finish",
+      "crossfade between items",
+      "on-air card on hover",
+      "arrival cards",
+      "double-click camera focus"
+    ],
+    "commands": {
+      "es": [
+        "/emision",
+        "/emision on|off",
+        "/emision luz on|off",
+        "/emision estado"
+      ],
+      "en": [
+        "/onair",
+        "/onair on|off",
+        "/onair light on|off",
+        "/onair status"
+      ]
+    },
+    "browser_api": "window.XpaceMatrixOptions.screenLight.state() / .set({light,onAir})",
+    "storage": "xpaceos.matrix.screen-light.v1",
+    "defaults": {
+      "light": true,
+      "onAir": false
+    },
+    "scope": "Read-only local representation of what this browser plays; no MCP tool, no network call, no physical-device acknowledgement",
+    "pending": [
+      "Good/Better/Best still do not play playlists",
+      "live MCP server help topic pantallas-vivas"
+    ],
+    "es": "Matrix · Starbucks: las pantallas arrojan la luz de su contenido, funden entre piezas y muestran la ficha «En emisión» (pieza, playlist, posición, Stock, tiempo y siguiente). Solo lectura y local.",
+    "en": "Matrix · Starbucks: screens cast the light of their content, crossfade between items and show the “On air” card (item, playlist, position, Stock, time and next). Read-only and local."
+  },
   "playlist_capsules": {
     "highlight": "actual local playback on selected devices",
     "compact_header": true,
