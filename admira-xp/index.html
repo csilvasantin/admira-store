@@ -2683,10 +2683,14 @@ function dsMediaUrlPlayable(url){
   // llega como URL muerta y deja la pantalla en negro. FLT-100904.
   return /^https?:\/\//i.test(String(url||''));
 }
+// Excepción: los blobs que ESTA pestaña crea al descargar un pin remoto (dlProgressScript)
+// siguen vivos aquí y se apuntan en este registro. Sólo sirven en la pestaña: no salen de ella.
+const DS_OWN_BLOBS=new Set();
+try{ window.__dsOwnBlobs=DS_OWN_BLOBS; }catch(e){}
 function dsPinSurfaceFromUrl(surfaceId,kind,url,name){
   if(dsMatrixOwnsScreens())return dsMediaUrlPlayable(url)&&['image','video'].includes(kind)?dsPreviewMatrix(surfaceId,{id:'signage-url',title:name||url,url,kind}):false;
   if(!dsSurfaceById(surfaceId)||!url) return false;
-  if(!dsMediaUrlPlayable(url)) return false;
+  if(!dsMediaUrlPlayable(url)&&!DS_OWN_BLOBS.has(url)) return false;
   if(kind!=='image'&&kind!=='video') return false;
   const m=dsEnsureSurfaceMedia(surfaceId);
   m.ready=false; m.kind=kind; m.name=name||url;
@@ -3585,16 +3589,15 @@ function dsControl(arg){
 const SIGNAGE_NOW_URL='https://api.admira.store/signage/now';
 let _escNowSig='';
 function escaparateNowItem(){
-  const pin=(DS_PIN&&typeof DS_PIN==='object')?DS_PIN['escaparate']:null;
+  let pin=(DS_PIN&&typeof DS_PIN==='object')?DS_PIN['escaparate']:null;
+  // Un pin remoto (canal por tag / feed) no se espeja: fuera, el escaparate sigue contando la
+  // rotación global. El canal cambia de pieza cada 10 s y aquí cada cambio es una escritura en
+  // el worker (cuota de KV) más un aviso en el feed que leen todas las pestañas; y el medio
+  // puede ser un blob de esta pestaña, que fuera es una URL muerta (FLT-100904).
+  if(pin&&pin.remote) pin=null;
   let name,kind;
   if(pin){
     name=pin.name; kind=pin.kind;
-    // Pin remoto (canal por tag / feed): la URL está en DS_SURFACE_MEDIA, no en VIDEO_FILES.
-    if(pin.remote){
-      const m=DS_SURFACE_MEDIA&&DS_SURFACE_MEDIA['escaparate'];
-      const src=m?(kind==='image'?(m.img&&m.img.src):(m.video&&m.video.src)):null;
-      return src?{kind,name,src}:{kind:'idle',name:name||'',src:null};
-    }
   }
   else {
     // Sin pin, el escaparate refleja la rotación global. Si la rotación no está
@@ -3652,7 +3655,8 @@ setInterval(()=>emitEscaparateNow(true),60000); // keepalive del puntero /now (w
 let _totemNowSig='';
 function totemNowItem(){
   const pin=(DS_PIN&&typeof DS_PIN==='object')?DS_PIN['metahuman']:null;
-  if(!pin) return {kind:'idle',name:'',src:null};
+  // Como en el escaparate: un pin remoto (canal por tag / feed) no se espeja.
+  if(!pin||pin.remote) return {kind:'idle',name:'',src:null};
   // Pin 'web' (avatar 3D de DigitalAvatar.ai): el tótem renderiza la URL en iframe.
   if(pin.kind==='web'&&pin.src) return {kind:'web',name:pin.name||'DigitalAvatar.ai',src:pin.src};
   const name=pin.name, kind=pin.kind;
@@ -36249,19 +36253,26 @@ window.xtAPI = (function(){
   function start(id){ prog[id].pct=0; clearTimeout(prog[id].t); prog[id].t=setTimeout(function(){ prog[id].active=true; },200); } // solo si tarda >200ms
   function set(id,pct){ prog[id].pct=Math.max(0,Math.min(100,pct)); }
   function done(id){ clearTimeout(prog[id].t); if(prog[id].active){ prog[id].pct=100; setTimeout(function(){ prog[id].active=false; },420); } else { prog[id].active=false; } }
+  // Fija el blob descargado; si el core no lo admite, la URL de origen: la pantalla nunca se queda sin contenido en silencio.
+  function pinBlob(surfaceId, kind, url, burl, name){ return orig(surfaceId,kind,burl,name) || orig(surfaceId,kind,url,name); }
   function pinWithProgress(surfaceId, kind, url, name){
     if(dsMatrixOwnsScreens())return orig&&orig(surfaceId,kind,url,name);
     try{
       if(SURF.indexOf(surfaceId)<0 || typeof orig!=='function') return orig&&orig(surfaceId,kind,url,name);
-      if(blobCache[url]) return orig(surfaceId,kind,blobCache[url],name);              // ya descargado
-      if(!window.fetch || !url || String(url).indexOf('blob:')===0) return orig(surfaceId,kind,url,name);
+      if(blobCache[url]) return pinBlob(surfaceId,kind,url,blobCache[url],name);        // ya descargado
+      if(!window.fetch || !/^https?:\/\//i.test(String(url||''))) return orig(surfaceId,kind,url,name);   // sólo se descarga lo que el core fijaría tal cual
       start(surfaceId);
       fetch(url).then(function(resp){
         if(!resp.ok||!resp.body) throw 0;
         var total=+(resp.headers.get('content-length')||0);
         var reader=resp.body.getReader(), chunks=[], loaded=0;
         function pump(){ return reader.read().then(function(r){
-          if(r.done){ var burl=URL.createObjectURL(new Blob(chunks)); blobCache[url]=burl; set(surfaceId,100); done(surfaceId); orig(surfaceId,kind,burl,name); return; }
+          if(r.done){
+            var burl=URL.createObjectURL(new Blob(chunks,{type:resp.headers.get('content-type')||''}));
+            // El core sólo fija un blob si consta como propio de esta pestaña (FLT-100904).
+            try{ window.__dsOwnBlobs.add(burl); }catch(e){}
+            blobCache[url]=burl; set(surfaceId,100); done(surfaceId); pinBlob(surfaceId,kind,url,burl,name); return;
+          }
           chunks.push(r.value); loaded+=r.value.length; if(total>0) set(surfaceId, loaded/total*100);
           return pump();
         }); }

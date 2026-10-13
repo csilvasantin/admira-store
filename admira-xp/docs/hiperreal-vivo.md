@@ -76,9 +76,11 @@ Las cuatro primeras son las mismas etiquetas que ya usa Good.
 - **Preferencias** en este navegador: `xpaceos.xtanco-players.v1` (players) y `xpaceos.best.screens.v1` (fichas y luz). Por defecto: players y luz encendidos, fichas al pasar el ratón.
 - **Para agentes:** `window.XpaceHiperreal` existe mientras la vista está abierta. `players.state()` y `players.set(true|false)`; `screens.state()` y `screens.set({onAir,light})`; `lift.state()`, `lift.select(id)`, `lift.move(id,col,row,rot)`, `lift.nudge(dc,dr)`, `lift.turn()`, `lift.undo()`; `furniture.screens()`.
 
-### Observado y no tocado
+### Canal por etiqueta de Good (corregido)
 
-En Good, el canal por etiqueta descarga el contenido pero no llega a fijarlo: el pin llega como dirección `blob:` y se rechaza. Pasa también en producción. Esta vista reproduce el canal por su cuenta, así que aquí sí se ve. Queda propuesto como tarea aparte.
+Hasta el 13-oct-2026, Good descargaba el canal por etiqueta pero no llegaba a fijarlo: el pin llegaba como dirección `blob:` y se rechazaba. Ya lo fija en pared 1, pared 2 y escaparate. En las pantallas que comparte con Good, esta vista enseña ese mismo vídeo (punto 2 de la lista) y a su ritmo: Good cambia de pieza cada 10 segundos. Los demás players siguen reproduciendo su canal por su cuenta, pieza tras pieza.
+
+Para agentes: Good solo fija un `blob:` creado por su propia descarga, apuntado en `window.__dsOwnBlobs`. Un `blob:` ajeno se sigue rechazando. Nada nuevo sale de la pestaña: los espejos del escaparate y del tótem hacia las pantallas físicas (`/signage/now`) no reflejan el canal por etiqueta; el del escaparate sigue contando la rotación general. Prueba: `tests/pin-remoto-blob-propio.test.mjs`.
 
 ### Cómo se generan los renders
 
@@ -166,9 +168,11 @@ The first four are the tags Good already uses.
 - **Preferences** in this browser: `xpaceos.xtanco-players.v1` (players) and `xpaceos.best.screens.v1` (cards and light). Defaults: players and light on, cards on hover.
 - **For agents:** `window.XpaceHiperreal` exists while the view is open. `players.state()` and `players.set(true|false)`; `screens.state()` and `screens.set({onAir,light})`; `lift.state()`, `lift.select(id)`, `lift.move(id,col,row,rot)`, `lift.nudge(dc,dr)`, `lift.turn()`, `lift.undo()`; `furniture.screens()`.
 
-### Observed and left untouched
+### Good's tagged channel (fixed)
 
-In Good, the tagged channel downloads its content but never pins it: the pin arrives as a `blob:` address and is rejected. It happens in production too. This view plays the channel by itself, so here it shows. It is proposed as a separate task.
+Until 13 Oct 2026, Good downloaded the tagged channel but never pinned it: the pin arrived as a `blob:` address and was rejected. It now pins it on wall 1, wall 2 and the storefront. On the screens shared with Good, this view shows that very video (item 2 of the list) at Good's pace: Good switches item every 10 seconds. The other players keep running their channel by themselves, item after item.
+
+For agents: Good only pins a `blob:` created by its own download, recorded in `window.__dsOwnBlobs`. A foreign `blob:` is still rejected. Nothing new leaves the tab: the storefront and totem mirrors to the physical screens (`/signage/now`) do not reflect the tagged channel; the storefront one keeps reporting the general rotation. Test: `tests/pin-remoto-blob-propio.test.mjs`.
 
 ### How the renders are made
 
