@@ -53,7 +53,7 @@ Las pantallas se agrupan por reloj compartido y por zona: «Pantallas 1–6», �
 ### Entregado y pendiente
 
 - Entregado: los seis puntos de arriba, en la vista Matrix del Starbucks.
-- Pendiente: Good, Better y Best siguen sin reproducir las playlists (solo muestran vistas previas). La duración de las imágenes sigue fija en 30 s.
+- Good, Better y Best reproducen las playlists desde «Playlists en escena» (`playlists-en-escena.md`). Pendiente: la duración de las imágenes sigue fija en 30 s.
 - Pendiente: la ayuda del servidor MCP real (`xpaceos-mcp`) no incluye aún el tema `pantallas-vivas`.
 
 ### Código y pruebas
@@ -96,5 +96,5 @@ On air · Paused · Preview (temporary content, not the schedule) · Reaction (a
 ### Delivered and pending
 
 - Delivered: the six items above, in the Starbucks Matrix view.
-- Pending: Good, Better and Best still do not play playlists (previews only). Image duration remains fixed at 30 s.
+- Good, Better and Best play playlists since “Scene playlists” (`playlists-en-escena.md`). Pending: image duration remains fixed at 30 s.
 - Pending: the live MCP server help (`xpaceos-mcp`) does not yet include the `pantallas-vivas` topic.

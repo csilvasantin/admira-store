@@ -2721,11 +2721,57 @@
     },
     "scope": "Read-only local representation of what this browser plays; no MCP tool, no network call, no physical-device acknowledgement",
     "pending": [
-      "Good/Better/Best still do not play playlists",
+      "Sincro IA and local /navidad in Good/Better/Best (see scene_playlists)",
       "live MCP server help topic pantallas-vivas"
     ],
     "es": "Matrix · Starbucks: las pantallas arrojan la luz de su contenido, funden entre piezas y muestran la ficha «En emisión» (pieza, playlist, posición, Stock, tiempo y siguiente). Solo lectura y local.",
     "en": "Matrix · Starbucks: screens cast the light of their content, crossfade between items and show the “On air” card (item, playlist, position, Stock, time and next). Read-only and local."
+  },
+  "scene_playlists": {
+    "views": [
+      "good",
+      "better",
+      "best"
+    ],
+    "location_id": "alsea-sbux-021",
+    "url": "https://www.xpaceos.com/admira-xp/?quality=best&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks",
+    "guide": "https://www.xpaceos.com/admira-xp/docs/playlists-en-escena.md",
+    "sources": [
+      "repo seeds",
+      "MCP-managed playlists (matrix/starbucks)",
+      "device layout assignments",
+      "devicesOff",
+      "screen display mode (/sincro)"
+    ],
+    "precedence": [
+      "preview",
+      "schedule",
+      "iPad queue manager while its playlist has no video",
+      "illustrative menu"
+    ],
+    "commands": {
+      "es": [
+        "/emision escena",
+        "/emision escena on|off"
+      ],
+      "en": [
+        "/onair scene",
+        "/onair scene on|off"
+      ]
+    },
+    "browser_api": "window.XpaceScenePlaylists.state() / .set(true|false)",
+    "storage": "xpaceos.scene-playlists.v1",
+    "default": true,
+    "media_route": "https://api.admira.store/stock/asset/<id> (cross-origin readable; required by canvas and WebGL)",
+    "scope": "Read-only local playback; one hidden muted video per playlist in use; polls live state every 5 s only while a scene paints; no MCP tool, no physical-device acknowledgement",
+    "out_of_scope": [
+      "Sincro IA per-screen clips",
+      "local /navidad",
+      "room light and on-air cards in these views"
+    ],
+    "included_fix": "A playlist replaced through MCP while its first item was loading no longer stays paused (POS in Matrix).",
+    "es": "Good/Better/Best · Starbucks: pared, TPV e iPad reproducen la misma programación que Matrix, con el estado vivo de MCP y el reparto /sincro. Solo lectura y local.",
+    "en": "Good/Better/Best · Starbucks: wall, POS and iPad play the same schedule as Matrix, with live MCP state and the /sync layout. Read-only and local."
   },
   "playlist_capsules": {
     "highlight": "actual local playback on selected devices",
@@ -2760,8 +2806,8 @@
     "good": "https://www.xpaceos.com/admira-xp/?loc=alsea-sbux-021&quality=good",
     "default": "matrix",
     "storage": "starbucks_pg103_v1",
-    "es": "Good/Better/Best comparten reconstrucción interpretativa del Starbucks; menús ilustrativos. Players y playlists operativos en Matrix. No es un levantamiento métrico.",
-    "en": "Good/Better/Best share an interpretive Starbucks reconstruction with illustrative menus. Operational players/playlists remain in Matrix. Not a measured survey."
+    "es": "Good/Better/Best comparten reconstrucción interpretativa del Starbucks; sus pantallas reproducen las mismas playlists que Matrix (los menús ilustrativos quedan de reserva). Asignar contenidos, mapeo y MCP siguen en Matrix. No es un levantamiento métrico.",
+    "en": "Good/Better/Best share an interpretive Starbucks reconstruction; their screens play the same playlists as Matrix (illustrative menus remain as fallback). Assign content, mapping and MCP remain in Matrix. Not a measured survey."
   },
   "side_panel_resize": {
     "id": "side-panel-resize",

@@ -1,6 +1,8 @@
 // All virtual screens follow the first video's clock; no audio output or physical writes.
 export function createScreenPlaylist({videos,tracks,initialURL,loop=true,onState=()=>{},loadImage=url=>new Promise((resolve,reject)=>{const image=new Image();image.onload=resolve;image.onerror=reject;image.src=url;}),schedule=setTimeout,unschedule=clearTimeout}){
  let index=Math.max(0,tracks.findIndex(t=>t.url===initialURL)),disposed=false,playing=false,error=false,generation=0,finished=false;
+ // `wanted` is the intent to play: `playing` stays false while the first item is still loading.
+ let wanted=false;
  let imageTimer=null,imageRemaining=30000,imageStarted=0;
  const isImage=()=>tracks[index]?.kind==='image';
  function clearImage(){if(imageTimer!==null){imageRemaining=Math.max(0,imageRemaining-(Date.now()-imageStarted));unschedule(imageTimer);imageTimer=null;}}
@@ -11,6 +13,7 @@ export function createScreenPlaylist({videos,tracks,initialURL,loop=true,onState
  const timer=setInterval(sync,500);
  async function play(){
   if(disposed||!tracks.length||!videos.length)return;
+  wanted=true;
   if(finished){index=0;finished=false;loadTrack();}
   clearImage();
   const ticket=++generation;error=false;playing=false;emit();
@@ -30,13 +33,13 @@ export function createScreenPlaylist({videos,tracks,initialURL,loop=true,onState
   error=results.some(r=>r.status==='rejected');playing=!error;
   if(error)for(const v of videos)v.pause();else sync();emit();
  }
- function pause(){clearImage();++generation;playing=false;for(const v of videos)v.pause();emit();}
+ function pause(){wanted=false;clearImage();++generation;playing=false;for(const v of videos)v.pause();emit();}
  const ended=()=>{if(!playing||disposed)return;if(!loop&&index===tracks.length-1){finished=true;pause();return;}index=(index+1)%tracks.length;loadTrack();void play();};
  const failed=()=>{pause();error=true;emit();};
  videos[0]?.addEventListener('ended',ended);for(const v of videos)v.addEventListener('error',failed);
  emit();
  function replaceTracks(incoming){
-  const current=tracks[index]?.url,wasPlaying=playing;tracks=[...incoming];
+  const current=tracks[index]?.url,wasPlaying=playing||wanted;tracks=[...incoming];
   const kept=tracks.findIndex(t=>t.url===current);if(kept>=0){index=kept;emit();return;}
   ++generation;index=Math.min(index,Math.max(0,tracks.length-1));
   if(tracks.length)loadTrack();else{clearImage();for(const v of videos){v.pause();v.poster='';v.removeAttribute('src');v.load();}}
