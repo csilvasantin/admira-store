@@ -772,7 +772,7 @@
   }
   function suiteAction(engine,def){
     if(def.id==='demo'){
-      engine.registerAdapter({id:'store-local-demos',demos:['taza','kiosko','quiosco','creador','creator'].map(name=>({name,run:args=>def.run([name,...args].join(' '),{log,lang:lang(),shell:root.XpaceShell},lang())}))});return;
+      engine.registerAdapter({id:'store-local-demos',demos:['taza','kiosko','quiosco','creador','creator',...(/^\/xpacios\/sneakerstore\//.test(root.location.pathname)?['sneakers','sneaker','next-step','nextstep']:[])].map(name=>({name,run:args=>(pageVerbs.get('demo')||def).run([name,...args].join(' '),{log,lang:lang(),shell:root.XpaceShell},lang())}))});return;
     }
     engine.registerAdapter({id:'store-action-'+def.id,verbs:[{name:def.id,alias:def.aliases||[],desc:[def.es||def.id,def.en||def.es||def.id],run:async args=>{const out=await def.run(args.join(' '),{log,lang:lang(),shell:root.XpaceShell},lang());if(out!=null&&out!=='')log(typeof out==='string'?out:JSON.stringify(out));return out;}}]});
   }
