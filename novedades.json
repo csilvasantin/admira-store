@@ -644,5 +644,11 @@
     "Ficha «En emisión» al pasar el ratón por una pantalla; doble clic acerca la cámara.",
     "Good, Better y Best reproducen las mismas playlists que Matrix: pared, TPV e iPad.",
     "Corregido: el TPV se quedaba en pausa en Matrix. Nuevo: /emision y /emision escena."
+  ],
+  "v.13.10.2026.r2.22:09": [
+    "Estanco · Best Hiperreal: cada pantalla de la sala es un player virtual (tótem, pared, LED, portátil, lotería, turnos y tablet).",
+    "Emiten lo que Good tiene fijado, el contenido del Stock con su etiqueta XT-GRACIA-… o la parrilla de la casa; fichas «En emisión».",
+    "Los muebles se levantan: arrastrar, girar con R y soltar; huella verde o roja, imán al hueco libre y Ctrl/⌘+Z.",
+    "Los 43 muebles renderizados de nuevo en Blender, con sombra de suelo; el quiosco del tótem se ve en perspectiva."
   ]
 }
