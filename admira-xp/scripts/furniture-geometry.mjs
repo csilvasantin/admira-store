@@ -4,6 +4,12 @@ export const FLOOR_FOOTPRINTS=Object.freeze({counter:[1,2],shelves:[1,2],wineRac
 const WALL_TYPES=new Set(['led','tft','aroma','door']);
 export const isWallFurniture=item=>item?.mount==='wall'||WALL_TYPES.has(item?.type);
 export const isSolidFurniture=item=>item&&item.hidden!==true&&item.solid!==false&&!isWallFurniture(item)&&item.type!=='rug';
+// The Creator catalog files the Mupi and the feedback tablet under wall-mounted,
+// yet every view of the twin stands them on the floor with their own footprint.
+// A hand that lifts pieces (Best · Hiperreal) follows what really hangs.
+const STANDING_TYPES=new Set(['metahuman','tablet']);
+export const hangsOnWall=item=>WALL_TYPES.has(item?.type)||(item?.mount==='wall'&&!STANDING_TYPES.has(item?.type));
+export const standsOnFloor=item=>!!item&&item.hidden!==true&&item.solid!==false&&!hangsOnWall(item)&&item.type!=='rug';
 const number=(value,fallback)=>Number.isFinite(Number(value))?Number(value):fallback;
 export function furnitureBounds(item,footprints={}){
   const fp=Array.isArray(item?.fp)?item.fp:footprints[item?.type]||FLOOR_FOOTPRINTS[item?.type]||[1,1];

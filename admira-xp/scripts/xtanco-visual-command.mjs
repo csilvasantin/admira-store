@@ -41,6 +41,7 @@ export function parseVisualCommand(input){
   if(/^\/(?:sincro|sync)\s+(?:ia|ai)$/i.test(text))return {demo:'ia'};
   // Pantallas vivas: /emision [on|off|estado] muestra la ficha «En emisión»; /emision luz [on|off] la luz de las pantallas.
   // Playlists en escena: /emision escena [on|off] hace que Good, Better y Best reproduzcan la programación.
+  // En Best · Hiperreal del Xtanco las tres actúan sobre los players de la sala (docs/hiperreal-vivo.md).
   const onAir=text.match(/^\/(?:emision|emisión|enemision|onair)(?:@\w+)?(?:\s+([\s\S]*))?$/i);
   if(onAir){const arg=(onAir[1]||'').trim().toLowerCase().replace(/\s+/g,' '),value={on:true,off:false}[arg.split(' ').pop()];
    if(!arg)return {onAir:{key:'onAir',value:null}};if(['estado','status'].includes(arg))return {onAir:{status:true}};
@@ -103,6 +104,18 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
   if(command.onAir){
     const a=command.onAir;
     if(a.invalid)return {ok:false,local:true,message:en?'Usage: /onair [on|off] shows what each screen is playing; /onair light [on|off] toggles the light screens cast on the room; /onair scene [on|off] plays the schedule in Good, Better and Best; /onair status.':'Uso: /emision [on|off] muestra qué emite cada pantalla; /emision luz [on|off] alterna la luz que las pantallas arrojan sobre la sala; /emision escena [on|off] reproduce la programación en Good, Better y Best; /emision estado.'};
+    // Best · Hiperreal del Xtanco tiene sus propias pantallas y players: se atiende ahí, sin saltar a Matrix.
+    const stage=globalThis.XpaceHiperreal;
+    if(stage?.screens&&(stage.players||!a.scene)){
+      const before=stage.screens.state(),players=stage.players;
+      if(a.scene)players.set(a.value===null?!players.enabled:a.value);
+      const state=a.status||a.scene?before:stage.screens.set({[a.key]:a.value===null?!before[a.key]:a.value}),live=before.screens.filter(screen=>['live','preview'].includes(screen.state)).length;
+      const on=value=>value?'ON':'OFF';
+      return {ok:true,local:true,mode:'best',hiperreal:{onAir:state.onAir,light:state.light,players:players?players.enabled:null,screens:before.screens.length},
+        message:'Xtanco · Best Hiperreal: '+before.screens.length+(en?' screens':' pantallas')+(a.status?' · '+live+(en?' on air':' en emisión'):'')+' · '+(en?'on air cards ':'fichas «En emisión» ')+on(state.onAir)+' · '+(en?'screen light ':'luz de pantallas ')+on(state.light)+(players?' · players '+on(players.enabled):'')+'. '
+          +(a.scene?(players.enabled?(en?'Each screen plays what Good pins there, its tagged Stock channel (XT-GRACIA-…) or the house schedule.':'Cada pantalla emite lo que Good tiene fijado en ella, su canal del Stock por etiqueta (XT-GRACIA-…) o la parrilla de la casa.'):(en?'Tagged channels and the house schedule stop; previews and Good pins still show.':'Se paran los canales por etiqueta y la parrilla de la casa; las vistas previas y lo fijado en Good se siguen viendo.'))
+            :(en?'Hover a screen to see what it plays and its tag.':'Pasa el ratón por una pantalla para ver qué emite y su etiqueta.'))+(en?' Saved in this browser.':' Guardado en este navegador.')};
+    }
     // La programación en escena no es de Matrix: se cambia sin salir de la vista actual.
     if(a.scene){const scene=globalThis.XpaceScenePlaylists;if(!scene)return {ok:false,local:true,message:en?'Scene playlists are not ready. Reload the twin.':'Las playlists en escena no están listas. Recarga el gemelo.'};
       const on=scene.set(a.value===null?!scene.enabled:a.value);

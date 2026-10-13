@@ -16,3 +16,76 @@ body.xtanco-mudanza .matrix-dialog .matrix-furniture-layer,body.xtanco-mudanza .
   .matrix-furniture-selection{bottom:74px}
   .matrix-dialog .visual-surface-badge{max-width:48%;text-align:right}
 }
+
+/* ── Best · Hiperreal vivo (admira-xp/docs/hiperreal-vivo.md) ─────────────────────────────────────────────
+   Sombras de suelo renderizadas en Blender: una por pieza y giro, bajo todos los muebles y las personas.
+   --lift (0–1) la da furniture-lift.mjs: en el aire la sombra se abre, se aclara y se difumina. */
+.matrix-furniture-shadow{position:absolute;display:block;max-width:none;pointer-events:none;-webkit-user-select:none;user-select:none;opacity:calc(.62 - .2*var(--lift,0));filter:blur(calc(var(--lift,0)*4px));scale:calc(1 + .1*var(--lift,0));-webkit-mask-image:radial-gradient(closest-side,#000 58%,#0000 98%);mask-image:radial-gradient(closest-side,#000 58%,#0000 98%)}
+.matrix-furniture-shadow[hidden]{display:none}
+.matrix-furniture-item{touch-action:none;-webkit-tap-highlight-color:transparent}
+.matrix-furniture-item>:is(svg,img){transition:filter .16s ease}
+.matrix-furniture-item[data-wall="1"]>:is(svg,img){filter:drop-shadow(-2px 3px 3px #00000059)}
+/* La silueta recibe la luz: el filtro sigue el recorte real de la pieza, no su caja. */
+.matrix-furniture-item[data-lift=hover]>:is(svg,img){filter:brightness(1.08) drop-shadow(0 0 4px #fff3cfb3)}
+.matrix-furniture-item[data-lift=selected]>:is(svg,img){filter:brightness(1.05) drop-shadow(0 0 2px #ffe9a8) drop-shadow(0 0 9px #ffd45f99)}
+.matrix-furniture-item:is([data-lift=held],[data-lift=settling])>:is(svg,img){filter:brightness(1.06) drop-shadow(0 0 2px #fff3cf99);transition:none}
+.matrix-furniture-item[data-lift=blocking]>:is(svg,img){filter:saturate(.75) drop-shadow(0 0 3px #ff6a6a) drop-shadow(0 0 11px #ff5a5acc)}
+.matrix-furniture-item[data-lift=refused]{animation:furniture-refuse .34s ease}
+@keyframes furniture-refuse{20%{translate:-5px 0}45%{translate:5px 0}70%{translate:-3px 0}100%{translate:0 0}}
+.best-live-scene[data-lift-cursor=grab],.best-live-scene[data-lift-cursor=grab] .matrix-furniture-item{cursor:grab}
+.best-live-scene[data-lift-cursor=grabbing],.best-live-scene[data-lift-cursor=grabbing] *{cursor:grabbing!important}
+
+/* Pantallas: cada una es un lienzo sobre la apertura de su mueble. La regla global de <canvas> del gemelo 8-bit
+   (pixelado y sombra) no vale aquí. Apagada es transparente y deja ver el dibujo propio del mueble. */
+.matrix-furniture-screen{image-rendering:auto;filter:none;opacity:0;transition:opacity .45s ease;backface-visibility:hidden}
+.matrix-furniture-screen[data-lit="1"]{opacity:1}
+.matrix-furniture-screen.media-drop-over{opacity:1;outline:6px solid #78f3ff;outline-offset:-6px}
+/* Web en una pantalla (el quiosco o el canal del tótem): inerte, sobre la misma apertura; entra con un fundido. */
+.matrix-furniture-web{background:#06121a;opacity:0;transition:opacity .35s ease;backface-visibility:hidden}
+.matrix-furniture-web[data-ready="1"]{opacity:1}
+/* Resplandor: el propio contenido, muy reducido y desenfocado en el plano de la pantalla. El desenfoque va en el
+   envoltorio porque el lienzo hereda filtros de la página. */
+.matrix-screen-glow{opacity:0;transition:opacity .7s ease}
+.matrix-screen-glow[data-lit="1"]{opacity:.5}
+.matrix-screen-haze{position:absolute;left:-26%;top:-18%;width:152%;height:136%;filter:blur(30px) saturate(1.5);-webkit-mask-image:radial-gradient(closest-side,#000 45%,#0000 100%);mask-image:radial-gradient(closest-side,#000 45%,#0000 100%)}
+.matrix-screen-haze>canvas,.matrix-screen-pool>canvas{display:block;width:100%;height:100%;image-rendering:auto;filter:none}
+/* Luz que la pantalla echa sobre la tarima, un disco en el plano del suelo delante del mueble. */
+.matrix-screen-pool{position:absolute;width:100px;height:100px;border-radius:50%;overflow:hidden;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity .7s ease;filter:blur(10px) saturate(1.6);-webkit-mask-image:radial-gradient(closest-side,#000 8%,#0000 100%);mask-image:radial-gradient(closest-side,#000 8%,#0000 100%)}
+.matrix-screen-pool[data-lit="1"]{opacity:.4}
+.matrix-screen-pool[hidden]{display:none}
+.best-live-scene.screens-dark :is(.matrix-screen-glow,.matrix-screen-pool){opacity:0!important}
+
+/* Suelo mientras se lleva una pieza: rejilla tenue alrededor, huella de salida y huella de destino. */
+.furniture-lift-floor,.furniture-lift-xray{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;opacity:0;transition:opacity .22s ease}
+.furniture-lift-floor{z-index:4}.furniture-lift-xray{z-index:1890}
+.furniture-lift-floor.is-active{opacity:1}.furniture-lift-xray.is-active{opacity:.5}
+.furniture-lift-floor :is(path,polygon),.furniture-lift-xray polygon{vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.lift-grid{fill:none;stroke:#fff6dc;stroke-width:1;stroke-opacity:.26}
+.lift-origin{fill:none;stroke:#fff6dc;stroke-width:1.5;stroke-opacity:.55;stroke-dasharray:5 5}
+.lift-ghost{fill:#7dffb84d;stroke:#9dffcf;stroke-width:2.5}
+.lift-ghost[data-valid="0"]{fill:#ff5a5a4d;stroke:#ff8f8f}
+.furniture-lift-xray .lift-ghost{fill:none;stroke-width:1.5;stroke-dasharray:6 5}
+.lift-ripple{fill:none;stroke:#fff6dc;stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:50% 50%}
+.furniture-lift-floor .lift-ripple.is-running{animation:furniture-ripple .52s ease-out}
+/* La onda se pinta aunque la capa ya se esté apagando tras soltar. */
+.furniture-lift-floor:has(.lift-ripple.is-running){opacity:1}
+.furniture-lift-floor:not(.is-active) :is(.lift-grid,.lift-origin,.lift-ghost){opacity:0}
+@keyframes furniture-ripple{0%{opacity:.85;transform:scale(.96)}100%{opacity:0;transform:scale(1.35)}}
+
+/* Fichas «En emisión» de la sala (best-onair.mjs): mismas fichas que Matrix, por encima de muebles y lluvia. */
+.best-onair-layer{position:absolute;inset:0;z-index:2060;overflow:hidden;pointer-events:none}
+.lift-grid,.lift-origin,.lift-ghost{transition:opacity .2s ease,fill .12s ease,stroke .12s ease}
+/* Barra de la pieza elegida y aviso breve: cristal oscuro, como las fichas «En emisión». */
+.furniture-lift-bar{position:absolute;left:0;top:0;z-index:2070;display:flex;align-items:center;gap:6px;box-sizing:border-box;max-width:calc(100% - 16px);padding:5px 6px 5px 12px;border:1px solid #ffe9a84d;border-radius:999px;background:#0b1719e0;-webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3);color:#f3ead0;font:600 12px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 10px 28px #0008;white-space:nowrap;pointer-events:auto}
+.furniture-lift-bar[hidden]{display:none}
+.lift-bar-name{overflow:hidden;text-overflow:ellipsis;padding-right:4px}
+.lift-bar-button{appearance:none;border:1px solid #ffe9a859;border-radius:999px;background:#ffe9a81f;color:#fff6dc;font:600 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:6px 10px;cursor:pointer}
+.lift-bar-button:hover{background:#ffe9a83d}.lift-bar-button:focus-visible{outline:2px solid #ffe9a8;outline-offset:2px}
+.lift-bar-button[hidden]{display:none}
+.furniture-lift-toast{position:absolute;left:50%;top:14px;z-index:2070;margin:0;max-width:calc(100% - 28px);padding:8px 14px;border:1px solid #9dffcf4d;border-radius:999px;background:#06191ce6;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#eafff6;font:600 12px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 10px 28px #0008;pointer-events:none;opacity:0;transform:translate(-50%,-8px);transition:opacity .2s ease,transform .2s ease;text-align:center}
+.furniture-lift-toast.is-visible{opacity:1;transform:translate(-50%,0)}
+.furniture-lift-toast[data-tone=warn]{border-color:#ff8f8f80;color:#ffe2e2}
+/* Mudanza vacía la sala: ni huellas ni barra. */
+body.xtanco-mudanza .matrix-dialog :is(.furniture-lift-floor,.furniture-lift-xray,.furniture-lift-bar){visibility:hidden}
+@media(max-width:700px){.furniture-lift-bar{font-size:11px;padding:4px 5px 4px 10px}.furniture-lift-toast{font-size:11px;top:8px}}
+@media(prefers-reduced-motion:reduce){.matrix-furniture-screen,.matrix-screen-glow,.matrix-screen-pool,.furniture-lift-floor,.furniture-lift-xray,.furniture-lift-toast,.matrix-furniture-item>:is(svg,img){transition:none}.matrix-furniture-item[data-lift=refused],.furniture-lift-floor .lift-ripple.is-running{animation:none}}

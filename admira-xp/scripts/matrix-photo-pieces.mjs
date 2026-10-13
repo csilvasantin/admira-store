@@ -8,10 +8,10 @@ export const MATRIX_PHOTO_PIECES={
   counter:piece(1,[1,2],[181,590],[.112,.576],[[[88,449],[211,407],[239,382],[281,376],[291,398],[332,420],[332,531],[203,594],[137,583],[88,566]]]),
   shelves:piece(2,[4,1],[689,430],[.421,.435],[[[574,175],[651,153],[680,127],[748,130],[769,150],[797,172],[793,417],[750,443],[684,418],[573,378]]]),
   wineRack:piece(3,[6,1],[833,463],[.515,.464],[[[788,218],[878,250],[884,447],[834,465],[777,436],[781,270]]]),
-  lottery:piece(4,[7,2],[961,547],[.601,.528],[[[882,365],[904,329],[953,316],[982,356],[1026,367],[1042,403],[1033,552],[969,552],[884,499]]]),
+  lottery:piece(4,[7,2],[961,547],[.601,.528],[[[882,365],[904,329],[953,316],[982,356],[998,345],[1035,360],[1042,403],[1033,552],[969,552],[884,499]]]),
   vending:piece(5,[9,2],[1101,581],[.677,.561],[[[1036,343],[1104,320],[1167,348],[1165,554],[1102,585],[1030,550],[1032,402]]]),
   magazines:piece(6,[2,3],[325,726],[.210,.673],[[[277,493],[421,535],[435,583],[417,638],[416,699],[363,731],[211,659],[235,572]]]),
-  manager:piece(7,[5,4],[498,760],[.320,.723],[[[482,556],[533,570],[532,602],[593,624],[595,646],[584,659],[586,741],[557,757],[545,689],[532,686],[531,743],[496,777],[456,772],[414,749],[413,706],[417,639],[437,596],[478,600]]]),
+  manager:piece(7,[5,4],[498,760],[.320,.723],[[[482,556],[544,578],[538,612],[593,624],[595,646],[584,659],[586,741],[557,757],[545,689],[532,686],[531,743],[496,777],[456,772],[414,749],[413,706],[417,639],[437,596],[478,600]]]),
   plant1:piece(9,[0,1],[521,371],[.326,.369],[[[495,141],[538,149],[563,171],[575,207],[568,260],[555,292],[565,326],[548,373],[500,374],[480,345],[475,295],[477,215]]]),
   plant3:piece(9,[0,5],[69,538],[.045,.521],[[[29,401],[63,385],[85,390],[111,408],[113,436],[88,450],[88,527],[77,542],[47,533],[36,488]]]),
   floorLamp:piece(10,[10,5],[361,442],[.225,.416],[[[317,167],[401,164],[402,444],[319,444]]]),
@@ -49,6 +49,20 @@ for(const [id,ground] of Object.entries(GROUND_SUPPORTS))MATRIX_PHOTO_PIECES[id]
 // an inventory mirror then composes with this correction rather than replacing it.
 MATRIX_PHOTO_PIECES.shelves.mirrorX=true;
 
+// Display apertures measured on the same atlas: top-left, top-right, bottom-right
+// and bottom-left of the picture as a visitor reads it, plus the physical
+// width / height of the panel. Each one is a virtual player of the shop
+// (xtanco-players.mjs). They are cut lines for presentation, never geometry.
+const SCREENS={
+  lottery:{quad:[[1004.1,354.4],[1029.8,364.6],[1024.2,390],[999,380]],aspect:1.3},
+  manager:{quad:[[491.8,566.5],[536.7,583.5],[531.8,615.8],[487.1,599.3]],aspect:16/10},
+  led:{quad:[[410,129],[475,106],[475,264],[410,286]],aspect:9/16},
+  metahuman:{quad:[[692,392],[755,414],[755,565],[690,540]],aspect:9/16},
+  turnKiosk:{quad:[[1082,701.1],[1115.6,713.3],[1103.9,781.7],[1071.7,767.2]],aspect:2/3}
+};
+const screen=value=>Object.freeze({...value,quad:Object.freeze(value.quad.map(point=>Object.freeze(point)))});
+for(const [id,value] of Object.entries(SCREENS))MATRIX_PHOTO_PIECES[id].screens=Object.freeze([screen(value)]);
+
 // Ceiling luminaires and printed wall art belong to the architectural backdrop,
 // rather than to an invented inventory instance. /mudanza hides these fixtures.
 export const MATRIX_ARCHITECTURE_DETAILS=[
@@ -56,8 +70,11 @@ export const MATRIX_ARCHITECTURE_DETAILS=[
   piece(null,null,[623,160],[.395,.159],[[[580,42],[668,44],[668,163],[580,164]]],{wall:true}),
   piece(null,null,[960,291],[.590,.291],[[[914,179],[1007,178],[1007,294],[913,294]]],{wall:true}),
   piece(null,null,[1289,434],[.780,.421],[[[1241,313],[1336,313],[1336,440],[1240,440]]],{wall:true}),
-  piece(null,null,[204,400],[.127,.391],[[[154,228],[250,193],[252,367],[160,405]]],{wall:true}),
-  piece(null,null,[1406,576],[.871,.550],[[[1350,385],[1455,424],[1461,578],[1351,540]]],{wall:true})
+  // The two framed prints are the wall players of Good (ds1, ds2): while one
+  // is on air its picture covers the print, and the print returns when it stops.
+  // The left one hangs between the door and the floor lamp, clear of both.
+  piece(null,null,[204,400],[.175,.360],[[[154,228],[250,193],[252,367],[160,405]]],{wall:true,screens:Object.freeze([screen({id:'ds1',quad:[[172.7,235.6],[237.8,213.8],[237.8,368.4],[172.7,391.1]],aspect:9/16})])}),
+  piece(null,null,[1406,576],[.871,.550],[[[1350,385],[1455,424],[1461,578],[1351,540]]],{wall:true,screens:Object.freeze([screen({id:'ds2',quad:[[1370.6,401.1],[1450.6,435.6],[1450.6,573.5],[1370.6,541.1]],aspect:4/5})])})
 ];
 
 export function photoPieceFor(item,number){

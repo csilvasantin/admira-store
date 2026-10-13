@@ -2707,6 +2707,18 @@ function dsPinSurfaceFromUrl(surfaceId,kind,url,name){
 // DOOH emiten la parrilla de admira.tv por su tag reutilizando el pin remoto.
 try{ window.__dsPinSurfaceFromUrl=dsPinSurfaceFromUrl; }catch(e){}
 try{ window.__dsPinSurfaceFromUrl=dsPinSurfaceFromUrl; }catch(e){}
+// Best · Hiperreal emite en sus mismas pantallas lo que cada superficie tiene fijado aquí (scripts/xtanco-players.mjs).
+// Sólo lectura: devuelve el <img>/<video> que ya reproduce Good, nunca un iframe ni un pin web.
+try{ window.__xtancoSurfaceMedia=function(id){
+  const pin=DS_PIN[id], m=DS_SURFACE_MEDIA[id];
+  if(!pin||!m||m.kind!==pin.kind||(pin.kind!=='image'&&pin.kind!=='video')) return null;
+  return {kind:m.kind,title:String(pin.name||''),remote:!!pin.remote,element:m.kind==='image'?m.img:m.video};
+}; }catch(e){}
+// Y el pin web (quiosco de pedido, canal admira.tv, avatar): Best lo proyecta sobre su propio tótem.
+try{ window.__xtancoSurfaceWeb=function(id){
+  const pin=DS_PIN[id];
+  return pin&&pin.kind==='web'&&/^https:\/\//i.test(String(pin.src||''))?{src:String(pin.src),title:String(pin.name||''),kiosk:!!pin.kiosk}:null;
+}; }catch(e){}
 // Master mute global: cuando esta activo, silencia bgMusic, dsVideoEl, todos los
 // m.video pineados y los iframes de AdmiraTube. Se controla con /audio mute.
 let dsMasterMute=false;
@@ -21181,7 +21193,8 @@ function positionTotemAvatar(){
   const pin=(typeof DS_PIN==='object'&&DS_PIN)?DS_PIN['metahuman']:null;
   const q=(typeof DS_SURFACE_QUADS==='object'&&DS_SURFACE_QUADS)?DS_SURFACE_QUADS.metahuman:null;
   // Mostrar siempre que haya pin web + quad del tótem (vale en juego Y en demo).
-  const on=pin&&pin.kind==='web'&&pin.src&&q&&inventoryPresentationLayout().some(i=>i.type==='metahuman');
+  // En Best · Hiperreal el tótem lleva su propia copia en perspectiva (matrix-furniture.mjs): aquí se aparca.
+  const on=pin&&pin.kind==='web'&&pin.src&&q&&!window.XpaceHiperreal&&inventoryPresentationLayout().some(i=>i.type==='metahuman');
   if(!on){ totemSwapSrc(el,null); if(glow) glow.style.display='none'; if(chip) chip.style.display='none'; return; }
   try{
     const canvasRect=cv.getBoundingClientRect();
@@ -27815,6 +27828,22 @@ window.__xtancoFurnitureEditor={
     this.save(next,ledger);
     return {ok:true,...result.position};
   },
+  // Best · Hiperreal lifts a piece and sets it down elsewhere: only the landing is validated (no floor path).
+  async place({roomId,id,from,col,row,rot,signal}){
+    const {validateFurniturePlacement,sameFurniturePose}=await import('./scripts/distribuit.mjs?v=hiperreal-vivo-1');
+    if(signal?.aborted)throw Error('cancelled');
+    const scene=this.read(),item=scene.layout.find(value=>String(value.id)===String(id));
+    if(!scene.active||scene.roomId!==roomId)throw Error('room');
+    if(!item||!from||!sameFurniturePose(item,from))throw Error('changed');
+    const result=validateFurniturePlacement(scene,id,{col,row,rot},{from});
+    if(!result.ok)throw Error(result.reason||'invalid');
+    const store=window.XpaceInventory,space=inventorySpace();
+    const next=(store?.retained(space,shopLayout)||shopLayout).map(value=>String(value.id)===String(id)?{...value,...result.position}:value);
+    const ledger=store?cloneLayoutData(store.removals(space)):null;
+    if(ledger?.added?.[id])ledger.added[id]=cloneLayoutData(next.find(value=>String(value.id)===String(id)));
+    this.save(next,ledger);
+    return {ok:true,...result.position};
+  },
   save(next,ledger=null,visibility=null){
     const roomId=getLayoutStoragePrefix(),space=inventorySpace(),store=window.XpaceInventory;
     const keys=getLayoutSlotKeys(roomId),writes=[[keys.current,JSON.stringify(next)],[keys.backup,JSON.stringify(next)],[keys.schema,LAYOUT_SCHEMA_VERSION]];
@@ -32073,7 +32102,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:convertir|convert|ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement|emision|emisión|enemision|onair)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=pantallas-vivas-1');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=hiperreal-vivo-1');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -36531,7 +36560,7 @@ window.xtAPI = (function(){
 <link rel="stylesheet" href="../inventario/shelf-product-panel.css?v=shelf-products-1">
 <link rel="stylesheet" href="scripts/distribuit.css?v=check-passage-20261004-1">
 <link rel="stylesheet" href="scripts/best-preview.css?v=best-people-1">
-<link rel="stylesheet" href="scripts/matrix-furniture.css?v=matrix-furniture-1">
+<link rel="stylesheet" href="scripts/matrix-furniture.css?v=hiperreal-vivo-1">
 <link rel="stylesheet" href="scripts/visitor-matrix.css?v=walk-1">
 <link rel="stylesheet" href="scripts/tier-hud.css?v=expert-hud-1">
 <script type="module">
@@ -36540,8 +36569,8 @@ const installShelfProducts=()=>mountShelfProductsRuntime({acquireSurface:id=>dsE
 installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
-<script type="module" src="scripts/scene-playlists.mjs?v=escena-1"></script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=pantallas-vivas-1"></script>
+<script type="module" src="scripts/scene-playlists.mjs?v=hiperreal-vivo-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=hiperreal-vivo-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <script type="module" src="scripts/dock-scroll-guard.mjs?v=hueco-360-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">

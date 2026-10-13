@@ -12,10 +12,17 @@ Cada mueble de Matrix es seleccionable por ratón o teclado y muestra su número
 
 - `avenida-furniture-atlas-v1.png`: atlas fotográfico RGBA, 1586 × 992. Piezas originales conservadas sobre transparencia. `matrix-photo-pieces.mjs` define recortes SVG independientes; el archivo fuente no se modifica al añadir o quitar muebles.
 - `catalog/`: 43 modelos Blender renderizados desde cuatro orientaciones reales, 172 PNG transparentes de 384 × 384. Se carga únicamente la orientación utilizada. Véase su README para reproducción y validación.
-- Las piezas de la escena original usan sus recortes fotográficos en orientación inicial. El resto del catálogo y los giros usan renders Blender; el acabado entre ambos puede diferir.
+- `hiperreal/`: los mismos 43 modelos en su versión Hiperreal, renderizados con Cycles desde las cuatro orientaciones: 172 imágenes WebP con alfa de 1024 × 1024 y, aparte, 172 sombras de suelo de 512 × 512. Su `manifest.json` añade a cada vista el ancla, la escala, la sombra y las esquinas de cada pantalla que mira a cámara. Es un refinamiento opcional: si falta, la vista usa `catalog/` sin sombras. Reproducción: `blender --background --factory-startup --python admira-xp/tools/xpacios-blender/render_hiperreal_sprites.py -- --size 1024 --samples 64 --shadow-size 512 --shadow-samples 32`. Guía: `../../docs/hiperreal-vivo.md`.
+- Las piezas de la escena original usan sus recortes fotográficos en orientación inicial. El resto del catálogo y los giros usan renders Blender (los de `hiperreal/` cuando están); el acabado entre ambos puede diferir.
 - Suelo y paredes proceden de `../best-xtanco-avenida-admira-mudanza-20260915.png`. Lámparas de techo y cuadros impresos permanecen como decoración arquitectónica; no se inventan registros de inventario para ellos.
 
 `matrix-floor.mjs` calibra las cuatro esquinas de esta sala. Muebles y visitantes utilizan esa misma proyección del layout actual. La altura de los modelos Pixeria respeta el valor de la escena. No se modifica la simulación ni la geometría del inventario para componer la imagen.
+
+## Pantallas, sombras y muebles que se levantan
+
+Cada pantalla de la sala es un player virtual: `matrix-photo-pieces.mjs` registra `screens` (las cuatro esquinas de la pantalla sobre el lienzo de diseño y su proporción física) para las piezas fotográficas y para los dos cuadros de pared, que son las pantallas de pared de Good (`ds1`, `ds2`); los renders de `hiperreal/` traen las suyas medidas desde el modelo. `matrix-furniture.mjs` pone un lienzo sobre cada apertura, un resplandor detrás y, en los muebles de suelo, un disco de luz delante. Qué emite cada una lo decide `xtanco-players.mjs`.
+
+Las sombras de `hiperreal/` se pintan bajo todos los muebles y personas; las alfombras, bajo las sombras. Una pieza se puede coger, llevar por el aire, girar y posar (`furniture-lift.mjs`): mientras está en la mano se dibuja sobre toda la sala y su sombra se queda en el suelo. La pieza bajo el puntero se elige por sus píxeles opacos (recorte de la fotografía o alfa del render), nunca por su caja. Guía completa: `../../docs/hiperreal-vivo.md`.
 
 ## Apoyos y oclusión
 
@@ -25,7 +32,7 @@ La estantería tiene una corrección declarativa de espejo porque el eje largo d
 
 La profundidad de un sólido se ordena por el borde frontal de su huella proyectada. Una persona cuyos pies están detrás queda ocluida por el mueble; quienes pasan por delante se dibujan por encima. La navegación usa la huella del inventario y el margen corporal, incluso mientras una imagen está cargando. El DOM expone `data-furniture-floor-zone` y `data-furniture-depth-y` para comprobar la composición.
 
-Pruebas: `node --test admira-xp/scripts/matrix-furniture.test.mjs admira-xp/scripts/best-live-people.test.mjs`. Se reconstruyen las coordenadas de apoyo desde el recorte SVG y su transformación CSS, comprobando contención con desplazamientos, escalas y espejos. Calibración y movimiento: misión Yokup #224 (`DCL-f148d38193c01721ee69b785`).
+Pruebas: `node --test admira-xp/scripts/matrix-furniture.test.mjs admira-xp/scripts/best-live-people.test.mjs admira-xp/scripts/furniture-lift.test.mjs admira-xp/scripts/xtanco-players.test.mjs`. Se reconstruyen las coordenadas de apoyo desde el recorte SVG y su transformación CSS, comprobando contención con desplazamientos, escalas y espejos. Calibración y movimiento: misión Yokup #224 (`DCL-f148d38193c01721ee69b785`).
 
 ## Procedencia del atlas
 

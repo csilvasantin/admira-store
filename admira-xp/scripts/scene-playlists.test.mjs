@@ -203,5 +203,5 @@ test('the three scenes load the schedule once and keep the documented wiring',()
  const panorama=read('./matrix-panorama.mjs');
  for(const name of ['screen-display.mjs','device-layout.mjs','starbucks-demo.mjs','starbucks-ipad.mjs','matrix-remote.mjs']){const spec=module.match(new RegExp("'\\./"+name.replace('.','\\.')+"\\?v=[^']+'"))?.[0];assert.ok(spec&&panorama.includes(spec),name);}
  assert.doesNotMatch(module,/setScreenDisplayMode|localStorage\.setItem\(DEVICE|method:\s*'(?:POST|PUT|DELETE)'/,'read-only on layout, mode and MCP');
- assert.match(module,/crossOrigin='anonymous'/);assert.match(module,/pagehide',\(\)=>runtime\.rest\(\)/);
+ assert.match(read('./playlist-painter.mjs'),/crossOrigin='anonymous'/);assert.match(module,/pagehide',\(\)=>runtime\.rest\(\)/);
 });
