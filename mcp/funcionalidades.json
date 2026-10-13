@@ -2850,7 +2850,7 @@
       "players in other verticals",
       "touching the totem page inside the room (double-click opens the existing touch view)"
     ],
-    "observed": "In Good the tagged channel downloads its content but never pins it (the pin arrives as a blob: address and is rejected); this view plays the channel by itself.",
+    "observed": "Fixed 13 Oct 2026: Good pins its tagged channel again (it used to download it and reject its own blob: address). On the screens shared with Good this view shows the very video Good plays, at Good's pace (one item every 10 s); the other players run their channel by themselves. Good only pins a blob: recorded in window.__dsOwnBlobs; a foreign blob: is still rejected. Nothing new leaves the tab: the storefront and totem mirrors (/signage/now) do not reflect the tagged channel.",
     "es": "Best · Hiperreal · Xtanco: cada pantalla de la sala es un player virtual con su etiqueta y los muebles se levantan, se llevan, se giran y se posan. Players de solo lectura y locales; mover guarda por el puente de Distribuir.",
     "en": "Best · Hiperreal · Xtanco: every screen in the room is a virtual player with its tag, and furniture is lifted, carried, turned and set down. Players are read-only and local; moving saves through the Distribuir bridge."
   },
