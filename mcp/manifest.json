@@ -3079,6 +3079,23 @@
         "en": "H · Hide interface"
       },
       "modalDialogs": "temporarily suspend native dialog:modal with cleanup suppressed; preserve same nodes, values, scroll, returnValue, modal order and focus; scene remains movable while UI hidden"
+    },
+    "preview5834": {
+      "status": "branch-preview; production unchanged",
+      "studio": "http://127.0.0.1:8481/campanas/next-step/?lang=es",
+      "twin": "http://127.0.0.1:8482/xpacios/sneakerstore/?campaign=next-step&view=jordan&lang=es",
+      "actions": [
+        "start",
+        "pause",
+        "resume",
+        "restart",
+        "status",
+        "stop"
+      ],
+      "restart": "zero and play",
+      "clockScope": "one per viewer session; no cross-tab sync",
+      "unknownAction": "no mutation",
+      "draftWrites": false
     }
   },
   "creator_demo_contract": {
