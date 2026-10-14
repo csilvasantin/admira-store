@@ -1,4 +1,4 @@
-// /redistribucion (FLT-102063): desde admira.store se abre en admira.app el plano en planta y
+// /redistribucion (FLT-102063): desde admira.store se abre en admira.biz el plano en planta y
 // alzado del Xpacio, en modo obras. El Xpacio sale del argumento, del ?loc= del gemelo o, si
 // solo hay uno con plano, de ese; uno sin plano no navega.
 import test from 'node:test';
@@ -11,9 +11,9 @@ import {createRequire} from 'node:module';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(import.meta.url);
 const SHELL = require(join(root, 'assets/xpace-shell.js'));
-const URL_PG103 = 'https://www.admira.app/plano.html?locationId=alsea-sbux-021&modo=obra&lang=';
+const URL_PG103 = 'https://www.admira.biz/plano.html?locationId=alsea-sbux-021&modo=obra&lang=';
 
-test('planoTarget resolves aliases, accents and the twin loc to the admira.app plan', () => {
+test('planoTarget resolves aliases, accents and the twin loc to the admira.biz plan', () => {
   for (const args of ['starbucks', 'Starbucks Paseo de Gracia', 'pg103', 'alsea-sbux-021', 'xpacio=paseo de gracia', 'PASEO DE GRÀCIA 103']) {
     const r = SHELL.planoTarget(args, '', 'es');
     assert.equal(r.ok, true, args);
