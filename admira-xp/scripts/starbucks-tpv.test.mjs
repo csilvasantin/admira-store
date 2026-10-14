@@ -7,7 +7,8 @@ import {validateMapping,quadTransform} from './matrix-mapping.mjs';
 import {screenSlice} from './screen-display.mjs';
 test('published POS contracts match runtime; separate local advert on a valid portrait quad',async()=>{
  for(const [name,value] of [['starbucks-tpv-playlist.json',playlist],['starbucks-tpv-mapping.json',mapping]])assert.deepEqual(JSON.parse(await readFile(new URL('../'+name,import.meta.url))),value);
- assert.deepEqual(playlist.tracks.map(t=>t.stockNumber),[1315,1317]);
+ // #5840: el vertical ES/EN de admira-studio #5839 va delante de los dos anuncios locales de siempre.
+ assert.deepEqual(playlist.tracks.map(t=>t.stockNumber??t.id),['sbux-5839-tu-momento-es-1080x1920','sbux-5839-your-moment-en-1080x1920',1315,1317]);assert.ok(playlist.tracks.slice(0,2).every(t=>t.orientation==='portrait'));
  const [p]=validateMapping(mapping).players;assert.equal(p.playerId,'');assert.equal(new URL(p.url).protocol,'https:');assert.equal(p.width/p.height,360/640);assert.ok(quadTransform(p.corners.map(c=>({x:c.yaw,y:c.pitch}))));
  for(const mode of ['individual','groups','total'])assert.equal(screenSlice(p.id,mode),null);
 });

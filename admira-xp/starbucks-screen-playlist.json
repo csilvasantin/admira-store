@@ -58,6 +58,28 @@
   },
   "tracks": [
     {
+      "id": "sbux-5839-tu-momento-es-1080x1920",
+      "title": "Starbucks · Tu momento · ES · vertical",
+      "url": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-tu-momento-es-1080x1920.mp4",
+      "poster": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-tu-momento-es-1080x1920.png",
+      "duration": 10,
+      "mimeType": "video/mp4",
+      "orientation": "portrait",
+      "language": "es",
+      "source": "admira-studio#5839"
+    },
+    {
+      "id": "sbux-5839-your-moment-en-1080x1920",
+      "title": "Starbucks · Your moment · EN · vertical",
+      "url": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-your-moment-en-1080x1920.mp4",
+      "poster": "https://www.admira.store/admira-xp/media/starbucks-5839/starbucks-your-moment-en-1080x1920.png",
+      "duration": 10,
+      "mimeType": "video/mp4",
+      "orientation": "portrait",
+      "language": "en",
+      "source": "admira-studio#5839"
+    },
+    {
       "id": "1790708669463-h7bbpf",
       "stockId": "1790708669463-h7bbpf",
       "stockNumber": 1310,

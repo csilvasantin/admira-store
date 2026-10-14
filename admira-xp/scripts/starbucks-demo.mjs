@@ -135,8 +135,21 @@ export const STARBUCKS_STOCK={
     "mimeType": "video/mp4"
   }
 };
+// #5840/#5843 · campaña Starbucks marca blanca GOOD ES/EN de Oráculo (admira-studio #5839): 10 s, H.264 25 fps, sin audio
+// (suena el hilo musical). Aún no está en el Stock: se sirve desde el propio sitio, con el SHA-256 de su delivery.json.
+const SBUX_5839='https://www.admira.store/admira-xp/media/starbucks-5839/';
+const sbux5839=(id,file,title,orientation,language)=>({id,title,url:SBUX_5839+file+'.mp4',poster:SBUX_5839+file+'.png',duration:10,mimeType:'video/mp4',orientation,language,source:'admira-studio#5839'});
+export const STARBUCKS_5839={
+  "es-vertical":sbux5839("sbux-5839-tu-momento-es-1080x1920","starbucks-tu-momento-es-1080x1920","Starbucks · Tu momento · ES · vertical","portrait","es"),
+  "en-vertical":sbux5839("sbux-5839-your-moment-en-1080x1920","starbucks-your-moment-en-1080x1920","Starbucks · Your moment · EN · vertical","portrait","en"),
+  "es-horizontal":sbux5839("sbux-5839-tu-momento-es-1920x1080","starbucks-tu-momento-es-1920x1080","Starbucks · Tu momento · ES · horizontal","landscape","es"),
+  "en-horizontal":sbux5839("sbux-5839-your-moment-en-1920x1080","starbucks-your-moment-en-1920x1080","Starbucks · Your moment · EN · horizontal","landscape","en")
+};
+const SBUX_5839_VERTICAL=[STARBUCKS_5839["es-vertical"],STARBUCKS_5839["en-vertical"]];
 export const DEMO_MUSIC=[1308,1309].map(n=>STARBUCKS_STOCK[n]);
-export const DEMO_WALL=[1310,1312,1314].map(n=>STARBUCKS_STOCK[n]);
+// Cada formato en su pantalla: el vertical abre el muro (P1-P6, 9:16) y el TPV (9:16); el horizontal va al iPad (único apaisado).
+export const DEMO_WALL=[...SBUX_5839_VERTICAL,...[1310,1312,1314].map(n=>STARBUCKS_STOCK[n])];
 export const DEMO_CHRISTMAS=[{...STARBUCKS_STOCK[1313],condition:"/navidad"}];
-export const DEMO_TPV=[1315,1317].map(n=>STARBUCKS_STOCK[n]);
+export const DEMO_TPV=[...SBUX_5839_VERTICAL,...[1315,1317].map(n=>STARBUCKS_STOCK[n])];
+export const DEMO_IPAD=[STARBUCKS_5839["es-horizontal"],STARBUCKS_5839["en-horizontal"]];
 export const DEMO_IA=[1316,1318,1319,1320,1321,1322].map((n,i)=>({...STARBUCKS_STOCK[n],screen:i+1,condition:"/sincro IA"}));
