@@ -20,7 +20,19 @@ test('planoTarget resolves aliases, accents and the twin loc to the admira.biz p
     assert.equal(r.url, URL_PG103 + 'es', args);
   }
   assert.equal(SHELL.planoTarget('', '?autostart=xtanco&visual=matrix&loc=alsea-sbux-021', 'en').url, URL_PG103 + 'en');
-  assert.equal(SHELL.planoTarget('', '', 'es').id, 'alsea-sbux-021', 'a single plan is the default');
+});
+
+// Laboratorio Gran de Gràcia 51 (DCL-6ae9d5b0e2d48ee2fd9c7b19): segundo Xpacio con plano. Con dos, sin
+// argumento ni ?loc= ya no hay uno por defecto, salvo el que declara la página (XPACE_SHELL.plano).
+test('the Gran de Gràcia 51 lab has a plan; with two plans the page plan or an argument decides', () => {
+  const URL_LAB = 'https://www.admira.biz/plano.html?locationId=lab-gran-de-gracia-51&modo=obra&lang=';
+  for (const args of ['laboratorio', 'Gran de Gràcia 51', 'gdg51', 'lab-gran-de-gracia-51']) assert.equal(SHELL.planoTarget(args, '', 'es').url, URL_LAB + 'es', args);
+  assert.equal(SHELL.planoTarget('', '', 'en', 'lab-gran-de-gracia-51').url, URL_LAB + 'en', 'the page plan is the default');
+  assert.equal(SHELL.planoTarget('starbucks', '', 'es', 'lab-gran-de-gracia-51').id, 'alsea-sbux-021', 'an argument beats the page plan');
+  assert.equal(SHELL.planoTarget('', '?loc=alsea-sbux-021', 'es', 'lab-gran-de-gracia-51').id, 'alsea-sbux-021', 'the twin ?loc= beats the page plan');
+  const none = SHELL.planoTarget('', '', 'es');
+  assert.equal(none.ok, false, 'two plans: no implicit default');
+  assert.match(none.list, /Starbucks Paseo de Gracia 103, Laboratorio Gran de Gràcia 51/);
 });
 
 test('an Xpacio without a plan does not navigate and lists the ones that have one', () => {
@@ -34,5 +46,5 @@ test('an Xpacio without a plan does not navigate and lists the ones that have on
 test('the shell registers /redistribucion with the accented alias the suite engine needs', () => {
   const src = readFileSync(join(root, 'assets/xpace-shell.js'), 'utf8');
   assert.match(src, /id: 'redistribucion',\s*aliases: \['redistribución', 'redistribuir', 'plano', 'obras'\]/);
-  assert.match(src, /planoTarget\(args, root\.location\.search, lang\(\)\)/);
+  assert.match(src, /planoTarget\(args, root\.location\.search, lang\(\), cfg && cfg\.plano\)/);
 });

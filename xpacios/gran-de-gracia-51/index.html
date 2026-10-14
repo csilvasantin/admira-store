@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="admiranext-version" content="v.14.10.2026.r2.10:54">
+<title>Laboratorio Gran de Gràcia 51 · gemelo 3D · XpaceOS</title>
+<meta name="description" content="Gemelo 3D del laboratorio AdmiraNeXT de Gran de Gràcia 51: sala, mobiliario, siete pantallas a escala con su código ITIL, players y webcam, en órbita, planta y alzado por pared. Levantamiento por cámara, medidas por confirmar con metro.">
+<meta name="theme-color" content="#0f1416">
+<link rel="canonical" href="https://www.admira.store/xpacios/gran-de-gracia-51/">
+<link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
+<link rel="stylesheet" href="./gemelo.css?v=gdg51-1">
+<script>window.XPACE_SHELL={section:{es:'Xpacio · Gran de Gràcia 51',en:'Xpace · Gran de Gràcia 51'},plano:'lab-gran-de-gracia-51',
+options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},
+{href:'https://www.admira.biz/plano.html?locationId=lab-gran-de-gracia-51',es:'Plano 2D y obras · admira.biz',en:'2D plan and works · admira.biz',newTab:true},
+{href:'https://admira.app/retailer#itil',es:'Inventario ITIL en Yokup',en:'ITIL inventory in Yokup',newTab:true},
+{href:'https://www.admira.studio/adaptaciones/campanas/starbucks-six.json',es:'Instalación starbucks-six · admira.studio',en:'starbucks-six installation · admira.studio',newTab:true},
+{href:'https://admira.tv/',es:'admira.tv',en:'admira.tv',newTab:true}],
+advanced:[{id:'gdg-orbital',es:'Vista · órbita',en:'View · orbit'},{id:'gdg-puerta',es:'Vista · desde la puerta',en:'View · from the door'},{id:'gdg-webcam',es:'Vista · webcam',en:'View · webcam'},{id:'gdg-planta',es:'Vista · planta',en:'View · plan'},{id:'gdg-alzado-f',es:'Alzado · pared F (puesto de Carlos)',en:'Elevation · wall F (Carlos’s desk)'},{id:'gdg-alzado-i',es:'Alzado · pared I (mesa larga)',en:'Elevation · wall I (long desk)'},{id:'gdg-inventario',es:'Inventario ITIL',en:'ITIL inventory'},{id:'gdg-etiquetas',es:'Etiquetas sí / no',en:'Labels on / off'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261007-native-demo-control-2">
+<script defer src="/assets/xpace-shell.js?v=20261014-gdg51-1"></script>
+<script type="module" src="./gemelo.mjs?v=gdg51-1"></script>
+</head>
+<body>
+<header data-shell-replace><a href="/xpacios/" data-shell-slot="options">Todos los Xpacios</a></header>
+<main id="gemelo" aria-label="Gemelo 3D del laboratorio">
+  <canvas id="gemelo-canvas" tabindex="0" aria-label="Laboratorio Gran de Gràcia 51 en 3D · arrastra para girar y rueda para acercar"></canvas>
+  <div id="etiquetas" aria-label="Etiquetas ITIL"></div>
+  <section class="ficha-xpacio" aria-labelledby="xp-nombre">
+    <p class="eyebrow">XPACIO · LABORATORIO · GEMELO 3D</p>
+    <h1 id="xp-nombre">Laboratorio Gran de Gràcia 51</h1>
+    <p id="xp-direccion">Carrer Gran de Gràcia 51, 1.ª planta · Barcelona</p>
+    <p id="xp-medidas"></p>
+    <p class="aviso" id="xp-aviso">Levantamiento por cámara · medidas por confirmar con metro</p>
+    <p class="fuente" id="xp-fuente">Fuente: …</p>
+    <p id="estado" role="status">Preparando el gemelo…</p>
+    <p class="enlaces"><a id="xp-plano2d" href="https://www.admira.biz/plano.html?locationId=lab-gran-de-gracia-51" target="_blank" rel="noopener">Plano 2D ↗</a><a id="xp-yokup" href="https://admira.app/retailer#itil" target="_blank" rel="noopener">Ver en Yokup (ITIL) ↗</a><button type="button" id="inv-toggle" aria-expanded="false" aria-controls="inventario">Inventario ITIL</button></p>
+  </section>
+  <p id="hud" role="status"></p>
+  <nav id="vistas" aria-label="Vistas del gemelo"></nav>
+  <aside id="inventario" hidden aria-labelledby="inv-titulo">
+    <div class="inv-cab"><h2 id="inv-titulo">Inventario ITIL <span id="inv-total"></span></h2><button type="button" id="inv-cerrar" aria-label="Cerrar inventario">×</button></div>
+    <p class="inv-nota">Pantallas por mosaico, players y webcam. Yokup es el maestro del ITIL; aquí se lee el plano.</p>
+    <ul id="inv-lista"></ul>
+  </aside>
+  <section id="detalle" hidden aria-live="polite"></section>
+  <noscript><p class="noscript">El gemelo 3D necesita JavaScript y WebGL.</p></noscript>
+</main>
+</body>
+</html>
