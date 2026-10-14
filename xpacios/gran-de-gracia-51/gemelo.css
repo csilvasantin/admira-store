@@ -1,0 +1,72 @@
+:root{color-scheme:dark;--fondo:#0f1416;--panel:#0a1216e8;--linea:#2a3f44;--tinta:#e3eeeb;--suave:#9db1ad;--cian:#78f3ff;--verde:#46e08a;--ambar:#ffc867;--rosa:#ff8fd0}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fondo);color:var(--tinta);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--verde)}
+button{font:600 12px system-ui,sans-serif;color:var(--tinta);background:#14262a;border:1px solid var(--linea);border-radius:6px;padding:7px 10px;cursor:pointer}
+button:hover,button:focus-visible{border-color:var(--cian)}
+button[aria-pressed="true"]{background:#13424a;border-color:var(--cian);color:#fff}
+#gemelo{position:relative;height:calc(100dvh - var(--xs-bar-h,46px));min-height:420px;overflow:hidden}
+#gemelo-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+#etiquetas{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.etiqueta[hidden]{display:none!important}
+.etiqueta{position:absolute;left:0;top:0;pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:3px 7px;border-radius:5px;background:#071012e0;border:1px solid #78f3ff88;color:var(--tinta);font:600 11px/1.2 ui-monospace,"SF Mono",Menlo,monospace;white-space:nowrap;text-align:left;will-change:transform}
+.etiqueta b{color:var(--cian);font-weight:700}
+.etiqueta span{font-weight:500;font-size:10px;color:var(--suave)}
+.etiqueta i{display:none;font-style:normal;font-size:10px;color:#cfe6e2}
+#gemelo.detalle .etiqueta i{display:block}
+.etiqueta.player{border-color:#ffc86788}.etiqueta.player b{color:var(--ambar)}
+.etiqueta.camara{border-color:#ff8fd088}.etiqueta.camara b{color:var(--rosa)}
+.etiqueta.tapada{opacity:.38}
+.etiqueta.sel{border-color:#fff;box-shadow:0 0 0 2px #78f3ff66;z-index:2}
+.regla{position:absolute;left:0;top:0;font:600 10px ui-monospace,Menlo,monospace;color:#c9d6d3;pointer-events:none;white-space:nowrap}
+.regla.abajo{margin:2px 0 0 -10px}.regla.izquierda{margin:-7px 0 0 -40px}
+.regla.hueco{margin:0 0 0 -60px;width:120px;text-align:center;white-space:normal;color:#9db1ad;font-weight:500}
+.regla.extremo{margin:-14px 0 0 -4px;color:var(--cian)}
+.ficha-xpacio{position:absolute;left:16px;top:14px;max-width:min(380px,calc(100% - 32px));padding:12px 16px;background:var(--panel);border:1px solid var(--linea);border-radius:8px}
+.ficha-xpacio .eyebrow{margin:0;font:600 10px ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--verde)}
+.ficha-xpacio h1{margin:4px 0 2px;font-size:19px;letter-spacing:-.02em;line-height:1.2}
+.ficha-xpacio p{margin:2px 0;color:var(--suave);font-size:12.5px}
+.ficha-xpacio .aviso{color:var(--ambar);font-weight:600}
+.ficha-xpacio .fuente{font:11px ui-monospace,Menlo,monospace}
+.ficha-xpacio .fuente[data-fuente="compartido"]{color:var(--verde)}
+.ficha-xpacio .enlaces{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:8px}
+#hud{position:absolute;right:16px;top:14px;max-width:min(520px,45%);margin:0;padding:6px 10px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;font:11px ui-monospace,Menlo,monospace;color:var(--suave);pointer-events:none}
+#vistas{position:absolute;left:16px;right:16px;bottom:14px;display:flex;gap:6px;align-items:center;overflow-x:auto;padding:6px;background:var(--panel);border:1px solid var(--linea);border-radius:8px;width:max-content;max-width:calc(100% - 32px);scrollbar-width:thin}
+#vistas button{flex:0 0 auto}
+#vistas .sep{flex:0 0 auto;margin-left:6px;font:600 10px ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--suave)}
+#vistas select{flex:0 0 auto;font:12px system-ui;color:var(--tinta);background:#0d1b1e;border:1px solid var(--linea);border-radius:6px;padding:6px;max-width:250px;opacity:.65}
+#vistas select.activo{opacity:1;border-color:var(--cian)}
+#inventario{position:absolute;right:16px;top:56px;bottom:76px;width:min(330px,calc(100% - 32px));display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--linea);border-radius:8px;padding:10px 12px}
+#inventario[hidden]{display:none}
+.inv-cab{display:flex;justify-content:space-between;align-items:center}
+.inv-cab h2{margin:0;font-size:14px}.inv-cab h2 span{color:var(--suave);font-weight:500;font-size:12px}
+.inv-cab button{padding:2px 9px;font-size:16px}
+.inv-nota{margin:4px 0 6px;color:var(--suave);font-size:11.5px}
+#inv-lista{list-style:none;margin:0;padding:0;overflow:auto;flex:1}
+#inv-lista .grupo{margin:10px 0 4px;font:600 10px ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--verde)}
+#inv-lista button{display:grid;grid-template-columns:auto 1fr;gap:0 8px;width:100%;margin:0 0 4px;text-align:left;padding:6px 8px;background:#0d1b1e}
+#inv-lista button b{font:700 11px ui-monospace,Menlo,monospace;color:var(--cian)}
+#inv-lista button span{font-weight:600}
+#inv-lista button small{grid-column:1/-1;color:var(--suave);font:500 10.5px ui-monospace,Menlo,monospace}
+#inv-lista button.sel{border-color:#fff;background:#13424a}
+#detalle{position:absolute;left:16px;bottom:76px;width:min(360px,calc(100% - 32px));padding:10px 14px;background:#091416f2;border:1px solid var(--cian);border-radius:8px;font-size:12.5px}
+#detalle[hidden]{display:none}
+.det-cab{display:flex;justify-content:space-between;align-items:center;gap:10px}.det-cab button{padding:1px 8px;font-size:16px}
+#detalle dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0}
+#detalle dt{color:var(--suave)}#detalle dd{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;word-break:break-word}
+.det-enlaces{margin:4px 0 0}
+#estado{margin:4px 0 0;font:10.5px/1.35 ui-monospace,Menlo,monospace;color:var(--suave)}
+#estado:empty{display:none}
+#estado.error{color:#ff8f8f}
+.noscript{position:absolute;inset:40% 16px auto;text-align:center}
+@media (max-width:900px){
+  .ficha-xpacio{padding:9px 12px;max-width:calc(100% - 32px)}
+  .ficha-xpacio h1{font-size:17px}
+  .ficha-xpacio #xp-medidas{display:none}
+  #vistas{bottom:46px;flex-wrap:wrap;width:auto}
+  #hud{top:auto;bottom:calc(54px + var(--vistas-h,52px));right:16px;left:16px;max-width:none}
+  #inventario{top:14px;bottom:calc(54px + var(--vistas-h,52px))}
+  #detalle{bottom:calc(92px + var(--vistas-h,52px))}
+}
+/* El sello del release (cargador común, abajo a la izquierda) no tapa la barra de vistas. */
+@media (min-width:901px){#vistas{left:236px;max-width:calc(100% - 252px)}}

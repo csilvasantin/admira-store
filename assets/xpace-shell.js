@@ -377,14 +377,17 @@
   // uno con plano, ese. Misma lista que expert-commands.js de clearchannel-tv (PLANOS).
   const PLANOS = [
     {id: 'alsea-sbux-021', nombre: 'Starbucks Paseo de Gracia 103', aliases: ['starbucks', 'starbucks 103', 'starbucks paseo de gracia', 'paseo de gracia', 'paseo de gracia 103', 'pg103', 'sbux 021']},
+    // Laboratorio AdmiraNeXT (DCL-6ae9d5b0e2d48ee2fd9c7b19): gemelo 3D en /xpacios/gran-de-gracia-51/.
+    {id: 'lab-gran-de-gracia-51', nombre: 'Laboratorio Gran de Gràcia 51', aliases: ['laboratorio', 'lab', 'gran de gracia 51', 'gran de gracia', 'gdg51', 'laboratorio admiranext']},
   ];
   const PLANO_ORIGIN = 'https://www.admira.biz';
   const planoKey = value => String(value == null ? '' : value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-  function planoTarget(args, search = '', lang = 'es') {
+  // `pagina`: el Xpacio de la página (XPACE_SHELL.plano), para las que no son el gemelo.
+  function planoTarget(args, search = '', lang = 'es', pagina = '') {
     const raw = String(args || '').trim().replace(/^(?:xpacio|xpace|local|tienda|store)\s*[=:]\s*/i, '');
     let loc = '';
     try { loc = new URLSearchParams(search).get('loc') || ''; } catch (_) {}
-    const wanted = planoKey(raw || loc || (PLANOS.length === 1 ? PLANOS[0].id : ''));
+    const wanted = planoKey(raw || loc || (typeof pagina === 'string' ? pagina : '') || (PLANOS.length === 1 ? PLANOS[0].id : ''));
     const plano = wanted && PLANOS.find(p => [p.id, p.nombre, ...p.aliases].some(a => planoKey(a) === wanted));
     if (!plano) return {ok: false, asked: raw || loc, list: PLANOS.map(p => p.nombre).join(', ')};
     return {ok: true, id: plano.id, nombre: plano.nombre,
@@ -983,10 +986,10 @@
     registerVerb({
       id: 'redistribucion',
       aliases: ['redistribución', 'redistribuir', 'plano', 'obras'],
-      es: 'Abre en admira.biz el plano en planta y alzado del Xpacio con su inventario ITIL de pantallas, en modo obras para cambiar su distribución y sacar la orden de obra. Sin argumento: el Xpacio del gemelo (?loc=).',
-      en: 'Opens the Xpace floor plan and elevation with its ITIL screen inventory on admira.biz, in works mode to change its layout and get the work order. No argument: the twin Xpace (?loc=).',
+      es: 'Abre en admira.biz el plano en planta y alzado del Xpacio con su inventario ITIL de pantallas, en modo obras para cambiar su distribución y sacar la orden de obra. Sin argumento: el Xpacio del gemelo (?loc=) o el de la página.',
+      en: 'Opens the Xpace floor plan and elevation with its ITIL screen inventory on admira.biz, in works mode to change its layout and get the work order. No argument: the twin Xpace (?loc=) or the page one.',
       run(args) {
-        const r = planoTarget(args, root.location.search, lang());
+        const r = planoTarget(args, root.location.search, lang(), cfg && cfg.plano);
         if (!r.ok) return r.asked
           ? T(`«${r.asked}» aún no tiene plano. Con plano: ${r.list}.`, `“${r.asked}” has no floor plan yet. With a plan: ${r.list}.`)
           : T(`Indica el Xpacio: /redistribucion <xpacio>. Con plano: ${r.list}.`, `Name the Xpace: /redistribucion <xpace>. With a plan: ${r.list}.`);
