@@ -3,8 +3,9 @@
 // este sitio) y lo pinta: órbita, vista desde la puerta, vista de la webcam, planta y
 // alzado de cada pared, con etiquetas ITIL por pantalla y dispositivo.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { cargarPlano, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-1';
-import { crearEscena3D } from './escena3d.mjs?v=gdg51-1';
+import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-2';
+import { crearEscena3D } from './escena3d.mjs?v=gdg51-2';
+import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -20,9 +21,9 @@ const COLOCACION = { 'lab-gran-de-gracia-51': { macmini: 'bajo-mesa' } };
 const PAN_CERO = { 'lab-gran-de-gracia-51': -27 };
 const PLANO_2D = id => `https://www.admira.biz/plano.html?locationId=${encodeURIComponent(id)}`;
 const YOKUP_ITIL = 'https://admira.app/retailer#itil';
-// El canal de admira.tv con ?screen=<pantalla real> emite como esa pantalla (proof-of-play y
-// /signage/now): desde aquí sólo se enlaza la portada de admira.tv, sin parámetros.
-const ADMIRA_TV = 'https://admira.tv/';
+// admira.tv: espejo de solo lectura de /signage/now (espejo.mjs) y, como enlace, la portada o el
+// canal de un player virtual; nunca el canal de una pantalla real (emitiría como ella).
+const LOGIN = () => `/auth/login?return_to=${encodeURIComponent(location.pathname + location.search)}`;
 const PANES = [[-60, 'webcam -60° · V del puesto y mueble negro'], [0, 'webcam 0° · puerta y recreativa'], [28, 'webcam 28° · sala de frente'], [42, 'webcam 42° · pizarras y nevera'], [60, 'webcam 60° · mesa larga (Mac Studio)'], [100, 'webcam 100° · V del puesto junto a la ventana']];
 const num = (n, d = 2) => (en ? String(round(n, d)) : String(round(n, d)).replace('.', ','));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -31,7 +32,8 @@ const canvas = $('gemelo-canvas'), stage = $('gemelo'), capa = $('etiquetas');
 const estado = $('estado');
 const status = (texto, error = false) => { estado.textContent = texto; estado.classList.toggle('error', error); };
 
-let escena, s3d, renderer, plan, fuente;
+let escena, s3d, renderer, plan, fuente, acceso = 'publico';
+const senales = new Map();   // id de pantalla → estadoSenal() vigente
 const persp = new T.PerspectiveCamera(40, 1, 0.03, 80);
 const orto = new T.OrthographicCamera(-1, 1, 1, -1, 0.1, 80);
 let camara = persp, ancho = 1, alto = 1, pendiente = false, seleccion = null;
@@ -51,8 +53,10 @@ function invalidar() { if (pendiente) return; pendiente = true; requestAnimation
 async function arrancar() {
   status(t('Leyendo el plano…', 'Reading the floor plan…'));
   let carga;
-  try { carga = await cargarPlano(LOC); } catch (e) { status(e.message, true); return; }
-  ({ plan, fuente } = carga);
+  const sesion = await comprobarSesion();
+  try { carga = await cargarPlano(LOC, { sesion }); } catch (e) { status(e.message, true); return; }
+  ({ plan, fuente, acceso } = carga);
+  stage.dataset.acceso = acceso;
   try { escena = escenaDesdePlano(plan, { colocacion: COLOCACION[plan.id] || {} }); } catch (e) { status(t('Plano no válido: ', 'Invalid plan: ') + e.message, true); return; }
   try {
     renderer = new T.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: params.get('captura') === '1' });
@@ -72,18 +76,55 @@ async function arrancar() {
   redimensionar();
   ponerVista(params.get('vista') || 'orbital', { url: false });
   canvas.dataset.listo = '1';
+  if (acceso === 'sesion') arrancarEspejo();
+}
+
+// ── Espejo de admira.tv: lo que emite AHORA cada pantalla real (sólo con sesión) ──
+let espejoTimer = null;
+async function refrescarEspejo() {
+  const conId = escena.pantallas.filter(p => p.screenId);
+  if (!conId.length || document.visibilityState !== 'visible') return;
+  await Promise.all(conId.map(async p => {
+    let resp = null;
+    try {
+      const r = await fetch(`/xpacios/senal?screen=${encodeURIComponent(p.screenId)}`, { credentials: 'same-origin', cache: 'no-store' });
+      if (r.status === 401) { pararEspejo(t('sesión caducada', 'session expired')); return; }
+      if (r.ok && /json/.test(r.headers.get('content-type') || '')) resp = await r.json();
+    } catch (_) { resp = null; }
+    const est = estadoSenal(resp, { captura: p.textura });
+    const antes = senales.get(p.id);
+    senales.set(p.id, est);
+    if (!antes || antes.url !== est.url) s3d.ponerMedio(p.id, est);
+  }));
+  const vivas = [...senales.values()].filter(e => e.fuente === 'vivo').length;
+  $('xp-espejo').textContent = vivas ? `${t('admira.tv', 'admira.tv')}: ${vivas}/${senales.size} ${t('en vivo', 'live')}` : `${t('admira.tv: sin señal · capturas del 13-oct', 'admira.tv: no signal · 13-Oct captures')}`;
+  if (seleccion) seleccionar(seleccion);
+  invalidar();
+}
+function arrancarEspejo() {
+  refrescarEspejo();
+  espejoTimer = setInterval(refrescarEspejo, REFRESCO_MS);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refrescarEspejo(); });
+}
+function pararEspejo(motivo) {
+  if (espejoTimer) clearInterval(espejoTimer); espejoTimer = null;
+  $('xp-espejo').textContent = `admira.tv: ${motivo}`;
 }
 
 function pintarFicha({ fuente: f, url, fallos }) {
   $('xp-nombre').textContent = plan.nombre || plan.id;
   $('xp-direccion').textContent = plan.direccion || '';
+  const publico = acceso !== 'sesion';
+  for (const id of ['xp-plano2d', 'xp-yokup', 'inv-toggle']) $(id).hidden = publico;
+  $('xp-entrar').hidden = !publico; $('xp-entrar').href = LOGIN();
+  $('xp-espejo').hidden = publico;
   $('xp-medidas').textContent = `${num(plan.planta.ancho)} × ${num(plan.planta.fondo)} m · ${t('techo', 'ceiling')} ${num(plan.planta.alto)} m · ${escena.pantallas.length} ${t('pantallas', 'screens')} · ${escena.dispositivos.length} ${t('dispositivos', 'devices')}`;
   $('xp-plano2d').href = PLANO_2D(plan.id);
   $('xp-yokup').href = (plan.yokup && /^https:\/\//.test(plan.yokup.portal || '')) ? plan.yokup.portal : YOKUP_ITIL;
-  const origen = f === 'compartido' ? t('plano compartido · admira.biz', 'shared plan · admira.biz') : t('copia local · admira.store', 'local copy · admira.store');
+  const origen = publico ? t('vista pública · sin inventario ITIL', 'public view · no ITIL inventory') : f === 'compartido' ? t('plano compartido · admira.biz', 'shared plan · admira.biz') : t('copia local · admira.store', 'local copy · admira.store');
   const fuenteEl = $('xp-fuente');
   fuenteEl.textContent = `${t('Fuente', 'Source')}: ${origen} · ${plan.version || 's/v'}`;
-  fuenteEl.dataset.fuente = f;
+  fuenteEl.dataset.fuente = publico ? 'publico' : f;
   fuenteEl.title = url + (fallos.length ? `\n${t('No se usó', 'Not used')}: ${fallos.map(x => `${x.url} (${x.error})`).join(' · ')}` : '');
   $('xp-aviso').textContent = t('Levantamiento por cámara · medidas por confirmar con metro', 'Camera survey · measurements to be confirmed with a tape');
   const avisos = escena.avisos.length ? ' · ' + escena.avisos.join(' · ') : '';
@@ -93,6 +134,7 @@ function pintarFicha({ fuente: f, url, fallos }) {
 
 // ── Inventario ITIL ──
 function pintarInventario() {
+  if (acceso !== 'sesion') { $('inv-lista').innerHTML = ''; return; }
   const filas = [];
   const pantalla = p => `<li><button type="button" data-sel="p:${esc(p.id)}"><b>${esc(p.itil || t('sin código', 'no code'))}</b><span>${esc(p.nombre)}</span><small>${esc(p.screenId || p.corto)} · ${num(p.pulgadas, 1)}″ ${p.orientacion === 'vertical' ? 'V' : 'H'} · ${t('pared', 'wall')} ${esc(p.pared)} · s ${num(p.s)} · z ${num(p.z)}</small></button></li>`;
   for (const g of escena.grupos) {
@@ -246,6 +288,7 @@ function pintar() {
   colocarCamara(); recortar();
   renderer.render(s3d.scene, camara);
   pintarEtiquetas();
+  if (s3d.hayVideo()) invalidar();   // un vídeo en vivo en una pantalla pide fotogramas
 }
 
 // ── Etiquetas ITIL ──
@@ -253,16 +296,20 @@ let etiquetas = [], reglas = [];
 function crearEtiquetas() {
   capa.innerHTML = '';
   etiquetas = [];
+  const publico = acceso !== 'sesion';
   for (const p of escena.pantallas) {
     const top = p.portatil ? p.z + p.h * Math.cos(0.2) + 0.04 : p.z1 + 0.04;
+    const ov = p.portatil ? t('Portátil', 'Laptop') : p.orientacion === 'vertical' ? 'V' : 'H';
     etiquetas.push({ clave: `p:${p.id}`, tipo: 'pantalla', pared: p.pared, ancla: V(p.centro[0], p.centro[1], top),
-      corto: p.itil || p.corto, largo: p.screenId || p.corto, medida: `s ${num(p.s)} · z ${num(p.z)} · ${num(p.pulgadas, 1)}″` });
+      corto: publico ? `${ov} · ${num(p.pulgadas, 1)}″` : (p.itil || p.corto), largo: publico ? (p.player || t('pantalla', 'screen')) : (p.screenId || p.corto),
+      medida: `s ${num(p.s)} · z ${num(p.z)}${publico ? '' : ` · ${num(p.pulgadas, 1)}″`}` });
   }
   for (const d of escena.dispositivos) {
     if (!d.pos) continue;
     const h = d.colocacion === 'pantalla' ? -0.07 : d.tam[1] + 0.03;
-    etiquetas.push({ clave: `d:${d.id}`, tipo: /webcam|c[aá]mara/i.test(d.nombre) ? 'camara' : 'player', pared: d.pared, ancla: V(d.pos[0], d.pos[1], d.pos[2] + h),
-      corto: d.itil || d.id, largo: d.nombre, medida: '' });
+    const camara = /webcam|c[aá]mara/i.test(`${d.nombre} ${d.rol || ''}`);
+    etiquetas.push({ clave: `d:${d.id}`, tipo: camara ? 'camara' : 'player', pared: d.pared, ancla: V(d.pos[0], d.pos[1], d.pos[2] + h),
+      corto: publico ? (camara ? t('Cámara', 'Camera') : 'Player') : (d.itil || d.id), largo: publico ? (camara ? '' : d.nombre) : d.nombre, medida: '' });
   }
   for (const e of etiquetas) {
     const el = document.createElement('button');
@@ -303,6 +350,7 @@ function pintarEtiquetas() {
     e.el.hidden = !ver;
     e.el.classList.toggle('sel', seleccion === e.clave);
     e.el.classList.toggle('tapada', ver && tapada(e));
+    e.el.classList.toggle('vivo', senales.get(e.clave.slice(2))?.fuente === 'vivo');
     return ver ? { e, p } : null;
   }).filter(Boolean).sort((a, b) => a.p.y - b.p.y);
   for (const { e, p } of visibles) {
@@ -336,18 +384,32 @@ function seleccionar(clave, { mostrar = false } = {}) {
   const o = p || d;
   if (!o) return;
   for (const b of document.querySelectorAll('#inv-lista [data-sel]')) b.classList.toggle('sel', b.dataset.sel === clave);
-  const filas = p ? [
+  const publico = acceso !== 'sesion';
+  const senal = p ? senales.get(p.id) : null;
+  const filas = p ? (publico ? [
+    [t('Formato', 'Format'), `${num(p.pulgadas, 1)}″ · ${p.portatil ? t('portátil', 'laptop') : p.orientacion}`], ['Player', p.player || '—'],
+    [t('Posición', 'Position'), `${t('pared', 'wall')} ${p.pared} · s ${num(p.s)} m · z ${num(p.z)} m`],
+  ] : [
     [t('Código ITIL', 'ITIL code'), p.itil || '—'], ['screenId', p.screenId || '—'], [t('Mosaico', 'Mosaic'), p.grupoNombre || t('suelta', 'single')],
     ['Player', p.player || '—'], [t('Formato', 'Format'), `${num(p.pulgadas, 1)}″ · ${p.orientacion} · ${(p.resolucion || []).join('×')}`],
     [t('Posición', 'Position'), `${t('pared', 'wall')} ${p.pared} · s ${num(p.s)} m · z ${num(p.z)} m`],
     ['3D', `${t('a', 'at')} ${num(p.separacion)} m ${t('de la pared', 'from the wall')}${p.apoyo ? ` · ${t('sobre', 'on')} ${p.apoyo.id}` : ''}`],
     [t('Estado', 'Status'), p.estado || '—'],
+    ...(p.screenId ? [['admira.tv', senal ? senal.rotulo : t('consultando…', 'checking…')]] : []),
+  ]) : (publico ? [
+    [t('Tipo', 'Type'), d.rol || d.categoria || '—'],
   ] : [
     [t('Código ITIL', 'ITIL code'), d.itil || '—'], [t('Categoría', 'Category'), d.categoria || '—'], [t('Rol', 'Role'), d.rol || '—'],
     [t('Colocación', 'Placement'), `${d.colocacion}${d.deducida ? ' · ' + t('deducida, por confirmar', 'derived, to be confirmed') : ''}`],
-  ];
-  const enlaces = [`<a href="${esc($('xp-yokup').href)}" target="_blank" rel="noopener">${t('Ver en Yokup (ITIL)', 'View in Yokup (ITIL)')} ↗</a>`];
-  if (p?.textura) enlaces.push(`<a href="${esc(p.textura)}" target="_blank" rel="noopener">${t('Captura starbucks-six', 'starbucks-six capture')} ↗</a>`, `<a href="${ADMIRA_TV}" target="_blank" rel="noopener" title="${t('Portada de admira.tv: el canal de una pantalla real no se abre desde aquí para no emitir en su nombre', 'admira.tv home: a real screen channel is not opened from here so as not to broadcast on its behalf')}">admira.tv ↗</a>`);
+  ]);
+  const enlaces = [];
+  if (publico) enlaces.push(`<a href="${esc(LOGIN())}">${t('Entra con tu cuenta Admira para ver el inventario ITIL', 'Sign in with your Admira account to see the ITIL inventory')}</a>`);
+  else enlaces.push(`<a href="${esc($('xp-yokup').href)}" target="_blank" rel="noopener">${t('Ver en Yokup (ITIL)', 'View in Yokup (ITIL)')} ↗</a>`);
+  if (!publico && p?.textura) enlaces.push(`<a href="${esc(p.textura)}" target="_blank" rel="noopener">${t('Captura starbucks-six', 'starbucks-six capture')} ↗</a>`);
+  if (!publico && p?.screenId) {
+    const tv = urlAdmiraTv(p);
+    enlaces.push(`<a href="${esc(tv.url)}" target="_blank" rel="noopener" title="${esc(tv.canal ? t('Canal del player virtual de esta pantalla', 'Virtual player channel for this screen') : t('Portada de admira.tv. El canal de una pantalla real emitiría como ella: hace falta un player virtual virtual-gdg51-* dado de alta en admira.tv/virtual-players.', 'admira.tv home. A real screen channel would broadcast as that screen: a virtual-gdg51-* virtual player registered in admira.tv/virtual-players is needed.'))}">${tv.canal ? t('Reproducir en admira.tv', 'Play on admira.tv') : 'admira.tv'} ↗</a>`);
+  }
   $('detalle').innerHTML = `<div class="det-cab"><b>${esc(o.nombre)}</b><button type="button" id="det-cerrar" aria-label="${t('Cerrar', 'Close')}">×</button></div><dl>${filas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="det-enlaces">${enlaces.join(' · ')}</p>`;
   $('detalle').hidden = false;
   $('det-cerrar').onclick = () => { $('detalle').hidden = true; seleccion = null; for (const b of document.querySelectorAll('#inv-lista [data-sel]')) b.classList.remove('sel'); invalidar(); };
@@ -409,6 +471,7 @@ const ACCIONES = { 'gdg-orbital': () => ponerVista('orbital'), 'gdg-puerta': () 
 document.addEventListener('click', e => { const a = e.target.closest('[id]'); if (a && ACCIONES[a.id] && !a.closest('#gemelo')) ACCIONES[a.id](); });
 function alternarInventario(forzar) {
   const abierto = forzar ?? $('inventario').hidden;
+  if (abierto && acceso !== 'sesion') { status(t('El inventario ITIL necesita sesión: entra con tu cuenta Admira.', 'The ITIL inventory needs a session: sign in with your Admira account.')); return; }
   $('inventario').hidden = !abierto; $('inv-toggle').setAttribute('aria-expanded', String(abierto));
   if (renderer) { redimensionarCamara(); if (st.vista === 'orbital') ajustarOrbita(); invalidar(); }
 }
