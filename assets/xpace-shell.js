@@ -541,7 +541,7 @@
     } catch (_) { return false; }
   }
   const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=' +
-    (nativeStoreLaunch() ? '20261012-unified-1' : '20261014-personajes-1');
+    (nativeStoreLaunch() ? '20261012-unified-1' : '20261014-personajes-2');
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
@@ -850,7 +850,7 @@
   // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
-    const V = '20261014-personajes-1', BASE = 'https://www.admiranext.com/suite/experto';
+    const V = '20261014-personajes-2', BASE = 'https://www.admiranext.com/suite/experto';
     const host = location.hostname.replace(/^www\./, '');
     const nativeDemo = /^(admira\.store|xpaceos\.com)$/.test(host) && new URLSearchParams(location.search).get('ax_demo') === 'store';
     if (doc.querySelector('script[src^="' + BASE + '.js"]')) return;
