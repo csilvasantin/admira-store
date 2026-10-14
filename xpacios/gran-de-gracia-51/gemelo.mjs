@@ -3,8 +3,8 @@
 // este sitio) y lo pinta: órbita, vista desde la puerta, vista de la webcam, planta y
 // alzado de cada pared, con etiquetas ITIL por pantalla y dispositivo.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-3';
-import { crearEscena3D } from './escena3d.mjs?v=gdg51-4';
+import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-5';
+import { crearEscena3D } from './escena3d.mjs?v=gdg51-5';
 import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
 
 const $ = id => document.getElementById(id);

@@ -1,7 +1,7 @@
 {
  "schema": "admira.xpacio-plano/1",
  "id": "lab-gran-de-gracia-51",
- "version": "2026-10-14-camara-2",
+ "version": "2026-10-14-camara-3",
  "publico": true,
  "nombre": "Laboratorio AdmiraNeXT · Gran de Gràcia",
  "direccion": "Gran de Gràcia · Barcelona",
@@ -102,9 +102,9 @@
   {
    "id": "mueble-1",
    "nombre": "Mesa",
-   "x": 0.9,
+   "x": 0.7,
    "y": 0,
-   "w": 1.75,
+   "w": 1.95,
    "d": 0.7,
    "alto": 0.75
   },
@@ -112,9 +112,9 @@
    "id": "mueble-2",
    "nombre": "Mesa larga · Mac Studio",
    "x": 0,
-   "y": 0.75,
+   "y": 0,
    "w": 0.7,
-   "d": 2.2,
+   "d": 2.95,
    "alto": 0.75
   },
   {
@@ -124,7 +124,8 @@
    "y": 3,
    "w": 0.6,
    "d": 0.5,
-   "alto": 1.75
+   "alto": 1.75,
+   "pared": "I"
   },
   {
    "id": "mueble-4",
