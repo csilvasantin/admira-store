@@ -36,7 +36,7 @@ if (en) {
   $('#subtitle').textContent = 'Yokup inventory and photographic references';
   $('#basis').textContent = 'Each reference number identifies an element and its real photograph. Photos come from the Matrix 360 or supplied references. Reference numbers and 3D model numbers are independent.';
   $('#reference-note').textContent = '“To review” and “Product reference” are observations from the 360; they do not register new units or represent stock. Shared type or context photos are indicated on each record. Existing models use interpretative proportions; measurements and warranties are pending.';
-  $('#catalog-link').textContent = 'Catalogue'; $('#matrix-link').textContent = 'Open Matrix 360 ↗';
+  $('#catalog-link').textContent = 'Catalogue'; $('#matrix-link').textContent = 'Open Matrix 360 ↗'; if ($('#plano3d-link')) $('#plano3d-link').textContent = '3D twin from the floor plan ↗';
   $('nav').setAttribute('aria-label', 'Navigation'); $('.view-switch').setAttribute('aria-label', 'Inventory view');
   $('#units').setAttribute('aria-label', 'Numbered elements'); $('#reference-filter').setAttribute('aria-label', 'Filter references');
   $('#model-heading').textContent = 'Interpretative 3D model'; $('#wire-label').textContent = 'Wireframe';

@@ -1,15 +1,15 @@
 {
-  "version": "v.14.10.2026.r4.13:50",
-  "deployedAt": "2026-10-14T11:50:25Z",
-  "deployer": "NeoMBP14",
-  "machine": "MacBookProNegro14",
-  "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "b4ad5c7fd731957e9e9c5caece96f23b9bcb9b88",
-  "gitShort": "b4ad5c7",
-  "gitFull": "b4ad5c7fd731957e9e9c5caece96f23b9bcb9b88",
+  "version": "v.14.10.2026.r6.17:25",
+  "deployedAt": "2026-10-14T15:25:35Z",
+  "deployer": "NeoMacStudio",
+  "machine": "MacStudio",
+  "signature": "NeoMacStudio · MacStudio",
+  "git": "efe44d3ddf60b47f4200aa30fa31147e43b316a6",
+  "gitShort": "efe44d3",
+  "gitFull": "efe44d3ddf60b47f4200aa30fa31147e43b316a6",
   "dirty": false,
   "novedades": [
-    "⌘ Experto: /bugito abre el banco de pruebas de Bugito en admira.biz, el Admirito diablillo que provoca incidencias en un player virtual de laboratorio.",
-    "El asistente flotante carga el cargador común del avatar que conoce a los personajes de Admirito."
+    "Starbucks Paseo de Gracia: el mural doble H se ve como una sola pantalla; el titular «Tu café sigue contigo.» cruza las seis pantallas a la vez sobre la barra.",
+    "Campaña starbucks-six de admira.studio pintada en un solo lienzo en el gemelo, con botón para pausarla; lo que una pantalla real emita en vivo en admira.tv manda sobre el lienzo."
   ]
 }

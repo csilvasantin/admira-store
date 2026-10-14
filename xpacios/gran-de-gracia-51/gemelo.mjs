@@ -3,8 +3,8 @@
 // este sitio) y lo pinta: órbita, vista desde la puerta, vista de la webcam, planta y
 // alzado de cada pared, con etiquetas ITIL por pantalla y dispositivo.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-2';
-import { crearEscena3D } from './escena3d.mjs?v=gdg51-2';
+import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-3';
+import { crearEscena3D } from './escena3d.mjs?v=gdg51-4';
 import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
 
 const $ = id => document.getElementById(id);
@@ -12,7 +12,9 @@ const params = new URLSearchParams(location.search);
 const en = params.get('lang') === 'en';
 const t = (es, english) => (en ? english : es);
 document.documentElement.lang = en ? 'en' : 'es';
-const LOC = ID_RE.test(params.get('loc') || '') ? params.get('loc') : 'lab-gran-de-gracia-51';
+// Cada página de Xpacio dice cuál pinta y con qué acabado (window.XPACIO_GEMELO); sin nada, el laboratorio.
+const CFG = (typeof window !== 'undefined' && window.XPACIO_GEMELO) || {};
+const LOC = ID_RE.test(params.get('loc') || '') ? params.get('loc') : ID_RE.test(CFG.loc || '') ? CFG.loc : 'lab-gran-de-gracia-51';
 // Lo que el plano no dice y la cámara no ve: el Mac mini va bajo la mesa (por confirmar).
 const COLOCACION = { 'lab-gran-de-gracia-51': { macmini: 'bajo-mesa' } };
 // Calibración de la webcam con sus fotos del 14-oct (04, 05, 06 y 07): con el pan 0 perpendicular a la
@@ -63,7 +65,7 @@ async function arrancar() {
   } catch (e) { status(t('Este navegador no puede abrir WebGL: ', 'This browser cannot open WebGL: ') + e.message, true); return; }
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
-  s3d = crearEscena3D(escena, { anisotropia: renderer.capabilities.getMaxAnisotropy(), onCambio: invalidar });
+  s3d = crearEscena3D(escena, { anisotropia: renderer.capabilities.getMaxAnisotropy(), onCambio: invalidar, tema: CFG.tema });
   st.orb.objetivo.copy(V(escena.sala.centro[0], escena.sala.centro[1], 1.0));
   const pan = params.has('pan') ? Number(params.get('pan')) : NaN, tilt = params.has('tilt') ? Number(params.get('tilt')) : NaN;
   if (Number.isFinite(pan)) st.pan = Math.max(-170, Math.min(170, pan));
@@ -77,6 +79,10 @@ async function arrancar() {
   ponerVista(params.get('vista') || 'orbital', { url: false });
   canvas.dataset.listo = '1';
   if (acceso === 'sesion') arrancarEspejo();
+  // Gancho para lo propio de cada página (el mural de Starbucks): la escena ya está montada.
+  const api = { escena, s3d, invalidar, status, t, acceso, plan };
+  window.XpacioGemelo = api;
+  document.dispatchEvent(new CustomEvent('xpacio:listo', { detail: api }));
 }
 
 // ── Espejo de admira.tv: lo que emite AHORA cada pantalla real (sólo con sesión) ──
@@ -126,7 +132,7 @@ function pintarFicha({ fuente: f, url, fallos }) {
   fuenteEl.textContent = `${t('Fuente', 'Source')}: ${origen} · ${plan.version || 's/v'}`;
   fuenteEl.dataset.fuente = publico ? 'publico' : f;
   fuenteEl.title = url + (fallos.length ? `\n${t('No se usó', 'Not used')}: ${fallos.map(x => `${x.url} (${x.error})`).join(' · ')}` : '');
-  $('xp-aviso').textContent = t('Levantamiento por cámara · medidas por confirmar con metro', 'Camera survey · measurements to be confirmed with a tape');
+  $('xp-aviso').textContent = CFG.aviso ? t(CFG.aviso.es, CFG.aviso.en) : t('Levantamiento por cámara · medidas por confirmar con metro', 'Camera survey · measurements to be confirmed with a tape');
   const avisos = escena.avisos.length ? ' · ' + escena.avisos.join(' · ') : '';
   // La fuente ya va en su línea: aquí sólo por qué no se usó el plano compartido y los avisos.
   status(`${f === 'local' && fallos.length ? `${t('admira.biz no sirvió el plano', 'admira.biz did not serve the plan')}: ${fallos[0].error}` : ''}${avisos ? avisos.replace(/^ · /, f === 'local' && fallos.length ? ' · ' : '') : ''}`);
@@ -157,14 +163,17 @@ function pintarInventario() {
 function montarVistas() {
   const b = (id, texto) => `<button type="button" data-vista="${id}" aria-pressed="false">${texto}</button>`;
   const alzados = escena.paredes.map(w => b(`alzado-${w.id}`, w.id)).join('');
-  $('vistas').innerHTML = b('orbital', t('Órbita', 'Orbit')) + b('puerta', t('Desde la puerta', 'From the door')) + b('webcam', 'Webcam') +
-    `<select id="pan" aria-label="${t('Encuadre de la webcam', 'Webcam framing')}">${PANES.map(([p, txt]) => `<option value="${p}">${esc(txt)}</option>`).join('')}</select>` +
+  // Sin webcam en el plano (Starbucks) no hay vista de webcam ni encuadres que ofrecer.
+  const conWebcam = Boolean(vistaWebcam(escena));
+  $('vistas').innerHTML = b('orbital', t('Órbita', 'Orbit')) + (vistaPuerta(escena) ? b('puerta', t('Desde la puerta', 'From the door')) : '') +
+    (conWebcam ? b('webcam', 'Webcam') + `<select id="pan" aria-label="${t('Encuadre de la webcam', 'Webcam framing')}">${PANES.map(([p, txt]) => `<option value="${p}">${esc(txt)}</option>`).join('')}</select>` : '') +
     b('planta', t('Planta', 'Plan')) + `<span class="sep">${t('Alzado', 'Elevation')}</span>${alzados}` +
     `<button type="button" id="ver-etiquetas" aria-pressed="${st.etiquetas}">${t('Etiquetas', 'Labels')}</button>`;
   $('vistas').addEventListener('click', e => {
     const v = e.target.closest('[data-vista]'); if (v) ponerVista(v.dataset.vista);
     if (e.target.id === 'ver-etiquetas') { st.etiquetas = !st.etiquetas; e.target.setAttribute('aria-pressed', String(st.etiquetas)); invalidar(); }
   });
+  if (!conWebcam) return;
   if (!PANES.some(([p]) => p === st.pan)) $('pan').insertAdjacentHTML('afterbegin', `<option value="${st.pan}">webcam ${st.pan}°</option>`);
   $('pan').value = String(st.pan);
   $('pan').addEventListener('change', e => { st.pan = Number(e.target.value); ponerVista('webcam'); });
@@ -186,7 +195,7 @@ function ponerVista(nombre, { url = true } = {}) {
   else if (pared) def = vistaAlzado(escena, pared);
   if (!['orbital', 'planta'].includes(nombre) && !def) nombre = 'orbital';
   st.vista = nombre; st.def = def; st.orto = { zoom: 1, panX: 0, panY: 0 };
-  if (nombre === 'orbital') { camara = persp; persp.fov = 40; st.orb.az = Math.PI / 4; st.orb.el = 0.92; persp.near = 0.05; persp.far = 80; redimensionarCamara(); ajustarOrbita(); }
+  if (nombre === 'orbital') { camara = persp; persp.fov = 40; st.orb.az = Number.isFinite(CFG.orbita?.az) ? CFG.orbita.az : Math.PI / 4; st.orb.el = Number.isFinite(CFG.orbita?.el) ? CFG.orbita.el : 0.92; persp.near = 0.05; persp.far = 80; redimensionarCamara(); ajustarOrbita(); }
   else if (def && def.tipo === 'perspectiva') {
     camara = persp; persp.near = 0.03; persp.far = 40;
     const p = V(...def.pos), o = V(...def.objetivo), d = o.clone().sub(p).normalize();
@@ -194,8 +203,8 @@ function ponerVista(nombre, { url = true } = {}) {
     st.mira.fovBase = def.fov; st.mira.hfovMin = nombre === 'webcam' ? 72 : 84; st.mira.zoom = 1;
   } else { camara = orto; }
   for (const b of document.querySelectorAll('[data-vista]')) b.setAttribute('aria-pressed', String(b.dataset.vista === nombre));
-  $('pan').classList.toggle('activo', nombre === 'webcam');
-  const nombres = { orbital: t('Órbita · arrastra para girar, rueda o pellizco para acercar', 'Orbit · drag to rotate, wheel or pinch to zoom'), puerta: t('Desde la puerta del pasillo · arrastra para mirar alrededor', 'From the corridor door · drag to look around'), webcam: `${t('Webcam PTZ', 'PTZ webcam')} · pan ${st.pan}° · tilt ${st.tilt}° · 72° × 44°${def?.panCero ? ` · ${t('cero del pan calibrado', 'pan zero calibrated')} ${def.panCero}°` : ''} · ${t('compárala con su foto', 'compare with its photo')}`, planta: t('Planta · vista cenital a escala', 'Plan · top view to scale') };
+  $('pan')?.classList.toggle('activo', nombre === 'webcam');
+  const nombres = { orbital: t('Órbita · arrastra para girar, rueda o pellizco para acercar', 'Orbit · drag to rotate, wheel or pinch to zoom'), puerta: CFG.puerta ? t(CFG.puerta.es, CFG.puerta.en) : t('Desde la puerta del pasillo · arrastra para mirar alrededor', 'From the corridor door · drag to look around'), webcam: `${t('Webcam PTZ', 'PTZ webcam')} · pan ${st.pan}° · tilt ${st.tilt}° · 72° × 44°${def?.panCero ? ` · ${t('cero del pan calibrado', 'pan zero calibrated')} ${def.panCero}°` : ''} · ${t('compárala con su foto', 'compare with its photo')}`, planta: t('Planta · vista cenital a escala', 'Plan · top view to scale') };
   $('hud').textContent = pared ? `${t('Alzado', 'Elevation')} · ${t('pared', 'wall')} ${pared} · ${def.nombre} · ${num(def.ancho)} × ${num(def.alto)} m · ${t('visto desde dentro, de a (izquierda) a b (derecha)', 'seen from inside, a (left) to b (right)')}` : nombres[nombre];
   stage.dataset.vista = nombre;
   if (url) { const u = new URL(location.href); u.searchParams.set('vista', nombre); if (nombre === 'webcam') u.searchParams.set('pan', String(st.pan)); else u.searchParams.delete('pan'); history.replaceState(null, '', u); }

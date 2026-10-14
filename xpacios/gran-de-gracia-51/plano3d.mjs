@@ -201,6 +201,12 @@ export function tipoMueble(m) {
   if (/silla|chair/.test(t)) return 'silla';
   if (/nevera|frigor|fridge/.test(t)) return 'nevera';
   if (/recreativa|arcade/.test(t)) return 'recreativa';
+  // Cafetería (Starbucks Paseo de Gracia): barra, caja, vitrina, estantería de tazas y pilar.
+  if (/barra|mostrador|counter/.test(t)) return 'barra';
+  if (/\bcaja\b|tpv|checkout/.test(t)) return 'caja';
+  if (/vitrina|display case/.test(t)) return 'vitrina';
+  if (/taza|estanter|shelf/.test(t)) return 'estanteria';
+  if (/pilar|columna|pillar|column/.test(t)) return 'pilar';
   return 'mueble';
 }
 
