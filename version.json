@@ -1,17 +1,15 @@
 {
-  "version": "v.13.10.2026.r2.22:09",
-  "deployedAt": "2026-10-13T20:09:53Z",
-  "deployer": "NeoMacStudio",
-  "machine": "MacStudio",
-  "signature": "NeoMacStudio · MacStudio",
-  "git": "9f7b1c6badfbc815d3eb7b84ba0e738e12edaf82",
-  "gitShort": "9f7b1c6",
-  "gitFull": "9f7b1c6badfbc815d3eb7b84ba0e738e12edaf82",
+  "version": "v.14.10.2026.r1.08:55",
+  "deployedAt": "2026-10-14T06:54:36Z",
+  "deployer": "MorfeoMacMini",
+  "machine": "MacMini",
+  "signature": "MorfeoMacMini · MacMini",
+  "git": "69dc3b79d373515d7eb29cc65545139bf0e0f5e1",
+  "gitShort": "69dc3b7",
+  "gitFull": "69dc3b79d373515d7eb29cc65545139bf0e0f5e1",
   "dirty": false,
   "novedades": [
-    "Estanco · Best Hiperreal: cada pantalla de la sala es un player virtual (tótem, pared, LED, portátil, lotería, turnos y tablet).",
-    "Emiten lo que Good tiene fijado, el contenido del Stock con su etiqueta XT-GRACIA-… o la parrilla de la casa; fichas «En emisión».",
-    "Los muebles se levantan: arrastrar, girar con R y soltar; huella verde o roja, imán al hueco libre y Ctrl/⌘+Z.",
-    "Los 43 muebles renderizados de nuevo en Blender, con sombra de suelo; el quiosco del tótem se ve en perspectiva."
+    "Modo experto: /redistribucion (también /redistribución, /plano, /obras) abre en admira.biz el plano en planta y alzado del Xpacio con su inventario ITIL de pantallas, en modo obras.",
+    "Sin argumento usa el Xpacio del gemelo (?loc=); hoy tiene plano Starbucks Paseo de Gracia 103."
   ]
 }
