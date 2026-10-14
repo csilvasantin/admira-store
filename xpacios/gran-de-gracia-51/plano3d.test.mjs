@@ -6,30 +6,36 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
   SCHEMA, validatePlan, panelSize, footprint, wallSolids, escenaDesdePlano, colocarDispositivo,
-  vistaWebcam, vistaAlzado, vistaPuerta, cargarPlano, PLANO_COMPARTIDO, PLANO_LOCAL, ALZADO_FONDO, inwardNormal,
+  vistaWebcam, vistaAlzado, vistaPuerta, cargarPlano, comprobarSesion, PLANO_COMPARTIDO, PLANO_LOCAL, ALZADO_FONDO, inwardNormal,
 } from './plano3d.mjs';
 
 const repo = fileURLToPath(new URL('../../', import.meta.url));
 const read = p => readFileSync(repo + p, 'utf8');
-const PLAN = JSON.parse(read('data/xpacios/lab-gran-de-gracia-51.json'));
+// El repositorio es público: guarda la versión pública del plano. El completo (ITIL, screenIds,
+// dirección) vive en admira.biz; aquí se reconstruye con datos de prueba para ejercitar ese camino.
+const PUBLICO = JSON.parse(read('data/xpacios/lab-gran-de-gracia-51.json'));
+const STARBUCKS_SIX = ['macmini-starbucks-vertical', 'macmini-starbucks-horizontal', 'macmini-starbucks-vertical-right',
+  'macstudio-starbucks-vertical', 'macstudio-starbucks-horizontal', 'macstudio-starbucks-vertical-right'];
+const PLAN = {
+  ...PUBLICO, publico: undefined, direccion: 'Calle de Prueba 1 · 08000 Barcelona',
+  pantallas: PUBLICO.pantallas.map((s, i) => ({ ...s, itil: `TEST-PAN-0${i + 1}`, ...(i < 6 ? { screenId: STARBUCKS_SIX[i] } : {}) })),
+  dispositivos: PUBLICO.dispositivos.map((d, i) => ({ ...d, itil: `TEST-DEV-0${i + 1}` })),
+};
+delete PLAN.publico;
 const cerca = (a, b, eps = 0.002) => Math.abs(a - b) <= eps;
-const STARBUCKS_SIX = ['macstudio-starbucks-vertical', 'macstudio-starbucks-horizontal', 'macstudio-starbucks-vertical-right',
-  'macmini-starbucks-vertical', 'macmini-starbucks-horizontal', 'macmini-starbucks-vertical-right'];
 
-test('the lab plan follows admira.xpacio-plano/1 and declares the 7 screens with their ITIL codes', () => {
-  const { errores, avisos } = validatePlan(PLAN);
+test('the repository keeps the public lab plan: valid admira.xpacio-plano/1 geometry, 7 screens, no ITIL map', () => {
+  const { errores, avisos } = validatePlan(PUBLICO);
   assert.deepEqual(errores, []);
   assert.deepEqual(avisos, [], 'walls run clockwise and close');
-  assert.equal(PLAN.schema, SCHEMA);
-  assert.equal(PLAN.id, 'lab-gran-de-gracia-51');
-  assert.deepEqual(PLAN.paredes.map(w => w.id), ['F', 'D', 'P', 'I']);
-  assert.equal(PLAN.pantallas.length, 7);
-  assert.deepEqual(PLAN.pantallas.filter(s => s.screenId).map(s => s.screenId).sort(), [...STARBUCKS_SIX].sort());
-  assert.ok(PLAN.pantallas.some(s => /MacBook Pro 16/.test(s.nombre) && s.pulgadas === 16.2));
-  const codigos = [...PLAN.pantallas, ...PLAN.dispositivos].map(o => o.itil || o.itilPropuesto);
-  assert.equal(new Set(codigos).size, 11, 'one ITIL code per CI');
-  assert.ok(codigos.every(c => /^GDG51-(PAN|PLY|CAM)-\d\d$/.test(c)), codigos.join());
-  assert.match(PLAN.yokup?.portal || '', /^https:\/\//);
+  assert.equal(PUBLICO.schema, SCHEMA);
+  assert.equal(PUBLICO.id, 'lab-gran-de-gracia-51');
+  assert.equal(PUBLICO.publico, true);
+  assert.deepEqual(PUBLICO.paredes.map(w => w.id), ['F', 'D', 'P', 'I']);
+  assert.equal(PUBLICO.pantallas.length, 7);
+  assert.ok(PUBLICO.pantallas.some(s => s.pulgadas === 16.2 && /integrada/.test(s.nombre)));
+  const texto = JSON.stringify(PUBLICO);
+  for (const prohibido of ['"itil', 'screenId', 'yokup', 'GDG51', 'starbucks', '08012', 'Carrer', 'Carlos']) assert.ok(!texto.includes(prohibido), prohibido);
 });
 
 test('the copied plano-core geometry measures 27″ and 16,2″ panels like the 2D plan', () => {
@@ -63,7 +69,7 @@ test('screens stand on their desks, face the room and group as V–H–V per pla
     assert.deepEqual(p.n, w.n);
     assert.ok(cerca(Math.sin(p.yaw), w.n[0], 1e-9) && cerca(Math.cos(p.yaw), w.n[1], 1e-9), `${p.id} faces inwards`);
   }
-  assert.deepEqual(e.grupos.map(g => [g.id, g.pared, g.composicion, g.player]), [['puesto-carlos', 'F', 'V–H–V', 'Mac mini'], ['mesa-larga', 'I', 'V–H–V', 'Mac Studio']]);
+  assert.deepEqual(e.grupos.map(g => [g.id, g.pared, g.composicion, g.player]), [['mosaico-1', 'F', 'V–H–V', 'Mac mini'], ['mosaico-2', 'I', 'V–H–V', 'Mac Studio']]);
   assert.equal(e.pantallas.find(p => p.portatil)?.pulgadas, 16.2, 'the MacBook Pro 16 is drawn as a laptop');
   assert.equal(e.pantallas.find(p => p.screenId === 'macstudio-starbucks-horizontal').textura,
     'https://admira.studio/assets/demos/starbucks-six/captures-r2/starbucks-six-r2-frame-macstudio-starbucks-horizontal.jpg');
@@ -74,7 +80,7 @@ test('players and webcam are placed from their screens when the plan has no posi
   const e = escenaDesdePlano(PLAN, { colocacion: { macmini: 'bajo-mesa' } });
   const d = id => e.dispositivos.find(x => x.id === id);
   assert.equal(d('webcam').colocacion, 'sobre-pantalla');
-  assert.equal(d('webcam').sobre, 'macmini-starbucks-horizontal');
+  assert.equal(e.pantallas.find(p => p.id === d('webcam').sobre).screenId, 'macmini-starbucks-horizontal', 'on the Mac mini H');
   assert.equal(d('macstudio').colocacion, 'sobre-mesa');
   assert.equal(d('macstudio').pos[2], 0.75, 'on the long desk top');
   assert.equal(d('macmini').colocacion, 'bajo-mesa');
@@ -107,15 +113,17 @@ function respuesta(cuerpo, { status = 200, tipo = 'application/json' } = {}) {
   return { ok: status >= 200 && status < 300, status, headers: { get: k => (k.toLowerCase() === 'content-type' ? tipo : null) }, json: async () => (typeof cuerpo === 'string' ? JSON.parse(cuerpo) : cuerpo) };
 }
 
-test('the shared admira.biz plan wins; HTML, errors, other Xpacios or invalid plans fall back to the local copy', async () => {
+test('with a session the shared admira.biz plan wins; HTML, errors, other Xpacios or invalid plans fall back to the local copy', async () => {
   const ID = 'lab-gran-de-gracia-51';
   assert.equal(PLANO_COMPARTIDO(ID), 'https://www.admira.biz/data/xpacios/lab-gran-de-gracia-51.json');
   assert.equal(PLANO_LOCAL(ID), '/data/xpacios/lab-gran-de-gracia-51.json');
   const pedidas = [];
   const fetchCon = compartido => async url => { pedidas.push(url); return url.startsWith('https://') ? compartido() : respuesta(PLAN); };
-  const ok = await cargarPlano(ID, { fetchImpl: fetchCon(() => respuesta({ ...PLAN, version: 'compartida' })) });
+  const ok = await cargarPlano(ID, { sesion: true, fetchImpl: fetchCon(() => respuesta({ ...PLAN, version: 'compartida' })) });
   assert.equal(ok.fuente, 'compartido');
+  assert.equal(ok.acceso, 'sesion');
   assert.equal(ok.plan.version, 'compartida');
+  assert.equal(ok.plan.pantallas[0].itil, 'TEST-PAN-01');
   assert.deepEqual(pedidas, [PLANO_COMPARTIDO(ID)], 'no local request when the shared plan is good');
   const casos = [
     ['HTML portal', () => respuesta('<!doctype html>', { tipo: 'text/html; charset=utf-8' }), /HTML/],
@@ -125,26 +133,50 @@ test('the shared admira.biz plan wins; HTML, errors, other Xpacios or invalid pl
     ['invalid plan', () => respuesta({ ...PLAN, pantallas: [{ id: 'x', pared: 'Q' }] }), /no válido/],
   ];
   for (const [nombre, compartido, motivo] of casos) {
-    const r = await cargarPlano(ID, { fetchImpl: fetchCon(compartido) });
+    const r = await cargarPlano(ID, { sesion: true, fetchImpl: fetchCon(compartido) });
     assert.equal(r.fuente, 'local', nombre);
     assert.equal(r.plan.id, ID, nombre);
     assert.equal(r.fallos.length, 1, nombre);
     assert.match(r.fallos[0].error, motivo, nombre);
   }
-  await assert.rejects(cargarPlano(ID, { fetchImpl: async () => respuesta({}, { status: 500 }) }), e => e.fallos.length === 2);
+  const caducada = await cargarPlano(ID, { sesion: true, fetchImpl: async url => (url.startsWith('https://') ? respuesta({}, { status: 404 }) : respuesta(PUBLICO)) });
+  assert.equal(caducada.acceso, 'publico', 'the server answered with the public plan: show the public view');
+  await assert.rejects(cargarPlano(ID, { sesion: true, fetchImpl: async () => respuesta({}, { status: 500 }) }), e => e.fallos.length === 2);
   await assert.rejects(cargarPlano('../secreto', { fetchImpl: async () => respuesta(PLAN) }), /no válido/);
 });
 
-test('the page reads the plan, registers /redistribucion for the lab and is listed with the Xpacios', () => {
+test('without a session only this site is asked, never admira.biz, and the plan is cut to its public version', async () => {
+  const pedidas = [];
+  const r = await cargarPlano('lab-gran-de-gracia-51', { fetchImpl: async url => { pedidas.push(url); return respuesta(PLAN); } });
+  assert.deepEqual(pedidas, ['/data/xpacios/lab-gran-de-gracia-51.json']);
+  assert.equal(r.acceso, 'publico');
+  assert.equal(r.plan.publico, true);
+  assert.ok(!JSON.stringify(r.plan).includes('TEST-PAN') && !JSON.stringify(r.plan).includes('starbucks'), 'no ITIL codes or screenIds even if the server sent them');
+  assert.equal(r.plan.direccion, 'Prueba · Barcelona');
+});
+
+test('the session check reads /auth/session and treats any failure as no session', async () => {
+  const con = res => ({ fetchImpl: async (url, opts) => { assert.equal(url, '/auth/session'); assert.equal(opts.credentials, 'same-origin'); return res(); } });
+  assert.equal(await comprobarSesion(con(() => respuesta({ ok: true, email: 'x@admira.com' }))), true);
+  assert.equal(await comprobarSesion(con(() => respuesta({ ok: false }, { status: 401 }))), false);
+  assert.equal(await comprobarSesion(con(() => respuesta({ ok: false }))), false);
+  assert.equal(await comprobarSesion(con(() => { throw new TypeError('offline'); })), false);
+  assert.equal(await comprobarSesion(con(() => respuesta('<!doctype html>', { tipo: 'text/html' }))), false);
+});
+
+test('the page loads the shell, registers /redistribucion for the lab, hides the exact address and is listed', () => {
   const html = read('xpacios/gran-de-gracia-51/index.html');
   const portada = read('index.html');
   const version = (portada.match(/\/assets\/xpace-shell\.js\?v=([^"'&\s]+)/) || [])[1];
   assert.ok(html.includes(`/assets/xpace-shell.js?v=${version}`), 'current shell release');
   assert.match(html, /plano:'lab-gran-de-gracia-51'/);
-  assert.match(html, /https:\/\/www\.admira\.biz\/plano\.html\?locationId=lab-gran-de-gracia-51/);
-  assert.match(html, /https:\/\/admira\.app\/retailer#itil/);
   assert.match(html, /por confirmar con metro/);
+  for (const exacta of ['Carrer', '08012', '1.ª planta', 'Gran de Gràcia 51', 'admira.biz/plano.html', 'retailer#itil']) assert.ok(!html.includes(exacta), exacta);
   const js = read('xpacios/gran-de-gracia-51/gemelo.mjs');
+  assert.match(js, /https:\/\/www\.admira\.biz\/plano\.html\?locationId=/, 'the 2D plan link is added only with a session');
+  assert.match(js, /https:\/\/admira\.app\/retailer#itil/);
   assert.doesNotMatch(js + html, /canal(\.html)?\?screen=/, 'never opens a real screen channel (it would broadcast as that screen)');
-  assert.match(read('xpacios/index.html'), /href="\/xpacios\/gran-de-gracia-51\/"/);
+  const lista = read('xpacios/index.html');
+  assert.match(lista, /href="\/xpacios\/gran-de-gracia-51\/"/);
+  assert.ok(!/Gran de Gràcia 51|GDG51|CI ITIL/.test(lista), 'the public listing does not expose the exact address or the inventory');
 });

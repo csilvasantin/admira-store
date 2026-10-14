@@ -3,7 +3,7 @@
 // pantallas con su captura, players y webcam. Three.js r160 del propio sitio
 // (admira-xp/scripts/premium-three.mjs, el mismo de Better/Best y de SneakerStore).
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { pointOnWall } from './plano3d.mjs?v=gdg51-1';
+import { pointOnWall } from './plano3d.mjs?v=gdg51-2';
 
 const GROSOR = 0.08;
 const tipoTexto = (m, re) => (String(m.nombre || '').replace(re, '').trim() || m.id).toUpperCase();
@@ -239,15 +239,51 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
       const pie = box(0.05, cuello, 0.03, M.bisel); pie.position.set(0, -cuello / 2, -0.06); g.add(pie);
       const plato = box(0.22, 0.012, 0.18, M.bisel); plato.position.set(0, -cuello + 0.006, -0.03); g.add(plato);
     }
-    if (p.textura) {
-      loader.load(p.textura, t => {
-        own(t); t.colorSpace = T.SRGBColorSpace; t.anisotropy = anisotropia; cubrir(t, p.w, p.h);
-        pantallaMat.map = t; pantallaMat.color.set('#ffffff'); pantallaMat.needsUpdate = true; onCambio({ textura: p.id });
-      }, undefined, () => onCambio({ textura: p.id, error: true }));
-    }
-    pantallas.set(p.id, { grupo: g, display: disp, dato: p });
+    // Sin captura (vista pública o pantalla sin contenido publicado): rótulo neutro, no un panel negro.
+    const neutro = lienzo(p.orientacion === 'vertical' ? 288 : 512, p.orientacion === 'vertical' ? 512 : 288, (g2, W, H) => {
+      const gr = g2.createLinearGradient(0, 0, W, H); gr.addColorStop(0, '#12333a'); gr.addColorStop(1, '#0b1a20'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H);
+      g2.fillStyle = '#78f3ff'; g2.font = 'bold 64px system-ui'; g2.textAlign = 'center'; g2.fillText(p.orientacion === 'vertical' ? 'V' : 'H', W / 2, H / 2);
+      g2.fillStyle = '#7f9ea3'; g2.font = '22px system-ui'; g2.fillText(`${String(p.pulgadas).replace('.', ',')}″ · XpaceOS`, W / 2, H / 2 + 40);
+    });
+    pantallaMat.map = neutro; pantallaMat.color.set('#ffffff');
+    const estado = { grupo: g, display: disp, dato: p, mat: pantallaMat, neutro, url: null, video: null };
+    pantallas.set(p.id, estado);
+    if (p.textura) ponerMedio(p.id, { fuente: 'captura', url: p.textura, tipo: 'imagen' });
     root.add(g);
   }
+
+  // Lo que muestra una pantalla: la captura r2, lo que emite en vivo (imagen o vídeo) o el rótulo
+  // neutro. Si el contenido en vivo no se puede pintar (CORS, formato), vuelve a la captura.
+  function soltarVideo(e) { if (!e.video) return; try { e.video.pause(); e.video.removeAttribute('src'); e.video.load(); } catch (_) {} e.video = null; }
+  function ponerMedio(id, est) {
+    const e = pantallas.get(id);
+    if (!e || e.dato.portatil) return;
+    const url = est && est.url;
+    if (!url) { if (e.url) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
+    if (e.url === url) return;
+    e.url = url;
+    const fallo = () => { if (e.url !== url) return; e.url = null; soltarVideo(e); e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id, error: true, fuente: est.fuente }); if (est.fuente === 'vivo' && e.dato.textura) ponerMedio(id, { fuente: 'captura', url: e.dato.textura, tipo: 'imagen' }); };
+    if (est.tipo === 'video') {
+      const v = document.createElement('video');
+      Object.assign(v, { crossOrigin: 'anonymous', muted: true, playsInline: true, loop: true, preload: 'auto' });
+      v.addEventListener('loadedmetadata', () => {
+        if (e.url !== url) return;
+        if (est.startedAt && Number.isFinite(v.duration) && v.duration > 0) { try { v.currentTime = ((Date.now() - est.startedAt) / 1000) % v.duration; } catch (_) {} }
+        const t = own(new T.VideoTexture(v)); t.colorSpace = T.SRGBColorSpace;
+        const ia = v.videoWidth / v.videoHeight, pa = e.dato.w / e.dato.h; if (ia > pa) { t.repeat.set(pa / ia, 1); t.offset.set((1 - pa / ia) / 2, 0); } else { t.repeat.set(1, ia / pa); t.offset.set(0, (1 - ia / pa) / 2); }
+        soltarVideo(e); e.video = v; e.mat.map = t; e.mat.needsUpdate = true; v.play().catch(() => {}); onCambio({ medio: id, video: true });
+      }, { once: true });
+      v.addEventListener('error', fallo, { once: true });
+      v.src = url;
+      return;
+    }
+    loader.load(url, t => {
+      if (e.url !== url) { t.dispose(); return; }
+      own(t); t.colorSpace = T.SRGBColorSpace; t.anisotropy = anisotropia; cubrir(t, e.dato.w, e.dato.h);
+      soltarVideo(e); e.mat.map = t; e.mat.needsUpdate = true; onCambio({ medio: id, textura: id });
+    }, undefined, fallo);
+  }
+  const hayVideo = () => [...pantallas.values()].some(e => e.video && !e.video.paused);
 
   // ── Players y webcam ──
   const dispositivos = new Map();
@@ -280,7 +316,7 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
   const bombilla = new T.PointLight('#fff1d6', 6, 8, 1.6); bombilla.position.copy(V(ancho / 2, fondo / 2, alto - 0.25)); scene.add(bombilla);
 
   return {
-    scene, root, paredes, techo, lampara, pantallas, dispositivos, muebles,
-    dispose() { for (const r of resources) r.dispose?.(); resources.clear(); },
+    scene, root, paredes, techo, lampara, pantallas, dispositivos, muebles, ponerMedio, hayVideo,
+    dispose() { for (const e of pantallas.values()) soltarVideo(e); for (const r of resources) r.dispose?.(); resources.clear(); },
   };
 }

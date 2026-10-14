@@ -17,6 +17,10 @@ button[aria-pressed="true"]{background:#13424a;border-color:var(--cian);color:#f
 .etiqueta.player{border-color:#ffc86788}.etiqueta.player b{color:var(--ambar)}
 .etiqueta.camara{border-color:#ff8fd088}.etiqueta.camara b{color:var(--rosa)}
 .etiqueta.tapada{opacity:.38}
+.etiqueta.vivo b::before{content:"● ";color:#5dff8f}
+#xp-espejo{margin:2px 0 0;font:10.5px/1.35 ui-monospace,Menlo,monospace;color:var(--verde)}
+#xp-espejo[hidden]{display:none}
+#gemelo[data-acceso="publico"] .ficha-xpacio .fuente{color:var(--ambar)}
 .etiqueta.sel{border-color:#fff;box-shadow:0 0 0 2px #78f3ff66;z-index:2}
 .regla{position:absolute;left:0;top:0;font:600 10px ui-monospace,Menlo,monospace;color:#c9d6d3;pointer-events:none;white-space:nowrap}
 .regla.abajo{margin:2px 0 0 -10px}.regla.izquierda{margin:-7px 0 0 -40px}

@@ -17,6 +17,8 @@
 // `yaw` = atan2(nx, ny) gira su cara +z hacia (nx, ny) y su eje +x queda en el
 // sentido a→b de la pared: la pantalla se ve desde dentro como en el alzado.
 
+import { planoPublico } from '../plano-publico.mjs';
+
 export const SCHEMA = 'admira.xpacio-plano/1';
 export const ID_RE = /^[a-z0-9][a-z0-9-]{0,79}$/;
 export const CAPTURA_STARBUCKS_SIX = id => `https://admira.studio/assets/demos/starbucks-six/captures-r2/starbucks-six-r2-frame-${id}.jpg`;
@@ -27,32 +29,47 @@ export const round = (n, d = 2) => Math.round(n * 10 ** d) / 10 ** d;
 const num = v => typeof v === 'number' && Number.isFinite(v);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-// ── Fuente del plano ────────────────────────────────────────────────────────
+// ── Fuente del plano y acceso ───────────────────────────────────────────────
 // Los clientes de las cinco soluciones comparten planos e inventario ITIL (Carlos,
-// 14-oct-2026): manda el plano publicado en admira.biz. Si no responde, no es JSON
-// (admira.biz contesta con su portada a un plano que no existe), no valida o es de
-// otro Xpacio, se usa la copia de este sitio y se dice cuál.
+// 14-oct-2026): con sesión manda el plano publicado en admira.biz. Si no responde, no es
+// JSON, no valida o es de otro Xpacio, se usa la copia de este sitio y se dice cuál.
+// Sin sesión (criterio del ITIL de Yokup: el mapa de qué pantalla hay en qué pared no es
+// público) sólo se pide la copia de este sitio, que el servidor ya entrega en su versión
+// pública (functions/data/xpacios/[id].js), y aquí se vuelve a recortar por si acaso.
 export const PLANO_COMPARTIDO = id => `https://www.admira.biz/data/xpacios/${id}.json`;
 export const PLANO_LOCAL = id => `/data/xpacios/${id}.json`;
 
-export async function cargarPlano(id, { fetchImpl = globalThis.fetch, fuentes, timeoutMs = 6000 } = {}) {
+export async function comprobarSesion({ fetchImpl = globalThis.fetch, timeoutMs = 6000 } = {}) {
+  const ac = typeof AbortController === 'function' ? new AbortController() : null;
+  const timer = ac ? setTimeout(() => ac.abort(), timeoutMs) : null;
+  try {
+    const r = await fetchImpl('/auth/session', { credentials: 'same-origin', cache: 'no-store', ...(ac ? { signal: ac.signal } : {}) });
+    if (!r || !r.ok) return false;
+    const j = await r.json().catch(() => null);
+    return Boolean(j && j.ok === true);
+  } catch (_) { return false; } finally { if (timer) clearTimeout(timer); }
+}
+
+export async function cargarPlano(id, { fetchImpl = globalThis.fetch, fuentes, timeoutMs = 6000, sesion = false } = {}) {
   if (!ID_RE.test(String(id || ''))) throw new Error(`Id de Xpacio no válido: «${id}»`);
-  const lista = fuentes || [{ fuente: 'compartido', url: PLANO_COMPARTIDO(id) }, { fuente: 'local', url: PLANO_LOCAL(id) }];
+  const lista = fuentes || (sesion ? [{ fuente: 'compartido', url: PLANO_COMPARTIDO(id) }, { fuente: 'local', url: PLANO_LOCAL(id) }] : [{ fuente: 'local', url: PLANO_LOCAL(id) }]);
   const fallos = [];
   for (const { fuente, url } of lista) {
     const ac = typeof AbortController === 'function' ? new AbortController() : null;
     const timer = ac ? setTimeout(() => ac.abort(), timeoutMs) : null;
     try {
-      // no-store: sin petición condicional (admira.biz contestaba 404 a If-None-Match en vez de 304).
-      const r = await fetchImpl(url, { cache: 'no-store', credentials: 'omit', ...(ac ? { signal: ac.signal } : {}) });
+      // no-store: sin petición condicional (admira.biz llegó a contestar 404 a If-None-Match).
+      const r = await fetchImpl(url, { cache: 'no-store', credentials: fuente === 'local' ? 'same-origin' : 'omit', ...(ac ? { signal: ac.signal } : {}) });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const tipo = (r.headers && typeof r.headers.get === 'function' && r.headers.get('content-type')) || '';
       if (/text\/html/i.test(tipo)) throw new Error('responde HTML: no hay plano publicado');
-      const plan = await r.json();
+      let plan = await r.json();
       const { errores } = validatePlan(plan);
       if (errores.length) throw new Error(`plano no válido: ${errores[0]}`);
       if (plan.id !== id) throw new Error(`es el plano de «${plan.id}»`);
-      return { plan, fuente, url, fallos };
+      const publico = !sesion || plan.publico === true;
+      if (publico) plan = planoPublico(plan);
+      return { plan, fuente, url, fallos, acceso: publico ? 'publico' : 'sesion' };
     } catch (e) {
       fallos.push({ fuente, url, error: e && e.name === 'AbortError' ? `sin respuesta en ${timeoutMs / 1000} s` : String(e && e.message || e) });
     } finally { if (timer) clearTimeout(timer); }
@@ -257,6 +274,7 @@ export function colocarPantalla(s, plan) {
     apoyo: apoyo ? { id: apoyo.m.id, alto: apoyo.m.alto } : null,
     portatil,
     textura: s.screenId ? CAPTURA_STARBUCKS_SIX(s.screenId) : null,
+    playerVirtual: s.playerVirtual || null,
   };
 }
 
