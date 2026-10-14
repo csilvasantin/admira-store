@@ -7,7 +7,7 @@ const read = file => readFileSync(new URL('../' + file, import.meta.url), 'utf8'
 const source = read('assets/xpace-shell.js');
 const base = 'https://www.admiranext.com/assets/avatar.js?v=';
 const fresh = base + '20261007-native-demo-control-1';
-const old = base + '20261007-pill-1';
+const old = base + '20261014-personajes-2';
 const flush = async () => {for (let i=0;i<12;i++) await Promise.resolve();};
 
 // Execute the entire shipped IIFE. A real topBar with no generated shell marker
