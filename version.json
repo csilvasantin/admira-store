@@ -1,15 +1,16 @@
 {
-  "version": "v.14.10.2026.r1.08:55",
-  "deployedAt": "2026-10-14T06:54:36Z",
-  "deployer": "MorfeoMacMini",
-  "machine": "MacMini",
-  "signature": "MorfeoMacMini · MacMini",
-  "git": "69dc3b79d373515d7eb29cc65545139bf0e0f5e1",
-  "gitShort": "69dc3b7",
-  "gitFull": "69dc3b79d373515d7eb29cc65545139bf0e0f5e1",
+  "version": "v.14.10.2026.r2.11:03",
+  "deployedAt": "2026-10-14T09:03:40Z",
+  "deployer": "NeoMBP14",
+  "machine": "MacBookProNegro14",
+  "signature": "NeoMBP14 · MacBookProNegro14",
+  "git": "77a9cce7a158180d8022f157416752a5f17d7cc7",
+  "gitShort": "77a9cce",
+  "gitFull": "77a9cce7a158180d8022f157416752a5f17d7cc7",
   "dirty": false,
   "novedades": [
-    "Modo experto: /redistribucion (también /redistribución, /plano, /obras) abre en admira.biz el plano en planta y alzado del Xpacio con su inventario ITIL de pantallas, en modo obras.",
-    "Sin argumento usa el Xpacio del gemelo (?loc=); hoy tiene plano Starbucks Paseo de Gracia 103."
+    "Nuevo Xpacio real: el laboratorio AdmiraNeXT de Gran de Gràcia 51 en 3D (/xpacios/gran-de-gracia-51/), pintado desde su plano canónico: sala, muebles, 7 pantallas a escala con su código ITIL y screenId, players y webcam.",
+    "Vistas en órbita, desde la puerta, webcam (calibrada con sus fotos), planta y alzado de cada pared con reglas. Lee el plano compartido de admira.biz y, si falla, la copia local, y dice cuál usa.",
+    "Modo experto: /redistribucion ya conoce el laboratorio (alias laboratorio, gdg51) y, en la página de un Xpacio, abre su plano sin argumento. Levantamiento por cámara: medidas por confirmar con metro."
   ]
 }
