@@ -371,9 +371,28 @@
     return {ok:true, local:true, language:next, message: next === 'en' ? 'Language: English' : 'Idioma: español'};
   }
 
+  // /redistribucion (FLT-102063): el plano en planta y alzado del Xpacio vive en admira.app
+  // (plano.html, modo obras). Xpacio: el argumento, si no el ?loc= del gemelo y, si solo hay
+  // uno con plano, ese. Misma lista que expert-commands.js de clearchannel-tv (PLANOS).
+  const PLANOS = [
+    {id: 'alsea-sbux-021', nombre: 'Starbucks Paseo de Gracia 103', aliases: ['starbucks', 'starbucks 103', 'starbucks paseo de gracia', 'paseo de gracia', 'paseo de gracia 103', 'pg103', 'sbux 021']},
+  ];
+  const PLANO_ORIGIN = 'https://www.admira.app';
+  const planoKey = value => String(value == null ? '' : value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  function planoTarget(args, search = '', lang = 'es') {
+    const raw = String(args || '').trim().replace(/^(?:xpacio|xpace|local|tienda|store)\s*[=:]\s*/i, '');
+    let loc = '';
+    try { loc = new URLSearchParams(search).get('loc') || ''; } catch (_) {}
+    const wanted = planoKey(raw || loc || (PLANOS.length === 1 ? PLANOS[0].id : ''));
+    const plano = wanted && PLANOS.find(p => [p.id, p.nombre, ...p.aliases].some(a => planoKey(a) === wanted));
+    if (!plano) return {ok: false, asked: raw || loc, list: PLANOS.map(p => p.nombre).join(', ')};
+    return {ok: true, id: plano.id, nombre: plano.nombre,
+      url: PLANO_ORIGIN + '/plano.html?locationId=' + encodeURIComponent(plano.id) + '&modo=obra&lang=' + (lang === 'en' ? 'en' : 'es')};
+  }
+
   const api = {PANELS_KEY, HISTORY_KEY, LANG_KEY, LANG_EVENT, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
-    esc, normalizeConfig, markup, parseCommand, parseLangCommand, normalizeLangToken, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
+    PLANOS, planoTarget, esc, normalizeConfig, markup, parseCommand, parseLangCommand, normalizeLangToken, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -958,6 +977,20 @@
         if (!first) return shared.avatar('/avatar');
         if (first === 'good' || first === 'better' || first === 'best') return shared.avatar('/avatar ' + first);
         handoff('/cli' + (args ? ' ' + args : ''));
+      },
+    });
+    registerVerb({
+      id: 'redistribucion',
+      aliases: ['redistribución', 'redistribuir', 'plano', 'obras'],
+      es: 'Abre en admira.app el plano en planta y alzado del Xpacio con su inventario ITIL de pantallas, en modo obras para cambiar su distribución y sacar la orden de obra. Sin argumento: el Xpacio del gemelo (?loc=).',
+      en: 'Opens the Xpace floor plan and elevation with its ITIL screen inventory on admira.app, in works mode to change its layout and get the work order. No argument: the twin Xpace (?loc=).',
+      run(args) {
+        const r = planoTarget(args, root.location.search, lang());
+        if (!r.ok) return r.asked
+          ? T(`«${r.asked}» aún no tiene plano. Con plano: ${r.list}.`, `“${r.asked}” has no floor plan yet. With a plan: ${r.list}.`)
+          : T(`Indica el Xpacio: /redistribucion <xpacio>. Con plano: ${r.list}.`, `Name the Xpace: /redistribucion <xpace>. With a plan: ${r.list}.`);
+        setTimeout(() => root.location.assign(r.url), 350);
+        return T(`Abriendo en admira.app el plano de ${r.nombre} en modo obras…`, `Opening the ${r.nombre} floor plan in works mode on admira.app…`);
       },
     });
     log(T('XpaceOS · consola lista. Escribe /help.', 'XpaceOS · console ready. Type /help.'));
