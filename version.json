@@ -1,16 +1,15 @@
 {
-  "version": "v.14.10.2026.r3.11:29",
-  "deployedAt": "2026-10-14T09:29:57Z",
+  "version": "v.14.10.2026.r4.13:50",
+  "deployedAt": "2026-10-14T11:50:25Z",
   "deployer": "NeoMBP14",
   "machine": "MacBookProNegro14",
   "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "56bb02fe5cf7e3885cf3db4ff81b6590af6edf39",
-  "gitShort": "56bb02f",
-  "gitFull": "56bb02fe5cf7e3885cf3db4ff81b6590af6edf39",
+  "git": "b4ad5c7fd731957e9e9c5caece96f23b9bcb9b88",
+  "gitShort": "b4ad5c7",
+  "gitFull": "b4ad5c7fd731957e9e9c5caece96f23b9bcb9b88",
   "dirty": false,
   "novedades": [
-    "Gemelo 3D del laboratorio: sin sesión se ve la sala con rótulos genéricos (V/H, pulgadas, player), sin códigos ITIL, inventario ni dirección exacta; con la cuenta Admira, todo como antes.",
-    "Con sesión, cada pantalla pinta lo que su pantalla real emite ahora en admira.tv (espejo de solo lectura cada 20 s); sin señal, la captura del 13-oct y lo dice.",
-    "admira.tv sólo se abre en la portada o en el canal de un player virtual: nunca como una pantalla real."
+    "⌘ Experto: /bugito abre el banco de pruebas de Bugito en admira.biz, el Admirito diablillo que provoca incidencias en un player virtual de laboratorio.",
+    "El asistente flotante carga el cargador común del avatar que conoce a los personajes de Admirito."
   ]
 }
