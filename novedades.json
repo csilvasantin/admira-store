@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.14.10.2026.r6.17:25": [
+    "Starbucks Paseo de Gracia: el mural doble H se ve como una sola pantalla; el titular «Tu café sigue contigo.» cruza las seis pantallas a la vez sobre la barra.",
+    "Campaña starbucks-six de admira.studio pintada en un solo lienzo en el gemelo, con botón para pausarla; lo que una pantalla real emita en vivo en admira.tv manda sobre el lienzo."
+  ],
   "v.14.10.2026.r5.17:16": [
     "Nuevo gemelo 3D de Starbucks Paseo de Gracia desde su plano: barra con cafeteras, caja, vitrina, estantería de tazas y el mural doble H de seis pantallas sobre la barra (/xpacios/starbucks-paseo-de-gracia/).",
     "Mismo motor que el laboratorio con acabado de cafetería: tarima de roble y la pared de la barra en verde. Vistas: órbita, desde la puerta de la calle, planta y alzado por pared.",

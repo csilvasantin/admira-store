@@ -1,16 +1,15 @@
 {
-  "version": "v.14.10.2026.r5.17:16",
-  "deployedAt": "2026-10-14T15:16:03Z",
+  "version": "v.14.10.2026.r6.17:25",
+  "deployedAt": "2026-10-14T15:25:35Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "2a8873b9708fcc51b78c1cdfbe0d290504c8e8f6",
-  "gitShort": "2a8873b",
-  "gitFull": "2a8873b9708fcc51b78c1cdfbe0d290504c8e8f6",
+  "git": "efe44d3ddf60b47f4200aa30fa31147e43b316a6",
+  "gitShort": "efe44d3",
+  "gitFull": "efe44d3ddf60b47f4200aa30fa31147e43b316a6",
   "dirty": false,
   "novedades": [
-    "Nuevo gemelo 3D de Starbucks Paseo de Gracia desde su plano: barra con cafeteras, caja, vitrina, estantería de tazas y el mural doble H de seis pantallas sobre la barra (/xpacios/starbucks-paseo-de-gracia/).",
-    "Mismo motor que el laboratorio con acabado de cafetería: tarima de roble y la pared de la barra en verde. Vistas: órbita, desde la puerta de la calle, planta y alzado por pared.",
-    "Sin sesión, rótulos genéricos; con la cuenta Admira, el plano completo de admira.biz con las capturas starbucks-six y el espejo de admira.tv."
+    "Starbucks Paseo de Gracia: el mural doble H se ve como una sola pantalla; el titular «Tu café sigue contigo.» cruza las seis pantallas a la vez sobre la barra.",
+    "Campaña starbucks-six de admira.studio pintada en un solo lienzo en el gemelo, con botón para pausarla; lo que una pantalla real emita en vivo en admira.tv manda sobre el lienzo."
   ]
 }
