@@ -287,6 +287,7 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
 
   // ── Pantallas ──
   const pantallas = new Map();
+  let compartido = null;   // mural como un solo lienzo (ponerLienzo); antes del primer ponerMedio
   const loader = new T.TextureLoader(); loader.setCrossOrigin('anonymous');
   function cubrir(t, w, h) { // recorte «cover» de la imagen sobre el panel
     const ia = t.image.width / t.image.height, pa = w / h;
@@ -324,7 +325,7 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
       g2.fillStyle = '#7f9ea3'; g2.font = '22px system-ui'; g2.fillText(`${String(p.pulgadas).replace('.', ',')}″ · XpaceOS`, W / 2, H / 2 + 40);
     });
     pantallaMat.map = neutro; pantallaMat.color.set('#ffffff');
-    const estado = { grupo: g, display: disp, dato: p, mat: pantallaMat, neutro, url: null, video: null };
+    const estado = { grupo: g, display: disp, dato: p, mat: pantallaMat, neutro, url: null, video: null, uv0: disp.geometry.attributes.uv.array.slice() };
     pantallas.set(p.id, estado);
     if (p.textura) ponerMedio(p.id, { fuente: 'captura', url: p.textura, tipo: 'imagen' });
     root.add(g);
@@ -336,6 +337,12 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
   function ponerMedio(id, est) {
     const e = pantallas.get(id);
     if (!e || e.dato.portatil) return;
+    // Con el mural como un solo lienzo, sólo lo que la pantalla real emite EN VIVO se lo quita;
+    // la captura o la falta de señal la devuelven al mural.
+    if (compartido && e.lienzoUV) {
+      if (!(est && est.fuente === 'vivo' && est.url)) { if (!e.enLienzo) volverAlLienzo(e); return; }
+      if (e.enLienzo) { e.enLienzo = false; ponerUV(e, e.uv0); }
+    }
     const url = est && est.url;
     if (!url) { if (e.url) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
     if (e.url === url) return;
@@ -362,6 +369,43 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
     }, undefined, fallo);
   }
   const hayVideo = () => [...pantallas.values()].some(e => e.video && !e.video.paused);
+
+  // ── Un solo lienzo en varias pantallas (mural doble H de Starbucks) ──
+  // Una textura compartida y, en cada pantalla, las UV de su trozo: las seis cambian en el mismo
+  // fotograma y la textura se sube una vez. `uvs`: id de pantalla → 8 UV en el orden de PlaneGeometry.
+  function ponerUV(e, arr) { const a = e.display.geometry.attributes.uv; a.array.set(arr); a.needsUpdate = true; }
+  function volverAlLienzo(e) {
+    soltarVideo(e); e.url = null; ponerUV(e, e.lienzoUV);
+    e.mat.map = compartido.tex; e.mat.needsUpdate = true; e.enLienzo = true; onCambio({ lienzo: e.dato.id });
+  }
+  function quitarLienzo() {
+    if (!compartido) return;
+    const viejo = compartido; compartido = null;
+    for (const e of pantallas.values()) {
+      if (!e.lienzoUV) continue;
+      const estaba = e.enLienzo; delete e.lienzoUV; e.enLienzo = false;
+      if (!estaba) continue;
+      ponerUV(e, e.uv0); e.mat.map = e.neutro; e.mat.needsUpdate = true;
+      if (e.dato.textura) ponerMedio(e.dato.id, { fuente: 'captura', url: e.dato.textura, tipo: 'imagen' });
+    }
+    viejo.tex.dispose(); resources.delete(viejo.tex); onCambio({ lienzo: false });
+  }
+  function ponerLienzo(canvas, uvs) {
+    quitarLienzo();
+    if (!canvas || !uvs || !uvs.size) return 0;
+    const tex = own(new T.CanvasTexture(canvas)); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = anisotropia;
+    compartido = { tex };
+    let n = 0;
+    for (const [id, uv] of uvs) {
+      const e = pantallas.get(id);
+      if (!e || e.dato.portatil || !Array.isArray(uv) || uv.length !== 8) continue;
+      e.lienzoUV = uv; volverAlLienzo(e); n++;
+    }
+    if (!n) quitarLienzo();
+    return n;
+  }
+  const refrescarLienzo = () => { if (compartido) compartido.tex.needsUpdate = true; };
+  const enLienzo = () => [...pantallas.values()].filter(e => e.enLienzo).length;
 
   // ── Players y webcam ──
   const dispositivos = new Map();
@@ -400,6 +444,7 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
 
   return {
     scene, root, paredes, techo, lampara, pantallas, dispositivos, muebles, ponerMedio, hayVideo,
+    ponerLienzo, quitarLienzo, refrescarLienzo, enLienzo,
     dispose() { for (const e of pantallas.values()) soltarVideo(e); for (const r of resources) r.dispose?.(); resources.clear(); },
   };
 }

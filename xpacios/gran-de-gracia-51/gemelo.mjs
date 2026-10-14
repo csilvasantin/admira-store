@@ -4,7 +4,7 @@
 // alzado de cada pared, con etiquetas ITIL por pantalla y dispositivo.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-3';
-import { crearEscena3D } from './escena3d.mjs?v=gdg51-3';
+import { crearEscena3D } from './escena3d.mjs?v=gdg51-4';
 import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
 
 const $ = id => document.getElementById(id);
@@ -79,6 +79,10 @@ async function arrancar() {
   ponerVista(params.get('vista') || 'orbital', { url: false });
   canvas.dataset.listo = '1';
   if (acceso === 'sesion') arrancarEspejo();
+  // Gancho para lo propio de cada página (el mural de Starbucks): la escena ya está montada.
+  const api = { escena, s3d, invalidar, status, t, acceso, plan };
+  window.XpacioGemelo = api;
+  document.dispatchEvent(new CustomEvent('xpacio:listo', { detail: api }));
 }
 
 // ── Espejo de admira.tv: lo que emite AHORA cada pantalla real (sólo con sesión) ──
