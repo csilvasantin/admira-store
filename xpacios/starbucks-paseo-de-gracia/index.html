@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="admiranext-version" content="v.14.10.2026.r5.17:30">
+<title>Starbucks Paseo de Gracia · gemelo 3D · XpaceOS</title>
+<meta name="description" content="Gemelo 3D del Starbucks de Paseo de Gracia en Barcelona, pintado desde su plano canónico: barra, caja, vitrina y el mural doble H de seis pantallas sobre la barra, en órbita, planta y alzado por pared. Plano esquemático, por confirmar en visita técnica.">
+<meta name="theme-color" content="#10140f">
+<link rel="canonical" href="https://www.admira.store/xpacios/starbucks-paseo-de-gracia/">
+<link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
+<link rel="stylesheet" href="../gran-de-gracia-51/gemelo.css?v=gdg51-2">
+<script>window.XPACIO_GEMELO={loc:'alsea-sbux-021',tema:'cafeteria',orbita:{az:1.2,el:0.62},
+aviso:{es:'Plano esquemático · por confirmar en visita técnica',en:'Schematic plan · to be confirmed on a site visit'},
+puerta:{es:'Desde la puerta de la calle · arrastra para mirar alrededor',en:'From the street door · drag to look around'}};
+window.XPACE_SHELL={section:{es:'Xpacio · Starbucks',en:'Xpace · Starbucks'},plano:'alsea-sbux-021',
+options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'/admira-xp/?quality=matrix&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks',es:'Demo de Starbucks en el gemelo',en:'Starbucks demo in the twin'},{href:'https://admira.tv/',es:'admira.tv',en:'admira.tv',newTab:true}],
+advanced:[{id:'gdg-orbital',es:'Vista · órbita',en:'View · orbit'},{id:'gdg-puerta',es:'Vista · desde la puerta',en:'View · from the door'},{id:'gdg-planta',es:'Vista · planta',en:'View · plan'},{id:'gdg-alzado-f',es:'Alzado · pared F (barra y mural)',en:'Elevation · wall F (bar and mural)'},{id:'gdg-inventario',es:'Inventario ITIL (con sesión)',en:'ITIL inventory (signed in)'},{id:'gdg-etiquetas',es:'Etiquetas sí / no',en:'Labels on / off'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261007-native-demo-control-2">
+<script defer src="/assets/xpace-shell.js?v=20261014-gdg51-1"></script>
+<script type="module" src="../gran-de-gracia-51/gemelo.mjs?v=gdg51-3"></script>
+</head>
+<body>
+<header data-shell-replace><a href="/xpacios/" data-shell-slot="options">Todos los Xpacios</a></header>
+<main id="gemelo" aria-label="Gemelo 3D del Starbucks de Paseo de Gracia">
+  <canvas id="gemelo-canvas" tabindex="0" aria-label="Starbucks Paseo de Gracia en 3D · arrastra para girar y rueda para acercar"></canvas>
+  <div id="etiquetas" aria-label="Etiquetas ITIL"></div>
+  <section class="ficha-xpacio" aria-labelledby="xp-nombre">
+    <p class="eyebrow">XPACIO · STARBUCKS · GEMELO 3D</p>
+    <h1 id="xp-nombre">Starbucks Paseo de Gracia</h1>
+    <p id="xp-direccion">Barcelona</p>
+    <p id="xp-medidas"></p>
+    <p class="aviso" id="xp-aviso">Plano esquemático · por confirmar en visita técnica</p>
+    <p class="fuente" id="xp-fuente">Fuente: …</p>
+    <p id="xp-espejo" hidden></p>
+    <p id="estado" role="status">Preparando el gemelo…</p>
+    <p class="enlaces"><a id="xp-entrar" href="/auth/login" hidden>Entrar con cuenta Admira</a><a id="xp-plano2d" href="#" target="_blank" rel="noopener" hidden>Plano 2D ↗</a><a id="xp-yokup" href="#" target="_blank" rel="noopener" hidden>Ver en Yokup (ITIL) ↗</a><button type="button" id="inv-toggle" aria-expanded="false" aria-controls="inventario" hidden>Inventario ITIL</button></p>
+  </section>
+  <p id="hud" role="status"></p>
+  <nav id="vistas" aria-label="Vistas del gemelo"></nav>
+  <aside id="inventario" hidden aria-labelledby="inv-titulo">
+    <div class="inv-cab"><h2 id="inv-titulo">Inventario ITIL <span id="inv-total"></span></h2><button type="button" id="inv-cerrar" aria-label="Cerrar inventario">×</button></div>
+    <p class="inv-nota">Pantallas del mural doble H y sus players. Yokup es el maestro del ITIL; aquí se lee el plano.</p>
+    <ul id="inv-lista"></ul>
+  </aside>
+  <section id="detalle" hidden aria-live="polite"></section>
+  <noscript><p class="noscript">El gemelo 3D necesita JavaScript y WebGL.</p></noscript>
+</main>
+</body>
+</html>

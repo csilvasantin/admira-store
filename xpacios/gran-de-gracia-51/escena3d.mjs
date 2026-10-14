@@ -3,24 +3,33 @@
 // pantallas con su captura, players y webcam. Three.js r160 del propio sitio
 // (admira-xp/scripts/premium-three.mjs, el mismo de Better/Best y de SneakerStore).
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { pointOnWall } from './plano3d.mjs?v=gdg51-2';
+import { pointOnWall } from './plano3d.mjs?v=gdg51-3';
 
 const GROSOR = 0.08;
 const tipoTexto = (m, re) => (String(m.nombre || '').replace(re, '').trim() || m.id).toUpperCase();
 
-export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } = {}) {
+// Acabados por Xpacio: el plano no los trae, los elige la página. «laboratorio» es el de
+// Gran de Gràcia 51 (baldosa hidráulica, paredes blancas); «cafeteria» el de Starbucks
+// Paseo de Gracia: tarima de madera, paredes cálidas y la pared de la barra en verde.
+export const TEMAS = {
+  laboratorio: { fondo: '#0f1416', pared: '#eeede8', techo: '#f4f3ef', suelo: 'baldosa', acento: null, bombillas: 1 },
+  cafeteria: { fondo: '#10140f', pared: '#efe5d6', techo: '#f3ede3', suelo: 'tarima', acento: { re: /barra/i, color: '#1e3b31' }, bombillas: 3 },
+};
+
+export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, tema = 'laboratorio' } = {}) {
+  const TEMA = TEMAS[tema] || TEMAS.laboratorio;
   const resources = new Set();
   const own = x => (resources.add(x), x);
   const scene = new T.Scene();
-  scene.background = new T.Color('#0f1416');
+  scene.background = new T.Color(TEMA.fondo);
   const root = new T.Group();
   scene.add(root);
   const V = (x, y, h) => new T.Vector3(x, h, y);
 
   const mat = (color, extra = {}) => own(new T.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, ...extra }));
   const M = {
-    pared: mat('#eeede8', { roughness: 0.95 }),
-    techo: mat('#f4f3ef', { roughness: 1, side: T.FrontSide }),
+    pared: mat(TEMA.pared, { roughness: 0.95 }),
+    techo: mat(TEMA.techo, { roughness: 1, side: T.FrontSide }),
     blanco: mat('#f3f3f0', { roughness: 0.55 }),
     patas: mat('#cfd0cd', { roughness: 0.4, metalness: 0.4 }),
     negro: mat('#16181b', { roughness: 0.5 }),
@@ -55,6 +64,34 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
     }
   });
   baldosa.wrapS = baldosa.wrapT = T.RepeatWrapping;
+  // Tarima de roble en lamas de 20 cm a junta corrida: la textura cubre 1,2 × 0,6 m.
+  const tarima = lienzo(512, 256, (g, w, h) => {
+    const fila = h / 3, tonos = ['#9a6b43', '#a87749', '#8f6340', '#b07f52', '#966843'];
+    for (let r = 0; r < 3; r++) {
+      const corte = (r % 2) * w / 2;
+      for (let k = -1; k < 2; k++) {
+        const x = corte + k * w / 2 + (r === 2 ? w / 4 : 0);
+        g.fillStyle = tonos[(r * 3 + k + 5) % tonos.length]; g.fillRect(x, r * fila, w / 2, fila);
+        g.strokeStyle = 'rgba(60,38,20,.18)'; g.lineWidth = 1;
+        for (let v = 0; v < 6; v++) { const y = r * fila + 6 + v * (fila - 12) / 5; g.beginPath(); g.moveTo(x + 4, y); g.bezierCurveTo(x + w / 6, y + 3, x + w / 3, y - 3, x + w / 2 - 4, y); g.stroke(); }
+        g.strokeStyle = 'rgba(40,24,12,.55)'; g.lineWidth = 2; g.strokeRect(x + 1, r * fila + 1, w / 2 - 2, fila - 2);
+      }
+    }
+  });
+  tarima.wrapS = tarima.wrapT = T.RepeatWrapping;
+  // Frente de barra en listones verticales de madera oscura (la textura cubre 0,6 m de ancho).
+  const listones = lienzo(256, 256, (g, w, h) => {
+    for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? '#4a3021' : '#563827'; g.fillRect(i * w / 8, 0, w / 8, h); g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect((i + 1) * w / 8 - 3, 0, 3, h); }
+  });
+  listones.wrapS = listones.wrapT = T.RepeatWrapping;
+  const C = {
+    roble: mat('#9b6b42', { roughness: 0.6 }), nogal: mat('#3d281b', { roughness: 0.7 }), piedra: mat('#dcd6cb', { roughness: 0.35 }),
+    bollo: mat('#c98a4b', { roughness: 0.8 }), chocolate: mat('#5a3523', { roughness: 0.8 }), verde: mat('#1e5b45', { roughness: 0.5 }),
+  };
+  function listonesDe(w, h) {
+    const t = own(listones.clone()); t.needsUpdate = true; t.repeat.set(w / 0.6, Math.max(1, h / 0.6));
+    return plano(w, h, own(new T.MeshStandardMaterial({ map: t, roughness: 0.75 })));
+  }
   // Paneles 3D blancos de la pared de la mesa larga (piezas de 50 × 25 cm al tresbolillo).
   const paneles = lienzo(256, 256, (g, w, h) => {
     g.fillStyle = '#efeee9'; g.fillRect(0, 0, w, h);
@@ -82,8 +119,9 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
 
   // ── Suelo, techo y aristas ──
   const { ancho, fondo, alto } = escena.sala;
-  const suelo = plano(ancho, fondo, own(new T.MeshStandardMaterial({ map: baldosa, roughness: 0.75 })));
-  baldosa.repeat.set(ancho / 0.4, fondo / 0.4);
+  const conTarima = TEMA.suelo === 'tarima';
+  const suelo = plano(ancho, fondo, own(new T.MeshStandardMaterial({ map: conTarima ? tarima : baldosa, roughness: conTarima ? 0.6 : 0.75 })));
+  if (conTarima) tarima.repeat.set(ancho / 1.2, fondo / 0.6); else baldosa.repeat.set(ancho / 0.4, fondo / 0.4);
   suelo.rotation.x = -Math.PI / 2; suelo.position.copy(V(ancho / 2, fondo / 2, 0));
   suelo.userData.parte = 'suelo';
   root.add(suelo);
@@ -99,9 +137,10 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
   for (const w of escena.paredes) {
     const g = new T.Group(); g.userData.pared = w.id; root.add(g); paredes.set(w.id, g);
     const conPaneles = /paneles\s*3d/i.test(w.nombre);
+    const acento = TEMA.acento && TEMA.acento.re.test(w.nombre || '') ? mat(TEMA.acento.color, { roughness: 0.9 }) : null;
     for (const r of w.macizos) {
       const ws = r.s1 - r.s0, hz = r.z1 - r.z0;
-      let m = M.pared;
+      let m = acento || M.pared;
       if (conPaneles) { const t = paneles.clone(); own(t); t.needsUpdate = true; t.repeat.set(ws / 1.0, hz / 1.0); m = own(new T.MeshStandardMaterial({ map: t, roughness: 0.95 })); }
       const mesh = box(ws, hz, GROSOR, m);
       const p = pointOnWall(w, (r.s0 + r.s1) / 2);
@@ -175,7 +214,7 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
     // Medidas en el sistema del mueble: ancho a lo largo de su pared, fondo hacia n.
     const lateral = Math.abs(Math.sin(m.yaw)) > 0.7, W = lateral ? m.d : m.w, D = lateral ? m.w : m.d, H = m.alto;
     if (m.tipo === 'mesa') {
-      const top = box(W, 0.03, D, M.blanco); top.position.y = H - 0.015; g.add(top);
+      const top = box(W, 0.03, D, conTarima ? C.roble : M.blanco); top.position.y = H - 0.015; g.add(top);
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const p = box(0.04, H - 0.03, 0.04, M.patas); p.position.set(sx * (W / 2 - 0.05), (H - 0.03) / 2, sz * (D / 2 - 0.05)); g.add(p); }
     } else if (m.tipo === 'silla') {
       const clara = /secretlab/i.test(m.nombre || ''), cuerpo = clara ? M.blanco : M.negro;
@@ -197,6 +236,45 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
       const alto2 = box(W, H - 0.95, D * 0.55, mat('#1d2a1d')); alto2.position.set(0, 0.95 + (H - 0.95) / 2, -D * 0.2); g.add(alto2);
       const pant = plano(W * 0.72, 0.36, basic({ color: '#0b1a12' })); pant.position.set(0, 1.25, D * 0.075 + 0.003); pant.rotation.x = -0.12; g.add(pant);
       const marq = plano(W, 0.2, basic({ map: cartel(tipoTexto(m, /^recreativa\s*/i), { fondo: '#4cc23a', color: '#f4fff0' }) })); marq.position.set(0, H - 0.11, D * 0.075 + 0.003); g.add(marq);
+    } else if (m.tipo === 'barra' || m.tipo === 'caja' || m.tipo === 'vitrina') {
+      // Mostrador de cafetería: cuerpo de madera oscura con frente de listones y encimera de piedra.
+      // La barra lleva las cafeteras; la caja, el TPV; la vitrina, su urna de cristal con bollería.
+      const bajo = m.tipo === 'vitrina' ? H * 0.58 : H - 0.04;
+      const cuerpo = box(W, bajo, D - 0.04, C.nogal); cuerpo.position.y = bajo / 2; g.add(cuerpo);
+      const frente = listonesDe(W, bajo - 0.08); frente.position.set(0, bajo / 2 + 0.02, (D - 0.04) / 2 + 0.002); g.add(frente);
+      const encimera = box(W + 0.03, 0.04, D + 0.02, C.piedra); encimera.position.y = bajo + 0.02; g.add(encimera);
+      if (m.tipo === 'barra') {
+        for (const fx of [-0.32, -0.12]) {
+          const maquina = box(0.78, 0.44, 0.52, M.aluminio); maquina.position.set(W * fx, bajo + 0.04 + 0.22, -D * 0.12); g.add(maquina);
+          const panel = plano(0.62, 0.16, M.bisel); panel.position.set(W * fx, bajo + 0.04 + 0.3, -D * 0.12 + 0.262); g.add(panel);
+        }
+        const molino = new T.Mesh(own(new T.CylinderGeometry(0.09, 0.07, 0.42, 18)), M.negro); molino.position.set(W * 0.02, bajo + 0.04 + 0.21, -D * 0.15); g.add(molino);
+      } else if (m.tipo === 'caja') {
+        const brazo = box(0.04, 0.22, 0.04, M.bisel); brazo.position.set(W * 0.22, bajo + 0.04 + 0.11, 0); g.add(brazo);
+        const tpv = box(0.36, 0.25, 0.03, M.bisel); tpv.position.set(W * 0.22, bajo + 0.04 + 0.28, 0.02); tpv.rotation.x = -0.35; g.add(tpv);
+        const disp = plano(0.32, 0.21, basic({ color: '#16424a' })); disp.position.set(W * 0.22, bajo + 0.04 + 0.285, 0.04); disp.rotation.x = -0.35; g.add(disp);
+      } else {
+        const urnaH = H - bajo - 0.04;
+        const urna = box(W - 0.06, urnaH, D - 0.12, M.cristal); urna.position.y = bajo + 0.04 + urnaH / 2; g.add(urna);
+        const balda = box(W - 0.1, 0.015, D - 0.16, C.piedra); balda.position.y = bajo + 0.04 + urnaH * 0.5; g.add(balda);
+        const bollos = [C.bollo, C.chocolate, C.bollo, C.verde];
+        for (const y of [bajo + 0.05, bajo + 0.05 + urnaH * 0.5]) for (let i = 0; i < 12; i++) {
+          const b = box(0.2, 0.07, 0.16, bollos[(i + (y > bajo + 0.1 ? 1 : 0)) % bollos.length]); b.position.set(-W / 2 + 0.35 + i * (W - 0.7) / 11, y + 0.04, 0); g.add(b);
+        }
+      }
+    } else if (m.tipo === 'estanteria') {
+      // Estantería de tazas: costados, baldas y tazas blancas y verdes.
+      for (const sx of [-1, 1]) { const lado = box(0.03, H, D, C.roble); lado.position.set(sx * (W / 2 - 0.015), H / 2, 0); g.add(lado); }
+      const baldas = 5, taza = own(new T.CylinderGeometry(0.045, 0.038, 0.1, 14));
+      for (let k = 0; k < baldas; k++) {
+        const y = 0.12 + k * (H - 0.2) / (baldas - 1);
+        const balda = box(W - 0.06, 0.03, D, C.roble); balda.position.y = y; g.add(balda);
+        if (k === baldas - 1) continue;
+        const n = Math.floor((W - 0.2) / 0.16);
+        for (let i = 0; i < n; i++) { const c = new T.Mesh(taza, i % 4 === 3 ? C.verde : M.blanco); c.position.set(-W / 2 + 0.16 + i * 0.16, y + 0.065, D * 0.1); g.add(c); }
+      }
+    } else if (m.tipo === 'pilar') {
+      const cuerpo = box(W, H, D, mat(TEMA.pared, { roughness: 0.9 })); cuerpo.position.y = H / 2; g.add(cuerpo);
     } else {
       const cuerpo = box(W, H, D, M.negro); cuerpo.position.y = H / 2; g.add(cuerpo);
       if (/foto|retrato|cuadro/i.test(m.nombre || '')) {
@@ -313,7 +391,12 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {} } =
   // ── Luz ──
   scene.add(new T.HemisphereLight('#ffffff', '#6b6253', 1.5));
   const sol = new T.DirectionalLight('#fff4e2', 1.1); sol.position.copy(V(-2, -3, 6)); scene.add(sol);
-  const bombilla = new T.PointLight('#fff1d6', 6, 8, 1.6); bombilla.position.copy(V(ancho / 2, fondo / 2, alto - 0.25)); scene.add(bombilla);
+  // Una bombilla en el centro (laboratorio) o varias repartidas a lo largo de la sala (cafetería).
+  const nb = Math.max(1, TEMA.bombillas || 1);
+  for (let i = 0; i < nb; i++) {
+    const bombilla = new T.PointLight('#fff1d6', nb > 1 ? 4.5 : 6, 8, 1.6);
+    bombilla.position.copy(V(nb > 1 ? ancho * (i + 0.5) / nb : ancho / 2, fondo / 2, alto - 0.25)); scene.add(bombilla);
+  }
 
   return {
     scene, root, paredes, techo, lampara, pantallas, dispositivos, muebles, ponerMedio, hayVideo,

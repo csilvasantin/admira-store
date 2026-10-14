@@ -1,0 +1,254 @@
+{
+ "schema": "admira.xpacio-plano/1",
+ "id": "alsea-sbux-021",
+ "version": "2026-10-14-esquematico-1",
+ "publico": true,
+ "nombre": "Starbucks Paseo de Gracia",
+ "direccion": "Gracia · Barcelona",
+ "fuente": {
+  "titulo": "Plano esquemático · por confirmar en visita técnica"
+ },
+ "planta": {
+  "ancho": 14,
+  "fondo": 8,
+  "alto": 3.3
+ },
+ "paredes": [
+  {
+   "id": "F",
+   "nombre": "Fondo · barra",
+   "a": [
+    0,
+    0
+   ],
+   "b": [
+    14,
+    0
+   ]
+  },
+  {
+   "id": "D",
+   "nombre": "Lateral derecho",
+   "a": [
+    14,
+    0
+   ],
+   "b": [
+    14,
+    8
+   ]
+  },
+  {
+   "id": "P",
+   "nombre": "Frente",
+   "a": [
+    14,
+    8
+   ],
+   "b": [
+    0,
+    8
+   ]
+  },
+  {
+   "id": "C",
+   "nombre": "Lateral · acceso",
+   "a": [
+    0,
+    8
+   ],
+   "b": [
+    0,
+    0
+   ]
+  }
+ ],
+ "huecos": [
+  {
+   "id": "acceso",
+   "tipo": "puerta",
+   "nombre": "Puerta",
+   "pared": "C",
+   "desde": 0.25,
+   "ancho": 1.65,
+   "base": 0,
+   "alto": 2.4
+  }
+ ],
+ "mobiliario": [
+  {
+   "id": "mueble-1",
+   "nombre": "Barra · espresso",
+   "x": 3,
+   "y": 0,
+   "w": 10,
+   "d": 1,
+   "alto": 0.96
+  },
+  {
+   "id": "mueble-2",
+   "nombre": "Caja · TPV",
+   "x": 3,
+   "y": 3,
+   "w": 4,
+   "d": 1,
+   "alto": 1.05
+  },
+  {
+   "id": "mueble-3",
+   "nombre": "Vitrina",
+   "x": 7,
+   "y": 3,
+   "w": 6,
+   "d": 1,
+   "alto": 1.35
+  },
+  {
+   "id": "mueble-4",
+   "nombre": "Tazas",
+   "x": 0,
+   "y": 3,
+   "w": 1,
+   "d": 3,
+   "alto": 2.1
+  },
+  {
+   "id": "mueble-5",
+   "nombre": "Pilar",
+   "x": 2,
+   "y": 3,
+   "w": 1,
+   "d": 1,
+   "alto": 3.3
+  },
+  {
+   "id": "mueble-6",
+   "nombre": "Mesa",
+   "x": 3,
+   "y": 6,
+   "w": 2,
+   "d": 2,
+   "alto": 0.75
+  },
+  {
+   "id": "mueble-7",
+   "nombre": "Mesa",
+   "x": 6,
+   "y": 6,
+   "w": 2,
+   "d": 2,
+   "alto": 0.75
+  }
+ ],
+ "dispositivos": [],
+ "pantallas": [
+  {
+   "id": "pantalla-1",
+   "nombre": "Pantalla V",
+   "corto": "V",
+   "tipo": "pantalla",
+   "orientacion": "vertical",
+   "pulgadas": 55,
+   "resolucion": [
+    1920,
+    1080
+   ],
+   "pared": "F",
+   "s": 5.755,
+   "z": 1.75,
+   "player": "Mac Studio",
+   "grupo": "mosaico-1",
+   "grupoNombre": "Mosaico"
+  },
+  {
+   "id": "pantalla-2",
+   "nombre": "Pantalla H",
+   "corto": "H",
+   "tipo": "pantalla",
+   "orientacion": "horizontal",
+   "pulgadas": 55,
+   "resolucion": [
+    1920,
+    1080
+   ],
+   "pared": "F",
+   "s": 6.706,
+   "z": 2.016,
+   "player": "Mac Studio",
+   "grupo": "mosaico-1",
+   "grupoNombre": "Mosaico"
+  },
+  {
+   "id": "pantalla-3",
+   "nombre": "Pantalla V",
+   "corto": "V",
+   "tipo": "pantalla",
+   "orientacion": "vertical",
+   "pulgadas": 55,
+   "resolucion": [
+    1920,
+    1080
+   ],
+   "pared": "F",
+   "s": 7.658,
+   "z": 1.75,
+   "player": "Mac Studio",
+   "grupo": "mosaico-1",
+   "grupoNombre": "Mosaico"
+  },
+  {
+   "id": "pantalla-4",
+   "nombre": "Pantalla V",
+   "corto": "V",
+   "tipo": "pantalla",
+   "orientacion": "vertical",
+   "pulgadas": 55,
+   "resolucion": [
+    1920,
+    1080
+   ],
+   "pared": "F",
+   "s": 8.342,
+   "z": 1.75,
+   "player": "Mac mini",
+   "grupo": "mosaico-1",
+   "grupoNombre": "Mosaico"
+  },
+  {
+   "id": "pantalla-5",
+   "nombre": "Pantalla H",
+   "corto": "H",
+   "tipo": "pantalla",
+   "orientacion": "horizontal",
+   "pulgadas": 55,
+   "resolucion": [
+    1920,
+    1080
+   ],
+   "pared": "F",
+   "s": 9.294,
+   "z": 2.016,
+   "player": "Mac mini",
+   "grupo": "mosaico-1",
+   "grupoNombre": "Mosaico"
+  },
+  {
+   "id": "pantalla-6",
+   "nombre": "Pantalla V",
+   "corto": "V",
+   "tipo": "pantalla",
+   "orientacion": "vertical",
+   "pulgadas": 55,
+   "resolucion": [
+    1920,
+    1080
+   ],
+   "pared": "F",
+   "s": 10.245,
+   "z": 1.75,
+   "player": "Mac mini",
+   "grupo": "mosaico-1",
+   "grupoNombre": "Mosaico"
+  }
+ ]
+}
