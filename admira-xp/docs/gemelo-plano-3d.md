@@ -34,7 +34,11 @@ La vía correcta es un player virtual `virtual-gdg51-*` dado de alta en admira.t
 
 **Calibración de la webcam.** Con el pan 0 perpendicular a la pared F, las fotos del 14-oct (04 a 07) caen unos 27° más a la derecha que el plano. La vista webcam aplica un cero de pan de −27° (`?calibrar=0` lo quita). O la Link 2 tiene el cero girado hacia la pared D o el plano está corrido: se resuelve con metro.
 
-**Muebles.** Volúmenes sencillos por tipo deducido del nombre (mesa, silla, nevera, recreativa, mueble). El plano no trae giro: lo que toca una pared mira a la sala; lo suelto (sillas), a la pared F.
+**Muebles.** Volúmenes sencillos por tipo deducido del nombre (mesa, silla, nevera, recreativa, mueble). Un mueble puede decir en el plano a qué pared da la espalda (`pared`, opcional, como las pantallas): manda sobre la deducción. Sin `pared`, lo que toca una pared mira a la sala (en una esquina, la pared que más mira al centro); lo suelto (sillas), a la pared F.
+
+**Correcciones de Carlos con fotos (14-oct, 18:39; plano `2026-10-14-camara-3`).** La mesa larga llega al final de la pared I y se junta en L con la mesa de la pared F (que empieza a 0,70 m, donde acaba la larga). La nevera da la espalda a la pared I (paneles 3D) con la puerta hacia la sala: sin `pared` ganaba la pared P por muy poco. Ojo: en el plano la puerta del balcón (pared F, de 0,05 a 0,90 m) cae en esa esquina, detrás de la mesa; está por confirmar dónde está de verdad.
+
+**Mural y señal en vivo.** Si una pantalla ya emite en vivo cuando se monta el mural de una página, la conserva; vuelve al mural cuando pierde la señal o su vídeo falla.
 
 **admira.tv.** El canal `admira.tv/canal?screen=<pantalla real>` emite como esa pantalla (proof-of-play y `/signage/now`; `playerType=virtual` sólo vale para pantallas `virtual-*`). Por eso la ficha enlaza la portada de admira.tv y no el canal de cada pantalla.
 

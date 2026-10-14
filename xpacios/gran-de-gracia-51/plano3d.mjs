@@ -171,6 +171,7 @@ export function validatePlan(plan) {
   }
   for (const h of plan.huecos || []) if (!ids.has(h.pared)) errores.push(`El hueco «${h.id}» no está en ninguna pared`);
   for (const m of plan.mobiliario || []) if (![m.x, m.y, m.w, m.d, m.alto].every(num)) errores.push(`El mueble «${m.id}» necesita x, y, w, d y alto`);
+  for (const m of plan.mobiliario || []) if (m.pared && !ids.has(m.pared)) errores.push(`El mueble «${m.id}» da la espalda a una pared que no está en el plano: «${m.pared}»`);
   for (const d of plan.dispositivos || []) if (d.pared && !ids.has(d.pared)) errores.push(`El dispositivo «${d.id}» no está en ninguna pared`);
   return { errores, avisos };
 }
@@ -214,10 +215,14 @@ const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
 export const yawFor = ([nx, ny]) => Math.atan2(nx, ny);
 
-// Frente de un mueble: si toca una pared (≤ 12 cm), mira hacia dentro desde ella (en
+// Frente de un mueble: con `pared` en el plano, mira hacia dentro desde esa pared. Si no, si toca una pared (≤ 12 cm), mira hacia dentro desde ella (en
 // una esquina gana la pared que más mira al centro de la sala). Suelto (sillas), mira
 // a la pared frontal del plano, la primera: el plano no trae giro de muebles.
 export function frenteMueble(m, plan) {
+  // El plano puede decir a qué pared da la espalda el mueble (`pared`): manda sobre la deducción.
+  // Hace falta en las esquinas, donde dos paredes casi empatan (la nevera del laboratorio, 14-oct).
+  const fija = m.pared && plan.paredes.find(w => w.id === m.pared);
+  if (fija) return { pared: fija.id, n: inwardNormal(fija), apoyado: true };
   const centro = [plan.planta.ancho / 2, plan.planta.fondo / 2];
   const c = [m.x + m.w / 2, m.y + m.d / 2];
   const dir = sub(centro, c);

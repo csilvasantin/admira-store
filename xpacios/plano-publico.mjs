@@ -59,7 +59,7 @@ export function planoPublico(plan) {
     planta: plan.planta, ...(plan.criterios ? { criterios: plan.criterios } : {}),
     paredes: (plan.paredes || []).map(w => ({ id: w.id, nombre: limpiarPersonal(w.nombre) || `Pared ${w.id}`, a: w.a, b: w.b, ...(w.alto ? { alto: w.alto } : {}) })),
     huecos: (plan.huecos || []).map(h => ({ id: h.id, tipo: h.tipo, nombre: nombreHueco(h), pared: h.pared, desde: h.desde, ancho: h.ancho, base: h.base || 0, alto: h.alto })),
-    mobiliario: (plan.mobiliario || []).map((m, i) => ({ id: `mueble-${i + 1}`, nombre: limpiarPersonal(m.nombre) || 'Mueble', x: m.x, y: m.y, w: m.w, d: m.d, alto: m.alto })),
+    mobiliario: (plan.mobiliario || []).map((m, i) => ({ id: `mueble-${i + 1}`, nombre: limpiarPersonal(m.nombre) || 'Mueble', x: m.x, y: m.y, w: m.w, d: m.d, alto: m.alto, ...(m.pared ? { pared: m.pared } : {}) })),
     dispositivos, pantallas,
   };
 }

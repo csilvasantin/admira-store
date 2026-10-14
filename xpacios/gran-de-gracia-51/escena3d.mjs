@@ -3,7 +3,7 @@
 // pantallas con su captura, players y webcam. Three.js r160 del propio sitio
 // (admira-xp/scripts/premium-three.mjs, el mismo de Better/Best y de SneakerStore).
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { pointOnWall } from './plano3d.mjs?v=gdg51-3';
+import { pointOnWall } from './plano3d.mjs?v=gdg51-5';
 
 const GROSOR = 0.08;
 const tipoTexto = (m, re) => (String(m.nombre || '').replace(re, '').trim() || m.id).toUpperCase();
@@ -337,17 +337,20 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
   function ponerMedio(id, est) {
     const e = pantallas.get(id);
     if (!e || e.dato.portatil) return;
+    // Lo que emite EN VIVO queda anotado: el mural, aunque se monte después, no se lo quita.
+    const vivo = Boolean(est && est.fuente === 'vivo' && est.url);
+    e.vivo = vivo;
     // Con el mural como un solo lienzo, sólo lo que la pantalla real emite EN VIVO se lo quita;
     // la captura o la falta de señal la devuelven al mural.
     if (compartido && e.lienzoUV) {
-      if (!(est && est.fuente === 'vivo' && est.url)) { if (!e.enLienzo) volverAlLienzo(e); return; }
+      if (!vivo) { if (!e.enLienzo) volverAlLienzo(e); return; }
       if (e.enLienzo) { e.enLienzo = false; ponerUV(e, e.uv0); }
     }
     const url = est && est.url;
     if (!url) { if (e.url) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
     if (e.url === url) return;
     e.url = url;
-    const fallo = () => { if (e.url !== url) return; e.url = null; soltarVideo(e); e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id, error: true, fuente: est.fuente }); if (est.fuente === 'vivo' && e.dato.textura) ponerMedio(id, { fuente: 'captura', url: e.dato.textura, tipo: 'imagen' }); };
+    const fallo = () => { if (e.url !== url) return; e.url = null; e.vivo = false; soltarVideo(e); e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id, error: true, fuente: est.fuente }); if (est.fuente === 'vivo' && e.dato.textura) ponerMedio(id, { fuente: 'captura', url: e.dato.textura, tipo: 'imagen' }); };
     if (est.tipo === 'video') {
       const v = document.createElement('video');
       Object.assign(v, { crossOrigin: 'anonymous', muted: true, playsInline: true, loop: true, preload: 'auto' });
@@ -399,7 +402,8 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
     for (const [id, uv] of uvs) {
       const e = pantallas.get(id);
       if (!e || e.dato.portatil || !Array.isArray(uv) || uv.length !== 8) continue;
-      e.lienzoUV = uv; volverAlLienzo(e); n++;
+      e.lienzoUV = uv; n++;
+      if (!e.vivo) volverAlLienzo(e);   // la que ya emite en vivo sigue en vivo; vuelve al mural si pierde la señal
     }
     if (!n) quitarLienzo();
     return n;

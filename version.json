@@ -1,15 +1,15 @@
 {
-  "version": "v.14.10.2026.r6.17:25",
-  "deployedAt": "2026-10-14T15:25:35Z",
+  "version": "v.14.10.2026.r7.18:48",
+  "deployedAt": "2026-10-14T16:48:19Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "efe44d3ddf60b47f4200aa30fa31147e43b316a6",
-  "gitShort": "efe44d3",
-  "gitFull": "efe44d3ddf60b47f4200aa30fa31147e43b316a6",
+  "git": "9a921cfdf13a6962927a876a67723fd546f8f19a",
+  "gitShort": "9a921cf",
+  "gitFull": "9a921cfdf13a6962927a876a67723fd546f8f19a",
   "dirty": false,
   "novedades": [
-    "Starbucks Paseo de Gracia: el mural doble H se ve como una sola pantalla; el titular «Tu café sigue contigo.» cruza las seis pantallas a la vez sobre la barra.",
-    "Campaña starbucks-six de admira.studio pintada en un solo lienzo en el gemelo, con botón para pausarla; lo que una pantalla real emita en vivo en admira.tv manda sobre el lienzo."
+    "Laboratorio: la mesa larga llega al final de la pared y se junta en L con la otra, y la nevera mira a la sala con la espalda en los paneles 3D, como en las fotos.",
+    "Starbucks: las pantallas que emiten en vivo en admira.tv (las tres del Mac Studio) se ven en vivo aunque el mural se monte después; las demás siguen en el mural."
   ]
 }
