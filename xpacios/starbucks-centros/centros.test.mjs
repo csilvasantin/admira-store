@@ -5,6 +5,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { validarPrograma, cicloDe, piezaDe } from './reproductor.mjs';
+import { centroDesdeURL } from './centros.mjs';
+import { venueUrl } from '../../admira-xp/scripts/central-project-client.mjs';
 
 const repo = fileURLToPath(new URL('../../', import.meta.url));
 const aqui = fileURLToPath(new URL('./', import.meta.url));
@@ -35,7 +37,7 @@ test('three options: Paseo de Gràcia 103 and Diagonal 634 with their models; Gr
   assert.equal(d.catalogo, null, 'Diagonal 634 is not in the catalogue');
   assert.match(d.identidad, /L’Illa Diagonal 557/);
   assert.match(d.identidad, /Gran de Gràcia 51/);
-  assert.equal(g.enlace, '/xpacios/gran-de-gracia-51/');
+  assert.equal(g.enlace, '/xpacios/gran-de-gracia-51/?loc=lab-gran-de-gracia-51', 'opens the lab twin with its real location');
   assert.ok(existsSync(repo + 'xpacios/gran-de-gracia-51/index.html'));
   assert.match(g.pendiente, /4 pantallas horizontales y 2 verticales/);
 });
@@ -69,4 +71,35 @@ test('the viewer keeps Matrix honest: green outlines of the room, screens still 
   assert.match(visor, /toneMapped: false, fog: false, polygonOffset: true/, 'video is unlit, unfogged and above the glass');
   assert.match(visor, /ajusteSinRecorte\(\[p\.ancho, p\.alto\], medio\)/, 'fit without crop on every frame');
   assert.match(visor, /p\.ultima \|\| p\.cargando/, 'keeps the last frame until the next piece has an image');
+});
+
+test('the venue chosen in the Matrix twin selector opens the right centre (venue, loc or an explicit centro)', () => {
+  const ir = q => centroDesdeURL(q, CENTROS).id;
+  assert.equal(ir(''), 'pg103', 'no venue: the first centre with a model');
+  assert.equal(ir('?centro=d634'), 'd634');
+  assert.equal(ir('?venue=starbucks-diagonal-634&loc=starbucks-diagonal-634'), 'd634');
+  assert.equal(ir('?venue=demo-starbucks&loc=alsea-sbux-021'), 'pg103');
+  assert.equal(ir('?loc=alsea-sbux-021'), 'pg103');
+  assert.equal(ir('?loc=lab-gran-de-gracia-51'), 'gdg51');
+  assert.equal(ir('?centro=pg103&venue=starbucks-diagonal-634'), 'pg103', 'an explicit centro wins');
+  assert.equal(ir('?loc=..%2Fevil'), 'pg103');
+  const todos = CENTROS.flatMap(c => c.locales || []);
+  assert.equal(new Set(todos).size, todos.length, 'a venue belongs to one centre only');
+  assert.match(CENTROS.find(c => c.id === 'pg103').gemeloMatrix, /^\/admira-xp\/\?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks/);
+});
+
+test('end to end: the central-registry entries for the three Starbucks venues go through the selector to the right page', () => {
+  const proyecto = { id: 'starbucks', circuit: 'alsea_starbucks' };
+  const desde = 'https://www.admira.store/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks&quality=best';
+  const locales = [
+    { id: 'demo-starbucks', project_id: 'starbucks', demo: true, xpace_url: 'https://www.xpaceos.com/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks&quality=better', centro: null },
+    { id: 'starbucks-diagonal-634', project_id: 'starbucks', demo: true, xpace_url: 'https://www.admira.store/xpacios/starbucks-centros/?loc=starbucks-diagonal-634', centro: 'd634' },
+    { id: 'lab-gran-de-gracia-51', project_id: 'starbucks', demo: true, xpace_url: 'https://www.admira.store/xpacios/gran-de-gracia-51/?loc=lab-gran-de-gracia-51', centro: null },
+  ];
+  const [pg, diag, lab] = locales.map(v => new URL(venueUrl(desde, v, proyecto, 'best', { publicDemo: true, language: 'es' })));
+  assert.equal(pg.pathname, '/admira-xp/'); assert.equal(pg.searchParams.get('loc'), 'alsea-sbux-021');
+  assert.equal(diag.host, 'www.admira.store'); assert.equal(diag.pathname, '/xpacios/starbucks-centros/');
+  assert.equal(centroDesdeURL(diag.search, CENTROS).id, 'd634', 'Diagonal opens Diagonal, not Paseo de Gràcia');
+  assert.equal(lab.pathname, '/xpacios/gran-de-gracia-51/');
+  assert.equal(lab.searchParams.get('loc'), 'lab-gran-de-gracia-51', 'the lab keeps its real location (calibration, plan)');
 });
