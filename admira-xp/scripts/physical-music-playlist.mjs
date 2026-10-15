@@ -1,4 +1,4 @@
-import {createPhysicalPlaylistWatch} from './ipad-physical-playlist.mjs?v=tpv-portrait-20261015';
+import {contextPlaylist} from './context-playlist-client.mjs?v=local-playlist-349';
 export const MUSIC_SCREEN='iphone17-mupi',MUSIC_PLAYLIST_URL='/admira-xp/api/music-playlist';
 const safe=value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch{return '';}};
 export function physicalMusicTracks(data,catalog=[]){
@@ -13,10 +13,7 @@ export function physicalMusicTracks(data,catalog=[]){
   tracks.push({id,stockId:id,url,title:String(item.title||id),kind:kind==='video'?'video':'audio',cover,visualUrl,...dimensions,...(Number(item.seconds)>0?{seconds:Number(item.seconds)}:{})});
  }return tracks;
 }
-let watch;
 export function watchPhysicalMusic(onState){
- watch??=createPhysicalPlaylistWatch({url:MUSIC_PLAYLIST_URL,screen:MUSIC_SCREEN,normalize:data=>{
-  if(data.ok!==true||data.screen!==MUSIC_SCREEN||!Array.isArray(data.tracks))throw Error('Invalid shared music');
-  return physicalMusicTracks({ok:true,draft:{items:data.tracks},auto:[]});
- }});return watch(onState);
+ const client=contextPlaylist();if(!client)return ()=>{};
+ return client.subscribe(state=>onState({tracks:state.tracks,scope:state.scope,revision:state.data?.revision,error:state.error}));
 }

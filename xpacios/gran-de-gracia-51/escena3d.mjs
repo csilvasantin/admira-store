@@ -382,7 +382,7 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
       if (p.apoyo) { const soporte = box(0.24, Math.max(0.01, p.z - p.apoyo.alto - 0.016), 0.06, M.aluminio); soporte.position.set(0, -(p.z - p.apoyo.alto) / 2 - 0.008, 0.12); g.add(soporte); }
       const t = lienzo(512, 330, (g2, W, H) => { const gr = g2.createLinearGradient(0, 0, W, H); gr.addColorStop(0, '#0d3b2c'); gr.addColorStop(1, '#16222b'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H); g2.fillStyle = '#d7efe2'; g2.font = 'bold 40px system-ui'; g2.textAlign = 'center'; g2.fillText(p.corto, W / 2, H / 2 - 10); g2.font = '22px system-ui'; g2.fillStyle = '#9fc4b4'; g2.fillText('pantalla integrada · sin captura publicada', W / 2, H / 2 + 30); });
       pantallaMat.map = t; pantallaMat.color.set('#ffffff'); pantallaMat.needsUpdate = true;
-      pantallas.set(p.id, { grupo: g, display: disp, dato: p });
+      pantallas.set(p.id, { grupo: g, display: disp, dato: p, mat:pantallaMat, neutro:t, video:null, url:null });
       root.add(g); continue;
     }
     // Tres cuerpos: LCD con bisel y trasera (lo de siempre), LED con armario fino y rejilla de
@@ -448,18 +448,19 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
   function soltarVideo(e) { if (!e.video) return; try { e.video.pause(); e.video.removeAttribute('src'); e.video.load(); } catch (_) {} e.video = null; }
   function ponerMedio(id, est) {
     const e = pantallas.get(id);
-    if (!e || e.dato.portatil) return;
+    if (!e || e.dato.portatil&&est?.fuente!=='playlist-local') return;
     // Lo que emite EN VIVO queda anotado: el mural, aunque se monte después, no se lo quita.
     const vivo = Boolean(est && est.fuente === 'vivo' && est.url);
+    const local=Boolean(est&&est.fuente==='playlist-local');
     e.vivo = vivo;
     // Con el mural como un solo lienzo, sólo lo que la pantalla real emite EN VIVO se lo quita;
     // la captura o la falta de señal la devuelven al mural.
     if (compartido && e.lienzoUV) {
-      if (!vivo) { if (!e.enLienzo) volverAlLienzo(e); return; }
+      if (!vivo&&!local) { if (!e.enLienzo) volverAlLienzo(e); return; }
       if (e.enLienzo) { e.enLienzo = false; ponerUV(e, e.uv0); }
     }
     const url = est && est.url;
-    if (!url) { if (e.url) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
+    if (!url) { if (e.url||local) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
     if (e.url === url) return;
     e.url = url;
     const fallo = () => { if (e.url !== url) return; e.url = null; e.vivo = false; soltarVideo(e); e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id, error: true, fuente: est.fuente }); if (est.fuente === 'vivo' && e.dato.textura) ponerMedio(id, { fuente: 'captura', url: e.dato.textura, tipo: 'imagen' }); };

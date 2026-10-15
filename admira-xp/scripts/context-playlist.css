@@ -1,0 +1,13 @@
+.context-playlist-editor{font:12px/1.4 system-ui,sans-serif;border-top:1px solid #84d8c655;margin-top:10px;padding-top:8px;text-align:left;color:inherit}
+.context-playlist-editor p{white-space:normal!important;margin:6px 0!important;overflow-wrap:anywhere}
+.context-playlist-editor ol{list-style:decimal!important;max-height:240px;overflow:auto;padding-left:22px!important;margin:8px 0!important}
+.context-playlist-editor li{display:flex!important;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 0;border-top:1px solid #84d8c633}
+.context-playlist-editor li>span{flex:1 1 130px;overflow-wrap:anywhere;white-space:normal}
+.context-playlist-editor form{display:flex;gap:5px;flex-wrap:wrap}.context-playlist-editor input[type=search]{flex:1;min-width:120px}
+.context-playlist-editor button,.context-playlist-editor input,.context-playlist-editor select{font:inherit;white-space:normal;touch-action:manipulation}
+.context-playlist-editor button{min-height:30px;cursor:pointer}.context-playlist-editor button:disabled{opacity:.5;cursor:default}
+.context-playlist-editor a{display:inline-block;margin:4px;color:#9ce7db}.context-playlist-editor>div>div{padding:8px 0;border-bottom:1px solid #84d8c633}
+.matrix-onair-card.has-music-remote,.matrix-onair-card:has(.context-playlist-editor){max-height:min(600px,80vh);overflow:auto;pointer-events:auto}
+#screenInfoPop{max-height:min(680px,80vh);overflow:auto}
+.context-surface-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;object-fit:fill}
+.context-surface-canvas[hidden]{display:none!important}

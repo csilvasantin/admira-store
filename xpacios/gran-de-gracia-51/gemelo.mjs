@@ -4,8 +4,9 @@
 // alzado de cada pared, con etiquetas ITIL por pantalla y dispositivo.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-6';
-import { crearEscena3D } from './escena3d.mjs?v=gdg51-7';
+import { crearEscena3D } from './escena3d.mjs?v=local-playlist-349';
 import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
+import {contextSurfaces,mountSurfacePlaylistRemote,channelForSurface} from '../../admira-xp/scripts/context-surfaces.mjs?v=local-playlist-349';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -35,6 +36,9 @@ const estado = $('estado');
 const status = (texto, error = false) => { estado.textContent = texto; estado.classList.toggle('error', error); };
 
 let escena, s3d, renderer, plan, fuente, acceso = 'publico';
+let localSurfaces=null,localRemote=null,localTimer=null;
+const locallyOwned=new Set();
+window.addEventListener('pagehide',()=>{clearInterval(localTimer);localRemote?.dispose();},{once:true});
 const senales = new Map();   // id de pantalla → estadoSenal() vigente
 const persp = new T.PerspectiveCamera(40, 1, 0.03, 80);
 const orto = new T.OrthographicCamera(-1, 1, 1, -1, 0.1, 80);
@@ -79,6 +83,10 @@ async function arrancar() {
   ponerVista(params.get('vista') || 'orbital', { url: false });
   canvas.dataset.listo = '1';
   if (acceso === 'sesion') arrancarEspejo();
+  if(acceso==='sesion'){
+    localSurfaces=contextSurfaces(window);for(const screen of escena.pantallas)if(channelForSurface(screen.id))localSurfaces.ensure(screen.id);
+    localTimer=setInterval(()=>{for(const screen of escena.pantallas){const state=localSurfaces.get(screen.id);if(state){locallyOwned.add(screen.id);s3d.ponerMedio(screen.id,{fuente:'playlist-local',url:state.url,tipo:state.kind==='image'?'imagen':'video',empty:state.empty});}else if(locallyOwned.has(screen.id)){s3d.ponerMedio(screen.id,{fuente:'playlist-local',url:null});}}invalidar();},500);
+  }
   // Gancho para lo propio de cada página (el mural de Starbucks): la escena ya está montada.
   const api = { escena, s3d, invalidar, status, t, acceso, plan };
   window.XpacioGemelo = api;
@@ -91,6 +99,7 @@ async function refrescarEspejo() {
   const conId = escena.pantallas.filter(p => p.screenId);
   if (!conId.length || document.visibilityState !== 'visible') return;
   await Promise.all(conId.map(async p => {
+    if(localSurfaces?.get(p.id)||locallyOwned.has(p.id))return;
     let resp = null;
     try {
       const r = await fetch(`/xpacios/senal?screen=${encodeURIComponent(p.screenId)}`, { credentials: 'same-origin', cache: 'no-store' });
@@ -104,7 +113,7 @@ async function refrescarEspejo() {
   }));
   const vivas = [...senales.values()].filter(e => e.fuente === 'vivo').length;
   $('xp-espejo').textContent = vivas ? `${t('admira.tv', 'admira.tv')}: ${vivas}/${senales.size} ${t('en vivo', 'live')}` : `${t('admira.tv: sin señal · capturas del 13-oct', 'admira.tv: no signal · 13-Oct captures')}`;
-  if (seleccion) seleccionar(seleccion);
+  if (seleccion&&!localRemote?.open) seleccionar(seleccion);
   invalidar();
 }
 function arrancarEspejo() {
@@ -386,6 +395,7 @@ function pintarEtiquetas() {
 
 // ── Selección y ficha ──
 function seleccionar(clave, { mostrar = false } = {}) {
+  localRemote?.dispose();localRemote=null;
   seleccion = clave;
   const [tipo, id] = clave.split(/:(.*)/s);
   const p = tipo === 'p' ? escena.pantallas.find(x => x.id === id) : null;
@@ -421,7 +431,8 @@ function seleccionar(clave, { mostrar = false } = {}) {
   }
   $('detalle').innerHTML = `<div class="det-cab"><b>${esc(o.nombre)}</b><button type="button" id="det-cerrar" aria-label="${t('Cerrar', 'Close')}">×</button></div><dl>${filas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="det-enlaces">${enlaces.join(' · ')}</p>`;
   $('detalle').hidden = false;
-  $('det-cerrar').onclick = () => { $('detalle').hidden = true; seleccion = null; for (const b of document.querySelectorAll('#inv-lista [data-sel]')) b.classList.remove('sel'); invalidar(); };
+  if(!publico&&p&&channelForSurface(p.id))localRemote=mountSurfacePlaylistRemote($('detalle'),p.id,{t,win:window});
+  $('det-cerrar').onclick = () => {localRemote?.dispose();localRemote=null; $('detalle').hidden = true; seleccion = null; for (const b of document.querySelectorAll('#inv-lista [data-sel]')) b.classList.remove('sel'); invalidar(); };
   if (mostrar && innerWidth < 1100) alternarInventario(false); // en estrecho, el inventario tapa el alzado
   if (mostrar && o.pared && st.vista !== `alzado-${o.pared}`) ponerVista(`alzado-${o.pared}`);
   else invalidar();

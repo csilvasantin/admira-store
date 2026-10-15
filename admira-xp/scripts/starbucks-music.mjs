@@ -1,6 +1,7 @@
-import {installMusicCanvasGesture} from './music-listening.mjs?v=tpv-portrait-20261015';
-import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=tpv-portrait-20261015';
+import {installMusicCanvasGesture} from './music-listening.mjs?v=local-playlist-349';
+import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=local-playlist-349';
 import {STARBUCKS_PUBLISHED_TRACKS} from './starbucks-playlist.mjs?v=devices-1';
+import {contextPlaylist} from './context-playlist-client.mjs?v=local-playlist-349';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export const STARBUCKS_FEED=`https://api.admira.store/hilomusical/next?store=${STARBUCKS_STORE}&since=0`;
 // Physical wall speaker, above and to the left of the emergency-exit sign.
@@ -26,11 +27,11 @@ export function musicTracks(value){
 export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fetch(STARBUCKS_FEED,{cache:'no-store'})}={}){
   const published=musicTracks(publishedTracks);
   let tracks=[...published],index=0,started=false,loading=false,error='',request=null,disposed=false,seeded=false;
-  let managed=false,suppressions=0,resumeAfter=false;
+  let managed=false,suppressions=0,resumeAfter=false,ownerScope=null;
   let playVersion=0,revision=0,reason='initial',lastClockEmit=0;
   const listeners=new Set(),failed=new Set();
   audio.preload='metadata';audio.loop=false;audio.muted=true;audio.volume=.35;
-  const state=()=>({schemaVersion:1,store:STARBUCKS_STORE,managed,suppressed:suppressions>0,tracks:tracks.length,index,title:tracks[index]?.title||'',url:tracks[index]?.url||'',position:Number.isFinite(audio.currentTime)?audio.currentTime:0,playing:started&&!audio.paused,started,muted:audio.muted,loading,error,revision,reason,updatedAt:Date.now()});
+  const state=()=>({schemaVersion:1,store:ownerScope?.venueId||STARBUCKS_STORE,scope:ownerScope,managed,suppressed:suppressions>0,tracks:tracks.length,index,title:tracks[index]?.title||'',url:tracks[index]?.url||'',position:Number.isFinite(audio.currentTime)?audio.currentTime:0,playing:started&&!audio.paused,started,muted:audio.muted,loading,error,revision,reason,updatedAt:Date.now()});
   const emit=()=>{for(const fn of listeners)fn(state());};
   async function play(){
     // Prioridad de las locuciones (Carlos, 7-oct-2026): con un aviso sonando la música no arranca; queda
@@ -59,6 +60,7 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
   audio.addEventListener('ended',ended);audio.addEventListener('error',mediaError);audio.addEventListener('timeupdate',clock);
   return {
     state,
+    setScope(value){ownerScope=value?{...value}:null;},
     getTracks:()=>tracks.map(t=>({...t})),
     async jump(url){const next=tracks.findIndex(t=>t.url===url);if(next<0)throw Error('Unknown track');failed.clear();error='';started=true;select(next,'jump');await play();emit();return state();},
     suppress(){
@@ -123,16 +125,17 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
 }
 
 let shared;
+const scopedMusicActive=()=>!!contextPlaylist()?.state().scope;
 export function starbucksMusic(){
   if(!shared){
     const audio=new Audio();audio.id='starbucksMusic';audio.hidden=true;document.body.append(audio);
     shared=createStarbucksMusic({audio,publishedTracks:[]});
     shared.replaceTracks([]); // TV is authoritative; never fall back to the old Suno/feed seed.
-    watchPhysicalMusic(value=>{if(value.tracks===null)return;shared.replaceTracks(value.tracks);shared.startMuted();});
+    watchPhysicalMusic(value=>{shared.setScope(value.scope);if(value.tracks===null)return;shared.replaceTracks(value.tracks);shared.startMuted();});
     // Local contract for the PlayerTaza bridge; no remote/hardware acknowledgement implied.
     window.XpaceStarbucksMusic=Object.freeze({getState:shared.state,subscribe:fn=>shared.subscribe(fn),next:()=>shared.next()});
-    let oldBackground=null;shared.subscribe(state=>{const active=!!window.XpaceMatrixOptions||!!window.XpaceStarbucks?.active?.(),bg=document.getElementById('bgMusic');if(active&&bg){oldBackground??={muted:bg.muted,playing:!bg.paused};bg.muted=true;bg.pause();}else if(!active){if(!state.muted)shared.mute();if(bg&&oldBackground){const saved=oldBackground;oldBackground=null;bg.muted=saved.muted;if(saved.playing)Promise.resolve(bg.play()).catch(()=>{});}}window.dispatchEvent(new CustomEvent(STARBUCKS_MUSIC_EVENT,{detail:shared.state()}));});
-    installSharedMusicOptions(window.XpaceOptionsPlayback,shared,()=>!!window.XpaceMatrixOptions||!!window.XpaceStarbucks?.active?.());
+    let oldBackground=null;shared.subscribe(state=>{const active=scopedMusicActive(),bg=document.getElementById('bgMusic');if(active&&bg){oldBackground??={muted:bg.muted,playing:!bg.paused};bg.muted=true;bg.pause();}else if(!active){if(!state.muted)shared.mute();if(bg&&oldBackground){const saved=oldBackground;oldBackground=null;bg.muted=saved.muted;if(saved.playing)Promise.resolve(bg.play()).catch(()=>{});}}window.dispatchEvent(new CustomEvent(STARBUCKS_MUSIC_EVENT,{detail:shared.state()}));});
+    installSharedMusicOptions(window.XpaceOptionsPlayback,shared,scopedMusicActive);
     installMusicCanvasGesture({music:shared,win:window,isActive:()=>!!window.XpaceStarbucks?.active?.()});
     window.addEventListener('pagehide',()=>shared.mute());
   }
@@ -142,11 +145,12 @@ export function starbucksMusic(){
 // Background music options share the same transport in Good/Better/Best and Matrix.
 export function installSharedMusicOptions(target,music,isActive=()=>true){if(!target||target.__physicalMusic)return;target.__physicalMusic=true;
  const groups=target.groups?.bind(target),state=target.state?.bind(target),control=target.control?.bind(target),play=target.play?.bind(target),insert=target.insert?.bind(target),move=target.move?.bind(target);
- target.groups=(channel,...args)=>channel==='music'&&isActive()?[{id:'music',title:'Starbucks · hilo musical'}]:groups?.(channel,...args);
- target.state=(channel,...args)=>channel==='music'&&isActive()?{playing:music.state().playing,readOnly:true,tracks:music.getTracks().map(t=>({...t,id:t.url,kind:'music',sourceKind:t.kind,active:t.url===music.state().url}))}:state?.(channel,...args);
- target.control=(action,...args)=>{if(!isActive())return control?.(action,...args);if(action==='musicToggle'){if(globalThis.dsMasterMute&&music.state().muted)return;return music.toggle();}if(action==='musicNext')return music.next();if(action==='musicPrev'){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url);if(tracks.length)return music.jump(tracks[(index+tracks.length-1)%tracks.length].url);return;}return control?.(action,...args);};
- target.play=(channel,id,...args)=>channel==='music'&&isActive()?music.jump(id):play?.(channel,id,...args);
- const readOnly=()=>{throw Error('Edit shared music in Stock → Starbucks → Hilo musical');};
- target.insert=(channel,...args)=>channel==='music'&&isActive()?readOnly():insert?.(channel,...args);target.move=(channel,...args)=>channel==='music'&&isActive()?readOnly():move?.(channel,...args);
+ const local=()=>globalThis.window?.XpaceContextPlaylists;
+ target.groups=(channel,...args)=>channel==='screens'&&local()?local().screenIds().map(id=>({id,title:id})):channel==='music'&&isActive()?[{id:'music',title:(contextPlaylist()?.state().data?.venue?.name||music.state().scope?.venueId||'')+' · hilo musical'}]:groups?.(channel,...args);
+ target.state=(channel,...args)=>{if(channel==='screens'&&local()){const id=args[0]||local().selectedScreen();if(!id)return {localEditor:true,readOnly:true,playing:false,tracks:[],sourceHint:['Selecciona un establecimiento con superficies registradas.','Choose a venue with registered surfaces.']};const client=local().client('screen-'+id),value=client.state(),current=local().surfaces.get(id);return {localEditor:true,readOnly:true,playing:current?.state==='live',tracks:(value.tracks||[]).map(track=>({...track,active:current?.id===track.id})),sourceHint:['Playlist de esta pantalla · edita con Añadir desde Stock y Quitar.','This screen’s playlist · edit with Add from Stock and Remove.']};}return channel==='music'&&isActive()?{playing:music.state().playing,readOnly:true,sourceHint:['Playlist de este establecimiento · edita con Añadir desde Stock y Quitar.','This venue’s playlist · edit with Add from Stock and Remove.'],tracks:music.getTracks().map(t=>({...t,id:t.url,kind:'music',sourceKind:t.kind,active:t.url===music.state().url}))}:state?.(channel,...args);};
+ target.control=(action,...args)=>{if(local()&&action.startsWith('ds'))return local().surfaces.control(args[0]||local().selectedScreen(),{dsToggle:'toggle',dsPrev:'prev',dsNext:'next'}[action]);if(!isActive())return control?.(action,...args);if(action==='musicToggle'){if(globalThis.dsMasterMute&&music.state().muted)return;return music.toggle();}if(action==='musicNext')return music.next();if(action==='musicPrev'){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url);if(tracks.length)return music.jump(tracks[(index+tracks.length-1)%tracks.length].url);return;}return control?.(action,...args);};
+ target.play=(channel,id,...args)=>channel==='screens'&&local()?local().surfaces.control(args[0]||local().selectedScreen(),'jump',id):channel==='music'&&isActive()?music.jump(id):play?.(channel,id,...args);
+ const readOnly=()=>{throw Error('Edit this venue playlist with Add from Stock / Remove');};
+ target.insert=(channel,...args)=>(channel==='screens'&&local()||channel==='music'&&isActive())?readOnly():insert?.(channel,...args);target.move=(channel,...args)=>(channel==='screens'&&local()||channel==='music'&&isActive())?readOnly():move?.(channel,...args);
  target.suppressMusic=()=>music.suppress();
 }

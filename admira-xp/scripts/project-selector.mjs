@@ -1,5 +1,5 @@
 import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-2';
-import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=topbar-20261005-1';
+import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=local-playlist-349';
 const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip'),space=$('xpaceActiveSpace');
 let storage;try{storage=sessionStorage;}catch{}
 const client=new ProjectClient({storage}),chosenQuality=()=>document.querySelector('#visualQualityOptions [aria-pressed="true"]')?.dataset.visualMode;
