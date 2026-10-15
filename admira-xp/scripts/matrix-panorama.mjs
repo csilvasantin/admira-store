@@ -9,7 +9,7 @@ import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbuc
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
-import {mountIncidentPanel} from './starbucks-incidents.mjs?v=ipad-20261005-1';
+import {mountIncidentPanel} from './starbucks-incidents.mjs?v=good-matrix-6161';
 import {createSincroIA} from './sincro-ia.mjs?v=devices-2';
 import {mountDeviceEditor} from './device-editor.mjs?v=matrix-signage-reset-1';
 import {createDevicePlayback} from './device-playback.mjs?v=matrix-signage-reset-1';

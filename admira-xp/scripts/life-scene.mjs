@@ -1,11 +1,11 @@
 import {createSurfaceBinding,connectAppearance} from './surface-materials.mjs?v=surfaces-1';
 import {appearanceIdentity} from '../../inventario/starbucks/surface-identities.mjs';
 import * as T from './premium-three.mjs';
-import './starbucks-room.js?v=ipad-20261005-1';
+import './starbucks-room.js?v=good-matrix-6161';
 import {FOOTPRINTS,normalizeSnapshot} from './premium-model.mjs';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collision-20261004-1';
 import {createCustomerMotion} from './customer-motion.mjs?v=actor-collision-20261004-1';
-import {actorCollisionRadius,physicalColliders} from './physical-colliders.mjs?v=actor-collision-20261004-1';
+import {actorCollisionRadius,physicalColliders} from './physical-colliders.mjs?v=good-matrix-6161';
 import {createLifeExterior} from './life-exterior.mjs?v=exterior-1';
 
 // Keep the live game's appearance and selection metadata while reusing the

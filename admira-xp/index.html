@@ -1519,7 +1519,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261015-1059-r2"></script>
+<script src="xtanco-version.js?v=20261015-1114-r4"></script>
 <script src="xtanco-runtime-config.js?r=agua-voz-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -1528,14 +1528,20 @@
 <script src="assets/js/sfx.js?v=20261006-alsea-repair-1"></script>
 <script src="assets/js/ambient.js?v=20261006-alsea-repair-1"></script>
 <script src="assets/js/sky.js"></script>
-<script src="scripts/starbucks-room.js?v=ipad-20261005-1"></script>
+<script src="scripts/starbucks-room.js?v=good-matrix-6161"></script>
+<script type="module">
+import {ensureIncidentFeed,incidentForScreen,chipModel} from './scripts/starbucks-incidents.mjs?v=good-matrix-6161';
+if(window.XpaceStarbucks?.active?.())ensureIncidentFeed();
+const lang=()=>document.documentElement.lang==='en'?'en':'es';
+window.XpaceIncidentFeed={forScreen:incidentForScreen,lines:inc=>chipModel(inc,Date.now(),lang()).lines};
+</script>
 <script src="assets/js/heatmap.js"></script>
 <script src="assets/js/streamdeck.js"></script>
 <script src="assets/js/session-ping.js" defer></script>
 <script src="assets/js/session-log.js" defer></script>
 <script type="module">
 import {buildCustomerNavigation,ACTOR_BODY_RADIUS} from './scripts/customer-navigation.mjs?v=actor-collision-20261004-1';
-import {physicalColliders,actorCollisionRadius} from './scripts/physical-colliders.mjs?v=actor-collision-20261004-1';
+import {physicalColliders,actorCollisionRadius} from './scripts/physical-colliders.mjs?v=good-matrix-6161';
 window.XpaceCustomerNavigation={buildCustomerNavigation,ACTOR_BODY_RADIUS,physicalColliders,actorCollisionRadius};
 </script>
 <script>
@@ -36570,7 +36576,7 @@ installShelfProducts();
 window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)installShelfProducts();});
 </script>
 <script type="module" src="scripts/scene-playlists.mjs?v=shared-music-20261015"></script>
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=hiperreal-vivo-1"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=good-matrix-6161"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <script type="module" src="scripts/dock-scroll-guard.mjs?v=hueco-360-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">

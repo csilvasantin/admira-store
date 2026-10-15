@@ -1,15 +1,15 @@
 {
-  "version": "v.15.10.2026.r3.11:07",
-  "deployedAt": "2026-10-15T11:07:00+02:00",
-  "deployer": "TrinityMBP14",
-  "machine": "MacBookProNegro14",
-  "signature": "TrinityMBP14 · MacBookProNegro14",
-  "git": "2df31a74ce756631afe8ec42824f2f71550dd287",
-  "gitShort": "2df31a7",
-  "gitFull": "2df31a74ce756631afe8ec42824f2f71550dd287",
+  "version": "v.15.10.2026.r4.11:14",
+  "deployedAt": "2026-10-15T09:14:49Z",
+  "deployer": "MerovingioMacMini",
+  "machine": "MacMini",
+  "signature": "MerovingioMacMini · MacMini",
+  "git": "a1f45cde2c108b70bdb2ff260ada4ab4c3a78e16",
+  "gitShort": "a1f45cd",
+  "gitFull": "a1f45cde2c108b70bdb2ff260ada4ab4c3a78e16",
   "dirty": false,
   "novedades": [
-    "Opciones: el aviso de playlist vacía desaparece al cargar las pistas compartidas del hilo musical.",
-    "Los mensajes de Lanzar se conservan al actualizar la lista; el TPV y el iPad mantienen su programación."
+    "Starbucks: Good y Matrix leen la misma bandeja de admira.app. Una incidencia abierta se ve en la misma pantalla en los dos modos.",
+    "Al cerrarla en admira.app desaparece en Good y en Matrix. Punto de retorno: v.15.10.2026.r3.11:07."
   ]
 }
