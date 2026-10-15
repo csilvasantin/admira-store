@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.15.10.2026.r19.22:15": [
+    "Gemelo: tres combos en la barra, Xpacio (aplica su marca), Local y Calidad, en vez del combo largo «Proyecto y local»; la cuenta de AdmiraNext pasa a ☰ Opciones.",
+    "Con Calidad Matrix, cambiar a Diagonal 634 abre Diagonal en Matrix."
+  ],
   "v.15.10.2026.r18.21:43": [
     "«alsea» es Starbucks: ?marca=alsea, ?project=alsea y /marca alsea aplican Starbucks (por si alguien se equivoca)."
   ],
