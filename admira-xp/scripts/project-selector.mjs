@@ -8,7 +8,7 @@ const marcaLimite=()=>marcaQueLimita({marca:leerMarca('mb:marca'),manual:leerMar
 const nombreMarca=id=>{try{const a=window.AdmiraMarca&&window.AdmiraMarca.actual&&window.AdmiraMarca.actual();if(a&&a.id===id&&a.nombre)return a.nombre;}catch{}return id.charAt(0).toUpperCase()+id.slice(1);};
 const client=new ProjectClient({storage}),chosenQuality=()=>document.querySelector('#visualQualityOptions [aria-pressed="true"]')?.dataset.visualMode;
 const english=()=>document.documentElement.lang==='en',text=(en,es)=>english()?en:es;
-let pendingProject='',catalog={projects:[],venues:[]},mode=client.access||client.expired?'account':'demo',error='',busy=false,last='',popup;
+let venuesDe='',pendingProject='',catalog={projects:[],venues:[]},mode=client.access||client.expired?'account':'demo',error='',busy=false,last='',popup;
 function sceneId(){return new URL(location.href).searchParams.get('project')||projectContext(location.href,window.__xtancoVisualState?.()?.vertical).id;}
 function currentId(){return pendingProject||sceneId();}
 function currentVenue(project){if(project!==sceneId())return null;const p=new URL(location.href).searchParams;return catalog.venues.find(v=>v.project_id===project&&v.id===p.get('venue'))||catalog.venues.find(v=>v.project_id===project&&new URL(v.xpace_url).searchParams.get('loc')===p.get('loc'));}
@@ -20,7 +20,9 @@ function draw(){
  $('projectVenueFieldLabel').textContent=text('Choose venue','Elegir local');
  select.replaceChildren(new Option(text('Choose a project','Escoge un proyecto'),''));
  for(const p of visibles){const o=new Option(p.name,p.id);select.add(o);}select.value=project?.id||'';select.disabled=busy||!visibles.length;
- venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));for(const v of catalog.venues.filter(v=>v.project_id===id))venueSelect.add(new Option(v.name,v.id));venueSelect.value=venue?.id||'';venueSelect.disabled=busy||venueSelect.options.length<2;
+ // Con una marca que limita y una escena de otro proyecto, los locales son los de la marca (si es uno solo).
+ venuesDe=project?project.id:(limitado&&visibles.length===1?visibles[0].id:(limitado?'':id));
+ venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));for(const v of catalog.venues.filter(v=>v.project_id===venuesDe))venueSelect.add(new Option(v.name,v.id));venueSelect.value=venue?.id||'';venueSelect.disabled=busy||venueSelect.options.length<2;
  const activeId=sceneId();space.textContent=catalog.projects.find(p=>p.id===activeId)?.name||({estancos:'Estancos',cafebreria:'Cafebrería',starbucks:'Starbucks'}[activeId]||'');space.title=space.textContent;
  chip.textContent=(catalog.projects.find(p=>p.id===sceneId())?.name||text('Choose project','Elegir proyecto'))+(mode==='demo'?' · Demo':'');chip.title=chip.textContent;
  $('projectVenueName').textContent=venue?.name||'—';
@@ -36,7 +38,7 @@ function draw(){
 }
 async function load(){busy=true;error='';draw();try{catalog=mode==='account'?await client.context():await client.demos();}catch(e){pendingProject='';catalog={projects:[],venues:[]};error=e.message==='SESSION_EXPIRED'?text('Connection expired or revoked. Reconnect with AdmiraNext.','Conexión caducada o revocada. Reconecta con AdmiraNext.'):text('AdmiraNext is unavailable. Your selection has not changed.','AdmiraNext no está disponible. Tu selección no ha cambiado.');}finally{busy=false;last='';draw();}}
 async function navigate(projectId,venueId){busy=true;draw();try{if(mode==='account')catalog=await client.context();const project=proyectosPermitidos(marcaLimite(),catalog.projects).find(p=>p.id===projectId),venues=catalog.venues.filter(v=>v.project_id===projectId);if(!project)throw Error('SESSION_EXPIRED');const venue=venues.find(v=>v.id===venueId)||(venues.length===1?venues[0]:null);if(!venue){pendingProject=project.id;error=venues.length?text('Choose the venue to open.','Escoge el local que quieres abrir.'):text('This project has no associated venue.','Este proyecto no tiene un local asociado.');return;}const href=venueUrl(location.href,venue,project,chosenQuality(),{publicDemo:mode==='demo',language:english()?'en':'es'});try{const dest=new URL(href);const id=dest.searchParams.get('loc')==='alsea-sbux-021'?'starbucks':(dest.searchParams.get('project')||'');if(id&&window.AdmiraMarca&&typeof window.AdmiraMarca.aplicarProyecto==='function')window.AdmiraMarca.aplicarProyecto(id);if(id&&typeof window.dispatchEvent==='function')window.dispatchEvent(new CustomEvent('xpaceos:project-change',{detail:{id}}));}catch(err){}location.assign(href);}catch(e){if(e.message==='SESSION_EXPIRED'){catalog={projects:[],venues:[]};pendingProject='';}error=e.message==='SESSION_EXPIRED'?text('Access changed. Reconnect with AdmiraNext.','El acceso ha cambiado. Reconecta con AdmiraNext.'):text('Unable to verify the selected venue.','No se pudo verificar el local seleccionado.');}finally{busy=false;last='';draw();}}
-select.addEventListener('change',()=>{if(select.value)navigate(select.value);});venueSelect.addEventListener('change',()=>{if(venueSelect.value)navigate(select.value,venueSelect.value);});
+select.addEventListener('change',()=>{if(select.value)navigate(select.value);});venueSelect.addEventListener('change',()=>{if(venueSelect.value)navigate(venuesDe||select.value,venueSelect.value);});
 $('projectRefresh').onclick=load;
 $('projectDisconnect').onclick=async()=>{await client.disconnect();pendingProject='';catalog={projects:[],venues:[]};error=text('Disconnected. Reconnect or choose public demos.','Desconectado. Reconecta o elige demos públicas.');last='';draw();};
 $('projectDemos').onclick=async()=>{await client.disconnect();mode='demo';await load();};

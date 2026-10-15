@@ -1,15 +1,14 @@
 {
-  "version": "v.15.10.2026.r13.20:02",
-  "deployedAt": "2026-10-15T18:02:50Z",
+  "version": "v.15.10.2026.r14.20:08",
+  "deployedAt": "2026-10-15T18:08:41Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "2d43d8375686e2c2dd7852f4ca3a538736f33a7a",
-  "gitShort": "2d43d83",
-  "gitFull": "2d43d8375686e2c2dd7852f4ca3a538736f33a7a",
+  "git": "a80ade303297ae2e5543ae72c6062b5106cf420a",
+  "gitShort": "a80ade3",
+  "gitFull": "a80ade303297ae2e5543ae72c6062b5106cf420a",
   "dirty": false,
   "novedades": [
-    "Proyecto y local: con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis o /marca) sólo se ofrecen sus proyectos: Starbucks → Starbucks; Altadis → Altadis y Estancos.",
-    "Como Admira, sin marca o con la marca que pone el propio proyecto al elegirlo se ofrecen todos; /marca off los vuelve a mostrar."
+    "Proyecto y local con la marca de un cliente: el desplegable de locales ofrece los de esa marca aunque la escena abierta sea de otro proyecto (p. ej. un Xtanco con la marca Starbucks), y elegir uno abre ese local."
   ]
 }
