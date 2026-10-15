@@ -68,3 +68,23 @@ h1{margin:2px 0 6px;font-size:21px;line-height:1.2}
 [data-panorama="1"] .grupo[aria-label="Vista"]{display:none}
 [data-panorama="1"] #lienzo{cursor:grab}
 [data-panorama="1"] #lienzo:active{cursor:grabbing}
+/* Ventanas (ventanas.mjs): barra para arrastrar, esquina para redimensionar, × para cerrar y dock para reabrir. */
+.vent{overflow:auto;min-width:220px;min-height:70px}
+.vent-esquina{position:absolute;right:2px;bottom:2px;width:16px;height:16px;cursor:nwse-resize;touch-action:none;z-index:2;background:linear-gradient(135deg,transparent 0 55%,var(--suave) 55% 62%,transparent 62% 72%,var(--suave) 72% 79%,transparent 79%);opacity:.8}
+.vent-esquina:hover{opacity:1}
+.vent.vent-cerrada{display:none!important}
+.vent-barra{display:flex;align-items:center;gap:8px;margin:-6px -8px 8px;padding:4px 6px 4px 8px;border-bottom:1px solid var(--linea);cursor:move;user-select:none;touch-action:none}
+.vent-asa{color:var(--suave);font-size:13px;letter-spacing:-1px}
+.vent-titulo{flex:1;min-width:0;font:700 10px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vent-cerrar{flex:none;width:24px;height:24px;padding:0;border-radius:6px;background:transparent;color:var(--tinta);font-size:17px;line-height:1}
+.vent-cerrar:hover{background:#ffffff1f}
+.reproductor .vent-barra{grid-column:1/-1}
+.vent-dock{position:absolute;left:16px;top:14px;z-index:60;display:flex;flex-wrap:wrap;gap:6px}
+.vent-dock .vent-abrir{padding:6px 10px;background:var(--panel);color:var(--tinta);border:1px solid var(--linea);font-size:12px}
+.vent-dock .vent-abrir:hover{border-color:var(--verde)}
+.reproductor{grid-template-areas:"barra barra" "mandos linea" "estado estado" "fuente fuente" "avisos avisos"}
+.reproductor .vent-barra{grid-area:barra}
+@media (max-width:820px){.reproductor{grid-template-areas:"barra" "mandos" "linea" "estado" "avisos"}}
+/* El visor es oscuro también con marca blanca: la hoja de la marca cambia --panel en :root (blanco con
+   Starbucks) y los textos del visor son claros. Los colores del visor se fijan en #sc. */
+#sc{--panel:#0d1915e8;--linea:#2c463c;--tinta:#eef4ef;--suave:#a9bdb3;color:var(--tinta)}

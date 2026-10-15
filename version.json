@@ -1,14 +1,15 @@
 {
-  "version": "v.15.10.2026.r24.23:34",
-  "deployedAt": "2026-10-15T21:34:41Z",
+  "version": "v.15.10.2026.r25.23:58",
+  "deployedAt": "2026-10-15T21:58:47Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "9a9c02c148ca896953765605cdaf1952dd09445c",
-  "gitShort": "9a9c02c",
-  "gitFull": "9a9c02c148ca896953765605cdaf1952dd09445c",
+  "git": "e4cffed98707fd75e279b3b9e4f3ad3ccbcca5dc",
+  "gitShort": "e4cffed",
+  "gitFull": "e4cffed98707fd75e279b3b9e4f3ad3ccbcca5dc",
   "dirty": false,
   "novedades": [
-    "La puerta de Google Maps ya carga la calle en admira.store; la fachada pulsable brilla más para que se vea dónde entrar."
+    "Matrix de Diagonal 634: las seis pantallas de la foto 360 emiten su playlist y se pueden tocar para ver lo que suena.",
+    "Las ventanas del visor de centros se mueven, cambian de tamaño y se cierran (vuelven desde el botón de arriba a la izquierda)."
   ]
 }

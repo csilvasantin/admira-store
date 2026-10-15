@@ -2,8 +2,9 @@
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
 // Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { crearPanorama } from './panorama.mjs?v=sc-pano-1';
+import { crearPanorama } from './panorama.mjs?v=sc-pano-2';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
+import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
@@ -68,7 +69,13 @@ function animar(now) {
 (function controles() {
   const punteros = new Map(); let movido = false, pinza = 0;
   lienzo.addEventListener('pointerdown', e => { punteros.set(e.pointerId, { x: e.clientX, y: e.clientY }); movido = false; lienzo.setPointerCapture(e.pointerId); anim = null; });
-  lienzo.addEventListener('pointerup', e => { punteros.delete(e.pointerId); pinza = 0; if (!movido && !enPanorama()) elegir(e); });
+  lienzo.addEventListener('pointerup', e => {
+    punteros.delete(e.pointerId); pinza = 0; if (movido) return;
+    if (!enPanorama()) { elegir(e); return; }
+    // En la foto 360 también se toca una pantalla para ver su playlist.
+    const r = lienzo.getBoundingClientRect();
+    seleccionar(pano.elegir((e.clientX - r.left) / r.width * 2 - 1, 1 - (e.clientY - r.top) / r.height * 2));
+  });
   lienzo.addEventListener('pointercancel', e => { punteros.delete(e.pointerId); pinza = 0; });
   lienzo.addEventListener('pointermove', e => {
     const p = punteros.get(e.pointerId);
@@ -430,7 +437,12 @@ function bucle(now) {
   if (rep) rep.tick();
   actualizarPantallas();
   animar(now); ponerCamara();
-  if (enPanorama()) pano.render(); else renderer.render(scene, camera);
+  if (enPanorama()) {
+    // Las pantallas de la foto emiten lo mismo que las del 3D (la textura que ya tiene cada una).
+    for (const p of pantallasVisor) pano.pintarPantalla(p.id, p.contenido.material.map);
+    pano.resaltar(seleccion);
+    pano.render();
+  } else renderer.render(scene, camera);
   if (now - ultimaUI > 200) { ultimaUI = now; pintarReproductor(); if (params.get('diag') === '1' || seleccion) { pintarLista(); pintarDetalle(); } }
 }
 
@@ -480,6 +492,13 @@ combos = montarCombos({
     cargarCentro(c.id); return true;
   },
 });
+
+// Paneles que se mueven, se redimensionan y se cierran (ventanas.mjs).
+montarVentanas($('#sc'), [
+  { el: $('.ficha'), id: 'ficha', titulo: 'Centro' },
+  { el: $('.pantallas'), id: 'pantallas', titulo: 'Pantallas' },
+  { el: $('#reproductor'), id: 'reproductor', titulo: 'Reproducción' },
+]);
 
 try {
   CENTROS = (await json('centros.json')).centros;
