@@ -57,7 +57,7 @@ export function readScenePlaylists(storage){try{return JSON.parse(storage?.getIt
 
 export function createScenePlaylists({win=globalThis,doc=win.document,storage,watch=watchMatrixState,watchPhysicalIPad=watchIPadPlaylist,sequencer=createScreenPlaylist,seeds=SCENE_SEEDS,mode=getScreenDisplayMode,number=id=>7-Number(id.slice(-1))}={}){
  const store=storage===undefined?win.localStorage:storage,clock=()=>win.performance.now(),byDevice=new Map();
- let enabled=readScenePlaylists(store),state=null,stopWatch=null,stopIPad=null,physicalTracks=seeds.ipad,idle=0,lastUse=0,awake=false,disposed=false,off={};
+ let enabled=readScenePlaylists(store),state=null,stopWatch=null,stopIPad=null,physicalTracks=[],idle=0,lastUse=0,awake=false,disposed=false,off={};
  const pool=createPainterPool({win,doc,sequencer,awake:()=>awake});
  function savedLayout(){try{return JSON.parse(store?.getItem(DEVICE_LAYOUT_KEY)||'null');}catch{return null;}}
  function sync(){

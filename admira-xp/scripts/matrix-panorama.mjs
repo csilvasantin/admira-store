@@ -4,7 +4,7 @@ import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mj
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=una-lectura-1';
 import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=starbucks-defaults-1';
 import {watchIPadPlaylist} from './ipad-physical-playlist.mjs?v=shared-ipad-20261015';
-import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
+import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
@@ -63,7 +63,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function showNumbers(visible){deviceEditor?.enable(visible);numberLayer.hidden=!visible;numberButton.setAttribute('aria-pressed',String(visible));}
  showNumbers(getScreenNumbersVisible());const unsubscribeNumbers=subscribeScreenNumbers(showNumbers);
  numberButton.addEventListener('click',()=>setScreenNumbersVisible(null),options);
- let wallPlayback=null,wallTracks=[...DEMO_WALL,...DEMO_CHRISTMAS],tpvTracks=DEMO_TPV,ipadTracks=STARBUCKS_IPAD_PLAYLIST.tracks;
+ let wallPlayback=null,wallTracks=[...DEMO_WALL,...DEMO_CHRISTMAS],tpvTracks=DEMO_TPV,ipadTracks=[];
  const layoutSelect=root.querySelector('[data-screen-layout]');
  function applyScreenLayout(mode=getScreenDisplayMode()){
   layoutSelect.value=mode;

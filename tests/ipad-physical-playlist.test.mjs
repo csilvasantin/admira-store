@@ -29,3 +29,10 @@ test('one bounded watcher serves all consumers, retains last valid list on failu
  mode='malformed';await tick();assert.equal(b.at(-1).error,true);assert.equal(b.at(-1).tracks.length,2);
  mode='valid';await tick();assert.equal(a.at(-1).error,false);stopA();assert.equal(timers.size,1);stopB();assert.equal(timers.size,0);
 });
+
+test('first unavailable read reports no fabricated playlist before any physical snapshot',async()=>{
+ const pending=new Map(),seen=[];let seq=0;
+ const timers={setTimeout(fn,ms){const id=++seq;pending.set(id,{fn,ms});return id;},clearTimeout:id=>pending.delete(id)};
+ const watch=createIPadPlaylistWatch({fetcher:async()=>{throw Error('offline');},timers});const stop=watch(v=>seen.push(v));await new Promise(setImmediate);
+ assert.equal(seen.length,1);assert.equal(seen[0].error,true);assert.equal(seen[0].tracks,null);stop();assert.equal(pending.size,0);
+});

@@ -66,7 +66,7 @@ test('frames keep their proportion on the physical screen and slices tile withou
  near(SURFACE_ASPECT.ipad,4/3);
 });
 
-function harness({state=null,stored={}}={}){
+function harness({state=null,stored={},physical=true}={}){
  let now=0;const timers=new Map(),intervals=new Map(),videos=[],sequences=[],watches=[],data=new Map(Object.entries(stored));let seq=0;
  class FakeImage{constructor(){FakeImage.made.push(this);this.complete=false;this.naturalWidth=0;this.naturalHeight=0;}set src(value){this.url=value;}}
  FakeImage.made=[];
@@ -78,7 +78,7 @@ function harness({state=null,stored={}}={}){
  const advance=ms=>{const end=now+ms;for(;;){const due=[...timers].filter(([,t])=>t.at<=end).map(([id,t])=>({id,at:t.at,run:()=>{timers.delete(id);t.fn();}})).concat([...intervals].filter(([,t])=>t.next<=end).map(([id,t])=>({id,at:t.next,run:()=>{t.next+=t.ms;t.fn();}}))).sort((a,b)=>a.at-b.at)[0];if(!due)break;now=due.at;due.run();}now=end;};
  const context=()=>{const calls=[];return {calls,save(){},restore(){},drawImage(...args){calls.push(['image',...args]);},fillRect(...args){calls.push(['fill',...args]);},set fillStyle(value){calls.push(['style',value]);}};};
  const seeds={wall:[track('w1'),track('w2')],tpv:[track('t1')],ipad:[track('photo',{kind:'image',url:stock('photo','jpg')})]};
- let physicalListener;const runtime=createScenePlaylists({win,doc,storage,watch,watchPhysicalIPad:fn=>{physicalListener=fn;return ()=>{};},sequencer,seeds,mode:()=>win.mode||'individual'});
+ let physicalListener;const runtime=createScenePlaylists({win,doc,storage,watch,watchPhysicalIPad:fn=>{physicalListener=fn;if(physical)fn({tracks:seeds.ipad,error:false});return ()=>{};},sequencer,seeds,mode:()=>win.mode||'individual'});
  const ready=(video,src)=>{video.attrs.src=src;video.readyState=4;video.videoWidth=1080;video.videoHeight=1920;};
  return {physical:value=>physicalListener(value),runtime,win,videos,sequences,watches,data,advance,context,ready,images:FakeImage.made,set now(value){now=value;}};
 }
@@ -129,12 +129,12 @@ test('live MCP state replaces tracks, powers screens off and follows shared assi
  assert.equal(h.runtime.draw(ctx,512,768,WALL[0]),true,'an off screen is painted black');assert.deepEqual(ctx.calls.at(-1),['fill',0,0,512,768]);
  assert.equal(h.runtime.get(WALL[0]).kind,'off');
  const groups=h.runtime.state().groups;assert.equal(h.runtime.state().revision,7);
- assert.deepEqual(groups.map(g=>[g.playlistId,g.devices.length]),[['wall',4],['tpv',1],['ipad',1],['playlist-a',1]]);
+ assert.deepEqual(groups.map(g=>[g.playlistId,g.devices.length]),[['wall',4],['tpv',1],['playlist-a',1],['ipad',1]]);
  assert.equal(h.runtime.get(IPAD).id,'photo','MCP iPad state cannot replace the physical playlist');
  assert.equal(h.runtime.get(WALL[1]).playlistId,'playlist-a');assert.equal(h.sequences.find(s=>s.options.tracks[0].id==='a1').options.loop,false);
  const wall=h.sequences.find(s=>s.calls.includes('replace'));assert.equal(wall.options.tracks[0].url,stable('w9'));
  h.watches[0].onState({...state,revision:8,devicesOff:{},playlists:{...state.playlists,tpv:{managed:true,tracks:[]}}});
- assert.deepEqual(h.runtime.state().groups.map(g=>[g.playlistId,g.devices.length]),[['wall',5],['ipad',1],['playlist-a',1]]);
+ assert.deepEqual(h.runtime.state().groups.map(g=>[g.playlistId,g.devices.length]),[['wall',5],['playlist-a',1],['ipad',1]]);
  assert.ok(h.sequences.some(s=>s.calls.at(-1)==='dispose'),'unused clocks are released');
 });
 
@@ -212,4 +212,11 @@ test('the iPad follows the physical two-video list despite old MCP media or cust
  const ipad=h.runtime.state().groups.find(g=>g.devices.includes(IPAD));assert.equal(ipad.playlistId,'ipad');assert.equal(ipad.total,2);assert.equal(h.runtime.get(IPAD).id,'horizontal-one');
  h.physical({tracks:null,error:true});assert.equal(h.runtime.get(IPAD).id,'horizontal-one');
  h.win.XpaceIpadCola={hasOrders:()=>true};assert.equal(h.runtime.get(IPAD),null);h.win.XpaceIpadCola={hasOrders:()=>false};assert.equal(h.runtime.get(IPAD).id,'horizontal-one');
+});
+
+test('a cold failed physical read cannot display seed or MCP iPad content',()=>{
+ const h=harness({physical:false,state:{revision:4,controls:{},playlists:{ipad:{managed:true,tracks:[track('old-mcp')]}}}});
+ assert.equal(h.runtime.get(IPAD),null);h.physical({tracks:null,error:true});assert.equal(h.runtime.get(IPAD),null);assert.ok(!h.runtime.state().groups.some(g=>g.devices.includes(IPAD)));
+ h.physical({tracks:[track('physical-one'),track('physical-two')],error:false});assert.equal(h.runtime.get(IPAD).id,'physical-one');
+ h.physical({tracks:null,error:true});assert.equal(h.runtime.get(IPAD).id,'physical-one');
 });
