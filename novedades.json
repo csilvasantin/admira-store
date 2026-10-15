@@ -701,5 +701,9 @@
   "v.15.10.2026.r5.11:32": [
     "Starbucks: pulsa el TPV para escuchar o silenciar el mismo hilo musical del gemelo; también admite teclado en Matrix.",
     "Los vídeos verticales llenan el TPV sin deformarse; los horizontales conservan su imagen completa. Continúan las siete piezas del iPhone y los dos vídeos del iPad con colas."
+  ],
+  "v.15.10.2026.r6.11:57": [
+    "Starbucks: Bad Times muestra sólo su portada original en una composición vertical limpia, con su audio intacto y respaldo editorial si falla la imagen.",
+    "La ficha En emisión del TPV despliega un mando interactivo para el hilo musical: Anterior, Escuchar/Silenciar, Siguiente y las siete pistas. Controla el reloj web del gemelo."
   ]
 }

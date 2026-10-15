@@ -18,3 +18,9 @@ test('portrait videos fill proportionally in DOM and canvas; landscape stays com
  v.video.videoWidth=1280;v.video.videoHeight=720;v.sample();assert.equal(v.video.style.objectFit,'contain');v.draw(ctx,352,632);
  const landscape=drawn.at(-1);assert.equal(landscape[3],352);assert.ok(Math.abs(landscape[4]-198)<1e-9);assert.equal(landscape[1],0);v.dispose();
 });
+test('Bad Times shows only its original cover composition while retaining the musical source',()=>{
+ const h=setup(),v=h.visual;h.track({id:'1790706121644-y5mqrq',url:'bad-times-source',visualUrl:'https://example.com/bad.mp4',kind:'video',title:'EN · Bad Times Deep House (Stock 1308)'});h.set({url:'bad-times-source',position:20});
+ assert.equal(v.video.src,'');assert.equal(v.video.hidden,true);assert.equal(v.node.dataset.visualMode,'artwork');assert.equal(v.cover.src,'https://img.youtube.com/vi/8PeU6AVPQVg/hqdefault.jpg');assert.match(decodeURIComponent(v.fallback.src),/Bad Times/);
+ v.cover.naturalWidth=480;v.cover.naturalHeight=360;v.cover.dispatchEvent(new Event('load'));const drawn=[],ctx={save(){},restore(){},beginPath(){},rect(){},clip(){},fillRect(){},fillText(){},drawImage(...args){drawn.push(args);}};v.draw(ctx,360,640);const art=drawn.find(args=>args[0]===v.cover);assert.deepEqual(art.slice(1,5),[0,20,480,320]);assert.equal(drawn.some(args=>args[0]===v.video),false);
+ v.cover.dispatchEvent(new Event('error'));assert.equal(v.cover.hidden,true);assert.equal(v.state().cover,true);assert.equal(v.video.src,'');v.dispose();
+});
