@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import { createRequire } from 'node:module';
+const shellApi = createRequire(import.meta.url)('../assets/xpace-shell.js');
 
 const source = readFileSync(new URL('../assets/xpace-shell.js', import.meta.url), 'utf8');
 const loader = source.slice(source.indexOf('  function suiteExperto() {'), source.indexOf('  function start() {'));
@@ -9,14 +11,14 @@ assert.ok(loader.includes('doc.head.appendChild(js)'), 'exercise the actual shel
 const base = 'https://www.admiranext.com/suite/experto';
 function page(url, {iframe = false, existing} = {}) {
   const location = new URL(url), nodes = existing ? [existing] : [], handlers = [];
-  const root = {self:{}}; root.top = iframe ? {} : root.self;
+  const root = {self:{}, location}; root.top = iframe ? {} : root.self;
   const doc = {
     querySelector: () => nodes.find(n => n.src?.startsWith(base + '.js')),
     createElement: tag => ({tag, attrs:{}, setAttribute(k, v) {this.attrs[k] = v;}}),
     addEventListener: (...args) => handlers.push(args),
     head: {appendChild: n => nodes.push(n)}
   };
-  const context = vm.createContext({root, doc, location, URLSearchParams,
+  const context = vm.createContext({root, doc, location, URLSearchParams, esPortada: shellApi.esPortada,
     parts:{expert:{classList:{contains: () => false}}}, setPanel() {},
     MutationObserver:class {observe() {}}, fetch() {throw Error('bootstrap cannot make API calls');}});
   return {nodes, handlers, run: () => vm.runInContext(loader + '\nsuiteExperto();', context),
@@ -69,11 +71,18 @@ test('embedded shell remains isolated', () => {
 test('both native entry pages invalidate cached shell code, and next seal carries the change', () => {
   for (const file of ['index.html','admira-xp/index.html']) {
     const html = readFileSync(new URL('../' + file, import.meta.url), 'utf8');
-    assert.ok(html.includes('/assets/xpace-shell.js?v=20261014-gdg51-1'), file);
+    assert.ok(html.includes('/assets/xpace-shell.js?v=20261015-portada-1'), file);
     assert.ok(!html.includes('/assets/xpace-shell.js?v=20261007-kiosko-1'), file);
   }
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   const seal = html.match(/name="admiranext-version" content="([^"]+)"/)[1];
   const news = JSON.parse(readFileSync(new URL('../novedades.json', import.meta.url), 'utf8'));
   assert.match(seal, /^v\.07\.10\.2026\.r\d+\./); assert.ok(Number(seal.match(/\.r(\d+)\./)[1]) >= 26); assert.ok(news[seal].length >= 2);
+});
+
+test('the plain home page (no ?ax_demo) loads no Expert engine; the native walkthrough on the home still does', () => {
+  const portada = page('https://www.admira.store/'); portada.run();
+  assert.equal(portada.engines().length, 0, 'home page without Expert mode');
+  const demo = page('https://www.admira.store/?ax_demo=store'); demo.run();
+  assert.ok(demo.engines().length > 0, 'the walkthrough keeps its engine');
 });

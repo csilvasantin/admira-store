@@ -1,14 +1,15 @@
 {
-  "version": "v.15.10.2026.r14.20:08",
-  "deployedAt": "2026-10-15T18:08:41Z",
+  "version": "v.15.10.2026.r15.20:30",
+  "deployedAt": "2026-10-15T18:30:32Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "a80ade303297ae2e5543ae72c6062b5106cf420a",
-  "gitShort": "a80ade3",
-  "gitFull": "a80ade303297ae2e5543ae72c6062b5106cf420a",
+  "git": "b7ba7b3556839c06bf5a5c39f4ba0da1ccb47ce1",
+  "gitShort": "b7ba7b3",
+  "gitFull": "b7ba7b3556839c06bf5a5c39f4ba0da1ccb47ce1",
   "dirty": false,
   "novedades": [
-    "Proyecto y local con la marca de un cliente: el desplegable de locales ofrece los de esa marca aunque la escena abierta sea de otro proyecto (p. ej. un Xtanco con la marca Starbucks), y elegir uno abre ese local."
+    "Portada sin modo Experto: en el sitio de ⌘, la pastilla de idioma del mismo tamaño — ENG pasa a inglés y ESP vuelve al castellano. El recorrido de demo nativo (?ax_demo=store) conserva su motor.",
+    "Con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis) la portada y las listas de Xpacios sólo enseñan lo suyo; con Starbucks, el gemelo de referencia y los botones abren el Starbucks de Paseo de Gràcia. Como Admira, todo."
   ]
 }
