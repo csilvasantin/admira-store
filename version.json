@@ -1,14 +1,14 @@
 {
-  "version": "v.15.10.2026.r21.22:55",
-  "deployedAt": "2026-10-15T20:55:21Z",
+  "version": "v.15.10.2026.r22.23:00",
+  "deployedAt": "2026-10-15T21:00:12Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "8a74eb5dcb13ebfff65f8b62d68ae29eadffdcd2",
-  "gitShort": "8a74eb5",
-  "gitFull": "8a74eb5dcb13ebfff65f8b62d68ae29eadffdcd2",
+  "git": "4fe651401fcb9bd5d793d85c63d80b9f4ec0189a",
+  "gitShort": "4fe6514",
+  "gitFull": "4fe651401fcb9bd5d793d85c63d80b9f4ec0189a",
   "dirty": false,
   "novedades": [
-    "Elegir Starbucks Passeig de Gràcia 103 en el combo Local lleva antes a su puerta en Google Maps (/xpacios/puerta/): pulsa la fachada para entrar en el gemelo con la calidad elegida."
+    "La puerta de Google Maps: la ficha se lee también con la marca Starbucks (textos claros sobre la ficha oscura)."
   ]
 }

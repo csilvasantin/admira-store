@@ -23,3 +23,12 @@ html,body{margin:0;height:100%;background:var(--fondo);color:var(--tinta);font:1
 @keyframes brillo-puerta{50%{opacity:.85}}
 @media (prefers-reduced-motion:reduce){.puerta-local::before{animation:none}}
 @media (max-width:600px){.ficha{left:8px;right:8px;bottom:8px;max-width:none}}
+/* Con marca blanca (Starbucks: textos oscuros, fondo blanco) la ficha y el fondo siguen siendo los de la puerta:
+   la ficha es oscura, así que sus textos son claros (con #puerta, más específico que la hoja de la marca). */
+#puerta{background:radial-gradient(circle at 30% 30%,#173326,#0b1411 70%)}
+#puerta .ficha,#puerta .ficha h1,#puerta .ficha .pista{color:var(--tinta)}
+#puerta .ficha .direccion{color:var(--suave)}
+#puerta .ficha .eyebrow{color:var(--verde)}
+#puerta .ficha .enlace{color:#9ae3e8}
+#puerta .ficha .boton{background:var(--verde);color:#00180f}
+#puerta .ficha .aviso{color:#ffd38a}
