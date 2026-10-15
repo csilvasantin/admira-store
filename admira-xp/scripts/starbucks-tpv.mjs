@@ -1,13 +1,14 @@
-import {DEMO_TPV} from './starbucks-demo.mjs?v=devices-1';
-// Separate local-advertising playlist for the customer-facing virtual POS screen.
+
+// Legacy seed is empty; the customer-facing screen follows the physical iPhone music transport.
 export const STARBUCKS_TPV_PLAYLIST={
   "schemaVersion": 1,
   "id": "starbucks-alsea-paseo-de-gracia-tpv",
   "store": "starbucks-alsea-paseo-de-gracia",
-  "purpose": "local-advertising",
+  "purpose": "physical-music-visual",
+  "sourceScreen": "iphone17-mupi",
   "muted": true,
   "repeat": "all",
-  "tracks": DEMO_TPV
+  "tracks": []
 };
 export const STARBUCKS_TPV_MAPPING={
   "version": 1,

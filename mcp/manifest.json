@@ -307,14 +307,23 @@
     "real_player_connections_verified": false
   },
   "starbucks_music": {
-    "es": "Matrix · Starbucks Paseo de Gracia: pulsa el altavoz situado junto a la señal de salida para escuchar la playlist Starbucks Alsea. La primera pulsación inicia el audio; las siguientes alternan sonido y silencio sin pausar, reiniciar ni detener el cambio de canción. Experto → Altavoz lleva la cámara hasta él; Escuchar/Silenciar ofrece el mismo control. Al salir de Matrix se silencia la escucha local y la playlist sigue avanzando mientras la página esté abierta. Primera pieza de Stock: Bad Times Deep House (6:41), enlazada directamente. Las referencias publicadas se conservan aunque caduque la cola. Las piezas Suno encargadas a Morfeo siguen pendientes de entrega. Consulta nuevas piezas cada 30 segundos. Este control no cambia el volumen de las pantallas físicas.",
-    "en": "Matrix · Starbucks Paseo de Gracia: click the speaker beside the exit sign to listen to the Starbucks Alsea playlist. The first click starts audio; subsequent clicks toggle sound and mute without pausing, restarting or stopping track changes. Expert → Speaker takes the camera there; Listen/Mute offers the same control. Leaving Matrix mutes local listening while the playlist keeps advancing as long as the page stays open. First Stock track: Bad Times Deep House (6:41), linked directly. Published references remain available after the delivery queue expires. The Suno tracks requested from Morfeo are still awaiting delivery. New tracks are checked every 30 seconds. This control does not change the volume of physical screens.",
+    "es": "En Starbucks, Opciones → Hilo musical → Playlist actual muestra las siete piezas del iPhone iphone17-mupi, en el mismo orden: seis manuales y una automática, sin duplicados. Anterior, Siguiente y Lanzar cambian el único transporte musical virtual. Al recibir la fuente avanza sin sonido; Escuchar activa el audio sin reiniciar la pista. La pantalla vertical detrás del TPV sigue esa pista y posición, siempre sin audio propio. Los vídeos se muestran completos sobre una carátula de fondo; las dos piezas de audio usan una carátula editorial con su título. La carátula también aparece durante carga, error, fotogramas negros y los últimos dos segundos de cada vídeo. Se recupera el vídeo al llegar una imagen válida. Pausar TPV pausa sólo su imagen; al reanudar vuelve al punto del hilo. Reacciones, cesta, avisos y locuciones conservan prioridad. La lista compartida se edita en Stock → Starbucks → Hilo musical; aquí es de lectura. El iPad conserva sus dos vídeos horizontales y la cola automática.",
+    "en": "In Starbucks, Options → Background music → Current playlist shows the seven iphone17-mupi items in the same order: six manual items and one automatic item, without duplicates. Previous, Next and Launch use the single virtual music transport. It starts muted when the source arrives; Listen enables sound without restarting the track. The portrait screen behind the POS follows that track and position, always without its own audio. Videos fit in full over a cover background; the two audio items use an editorial cover with their title. The cover also appears during loading, errors, black frames and the final two seconds of every video. Video returns when a valid picture arrives. Pause POS pauses only its picture; resuming returns to the music position. Reactions, basket, announcements and voiceovers retain priority. Edit the shared list in Stock → Starbucks → Background music; this view is read-only. The iPad retains its two landscape videos and automatic queue.",
     "store": "starbucks-alsea-paseo-de-gracia",
     "tutorial": "https://www.xpaceos.com/help/#starbucks-music",
     "playlist_url": "https://www.xpaceos.com/admira-xp/starbucks-playlist.json",
     "integration_guide": "https://www.xpaceos.com/admira-xp/docs/starbucks-playlist.md",
     "screen_muted": true,
-    "cross_device_sync": false
+    "cross_device_sync": false,
+    "source_screen": "iphone17-mupi",
+    "source_url": "https://admira.tv/api/playlist?screen=iphone17-mupi",
+    "source_proxy": "https://www.admira.store/admira-xp/api/music-playlist",
+    "read_only": true,
+    "mcp_legacy_snapshot_authoritative": false,
+    "audio_owner": "starbucksMusic",
+    "visual_device": "starbucks-tpv-01",
+    "editorial_fallback": true,
+    "tail_cover_seconds": 2
   },
   "starbucks_digital_twin": {
     "location_id": "alsea-sbux-021",
@@ -397,8 +406,8 @@
     "guide": "https://www.xpaceos.com/admira-xp/docs/starbucks-playlist.md"
   },
   "starbucks_tpv": {
-    "es": "En Matrix · Starbucks, Experto → TPV / POS centra la cámara en la pantalla del terminal orientada al cliente. Reproduce la playlist de publicidad local: Stock 1329, «Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2» (30 s), en bucle y sin audio. Pausar/Reproducir TPV actúa solo sobre ese player. Las seis pantallas de pared, /sincro, /sincrototal y el hilo musical son independientes. /layout identifica el terminal como TPV, sin cambiar los números 1–6. Editor de geometría permite recalibrar y guardar las cuatro esquinas.",
-    "en": "In Matrix · Starbucks, Expert → TPV / POS centers the camera on the customer-facing terminal screen. It plays the local advertising playlist: Stock 1329, “Good Energy with Adrian Grenier: Starbucks & The Devil Wears Prada 2” (30 s), looping without audio. Pause/Play POS affects only that player. The six wall screens, /sync, /synctotal and speaker music remain independent. /layout labels the terminal as TPV without changing numbers 1–6. Geometry editor allows recalibrating and saving its four corners.",
+    "es": "En Starbucks, Opciones → Hilo musical → Playlist actual muestra las siete piezas del iPhone iphone17-mupi, en el mismo orden: seis manuales y una automática, sin duplicados. Anterior, Siguiente y Lanzar cambian el único transporte musical virtual. Al recibir la fuente avanza sin sonido; Escuchar activa el audio sin reiniciar la pista. La pantalla vertical detrás del TPV sigue esa pista y posición, siempre sin audio propio. Los vídeos se muestran completos sobre una carátula de fondo; las dos piezas de audio usan una carátula editorial con su título. La carátula también aparece durante carga, error, fotogramas negros y los últimos dos segundos de cada vídeo. Se recupera el vídeo al llegar una imagen válida. Pausar TPV pausa sólo su imagen; al reanudar vuelve al punto del hilo. Reacciones, cesta, avisos y locuciones conservan prioridad. La lista compartida se edita en Stock → Starbucks → Hilo musical; aquí es de lectura. El iPad conserva sus dos vídeos horizontales y la cola automática.",
+    "en": "In Starbucks, Options → Background music → Current playlist shows the seven iphone17-mupi items in the same order: six manual items and one automatic item, without duplicates. Previous, Next and Launch use the single virtual music transport. It starts muted when the source arrives; Listen enables sound without restarting the track. The portrait screen behind the POS follows that track and position, always without its own audio. Videos fit in full over a cover background; the two audio items use an editorial cover with their title. The cover also appears during loading, errors, black frames and the final two seconds of every video. Video returns when a valid picture arrives. Pause POS pauses only its picture; resuming returns to the music position. Reactions, basket, announcements and voiceovers retain priority. Edit the shared list in Stock → Starbucks → Background music; this view is read-only. The iPad retains its two landscape videos and automatic queue.",
     "playlist_id": "starbucks-alsea-paseo-de-gracia-tpv",
     "virtual_player_id": "starbucks-tpv-01",
     "playlist": "https://www.xpaceos.com/admira-xp/starbucks-tpv-playlist.json",
@@ -410,7 +419,16 @@
     "independent_from": [
       "wall",
       "music"
-    ]
+    ],
+    "source_screen": "iphone17-mupi",
+    "source_url": "https://admira.tv/api/playlist?screen=iphone17-mupi",
+    "source_proxy": "https://www.admira.store/admira-xp/api/music-playlist",
+    "read_only": true,
+    "mcp_legacy_snapshot_authoritative": false,
+    "audio_owner": "starbucksMusic",
+    "visual_device": "starbucks-tpv-01",
+    "editorial_fallback": true,
+    "tail_cover_seconds": 2
   },
   "matrix_mcp": {
     "es": "Las pantallas de Matrix · Starbucks y el TPV llevan marco negro, incluido el halo de la captura. Los agentes gestionan sus contenidos desde el MCP de XpaceOS: matrix_state consulta las cuatro playlists (wall, tpv, ipad, music); matrix_playlist_update añade, quita, ordena o vacía contenido; matrix_configure controla reproducción de pared/TPV, sincro, etiquetas y silencio; matrix_music_next avanza la música. Matrix consulta cambios cada 5 segundos mientras está abierto. Las escrituras exigen clave de flota y expected_revision; quedan firmadas por el agente. El estado compartido conserva la última versión si se pierde la conexión.",

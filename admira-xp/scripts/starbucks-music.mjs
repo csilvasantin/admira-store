@@ -1,3 +1,4 @@
+import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=shared-music-20261015';
 import {STARBUCKS_PUBLISHED_TRACKS} from './starbucks-playlist.mjs?v=devices-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export const STARBUCKS_FEED=`https://api.admira.store/hilomusical/next?store=${STARBUCKS_STORE}&since=0`;
@@ -14,7 +15,7 @@ export function musicTracks(value){
       const url=new URL(item.url);
       if(url.protocol!=='https:'||url.username||url.password||seen.has(url.href))return [];
       seen.add(url.href);
-      return [{url:url.href,title:String(item.title||'Starbucks · Alsea').slice(0,160)}];
+      return [{url:url.href,title:String(item.title||'Starbucks · Alsea').slice(0,160),...Object.fromEntries(['id','stockId','kind','cover','visualUrl','seconds'].filter(k=>item[k]!==undefined).map(k=>[k,item[k]]))}];
     }catch{return [];}
   }).slice(0,100);
 }
@@ -73,6 +74,7 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
       if(!tracks.length){started=false;revision++;reason='playlist';audio.removeAttribute('src');audio.load();emit();return;}
       select(index,'playlist');if(wasStarted)void play();emit();
     },
+    startMuted(){if(disposed||started||!tracks.length)return;started=true;audio.muted=true;select(index,'autoplay-muted');void play();emit();},
     next:()=>advance(true),
     setActiveLang(lang){
       lang = lang === 'es' ? 'es' : 'en';
@@ -123,11 +125,26 @@ let shared;
 export function starbucksMusic(){
   if(!shared){
     const audio=new Audio();audio.id='starbucksMusic';audio.hidden=true;document.body.append(audio);
-    shared=createStarbucksMusic({audio,publishedTracks:STARBUCKS_PUBLISHED_TRACKS});
+    shared=createStarbucksMusic({audio,publishedTracks:[]});
+    shared.replaceTracks([]); // TV is authoritative; never fall back to the old Suno/feed seed.
+    watchPhysicalMusic(value=>{if(value.tracks===null)return;shared.replaceTracks(value.tracks);shared.startMuted();});
     // Local contract for the PlayerTaza bridge; no remote/hardware acknowledgement implied.
     window.XpaceStarbucksMusic=Object.freeze({getState:shared.state,subscribe:fn=>shared.subscribe(fn),next:()=>shared.next()});
-    shared.subscribe(state=>window.dispatchEvent(new CustomEvent(STARBUCKS_MUSIC_EVENT,{detail:state})));
+    let oldBackground=null;shared.subscribe(state=>{const active=!!window.XpaceMatrixOptions||!!window.XpaceStarbucks?.active?.(),bg=document.getElementById('bgMusic');if(active&&bg){oldBackground??={muted:bg.muted,playing:!bg.paused};bg.muted=true;bg.pause();}else if(!active){if(!state.muted)shared.mute();if(bg&&oldBackground){const saved=oldBackground;oldBackground=null;bg.muted=saved.muted;if(saved.playing)Promise.resolve(bg.play()).catch(()=>{});}}window.dispatchEvent(new CustomEvent(STARBUCKS_MUSIC_EVENT,{detail:shared.state()}));});
+    installSharedMusicOptions(window.XpaceOptionsPlayback,shared,()=>!!window.XpaceMatrixOptions||!!window.XpaceStarbucks?.active?.());
     window.addEventListener('pagehide',()=>shared.mute());
   }
   return shared;
+}
+
+// Background music options share the same transport in Good/Better/Best and Matrix.
+export function installSharedMusicOptions(target,music,isActive=()=>true){if(!target||target.__physicalMusic)return;target.__physicalMusic=true;
+ const groups=target.groups?.bind(target),state=target.state?.bind(target),control=target.control?.bind(target),play=target.play?.bind(target),insert=target.insert?.bind(target),move=target.move?.bind(target);
+ target.groups=(channel,...args)=>channel==='music'&&isActive()?[{id:'music',title:'Starbucks · hilo musical'}]:groups?.(channel,...args);
+ target.state=(channel,...args)=>channel==='music'&&isActive()?{playing:music.state().playing,readOnly:true,tracks:music.getTracks().map(t=>({...t,id:t.url,kind:'music',sourceKind:t.kind,active:t.url===music.state().url}))}:state?.(channel,...args);
+ target.control=(action,...args)=>{if(!isActive())return control?.(action,...args);if(action==='musicToggle'){if(globalThis.dsMasterMute&&music.state().muted)return;return music.toggle();}if(action==='musicNext')return music.next();if(action==='musicPrev'){const tracks=music.getTracks(),index=tracks.findIndex(t=>t.url===music.state().url);if(tracks.length)return music.jump(tracks[(index+tracks.length-1)%tracks.length].url);return;}return control?.(action,...args);};
+ target.play=(channel,id,...args)=>channel==='music'&&isActive()?music.jump(id):play?.(channel,id,...args);
+ const readOnly=()=>{throw Error('Edit shared music in Stock → Starbucks → Hilo musical');};
+ target.insert=(channel,...args)=>channel==='music'&&isActive()?readOnly():insert?.(channel,...args);target.move=(channel,...args)=>channel==='music'&&isActive()?readOnly():move?.(channel,...args);
+ target.suppressMusic=()=>music.suppress();
 }
