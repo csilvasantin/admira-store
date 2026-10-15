@@ -1,14 +1,14 @@
 {
-  "version": "v.15.10.2026.r23.23:03",
-  "deployedAt": "2026-10-15T21:03:41Z",
+  "version": "v.15.10.2026.r24.23:34",
+  "deployedAt": "2026-10-15T21:34:41Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "5c9395582e42065686b019752771a9f6b079d47c",
-  "gitShort": "5c93955",
-  "gitFull": "5c9395582e42065686b019752771a9f6b079d47c",
+  "git": "9a9c02c148ca896953765605cdaf1952dd09445c",
+  "gitShort": "9a9c02c",
+  "gitFull": "9a9c02c148ca896953765605cdaf1952dd09445c",
   "dirty": false,
   "novedades": [
-    "La ficha de la puerta queda por encima del sello de versión (no tapa «Entrar»)."
+    "La puerta de Google Maps ya carga la calle en admira.store; la fachada pulsable brilla más para que se vea dónde entrar."
   ]
 }
