@@ -23,6 +23,12 @@
 #topBar .topbar-combo select:focus{outline:none}
 #topBar .topbar-combo select:disabled{opacity:.55;cursor:default}
 #topBar .topbar-combo option{background:#09151f;color:#dff8ff}
+/* En la barra común de las páginas de un local (assets/xpace-combos.mjs) los combos dicen ya dónde estás: fuera el rótulo de sección. */
+#topBar.xs-bar:has(.xpace-combos) .xs-section{display:none}
+#topBar.xs-bar .xpace-combos .topbar-combo{height:30px;box-sizing:border-box}
+#topBar.xs-bar .xpace-combos .topbar-combo:not([data-combo="local"]){flex:0 0 auto}
+#topBar.xs-bar .xpace-combos .topbar-combo[data-combo="local"]{flex:0 1 auto;min-width:0}
+#topBar.xs-bar .xpace-combos .topbar-combo[data-combo="local"] select{min-width:0;width:100%}
 #topBar .topbar-picker>.expert-menu-group{position:absolute;top:calc(100% + 8px);left:0;width:270px;max-width:calc(100vw - 20px);max-height:calc(100dvh - 64px);overflow:auto;box-sizing:border-box;padding:14px;background:#07151ff7;border:1px solid #315766;border-radius:6px;box-shadow:0 12px 30px #0009;color:#dff8ff;white-space:normal}
 #topBar .topbar-picker:not([open])>.expert-menu-group{display:none}
 #topBar .topbar-picker h2{font:700 10px/1.4 monospace;letter-spacing:.08em;margin:0 0 10px;color:#78f3ff}

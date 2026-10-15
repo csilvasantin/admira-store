@@ -1,15 +1,15 @@
 {
-  "version": "v.15.10.2026.r19.22:15",
-  "deployedAt": "2026-10-15T20:15:47Z",
+  "version": "v.15.10.2026.r20.22:33",
+  "deployedAt": "2026-10-15T20:33:27Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "cbbca7ae1c67bb676715f06c1705f747ed05dcb1",
-  "gitShort": "cbbca7a",
-  "gitFull": "cbbca7ae1c67bb676715f06c1705f747ed05dcb1",
+  "git": "af28cbb9b945310f89f98b6a1e1a96cd493d53f1",
+  "gitShort": "af28cbb",
+  "gitFull": "af28cbb9b945310f89f98b6a1e1a96cd493d53f1",
   "dirty": false,
   "novedades": [
-    "Gemelo: tres combos en la barra, Xpacio (aplica su marca), Local y Calidad, en vez del combo largo «Proyecto y local»; la cuenta de AdmiraNext pasa a ☰ Opciones.",
-    "Con Calidad Matrix, cambiar a Diagonal 634 abre Diagonal en Matrix."
+    "Centros Starbucks: Matrix es la foto 360 real del local (la del visor de panoramas, con su vista guardada); Diagonal 634 en 8K.",
+    "Las páginas de los locales (centros y Gran de Gràcia 51) tienen los tres combos de la barra: Xpacio, Local y Calidad."
   ]
 }

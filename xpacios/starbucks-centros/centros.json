@@ -23,7 +23,19 @@
         "alsea-sbux-021",
         "demo-starbucks"
       ],
-      "gemeloMatrix": "/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&quality=better"
+      "gemeloMatrix": "/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks&circuit=alsea_starbucks&quality=better",
+      "panorama": {
+        "src": "referencias/paseo-gracia-103.webp",
+        "srcMovil": "referencias/paseo-gracia-103-4k.jpg",
+        "vista": {
+          "yaw": 160.4651749580645,
+          "pitch": -13.367460789032352,
+          "fov": 100,
+          "sphereX": -3,
+          "sphereY": 0
+        },
+        "origen": "https://panorama-viewer-d8j.pages.dev/?image=demo:starbucks"
+      }
     },
     {
       "id": "d634",
@@ -41,7 +53,20 @@
       },
       "locales": [
         "starbucks-diagonal-634"
-      ]
+      ],
+      "panorama": {
+        "src": "referencias/diagonal-634-8k.jpg",
+        "srcMovil": "referencias/diagonal-634-4k.jpg",
+        "previa": "referencias/diagonal-634.jpg",
+        "vista": {
+          "yaw": -1.756164393973222,
+          "pitch": -4.551646284610172,
+          "fov": 100,
+          "sphereX": -2.3399999999999994,
+          "sphereY": -2.7
+        },
+        "origen": "https://panorama-viewer-d8j.pages.dev/?image=318417c3-fbd2-4460-a135-3ae6a1d232eb"
+      }
     },
     {
       "id": "gdg51",

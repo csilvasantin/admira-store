@@ -13,9 +13,14 @@
 <script>window.XPACE_SHELL={section:{es:'Xpacio · Laboratorio',en:'Xpace · Lab'},plano:'lab-gran-de-gracia-51',
 options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'https://admira.tv/',es:'admira.tv',en:'admira.tv',newTab:true}],
 advanced:[{id:'gdg-orbital',es:'Vista · órbita',en:'View · orbit'},{id:'gdg-puerta',es:'Vista · desde la puerta',en:'View · from the door'},{id:'gdg-webcam',es:'Vista · webcam',en:'View · webcam'},{id:'gdg-planta',es:'Vista · planta',en:'View · plan'},{id:'gdg-alzado-f',es:'Alzado · pared F',en:'Elevation · wall F'},{id:'gdg-alzado-i',es:'Alzado · pared I',en:'Elevation · wall I'},{id:'gdg-inventario',es:'Inventario ITIL (con sesión)',en:'ITIL inventory (signed in)'},{id:'gdg-etiquetas',es:'Etiquetas sí / no',en:'Labels on / off'}]};</script>
-<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261007-native-demo-control-2">
-<script defer src="/assets/xpace-shell.js?v=20261015-alsea-1"></script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261015-centros-1">
+<script defer src="/assets/xpace-shell.js?v=20261015-centros-1"></script>
 <script type="module" src="./gemelo.mjs?v=local-playlist-349"></script>
+<script type="module">
+  // Los tres combos de la barra (Xpacio · Local · Calidad), como en el gemelo y en el visor de centros (Carlos, 15-oct-2026).
+  import { montarCombos } from '/assets/xpace-combos.mjs?v=centros-1';
+  montarCombos({ proyecto: 'starbucks', local: ['lab-gran-de-gracia-51'], calidad: () => new URLSearchParams(location.search).get('quality') || 'better' });
+</script>
 </head>
 <body>
 <header data-shell-replace><a href="/xpacios/" data-shell-slot="options">Todos los Xpacios</a></header>

@@ -23,7 +23,7 @@ function page(url, {iframe=false, existing=false}={}) {
       dispatch(type){this['on'+type]?.();for(const fn of [...events.get(type)||[]]) fn();}};
   }
   const append = n => {n.isConnected=true; nodes.push(n); appended.push(n);};
-  const currentScript={src:new URL('/assets/xpace-shell.js?v=20261015-alsea-1',url).href,dataset:{shell:'inline'}};
+  const currentScript={src:new URL('/assets/xpace-shell.js?v=20261015-centros-1',url).href,dataset:{shell:'inline'}};
   const document={readyState:'loading', currentScript, title:'Store',
     documentElement:{lang:'es',setAttribute(){},getAttribute(){return null;}},
     head:{append,appendChild:append},createElement:node,
