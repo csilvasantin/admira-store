@@ -120,3 +120,13 @@ test('el visor abre con la interfaz limpia (como con H); H o ☰ ▤ ⌘ la abre
   assert.match(ui, /#topBar \[data-quad-toggle\], #topBar #pfOptions, #topBar #pfExpert/);
   assert.doesNotMatch(ui, /addEventListener\('xpace:shell-panel'/, 'la barra abre sola el panel ⌘ al cargar: eso no destapa');
 });
+
+test('Paseo de Gràcia 103 igual: sus 6 pantallas, el TPV y el iPad (horizontal) en la foto 360, desde la calibración del gemelo', () => {
+  const pg = centros.find(c => c.id === 'pg103').panorama;
+  const geo = JSON.parse(readFileSync(aqui('./modelos/paseo-gracia-103.geometry.json'), 'utf8'));
+  assert.deepEqual(pg.base, [8192, 4096]);
+  assert.deepEqual(pg.pantallas.map(p => p.id), [...geo.screens].sort((a, b) => a.position[0] - b.position[0]).map(s => s.id));
+  assert.deepEqual(pg.piezas.map(p => [p.id, p.tipo, !!p.horizontal]), [['PG103-TPV', 'tpv', false], ['PG103-IPAD', 'ipad', true]]);
+  for (const p of [...pg.pantallas, ...pg.piezas]) for (const [x, y] of p.esquinas) assert.ok(x >= 0 && x < 8192 && y > 0 && y < 4096, p.id);
+  assert.match(readFileSync(aqui('./cola-ipad.mjs'), 'utf8'), /const W = horizontal \? 1024 : ANCHO, H = horizontal \? 768 : ALTO;/);
+});

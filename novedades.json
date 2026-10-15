@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r4.00:44": [
+    "Paseo de Gràcia 103 en el visor de centros, igual que Diagonal: en la foto 360 emiten sus 6 pantallas, el TPV lleva el hilo musical y el iPad (horizontal) la gestión de colas."
+  ],
   "v.16.10.2026.r3.00:38": [
     "El gemelo abre con la interfaz limpia, como al pulsar H: sólo la barra de arriba y la escena; ☰ ▤ ⌘ o la H enseñan los paneles y botones."
   ],

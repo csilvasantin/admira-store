@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r3.00:38",
-  "deployedAt": "2026-10-15T22:38:10Z",
+  "version": "v.16.10.2026.r4.00:44",
+  "deployedAt": "2026-10-15T22:44:48Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "339129899a953ace8f58d450b3fecfec9ec1d9f9",
-  "gitShort": "3391298",
-  "gitFull": "339129899a953ace8f58d450b3fecfec9ec1d9f9",
+  "git": "cc5a6129385b25027b631ba516ccb87098252fa7",
+  "gitShort": "cc5a612",
+  "gitFull": "cc5a6129385b25027b631ba516ccb87098252fa7",
   "dirty": false,
   "novedades": [
-    "El gemelo abre con la interfaz limpia, como al pulsar H: sólo la barra de arriba y la escena; ☰ ▤ ⌘ o la H enseñan los paneles y botones."
+    "Paseo de Gràcia 103 en el visor de centros, igual que Diagonal: en la foto 360 emiten sus 6 pantallas, el TPV lleva el hilo musical y el iPad (horizontal) la gestión de colas."
   ]
 }
