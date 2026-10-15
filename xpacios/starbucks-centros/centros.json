@@ -244,6 +244,106 @@
                 2217
               ]
             ]
+          },
+          {
+            "id": "D634-EINK-SUAU",
+            "tipo": "eink",
+            "nombre": "Tinta electrónica · Cafès Torrat Suau",
+            "imagen": "https://stock.admira.store/stock/1792059860405-epierk/asset.png",
+            "titulo": "Súbele el brillo a tus días · Contraste",
+            "esquinas": [
+              [
+                7342,
+                2084
+              ],
+              [
+                7508,
+                2084
+              ],
+              [
+                7510,
+                2518
+              ],
+              [
+                7342,
+                2512
+              ]
+            ]
+          },
+          {
+            "id": "D634-EINK-MITJA",
+            "tipo": "eink",
+            "nombre": "Tinta electrónica · Cafès Torrat Mitjà",
+            "imagen": "https://stock.admira.store/stock/1792059872575-y1vrt4/asset.png",
+            "titulo": "Súbele el brillo a tus días · Luz",
+            "esquinas": [
+              [
+                7789,
+                2136
+              ],
+              [
+                7985,
+                2136
+              ],
+              [
+                7988,
+                2480
+              ],
+              [
+                7790,
+                2480
+              ]
+            ]
+          },
+          {
+            "id": "D634-EINK-1971",
+            "tipo": "eink",
+            "nombre": "Tinta electrónica · 1971 Dark Roast",
+            "imagen": "https://stock.admira.store/stock/1792057997736-fruptg/asset.png",
+            "titulo": "Súbele el brillo a tus días · cartel Starbucks original",
+            "esquinas": [
+              [
+                7757,
+                2460
+              ],
+              [
+                8028,
+                2458
+              ],
+              [
+                8038,
+                2790
+              ],
+              [
+                7760,
+                2792
+              ]
+            ]
+          },
+          {
+            "id": "D634-EINK-INTENS",
+            "tipo": "eink",
+            "nombre": "Tinta electrónica · Cafès Torrat Intens",
+            "imagen": "https://stock.admira.store/stock/1792059886064-bmn6fk/asset.png",
+            "titulo": "Súbele el brillo a tus días · Pausa",
+            "esquinas": [
+              [
+                48,
+                2150
+              ],
+              [
+                272,
+                2129
+              ],
+              [
+                318,
+                2545
+              ],
+              [
+                95,
+                2570
+              ]
+            ]
           }
         ]
       }

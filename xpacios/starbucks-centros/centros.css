@@ -88,3 +88,5 @@ h1{margin:2px 0 6px;font-size:21px;line-height:1.2}
 /* El visor es oscuro también con marca blanca: la hoja de la marca cambia --panel en :root (blanco con
    Starbucks) y los textos del visor son claros. Los colores del visor se fijan en #sc. */
 #sc{--panel:#0d1915e8;--linea:#2c463c;--tinta:#eef4ef;--suave:#a9bdb3;color:var(--tinta)}
+/* Interfaz limpia por defecto (assets/interfaz-limpia.js): sólo la barra de arriba y la escena; H o ☰ ▤ ⌘ la abren. */
+html.ui-limpia #sc .vent,html.ui-limpia #sc .vent-dock{display:none!important}

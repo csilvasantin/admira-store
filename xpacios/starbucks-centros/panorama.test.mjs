@@ -81,7 +81,7 @@ test('las ventanas se mueven, cambian de tamaño, se cierran y vuelven desde el 
 
 test('Diagonal es un clon de Paseo de Gràcia en el mostrador: TPV con el hilo musical e iPad con la gestión de colas', async () => {
   const d634 = centros.find(c => c.id === 'd634').panorama;
-  assert.deepEqual(d634.piezas.map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad']]);
+  assert.deepEqual(d634.piezas.filter(p => p.tipo !== 'eink').map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad']]);
   for (const p of d634.piezas) assert.equal(p.esquinas.length, 4);
   const html = readFileSync(aqui('./index.html'), 'utf8');
   assert.match(html, /window\.XpaceStarbucks=window\.XpaceStarbucks\|\|\{active:\(\)=>document\.documentElement\.dataset\.panorama==='1'\}/);
@@ -102,4 +102,21 @@ test('la playlist del hilo musical se deja leer desde xpaceos.com (sin funciones
   assert.equal(r.headers.get('access-control-allow-origin'), 'https://www.xpaceos.com');
   const otro = await onRequest({ request: new Request('https://www.admira.store/admira-xp/api/music-playlist', { headers: { Origin: 'https://evil.example' } }) }, fuente);
   assert.equal(otro.headers.get('access-control-allow-origin'), null);
+});
+
+test('las 4 pantallas de tinta electrónica de la zona de los cafés de Diagonal, con las imágenes de Trinity en Stock', () => {
+  const tinta = centros.find(c => c.id === 'd634').panorama.piezas.filter(p => p.tipo === 'eink');
+  assert.deepEqual(tinta.map(p => p.id), ['D634-EINK-SUAU', 'D634-EINK-MITJA', 'D634-EINK-1971', 'D634-EINK-INTENS'], 'el de 1971 va después del de Mitjà: lo tapa');
+  for (const p of tinta) { assert.match(p.imagen, /^https:\/\/stock\.admira\.store\/stock\/\d+-[a-z0-9]+\/asset\.png$/); assert.equal(p.esquinas.length, 4); }
+  assert.match(readFileSync(aqui('./panorama.mjs'), 'utf8'), /depthTest: false \}\)\);\s*m\.renderOrder = 1 \+ cuadros\.size;/);
+});
+
+test('el visor abre con la interfaz limpia (como con H); H o ☰ ▤ ⌘ la abren', () => {
+  const html = readFileSync(aqui('./index.html'), 'utf8'), css = readFileSync(aqui('./centros.css'), 'utf8');
+  const ui = readFileSync(aqui('../../assets/interfaz-limpia.js'), 'utf8');
+  assert.match(html, /<script src="\/assets\/interfaz-limpia\.js\?v=[^"]+"><\/script>/);
+  assert.match(css, /html\.ui-limpia #sc \.vent,html\.ui-limpia #sc \.vent-dock\{display:none!important\}/);
+  assert.match(ui, /e\.key\.toLowerCase\(\) !== 'h'/);
+  assert.match(ui, /#topBar \[data-quad-toggle\], #topBar #pfOptions, #topBar #pfExpert/);
+  assert.doesNotMatch(ui, /addEventListener\('xpace:shell-panel'/, 'la barra abre sola el panel ⌘ al cargar: eso no destapa');
 });

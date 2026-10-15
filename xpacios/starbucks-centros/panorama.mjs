@@ -47,7 +47,9 @@ export function crearPanorama(T, renderer) {
       g.setAttribute('position', new T.Float32BufferAttribute(v.flat(), 3));
       g.setAttribute('uv', new T.Float32BufferAttribute([0, 1, 1, 1, 1, 0, 0, 0], 2));
       g.setIndex([0, 3, 1, 1, 3, 2]);
-      const m = new T.Mesh(g, new T.MeshBasicMaterial({ color: '#ffffff', toneMapped: false, side: T.DoubleSide }));
+      // Por encima de la foto y en el orden de la lista: el cartel de delante (el verde de 1971) tapa al de detrás.
+      const m = new T.Mesh(g, new T.MeshBasicMaterial({ color: '#ffffff', toneMapped: false, side: T.DoubleSide, depthTest: false }));
+      m.renderOrder = 1 + cuadros.size;
       m.userData.pantalla = p.id;
       const borde = new T.LineLoop(new T.BufferGeometry().setAttribute('position', new T.Float32BufferAttribute(p.esquinas.map(([x, y]) => direccion(x, y, base, 98.9)).flat(), 3)), new T.LineBasicMaterial({ color: '#ffffff', toneMapped: false }));
       borde.visible = false; m.userData.borde = borde;
