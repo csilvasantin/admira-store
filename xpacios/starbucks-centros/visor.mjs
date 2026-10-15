@@ -2,9 +2,11 @@
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
 // Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { crearPanorama } from './panorama.mjs?v=sc-pano-2';
+import { crearPanorama } from './panorama.mjs?v=sc-pano-3';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
+import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-1';
+import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-1';
 import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
@@ -28,6 +30,34 @@ const camera = new T.PerspectiveCamera(48, 1, 0.05, 120);
 const pano = crearPanorama(T, renderer);
 // ¿Se ve ahora la foto 360? (Matrix en un centro con panorama).
 const enPanorama = () => modo === 'matrix' && !!(centro && centro.panorama);
+// Las piezas del mostrador en la foto 360, clon de Paseo de Gràcia 103: TPV con el hilo musical e iPad con la cola.
+const piezas = { tpv: null, ipad: null, texturas: new Map(), ultima: 0 };
+const piezaMostrador = id => ((centro && centro.panorama && centro.panorama.piezas) || []).find(p => p.id === id) || null;
+function texturaPieza(p) {
+  let t = piezas.texturas.get(p.id);
+  if (!t) {
+    if (p.tipo === 'tpv') piezas.tpv = piezas.tpv || crearHiloTPV();
+    if (p.tipo === 'ipad') piezas.ipad = piezas.ipad || crearColaIPad();
+    const fuente = p.tipo === 'tpv' ? piezas.tpv : p.tipo === 'ipad' ? piezas.ipad : null;
+    if (!fuente) return null;
+    t = new T.CanvasTexture(fuente.lienzo); t.colorSpace = T.SRGBColorSpace; t.userData.fuente = fuente; piezas.texturas.set(p.id, t);
+  }
+  return t;
+}
+function pintarPiezas(now) {
+  const lista = (centro && centro.panorama && centro.panorama.piezas) || [];
+  if (!lista.length) return;
+  const repintar = now - piezas.ultima > 250; if (repintar) piezas.ultima = now;
+  for (const p of lista) {
+    const t = texturaPieza(p); if (!t) continue;
+    if (repintar) { t.userData.fuente.pintar(); t.needsUpdate = true; }
+    pano.pintarPantalla(p.id, t);
+  }
+}
+async function tocarPieza(p) {
+  if (p.tipo === 'tpv') { const s = await piezas.tpv.alternar(); aviso(s ? `Hilo musical · suena «${piezas.tpv.titulo}»` : 'Hilo musical en silencio'); }
+  else if (p.tipo === 'ipad') { if (!piezas.ipad.abrir()) aviso('El gestor de colas no está disponible ahora.'); }
+}
 
 let combos = null; // los tres combos de la barra (más abajo)
 let CENTROS = [], centroElegido = null, centro = null, geo = null, rep = null, programas = [], programaActivo = null;
@@ -74,7 +104,9 @@ function animar(now) {
     if (!enPanorama()) { elegir(e); return; }
     // En la foto 360 también se toca una pantalla para ver su playlist.
     const r = lienzo.getBoundingClientRect();
-    seleccionar(pano.elegir((e.clientX - r.left) / r.width * 2 - 1, 1 - (e.clientY - r.top) / r.height * 2));
+    const id = pano.elegir((e.clientX - r.left) / r.width * 2 - 1, 1 - (e.clientY - r.top) / r.height * 2), p = piezaMostrador(id);
+    if (p) { tocarPieza(p); return; }
+    seleccionar(id);
   });
   lienzo.addEventListener('pointercancel', e => { punteros.delete(e.pointerId); pinza = 0; });
   lienzo.addEventListener('pointermove', e => {
@@ -233,6 +265,8 @@ function aplicarModo() {
   document.documentElement.dataset.escena = modo;
   // Matrix con foto 360: las vistas de cámara del 3D (Cliente, Pantallas, General) no aplican.
   document.documentElement.dataset.panorama = enPanorama() ? '1' : '0';
+  // Fuera de la foto 360 (3D u otro centro) el hilo musical del TPV se calla.
+  if (!enPanorama() && piezas.tpv) piezas.tpv.silenciar();
   if (enPanorama()) { pano.cargar(centro.panorama); lienzo.style.cursor = 'grab'; }
   document.querySelectorAll('button[data-modo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === modo)));
   if (!raiz) return;
@@ -440,6 +474,7 @@ function bucle(now) {
   if (enPanorama()) {
     // Las pantallas de la foto emiten lo mismo que las del 3D (la textura que ya tiene cada una).
     for (const p of pantallasVisor) pano.pintarPantalla(p.id, p.contenido.material.map);
+    pintarPiezas(now);
     pano.resaltar(seleccion);
     pano.render();
   } else renderer.render(scene, camera);
@@ -471,7 +506,9 @@ document.addEventListener('keydown', e => {
 // Para comprobar la sincronía desde la consola (y en las pruebas en el navegador).
 window.__starbucksCentros = {
   get centro() { return centro && centro.id; }, get modo() { return modo; },
-  get panorama() { return enPanorama() ? { cargada: pano.cargada, vista: { ...pano.vista } } : null; }, get programa() { return programaActivo && programaActivo.id; },
+  get panorama() { return enPanorama() ? { cargada: pano.cargada, vista: { ...pano.vista } } : null; },
+  get piezas() { return { tpv: piezas.tpv && { sonando: piezas.tpv.sonando, titulo: piezas.tpv.titulo, pistas: piezas.tpv.pistas }, ipad: piezas.ipad && { pedidos: piezas.ipad.pedidos, gestor: !!globalThis.XpaceIpadCola } }; },
+  tocarPieza: id => { const p = piezaMostrador(id); return p ? tocarPieza(p) : null; }, get programa() { return programaActivo && programaActivo.id; },
   estado: () => rep && rep.estado(),
   muestras: () => pantallasVisor.map(p => { const m = rep && rep.medioDe(p.id); return m && { pantalla: p.id, src: m.src, t: m.video.currentTime, listo: m.video.readyState, pausado: m.video.paused, ritmo: m.video.playbackRate, imagen: p.contenido.material.map === p.cargando ? 'cargando' : p.contenido.material.map instanceof T.VideoTexture ? (p.contenido.material.map.userData.src === m.src ? 'video' : 'video-anterior') : 'fallo', deriva: m.deriva, ajuste: p.ajuste && p.ajuste.modo, medio: p.ajuste && p.ajuste.medio }; }),
   rep: () => rep,

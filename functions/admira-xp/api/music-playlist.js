@@ -2,6 +2,8 @@ import {physicalMusicTracks,MUSIC_SCREEN} from '../../../admira-xp/scripts/physi
 export const MUSIC_SOURCE='https://admira.tv/api/playlist?screen='+MUSIC_SCREEN;
 export async function onRequest({request},fetcher=fetch){
  const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
+ // xpaceos.com (GitHub Pages, sin funciones) lee aquí la misma playlist para el TPV de sus centros (16-oct-2026).
+ const origin=request.headers.get('Origin')||'';if(['https://www.xpaceos.com','https://xpaceos.com'].includes(origin)){headers['Access-Control-Allow-Origin']=origin;headers['Vary']='Origin';}
  if(request.method!=='GET')return Response.json({ok:false,error:'GET only'},{status:405,headers:{...headers,Allow:'GET'}});
  try{
   const [source,art]=await Promise.allSettled([

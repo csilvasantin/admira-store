@@ -1,15 +1,14 @@
 {
-  "version": "v.15.10.2026.r25.23:58",
-  "deployedAt": "2026-10-15T21:58:47Z",
+  "version": "v.16.10.2026.r1.00:18",
+  "deployedAt": "2026-10-15T22:18:47Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "e4cffed98707fd75e279b3b9e4f3ad3ccbcca5dc",
-  "gitShort": "e4cffed",
-  "gitFull": "e4cffed98707fd75e279b3b9e4f3ad3ccbcca5dc",
+  "git": "7cfbca9d7ed62b0ad69a275178a9773bba918a51",
+  "gitShort": "7cfbca9",
+  "gitFull": "7cfbca9d7ed62b0ad69a275178a9773bba918a51",
   "dirty": false,
   "novedades": [
-    "Matrix de Diagonal 634: las seis pantallas de la foto 360 emiten su playlist y se pueden tocar para ver lo que suena.",
-    "Las ventanas del visor de centros se mueven, cambian de tamaño y se cierran (vuelven desde el botón de arriba a la izquierda)."
+    "Diagonal 634 en Matrix, clon de Paseo de Gràcia: el TPV enseña y hace sonar el hilo musical (toca para escuchar) y el iPad lleva la gestión de colas (toca para abrir el gestor)."
   ]
 }
