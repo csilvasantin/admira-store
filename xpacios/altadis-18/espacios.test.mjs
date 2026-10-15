@@ -10,7 +10,7 @@ import {
   STUDIO, ARQUITECTO, INDICE_COMPARTIDO, INDICE_LOCAL, PLANO_COMPARTIDO, PLANO_LOCAL, MANIFIESTO, TEMA_DE_TIPO,
   ESPERA_COMPARTIDO_MS, RECORRIDO_MS, RECORRIDO_MAX_MS, MONTAJES, PAREDES, textoMontaje, textoPared, textoZona, textoEntrega,
 } from './espacios.mjs';
-import { encuadre, esquinas, svgFormato, celdasFormato, posicionOrbita, camaraEncuadre, GIRO_CUBO } from './vista.mjs';
+import { encuadre, esquinas, svgFormato, celdasFormato, posicionOrbita, camaraEncuadre, GIRO_CUBO, fovPara, distanciaEnZona, planosCamara, puntosVisibles } from './vista.mjs';
 import { uvsFormato } from './recorte.mjs';
 import { tamanoPlaceholder, barrido, reloj, rotulos } from './placeholder.mjs';
 import { escenaDesdePlano, medidasCubo, tipoMueble, panelSize } from '../gran-de-gracia-51/plano3d.mjs';
@@ -343,4 +343,42 @@ test('gallery cards are never empty: the format schematic is always under the po
   assert.doesNotMatch(visor, /loading="lazy"/, 'posters load eagerly (18 small JPEGs)');
   assert.match(visor, /if \(e\.target\.tagName === 'IMG'\) e\.target\.remove\(\)/, 'a broken poster leaves the schematic');
   assert.match(read('xpacios/altadis-18/altadis.css'), /\.poster img\.ok\{opacity:1\}/, 'a poster shows only once loaded');
+});
+
+test('phone (390 × 844): the camera stays close enough and the depth buffer separates screen and bezel (no black murals)', () => {
+  // Zona libre típica a 390 × 844: lienzo 390 × 798 (sin la barra del shell), ficha arriba y controles abajo.
+  const lienzo = 390 / 798, zona = { aspect: 358 / 400, escala: 400 / 798 };
+  const fov = fovPara(lienzo);
+  assert.ok(fov > 40 && fov <= 65, `portrait widens the vertical field (${fov.toFixed(1)}°)`);
+  assert.equal(fovPara(16 / 9), 40);
+  for (const f of INDICE.formatos) for (const tipo of ['xtanco', 'cafe']) {
+    const e = escenaDesdePlano(plano(f.espacios[tipo])), suyas = e.pantallas.filter(x => x.recorte);
+    const nominal = camaraEncuadre(suyas, { fov: 40, aspect: 16 / 9, sala: e.sala }).dist;
+    const movil = camaraEncuadre(suyas, { fov, aspect: zona.aspect, sala: e.sala });
+    const d = distanciaEnZona(movil.dist, zona.escala, nominal), { near, far } = planosCamara(d, e.sala);
+    assert.ok(d <= 2 * nominal + 1e-9 && d < 15, `${f.espacios[tipo]}: camera at ${d.toFixed(1)} m (desktop ${nominal.toFixed(1)} m)`);
+    assert.ok(near >= 0.05 && far / near <= 1000, `${f.espacios[tipo]}: far/near ${Math.round(far / near)}`);
+    assert.ok(far > d + Math.hypot(e.sala.ancho, e.sala.fondo), 'the whole room fits before far');
+    // Resolución del búfer de 24 bits a esa distancia, contra los 0,3 mm entre pantalla y bisel.
+    assert.ok(d * d / (near * 2 ** 24) < 0.0003, `${f.espacios[tipo]}: depth step ${(d * d / (near * 2 ** 24) * 1000).toFixed(3)} mm`);
+  }
+  // Con el near fijo de antes (3 cm) y 20 m, el paso es de ~0,8 mm: z-fighting.
+  assert.ok(20 * 20 / (0.03 * 2 ** 24) > 0.0003);
+});
+
+test('occlusion probes: centre, corners and bottom edge of every screen; the placeholder never says «coming soon» when the video failed', () => {
+  const e = escenaDesdePlano(plano('altadis-cafe-15'));
+  const p0 = e.pantallas.find(x => x.recorte), pts = puntosVisibles(p0);
+  assert.equal(pts.length, 6, 'centre + 4 corners + bottom edge');
+  assert.ok(pts.some(q => Math.abs(q[2] - (p0.z + 0.02)) < 1e-9), 'the bottom edge is probed (coffee machines hid it)');
+  assert.ok(pts.slice(1, 5).every(q => q[2] > p0.z && q[2] < p0.z1), 'corners slightly inside the screen');
+  const visor = read('xpacios/altadis-18/visor.mjs');
+  assert.match(visor, /puntos = suyas\.flatMap\(puntosVisibles\)/);
+  assert.match(visor, /filter\(\(\[id\]\) => !apoyos\.has\(id\)\)/, 'the furniture a screen stands on is never hidden');
+  assert.match(visor, /once: true/, 'one tap listener, not one per aborted play()');
+  const vw = formatoDe(INDICE, 'cliente-15');
+  assert.doesNotMatch(rotulos(vw, 'es', 'error').pie, /preparación/);
+  assert.doesNotMatch(rotulos(vw, 'en', 'error').pie, /coming soon/);
+  assert.match(rotulos(vw, 'en', 'error').pie, /video unavailable/);
+  assert.match(rotulos(vw, 'es').pie, /en preparación/);
 });

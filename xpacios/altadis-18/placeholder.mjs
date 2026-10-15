@@ -29,26 +29,28 @@ export function reloj(t) {
   return `${String(m).padStart(2, '0')}:${r.toFixed(1).padStart(4, '0')}`;
 }
 
-/** Textos del placeholder en el idioma pedido. */
-export function rotulos(formato, idioma = 'es') {
+/**
+ * Textos del placeholder en el idioma pedido. `motivo`: 'error' (el vídeo falló: no se dice «en
+ * preparación»), 'lento' (llegando) o el de que aún no hay vídeo publicado.
+ */
+export function rotulos(formato, idioma = 'es', motivo = null) {
   const en = idioma === 'en';
-  return {
-    nombre: formato.nombre,
-    pixeles: `${formato.ancho} × ${formato.alto} px`,
-    pie: `${formato.fps || 25} fps · ${en ? 'adapted content coming soon' : 'contenido adaptado en preparación'}`,
-  };
+  const estado = motivo === 'error' ? (en ? 'video unavailable · format animation' : 'vídeo no disponible · animación del formato')
+    : motivo === 'lento' ? (en ? 'loading the adapted video…' : 'cargando el vídeo adaptado…')
+    : (en ? 'adapted content coming soon' : 'contenido adaptado en preparación');
+  return { nombre: formato.nombre, pixeles: `${formato.ancho} × ${formato.alto} px`, pie: `${formato.fps || 25} fps · ${estado}` };
 }
 
 /**
  * Crea el canvas del placeholder. `pintar(t)` dibuja el fotograma del segundo t. Sin
  * imágenes ni red: no puede fallar por CORS el día de la demo.
  */
-export function crearPlaceholder(formato, { doc = globalThis.document, idioma = 'es', recortes = [] } = {}) {
+export function crearPlaceholder(formato, { doc = globalThis.document, idioma = 'es', motivo = null, recortes = [] } = {}) {
   const { ancho: W, alto: H, escala } = tamanoPlaceholder(formato.ancho, formato.alto);
   const canvas = doc.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const g = canvas.getContext('2d');
-  const txt = rotulos(formato, idioma);
+  const txt = rotulos(formato, idioma, motivo);
   const tumbado = H > W * 1.6;   // góndola LED 64 × 384: el texto va girado
   const largo = tumbado ? H : W, corto = tumbado ? W : H;
   function pintar(t) {

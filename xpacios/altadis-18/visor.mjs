@@ -15,10 +15,10 @@ import {
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, medidaFisica,
   textoMontaje, textoPared, textoZona, textoEntrega,
   STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, dos,
-} from './espacios.mjs?v=a18-3';
-import { uvsFormato } from './recorte.mjs?v=a18-3';
-import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-3';
-import { camaraEncuadre, svgFormato } from './vista.mjs?v=a18-3';
+} from './espacios.mjs?v=a18-4';
+import { uvsFormato } from './recorte.mjs?v=a18-4';
+import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-4';
+import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles } from './vista.mjs?v=a18-4';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -79,7 +79,7 @@ function pintarFuentes() {
   const fi = st.fuenteIndice, fm = st.fuenteManifiesto, campana = st.manifiesto?.campania?.titulo;
   const cont = !fm ? '' : fm.error ? t('animación de cada formato', 'an animation of each format') : campana ? `«${campana[st.lang] || campana.es}»` : t('vídeo adaptado a cada formato', 'video adapted to each format');
   $('fuentes').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${st.indice?.version || ''}${cont ? ` · ${t('Contenido', 'Content')}: ${cont}` : ''}`;
-  $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${f.error})`), fm?.url || (fm?.error ? `${MANIFIESTO} (${fm.error})` : '')].filter(Boolean).join('\n');
+  $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`), fm?.url || (fm?.error ? `${MANIFIESTO} (${fm.error})` : '')].filter(Boolean).join('\n');
 }
 
 // ── Galería ──
@@ -181,10 +181,12 @@ function encuadrar() {
   const zona = zonaLibre();
   // La regla (de frente, centrada, dos tercios del cuadro; el cubo en diagonal) vive en vista.mjs y
   // tiene su test en los 36 planos; aquí sólo se ajusta a la zona libre del lienzo.
-  cam.marco = camaraEncuadre(pantallasFormato(), { fov: 40, aspect: zona.aspect, sala: escena.sala });
+  const suyas = pantallasFormato(), fov = fovPara(persp.aspect);
+  cam.marco = camaraEncuadre(suyas, { fov, aspect: zona.aspect, sala: escena.sala });
   if (!cam.marco) return;
+  const nominal = camaraEncuadre(suyas, { fov: 40, aspect: 16 / 9, sala: escena.sala }).dist;
   const [x, y, h] = cam.marco.objetivo;
-  cam.orb = { az: cam.marco.az, el: cam.marco.el, dist: cam.marco.dist / zona.escala, objetivo: V(x, y, h) };
+  cam.orb = { az: cam.marco.az, el: cam.marco.el, dist: distanciaEnZona(cam.marco.dist, zona.escala, nominal), objetivo: V(x, y, h) };
 }
 
 // Lo que no tapan la ficha ni la barra de controles: el encuadre se centra ahí (setViewOffset,
@@ -203,7 +205,7 @@ function ajustarFov() {
     const minV = 2 * Math.atan(Math.tan(80 * Math.PI / 360) / persp.aspect) * 180 / Math.PI;
     persp.fov = Math.min(100, Math.max(58, minV) / (cam.mira.zoom || 1));
     persp.clearViewOffset();
-  } else { persp.fov = 40; zonaLibre(); }
+  } else { persp.fov = fovPara(persp.aspect); zonaLibre(); }
   persp.updateProjectionMatrix();
 }
 
@@ -233,10 +235,13 @@ function pintarHud() {
 function colocarCamara() {
   if (cam.vista === 'puerta') {
     const { pos, yaw, pitch } = cam.mira;
+    if (persp.near !== 0.03) { persp.near = 0.03; persp.far = 40; persp.updateProjectionMatrix(); }
     persp.position.copy(pos); persp.up.set(0, 1, 0);
     persp.lookAt(pos.x + Math.cos(pitch) * Math.cos(yaw), pos.y + Math.sin(pitch), pos.z + Math.cos(pitch) * Math.sin(yaw));
   } else {
     const { az, el, dist, objetivo } = cam.orb;
+    const pl = planosCamara(dist, escena?.sala);
+    if (Math.abs(persp.near - pl.near) > 1e-4 || Math.abs(persp.far - pl.far) > 1e-3) { persp.near = pl.near; persp.far = pl.far; persp.updateProjectionMatrix(); }
     persp.position.set(objetivo.x + Math.cos(el) * Math.cos(az) * dist, objetivo.y + Math.sin(el) * dist, objetivo.z + Math.cos(el) * Math.sin(az) * dist);
     persp.up.set(0, 1, 0); persp.lookAt(objetivo);
   }
@@ -249,18 +254,19 @@ function recortar() {
   for (const w of escena.paredes) s3d.paredes.get(w.id).visible = (x - w.a[0]) * w.n[0] + (y - w.a[1]) * w.n[1] > -0.02;
   const dentro = x > 0 && x < escena.sala.ancho && y > 0 && y < escena.sala.fondo && c.y < escena.sala.alto;
   s3d.techo.visible = s3d.lampara.visible = dentro;
-  // Un mueble entre la cámara y una pantalla del formato (la góndola LED en la cabecera del lineal)
-  // se oculta, como las paredes: lo que se enseña son las pantallas. El que está pegado a la
-  // pantalla (menos de 30 cm antes de llegar a ella), no: es su apoyo.
+  // Un mueble entre la cámara y una pantalla del formato se oculta, como las paredes: lo que se
+  // enseña son las pantallas. Se prueban su centro, sus esquinas y su borde inferior (las cafeteras
+  // de la contrabarra tapaban la parte baja del mural). El mueble sobre el que está la pantalla, no.
   for (const m of tapas) {
-    m.g.visible = !centros.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.3; });
+    m.g.visible = !puntos.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.1; });
   }
 }
 const rayo = new T.Ray(), punto = new T.Vector3();
-let tapas = [], centros = [];
+let tapas = [], puntos = [];
 function prepararTapas() {
-  tapas = [...s3d.muebles.values()].map(g => ({ g, caja: new T.Box3().setFromObject(g) }));
-  centros = pantallasFormato().map(p => V(p.centro[0], p.centro[1], p.centro[2]));
+  const suyas = pantallasFormato(), apoyos = new Set(suyas.map(p => p.apoyo?.id).filter(Boolean));
+  tapas = [...s3d.muebles].filter(([id]) => !apoyos.has(id)).map(([, g]) => ({ g, caja: new T.Box3().setFromObject(g) }));
+  puntos = suyas.flatMap(puntosVisibles).map(q => V(q[0], q[1], q[2]));
 }
 
 function pintar() {
@@ -285,6 +291,7 @@ async function abrir(formatoId, tipo) {
   try { carga = await cargarPlanoEspacio(r.id, r.formato, { memoria: caidos }); } catch (e) {
     if (token !== st.token) return;
     soltarEspacio(); $('f-datos').innerHTML = ''; $('f-contenido').textContent = ''; $('f-plano').textContent = '';
+    if (renderer) { renderer.setClearColor('#0f1416', 1); renderer.clear(); }   // sin el fotograma del espacio anterior
     status(t('No se pudo abrir el plano de este espacio.', 'The plan of this space could not be opened.'), true); estado.title = e.message;
     programarRecorrido(); return;   // el recorrido sigue con el siguiente
   }
@@ -320,7 +327,7 @@ function ponerContenido(token, { suave = false } = {}) {
   const conPlaceholder = (motivo, esperando = null, detalle = '') => {
     if (token !== st.token || !s3d) return;
     soltarMedio(); liberar(previo);
-    const ph = crearPlaceholder({ ...f, ancho: lienzo[0], alto: lienzo[1] }, { idioma: st.lang, recortes: suyas.map(p => p.recorte).filter(Boolean) });
+    const ph = crearPlaceholder({ ...f, ancho: lienzo[0], alto: lienzo[1] }, { idioma: st.lang, motivo, recortes: suyas.map(p => p.recorte).filter(Boolean) });
     s3d.ponerLienzo(ph.canvas, uvsFormato(suyas, { lienzo, medio: [ph.ancho, ph.alto] }));
     const t0 = performance.now();
     const timer = setInterval(() => { if (document.visibilityState !== 'visible' || stage.hidden) return; ph.pintar((performance.now() - t0) / 1000); s3d.refrescarLienzo(); invalidar(); }, 1000 / FPS);
@@ -335,12 +342,7 @@ function ponerContenido(token, { suave = false } = {}) {
   medio = { tipo: 'video', video: v, eleccion, cargando: true, previo };
   const mio = () => medio && (medio.video === v || medio.esperando === v);
   // iOS: play() en cuanto hay src y otra vez con el primer fotograma; si lo rechaza, con el primer toque.
-  let conGesto = false;
-  const reproducir = () => v.play().catch(() => {
-    if (conGesto) return; conGesto = true;
-    const ya = () => { document.removeEventListener('pointerdown', ya, true); document.removeEventListener('keydown', ya, true); if (mio()) v.play().catch(() => {}); };
-    document.addEventListener('pointerdown', ya, true); document.addEventListener('keydown', ya, true);
-  });
+  const reproducir = () => v.play().catch(() => { if (mio()) pedirGesto(() => { if (mio()) v.play().catch(() => {}); }); });
   // Un error suelta el vídeo; si sólo tarda (red lenta el día de la demo), sigue cargando detrás del placeholder.
   const fallo = (motivo, detalle, seguir = false) => {
     clearTimeout(caduca);
@@ -366,6 +368,19 @@ function ponerContenido(token, { suave = false } = {}) {
   pintarContenido();
 }
 
+// Un solo escuchador para «reproducir con el primer toque» (iOS): se cambia, no se acumula, y se
+// quita al soltar el medio.
+let alGesto = null;
+function quitarGesto() {
+  if (!alGesto) return;
+  document.removeEventListener('pointerdown', alGesto, true); document.removeEventListener('keydown', alGesto, true); alGesto = null;
+}
+function pedirGesto(fn) {
+  quitarGesto();
+  alGesto = () => { quitarGesto(); fn(); };
+  document.addEventListener('pointerdown', alGesto, { capture: true, once: true }); document.addEventListener('keydown', alGesto, { capture: true, once: true });
+}
+
 // Suelta lo que un medio tiene vivo: intervalo del placeholder, vídeo, el que esperaba y el anterior.
 function liberar(m) {
   if (!m) return;
@@ -375,6 +390,7 @@ function liberar(m) {
 }
 
 function soltarMedio() {
+  quitarGesto();
   if (!medio) return;
   const m = medio; medio = null;
   s3d?.quitarLienzo();
@@ -431,8 +447,15 @@ function pintarFicha() {
   $('f-datos').innerHTML = filas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
   const c = st.carga;
   $('f-plano').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${plan.version || ''}`;
-  $('f-plano').title = `${id} · ${c.fuente === 'compartido' ? 'admira.biz' : t('copia local de admira.store', 'local copy on admira.store')}\n${c.url}` + (c.fallos.length ? `\n${t('No se usó', 'Not used')}: ${c.fallos.map(x => `${x.url} (${x.error})`).join(' · ')}` : '') + (c.avisos.length ? `\n${c.avisos.join('\n')}` : '');
+  $('f-plano').title = `${id} · ${c.fuente === 'compartido' ? 'admira.biz' : t('copia local de admira.store', 'local copy on admira.store')}\n${c.url}` + (c.fallos.length ? `\n${t('No se usó', 'Not used')}: ${c.fallos.map(x => `${x.url} (${motivoFallo(x)})`).join(' · ')}` : '') + (NOTAS && c.avisos.length ? `\n${c.avisos.join('\n')}` : '');
   pintarContenido();
+}
+
+// Por qué no se usó una fuente, en el idioma de la página (espacios.mjs lo da en castellano).
+function motivoFallo(x) {
+  if (!EN()) return x.error;
+  if (x.recordado) return 'did not answer earlier in this session';
+  return String(x.error).replace(/^sin respuesta en (.+) s$/, 'no answer in $1 s').replace(/^responde HTML: no está publicado$/, 'answers HTML: not published').replace(/^no válido: .*/, 'not valid');
 }
 
 function pintarContenido() {

@@ -72,6 +72,41 @@ export function camaraEncuadre(pantallas, { fov = 40, aspect = 16 / 9, sala = nu
   return { objetivo: m.objetivo, az, el, dist: m.dist, normal: m.normal, ancho: m.ancho, alto: m.alto, cubo };
 }
 
+/**
+ * Campo vertical de la órbita: 40° en apaisado; en vertical (un móvil) se abre para conservar el
+ * campo horizontal de un lienzo cuadrado, con un tope de 65°. Sin esto, un mural de 4 m en un
+ * móvil pedía la cámara a unos 20 m.
+ */
+export function fovPara(aspectLienzo, base = 40, max = 65) {
+  if (!(aspectLienzo > 0) || aspectLienzo >= 1) return base;
+  return Math.min(max, 2 * Math.atan(Math.tan(base * Math.PI / 360) / aspectLienzo) * 180 / Math.PI);
+}
+
+/** Distancia de la cámara en la zona libre del visor (`escala` = alto de la zona / alto del lienzo), con tope: el doble de la de escritorio. */
+export function distanciaEnZona(dist, escala, nominal = Infinity) {
+  return Math.min(dist / Math.max(0.05, escala || 1), 2 * nominal);
+}
+
+/**
+ * Planos de recorte según la distancia: near = dist / 100 (≥ 5 cm). La pantalla está a 0,3 mm de
+ * su bisel; con near fijo en 3 cm y la cámara a 20 m, el búfer de profundidad no los separa y el
+ * mural sale negro o rayado (z-fighting). Así la resolución a esa distancia queda en ~0,1 mm.
+ */
+export function planosCamara(dist, sala = null) {
+  const near = Math.max(0.05, dist / 100);
+  const diag = sala ? Math.hypot(sala.ancho, sala.fondo, sala.alto) : 20;
+  return { near, far: dist + diag + 10 };
+}
+
+/** Puntos de una pantalla que tienen que verse: centro, esquinas (2 cm hacia dentro) y borde inferior. */
+export function puntosVisibles(p) {
+  const [cx, cy, cz] = p.centro, k = 0.02;
+  const pts = [[cx, cy, cz]];
+  for (const q of esquinas(p)) pts.push([q[0] + Math.sign(cx - q[0]) * k, q[1] + Math.sign(cy - q[1]) * k, q[2] + Math.sign(cz - q[2]) * k]);
+  pts.push([cx, cy, p.z + k]);
+  return pts;
+}
+
 /** Posición de la cámara de la órbita (en el plano: x, y, altura). */
 export function posicionOrbita({ objetivo, dist, az, el }) {
   return [objetivo[0] + Math.cos(el) * Math.cos(az) * dist, objetivo[1] + Math.cos(el) * Math.sin(az) * dist, objetivo[2] + Math.sin(el) * dist];
