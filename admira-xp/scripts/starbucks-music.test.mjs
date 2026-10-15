@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createStarbucksMusic,musicTracks,STARBUCKS_FEED} from './starbucks-music.mjs';
+import {createStarbucksMusic,musicTracks,STARBUCKS_FEED,installSharedMusicOptions} from './starbucks-music.mjs';
 class AudioStub extends EventTarget{
  constructor(){super();this.src='';this.currentTime=0;this.playCalls=0;this.pauseCalls=0;this.loadCalls=0;}
  load(){this.currentTime=0;this.loadCalls++;}
@@ -71,3 +71,10 @@ test('MCP playlist replaces queue authoritatively and removing current track kee
 // Carlos, 7-oct-2026: la locución tiene PRIORIDAD — el hilo musical se para (antes seguía a volumen cero) y sigue donde estaba al terminar.
 test('announcement suppression pauses the music where it is and resumes it once after the last nested release',async()=>{const {audio,music}=setup();await music.refresh();music.toggle();await tick();audio.currentTime=45;const volume=audio.volume,plays=audio.playCalls;const release=music.suppress(),nested=music.suppress();assert.equal(audio.paused,true);assert.equal(audio.pauseCalls,1);assert.equal(audio.volume,volume);assert.equal(audio.muted,false);assert.equal(audio.currentTime,45);assert.equal(music.state().suppressed,true);assert.equal(music.state().playing,false);release();release();assert.equal(audio.paused,true);assert.equal(audio.playCalls,plays);nested();await tick();assert.equal(audio.paused,false);assert.equal(audio.playCalls,plays+1);assert.equal(audio.currentTime,45);assert.equal(audio.volume,volume);assert.equal(music.state().suppressed,false);music.dispose();});
 test('music that was not playing stays stopped after an announcement, and a track asked for meanwhile waits for it to end',async()=>{const {audio,music}=setup();await music.refresh();const idle=music.suppress();assert.equal(audio.pauseCalls,0);idle();await tick();assert.equal(audio.playCalls,0);music.toggle();await tick();const plays=audio.playCalls,hold=music.suppress();music.next();await tick();assert.equal(audio.playCalls,plays,'no arranca encima del aviso');hold();await tick();assert.equal(audio.playCalls,plays+1);assert.equal(audio.paused,false);music.dispose();});
+
+test('physical music starts muted and Listen unmutes the same position without reset',async()=>{
+ const audio=new AudioStub(),music=createStarbucksMusic({audio});const tracks=Array.from({length:7},(_,i)=>({id:'track-'+i,url:'https://example.com/'+i+'.mp4',title:'Track '+i,kind:i===3||i===4?'audio':'video',cover:''}));
+ music.replaceTracks(tracks);music.startMuted();await tick();assert.equal(audio.muted,true);assert.equal(music.state().playing,true);audio.currentTime=17;const loads=audio.loadCalls;music.toggle();assert.equal(audio.muted,false);assert.equal(audio.currentTime,17);assert.equal(audio.loadCalls,loads);assert.equal(music.getTracks()[3].kind,'audio');
+ const original={state:()=>({other:true}),groups:()=>[{id:'wall'}],control:()=>42};installSharedMusicOptions(original,music);assert.equal(original.state('music').tracks.length,7);assert.equal(original.state('music').readOnly,true);assert.equal(original.state('screens').other,true);assert.equal(original.control('dsNext'),42);
+ original.control('musicNext');await tick();assert.equal(music.state().index,1);await original.play('music',tracks[4].url);assert.equal(music.state().index,4);assert.equal(original.state('music').tracks[4].active,true);assert.throws(()=>original.move('music','a','b'));assert.equal(music.getTracks().length,7);music.dispose();
+});

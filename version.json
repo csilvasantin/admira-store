@@ -1,16 +1,15 @@
 {
-  "version": "v.15.10.2026.r2.10:41",
-  "deployedAt": "2026-10-15T08:41:10Z",
-  "deployer": "NeoMBP14",
+  "version": "v.15.10.2026.r3.11:07",
+  "deployedAt": "2026-10-15T11:07:00+02:00",
+  "deployer": "TrinityMBP14",
   "machine": "MacBookProNegro14",
-  "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "09afe83c44c625a7c323bde6f713fb738509d922",
-  "gitShort": "09afe83",
-  "gitFull": "09afe83c44c625a7c323bde6f713fb738509d922",
+  "signature": "TrinityMBP14 · MacBookProNegro14",
+  "git": "2df31a74ce756631afe8ec42824f2f71550dd287",
+  "gitShort": "2df31a7",
+  "gitFull": "2df31a74ce756631afe8ec42824f2f71550dd287",
   "dirty": false,
   "novedades": [
-    "Nuevo /xpacios/altadis-18/: los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks, con su gemelo 3D desde los planos del Arquitecto.",
-    "En cada espacio, el vídeo adaptado a ese formato (stock.admira.store) se reproduce en sus pantallas: un solo vídeo por formato repartido por recortes, todas sincronizadas; el cubo LED, en sus cuatro caras.",
-    "Galería con Xtanco / Starbucks y ES / EN, ← → para recorrer los 18, recorrido automático y botones a admira.studio (crear y adaptar) y al Arquitecto (plano)."
+    "Opciones: el aviso de playlist vacía desaparece al cargar las pistas compartidas del hilo musical.",
+    "Los mensajes de Lanzar se conservan al actualizar la lista; el TPV y el iPad mantienen su programación."
   ]
 }
