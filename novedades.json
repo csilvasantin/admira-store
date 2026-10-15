@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.15.10.2026.r22.23:00": [
+    "La puerta de Google Maps: la ficha se lee también con la marca Starbucks (textos claros sobre la ficha oscura)."
+  ],
   "v.15.10.2026.r21.22:55": [
     "Elegir Starbucks Passeig de Gràcia 103 en el combo Local lleva antes a su puerta en Google Maps (/xpacios/puerta/): pulsa la fachada para entrar en el gemelo con la calidad elegida."
   ],
