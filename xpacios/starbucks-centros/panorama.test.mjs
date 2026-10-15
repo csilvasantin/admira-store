@@ -37,7 +37,7 @@ test('se pide primero la previa y después la buena que admite la tarjeta (8K o 
 
 test('el visor usa la foto en Matrix y monta los tres combos; un local de esta página cambia de centro sin recargar', () => {
   assert.match(visor, /import \{ crearPanorama \} from '\.\/panorama\.mjs/);
-  assert.match(visor, /if \(enPanorama\(\)\) pano\.render\(\); else renderer\.render\(scene, camera\);/);
+  assert.match(visor, /if \(enPanorama\(\)\) \{[\s\S]*?pano\.pintarPantalla\(p\.id, p\.contenido\.material\.map\)[\s\S]*?pano\.render\(\);\s*\} else renderer\.render\(scene, camera\);/);
   assert.match(visor, /import \{ montarCombos \} from '\/assets\/xpace-combos\.mjs/);
   assert.match(visor, /alCambiarCalidad: q => \{[^}]*modo = q === 'matrix' \? 'matrix' : '3d'/);
   assert.match(visor, /if \(u\.pathname !== location\.pathname \|\| !c\) return false;\s*cargarCentro\(c\.id\); return true;/);
@@ -50,4 +50,31 @@ test('los combos: las cuatro calidades del gemelo y el local sin repetir el Xpac
   assert.equal(nombreLocal({ project_id: 'starbucks', name: 'Gran de Gràcia 51 · laboratorio' }, proyectos), 'Gran de Gràcia 51 · laboratorio');
   const gdg = readFileSync(aqui('../gran-de-gracia-51/index.html'), 'utf8');
   assert.match(gdg, /montarCombos\(\{ proyecto: 'starbucks', local: \['lab-gran-de-gracia-51'\]/);
+});
+
+test('en la foto 360 de Diagonal emiten sus seis pantallas: las del modelo, de izquierda a derecha', () => {
+  const d634 = centros.find(c => c.id === 'd634').panorama;
+  const geo = JSON.parse(readFileSync(aqui('./modelos/diagonal-634.geometry.json'), 'utf8'));
+  const ids = [...geo.screens].sort((a, b) => a.position[0] - b.position[0]).map(s => s.id);
+  assert.deepEqual(d634.base, [8192, 4096]);
+  assert.deepEqual(d634.pantallas.map(p => p.id), ids, 'mismo orden que el modelo (2 + 1 + 3)');
+  let antes = -1;
+  for (const p of d634.pantallas) {
+    assert.equal(p.esquinas.length, 4);
+    for (const [x, y] of p.esquinas) assert.ok(x > 0 && x < 8192 && y > 0 && y < 4096);
+    const [tl, tr, br, bl] = p.esquinas;
+    assert.ok(tr[0] > tl[0] && br[0] > bl[0] && bl[1] > tl[1] && br[1] > tr[1], `${p.id}: esquinas en orden`);
+    assert.ok(tl[0] >= antes, `${p.id}: a la derecha de la anterior`); antes = tl[0];
+  }
+  const pano = readFileSync(aqui('./panorama.mjs'), 'utf8');
+  assert.match(pano, /ponerPantallas\(conf\.pantallas, conf\.base\)/);
+  assert.match(visor, /seleccionar\(pano\.elegir\(/, 'tocar una pantalla en la foto enseña su playlist');
+});
+
+test('las ventanas se mueven, cambian de tamaño, se cierran y vuelven desde el dock; el visor es oscuro con marca', () => {
+  const v = readFileSync(aqui('./ventanas.mjs'), 'utf8'), css = readFileSync(aqui('./centros.css'), 'utf8');
+  for (const que of ['vent-barra', 'vent-cerrar', 'vent-esquina', 'vent-dock', 'vent-abrir', 'setPointerCapture', 'localStorage']) assert.ok(v.includes(que), que);
+  assert.match(visor, /montarVentanas\(\$\('#sc'\), \[\s*\{ el: \$\('\.ficha'\), id: 'ficha'[\s\S]*?id: 'pantallas'[\s\S]*?id: 'reproductor'/);
+  assert.match(css, /\.vent\.vent-cerrada\{display:none!important\}/);
+  assert.match(css, /#sc\{--panel:#0d1915e8;--linea:#2c463c;--tinta:#eef4ef;--suave:#a9bdb3;color:var\(--tinta\)\}/);
 });
