@@ -34,6 +34,9 @@ export const INDICE_LOCAL = '/xpacios/altadis-18/planos/altadis-18.json';
 export const PLANO_COMPARTIDO = id => `https://www.admira.biz/data/xpacios/${id}.json`;
 export const PLANO_LOCAL = id => `/xpacios/altadis-18/planos/${id}.json`;
 export const MANIFIESTO = 'https://stock.admira.store/espacios/altadis-18/v1/manifest.json';
+// Los Xtanco enseñan contenido de Altadis (Carlos, 15-oct): su propio manifiesto, con el de siempre
+// (Starbucks) de respaldo si aún no existe o falla. Los Starbucks, el de siempre.
+export const MANIFIESTO_XTANCO = 'https://stock.admira.store/espacios/altadis-18/v1/manifest-xtanco.json';
 export const STUDIO = formato => `https://admira.studio/adaptaciones/?formato=${encodeURIComponent(formato)}`;
 export const ARQUITECTO = (formato, tipo) => `https://www.admira.biz/arquitecto.html?formato=${encodeURIComponent(formato)}&tipo=${encodeURIComponent(tipo)}`;
 export const RECORRIDO_MS = 12000;      // cada espacio, desde que su contenido pinta
@@ -213,6 +216,22 @@ export function validarManifiesto(m) {
 
 const urlSegura = u => typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/i.test(u);
 
+/** Manifiestos que se prueban para un tipo de espacio, en orden: el suyo y, en Xtanco, el de siempre. */
+export function fuentesManifiesto(tipo) {
+  const comun = { fuente: 'stock', url: MANIFIESTO };
+  return tipo === 'xtanco' ? [{ fuente: 'altadis', url: MANIFIESTO_XTANCO, timeoutMs: 4000 }, comun] : [comun];
+}
+/** Carga el manifiesto de un tipo con su respaldo (sin error para el cliente si el suyo no está). */
+export const cargarManifiesto = (tipo, opts = {}) => cargarConRespaldo(fuentesManifiesto(tipo), { timeoutMs: 5000, ...opts, validar: validarManifiesto });
+/** Título de la campaña de un manifiesto en el idioma pedido (o castellano). */
+export function tituloCampana(m, idioma = 'es') {
+  const t = m && m.campania && m.campania.titulo;
+  if (typeof t === 'string') return t;
+  return t ? (t[idioma] || t.es || t.en || null) : null;
+}
+/** URL de un póster con la versión del manifiesto: cuando el contenido se rehace, la caché no sirve el viejo. */
+export const conVersion = (url, m) => (url && m && m.version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(m.version)}` : url);
+
 /**
  * Qué se reproduce en las pantallas de un formato: el MP4 del manifiesto en el idioma pedido;
  * si ese idioma no está, el otro (y lo dice); si no hay pieza o el manifiesto no llegó, el
@@ -221,13 +240,15 @@ const urlSegura = u => typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/i.test(u
  */
 export function elegirContenido(manifiesto, formato, idioma = 'es') {
   const otro = idioma === 'en' ? 'es' : 'en';
+  // Un manifiesto que declara sus idiomas y no trae el pedido (Altadis: sólo `es`) no es un fallo.
+  const declarados = manifiesto && Array.isArray(manifiesto.idiomas) ? manifiesto.idiomas : null;
   const id = typeof formato === 'string' ? formato : formato && formato.formato;
   const pieza = manifiesto && manifiesto.piezas && manifiesto.piezas[id];
   if (!pieza) return { tipo: 'placeholder', motivo: manifiesto ? 'sin-pieza' : 'sin-manifiesto', idioma };
   for (const lang of [idioma, otro]) {
     const v = pieza[lang];
     if (v && urlSegura(v.url)) {
-      return { tipo: 'video', url: v.url, poster: urlSegura(v.poster) ? v.poster : null, idioma: lang, pedido: idioma, sustituto: lang !== idioma,
+      return { tipo: 'video', url: v.url, poster: urlSegura(v.poster) ? v.poster : null, idioma: lang, pedido: idioma, sustituto: lang !== idioma && (!declarados || declarados.includes(idioma)),
         metodo: pieza.metodo || null, ancho: pieza.ancho || null, alto: pieza.alto || null };
     }
   }

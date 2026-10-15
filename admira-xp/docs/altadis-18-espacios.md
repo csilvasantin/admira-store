@@ -12,7 +12,8 @@ Misión Yokup DCL-d7966deb02734a6f34beb54e («los 18 espacios Altadis», demo a 
 |---|---|---|
 | Índice `admira.espacios-formato/1` | `https://www.admira.biz/data/xpacios/altadis-18.json` | `/xpacios/altadis-18/planos/altadis-18.json` |
 | 36 planos `admira.xpacio-plano/1` (`altadis-xtanco-NN`, `altadis-cafe-NN`) | `https://www.admira.biz/data/xpacios/<id>.json` | `/xpacios/altadis-18/planos/<id>.json` |
-| Contenido `admira.espacios-contenido/1` | `https://stock.admira.store/espacios/altadis-18/v1/manifest.json` | placeholder animado (nombre, píxeles y una barra que cruza el lienzo) |
+| Contenido de los Starbucks `admira.espacios-contenido/1` | `https://stock.admira.store/espacios/altadis-18/v1/manifest.json` | placeholder animado (nombre, píxeles y una barra que cruza el lienzo) |
+| Contenido de los Xtanco (Altadis, sólo `es`) | `https://stock.admira.store/espacios/altadis-18/v1/manifest-xtanco.json` | el de los Starbucks, sin aviso; después, el placeholder |
 
 La copia local va fuera de `/data/xpacios/` a propósito: allí la función de Pages serviría la versión pública de `plano-publico.mjs`, que quita `recorte`, `lienzo` y `formato`. Se refresca con `node scripts/altadis-18-planos.mjs` (de admira.biz) o `--desde <dir>` (del worktree del Arquitecto); valida todo antes de escribir y guarda la versión sin campos ITIL (`planoEspacioPublico`). Si el vídeo falla, las pantallas pasan al placeholder; si sólo tarda más de 12 s, el placeholder lo cubre mientras sigue cargando y el vídeo lo sustituye al llegar. La ficha dice qué se ve y por qué.
 
@@ -33,6 +34,8 @@ La copia local va fuera de `/data/xpacios/` a propósito: allí la función de P
 ## EN
 
 **What it is.** **`/xpacios/altadis-18/`**: one model space for each of Altadis's 18 screen formats, as a tobacconist (Xtanco) and as a Starbucks café. A gallery of the 18 and, for each one, its 3D twin with the format-adapted video playing on its screens. Public like the rest of `/xpacios/`; no ITIL data.
+
+**Content per type.** Xtanco spaces play the Altadis manifest (`manifest-xtanco.json`, Spanish only; English requests use Spanish without flagging it), falling back silently to the usual `manifest.json`; Starbucks spaces keep `manifest.json`. Gallery and card name each type's campaign (`campania.titulo`); poster URLs carry the manifest version.
 
 **Data.** Shared plans and index on `www.admira.biz/data/xpacios/` first, local copies in `/xpacios/altadis-18/planos/` as the fallback (refresh with `node scripts/altadis-18-planos.mjs`). Content from `stock.admira.store/espacios/altadis-18/v1/manifest.json`; without it, or if a video fails, an animated placeholder with the format name and pixels.
 

@@ -8,7 +8,7 @@ import {
   validarIndice, validarPlanoEspacio, planoEspacioPublico, cargarConRespaldo, cargarIndice, cargarPlanoEspacio, elegirContenido, posterDe,
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, medidaFisica, pantallasDelFormato, formatoDe,
   STUDIO, ARQUITECTO, INDICE_COMPARTIDO, INDICE_LOCAL, PLANO_COMPARTIDO, PLANO_LOCAL, MANIFIESTO, TEMA_DE_TIPO,
-  ESPERA_COMPARTIDO_MS, RECORRIDO_MS, RECORRIDO_MAX_MS, MONTAJES, PAREDES, textoMontaje, textoPared, textoZona, textoEntrega,
+  ESPERA_COMPARTIDO_MS, RECORRIDO_MS, RECORRIDO_MAX_MS, MANIFIESTO_XTANCO, fuentesManifiesto, cargarManifiesto, tituloCampana, conVersion, MONTAJES, PAREDES, textoMontaje, textoPared, textoZona, textoEntrega,
 } from './espacios.mjs';
 import { encuadre, esquinas, svgFormato, celdasFormato, posicionOrbita, camaraEncuadre, GIRO_CUBO, fovPara, distanciaEnZona, planosCamara, puntosVisibles } from './vista.mjs';
 import { uvsFormato } from './recorte.mjs';
@@ -383,4 +383,29 @@ test('occlusion probes: centre, corners and bottom edge of every screen; the pla
   assert.doesNotMatch(rotulos(vw, 'en', 'error').pie, /coming soon/);
   assert.match(rotulos(vw, 'en', 'error').pie, /video unavailable/);
   assert.match(rotulos(vw, 'es').pie, /en preparación/);
+});
+
+test('content per space type: Xtanco shows the Altadis manifest, falls back to the usual one; Starbucks keeps Starbucks', async () => {
+  assert.equal(MANIFIESTO_XTANCO, 'https://stock.admira.store/espacios/altadis-18/v1/manifest-xtanco.json');
+  assert.deepEqual(fuentesManifiesto('xtanco').map(f => f.url), [MANIFIESTO_XTANCO, MANIFIESTO]);
+  assert.deepEqual(fuentesManifiesto('cafe').map(f => f.url), [MANIFIESTO]);
+  const pieza = id => ({ [id]: { es: { url: `https://stock.admira.store/espacios/altadis-18/v1/es/${id}.mp4`, poster: `https://stock.admira.store/x/${id}.jpg` } } });
+  const altadis = { schema: 'admira.espacios-contenido/1', version: 'v.15.10.2026.r1.12:00', idiomas: ['es'], campania: { titulo: { es: 'Altadis · contenido de ejemplo' } }, piezas: pieza('cliente-15') };
+  const starbucks = { schema: 'admira.espacios-contenido/1', idiomas: ['es', 'en'], campania: { titulo: { es: 'Starbucks · Cada café tiene una historia', en: 'Starbucks · Every coffee has a story' } }, piezas: pieza('cliente-15') };
+  let r = await cargarManifiesto('xtanco', { fetchImpl: falso({ [MANIFIESTO_XTANCO]: { cuerpo: altadis }, [MANIFIESTO]: { cuerpo: starbucks } }).fetchImpl });
+  assert.equal(r.fuente, 'altadis');
+  assert.equal(tituloCampana(r.datos, 'en'), 'Altadis · contenido de ejemplo', 'Spanish title when there is no English one');
+  // Aún no publicado (404 HTML) o roto: el de siempre, sin error.
+  r = await cargarManifiesto('xtanco', { fetchImpl: falso({ [MANIFIESTO]: { cuerpo: starbucks } }).fetchImpl });
+  assert.deepEqual([r.fuente, r.fallos.length], ['stock', 1]);
+  r = await cargarManifiesto('xtanco', { fetchImpl: falso({ [MANIFIESTO_XTANCO]: { cuerpo: { schema: 'otro' } }, [MANIFIESTO]: { cuerpo: starbucks } }).fetchImpl });
+  assert.equal(r.fuente, 'stock');
+  r = await cargarManifiesto('cafe', { fetchImpl: falso({ [MANIFIESTO_XTANCO]: { cuerpo: altadis }, [MANIFIESTO]: { cuerpo: starbucks } }).fetchImpl });
+  assert.equal(tituloCampana(r.datos, 'en'), 'Starbucks · Every coffee has a story');
+  // Altadis sólo trae `es`: en inglés se usa `es` y no cuenta como sustituto (no es un fallo).
+  const en = elegirContenido(altadis, 'cliente-15', 'en');
+  assert.deepEqual([en.tipo, en.idioma, en.sustituto], ['video', 'es', false]);
+  assert.equal(elegirContenido({ ...starbucks, piezas: { 'cliente-15': { es: starbucks.piezas['cliente-15'].es } } }, 'cliente-15', 'en').sustituto, true, 'declared EN but missing: that one is a substitute');
+  assert.equal(conVersion('https://stock.admira.store/x/a.jpg', altadis), 'https://stock.admira.store/x/a.jpg?v=v.15.10.2026.r1.12%3A00', 'poster URLs change with the manifest');
+  assert.equal(conVersion(null, altadis), null);
 });

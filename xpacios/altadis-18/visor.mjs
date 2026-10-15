@@ -11,7 +11,7 @@ import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import { escenaDesdePlano, vistaPuerta, round } from '../gran-de-gracia-51/plano3d.mjs?v=gdg51-6';
 import { crearEscena3D } from '../gran-de-gracia-51/escena3d.mjs?v=gdg51-7';
 import {
-  cargarIndice, cargarPlanoEspacio, cargarConRespaldo, validarManifiesto, MANIFIESTO, elegirContenido, posterDe,
+  cargarIndice, cargarPlanoEspacio, cargarManifiesto, fuentesManifiesto, tituloCampana, conVersion, elegirContenido, posterDe,
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, medidaFisica,
   textoMontaje, textoPared, textoZona, textoEntrega,
   STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, dos,
@@ -23,7 +23,7 @@ import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, pun
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const pedido = destinoDesdeURL(location.search);
-const st = { lang: pedido.lang, tipo: pedido.tipo, indice: null, fuenteIndice: null, manifiesto: null, fuenteManifiesto: null,
+const st = { lang: pedido.lang, tipo: pedido.tipo, indice: null, fuenteIndice: null, manifiestos: {}, fuentesMan: {},
   actual: null, carga: null, auto: false, autoTimer: null, token: 0 };
 const t = (es, en) => (st.lang === 'en' ? en : es);
 const EN = () => st.lang === 'en';
@@ -31,6 +31,7 @@ const EN = () => st.lang === 'en';
 const NOTAS = params.get('notas') === '1';
 // admira.biz que no respondió una vez no se vuelve a esperar en esta sesión (copia local directa).
 const caidos = new Set();
+const manifiestoDe = tipo => st.manifiestos[tipo] || null;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const num = (n, d = 2) => (st.lang === 'en' ? String(round(n, d)) : String(round(n, d)).replace('.', ','));
 const NOMBRE_TIPO = { xtanco: { es: 'Xtanco', en: 'Xtanco' }, cafe: { es: 'Starbucks', en: 'Starbucks' } };
@@ -60,15 +61,16 @@ async function arrancar() {
     st.indice = r.datos; st.fuenteIndice = r;
   } catch (e) { status(`${t('No hay índice de formatos', 'No format index')}: ${e.message}`, true); return; }
   // El contenido no bloquea: sin manifiesto, placeholder animado.
-  const contenido = cargarConRespaldo([{ fuente: 'stock', url: MANIFIESTO }], { validar: validarManifiesto, timeoutMs: 5000 })
-    .then(r => { st.manifiesto = r.datos; st.fuenteManifiesto = r; })
-    .catch(e => { st.fuenteManifiesto = { error: e.fallos?.[0]?.error || e.message }; });
+  // Un manifiesto por tipo: Xtanco con el de Altadis (respaldo: el de siempre), Starbucks el de siempre.
+  const contenido = Promise.all(TIPOS.map(tipo => cargarManifiesto(tipo)
+    .then(r => { st.manifiestos[tipo] = r.datos; st.fuentesMan[tipo] = r; })
+    .catch(e => { st.fuentesMan[tipo] = { error: e.fallos?.[0]?.error || e.message, fallos: e.fallos || [] }; })));
   pintarGaleria();
   pintarFuentes();
   status('');
   await Promise.race([contenido, new Promise(r => setTimeout(r, 1500))]);
   pintarGaleria(); pintarFuentes();
-  contenido.then(() => { pintarGaleria(); pintarFuentes(); if (st.actual && medio?.tipo === 'placeholder' && st.manifiesto) ponerContenido(st.token, { suave: true }); });
+  contenido.then(() => { pintarGaleria(); pintarFuentes(); if (st.actual && medio?.tipo === 'placeholder' && manifiestoDe(st.actual.tipo)) ponerContenido(st.token, { suave: true }); });
   if (pedido.formato) abrir(pedido.formato, pedido.tipo);
   if (pedido.auto) alternarRecorrido(true);
   raiz.dataset.listo = '1';
@@ -76,10 +78,10 @@ async function arrancar() {
 
 // Texto neutro, sea cual sea la fuente: el detalle (qué fuente y por qué) va en el title.
 function pintarFuentes() {
-  const fi = st.fuenteIndice, fm = st.fuenteManifiesto, campana = st.manifiesto?.campania?.titulo;
-  const cont = !fm ? '' : fm.error ? t('animación de cada formato', 'an animation of each format') : campana ? `«${campana[st.lang] || campana.es}»` : t('vídeo adaptado a cada formato', 'video adapted to each format');
+  const fi = st.fuenteIndice, fm = st.fuentesMan[st.tipo], campana = tituloCampana(manifiestoDe(st.tipo), st.lang);
+  const cont = !fm ? '' : fm.error ? t('animación de cada formato', 'an animation of each format') : campana ? `«${campana}»` : t('vídeo adaptado a cada formato', 'video adapted to each format');
   $('fuentes').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${st.indice?.version || ''}${cont ? ` · ${t('Contenido', 'Content')}: ${cont}` : ''}`;
-  $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`), fm?.url || (fm?.error ? `${MANIFIESTO} (${fm.error})` : '')].filter(Boolean).join('\n');
+  $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`), fm?.url || (fm?.error ? `${fuentesManifiesto(st.tipo).map(x => x.url).join(' · ')} (${fm.error})` : '')].filter(Boolean).join('\n');
 }
 
 // ── Galería ──
@@ -88,7 +90,8 @@ function pintarGaleria() {
   const lista = formatosOrdenados(st.indice);
   $('galeria-titulo').textContent = t(`${lista.length} espacios tipo · uno por formato de Altadis`, `${lista.length} model spaces · one per Altadis format`);
   const html = lista.map(f => {
-    const id = f.espacios[st.tipo], poster = posterDe(st.manifiesto, f.formato, st.lang);
+    // Pósters del manifiesto del tipo (Xtanco: Altadis; Starbucks: Starbucks), con su versión en la URL.
+    const id = f.espacios[st.tipo], m = manifiestoDe(st.tipo), poster = conVersion(posterDe(m, f.formato, st.lang), m);
     const led = /LED/i.test(f.nombre) || f.zona === 'cubo';
     const zona = textoZona(f.zona, EN());
     const uso = f.uso ? (f.uso[st.lang] || f.uso.es || '') : '';
@@ -354,7 +357,7 @@ function ponerContenido(token, { suave = false } = {}) {
   const previo = suave ? medio : null;
   if (suave) medio = null; else soltarMedio();
   const f = st.actual.formato, lienzo = [plan.formato.ancho, plan.formato.alto], suyas = pantallasFormato();
-  const eleccion = elegirContenido(st.manifiesto, f, st.lang);
+  const eleccion = elegirContenido(manifiestoDe(st.actual.tipo), f, st.lang);
   // `esperando`: el vídeo que tarda; el placeholder lo cubre y, si llega, el vídeo lo sustituye.
   const conPlaceholder = (motivo, esperando = null, detalle = '') => {
     if (token !== st.token || !s3d) return;
@@ -494,16 +497,17 @@ function pintarContenido() {
   const el = $('f-contenido');
   if (!medio) { el.textContent = ''; el.title = ''; return; }
   if (medio.tipo === 'video') {
-    const e = medio.eleccion, lang = e.idioma.toUpperCase();
+    // La campaña de cada tipo: en Xtanco la de Altadis (o la de siempre si aún no está), en Starbucks la suya.
+    const e = medio.eleccion, lang = e.idioma.toUpperCase(), campana = tituloCampana(manifiestoDe(st.actual?.tipo), st.lang);
     el.textContent = medio.cargando ? t('Contenido: cargando el vídeo de este formato…', 'Content: loading this format’s video…')
-      : `${t('Contenido: vídeo adaptado a este formato', 'Content: video adapted to this format')} · ${e.sustituto ? t(`versión ${lang}`, `${lang} version`) : lang}`;
+      : `${t('Contenido', 'Content')}: ${campana ? `«${campana}» · ` : ''}${t('vídeo adaptado a este formato', 'video adapted to this format')} · ${e.sustituto ? t(`versión ${lang}`, `${lang} version`) : lang}`;
     el.title = e.url;
   } else {
     const m = medio.motivo;
     el.textContent = m === 'lento' ? t('Contenido: animación del formato mientras llega el vídeo', 'Content: format animation while the video loads')
       : m === 'error' ? t('Contenido: animación del formato (el vídeo no se pudo cargar)', 'Content: format animation (the video could not be loaded)')
       : t('Contenido: animación del formato (el vídeo adaptado aún no está disponible)', 'Content: format animation (the adapted video is not available yet)');
-    el.title = `${MANIFIESTO}${medio.detalle ? ` · ${medio.detalle}` : ''}${m ? ` · ${m}` : ''}`;
+    el.title = `${fuentesManifiesto(st.actual?.tipo).map(x => x.url).join(' · ')}${medio.detalle ? ` · ${medio.detalle}` : ''}${m ? ` · ${m}` : ''}`;
   }
 }
 
@@ -517,6 +521,7 @@ function paso(d) {
 function cambiarTipo(tipo) {
   if (!TIPOS.includes(tipo) || tipo === st.tipo && (!st.actual || st.actual.tipo === tipo)) return;
   st.tipo = tipo; aplicarTextos();
+  pintarFuentes();   // la campaña del tipo (Xtanco: Altadis; Starbucks: Starbucks)
   if (st.actual) abrir(st.actual.formato.formato, tipo); else { actualizarURL(); pintarGaleria(); }
 }
 
