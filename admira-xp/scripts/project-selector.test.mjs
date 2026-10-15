@@ -4,9 +4,10 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {venueUrl,validAccess} from './central-project-client.mjs';
 import {projectContext} from './project-context.mjs';
+import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs';
 
 const code=(await readFile(new URL('./project-selector.mjs',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
-async function harness({account=false}={}){
+async function harness({account=false,catalogo=null,marca=null}={}){
  const elements=new Map(),ticks=[],events=new Map(),destinations=[];
  class Element{
   options=[];value='';replacements=0;listeners=new Map();
@@ -18,9 +19,10 @@ async function harness({account=false}={}){
  }
  const element=id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);};
  const catalog={projects:[{id:'estancos',name:'Estancos',circuit:'estancos'},{id:'cafebreria',name:'Cafebrería',circuit:'cafebreria'}],venues:[{id:'demo-xtanco',project_id:'estancos',name:'Xtanco',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco'},{id:'demo-cafebreria',project_id:'cafebreria',name:'Cafebrería',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria'}]};
+ if(catalogo)Object.assign(catalog,catalogo);
  const client={access:account?{token:'a'.repeat(64),expires_at:Date.now()+600000}:null,expired:false,demos:async()=>catalog,context:async()=>catalog,clear(){this.access=null;}};
- const context={URL,Option:class{constructor(text,value){this.text=text;this.value=value;}},ProjectClient:class{constructor(){return client;}},CENTRAL:'https://www.admiranext.com',venueUrl,validAccess,projectContext,
-  document:{documentElement:{lang:'en'},getElementById:element,querySelector:()=>null},window:{addEventListener:(name,handler)=>events.set(name,handler)},location:{href:'https://www.admira.store/admira-xp/?autostart=xtanco&from=portada&project=estancos&circuit=estancos&quality=better',assign:url=>destinations.push(url)},sessionStorage:{},MutationObserver:class{observe(){}},setInterval:handler=>ticks.push(handler)};
+ const context={URL,Option:class{constructor(text,value){this.text=text;this.value=value;}},ProjectClient:class{constructor(){return client;}},CENTRAL:'https://www.admiranext.com',venueUrl,validAccess,projectContext,marcaQueLimita,proyectosPermitidos,
+  document:{documentElement:{lang:'en'},getElementById:element,querySelector:()=>null},window:{addEventListener:(name,handler)=>events.set(name,handler)},location:{href:'https://www.admira.store/admira-xp/?autostart=xtanco&from=portada&project=estancos&circuit=estancos&quality=better',assign:url=>destinations.push(url)},sessionStorage:marca?{getItem:k=>marca[k]??null}:{},MutationObserver:class{observe(){}},setInterval:handler=>ticks.push(handler)};
  vm.runInNewContext(code,context);await new Promise(setImmediate);
  return {element,ticks,events,client,destinations};
 }
@@ -41,4 +43,26 @@ test('account expiry still clears authorized selections on the timer',async()=>{
  h.client.access.expires_at=1;h.ticks[0]();
  assert.equal(h.client.access,null);assert.equal(h.element('projectSelector').options.length,1);
  assert.equal(h.element('projectSelector').disabled,true);assert.match(h.element('projectSelectionStatus').textContent,/expired/);
+});
+
+const cuatro={projects:[{id:'starbucks',name:'Starbucks',circuit:'alsea_starbucks'},{id:'altadis',name:'Altadis',circuit:'altadis_bcn'},{id:'estancos',name:'Estancos',circuit:'estancos'},{id:'cafebreria',name:'Cafebrería',circuit:'cafebreria'}],
+ venues:[{id:'demo-starbucks',project_id:'starbucks',name:'Paseo de Gràcia 103',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021'},{id:'starbucks-diagonal-634',project_id:'starbucks',name:'Diagonal 634',demo:true,xpace_url:'https://www.admira.store/xpacios/starbucks-centros/?loc=starbucks-diagonal-634'},{id:'altadis-bcn-001',project_id:'altadis',name:'Estanco 1',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco&loc=altadis-bcn-001'},{id:'demo-xtanco',project_id:'estancos',name:'Xtanco',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco'},{id:'demo-cafebreria',project_id:'cafebreria',name:'Cafebrería',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria'}]};
+const proyectos=h=>h.element('projectSelector').options.slice(1).map(o=>o.value);
+test('entering with the Starbucks brand (?marca=starbucks) the selector offers only Starbucks',async()=>{
+ const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
+ assert.deepEqual(proyectos(h),['starbucks']);
+ assert.match(h.element('projectSelectionStatus').textContent,/Starbucks brand: only its projects · \/marca off/);
+ assert.equal(h.element('projectSelector').value,'','the open Xtanco scene is not offered as the current project');
+});
+test('entering with the Altadis brand the selector offers only the tobacconist projects',async()=>{
+ const h=await harness({catalogo:cuatro,marca:{'mb:marca':'altadis','mb:manual':'1'}});
+ assert.deepEqual(proyectos(h),['altadis','estancos']);
+ assert.equal(h.element('projectSelector').value,'estancos','the open Xtanco scene stays selected');
+});
+test('as Admira, by default, or with the brand a project applied on its own, every project is offered',async()=>{
+ for(const marca of [null,{'mb:marca':'admira','mb:manual':'1'},{'mb:marca':'starbucks'},{'mb:marca':'starbucks','mb:manual':'off'}]){
+  const h=await harness({catalogo:cuatro,marca});
+  assert.deepEqual(proyectos(h),['starbucks','altadis','estancos','cafebreria'],JSON.stringify(marca));
+  assert.doesNotMatch(h.element('projectSelectionStatus').textContent,/only its projects/);
+ }
 });

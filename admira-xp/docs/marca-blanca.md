@@ -15,6 +15,12 @@ Estado: al cambiar de proyecto se aplica la marca del catálogo. Sello v.05.10.2
 
 La marca se mantiene al navegar entre páginas de la misma pestaña (portada, ayuda, gemelo, inventario…). Una pestaña nueva empieza sin marca.
 
+## La marca limita los proyectos (15-oct-2026)
+
+Con la marca personalizada de un cliente puesta a mano (`?marca=<id>` o `/marca <id>`; la pestaña guarda `mb:manual = 1`), **Barra superior → Xpacio → Proyecto y local** sólo ofrece los proyectos de esa marca: **Starbucks** → Starbucks (y Starbucks México); **Altadis** → Altadis y Estancos. Una marca sin entrada abre el proyecto con su mismo id; una marca sin proyecto (las de ejemplo) no vacía el selector. **Como Admira, sin marca o con la marca que pone el propio proyecto al elegirlo, se ofrecen todos.** `/marca off` vuelve a Admira y los muestra todos. Regla en `admira-xp/scripts/marca-proyectos.mjs`.
+
+EN: With a client brand set by hand (`?marca=<id>` or `/marca <id>`), Project and venue only offers the projects of that brand (Starbucks → Starbucks, Starbucks Mexico; Altadis → Altadis, Estancos). As Admira, with no brand, or with the brand a project applies when chosen, every project is offered. `/marca off` shows them all.
+
 ## Cómo se vuelve a Admira
 
 `/marca off` (o `/marca admira`), el acceso del proyecto en la barra superior o `?marca=admira` en la URL. Se deshace en el sitio, sin recargar: variables, atributos, logo, «powered by», favicon, theme-color, título y hojas cargadas; también se quitan `?marca=`/`?modo=` de la URL.
