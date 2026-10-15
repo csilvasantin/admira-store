@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r3.00:38": [
+    "El gemelo abre con la interfaz limpia, como al pulsar H: sólo la barra de arriba y la escena; ☰ ▤ ⌘ o la H enseñan los paneles y botones."
+  ],
   "v.16.10.2026.r2.00:32": [
     "Diagonal 634: las 4 pantallas de tinta electrónica de la zona de los cafés con las imágenes de «Súbele el brillo a tus días».",
     "Visor de centros y Gran de Gràcia 51 con la interfaz limpia por defecto: H o ☰ ▤ ⌘ enseñan los paneles."

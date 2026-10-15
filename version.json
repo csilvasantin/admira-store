@@ -1,15 +1,14 @@
 {
-  "version": "v.16.10.2026.r2.00:32",
-  "deployedAt": "2026-10-15T22:32:17Z",
+  "version": "v.16.10.2026.r3.00:38",
+  "deployedAt": "2026-10-15T22:38:10Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "49e9492d953183d25c10aaa376615477db1045ca",
-  "gitShort": "49e9492",
-  "gitFull": "49e9492d953183d25c10aaa376615477db1045ca",
+  "git": "339129899a953ace8f58d450b3fecfec9ec1d9f9",
+  "gitShort": "3391298",
+  "gitFull": "339129899a953ace8f58d450b3fecfec9ec1d9f9",
   "dirty": false,
   "novedades": [
-    "Diagonal 634: las 4 pantallas de tinta electrónica de la zona de los cafés con las imágenes de «Súbele el brillo a tus días».",
-    "Visor de centros y Gran de Gràcia 51 con la interfaz limpia por defecto: H o ☰ ▤ ⌘ enseñan los paneles."
+    "El gemelo abre con la interfaz limpia, como al pulsar H: sólo la barra de arriba y la escena; ☰ ▤ ⌘ o la H enseñan los paneles y botones."
   ]
 }
