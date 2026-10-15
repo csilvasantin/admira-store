@@ -196,6 +196,7 @@
             "tipo": "ipad",
             "horizontal": true,
             "nombre": "iPad · gestión de colas",
+            "cola": "starbucks-paseo-de-gracia",
             "esquinas": [
               [
                 7748,
@@ -407,6 +408,7 @@
             "id": "D634-IPAD",
             "tipo": "ipad",
             "nombre": "iPad · gestión de colas",
+            "cola": "starbucks-diagonal-634",
             "esquinas": [
               [
                 3171,
@@ -423,6 +425,30 @@
               [
                 3123,
                 2217
+              ]
+            ]
+          },
+          {
+            "id": "D634-KIOSKO",
+            "tipo": "kiosko",
+            "nombre": "Quiosco de pedidos",
+            "cola": "starbucks-diagonal-634",
+            "esquinas": [
+              [
+                6217,
+                1936
+              ],
+              [
+                6327,
+                1932
+              ],
+              [
+                6327,
+                2132
+              ],
+              [
+                6217,
+                2128
               ]
             ]
           },
