@@ -1,0 +1,49 @@
+{
+  "sourceViewer": "https://panorama-viewer-d8j.pages.dev/",
+  "references": [
+    {
+      "id": "demo:starbucks",
+      "name": "starbucks-demo.webp",
+      "src": "/img/starbucks-demo.webp",
+      "view": {
+        "yaw": 160.4651749580645,
+        "pitch": -13.367460789032352,
+        "fov": 100,
+        "sphereX": -3,
+        "sphereY": 0
+      },
+      "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
+      "center": "Paseo de Gracia 103",
+      "identificationBasis": "correspondencia con referencia previa",
+      "sha256": "316d329d871a48263b3cbace403472f3a326c4677fd125837d4ec4ac58ddc4cb",
+      "dimensionsVerified": false,
+      "requestedViews": [
+        "3D",
+        "Matrix"
+      ]
+    },
+    {
+      "id": "318417c3-fbd2-4460-a135-3ae6a1d232eb",
+      "name": "starbucks_illia.jpg",
+      "src": "/api/images/318417c3-fbd2-4460-a135-3ae6a1d232eb",
+      "view": {
+        "yaw": -1.756164393973222,
+        "pitch": -4.551646284610172,
+        "fov": 100,
+        "sphereX": -2.3399999999999994,
+        "sphereY": -2.7
+      },
+      "source": "https://panorama-viewer-d8j.pages.dev/api/images/318417c3-fbd2-4460-a135-3ae6a1d232eb",
+      "center": "Diagonal 634",
+      "identificationBasis": "correspondencia visual con fachada; nombre original illia",
+      "sha256": "32bc88ab3f36056df8099406256cd9199f807a3690ca7213fd1d157adeec4fd9",
+      "dimensionsVerified": false,
+      "requestedViews": [
+        "3D",
+        "Matrix"
+      ]
+    }
+  ],
+  "requestedOutcome": "Centros independientes, geometría y pantallas compartidas entre 3D y Matrix; conservar las playlists por centro",
+  "status": "referencias recuperadas; levantamiento en curso en Arquitecto"
+}

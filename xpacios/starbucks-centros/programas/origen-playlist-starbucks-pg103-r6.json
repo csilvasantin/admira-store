@@ -1,0 +1,127 @@
+{
+  "schema": "admira.mixed-screen-program.v1",
+  "campaign": "starbucks-alsea-historia-20261013-57fec1ad",
+  "revision": 6,
+  "contentLanguage": "es",
+  "clock": "https://brain.digitalavatar.ai/sync/state",
+  "fps": 25,
+  "totalSeconds": 32,
+  "hardwareVerified": false,
+  "screens": [
+    {
+      "screen": "starbucks-pg103-p1",
+      "format": {
+        "width": 1080,
+        "height": 1920
+      },
+      "items": [
+        {
+          "kind": "mural",
+          "seconds": 24,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p1-r6-1080x1920.mp4"
+        },
+        {
+          "kind": "individual",
+          "seconds": 8,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+        }
+      ]
+    },
+    {
+      "screen": "starbucks-pg103-p2",
+      "format": {
+        "width": 1080,
+        "height": 1920
+      },
+      "items": [
+        {
+          "kind": "mural",
+          "seconds": 24,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p2-r6-1080x1920.mp4"
+        },
+        {
+          "kind": "individual",
+          "seconds": 8,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+        }
+      ]
+    },
+    {
+      "screen": "starbucks-pg103-p3",
+      "format": {
+        "width": 1080,
+        "height": 1920
+      },
+      "items": [
+        {
+          "kind": "mural",
+          "seconds": 24,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p3-r6-1080x1920.mp4"
+        },
+        {
+          "kind": "individual",
+          "seconds": 8,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+        }
+      ]
+    },
+    {
+      "screen": "starbucks-pg103-p4",
+      "format": {
+        "width": 1080,
+        "height": 1920
+      },
+      "items": [
+        {
+          "kind": "mural",
+          "seconds": 24,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p4-r6-1080x1920.mp4"
+        },
+        {
+          "kind": "individual",
+          "seconds": 8,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+        }
+      ]
+    },
+    {
+      "screen": "starbucks-pg103-p5",
+      "format": {
+        "width": 1080,
+        "height": 1920
+      },
+      "items": [
+        {
+          "kind": "mural",
+          "seconds": 24,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p5-r6-1080x1920.mp4"
+        },
+        {
+          "kind": "individual",
+          "seconds": 8,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+        }
+      ]
+    },
+    {
+      "screen": "starbucks-pg103-p6",
+      "format": {
+        "width": 1080,
+        "height": 1920
+      },
+      "items": [
+        {
+          "kind": "mural",
+          "seconds": 24,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p6-r6-1080x1920.mp4"
+        },
+        {
+          "kind": "individual",
+          "seconds": 8,
+          "file": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+        }
+      ]
+    }
+  ],
+  "installation": "starbucks-pg103"
+}

@@ -1,0 +1,156 @@
+{
+  "schema": "admira.starbucks-programa/1",
+  "id": "starbucks-pg103-sincroia-mcp",
+  "nombre": "SincroIA · Your Drink, Your Story",
+  "centro": "pg103",
+  "revision": 43,
+  "fuente": {
+    "tipo": "mcp",
+    "url": "https://mcp.admira.store/matrix/starbucks",
+    "tienda": "starbucks-alsea-paseo-de-gracia",
+    "canal": "sincroIA",
+    "playlist": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+    "revision": 43,
+    "actualizado": "2026-10-12T11:41:12.237Z"
+  },
+  "vinculacionFisica": "pendiente",
+  "asociaciones": [
+    {
+      "pantalla": "PG103-MENU-01",
+      "posicion": 1,
+      "grupo": 2,
+      "canal": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+      "origen": "sincroIA · pantalla 1 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-02",
+      "posicion": 2,
+      "grupo": 2,
+      "canal": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+      "origen": "sincroIA · pantalla 2 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-03",
+      "posicion": 3,
+      "grupo": 1,
+      "canal": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+      "origen": "sincroIA · pantalla 3 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-04",
+      "posicion": 4,
+      "grupo": 3,
+      "canal": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+      "origen": "sincroIA · pantalla 4 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-05",
+      "posicion": 5,
+      "grupo": 3,
+      "canal": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+      "origen": "sincroIA · pantalla 5 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-06",
+      "posicion": 6,
+      "grupo": 3,
+      "canal": "starbucks-alsea-paseo-de-gracia-sincro-ia",
+      "origen": "sincroIA · pantalla 6 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    }
+  ],
+  "tramos": [
+    {
+      "id": "sincro",
+      "tipo": "mural",
+      "nombre": "SincroIA · seis pantallas",
+      "segundos": "medio",
+      "segundosMedidos": 21.16,
+      "piezas": {
+        "PG103-MENU-01": {
+          "id": "1790710675951-2dxnev",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 1 de 6",
+          "src": "https://stock.admira.store/stock/1790710675951-2dxnev/asset.mp4?v=5259808",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1316
+        },
+        "PG103-MENU-02": {
+          "id": "1790710719553-e7aa55",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 2 de 6",
+          "src": "https://stock.admira.store/stock/1790710719553-e7aa55/asset.mp4?v=5804509",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1318
+        },
+        "PG103-MENU-03": {
+          "id": "1790710758622-9sbv1r",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 3 de 6",
+          "src": "https://stock.admira.store/stock/1790710758622-9sbv1r/asset.mp4?v=4755805",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1319
+        },
+        "PG103-MENU-04": {
+          "id": "1790710794937-tkk8iv",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 4 de 6",
+          "src": "https://stock.admira.store/stock/1790710794937-tkk8iv/asset.mp4?v=8249393",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1320
+        },
+        "PG103-MENU-05": {
+          "id": "1790710829529-m49jhb",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 5 de 6",
+          "src": "https://stock.admira.store/stock/1790710829529-m49jhb/asset.mp4?v=6516829",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1321
+        },
+        "PG103-MENU-06": {
+          "id": "1790710872361-d2utbz",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 6 de 6",
+          "src": "https://stock.admira.store/stock/1790710872361-d2utbz/asset.mp4?v=5520216",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1322
+        }
+      }
+    }
+  ]
+}

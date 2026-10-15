@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="admiranext-version" content="v.15.10.2026.r11.19:30">
+<title>Starbucks · centros reales · playlists en 3D y Matrix · XpaceOS</title>
+<meta name="description" content="Paseo de Gràcia 103 y Diagonal 634 en 3D y en Matrix, con sus playlists reproduciéndose de verdad y sincronizadas en las seis pantallas de cada local.">
+<meta name="theme-color" content="#0b1411">
+<link rel="canonical" href="https://www.admira.store/xpacios/starbucks-centros/">
+<link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
+<link rel="stylesheet" href="./centros.css?v=sc-1">
+<script>window.XPACE_SHELL={section:{es:'Xpacios · Starbucks · centros',en:'Xpaces · Starbucks · venues'},
+options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'/xpacios/altadis-18/?tipo=cafe',es:'Los 18 espacios Altadis · Starbucks',en:'The 18 Altadis spaces · Starbucks'},{href:'https://panorama-viewer-d8j.pages.dev/',es:'Panoramas de los centros',en:'Venue panoramas',newTab:true}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261014-gdg51-1">
+<script defer src="/assets/xpace-shell.js?v=20261014-gdg51-1"></script>
+<script type="module" src="./visor.mjs?v=sc-1"></script>
+</head>
+<body>
+<header data-shell-replace><a href="/xpacios/" data-shell-slot="options">Todos los Xpacios</a></header>
+<main id="sc" aria-label="Centros Starbucks con sus playlists">
+  <canvas id="lienzo" tabindex="0" aria-label="Local en 3D · arrastra para girar, rueda o pellizca para acercar, toca una pantalla para ver su playlist"></canvas>
+
+  <section class="ficha" aria-labelledby="titulo">
+    <nav id="centros" class="centros" role="tablist" aria-label="Centro"></nav>
+    <p class="eyebrow">STARBUCKS · CENTROS REALES · PLAYLISTS</p>
+    <h1 id="titulo">Starbucks</h1>
+    <p id="identidad" class="identidad"></p>
+    <div class="botones">
+      <span class="grupo" role="group" aria-label="Modo"><button type="button" data-modo="3d" aria-pressed="true">3D</button><button type="button" data-modo="matrix" aria-pressed="false">Matrix</button></span>
+      <span class="grupo" role="group" aria-label="Vista"><button type="button" data-vista="cliente" aria-pressed="true">Cliente</button><button type="button" data-vista="pantallas" aria-pressed="false">Pantallas</button><button type="button" data-vista="general" aria-pressed="false">General</button></span>
+    </div>
+    <p id="referencia" class="referencia"></p>
+    <div id="detalle" class="detalle" aria-live="polite"></div>
+  </section>
+
+  <aside class="pantallas" aria-label="Pantallas y pieza actual">
+    <h2>Pantallas · 2 + 1 + 3</h2>
+    <ol id="lista"></ol>
+  </aside>
+
+  <footer id="reproductor" class="reproductor" aria-label="Reproducción">
+    <div class="mandos">
+      <button type="button" id="play" aria-label="Pausa">❚❚</button>
+      <button type="button" id="reiniciar" aria-label="Reiniciar" title="Reiniciar (R)">⟲</button>
+      <button type="button" id="siguiente" aria-label="Siguiente pieza" title="Siguiente pieza (→)">⏭</button>
+      <select id="programa" aria-label="Playlist" hidden></select>
+    </div>
+    <div class="linea">
+      <div id="tramos" class="tramos"></div>
+      <div id="cabezal" class="cabezal"></div>
+    </div>
+    <p class="estado"><b id="pieza">—</b> <span id="tiempo"></span></p>
+    <p id="fuente" class="fuente"></p>
+    <p id="avisos" class="avisos" role="status"></p>
+  </footer>
+
+  <div id="enlace" class="enlace" hidden></div>
+  <p id="aviso" class="aviso" role="status" hidden></p>
+  <button type="button" id="gesto" class="gesto" hidden>▶ Toca para reproducir</button>
+</main>
+</body>
+</html>

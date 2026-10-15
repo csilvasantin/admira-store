@@ -1,16 +1,16 @@
 {
-  "version": "v.15.10.2026.r8.12:28",
-  "deployedAt": "2026-10-15T10:30:55Z",
-  "deployer": "NeoMBP14",
-  "machine": "MacBookProNegro14",
-  "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "10cf16d9adb030456e879a8c5b20a6d5c9d6342f",
-  "gitShort": "10cf16d",
-  "gitFull": "10cf16d9adb030456e879a8c5b20a6d5c9d6342f",
+  "version": "v.15.10.2026.r11.19:30",
+  "deployedAt": "2026-10-15T17:30:45Z",
+  "deployer": "NeoMacStudio",
+  "machine": "MacStudio",
+  "signature": "NeoMacStudio · MacStudio",
+  "git": "115763839950a7e2b622f1c1cbf03071bc75dd28",
+  "gitShort": "1157638",
+  "gitFull": "115763839950a7e2b622f1c1cbf03071bc75dd28",
   "dirty": false,
   "novedades": [
-    "Nuevo /xpacios/altadis-18/: los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks, con su gemelo 3D desde los planos del Arquitecto.",
-    "En cada espacio, el vídeo adaptado a ese formato: contenido de Altadis en los Xtanco y de Starbucks en las cafeterías; un solo vídeo por formato repartido por recortes, todas las pantallas sincronizadas; el cubo LED, en sus cuatro caras.",
-    "Galería con Xtanco / Starbucks y ES / EN, ← → para recorrer los 18, recorrido automático y botones a admira.studio (crear y adaptar) y al Arquitecto (plano)."
+    "Nuevo /xpacios/starbucks-centros/: Paseo de Gràcia 103 y Diagonal 634 en 3D y en Matrix, con sus playlists sonando de verdad y sincronizadas en las seis pantallas 2 + 1 + 3.",
+    "Paseo de Gràcia 103 con la campaña «Cada café tiene una historia» (mural de 24 s + pieza común de 8 s) o la playlist sincroIA leída en vivo del MCP; Diagonal 634 con su propia adaptación de contenido de marca.",
+    "Controles de reproducción, pausa, reinicio y siguiente pieza; ficha de cada pantalla con su playlist. Gran de Gràcia 51 abre su gemelo; la vinculación física de cada pantalla sigue pendiente."
   ]
 }
