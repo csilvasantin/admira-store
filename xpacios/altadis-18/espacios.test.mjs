@@ -10,7 +10,7 @@ import {
   STUDIO, ARQUITECTO, INDICE_COMPARTIDO, INDICE_LOCAL, PLANO_COMPARTIDO, PLANO_LOCAL, MANIFIESTO, TEMA_DE_TIPO,
   ESPERA_COMPARTIDO_MS, RECORRIDO_MS, RECORRIDO_MAX_MS, MONTAJES, PAREDES, textoMontaje, textoPared, textoZona, textoEntrega,
 } from './espacios.mjs';
-import { encuadre, esquinas, svgFormato, celdasFormato, posicionOrbita } from './vista.mjs';
+import { encuadre, esquinas, svgFormato, celdasFormato, posicionOrbita, camaraEncuadre, GIRO_CUBO } from './vista.mjs';
 import { uvsFormato } from './recorte.mjs';
 import { tamanoPlaceholder, barrido, reloj, rotulos } from './placeholder.mjs';
 import { escenaDesdePlano, medidasCubo, tipoMueble, panelSize } from '../gran-de-gracia-51/plano3d.mjs';
@@ -309,4 +309,38 @@ test('what the client sees: no internal notes by default, no fallback error, no 
   const css = read('xpacios/altadis-18/altadis.css');
   assert.match(css, /#estado\{[^}]*pointer-events:none/, 'the status line never blocks the controls');
   assert.doesNotMatch(css, /var\(--ambar\)\}\s*\.fuente/, 'no amber source line');
+});
+
+test('auto framing in the 36 spaces: facing the screens (< 25° from their normal), centred and filling the frame; the cube in diagonal', () => {
+  const FOV = 40, ASPECT = 16 / 9, rad = Math.PI / 180;
+  const tv = Math.tan(FOV / 2 * rad), th = tv * ASPECT;
+  for (const f of INDICE.formatos) for (const tipo of ['xtanco', 'cafe']) {
+    const p = plano(f.espacios[tipo]), e = escenaDesdePlano(p), suyas = e.pantallas.filter(x => x.recorte);
+    const c = camaraEncuadre(suyas, { fov: FOV, aspect: ASPECT, sala: e.sala });
+    const pos = posicionOrbita(c), o = c.objetivo;
+    const d = [pos[0] - o[0], pos[1] - o[1], pos[2] - o[2]], dl = Math.hypot(...d);
+    const n = suyas[0].n, ang = Math.acos((d[0] * n[0] + d[1] * n[1]) / dl) / rad;
+    if (suyas.some(x => x.cubo)) assert.ok(ang > 15 && ang < 45, `${p.id}: the cube is seen in diagonal from its room face (${ang.toFixed(1)}°)`);
+    else assert.ok(ang < 25, `${p.id}: camera ${ang.toFixed(1)}° from the screen normal`);
+    // El centro de las pantallas, en el tercio central del cuadro (cámara mirando a `objetivo`).
+    const cx = suyas.reduce((s, x) => s + x.centro[0], 0) / suyas.length, cy = suyas.reduce((s, x) => s + x.centro[1], 0) / suyas.length, cz = suyas.reduce((s, x) => s + x.centro[2], 0) / suyas.length;
+    const fwd = d.map(v => -v / dl), up0 = [0, 0, 1];
+    const right = [fwd[1] * up0[2] - fwd[2] * up0[1], fwd[2] * up0[0] - fwd[0] * up0[2], fwd[0] * up0[1] - fwd[1] * up0[0]], rl = Math.hypot(...right);
+    const r = right.map(v => v / rl), up = [r[1] * fwd[2] - r[2] * fwd[1], r[2] * fwd[0] - r[0] * fwd[2], r[0] * fwd[1] - r[1] * fwd[0]];
+    const v = [cx - pos[0], cy - pos[1], cz - pos[2]], z = v[0] * fwd[0] + v[1] * fwd[1] + v[2] * fwd[2];
+    const sx = (v[0] * r[0] + v[1] * r[1] + v[2] * r[2]) / z / th, sy = (v[0] * up[0] + v[1] * up[1] + v[2] * up[2]) / z / tv;
+    assert.ok(Math.abs(sx) < 1 / 3 && Math.abs(sy) < 1 / 3, `${p.id}: screens centred (${sx.toFixed(2)}, ${sy.toFixed(2)})`);
+    // Y llenan buena parte del cuadro (el lado que manda, al menos un 40 %).
+    const lleno = Math.max(c.alto / (2 * dl * tv), c.ancho / (2 * dl * th));
+    assert.ok(lleno > 0.4, `${p.id}: screens fill ${Math.round(lleno * 100)} % of the frame`);
+  }
+  assert.equal(GIRO_CUBO, 0.5);
+});
+
+test('gallery cards are never empty: the format schematic is always under the poster', () => {
+  const visor = read('xpacios/altadis-18/visor.mjs');
+  assert.match(visor, /<span class="poster">\$\{svgFormato\(f\)\}\$\{poster \?/, 'schematic first, poster on top');
+  assert.doesNotMatch(visor, /loading="lazy"/, 'posters load eagerly (18 small JPEGs)');
+  assert.match(visor, /if \(e\.target\.tagName === 'IMG'\) e\.target\.remove\(\)/, 'a broken poster leaves the schematic');
+  assert.match(read('xpacios/altadis-18/altadis.css'), /\.poster img\.ok\{opacity:1\}/, 'a poster shows only once loaded');
 });

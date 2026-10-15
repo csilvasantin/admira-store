@@ -48,6 +48,30 @@ export function encuadre(pantallas, { fov = 40, aspect = 16 / 9, margen = 1.3, e
   return { objetivo, dist, az: Math.atan2(ny, nx), el, ancho, alto, fondo, normal: [nx, ny] };
 }
 
+/**
+ * La regla del encuadre automático (lo que usa visor.mjs): la cámara en la normal de las
+ * pantallas del formato, mirándolas de frente y con su centro en el centro del cuadro, a la
+ * distancia a la que llenan dos tercios del lado que manda. Un poco desde arriba (más si la
+ * pantalla está baja, como la de un mostrador), nunca más de unos 13°. El cubo, frente a la cara
+ * que da a la sala pero en diagonal (GIRO_CUBO), para que se vean dos caras; hacia el lado que
+ * deja la cámara más cerca del centro de la sala si se da `sala`.
+ */
+export const GIRO_CUBO = 0.5;
+export function camaraEncuadre(pantallas, { fov = 40, aspect = 16 / 9, sala = null } = {}) {
+  const ps = (pantallas || []).filter(p => p && p.centro);
+  const cubo = ps.some(p => p.cubo);
+  const m = encuadre(ps, { fov, aspect, margen: 1.5, minDist: 0.6, el: 0 });
+  if (!m) return null;
+  const el = cubo ? 0.3 : m.objetivo[2] < 1.2 ? 0.22 : 0.1;
+  let az = m.az;
+  if (cubo) {
+    const lados = [m.az + GIRO_CUBO, m.az - GIRO_CUBO];
+    const centro = sala && sala.centro;
+    az = centro ? lados.map(a => [a, posicionOrbita({ objetivo: m.objetivo, dist: m.dist, az: a, el })]).sort((x, y) => Math.hypot(x[1][0] - centro[0], x[1][1] - centro[1]) - Math.hypot(y[1][0] - centro[0], y[1][1] - centro[1]))[0][0] : lados[0];
+  }
+  return { objetivo: m.objetivo, az, el, dist: m.dist, normal: m.normal, ancho: m.ancho, alto: m.alto, cubo };
+}
+
 /** Posición de la cámara de la órbita (en el plano: x, y, altura). */
 export function posicionOrbita({ objetivo, dist, az, el }) {
   return [objetivo[0] + Math.cos(el) * Math.cos(az) * dist, objetivo[1] + Math.cos(el) * Math.sin(az) * dist, objetivo[2] + Math.sin(el) * dist];

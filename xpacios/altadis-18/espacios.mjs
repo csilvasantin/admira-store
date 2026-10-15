@@ -18,7 +18,7 @@
 
 import { validatePlan } from '../gran-de-gracia-51/plano3d.mjs?v=gdg51-6';
 import { CAMPOS_PRIVADOS } from '../plano-publico.mjs';
-import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-2';
+import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-3';
 
 export const SCHEMA_INDICE = 'admira.espacios-formato/1';
 export const SCHEMA_CONTENIDO = 'admira.espacios-contenido/1';

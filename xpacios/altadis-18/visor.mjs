@@ -15,10 +15,10 @@ import {
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, medidaFisica,
   textoMontaje, textoPared, textoZona, textoEntrega,
   STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, dos,
-} from './espacios.mjs?v=a18-2';
-import { uvsFormato } from './recorte.mjs?v=a18-2';
-import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-2';
-import { encuadre, posicionOrbita, svgFormato } from './vista.mjs?v=a18-2';
+} from './espacios.mjs?v=a18-3';
+import { uvsFormato } from './recorte.mjs?v=a18-3';
+import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-3';
+import { camaraEncuadre, svgFormato } from './vista.mjs?v=a18-3';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -87,29 +87,34 @@ function pintarGaleria() {
   if (!st.indice) return;
   const lista = formatosOrdenados(st.indice);
   $('galeria-titulo').textContent = t(`${lista.length} espacios tipo · uno por formato de Altadis`, `${lista.length} model spaces · one per Altadis format`);
-  $('tarjetas').innerHTML = lista.map(f => {
+  const html = lista.map(f => {
     const id = f.espacios[st.tipo], poster = posterDe(st.manifiesto, f.formato, st.lang);
     const led = /LED/i.test(f.nombre) || f.zona === 'cubo';
     const zona = textoZona(f.zona, EN());
     const uso = f.uso ? (f.uso[st.lang] || f.uso.es || '') : '';
+    // El esquema del formato siempre está debajo; el póster del vídeo lo tapa cuando ha cargado. Una
+    // tarjeta nunca se queda vacía (póster lento, caído o sin manifiesto).
     return `<li><a class="tarjeta" href="${esc(queryEspacio({ espacio: id, lang: st.lang }))}" data-formato="${esc(f.formato)}" aria-current="${st.actual?.formato.formato === f.formato}">` +
-      `<span class="poster">${poster ? `<img src="${esc(poster)}" alt="" loading="lazy" decoding="async">` : svgFormato(f)}<b class="n">${dos(f.n)}</b>${led ? '<i class="tec">LED</i>' : ''}</span>` +
+      `<span class="poster">${svgFormato(f)}${poster ? `<img src="${esc(poster)}" alt="" decoding="async">` : ''}<b class="n">${dos(f.n)}</b>${led ? '<i class="tec">LED</i>' : ''}</span>` +
       `<span class="nombre">${esc(f.nombre)}</span><span class="px">${f.ancho} × ${f.alto} px</span>` +
       `<span class="uso">${esc(uso)}${zona && zona !== uso ? ` · ${esc(zona)}` : ''}</span>` +
       `<span class="pantallas">${f.pantallas} ${f.pantallas === 1 ? t('pantalla', 'screen') : t('pantallas', 'screens')}${f.grid && f.pantallas > 1 ? ` · ${f.grid.cols} × ${f.grid.rows}` : ''}</span></a></li>`;
   }).join('');
+  // Sin volver a pintar si nada cambió: rehacer el HTML reinicia la carga de los pósters.
+  if (html === galeriaPintada) return;
+  galeriaPintada = html;
+  $('tarjetas').innerHTML = html;
+  for (const img of $('tarjetas').querySelectorAll('img')) if (img.complete && img.naturalWidth) img.classList.add('ok');
 }
+let galeriaPintada = '';
+$('tarjetas').addEventListener('load', e => { if (e.target.tagName === 'IMG') e.target.classList.add('ok'); }, true);
 $('tarjetas').addEventListener('click', e => {
   const a = e.target.closest('a[data-formato]');
   if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
   e.preventDefault(); abrir(a.dataset.formato, st.tipo);
 });
-// Un póster que no carga deja paso al esquema del formato.
-$('tarjetas').addEventListener('error', e => {
-  if (e.target.tagName !== 'IMG') return;
-  const a = e.target.closest('a[data-formato]'), f = st.indice?.formatos.find(x => x.formato === a?.dataset.formato);
-  if (f) e.target.outerHTML = svgFormato(f);
-}, true);
+// Un póster que no carga se quita: debajo está el esquema del formato.
+$('tarjetas').addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);
 
 // ── Modo: galería o espacio ──
 function mostrarModo(modo) {
@@ -173,19 +178,13 @@ const pantallasFormato = () => (escena ? escena.pantallas.filter(p => p.recorte 
 
 // Encuadre automático sobre las pantallas del formato, de frente y a la distancia justa.
 function encuadrar() {
-  const zona = zonaLibre(), suyas = pantallasFormato();
-  // Algo de sala alrededor, en proporción a la pantalla: la tablet de cerca, el mural entero.
-  const dim = Math.max(...suyas.map(p => Math.max(p.w, p.h)), 0.2), cl = (v, a, b) => Math.max(a, Math.min(b, v));
-  cam.marco = encuadre(suyas, { fov: 40, aspect: zona.aspect, margen: 1.3, minAncho: cl(dim * 3, 0.8, 2.6), minAlto: cl(dim * 2, 0.6, 1.7) });
+  const zona = zonaLibre();
+  // La regla (de frente, centrada, dos tercios del cuadro; el cubo en diagonal) vive en vista.mjs y
+  // tiene su test en los 36 planos; aquí sólo se ajusta a la zona libre del lienzo.
+  cam.marco = camaraEncuadre(pantallasFormato(), { fov: 40, aspect: zona.aspect, sala: escena.sala });
   if (!cam.marco) return;
-  const [x, y, h] = cam.marco.objetivo, cubo = suyas.some(p => p.cubo);
-  // Un poco de lado para que se lea el volumen (el cubo, bastante más: dos caras a la vista), hacia
-  // el lado que deja la cámara más cerca del centro de la sala.
-  const giro = cubo ? 0.62 : 0.26, el = cubo ? 0.3 : h < 1.2 ? 0.32 : 0.16;
-  const dist = cam.marco.dist / zona.escala, [cx, cy] = escena.sala.centro;
-  const lejos = az => { const p = posicionOrbita({ objetivo: cam.marco.objetivo, dist, az, el }); return Math.hypot(p[0] - cx, p[1] - cy); };
-  const az = [cam.marco.az + giro, cam.marco.az - giro].sort((a, b) => lejos(a) - lejos(b))[0];
-  cam.orb = { az, el, dist, objetivo: V(x, y, h) };
+  const [x, y, h] = cam.marco.objetivo;
+  cam.orb = { az: cam.marco.az, el: cam.marco.el, dist: cam.marco.dist / zona.escala, objetivo: V(x, y, h) };
 }
 
 // Lo que no tapan la ficha ni la barra de controles: el encuadre se centra ahí (setViewOffset,
