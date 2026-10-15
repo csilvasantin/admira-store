@@ -4,7 +4,8 @@ import {contextSurfaces,channelForSurface,mountSurfacePlaylistRemote} from './co
 import {starbucksMusic} from './starbucks-music.mjs?v=local-playlist-349';
 import {stockSelections} from './stock-identifiers.mjs?v=local-playlist-349';
 const win=window,doc=win.document,t=(es,en)=>doc.documentElement.lang==='en'?en:es;
-const initialScope=JSON.stringify(playlistContext(win.location.href)),initialSelections={music:stockSelections(win.XpaceOptionsPlayback?.state?.('music')?.tracks),screens:stockSelections(win.XpaceOptionsPlayback?.state?.('screens')?.tracks)};
+const previousSelection=channel=>{const api=win.XpaceOptionsPlayback,id=doc.querySelector('[data-options-playlist="'+channel+'"] select')?.value||api?.groups?.(channel)?.[0]?.id;return stockSelections(api?.state?.(channel,id)?.tracks);};
+const initialScope=JSON.stringify(playlistContext(win.location.href)),initialSelections={music:previousSelection('music'),screens:previousSelection('screens')};
 const initialSelection=channel=>initialScope===JSON.stringify(playlistContext(win.location.href))?initialSelections[channel==='music'?'music':'screens']:[];
 starbucksMusic();
 const surfaces=contextSurfaces(win),media=win.XpaceScreenMedia;if(media?.setLocalSchedule)media.setLocalSchedule(surfaces);
