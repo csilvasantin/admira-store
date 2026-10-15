@@ -192,8 +192,8 @@ function encuadrar() {
 
 // El mueble sobre el que está la pantalla (la contrabarra bajo el mural, con sus cafeteras) no se
 // oculta entero: se mira pieza a pieza. Una pieza metida en el volumen de la pantalla (una cafetera
-// contra la pared, delante del borde inferior del mural) se oculta siempre: desde ningún ángulo deja
-// ver ese borde. Si otra pieza tapa, la cámara sube (hasta 24°, sigue de frente) hasta que la línea
+// contra la pared, su panel o el molino, delante del borde inferior del mural) se oculta siempre:
+// desde ningún ángulo deja ver ese borde. Si otra pieza tapa, la cámara sube (hasta 24°, sigue de frente) hasta que la línea
 // a las esquinas y al borde inferior pasa por encima; sólo si ni así, se ocultan las que tapan.
 const EL_MAX = 0.42;
 const tapa = (m, c) => puntos.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.1; });
@@ -283,13 +283,21 @@ const rayo = new T.Ray(), punto = new T.Vector3();
 let tapas = [], apoyosTapa = [], puntos = [];
 function prepararTapas() {
   const suyas = pantallasFormato(), apoyos = new Set(suyas.map(p => p.apoyo?.id).filter(Boolean));
+  s3d.scene.updateMatrixWorld(true);   // antes del primer render las piezas aún no tienen su matrixWorld
   puntos = suyas.flatMap(puntosVisibles).map(q => V(q[0], q[1], q[2]));
   tapas = [...s3d.muebles].filter(([id]) => !apoyos.has(id)).map(([id, g]) => ({ id, g, caja: new T.Box3().setFromObject(g) }));
+  // Volumen delante de cada pantalla (70 cm hacia la sala, de su borde inferior al superior): una
+  // pieza del mueble de apoyo que se mete ahí (cafetera, su panel, el molino) tapa la pantalla.
+  const zonas = suyas.filter(p => !p.cubo).map(p => {
+    const [cx, cy] = p.centro, [ux, uy] = p.u, [nx, ny] = p.n, caja = new T.Box3();
+    for (const k of [-0.5, 0.5]) for (const f of [-0.02, 0.7]) for (const h of [p.z + 0.01, p.z1]) caja.expandByPoint(V(cx + ux * p.w * k + nx * f, cy + uy * p.w * k + ny * f, h));
+    return caja;
+  });
   apoyosTapa = [];
   for (const id of apoyos) s3d.muebles.get(id)?.traverse(o => {
     if (!o.isMesh) return;
     const caja = new T.Box3().setFromObject(o);
-    apoyosTapa.push({ id, g: o, caja, solapa: puntos.some(q => caja.containsPoint(q)) });
+    apoyosTapa.push({ id, g: o, caja, solapa: zonas.some(z => z.intersectsBox(caja)) || puntos.some(q => caja.containsPoint(q)) });
   });
 }
 

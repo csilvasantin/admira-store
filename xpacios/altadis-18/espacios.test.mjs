@@ -376,7 +376,7 @@ test('occlusion probes: centre, corners and bottom edge of every screen; the pla
   assert.match(visor, /puntos = suyas\.flatMap\(puntosVisibles\)/);
   assert.match(visor, /tapas = \[\.\.\.s3d\.muebles\]\.filter\(\(\[id\]\) => !apoyos\.has\(id\)\)/, 'the furniture a screen stands on is not hidden as a whole');
   assert.match(visor, /const EL_MAX = 0\.42;/, 'the camera rises at most to 24° (still facing the screens) to clear it');
-  assert.match(visor, /solapa: puntos\.some\(q => caja\.containsPoint\(q\)\)/, 'a piece inside the screen volume (a coffee machine against the wall) is hidden piece by piece');
+  assert.match(visor, /solapa: zonas\.some\(z => z\.intersectsBox\(caja\)\)/, 'a piece inside the screen volume (a coffee machine against the wall) is hidden piece by piece');
   assert.match(visor, /once: true/, 'one tap listener, not one per aborted play()');
   const vw = formatoDe(INDICE, 'cliente-15');
   assert.doesNotMatch(rotulos(vw, 'es', 'error').pie, /preparación/);
