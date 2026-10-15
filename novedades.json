@@ -6,6 +6,9 @@
     "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
     "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
   ],
+  "v.15.10.2026.r16.20:35": [
+    "Portada: la pastilla ENG/ESP mide lo mismo que ☰ y ▤. Con ?marca=starbucks la portada ya filtra en la primera visita (antes había que recargar)."
+  ],
   "v.15.10.2026.r15.20:30": [
     "Portada sin modo Experto: en el sitio de ⌘, la pastilla de idioma del mismo tamaño — ENG pasa a inglés y ESP vuelve al castellano. El recorrido de demo nativo (?ax_demo=store) conserva su motor.",
     "Con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis) la portada y las listas de Xpacios sólo enseñan lo suyo; con Starbucks, el gemelo de referencia y los botones abren el Starbucks de Paseo de Gràcia. Como Admira, todo."

@@ -114,7 +114,7 @@
   // La pastilla de idioma: misma clase y caja (30 × 30) que ⌘; el texto dice el idioma al que se pasa.
   function pastillaIdioma(lang) {
     const en = lang === 'en', label = en ? 'Switch to Spanish' : 'Cambiar a inglés';
-    return `<button type="button" class="quad-icon xs-lang-pill" id="pfLang" data-shell-lang-pill aria-label="${label}" title="${label}" style="font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.02em">${en ? 'ESP' : 'ENG'}</button>`;
+    return `<button type="button" class="quad-icon xs-lang-pill" id="pfLang" data-shell-lang-pill data-admira-compact-control aria-label="${label}" title="${label}" style="font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.02em">${en ? 'ESP' : 'ENG'}</button>`;
   }
 
   // Marcado del shell: mismos ids, clases y glifos que la barra del gemelo.
@@ -452,6 +452,7 @@
     try { id = new URLSearchParams(root.location.search).get('cliente') || ''; } catch (_) {}
     if (!id) { try { id = (JSON.parse(session && session.getItem('pixeria:cliente:v2') || 'null') || {}).id || ''; } catch (_) {} }
     // Marca de un cliente puesta a mano (?marca= o /marca): filtra como su cliente (Carlos, 15-oct-2026).
+    if (!id) { try { id = new URLSearchParams(root.location.search).get('marca') || ''; } catch (_) {} }
     if (!id) { try { if (session && session.getItem('mb:manual') === '1') id = session.getItem('mb:marca') || ''; } catch (_) {} }
     return !!id && !/^(admira|todos|todas|all|off|ninguno)$/i.test(id);
   }
@@ -471,6 +472,8 @@
     return clientePromise;
   }
   if (clientePedido()) cargarCliente();
+  // Si la marca de un cliente se pone después (marca-blanca.js, /marca), el filtro se carga entonces.
+  doc.addEventListener('admira:marca', () => { if (clientePedido()) cargarCliente(); });
   // /marca y el cliente (Carlos, 4-oct-2026): /marca <cliente> filtra por ese cliente (y si además es
   // marca del catálogo, la viste como siempre); /marca off vuelve a Admira, que lo ve todo; /marca todas
   // lista los clientes (en XpaceOS no hay selector visible). → true si ya no hace falta la marca blanca.

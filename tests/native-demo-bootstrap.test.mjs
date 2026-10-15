@@ -71,7 +71,7 @@ test('embedded shell remains isolated', () => {
 test('both native entry pages invalidate cached shell code, and next seal carries the change', () => {
   for (const file of ['index.html','admira-xp/index.html']) {
     const html = readFileSync(new URL('../' + file, import.meta.url), 'utf8');
-    assert.ok(html.includes('/assets/xpace-shell.js?v=20261015-portada-1'), file);
+    assert.ok(html.includes('/assets/xpace-shell.js?v=20261015-portada-2'), file);
     assert.ok(!html.includes('/assets/xpace-shell.js?v=20261007-kiosko-1'), file);
   }
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
