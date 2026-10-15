@@ -6,7 +6,7 @@ import { crearPanorama } from './panorama.mjs?v=sc-pano-4';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-1';
-import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-1';
+import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-2';
 import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
@@ -37,7 +37,7 @@ function texturaPieza(p) {
   let t = piezas.texturas.get(p.id);
   if (!t) {
     if (p.tipo === 'tpv') piezas.tpv = piezas.tpv || crearHiloTPV();
-    if (p.tipo === 'ipad') piezas.ipad = piezas.ipad || crearColaIPad();
+    if (p.tipo === 'ipad') piezas.ipad = piezas.ipad && piezas.ipad.horizontal === !!p.horizontal ? piezas.ipad : Object.assign(crearColaIPad({ horizontal: !!p.horizontal }), { horizontal: !!p.horizontal });
     // Tinta electrónica: una imagen fija (la de Stock), sin repintar.
     if (p.tipo === 'eink') {
       t = new T.TextureLoader().setCrossOrigin('anonymous').load(p.imagen); t.colorSpace = T.SRGBColorSpace; t.userData.fija = true;
