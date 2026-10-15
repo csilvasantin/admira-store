@@ -191,16 +191,19 @@ function encuadrar() {
 }
 
 // El mueble sobre el que está la pantalla (la contrabarra bajo el mural, con sus cafeteras) no se
-// oculta: si tapa el borde inferior de las pantallas, la cámara sube (hasta 24°, sigue de frente)
-// hasta que la línea a ese borde pasa por encima. Sólo si ni así, se oculta también.
+// oculta entero: se mira pieza a pieza. Una pieza metida en el volumen de la pantalla (una cafetera
+// contra la pared, delante del borde inferior del mural) se oculta siempre: desde ningún ángulo deja
+// ver ese borde. Si otra pieza tapa, la cámara sube (hasta 24°, sigue de frente) hasta que la línea
+// a las esquinas y al borde inferior pasa por encima; sólo si ni así, se ocultan las que tapan.
 const EL_MAX = 0.42;
 const tapa = (m, c) => puntos.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.1; });
 function despejar() {
   cam.apoyosFuera = false;
-  if (!apoyosTapa.length || !escena) return;
+  const libres = apoyosTapa.filter(m => !m.solapa);
+  if (!libres.length || !escena) return;
   for (let el = cam.orb.el; el <= EL_MAX + 1e-9; el += 0.02) {
     cam.orb.el = el; colocarCamara();
-    if (!apoyosTapa.some(m => tapa(m, persp.position))) return;
+    if (!libres.some(m => tapa(m, persp.position))) return;
   }
   cam.orb.el = EL_MAX; cam.apoyosFuera = true;
 }
@@ -274,15 +277,20 @@ function recortar() {
   // enseña son las pantallas. Se prueban su centro, sus esquinas y su borde inferior (las cafeteras
   // de la contrabarra tapaban la parte baja del mural). El mueble sobre el que está la pantalla, no.
   for (const m of tapas) m.g.visible = !tapa(m, c);
-  for (const m of apoyosTapa) m.g.visible = !(cam.vista === 'encuadre' && cam.apoyosFuera && tapa(m, c));
+  for (const m of apoyosTapa) m.g.visible = !(cam.vista === 'encuadre' && (m.solapa || (cam.apoyosFuera && tapa(m, c))));
 }
 const rayo = new T.Ray(), punto = new T.Vector3();
 let tapas = [], apoyosTapa = [], puntos = [];
 function prepararTapas() {
   const suyas = pantallasFormato(), apoyos = new Set(suyas.map(p => p.apoyo?.id).filter(Boolean));
-  const todos = [...s3d.muebles].map(([id, g]) => ({ id, g, caja: new T.Box3().setFromObject(g) }));
-  tapas = todos.filter(m => !apoyos.has(m.id)); apoyosTapa = todos.filter(m => apoyos.has(m.id));
   puntos = suyas.flatMap(puntosVisibles).map(q => V(q[0], q[1], q[2]));
+  tapas = [...s3d.muebles].filter(([id]) => !apoyos.has(id)).map(([id, g]) => ({ id, g, caja: new T.Box3().setFromObject(g) }));
+  apoyosTapa = [];
+  for (const id of apoyos) s3d.muebles.get(id)?.traverse(o => {
+    if (!o.isMesh) return;
+    const caja = new T.Box3().setFromObject(o);
+    apoyosTapa.push({ id, g: o, caja, solapa: puntos.some(q => caja.containsPoint(q)) });
+  });
 }
 
 function pintar() {
