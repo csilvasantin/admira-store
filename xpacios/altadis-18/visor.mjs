@@ -187,6 +187,22 @@ function encuadrar() {
   const nominal = camaraEncuadre(suyas, { fov: 40, aspect: 16 / 9, sala: escena.sala }).dist;
   const [x, y, h] = cam.marco.objetivo;
   cam.orb = { az: cam.marco.az, el: cam.marco.el, dist: distanciaEnZona(cam.marco.dist, zona.escala, nominal), objetivo: V(x, y, h) };
+  despejar();
+}
+
+// El mueble sobre el que está la pantalla (la contrabarra bajo el mural, con sus cafeteras) no se
+// oculta: si tapa el borde inferior de las pantallas, la cámara sube (hasta 24°, sigue de frente)
+// hasta que la línea a ese borde pasa por encima. Sólo si ni así, se oculta también.
+const EL_MAX = 0.42;
+const tapa = (m, c) => puntos.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.1; });
+function despejar() {
+  cam.apoyosFuera = false;
+  if (!apoyosTapa.length || !escena) return;
+  for (let el = cam.orb.el; el <= EL_MAX + 1e-9; el += 0.02) {
+    cam.orb.el = el; colocarCamara();
+    if (!apoyosTapa.some(m => tapa(m, persp.position))) return;
+  }
+  cam.orb.el = EL_MAX; cam.apoyosFuera = true;
 }
 
 // Lo que no tapan la ficha ni la barra de controles: el encuadre se centra ahí (setViewOffset,
@@ -257,15 +273,15 @@ function recortar() {
   // Un mueble entre la cámara y una pantalla del formato se oculta, como las paredes: lo que se
   // enseña son las pantallas. Se prueban su centro, sus esquinas y su borde inferior (las cafeteras
   // de la contrabarra tapaban la parte baja del mural). El mueble sobre el que está la pantalla, no.
-  for (const m of tapas) {
-    m.g.visible = !puntos.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.1; });
-  }
+  for (const m of tapas) m.g.visible = !tapa(m, c);
+  for (const m of apoyosTapa) m.g.visible = !(cam.vista === 'encuadre' && cam.apoyosFuera && tapa(m, c));
 }
 const rayo = new T.Ray(), punto = new T.Vector3();
-let tapas = [], puntos = [];
+let tapas = [], apoyosTapa = [], puntos = [];
 function prepararTapas() {
   const suyas = pantallasFormato(), apoyos = new Set(suyas.map(p => p.apoyo?.id).filter(Boolean));
-  tapas = [...s3d.muebles].filter(([id]) => !apoyos.has(id)).map(([, g]) => ({ g, caja: new T.Box3().setFromObject(g) }));
+  const todos = [...s3d.muebles].map(([id, g]) => ({ id, g, caja: new T.Box3().setFromObject(g) }));
+  tapas = todos.filter(m => !apoyos.has(m.id)); apoyosTapa = todos.filter(m => apoyos.has(m.id));
   puntos = suyas.flatMap(puntosVisibles).map(q => V(q[0], q[1], q[2]));
 }
 
