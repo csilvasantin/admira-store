@@ -15,6 +15,12 @@
   // Resolve the Starbucks entry before the first paint; never reveal the arcade on a timer.
   (function(){
     var q=new URLSearchParams(location.search),visual=q.get('visual')??q.get('quality');
+    window.__xpaceMatrixVenueAllowed=function(search){
+      var p=new URLSearchParams(search==null?location.search:search),loc=p.get('loc'),venue=p.get('venue'),project=p.get('project');
+      if(!loc&&!venue)return true;
+      return (!loc||loc==='alsea-sbux-021')&&(!venue||['alsea-sbux-021','demo-starbucks'].includes(venue))&&(!project||project==='starbucks');
+    };
+
     // Estancos Altadis BCN: cada uno entra en SU escena de estanco (FLT-101401;
     // antes, FLT-101352, todos compartían la cafetería), nunca en Matrix (Matrix =
     // Starbucks Pg. de Gràcia aunque el nivel venga guardado).
@@ -29,6 +35,7 @@
     }
     var matrix=visual===null||visual==='matrix';
     if(!matrix)return;
+    if(!window.__xpaceMatrixVenueAllowed()){q.delete('visual');q.set('quality','better');try{history.replaceState(history.state,'',location.pathname+'?'+q.toString()+location.hash);}catch(e){}return;}
     window.__xpaceMatrixEntry=true;document.documentElement.classList.add('matrix-entry','matrix-boot');
     var ready=false,failed=false,timer;
     function fail(){if(ready)return;failed=true;var box=document.getElementById('matrixEntryStatus');if(!box)return;box.hidden=false;box.replaceChildren();var es=document.documentElement.lang==='es',text=document.createElement('p'),retry=document.createElement('button');text.textContent=es?'No se pudo abrir Starbucks. Vuelve a intentarlo.':'Could not open Starbucks. Please try again.';retry.textContent=es?'Reintentar Matrix':'Retry Matrix';retry.onclick=function(){location.reload();};box.append(text,retry);}
@@ -1083,7 +1090,7 @@
 <script src="scripts/voice-receipts.js?v=person-voice-3"></script>
 <link rel="stylesheet" href="scripts/media-experience.css?v=water-finish-4">
 <script src="scripts/media-experience.js?v=20261006-media-experience-1"></script>
-<script src="scripts/media-options.js?v=local-playlist-349"></script>
+<script src="scripts/media-options.js?v=matrix-venue-guard-349"></script>
 <script type="module" src="scripts/pixeria-library.mjs?v=20261006-alsea-repair-1"></script>
 <script src="scripts/media-stock.js?v=person-voice-1"></script>
 <script src="scripts/announcements.js?v=una-lectura-1"></script>
@@ -1519,7 +1526,7 @@
   window.AdmiraXP_KillSwitch={check, apply:applyKillSwitch};
 })();
 </script>
-<script src="xtanco-version.js?v=20261015-1356-r9"></script>
+<script src="xtanco-version.js?v=20261015-1435-r10"></script>
 <script src="xtanco-runtime-config.js?r=agua-voz-1"></script>
 <script src="qrcode.min.js"></script>
 <script src="xtanco-loyalty-client.js"></script>
@@ -27791,13 +27798,15 @@ function loop(){
 }
 // Matrix represents this concrete venue even when opened from the generic entry.
 window.__xtancoEnterStarbucks=()=>{
-  if(isStarbucksVenue())return;
+  if(!window.__xpaceMatrixVenueAllowed())return false;
+  if(isStarbucksVenue())return true;
   const url=new URL(location.href);url.searchParams.set('loc','alsea-sbux-021');
   url.searchParams.delete('play');url.searchParams.delete('autostart');
   url.searchParams.set('project','starbucks');url.searchParams.set('circuit','alsea_starbucks');
   history.replaceState(history.state,'',url);
   autoEnterVertical('cafeteria');
   window.dispatchEvent(new Event('xpaceos:project-change'));
+  return true;
 };
 window.__xtancoVisualState=()=>{
   const moving=document.body.classList.contains('xtanco-mudanza');
@@ -36579,7 +36588,7 @@ window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)instal
 <script type="module" src="scripts/scene-playlists.mjs?v=local-playlist-349"></script>
 <script type="module" src="scripts/context-playlist-ui.mjs?v=local-playlist-349"></script>
 <link rel="stylesheet" href="scripts/context-playlist.css?v=local-playlist-349">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=local-playlist-349"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=matrix-venue-guard-349"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <script type="module" src="scripts/dock-scroll-guard.mjs?v=hueco-360-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">

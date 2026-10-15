@@ -1,7 +1,7 @@
 {
   "name": "XpaceOS",
   "description": "MCP de XpaceOS, el sistema operativo del comercio físico y nexo operativo de la Galaxia Admira: conecta creación, gemelos, pantallas, emisión, audiencia y trabajo mediante identificadores compartidos y servidores MCP federados.",
-  "version": "v.15.10.2026.r9.13:56",
+  "version": "v.15.10.2026.r10.14:35",
   "endpoint": "https://mcp.admira.store/mcp",
   "transport": "streamable-http",
   "server": {
@@ -3469,6 +3469,10 @@
       "existing Matrix/Best device remotes",
       "Gran de Gràcia matching public floor-plan inventory"
     ],
-    "cli_write_command": null
+    "cli_write_command": null,
+    "matrix_venue_policy": {
+      "es": "Elegir Matrix respeta el establecimiento: si hay loc/venue explícito distinto del demo de Paseo de Gràcia, se usa Better sin cambiar proyecto ni destino. La entrada genérica sin local y el demo concreto conservan Matrix.",
+      "en": "Choosing Matrix preserves the venue: an explicit loc/venue outside the Paseo de Gràcia demo uses Better without changing project or destination. Generic entry without a venue and the concrete demo retain Matrix."
+    }
   }
 }

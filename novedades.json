@@ -718,5 +718,9 @@
   "v.15.10.2026.r9.13:56": [
     "Playlists por establecimiento y canal: Añadir desde Stock y quitar asociaciones desde el mando, con permisos y revisión.",
     "Lista vacía explícita, selección histórica conservada y fuentes locales aisladas; guardado distinto de recibo físico."
+  ],
+  "v.15.10.2026.r10.14:35": [
+    "Matrix conserva el establecimiento explícito: otros locales usan Better sin redirigirse a Paseo de Gràcia.",
+    "La playlist muestra su ámbito local y mantiene la entrada Matrix genérica y del demo real."
   ]
 }

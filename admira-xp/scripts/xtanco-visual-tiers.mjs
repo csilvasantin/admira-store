@@ -1,3 +1,8 @@
+export function matrixVenueAllowed(search=''){
+ const p=new URLSearchParams(search),loc=p.get('loc'),venue=p.get('venue'),project=p.get('project');
+ if(!loc&&!venue)return true;
+ return (!loc||loc==='alsea-sbux-021')&&(!venue||['alsea-sbux-021','demo-starbucks'].includes(venue))&&(!project||project==='starbucks');
+}
 export const TIER_STORAGE_KEY='xtanco_visual_tier_v2';
 export function requestedTier(search='',storage){
   const params=new URLSearchParams(search);
