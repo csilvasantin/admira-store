@@ -31,6 +31,8 @@
   // (Carlos, 15-oct-2026): con ?marca=starbucks la portada y las listas sólo enseñan lo de Starbucks.
   // No se guarda como cliente: sigue a la marca y /marca off vuelve a Admira (todo).
   function marcaManual() {
+    // ?marca= en la URL es la marca puesta a mano aunque marca-blanca.js aún no la haya guardado.
+    try { var u = new URLSearchParams(location.search).get('marca'); if (u != null) return slug(u); } catch (_) {}
     try { return sessionStorage.getItem('mb:manual') === '1' ? slug(sessionStorage.getItem('mb:marca')) : ''; } catch (_) { return ''; }
   }
   var porMarca = q == null && !(g && g.id);

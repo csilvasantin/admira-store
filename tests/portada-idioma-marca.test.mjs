@@ -14,6 +14,7 @@ const SHELL = leer('assets/xpace-shell.js');
 test('on the home page the ⌘ slot is the language pill, same class and box; other pages keep ⌘', () => {
   const es = shell.markup({}, { lang: 'es', portada: true }).bar, en = shell.markup({}, { lang: 'en', portada: true }).bar;
   assert.match(es, /<button type="button" class="quad-icon xs-lang-pill" id="pfLang"[^>]*aria-label="Cambiar a inglés"[^>]*>ENG<\/button>/);
+  assert.match(es, /id="pfLang"[^>]*data-admira-compact-control/, 'same compact zoom as ☰ and ▤ (suite/header.js)');
   assert.match(en, /id="pfLang"[^>]*aria-label="Switch to Spanish"[^>]*>ESP<\/button>/);
   for (const bar of [es, en]) {
     assert.doesNotMatch(bar, /id="pfExpert"|data-quad-toggle="expert"|⌘/, 'no Expert on the home page');
@@ -47,7 +48,7 @@ test('the home page does not load the shared Expert engine and the pill switches
 });
 
 // ── La marca puesta a mano hace de cliente (assets/xpace-cliente.js) ──
-async function cliente({ marca = null, manual = null, cliente = null } = {}) {
+async function cliente({ marca = null, manual = null, cliente = null, url = '' } = {}) {
   const store = new Map(Object.entries({ 'mb:marca': marca, 'mb:manual': manual }).filter(([, v]) => v != null));
   const oyentes = new Map();
   const document = {
@@ -58,7 +59,7 @@ async function cliente({ marca = null, manual = null, cliente = null } = {}) {
   };
   const mapeo = JSON.parse(leer('data/clientes-mapeo.json'));
   const ctx = {
-    document, location: { href: 'https://www.admira.store/' + (cliente ? '?cliente=' + cliente : ''), search: cliente ? '?cliente=' + cliente : '' },
+    document, location: { href: 'https://www.admira.store/' + (url || (cliente ? '?cliente=' + cliente : '')), search: url || (cliente ? '?cliente=' + cliente : '') },
     sessionStorage: { getItem: k => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, v), removeItem: k => store.delete(k) },
     history: { replaceState() {}, state: null }, URL, URLSearchParams, setTimeout, clearTimeout, Promise, JSON,
     CustomEvent: class { constructor(type, init) { this.type = type; this.detail = init && init.detail; } },
@@ -74,6 +75,8 @@ async function cliente({ marca = null, manual = null, cliente = null } = {}) {
 test('entering with the Starbucks brand by hand, lists show Starbucks; as Admira or with a project brand, everything', async () => {
   assert.equal((await cliente({ marca: 'starbucks', manual: '1' })).api.activo(), 'starbucks');
   assert.equal((await cliente({ marca: 'altadis', manual: '1' })).api.activo(), 'altadis');
+  assert.equal((await cliente({ url: '?marca=starbucks' })).api.activo(), 'starbucks', 'first visit: the URL brand counts before marca-blanca.js stores it');
+  assert.equal((await cliente({ url: '?marca=admira', marca: 'starbucks', manual: '1' })).api.activo(), null, '?marca=admira in the URL means everything');
   for (const c of [{}, { marca: 'starbucks' }, { marca: 'starbucks', manual: 'off' }, { marca: 'admira', manual: '1' }, { marca: 'starbucks', manual: '1', cliente: 'admira' }])
     assert.equal((await cliente(c)).api.activo(), null, JSON.stringify(c));
   const sb = (await cliente({ marca: 'starbucks', manual: '1' })).api;
@@ -89,7 +92,9 @@ test('the client follows the brand: /marca off brings everything back', async ()
   assert.equal(api.activo(), null);
 });
 
-test('the shell loads the client filter when a brand was set by hand', () => {
+test('the shell loads the client filter when a brand was set by hand, from the URL or later on', () => {
+  assert.match(SHELL, /id = new URLSearchParams\(root\.location\.search\)\.get\('marca'\) \|\| '';/);
+  assert.match(SHELL, /doc\.addEventListener\('admira:marca', \(\) => \{ if \(clientePedido\(\)\) cargarCliente\(\); \}\);/);
   assert.match(SHELL, /if \(!id\) \{ try \{ if \(session && session\.getItem\('mb:manual'\) === '1'\) id = session\.getItem\('mb:marca'\) \|\| ''; \} catch \(_\) \{\} \}/);
 });
 

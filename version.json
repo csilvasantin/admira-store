@@ -1,15 +1,14 @@
 {
-  "version": "v.15.10.2026.r15.20:30",
-  "deployedAt": "2026-10-15T18:30:32Z",
+  "version": "v.15.10.2026.r16.20:35",
+  "deployedAt": "2026-10-15T18:35:28Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "b7ba7b3556839c06bf5a5c39f4ba0da1ccb47ce1",
-  "gitShort": "b7ba7b3",
-  "gitFull": "b7ba7b3556839c06bf5a5c39f4ba0da1ccb47ce1",
+  "git": "d69069bd5f84b80b773b7e35fe84ac68888418a6",
+  "gitShort": "d69069b",
+  "gitFull": "d69069bd5f84b80b773b7e35fe84ac68888418a6",
   "dirty": false,
   "novedades": [
-    "Portada sin modo Experto: en el sitio de ⌘, la pastilla de idioma del mismo tamaño — ENG pasa a inglés y ESP vuelve al castellano. El recorrido de demo nativo (?ax_demo=store) conserva su motor.",
-    "Con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis) la portada y las listas de Xpacios sólo enseñan lo suyo; con Starbucks, el gemelo de referencia y los botones abren el Starbucks de Paseo de Gràcia. Como Admira, todo."
+    "Portada: la pastilla ENG/ESP mide lo mismo que ☰ y ▤. Con ?marca=starbucks la portada ya filtra en la primera visita (antes había que recargar)."
   ]
 }
