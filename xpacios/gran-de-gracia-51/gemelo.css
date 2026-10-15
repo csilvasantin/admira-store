@@ -74,3 +74,5 @@ button[aria-pressed="true"]{background:#13424a;border-color:var(--cian);color:#f
 }
 /* El sello del release (cargador común, abajo a la izquierda) no tapa la barra de vistas. */
 @media (min-width:901px){#vistas{left:236px;max-width:calc(100% - 252px)}}
+/* Interfaz limpia por defecto (assets/interfaz-limpia.js, Carlos 16-oct-2026): sólo la barra de arriba y el 3D; H o ☰ ▤ ⌘ la abren. */
+html.ui-limpia #gemelo :is(.ficha-xpacio,#hud,#vistas,#inventario,#detalle,#etiquetas){display:none!important}

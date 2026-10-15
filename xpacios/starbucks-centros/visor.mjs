@@ -2,7 +2,7 @@
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
 // Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { crearPanorama } from './panorama.mjs?v=sc-pano-3';
+import { crearPanorama } from './panorama.mjs?v=sc-pano-4';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-1';
@@ -38,6 +38,11 @@ function texturaPieza(p) {
   if (!t) {
     if (p.tipo === 'tpv') piezas.tpv = piezas.tpv || crearHiloTPV();
     if (p.tipo === 'ipad') piezas.ipad = piezas.ipad || crearColaIPad();
+    // Tinta electrónica: una imagen fija (la de Stock), sin repintar.
+    if (p.tipo === 'eink') {
+      t = new T.TextureLoader().setCrossOrigin('anonymous').load(p.imagen); t.colorSpace = T.SRGBColorSpace; t.userData.fija = true;
+      piezas.texturas.set(p.id, t); return t;
+    }
     const fuente = p.tipo === 'tpv' ? piezas.tpv : p.tipo === 'ipad' ? piezas.ipad : null;
     if (!fuente) return null;
     t = new T.CanvasTexture(fuente.lienzo); t.colorSpace = T.SRGBColorSpace; t.userData.fuente = fuente; piezas.texturas.set(p.id, t);
@@ -50,13 +55,14 @@ function pintarPiezas(now) {
   const repintar = now - piezas.ultima > 250; if (repintar) piezas.ultima = now;
   for (const p of lista) {
     const t = texturaPieza(p); if (!t) continue;
-    if (repintar) { t.userData.fuente.pintar(); t.needsUpdate = true; }
+    if (repintar && !t.userData.fija) { t.userData.fuente.pintar(); t.needsUpdate = true; }
     pano.pintarPantalla(p.id, t);
   }
 }
 async function tocarPieza(p) {
   if (p.tipo === 'tpv') { const s = await piezas.tpv.alternar(); aviso(s ? `Hilo musical · suena «${piezas.tpv.titulo}»` : 'Hilo musical en silencio'); }
   else if (p.tipo === 'ipad') { if (!piezas.ipad.abrir()) aviso('El gestor de colas no está disponible ahora.'); }
+  else if (p.tipo === 'eink') aviso(`${p.nombre} · ${p.titulo}`);
 }
 
 let combos = null; // los tres combos de la barra (más abajo)
@@ -536,6 +542,9 @@ montarVentanas($('#sc'), [
   { el: $('.pantallas'), id: 'pantallas', titulo: 'Pantallas' },
   { el: $('#reproductor'), id: 'reproductor', titulo: 'Reproducción' },
 ]);
+
+// Interfaz limpia por defecto (assets/interfaz-limpia.js): se dice una vez cómo abrir los paneles.
+if (globalThis.XpaceInterfaz && globalThis.XpaceInterfaz.oculta) setTimeout(() => { if (globalThis.XpaceInterfaz.oculta) aviso('Interfaz limpia · pulsa H o ☰ ▤ ⌘ arriba para ver los paneles'); }, 2500);
 
 try {
   CENTROS = (await json('centros.json')).centros;

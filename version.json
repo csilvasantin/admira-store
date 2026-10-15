@@ -1,14 +1,15 @@
 {
-  "version": "v.16.10.2026.r1.00:18",
-  "deployedAt": "2026-10-15T22:18:47Z",
+  "version": "v.16.10.2026.r2.00:32",
+  "deployedAt": "2026-10-15T22:32:17Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "7cfbca9d7ed62b0ad69a275178a9773bba918a51",
-  "gitShort": "7cfbca9",
-  "gitFull": "7cfbca9d7ed62b0ad69a275178a9773bba918a51",
+  "git": "49e9492d953183d25c10aaa376615477db1045ca",
+  "gitShort": "49e9492",
+  "gitFull": "49e9492d953183d25c10aaa376615477db1045ca",
   "dirty": false,
   "novedades": [
-    "Diagonal 634 en Matrix, clon de Paseo de Gràcia: el TPV enseña y hace sonar el hilo musical (toca para escuchar) y el iPad lleva la gestión de colas (toca para abrir el gestor)."
+    "Diagonal 634: las 4 pantallas de tinta electrónica de la zona de los cafés con las imágenes de «Súbele el brillo a tus días».",
+    "Visor de centros y Gran de Gràcia 51 con la interfaz limpia por defecto: H o ☰ ▤ ⌘ enseñan los paneles."
   ]
 }
