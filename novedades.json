@@ -1,5 +1,16 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "default": [
+    "Demo Creador todo: imagen y vídeo IA originales bajo petición.",
+    "Proceso visible con estados reales y recuperación sin repetir solicitudes.",
+    "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
+    "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
+  ],
+  "v.15.10.2026.r11.19:30": [
+    "Nuevo /xpacios/starbucks-centros/: Paseo de Gràcia 103 y Diagonal 634 en 3D y en Matrix, con sus playlists sonando de verdad y sincronizadas en las seis pantallas 2 + 1 + 3.",
+    "Paseo de Gràcia 103 con la campaña «Cada café tiene una historia» (mural de 24 s + pieza común de 8 s) o la playlist sincroIA leída en vivo del MCP; Diagonal 634 con su propia adaptación de contenido de marca.",
+    "Controles de reproducción, pausa, reinicio y siguiente pieza; ficha de cada pantalla con su playlist. Gran de Gràcia 51 abre su gemelo; la vinculación física de cada pantalla sigue pendiente."
+  ],
   "v.15.10.2026.r8.12:28": [
     "Nuevo /xpacios/altadis-18/: los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks, con su gemelo 3D desde los planos del Arquitecto.",
     "En cada espacio, el vídeo adaptado a ese formato: contenido de Altadis en los Xtanco y de Starbucks en las cafeterías; un solo vídeo por formato repartido por recortes, todas las pantallas sincronizadas; el cubo LED, en sus cuatro caras.",
@@ -346,12 +357,6 @@
     "Imagen, música, locución y vídeo con reproductor, Lanzar y Ver en Stock",
     "Nuevo Crear locución: se emite tres veces sólo al pulsar Emitir",
     "El sello de versión ya no tapa «Crear contenidos» con el menú inferior bajo"
-  ],
-  "default": [
-    "Demo Creador todo: imagen y vídeo IA originales bajo petición.",
-    "Proceso visible con estados reales y recuperación sin repetir solicitudes.",
-    "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
-    "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
   ],
   "v.07.10.2026.r11.08:07": [
     "Tótem: /totem kiosko (o el botón 🛒 Quiosco) pone el Quiosco de pedido de ainimation.studio en la pantalla vertical",
