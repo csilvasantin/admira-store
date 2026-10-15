@@ -215,3 +215,5 @@ dialog.matrix-ficha{position:fixed;inset:64px 16px auto auto;margin:0;z-index:au
 .matrix-tpv-listen:hover span,.matrix-tpv-listen:focus-visible span{opacity:1}
 .matrix-tpv-listen:focus-visible{outline:5px solid #fff;outline-offset:-7px}
 .device-layout-active .matrix-tpv-listen,.matrix-mapped-player.device-off .matrix-tpv-listen{display:none}
+
+.matrix-mapped-player:has([data-visual-mode="portrait-artwork"]) .matrix-tpv-listen span{top:10px;bottom:auto}

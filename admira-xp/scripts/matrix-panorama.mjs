@@ -1,5 +1,5 @@
-import {mountMusicListeningButton} from './music-listening.mjs?v=tpv-remote-20261015';
-import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=tpv-remote-20261015';
+import {mountMusicListeningButton} from './music-listening.mjs?v=tpv-portrait-20261015';
+import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=tpv-portrait-20261015';
 import {WATER_VIEW} from './pos-water.mjs?v=water-finish-3';
 import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3';
 import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=starbucks-defaults-1';
@@ -20,11 +20,11 @@ import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
 import {STARBUCKS_TPV_PLAYLIST,STARBUCKS_TPV_MAPPING,STARBUCKS_TPV_VIEW,withStarbucksTPV} from './starbucks-tpv.mjs?v=tpv-1';
 import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenSlice,screenNumber,screenGroup,getScreenNumbersVisible,setScreenNumbersVisible,subscribeScreenNumbers} from './screen-display.mjs?v=number-layout-1';
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
-import {starbucksMusic,STARBUCKS_SPEAKER,installSharedMusicOptions} from './starbucks-music.mjs?v=tpv-remote-20261015';
+import {starbucksMusic,STARBUCKS_SPEAKER,installSharedMusicOptions} from './starbucks-music.mjs?v=tpv-portrait-20261015';
 import {mountSpeakerLocutions} from './starbucks-locuciones.mjs?v=avatar-panel-1';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
-import {mountScreenLight,onAirGroups,focusTarget} from './screen-light.mjs?v=tpv-remote-20261015';
+import {mountScreenLight,onAirGroups,focusTarget} from './screen-light.mjs?v=tpv-portrait-20261015';
 
 export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}={}){
  const copy=interfaceTranslator(Object.values(ANNOUNCEMENT_QUALITIES).map(q=>[q.label.es,q.label.en])),t=copy.t;

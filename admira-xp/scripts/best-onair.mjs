@@ -1,9 +1,9 @@
-import {mountMusicRemote} from './music-remote.mjs?v=tpv-remote-20261015';
+import {mountMusicRemote} from './music-remote.mjs?v=tpv-portrait-20261015';
 // Fichas «En emisión» de Best · Hiperreal (Neo, 13-oct-2026). Al pasar por una pantalla de la sala cuenta qué emite,
 // de dónde sale (vista previa, Good, canal por etiqueta o parrilla de la casa) y con qué etiqueta se le dirige
 // contenido. /emision las deja fijas y /emision luz enciende o apaga la luz que las pantallas echan sobre la sala.
 // Sólo lee: no cambia players, pines ni vistas previas. Guía: admira-xp/docs/hiperreal-vivo.md
-import {placeCards,clock} from './screen-light.mjs?v=tpv-remote-20261015';
+import {placeCards,clock} from './screen-light.mjs?v=tpv-portrait-20261015';
 
 export const BEST_SCREENS_KEY='xpaceos.best.screens.v1';
 export const IMAGE_SECONDS=30;

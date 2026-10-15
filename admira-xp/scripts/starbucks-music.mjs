@@ -1,5 +1,5 @@
-import {installMusicCanvasGesture} from './music-listening.mjs?v=tpv-remote-20261015';
-import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=tpv-remote-20261015';
+import {installMusicCanvasGesture} from './music-listening.mjs?v=tpv-portrait-20261015';
+import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=tpv-portrait-20261015';
 import {STARBUCKS_PUBLISHED_TRACKS} from './starbucks-playlist.mjs?v=devices-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export const STARBUCKS_FEED=`https://api.admira.store/hilomusical/next?store=${STARBUCKS_STORE}&since=0`;
@@ -16,7 +16,7 @@ export function musicTracks(value){
       const url=new URL(item.url);
       if(url.protocol!=='https:'||url.username||url.password||seen.has(url.href))return [];
       seen.add(url.href);
-      return [{url:url.href,title:String(item.title||'Starbucks · Alsea').slice(0,160),...Object.fromEntries(['id','stockId','kind','cover','visualUrl','seconds'].filter(k=>item[k]!==undefined).map(k=>[k,item[k]]))}];
+      return [{url:url.href,title:String(item.title||'Starbucks · Alsea').slice(0,160),...Object.fromEntries(['id','stockId','kind','cover','visualUrl','seconds','width','height'].filter(k=>item[k]!==undefined).map(k=>[k,item[k]]))}];
     }catch{return [];}
   }).slice(0,100);
 }

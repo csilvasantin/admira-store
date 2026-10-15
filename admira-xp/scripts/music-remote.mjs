@@ -1,4 +1,4 @@
-import {toggleMusicFromGesture} from './music-listening.mjs?v=tpv-remote-20261015';
+import {toggleMusicFromGesture} from './music-listening.mjs?v=tpv-portrait-20261015';
 // This controls only the twin's shared web clock. No commands go to the physical iPhone or admira.tv.
 export function mountMusicRemote(host,{music,win=globalThis,t=es=>es,blocked=()=>false,signal,onToggle=()=>{}}={}){
  const doc=host.ownerDocument,make=(tag,text)=>{const node=doc.createElement(tag);if(text)node.textContent=text;return node;};

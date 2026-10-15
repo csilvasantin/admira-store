@@ -1,4 +1,4 @@
-import {mountMusicRemote} from './music-remote.mjs?v=tpv-remote-20261015';
+import {mountMusicRemote} from './music-remote.mjs?v=tpv-portrait-20261015';
 // Pantallas vivas · Matrix (Neo, 13-oct-2026). Cada pantalla mapeada emite la luz de su contenido sobre la sala,
 // funde entre piezas y cuenta qué emite. Sólo lee los <video> y el estado de reproducción del gemelo:
 // no cambia playlists, relojes, mapeo ni estado MCP. Guía: admira-xp/docs/pantallas-vivas.md
