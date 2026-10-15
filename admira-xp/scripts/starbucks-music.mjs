@@ -1,4 +1,5 @@
-import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=shared-music-20261015';
+import {installMusicCanvasGesture} from './music-listening.mjs?v=tpv-listen-20261015';
+import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=tpv-listen-20261015';
 import {STARBUCKS_PUBLISHED_TRACKS} from './starbucks-playlist.mjs?v=devices-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export const STARBUCKS_FEED=`https://api.admira.store/hilomusical/next?store=${STARBUCKS_STORE}&since=0`;
@@ -110,8 +111,8 @@ export function createStarbucksMusic({audio,publishedTracks=[],fetchFeed=()=>fet
     toggle(){
       if(disposed)return;
       if(!tracks.length){void this.refresh();emit();return;}
-      if(started){audio.muted=!audio.muted;emit();return;}
-      const retry=!!error;failed.clear();started=true;error='';audio.muted=false;
+      if(started){if(!audio.muted&&!audio.paused){audio.muted=true;emit();return;}audio.muted=false;if(audio.paused)void play();emit();return;}
+      const retry=error==='media';failed.clear();started=true;error='';audio.muted=false;
       // Called synchronously by a real click so browsers can grant audio.
       if(retry||audio.src!==tracks[index].url)select(index,'start');
       void play();emit();
@@ -132,6 +133,7 @@ export function starbucksMusic(){
     window.XpaceStarbucksMusic=Object.freeze({getState:shared.state,subscribe:fn=>shared.subscribe(fn),next:()=>shared.next()});
     let oldBackground=null;shared.subscribe(state=>{const active=!!window.XpaceMatrixOptions||!!window.XpaceStarbucks?.active?.(),bg=document.getElementById('bgMusic');if(active&&bg){oldBackground??={muted:bg.muted,playing:!bg.paused};bg.muted=true;bg.pause();}else if(!active){if(!state.muted)shared.mute();if(bg&&oldBackground){const saved=oldBackground;oldBackground=null;bg.muted=saved.muted;if(saved.playing)Promise.resolve(bg.play()).catch(()=>{});}}window.dispatchEvent(new CustomEvent(STARBUCKS_MUSIC_EVENT,{detail:shared.state()}));});
     installSharedMusicOptions(window.XpaceOptionsPlayback,shared,()=>!!window.XpaceMatrixOptions||!!window.XpaceStarbucks?.active?.());
+    installMusicCanvasGesture({music:shared,win:window,isActive:()=>!!window.XpaceStarbucks?.active?.()});
     window.addEventListener('pagehide',()=>shared.mute());
   }
   return shared;

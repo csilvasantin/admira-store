@@ -78,3 +78,14 @@ test('physical music starts muted and Listen unmutes the same position without r
  const original={state:()=>({other:true}),groups:()=>[{id:'wall'}],control:()=>42};installSharedMusicOptions(original,music);assert.equal(original.state('music').tracks.length,7);assert.equal(original.state('music').readOnly,true);assert.equal(original.state('screens').other,true);assert.equal(original.control('dsNext'),42);
  original.control('musicNext');await tick();assert.equal(music.state().index,1);await original.play('music',tracks[4].url);assert.equal(music.state().index,4);assert.equal(original.state('music').tracks[4].active,true);assert.throws(()=>original.move('music','a','b'));assert.equal(music.getTracks().length,7);music.dispose();
 });
+
+test('a music gesture resumes a paused owner audibly without reloading or losing its position',async()=>{
+ const {audio,music}=setup();await music.refresh();music.startMuted();await tick();audio.currentTime=37;audio.pause();const loads=audio.loadCalls;
+ const target={groups(){},state(){},control(){}};installSharedMusicOptions(target,music);target.control('musicToggle');await tick();
+ assert.equal(audio.muted,false);assert.equal(audio.paused,false);assert.equal(audio.currentTime,37);assert.equal(audio.loadCalls,loads);
+ music.next();await tick();assert.equal(audio.muted,false);music.dispose();
+});
+test('a user retry after blocked autoplay preserves the current source and position',async()=>{
+ const {audio,music}=setup();await music.refresh();audio.reject=true;music.startMuted();await tick();audio.currentTime=19;const loads=audio.loadCalls;audio.reject=false;music.toggle();await tick();
+ assert.equal(audio.muted,false);assert.equal(audio.paused,false);assert.equal(audio.currentTime,19);assert.equal(audio.loadCalls,loads);music.dispose();
+});

@@ -697,5 +697,9 @@
   "v.15.10.2026.r3.11:07": [
     "Opciones: el aviso de playlist vacía desaparece al cargar las pistas compartidas del hilo musical.",
     "Los mensajes de Lanzar se conservan al actualizar la lista; el TPV y el iPad mantienen su programación."
+  ],
+  "v.15.10.2026.r5.11:32": [
+    "Starbucks: pulsa el TPV para escuchar o silenciar el mismo hilo musical del gemelo; también admite teclado en Matrix.",
+    "Los vídeos verticales llenan el TPV sin deformarse; los horizontales conservan su imagen completa. Continúan las siete piezas del iPhone y los dos vídeos del iPad con colas."
   ]
 }
