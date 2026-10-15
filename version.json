@@ -1,16 +1,15 @@
 {
-  "version": "v.15.10.2026.r5.11:21",
-  "deployedAt": "2026-10-15T09:21:43Z",
-  "deployer": "NeoMBP14",
+  "version": "v.15.10.2026.r5.11:32",
+  "deployedAt": "2026-10-15T11:32:00+02:00",
+  "deployer": "TrinityMBP14",
   "machine": "MacBookProNegro14",
-  "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "42a97327dde8fc38a04b16985592b1d78a412617",
-  "gitShort": "42a9732",
-  "gitFull": "42a97327dde8fc38a04b16985592b1d78a412617",
+  "signature": "TrinityMBP14 · MacBookProNegro14",
+  "git": "a1f45cde2c108b70bdb2ff260ada4ab4c3a78e16",
+  "gitShort": "a1f45cd",
+  "gitFull": "a1f45cde2c108b70bdb2ff260ada4ab4c3a78e16",
   "dirty": false,
   "novedades": [
-    "Nuevo /xpacios/altadis-18/: los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks, con su gemelo 3D desde los planos del Arquitecto.",
-    "En cada espacio, el vídeo adaptado a ese formato (stock.admira.store) se reproduce en sus pantallas: un solo vídeo por formato repartido por recortes, todas sincronizadas; el cubo LED, en sus cuatro caras.",
-    "Galería con Xtanco / Starbucks y ES / EN, ← → para recorrer los 18, recorrido automático y botones a admira.studio (crear y adaptar) y al Arquitecto (plano)."
+    "Starbucks: pulsa el TPV para escuchar o silenciar el mismo hilo musical del gemelo; también admite teclado en Matrix.",
+    "Los vídeos verticales llenan el TPV sin deformarse; los horizontales conservan su imagen completa. Continúan las siete piezas del iPhone y los dos vídeos del iPad con colas."
   ]
 }

@@ -10,3 +10,11 @@ test('a single muted visual follows the musical position, covers audio/error and
 test('black frames and the final two seconds show cover; nonblack frames recover without advancing music',()=>{const h=setup(),v=h.visual;h.black(true);v.sample();assert.equal(v.video.hidden,true);h.black(false);v.sample();assert.equal(v.video.hidden,false);h.set({position:198.5});assert.equal(v.video.hidden,true);h.set({position:190});v.sample();assert.equal(v.video.hidden,false);v.video.dispatchEvent(new Event('ended'));assert.equal(v.video.hidden,true);assert.equal(v.state().trackId,'one');v.dispose();});
 test('a stale play rejection cannot mark a later track failed',async()=>{const h=setup(),v=h.visual;v.video.pause();h.delay();v.sync();h.track({id:'three',url:'three',visualUrl:'https://example.com/three.mp4',kind:'video',title:'Three'});h.set({url:'three'});h.reject();await new Promise(setImmediate);v.sample();assert.equal(v.state().trackId,'three');assert.equal(v.state().cover,false);v.dispose();});
 test('editorial fallback is native SVG with safely escaped titles; black detector allows normal pictures',()=>{const svg=musicCoverSvg('<script> & title');assert.ok(svg.includes('&lt;script&gt;'));assert.ok(!svg.includes('foreignObject'));assert.equal(blackMusicFrame(new Uint8ClampedArray(64)),true);assert.equal(blackMusicFrame(new Uint8ClampedArray(64).fill(120)),false);});
+
+test('portrait videos fill proportionally in DOM and canvas; landscape stays complete',()=>{
+ const h=setup(),v=h.visual,drawn=[],ctx={save(){},restore(){},beginPath(){},rect(){},clip(){},fillRect(){},fillText(){},drawImage(...args){drawn.push(args);}};
+ v.video.videoWidth=1080;v.video.videoHeight=1920;v.sample();assert.equal(v.video.style.objectFit,'cover');v.draw(ctx,352,632);
+ const portrait=drawn.at(-1);assert.equal(portrait[0],v.video);assert.ok(portrait[3]>=352&&portrait[4]>=632);assert.equal(portrait[3]/portrait[4],1080/1920);
+ v.video.videoWidth=1280;v.video.videoHeight=720;v.sample();assert.equal(v.video.style.objectFit,'contain');v.draw(ctx,352,632);
+ const landscape=drawn.at(-1);assert.equal(landscape[3],352);assert.ok(Math.abs(landscape[4]-198)<1e-9);assert.equal(landscape[1],0);v.dispose();
+});
