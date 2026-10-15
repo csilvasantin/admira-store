@@ -1,13 +1,13 @@
 import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1';
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=hiperreal-r23-20261008-1';
+import {createLifeScene} from './life-scene.mjs?v=good-matrix-6161';
 import {createMatrixEnvironmentRoom} from '../../inventario/matrix-rendering.mjs?v=hiperreal-r23-20261008-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
 import {inventoryIdFor} from './furniture-asset.mjs?v=hiperreal-r23-20261008-1';
 import {furnitureBounds,isSolidFurniture} from './furniture-geometry.mjs?v=imported-space-1';
 import {mappedCameraFrame,fitBoxFrame} from './life-camera.mjs';
 import {appendPassageOverlay} from './passage-overlay.mjs?v=check-passage-1';
-import {physicalColliders} from './physical-colliders.mjs?v=actor-collision-20261004-1';
+import {physicalColliders} from './physical-colliders.mjs?v=good-matrix-6161';
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 /** Presentation only: no simulation, media owner or autonomous animation loop. */

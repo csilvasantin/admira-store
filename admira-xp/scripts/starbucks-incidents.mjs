@@ -21,6 +21,35 @@ export const YOKUP_INCIDENTS_URL='https://www.yokup.com/incidencias',YOKUP_TICKE
 export function incidentDetailUrl(id){const v=String(id||'').trim();return /^[A-Z]{3}-[A-Z0-9]{4,10}$/.test(v)?YOKUP_TICKET_URL+encodeURIComponent(v):YOKUP_INCIDENTS_URL;}
 // Por equipo: la incidencia activa más reciente; si no hay, la última cerrada hace menos de 10 min.
 export function pickIncidentPerDevice(incidents,now=Date.now()){const out=new Map();for(const inc of incidents||[]){const equipo=equipoFromResource(inc.resource);if(!equipo||inc.stage==='cancelada')continue;const closed=inc.stage==='cerrada';if(closed&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS)continue;const prev=out.get(equipo);const rank=i=>(i.stage==='cerrada'?0:1)*1e15+(i.created_at||0);if(!prev||rank(inc)>rank(prev))out.set(equipo,inc);}return out;}
+// Misma pantalla en Good y en Matrix. El número visible 1 es starbucks-wall-06.
+export function equipoForScreen(id){
+ if(id==='starbucks-ipad-01')return 'PDG103-IPAD-01';
+ if(id==='starbucks-tpv-01')return 'tpv';
+ const wall=/^starbucks-wall-0([1-6])$/.exec(String(id||''));
+ return wall?'pantalla-'+(7-Number(wall[1])):null;
+}
+// Abierta o en curso se ve. Cerrada o cancelada desaparece: Good no guarda otra lista.
+export function openIncidentForScreen(id,incidents,now=Date.now()){
+ const equipo=equipoForScreen(id);if(!equipo)return null;
+ const inc=pickIncidentPerDevice(incidents,now).get(equipo)||null;
+ return inc&&inc.stage!=='cerrada'&&inc.stage!=='cancelada'?inc:null;
+}
+// Una sola lectura para los dos modos: la bandeja de admira.app (api.yokup.com/incident/status).
+let feedIncidents=[],feedTimer=0,feedOn=false;
+const feedListeners=new Set();
+export function incidentFeedSnapshot(){return feedIncidents;}
+export function incidentForScreen(id,now=Date.now()){return openIncidentForScreen(id,feedIncidents,now);}
+function publishFeed(list){feedIncidents=list||[];for(const fn of feedListeners){try{fn(feedIncidents);}catch{}}}
+export async function refreshIncidentFeed(fetcher=fetch){const data=await fetchIncidentStatus([],fetcher);publishFeed(data.incidents||[]);return data;}
+export function ensureIncidentFeed(fetcher=fetch){
+ if(feedOn)return;
+ feedOn=true;
+ const loop=async()=>{try{await refreshIncidentFeed(fetcher);}catch{}
+  const hidden=typeof document!=='undefined'&&document.hidden;
+  feedTimer=setTimeout(loop,hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);};
+ loop();
+}
+export function onIncidentFeed(fn){feedListeners.add(fn);ensureIncidentFeed();fn(feedIncidents);return()=>feedListeners.delete(fn);}
 const clock=ms=>{const s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0');};
 export function chipModel(inc,now=Date.now(),lang='es'){const t=(es,en)=>lang==='en'?en:es,sla=inc.sla||{},stageText={abierta:t('ABIERTA','OPEN'),en_curso:t('EN CURSO','IN PROGRESS'),recuperada:t('RECUPERADA','RECOVERED'),cerrada:t('CERRADA','CLOSED')}[inc.stage]||inc.stage.toUpperCase(),prio={urgente:t('URGENTE','URGENT'),alta:t('ALTA','HIGH'),normal:'NORMAL',baja:t('BAJA','LOW')}[inc.priority]||'';
  const lines=[inc.id,stageText+(prio?' · '+prio:''),t('Técnico: ','Technician: ')+(inc.assignee||'—')];let tone=inc.stage==='cerrada'?'ok':inc.stage==='abierta'?'alert':'warn';
@@ -97,8 +126,11 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
   const shape=model.lines.map(l=>l.replace(/\d/g,'0')).join('\n');if(chip.dataset.fitShape!==shape&&fitChip(chip))chip.dataset.fitShape=shape;
  }
  for(const [id,inc] of resumes)resumeClosed(id,inc);}
- async function poll(){clearTimeout(pollTimer);if(abort.signal.aborted)return;try{const data=await fetchIncidentStatus([...tracked.keys()],fetcher);statusData=data.incidents||[];if(!panel.hidden&&!busy)refresh();const now=Date.now();for(const inc of statusData)if(inc.stage==='cerrada'&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS&&tracked.delete(inc.id))try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}paint();}catch{}pollTimer=setTimeout(poll,document.hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);}
- tickTimer=setInterval(()=>{if(statusData.length)paint();},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll();},opts);abort.signal.addEventListener('abort',()=>{clearTimeout(pollTimer);clearInterval(tickTimer);for(const d of devices){nodeFor(d.id)?.querySelector(':scope>.matrix-incident-chip')?.remove();nodeFor(d.id)?.querySelector(':scope>.matrix-incident-quickclose')?.remove();}});poll();
+ async function poll(){clearTimeout(pollTimer);if(abort.signal.aborted)return;try{const data=await refreshIncidentFeed(fetcher);statusData=data.incidents||[];if(!panel.hidden&&!busy)refresh();const now=Date.now();for(const inc of statusData)if(inc.stage==='cerrada'&&now-(inc.resolved_at||0)>CLOSED_VISIBLE_MS&&tracked.delete(inc.id))try{localStorage.setItem('xpaceos.starbucks.tickets.v1',JSON.stringify(Object.fromEntries(tracked)));}catch{}paint();}catch{}pollTimer=setTimeout(poll,document.hidden?STATUS_POLL_MS*4:STATUS_POLL_MS);}
+ tickTimer=setInterval(()=>{if(statusData.length)paint();},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll();},opts);abort.signal.addEventListener('abort',()=>{clearTimeout(pollTimer);clearInterval(tickTimer);for(const d of devices){nodeFor(d.id)?.querySelector(':scope>.matrix-incident-chip')?.remove();nodeFor(d.id)?.querySelector(':scope>.matrix-incident-quickclose')?.remove();}});
+ const stopShared=onIncidentFeed(list=>{if(abort.signal.aborted)return;statusData=list;if(!panel.hidden&&!busy)refresh();paint();});
+ abort.signal.addEventListener('abort',stopShared);
+ poll();
  const stopLanguage=copy.observe(panel);
  // ── Demo guiada desde la CLI del modo experto (/crear incidencia · /cerrar incidencia, Carlos 7-oct-2026) ──
  // Todo se ve: el panel se abre, el motivo se escribe letra a letra, se pulsa «Abrir ticket»; al cerrar se pulsa

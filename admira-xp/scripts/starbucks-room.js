@@ -117,6 +117,22 @@
   }
   // Canvas follows the existing Good projection and pixel grid; no image backdrop.
   const screenId=device=>device==='ipad'?'starbucks-ipad-01':device==='pos'?'starbucks-tpv-01':'starbucks-wall-0'+(7-device);
+  // Good es el reflejo en 8 bits: la pantalla en incidencia se pinta encima del mismo cuadrilátero.
+  function paintGoodIncident(ctx,q,inc,cw,ch){
+    const lines=(root.XpaceIncidentFeed?.lines?.(inc))||[inc.id,String(inc.stage||'').toUpperCase(),inc.assignee||''];
+    ctx.save();ctx.globalAlpha=1;
+    ctx.transform((q[1][0]-q[0][0])/cw,(q[1][1]-q[0][1])/cw,(q[3][0]-q[0][0])/ch,(q[3][1]-q[0][1])/ch,q[0][0],q[0][1]);
+    ctx.fillStyle='#160208';ctx.fillRect(0,0,cw,ch);
+    ctx.strokeStyle='#ff2a3a';ctx.lineWidth=28;ctx.strokeRect(18,18,cw-36,ch-36);
+    ctx.fillStyle='#ffd2d6';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 46px ui-monospace,monospace';
+    lines.slice(0,5).forEach((line,i)=>ctx.fillText(String(line),cw/2,ch*(0.22+i*0.12),cw-70));
+    ctx.restore();
+    ctx.save();ctx.globalAlpha=1;ctx.beginPath();q.forEach((v,i)=>i?ctx.lineTo(v[0],v[1]):ctx.moveTo(v[0],v[1]));ctx.closePath();ctx.strokeStyle='#ff2233';ctx.lineWidth=3;ctx.stroke();
+    const x=q.reduce((s,v)=>s+v[0],0)/4,y=q.reduce((s,v)=>s+v[1],0)/4,stage=String(lines[1]||'ABIERTA').split(' · ')[0],label=inc.id+' · '+stage;
+    ctx.font='bold 12px ui-monospace,monospace';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    const tw=ctx.measureText(label).width+12;ctx.fillStyle='#2a0006';ctx.fillRect(x-tw/2,y-16,tw,16);ctx.fillStyle='#ff8b93';ctx.fillText(label,x,y-4);
+    ctx.restore();
+  }
   const screenQuads={};let dropTarget=null;
   let cachedKey=null,cachedGroups=null;
   function draw(ctx,iso,project,items,actors=[],moving=false){
@@ -138,7 +154,9 @@
       }else{poly([b,k,f,c],shade(color,.70));poly([e,c,f,j],shade(color,.88));poly([a,b,c,e],color);}
       if(v.text){ctx.save();ctx.transform((c[0]-e[0])/w,(c[1]-e[1])/w,0,height,e[0],e[1]);ctx.fillStyle='#f5eed9';ctx.font=`bold ${h*.72}px monospace`;ctx.textAlign='center';ctx.fillText(v.text,w/2,h*.78,w*.93);ctx.restore();}
     }for(const raw of g.parts.filter(part=>part.device)){const v=transformPart(raw,g.item),id=screenId(v.device),{x,y,z,w,h,d}=v,q=[p(x,y+h,z+d+.002),p(x+w,y+h,z+d+.002),p(x+w,y,z+d+.002),p(x,y,z+d+.002)];screenQuads[id]=q;
-      if(root.XpaceScreenMedia?.get(id)){const cw=v.device==='ipad'?1024:512,ch=768;ctx.save();ctx.transform((q[1][0]-q[0][0])/cw,(q[1][1]-q[0][1])/cw,(q[3][0]-q[0][0])/ch,(q[3][1]-q[0][1])/ch,q[0][0],q[0][1]);root.XpaceScreenMedia.draw(ctx,cw,ch,id);ctx.restore();}
+      const inc=root.XpaceIncidentFeed?.forScreen?.(id)||null;
+      if(inc)paintGoodIncident(ctx,q,inc,v.device==='ipad'?1024:512,768);
+      else if(root.XpaceScreenMedia?.get(id)){const cw=v.device==='ipad'?1024:512,ch=768;ctx.save();ctx.transform((q[1][0]-q[0][0])/cw,(q[1][1]-q[0][1])/cw,(q[3][0]-q[0][0])/ch,(q[3][1]-q[0][1])/ch,q[0][0],q[0][1]);root.XpaceScreenMedia.draw(ctx,cw,ch,id);ctx.restore();}
       if(dropTarget===id){ctx.save();ctx.globalAlpha=1;ctx.strokeStyle='#78f3ff';ctx.lineWidth=3;ctx.beginPath();q.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();ctx.stroke();ctx.restore();}
     }}ctx.globalAlpha=1;
   }

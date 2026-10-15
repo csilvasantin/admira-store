@@ -1,5 +1,5 @@
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=hiperreal-r23-20261008-1';
-import {createBestPeopleLayer} from './best-live-people.mjs?v=actor-collision-20261004-1';
+import {createBestPeopleLayer} from './best-live-people.mjs?v=good-matrix-6161';
 import {mountMatrixFurniture} from './matrix-furniture.mjs?v=hiperreal-vivo-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountFurnitureLift} from './furniture-lift.mjs?v=hiperreal-vivo-1';

@@ -24,6 +24,19 @@ test('venue profile survives the shared snapshot and creates Starbucks, not toba
  }
  assert.equal(JSON.stringify(layout),original);
 });
+test('Good paints the open admira.app incident on screen 1 and drops it once closed',()=>{
+ const texts=[];
+ const ctx={save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){},stroke(){},fillRect(){},strokeRect(){},transform(){},measureText:()=>({width:80}),fillText:(text)=>texts.push(String(text)),set fillStyle(v){void v;},set strokeStyle(v){void v;},set lineWidth(v){void v;},set globalAlpha(v){void v;},set font(v){void v;},set textAlign(v){void v;},set textBaseline(v){void v;}};
+ const project=(x,z)=>({x:x*40,y:z*20});
+ const iso={tileW:80,tileH:28};
+ globalThis.XpaceIncidentFeed={forScreen:id=>id==='starbucks-wall-06'?{id:'INC-BEH7V5',stage:'abierta',assignee:'Laura R.'}:null,lines:()=>['INC-BEH7V5','ABIERTA · ALTA','Técnico: Laura R.','fuera de SLA']};
+ room.draw(ctx,iso,project,room.layout(),[],false);
+ assert.ok(texts.includes('INC-BEH7V5'));assert.ok(texts.includes('INC-BEH7V5 · ABIERTA'));
+ texts.length=0;
+ globalThis.XpaceIncidentFeed={forScreen:()=>null,lines:()=>[]};
+ room.draw(ctx,iso,project,room.layout(),[],false);
+ assert.equal(texts.includes('INC-BEH7V5'),false);
+});
 test('moving mode removes equipment but retains the architectural shell',()=>{
  const groups=room.build(room.layout(),{moving:true});assert.deepEqual(groups.map(x=>x.id),['architecture']);assert.equal(groups.flatMap(x=>x.parts).filter(x=>x.device).length,0);
 });
