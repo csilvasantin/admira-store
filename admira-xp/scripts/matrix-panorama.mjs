@@ -1,5 +1,5 @@
-import {mountMusicListeningButton} from './music-listening.mjs?v=tpv-listen-20261015';
-import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=tpv-listen-20261015';
+import {mountMusicListeningButton} from './music-listening.mjs?v=tpv-portrait-20261015';
+import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=tpv-portrait-20261015';
 import {WATER_VIEW} from './pos-water.mjs?v=water-finish-3';
 import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3';
 import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=starbucks-defaults-1';
@@ -20,11 +20,11 @@ import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
 import {STARBUCKS_TPV_PLAYLIST,STARBUCKS_TPV_MAPPING,STARBUCKS_TPV_VIEW,withStarbucksTPV} from './starbucks-tpv.mjs?v=tpv-1';
 import {getScreenDisplayMode,setScreenDisplayMode,subscribeScreenDisplay,screenSlice,screenNumber,screenGroup,getScreenNumbersVisible,setScreenNumbersVisible,subscribeScreenNumbers} from './screen-display.mjs?v=number-layout-1';
 import {STARBUCKS_SCREEN_PLAYLIST,STARBUCKS_WALL_MAPPING,STARBUCKS_WALL_VIEW} from './starbucks-screens.mjs?v=number-layout-1';
-import {starbucksMusic,STARBUCKS_SPEAKER,installSharedMusicOptions} from './starbucks-music.mjs?v=tpv-listen-20261015';
+import {starbucksMusic,STARBUCKS_SPEAKER,installSharedMusicOptions} from './starbucks-music.mjs?v=tpv-portrait-20261015';
 import {mountSpeakerLocutions} from './starbucks-locuciones.mjs?v=avatar-panel-1';
 import {MATRIX_CAPTURE as CAPTURE,MAPPING_KEY,validateMapping,previewURL,quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
-import {mountScreenLight,onAirGroups,focusTarget} from './screen-light.mjs?v=pantallas-vivas-1';
+import {mountScreenLight,onAirGroups,focusTarget} from './screen-light.mjs?v=tpv-portrait-20261015';
 
 export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}={}){
  const copy=interfaceTranslator(Object.values(ANNOUNCEMENT_QUALITIES).map(q=>[q.label.es,q.label.en])),t=copy.t;
@@ -139,7 +139,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  // Pantallas vivas (13-oct-2026): luz del contenido sobre la sala, fundido entre piezas y ficha «En emisión». Sólo lectura.
  // Qué capa tapa la pieza programada en una pantalla: incidencia, cesta del TPV, reacción de una regla o el gestor de colas del iPad.
  function screenOverlay(id){const node=nodes.get(id);if(!node||incidents.off.has(id))return null;const chip=node.querySelector('.matrix-incident-chip');if(chip)return {type:'incident',title:chip.querySelector('strong')?.textContent.trim()||t('Incidencia abierta','Open incident')};if(node.querySelector('.matrix-pos-checkout'))return {type:'app',title:t('Cesta de la compra','Shopping basket')};const reaction=node.querySelector('.retail-reaction-media');if(reaction)return {type:'reaction',title:reaction.alt||reaction.getAttribute('alt')||t('Contenido de la regla','Rule content')};if(node.classList.contains('ipad-cola-on'))return {type:'app',title:t('Gestor de colas','Queue manager')};return null;}
- const screenLight=mountScreenLight({surface,layer,nodes,previews,t,buttons:[...root.querySelectorAll('[data-screen-light]')],busy:()=>!!marking||getScreenNumbersVisible(),
+ const screenLight=mountScreenLight({surface,layer,nodes,previews,t,musicControl:music,musicBlocked:()=>!!incidents?.visible||!!incidents?.off.has(tpvId)||!!screenOverlay(tpvId),buttons:[...root.querySelectorAll('[data-screen-light]')],busy:()=>!!marking||getScreenNumbersVisible(),
   groups:()=>onAirGroups({buckets:[...runtime.nowPlaying(DEVICE_IDS),...(!incidents.off.has(tpvId)?[{playlistId:'physical-music',deviceIds:[tpvId],trackId:musicVisual.state().trackId,url:music.state().url,playing:music.state().playing,index:music.state().index,count:music.getTracks().length}]:[])],playlist:playlistValue,preview:id=>signagePreviews.get(id)||previewTracks.get(id),number:screenNumber,overlay:screenOverlay,off:DEVICE_IDS.filter(id=>nodes.has(id)&&incidents.off.has(id)),ia:demoMode==='ia'?{ids:[...wallIds].filter(id=>nodes.has(id)),playing:!!iaPlayback?.state().playing,count:iaTracks.length}:null,t}),
   music:()=>{const state=music.state();return state.tracks?{title:state.title,count:state.tracks,state:!state.started?'idle':state.suppressed?'suppressed':state.muted?'muted':'live'}:null;},
   focus:ids=>{const to=focusTarget(model.players.filter(p=>ids.includes(p.id)).flatMap(p=>p.corners),surface.clientWidth/Math.max(1,surface.clientHeight));return to?lookAt(to,{ms:900}):Promise.resolve(false);},

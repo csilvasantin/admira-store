@@ -1,6 +1,6 @@
 {
-  "version": "v.15.10.2026.r5.11:32",
-  "deployedAt": "2026-10-15T11:32:00+02:00",
+  "version": "v.15.10.2026.r7.12:25",
+  "deployedAt": "2026-10-15T12:25:00+02:00",
   "deployer": "TrinityMBP14",
   "machine": "MacBookProNegro14",
   "signature": "TrinityMBP14 · MacBookProNegro14",
@@ -9,7 +9,7 @@
   "gitFull": "a1f45cde2c108b70bdb2ff260ada4ab4c3a78e16",
   "dirty": false,
   "novedades": [
-    "Starbucks: pulsa el TPV para escuchar o silenciar el mismo hilo musical del gemelo; también admite teclado en Matrix.",
-    "Los vídeos verticales llenan el TPV sin deformarse; los horizontales conservan su imagen completa. Continúan las siete piezas del iPhone y los dos vídeos del iPad con colas."
+    "Starbucks: el TPV presenta una sola imagen vertical a pantalla completa; las pistas horizontales o cuadradas usan su portada con recorte proporcional y título superpuesto, manteniendo el audio original.",
+    "Sólo un vídeo confirmado vertical aparece en pantalla; mientras se conoce la orientación permanece la carátula. Nyla y Bad Times quedan sin ventanas horizontales, con el mando y las siete pistas intactos."
   ]
 }

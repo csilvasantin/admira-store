@@ -1,10 +1,11 @@
+import {starbucksMusic} from './starbucks-music.mjs?v=tpv-portrait-20261015';
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=hiperreal-r23-20261008-1';
 import {createBestPeopleLayer} from './best-live-people.mjs?v=good-matrix-6161';
 import {mountMatrixFurniture} from './matrix-furniture.mjs?v=hiperreal-vivo-1';
 import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountFurnitureLift} from './furniture-lift.mjs?v=hiperreal-vivo-1';
 import {createXtancoPlayers} from './xtanco-players.mjs?v=hiperreal-vivo-1';
-import {mountBestOnAir} from './best-onair.mjs?v=hiperreal-vivo-1';
+import {mountBestOnAir} from './best-onair.mjs?v=tpv-portrait-20261015';
 import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
@@ -99,7 +100,7 @@ export function openBestView(options={}){
     catch{showError('No se pudieron cargar los visitantes de Best. Puedes cambiar de vista desde el menú avanzado o el CLI.');return;}
     // Lifting furniture and the on-air cards are presentation: neither ever blocks Best.
     try{const bridge=window.__xtancoFurnitureEditor;if(bridge?.place)lift=mountFurnitureLift({container,furniture,bridge});}catch{lift=null;}
-    try{onAir=mountBestOnAir({stage:container,furniture,players,web:id=>webScreen({id}),busy:()=>!!lift?.state().holding});}catch{onAir=null;}
+    try{onAir=mountBestOnAir({stage:container,furniture,players,musicControl:window.XpaceStarbucks?.active?.()?starbucksMusic():null,musicBlocked:()=>window.XpaceScreenMedia?.get?.('starbucks-tpv-01')?.kind!=='music-visual'||!!window.XpaceScenePlaylists?.state?.().off?.includes('starbucks-tpv-01'),web:id=>webScreen({id}),busy:()=>!!lift?.state().holding});}catch{onAir=null;}
     // A page on a screen is shown, not touched, in the room: a double click opens it at touch size (totem-kiosko.js).
     container.addEventListener('dblclick',event=>{
       if(dialog!==current||lift?.state().holding)return;

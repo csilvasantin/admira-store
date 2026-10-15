@@ -1,3 +1,4 @@
+import {mountMusicRemote} from './music-remote.mjs?v=tpv-portrait-20261015';
 // Pantallas vivas · Matrix (Neo, 13-oct-2026). Cada pantalla mapeada emite la luz de su contenido sobre la sala,
 // funde entre piezas y cuenta qué emite. Sólo lee los <video> y el estado de reproducción del gemelo:
 // no cambia playlists, relojes, mapeo ni estado MCP. Guía: admira-xp/docs/pantallas-vivas.md
@@ -112,7 +113,7 @@ export function placeCards(items,viewport,{gap=12,margin=8}={}){
 
 const STATE_COPY={live:['En emisión','On air'],paused:['En pausa','Paused'],preview:['Vista previa','Preview'],error:['Sin señal','No signal'],empty:['Sin contenido','No content'],off:['Apagada','Off'],incident:['Incidencia','Incident'],app:['App en pantalla','App on screen'],reaction:['Reacción','Reaction']};
 
-export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],music=()=>null,focus=()=>{},camera=null,busy=()=>false,buttons=[],t=es=>es,win=globalThis,storage}={}){
+export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],music=()=>null,musicControl=null,musicBlocked=()=>false,focus=()=>{},camera=null,busy=()=>false,buttons=[],t=es=>es,win=globalThis,storage}={}){
  const doc=surface.ownerDocument,store=storage===undefined?win.localStorage:storage,controls=new AbortController(),options={signal:controls.signal};
  const reduced=()=>!!win.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
  const el=(tag,name)=>{const node=doc.createElement(tag);node.className=name;return node;};
@@ -212,19 +213,22 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
  function renderCards(now){
   let list=[];try{list=groups()||[];}catch{list=[];}
   snapshot=list;
-  const quiet=busy(),hovered=list.find(g=>g.ids.includes(hover));
+  const quiet=busy(),focusId=doc.activeElement?.closest?.('[data-device-id]')?.dataset.deviceId,hovered=list.find(g=>g.ids.includes(hover)||g.ids.includes(focusId));
+  if(hovered?.kind==='tpv'){const c=card(hovered.key);c.linger=now+1800;}
   // Llegadas: la ficha aparece sola unos segundos cuando una pieza entra fuera del orden de la playlist.
   const next=new Map();
   for(const g of list)for(const id of g.ids){const before=seen.get(id);next.set(id,g);if(prefs.light&&!quiet&&isArrival(before,g))toast.set(g.key,now+4500);}
   seen=next;
   for(const [key,until] of toast)if(until<now||!list.some(g=>g.key===key))toast.delete(key);
-  const visible=quiet?[]:list.filter(g=>prefs.onAir||g===hovered||toast.has(g.key));
+  const visible=quiet?[]:list.filter(g=>prefs.onAir||g===hovered||toast.has(g.key)||cards.get(g.key)?.remote?.open||cards.get(g.key)?.node.matches?.(':hover,:focus-within')||cards.get(g.key)?.linger>now);
   const tune=prefs.onAir&&!quiet?music():null,near=!quiet&&pointer&&musicPoint&&Math.hypot(pointer.x-musicPoint.x,pointer.y-musicPoint.y)<34?music():null,sound=musicPoint?(tune||near):null;
   const items=[];
   for(const g of visible){
    const bounds=quadBounds(g.ids.map(id=>devices.get(id)?.quad));if(!bounds)continue;
    const c=card(g.key),p=['live','paused','preview'].includes(g.state)?progress(g,now):null;
    c.node.dataset.state=g.state;c.node.dataset.kind=g.kind;
+   if(g.kind==='tpv'&&g.playlistId==='physical-music'&&musicControl&&!c.remote){c.node.classList.add('has-music-remote');c.remote=mountMusicRemote(c.node,{music:musicControl,win,t,signal:controls.signal,blocked:()=>busy()||musicBlocked(),onToggle:()=>{c.size=null;lastCards=0;}});}
+   c.remote?.update();
    write(c,'state',t(...STATE_COPY[g.state]));write(c,'label',g.label);write(c,'title',g.title);
    write(c,'meta',[g.playlistTitle,g.total>0&&g.index>=0?(g.index+1)+'/'+g.total:g.playlistId==='sincroIA'?g.total+' '+t('piezas','clips'):'',g.stock].filter(Boolean).join(' · '));
    write(c,'time',p?.text||'',false);show(c,'progress',!!p);if(p)c.parts.bar.style.transform='scaleX('+p.ratio.toFixed(4)+')';
@@ -243,7 +247,7 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
   for(const [key,c] of cards){
    const p=placed.get(key);c.node.classList.toggle('is-visible',!!p);
    if(p){c.node.style.transform='translate('+Math.round(p.x)+'px,'+Math.round(p.y)+'px)';c.node.dataset.side=p.side;c.node.style.setProperty('--caret',Math.round(p.caret)+'px');}
-   else if(!list.some(g=>g.key===key)&&key!=='music'){c.node.remove();cards.delete(key);}
+   else if(!list.some(g=>g.key===key)&&key!=='music'){c.remote?.dispose();c.node.remove();cards.delete(key);}
   }
   const lit=new Set(quiet?[]:(hovered?.ids||[]));
   for(const d of devices.values())d.halo.classList.toggle('is-hover',lit.has(d.id));
@@ -284,7 +288,7 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
   anchor(name,point){if(name==='music')musicPoint=point||null;},
   state:()=>({...prefs,hover,focused,groups:snapshot.map(g=>({...g}))}),
   set(value={}){prefs=writeScreenLight(store,{...prefs,...value});apply();return {...prefs};},
-  dispose(){if(disposed)return;disposed=true;win.cancelAnimationFrame(frame);win.clearTimeout(touchTimer);controls.abort();for(const d of devices.values()){d.abort?.abort();win.clearTimeout(d.timer);d.freeze.remove();}devices.clear();cards.clear();posters.clear();haloLayer.remove();cardLayer.remove();surface.classList.remove('screen-light');}
+  dispose(){if(disposed)return;disposed=true;win.cancelAnimationFrame(frame);win.clearTimeout(touchTimer);controls.abort();for(const d of devices.values()){d.abort?.abort();win.clearTimeout(d.timer);d.freeze.remove();}devices.clear();for(const c of cards.values())c.remote?.dispose();cards.clear();posters.clear();haloLayer.remove();cardLayer.remove();surface.classList.remove('screen-light');}
  };
  apply();frame=win.requestAnimationFrame(tick);
  return api;

@@ -1,8 +1,9 @@
+import {mountMusicRemote} from './music-remote.mjs?v=tpv-portrait-20261015';
 // Fichas «En emisión» de Best · Hiperreal (Neo, 13-oct-2026). Al pasar por una pantalla de la sala cuenta qué emite,
 // de dónde sale (vista previa, Good, canal por etiqueta o parrilla de la casa) y con qué etiqueta se le dirige
 // contenido. /emision las deja fijas y /emision luz enciende o apaga la luz que las pantallas echan sobre la sala.
 // Sólo lee: no cambia players, pines ni vistas previas. Guía: admira-xp/docs/hiperreal-vivo.md
-import {placeCards,clock} from './screen-light.mjs?v=pantallas-vivas-1';
+import {placeCards,clock} from './screen-light.mjs?v=tpv-portrait-20261015';
 
 export const BEST_SCREENS_KEY='xpaceos.best.screens.v1';
 export const IMAGE_SECONDS=30;
@@ -29,7 +30,7 @@ export function describeScreen({name='',preview=null,web=null,info=null,lit=fals
  return {state:paused?'off':'empty',label,tag,title:paused?t('Players en pausa','Players paused'):t('Sin contenido','No content'),meta:paused?t('/emision escena on los enciende','/onair scene on turns them on'):'',next:'',media:null,image:true};
 }
 
-export function mountBestOnAir({stage,furniture,players=null,web=()=>null,media=()=>globalThis.XpaceScreenMedia,busy=()=>false,win=globalThis,storage,lang=()=>stage.ownerDocument.documentElement?.lang==='en'?'en':'es'}={}){
+export function mountBestOnAir({stage,furniture,players=null,musicControl=null,musicBlocked=()=>false,web=()=>null,media=()=>globalThis.XpaceScreenMedia,busy=()=>false,win=globalThis,storage,lang=()=>stage.ownerDocument.documentElement?.lang==='en'?'en':'es'}={}){
  if(!stage||!furniture)throw Error('Falta la escena o el mobiliario');
  const doc=stage.ownerDocument,store=storage===undefined?win.localStorage:storage,controls=new AbortController(),options={signal:controls.signal};
  const t=(es,en)=>lang()==='en'?en:es;
@@ -68,8 +69,11 @@ export function mountBestOnAir({stage,furniture,players=null,web=()=>null,media=
    const model={id,...describeScreen({name:screen.label,preview,web:page,info,lit:screen.lit,t})};
    const key=model.state+'|'+model.title;if(since.get(id)?.key!==key)since.set(id,{key,at:now});
    models.push(model);
-   if(quiet||!screen.rects.length||!(prefs.onAir||id===hover))continue;
+   if(id==='starbucks-tpv-01'&&id===hover){const c=card(id);c.linger=now+1800;}
+   if(quiet||!screen.rects.length||!(prefs.onAir||id===hover||cards.get(id)?.remote?.open||cards.get(id)?.node.matches?.(':hover,:focus-within')||cards.get(id)?.linger>now))continue;
    const c=card(id),p=progress(id,model,now);
+   if(id==='starbucks-tpv-01'&&musicControl&&!c.remote){c.node.classList.add('has-music-remote');c.remote=mountMusicRemote(c.node,{music:musicControl,win,t,signal:controls.signal,blocked:()=>busy()||musicBlocked(),onToggle:()=>{c.size=null;last=-Infinity;}});}
+   c.remote?.update();
    c.node.dataset.state=model.state==='rest'?'paused':model.state;c.node.dataset.kind='best';
    write(c,'state',t(...STATE_COPY[model.state]));write(c,'label',model.label);write(c,'title',model.title);write(c,'meta',model.meta);
    write(c,'time',p?.text||'',false);show(c,'progress',!!p);if(p)c.parts.bar.style.transform='scaleX('+p.ratio.toFixed(4)+')';
@@ -83,7 +87,7 @@ export function mountBestOnAir({stage,furniture,players=null,web=()=>null,media=
   for(const [key,c] of cards){
    const p=placed.get(key);c.node.classList.toggle('is-visible',!!p);
    if(p){c.node.style.transform='translate('+Math.round(p.x)+'px,'+Math.round(p.y)+'px)';c.node.dataset.side=p.side;c.node.style.setProperty('--caret',Math.round(p.caret)+'px');}
-   else if(!byId.has(key)){c.node.remove();cards.delete(key);}
+   else if(!byId.has(key)){c.remote?.dispose();c.node.remove();cards.delete(key);}
   }
  }
  function tick(now){
@@ -102,7 +106,7 @@ export function mountBestOnAir({stage,furniture,players=null,web=()=>null,media=
   light:()=>prefs.light,
   state:()=>({...prefs,hover,screens:snapshot.map(({media:_,...model})=>({...model}))}),
   set(value={}){prefs={onAir:value.onAir===undefined?prefs.onAir:value.onAir===true,light:value.light===undefined?prefs.light:value.light!==false};try{store?.setItem(BEST_SCREENS_KEY,JSON.stringify(prefs));}catch{}apply();return {...prefs};},
-  dispose(){if(disposed)return;disposed=true;win.cancelAnimationFrame(frame);win.clearTimeout(touchTimer);controls.abort();cards.clear();since.clear();layer.remove();stage.classList.remove('screens-dark');}
+  dispose(){if(disposed)return;disposed=true;win.cancelAnimationFrame(frame);win.clearTimeout(touchTimer);controls.abort();for(const c of cards.values())c.remote?.dispose();cards.clear();since.clear();layer.remove();stage.classList.remove('screens-dark');}
  };
  apply();frame=win.requestAnimationFrame(tick);
  return api;

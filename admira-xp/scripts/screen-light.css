@@ -46,3 +46,13 @@
 [data-screen-light][aria-pressed="true"]{background:#9dffcf!important;color:#032b28!important}
 @media(max-width:650px){.matrix-onair-card{min-width:150px;max-width:min(220px,calc(100% - 12px));padding:7px 9px;font-size:11px}.onair-title{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.matrix-halo-light,.matrix-halo-ring,.matrix-onair-card,.matrix-screen-freeze.is-fading,.onair-bar i{transition:none}.matrix-halo.is-pulse .matrix-halo-light,.matrix-onair-card[data-state=live] .onair-kicker i{animation:none}}
+
+.matrix-onair-card.has-music-remote{pointer-events:auto;max-width:min(320px,calc(100% - 16px));max-height:calc(100% - 16px);overflow:auto}
+.music-remote{margin-top:5px;border-top:1px solid #a2d9c34d;padding-top:6px;font:12px/1.4 system-ui,sans-serif;color:#eafff6;pointer-events:auto}
+.music-remote summary{cursor:pointer;font-size:10px;font-weight:750;letter-spacing:.04em;padding:5px 0}
+.music-remote-body{display:grid;gap:7px;padding-top:6px}
+.music-remote-body p{margin:0;white-space:normal;overflow-wrap:anywhere}
+.music-remote-body p:first-child{font-size:10px;color:#b5d1c7}
+.music-remote-controls{display:flex;gap:5px}.music-remote button,.music-remote select{font:inherit;min-height:30px;border:1px solid #8dcab18c;border-radius:6px;background:#12392e;color:#fff;padding:4px 7px}
+.music-remote select{width:100%;min-width:0;text-overflow:ellipsis}.music-remote-controls button{flex:1;padding:4px}.music-remote button:disabled{opacity:.45}
+.music-remote :focus-visible{outline:2px solid #fff;outline-offset:2px}
