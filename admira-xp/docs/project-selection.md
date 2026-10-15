@@ -4,6 +4,8 @@ ES: Barra superior → Xpacio → Proyecto y local → Conectar con AdmiraNext u
 
 EN: Top bar → Xpace → Project and venue → Connect with AdmiraNext uses central identity and shows only permitted commercial projects and venues. The registry and associations live in AdmiraNext D1; admira.app and XpaceOS are clients. Without a connection, four clearly identified public demo projects are available. A permitted project with no associated venue never opens an invented twin. Choose a venue first when several are available. Central management: https://www.admiranext.com/xpace/manage; permissions: https://www.admiranext.com/usuarios. Read access lasts 10 minutes in this tab; expiry or revocation requires reconnection. Quality, language and layout remain local. It grants no MCP writes or physical device control.
 
+Con la marca de un cliente puesta a mano (`?marca=starbucks`, `?marca=altadis`), el selector sólo ofrece los proyectos de esa marca; como Admira o sin marca, todos (ver `marca-blanca.md`). / With a client brand set by hand, only the projects of that brand are offered; as Admira or with no brand, all of them.
+
 ## Tutorial ES / EN
 
 1. Abre Barra superior → Xpacio → Proyecto y local / Open Top bar → Xpace → Project and venue.

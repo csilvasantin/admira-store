@@ -1,15 +1,15 @@
 {
-  "version": "v.15.10.2026.r12.19:51",
-  "deployedAt": "2026-10-15T17:51:49Z",
+  "version": "v.15.10.2026.r13.20:02",
+  "deployedAt": "2026-10-15T18:02:50Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "f48e26f1a1f566c0b8974cff4a2ef6eee0061a99",
-  "gitShort": "f48e26f",
-  "gitFull": "f48e26f1a1f566c0b8974cff4a2ef6eee0061a99",
+  "git": "2d43d8375686e2c2dd7852f4ca3a538736f33a7a",
+  "gitShort": "2d43d83",
+  "gitFull": "2d43d8375686e2c2dd7852f4ca3a538736f33a7a",
   "dirty": false,
   "novedades": [
-    "Starbucks · centros: al elegir local en «Proyecto y local» del gemelo Matrix se abre ese centro: Paseo de Gràcia 103, Diagonal 634 o Gran de Gràcia 51 (laboratorio).",
-    "Desde Paseo de Gràcia 103, enlace al gemelo Matrix completo; al cambiar de centro la dirección deja de arrastrar el local de origen."
+    "Proyecto y local: con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis o /marca) sólo se ofrecen sus proyectos: Starbucks → Starbucks; Altadis → Altadis y Estancos.",
+    "Como Admira, sin marca o con la marca que pone el propio proyecto al elegirlo se ofrecen todos; /marca off los vuelve a mostrar."
   ]
 }

@@ -6,6 +6,10 @@
     "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
     "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
   ],
+  "v.15.10.2026.r13.20:02": [
+    "Proyecto y local: con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis o /marca) sólo se ofrecen sus proyectos: Starbucks → Starbucks; Altadis → Altadis y Estancos.",
+    "Como Admira, sin marca o con la marca que pone el propio proyecto al elegirlo se ofrecen todos; /marca off los vuelve a mostrar."
+  ],
   "v.15.10.2026.r12.19:51": [
     "Starbucks · centros: al elegir local en «Proyecto y local» del gemelo Matrix se abre ese centro: Paseo de Gràcia 103, Diagonal 634 o Gran de Gràcia 51 (laboratorio).",
     "Desde Paseo de Gràcia 103, enlace al gemelo Matrix completo; al cambiar de centro la dirección deja de arrastrar el local de origen."
