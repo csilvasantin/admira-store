@@ -1,0 +1,25 @@
+/* La puerta del local en Google Maps (Carlos, 15-oct-2026). La calle ocupa la pantalla bajo la barra común;
+   la fachada del local es un enlace deformado sobre la foto (como .store-door en admira.tv). */
+:root{--verde:#00e293;--tinta:#e9f5ef;--suave:#a9c6b9;--fondo:#0b1411}
+html,body{margin:0;height:100%;background:var(--fondo);color:var(--tinta);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+#puerta{position:fixed;inset:var(--xs-bar-h,46px) 0 0 0;overflow:hidden}
+.calle{position:absolute;inset:0;background:#0b1411}
+.ficha{position:absolute;left:14px;bottom:14px;z-index:30;max-width:min(420px,calc(100% - 28px));box-sizing:border-box;padding:14px 16px;border:1px solid #1f4a3a;border-radius:12px;background:#06120ddd;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.eyebrow{margin:0 0 4px;color:var(--verde);font:700 10px/1.3 ui-monospace,Menlo,monospace;letter-spacing:.14em}
+.ficha h1{margin:0;font-size:20px;line-height:1.2}
+.direccion{margin:4px 0 0;color:var(--suave)}
+.pista{margin:8px 0 0}
+.botones{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0 0}
+.boton{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:9px;background:var(--verde);color:#00180f;font-weight:700;text-decoration:none}
+.enlace{color:#9ae3e8}
+.aviso{margin:10px 0 0;color:#ffd38a}
+.aviso[hidden]{display:none}
+/* La fachada pulsable: caja de 200×80 llevada a las cuatro esquinas de la foto. */
+.puerta-local{position:absolute;left:0;top:0;width:200px;height:80px;transform-origin:0 0;z-index:26;border-radius:8px;box-sizing:border-box;cursor:pointer;text-decoration:none}
+.puerta-local[hidden]{display:none}
+.puerta-local::before{content:"";position:absolute;inset:0;border:1px solid #bce9cd;border-radius:inherit;box-shadow:0 0 9px 3px #8adcb980,inset 0 0 7px #8adcb950;filter:blur(3px);opacity:.45;pointer-events:none;animation:brillo-puerta 3.2s ease-in-out infinite}
+.puerta-local:hover::before,.puerta-local:focus-visible::before{opacity:.95;animation:none}
+.puerta-local:focus-visible{outline:2px solid #d7f5e3;outline-offset:4px}
+@keyframes brillo-puerta{50%{opacity:.85}}
+@media (prefers-reduced-motion:reduce){.puerta-local::before{animation:none}}
+@media (max-width:600px){.ficha{left:8px;right:8px;bottom:8px;max-width:none}}

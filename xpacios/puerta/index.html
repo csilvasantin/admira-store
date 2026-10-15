@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La puerta del local · Google Maps · XpaceOS</title>
+<meta name="description" content="La calle del local en Google Maps, delante de su fachada: pulsa la puerta para entrar en su gemelo digital.">
+<meta name="theme-color" content="#0b1411">
+<link rel="canonical" href="https://www.admira.store/xpacios/puerta/">
+<link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
+<link rel="stylesheet" href="./puerta.css?v=puerta-1">
+<script>window.XPACE_SHELL={section:{es:'Xpacios · la puerta',en:'Xpaces · the door'},
+options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'/xpacios/starbucks-centros/',es:'Centros Starbucks',en:'Starbucks venues'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261015-centros-1">
+<script defer src="/assets/xpace-shell.js?v=20261015-centros-1"></script>
+<!-- La clave de navegador de Google Maps de la casa vive en un solo sitio (admira.tv); aquí no se copia. -->
+<script src="https://admira.tv/adcelerate/demo/js/maps-clave.js?v=puerta-1"></script>
+<script type="module" src="./puerta.mjs?v=puerta-1"></script>
+</head>
+<body>
+<header data-shell-replace><a href="/xpacios/" data-shell-slot="options">Todos los Xpacios</a></header>
+<main id="puerta" aria-label="La calle del local en Google Maps">
+  <div id="calle" class="calle" aria-label="Street View delante del local"></div>
+  <section class="ficha" aria-labelledby="titulo">
+    <p class="eyebrow" data-es="LA PUERTA · GOOGLE MAPS" data-en="THE DOOR · GOOGLE MAPS">LA PUERTA · GOOGLE MAPS</p>
+    <h1 id="titulo">—</h1>
+    <p id="direccion" class="direccion"></p>
+    <p id="pista" class="pista" data-es="Pulsa la puerta para entrar en su gemelo digital." data-en="Tap the door to enter its digital twin.">Pulsa la puerta para entrar en su gemelo digital.</p>
+    <p class="botones">
+      <a id="entrar" class="boton" href="/admira-xp/" data-es="Entrar →" data-en="Enter →">Entrar →</a>
+      <a id="maps" class="enlace" href="https://www.google.com/maps" target="_blank" rel="noopener" data-es="Abrir en Google Maps ↗" data-en="Open in Google Maps ↗">Abrir en Google Maps ↗</a>
+    </p>
+    <p id="aviso" class="aviso" role="status" hidden></p>
+  </section>
+</main>
+</body>
+</html>

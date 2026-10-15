@@ -5,6 +5,7 @@
 // (el visor de centros cambia de centro o de 3D a Matrix sin recargar); si no, se navega como en el gemelo.
 import { ProjectClient, venueUrl } from '../admira-xp/scripts/central-project-client.mjs?v=tres-combos-1';
 import { marcaQueLimita, proyectosPermitidos } from '../admira-xp/scripts/marca-proyectos.mjs?v=alsea-1';
+import { conPuerta } from './puertas.mjs?v=puerta-1';
 
 export const CALIDADES = [['good', 'Good'], ['better', 'Better'], ['best', 'Best'], ['matrix', 'Matrix']];
 const leer = k => { try { return sessionStorage.getItem(k); } catch { return null; } };
@@ -81,7 +82,7 @@ export function montarCombos({ proyecto, local, calidad, alCambiarCalidad, alCam
     if (locales.length) abrirLocal();
   }
 
-  function elegirLocal(id) {
+  async function elegirLocal(id) {
     const pid = proyectoActual(), p = catalog.projects.find(x => x.id === pid), v = catalog.venues.find(x => x.id === id && x.project_id === pid);
     if (!p || !v) return;
     let href;
@@ -90,7 +91,8 @@ export function montarCombos({ proyecto, local, calidad, alCambiarCalidad, alCam
     if (typeof alCambiarLocal === 'function' && alCambiarLocal(v, href) === true) { pintar(); return; }
     aplicarMarca(pid);
     try { window.dispatchEvent(new CustomEvent('xpaceos:project-change', { detail: { id: pid } })); } catch { /* nada */ }
-    location.assign(href);
+    // Un local con puerta de Google Maps pasa primero por su calle (assets/puertas.mjs).
+    location.assign(await conPuerta(v, href));
   }
 
   function elegirCalidad(q) {

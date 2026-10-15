@@ -86,3 +86,7 @@ EN: Without signing in, open Top bar → Xpace and select Cafebrería and check 
 ES: El desplegable conserva sus opciones mientras eliges: la comprobación de sesión cada segundo no reconstruye el menú si nada cambia. La caducidad del acceso sigue retirando los proyectos autorizados. Abre Proyecto, elige Cafebrería y confirma la opción; puedes dejar el menú abierto antes de confirmar.
 
 EN: The dropdown keeps its options while you choose: the session check every second does not rebuild the menu when nothing changes. Access expiry still removes authorized projects. Open Project, choose Cafebrería and confirm the option; you can leave the menu open before confirming.
+
+ES: Un local con puerta de Google Maps (de momento Starbucks Passeig de Gràcia 103) pasa primero por su calle en Street View (/xpacios/puerta/): pulsa la fachada para entrar en su gemelo con la calidad elegida.
+
+EN: A venue with a Google Maps door (for now Starbucks Passeig de Gràcia 103) first opens its street in Street View (/xpacios/puerta/): tap the shop front to enter its twin at the chosen quality.
