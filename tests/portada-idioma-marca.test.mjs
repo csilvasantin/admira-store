@@ -81,7 +81,15 @@ test('entering with the Starbucks brand by hand, lists show Starbucks; as Admira
     assert.equal((await cliente(c)).api.activo(), null, JSON.stringify(c));
   const sb = (await cliente({ marca: 'starbucks', manual: '1' })).api;
   const altadis = { id: 'a1', name: 'Estanco Altadis Gràcia', kind: 'Altadis · estanco' }, starbucks = { id: 's1', name: 'Starbucks Paseo de Gracia', kind: 'Starbucks · café' }, generico = { id: 'g1', name: 'Xtanco Barcelona', kind: 'Xtanco' };
-  assert.deepEqual(sb.filtrar([altadis, starbucks, generico]).map(x => x.id), ['s1', 'g1'], 'another client hidden; generic Admira content stays');
+  assert.deepEqual(sb.filtrar([altadis, starbucks, generico]).map(x => x.id), ['s1'], 'with a brand only its own: no other client, no generic');
+  assert.equal(sb.estricto(), true);
+});
+
+test('?cliente= (Pixeria) keeps its rule: the client plus generic Admira content', async () => {
+  const px = (await cliente({ url: '?cliente=starbucks' })).api;
+  const altadis = { id: 'a1', name: 'Estanco Altadis', kind: 'Altadis' }, starbucks = { id: 's1', name: 'Starbucks Diagonal', kind: 'Starbucks' }, generico = { id: 'g1', name: 'Xtanco', kind: 'Xtanco' };
+  assert.deepEqual(px.filtrar([altadis, starbucks, generico]).map(x => x.id), ['s1', 'g1']);
+  assert.equal(px.estricto(), false);
 });
 
 test('the client follows the brand: /marca off brings everything back', async () => {
@@ -102,7 +110,7 @@ test('the home reference twin and its links follow the client: Starbucks opens S
   const portada = leer('index.html');
   assert.match(portada, /starbucks: \{ url: '\/admira-xp\/\?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks&from=portada&visual=hiperreal'/);
   assert.match(portada, /function prTwinUrl\(id\)\{ const ref = !id && prReferencia\(\); if \(ref\) return ref\.url;/);
-  assert.match(portada, /if \(typeof prEnlacesReferencia === 'function'\) prEnlacesReferencia\(\);\n\}\);/, 'recomputed when the client changes');
+  assert.match(portada, /document\.addEventListener\('xpace:cliente', \(\) => \{\n  if \(typeof prEnlacesReferencia === 'function'\) prEnlacesReferencia\(\);\n  if \(!Array\.isArray\(gemelosTodos\)\) return;/, 'recomputed as soon as the client is known, even before the catalogue');
   const fijos = portada.match(/href="\/admira-xp\/\?autostart=xtanco&amp;from=portada&amp;visual=hiperreal"/g) || [];
   assert.ok(fijos.length >= 3, 'the Xtanco stays the default link for Admira and Altadis');
 });
