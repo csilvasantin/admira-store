@@ -1,6 +1,6 @@
 {
-  "version": "v.15.10.2026.r1.10:23",
-  "deployedAt": "2026-10-15T10:23:06.837942+02:00",
+  "version": "v.15.10.2026.r2.10:59",
+  "deployedAt": "2026-10-15T10:59:51.717174+02:00",
   "deployer": "TrinityMBP14",
   "machine": "MacBookProNegro14",
   "signature": "TrinityMBP14 · MacBookProNegro14",
@@ -9,7 +9,7 @@
   "gitFull": "9a921cfdf13a6962927a876a67723fd546f8f19a",
   "dirty": false,
   "novedades": [
-    "Starbucks: el iPad virtual reproduce la misma playlist horizontal que el iPad real, con los dos vídeos de demo, sin importar otros contenidos.",
-    "Starbucks: los pedidos activos muestran la gestión de colas; al recoger el último vuelven los vídeos. El hilo musical conserva su programación."
+    "Starbucks: el hilo musical virtual y la pantalla detrás del TPV leen las siete piezas del iPhone, en el mismo orden y sin un segundo audio.",
+    "TPV: vídeos completos y carátulas editoriales para audio, carga, errores y cierre de vídeo; Opciones muestra la playlist compartida de siete. El iPad conserva sus dos vídeos y las colas."
   ]
 }

@@ -685,5 +685,9 @@
   "v.15.10.2026.r1.10:23": [
     "Starbucks: el iPad virtual reproduce la misma playlist horizontal que el iPad real, con los dos vídeos de demo, sin importar otros contenidos.",
     "Starbucks: los pedidos activos muestran la gestión de colas; al recoger el último vuelven los vídeos. El hilo musical conserva su programación."
+  ],
+  "v.15.10.2026.r2.10:59": [
+    "Starbucks: el hilo musical virtual y la pantalla detrás del TPV leen las siete piezas del iPhone, en el mismo orden y sin un segundo audio.",
+    "TPV: vídeos completos y carátulas editoriales para audio, carga, errores y cierre de vídeo; Opciones muestra la playlist compartida de siete. El iPad conserva sus dos vídeos y las colas."
   ]
 }

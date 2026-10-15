@@ -1,3 +1,4 @@
+import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=shared-music-20261015';
 // Playlists en escena (Neo, 13-oct-2026). En Good, Better y Best las pantallas del Starbucks reproducen la misma
 // programación que en Matrix: playlists de pared, TPV e iPad, estado vivo de MCP, asignaciones y reparto /sincro.
 // Sólo lectura: un <video> oculto y mudo por playlist; no cambia playlists, asignaciones ni estado MCP.
@@ -55,9 +56,9 @@ export function sceneSlice(id,mode,sameClock=()=>true){
 }
 export function readScenePlaylists(storage){try{return JSON.parse(storage?.getItem(SCENE_PLAYLISTS_KEY)||'null')?.enabled!==false;}catch{return true;}}
 
-export function createScenePlaylists({win=globalThis,doc=win.document,storage,watch=watchMatrixState,watchPhysicalIPad=watchIPadPlaylist,sequencer=createScreenPlaylist,seeds=SCENE_SEEDS,mode=getScreenDisplayMode,number=id=>7-Number(id.slice(-1))}={}){
+export function createScenePlaylists({win=globalThis,doc=win.document,storage,watch=watchMatrixState,watchPhysicalIPad=watchIPadPlaylist,musicVisualFactory=null,sequencer=createScreenPlaylist,seeds=SCENE_SEEDS,mode=getScreenDisplayMode,number=id=>7-Number(id.slice(-1))}={}){
  const store=storage===undefined?win.localStorage:storage,clock=()=>win.performance.now(),byDevice=new Map();
- let enabled=readScenePlaylists(store),state=null,stopWatch=null,stopIPad=null,physicalTracks=[],idle=0,lastUse=0,awake=false,disposed=false,off={};
+ let enabled=readScenePlaylists(store),state=null,stopWatch=null,stopIPad=null,physicalTracks=[],musicLease=null,idle=0,lastUse=0,awake=false,disposed=false,off={};
  const pool=createPainterPool({win,doc,sequencer,awake:()=>awake});
  function savedLayout(){try{return JSON.parse(store?.getItem(DEVICE_LAYOUT_KEY)||'null');}catch{return null;}}
  function sync(){
@@ -67,7 +68,7 @@ export function createScenePlaylists({win=globalThis,doc=win.document,storage,wa
   // The iPad alone follows its real screen; wall/POS assignments remain unchanged.
   layout.assignments={...layout.assignments,'starbucks-ipad-01':'ipad'};
   catalog.ipad={tracks:physicalTracks,loop:true};
-  const groups=enabled?sceneGroups({layout,catalog,off}):new Map();
+  const groups=enabled?sceneGroups({devices:musicLease?DEVICE_IDS.filter(id=>id!==TPV_MUSIC_ID):DEVICE_IDS,layout,catalog,off}):new Map();
   for(const player of pool.values())if(!groups.has(player.id))pool.drop(player);
   byDevice.clear();
   for(const group of groups.values()){
@@ -78,12 +79,12 @@ export function createScenePlaylists({win=globalThis,doc=win.document,storage,wa
   }
  }
  function sleep(){
-  if(!awake)return;awake=false;win.clearInterval(idle);idle=0;stopWatch?.();stopWatch=null;stopIPad?.();stopIPad=null;pool.pause();
+  if(!awake)return;awake=false;win.clearInterval(idle);idle=0;stopWatch?.();stopWatch=null;stopIPad?.();stopIPad=null;musicLease?.release();musicLease=null;pool.pause();
  }
  // Sólo trabaja mientras alguna escena pinta: en Matrix, con la pestaña oculta o fuera del Starbucks no consume nada.
  function wake(){
   lastUse=clock();if(awake||disposed||!enabled)return;awake=true;
-  sync();pool.play();
+  musicLease=musicVisualFactory?.()||null;sync();pool.play();
   stopWatch=watch({onState:value=>{state=value;sync();}});
   stopIPad=watchPhysicalIPad(value=>{if(value.tracks!==null){physicalTracks=value.tracks;sync();if(awake)pool.play();}});
   idle=win.setInterval(()=>{if(clock()-lastUse>SLEEP_MS)sleep();},1000);
@@ -94,6 +95,7 @@ export function createScenePlaylists({win=globalThis,doc=win.document,storage,wa
   if(!enabled||disposed||!DEVICE_IDS.includes(id))return false;
   wake();
   if(off[id]){ctx.save();ctx.fillStyle='#050606';ctx.fillRect(0,0,w,h);ctx.restore();return true;}
+  if(id===TPV_MUSIC_ID&&musicLease)return musicLease.visual.draw(ctx,w,h);
   const player=byDevice.get(id);if(!player||queueOwns(id,player))return false;
   const slice=sceneSlice(id,mode(),numbers=>numbers.every(n=>player.devices.some(device=>number(device)===n)));
   return pool.paint(player,ctx,w,h,{aspect:SURFACE_ASPECT[sceneKind(id)],slice});
@@ -102,6 +104,7 @@ export function createScenePlaylists({win=globalThis,doc=win.document,storage,wa
   if(!enabled||disposed||!DEVICE_IDS.includes(id))return null;
   wake();
   if(off[id])return {id:'off',kind:'off',title:'',scheduled:true};
+  if(id===TPV_MUSIC_ID&&musicLease){const value=musicLease.visual.state();return {id:value.trackId||'music-cover',title:value.title,kind:'music-visual',scheduled:true,playlistId:'physical-music'};}
   const player=byDevice.get(id);if(!player||queueOwns(id,player))return null;
   const item=player.track();
   return item?{id:item.id||item.stockId,title:item.title||'',url:item.url,kind:item.kind==='image'?'image':'video',playlistId:player.id,scheduled:true}:null;
@@ -119,7 +122,7 @@ export function createScenePlaylists({win=globalThis,doc=win.document,storage,wa
 // Montaje: las tres escenas ya pintan cada pantalla con XpaceScreenMedia.draw; la programación entra por debajo de
 // las vistas previas (que siguen mandando) y por delante del menú ilustrativo.
 if(typeof window!=='undefined'&&window.XpaceScreenMedia?.setSchedule&&!window.XpaceScenePlaylists){
- const runtime=createScenePlaylists({win:window});
+ const runtime=createScenePlaylists({win:window,musicVisualFactory:acquireMusicVisual});
  window.XpaceScenePlaylists=runtime;window.XpaceScreenMedia.setSchedule({draw:runtime.draw,get:runtime.get});
  window.addEventListener('pagehide',()=>runtime.rest());
 }
