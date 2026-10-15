@@ -34,6 +34,12 @@ Previous, Listen/Mute, Next and Launch control the twin's web clock and keep the
 
 The common editor is mounted in shell Options, existing Matrix/Best device cards and the Gran de Gràcia floor-plan detail. Artifact-only lab pages do not gain new screen remotes. Private surface IDs that cannot match the public inventory are rejected. No new editing CLI command or MCP tool is claimed; legacy MCP snapshots do not replace this scoped authority.
 
+## Calidad / Quality
+
+Elegir Matrix respeta el establecimiento: si hay loc/venue explícito distinto del demo de Paseo de Gràcia, se usa Better sin cambiar proyecto ni destino. La entrada genérica sin local y el demo concreto conservan Matrix.
+
+Choosing Matrix preserves the venue: an explicit loc/venue outside the Paseo de Gràcia demo uses Better without changing project or destination. Generic entry without a venue and the concrete demo retain Matrix.
+
 ## API / contracts
 
 - Store BFF: `GET/POST /admira-xp/api/context-playlist`, authenticated same-origin session; mutations require Origin and `X-Admira-Playlist-Request:1`.

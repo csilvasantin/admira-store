@@ -1,7 +1,7 @@
 import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=local-playlist-349';
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=good-matrix-6161';
 import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=local-playlist-349';
-import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=xtore-ux-3';
+import {createVisualTiers,requestedTier,matrixVenueAllowed} from './xtanco-visual-tiers.mjs?v=matrix-venue-guard-349';
 import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=options-language-1';
 
 const qualityOptions=document.querySelector('#visualQualityOptions');
@@ -88,7 +88,7 @@ function fuseWithoutNative(mode){
   return outcome;
 }
 tiers.choose=mode=>{
-  if(mode==='matrix')window.__xtancoEnterStarbucks?.();
+  if(mode==='matrix'){if(!matrixVenueAllowed(location.search)||window.__xtancoEnterStarbucks?.()===false)mode='better';}
   syncVisualSurface();
   if(window.__xpaceMatrixEntry&&document.documentElement.classList.contains('matrix-boot'))return chooseDirect(mode);
   if(mode===tiers.mode)return chooseDirect(mode); // Same-view commands must not clone media for a transition.

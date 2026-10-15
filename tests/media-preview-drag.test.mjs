@@ -101,3 +101,10 @@ for(const [lang,empty]of [['en','Empty playlist.'],['es','Playlist vacía.']])te
  h.setTracks(Array.from({length:7},(_,i)=>({id:'physical-'+i,kind:'music',title:'Refreshed track '+i,url:'https://media.example/'+i+'.mp3'})));
  assert.equal(status.textContent,action,'a later source refresh retains the action message');
 });
+
+for(const [lang,expected]of [['es','Playlist de este establecimiento · contenidos de Admira Stock'],['en','This venue’s playlist · contents from Admira Stock']])test(`scoped playlist hint identifies the current venue (${lang})`,()=>{
+ const h=setup({lang});h.root.XpaceContextPlaylists={scope:()=>({projectId:'starbucks',venueId:'qa349-starbucks-b',channelId:'music'})};h.setTracks([{id:'scope-test',title:'Local',kind:'music'}]);assert.equal(h.musicPlaylist.querySelector('.options-playlist-body').children[1].textContent,expected);
+});
+for(const [lang,expected]of [['es','Fuente compartida: Stock → Starbucks → Hilo musical.'],['en','Shared source: Stock → Starbucks → Background music.']])test(`legacy shared-source hint remains only outside scoped context (${lang})`,()=>{
+ const h=setup({lang});h.root.XpaceMatrixOptions.state=()=>({readOnly:true,playing:false,tracks:[]});h.setTracks([]);assert.equal(h.musicPlaylist.querySelector('.options-playlist-body').children[1].textContent,expected);
+});

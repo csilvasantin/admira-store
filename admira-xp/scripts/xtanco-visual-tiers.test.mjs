@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {TIER_STORAGE_KEY,requestedTier,createVisualTiers} from './xtanco-visual-tiers.mjs';
+import {TIER_STORAGE_KEY,requestedTier,createVisualTiers,matrixVenueAllowed} from './xtanco-visual-tiers.mjs';
 
 function memoryStorage(entries={}){
   const values=new Map(Object.entries(entries)),reads=[],writes=[];
@@ -239,7 +239,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   class MutationObserver {constructor(callback){this.callback=callback;}observe(node,options){this.node=node;this.options=options;observers.push(this);}}
   const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},MutationObserver,__xtancoVisualState:()=>({vertical})};Object.defineProperty(window,'localStorage',{get(){if(storageBlocked)throw Error('denied');return storage;}});
   document.documentElement={lang:'es'};
-  const context=vm.createContext({interfaceTranslator,document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,...life,
+  const context=vm.createContext({interfaceTranslator,document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,matrixVenueAllowed,...life,
     openGoodView:good.openLifeView,closeGoodView:good.closeLifeView,subscribeGoodView:good.subscribeLifeView,
     openBestView:best.openLifeView,closeBestView:best.closeLifeView,subscribeBestView:best.subscribeLifeView,
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
@@ -374,4 +374,11 @@ test('Matrix stays on the top-bar selector and reports missing initialization ho
 });
 test('Starbucks venue starts Matrix and retains explicit view choices',()=>{
  const storage={getItem:()=> 'better'};assert.equal(requestedTier('?loc=alsea-sbux-021',storage),'matrix');assert.equal(requestedTier('?loc=alsea-sbux-021&visual=good',storage),'good');assert.equal(requestedTier('?loc=another',storage),'matrix');assert.equal(requestedTier('?loc=ALSEA-SBUX-021',storage),'matrix');
+});
+
+
+test('Matrix requests for an explicit different venue remain in that venue and use Better',async()=>{
+ for(const search of ['?project=starbucks&loc=qa349-starbucks-b&quality=matrix','?venue=qa349-office&visual=matrix','?loc=alsea-sbux-021&venue=other&quality=matrix']){
+  const h=selectorHarness({search});assert.equal(h.body.dataset.xtancoTier,'better');assert.equal(h.matrix.calls.open,0);assert.equal(h.life.calls.open,1);await h.window.__xtancoVisualTiers.choose('matrix');assert.equal(h.matrix.calls.open,0);assert.equal(h.body.dataset.xtancoTier,'better');
+ }
 });
