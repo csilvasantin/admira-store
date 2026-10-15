@@ -1,14 +1,14 @@
 {
-  "version": "v.15.10.2026.r17.20:41",
-  "deployedAt": "2026-10-15T18:41:34Z",
+  "version": "v.15.10.2026.r18.21:43",
+  "deployedAt": "2026-10-15T19:43:38Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "442903d7011c999fa3866edf613a1aa909eb8865",
-  "gitShort": "442903d",
-  "gitFull": "442903d7011c999fa3866edf613a1aa909eb8865",
+  "git": "575b787dc9c7ee21c97732a17280d43ca6b2eed4",
+  "gitShort": "575b787",
+  "gitFull": "575b787dc9c7ee21c97732a17280d43ca6b2eed4",
   "dirty": false,
   "novedades": [
-    "Con la marca de un cliente la portada es estricta: el catálogo sólo enseña sus espacios (con Starbucks, 110 Starbucks; ni Xtanco ni genéricos) y el gemelo de referencia y los enlaces abren Starbucks Paseo de Gràcia. Los enlaces del menú no cambian."
+    "«alsea» es Starbucks: ?marca=alsea, ?project=alsea y /marca alsea aplican Starbucks (por si alguien se equivoca)."
   ]
 }
