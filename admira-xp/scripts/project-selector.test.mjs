@@ -53,6 +53,10 @@ test('entering with the Starbucks brand (?marca=starbucks) the selector offers o
  assert.deepEqual(proyectos(h),['starbucks']);
  assert.match(h.element('projectSelectionStatus').textContent,/Starbucks brand: only its projects · \/marca off/);
  assert.equal(h.element('projectSelector').value,'','the open Xtanco scene is not offered as the current project');
+ const venue=h.element('projectVenueSelector');
+ assert.deepEqual(venue.options.slice(1).map(o=>o.value),['demo-starbucks','starbucks-diagonal-634'],'the venues offered are those of the brand, not the Xtanco');
+ venue.value='starbucks-diagonal-634';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(new URL(h.destinations[0]).pathname,'/xpacios/starbucks-centros/','choosing one goes there');
 });
 test('entering with the Altadis brand the selector offers only the tobacconist projects',async()=>{
  const h=await harness({catalogo:cuatro,marca:{'mb:marca':'altadis','mb:manual':'1'}});

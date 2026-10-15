@@ -6,6 +6,9 @@
     "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
     "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
   ],
+  "v.15.10.2026.r14.20:08": [
+    "Proyecto y local con la marca de un cliente: el desplegable de locales ofrece los de esa marca aunque la escena abierta sea de otro proyecto (p. ej. un Xtanco con la marca Starbucks), y elegir uno abre ese local."
+  ],
   "v.15.10.2026.r13.20:02": [
     "Proyecto y local: con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis o /marca) sólo se ofrecen sus proyectos: Starbucks → Starbucks; Altadis → Altadis y Estancos.",
     "Como Admira, sin marca o con la marca que pone el propio proyecto al elegirlo se ofrecen todos; /marca off los vuelve a mostrar."
