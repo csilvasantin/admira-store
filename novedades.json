@@ -689,5 +689,9 @@
   "v.15.10.2026.r2.10:59": [
     "Starbucks: el hilo musical virtual y la pantalla detrás del TPV leen las siete piezas del iPhone, en el mismo orden y sin un segundo audio.",
     "TPV: vídeos completos y carátulas editoriales para audio, carga, errores y cierre de vídeo; Opciones muestra la playlist compartida de siete. El iPad conserva sus dos vídeos y las colas."
+  ],
+  "v.15.10.2026.r3.11:07": [
+    "Opciones: el aviso de playlist vacía desaparece al cargar las pistas compartidas del hilo musical.",
+    "Los mensajes de Lanzar se conservan al actualizar la lista; el TPV y el iPad mantienen su programación."
   ]
 }
