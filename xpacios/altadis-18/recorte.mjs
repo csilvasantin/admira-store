@@ -129,13 +129,3 @@ export function coberturaLienzo(recortes, lienzo) {
   if (!avisos.length && Math.abs(cubierto - 1) > 1e-9) avisos.push(`Los recortes cubren el ${Math.round(cubierto * 1000) / 10} % del lienzo`);
   return { cubierto, avisos };
 }
-
-/**
- * Repetición de la rejilla de píxel de un LED: una celda por píxel físico. Por encima de
- * `max` celdas en un eje se agrupa (la rejilla sólo insinúa el LED; a esa densidad no se ve).
- */
-export function rejillaLED(resolucion, max = 512) {
-  if (!Array.isArray(resolucion) || !resolucion.every(v => num(v) && v > 0)) return null;
-  const k = Math.max(1, Math.ceil(Math.max(...resolucion) / max));
-  return [Math.max(1, Math.round(resolucion[0] / k)), Math.max(1, Math.round(resolucion[1] / k))];
-}

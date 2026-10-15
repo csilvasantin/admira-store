@@ -35,7 +35,7 @@ export function rotulos(formato, idioma = 'es') {
   return {
     nombre: formato.nombre,
     pixeles: `${formato.ancho} × ${formato.alto} px`,
-    pie: `${formato.formato} · ${formato.fps || 25} fps · ${en ? 'adapted content coming soon' : 'contenido adaptado en preparación'}`,
+    pie: `${formato.fps || 25} fps · ${en ? 'adapted content coming soon' : 'contenido adaptado en preparación'}`,
   };
 }
 

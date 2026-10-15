@@ -8,6 +8,7 @@ import {
   validarIndice, validarPlanoEspacio, planoEspacioPublico, cargarConRespaldo, cargarIndice, cargarPlanoEspacio, elegirContenido, posterDe,
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, medidaFisica, pantallasDelFormato, formatoDe,
   STUDIO, ARQUITECTO, INDICE_COMPARTIDO, INDICE_LOCAL, PLANO_COMPARTIDO, PLANO_LOCAL, MANIFIESTO, TEMA_DE_TIPO,
+  ESPERA_COMPARTIDO_MS, RECORRIDO_MS, RECORRIDO_MAX_MS, MONTAJES, PAREDES, textoMontaje, textoPared, textoZona, textoEntrega,
 } from './espacios.mjs';
 import { encuadre, esquinas, svgFormato, celdasFormato, posicionOrbita } from './vista.mjs';
 import { uvsFormato } from './recorte.mjs';
@@ -153,7 +154,7 @@ test('sources: the shared plan in admira.biz first, the local copy if it fails, 
   assert.equal(r.fuente, 'local');
   assert.match(r.fallos[0].error, /no válido/);
   ({ fetchImpl } = falso({ [PLANO_COMPARTIDO(id)]: () => { const e = new Error('abort'); e.name = 'AbortError'; throw e; } }));
-  await assert.rejects(cargarPlanoEspacio(id, f, { fetchImpl, timeoutMs: 6000 }), e => e.fallos.length === 2 && /sin respuesta en 6 s/.test(e.fallos[0].error));
+  await assert.rejects(cargarPlanoEspacio(id, f, { fetchImpl, timeoutMs: 6000 }), e => e.fallos.length === 2 && /sin respuesta en 2\.5 s/.test(e.fallos[0].error), 'admira.biz gets 2.5 s, not the general 6 s');
   await assert.rejects(cargarPlanoEspacio('lab-gran-de-gracia-51', f, { fetchImpl }), /no válido/);
   ({ fetchImpl } = falso({ [INDICE_LOCAL]: { cuerpo: INDICE } }));
   const ri = await cargarIndice({ fetchImpl });
@@ -257,4 +258,55 @@ test('the page: public like the lab, current shell, one module, linked from /xpa
   assert.match(motor, /estanco: \{/);
   assert.match(motor, /new T\.VideoTexture\(video\)/, 'the shared canvas can be a video');
   assert.deepEqual(['Lineal de tabaco', 'Góndola', 'Mostrador'].map(n => tipoMueble({ id: 'x', nombre: n })), ['expositor', 'gondola', 'barra']);
+});
+
+test('a shared source that does not answer is remembered for the session: no more waiting on admira.biz', async () => {
+  const id = 'altadis-cafe-03', f = formatoDe(INDICE, 'cliente-03'), bueno = plano(id);
+  const { fetchImpl, pedidas } = falso({ [PLANO_LOCAL(id)]: { cuerpo: bueno }, [PLANO_LOCAL('altadis-cafe-04')]: { cuerpo: plano('altadis-cafe-04') } });
+  const memoria = new Set();
+  const a = await cargarPlanoEspacio(id, f, { fetchImpl, memoria });
+  assert.equal(a.fuente, 'local');
+  assert.deepEqual([...memoria], ['compartido'], 'the 404 of admira.biz is remembered');
+  const b = await cargarPlanoEspacio('altadis-cafe-04', formatoDe(INDICE, 'cliente-04'), { fetchImpl, memoria });
+  assert.equal(b.fuente, 'local');
+  assert.equal(b.fallos[0].recordado, true);
+  assert.deepEqual(pedidas.map(p => p.url), [PLANO_COMPARTIDO(id), PLANO_LOCAL(id), PLANO_LOCAL('altadis-cafe-04')], 'the second space goes straight to the local copy');
+  // Un plano que llega pero no valida es cosa de ese plano: no apunta a admira.biz como caído.
+  const m2 = new Set();
+  await cargarPlanoEspacio(id, f, { fetchImpl: falso({ [PLANO_COMPARTIDO(id)]: { cuerpo: plano('altadis-cafe-04') }, [PLANO_LOCAL(id)]: { cuerpo: bueno } }).fetchImpl, memoria: m2 });
+  assert.equal(m2.size, 0);
+  // Plazo corto para admira.biz, el normal para la copia local.
+  const espera = [];
+  const lento = async (url, opts) => { espera.push(url); return new Promise((_, no) => opts.signal.addEventListener('abort', () => { const e = new Error('abort'); e.name = 'AbortError'; no(e); })); };
+  const t0 = Date.now();
+  await assert.rejects(cargarConRespaldo([{ fuente: 'compartido', url: 'https://x', timeoutMs: 50 }], { fetchImpl: lento, memoria: m2 }), e => /0\.05 s/.test(e.fallos[0].error));
+  assert.ok(Date.now() - t0 < 1000);
+  assert.equal(ESPERA_COMPARTIDO_MS, 2500);
+  assert.ok(m2.has('compartido'), 'a hang is remembered too');
+  assert.deepEqual([RECORRIDO_MS, RECORRIDO_MAX_MS], [12000, 20000]);
+});
+
+test('client texts: every mounting and wall of the 36 plans reads in Spanish and English, delivery is clean', () => {
+  const montajes = new Set(), paredes = new Set();
+  for (const f of INDICE.formatos) for (const tipo of ['xtanco', 'cafe']) for (const s of pantallasDelFormato(plano(f.espacios[tipo]))) { montajes.add(s.montaje); paredes.add(s.pared); }
+  for (const m of montajes) assert.ok(MONTAJES[m], `mounting «${m}» has its texts`);
+  for (const w of paredes) assert.ok(PAREDES[w], `wall «${w}» has its texts`);
+  assert.equal(textoMontaje('pared-fondo', true), 'on the back wall');
+  assert.equal(textoPared('F'), 'pared del fondo');
+  assert.equal(textoPared('F', true), 'back wall');
+  assert.equal(textoZona('cubo', true), 'cube');
+  assert.equal(textoEntrega(formatoDe(INDICE, 'cliente-05')), 'MP4 · H.264 · 25 fps');
+});
+
+test('what the client sees: no internal notes by default, no fallback error, no internal ids in the ficha', () => {
+  const visor = read('xpacios/altadis-18/visor.mjs');
+  assert.match(visor, /const NOTAS = params\.get\('notas'\) === '1'/);
+  assert.match(visor, /if \(NOTAS && txt\(fu\.sincro\)\)/, 'sync notes only with ?notas=1');
+  assert.match(visor, /if \(NOTAS\) for \(const a of Array\.isArray\(fu\.avisos\)/, 'Architect warnings only with ?notas=1');
+  assert.doesNotMatch(visor, /no sirvió|did not serve/, 'using the local copy is not an error on screen');
+  assert.doesNotMatch(visor, /\[t\('Formato', 'Format'\), `\$\{pf\.id\}/, 'the format row does not show cliente-NN');
+  assert.match(visor, /t\('Planos del Arquitecto', 'Architect plans'\)/);
+  const css = read('xpacios/altadis-18/altadis.css');
+  assert.match(css, /#estado\{[^}]*pointer-events:none/, 'the status line never blocks the controls');
+  assert.doesNotMatch(css, /var\(--ambar\)\}\s*\.fuente/, 'no amber source line');
 });

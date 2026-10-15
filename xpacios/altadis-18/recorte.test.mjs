@@ -2,8 +2,9 @@
 // formato (offset/repeat de UV), el cubo LED en 4 caras y el ajuste de un medio de otra proporción.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ajusteMedio, uvRecorte, uvPlano, carasCubo, uvsFormato, erroresRecorte, coberturaLienzo, rejillaLED, lienzoValido } from './recorte.mjs';
+import { ajusteMedio, uvRecorte, uvPlano, carasCubo, uvsFormato, erroresRecorte, coberturaLienzo, lienzoValido } from './recorte.mjs';
 import { uvDeRect } from '../starbucks-paseo-de-gracia/mural.mjs';
+import { uvValido, uvPorCara } from '../gran-de-gracia-51/escena3d.mjs';
 
 const r4 = a => a.map(v => Math.round(v * 1e4) / 1e4);
 const CELDAS_4X1 = [0, 1, 2, 3].map(c => ({ x: c * 960, y: 0, w: 960, h: 540 }));
@@ -76,8 +77,17 @@ test('coverage: the screens of a format tile the canvas; gaps and overlaps are r
   assert.match(coberturaLienzo([CELDAS_4X1[0], { x: 900, y: 0, w: 960, h: 540 }], [3840, 540]).avisos[0], /se pisan/);
 });
 
-test('LED pixel grid: one cell per physical pixel, grouped above 512 per axis', () => {
-  assert.deepEqual(rejillaLED([64, 384]), [64, 384]);
-  assert.deepEqual(rejillaLED([1536, 192]), [512, 64]);
-  assert.equal(rejillaLED(null), null);
+test('ponerUV of the engine: a cube keeps one UV set per face, also when they are Float32Array (its uv0)', () => {
+  const caras = carasCubo({ x: 0, y: 0, w: 1600, h: 600 }).map(c => new Float32Array(uvPlano(uvRecorte(c, [1600, 600]))));
+  assert.ok(uvValido(caras), 'a list of Float32Array is a valid cube UV set');
+  const r = uvPorCara(caras, 4);
+  assert.equal(r.length, 4);
+  assert.deepEqual([...r[2]], [0.5, 1, 0.75, 1, 0.5, 0, 0.75, 0]);
+  assert.ok(r.every(x => [...x].every(Number.isFinite)), 'no NaN');
+  const plano = new Float32Array([0, 1, 1, 1, 0, 0, 1, 0]);
+  assert.ok(uvValido(plano));
+  assert.deepEqual(uvPorCara(plano, 4).map(x => [...x]), Array(4).fill([0, 1, 1, 1, 0, 0, 1, 0]), 'one flat set goes to every face');
+  assert.deepEqual(uvPorCara([0.25, 1, 0.5, 1, 0.25, 0, 0.5, 0], 1), [[0.25, 1, 0.5, 1, 0.25, 0, 0.5, 0]]);
+  assert.equal(uvValido([1, 2, 3]), false);
+  assert.equal(uvValido([new Float32Array(3)]), false);
 });

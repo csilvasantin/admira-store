@@ -12,10 +12,11 @@ button[aria-pressed="true"]{background:#13424a;border-color:var(--cian);color:#f
 .grupo button:first-child{border-radius:6px 0 0 6px}
 .grupo button:last-child{border-radius:0 6px 6px 0;margin-left:-1px}
 .eyebrow{margin:0;font:600 10px ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--verde)}
-.fuente{margin:4px 0 0;font:11px/1.4 ui-monospace,Menlo,monospace;color:var(--ambar)}
-.fuente[data-fuente="compartido"],.fuente[data-medio="video"]{color:var(--verde)}
+.fuente{margin:4px 0 0;font:11px/1.4 ui-monospace,Menlo,monospace;color:var(--suave)}
 
-#a18{position:relative;height:calc(100dvh - var(--xs-bar-h,46px));min-height:480px;overflow:hidden}
+/* --controles-abajo: hueco bajo la barra de controles (en estrecho, para el sello del release);
+   --controles-h: su alto real (visor.mjs), para que el estado y la ficha no la tapen. */
+#a18{position:relative;height:calc(100dvh - var(--xs-bar-h,46px));min-height:480px;overflow:hidden;--controles-abajo:14px}
 #galeria{position:absolute;inset:0;overflow:auto;padding:22px 24px 72px}
 #galeria[hidden],#espacio[hidden]{display:none}
 .cabecera{max-width:1100px}
@@ -38,7 +39,7 @@ button[aria-pressed="true"]{background:#13424a;border-color:var(--cian);color:#f
 
 #espacio{position:absolute;inset:0}
 #lienzo3d{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
-.ficha{position:absolute;left:16px;top:14px;width:min(340px,calc(100% - 32px));max-height:calc(100% - 96px);overflow:auto;padding:12px 16px;background:var(--panel);border:1px solid var(--linea);border-radius:8px}
+.ficha{position:absolute;left:16px;top:14px;width:min(340px,calc(100% - 32px));max-height:calc(100% - var(--controles-abajo) - var(--controles-h,56px) - 28px);overflow:auto;padding:12px 16px;background:var(--panel);border:1px solid var(--linea);border-radius:8px}
 .ficha h1{margin:4px 0 2px;font-size:20px;letter-spacing:-.02em;line-height:1.2}
 .ficha .uso{margin:0 0 8px;color:var(--suave);font-size:12.5px}
 .ficha dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:6px 0 10px;font-size:12.5px}
@@ -50,22 +51,24 @@ button[aria-pressed="true"]{background:#13424a;border-color:var(--cian);color:#f
 .boton.primario{background:#0f4a3a;border-color:var(--verde);color:#eafff3}
 #hud{position:absolute;right:16px;top:14px;max-width:min(460px,40%);margin:0;padding:6px 10px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;font:11px ui-monospace,Menlo,monospace;color:var(--suave);pointer-events:none}
 #hud:empty{display:none}
-#controles{position:absolute;left:16px;right:16px;bottom:14px;display:flex;gap:6px;align-items:center;overflow-x:auto;padding:6px;background:var(--panel);border:1px solid var(--linea);border-radius:8px;width:max-content;max-width:calc(100% - 32px);scrollbar-width:thin}
+#controles{position:absolute;left:16px;right:16px;bottom:var(--controles-abajo);display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px;background:var(--panel);border:1px solid var(--linea);border-radius:8px;width:max-content;max-width:calc(100% - 32px)}
 #controles>*{flex:0 0 auto}
 #controles .n{min-width:58px;text-align:center;font:700 12px ui-monospace,Menlo,monospace;color:var(--cian)}
 #controles .sep{width:1px;height:22px;background:var(--linea);margin:0 4px}
-#estado{position:absolute;right:16px;bottom:72px;max-width:min(520px,calc(100% - 32px));margin:0;padding:5px 9px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;font:10.5px/1.35 ui-monospace,Menlo,monospace;color:var(--suave)}
+#estado{position:absolute;right:16px;bottom:calc(var(--controles-abajo) + var(--controles-h,56px) + 10px);pointer-events:none;max-width:min(520px,calc(100% - 32px));margin:0;padding:5px 9px;background:var(--panel);border:1px solid var(--linea);border-radius:6px;font:10.5px/1.35 ui-monospace,Menlo,monospace;color:var(--suave)}
 #estado:empty{display:none}
 #estado.error{color:#ff8f8f;border-color:#ff8f8f88}
 .noscript{position:absolute;inset:40% 16px auto;text-align:center}
 @media (max-width:900px){
   #galeria{padding:16px 14px 72px}
   .tarjetas{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-  .ficha{width:calc(100% - 32px);max-height:42%;padding:9px 12px}
+  .ficha{width:calc(100% - 32px);max-height:min(42%,calc(100% - var(--controles-abajo) - var(--controles-h,56px) - 28px));padding:9px 12px}
   .ficha h1{font-size:17px}
   .ficha dl{display:none}
   #hud{display:none}
-  #controles{flex-wrap:wrap;width:auto}
+  #a18{--controles-abajo:50px}
+  #controles{left:12px;right:12px;width:auto;max-width:calc(100% - 24px)}
+  #estado{left:12px;right:12px;max-width:none}
 }
 /* El sello del release (cargador común, abajo a la izquierda) no tapa la barra de controles. */
 @media (min-width:901px){#controles{left:236px;max-width:calc(100% - 252px)}}

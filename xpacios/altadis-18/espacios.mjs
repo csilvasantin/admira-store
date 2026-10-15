@@ -18,7 +18,7 @@
 
 import { validatePlan } from '../gran-de-gracia-51/plano3d.mjs?v=gdg51-6';
 import { CAMPOS_PRIVADOS } from '../plano-publico.mjs';
-import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-1';
+import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-2';
 
 export const SCHEMA_INDICE = 'admira.espacios-formato/1';
 export const SCHEMA_CONTENIDO = 'admira.espacios-contenido/1';
@@ -36,7 +36,8 @@ export const PLANO_LOCAL = id => `/xpacios/altadis-18/planos/${id}.json`;
 export const MANIFIESTO = 'https://stock.admira.store/espacios/altadis-18/v1/manifest.json';
 export const STUDIO = formato => `https://admira.studio/adaptaciones/?formato=${encodeURIComponent(formato)}`;
 export const ARQUITECTO = (formato, tipo) => `https://www.admira.biz/arquitecto.html?formato=${encodeURIComponent(formato)}&tipo=${encodeURIComponent(tipo)}`;
-export const RECORRIDO_MS = 12000;
+export const RECORRIDO_MS = 12000;      // cada espacio, desde que su contenido pinta
+export const RECORRIDO_MAX_MS = 20000;  // tope si el vídeo no llega
 
 const num = v => typeof v === 'number' && Number.isFinite(v);
 const entero = v => Number.isInteger(v);
@@ -147,19 +148,27 @@ export function planoEspacioPublico(plan) {
 }
 
 // ── Fuentes con respaldo ────────────────────────────────────────────────────
-export const fuentesIndice = () => [{ fuente: 'compartido', url: INDICE_COMPARTIDO }, { fuente: 'local', url: INDICE_LOCAL }];
-export const fuentesPlano = id => [{ fuente: 'compartido', url: PLANO_COMPARTIDO(id) }, { fuente: 'local', url: PLANO_LOCAL(id) }];
+// admira.biz tiene poco margen (2,5 s): si no contesta, la copia local está al lado.
+export const ESPERA_COMPARTIDO_MS = 2500;
+export const fuentesIndice = () => [{ fuente: 'compartido', url: INDICE_COMPARTIDO, timeoutMs: ESPERA_COMPARTIDO_MS }, { fuente: 'local', url: INDICE_LOCAL }];
+export const fuentesPlano = id => [{ fuente: 'compartido', url: PLANO_COMPARTIDO(id), timeoutMs: ESPERA_COMPARTIDO_MS }, { fuente: 'local', url: PLANO_LOCAL(id) }];
 
 /**
  * Prueba las fuentes por orden y devuelve la primera que responde JSON válido. `validar`
  * devuelve la lista de errores del dato (vacía si vale). Un 404 de Pages llega como HTML:
  * eso también es «no hay dato». Si ninguna sirve, lanza con todos los motivos.
+ * `memoria` (un Set de nombres de fuente): una fuente que no respondió (red, plazo, HTTP o
+ * HTML) se apunta y en lo que queda de sesión se salta; así un admira.biz caído no hace
+ * esperar en cada espacio. Un dato que llega pero no valida no la apunta (es de ese plano).
  */
-export async function cargarConRespaldo(fuentes, { fetchImpl = globalThis.fetch, timeoutMs = 6000, validar = () => [] } = {}) {
+export async function cargarConRespaldo(fuentes, { fetchImpl = globalThis.fetch, timeoutMs = 6000, validar = () => [], memoria = null } = {}) {
   const fallos = [];
-  for (const { fuente, url } of fuentes) {
+  for (const { fuente, url, timeoutMs: propio } of fuentes) {
+    if (memoria && memoria.has(fuente)) { fallos.push({ fuente, url, error: 'no respondió antes en esta sesión', recordado: true }); continue; }
+    const espera = propio || timeoutMs;
     const ac = typeof AbortController === 'function' ? new AbortController() : null;
-    const timer = ac ? setTimeout(() => ac.abort(), timeoutMs) : null;
+    const timer = ac ? setTimeout(() => ac.abort(), espera) : null;
+    let llego = false;
     try {
       // no-store: sin petición condicional (admira.biz llegó a contestar 404 a If-None-Match).
       const r = await fetchImpl(url, { cache: 'no-store', credentials: fuente === 'local' ? 'same-origin' : 'omit', ...(ac ? { signal: ac.signal } : {}) });
@@ -167,11 +176,13 @@ export async function cargarConRespaldo(fuentes, { fetchImpl = globalThis.fetch,
       const tipo = (r.headers && typeof r.headers.get === 'function' && r.headers.get('content-type')) || '';
       if (/text\/html/i.test(tipo)) throw new Error('responde HTML: no está publicado');
       const datos = await r.json();
+      llego = true;
       const errores = validar(datos) || [];
       if (errores.length) throw new Error(`no válido: ${errores[0]}`);
       return { datos, fuente, url, fallos };
     } catch (e) {
-      fallos.push({ fuente, url, error: e && e.name === 'AbortError' ? `sin respuesta en ${timeoutMs / 1000} s` : String(e && e.message || e) });
+      fallos.push({ fuente, url, error: e && e.name === 'AbortError' ? `sin respuesta en ${espera / 1000} s` : String(e && e.message || e) });
+      if (memoria && !llego && fuente !== 'local') memoria.add(fuente);
     } finally { if (timer) clearTimeout(timer); }
   }
   const e = new Error(`Ninguna fuente sirvió: ${fallos.map(f => `${f.fuente} (${f.error})`).join(' · ')}`);
@@ -271,6 +282,22 @@ export function queryEspacio({ espacio, lang = 'es', auto = false } = {}) {
   const q = p.toString();
   return q ? `?${q}` : '';
 }
+
+// ── Textos para el cliente (ES/EN, sin ids internos) ────────────────────────
+export const MONTAJES = {
+  escaparate: ['en el escaparate', 'in the shop window'], 'tras-mostrador': ['tras el mostrador', 'behind the counter'],
+  'sobre-contrabarra': ['sobre la contrabarra', 'above the back counter'], 'pared-fondo': ['en la pared del fondo', 'on the back wall'],
+  'junto-caja': ['junto a la caja', 'next to the till'], peana: ['sobre peana', 'on a pedestal'],
+  'banda-alta': ['en banda alta', 'high-level strip'], 'cabecera-lineal': ['en la cabecera del lineal', 'at the end of the shelving'],
+};
+export const PAREDES = { F: ['pared del fondo', 'back wall'], D: ['pared derecha', 'right-hand wall'], I: ['pared izquierda', 'left-hand wall'], P: ['fachada', 'front wall'] };
+export const ZONAS_TXT = { mostrador: ['mostrador', 'counter'], mural: ['mural', 'wall display'], columna: ['columna', 'column'], superstretch: ['superstretch', 'superstretch'], cubo: ['cubo', 'cube'] };
+const elegir = (dic, k, en) => (dic[k] ? dic[k][en ? 1 : 0] : String(k || '').replace(/-/g, ' '));
+export const textoMontaje = (m, en = false) => (m ? elegir(MONTAJES, m, en) : '');
+export const textoPared = (id, en = false) => elegir(PAREDES, id, en);
+export const textoZona = (z, en = false) => (z ? elegir(ZONAS_TXT, z, en) : '');
+/** Entrega del contenido, igual en los dos idiomas: «MP4 · H.264 · 25 fps». */
+export const textoEntrega = formato => `MP4 · H.264 · ${(formato && formato.fps) || 25} fps`;
 
 /** Medidas físicas legibles de una pantalla del plano: pulgadas o metros. */
 export function medidaFisica(p, en = false) {

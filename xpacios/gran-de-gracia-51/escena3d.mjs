@@ -20,6 +20,17 @@ export const TEMAS = {
   estanco: { fondo: '#15100c', pared: '#f0e4d2', techo: '#f4ece0', suelo: 'gres', acento: { re: /lineal|tabac|mostrador/i, color: '#4b301f' }, bombillas: 2, cafeteras: false },
 };
 
+// UV de un plano o de las caras de un cubo (lista de 8 valores, o lista de listas, una por cara).
+// Las listas pueden ser Array o Float32Array: la copia de las UV originales (uv0) de un cubo es
+// una lista de Float32Array, y tratarla como 8 números pintaría NaN.
+const esLista = x => Array.isArray(x) || ArrayBuffer.isView(x);
+export const uvValido = uv => esLista(uv) && ((uv.length === 8 && [...uv].every(Number.isFinite)) || (uv.length > 0 && [...uv].every(x => esLista(x) && x.length === 8)));
+/** Las UV que toca a cada una de `n` caras: la suya si viene una por cara, o la misma para todas. */
+export function uvPorCara(arr, n = 1) {
+  const lista = esLista(arr[0]) ? [...arr] : [arr];
+  return Array.from({ length: n }, (_, i) => lista[i] || lista[0]);
+}
+
 export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, tema = 'laboratorio' } = {}) {
   const TEMA = TEMAS[tema] || TEMAS.laboratorio;
   const resources = new Set();
@@ -479,10 +490,9 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
   // fotograma y la textura se sube una vez. `uvs`: id de pantalla → 8 UV en el orden de PlaneGeometry
   // (o, para un cubo LED, una lista de 4 con las de cada cara). El lienzo puede ser un <canvas> (el
   // mural de Starbucks) o un <video> (un formato Altadis de varias pantallas, un solo vídeo).
-  const uvValido = uv => Array.isArray(uv) && ((uv.length === 8 && uv.every(Number.isFinite)) || (uv.length > 0 && uv.every(x => Array.isArray(x) && x.length === 8)));
   function ponerUV(e, arr) {
-    const lista = Array.isArray(arr[0]) ? arr : [arr];
-    (e.caras || [e.display]).forEach((d, i) => { const a = d.geometry.attributes.uv; a.array.set(lista[i] || lista[0]); a.needsUpdate = true; });
+    const ds = e.caras || [e.display], uvs = uvPorCara(arr, ds.length);
+    ds.forEach((d, i) => { const a = d.geometry.attributes.uv; a.array.set(uvs[i]); a.needsUpdate = true; });
   }
   function volverAlLienzo(e) {
     soltarVideo(e); e.url = null; ponerUV(e, e.lienzoUV);

@@ -9,15 +9,16 @@
 // pantallas tiene UN <video> y cada pantalla pinta su recorte (recorte.mjs): van sincronizadas.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import { escenaDesdePlano, vistaPuerta, round } from '../gran-de-gracia-51/plano3d.mjs?v=gdg51-6';
-import { crearEscena3D } from '../gran-de-gracia-51/escena3d.mjs?v=gdg51-6';
+import { crearEscena3D } from '../gran-de-gracia-51/escena3d.mjs?v=gdg51-7';
 import {
   cargarIndice, cargarPlanoEspacio, cargarConRespaldo, validarManifiesto, MANIFIESTO, elegirContenido, posterDe,
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, medidaFisica,
-  STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, dos,
-} from './espacios.mjs?v=a18-1';
-import { uvsFormato } from './recorte.mjs?v=a18-1';
-import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-1';
-import { encuadre, posicionOrbita, svgFormato } from './vista.mjs?v=a18-1';
+  textoMontaje, textoPared, textoZona, textoEntrega,
+  STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, dos,
+} from './espacios.mjs?v=a18-2';
+import { uvsFormato } from './recorte.mjs?v=a18-2';
+import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-2';
+import { encuadre, posicionOrbita, svgFormato } from './vista.mjs?v=a18-2';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -25,13 +26,19 @@ const pedido = destinoDesdeURL(location.search);
 const st = { lang: pedido.lang, tipo: pedido.tipo, indice: null, fuenteIndice: null, manifiesto: null, fuenteManifiesto: null,
   actual: null, carga: null, auto: false, autoTimer: null, token: 0 };
 const t = (es, en) => (st.lang === 'en' ? en : es);
+const EN = () => st.lang === 'en';
+// Las notas internas del Arquitecto (avisos, sincronía) no son para el cliente: sólo con ?notas=1.
+const NOTAS = params.get('notas') === '1';
+// admira.biz que no respondió una vez no se vuelve a esperar en esta sesión (copia local directa).
+const caidos = new Set();
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const num = (n, d = 2) => (st.lang === 'en' ? String(round(n, d)) : String(round(n, d)).replace('.', ','));
 const NOMBRE_TIPO = { xtanco: { es: 'Xtanco', en: 'Xtanco' }, cafe: { es: 'Starbucks', en: 'Starbucks' } };
-const ZONA = { mostrador: ['mostrador', 'counter'], mural: ['mural', 'wall'], columna: ['columna', 'column'], superstretch: ['superstretch', 'superstretch'], cubo: ['cubo', 'cube'] };
 const nombreTipo = tipo => (st.indice?.tipos?.[tipo]?.[st.lang]) || NOMBRE_TIPO[tipo][st.lang];
 
 const raiz = $('a18'), estado = $('estado');
+// El alto real de la barra de controles (cambia al envolverse en estrecho): el estado y la ficha se apartan.
+new ResizeObserver(() => raiz.style.setProperty('--controles-h', `${$('controles').offsetHeight || 56}px`)).observe($('controles'));
 const status = (texto, error = false) => { estado.textContent = texto; estado.classList.toggle('error', error); };
 
 // ── Textos fijos (data-es / data-en) ──
@@ -49,7 +56,7 @@ async function arrancar() {
   aplicarTextos();
   status(t('Leyendo los 18 formatos…', 'Reading the 18 formats…'));
   try {
-    const r = await cargarIndice();
+    const r = await cargarIndice({ memoria: caidos });
     st.indice = r.datos; st.fuenteIndice = r;
   } catch (e) { status(`${t('No hay índice de formatos', 'No format index')}: ${e.message}`, true); return; }
   // El contenido no bloquea: sin manifiesto, placeholder animado.
@@ -61,19 +68,18 @@ async function arrancar() {
   status('');
   await Promise.race([contenido, new Promise(r => setTimeout(r, 1500))]);
   pintarGaleria(); pintarFuentes();
-  contenido.then(() => { pintarGaleria(); pintarFuentes(); if (st.actual && medio?.tipo === 'placeholder' && st.manifiesto) ponerContenido(st.token); });
+  contenido.then(() => { pintarGaleria(); pintarFuentes(); if (st.actual && medio?.tipo === 'placeholder' && st.manifiesto) ponerContenido(st.token, { suave: true }); });
   if (pedido.formato) abrir(pedido.formato, pedido.tipo);
   if (pedido.auto) alternarRecorrido(true);
   raiz.dataset.listo = '1';
 }
 
+// Texto neutro, sea cual sea la fuente: el detalle (qué fuente y por qué) va en el title.
 function pintarFuentes() {
-  const fi = st.fuenteIndice, fm = st.fuenteManifiesto;
-  const planos = fi ? (fi.fuente === 'compartido' ? t('planos compartidos · admira.biz', 'shared plans · admira.biz') : t('copia local de los planos · admira.store', 'local copy of the plans · admira.store')) : '…';
-  const cont = !fm ? t('contenido: consultando…', 'content: checking…') : fm.error ? t('contenido: placeholder (el vídeo adaptado aún no está publicado)', 'content: placeholder (the adapted video is not published yet)') : t('contenido: vídeo adaptado · stock.admira.store', 'content: adapted video · stock.admira.store');
-  $('fuentes').textContent = `${planos} · ${st.indice?.version || ''} · ${cont}`;
+  const fi = st.fuenteIndice, fm = st.fuenteManifiesto, campana = st.manifiesto?.campania?.titulo;
+  const cont = !fm ? '' : fm.error ? t('animación de cada formato', 'an animation of each format') : campana ? `«${campana[st.lang] || campana.es}»` : t('vídeo adaptado a cada formato', 'video adapted to each format');
+  $('fuentes').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${st.indice?.version || ''}${cont ? ` · ${t('Contenido', 'Content')}: ${cont}` : ''}`;
   $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${f.error})`), fm?.url || (fm?.error ? `${MANIFIESTO} (${fm.error})` : '')].filter(Boolean).join('\n');
-  $('fuentes').dataset.fuente = fi?.fuente || '';
 }
 
 // ── Galería ──
@@ -84,7 +90,7 @@ function pintarGaleria() {
   $('tarjetas').innerHTML = lista.map(f => {
     const id = f.espacios[st.tipo], poster = posterDe(st.manifiesto, f.formato, st.lang);
     const led = /LED/i.test(f.nombre) || f.zona === 'cubo';
-    const zona = ZONA[f.zona] ? ZONA[f.zona][st.lang === 'en' ? 1 : 0] : (f.zona || '');
+    const zona = textoZona(f.zona, EN());
     const uso = f.uso ? (f.uso[st.lang] || f.uso.es || '') : '';
     return `<li><a class="tarjeta" href="${esc(queryEspacio({ espacio: id, lang: st.lang }))}" data-formato="${esc(f.formato)}" aria-current="${st.actual?.formato.formato === f.formato}">` +
       `<span class="poster">${poster ? `<img src="${esc(poster)}" alt="" loading="lazy" decoding="async">` : svgFormato(f)}<b class="n">${dos(f.n)}</b>${led ? '<i class="tec">LED</i>' : ''}</span>` +
@@ -168,7 +174,9 @@ const pantallasFormato = () => (escena ? escena.pantallas.filter(p => p.recorte 
 // Encuadre automático sobre las pantallas del formato, de frente y a la distancia justa.
 function encuadrar() {
   const zona = zonaLibre(), suyas = pantallasFormato();
-  cam.marco = encuadre(suyas, { fov: 40, aspect: zona.aspect, margen: 1.3, minAncho: 2.6, minAlto: 1.7 });
+  // Algo de sala alrededor, en proporción a la pantalla: la tablet de cerca, el mural entero.
+  const dim = Math.max(...suyas.map(p => Math.max(p.w, p.h)), 0.2), cl = (v, a, b) => Math.max(a, Math.min(b, v));
+  cam.marco = encuadre(suyas, { fov: 40, aspect: zona.aspect, margen: 1.3, minAncho: cl(dim * 3, 0.8, 2.6), minAlto: cl(dim * 2, 0.6, 1.7) });
   if (!cam.marco) return;
   const [x, y, h] = cam.marco.objetivo, cubo = suyas.some(p => p.cubo);
   // Un poco de lado para que se lea el volumen (el cubo, bastante más: dos caras a la vista), hacia
@@ -215,8 +223,12 @@ function ponerVista(nombre) {
     cam.mira = { pos, yaw: Math.atan2(d.z, d.x), pitch: Math.asin(d.y), zoom: 1 };
   } else { cam.vista = 'encuadre'; encuadrar(); }
   for (const b of document.querySelectorAll('[data-vista]')) b.setAttribute('aria-pressed', String(b.dataset.vista === cam.vista));
-  $('hud').textContent = { encuadre: t('Encuadre de las pantallas del formato · arrastra para girar, rueda para acercar', 'Framing the format screens · drag to orbit, wheel to zoom'), sala: t('Órbita de la sala · arrastra para girar', 'Room orbit · drag to orbit'), puerta: t('Desde la puerta · arrastra para mirar alrededor', 'From the door · drag to look around') }[cam.vista];
+  pintarHud();
   ajustarFov(); invalidar();
+}
+
+function pintarHud() {
+  $('hud').textContent = { encuadre: t('Encuadre de las pantallas del formato · arrastra para girar, rueda para acercar', 'Framing the format screens · drag to orbit, wheel to zoom'), sala: t('Órbita de la sala · arrastra para girar', 'Room orbit · drag to orbit'), puerta: t('Desde la puerta · arrastra para mirar alrededor', 'From the door · drag to look around') }[cam.vista];
 }
 
 function colocarCamara() {
@@ -238,6 +250,18 @@ function recortar() {
   for (const w of escena.paredes) s3d.paredes.get(w.id).visible = (x - w.a[0]) * w.n[0] + (y - w.a[1]) * w.n[1] > -0.02;
   const dentro = x > 0 && x < escena.sala.ancho && y > 0 && y < escena.sala.fondo && c.y < escena.sala.alto;
   s3d.techo.visible = s3d.lampara.visible = dentro;
+  // Un mueble entre la cámara y una pantalla del formato (la góndola LED en la cabecera del lineal)
+  // se oculta, como las paredes: lo que se enseña son las pantallas. El que está pegado a la
+  // pantalla (menos de 30 cm antes de llegar a ella), no: es su apoyo.
+  for (const m of tapas) {
+    m.g.visible = !centros.some(o => { const d = o.distanceTo(c); rayo.set(c, o.clone().sub(c).normalize()); const hit = rayo.intersectBox(m.caja, punto); return hit && c.distanceTo(punto) < d - 0.3; });
+  }
+}
+const rayo = new T.Ray(), punto = new T.Vector3();
+let tapas = [], centros = [];
+function prepararTapas() {
+  tapas = [...s3d.muebles.values()].map(g => ({ g, caja: new T.Box3().setFromObject(g) }));
+  centros = pantallasFormato().map(p => V(p.centro[0], p.centro[1], p.centro[2]));
 }
 
 function pintar() {
@@ -259,77 +283,103 @@ async function abrir(formatoId, tipo) {
   pintarFichaBasica();
   status(t('Leyendo el plano…', 'Reading the plan…'));
   let carga;
-  try { carga = await cargarPlanoEspacio(r.id, r.formato); } catch (e) {
+  try { carga = await cargarPlanoEspacio(r.id, r.formato, { memoria: caidos }); } catch (e) {
     if (token !== st.token) return;
-    soltarEspacio(); status(e.message, true); programarRecorrido(); return;   // el recorrido sigue con el siguiente
+    soltarEspacio(); $('f-datos').innerHTML = ''; $('f-contenido').textContent = ''; $('f-plano').textContent = '';
+    status(t('No se pudo abrir el plano de este espacio.', 'The plan of this space could not be opened.'), true); estado.title = e.message;
+    programarRecorrido(); return;   // el recorrido sigue con el siguiente
   }
   if (token !== st.token) return;
   if (!asegurarRenderer()) return;
   soltarEspacio();
   st.carga = carga; plan = carga.plan;
-  try { escena = escenaDesdePlano(plan); } catch (e) { status(t('Plano no válido: ', 'Invalid plan: ') + e.message, true); return; }
+  try { escena = escenaDesdePlano(plan); } catch (e) {
+    $('f-contenido').textContent = ''; status(t('El plano de este espacio no se puede pintar.', 'The plan of this space cannot be drawn.'), true); estado.title = e.message;
+    programarRecorrido(); return;
+  }
   s3d = crearEscena3D(escena, { anisotropia: renderer.capabilities.getMaxAnisotropy(), onCambio: invalidar, tema: TEMA_DE_TIPO[tipo] });
+  prepararTapas();
   redimensionar();
   pintarFicha();
   ponerVista('encuadre');
-  ponerContenido(token);
-  status(carga.fallos.length ? `${t('admira.biz no sirvió el plano', 'admira.biz did not serve the plan')}: ${carga.fallos[0].error} · ${t('copia local', 'local copy')}` : '');
-  canvas.dataset.listo = r.id;
+  status(''); estado.title = '';   // el respaldo no es un error: el motivo va en el title de la ficha
   programarRecorrido();
+  ponerContenido(token);
+  canvas.dataset.listo = r.id;
 }
 
 // ── Contenido: el MP4 del formato (un solo <video>) o el placeholder ──
-function ponerContenido(token) {
+// `suave` (cambio de idioma, llegada del manifiesto): lo que se ve sigue en pantalla hasta que lo
+// nuevo pinta; sin pantallas en neutro entre medias.
+function ponerContenido(token, { suave = false } = {}) {
   if (!s3d || token !== st.token) return;
-  soltarMedio();
+  const previo = suave ? medio : null;
+  if (suave) medio = null; else soltarMedio();
   const f = st.actual.formato, lienzo = [plan.formato.ancho, plan.formato.alto], suyas = pantallasFormato();
   const eleccion = elegirContenido(st.manifiesto, f, st.lang);
   // `esperando`: el vídeo que tarda; el placeholder lo cubre y, si llega, el vídeo lo sustituye.
-  const conPlaceholder = (motivo, esperando = null) => {
+  const conPlaceholder = (motivo, esperando = null, detalle = '') => {
     if (token !== st.token || !s3d) return;
-    soltarMedio();
+    soltarMedio(); liberar(previo);
     const ph = crearPlaceholder({ ...f, ancho: lienzo[0], alto: lienzo[1] }, { idioma: st.lang, recortes: suyas.map(p => p.recorte).filter(Boolean) });
     s3d.ponerLienzo(ph.canvas, uvsFormato(suyas, { lienzo, medio: [ph.ancho, ph.alto] }));
     const t0 = performance.now();
     const timer = setInterval(() => { if (document.visibilityState !== 'visible' || stage.hidden) return; ph.pintar((performance.now() - t0) / 1000); s3d.refrescarLienzo(); invalidar(); }, 1000 / FPS);
-    medio = { tipo: 'placeholder', timer, motivo, esperando };
+    medio = { tipo: 'placeholder', timer, motivo, detalle, esperando };
     pintarContenido(); invalidar();
+    if (motivo !== 'lento') contenidoListo();
   };
   if (eleccion.tipo !== 'video') return conPlaceholder(eleccion.motivo);
   const v = document.createElement('video');
   Object.assign(v, { crossOrigin: 'anonymous', muted: true, defaultMuted: true, playsInline: true, loop: true, preload: 'auto' });
   v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
-  medio = { tipo: 'video', video: v, eleccion, cargando: true };
+  medio = { tipo: 'video', video: v, eleccion, cargando: true, previo };
   const mio = () => medio && (medio.video === v || medio.esperando === v);
+  // iOS: play() en cuanto hay src y otra vez con el primer fotograma; si lo rechaza, con el primer toque.
+  let conGesto = false;
+  const reproducir = () => v.play().catch(() => {
+    if (conGesto) return; conGesto = true;
+    const ya = () => { document.removeEventListener('pointerdown', ya, true); document.removeEventListener('keydown', ya, true); if (mio()) v.play().catch(() => {}); };
+    document.addEventListener('pointerdown', ya, true); document.addEventListener('keydown', ya, true);
+  });
   // Un error suelta el vídeo; si sólo tarda (red lenta el día de la demo), sigue cargando detrás del placeholder.
-  const fallo = (motivo, seguir = false) => {
+  const fallo = (motivo, detalle, seguir = false) => {
     clearTimeout(caduca);
     if (!mio()) return;
-    if (seguir) { medio.video = null; conPlaceholder(motivo, v); } else conPlaceholder(motivo);
+    if (seguir) { medio.video = null; conPlaceholder(motivo, v, detalle); } else conPlaceholder(motivo, null, detalle);
   };
-  const caduca = setTimeout(() => fallo(t('el vídeo tarda más de 12 s; sigue cargando', 'the video takes over 12 s; still loading'), true), 12000);
+  const caduca = setTimeout(() => fallo('lento', '> 12 s', true), 12000);
   v.addEventListener('loadeddata', () => {
     clearTimeout(caduca);
     if (!mio() || token !== st.token || !s3d) return;
     if (medio.esperando === v) { clearInterval(medio.timer); medio = { tipo: 'video', video: v, eleccion, cargando: true }; }
     s3d.ponerLienzo(v, uvsFormato(suyas, { lienzo, medio: [v.videoWidth, v.videoHeight] }));
+    if (medio.previo) { liberar(medio.previo); medio.previo = null; }
     medio.cargando = false;
-    v.play().catch(() => {});
-    pintarContenido(); invalidar();
+    reproducir();
+    pintarContenido(); invalidar(); contenidoListo();
   }, { once: true });
-  v.addEventListener('error', () => fallo(v.error ? `${t('el vídeo falló', 'the video failed')} (${t('código', 'code')} ${v.error.code})` : t('el vídeo falló', 'the video failed')), { once: true });
+  v.addEventListener('error', () => fallo('error', v.error ? `MediaError ${v.error.code}` : 'error'), { once: true });
   v.addEventListener('playing', invalidar);
   v.src = eleccion.url;
   v.load();
+  reproducir();
   pintarContenido();
+}
+
+// Suelta lo que un medio tiene vivo: intervalo del placeholder, vídeo, el que esperaba y el anterior.
+function liberar(m) {
+  if (!m) return;
+  if (m.timer) clearInterval(m.timer);
+  for (const v of [m.video, m.esperando]) if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (_) {} }
+  if (m.previo) { liberar(m.previo); m.previo = null; }
 }
 
 function soltarMedio() {
   if (!medio) return;
   const m = medio; medio = null;
-  if (m.timer) clearInterval(m.timer);
   s3d?.quitarLienzo();
-  for (const v of [m.video, m.esperando]) if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (_) {} }
+  liberar(m);
 }
 
 function soltarEspacio() {
@@ -344,7 +394,8 @@ function pintarFichaBasica() {
   const { formato: f, tipo } = st.actual;
   $('f-eyebrow').textContent = `ALTADIS · ${t('FORMATO', 'FORMAT')} ${dos(f.n)}/${dos(st.indice.formatos.length)} · ${nombreTipo(tipo).toUpperCase()}`;
   $('f-nombre').textContent = f.nombre;
-  $('f-uso').textContent = `${f.uso ? (f.uso[st.lang] || f.uso.es) : ''}${f.zona ? ` · ${t('zona', 'zone')} ${ZONA[f.zona] ? ZONA[f.zona][st.lang === 'en' ? 1 : 0] : f.zona}` : ''}`;
+  const uso = f.uso ? (f.uso[st.lang] || f.uso.es) : '', zona = textoZona(f.zona, EN());
+  $('f-uso').textContent = `${uso}${zona && zona !== uso ? ` · ${t('zona', 'zone')} ${zona}` : ''}`;
   $('f-studio').href = STUDIO(f.formato);
   $('f-arquitecto').href = ARQUITECTO(f.formato, tipo);
   $('n-actual').textContent = `${dos(f.n)} / ${dos(st.indice.formatos.length)}`;
@@ -364,36 +415,41 @@ function pintarFicha() {
     const k = `${fis} ${tec}${paso} · ${res}${cara ? ` (4 × ${cara.w} × ${cara.h})` : ''}`;
     grupos.set(k, (grupos.get(k) || 0) + 1);
   }
+  // Sin ids internos (cliente-NN, altadis-…, pared F): lo que entiende el cliente, en su idioma.
+  const p0 = suyas[0], donde = p0 ? (textoMontaje(p0.montaje, EN()) || (!p0.cubo ? textoPared(p0.pared, EN()) : '')) : '';
   const filas = [
-    [t('Formato', 'Format'), `${pf.id} · ${pf.ancho} × ${pf.alto} px · ${pf.fps || f.fps || 25} fps`],
+    [t('Formato', 'Format'), `${pf.ancho} × ${pf.alto} px · ${pf.fps || f.fps || 25} fps`],
     [t('Rejilla', 'Grid'), `${pf.grid?.cols || f.grid.cols} × ${pf.grid?.rows || f.grid.rows} · ${suyas.length} ${suyas.length === 1 ? t('pantalla física', 'physical screen') : t('pantallas físicas', 'physical screens')}`],
     [t('Pantallas', 'Screens'), [...grupos].map(([k, n]) => `${n} × ${k}`).join(' · ')],
-    [t('Zona', 'Zone'), `${ZONA[pf.zona] ? ZONA[pf.zona][st.lang === 'en' ? 1 : 0] : pf.zona || '—'}${suyas[0]?.montaje ? ` · ${suyas[0].montaje.replace(/-/g, ' ')}` : ''}${suyas[0] && !suyas[0].cubo ? ` · ${t('pared', 'wall')} ${suyas[0].pared}` : ''}`],
-    [t('Espacio', 'Space'), `${nombreTipo(tipo)} · ${id} · ${num(escena.sala.ancho, 2)} × ${num(escena.sala.fondo, 2)} m`],
+    [t('Zona', 'Zone'), [textoZona(pf.zona, EN()), donde].filter(Boolean).join(' · ') || '—'],
+    [t('Espacio', 'Space'), `${nombreTipo(tipo)} · ${num(escena.sala.ancho, 2)} × ${num(escena.sala.fondo, 2)} m`],
+    [t('Entrega', 'Delivery'), textoEntrega(pf)],
   ];
-  // Lo que el Arquitecto anota del formato (en castellano): requisitos de entrega, sincronía y avisos.
+  // Notas internas del Arquitecto (en castellano: sincronía y avisos), sólo con ?notas=1.
   const fu = plan.fuente || {}, txt = v => (typeof v === 'string' ? v : '');
-  if (txt(fu.requisitos)) filas.push([t('Entrega', 'Delivery'), fu.requisitos]);
-  if (txt(fu.sincro)) filas.push([t('Sincro', 'Sync'), fu.sincro]);
-  for (const a of Array.isArray(fu.avisos) ? fu.avisos.filter(txt) : []) filas.push([t('Nota', 'Note'), a]);
+  if (NOTAS && txt(fu.sincro)) filas.push([t('Sincro', 'Sync'), fu.sincro]);
+  if (NOTAS) for (const a of Array.isArray(fu.avisos) ? fu.avisos.filter(txt) : []) filas.push([t('Nota', 'Note'), a]);
   $('f-datos').innerHTML = filas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
   const c = st.carga;
-  $('f-plano').textContent = `${t('Plano', 'Plan')}: ${c.fuente === 'compartido' ? t('compartido · admira.biz', 'shared · admira.biz') : t('copia local · admira.store', 'local copy · admira.store')} · ${plan.version || 's/v'}`;
-  $('f-plano').dataset.fuente = c.fuente;
-  $('f-plano').title = c.url + (c.fallos.length ? `\n${t('No se usó', 'Not used')}: ${c.fallos.map(x => `${x.url} (${x.error})`).join(' · ')}` : '') + (c.avisos.length ? `\n${c.avisos.join('\n')}` : '');
+  $('f-plano').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${plan.version || ''}`;
+  $('f-plano').title = `${id} · ${c.fuente === 'compartido' ? 'admira.biz' : t('copia local de admira.store', 'local copy on admira.store')}\n${c.url}` + (c.fallos.length ? `\n${t('No se usó', 'Not used')}: ${c.fallos.map(x => `${x.url} (${x.error})`).join(' · ')}` : '') + (c.avisos.length ? `\n${c.avisos.join('\n')}` : '');
   pintarContenido();
 }
 
 function pintarContenido() {
   const el = $('f-contenido');
-  if (!medio) { el.textContent = ''; return; }
+  if (!medio) { el.textContent = ''; el.title = ''; return; }
   if (medio.tipo === 'video') {
-    const e = medio.eleccion;
-    el.textContent = `${t('Contenido', 'Content')}: ${medio.cargando ? t('cargando vídeo', 'loading video') : t('vídeo adaptado', 'adapted video')} ${e.idioma.toUpperCase()}${e.sustituto ? ` (${t('no hay', 'no')} ${e.pedido.toUpperCase()})` : ''} · stock.admira.store`;
-    el.dataset.medio = 'video'; el.title = e.url;
+    const e = medio.eleccion, lang = e.idioma.toUpperCase();
+    el.textContent = medio.cargando ? t('Contenido: cargando el vídeo de este formato…', 'Content: loading this format’s video…')
+      : `${t('Contenido: vídeo adaptado a este formato', 'Content: video adapted to this format')} · ${e.sustituto ? t(`versión ${lang}`, `${lang} version`) : lang}`;
+    el.title = e.url;
   } else {
-    el.textContent = `${t('Contenido', 'Content')}: ${t('placeholder animado', 'animated placeholder')} · ${medio.motivo === 'sin-manifiesto' ? t('vídeo adaptado aún no publicado', 'adapted video not published yet') : medio.motivo === 'sin-pieza' || medio.motivo === 'sin-url' ? t('sin vídeo para este formato', 'no video for this format') : medio.motivo}`;
-    el.dataset.medio = 'placeholder'; el.title = MANIFIESTO;
+    const m = medio.motivo;
+    el.textContent = m === 'lento' ? t('Contenido: animación del formato mientras llega el vídeo', 'Content: format animation while the video loads')
+      : m === 'error' ? t('Contenido: animación del formato (el vídeo no se pudo cargar)', 'Content: format animation (the video could not be loaded)')
+      : t('Contenido: animación del formato (el vídeo adaptado aún no está disponible)', 'Content: format animation (the adapted video is not available yet)');
+    el.title = `${MANIFIESTO}${medio.detalle ? ` · ${medio.detalle}` : ''}${m ? ` · ${m}` : ''}`;
   }
 }
 
@@ -413,21 +469,29 @@ function cambiarTipo(tipo) {
 function cambiarIdioma(lang) {
   if (!['es', 'en'].includes(lang) || lang === st.lang) return;
   st.lang = lang; aplicarTextos(); pintarGaleria(); pintarFuentes(); actualizarURL();
-  if (st.actual) { pintarFichaBasica(); if (plan) { pintarFicha(); ponerVista(cam.vista); ponerContenido(st.token); } }
+  if (st.actual) { pintarFichaBasica(); if (plan) { pintarFicha(); pintarHud(); ponerContenido(st.token, { suave: true }); } }
 }
 // El shell (/idioma) llama a setLanguage; su evento llega después y ya no cambia nada.
 window.setLanguage = cambiarIdioma;
 window.addEventListener('admira:languagechange', e => cambiarIdioma(e.detail?.lang));
 
+// Recorrido: 12 s desde que el contenido pinta (contenidoListo); si el vídeo no llega, a los 20 s.
+const avanzar = () => { if (document.visibilityState === 'visible') paso(1); else programarRecorrido(); };
 function programarRecorrido() {
   clearTimeout(st.autoTimer);
   if (!st.auto) return;
-  st.autoTimer = setTimeout(() => { if (document.visibilityState === 'visible') paso(1); else programarRecorrido(); }, RECORRIDO_MS);
+  st.autoTimer = setTimeout(avanzar, RECORRIDO_MAX_MS);
+}
+function contenidoListo() {
+  if (!st.auto) return;
+  clearTimeout(st.autoTimer);
+  st.autoTimer = setTimeout(avanzar, RECORRIDO_MS);
 }
 function alternarRecorrido(forzar) {
   st.auto = forzar ?? !st.auto;
   aplicarTextos();
-  if (st.auto && !st.actual && st.indice) paso(0); else programarRecorrido();
+  if (st.auto && !st.actual && st.indice) paso(0);
+  else if (st.auto && medio && !medio.cargando && medio.motivo !== 'lento') contenidoListo(); else programarRecorrido();
   if (st.actual || !st.auto) actualizarURL();
 }
 

@@ -4,7 +4,7 @@
 // alzado de cada pared, con etiquetas ITIL por pantalla y dispositivo.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebcam, vistaAlzado, pointOnWall, ID_RE, round } from './plano3d.mjs?v=gdg51-6';
-import { crearEscena3D } from './escena3d.mjs?v=gdg51-6';
+import { crearEscena3D } from './escena3d.mjs?v=gdg51-7';
 import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
 
 const $ = id => document.getElementById(id);
