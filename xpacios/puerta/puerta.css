@@ -35,3 +35,8 @@ html,body{margin:0;height:100%;background:var(--fondo);color:var(--tinta);font:1
 /* El sello de versión común vive abajo a la izquierda: la ficha queda por encima de él. */
 #puerta .ficha{bottom:44px}
 @media (max-width:600px){#puerta .ficha{bottom:40px}}
+/* La fachada tiene que verse sobre la foto (15-oct-2026: el brillo de admira.tv apenas se veía en Street View). */
+#puerta .puerta-local{background:rgba(0,226,147,.10)}
+#puerta .puerta-local::before{border:2px solid #9dffd6;box-shadow:0 0 12px 4px #00e293b3,inset 0 0 10px #00e29380;filter:blur(1px);opacity:.8}
+#puerta .puerta-local:hover{background:rgba(0,226,147,.22)}
+#puerta .puerta-local:hover::before,#puerta .puerta-local:focus-visible::before{opacity:1}
