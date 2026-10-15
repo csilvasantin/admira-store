@@ -14,7 +14,9 @@ const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
 /** La marca que limita el selector: la puesta a mano (mb:manual = '1') y que no es Admira. Si no, ''. */
 export function marcaQueLimita({ marca, manual } = {}) {
-  const m = String(marca == null ? '' : marca).trim().toLowerCase();
+  // «alsea» es Starbucks (Carlos, 15-oct-2026), igual que en assets/marca-blanca.js.
+  const m0 = String(marca == null ? '' : marca).trim().toLowerCase();
+  const m = m0 === 'alsea' ? 'starbucks' : m0;
   return manual === '1' && ID.test(m) && !ADMIRA.has(m) ? m : '';
 }
 

@@ -1,6 +1,6 @@
 import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-2';
 import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=local-playlist-349';
-import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs?v=marca-limita-1';
+import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs?v=alsea-1';
 const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip'),space=$('xpaceActiveSpace');
 let storage;try{storage=sessionStorage;}catch{}
 const leerMarca=k=>{try{return storage&&typeof storage.getItem==='function'?storage.getItem(k):null;}catch{return null;}};
