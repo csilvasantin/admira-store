@@ -1,15 +1,15 @@
 {
-  "version": "v.15.10.2026.r2.10:59",
-  "deployedAt": "2026-10-15T10:59:51.717174+02:00",
+  "version": "v.15.10.2026.r3.11:07",
+  "deployedAt": "2026-10-15T11:07:00+02:00",
   "deployer": "TrinityMBP14",
   "machine": "MacBookProNegro14",
   "signature": "TrinityMBP14 · MacBookProNegro14",
-  "git": "9a921cfdf13a6962927a876a67723fd546f8f19a",
-  "gitShort": "9a921cf",
-  "gitFull": "9a921cfdf13a6962927a876a67723fd546f8f19a",
+  "git": "2df31a74ce756631afe8ec42824f2f71550dd287",
+  "gitShort": "2df31a7",
+  "gitFull": "2df31a74ce756631afe8ec42824f2f71550dd287",
   "dirty": false,
   "novedades": [
-    "Starbucks: el hilo musical virtual y la pantalla detrás del TPV leen las siete piezas del iPhone, en el mismo orden y sin un segundo audio.",
-    "TPV: vídeos completos y carátulas editoriales para audio, carga, errores y cierre de vídeo; Opciones muestra la playlist compartida de siete. El iPad conserva sus dos vídeos y las colas."
+    "Opciones: el aviso de playlist vacía desaparece al cargar las pistas compartidas del hilo musical.",
+    "Los mensajes de Lanzar se conservan al actualizar la lista; el TPV y el iPad mantienen su programación."
   ]
 }

@@ -38,7 +38,7 @@
  doc.addEventListener('keydown',event=>{if(event.key==='Escape'&&pointer){event.preventDefault();event.stopImmediatePropagation();cancelDrag();}},true);
  root.addEventListener('blur',cancelDrag);
  doc.addEventListener('click',event=>{if(suppressClick){event.preventDefault();event.stopImmediatePropagation();suppressClick=false;}},true);
- function notice(channel,message){const h=hosts[channel];if(h)h.status.textContent=message;}
+ function notice(channel,message){const h=hosts[channel];if(h){h.status.textContent=message;delete h.status.dataset.emptyPlaylist;}}
  function renderReady(kind){const track=ready[kind],node=doc.querySelector('[data-media-ready="'+kind+'"]');if(!node||!track)return;quiet();node.hidden=false;
   // Keep the original video element so the generation module retains its handle.
   let player=kind==='video'?doc.getElementById('videoPreview'):null;node.replaceChildren();if(!player)player=media(track,kind+'Preview');else{player.src=track.url;player.hidden=false;player.load();}node.append(previewSource(player,{asset:kind}));
@@ -64,7 +64,7 @@
    const view=element('button',(track.active?'● ':'')+(i+1)+'. '+track.title,{'title':t('Ver previo','Preview')});view.type='button';view.addEventListener('click',()=>previewTrack(channel,track));
    const play=element('button','▶',{'aria-label':t('Lanzar ','Launch ')+track.title});play.type='button';play.addEventListener('click',async()=>{try{quiet();await api.play(channel,track.id,selected[channel]);notice(channel,t('Contenido lanzado.','Content launched.'));renderLists(true);}catch(e){notice(channel,t('No se pudo reproducir: ','Could not play: ')+e.message);}});
    const up=element('button','↑',{'aria-label':t('Subir ','Move up ')+track.title});up.type='button';up.disabled=!!state.readOnly||i===0;up.addEventListener('click',async()=>{try{await api.move(channel,track.id,state.tracks[i-1].id,selected[channel]);renderLists(true);}catch(e){notice(channel,e.message);}});row.append(view,play,up);h.list.append(row);}
-  if(!state.tracks.length)h.status.textContent=t('Playlist vacía.','Empty playlist.');
+  if(!state.tracks.length){h.status.textContent=t('Playlist vacía.','Empty playlist.');h.status.dataset.emptyPlaylist='true';}else if(h.status.dataset.emptyPlaylist){h.status.textContent='';delete h.status.dataset.emptyPlaylist;}
  }}
  root.XpaceMediaOptions={stage,launch,attachProduct(node,product,picture){source(node,{product},picture);node.addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopPropagation();const api=root.XpacePOSExperience;if(api?.isActive?.()){api.prepareRules?.();api.pickProduct?.(product.id,product);const accepted=api.addProduct(product.id,product);api.finishProduct?.(product.id,accepted);}});return ()=>{if(pointer?.node===node)cancelDrag();};},attachSignage:(node,name,track,picture)=>source(node,{signage:name,staged:track},picture),preview:(kind,stock,player)=>previewSource(player,{asset:kind,staged:asset(kind,stock)}),attachPreview:(node,kind,stock,picture)=>source(node,{asset:kind,staged:asset(kind,stock)},picture),get:kind=>ready[kind]||null};
  try{const stored=JSON.parse(root.sessionStorage.getItem(KEY)||'{}');for(const [kind,value]of Object.entries(stored))try{ready[kind]=asset(kind,value);}catch(_){} }catch(_){}

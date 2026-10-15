@@ -17,20 +17,21 @@ class Node {
  querySelectorAll(s){const parts=s.split(',');return this.children.flatMap(n=>[...(parts.some(p=>n.matches(p))?[n]:[]),...n.querySelectorAll(s)]);}querySelector(s){return this.querySelectorAll(s)[0]||null;}
  getContext(){return {drawImage:(...args)=>this.drawn=args};}
 }
-function setup(){
+function setup({initialTracks,lang='en'}={}){
  const doc=new Node('document'),calls=[],body=new Node('body'),html=new Node('html'),videoHost=new Node(),imageHost=new Node(),musicHost=new Node(),musicPlaylist=new Node(),playlist=new Node(),listBody=new Node(),summary=new Node('summary'),original=new Node('video');
- html.lang='en';doc.body=body;doc.documentElement=html;doc.append(body);body.append(videoHost,imageHost,musicHost,playlist,musicPlaylist);musicHost.dataset.mediaReady="music";musicPlaylist.dataset.optionsPlaylist="music";const musicBody=new Node();musicBody.className="options-playlist-body";musicPlaylist.append(new Node("summary"),musicBody);videoHost.dataset.mediaReady='video';imageHost.dataset.mediaReady='image';videoHost.append(original);original.id='videoPreview';original.controls=true;original.readyState=4;original.videoWidth=1920;original.videoHeight=1080;playlist.dataset.optionsPlaylist='screens';listBody.className='options-playlist-body';playlist.append(summary,listBody);
+ html.lang=lang;doc.body=body;doc.documentElement=html;doc.append(body);body.append(videoHost,imageHost,musicHost,playlist,musicPlaylist);musicHost.dataset.mediaReady="music";musicPlaylist.dataset.optionsPlaylist="music";const musicBody=new Node();musicBody.className="options-playlist-body";musicPlaylist.append(new Node("summary"),musicBody);videoHost.dataset.mediaReady='video';imageHost.dataset.mediaReady='image';videoHost.append(original);original.id='videoPreview';original.controls=true;original.readyState=4;original.videoWidth=1920;original.videoHeight=1080;playlist.dataset.optionsPlaylist='screens';listBody.className='options-playlist-body';playlist.append(summary,listBody);
  const baseQuery=doc.querySelector.bind(doc);doc.querySelector=s=>s==='[data-media-ready="video"]'?videoHost:s==='[data-media-ready="image"]'?imageHost:s==='[data-media-ready="music"]'?musicHost:baseQuery(s);
  doc.getElementById=id=>id==='videoPreview'?original:null;doc.createElement=tag=>new Node(tag);doc.elementFromPoint=()=>doc.hit||null;
  const track={id:'saved',kind:'video',title:'Existing video',url:'https://api.admira.store/stock/asset/saved'};
- const api={groups:()=>[{id:'wall',title:'Wall'}],state:()=>({tracks:[track],playing:true}),screenAt:(x)=>x>=500?'starbucks-ipad-01':null,screenHighlight:id=>calls.push(['highlight',id]),screenTitle:()=> 'Landscape iPad',previewScreen:async(id,t)=>calls.push(['preview',id,t.id]),insert:async(...a)=>{calls.push(['insert',...a]);return 'added';},play:async(...a)=>calls.push(['play',...a]),move:async()=>{}};
+ let tracks=initialTracks??[track];
+ const api={groups:()=>[{id:'wall',title:'Wall'}],state:()=>({tracks,playing:true}),screenAt:(x)=>x>=500?'starbucks-ipad-01':null,screenHighlight:id=>calls.push(['highlight',id]),screenTitle:()=> 'Landscape iPad',previewScreen:async(id,t)=>calls.push(['preview',id,t.id]),insert:async(...a)=>{calls.push(['insert',...a]);return 'added';},play:async(...a)=>calls.push(['play',...a]),move:async()=>{}};
  const root={document:doc,innerWidth:1280,innerHeight:720,XpaceMatrixOptions:api,sessionStorage:{getItem:()=>null,setItem(){}},addEventListener:(k,fn)=>doc.addEventListener('window:'+k,fn),setInterval(){},setTimeout,MutationObserver:class{observe(){}}};
  vm.runInNewContext(code,{window:root,URL});
  const staged={id:'new-video',title:'New video',url:'https://api.admira.store/stock/asset/new-video'};
  root.XpaceMediaOptions.stage('video',staged);
  const event=(x,y,more={})=>({pointerId:1,button:0,clientX:x,clientY:y,preventDefault(){},stopPropagation(){},stopImmediatePropagation(){},...more});
  const grab=videoHost.querySelector('.media-preview-grab');
- return {doc,calls,root,videoHost,imageHost,musicHost,musicPlaylist,original,grab,playlist,event,down:(x=30,y=60)=>grab.fire('pointerdown',event(x,y)),move:(x,y)=>doc.fire('pointermove',event(x,y)),up:(x,y)=>doc.fire('pointerup',event(x,y)),ghost:()=>body.querySelector('.media-drag-ghost')};
+ return {setTracks(value){tracks=value;doc.fire('window:xpace:playlist');},doc,calls,root,videoHost,imageHost,musicHost,musicPlaylist,original,grab,playlist,event,down:(x=30,y=60)=>grab.fire('pointerdown',event(x,y)),move:(x,y)=>doc.fire('pointermove',event(x,y)),up:(x,y)=>doc.fire('pointerup',event(x,y)),ghost:()=>body.querySelector('.media-drag-ghost')};
 }
 test('video stays controllable while a real frame and title follow the pointer and drop only on the chosen device',async()=>{
  const h=setup();assert.equal(h.videoHost.querySelector('video'),h.original);assert.equal(h.original.controls,true);assert.equal(h.videoHost.querySelectorAll('button').length,3);
@@ -88,4 +89,15 @@ test('water gesture carries the exact ITIL slot and always releases the lifted b
   if(scenario==='escape')h.doc.fire('keydown',h.event(0,0,{key:'Escape'}));else if(scenario==='blur')h.doc.fire('window:blur');else if(scenario==='capture')bottle.releasePointerCapture();else h.up(scenario==='outside'?100:640,270);
   await new Promise(setImmediate);assert.deepEqual(calls[0],['pick','water',7]);assert.deepEqual(calls.at(-1),['finish','water',scenario==='register']);assert.equal(calls.filter(x=>x[0]==='add').length,['register','rejected'].includes(scenario)?1:0);assert.equal(h.ghost(),null);
  }
+});
+
+for(const [lang,empty]of [['en','Empty playlist.'],['es','Playlist vacía.']])test(`async music source replaces initial empty notice after seven tracks arrive (${lang})`,async()=>{
+ const h=setup({initialTracks:[],lang}),status=h.musicPlaylist.querySelector('.options-playlist-body').children.at(-1);
+ assert.equal(status.textContent,empty);
+ await new Promise(setImmediate);h.setTracks(Array.from({length:7},(_,i)=>({id:'physical-'+i,kind:'music',title:'Physical track '+i,url:'https://media.example/'+i+'.mp3'})));
+ assert.equal(h.musicPlaylist.querySelectorAll('li').length,7);assert.equal(status.textContent,'');
+ const launch=h.musicPlaylist.querySelector('li').querySelectorAll('button')[1];launch.fire('click');await new Promise(setImmediate);
+ const action=status.textContent;assert.match(action,/Content launched|Contenido lanzado/);
+ h.setTracks(Array.from({length:7},(_,i)=>({id:'physical-'+i,kind:'music',title:'Refreshed track '+i,url:'https://media.example/'+i+'.mp3'})));
+ assert.equal(status.textContent,action,'a later source refresh retains the action message');
 });
