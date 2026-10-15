@@ -3,7 +3,7 @@
 // Diagonal se pierde la interface superior para seleccionar proyecto, local y calidad»).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, existsSync } from 'node:fs';
 import { fuentesPanorama, FOV_MIN, FOV_MAX } from './panorama.mjs';
 import { nombreLocal, CALIDADES } from '../../assets/xpace-combos.mjs';
 
@@ -67,8 +67,8 @@ test('en la foto 360 de Diagonal emiten sus seis pantallas: las del modelo, de i
     assert.ok(tl[0] >= antes, `${p.id}: a la derecha de la anterior`); antes = tl[0];
   }
   const pano = readFileSync(aqui('./panorama.mjs'), 'utf8');
-  assert.match(pano, /ponerPantallas\(conf\.pantallas, conf\.base\)/);
-  assert.match(visor, /seleccionar\(pano\.elegir\(/, 'tocar una pantalla en la foto enseña su playlist');
+  assert.match(pano, /ponerPantallas\(\[\.\.\.\(conf\.pantallas \|\| \[\]\), \.\.\.\(conf\.piezas \|\| \[\]\)\], conf\.base\)/);
+  assert.match(visor, /const id = pano\.elegir\([\s\S]*?seleccionar\(id\);/, 'tocar una pantalla en la foto enseña su playlist');
 });
 
 test('las ventanas se mueven, cambian de tamaño, se cierran y vuelven desde el dock; el visor es oscuro con marca', () => {
@@ -77,4 +77,29 @@ test('las ventanas se mueven, cambian de tamaño, se cierran y vuelven desde el 
   assert.match(visor, /montarVentanas\(\$\('#sc'\), \[\s*\{ el: \$\('\.ficha'\), id: 'ficha'[\s\S]*?id: 'pantallas'[\s\S]*?id: 'reproductor'/);
   assert.match(css, /\.vent\.vent-cerrada\{display:none!important\}/);
   assert.match(css, /#sc\{--panel:#0d1915e8;--linea:#2c463c;--tinta:#eef4ef;--suave:#a9bdb3;color:var\(--tinta\)\}/);
+});
+
+test('Diagonal es un clon de Paseo de Gràcia en el mostrador: TPV con el hilo musical e iPad con la gestión de colas', async () => {
+  const d634 = centros.find(c => c.id === 'd634').panorama;
+  assert.deepEqual(d634.piezas.map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad']]);
+  for (const p of d634.piezas) assert.equal(p.esquinas.length, 4);
+  const html = readFileSync(aqui('./index.html'), 'utf8');
+  assert.match(html, /window\.XpaceStarbucks=window\.XpaceStarbucks\|\|\{active:\(\)=>document\.documentElement\.dataset\.panorama==='1'\}/);
+  assert.match(html, /<script defer src="\/admira-xp\/scripts\/ipad-cola\.js\?v=[^"]+"><\/script>/, 'el mismo gestor de colas que el iPad de Paseo de Gràcia');
+  assert.match(visor, /if \(p\) \{ tocarPieza\(p\); return; \}/);
+  const { lineas } = await import('./hilo-tpv.mjs');
+  assert.deepEqual(lineas('Best Songs Of 1983! #music #80smusic #1983 #oldsong'), ['Best Songs Of 1983!']);
+  assert.ok(readFileSync(aqui('./hilo-tpv.mjs'), 'utf8').includes("'/admira-xp/api/music-playlist'"), 'la misma playlist que el TPV de Paseo de Gràcia');
+});
+
+test('la playlist del hilo musical se deja leer desde xpaceos.com (sin funciones propias)', async t => {
+  // La función vive en admira.store; el gemelo xpaceos no la publica (GitHub Pages) y la lee de allí.
+  const ruta = new URL('../../functions/admira-xp/api/music-playlist.js', import.meta.url);
+  if (!existsSync(ruta)) { t.skip('este repo no publica la función: la lee de admira.store'); return; }
+  const { onRequest } = await import(ruta.href);
+  const fuente = async () => ({ ok: true, json: async () => ({ ok: true, draft: { rev: 1, items: [] }, auto: [] }) });
+  const r = await onRequest({ request: new Request('https://www.admira.store/admira-xp/api/music-playlist', { headers: { Origin: 'https://www.xpaceos.com' } }) }, fuente);
+  assert.equal(r.headers.get('access-control-allow-origin'), 'https://www.xpaceos.com');
+  const otro = await onRequest({ request: new Request('https://www.admira.store/admira-xp/api/music-playlist', { headers: { Origin: 'https://evil.example' } }) }, fuente);
+  assert.equal(otro.headers.get('access-control-allow-origin'), null);
 });

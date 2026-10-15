@@ -70,7 +70,8 @@ export function crearPanorama(T, renderer) {
     // Corrección de la esfera del visor de panoramas: inclinación (sphereX) y giro (sphereY), en grados.
     // El centro de la foto queda delante (yaw 0).
     esfera.rotation.set(rad(Number(v.sphereX) || 0), -Math.PI / 2 - rad(Number(v.sphereY) || 0), 0);
-    ponerPantallas(conf.pantallas, conf.base);
+    // Las pantallas del mural y las piezas del mostrador (TPV con el hilo musical, iPad con la cola).
+    ponerPantallas([...(conf.pantallas || []), ...(conf.piezas || [])], conf.base);
     for (const src of fuentesPanorama(conf, renderer.capabilities.maxTextureSize || 4096)) {
       try {
         const t = await textura(src);
