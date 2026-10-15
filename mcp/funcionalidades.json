@@ -4334,8 +4334,8 @@
   },
   "optionsPlaylists": {
     "guide": "https://www.admira.store/admira-xp/docs/options-playlists.md",
-    "es": "Opciones muestra un previo de cada imagen, vídeo o música nueva de Stock. Generar y guardar en Stock no envían ni reproducen el contenido. Revisa el previo y pulsa Lanzar para incorporarlo y reproducirlo en las pantallas o el hilo musical del Xpacio. Añadir a playlist y arrastrar al menú Playlist actual incorporan el contenido en la posición elegida sin interrumpir la emisión actual. Los menús compactos están al final de Hilo Musical y Vídeo: el título de una fila abre el previo, ▶ salta a ese contenido, arrastrar reordena y ↑ permite ordenar con teclado. En Matrix el selector indica la playlist y sus pantallas o TPV; se conservan las asignaciones y el contenido activo. Las imágenes duran 30 segundos en la playlist. Los previos de vídeo son silenciosos y no arrancan solos; el previo musical se escucha sólo al pulsar Play y baja temporalmente el hilo. Las canciones recibidas de PixerIA esperan en el previo. Los contenidos recién creados se excluyen de la selección automática XPL. Las locuciones conservan su botón explícito Emitir y suenan una sola vez. La emisión corresponde al reproductor virtual de esta página; no confirma publicación física.",
-    "en": "Options shows a preview of each new Stock image, video or music track. Generating and saving to Stock never send or play the content. Review it and press Launch to add it and play it on the Xpace screens or background music. Add to playlist and dropping onto Current playlist insert the content at the chosen position without interrupting current playback. Compact menus appear at the bottom of Background music and Video: a row title opens its preview, ▶ jumps to that content, dragging reorders and ↑ supports keyboard ordering. In Matrix the selector identifies the playlist and its screens or POS; assignments and the active item are retained. Playlist images last 30 seconds. Video previews stay muted and never autoplay; music previews require Play and temporarily lower background music. Tracks delivered by PixerIA wait in preview. Newly generated content is excluded from automatic XPL selection. Announcements keep their explicit Play announcement action and play once. Playback refers to this page’s virtual player; it does not confirm physical broadcasting.",
+    "es": "Los previos de contenidos creados se conservan. En el shell actual, edita la playlist persistente con Añadir desde Stock y Quitar de esta playlist en Opciones o en el mando del establecimiento. Los antiguos arrastres, inserciones y reordenaciones globales quedan bloqueados al montar el editor scoped; no constituyen su autoridad. La selección histórica Stock puede adoptarse explícitamente una vez. Consulta /admira-xp/docs/context-playlist.md.",
+    "en": "Created-media previews are retained. In the current shell, edit the persistent playlist with Add from Stock and Remove from this playlist in venue Options or its remote. Legacy global drag/insertion/reorder writers are blocked while the scoped editor is mounted; they are not its authority. Previous Stock selections can be explicitly adopted once. See /admira-xp/docs/context-playlist.md.",
     "auto_send": false,
     "generation_preview": [
       "image",
@@ -4347,12 +4347,12 @@
       "[data-options-playlist=\"music\"]",
       "[data-options-playlist=\"screens\"]"
     ],
-    "drop_behavior": "insert into playlist at chosen position, preserve current playback",
+    "drop_behavior": "legacy persistent drop blocked; use scoped Stock add/remove",
     "image_duration_seconds": 30,
     "runtime_scope": "Current registered project + venue + channel; legacy browser lists retained as history, not editable authority when scoped editor is mounted.",
     "staged_storage": "sessionStorage:xpaceos.options-media-ready.v1",
-    "stock_reference_storage": "localStorage:xpaceos.options-playlist-stock.v1",
-    "matrix_playlist_storage": "xpaceos.starbucks.device-layout.v1",
+    "stock_reference_storage": "legacy localStorage:xpaceos.options-playlist-stock.v1 history; not scoped authority",
+    "matrix_playlist_storage": "legacy layout/history xpaceos.starbucks.device-layout.v1; not scoped authority",
     "matrix_registry": "https://mcp.admira.store/playlists",
     "matrix_tracks_image_contract": {
       "kind": "image",

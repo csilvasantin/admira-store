@@ -1,6 +1,7 @@
 import {toggleMusicFromGesture} from './music-listening.mjs?v=local-playlist-349';
 import {mountContextPlaylistEditor} from './context-playlist-editor.mjs?v=local-playlist-349';
-// This controls only the twin's shared web clock. No commands go to the physical iPhone or admira.tv.
+// Playback buttons control the twin’s web clock. The scoped editor persists TV
+// associations separately, without issuing physical transport commands or ACKs.
 export function mountMusicRemote(host,{music,win=globalThis,t=es=>es,blocked=()=>false,signal,onToggle=()=>{}}={}){
  const doc=host.ownerDocument,make=(tag,text)=>{const node=doc.createElement(tag);if(text)node.textContent=text;return node;};
  const details=make('details'),summary=make('summary'),body=make('div'),scope=make('p'),current=make('p'),status=make('p'),controls=make('div'),select=make('select'),launch=make('button'),previous=make('button'),listen=make('button'),next=make('button');
