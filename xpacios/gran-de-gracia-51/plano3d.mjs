@@ -295,9 +295,11 @@ function cuboDe(s) {
   const c = s.cubo;
   if (c && Array.isArray(c.centro) && c.centro.every(num) && c.lado > 0 && c.alto > 0) {
     const caras = Array.isArray(c.caras) && c.caras.length === 4 && c.caras.every(x => Array.isArray(x.n) && x.recorte) ? c.caras.map(x => ({ cara: x.cara, n: x.n, recorte: x.recorte })) : null;
-    return { lado: c.lado, alto: c.alto, centro: c.centro, peana: num(c.peana) ? c.peana : null, caras };
+    // La cara que da a la sala es la del recorte de la pantalla (si lo trae): hacia ella mira el cubo.
+    const r = s.recorte, frente = caras && r ? caras.find(x => x.recorte.x === r.x && x.recorte.y === r.y && x.recorte.w === r.w && x.recorte.h === r.h) : null;
+    return { lado: c.lado, alto: c.alto, centro: c.centro, peana: num(c.peana) ? c.peana : null, caras, frente: (frente || (caras && caras[0]) || {}).n || null };
   }
-  return { ...medidasCubo(s), centro: num(s.x) && num(s.y) ? [s.x, s.y] : null, peana: null, caras: null };
+  return { ...medidasCubo(s), centro: num(s.x) && num(s.y) ? [s.x, s.y] : null, peana: null, caras: null, frente: null };
 }
 
 export function colocarPantalla(s, plan) {
@@ -305,8 +307,8 @@ export function colocarPantalla(s, plan) {
   const cubo = cuboDe(s);
   const zc = cubo && cubo.peana != null ? cubo.peana : s.z;
   const f = cubo ? { x0: s.s - cubo.lado / 2, x1: s.s + cubo.lado / 2, z0: zc, z1: zc + cubo.alto, w: cubo.lado, h: cubo.alto } : footprint(s);
-  // El cubo mira a donde mira su cara 1; lo demás, hacia dentro desde su pared.
-  const n = cubo && cubo.caras ? cubo.caras[0].n : inwardNormal(wall), u = [(wall.b[0] - wall.a[0]) / wallLength(wall), (wall.b[1] - wall.a[1]) / wallLength(wall)];
+  // El cubo mira a donde mira su cara hacia la sala; lo demás, hacia dentro desde su pared.
+  const n = cubo && cubo.frente ? cubo.frente : inwardNormal(wall), u = [(wall.b[0] - wall.a[0]) / wallLength(wall), (wall.b[1] - wall.a[1]) / wallLength(wall)];
   const portatil = esPortatil(s, plan);
   const apoyo = cubo ? null : apoyoDe(f, wall, plan);
   let separacion = num(s.separacion) ? s.separacion : cubo ? cubo.lado / 2 + 0.5 : SEPARACION_PARED;

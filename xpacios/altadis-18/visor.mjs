@@ -284,14 +284,15 @@ function ponerContenido(token) {
   soltarMedio();
   const f = st.actual.formato, lienzo = [plan.formato.ancho, plan.formato.alto], suyas = pantallasFormato();
   const eleccion = elegirContenido(st.manifiesto, f, st.lang);
-  const conPlaceholder = motivo => {
+  // `esperando`: el vídeo que tarda; el placeholder lo cubre y, si llega, el vídeo lo sustituye.
+  const conPlaceholder = (motivo, esperando = null) => {
     if (token !== st.token || !s3d) return;
     soltarMedio();
     const ph = crearPlaceholder({ ...f, ancho: lienzo[0], alto: lienzo[1] }, { idioma: st.lang, recortes: suyas.map(p => p.recorte).filter(Boolean) });
     s3d.ponerLienzo(ph.canvas, uvsFormato(suyas, { lienzo, medio: [ph.ancho, ph.alto] }));
     const t0 = performance.now();
     const timer = setInterval(() => { if (document.visibilityState !== 'visible' || stage.hidden) return; ph.pintar((performance.now() - t0) / 1000); s3d.refrescarLienzo(); invalidar(); }, 1000 / FPS);
-    medio = { tipo: 'placeholder', timer, motivo };
+    medio = { tipo: 'placeholder', timer, motivo, esperando };
     pintarContenido(); invalidar();
   };
   if (eleccion.tipo !== 'video') return conPlaceholder(eleccion.motivo);
@@ -299,17 +300,24 @@ function ponerContenido(token) {
   Object.assign(v, { crossOrigin: 'anonymous', muted: true, defaultMuted: true, playsInline: true, loop: true, preload: 'auto' });
   v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
   medio = { tipo: 'video', video: v, eleccion, cargando: true };
-  const fallo = motivo => { clearTimeout(caduca); if (medio?.video === v) conPlaceholder(`${t('el vídeo falló', 'the video failed')} (${motivo})`); };
-  const caduca = setTimeout(() => fallo(t('sin respuesta en 12 s', 'no response in 12 s')), 12000);
+  const mio = () => medio && (medio.video === v || medio.esperando === v);
+  // Un error suelta el vídeo; si sólo tarda (red lenta el día de la demo), sigue cargando detrás del placeholder.
+  const fallo = (motivo, seguir = false) => {
+    clearTimeout(caduca);
+    if (!mio()) return;
+    if (seguir) { medio.video = null; conPlaceholder(motivo, v); } else conPlaceholder(motivo);
+  };
+  const caduca = setTimeout(() => fallo(t('el vídeo tarda más de 12 s; sigue cargando', 'the video takes over 12 s; still loading'), true), 12000);
   v.addEventListener('loadeddata', () => {
     clearTimeout(caduca);
-    if (medio?.video !== v || token !== st.token || !s3d) return;
+    if (!mio() || token !== st.token || !s3d) return;
+    if (medio.esperando === v) { clearInterval(medio.timer); medio = { tipo: 'video', video: v, eleccion, cargando: true }; }
     s3d.ponerLienzo(v, uvsFormato(suyas, { lienzo, medio: [v.videoWidth, v.videoHeight] }));
     medio.cargando = false;
     v.play().catch(() => {});
     pintarContenido(); invalidar();
   }, { once: true });
-  v.addEventListener('error', () => fallo(v.error ? `${t('código', 'code')} ${v.error.code}` : 'error'), { once: true });
+  v.addEventListener('error', () => fallo(v.error ? `${t('el vídeo falló', 'the video failed')} (${t('código', 'code')} ${v.error.code})` : t('el vídeo falló', 'the video failed')), { once: true });
   v.addEventListener('playing', invalidar);
   v.src = eleccion.url;
   v.load();
@@ -321,7 +329,7 @@ function soltarMedio() {
   const m = medio; medio = null;
   if (m.timer) clearInterval(m.timer);
   s3d?.quitarLienzo();
-  if (m.video) { try { m.video.pause(); m.video.removeAttribute('src'); m.video.load(); } catch (_) {} }
+  for (const v of [m.video, m.esperando]) if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (_) {} }
 }
 
 function soltarEspacio() {
@@ -349,10 +357,11 @@ function pintarFicha() {
   // Pantallas físicas iguales, agrupadas: «4 × 49″ LCD · 960 × 540 px».
   const grupos = new Map();
   for (const p of suyas) {
-    const tec = (p.tecnologia || 'lcd').toUpperCase(), res = p.recorte ? `${p.recorte.w} × ${p.recorte.h} px` : (p.resolucion || []).join(' × ');
+    const tec = (p.tecnologia || 'lcd').toUpperCase(), res = p.cubo && p.lienzo ? `${p.lienzo[0]} × ${p.lienzo[1]} px` : p.recorte ? `${p.recorte.w} × ${p.recorte.h} px` : (p.resolucion || []).join(' × ');
     const fis = p.cubo ? `${t('cubo', 'cube')} ${num(p.cubo.lado)} × ${num(p.cubo.lado)} × ${num(p.cubo.alto)} m · 4 ${t('caras', 'faces')}` : medidaFisica(p, st.lang === 'en');
     const paso = p.pasoPixelMm ? ` P${num(p.pasoPixelMm, 3)}` : '';
-    const k = `${fis} ${tec}${paso} · ${res}${p.cubo ? ` (4 × ${p.recorte.w / 4} × ${p.recorte.h})` : ''}`;
+    const cara = p.cubo ? (p.cubo.caras?.[0]?.recorte || { w: (p.lienzo?.[0] || 1600) / 4, h: p.lienzo?.[1] || 600 }) : null;
+    const k = `${fis} ${tec}${paso} · ${res}${cara ? ` (4 × ${cara.w} × ${cara.h})` : ''}`;
     grupos.set(k, (grupos.get(k) || 0) + 1);
   }
   const filas = [

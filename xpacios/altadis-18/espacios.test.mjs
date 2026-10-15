@@ -94,11 +94,13 @@ test('LED formats: metres instead of inches, the gondola is 1:6 and the cube is 
   assert.ok(e.cubo && Math.abs(e.cubo.lado / e.cubo.alto - 400 / 600) < 1e-9, 'each face keeps the 400 × 600 proportion');
   assert.deepEqual([e.centro[0], e.centro[1]], pc.pantallas[0].cubo.centro, 'the prism stands where cubo.centro says, not on the unfolded wall position');
   assert.equal(e.z, pc.pantallas[0].cubo.peana, 'on top of its pedestal');
-  assert.deepEqual(e.n, pc.pantallas[0].cubo.caras[0].n, 'the cube faces where face 1 faces');
+  const r = pc.pantallas[0].recorte, sala = pc.pantallas[0].cubo.caras.find(c => c.recorte.x === r.x);
+  assert.deepEqual(e.n, sala.n, 'the cube faces the room with the face of its recorte');
+  assert.equal(e.dimensiones.ancho, e.cubo.lado, 'dimensiones and recorte are that one face; the prism comes from cubo');
   assert.ok(pc.mobiliario.some(m => m.id === 'm-peana'), 'the pedestal is furniture of the plan');
   const uvs = uvsFormato([e], { lienzo: [1600, 600] }).get(e.id);
   assert.deepEqual(uvs.map(u => u[0]), pc.pantallas[0].cubo.caras.map(c => c.recorte.x / 1600), 'one UV set per face, from the plan recortes');
-  const sinCaras = { ...e, cubo: { ...e.cubo, caras: null } };
+  const sinCaras = { ...e, recorte: { x: 0, y: 0, w: 1600, h: 600 }, cubo: { ...e.cubo, caras: null } };
   assert.deepEqual(uvsFormato([sinCaras], { lienzo: [1600, 600] }).get(e.id), uvs, 'without faces in the plan, the canvas split in 4 is the same');
   // dimensiones de una cara o de las cuatro desplegadas; o la diagonal de una cara en pulgadas.
   assert.deepEqual(medidasCubo({ lienzo: [1600, 600], dimensiones: { ancho: 0.8, alto: 1.2 } }), { lado: 0.8, alto: 1.2 });

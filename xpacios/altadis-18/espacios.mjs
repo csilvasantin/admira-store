@@ -120,13 +120,15 @@ export function validarPlanoEspacio(plan, formato = null) {
     else if (ps.length > 1) errores.push(`La pantalla «${s.id}» necesita su recorte: el formato tiene ${ps.length} pantallas`);
     if (s.tecnologia && !['lcd', 'led'].includes(s.tecnologia)) avisos.push(`Tecnología desconocida en «${s.id}»: «${s.tecnologia}»`);
     if (s.recorte && Array.isArray(s.resolucion) && (s.resolucion[0] !== s.recorte.w || s.resolucion[1] !== s.recorte.h)) avisos.push(`La pantalla «${s.id}» dice resolución ${s.resolucion.join('×')} y su recorte es ${s.recorte.w}×${s.recorte.h}`);
-    if (s.forma === 'cubo-4-caras' && s.recorte && s.recorte.w % 4) avisos.push(`El cubo «${s.id}» tiene ${s.recorte.w} px de ancho: no se parte en 4 caras iguales`);
+    if (s.forma === 'cubo-4-caras' && !s.cubo && s.recorte && s.recorte.w % 4) avisos.push(`El cubo «${s.id}» tiene ${s.recorte.w} px de ancho: no se parte en 4 caras iguales`);
     if (s.forma && s.forma !== 'cubo-4-caras') avisos.push(`Forma desconocida en «${s.id}»: «${s.forma}»`);
     if (s.grupo) grupos.add(s.grupo);
   }
   if (ps.length > 1 && (grupos.size !== 1 || ps.some(s => !s.grupo))) avisos.push('Las pantallas del formato deberían compartir un mismo grupo');
   if (formato && formato.pantallas && ps.length !== formato.pantallas) avisos.push(`El índice dice ${formato.pantallas} pantallas y el plano trae ${ps.length}`);
-  if (!errores.length && ps.every(s => s.recorte)) avisos.push(...coberturaLienzo(ps.map(s => s.recorte), lienzo).avisos);
+  // Cobertura del lienzo: el cubo cubre lo de sus caras (su `recorte` es sólo la que da a la sala).
+  const trozos = s => (s.forma === 'cubo-4-caras' && Array.isArray(s.cubo?.caras) && s.cubo.caras.every(c => c && c.recorte) ? s.cubo.caras.map(c => c.recorte) : [s.recorte]);
+  if (!errores.length && ps.every(s => s.recorte)) avisos.push(...coberturaLienzo(ps.flatMap(trozos), lienzo).avisos);
   return { errores, avisos };
 }
 
