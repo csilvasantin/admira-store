@@ -1,6 +1,7 @@
 // Visor de los centros reales de Starbucks: la geometría del Arquitecto (cajas estimadas desde el
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
+import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
 const $ = s => document.querySelector(s);
@@ -22,7 +23,7 @@ const scene = new T.Scene();
 const camera = new T.PerspectiveCamera(48, 1, 0.05, 120);
 
 let CENTROS = [], centroElegido = null, centro = null, geo = null, rep = null, programas = [], programaActivo = null;
-let modo = params.get('modo') === 'matrix' ? 'matrix' : '3d';
+let modo = params.get('modo') === 'matrix' || (!params.get('modo') && params.get('quality') === 'matrix') ? 'matrix' : '3d';
 let raiz = null, pantallasVisor = [], seleccion = null, vistas = {};
 const texturas = new Map(); // src → VideoTexture
 
@@ -264,7 +265,7 @@ function pintarFicha() {
   $('#titulo').textContent = `Starbucks · ${centro.nombre}`;
   $('#identidad').textContent = centro.identidad;
   const ref = centro.referencia;
-  $('#referencia').innerHTML = ref ? `<a href="${esc(ref.src)}" target="_blank" rel="noopener">${esc(ref.titulo)}</a>` : '';
+  $('#referencia').innerHTML = [ref && `<a href="${esc(ref.src)}" target="_blank" rel="noopener">${esc(ref.titulo)}</a>`, centro.gemeloMatrix && `<a href="${esc(centro.gemeloMatrix)}">Gemelo Matrix completo →</a>`].filter(Boolean).join(' · ');
   $('#programa').innerHTML = programas.map(p => `<option value="${esc(p.id)}"${p.id === programaActivo.id ? ' selected' : ''}>${esc(p.nombre)}</option>`).join('');
   $('#programa').hidden = programas.length < 2;
   const marcas = marcasDe(programaActivo);
@@ -335,9 +336,9 @@ async function json(url) { const r = await fetch(url, { cache: 'no-cache' }); if
 async function cargarCentro(id) {
   const c = CENTROS.find(x => x.id === id) || CENTROS[0];
   centroElegido = c.id;
-  if (c.enlace) { pintarCentros(); mostrarEnlace(c); actualizarURL({ centro: c.id }); return; }
+  if (c.enlace) { pintarCentros(); mostrarEnlace(c); actualizarURL({ centro: c.id, venue: null, loc: null }); return; }
   $('#enlace').hidden = true; $('#sc').classList.remove('con-enlace');
-  centro = c; pintarCentros(); actualizarURL({ centro: c.id });
+  centro = c; pintarCentros(); actualizarURL({ centro: c.id, venue: null, loc: null });
   aviso('Cargando el modelo y las playlists…');
   geo = await json(c.geometria);
   programas = await Promise.all(c.programas.map(json));
@@ -445,7 +446,7 @@ window.__starbucksCentros = {
 try {
   CENTROS = (await json('centros.json')).centros;
   pintarCentros(); redimensionar(); requestAnimationFrame(bucle);
-  await cargarCentro(params.get('centro') || 'pg103');
+  await cargarCentro(centroDesdeURL(location.search, CENTROS).id);
 } catch (e) {
   console.error(e); aviso(`No se pudo cargar el visor: ${e.message}`, true);
 }
