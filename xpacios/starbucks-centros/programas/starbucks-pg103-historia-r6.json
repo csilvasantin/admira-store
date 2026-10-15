@@ -1,0 +1,170 @@
+{
+  "schema": "admira.starbucks-programa/1",
+  "id": "starbucks-pg103-historia-r6",
+  "nombre": "Cada café tiene una historia",
+  "centro": "pg103",
+  "revision": 6,
+  "fuente": {
+    "tipo": "campana",
+    "campana": "starbucks-alsea-historia-20261013-57fec1ad",
+    "fichero": "origen-playlist-starbucks-pg103-r6.json",
+    "instalacion": "starbucks-pg103",
+    "reloj": "https://brain.digitalavatar.ai/sync/state",
+    "fps": 25,
+    "hardwareVerificado": false
+  },
+  "vinculacionFisica": "pendiente",
+  "asociaciones": [
+    {
+      "pantalla": "PG103-MENU-01",
+      "posicion": 1,
+      "grupo": 2,
+      "canal": "starbucks-pg103",
+      "origen": "starbucks-pg103-p1",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-02",
+      "posicion": 2,
+      "grupo": 2,
+      "canal": "starbucks-pg103",
+      "origen": "starbucks-pg103-p2",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-03",
+      "posicion": 3,
+      "grupo": 1,
+      "canal": "starbucks-pg103",
+      "origen": "starbucks-pg103-p3",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-04",
+      "posicion": 4,
+      "grupo": 3,
+      "canal": "starbucks-pg103",
+      "origen": "starbucks-pg103-p4",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-05",
+      "posicion": 5,
+      "grupo": 3,
+      "canal": "starbucks-pg103",
+      "origen": "starbucks-pg103-p5",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "PG103-MENU-06",
+      "posicion": 6,
+      "grupo": 3,
+      "canal": "starbucks-pg103",
+      "origen": "starbucks-pg103-p6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    }
+  ],
+  "tramos": [
+    {
+      "id": "mural",
+      "tipo": "mural",
+      "nombre": "Mural sincronizado",
+      "segundos": 24,
+      "piezas": {
+        "PG103-MENU-01": {
+          "id": "starbucks-pg103-p1-mural",
+          "titulo": "Mural · pantalla 1 de 6",
+          "src": "media/historia-r6/pg103-p1-1080x1920.mp4",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 24,
+          "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p1-r6-1080x1920.mp4"
+        },
+        "PG103-MENU-02": {
+          "id": "starbucks-pg103-p2-mural",
+          "titulo": "Mural · pantalla 2 de 6",
+          "src": "media/historia-r6/pg103-p2-1080x1920.mp4",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 24,
+          "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p2-r6-1080x1920.mp4"
+        },
+        "PG103-MENU-03": {
+          "id": "starbucks-pg103-p3-mural",
+          "titulo": "Mural · pantalla 3 de 6",
+          "src": "media/historia-r6/pg103-p3-1080x1920.mp4",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 24,
+          "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p3-r6-1080x1920.mp4"
+        },
+        "PG103-MENU-04": {
+          "id": "starbucks-pg103-p4-mural",
+          "titulo": "Mural · pantalla 4 de 6",
+          "src": "media/historia-r6/pg103-p4-1080x1920.mp4",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 24,
+          "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p4-r6-1080x1920.mp4"
+        },
+        "PG103-MENU-05": {
+          "id": "starbucks-pg103-p5-mural",
+          "titulo": "Mural · pantalla 5 de 6",
+          "src": "media/historia-r6/pg103-p5-1080x1920.mp4",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 24,
+          "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p5-r6-1080x1920.mp4"
+        },
+        "PG103-MENU-06": {
+          "id": "starbucks-pg103-p6-mural",
+          "titulo": "Mural · pantalla 6 de 6",
+          "src": "media/historia-r6/pg103-p6-1080x1920.mp4",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 24,
+          "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-starbucks-pg103-travel-starbucks-pg103-p6-r6-1080x1920.mp4"
+        }
+      }
+    },
+    {
+      "id": "individual",
+      "tipo": "individual",
+      "nombre": "Pieza individual · Entrada",
+      "segundos": 8,
+      "pieza": {
+        "id": "portrait-travel-entrance",
+        "titulo": "Entrada · «Cada café tiene una historia»",
+        "src": "media/historia-r6/entrada-1080x1920.mp4",
+        "ancho": 1080,
+        "alto": 1920,
+        "segundos": 8,
+        "original": "pantallas/starbucks-alsea-historia-20261013-57fec1ad-portrait-travel-entrance-r6-1080x1920.mp4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "admira.starbucks-programa/1",
+  "id": "starbucks-d634-adaptacion-r1",
+  "nombre": "Diagonal 634 · adaptación «Your Drink, Your Story»",
+  "centro": "d634",
+  "revision": 1,
+  "fuente": {
+    "tipo": "adaptacion",
+    "motivo": "Diagonal 634 no tiene playlist histórica identificada; contenido de marca de stock.admira.store, sin textos de otro centro.",
+    "origenContenido": "stock.admira.store (mismas piezas de marca que usa el MCP de Starbucks)",
+    "excluido": [
+      {
+        "stockId": "1790708944451-w4c36z",
+        "titulo": "La Navidad de Jaime Lorente",
+        "motivo": "condicional /navidad en el MCP"
+      }
+    ]
+  },
+  "vinculacionFisica": "pendiente",
+  "asociaciones": [
+    {
+      "pantalla": "D634-MENU-01",
+      "posicion": 1,
+      "grupo": 2,
+      "canal": "starbucks-d634-adaptacion",
+      "origen": "adaptación · pantalla 1 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "D634-MENU-02",
+      "posicion": 2,
+      "grupo": 2,
+      "canal": "starbucks-d634-adaptacion",
+      "origen": "adaptación · pantalla 2 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "D634-MENU-03",
+      "posicion": 3,
+      "grupo": 1,
+      "canal": "starbucks-d634-adaptacion",
+      "origen": "adaptación · pantalla 3 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "D634-MENU-04",
+      "posicion": 4,
+      "grupo": 3,
+      "canal": "starbucks-d634-adaptacion",
+      "origen": "adaptación · pantalla 4 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "D634-MENU-05",
+      "posicion": 5,
+      "grupo": 3,
+      "canal": "starbucks-d634-adaptacion",
+      "origen": "adaptación · pantalla 5 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    },
+    {
+      "pantalla": "D634-MENU-06",
+      "posicion": 6,
+      "grupo": 3,
+      "canal": "starbucks-d634-adaptacion",
+      "origen": "adaptación · pantalla 6 de 6",
+      "formato": [
+        1080,
+        1920
+      ],
+      "dispositivoFisico": null
+    }
+  ],
+  "tramos": [
+    {
+      "id": "sincro",
+      "tipo": "mural",
+      "nombre": "SincroIA · seis pantallas",
+      "segundos": 21.16,
+      "piezas": {
+        "D634-MENU-01": {
+          "id": "1790710675951-2dxnev",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 1 de 6",
+          "src": "https://stock.admira.store/stock/1790710675951-2dxnev/asset.mp4?v=5259808",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1316
+        },
+        "D634-MENU-02": {
+          "id": "1790710719553-e7aa55",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 2 de 6",
+          "src": "https://stock.admira.store/stock/1790710719553-e7aa55/asset.mp4?v=5804509",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1318
+        },
+        "D634-MENU-03": {
+          "id": "1790710758622-9sbv1r",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 3 de 6",
+          "src": "https://stock.admira.store/stock/1790710758622-9sbv1r/asset.mp4?v=4755805",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1319
+        },
+        "D634-MENU-04": {
+          "id": "1790710794937-tkk8iv",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 4 de 6",
+          "src": "https://stock.admira.store/stock/1790710794937-tkk8iv/asset.mp4?v=8249393",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1320
+        },
+        "D634-MENU-05": {
+          "id": "1790710829529-m49jhb",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 5 de 6",
+          "src": "https://stock.admira.store/stock/1790710829529-m49jhb/asset.mp4?v=6516829",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1321
+        },
+        "D634-MENU-06": {
+          "id": "1790710872361-d2utbz",
+          "titulo": "Sincro 6 · Your Drink Your Story · pantalla 6 de 6",
+          "src": "https://stock.admira.store/stock/1790710872361-d2utbz/asset.mp4?v=5520216",
+          "ancho": 1080,
+          "alto": 1920,
+          "segundos": 21.16,
+          "stock": 1322
+        }
+      }
+    },
+    {
+      "id": "frappuccino",
+      "tipo": "individual",
+      "nombre": "Frappuccino® · las seis a la vez",
+      "segundos": 6.06,
+      "pieza": {
+        "id": "1790708669463-h7bbpf",
+        "titulo": "Starbucks® Frappuccino® · short 9:16",
+        "src": "https://stock.admira.store/stock/1790708669463-h7bbpf/asset.mp4?v=2515252",
+        "ancho": 1080,
+        "alto": 1920,
+        "segundos": 6.06,
+        "stock": 1310
+      }
+    },
+    {
+      "id": "horchata",
+      "tipo": "individual",
+      "nombre": "Iced Horchata Oatmilk Shaken Espresso · las seis a la vez",
+      "segundos": 8.03,
+      "pieza": {
+        "id": "1790708815665-wmnvht",
+        "titulo": "Starbucks · Iced Horchata Oatmilk Shaken Espresso · short 9:16",
+        "src": "https://stock.admira.store/stock/1790708815665-wmnvht/asset.mp4?v=4741384",
+        "ancho": 1080,
+        "alto": 1920,
+        "segundos": 8.03,
+        "stock": 1312
+      }
+    }
+  ]
+}

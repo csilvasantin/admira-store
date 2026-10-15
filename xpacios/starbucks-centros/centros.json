@@ -1,0 +1,37 @@
+{
+  "schema": "admira.starbucks-centros/1",
+  "nota": "Centros reales de Starbucks (Alsea) con sus pantallas y playlists. Geometría esquemática estimada desde panoramas por el Arquitecto; la correspondencia entre posiciones del modelo y dispositivos físicos sigue pendiente de verificar.",
+  "panoramas": "https://panorama-viewer-d8j.pages.dev/",
+  "centros": [
+    {
+      "id": "pg103",
+      "nombre": "Paseo de Gràcia 103",
+      "ciudad": "Barcelona",
+      "catalogo": "alsea-sbux-021",
+      "identidad": "Figura en el catálogo como alsea-sbux-021.",
+      "geometria": "modelos/paseo-gracia-103.geometry.json",
+      "programas": ["programas/starbucks-pg103-historia-r6.json", "programas/starbucks-pg103-sincroia-mcp.json"],
+      "referencia": { "src": "referencias/paseo-gracia-103.webp", "titulo": "Panorama interior · Paseo de Gràcia 103" },
+      "gemeloPlano": "/xpacios/starbucks-paseo-de-gracia/"
+    },
+    {
+      "id": "d634",
+      "nombre": "Diagonal 634",
+      "ciudad": "Barcelona",
+      "catalogo": null,
+      "identidad": "No aparece en el catálogo consultado. No confundir con L’Illa Diagonal 557 ni con el laboratorio Gran de Gràcia 51 (el panorama original se llama «illia»).",
+      "geometria": "modelos/diagonal-634.geometry.json",
+      "programas": ["programas/starbucks-d634-adaptacion-r1.json"],
+      "referencia": { "src": "referencias/diagonal-634.jpg", "titulo": "Panorama interior · Diagonal 634" }
+    },
+    {
+      "id": "gdg51",
+      "nombre": "Gran de Gràcia 51",
+      "ciudad": "Barcelona",
+      "catalogo": null,
+      "identidad": "Laboratorio de AdmiraNeXT, no es un local de Starbucks. Tiene su propio gemelo 3D desde el plano.",
+      "enlace": "/xpacios/gran-de-gracia-51/",
+      "pendiente": "La playlist de la campaña para Gran de Gràcia 51 está hecha para 4 pantallas horizontales y 2 verticales; el plano del laboratorio tiene 4 verticales y 2 horizontales. Hasta casar los formatos no se reproduce aquí para no deformar ni recortar."
+    }
+  ]
+}
