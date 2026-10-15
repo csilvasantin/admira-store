@@ -81,7 +81,7 @@ test('las ventanas se mueven, cambian de tamaño, se cierran y vuelven desde el 
 
 test('Diagonal es un clon de Paseo de Gràcia en el mostrador: TPV con el hilo musical e iPad con la gestión de colas', async () => {
   const d634 = centros.find(c => c.id === 'd634').panorama;
-  assert.deepEqual(d634.piezas.filter(p => p.tipo !== 'eink').map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad']]);
+  assert.deepEqual(d634.piezas.filter(p => p.tipo !== 'eink').map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad'], ['D634-KIOSKO', 'kiosko']]);
   for (const p of d634.piezas) assert.equal(p.esquinas.length, 4);
   const html = readFileSync(aqui('./index.html'), 'utf8');
   assert.match(html, /window\.XpaceStarbucks=window\.XpaceStarbucks\|\|\{active:\(\)=>document\.documentElement\.dataset\.panorama==='1'\}/);
@@ -129,4 +129,39 @@ test('Paseo de Gràcia 103 igual: sus 6 pantallas, el TPV y el iPad (horizontal)
   assert.deepEqual(pg.piezas.map(p => [p.id, p.tipo, !!p.horizontal]), [['PG103-TPV', 'tpv', false], ['PG103-IPAD', 'ipad', true]]);
   for (const p of [...pg.pantallas, ...pg.piezas]) for (const [x, y] of p.esquinas) assert.ok(x >= 0 && x < 8192 && y > 0 && y < 4096, p.id);
   assert.match(readFileSync(aqui('./cola-ipad.mjs'), 'utf8'), /const W = horizontal \? 1024 : ANCHO, H = horizontal \? 768 : ALTO;/);
+});
+
+test('cada local con su cola: Diagonal pide y ve sus pedidos en su sala, Paseo de Gràcia en la suya', async () => {
+  const sala = id => centros.find(c => c.id === id).panorama.piezas.filter(p => p.cola).map(p => [p.id, p.cola]);
+  assert.deepEqual(sala('d634'), [['D634-IPAD', 'starbucks-diagonal-634'], ['D634-KIOSKO', 'starbucks-diagonal-634']]);
+  assert.deepEqual(sala('pg103'), [['PG103-IPAD', 'starbucks-paseo-de-gracia']]);
+  assert.match(visor, /crearColaIPad\(\{ horizontal: !!p\.horizontal, sala: p\.cola \|\| null \}\)/);
+  const { crearColaIPad } = await import('./cola-ipad.mjs');
+  const pedidas = [], ctx = new Proxy({}, { get: () => () => {} });
+  const doc = { createElement: () => ({ getContext: () => ctx }) };
+  const gestor = { sala: s => pedidas.push(s), data: () => ({ recibido: [], preparando: [{ numero: 'A001' }], listo: [] }), open: () => pedidas.push('abierto') };
+  const ipad = crearColaIPad({ doc, cola: () => gestor, sala: 'starbucks-diagonal-634' });
+  assert.equal(ipad.pedidos, 1); assert.equal(ipad.abrir(), true);
+  assert.ok(pedidas.includes('abierto') && pedidas.filter(s => s !== 'abierto').every(s => s === 'starbucks-diagonal-634'), 'el gestor lee y abre la sala del local');
+});
+
+test('el quiosco de pedidos de la pared de Diagonal: el de Paseo de Gràcia con su sala, y avisa de cada pedido', async () => {
+  const k = centros.find(c => c.id === 'd634').panorama.piezas.find(p => p.tipo === 'kiosko');
+  assert.equal(k.esquinas.length, 4);
+  const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = k.esquinas;
+  assert.ok(x0 > 6105 && x1 < 6440 && y0 > 1695 && y3 < 2235, 'dentro de la pared oscura, entre la cristalera y la columna');
+  assert.ok(Math.abs(((y3 - y0 + y2 - y1) / 2) / ((x1 - x0 + x2 - x3) / 2) - 16 / 9) < 0.1, 'vertical 9:16, como el tótem');
+  const { urlKiosko, pedidoDe } = await import('./kiosko.mjs');
+  const u = new URL(urlKiosko({ sala: k.cola }));
+  assert.equal(u.origin + u.pathname, 'https://www.ainimation.studio/xperiencias/kiosko-pedido/');
+  assert.deepEqual(Object.fromEntries(u.searchParams), { store: 'starbucks-diagonal-634', marca: 'starbucks', lang: 'es', host: 'gemelo', formato: 'vertical', w: '1080', h: '1920' });
+  const tote = readFileSync(aqui('../../admira-xp/scripts/totem-kiosko.js'), 'utf8');
+  assert.ok(tote.includes("KIOSK_BASE='https://www.ainimation.studio/xperiencias/kiosko-pedido/'"), 'el mismo quiosco que el tótem de Paseo de Gràcia');
+  const marco = {}, msg = (origin, data, source = marco) => ({ origin, data, source });
+  const order = { id: 'k1', number: 'A012', store: 'starbucks-diagonal-634' };
+  assert.deepEqual(pedidoDe(msg('https://www.ainimation.studio', { source: 'ainimation-xperiencia', event: 'order', order }), marco), order);
+  assert.equal(pedidoDe(msg('https://example.com', { source: 'ainimation-xperiencia', event: 'order', order }), marco), null);
+  assert.equal(pedidoDe(msg('https://www.ainimation.studio', { source: 'ainimation-xperiencia', event: 'order', order }, {}), marco), null, 'solo su iframe');
+  assert.equal(pedidoDe(msg('https://www.ainimation.studio', { source: 'ainimation-xperiencia', event: 'ready' }), marco), null);
+  assert.match(visor, /else if \(p\.tipo === 'kiosko'\) texturaPieza\(p\)\.userData\.fuente\.abrir\(\);/);
 });

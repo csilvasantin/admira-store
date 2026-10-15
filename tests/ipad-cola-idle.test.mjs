@@ -37,3 +37,9 @@ test('Matrix overlays the playing video only while orders exist and keeps its if
 test('queue room override validates strict slugs and keeps the legacy option',async()=>{
  for(const [search,expected] of [['?ipadQueueRoom=INVALID%2Froom','starbucks-paseo-de-gracia'],['?cola=starbucks-qa','starbucks-qa'],['','starbucks-paseo-de-gracia']]){const r=runtime({search});await r.poll();assert.ok(r.urls[0].includes('sala='+expected));}
 });
+test('each venue fixes its own room: the old room is forgotten and the new one is read and opened',async()=>{
+ const r=runtime({search:''});r.set({...empty(),listo:[{numero:'A001'}]});await r.poll();assert.equal(r.api.hasOrders(),true);assert.equal(r.api.sala(),'starbucks-paseo-de-gracia');
+ assert.equal(r.api.sala('starbucks-diagonal-634'),'starbucks-diagonal-634');assert.equal(r.api.hasOrders(),false,'the Paseo de Gràcia orders do not show in Diagonal');
+ r.set(empty());await r.poll();assert.ok(r.urls.at(-1).includes('sala=starbucks-diagonal-634'));assert.equal(new URL(r.api.url()).searchParams.get('sala'),'starbucks-diagonal-634');assert.equal(new URL(r.api.controlUrl()).searchParams.get('sala'),'starbucks-diagonal-634');
+ assert.equal(r.api.sala('INVALID/room'),'starbucks-paseo-de-gracia');assert.equal(r.api.sala(null),'starbucks-paseo-de-gracia');assert.equal(new URL(r.api.url()).searchParams.get('sala'),null);
+});

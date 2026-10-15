@@ -5,7 +5,10 @@
  * /ipad cola · /ipad off (vuelve a la playlist) · /ipad abrir. Demo: pedidos de ejemplo, pago SIMULADO. */
 (function(root){'use strict';const doc=root.document;if(!doc)return;
   const ID='starbucks-ipad-01',KEY='xpace:ipad-cola';
-  const store=()=>{try{const params=new URLSearchParams(location.search),q=params.get('ipadQueueRoom')||params.get('cola');if(q&&/^[a-z0-9-]{2,80}$/.test(q))return q;}catch(_){}return 'starbucks-paseo-de-gracia';};
+  // Cada local con su sala (Carlos, 16-oct-2026: «pide una cola propia para Diagonal»): el visor de centros la fija
+  // con XpaceIpadCola.sala('starbucks-diagonal-634'); si no, manda la URL y, por defecto, Paseo de Gràcia.
+  const SLUG=/^[a-z0-9-]{2,80}$/;let salaFija=null;
+  const store=()=>{if(salaFija)return salaFija;try{const params=new URLSearchParams(location.search),q=params.get('ipadQueueRoom')||params.get('cola');if(q&&SLUG.test(q))return q;}catch(_){}return 'starbucks-paseo-de-gracia';};
   const pageUrl=()=>colasUrl();
   // Gestor de colas oficial (Carlos, 7-oct-2026): al tocar el iPad se abre admira.tv/gestorColas (pantalla del iPad + control de barra).
   const GC='https://admira.tv/gestorColas',salaQ=()=>store()==='starbucks-paseo-de-gracia'?'':'&sala='+store();
@@ -19,9 +22,10 @@
   let tocado=false;
   const active=()=>{try{return on&&(!!(root.XpaceStarbucks&&root.XpaceStarbucks.active())||!!doc.querySelector('.matrix-landscape-ipad'));}catch(_){return false;}};
   const hasOrders=()=>active()&&!!data&&['recibido','preparando','listo'].some(k=>data[k].length>0);
-  async function tic(){if(!active()||enVuelo)return;enVuelo=true;const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),5000);
-    try{const response=await fetch(GC+'/api/estado?sala='+store()+'&publico=1',{cache:'no-store',signal:ac.signal});if(!response.ok)throw Error('queue');const d=await response.json();
+  async function tic(){if(!active()||enVuelo)return;enVuelo=true;const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),5000),s=store();
+    try{const response=await fetch(GC+'/api/estado?sala='+s+'&publico=1',{cache:'no-store',signal:ac.signal});if(!response.ok)throw Error('queue');const d=await response.json();
       if(d.ok!==true||!['recibido','preparando','listo'].every(k=>Array.isArray(d[k])))throw Error('queue state');
+      if(s!==store())return;
       const ls=d.listo.map(p=>p.numero);if(vistos){ls.forEach(n=>{if(!vistos.has(n))nuevos.set(n,Date.now());});}vistos=new Set(ls);data=d;
     }catch(_){}finally{clearTimeout(timer);enVuelo=false;}}
   setInterval(tic,3000);setTimeout(tic,800);
@@ -122,5 +126,8 @@
   function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → playlist horizontal; con pedidos pasa al gestor de colas. Tócalo para ampliar.'};}
     if(a==='off'||a==='playlist'){on=false;setTimeout(matrixIpad,0);try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
     if(a==='abrir'||a==='open'){abrir(true);return {ok:true,message:colasUrl()};}return {ok:false,message:'/ipad cola · /ipad off · /ipad abrir'};}
-  root.XpaceIpadCola={id:ID,url:colasUrl,sceneUrl:pageUrl,controlUrl,on:()=>active(),hasOrders,open:()=>abrir(true),close:()=>abrir(false),touched:()=>tocado,untouch:()=>{tocado=false;},command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
+  // Cambiar de sala olvida los pedidos de la anterior y lee la nueva al momento. Sin argumento, dice la actual.
+  function sala(v){if(v===undefined)return store();const antes=store();salaFija=v&&SLUG.test(String(v))?String(v):null;
+    if(store()!==antes){data=null;vistos=null;nuevos.clear();if(modal&&modal.classList.contains('on'))abrir(true);setTimeout(tic,0);}return store();}
+  root.XpaceIpadCola={id:ID,sala,url:colasUrl,sceneUrl:pageUrl,controlUrl,on:()=>active(),hasOrders,open:()=>abrir(true),close:()=>abrir(false),touched:()=>tocado,untouch:()=>{tocado=false;},command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
 })(typeof window!=='undefined'?window:globalThis);

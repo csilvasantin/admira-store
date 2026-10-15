@@ -2,11 +2,13 @@
 // clon del Paseo de Gracia»). Usa el gestor del iPad de Paseo de Gràcia 103 (/admira-xp/scripts/ipad-cola.js,
 // window.XpaceIpadCola): la misma sala de admira.tv/gestorColas, sus pedidos y, al tocarlo, el mismo gestor de
 // colas (pantalla del iPad + control de barra). En Diagonal el iPad es vertical y en Paseo de Gràcia, horizontal.
+// Cada local tiene su sala (Carlos, 16-oct-2026: «pide una cola propia para Diagonal»): `sala` la fija en el gestor.
 export const ANCHO = 720, ALTO = 1280;
 const nombre = p => String((p && (p.nombre || p.name)) || '').replace(/[^\p{L} '\-]/gu, '').trim().slice(0, 14);
 const numero = p => String((p && (p.numero || p.number)) ?? '');
 
-export function crearColaIPad({ doc = document, cola = () => globalThis.XpaceIpadCola, horizontal = false } = {}) {
+export function crearColaIPad({ doc = document, cola: gestor = () => globalThis.XpaceIpadCola, horizontal = false, sala = null } = {}) {
+  const cola = () => { const c = gestor(); if (c && c.sala) c.sala(sala); return c; };
   const W = horizontal ? 1024 : ANCHO, H = horizontal ? 768 : ALTO;
   const lienzo = doc.createElement('canvas'); lienzo.width = W; lienzo.height = H;
   const ctx = lienzo.getContext('2d');
@@ -40,5 +42,5 @@ export function crearColaIPad({ doc = document, cola = () => globalThis.XpaceIpa
     ctx.textAlign = 'left';
   }
   pintar();
-  return { lienzo, pintar, abrir() { const c = cola(); if (c && c.open) { c.open(); return true; } return false; }, get pedidos() { const d = cola()?.data?.(); return d ? ['recibido', 'preparando', 'listo'].reduce((n, k) => n + ((d[k] || []).length), 0) : 0; } };
+  return { lienzo, pintar, sala, abrir() { const c = cola(); if (c && c.open) { c.open(); return true; } return false; }, get pedidos() { const d = cola()?.data?.(); return d ? ['recibido', 'preparando', 'listo'].reduce((n, k) => n + ((d[k] || []).length), 0) : 0; } };
 }
