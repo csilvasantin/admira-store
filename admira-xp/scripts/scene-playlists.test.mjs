@@ -66,7 +66,7 @@ test('frames keep their proportion on the physical screen and slices tile withou
  near(SURFACE_ASPECT.ipad,4/3);
 });
 
-function harness({state=null,stored={}}={}){
+function harness({state=null,stored={},physical=true}={}){
  let now=0;const timers=new Map(),intervals=new Map(),videos=[],sequences=[],watches=[],data=new Map(Object.entries(stored));let seq=0;
  class FakeImage{constructor(){FakeImage.made.push(this);this.complete=false;this.naturalWidth=0;this.naturalHeight=0;}set src(value){this.url=value;}}
  FakeImage.made=[];
@@ -78,9 +78,9 @@ function harness({state=null,stored={}}={}){
  const advance=ms=>{const end=now+ms;for(;;){const due=[...timers].filter(([,t])=>t.at<=end).map(([id,t])=>({id,at:t.at,run:()=>{timers.delete(id);t.fn();}})).concat([...intervals].filter(([,t])=>t.next<=end).map(([id,t])=>({id,at:t.next,run:()=>{t.next+=t.ms;t.fn();}}))).sort((a,b)=>a.at-b.at)[0];if(!due)break;now=due.at;due.run();}now=end;};
  const context=()=>{const calls=[];return {calls,save(){},restore(){},drawImage(...args){calls.push(['image',...args]);},fillRect(...args){calls.push(['fill',...args]);},set fillStyle(value){calls.push(['style',value]);}};};
  const seeds={wall:[track('w1'),track('w2')],tpv:[track('t1')],ipad:[track('photo',{kind:'image',url:stock('photo','jpg')})]};
- const runtime=createScenePlaylists({win,doc,storage,watch,sequencer,seeds,mode:()=>win.mode||'individual'});
+ let physicalListener;const runtime=createScenePlaylists({win,doc,storage,watch,watchPhysicalIPad:fn=>{physicalListener=fn;if(physical)fn({tracks:seeds.ipad,error:false});return ()=>{};},sequencer,seeds,mode:()=>win.mode||'individual'});
  const ready=(video,src)=>{video.attrs.src=src;video.readyState=4;video.videoWidth=1080;video.videoHeight=1920;};
- return {runtime,win,videos,sequences,watches,data,advance,context,ready,images:FakeImage.made,set now(value){now=value;}};
+ return {physical:value=>physicalListener(value),runtime,win,videos,sequences,watches,data,advance,context,ready,images:FakeImage.made,set now(value){now=value;}};
 }
 
 test('the schedule stays dormant until a Starbucks screen is drawn and never answers other screens',()=>{
@@ -129,23 +129,23 @@ test('live MCP state replaces tracks, powers screens off and follows shared assi
  assert.equal(h.runtime.draw(ctx,512,768,WALL[0]),true,'an off screen is painted black');assert.deepEqual(ctx.calls.at(-1),['fill',0,0,512,768]);
  assert.equal(h.runtime.get(WALL[0]).kind,'off');
  const groups=h.runtime.state().groups;assert.equal(h.runtime.state().revision,7);
- assert.deepEqual(groups.map(g=>[g.playlistId,g.devices.length]),[['wall',4],['tpv',1],['playlist-a',1]]);
- assert.equal(h.runtime.get(IPAD),null,'empty playlist leaves the illustrative screen');
+ assert.deepEqual(groups.map(g=>[g.playlistId,g.devices.length]),[['wall',4],['tpv',1],['playlist-a',1],['ipad',1]]);
+ assert.equal(h.runtime.get(IPAD).id,'photo','MCP iPad state cannot replace the physical playlist');
  assert.equal(h.runtime.get(WALL[1]).playlistId,'playlist-a');assert.equal(h.sequences.find(s=>s.options.tracks[0].id==='a1').options.loop,false);
  const wall=h.sequences.find(s=>s.calls.includes('replace'));assert.equal(wall.options.tracks[0].url,stable('w9'));
  h.watches[0].onState({...state,revision:8,devicesOff:{},playlists:{...state.playlists,tpv:{managed:true,tracks:[]}}});
- assert.deepEqual(h.runtime.state().groups.map(g=>[g.playlistId,g.devices.length]),[['wall',5],['playlist-a',1]]);
+ assert.deepEqual(h.runtime.state().groups.map(g=>[g.playlistId,g.devices.length]),[['wall',5],['playlist-a',1],['ipad',1]]);
  assert.ok(h.sequences.some(s=>s.calls.at(-1)==='dispose'),'unused clocks are released');
 });
 
-test('the queue manager keeps the iPad while its playlist has no video, as in Matrix',()=>{
+test('active orders temporarily own the iPad and empty queues restore its media',()=>{
  const h=harness();assert.equal(h.runtime.draw(h.context(),1024,768,IPAD),false);
  h.videos[2].poster=h.sequences[2].options.tracks[0].url;assert.equal(h.runtime.draw(h.context(),1024,768,IPAD),false,'the photo is still loading');
  const image=h.images.find(i=>i.url===stable('photo'));assert.ok(image,'image items load through the stable route');assert.equal(image.crossOrigin,'anonymous');
  Object.assign(image,{complete:true,naturalWidth:1600,naturalHeight:1200});
  const ctx=h.context();assert.equal(h.runtime.draw(ctx,1024,768,IPAD),true);assert.equal(ctx.calls.filter(c=>c[0]==='image').length,1,'4:3 photo fills a 4:3 screen without bands');
  assert.equal(h.runtime.get(IPAD).kind,'image');
- h.win.XpaceIpadCola={on:()=>true};assert.equal(h.runtime.draw(h.context(),1024,768,IPAD),false);assert.equal(h.runtime.get(IPAD),null);
+ h.win.XpaceIpadCola={hasOrders:()=>true};assert.equal(h.runtime.draw(h.context(),1024,768,IPAD),false);assert.equal(h.runtime.get(IPAD),null);
  h.win.XpaceIpadCola={on:()=>false};assert.equal(h.runtime.draw(h.context(),1024,768,IPAD),true);
 });
 
@@ -204,4 +204,19 @@ test('the three scenes load the schedule once and keep the documented wiring',()
  for(const name of ['screen-display.mjs','device-layout.mjs','starbucks-demo.mjs','starbucks-ipad.mjs','matrix-remote.mjs']){const spec=module.match(new RegExp("'\\./"+name.replace('.','\\.')+"\\?v=[^']+'"))?.[0];assert.ok(spec&&panorama.includes(spec),name);}
  assert.doesNotMatch(module,/setScreenDisplayMode|localStorage\.setItem\(DEVICE|method:\s*'(?:POST|PUT|DELETE)'/,'read-only on layout, mode and MCP');
  assert.match(read('./playlist-painter.mjs'),/crossOrigin='anonymous'/);assert.match(module,/pagehide',\(\)=>runtime\.rest\(\)/);
+});
+
+test('the iPad follows the physical two-video list despite old MCP media or custom assignments',()=>{
+ const h=harness({state:{revision:3,controls:{},playlists:{ipad:{managed:true,tracks:[track('wrong-photo',{kind:'image'})]}},deviceLayoutRevision:3,deviceLayout:{playlists:{'playlist-old':{title:'Old',tracks:[track('wrong-custom')]}},assignments:{[IPAD]:'playlist-old'}}}});
+ h.runtime.get(IPAD);h.physical({tracks:[track('horizontal-one'),track('horizontal-two')],error:false});
+ const ipad=h.runtime.state().groups.find(g=>g.devices.includes(IPAD));assert.equal(ipad.playlistId,'ipad');assert.equal(ipad.total,2);assert.equal(h.runtime.get(IPAD).id,'horizontal-one');
+ h.physical({tracks:null,error:true});assert.equal(h.runtime.get(IPAD).id,'horizontal-one');
+ h.win.XpaceIpadCola={hasOrders:()=>true};assert.equal(h.runtime.get(IPAD),null);h.win.XpaceIpadCola={hasOrders:()=>false};assert.equal(h.runtime.get(IPAD).id,'horizontal-one');
+});
+
+test('a cold failed physical read cannot display seed or MCP iPad content',()=>{
+ const h=harness({physical:false,state:{revision:4,controls:{},playlists:{ipad:{managed:true,tracks:[track('old-mcp')]}}}});
+ assert.equal(h.runtime.get(IPAD),null);h.physical({tracks:null,error:true});assert.equal(h.runtime.get(IPAD),null);assert.ok(!h.runtime.state().groups.some(g=>g.devices.includes(IPAD)));
+ h.physical({tracks:[track('physical-one'),track('physical-two')],error:false});assert.equal(h.runtime.get(IPAD).id,'physical-one');
+ h.physical({tracks:null,error:true});assert.equal(h.runtime.get(IPAD).id,'physical-one');
 });

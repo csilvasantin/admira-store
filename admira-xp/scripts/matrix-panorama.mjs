@@ -3,7 +3,8 @@ import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3'
 import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=starbucks-defaults-1';
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=una-lectura-1';
 import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=starbucks-defaults-1';
-import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_PLAYLIST,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
+import {watchIPadPlaylist} from './ipad-physical-playlist.mjs?v=shared-ipad-20261015';
+import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {previewSlice} from './device-preview-layout.mjs?v=drop-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV,DEMO_IA,DEMO_MUSIC} from './starbucks-demo.mjs?v=devices-2';
@@ -62,7 +63,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  function showNumbers(visible){deviceEditor?.enable(visible);numberLayer.hidden=!visible;numberButton.setAttribute('aria-pressed',String(visible));}
  showNumbers(getScreenNumbersVisible());const unsubscribeNumbers=subscribeScreenNumbers(showNumbers);
  numberButton.addEventListener('click',()=>setScreenNumbersVisible(null),options);
- let wallPlayback=null,wallTracks=[...DEMO_WALL,...DEMO_CHRISTMAS],tpvTracks=DEMO_TPV,ipadTracks=STARBUCKS_IPAD_PLAYLIST.tracks;
+ let wallPlayback=null,wallTracks=[...DEMO_WALL,...DEMO_CHRISTMAS],tpvTracks=DEMO_TPV,ipadTracks=[];
  const layoutSelect=root.querySelector('[data-screen-layout]');
  function applyScreenLayout(mode=getScreenDisplayMode()){
   layoutSelect.value=mode;
@@ -89,7 +90,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  }});
  const catalog=()=>({wall:{title:t('Pared · Starbucks','Wall · Starbucks'),tracks:wallTracks.filter(t=>demoMode==='christmas'?t.condition==='/navidad':!t.condition)},tpv:{title:t('TPV · Publicidad local','POS · Local advertising'),tracks:tpvTracks},ipad:{title:t('iPad · Publicidad horizontal','iPad · Landscape advertising'),tracks:ipadTracks}});
  function ensurePlaylistMedia(pid){for(const p of model.players){if(!DEVICE_IDS.includes(p.id)||!nodes.has(p.id))continue;const config=deviceEditor?.config||emptyDeviceLayout();if(pid?assignedPlaylist(config,p.id)!==pid:!config.assignments[p.id])continue;const kind=[tpvId,STARBUCKS_IPAD_ID].includes(p.id)?'tpvVideo':'wallVideo';if(!previews.get(p.id)?.dataset[kind])mediaFor(p,kind);}}
- function updateRuntime(){ensurePlaylistMedia();runtime.update({devices:[...previews].filter(([id,v])=>DEVICE_IDS.includes(id)&&!incidents?.off.has(id)&&!(demoMode==='ia'&&wallIds.has(id))&&v.tagName==='VIDEO'&&(v.dataset.wallVideo||v.dataset.tpvVideo)).map(([id,video])=>({id,video})),config:deviceEditor?.config||emptyDeviceLayout(),catalog:catalog()});applyScreenLayout();}
+ function updateRuntime(){ensurePlaylistMedia();runtime.update({devices:[...previews].filter(([id,v])=>DEVICE_IDS.includes(id)&&!incidents?.off.has(id)&&!(demoMode==='ia'&&wallIds.has(id))&&v.tagName==='VIDEO'&&(v.dataset.wallVideo||v.dataset.tpvVideo)).map(([id,video])=>({id,video})),config:{...(deviceEditor?.config||emptyDeviceLayout()),assignments:{...(deviceEditor?.config?.assignments||{}),[STARBUCKS_IPAD_ID]:'ipad'}},catalog:catalog()});applyScreenLayout();}
  function updateDeviceLabels(){for(const [id,badge] of numberNodes){const pid=assignedPlaylist(deviceEditor.config,id);badge.querySelector('small').textContent=deviceEditor.config.playlists[pid]?.title||(pid==='ipad'?t('Horizontal','Landscape'):pid==='tpv'?t('Publicidad local','Local advertising'):screenGroup(screenNumber(id))?t('Grupo ','Group ')+screenGroup(screenNumber(id)):t('Sola','Standalone'));}}
  const previewTracks=new Map();
  async function previewDevices(ids,track){for(const id of ids)previewTracks.set(id,track);if(demoMode==='ia')await setDemoMode('linear');for(const id of ids){const p=model.players.find(p=>p.id===id);if(p&&nodes.has(id)&&!previews.get(id)?.dataset[[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo'])mediaFor(p,[tpvId,STARBUCKS_IPAD_ID].includes(id)?'tpvVideo':'wallVideo');}updateRuntime();const result=await runtime.preview(ids,track);applyScreenLayout();return result;}
@@ -267,9 +268,9 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
  const toolbar=root.querySelector('.matrix-map-toolbar');
  for(const type of ['click','keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'])toolbar.addEventListener(type,e=>e.stopPropagation(),options);
  document.querySelector('#telegramDock .tg-actions')?.append(toolbar);
- let stopRemote=()=>{};
+ let stopRemote=()=>{},stopIPad=()=>{},ipadLoaded=false;
  stopLanguage=copy.observe([root,toolbar]);
- const dispose=()=>{if(disposed)return;disposed=true;screenLight.dispose();wallAvatar.dispose();personAnnouncements.dispose();speakerLocutions.dispose();posExperience.dispose();stopLanguage();mappingWindow.dispose();delete window.XpaceStarbucksDemo;delete window.XpaceMatrixOptions;iaPlayback?.dispose();incidents.dispose();deviceEditor.dispose();runtime.dispose();announcement.dispose();announcementAudio.remove();stopRemote();stopWall();stopTPV();controls.abort();clearInterval(musicPoll);unsubscribeMusic();unsubscribeLayout();unsubscribeNumbers();music.mute();cancelAnimationFrame(frame);observer?.disconnect();for(const id of previews.keys())destroyPreview(id);geometry?.dispose();material?.dispose();texture?.dispose();renderer?.dispose();toolbar.remove();root.replaceChildren();};
+ const dispose=()=>{if(disposed)return;disposed=true;screenLight.dispose();wallAvatar.dispose();personAnnouncements.dispose();speakerLocutions.dispose();posExperience.dispose();stopLanguage();mappingWindow.dispose();delete window.XpaceStarbucksDemo;delete window.XpaceMatrixOptions;iaPlayback?.dispose();incidents.dispose();deviceEditor.dispose();runtime.dispose();announcement.dispose();announcementAudio.remove();stopRemote();stopIPad();stopWall();stopTPV();controls.abort();clearInterval(musicPoll);unsubscribeMusic();unsubscribeLayout();unsubscribeNumbers();music.mute();cancelAnimationFrame(frame);observer?.disconnect();for(const id of previews.keys())destroyPreview(id);geometry?.dispose();material?.dispose();texture?.dispose();renderer?.dispose();toolbar.remove();root.replaceChildren();};
  let observer,snapshotFn=null;
  signal?.addEventListener('abort',dispose,{once:true});
  try{
@@ -298,10 +299,11 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
    const gl=renderer.domElement,c=document.createElement('canvas');c.width=gl.width;c.height=gl.height;try{c.getContext('2d').drawImage(gl,0,0);}catch{return null;}renderKey='';return {canvas:c,scale:gl.width/Math.max(1,surface.clientWidth),quad:pts,node:nodes.get(id)||null};};
   draw();startWall();startTPV();const ipad=model.players.find(p=>p.id===STARBUCKS_IPAD_ID);if(ipad){mediaFor(ipad,'tpvVideo');updateRuntime();}
   let remoteState=null;
+  stopIPad=watchIPadPlaylist(value=>{if(disposed||value.tracks===null)return;ipadTracks=value.tracks;updateRuntime();if(!ipadLoaded){ipadLoaded=true;runtime.setPlaying([STARBUCKS_IPAD_ID],true);}deviceEditor.refresh();});
   stopRemote=watchMatrixState({onState:state=>{
    deviceEditor.remote(state);if(state.playlists.sincroIA&&JSON.stringify(iaTracks)!==JSON.stringify(state.playlists.sincroIA.tracks)){iaTracks=state.playlists.sincroIA.tracks;if(demoMode==='ia')void setDemoMode('ia');}
    if(state.devicesOff)for(const [id,value] of Object.entries(state.devicesOff)){if(!remoteState||state.devicesOffRevision?.[id]!==remoteState.devicesOffRevision?.[id])incidents.remote(id,value);}
-   for(const channel of ['wall','tpv','ipad','music']){
+   for(const channel of ['wall','tpv','music']){
     const playlist=state.playlists[channel],old=remoteState?.playlists[channel];
     if(!playlist?.managed||JSON.stringify(playlist)===JSON.stringify(old))continue;
     if(channel==='wall'){wallTracks=playlist.tracks;wallPlayback?.replaceTracks(wallTracks);}

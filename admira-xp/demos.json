@@ -504,12 +504,12 @@
     "queue"
    ],
    "name": {
-    "es": "iPad · gestor de colas",
-    "en": "iPad · queue manager"
+    "es": "iPad · playlist y colas",
+    "en": "iPad · playlist and queue"
    },
    "shows": {
-    "es": "El iPad del mostrador con la cola de pedidos (Admirito si está vacía) y el gestor abierto en grande.",
-    "en": "The counter iPad with the order queue (Admirito when empty) and the manager opened large."
+    "es": "Playlist horizontal del iPad real; los pedidos activos muestran la cola y al vaciarse vuelven los vídeos.",
+    "en": "The physical iPad landscape playlist; active orders show the queue and emptying it restores videos."
    },
    "command": "/ipad cola · /ipad abrir",
    "duration_s": 15,

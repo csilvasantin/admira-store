@@ -1,31 +1,35 @@
 /* iPad del mostrador de Starbucks = gestor de colas (7-oct-2026, Carlos). Tres fases: recibido → en preparación → preparado.
  * El dispositivo virtual starbucks-ipad-01 (horizontal, 1024×768) pinta en la escena la pantalla de la cola
- * de ainimation (Admirito + «¡Listo para recoger!» con nombres + «En preparación»). Es una vista previa:
- * al pulsarla se abre en grande la página real https://www.ainimation.studio/cola/ipad.html (4:3), como el
- * avatar y el quiosco del tótem. Un previo arrastrado al iPad (Pixeria) manda sobre la cola.
+ * de Admira TV (Admirito + «¡Listo para recoger!» con nombres + «En preparación»).
+ * Al pulsarla se abre https://admira.tv/gestorColas/pantalla/ (4:3), como el quiosco del tótem. La cola activa se superpone a la playlist del iPad físico; sin pedidos vuelve a los vídeos.
  * /ipad cola · /ipad off (vuelve a la playlist) · /ipad abrir. Demo: pedidos de ejemplo, pago SIMULADO. */
 (function(root){'use strict';const doc=root.document;if(!doc)return;
-  const ID='starbucks-ipad-01',KEY='xpace:ipad-cola',RELAY='https://mcp-ainimation.admira.store';
-  const store=()=>{try{const q=new URLSearchParams(location.search).get('cola');if(q)return q.replace(/[^a-z0-9-]/g,'').slice(0,80);}catch(_){}return 'starbucks-paseo-de-gracia';};
-  const pageUrl=()=>'https://www.ainimation.studio/cola/ipad.html?store='+store();
+  const ID='starbucks-ipad-01',KEY='xpace:ipad-cola';
+  const store=()=>{try{const params=new URLSearchParams(location.search),q=params.get('ipadQueueRoom')||params.get('cola');if(q&&/^[a-z0-9-]{2,80}$/.test(q))return q;}catch(_){}return 'starbucks-paseo-de-gracia';};
+  const pageUrl=()=>colasUrl();
   // Gestor de colas oficial (Carlos, 7-oct-2026): al tocar el iPad se abre admira.tv/gestorColas (pantalla del iPad + control de barra).
   const GC='https://admira.tv/gestorColas',salaQ=()=>store()==='starbucks-paseo-de-gracia'?'':'&sala='+store();
   const audioOff=()=>{try{return root.localStorage.getItem('xpace:cola-audio')==='off';}catch(_){return false;}};
   const colasUrl=()=>GC+'/pantalla/?marca=starbucks'+salaQ()+'&voz=0',controlUrl=()=>GC+'/?marca=starbucks'+salaQ();
   let on=true;try{on=root.localStorage.getItem(KEY)!=='off';}catch(_){}
   let down=null,last=0;const dbg=(how,e,x)=>{try{root.__ipadColaDebug={how,x,t:new Date().toISOString(),at:[e&&e.clientX,e&&e.clientY],top:(doc.elementsFromPoint(e.clientX,e.clientY)||[]).slice(0,4).map(n=>n.tagName+'.'+String(n.className).slice(0,40))};}catch(_){}};
-  let data=null,nuevos=new Map(),vistos=null,modal=null;
+  let data=null,enVuelo=false,nuevos=new Map(),vistos=null,modal=null;
   // Presentación Alsea (Carlos, 7-oct-2026): el botón «Abrir gestor de colas» no sale por defecto;
   // aparece cuando ya se ha interactuado con el iPad (abierto una vez por toque, doble clic o /ipad abrir).
   let tocado=false;
   const active=()=>{try{return on&&(!!(root.XpaceStarbucks&&root.XpaceStarbucks.active())||!!doc.querySelector('.matrix-landscape-ipad'));}catch(_){return false;}};
-  async function tic(){if(!active())return;try{const d=await (await fetch(RELAY+'/cola/estado?store='+store(),{cache:'no-store'})).json();
-    const ls=(d.listo||[]).map(p=>p.numero);if(vistos){ls.forEach(n=>{if(!vistos.has(n))nuevos.set(n,Date.now());});}vistos=new Set(ls);data=d;}catch(_){}}
+  const hasOrders=()=>active()&&!!data&&['recibido','preparando','listo'].some(k=>data[k].length>0);
+  async function tic(){if(!active()||enVuelo)return;enVuelo=true;const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),5000);
+    try{const response=await fetch(GC+'/api/estado?sala='+store()+'&publico=1',{cache:'no-store',signal:ac.signal});if(!response.ok)throw Error('queue');const d=await response.json();
+      if(d.ok!==true||!['recibido','preparando','listo'].every(k=>Array.isArray(d[k])))throw Error('queue state');
+      const ls=d.listo.map(p=>p.numero);if(vistos){ls.forEach(n=>{if(!vistos.has(n))nuevos.set(n,Date.now());});}vistos=new Set(ls);data=d;
+    }catch(_){}finally{clearTimeout(timer);enVuelo=false;}}
   setInterval(tic,3000);setTimeout(tic,800);
   // Modo demo (Carlos, 7-oct-2026): frases simpáticas en español de España invitando a pedir en el quiosco.
   const FRASES=['¡Hola! Soy Admirito, la nube más cafetera de Paseo de Gracia','¿Un café? Pídelo en el quiosco y te llamo por tu nombre','Hoy el Caffè Latte está de rechupete, ¡palabra de nube!','Toca el quiosco, elige y paga con el móvil: yo te aviso aquí','Si llueve, que sea de cookies','Pide en el quiosco y escribe tu nombre: me encanta decirlo alto','Un cortado, un latte, un té… ¡venga, pide!'];
   const nom=s=>String(s||'').replace(/[^\p{L} '\-]/gu,'').trim().slice(0,14);
   function drawCola(ctx,w,h){
+    if(!hasOrders())return false;
     ctx.save();ctx.fillStyle='#1E3932';ctx.fillRect(0,0,w,h);
     ctx.textBaseline='middle';
     // Admirito (nube) a la izquierda; sin pedidos pendientes hace gracias (modo demo)
@@ -55,10 +59,11 @@
     ctx.fillStyle='#ffffffaa';ctx.font='bold 26px Inter,system-ui,sans-serif';ctx.fillText('🧾 Recibido',x0,Math.max(y,250)+120);ctx.font='bold 30px Inter,system-ui,sans-serif';ctx.fillText((d.recibido||[]).slice(0,5).map(p=>p.numero).join('  ')||'—',x0,Math.max(y,250)+164,w-x0-24);
     ctx.fillStyle='#FFE58A';ctx.fillRect(0,h-26,w,26);ctx.fillStyle='#3A2E00';ctx.font='bold 17px Inter,system-ui,sans-serif';ctx.fillText('DEMO · pago SIMULADO · toca para abrir el gestor de colas',w*.52,h-13);
     ctx.restore();return true;}
-  // Engancha el pintado de pantallas: el previo de Pixeria (si lo hay) manda; si no, la cola.
+  // La cola activa ocupa el iPad; vacío conserva su playlist, apagado conserva negro.
   function hook(){const M=root.XpaceScreenMedia;if(!M||M.__cola)return !!M;const get=M.get,draw=M.draw;
-    M.get=id=>get(id)||(id===ID&&active()?{id:'cola-ipad',kind:'web-app',app:'gestorColas',url:colasUrl(),control:controlUrl()}:null);
-    M.draw=(ctx,w,h,id)=>draw(ctx,w,h,id)||(id===ID&&active()?drawCola(ctx,w,h):false);M.__cola=true;return true;}
+    const owns=id=>id===ID&&hasOrders()&&get(id)?.kind!=='off';
+    M.get=id=>owns(id)?{id:'cola-ipad',kind:'web-app',app:'gestorColas',url:colasUrl(),control:controlUrl()}:get(id);
+    M.draw=(ctx,w,h,id)=>owns(id)?drawCola(ctx,w,h):draw(ctx,w,h,id);M.__cola=true;return true;}
   if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t);},500);}
   function ensure(){if(modal)return;const css=doc.createElement('style');
     css.textContent='#ipadColaModal{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(0,0,0,.6);z-index:2147483000;display:none;align-items:center;justify-content:center}#ipadColaModal.on{display:flex}#ipadColaModal::backdrop{background:transparent}.ipad-cola-hit{position:absolute;inset:0;z-index:50;pointer-events:auto;cursor:pointer;background:transparent}#ipadColaModal .wrap{position:relative;width:min(92vw,calc(88vh*4/3));aspect-ratio:4/3;border:14px solid #111;border-radius:30px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}#ipadColaModal iframe{width:100%;height:100%;border:0;border-radius:16px;background:#1E3932}#ipadColaModal .bar{position:absolute;left:0;right:0;bottom:-58px;display:flex;gap:10px;justify-content:center}#ipadColaModal .bar a{background:#00704A;color:#fff;font:700 15px system-ui;padding:10px 16px;border-radius:999px;text-decoration:none}#ipadColaModal .bar a.c{background:#fff;color:#1E3932}#ipadColaChip{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:9400;display:none;background:#00704A;color:#fff;border:0;border-radius:999px;padding:9px 16px;font:700 14px system-ui;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#ipadColaChip.on{display:block}#ipadColaModal .x{position:absolute;top:-26px;right:-26px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font:700 20px system-ui;cursor:pointer}';
@@ -101,11 +106,11 @@
     const nodes=doc.querySelectorAll('.matrix-landscape-ipad');
     nodes.forEach(node=>{
       let fr=node.querySelector('iframe.ipad-cola-frame');
-      const otro=[...node.querySelectorAll('.matrix-player-media')].some(m=>m!==fr&&((m.tagName==='VIDEO'&&(m.currentSrc||m.getAttribute('src')))||m.tagName==='IMG'||(m.tagName==='IFRAME'&&!m.classList.contains('ipad-cola-frame'))));
-      if(!on||otro){ if(fr){fr.remove();node.classList.remove('ipad-cola-on');} const hh=node.querySelector('.ipad-cola-hit');if(hh&&!on)hh.remove(); return; }
+      if(!hasOrders()||node.classList.contains('device-off')){if(fr)fr.style.display='none';node.classList.remove('ipad-cola-on');const hh=node.querySelector('.ipad-cola-hit');if(hh)hh.remove();return;}
+      if(fr)fr.style.display='';node.classList.add('ipad-cola-on');
       if(!fr){ fr=doc.createElement('iframe');fr.className='ipad-cola-frame';fr.title='iPad del mostrador · gestor de colas';fr.setAttribute('tabindex','-1');fr.setAttribute('aria-hidden','true');
-        fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#1E3932;pointer-events:none;z-index:1';
-        fr.src=pageUrl()+'&escena=1&v=ipad-idle-20261007';node.prepend(fr);node.classList.add('ipad-cola-on');
+        fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#1E3932;pointer-events:none;z-index:4';
+        fr.src=pageUrl()+'&escena=1&v=ipad-shared-20261015';node.prepend(fr);node.classList.add('ipad-cola-on');
          }
       node.style.pointerEvents=(doc.body.classList.contains('device-layout-active')||doc.documentElement.classList.contains('device-layout-active'))?'':'auto';node.style.cursor='pointer';
       if(on&&!node.querySelector('.ipad-cola-hit')){const h=doc.createElement('div');h.className='ipad-cola-hit';h.title='Toca para abrir el gestor de colas';const go=e=>{if(enLayout())return;e.stopPropagation();e.preventDefault();if(Date.now()-last<600)return;last=Date.now();dbg('matrix-overlay',e);abrir(true);};h.addEventListener('pointerdown',e=>e.stopPropagation());h.addEventListener('pointerup',go);h.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();});node.appendChild(h);}
@@ -114,8 +119,8 @@
     try{root.__ipadColaMatrix=nodes.length;}catch(_){}
   }
   setInterval(matrixIpad,1500);
-  function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → gestor de colas (Admirito). Tócalo para abrirlo en grande.'};}
+  function command(a){a=String(a||'').trim().toLowerCase();if(!a||a==='cola'||a==='on'){on=true;try{root.localStorage.removeItem(KEY);}catch(_){}return {ok:true,message:'🧾 iPad del mostrador → playlist horizontal; con pedidos pasa al gestor de colas. Tócalo para ampliar.'};}
     if(a==='off'||a==='playlist'){on=false;setTimeout(matrixIpad,0);try{root.localStorage.setItem(KEY,'off');}catch(_){}return {ok:true,message:'📺 iPad del mostrador → su playlist de vídeo.'};}
     if(a==='abrir'||a==='open'){abrir(true);return {ok:true,message:colasUrl()};}return {ok:false,message:'/ipad cola · /ipad off · /ipad abrir'};}
-  root.XpaceIpadCola={id:ID,url:colasUrl,sceneUrl:pageUrl,controlUrl,on:()=>active(),open:()=>abrir(true),close:()=>abrir(false),touched:()=>tocado,untouch:()=>{tocado=false;},command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
+  root.XpaceIpadCola={id:ID,url:colasUrl,sceneUrl:pageUrl,controlUrl,on:()=>active(),hasOrders,open:()=>abrir(true),close:()=>abrir(false),touched:()=>tocado,untouch:()=>{tocado=false;},command,draw:drawCola,data:()=>data,demo:()=>{const d=data||{};return !['recibido','preparando','listo'].some(k=>Array.isArray(d[k])&&d[k].length);},frases:FRASES};
 })(typeof window!=='undefined'?window:globalThis);

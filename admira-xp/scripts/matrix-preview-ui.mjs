@@ -1,4 +1,4 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=pantallas-vivas-1';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=shared-ipad-20261015';
 import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
 const listeners=new Set();
 let dialog,dispose,controller,hud,requestId,lastFocus,busy=false,viewError='';

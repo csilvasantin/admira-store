@@ -1,15 +1,15 @@
 {
-  "version": "v.14.10.2026.r7.18:48",
-  "deployedAt": "2026-10-14T16:48:19Z",
-  "deployer": "NeoMacStudio",
-  "machine": "MacStudio",
-  "signature": "NeoMacStudio · MacStudio",
+  "version": "v.15.10.2026.r1.10:23",
+  "deployedAt": "2026-10-15T10:23:06.837942+02:00",
+  "deployer": "TrinityMBP14",
+  "machine": "MacBookProNegro14",
+  "signature": "TrinityMBP14 · MacBookProNegro14",
   "git": "9a921cfdf13a6962927a876a67723fd546f8f19a",
   "gitShort": "9a921cf",
   "gitFull": "9a921cfdf13a6962927a876a67723fd546f8f19a",
   "dirty": false,
   "novedades": [
-    "Laboratorio: la mesa larga llega al final de la pared y se junta en L con la otra, y la nevera mira a la sala con la espalda en los paneles 3D, como en las fotos.",
-    "Starbucks: las pantallas que emiten en vivo en admira.tv (las tres del Mac Studio) se ven en vivo aunque el mural se monte después; las demás siguen en el mural."
+    "Starbucks: el iPad virtual reproduce la misma playlist horizontal que el iPad real, con los dos vídeos de demo, sin importar otros contenidos.",
+    "Starbucks: los pedidos activos muestran la gestión de colas; al recoger el último vuelven los vídeos. El hilo musical conserva su programación."
   ]
 }
