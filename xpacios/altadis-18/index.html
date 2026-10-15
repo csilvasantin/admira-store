@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="admiranext-version" content="v.15.10.2026.r8.12:28">
+<title>Altadis · 18 espacios tipo · gemelos 3D · XpaceOS</title>
+<meta name="description" content="Los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks: gemelo 3D desde su plano con el contenido adaptado a ese formato reproduciéndose en sus pantallas.">
+<meta name="theme-color" content="#0f1416">
+<link rel="canonical" href="https://www.admira.store/xpacios/altadis-18/">
+<link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
+<link rel="stylesheet" href="./altadis.css?v=a18-4">
+<script>(function(){var en=new URLSearchParams(location.search).get('lang')==='en';document.documentElement.lang=en?'en':'es';})();
+window.XPACE_SHELL={section:{es:'Xpacios · Altadis 18',en:'Xpaces · Altadis 18'},
+options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'https://admira.studio/adaptaciones/',es:'Adaptaciones · admira.studio',en:'Adaptations · admira.studio',newTab:true},{href:'https://www.admira.biz/arquitecto.html',es:'El Arquitecto · admira.biz',en:'The Architect · admira.biz',newTab:true}],
+advanced:[{id:'a18-galeria',es:'Galería de los 18',en:'Gallery of the 18'},{id:'a18-encuadre',es:'Vista · encuadre de las pantallas',en:'View · screen framing'},{id:'a18-sala',es:'Vista · órbita de la sala',en:'View · room orbit'},{id:'a18-puerta',es:'Vista · desde la puerta',en:'View · from the door'},{id:'a18-xtanco',es:'Espacios · Xtanco',en:'Spaces · Xtanco'},{id:'a18-cafe',es:'Espacios · Starbucks',en:'Spaces · Starbucks'},{id:'a18-recorrido',es:'Recorrido automático (12 s)',en:'Auto tour (12 s)'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261014-gdg51-1">
+<script defer src="/assets/xpace-shell.js?v=20261014-gdg51-1"></script>
+<script type="module" src="./visor.mjs?v=a18-4"></script>
+</head>
+<body>
+<header data-shell-replace><a href="/xpacios/" data-shell-slot="options">Todos los Xpacios</a></header>
+<main id="a18" data-modo="galeria" aria-label="Los 18 espacios Altadis">
+  <section id="galeria" aria-labelledby="galeria-h1">
+    <div class="cabecera">
+      <p class="eyebrow" data-es="ALTADIS · ESPACIOS TIPO · GEMELOS 3D" data-en="ALTADIS · MODEL SPACES · 3D TWINS">ALTADIS · ESPACIOS TIPO · GEMELOS 3D</p>
+      <h1 id="galeria-h1" data-es="Un espacio para cada formato de pantalla" data-en="A space for every screen format">Un espacio para cada formato de pantalla</h1>
+      <p class="lead" id="galeria-titulo">18 espacios tipo · uno por formato de Altadis</p>
+      <p class="lead2" data-es="Cada formato de Altadis en un estanco (Xtanco) y en una cafetería Starbucks, con su contenido adaptado reproduciéndose en sus pantallas. Elige uno para verlo en 3D; ← y → recorren los 18." data-en="Every Altadis format in a tobacconist (Xtanco) and in a Starbucks café, with its adapted content playing on its screens. Pick one to see it in 3D; ← and → step through the 18.">Cada formato de Altadis en un estanco (Xtanco) y en una cafetería Starbucks, con su contenido adaptado reproduciéndose en sus pantallas. Elige uno para verlo en 3D; ← y → recorren los 18.</p>
+      <div class="conmutadores">
+        <span class="grupo" role="group" aria-label="Tipo de espacio · Space type"><button type="button" data-tipo="xtanco" aria-pressed="true">Xtanco</button><button type="button" data-tipo="cafe" aria-pressed="false">Starbucks</button></span>
+        <span class="grupo" role="group" aria-label="Idioma · Language"><button type="button" data-lang="es" aria-pressed="true">ES</button><button type="button" data-lang="en" aria-pressed="false">EN</button></span>
+        <button type="button" data-recorrido aria-pressed="false">▶ Recorrido automático</button>
+      </div>
+      <p id="fuentes" class="fuente"></p>
+    </div>
+    <ol id="tarjetas" class="tarjetas" aria-label="Formatos"></ol>
+  </section>
+  <section id="espacio" hidden aria-label="Gemelo 3D del espacio">
+    <canvas id="lienzo3d" tabindex="0" aria-label="Espacio en 3D · arrastra para girar y rueda para acercar"></canvas>
+    <aside id="ficha" class="ficha" aria-labelledby="f-nombre">
+      <p class="eyebrow" id="f-eyebrow">ALTADIS</p>
+      <h1 id="f-nombre">…</h1>
+      <p id="f-uso" class="uso"></p>
+      <dl id="f-datos"></dl>
+      <p class="botones"><a id="f-studio" class="boton primario" href="https://admira.studio/adaptaciones/" target="_blank" rel="noopener" data-es="Crear y adaptar en admira.studio ↗" data-en="Create and adapt in admira.studio ↗">Crear y adaptar en admira.studio ↗</a><a id="f-arquitecto" class="boton" href="https://www.admira.biz/arquitecto.html" target="_blank" rel="noopener" data-es="Plano en el Arquitecto ↗" data-en="Plan in the Architect ↗">Plano en el Arquitecto ↗</a></p>
+      <p id="f-contenido" class="fuente"></p>
+      <p id="f-plano" class="fuente"></p>
+    </aside>
+    <p id="hud" role="status"></p>
+    <nav id="controles" aria-label="Controles del espacio">
+      <button type="button" id="a-galeria" data-es="← Galería" data-en="← Gallery">← Galería</button>
+      <button type="button" data-paso="-1" aria-label="Formato anterior · previous format" title="←">◀</button>
+      <span id="n-actual" class="n"></span>
+      <button type="button" data-paso="1" aria-label="Formato siguiente · next format" title="→">▶</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button type="button" data-vista="encuadre" aria-pressed="true" data-es="Encuadre" data-en="Framing">Encuadre</button>
+      <button type="button" data-vista="sala" aria-pressed="false" data-es="Órbita" data-en="Orbit">Órbita</button>
+      <button type="button" data-vista="puerta" aria-pressed="false" data-es="Desde la puerta" data-en="From the door">Desde la puerta</button>
+      <span class="sep" aria-hidden="true"></span>
+      <span class="grupo" role="group" aria-label="Tipo de espacio · Space type"><button type="button" data-tipo="xtanco">Xtanco</button><button type="button" data-tipo="cafe">Starbucks</button></span>
+      <span class="grupo" role="group" aria-label="Idioma · Language"><button type="button" data-lang="es">ES</button><button type="button" data-lang="en">EN</button></span>
+      <button type="button" data-recorrido aria-pressed="false">▶ Recorrido automático</button>
+    </nav>
+  </section>
+  <p id="estado" role="status">Preparando los 18 espacios…</p>
+  <noscript><p class="noscript">Los gemelos 3D necesitan JavaScript y WebGL.</p></noscript>
+</main>
+</body>
+</html>

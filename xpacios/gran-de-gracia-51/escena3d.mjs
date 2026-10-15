@@ -3,7 +3,7 @@
 // pantallas con su captura, players y webcam. Three.js r160 del propio sitio
 // (admira-xp/scripts/premium-three.mjs, el mismo de Better/Best y de SneakerStore).
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { pointOnWall } from './plano3d.mjs?v=gdg51-5';
+import { pointOnWall } from './plano3d.mjs?v=gdg51-6';
 
 const GROSOR = 0.08;
 const tipoTexto = (m, re) => (String(m.nombre || '').replace(re, '').trim() || m.id).toUpperCase();
@@ -11,10 +11,25 @@ const tipoTexto = (m, re) => (String(m.nombre || '').replace(re, '').trim() || m
 // Acabados por Xpacio: el plano no los trae, los elige la página. «laboratorio» es el de
 // Gran de Gràcia 51 (baldosa hidráulica, paredes blancas); «cafeteria» el de Starbucks
 // Paseo de Gracia: tarima de madera, paredes cálidas y la pared de la barra en verde.
+// «estanco» el de los Xtanco de los 18 espacios Altadis: gres cálido, paredes crema, la pared
+// del lineal de tabaco en madera oscura y un mostrador sin cafeteras (sólo el TPV).
 export const TEMAS = {
   laboratorio: { fondo: '#0f1416', pared: '#eeede8', techo: '#f4f3ef', suelo: 'baldosa', acento: null, bombillas: 1 },
-  cafeteria: { fondo: '#10140f', pared: '#efe5d6', techo: '#f3ede3', suelo: 'tarima', acento: { re: /barra/i, color: '#1e3b31' }, bombillas: 3 },
+  cafeteria: { fondo: '#10140f', pared: '#efe5d6', techo: '#f3ede3', suelo: 'tarima', acento: { re: /barra/i, color: '#1e3b31' }, bombillas: 3,
+    productos: ['#2f5d4a', '#6b4a32', '#e8e0cf', '#1e3b31', '#8c6a4a', '#f4f1ea', '#3a2a20', '#c9b79a'] },
+  estanco: { fondo: '#15100c', pared: '#f0e4d2', techo: '#f4ece0', suelo: 'gres', acento: { re: /lineal|tabac|mostrador/i, color: '#4b301f' }, bombillas: 2, cafeteras: false },
 };
+
+// UV de un plano o de las caras de un cubo (lista de 8 valores, o lista de listas, una por cara).
+// Las listas pueden ser Array o Float32Array: la copia de las UV originales (uv0) de un cubo es
+// una lista de Float32Array, y tratarla como 8 números pintaría NaN.
+const esLista = x => Array.isArray(x) || ArrayBuffer.isView(x);
+export const uvValido = uv => esLista(uv) && ((uv.length === 8 && [...uv].every(Number.isFinite)) || (uv.length > 0 && [...uv].every(x => esLista(x) && x.length === 8)));
+/** Las UV que toca a cada una de `n` caras: la suya si viene una por cara, o la misma para todas. */
+export function uvPorCara(arr, n = 1) {
+  const lista = esLista(arr[0]) ? [...arr] : [arr];
+  return Array.from({ length: n }, (_, i) => lista[i] || lista[0]);
+}
 
 export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, tema = 'laboratorio' } = {}) {
   const TEMA = TEMAS[tema] || TEMAS.laboratorio;
@@ -79,6 +94,31 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
     }
   });
   tarima.wrapS = tarima.wrapT = T.RepeatWrapping;
+  // Gres porcelánico cálido de 60 × 60 cm (estanco): la textura cubre 2 × 2 piezas (1,2 m).
+  const gres = lienzo(256, 256, (g, w) => {
+    const b = w / 2, tonos = ['#cdb79a', '#c4ad8f', '#d4bfa3', '#c8b193'];
+    for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
+      g.fillStyle = tonos[i * 2 + j]; g.fillRect(i * b, j * b, b, b);
+      for (let k = 0; k < 40; k++) { g.fillStyle = `rgba(${k % 2 ? '255,250,240' : '90,70,50'},.05)`; g.fillRect(i * b + (k * 37) % b, j * b + (k * 53) % b, 9, 5); }
+      g.strokeStyle = 'rgba(96,78,58,.5)'; g.lineWidth = 3; g.strokeRect(i * b + 1.5, j * b + 1.5, b - 3, b - 3);
+    }
+  });
+  gres.wrapS = gres.wrapT = T.RepeatWrapping;
+  // Cajetillas de un lineal de tabaco en una fila (frente de balda): sólo color, sin marcas.
+  // En la cafetería, paquetes de café y merchandising (TEMA.productos) en vez de cajetillas.
+  const cajetillas = lienzo(512, 64, (g, w, h) => {
+    const tonos = TEMA.productos || ['#f4f1ea', '#b3262d', '#1f3d7a', '#d9b44a', '#1b1b1d', '#e9e2d0', '#7a1e2b', '#3b6aa8'];
+    const cw = w / 16;
+    for (let i = 0; i < 16; i++) {
+      g.fillStyle = tonos[(i * 5) % tonos.length]; g.fillRect(i * cw + 1, 4, cw - 2, h - 4);
+      g.fillStyle = 'rgba(255,255,255,.55)'; g.fillRect(i * cw + 4, h * 0.42, cw - 8, h * 0.12);
+      g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(i * cw + cw - 3, 4, 2, h - 4);
+    }
+  });
+  cajetillas.wrapS = T.RepeatWrapping;
+  // Rejilla de píxel de un LED: una celda (16 × 16) con la junta oscura arriba y a la izquierda.
+  const rejilla = lienzo(16, 16, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(0, 0, w, 2); g.fillRect(0, 2, 2, h - 2); g.fillStyle = 'rgba(0,0,0,.22)'; g.fillRect(2, 2, 2, 2); g.fillRect(w - 2, 2, 2, 2); g.fillRect(2, h - 2, 2, 2); g.fillRect(w - 2, h - 2, 2, 2); });
+  rejilla.wrapS = rejilla.wrapT = T.RepeatWrapping;
   // Frente de barra en listones verticales de madera oscura (la textura cubre 0,6 m de ancho).
   const listones = lienzo(256, 256, (g, w, h) => {
     for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? '#4a3021' : '#563827'; g.fillRect(i * w / 8, 0, w / 8, h); g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect((i + 1) * w / 8 - 3, 0, 3, h); }
@@ -119,9 +159,9 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
 
   // ── Suelo, techo y aristas ──
   const { ancho, fondo, alto } = escena.sala;
-  const conTarima = TEMA.suelo === 'tarima';
-  const suelo = plano(ancho, fondo, own(new T.MeshStandardMaterial({ map: conTarima ? tarima : baldosa, roughness: conTarima ? 0.6 : 0.75 })));
-  if (conTarima) tarima.repeat.set(ancho / 1.2, fondo / 0.6); else baldosa.repeat.set(ancho / 0.4, fondo / 0.4);
+  const conTarima = TEMA.suelo === 'tarima', conGres = TEMA.suelo === 'gres';
+  const suelo = plano(ancho, fondo, own(new T.MeshStandardMaterial({ map: conTarima ? tarima : conGres ? gres : baldosa, roughness: conTarima ? 0.6 : conGres ? 0.45 : 0.75 })));
+  if (conTarima) tarima.repeat.set(ancho / 1.2, fondo / 0.6); else if (conGres) gres.repeat.set(ancho / 1.2, fondo / 1.2); else baldosa.repeat.set(ancho / 0.4, fondo / 0.4);
   suelo.rotation.x = -Math.PI / 2; suelo.position.copy(V(ancho / 2, fondo / 2, 0));
   suelo.userData.parte = 'suelo';
   root.add(suelo);
@@ -167,6 +207,10 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
       const fuera = plano(h.ancho, 1.2, own(new T.MeshStandardMaterial({ color: '#b9ad92', roughness: 0.9 })));
       fuera.rotation.x = -Math.PI / 2;
       const p = pointOnWall(w, sc); fuera.position.copy(V(p[0] - w.n[0] * 0.6, p[1] - w.n[1] * 0.6, 0.001)); fuera.rotation.z = w.yaw; g.add(fuera);
+    }
+    if (h.tipo === 'escaparate') { // escaparate de la fachada (Altadis 18): luna de cristal, sin cortina
+      en(sc, -GROSOR / 2, z0 + h.alto / 2, plano(h.ancho - 0.1, h.alto - 0.05, M.cristal)).rotation.y = w.yaw;
+      return g;
     }
     if (h.tipo === 'ventana') {
       en(sc, -GROSOR / 2, z0 + h.alto / 2, plano(h.ancho - 0.1, h.alto - 0.05, M.cristal)).rotation.y = w.yaw;
@@ -243,7 +287,12 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
       const cuerpo = box(W, bajo, D - 0.04, C.nogal); cuerpo.position.y = bajo / 2; g.add(cuerpo);
       const frente = listonesDe(W, bajo - 0.08); frente.position.set(0, bajo / 2 + 0.02, (D - 0.04) / 2 + 0.002); g.add(frente);
       const encimera = box(W + 0.03, 0.04, D + 0.02, C.piedra); encimera.position.y = bajo + 0.02; g.add(encimera);
-      if (m.tipo === 'barra') {
+      if (m.tipo === 'barra' && TEMA.cafeteras === false) {
+        // Mostrador de estanco: el TPV en un extremo y una urna baja de mecheros en el otro.
+        const tpv = box(0.36, 0.25, 0.03, M.bisel); tpv.position.set(W * 0.3, bajo + 0.04 + 0.16, 0.02); tpv.rotation.x = -0.35; g.add(tpv);
+        const disp = plano(0.32, 0.21, basic({ color: '#16424a' })); disp.position.set(W * 0.3, bajo + 0.04 + 0.165, 0.04); disp.rotation.x = -0.35; g.add(disp);
+        const urna = box(Math.min(0.6, W * 0.25), 0.22, Math.min(0.4, D - 0.1), M.cristal); urna.position.set(-W * 0.28, bajo + 0.04 + 0.11, 0); g.add(urna);
+      } else if (m.tipo === 'barra') {
         for (const fx of [-0.32, -0.12]) {
           const maquina = box(0.78, 0.44, 0.52, M.aluminio); maquina.position.set(W * fx, bajo + 0.04 + 0.22, -D * 0.12); g.add(maquina);
           const panel = plano(0.62, 0.16, M.bisel); panel.position.set(W * fx, bajo + 0.04 + 0.3, -D * 0.12 + 0.262); g.add(panel);
@@ -261,6 +310,32 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
         for (const y of [bajo + 0.05, bajo + 0.05 + urnaH * 0.5]) for (let i = 0; i < 12; i++) {
           const b = box(0.2, 0.07, 0.16, bollos[(i + (y > bajo + 0.1 ? 1 : 0)) % bollos.length]); b.position.set(-W / 2 + 0.35 + i * (W - 0.7) / 11, y + 0.04, 0); g.add(b);
         }
+      }
+    } else if (m.tipo === 'expositor' || m.tipo === 'gondola') {
+      // Lineal de tabaco (contra la pared, armario cerrado abajo y baldas de cajetillas arriba) o
+      // góndola exenta (más baja, baldas por las dos caras). Las cajetillas son una textura por balda.
+      if (m.tipo === 'expositor' && H < 1.3) {
+        // Expositor bajo de cajones (tabaco de liar, puros): cuerpo cerrado con frentes de cajón.
+        const cuerpo = box(W, H - 0.03, D, C.nogal); cuerpo.position.y = (H - 0.03) / 2; g.add(cuerpo);
+        const tapa = box(W + 0.02, 0.03, D + 0.02, C.roble); tapa.position.y = H - 0.015; g.add(tapa);
+        const filas = Math.max(2, Math.round((H - 0.15) / 0.22));
+        for (let k = 0; k < filas; k++) { const j = box(W - 0.04, 0.012, 0.01, M.negro); j.position.set(0, 0.1 + (k + 1) * (H - 0.18) / (filas + 1), D / 2 + 0.006); g.add(j); }
+        root.add(g); muebles.set(m.id, g); continue;
+      }
+      const lineal = m.tipo === 'expositor', base = lineal ? Math.min(0.9, H * 0.4) : 0.18;
+      const fondoM = lineal ? D : D / 2;
+      if (lineal) { const espalda = box(W, H, 0.03, C.nogal); espalda.position.set(0, H / 2, -D / 2 + 0.015); g.add(espalda); }
+      else { const alma = box(W, H, 0.04, C.nogal); alma.position.y = H / 2; g.add(alma); }
+      for (const sx of [-1, 1]) { const lado = box(0.03, H, D, C.nogal); lado.position.set(sx * (W / 2 - 0.015), H / 2, 0); g.add(lado); }
+      const zocalo = box(W, base, D, C.nogal); zocalo.position.y = base / 2; g.add(zocalo);
+      const remate = box(W, 0.04, D, C.nogal); remate.position.y = H - 0.02; g.add(remate);
+      const baldas = Math.max(2, Math.floor((H - base - 0.15) / 0.24));
+      for (const cara of lineal ? [1] : [1, -1]) for (let k = 0; k < baldas; k++) {
+        const y = base + 0.02 + k * (H - base - 0.12) / baldas;
+        const balda = box(W - 0.06, 0.02, fondoM - 0.04, C.roble); balda.position.set(0, y, cara * (lineal ? 0.01 : fondoM / 2)); g.add(balda);
+        const t = own(cajetillas.clone()); t.needsUpdate = true; t.repeat.set(Math.max(1, (W - 0.08) / 0.75), 1); t.offset.x = (k * 0.37) % 1;
+        const fila = plano(W - 0.08, 0.09, basic({ map: t }));
+        fila.position.set(0, y + 0.055, cara * (lineal ? fondoM / 2 - 0.06 : fondoM - 0.06)); if (cara < 0) fila.rotation.y = Math.PI; g.add(fila);
       }
     } else if (m.tipo === 'estanteria') {
       // Estantería de tazas: costados, baldas y tazas blancas y verdes.
@@ -310,22 +385,59 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
       pantallas.set(p.id, { grupo: g, display: disp, dato: p });
       root.add(g); continue;
     }
-    const bisel = box(p.w + 0.016, p.h + 0.016, 0.025, M.bisel); g.add(bisel);
-    const disp = plano(p.w, p.h, pantallaMat); disp.position.z = 0.0128; g.add(disp);
-    const trasera = box(p.w * 0.45, p.h * 0.4, 0.035, M.bisel); trasera.position.z = -0.03; g.add(trasera);
+    // Tres cuerpos: LCD con bisel y trasera (lo de siempre), LED con armario fino y rejilla de
+    // píxel, y el cubo LED de 4 caras (formatos Altadis). `caras`: los planos que pintan.
+    const led = p.tecnologia === 'led';
+    let disp, caras = null;
+    if (p.cubo) {
+      const { lado, alto: ac } = p.cubo;
+      const nucleo = box(lado - 0.006, ac - 0.006, lado - 0.006, M.negro); g.add(nucleo);
+      // Caras con su normal en planta: las del plano (cubo.caras) o, si no las trae, la 1 mirando a
+      // `n` y cada una a la derecha de la anterior, así el lienzo da la vuelta al cubo seguido.
+      g.rotation.y = 0;
+      const normales = p.cubo.caras ? p.cubo.caras.map(c => c.n) : [0, 1, 2, 3].reduce(l => (l.push(l.length ? [l[l.length - 1][1], -l[l.length - 1][0]] : p.n), l), []);
+      caras = normales.map(([nx, ny]) => {
+        const cara = plano(lado, ac, pantallaMat);
+        cara.position.set(nx * (lado / 2 + 0.001), 0, ny * (lado / 2 + 0.001)); cara.rotation.y = Math.atan2(nx, ny); g.add(cara);
+        return cara;
+      });
+      disp = caras[0];
+      // Sobre su peana (mueble del plano), colgado del techo si queda cerca o sobre un pie hasta el suelo.
+      const arriba = escena.sala.alto - (p.z + ac);
+      if (p.cubo.peana || p.montaje === 'peana') { /* la peana es un mueble del plano */ }
+      else if (arriba < 1.4) { const v = new T.Mesh(own(new T.CylinderGeometry(0.012, 0.012, Math.max(0.01, arriba), 8)), M.gris); v.position.y = ac / 2 + arriba / 2; g.add(v); }
+      else if (p.z > 0.05) { const pie = box(0.12, p.z, 0.12, M.negro); pie.position.y = -ac / 2 - p.z / 2; g.add(pie); }
+    } else if (led) {
+      const armario = box(p.w + 0.02, p.h + 0.02, 0.07, M.negro); armario.position.z = -0.022; g.add(armario);
+      disp = plano(p.w, p.h, pantallaMat); disp.position.z = 0.0135; g.add(disp);
+    } else {
+      const bisel = box(p.w + 0.016, p.h + 0.016, 0.025, M.bisel); g.add(bisel);
+      disp = plano(p.w, p.h, pantallaMat); disp.position.z = 0.0128; g.add(disp);
+      const trasera = box(p.w * 0.45, p.h * 0.4, 0.035, M.bisel); trasera.position.z = -0.03; g.add(trasera);
+    }
+    if (led || p.cubo) for (const d of caras || [disp]) {
+      // Rejilla de píxel sutil: una celda por píxel físico (agrupada si hay muchos).
+      const res = p.cubo ? [Math.round((p.lienzo?.[0] || 1600) / 4), p.lienzo?.[1] || 600] : (p.resolucion || [p.w * 100, p.h * 100]);
+      const k = Math.max(1, Math.ceil(Math.max(...res) / 512)), t = own(rejilla.clone()); t.needsUpdate = true;
+      t.repeat.set(Math.max(1, Math.round(res[0] / k)), Math.max(1, Math.round(res[1] / k)));
+      const capa = new T.Mesh(own(d.geometry.clone()), basic({ map: t, transparent: true, depthWrite: false, opacity: 0.9 }));
+      capa.position.copy(d.position); capa.rotation.copy(d.rotation); capa.translateZ(0.0012); capa.renderOrder = 1; g.add(capa);
+    }
     if (p.apoyo) {
       const cuello = p.centro[2] - p.apoyo.alto;
       const pie = box(0.05, cuello, 0.03, M.bisel); pie.position.set(0, -cuello / 2, -0.06); g.add(pie);
       const plato = box(0.22, 0.012, 0.18, M.bisel); plato.position.set(0, -cuello + 0.006, -0.03); g.add(plato);
     }
     // Sin captura (vista pública o pantalla sin contenido publicado): rótulo neutro, no un panel negro.
+    const medida = p.dimensiones ? `${String(p.dimensiones.ancho).replace('.', ',')} × ${String(p.dimensiones.alto).replace('.', ',')} m` : `${String(p.pulgadas).replace('.', ',')}″`;
     const neutro = lienzo(p.orientacion === 'vertical' ? 288 : 512, p.orientacion === 'vertical' ? 512 : 288, (g2, W, H) => {
       const gr = g2.createLinearGradient(0, 0, W, H); gr.addColorStop(0, '#12333a'); gr.addColorStop(1, '#0b1a20'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H);
-      g2.fillStyle = '#78f3ff'; g2.font = 'bold 64px system-ui'; g2.textAlign = 'center'; g2.fillText(p.orientacion === 'vertical' ? 'V' : 'H', W / 2, H / 2);
-      g2.fillStyle = '#7f9ea3'; g2.font = '22px system-ui'; g2.fillText(`${String(p.pulgadas).replace('.', ',')}″ · XpaceOS`, W / 2, H / 2 + 40);
+      g2.fillStyle = '#78f3ff'; g2.font = 'bold 64px system-ui'; g2.textAlign = 'center'; g2.fillText(led || p.cubo ? 'LED' : p.orientacion === 'vertical' ? 'V' : 'H', W / 2, H / 2);
+      g2.fillStyle = '#7f9ea3'; g2.font = '22px system-ui'; g2.fillText(`${medida} · XpaceOS`, W / 2, H / 2 + 40);
     });
     pantallaMat.map = neutro; pantallaMat.color.set('#ffffff');
-    const estado = { grupo: g, display: disp, dato: p, mat: pantallaMat, neutro, url: null, video: null, uv0: disp.geometry.attributes.uv.array.slice() };
+    const uv0 = caras ? caras.map(c => c.geometry.attributes.uv.array.slice()) : disp.geometry.attributes.uv.array.slice();
+    const estado = { grupo: g, display: disp, caras, dato: p, mat: pantallaMat, neutro, url: null, video: null, uv0 };
     pantallas.set(p.id, estado);
     if (p.textura) ponerMedio(p.id, { fuente: 'captura', url: p.textura, tipo: 'imagen' });
     root.add(g);
@@ -371,12 +483,17 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
       soltarVideo(e); e.mat.map = t; e.mat.needsUpdate = true; onCambio({ medio: id, textura: id });
     }, undefined, fallo);
   }
-  const hayVideo = () => [...pantallas.values()].some(e => e.video && !e.video.paused);
+  const hayVideo = () => [...pantallas.values()].some(e => e.video && !e.video.paused) || Boolean(compartido && compartido.video && !compartido.video.paused);
 
   // ── Un solo lienzo en varias pantallas (mural doble H de Starbucks) ──
   // Una textura compartida y, en cada pantalla, las UV de su trozo: las seis cambian en el mismo
-  // fotograma y la textura se sube una vez. `uvs`: id de pantalla → 8 UV en el orden de PlaneGeometry.
-  function ponerUV(e, arr) { const a = e.display.geometry.attributes.uv; a.array.set(arr); a.needsUpdate = true; }
+  // fotograma y la textura se sube una vez. `uvs`: id de pantalla → 8 UV en el orden de PlaneGeometry
+  // (o, para un cubo LED, una lista de 4 con las de cada cara). El lienzo puede ser un <canvas> (el
+  // mural de Starbucks) o un <video> (un formato Altadis de varias pantallas, un solo vídeo).
+  function ponerUV(e, arr) {
+    const ds = e.caras || [e.display], uvs = uvPorCara(arr, ds.length);
+    ds.forEach((d, i) => { const a = d.geometry.attributes.uv; a.array.set(uvs[i]); a.needsUpdate = true; });
+  }
   function volverAlLienzo(e) {
     soltarVideo(e); e.url = null; ponerUV(e, e.lienzoUV);
     e.mat.map = compartido.tex; e.mat.needsUpdate = true; e.enLienzo = true; onCambio({ lienzo: e.dato.id });
@@ -396,12 +513,13 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
   function ponerLienzo(canvas, uvs) {
     quitarLienzo();
     if (!canvas || !uvs || !uvs.size) return 0;
-    const tex = own(new T.CanvasTexture(canvas)); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = anisotropia;
-    compartido = { tex };
+    const video = canvas.tagName === 'VIDEO' ? canvas : null;
+    const tex = own(video ? new T.VideoTexture(video) : new T.CanvasTexture(canvas)); tex.colorSpace = T.SRGBColorSpace; if (!video) tex.anisotropy = anisotropia;
+    compartido = { tex, video };
     let n = 0;
     for (const [id, uv] of uvs) {
       const e = pantallas.get(id);
-      if (!e || e.dato.portatil || !Array.isArray(uv) || uv.length !== 8) continue;
+      if (!e || e.dato.portatil || !uvValido(uv)) continue;
       e.lienzoUV = uv; n++;
       if (!e.vivo) volverAlLienzo(e);   // la que ya emite en vivo sigue en vivo; vuelve al mural si pierde la señal
     }

@@ -70,6 +70,10 @@ La vía correcta es un player virtual `virtual-gdg51-*` dado de alta en admira.t
 
 **Código y tests.** `xpacios/starbucks-paseo-de-gracia/index.html`, plano público `data/xpacios/alsea-sbux-021.json` (generado con `scripts/plano-publico.mjs` desde el de admira.biz) y `xpacios/starbucks-paseo-de-gracia/gemelo.test.mjs`; el mural: `mural.mjs`, `mural-pagina.mjs` y `mural.test.mjs`. Está en la lista de `/xpacios/`.
 
+### Los 18 espacios Altadis (15-oct-2026)
+
+**`/xpacios/altadis-18/`** usa este motor para 36 espacios tipo, uno por formato de pantalla de Altadis en estanco y en cafetería: tema `estanco`, muebles `expositor` y `gondola`, escaparate de cristal, pantallas LED con rejilla de píxel, cubo LED de 4 caras desde el campo `cubo` del plano y un `<video>` por formato repartido por recortes con `ponerLienzo`. Detalle: `admira-xp/docs/altadis-18-espacios.md`.
+
 ## EN
 
 **What it is.** The 3D twin of the AdmiraNeXT lab (Gran de Gràcia 51, 1st floor, Barcelona), rendered from the canonical `admira.xpacio-plano/1` plan that `/redistribucion` opens on admira.biz. Nothing is copied by hand.
@@ -89,3 +93,5 @@ La vía correcta es un player virtual `virtual-gdg51-*` dado de alta en admira.t
 **Second Xpace: Starbucks Paseo de Gracia.** `/xpacios/starbucks-paseo-de-gracia/` renders plan `alsea-sbux-021` (the one `/redistribucion` opens on admira.biz; schematic, to be confirmed on a site visit) with the same engine: the page loads `xpacios/gran-de-gracia-51/gemelo.mjs` and configures it through `window.XPACIO_GEMELO` (`loc`, `tema`, `orbita`, `aviso`, `puerta`); without it the lab renders as before. Café finish (`tema:'cafeteria'`): oak floor, warm walls, a dark green bar wall and three lights. Café furniture from its name: bar, checkout with POS, display case, cup shelf and pillar. The six 55″ screens of the double-H mural hang over the bar on wall F as V–H–V–V–H–V. No webcam in the plan, so no webcam view. **One-canvas mural:** `mural.mjs` paints the 8160 × 1920 starbucks-six canvas (headline crossing the six screens, coffee band, siren on the two H) and `ponerLienzo` maps it onto the six screens with one texture and per-screen UVs, all in the same frame; a live admira.tv signal wins over the canvas. Matching by screenId when signed in, by order along wall F (if V–H–V–V–H–V agrees) when public. The six real players have not reported to `/signage/now` yet (`lastSeen: null`). Public plan: `data/xpacios/alsea-sbux-021.json`; tests: `xpacios/starbucks-paseo-de-gracia/gemelo.test.mjs`.
 
 **admira.tv links.** A real-screen channel would broadcast as that screen. The `rundown` preview still reports the cache and answers commands as the screen stored in the browser, and falls back to normal playback. Only a registered `virtual-*` player opens the channel (`playerVirtual`); otherwise the admira.tv home is linked.
+
+**Altadis 18 model spaces.** `/xpacios/altadis-18/` reuses this engine for 36 model spaces (one per Altadis screen format, tobacconist and café): `estanco` theme, LED screens, the 4-face LED cube and one `<video>` per format split by `recorte` through `ponerLienzo`. See `admira-xp/docs/altadis-18-espacios.md`.

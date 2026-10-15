@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.15.10.2026.r8.12:28": [
+    "Nuevo /xpacios/altadis-18/: los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks, con su gemelo 3D desde los planos del Arquitecto.",
+    "En cada espacio, el vídeo adaptado a ese formato: contenido de Altadis en los Xtanco y de Starbucks en las cafeterías; un solo vídeo por formato repartido por recortes, todas las pantallas sincronizadas; el cubo LED, en sus cuatro caras.",
+    "Galería con Xtanco / Starbucks y ES / EN, ← → para recorrer los 18, recorrido automático y botones a admira.studio (crear y adaptar) y al Arquitecto (plano)."
+  ],
   "v.14.10.2026.r7.18:48": [
     "Laboratorio: la mesa larga llega al final de la pared y se junta en L con la otra, y la nevera mira a la sala con la espalda en los paneles 3D, como en las fotos.",
     "Starbucks: las pantallas que emiten en vivo en admira.tv (las tres del Mac Studio) se ven en vivo aunque el mural se monte después; las demás siguen en el mural."

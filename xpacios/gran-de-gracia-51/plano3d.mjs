@@ -202,9 +202,14 @@ export function tipoMueble(m) {
   if (/silla|chair/.test(t)) return 'silla';
   if (/nevera|frigor|fridge/.test(t)) return 'nevera';
   if (/recreativa|arcade/.test(t)) return 'recreativa';
-  // Cafetería (Starbucks Paseo de Gracia): barra, caja, vitrina, estantería de tazas y pilar.
-  if (/barra|mostrador|counter/.test(t)) return 'barra';
+  // Estanco (los 18 espacios Altadis, 15-oct-2026): lineal de tabaco y góndola. Van antes que la
+  // barra: «lineal tras el mostrador» es el lineal, no el mostrador.
+  if (/lineal|tabac|expositor|cigarr/.test(t)) return 'expositor';
+  if (/g[oó]ndola|gondola/.test(t)) return 'gondola';
+  // Cafetería (Starbucks Paseo de Gracia): barra, caja, vitrina, estantería de tazas y pilar. La caja
+  // va antes que la barra: «Barra · caja» y «Mostrador · caja» son la caja (TPV, sin cafeteras).
   if (/\bcaja\b|tpv|checkout/.test(t)) return 'caja';
+  if (/barra|mostrador|counter/.test(t)) return 'barra';
   if (/vitrina|display case/.test(t)) return 'vitrina';
   if (/taza|estanter|shelf/.test(t)) return 'estanteria';
   if (/pilar|columna|pillar|column/.test(t)) return 'pilar';
@@ -266,26 +271,66 @@ function apoyoDe(f, wall, plan) {
   return best;
 }
 
+// Cubo LED de 4 caras (forma 'cubo-4-caras', formato LED CUBO de Altadis): el lienzo se parte en
+// 4 tiras, una por cara. Lado y alto de cada cara en metros: con `dimensiones`, el alto es el
+// suyo y el ancho es el de una cara o el de las cuatro desplegadas (lo que se parezca más a la
+// proporción de los píxeles); con `pulgadas`, la diagonal de una cara. Píxeles cuadrados.
+export function medidasCubo(s) {
+  const L = Array.isArray(s.lienzo) ? s.lienzo : s.resolucion || [1600, 600];
+  const r = s.recorte || { w: L[0], h: L[1] };
+  const a = (r.w / 4) / r.h;
+  if (s.dimensiones && s.dimensiones.ancho > 0 && s.dimensiones.alto > 0) {
+    const { ancho, alto } = s.dimensiones;
+    const unaCara = Math.abs(Math.log((ancho / alto) / a)) <= Math.abs(Math.log((ancho / alto) / (4 * a)));
+    return { lado: unaCara ? ancho : ancho / 4, alto };
+  }
+  const d = (num(s.pulgadas) && s.pulgadas > 0 ? s.pulgadas : 40) * INCH, alto = d / Math.hypot(a, 1);
+  return { lado: a * alto, alto };
+}
+
+// El plano del Arquitecto trae el prisma en `cubo` {centro, lado, alto, peana, caras: [{cara, n,
+// recorte}]}; su pared, s y dimensiones son el cubo desplegado (para el alzado 2D) y en 3D no cuentan.
+function cuboDe(s) {
+  if (s.forma !== 'cubo-4-caras') return null;
+  const c = s.cubo;
+  if (c && Array.isArray(c.centro) && c.centro.every(num) && c.lado > 0 && c.alto > 0) {
+    const caras = Array.isArray(c.caras) && c.caras.length === 4 && c.caras.every(x => Array.isArray(x.n) && x.recorte) ? c.caras.map(x => ({ cara: x.cara, n: x.n, recorte: x.recorte })) : null;
+    // La cara que da a la sala es la del recorte de la pantalla (si lo trae): hacia ella mira el cubo.
+    const r = s.recorte, frente = caras && r ? caras.find(x => x.recorte.x === r.x && x.recorte.y === r.y && x.recorte.w === r.w && x.recorte.h === r.h) : null;
+    return { lado: c.lado, alto: c.alto, centro: c.centro, peana: num(c.peana) ? c.peana : null, caras, frente: (frente || (caras && caras[0]) || {}).n || null };
+  }
+  return { ...medidasCubo(s), centro: num(s.x) && num(s.y) ? [s.x, s.y] : null, peana: null, caras: null, frente: null };
+}
+
 export function colocarPantalla(s, plan) {
   const wall = plan.paredes.find(w => w.id === s.pared);
-  const f = footprint(s), n = inwardNormal(wall), u = [(wall.b[0] - wall.a[0]) / wallLength(wall), (wall.b[1] - wall.a[1]) / wallLength(wall)];
+  const cubo = cuboDe(s);
+  const zc = cubo && cubo.peana != null ? cubo.peana : s.z;
+  const f = cubo ? { x0: s.s - cubo.lado / 2, x1: s.s + cubo.lado / 2, z0: zc, z1: zc + cubo.alto, w: cubo.lado, h: cubo.alto } : footprint(s);
+  // El cubo mira a donde mira su cara hacia la sala; lo demás, hacia dentro desde su pared.
+  const n = cubo && cubo.frente ? cubo.frente : inwardNormal(wall), u = [(wall.b[0] - wall.a[0]) / wallLength(wall), (wall.b[1] - wall.a[1]) / wallLength(wall)];
   const portatil = esPortatil(s, plan);
-  const apoyo = apoyoDe(f, wall, plan);
-  let separacion = num(s.separacion) ? s.separacion : SEPARACION_PARED;
+  const apoyo = cubo ? null : apoyoDe(f, wall, plan);
+  let separacion = num(s.separacion) ? s.separacion : cubo ? cubo.lado / 2 + 0.5 : SEPARACION_PARED;
   if (!num(s.separacion) && apoyo) separacion = portatil ? clamp(SEPARACION_PORTATIL, 0.1, apoyo.fondo - 0.3) : clamp(SEPARACION_MESA, 0.08, apoyo.fondo - 0.15);
   const base = pointOnWall(wall, s.s);
-  const p = [base[0] + n[0] * separacion, base[1] + n[1] * separacion];
+  // Un cubo exento trae su centro en planta: manda sobre la pared.
+  const nw = inwardNormal(wall);
+  const p = cubo && cubo.centro ? [...cubo.centro] : [base[0] + nw[0] * separacion, base[1] + nw[1] * separacion];
   return {
     id: s.id, itil: codigoItil(s), screenId: s.screenId || null, nombre: s.nombre || s.id, corto: s.corto || s.id,
     grupo: s.grupo || null, grupoNombre: s.grupoNombre || null, player: s.player || null,
     orientacion: s.orientacion, pulgadas: s.pulgadas, resolucion: s.resolucion || null, estado: s.estado || null,
-    pared: wall.id, s: s.s, z: s.z, w: f.w, h: f.h, x0: f.x0, x1: f.x1, z1: f.z1,
+    pared: wall.id, s: s.s, z: f.z0, w: f.w, h: f.h, x0: f.x0, x1: f.x1, z1: f.z1,
     separacion: round(separacion, 3), n, u, yaw: yawFor(n),
-    centro: [p[0], p[1], s.z + f.h / 2],
+    centro: [p[0], p[1], f.z0 + f.h / 2],
     apoyo: apoyo ? { id: apoyo.m.id, alto: apoyo.m.alto } : null,
     portatil,
     textura: s.screenId ? CAPTURA_STARBUCKS_SIX(s.screenId) : null,
     playerVirtual: s.playerVirtual || null,
+    // Espacios por formato (Altadis 18): qué trozo del lienzo del formato enseña y cómo es.
+    formato: s.formato || null, lienzo: s.lienzo || null, recorte: s.recorte || null,
+    tecnologia: s.tecnologia || null, forma: s.forma || null, dimensiones: s.dimensiones || null, pasoPixelMm: s.pasoPixelMm || null, montaje: s.montaje || null, cubo,
   };
 }
 
