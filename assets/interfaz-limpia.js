@@ -11,7 +11,8 @@
   var doc = G.document;
   if (!doc || G.XpaceInterfaz) return;
   var html = doc.documentElement;
-  var oculta = !/(^|[?&])ui=1(&|$)/.test(G.location.search);
+  // ?ui=1 la abre de entrada; el recorrido de demo (?ax_demo=) enseña su interfaz.
+  var oculta = !/(^|[?&])(ui=1(&|$)|ax_demo=)/.test(G.location.search);
   function poner(v) {
     var antes = oculta; oculta = !!v;
     html.classList.toggle('ui-limpia', oculta);
@@ -23,13 +24,24 @@
     if (!e.key || e.key.toLowerCase() !== 'h' || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
     var t = e.target;
     if (t && (t.isContentEditable || (t.closest && t.closest('input,textarea,select,[role="textbox"]')))) return;
+    if (escribiendoEnElJuego()) return;
     e.preventDefault(); poner(!oculta);
   }, true);
-  // Abrir un menú de la barra: sólo el clic de la persona en ☰ ▤ ⌘ (la barra común abre sola el panel de
-  // Experto al cargar su piel, y eso no debe destapar la interfaz).
+  // El gemelo escribe en su lienzo (nombre de un personaje, la pregunta inicial): ahí la H es una letra.
+  function escribiendoEnElJuego() {
+    try {
+      /* global npcEdOpen, npcEdNameEdit, preloadPhase, state, S */
+      if (typeof npcEdOpen !== 'undefined' && npcEdOpen && typeof npcEdNameEdit !== 'undefined' && npcEdNameEdit) return true;
+      if (typeof preloadPhase !== 'undefined' && preloadPhase === 'prompt' && typeof state !== 'undefined' && typeof S !== 'undefined' && state === S.PRELOAD) return true;
+    } catch (_) { /* variables aún sin iniciar: no se escribe */ }
+    return false;
+  }
+  // Abrir un menú de la barra: el clic en ☰ ▤ ⌘ que lo deja ABIERTO (cerrarlo no destapa nada). La barra común
+  // abre sola el panel de Experto al cargar su piel: eso tampoco cuenta, porque no es un clic.
+  function abierto(b) { return b.classList.contains('is-active') || b.getAttribute('aria-expanded') === 'true' || b.getAttribute('aria-pressed') === 'true'; }
   doc.addEventListener('click', function (e) {
     var b = e.target && e.target.closest && e.target.closest('#topBar [data-quad-toggle], #topBar #pfOptions, #topBar #pfExpert');
-    if (b) poner(false);
+    if (b) setTimeout(function () { if (abierto(b)) poner(false); }, 0);
   }, true);
   G.XpaceInterfaz = { mostrar: function () { poner(false); }, ocultar: function () { poner(true); }, alternar: function () { poner(!oculta); }, get oculta() { return oculta; } };
   html.classList.toggle('ui-limpia', oculta);
