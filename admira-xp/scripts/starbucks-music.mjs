@@ -1,5 +1,5 @@
-import {installMusicCanvasGesture} from './music-listening.mjs?v=tpv-listen-20261015';
-import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=tpv-listen-20261015';
+import {installMusicCanvasGesture} from './music-listening.mjs?v=tpv-remote-20261015';
+import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=tpv-remote-20261015';
 import {STARBUCKS_PUBLISHED_TRACKS} from './starbucks-playlist.mjs?v=devices-1';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export const STARBUCKS_FEED=`https://api.admira.store/hilomusical/next?store=${STARBUCKS_STORE}&since=0`;

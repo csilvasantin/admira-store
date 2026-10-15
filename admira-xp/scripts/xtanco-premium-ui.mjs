@@ -1,6 +1,6 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=tpv-listen-20261015';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=tpv-remote-20261015';
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=good-matrix-6161';
-import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=good-matrix-6161';
+import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=tpv-remote-20261015';
 import {createVisualTiers,requestedTier} from './xtanco-visual-tiers.mjs?v=xtore-ux-3';
 import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=options-language-1';
 

@@ -1,4 +1,4 @@
-import {createPhysicalPlaylistWatch} from './ipad-physical-playlist.mjs?v=tpv-listen-20261015';
+import {createPhysicalPlaylistWatch} from './ipad-physical-playlist.mjs?v=tpv-remote-20261015';
 export const MUSIC_SCREEN='iphone17-mupi',MUSIC_PLAYLIST_URL='/admira-xp/api/music-playlist';
 const safe=value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch{return '';}};
 export function physicalMusicTracks(data,catalog=[]){
