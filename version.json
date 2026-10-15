@@ -1,12 +1,12 @@
 {
   "version": "v.15.10.2026.r8.12:28",
-  "deployedAt": "2026-10-15T10:28:58Z",
+  "deployedAt": "2026-10-15T10:30:55Z",
   "deployer": "NeoMBP14",
   "machine": "MacBookProNegro14",
   "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "eaa2d2b34aad4235c55deea34b1068b640b8f49e",
-  "gitShort": "eaa2d2b",
-  "gitFull": "eaa2d2b34aad4235c55deea34b1068b640b8f49e",
+  "git": "10cf16d9adb030456e879a8c5b20a6d5c9d6342f",
+  "gitShort": "10cf16d",
+  "gitFull": "10cf16d9adb030456e879a8c5b20a6d5c9d6342f",
   "dirty": false,
   "novedades": [
     "Nuevo /xpacios/altadis-18/: los 18 formatos de pantalla de Altadis, cada uno en un espacio tipo de estanco (Xtanco) y de cafetería Starbucks, con su gemelo 3D desde los planos del Arquitecto.",
