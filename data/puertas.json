@@ -1,0 +1,17 @@
+{
+  "_como": "Puertas de Google Maps de los locales (Carlos, 15-oct-2026): al elegir el local en Store se llega a su puerta en Street View y, al pulsarla, al gemelo. Clave = id del local del registro (AdmiraNeXT) y, aparte, el loc del catálogo. Datos de Street View calibrados en admira.tv (adcelerate/demo/js/outdoor-sites.js, Carlos, 30-sep-2026). Carlos autoriza enseñar la dirección exacta en la puerta (15-oct-2026).",
+  "puertas": [
+    {
+      "id": "starbucks-paseo-de-gracia-103",
+      "locales": ["demo-starbucks"],
+      "loc": "alsea-sbux-021",
+      "proyecto": "starbucks",
+      "nombre": "Starbucks Passeig de Gràcia 103",
+      "direccion": "Passeig de Gràcia 103 · 08008 Barcelona",
+      "posicion": { "lat": 41.39574, "lng": 2.15979 },
+      "entrada": { "pano": "bNZ9QjiL55gYQ2iyOhSqMw", "pov": { "heading": 223, "pitch": 3, "zoom": 1.6 } },
+      "puerta": { "pano": "bNZ9QjiL55gYQ2iyOhSqMw", "esquinas": [[213.833, 6.2399], [238.8572, 5.5457], [238.5509, -4.341], [213.9175, -4.845]] },
+      "fuente": "admira-tv/adcelerate/demo/js/outdoor-sites.js · panorama de agosto de 2026, arco STARBUCKS + escaparate del 103"
+    }
+  ]
+}

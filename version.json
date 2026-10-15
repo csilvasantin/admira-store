@@ -1,15 +1,14 @@
 {
-  "version": "v.15.10.2026.r20.22:33",
-  "deployedAt": "2026-10-15T20:33:27Z",
+  "version": "v.15.10.2026.r21.22:55",
+  "deployedAt": "2026-10-15T20:55:21Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "af28cbb9b945310f89f98b6a1e1a96cd493d53f1",
-  "gitShort": "af28cbb",
-  "gitFull": "af28cbb9b945310f89f98b6a1e1a96cd493d53f1",
+  "git": "8a74eb5dcb13ebfff65f8b62d68ae29eadffdcd2",
+  "gitShort": "8a74eb5",
+  "gitFull": "8a74eb5dcb13ebfff65f8b62d68ae29eadffdcd2",
   "dirty": false,
   "novedades": [
-    "Centros Starbucks: Matrix es la foto 360 real del local (la del visor de panoramas, con su vista guardada); Diagonal 634 en 8K.",
-    "Las páginas de los locales (centros y Gran de Gràcia 51) tienen los tres combos de la barra: Xpacio, Local y Calidad."
+    "Elegir Starbucks Passeig de Gràcia 103 en el combo Local lleva antes a su puerta en Google Maps (/xpacios/puerta/): pulsa la fachada para entrar en el gemelo con la calidad elegida."
   ]
 }

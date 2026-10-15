@@ -21,7 +21,7 @@ async function harness({account=false,catalogo=null,marca=null,ventana={}}={}){
  const catalog={projects:[{id:'estancos',name:'Estancos',circuit:'estancos'},{id:'cafebreria',name:'Cafebrería',circuit:'cafebreria'}],venues:[{id:'demo-xtanco',project_id:'estancos',name:'Xtanco',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco'},{id:'demo-cafebreria',project_id:'cafebreria',name:'Cafebrería',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria'}]};
  if(catalogo)Object.assign(catalog,catalogo);
  const client={access:account?{token:'a'.repeat(64),expires_at:Date.now()+600000}:null,expired:false,demos:async()=>catalog,context:async()=>catalog,clear(){this.access=null;}};
- const context={URL,Option:class{constructor(text,value){this.text=text;this.value=value;}},ProjectClient:class{constructor(){return client;}},CENTRAL:'https://www.admiranext.com',venueUrl,validAccess,projectContext,marcaQueLimita,proyectosPermitidos,
+ const context={URL,Option:class{constructor(text,value){this.text=text;this.value=value;}},ProjectClient:class{constructor(){return client;}},CENTRAL:'https://www.admiranext.com',venueUrl,validAccess,projectContext,marcaQueLimita,proyectosPermitidos,conPuerta:async(venue,href)=>href,
   document:{documentElement:{lang:'en'},getElementById:element,querySelector:()=>null},window:Object.assign({addEventListener:(name,handler)=>events.set(name,handler)},ventana),location:{href:'https://www.admira.store/admira-xp/?autostart=xtanco&from=portada&project=estancos&circuit=estancos&quality=better',assign:url=>destinations.push(url)},sessionStorage:marca?{getItem:k=>marca[k]??null}:{},MutationObserver:class{observe(){}},setInterval:handler=>ticks.push(handler)};
  vm.runInNewContext(code,context);await new Promise(setImmediate);
  return {element,ticks,events,client,destinations};
@@ -34,7 +34,7 @@ test('unchanged session ticks keep the same options while a user chooses in the 
  for(let second=0;second<8;second++)h.ticks[0]();
  assert.equal(project.options[2],option);assert.equal(venue.options[1],venueOption);
  assert.equal(project.replacements,projectRenders);assert.equal(venue.replacements,venueRenders);assert.equal(project.value,'cafebreria');
- project.listeners.get('change')();
+ project.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(new URL(h.destinations[0]).pathname,'/xpacios/cafebreria/');
  assert.equal(new URL(h.destinations[0]).origin,'https://www.admira.store');
 });
