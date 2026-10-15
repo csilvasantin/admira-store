@@ -7,6 +7,7 @@ import {createScreenPlaylist} from './screen-playlist.mjs?v=options-preview-1';
 import {DEVICE_IDS,assignedPlaylist,emptyDeviceLayout,validateDeviceLayout} from './device-layout.mjs?v=ipad-20261005-1';
 import {DEMO_WALL,DEMO_CHRISTMAS,DEMO_TPV} from './starbucks-demo.mjs?v=devices-2';
 import {STARBUCKS_IPAD_PLAYLIST} from './starbucks-ipad.mjs?v=ipad-1';
+import {watchIPadPlaylist} from './ipad-physical-playlist.mjs?v=shared-ipad-20261015';
 import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
 import {getScreenDisplayMode,screenSlice} from './screen-display.mjs?v=number-layout-1';
 import {createPainterPool,sceneTrack,coverRect,containRect} from './playlist-painter.mjs?v=hiperreal-vivo-1';
@@ -54,15 +55,19 @@ export function sceneSlice(id,mode,sameClock=()=>true){
 }
 export function readScenePlaylists(storage){try{return JSON.parse(storage?.getItem(SCENE_PLAYLISTS_KEY)||'null')?.enabled!==false;}catch{return true;}}
 
-export function createScenePlaylists({win=globalThis,doc=win.document,storage,watch=watchMatrixState,sequencer=createScreenPlaylist,seeds=SCENE_SEEDS,mode=getScreenDisplayMode,number=id=>7-Number(id.slice(-1))}={}){
+export function createScenePlaylists({win=globalThis,doc=win.document,storage,watch=watchMatrixState,watchPhysicalIPad=watchIPadPlaylist,sequencer=createScreenPlaylist,seeds=SCENE_SEEDS,mode=getScreenDisplayMode,number=id=>7-Number(id.slice(-1))}={}){
  const store=storage===undefined?win.localStorage:storage,clock=()=>win.performance.now(),byDevice=new Map();
- let enabled=readScenePlaylists(store),state=null,stopWatch=null,idle=0,lastUse=0,awake=false,disposed=false,off={};
+ let enabled=readScenePlaylists(store),state=null,stopWatch=null,stopIPad=null,physicalTracks=seeds.ipad,idle=0,lastUse=0,awake=false,disposed=false,off={};
  const pool=createPainterPool({win,doc,sequencer,awake:()=>awake});
  function savedLayout(){try{return JSON.parse(store?.getItem(DEVICE_LAYOUT_KEY)||'null');}catch{return null;}}
  function sync(){
   if(disposed)return;
   off=state?.devicesOff||{};
-  const groups=enabled?sceneGroups({layout:sceneLayout(savedLayout(),state),catalog:sceneCatalog(state,seeds),off}):new Map();
+  const layout=sceneLayout(savedLayout(),state),catalog=sceneCatalog(state,seeds);
+  // The iPad alone follows its real screen; wall/POS assignments remain unchanged.
+  layout.assignments={...layout.assignments,'starbucks-ipad-01':'ipad'};
+  catalog.ipad={tracks:physicalTracks,loop:true};
+  const groups=enabled?sceneGroups({layout,catalog,off}):new Map();
   for(const player of pool.values())if(!groups.has(player.id))pool.drop(player);
   byDevice.clear();
   for(const group of groups.values()){
@@ -73,17 +78,18 @@ export function createScenePlaylists({win=globalThis,doc=win.document,storage,wa
   }
  }
  function sleep(){
-  if(!awake)return;awake=false;win.clearInterval(idle);idle=0;stopWatch?.();stopWatch=null;pool.pause();
+  if(!awake)return;awake=false;win.clearInterval(idle);idle=0;stopWatch?.();stopWatch=null;stopIPad?.();stopIPad=null;pool.pause();
  }
  // Sólo trabaja mientras alguna escena pinta: en Matrix, con la pestaña oculta o fuera del Starbucks no consume nada.
  function wake(){
   lastUse=clock();if(awake||disposed||!enabled)return;awake=true;
   sync();pool.play();
   stopWatch=watch({onState:value=>{state=value;sync();}});
+  stopIPad=watchPhysicalIPad(value=>{if(value.tracks!==null){physicalTracks=value.tracks;sync();if(awake)pool.play();}});
   idle=win.setInterval(()=>{if(clock()-lastUse>SLEEP_MS)sleep();},1000);
  }
  // En Matrix el gestor de colas ocupa el iPad mientras su playlist no trae vídeo; aquí se respeta igual.
- const queueOwns=(id,player)=>sceneKind(id)==='ipad'&&player.track()?.kind==='image'&&!!win.XpaceIpadCola?.on?.();
+ const queueOwns=id=>sceneKind(id)==='ipad'&&!!win.XpaceIpadCola?.hasOrders?.();
  function draw(ctx,w,h,id){
   if(!enabled||disposed||!DEVICE_IDS.includes(id))return false;
   wake();

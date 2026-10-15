@@ -1,35 +1,19 @@
-# iPad Starbucks · Admirito completo / Full-screen Admirito
+# iPad Starbucks · playlist horizontal y colas / Landscape playlist and queue
 
 ## Español
 
-Sin pedidos en Recibido, En preparación ni Preparado, Admirito ocupa toda la pantalla del iPad. Al llegar un pedido reaparecen las tres fases; al recogerse el último vuelve al avatar completo. Una pérdida de conexión conserva el último estado conocido. /ipad cola activa la cola, /ipad abrir la amplía (también doble clic), /ipad off recupera la playlist. Los previos de Pixeria conservan prioridad. La vista de escena no activa voz propia; la voz ampliada requiere un toque. Las pruebas usan starbucks-qa, sin alterar la cola real de Carlos.
+El iPad virtual de Starbucks reproduce en horizontal la misma playlist que el iPad real ipad-admin-mupi: la demo de dos vídeos, en su orden, sin importar los otros 25 contenidos. Stock → Starbucks → Demo iPad es el destino físico. Sin pedidos en Recibido, En preparación ni Preparado se ve la playlist; cualquier pedido activo superpone el gestor de colas y al recogerse el último vuelven los vídeos. Los fallos de lectura conservan la última lista y el último estado de cola válidos. /ipad cola activa este cambio automático; /ipad off lo desactiva y deja la playlist; /ipad abrir abre manualmente el gestor. La escena mantiene la cola sin voz propia. Pared, TPV e hilo musical conservan sus fuentes. No se garantiza sincronía de fotograma entre iPad real y virtual.
 
 ## English
 
-With no Received, Preparing or Ready orders, Admirito fills the iPad screen. Any active order restores all three phases; collecting the last order restores the full avatar. A connection failure retains the last known state. /ipad cola enables the queue, /ipad abrir expands it (also double-click), /ipad off restores its playlist. Pixeria previews retain priority. Scene mode has no independent voice; expanded voice requires a user gesture. Tests use starbucks-qa without changing Carlos’s live queue.
+The Starbucks virtual iPad plays the same landscape playlist as physical iPad ipad-admin-mupi: the two-video demo, in order, without importing the other 25 items. Stock → Starbucks → Demo iPad selects the physical destination. With no Received, Preparing or Ready orders the playlist is visible; any active order overlays the queue manager and collecting the final order restores the videos. Failed reads retain the last valid playlist and queue state. /ipad cola enables this automatic switch; /ipad off disables it and keeps the playlist; /ipad abrir manually opens the manager. The scene queue has no independent voice. Wall, POS and background music retain their sources. Frame-accurate sync between physical and virtual iPads is not guaranteed.
 
 ## Contrato compartido / Shared contract
 
-- Device: `starbucks-ipad-01` / `PDG103-IPAD-01`; venue `alsea-sbux-021`.
-- Queue page: https://www.ainimation.studio/cola/ipad.html?store=starbucks-paseo-de-gracia
-- Read-only relay: https://mcp-ainimation.admira.store/cola/estado?store=starbucks-paseo-de-gracia ; arrays `recibido`, `preparando`, `listo`. Empty means all three arrays are empty, not merely no ready orders.
-- Source: `ainimation/cola/ipad.html` (Matrix iframe and expanded view); `admira-xp/scripts/ipad-cola.js` (Good/Better/Best canvas adapter).
-- Native avatar URL: `https://digitalavatar.ai/nube.html?embed=1&kiosk=1&avatar=admirito&tier=good&sector=retail&audio=off`. Embed removes the console/header and fills the stage; kiosk hides the avatar evolution selector.
-- Queue UI state: body class `ipad-idle`; iframe is retained through transitions, no avatar reload. The DEMO notice remains overlaid. No browser Fullscreen API is invoked.
-- Storage `xpace:ipad-cola`: missing=ON, off=playlist. Matrix iframe has `escena=1` and cache token `v=ipad-idle-20261007`. Preserve mapped corners and independent playlist channel `ipad`.
-- Regression: empty → received → preparing → ready → empty; disconnection while active; portrait/landscape layout; Pixeria override; /ipad off. Test orders must use `starbucks-qa`, never create automated orders in `starbucks-paseo-de-gracia`.
-- Local simulated UI, no payments or physical iPad installation. Real voice and hardware delivery require separate acceptance.
+Source / Fuente: GET https://admira.tv/api/playlist?screen=ipad-admin-mupi, draft.items followed by auto with stock-ID deduplication; read-only Store proxy /admira-xp/api/ipad-playlist. Poll 15 s, request timeout 8 s. Virtual device starbucks-ipad-01; landscape 1024×768; mapped corners retained. Queue / Cola: GET https://admira.tv/gestorColas/api/estado?sala=starbucks-paseo-de-gracia&publico=1, poll 3 s, timeout 5 s, arrays recibido/preparando/listo. QA override ?ipadQueueRoom=starbucks-qa (legacy ?cola= preserved), strict slug 2–80 chars, read-only. MCP playlists.ipad remains a legacy snapshot and no longer governs the visible iPad; edit the physical playlist through Admira TV/Stock. Store does not publish to the physical device.
 
-## handON · 2026-10-07
+## Ensayo / Rehearsal
 
-Recovered current Store main with native Store walkthrough, local demos, kiosk messages, three-phase queue and mug project association. Portable Agora handoff is historical; current repository and live queue page were inspected. Initial defect confirmed in the public page: empty columns consumed 595 of 1280 px and avatar used kiosk console. This change supplies full-screen idle mode in both rendering paths.
+ES: Abrir el gemelo Starbucks en Matrix (también Good/Better/Best). Comprobar los mismos dos IDs y orden que la pantalla física. Sin pedidos deben verse los vídeos horizontales. Ensayar recibido → preparando → listo → recogido sólo en starbucks-qa, usando ?ipadQueueRoom=starbucks-qa. Comprobar que al vaciarse vuelven los vídeos; simular un fallo de lectura y verificar continuidad. El control manual ampliado abre el gestor aunque la cola esté vacía. La verificación del hardware y del audio requiere aceptación independiente; los acuses no demuestran imagen física. Registrar las evidencias y el minitutorial exportado en admira.app.
 
-## Tocar el iPad / Tap the iPad
-
-ES: Un solo toque en el iPad (o el botón 🧾 Abrir gestor de colas) abre el gestor de colas oficial admira.tv/gestorColas/pantalla, con enlaces a abrirlo en pestaña nueva y al control de barra. En ITIL, starbucks-ipad-01 tiene contenido tipo web app (gestorColas).
-
-EN: A single tap on the iPad (or the 🧾 Abrir gestor de colas button) opens the official queue manager at admira.tv/gestorColas/pantalla, with links to open it in a new tab and to the bar control. In ITIL, starbucks-ipad-01 content type is web app (gestorColas).
-
-ES: El toque funciona en Good, Better, Best y Matrix (detección por coordenadas). EN: Tap works in Good, Better, Best and Matrix (coordinate hit-test).
-
-ES: Matrix usa una capa táctil transparente sobre el iframe; la vista ampliada es un <dialog> modal (capa superior) y ✕ cierra con un toque. Diagnóstico: window.__ipadColaDebug. EN: Matrix uses a transparent tap layer over the iframe; the enlarged view is a modal <dialog> (top layer) and ✕ closes on one tap. Debug: window.__ipadColaDebug.
+EN: Open the Starbucks twin in Matrix (also Good/Better/Best). Compare the exact two IDs and their order with the physical screen. With no orders, landscape videos must be visible. Rehearse received → preparing → ready → collected only in starbucks-qa, with ?ipadQueueRoom=starbucks-qa. Verify videos return when the queue empties; simulate a failed read and check continuity. The enlarged manual view opens the manager even when empty. Hardware and audio require separate acceptance; acknowledgements do not prove physical images. Record evidence and the exported minitutorial in admira.app.
