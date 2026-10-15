@@ -98,8 +98,27 @@
     return `<button type="button" class="${cls}"${id}${label}</button>`;
   }
 
+  // Portada (Carlos, 15-oct-2026): la primera página de cada site va sin modo Experto; en el sitio de ⌘,
+  // la pastilla de idioma del mismo tamaño: «ENG» pasa a inglés y «ESP» vuelve al castellano. El resto
+  // de páginas conserva ⌘ Experto. Una página puede decidirlo con window.XPACE_SHELL.portada.
+  function esPortada(win) {
+    try {
+      const cfg = win && win.XPACE_SHELL;
+      if (cfg && typeof cfg.portada === 'boolean') return cfg.portada;
+      if (win.top !== win.self || /(^|[?&])embed=/.test(win.location.search)) return false;
+      // El recorrido de demo nativo (?ax_demo=store, lo lanza AdmiraNeXT) arranca en la portada con el motor Experto.
+      if (/(^|[?&])ax_demo=/.test(win.location.search)) return false;
+      return win.location.pathname === '/' || win.location.pathname === '/index.html';
+    } catch (_) { return false; }
+  }
+  // La pastilla de idioma: misma clase y caja (30 × 30) que ⌘; el texto dice el idioma al que se pasa.
+  function pastillaIdioma(lang) {
+    const en = lang === 'en', label = en ? 'Switch to Spanish' : 'Cambiar a inglés';
+    return `<button type="button" class="quad-icon xs-lang-pill" id="pfLang" data-shell-lang-pill aria-label="${label}" title="${label}" style="font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.02em">${en ? 'ESP' : 'ENG'}</button>`;
+  }
+
   // Marcado del shell: mismos ids, clases y glifos que la barra del gemelo.
-  function markup(rawCfg, {lang = 'es', version = ''} = {}) {
+  function markup(rawCfg, {lang = 'es', version = '', portada = false} = {}) {
     const cfg = normalizeConfig(rawCfg);
     const T = (es, en) => (lang === 'en' ? en : es);
     const section = cfg.section ? `<span class="xs-section"${bilingual(lang, cfg.section)}</span>` : '';
@@ -107,9 +126,9 @@
   <button type="button" class="quad-icon" id="pfOptions" data-quad-toggle="left" aria-controls="xsOptions" aria-expanded="false" data-shell-label-es="Opciones" data-shell-label-en="Options" aria-label="${T('Opciones', 'Options')}" title="${T('Opciones', 'Options')}">☰</button>
   <span class="xs-brand-wrap"><a class="xs-brand" href="${esc(cfg.home)}" data-shell-label-es="XpaceOS · volver al inicio" data-shell-label-en="XpaceOS · back to home" title="${T('XpaceOS · volver al inicio', 'XpaceOS · back to home')}"><span class="xs-brand-name">XpaceOS</span></a>${section}</span>
   <div class="spacer"></div>
-  <div id="pfToggles" class="pf-toggles" role="group" aria-label="${T('Modos: avanzado, experto', 'Modes: advanced, expert')}">
+  <div id="pfToggles" class="pf-toggles" role="group" aria-label="${portada ? T('Menú avanzado e idioma', 'Advanced menu and language') : T('Modos: avanzado, experto', 'Modes: advanced, expert')}">
     <button type="button" class="quad-icon" data-quad-toggle="right" aria-controls="xsAdvanced" aria-expanded="false" data-shell-label-es="Desplegar menú avanzado" data-shell-label-en="Open advanced menu" aria-label="${T('Desplegar menú avanzado', 'Open advanced menu')}" title="${T('Menú avanzado', 'Advanced menu')}">▤</button>
-    <button type="button" class="quad-icon" id="pfExpert" data-quad-toggle="expert" aria-controls="xsExpert" aria-pressed="false" data-shell-label-es="Modo experto — mostrar u ocultar el menú inferior" data-shell-label-en="Expert mode — show or hide the bottom menu" aria-label="${T('Modo experto — mostrar u ocultar el menú inferior', 'Expert mode — show or hide the bottom menu')}" title="${T('Modo experto · mostrar/ocultar menú inferior', 'Expert mode · show/hide bottom menu')}">⌘</button>
+    ${portada ? pastillaIdioma(lang) : `<button type="button" class="quad-icon" id="pfExpert" data-quad-toggle="expert" aria-controls="xsExpert" aria-pressed="false" data-shell-label-es="Modo experto — mostrar u ocultar el menú inferior" data-shell-label-en="Expert mode — show or hide the bottom menu" aria-label="${T('Modo experto — mostrar u ocultar el menú inferior', 'Expert mode — show or hide the bottom menu')}" title="${T('Modo experto · mostrar/ocultar menú inferior', 'Expert mode · show/hide bottom menu')}">⌘</button>`}
   </div>
 </div>`;
     const common = cfg.common ? COMMON_OPTIONS.map(o => (o.href === '/' ? Object.assign({}, o, {href: cfg.home}) : o)) : [];
@@ -396,7 +415,7 @@
 
   const api = {PANELS_KEY, HISTORY_KEY, LANG_KEY, LANG_EVENT, PENDING_KEY, PENDING_TTL, TWIN_HOME, TWIN_VERBS, BARE_TWIN, SHELL_VERBS, COMMON_OPTIONS,
     BRAND_SEED, MARCA_VERB, MB_SESSION_KEY, MB_PROJECT_KEY,
-    PLANOS, planoTarget, esc, normalizeConfig, markup, parseCommand, parseLangCommand, normalizeLangToken, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
+    PLANOS, planoTarget, esc, normalizeConfig, markup, esPortada, pastillaIdioma, parseCommand, parseLangCommand, normalizeLangToken, languageCommand, avatarCommandText, isAvatarCommand, isTwinVerb, twinCommand, savePending, takePending, complete, wantsBrand, runMarca, remoteMarca};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -432,6 +451,8 @@
     let id = '';
     try { id = new URLSearchParams(root.location.search).get('cliente') || ''; } catch (_) {}
     if (!id) { try { id = (JSON.parse(session && session.getItem('pixeria:cliente:v2') || 'null') || {}).id || ''; } catch (_) {} }
+    // Marca de un cliente puesta a mano (?marca= o /marca): filtra como su cliente (Carlos, 15-oct-2026).
+    if (!id) { try { if (session && session.getItem('mb:manual') === '1') id = session.getItem('mb:marca') || ''; } catch (_) {} }
     return !!id && !/^(admira|todos|todas|all|off|ninguno)$/i.test(id);
   }
   function cargarCliente() {
@@ -641,7 +662,7 @@
     const cfg = normalizeConfig(root.XPACE_SHELL, script ? script.dataset : {});
     const release = (doc.querySelector('meta[name="admiranext-version"]') || {}).content || '';
     const tpl = doc.createElement('template');
-    tpl.innerHTML = markup(cfg, {lang: lang(), version: release ? 'XpaceOS ' + release : 'XpaceOS'}).html;
+    tpl.innerHTML = markup(cfg, {lang: lang(), version: release ? 'XpaceOS ' + release : 'XpaceOS', portada: esPortada(root)}).html;
     const nodes = [...tpl.content.children];
     const bar = nodes[0];
     const [options, advanced, expert] = [...nodes[1].children];
@@ -850,6 +871,7 @@
   // Con la piel el panel queda abierto para el shell (sin inert): manda el estado de la piel.
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
+    if (esPortada(root)) return; // portada sin modo Experto: ni ⌘ ni el motor común
     const V = '20261014-personajes-2', BASE = 'https://www.admiranext.com/suite/experto';
     const host = location.hostname.replace(/^www\./, '');
     const nativeDemo = /^(admira\.store|xpaceos\.com)$/.test(host) && new URLSearchParams(location.search).get('ax_demo') === 'store';
@@ -904,6 +926,16 @@
     layout();
     requestAnimationFrame(() => requestAnimationFrame(() => html.classList.remove('xs-no-anim')));
 
+    const pastilla = doc.getElementById('pfLang');
+    if (pastilla) {
+      const pintar = () => { const en = lang() === 'en', label = en ? 'Switch to Spanish' : 'Cambiar a inglés'; pastilla.textContent = en ? 'ESP' : 'ENG'; pastilla.setAttribute('aria-label', label); pastilla.title = label; };
+      pastilla.addEventListener('click', () => {
+        const propio = doc.getElementById('lang-toggle');
+        if (propio) propio.click(); else shared.language('/idioma');
+      });
+      new MutationObserver(pintar).observe(html, {attributes: true, attributeFilter: ['lang']});
+      pintar();
+    }
     for (const btn of doc.querySelectorAll('#topBar [data-quad-toggle]')) {
       btn.addEventListener('click', () => { const name = btn.dataset.quadToggle; setPanel(name, !state[name]); });
     }

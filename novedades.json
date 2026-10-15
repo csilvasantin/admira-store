@@ -6,6 +6,10 @@
     "Nuevos medios aplicados a las siete composiciones del gemelo 360 y 3D.",
     "Ayuda y MCP bilingües; biblioteca, PNG y contrato, sin programación física."
   ],
+  "v.15.10.2026.r15.20:30": [
+    "Portada sin modo Experto: en el sitio de ⌘, la pastilla de idioma del mismo tamaño — ENG pasa a inglés y ESP vuelve al castellano. El recorrido de demo nativo (?ax_demo=store) conserva su motor.",
+    "Con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis) la portada y las listas de Xpacios sólo enseñan lo suyo; con Starbucks, el gemelo de referencia y los botones abren el Starbucks de Paseo de Gràcia. Como Admira, todo."
+  ],
   "v.15.10.2026.r14.20:08": [
     "Proyecto y local con la marca de un cliente: el desplegable de locales ofrece los de esa marca aunque la escena abierta sea de otro proyecto (p. ej. un Xtanco con la marca Starbucks), y elegir uno abre ese local."
   ],

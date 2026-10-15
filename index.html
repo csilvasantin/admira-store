@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.15.10.2026.r14.20:08"/>
+  <meta name="admiranext-version" content="v.15.10.2026.r15.20:30"/>
   <!-- Espejo de www.xpaceos.com (b0a2a28), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
@@ -445,7 +445,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 }
 </script>
 <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261007-native-demo-control-2">
-<script defer src="/assets/xpace-shell.js?v=20261014-gdg51-1" data-section="" data-section-en=""></script>
+<script defer src="/assets/xpace-shell.js?v=20261015-portada-1" data-section="" data-section-en=""></script>
 </head>
 <body id="top">
 <a class="skip-link" href="#main-content" data-i18n="skip">Saltar al contenido</a>
@@ -1289,6 +1289,7 @@ document.addEventListener('xpace:cliente', () => {
   renderGemelos();
   if (typeof renderCatalogo === 'function') renderCatalogo();
   if (typeof renderPulses === 'function') renderPulses();
+  if (typeof prEnlacesReferencia === 'function') prEnlacesReferencia();
 });
 
 function gmDict() { return I18N[document.documentElement.lang] || I18N.en; }
@@ -1365,7 +1366,25 @@ const PR_PAGE = 24;
 const PR_SURFS = ['pantalla','escaparate','mostrador','pwa','atm','pudo','vending','robot'];
 const prState = { q:'', brand:'', surf:'', page:1, sel:'', selName:'' };
 function prBrand(kind){ return String(kind || '').split('·')[0].trim(); }
-function prTwinUrl(id){ return '/admira-xp/?' + (id ? 'loc=' + encodeURIComponent(id) + '&' : '') + 'autostart=xtanco&from=portada&visual=hiperreal'; }
+// Gemelo de referencia por cliente (Carlos, 15-oct-2026): con la marca de Starbucks la portada abre el
+// Starbucks de Paseo de Gràcia en lugar del Xtanco; con Altadis o como Admira, el Xtanco.
+const PR_REFERENCIA = {
+  starbucks: { url: '/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021&project=starbucks&from=portada&visual=hiperreal', es: 'Starbucks · gemelo de referencia', en: 'Starbucks · reference twin' },
+};
+const PR_XTANCO = '/admira-xp/?autostart=xtanco&from=portada&visual=hiperreal';
+function prReferencia(){ const c = window.XpaceCliente && window.XpaceCliente.activo(); return (c && PR_REFERENCIA[c]) || null; }
+function prRefLabel(){ const ref = prReferencia(); return ref ? ref[document.documentElement.lang === 'en' ? 'en' : 'es'] : (gmDict()['prueba.now'] || ''); }
+function prTwinUrl(id){ const ref = !id && prReferencia(); if (ref) return ref.url; return '/admira-xp/?' + (id ? 'loc=' + encodeURIComponent(id) + '&' : '') + 'autostart=xtanco&from=portada&visual=hiperreal'; }
+// Los enlaces fijos al gemelo (menú «Demo», botón principal, «abrir a pantalla completa») siguen al cliente.
+function prEnlacesReferencia(){
+  const destino = prTwinUrl('');
+  document.querySelectorAll('a[data-pr-referencia], a[href="' + PR_XTANCO + '"]').forEach(a => {
+    a.setAttribute('data-pr-referencia', '');
+    if (a.id === 'pr-open' && prState.sel) return;
+    if (a.getAttribute('href') !== destino) a.setAttribute('href', destino);
+  });
+  const now = document.getElementById('pr-now'); if (now && !prState.sel) now.textContent = prRefLabel();
+}
 function prFiltered(){
   if (!Array.isArray(gemelosData)) return [];
   const q = prState.q.trim().toLowerCase();
@@ -1387,14 +1406,14 @@ function prLoadTwin(id, name){
   if (frame.getAttribute('src') !== url) frame.src = url;
   frame.hidden = false; if (cover) cover.hidden = true;
   if (open) open.href = url;
-  if (now) now.textContent = name || gmDict()['prueba.now'];
+  if (now) now.textContent = name || prRefLabel();
   document.querySelectorAll('.pr-item').forEach(el => el.classList.toggle('sel', el.dataset.id === prState.sel));
 }
 function renderCatalogo(){
   const list = document.getElementById('pr-list'); if (!list) return;
   const d = gmDict(), lang = document.documentElement.lang;
   const q = document.getElementById('pr-q'); if (q) q.placeholder = d['prueba.search'] || '';
-  const now = document.getElementById('pr-now'); if (now && !prState.sel) now.textContent = d['prueba.now'] || '';
+  const now = document.getElementById('pr-now'); if (now && !prState.sel) now.textContent = prReferencia() ? prRefLabel() : (d['prueba.now'] || '');
   if (gemelosData === null) { list.innerHTML = `<div class="gm-state">${d['gemelos.loading']}</div>`; return; }
   if (gemelosData === 'error') { list.innerHTML = `<div class="gm-state err">${d['gemelos.error']}</div>`; return; }
   const total = document.getElementById('pr-total'); if (total) total.textContent = gemelosData.length.toLocaleString(lang);

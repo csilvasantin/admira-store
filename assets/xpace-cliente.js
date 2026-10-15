@@ -27,6 +27,19 @@
   var pedido = slug(q != null ? q : g && g.id);
   activo = pedido && !TODOS.test(pedido) ? pedido : null;
   if (q != null) guardar();
+  // Sin cliente explícito (?cliente= o recordado), la marca de un cliente puesta a mano hace de cliente
+  // (Carlos, 15-oct-2026): con ?marca=starbucks la portada y las listas sólo enseñan lo de Starbucks.
+  // No se guarda como cliente: sigue a la marca y /marca off vuelve a Admira (todo).
+  function marcaManual() {
+    try { return sessionStorage.getItem('mb:manual') === '1' ? slug(sessionStorage.getItem('mb:marca')) : ''; } catch (_) { return ''; }
+  }
+  var porMarca = q == null && !(g && g.id);
+  if (porMarca) { var m0 = marcaManual(); activo = m0 && !TODOS.test(m0) ? m0 : null; }
+  document.addEventListener('admira:marca', function () {
+    if (!porMarca) return;
+    var m = marcaManual(), nuevo = m && !TODOS.test(m) ? m : null;
+    if (nuevo !== activo) { activo = nuevo; avisar(); }
+  });
 
   function guardar() {
     try { if (activo) sessionStorage.setItem(KEY, JSON.stringify({id: activo, nombre: nombre()})); else sessionStorage.removeItem(KEY); } catch (_) {}
@@ -40,6 +53,7 @@
     return lista.filter(function (c) { return plano(c.id) === t || plano(c.nombre) === t; })[0] || null;
   }
   function fijar(id) {
+    porMarca = false;
     var c = TODOS.test(slug(id)) || !slug(id) ? null : resolver(id);
     if (slug(id) && !TODOS.test(slug(id)) && !c) return false;
     activo = c ? c.id : null;
