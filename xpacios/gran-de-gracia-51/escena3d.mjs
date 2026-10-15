@@ -451,15 +451,16 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
     if (!e || e.dato.portatil) return;
     // Lo que emite EN VIVO queda anotado: el mural, aunque se monte después, no se lo quita.
     const vivo = Boolean(est && est.fuente === 'vivo' && est.url);
+    const local=Boolean(est&&est.fuente==='playlist-local');
     e.vivo = vivo;
     // Con el mural como un solo lienzo, sólo lo que la pantalla real emite EN VIVO se lo quita;
     // la captura o la falta de señal la devuelven al mural.
     if (compartido && e.lienzoUV) {
-      if (!vivo) { if (!e.enLienzo) volverAlLienzo(e); return; }
+      if (!vivo&&!local) { if (!e.enLienzo) volverAlLienzo(e); return; }
       if (e.enLienzo) { e.enLienzo = false; ponerUV(e, e.uv0); }
     }
     const url = est && est.url;
-    if (!url) { if (e.url) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
+    if (!url) { if (e.url||local) { soltarVideo(e); e.url = null; e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id }); } return; }
     if (e.url === url) return;
     e.url = url;
     const fallo = () => { if (e.url !== url) return; e.url = null; e.vivo = false; soltarVideo(e); e.mat.map = e.neutro; e.mat.needsUpdate = true; onCambio({ medio: id, error: true, fuente: est.fuente }); if (est.fuente === 'vivo' && e.dato.textura) ponerMedio(id, { fuente: 'captura', url: e.dato.textura, tipo: 'imagen' }); };

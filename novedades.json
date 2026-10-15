@@ -714,5 +714,9 @@
   "v.15.10.2026.r7.12:25": [
     "Starbucks: el TPV presenta una sola imagen vertical a pantalla completa; las pistas horizontales o cuadradas usan su portada con recorte proporcional y título superpuesto, manteniendo el audio original.",
     "Sólo un vídeo confirmado vertical aparece en pantalla; mientras se conoce la orientación permanece la carátula. Nyla y Bad Times quedan sin ventanas horizontales, con el mando y las siete pistas intactos."
+  ],
+  "v.15.10.2026.r9.13:56": [
+    "Playlists por establecimiento y canal: Añadir desde Stock y quitar asociaciones desde el mando, con permisos y revisión.",
+    "Lista vacía explícita, selección histórica conservada y fuentes locales aisladas; guardado distinto de recibo físico."
   ]
 }

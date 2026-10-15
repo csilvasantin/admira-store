@@ -2543,23 +2543,28 @@
     "real_player_connections_verified": false
   },
   "starbucks_music": {
-    "es": "En Starbucks, Opciones → Hilo musical → Playlist actual muestra las siete piezas del iPhone iphone17-mupi, en el mismo orden: seis manuales y una automática, sin duplicados. Anterior, Siguiente y Lanzar cambian el único transporte musical virtual. Al recibir la fuente avanza sin sonido; Escuchar activa el audio sin reiniciar la pista. Pulsa el cuerpo del TPV para Escuchar/Silenciar el mismo audio; en Matrix también Tab y Enter/Espacio. Opciones → Hilo musical usa el mismo control y reanuda un reproductor parado sin reiniciar la pista. Siguiente conserva sonido/silencio. El silencio general, Layout, incidencias, cesta y locuciones conservan prioridad. La pantalla vertical detrás del TPV sigue esa pista y posición, siempre sin audio propio. El TPV presenta una sola composición vertical: sólo reproduce vídeo cuyo formato vertical esté confirmado. Los horizontales o cuadrados se representan con su portada original recortada proporcionalmente para llenar toda la pantalla vertical, sin ventanas ni franjas y con el título superpuesto, o un SVG editorial titulado si falta o falla; mientras no se conoce la orientación también muestra la carátula. El audio fuente continúa intacto; las dos piezas de audio usan una carátula editorial con su título. La carátula también aparece durante carga, error, fotogramas negros y los últimos dos segundos de cada vídeo. Se recupera el vídeo al llegar una imagen válida. Pausar TPV pausa sólo su imagen; al reanudar vuelve al punto del hilo. Reacciones, cesta, avisos y locuciones conservan prioridad. La lista compartida se edita en Stock → Starbucks → Hilo musical; aquí es de lectura. El iPad conserva sus dos vídeos horizontales y la cola automática. Bad Times usa sólo su portada original de Stock sobre una composición vertical limpia; conserva su audio, con carátula editorial titulada si falla la imagen. En la ficha En emisión del TPV, DESPLEGAR MANDO INTERACTIVO abre Anterior, Escuchar/Silenciar, Siguiente y la playlist de siete con Lanzar pista. La ficha permanece visible mientras el mando está abierto. Son controles del gemelo y tiempo web, sin confirmación ni órdenes al reproductor físico.",
-    "en": "In Starbucks, Options → Background music → Current playlist shows the seven iphone17-mupi items in the same order: six manual items and one automatic item, without duplicates. Previous, Next and Launch use the single virtual music transport. It starts muted when the source arrives; Listen enables sound without restarting the track. Click the POS screen body to Listen/Mute the same audio; Matrix also supports Tab and Enter/Space. Options → Background music uses the same control and resumes a stopped owner without restarting its track. Next preserves sound/mute. Master mute, Layout, incidents, basket and voiceovers retain priority. The portrait screen behind the POS follows that track and position, always without its own audio. The POS shows a single portrait composition: only confirmed portrait video can play visually. Landscape or square items use their original cover cropped proportionally to fill the entire portrait screen, with no inset windows or bands and with an overlaid title, or a titled editorial SVG if unavailable; unknown orientation also stays on the portrait card. Source audio remains unchanged; the two audio items use an editorial cover with their title. The cover also appears during loading, errors, black frames and the final two seconds of every video. Video returns when a valid picture arrives. Pause POS pauses only its picture; resuming returns to the music position. Reactions, basket, announcements and voiceovers retain priority. Edit the shared list in Stock → Starbucks → Background music; this view is read-only. The iPad retains its two landscape videos and automatic queue. Bad Times uses only its original Stock cover in a clean portrait composition; its audio is retained, with a titled editorial fallback if the image fails. On the POS On air card, EXPAND INTERACTIVE REMOTE opens Previous, Listen/Mute, Next and the seven-track playlist with Launch track. The card stays visible while the remote is open. These control the twin and show web time, with no physical-player commands or acknowledgements.",
+    "es": "La playlist pertenece al proyecto, establecimiento y canal abierto. Opciones → Hilo musical → Playlist actual, o ficha → DESPLEGAR MANDO INTERACTIVO, permiten Añadir desde Stock (título o #número) y Quitar de esta playlist sin borrar Stock. Persiste en Admira TV D1 con permiso comercial, revisión e idempotencia; un lector no edita. Eliminar la última pieza guarda vacío y detiene audio, sin relleno automático. Los locales virtuales tienen autoridad propia; sólo la asociación administrativa del demo alsea-sbux-021 enlaza iphone17-mupi. Guardado no acredita entrega física. El mando controla un reloj web y un único audio, mantiene apertura y prioridades de incidencias/cesta/locución/silencio. El TPV conserva composición vertical única: vídeo vertical confirmado o portada original/editorial llenando el área; no muestra vídeo horizontal incrustado. iPad2/colas y eInk quedan fuera. Guía: /admira-xp/docs/context-playlist.md.",
+    "en": "The playlist belongs to the open project, venue and channel. Options → Background music → Current playlist, or device card → EXPAND INTERACTIVE REMOTE, supports Add from Stock (title or #number) and Remove from this playlist without deleting Stock. Admira TV D1 persists changes with commercial permission, revisions and idempotent receipts; viewers cannot edit. Removing the final item stores empty and stops audio without automatic fallback. Virtual venues own their authority; only administrative association of alsea-sbux-021 binds iphone17-mupi. Persistence does not prove physical delivery. The remote controls one web clock/audio owner, keeps its expanded state and incident/basket/announcement/master-mute priorities. The POS keeps a single portrait composition: confirmed portrait video or full-area original/editorial artwork, without inset horizontal video. iPad2/queue and eInk are excluded. Guide: /admira-xp/docs/context-playlist.md.",
     "store": "starbucks-alsea-paseo-de-gracia",
     "tutorial": "https://www.xpaceos.com/help/#starbucks-music",
     "playlist_url": "https://www.xpaceos.com/admira-xp/starbucks-playlist.json",
     "integration_guide": "https://www.xpaceos.com/admira-xp/docs/starbucks-playlist.md",
     "screen_muted": true,
     "cross_device_sync": false,
-    "source_screen": "iphone17-mupi",
-    "source_url": "https://admira.tv/api/playlist?screen=iphone17-mupi",
-    "source_proxy": "https://www.admira.store/admira-xp/api/music-playlist",
-    "read_only": true,
+    "source_screen": "administrative demo binding only: iphone17-mupi",
+    "source_url": "https://admira.tv/api/xpace-playlists",
+    "source_proxy": "https://www.admira.store/admira-xp/api/context-playlist",
+    "read_only": false,
     "mcp_legacy_snapshot_authoritative": false,
     "audio_owner": "starbucksMusic",
     "visual_device": "starbucks-tpv-01",
     "editorial_fallback": true,
-    "tail_cover_seconds": 2
+    "tail_cover_seconds": 2,
+    "source_scope": [
+      "projectId",
+      "venueId",
+      "channelId"
+    ]
   },
   "starbucks_digital_twin": {
     "location_id": "alsea-sbux-021",
@@ -2642,8 +2647,8 @@
     "guide": "https://www.xpaceos.com/admira-xp/docs/starbucks-playlist.md"
   },
   "starbucks_tpv": {
-    "es": "En Starbucks, Opciones → Hilo musical → Playlist actual muestra las siete piezas del iPhone iphone17-mupi, en el mismo orden: seis manuales y una automática, sin duplicados. Anterior, Siguiente y Lanzar cambian el único transporte musical virtual. Al recibir la fuente avanza sin sonido; Escuchar activa el audio sin reiniciar la pista. Pulsa el cuerpo del TPV para Escuchar/Silenciar el mismo audio; en Matrix también Tab y Enter/Espacio. Opciones → Hilo musical usa el mismo control y reanuda un reproductor parado sin reiniciar la pista. Siguiente conserva sonido/silencio. El silencio general, Layout, incidencias, cesta y locuciones conservan prioridad. La pantalla vertical detrás del TPV sigue esa pista y posición, siempre sin audio propio. El TPV presenta una sola composición vertical: sólo reproduce vídeo cuyo formato vertical esté confirmado. Los horizontales o cuadrados se representan con su portada original recortada proporcionalmente para llenar toda la pantalla vertical, sin ventanas ni franjas y con el título superpuesto, o un SVG editorial titulado si falta o falla; mientras no se conoce la orientación también muestra la carátula. El audio fuente continúa intacto; las dos piezas de audio usan una carátula editorial con su título. La carátula también aparece durante carga, error, fotogramas negros y los últimos dos segundos de cada vídeo. Se recupera el vídeo al llegar una imagen válida. Pausar TPV pausa sólo su imagen; al reanudar vuelve al punto del hilo. Reacciones, cesta, avisos y locuciones conservan prioridad. La lista compartida se edita en Stock → Starbucks → Hilo musical; aquí es de lectura. El iPad conserva sus dos vídeos horizontales y la cola automática. Bad Times usa sólo su portada original de Stock sobre una composición vertical limpia; conserva su audio, con carátula editorial titulada si falla la imagen. En la ficha En emisión del TPV, DESPLEGAR MANDO INTERACTIVO abre Anterior, Escuchar/Silenciar, Siguiente y la playlist de siete con Lanzar pista. La ficha permanece visible mientras el mando está abierto. Son controles del gemelo y tiempo web, sin confirmación ni órdenes al reproductor físico.",
-    "en": "In Starbucks, Options → Background music → Current playlist shows the seven iphone17-mupi items in the same order: six manual items and one automatic item, without duplicates. Previous, Next and Launch use the single virtual music transport. It starts muted when the source arrives; Listen enables sound without restarting the track. Click the POS screen body to Listen/Mute the same audio; Matrix also supports Tab and Enter/Space. Options → Background music uses the same control and resumes a stopped owner without restarting its track. Next preserves sound/mute. Master mute, Layout, incidents, basket and voiceovers retain priority. The portrait screen behind the POS follows that track and position, always without its own audio. The POS shows a single portrait composition: only confirmed portrait video can play visually. Landscape or square items use their original cover cropped proportionally to fill the entire portrait screen, with no inset windows or bands and with an overlaid title, or a titled editorial SVG if unavailable; unknown orientation also stays on the portrait card. Source audio remains unchanged; the two audio items use an editorial cover with their title. The cover also appears during loading, errors, black frames and the final two seconds of every video. Video returns when a valid picture arrives. Pause POS pauses only its picture; resuming returns to the music position. Reactions, basket, announcements and voiceovers retain priority. Edit the shared list in Stock → Starbucks → Background music; this view is read-only. The iPad retains its two landscape videos and automatic queue. Bad Times uses only its original Stock cover in a clean portrait composition; its audio is retained, with a titled editorial fallback if the image fails. On the POS On air card, EXPAND INTERACTIVE REMOTE opens Previous, Listen/Mute, Next and the seven-track playlist with Launch track. The card stays visible while the remote is open. These control the twin and show web time, with no physical-player commands or acknowledgements.",
+    "es": "La playlist pertenece al proyecto, establecimiento y canal abierto. Opciones → Hilo musical → Playlist actual, o ficha → DESPLEGAR MANDO INTERACTIVO, permiten Añadir desde Stock (título o #número) y Quitar de esta playlist sin borrar Stock. Persiste en Admira TV D1 con permiso comercial, revisión e idempotencia; un lector no edita. Eliminar la última pieza guarda vacío y detiene audio, sin relleno automático. Los locales virtuales tienen autoridad propia; sólo la asociación administrativa del demo alsea-sbux-021 enlaza iphone17-mupi. Guardado no acredita entrega física. El mando controla un reloj web y un único audio, mantiene apertura y prioridades de incidencias/cesta/locución/silencio. El TPV conserva composición vertical única: vídeo vertical confirmado o portada original/editorial llenando el área; no muestra vídeo horizontal incrustado. iPad2/colas y eInk quedan fuera. Guía: /admira-xp/docs/context-playlist.md.",
+    "en": "The playlist belongs to the open project, venue and channel. Options → Background music → Current playlist, or device card → EXPAND INTERACTIVE REMOTE, supports Add from Stock (title or #number) and Remove from this playlist without deleting Stock. Admira TV D1 persists changes with commercial permission, revisions and idempotent receipts; viewers cannot edit. Removing the final item stores empty and stops audio without automatic fallback. Virtual venues own their authority; only administrative association of alsea-sbux-021 binds iphone17-mupi. Persistence does not prove physical delivery. The remote controls one web clock/audio owner, keeps its expanded state and incident/basket/announcement/master-mute priorities. The POS keeps a single portrait composition: confirmed portrait video or full-area original/editorial artwork, without inset horizontal video. iPad2/queue and eInk are excluded. Guide: /admira-xp/docs/context-playlist.md.",
     "playlist_id": "starbucks-alsea-paseo-de-gracia-tpv",
     "virtual_player_id": "starbucks-tpv-01",
     "playlist": "https://www.xpaceos.com/admira-xp/starbucks-tpv-playlist.json",
@@ -2656,15 +2661,20 @@
       "wall",
       "music"
     ],
-    "source_screen": "iphone17-mupi",
-    "source_url": "https://admira.tv/api/playlist?screen=iphone17-mupi",
-    "source_proxy": "https://www.admira.store/admira-xp/api/music-playlist",
-    "read_only": true,
+    "source_screen": "administrative demo binding only: iphone17-mupi",
+    "source_url": "https://admira.tv/api/xpace-playlists",
+    "source_proxy": "https://www.admira.store/admira-xp/api/context-playlist",
+    "read_only": false,
     "mcp_legacy_snapshot_authoritative": false,
     "audio_owner": "starbucksMusic",
     "visual_device": "starbucks-tpv-01",
     "editorial_fallback": true,
-    "tail_cover_seconds": 2
+    "tail_cover_seconds": 2,
+    "source_scope": [
+      "projectId",
+      "venueId",
+      "channelId"
+    ]
   },
   "matrix_mcp": {
     "es": "Las pantallas de Matrix · Starbucks y el TPV llevan marco negro, incluido el halo de la captura. Los agentes gestionan sus contenidos desde el MCP de XpaceOS: matrix_state consulta las cuatro playlists (wall, tpv, ipad, music); matrix_playlist_update añade, quita, ordena o vacía contenido; matrix_configure controla reproducción de pared/TPV, sincro, etiquetas y silencio; matrix_music_next avanza la música. Matrix consulta cambios cada 5 segundos mientras está abierto. Las escrituras exigen clave de flota y expected_revision; quedan firmadas por el agente. El estado compartido conserva la última versión si se pierde la conexión.",
@@ -3734,7 +3744,7 @@
       "visualQualityOptions"
     ]
   },
-  "version": "v.05.10.2026.r19.23:18",
+  "version": "v.15.10.2026.r9.13:56",
   "inventory_scope": {
     "es": "ITIL abre el inventario del Xpacio visitado en la segunda columna de Experto y el detalle seleccionado en la tercera. El enlace opcional al catálogo conserva el mismo dominio, proyecto, local, idioma y marca y publica primero la distribución actual en este navegador. Tarjetas, selector 3D, desgloses y descargas se limitan a sus modelos; un enlace a una pieza ajena no la carga. Un Xpacio desconocido muestra un inventario vacío y pide abrir ITIL desde la escena. /inventario en el gemelo lista sólo sus modelos, conservando los números permanentes y las piezas retiradas para su recuperación. Las importaciones explícitas y Deshacer mantienen su funcionamiento. Starbucks PG103 conserva sus unidades y modelos 44–50 e incluye sus seis pantallas virtuales, TPV y altavoz; no acredita vinculación ni telemetría física. Cafebrería conserva su inventario completo de la escena y su librería 51. El catálogo general sin contexto sigue disponible para consultar plantillas. No crea altas patrimoniales en Yokup.",
     "en": "ITIL opens the inventory of the Xpace being visited in the second Expert column and the selected details in the third. The optional catalogue link preserves the same origin, project, venue, language and brand and first publishes the current layout in this browser. Cards, the 3D selector, breakdowns and downloads are limited to its models; links to foreign pieces do not load them. Unknown Xpacios show an empty inventory and ask users to open ITIL from the scene. /inventario in the twin lists only its models, preserving permanent numbers and removed pieces for recovery. Explicit imports and Undo retain their behavior. Starbucks PG103 keeps its units and models 44–50 and includes its six virtual screens, POS and speaker; this does not establish physical binding or telemetry. Cafebrería retains its full scene inventory and bookcase 51. The general catalogue without context remains available for browsing templates. No Yokup lifecycle assets are created.",
@@ -4339,7 +4349,7 @@
     ],
     "drop_behavior": "insert into playlist at chosen position, preserve current playback",
     "image_duration_seconds": 30,
-    "runtime_scope": "local virtual players; physical broadcast not verified",
+    "runtime_scope": "Current registered project + venue + channel; legacy browser lists retained as history, not editable authority when scoped editor is mounted.",
     "staged_storage": "sessionStorage:xpaceos.options-media-ready.v1",
     "stock_reference_storage": "localStorage:xpaceos.options-playlist-stock.v1",
     "matrix_playlist_storage": "xpaceos.starbucks.device-layout.v1",
@@ -4350,7 +4360,30 @@
       "duration_seconds": 30
     },
     "music_generation": "existing PixerIA delivery to Stock; no new paid music generator added",
-    "screen_drop_behavior": "temporary local preview on the exact target screen; restore original schedule"
+    "screen_drop_behavior": "temporary local preview on the exact target screen; restore original schedule",
+    "scoped_authority": {
+      "es": "La playlist pertenece al proyecto, establecimiento y canal abierto. Opciones → Hilo musical → Playlist actual, o ficha → DESPLEGAR MANDO INTERACTIVO, permiten Añadir desde Stock (título o #número) y Quitar de esta playlist sin borrar Stock. Persiste en Admira TV D1 con permiso comercial, revisión e idempotencia; un lector no edita. Eliminar la última pieza guarda vacío y detiene audio, sin relleno automático. Los locales virtuales tienen autoridad propia; sólo la asociación administrativa del demo alsea-sbux-021 enlaza iphone17-mupi. Guardado no acredita entrega física. El mando controla un reloj web y un único audio, mantiene apertura y prioridades de incidencias/cesta/locución/silencio. El TPV conserva composición vertical única: vídeo vertical confirmado o portada original/editorial llenando el área; no muestra vídeo horizontal incrustado. iPad2/colas y eInk quedan fuera. Guía: /admira-xp/docs/context-playlist.md.",
+      "en": "The playlist belongs to the open project, venue and channel. Options → Background music → Current playlist, or device card → EXPAND INTERACTIVE REMOTE, supports Add from Stock (title or #number) and Remove from this playlist without deleting Stock. Admira TV D1 persists changes with commercial permission, revisions and idempotent receipts; viewers cannot edit. Removing the final item stores empty and stops audio without automatic fallback. Virtual venues own their authority; only administrative association of alsea-sbux-021 binds iphone17-mupi. Persistence does not prove physical delivery. The remote controls one web clock/audio owner, keeps its expanded state and incident/basket/announcement/master-mute priorities. The POS keeps a single portrait composition: confirmed portrait video or full-area original/editorial artwork, without inset horizontal video. iPad2/queue and eInk are excluded. Guide: /admira-xp/docs/context-playlist.md.",
+      "guide": "https://www.admira.store/admira-xp/docs/context-playlist.md",
+      "api": "/admira-xp/api/context-playlist",
+      "stock_search": "/admira-xp/api/stock-search",
+      "authority": "admira.tv:PROGRAMACION_DB",
+      "scope": [
+        "projectId",
+        "venueId",
+        "channelId"
+      ],
+      "hardware_association": "administrative only",
+      "saved_is_physical_ack": false,
+      "empty": "managed-empty; no auto/synthetic/default fallback",
+      "legacy_browser_storage": "retained history; explicit scoped adoption of validated Stock IDs only",
+      "ui": [
+        "common Options music/screens",
+        "existing Matrix/Best device remotes",
+        "Gran de Gràcia matching public floor-plan inventory"
+      ],
+      "cli_write_command": null
+    }
   },
   "pixeriaScreenDrop": {
     "guide": "https://www.admira.store/admira-xp/docs/pixeria-screen-drop.md",
@@ -5859,5 +5892,28 @@
     "render": "tarjeta flotante a la derecha + pantalla vertical aleatoria del gemelo (Matrix) que se restaura al cerrar; idioma = el de la CLI o del recorrido",
     "es": "Cápsulas de conocimiento «¿Sabías que…?» de una página. GOOD lee una batería pregenerada y verificada con Nemotron 3 Ultra (10 tipologías × 10, ES/EN): instantáneo y sin coste. Elige al azar una que no haya salido hace poco, la pinta en 480×800 con los 4 colores de la tinta electrónica y la locuta con Mónica (ES) o Daniel (EN). better y best responden «próximamente / requiere encargo».",
     "en": "One-page “Did you know…?” knowledge capsules. GOOD reads a pre-generated, fact-checked bank made with Nemotron 3 Ultra (10 typologies × 10, ES/EN): instant and free. It picks a random one not shown recently, paints it at 480×800 in the e-ink's 4 colours and voices it with Mónica (ES) or Daniel (EN). better and best answer “coming soon / requires a commission”."
+  },
+  "context_playlist": {
+    "es": "La playlist pertenece al proyecto, establecimiento y canal abierto. Opciones → Hilo musical → Playlist actual, o ficha → DESPLEGAR MANDO INTERACTIVO, permiten Añadir desde Stock (título o #número) y Quitar de esta playlist sin borrar Stock. Persiste en Admira TV D1 con permiso comercial, revisión e idempotencia; un lector no edita. Eliminar la última pieza guarda vacío y detiene audio, sin relleno automático. Los locales virtuales tienen autoridad propia; sólo la asociación administrativa del demo alsea-sbux-021 enlaza iphone17-mupi. Guardado no acredita entrega física. El mando controla un reloj web y un único audio, mantiene apertura y prioridades de incidencias/cesta/locución/silencio. El TPV conserva composición vertical única: vídeo vertical confirmado o portada original/editorial llenando el área; no muestra vídeo horizontal incrustado. iPad2/colas y eInk quedan fuera. Guía: /admira-xp/docs/context-playlist.md.",
+    "en": "The playlist belongs to the open project, venue and channel. Options → Background music → Current playlist, or device card → EXPAND INTERACTIVE REMOTE, supports Add from Stock (title or #number) and Remove from this playlist without deleting Stock. Admira TV D1 persists changes with commercial permission, revisions and idempotent receipts; viewers cannot edit. Removing the final item stores empty and stops audio without automatic fallback. Virtual venues own their authority; only administrative association of alsea-sbux-021 binds iphone17-mupi. Persistence does not prove physical delivery. The remote controls one web clock/audio owner, keeps its expanded state and incident/basket/announcement/master-mute priorities. The POS keeps a single portrait composition: confirmed portrait video or full-area original/editorial artwork, without inset horizontal video. iPad2/queue and eInk are excluded. Guide: /admira-xp/docs/context-playlist.md.",
+    "guide": "https://www.admira.store/admira-xp/docs/context-playlist.md",
+    "api": "/admira-xp/api/context-playlist",
+    "stock_search": "/admira-xp/api/stock-search",
+    "authority": "admira.tv:PROGRAMACION_DB",
+    "scope": [
+      "projectId",
+      "venueId",
+      "channelId"
+    ],
+    "hardware_association": "administrative only",
+    "saved_is_physical_ack": false,
+    "empty": "managed-empty; no auto/synthetic/default fallback",
+    "legacy_browser_storage": "retained history; explicit scoped adoption of validated Stock IDs only",
+    "ui": [
+      "common Options music/screens",
+      "existing Matrix/Best device remotes",
+      "Gran de Gràcia matching public floor-plan inventory"
+    ],
+    "cli_write_command": null
   }
 }

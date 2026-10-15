@@ -1,4 +1,5 @@
-import {mountMusicRemote} from './music-remote.mjs?v=tpv-portrait-20261015';
+import {mountMusicRemote} from './music-remote.mjs?v=local-playlist-349';
+import {mountSurfacePlaylistRemote,contextSurfaces} from './context-surfaces.mjs?v=local-playlist-349';
 // Pantallas vivas · Matrix (Neo, 13-oct-2026). Cada pantalla mapeada emite la luz de su contenido sobre la sala,
 // funde entre piezas y cuenta qué emite. Sólo lee los <video> y el estado de reproducción del gemelo:
 // no cambia playlists, relojes, mapeo ni estado MCP. Guía: admira-xp/docs/pantallas-vivas.md
@@ -228,6 +229,7 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
    const c=card(g.key),p=['live','paused','preview'].includes(g.state)?progress(g,now):null;
    c.node.dataset.state=g.state;c.node.dataset.kind=g.kind;
    if(g.kind==='tpv'&&g.playlistId==='physical-music'&&musicControl&&!c.remote){c.node.classList.add('has-music-remote');c.remote=mountMusicRemote(c.node,{music:musicControl,win,t,signal:controls.signal,blocked:()=>busy()||musicBlocked(),onToggle:()=>{c.size=null;lastCards=0;}});}
+   if(win.location?.href&&!c.remote&&g.ids.length===1){const id=g.ids[0];contextSurfaces(win)?.ensure(id);c.remote=mountSurfacePlaylistRemote(c.node,id,{win,t,signal:controls.signal,onToggle:()=>{c.size=null;lastCards=0;}});}
    c.remote?.update();
    write(c,'state',t(...STATE_COPY[g.state]));write(c,'label',g.label);write(c,'title',g.title);
    write(c,'meta',[g.playlistTitle,g.total>0&&g.index>=0?(g.index+1)+'/'+g.total:g.playlistId==='sincroIA'?g.total+' '+t('piezas','clips'):'',g.stock].filter(Boolean).join(' · '));

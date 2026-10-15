@@ -1,9 +1,10 @@
-import {mountMusicRemote} from './music-remote.mjs?v=tpv-portrait-20261015';
+import {mountMusicRemote} from './music-remote.mjs?v=local-playlist-349';
+import {mountSurfacePlaylistRemote,contextSurfaces} from './context-surfaces.mjs?v=local-playlist-349';
 // Fichas «En emisión» de Best · Hiperreal (Neo, 13-oct-2026). Al pasar por una pantalla de la sala cuenta qué emite,
 // de dónde sale (vista previa, Good, canal por etiqueta o parrilla de la casa) y con qué etiqueta se le dirige
 // contenido. /emision las deja fijas y /emision luz enciende o apaga la luz que las pantallas echan sobre la sala.
 // Sólo lee: no cambia players, pines ni vistas previas. Guía: admira-xp/docs/hiperreal-vivo.md
-import {placeCards,clock} from './screen-light.mjs?v=tpv-portrait-20261015';
+import {placeCards,clock} from './screen-light.mjs?v=local-playlist-349';
 
 export const BEST_SCREENS_KEY='xpaceos.best.screens.v1';
 export const IMAGE_SECONDS=30;
@@ -11,7 +12,7 @@ export function readBestScreens(storage){
  try{const value=JSON.parse(storage?.getItem(BEST_SCREENS_KEY)||'null');return {onAir:value?.onAir===true,light:value?.light!==false};}catch{return {onAir:false,light:true};}
 }
 const STATE_COPY={live:['En emisión','On air'],paused:['En pausa','Paused'],preview:['Vista previa','Preview'],error:['Sin señal','No signal'],empty:['Sin contenido','No content'],off:['Apagada','Off'],rest:['En reposo','At rest']};
-const SOURCE_COPY={good:['Lo que emite Good','What Good is playing'],tag:['Canal por etiqueta','Tagged channel'],house:['Parrilla de la casa','House schedule']};
+const SOURCE_COPY={good:['Lo que emite Good','What Good is playing'],tag:['Canal por etiqueta','Tagged channel'],house:['Parrilla de la casa','House schedule'],venue:['Playlist de este establecimiento','This venue’s playlist']};
 
 // Qué contar de una pantalla. `preview` es la pieza en vista previa, `info` lo que dice xtanco-players.mjs y `lit`
 // si ahora mismo se ve algo en ella (por ejemplo, el reposo del tótem).
@@ -20,7 +21,7 @@ export function describeScreen({name='',preview=null,web=null,info=null,lit=fals
  // Una web fijada en Good (quiosco de pedido, canal admira.tv): se enseña en la sala y se toca aparte.
  if(web&&!preview)return {state:'live',label,tag,title:web.title||t('Web interactiva','Interactive page'),meta:t('Lo que emite Good · web','What Good is playing · web'),next:t('Doble clic para tocarla','Double-click to touch it'),media:null,image:false,web:true};
  if(preview)return {state:'preview',label,tag,title:preview.title||t('Contenido en vista previa','Preview content'),meta:t('Sólo en este navegador','This browser only'),next:'',media:null,image:preview.kind==='image'};
- if(info&&['live','paused','error'].includes(info.state)){
+ if(info&&['live','paused','error','empty'].includes(info.state)){
   const source=SOURCE_COPY[info.source];
   return {state:info.state,label,tag,title:info.title||t('Sin título','Untitled'),next:info.next||'',media:info.media||null,image:info.kind==='image',
    meta:[source?t(...source):'',info.total>1&&info.index>=0?(info.index+1)+'/'+info.total:'',info.stock].filter(Boolean).join(' · ')};
@@ -65,6 +66,7 @@ export function mountBestOnAir({stage,furniture,players=null,musicControl=null,m
    let preview=null,info=null,page=null;
    try{preview=api?.previewed?.(id)?api.get(id):null;}catch{}
    try{info=players?.info(id,lang(),screen.item)||null;}catch{}
+   try{const local=api?.get?.(id);if(!preview&&local?.contextScoped)info=local;}catch{}
    try{page=screen.web?web(id)||null:null;}catch{}
    const model={id,...describeScreen({name:screen.label,preview,web:page,info,lit:screen.lit,t})};
    const key=model.state+'|'+model.title;if(since.get(id)?.key!==key)since.set(id,{key,at:now});
@@ -72,6 +74,7 @@ export function mountBestOnAir({stage,furniture,players=null,musicControl=null,m
    if(id==='starbucks-tpv-01'&&id===hover){const c=card(id);c.linger=now+1800;}
    if(quiet||!screen.rects.length||!(prefs.onAir||id===hover||cards.get(id)?.remote?.open||cards.get(id)?.node.matches?.(':hover,:focus-within')||cards.get(id)?.linger>now))continue;
    const c=card(id),p=progress(id,model,now);
+   if(win.location?.href&&!c.remote&&id!=='starbucks-tpv-01'){contextSurfaces(win)?.ensure(id);c.remote=mountSurfacePlaylistRemote(c.node,id,{win,t,signal:controls.signal,blocked:()=>busy()||musicBlocked(),onToggle:()=>{c.size=null;last=-Infinity;}});}
    if(id==='starbucks-tpv-01'&&musicControl&&!c.remote){c.node.classList.add('has-music-remote');c.remote=mountMusicRemote(c.node,{music:musicControl,win,t,signal:controls.signal,blocked:()=>busy()||musicBlocked(),onToggle:()=>{c.size=null;last=-Infinity;}});}
    c.remote?.update();
    c.node.dataset.state=model.state==='rest'?'paused':model.state;c.node.dataset.kind='best';

@@ -1,4 +1,5 @@
-import {toggleMusicFromGesture} from './music-listening.mjs?v=tpv-portrait-20261015';
+import {toggleMusicFromGesture} from './music-listening.mjs?v=local-playlist-349';
+import {mountContextPlaylistEditor} from './context-playlist-editor.mjs?v=local-playlist-349';
 // This controls only the twin's shared web clock. No commands go to the physical iPhone or admira.tv.
 export function mountMusicRemote(host,{music,win=globalThis,t=es=>es,blocked=()=>false,signal,onToggle=()=>{}}={}){
  const doc=host.ownerDocument,make=(tag,text)=>{const node=doc.createElement(tag);if(text)node.textContent=text;return node;};
@@ -7,6 +8,8 @@ export function mountMusicRemote(host,{music,win=globalThis,t=es=>es,blocked=()=
  for(const button of [previous,listen,next,launch])button.type='button';select.setAttribute('aria-label',t('Playlist del hilo musical','Background music playlist'));
  previous.dataset.musicRemoteAction='previous';listen.dataset.musicRemoteAction='listen';next.dataset.musicRemoteAction='next';launch.dataset.musicRemoteAction='launch';
  controls.append(previous,listen,next);body.append(scope,current,controls,select,launch,status);details.append(summary,body);host.append(details);
+ const editor=mountContextPlaylistEditor(body,{t,signal});
+ editor.setInitialStockSelection?.(win.XpaceContextPlaylists?.initialSelection?.('music')||[]);
  let signature='',disposed=false;const label=()=>{summary.textContent=details.open?t('PLEGAR MANDO INTERACTIVO','COLLAPSE INTERACTIVE REMOTE'):t('DESPLEGAR MANDO INTERACTIVO','EXPAND INTERACTIVE REMOTE');};
  function update(state=music.state()){
   if(disposed)return;label();scope.textContent=t('Controles del gemelo · reloj web','Twin controls · web clock');current.textContent=state.title||t('Esperando playlist','Waiting for playlist');
@@ -23,5 +26,5 @@ export function mountMusicRemote(host,{music,win=globalThis,t=es=>es,blocked=()=
  details.addEventListener('toggle',()=>{label();onToggle(details.open);update();},{signal});
  // The remote must not turn a button press into a camera drag or another TPV click.
  for(const type of ['pointerdown','pointerup','click','keydown','keyup','wheel'])details.addEventListener(type,event=>event.stopPropagation(),{signal});
- const unsubscribe=music.subscribe(update);const timer=win.setInterval(()=>update(),500);const dispose=()=>{if(disposed)return;disposed=true;unsubscribe();win.clearInterval(timer);details.remove();};signal?.addEventListener('abort',dispose,{once:true});return {node:details,update,dispose,get open(){return details.open;}};
+ const unsubscribe=music.subscribe(update);const timer=win.setInterval(()=>update(),500);const dispose=()=>{if(disposed)return;disposed=true;unsubscribe();editor.dispose();win.clearInterval(timer);details.remove();};signal?.addEventListener('abort',dispose,{once:true});return {node:details,update,dispose,get open(){return details.open;}};
 }
