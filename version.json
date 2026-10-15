@@ -1,14 +1,14 @@
 {
-  "version": "v.15.10.2026.r22.23:00",
-  "deployedAt": "2026-10-15T21:00:12Z",
+  "version": "v.15.10.2026.r23.23:03",
+  "deployedAt": "2026-10-15T21:03:41Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "4fe651401fcb9bd5d793d85c63d80b9f4ec0189a",
-  "gitShort": "4fe6514",
-  "gitFull": "4fe651401fcb9bd5d793d85c63d80b9f4ec0189a",
+  "git": "5c9395582e42065686b019752771a9f6b079d47c",
+  "gitShort": "5c93955",
+  "gitFull": "5c9395582e42065686b019752771a9f6b079d47c",
   "dirty": false,
   "novedades": [
-    "La puerta de Google Maps: la ficha se lee también con la marca Starbucks (textos claros sobre la ficha oscura)."
+    "La ficha de la puerta queda por encima del sello de versión (no tapa «Entrar»)."
   ]
 }

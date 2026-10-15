@@ -32,3 +32,6 @@ html,body{margin:0;height:100%;background:var(--fondo);color:var(--tinta);font:1
 #puerta .ficha .enlace{color:#9ae3e8}
 #puerta .ficha .boton{background:var(--verde);color:#00180f}
 #puerta .ficha .aviso{color:#ffd38a}
+/* El sello de versión común vive abajo a la izquierda: la ficha queda por encima de él. */
+#puerta .ficha{bottom:44px}
+@media (max-width:600px){#puerta .ficha{bottom:40px}}
