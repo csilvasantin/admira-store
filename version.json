@@ -1,14 +1,15 @@
 {
-  "version": "v.15.10.2026.r18.21:43",
-  "deployedAt": "2026-10-15T19:43:38Z",
+  "version": "v.15.10.2026.r19.22:15",
+  "deployedAt": "2026-10-15T20:15:47Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "575b787dc9c7ee21c97732a17280d43ca6b2eed4",
-  "gitShort": "575b787",
-  "gitFull": "575b787dc9c7ee21c97732a17280d43ca6b2eed4",
+  "git": "cbbca7ae1c67bb676715f06c1705f747ed05dcb1",
+  "gitShort": "cbbca7a",
+  "gitFull": "cbbca7ae1c67bb676715f06c1705f747ed05dcb1",
   "dirty": false,
   "novedades": [
-    "«alsea» es Starbucks: ?marca=alsea, ?project=alsea y /marca alsea aplican Starbucks (por si alguien se equivoca)."
+    "Gemelo: tres combos en la barra, Xpacio (aplica su marca), Local y Calidad, en vez del combo largo «Proyecto y local»; la cuenta de AdmiraNext pasa a ☰ Opciones.",
+    "Con Calidad Matrix, cambiar a Diagonal 634 abre Diagonal en Matrix."
   ]
 }

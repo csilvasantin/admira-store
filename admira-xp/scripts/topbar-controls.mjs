@@ -1,5 +1,6 @@
-// Reuse the original project and quality controls in the header.
-const pickers=[...document.querySelectorAll('#topBar .topbar-picker')];
+// Reuse the original project and quality controls in the header: Xpacio and Local are native combos
+// (.topbar-combo), Calidad keeps its panel (.topbar-picker).
+const pickers=[...document.querySelectorAll('#topBar .topbar-picker')],combos=[...document.querySelectorAll('#topBar .topbar-combo')];
 const value=document.getElementById('topbarQualityValue');
 const quality=document.getElementById('visualQualityOptions');
 function sync(){
@@ -15,6 +16,8 @@ for(const picker of pickers){
   // Keep game keyboard shortcuts out of selector interaction.
   for(const type of ['keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'])picker.addEventListener(type,event=>event.stopPropagation());
 }
+// Arrows and letters inside a combo choose an option; they must not move the game.
+for(const combo of combos)for(const type of ['keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'])combo.addEventListener(type,event=>event.stopPropagation());
 document.addEventListener('click',event=>{for(const picker of pickers)if(!picker.contains(event.target))picker.open=false;});
 quality.addEventListener('click',event=>{if(event.target.closest('[data-visual-mode]'))document.getElementById('topbarQuality').open=false;},true);
 sync();

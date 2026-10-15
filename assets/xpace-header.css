@@ -15,6 +15,14 @@
 #topBar .topbar-picker[open] summary{border-color:#78f3ff}
 #topBar .picker-label{font-size:9px;color:#91b9c7}
 #topBar #xpaceActiveSpace{max-width:180px;overflow:hidden;text-overflow:ellipsis}
+/* Tres combos (Carlos, 15-oct-2026): Xpacio y Local son <select> con la misma caja que Calidad. */
+#topBar .topbar-combo{position:relative;display:flex;align-items:center;gap:7px;flex:0 1 auto;min-width:0;padding:0 8px;border:1px solid #315766;border-radius:5px;background:#09151f;color:#dff8ff;font:11px/1.3 monospace;white-space:nowrap;cursor:pointer}
+#topBar .topbar-combo::after{content:"▾";position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none}
+#topBar .topbar-combo:focus-within{border-color:#78f3ff}
+#topBar .topbar-combo select{-webkit-appearance:none;appearance:none;min-width:0;max-width:200px;margin:0;padding:6px 14px 6px 0;border:0;background:transparent;color:inherit;font:inherit;text-overflow:ellipsis;cursor:pointer}
+#topBar .topbar-combo select:focus{outline:none}
+#topBar .topbar-combo select:disabled{opacity:.55;cursor:default}
+#topBar .topbar-combo option{background:#09151f;color:#dff8ff}
 #topBar .topbar-picker>.expert-menu-group{position:absolute;top:calc(100% + 8px);left:0;width:270px;max-width:calc(100vw - 20px);max-height:calc(100dvh - 64px);overflow:auto;box-sizing:border-box;padding:14px;background:#07151ff7;border:1px solid #315766;border-radius:6px;box-shadow:0 12px 30px #0009;color:#dff8ff;white-space:normal}
 #topBar .topbar-picker:not([open])>.expert-menu-group{display:none}
 #topBar .topbar-picker h2{font:700 10px/1.4 monospace;letter-spacing:.08em;margin:0 0 10px;color:#78f3ff}
@@ -25,7 +33,7 @@
 #topBar #visualQualityOptions small{font-size:9px;color:#91b9c7}
 #topBar #visualQualityOptions button[aria-pressed=true]{border-color:#66d8ac;background:#12322d;box-shadow:inset 2px 0 #66d8ac}
 #topBar #visualQualityOptions button:disabled{opacity:.45;cursor:not-allowed}
-@media(max-width:680px){#topBar:has(.topbar-picker){gap:5px;padding:0 6px}#topBar .picker-label{display:none}#topBar .topbar-picker summary{gap:4px;padding:6px}#topBar #xpaceActiveSpace{max-width:100px}#topBar:has(.topbar-picker) #pfToggles{position:static;margin:0;padding:0;background:none}#topBar .topbar-picker>.expert-menu-group{position:fixed;top:48px;left:10px}#topBar .xs-brand{font-size:11px}}
+@media(max-width:680px){#topBar:has(.topbar-picker){gap:5px;padding:0 6px}#topBar .picker-label{display:none}#topBar .topbar-picker summary{gap:4px;padding:6px}#topBar #xpaceActiveSpace{max-width:100px}#topBar .topbar-combo{gap:4px;padding:0 6px}#topBar .topbar-combo select{max-width:96px}#topBar:has(.topbar-picker) #pfToggles{position:static;margin:0;padding:0;background:none}#topBar .topbar-picker>.expert-menu-group{position:fixed;top:48px;left:10px}#topBar .xs-brand{font-size:11px}}
 
 #topBar .topbar-picker [hidden]{display:none!important}
 

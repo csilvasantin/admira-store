@@ -32,3 +32,12 @@ test('Cafebrería routing accepts a future canonical demo association without re
 test('native browser fetch keeps the Window receiver across context, demos and disconnect',async()=>{const original=globalThis.fetch;let calls=0;globalThis.fetch=async function(){assert.equal(this,globalThis,'native Window.fetch rejects a ProjectClient receiver');calls++;return Response.json({projects:[],venues:[]});};try{const c=new ProjectClient();c.accept(access());await c.context();await c.demos();await c.disconnect();assert.equal(calls,3);}finally{globalThis.fetch=original;}});
 
 test('Sneakers Store venue preserves its own route and rejects cross-project associations',()=>{const p={id:'sneakers-store',circuit:'sneakerstore'},v={id:'sneakers-store-santa-rosa-19',project_id:p.id,xpace_url:'https://www.admira.store/xpacios/sneakerstore/?project=sneakers-store&loc=sneakers-store-santa-rosa-19'};const u=new URL(venueUrl('https://www.admira.store/admira-xp/?lang=en&twinSession=private',v,p,'better'));assert.equal(u.pathname,'/xpacios/sneakerstore/');assert.equal(u.searchParams.get('lang'),'en');assert.equal(u.searchParams.has('twinSession'),false);assert.throws(()=>venueUrl('https://www.admira.store/',{...v,project_id:'starbucks'},p));});
+
+test('Matrix stays Matrix in the Starbucks centres viewer (Diagonal 634); other venues without Matrix drop to Better',()=>{
+ const p={id:'starbucks',circuit:'alsea_starbucks'};
+ const d634={id:'starbucks-diagonal-634',project_id:'starbucks',xpace_url:'https://www.admira.store/xpacios/starbucks-centros/?loc=starbucks-diagonal-634'};
+ const gdg={id:'lab-gran-de-gracia-51',project_id:'starbucks',xpace_url:'https://www.admira.store/xpacios/gran-de-gracia-51/?loc=lab-gran-de-gracia-51'};
+ const u=new URL(venueUrl('https://www.admira.store/admira-xp/?quality=matrix',d634,p,'matrix'));
+ assert.equal(u.pathname,'/xpacios/starbucks-centros/');assert.equal(u.searchParams.get('quality'),'matrix');assert.equal(u.searchParams.get('loc'),'starbucks-diagonal-634');
+ assert.equal(new URL(venueUrl('https://www.admira.store/admira-xp/',gdg,p,'matrix')).searchParams.get('quality'),'better');
+});

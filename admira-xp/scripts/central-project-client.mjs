@@ -24,7 +24,9 @@ export function venueUrl(href,venue,project,quality,{publicDemo=false,language}=
  source.searchParams.set('project',project.id);source.searchParams.set('circuit',project.circuit);source.searchParams.set('venue',venue.id);
  for(const k of ['lang','langlock'])if(current.searchParams.has(k))source.searchParams.set(k,current.searchParams.get(k));
  const selected=quality||current.searchParams.get('quality')||current.searchParams.get('visual')||'good';
- const q=selected==='matrix'&&source.searchParams.get('loc')!=='alsea-sbux-021'||selected==='best'&&source.searchParams.get('autostart')==='cafeteria'&&source.searchParams.get('loc')!=='alsea-sbux-021'?'better':selected;
+ // Matrix existe en el gemelo de Paseo de Gràcia 103 y en el visor de centros de Starbucks (también Diagonal 634).
+ const centros=source.pathname==='/xpacios/starbucks-centros/';
+ const q=selected==='matrix'&&source.searchParams.get('loc')!=='alsea-sbux-021'&&!centros||selected==='best'&&source.searchParams.get('autostart')==='cafeteria'&&source.searchParams.get('loc')!=='alsea-sbux-021'?'better':selected;
  source.searchParams.delete('visual');source.searchParams.set('quality',['good','better','best','matrix'].includes(q)?q:'good');
  return source.href;
 }

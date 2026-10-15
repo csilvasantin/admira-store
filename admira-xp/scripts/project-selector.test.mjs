@@ -7,7 +7,7 @@ import {projectContext} from './project-context.mjs';
 import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs';
 
 const code=(await readFile(new URL('./project-selector.mjs',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
-async function harness({account=false,catalogo=null,marca=null}={}){
+async function harness({account=false,catalogo=null,marca=null,ventana={}}={}){
  const elements=new Map(),ticks=[],events=new Map(),destinations=[];
  class Element{
   options=[];value='';replacements=0;listeners=new Map();
@@ -22,7 +22,7 @@ async function harness({account=false,catalogo=null,marca=null}={}){
  if(catalogo)Object.assign(catalog,catalogo);
  const client={access:account?{token:'a'.repeat(64),expires_at:Date.now()+600000}:null,expired:false,demos:async()=>catalog,context:async()=>catalog,clear(){this.access=null;}};
  const context={URL,Option:class{constructor(text,value){this.text=text;this.value=value;}},ProjectClient:class{constructor(){return client;}},CENTRAL:'https://www.admiranext.com',venueUrl,validAccess,projectContext,marcaQueLimita,proyectosPermitidos,
-  document:{documentElement:{lang:'en'},getElementById:element,querySelector:()=>null},window:{addEventListener:(name,handler)=>events.set(name,handler)},location:{href:'https://www.admira.store/admira-xp/?autostart=xtanco&from=portada&project=estancos&circuit=estancos&quality=better',assign:url=>destinations.push(url)},sessionStorage:marca?{getItem:k=>marca[k]??null}:{},MutationObserver:class{observe(){}},setInterval:handler=>ticks.push(handler)};
+  document:{documentElement:{lang:'en'},getElementById:element,querySelector:()=>null},window:Object.assign({addEventListener:(name,handler)=>events.set(name,handler)},ventana),location:{href:'https://www.admira.store/admira-xp/?autostart=xtanco&from=portada&project=estancos&circuit=estancos&quality=better',assign:url=>destinations.push(url)},sessionStorage:marca?{getItem:k=>marca[k]??null}:{},MutationObserver:class{observe(){}},setInterval:handler=>ticks.push(handler)};
  vm.runInNewContext(code,context);await new Promise(setImmediate);
  return {element,ticks,events,client,destinations};
 }
@@ -69,4 +69,18 @@ test('as Admira, by default, or with the brand a project applied on its own, eve
   assert.deepEqual(proyectos(h),['starbucks','altadis','estancos','cafebreria'],JSON.stringify(marca));
   assert.doesNotMatch(h.element('projectSelectionStatus').textContent,/only its projects/);
  }
+});
+
+test('three combos: choosing the Starbucks Xpace applies its brand at once and opens the Venue combo',async()=>{
+ const aplicadas=[];
+ const h=await harness({catalogo:cuatro,ventana:{AdmiraMarca:{aplicarProyecto:id=>aplicadas.push(id)}}});
+ const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
+ let abierto=0;venue.showPicker=()=>{abierto++;};
+ project.value='starbucks';project.listeners.get('change')();await new Promise(setImmediate);await new Promise(setImmediate);
+ assert.deepEqual(aplicadas,['starbucks'],'the look and feel changes before a venue is chosen');
+ assert.equal(h.destinations.length,0,'two venues: nothing opens until one is chosen');
+ assert.equal(abierto,1,'the Venue combo opens by itself');
+ assert.deepEqual(venue.options.slice(1).map(o=>o.value),['demo-starbucks','starbucks-diagonal-634']);
+ venue.value='starbucks-diagonal-634';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(new URL(h.destinations[0]).pathname,'/xpacios/starbucks-centros/');
 });
