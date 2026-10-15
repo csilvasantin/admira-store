@@ -64,3 +64,7 @@ h1{margin:2px 0 6px;font-size:21px;line-height:1.2}
   .ficha{left:8px;top:8px;width:calc(100% - 16px)}
 }
 #sc.con-enlace #lienzo{filter:brightness(.35) saturate(.6)}#sc.con-enlace .pantallas,#sc.con-enlace .reproductor{opacity:.35;pointer-events:none}
+/* Matrix con la foto 360 del local (panorama.mjs): las vistas de cámara del 3D no aplican. */
+[data-panorama="1"] .grupo[aria-label="Vista"]{display:none}
+[data-panorama="1"] #lienzo{cursor:grab}
+[data-panorama="1"] #lienzo:active{cursor:grabbing}

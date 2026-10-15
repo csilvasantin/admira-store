@@ -1,6 +1,9 @@
 // Visor de los centros reales de Starbucks: la geometría del Arquitecto (cajas estimadas desde el
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
+// Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
+import { crearPanorama } from './panorama.mjs?v=sc-pano-1';
+import { montarCombos } from '/assets/xpace-combos.mjs?v=centros-1';
 import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
@@ -21,7 +24,11 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = T.PCFSoftShadowMap;
 const scene = new T.Scene();
 const camera = new T.PerspectiveCamera(48, 1, 0.05, 120);
+const pano = crearPanorama(T, renderer);
+// ¿Se ve ahora la foto 360? (Matrix en un centro con panorama).
+const enPanorama = () => modo === 'matrix' && !!(centro && centro.panorama);
 
+let combos = null; // los tres combos de la barra (más abajo)
 let CENTROS = [], centroElegido = null, centro = null, geo = null, rep = null, programas = [], programaActivo = null;
 let modo = params.get('modo') === 'matrix' || (!params.get('modo') && params.get('quality') === 'matrix') ? 'matrix' : '3d';
 let raiz = null, pantallasVisor = [], seleccion = null, vistas = {};
@@ -61,12 +68,22 @@ function animar(now) {
 (function controles() {
   const punteros = new Map(); let movido = false, pinza = 0;
   lienzo.addEventListener('pointerdown', e => { punteros.set(e.pointerId, { x: e.clientX, y: e.clientY }); movido = false; lienzo.setPointerCapture(e.pointerId); anim = null; });
-  lienzo.addEventListener('pointerup', e => { punteros.delete(e.pointerId); pinza = 0; if (!movido) elegir(e); });
+  lienzo.addEventListener('pointerup', e => { punteros.delete(e.pointerId); pinza = 0; if (!movido && !enPanorama()) elegir(e); });
   lienzo.addEventListener('pointercancel', e => { punteros.delete(e.pointerId); pinza = 0; });
   lienzo.addEventListener('pointermove', e => {
     const p = punteros.get(e.pointerId);
-    if (!p) { hover(e); return; }
+    if (!p) { if (!enPanorama()) hover(e); return; }
     const dx = e.clientX - p.x, dy = e.clientY - p.y;
+    if (enPanorama()) {
+      if (Math.abs(dx) + Math.abs(dy) > 3) movido = true;
+      if (punteros.size === 2) {
+        const [a, b] = [...punteros.values()]; p.x = e.clientX; p.y = e.clientY;
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinza) pano.acercar(pinza / d);
+        pinza = d; return;
+      }
+      pano.girar(dx, dy, lienzo.clientHeight); p.x = e.clientX; p.y = e.clientY; return;
+    }
     if (Math.abs(dx) + Math.abs(dy) > 3 && !movido) { movido = true; if (vistaActual) { vistaActual = null; aplicarRecorte(); document.querySelectorAll('button[data-vista]').forEach(b => b.setAttribute('aria-pressed', 'false')); } }
     if (punteros.size === 2) {
       const [a, b] = [...punteros.values()]; p.x = e.clientX; p.y = e.clientY;
@@ -77,7 +94,7 @@ function animar(now) {
     cam.yaw -= dx * 0.006; cam.pitch = Math.max(-0.15, Math.min(1.45, cam.pitch + dy * 0.006));
     p.x = e.clientX; p.y = e.clientY;
   });
-  lienzo.addEventListener('wheel', e => { e.preventDefault(); anim = null; cam.dist = Math.max(2.5, Math.min(40, cam.dist * Math.exp(e.deltaY * 0.0012))); }, { passive: false });
+  lienzo.addEventListener('wheel', e => { e.preventDefault(); if (enPanorama()) { pano.acercar(Math.exp(e.deltaY * 0.0012)); return; } anim = null; cam.dist = Math.max(2.5, Math.min(40, cam.dist * Math.exp(e.deltaY * 0.0012))); }, { passive: false });
 })();
 
 // ───────────────────────────── Escena desde la geometría del Arquitecto ─────────────────────────────
@@ -207,6 +224,9 @@ function calcularVistas() {
 function aplicarModo() {
   const matrix = modo === 'matrix';
   document.documentElement.dataset.escena = modo;
+  // Matrix con foto 360: las vistas de cámara del 3D (Cliente, Pantallas, General) no aplican.
+  document.documentElement.dataset.panorama = enPanorama() ? '1' : '0';
+  if (enPanorama()) { pano.cargar(centro.panorama); lienzo.style.cursor = 'grab'; }
   document.querySelectorAll('button[data-modo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === modo)));
   if (!raiz) return;
   raiz.userData.solido.visible = !matrix;
@@ -221,6 +241,7 @@ function aplicarModo() {
     p.numero.visible = matrix || params.get('numeros') === '1';
   }
   actualizarURL({ modo });
+  if (combos) combos.actualizar();
 }
 
 // ───────────────────────────── Texturas de vídeo por pantalla ─────────────────────────────
@@ -336,6 +357,7 @@ async function json(url) { const r = await fetch(url, { cache: 'no-cache' }); if
 async function cargarCentro(id) {
   const c = CENTROS.find(x => x.id === id) || CENTROS[0];
   centroElegido = c.id;
+  if (combos) combos.actualizar();
   if (c.enlace) { pintarCentros(); mostrarEnlace(c); actualizarURL({ centro: c.id, venue: null, loc: null }); return; }
   $('#enlace').hidden = true; $('#sc').classList.remove('con-enlace');
   centro = c; pintarCentros(); actualizarURL({ centro: c.id, venue: null, loc: null });
@@ -397,6 +419,7 @@ function aviso(texto, fijo = false) {
 function redimensionar() {
   const r = lienzo.getBoundingClientRect();
   renderer.setSize(r.width, r.height, false); camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix();
+  pano.aspecto(r.width / Math.max(1, r.height));
   if (geo) { calcularVistas(); aplicarRecorte(); }
 }
 new ResizeObserver(redimensionar).observe(lienzo);
@@ -407,7 +430,7 @@ function bucle(now) {
   if (rep) rep.tick();
   actualizarPantallas();
   animar(now); ponerCamara();
-  renderer.render(scene, camera);
+  if (enPanorama()) pano.render(); else renderer.render(scene, camera);
   if (now - ultimaUI > 200) { ultimaUI = now; pintarReproductor(); if (params.get('diag') === '1' || seleccion) { pintarLista(); pintarDetalle(); } }
 }
 
@@ -435,13 +458,28 @@ document.addEventListener('keydown', e => {
 
 // Para comprobar la sincronía desde la consola (y en las pruebas en el navegador).
 window.__starbucksCentros = {
-  get centro() { return centro && centro.id; }, get modo() { return modo; }, get programa() { return programaActivo && programaActivo.id; },
+  get centro() { return centro && centro.id; }, get modo() { return modo; },
+  get panorama() { return enPanorama() ? { cargada: pano.cargada, vista: { ...pano.vista } } : null; }, get programa() { return programaActivo && programaActivo.id; },
   estado: () => rep && rep.estado(),
   muestras: () => pantallasVisor.map(p => { const m = rep && rep.medioDe(p.id); return m && { pantalla: p.id, src: m.src, t: m.video.currentTime, listo: m.video.readyState, pausado: m.video.paused, ritmo: m.video.playbackRate, imagen: p.contenido.material.map === p.cargando ? 'cargando' : p.contenido.material.map instanceof T.VideoTexture ? (p.contenido.material.map.userData.src === m.src ? 'video' : 'video-anterior') : 'fallo', deriva: m.deriva, ajuste: p.ajuste && p.ajuste.modo, medio: p.ajuste && p.ajuste.medio }; }),
   rep: () => rep,
   // Imagen del 3D a la resolución del lienzo (para capturas de verificación).
   imagen: () => new Promise(r => { renderer.render(scene, camera); lienzo.toBlob(r, 'image/png'); }),
 };
+
+// Los tres combos de la barra (Xpacio · Local · Calidad), como en el gemelo. Un local de esta misma página
+// cambia de centro aquí; Calidad Matrix es la foto 360 y las otras tres, el 3D.
+combos = montarCombos({
+  proyecto: 'starbucks',
+  local: () => (CENTROS.find(c => c.id === centroElegido) || {}).locales || [],
+  calidad: () => (modo === 'matrix' ? 'matrix' : (['good', 'better', 'best'].includes(params.get('quality')) ? params.get('quality') : 'better')),
+  alCambiarCalidad: q => { params.set('quality', q); modo = q === 'matrix' ? 'matrix' : '3d'; actualizarURL({ quality: q }); aplicarModo(); return true; },
+  alCambiarLocal: (venue, href) => {
+    const u = new URL(href), c = CENTROS.find(x => (x.locales || []).includes(venue.id));
+    if (u.pathname !== location.pathname || !c) return false;
+    cargarCentro(c.id); return true;
+  },
+});
 
 try {
   CENTROS = (await json('centros.json')).centros;

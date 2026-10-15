@@ -26,6 +26,6 @@ test('la cuenta de AdmiraNext (estado, conectar, gestionar) está en ☰ Opcione
 test('los combos tienen la caja de Calidad y su marca de despliegue', () => {
   assert.match(css, /#topBar \.topbar-combo\{[^}]*border:1px solid #315766;border-radius:5px;background:#09151f/);
   assert.match(css, /#topBar \.topbar-combo::after\{content:"▾"/);
-  assert.match(html, /xpace-header\.css\?v=tres-combos-1/);
+  assert.match(html, /xpace-header\.css\?v=tres-combos-2/);
   assert.match(html, /project-selector\.mjs\?v=tres-combos-1/);
 });
