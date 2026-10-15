@@ -1,4 +1,4 @@
-import {createPhysicalPlaylistWatch} from './ipad-physical-playlist.mjs?v=tpv-remote-20261015';
+import {createPhysicalPlaylistWatch} from './ipad-physical-playlist.mjs?v=tpv-portrait-20261015';
 export const MUSIC_SCREEN='iphone17-mupi',MUSIC_PLAYLIST_URL='/admira-xp/api/music-playlist';
 const safe=value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch{return '';}};
 export function physicalMusicTracks(data,catalog=[]){
@@ -9,7 +9,8 @@ export function physicalMusicTracks(data,catalog=[]){
   if(!id||!url||!['video','audio','music'].includes(kind))throw Error('Invalid music track');if(seen.has(id))continue;seen.add(id);
   const extra=meta.get(id)||{},cover=[item.thumbnail,item.poster,item.cover,extra.thumbnail,extra.poster,extra.cover].map(safe).find(Boolean)||'';
   const visualUrl=kind==='video'?url:'';
-  tracks.push({id,stockId:id,url,title:String(item.title||id),kind:kind==='video'?'video':'audio',cover,visualUrl,...(Number(item.seconds)>0?{seconds:Number(item.seconds)}:{})});
+  const width=Number(item.width||item.ancho||extra.width||extra.ancho),height=Number(item.height||item.alto||extra.height||extra.alto),dimensions=Number.isFinite(width)&&width>0&&Number.isFinite(height)&&height>0?{width,height}:{};
+  tracks.push({id,stockId:id,url,title:String(item.title||id),kind:kind==='video'?'video':'audio',cover,visualUrl,...dimensions,...(Number(item.seconds)>0?{seconds:Number(item.seconds)}:{})});
  }return tracks;
 }
 let watch;
