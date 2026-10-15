@@ -1,4 +1,4 @@
-import {starbucksMusic} from './starbucks-music.mjs?v=shared-music-20261015';
+import {starbucksMusic} from './starbucks-music.mjs?v=tpv-listen-20261015';
 export const TPV_MUSIC_ID='starbucks-tpv-01';
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 export function musicCoverSvg(title){const words=String(title||'').replace(/#[\p{L}\p{N}_-]+/gu,'').replace(/\(Stock\s+\d+\)/gi,'').replace(/\s+/g,' ').trim().split(/\s+/),lines=[];let line='';for(const word of words){if((line+' '+word).trim().length>27&&line){lines.push(line);line=word;}else line=(line+' '+word).trim();}if(line)lines.push(line);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640"><rect width="360" height="640" fill="#1e3932"/><circle cx="180" cy="225" r="115" fill="#00704a"/><circle cx="180" cy="225" r="65" fill="#f2f0eb"/><circle cx="180" cy="225" r="12" fill="#1e3932"/><text x="180" y="408" fill="#f2f0eb" text-anchor="middle" font-family="Arial,sans-serif" font-size="20">STARBUCKS</text><text x="180" y="440" fill="#b5d5c5" text-anchor="middle" font-family="Arial,sans-serif" font-size="13">HILO MUSICAL · MUSIC</text><text fill="#fff" text-anchor="middle" font-family="Arial,sans-serif" font-size="18">'+lines.slice(0,5).map((text,i)=>'<tspan x="180" y="'+(490+i*25)+'">'+esc(text)+'</tspan>').join('')+'</text></svg>';}
@@ -13,7 +13,9 @@ export function createMusicVisual({music,doc=globalThis.document,win=globalThis}
  let enabled=true,generation=0,disposed=false,current=null,key='',state=music.state(),showVideo=false,failed=false,frameHandle=0,usingVideoFrames=false;
  function visible(value){showVideo=value;video.hidden=!value;root.dataset.coverVisible=String(!value);}
  function cancelFrame(){if(!frameHandle)return;usingVideoFrames?video.cancelVideoFrameCallback?.(frameHandle):win.cancelAnimationFrame?.(frameHandle);frameHandle=0;}
+ function fit(){const portrait=video.videoHeight>video.videoWidth;video.style.objectFit=portrait?'cover':'contain';root.dataset.videoFit=portrait?'cover':'contain';return portrait;}
  function sample(){
+  fit();
   if(disposed||!current||current.kind!=='video'||failed||video.ended||(Number.isFinite(video.duration)&&video.duration>0&&video.duration-video.currentTime<=2)||video.readyState<2||!video.videoWidth){visible(false);return;}
   try{sampleContext.drawImage(video,0,0,16,16);visible(!blackMusicFrame(sampleContext.getImageData(0,0,16,16).data));}catch{visible(false);}
  }
@@ -42,9 +44,9 @@ export function createMusicVisual({music,doc=globalThis.document,win=globalThis}
   node:root,video,cover,fallback,sync,sample,setEnabled(value){enabled=value!==false;sync();},
   attach(host){if(disposed||!host)return;if(root.parentNode!==host)host.append(root);},detach(){root.remove();},
   state:()=>({id:TPV_MUSIC_ID,trackId:current?.id||current?.url||'',title:current?.title||'',kind:current?.kind||'',position:state.position||0,playing:enabled&&!!state.playing&&!state.suppressed,muted:true,cover:!showVideo,source:'iphone17-mupi'}),
-  draw(ctx,w,h){if(disposed)return false;ctx.save();ctx.fillStyle='#1e3932';ctx.fillRect(0,0,w,h);const art=!cover.hidden&&cover.complete&&cover.naturalWidth?cover:fallback;
+  draw(ctx,w,h){if(disposed)return false;ctx.save();ctx.beginPath();ctx.rect(0,0,w,h);ctx.clip();ctx.fillStyle='#1e3932';ctx.fillRect(0,0,w,h);const art=!cover.hidden&&cover.complete&&cover.naturalWidth?cover:fallback;
    if(art.complete&&art.naturalWidth)ctx.drawImage(art,0,0,w,h);else{ctx.fillStyle='#f2f0eb';ctx.font='bold '+Math.max(14,w/14)+'px sans-serif';ctx.fillText('STARBUCKS · HILO MUSICAL',w*.05,h*.4,w*.9);ctx.fillText(current?.title||'Cargando / Loading',w*.05,h*.52,w*.9);}
-   if(showVideo){const sw=video.videoWidth,sh=video.videoHeight,fit=Math.min(w/sw,h/sh);ctx.drawImage(video,(w-sw*fit)/2,(h-sh*fit)/2,sw*fit,sh*fit);}ctx.restore();return true;},
+   if(showVideo){const sw=video.videoWidth,sh=video.videoHeight,fit=(sh>sw?Math.max:Math.min)(w/sw,h/sh);ctx.drawImage(video,(w-sw*fit)/2,(h-sh*fit)/2,sw*fit,sh*fit);}ctx.restore();return true;},
   dispose(){if(disposed)return;disposed=true;unsubscribe();win.clearInterval(timer);cancelFrame();video.pause();video.removeAttribute('src');video.load();root.remove();}
  };
 }

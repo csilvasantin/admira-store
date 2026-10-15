@@ -1,4 +1,4 @@
-import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=shared-music-20261015';
+import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=tpv-listen-20261015';
 // Playlists en escena (Neo, 13-oct-2026). En Good, Better y Best las pantallas del Starbucks reproducen la misma
 // programación que en Matrix: playlists de pared, TPV e iPad, estado vivo de MCP, asignaciones y reparto /sincro.
 // Sólo lectura: un <video> oculto y mudo por playlist; no cambia playlists, asignaciones ni estado MCP.
