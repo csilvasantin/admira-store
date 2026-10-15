@@ -91,13 +91,16 @@
     var gen = mapeo.genericos || [];
     return clientesDe(it).every(function (c) { return c === activo || gen.indexOf(c) >= 0; });
   }
-  function filtrar(items) { return activo && Array.isArray(items) ? items.filter(visible) : items; }
+  // Con marca (porMarca) el filtro es estricto: sólo lo de ese cliente, ni lo genérico ni lo sin asignar.
+  function suyo(it) { return clientesDe(it).indexOf(activo) >= 0; }
+  function filtrar(items) { return activo && Array.isArray(items) ? items.filter(porMarca && mapeo ? suyo : visible) : items; }
 
   // Fichas y enlaces de la página: [data-cliente] y enlaces a rutas de otro cliente (incluido el menú del shell).
   function aplicarDom() {
     if (!document.body) return;
     document.querySelectorAll('[data-cliente]').forEach(function (el) {
-      var ver = visible({cliente: el.getAttribute('data-cliente')});
+      var ficha = {cliente: el.getAttribute('data-cliente')};
+      var ver = porMarca && activo && mapeo ? suyo(ficha) : visible(ficha);
       if (!ver && !el.hidden) { el.hidden = true; el.setAttribute('data-cliente-oculto', ''); }
       else if (ver && el.hasAttribute('data-cliente-oculto')) { el.hidden = false; el.removeAttribute('data-cliente-oculto'); }
     });
@@ -132,6 +135,7 @@
     activo: function () { return activo; },
     nombre: function () { return activo ? nombre() : 'Admira'; },
     lista: function () { return lista.slice(); },
-    resolver: resolver, fijar: fijar, clientesDe: clientesDe, visible: visible, filtrar: filtrar
+    resolver: resolver, fijar: fijar, clientesDe: clientesDe, visible: visible, filtrar: filtrar,
+    estricto: function () { return !!(porMarca && activo); }
   };
 })();

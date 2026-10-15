@@ -473,7 +473,7 @@
   }
   if (clientePedido()) cargarCliente();
   // Si la marca de un cliente se pone después (marca-blanca.js, /marca), el filtro se carga entonces.
-  doc.addEventListener('admira:marca', () => { if (clientePedido()) cargarCliente(); });
+  if (typeof doc.addEventListener === 'function') doc.addEventListener('admira:marca', () => { if (clientePedido()) cargarCliente(); });
   // /marca y el cliente (Carlos, 4-oct-2026): /marca <cliente> filtra por ese cliente (y si además es
   // marca del catálogo, la viste como siempre); /marca off vuelve a Admira, que lo ve todo; /marca todas
   // lista los clientes (en XpaceOS no hay selector visible). → true si ya no hace falta la marca blanca.
