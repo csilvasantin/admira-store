@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r15.14:24",
-  "deployedAt": "2026-10-16T12:24:06Z",
+  "version": "v.16.10.2026.r16.14:29",
+  "deployedAt": "2026-10-16T12:29:33Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "cb418ea39bb373bac9aaa93e68c1c004ab138934",
-  "gitShort": "cb418ea",
-  "gitFull": "cb418ea39bb373bac9aaa93e68c1c004ab138934",
+  "git": "ad754b13d3479739a6426e3bc1bfaa74975d211e",
+  "gitShort": "ad754b1",
+  "gitFull": "ad754b13d3479739a6426e3bc1bfaa74975d211e",
   "dirty": false,
   "novedades": [
-    "«Gracias por comprar agua de proximidad» en dos voces que se turnan: Good (Mónica, gratuita) y ElevenLabs (Sara Martín)"
+    "/demo ifthendothat: dos botellas de agua, una con la voz Good y otra con ElevenLabs (Sara Martín)"
   ]
 }
