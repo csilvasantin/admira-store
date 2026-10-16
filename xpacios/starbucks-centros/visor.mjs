@@ -2,11 +2,12 @@
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
 // Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { crearPanorama } from './panorama.mjs?v=sc-pano-5';
+import { crearPanorama } from './panorama.mjs?v=sc-pano-6';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
-import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-2';
+import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-3';
 import { crearMandoTPV } from './mando-tpv.mjs?v=sc-mando-2';
+import { crearCajaTPV, mapaPantallas } from './caja-tpv.mjs?v=sc-caja-1';
 // El mismo cliente (la misma URL con su ?v=) que el editor del mando: una sola lectura y la edición se oye al momento.
 import { contextPlaylist } from '/admira-xp/scripts/context-playlist-client.mjs?v=local-playlist-349';
 import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-3';
@@ -35,12 +36,19 @@ const pano = crearPanorama(T, renderer);
 // ¿Se ve ahora la foto 360? (Matrix en un centro con panorama).
 const enPanorama = () => modo === 'matrix' && !!(centro && centro.panorama);
 // Las piezas del mostrador en la foto 360, clon de Paseo de Gràcia 103: TPV con el hilo musical e iPad con la cola.
-const piezas = { tpv: null, ipad: null, kiosko: null, texturas: new Map(), ultima: 0 };
+const OPCIONES_HILO = { lista: contextPlaylist('music') };
+const piezas = { tpv: null, ipad: null, kiosko: null, caja: null, texturas: new Map(), ultima: 0 };
+const hiloDelTPV = () => (piezas.tpv = piezas.tpv || crearHiloTPV(OPCIONES_HILO));
 const piezaMostrador = id => ((centro && centro.panorama && centro.panorama.piezas) || []).find(p => p.id === id) || null;
 function texturaPieza(p) {
   let t = piezas.texturas.get(p.id);
   if (!t) {
-    if (p.tipo === 'tpv') piezas.tpv = piezas.tpv || crearHiloTPV({ lista: contextPlaylist('music') });
+    if (p.tipo === 'tpv') hiloDelTPV();
+    // La caja: la cesta del gemelo y las reacciones del IF·THEN·DO THAT en las pantallas del local.
+    if (p.tipo === 'caja') {
+      const lista = (centro && centro.panorama && centro.panorama.piezas) || [], ipad = lista.find(x => x.tipo === 'ipad');
+      piezas.caja = crearCajaTPV({ T, musica: hiloDelTPV().musica, clave: ((centro.locales || [])[0] || centro.id) + ':' + p.id, mapa: mapaPantallas({ muro: (centro.panorama.pantallas || []).map(x => x.id), caja: p.id, ipad: ipad && ipad.id }) });
+    }
     // Un iPad por local: cada uno con su orientación y su sala de admira.tv/gestorColas.
     if (p.tipo === 'ipad') piezas.ipad = crearColaIPad({ horizontal: !!p.horizontal, sala: p.cola || null });
     // El quiosco de pedidos: su pantalla de bienvenida no cambia; sus pedidos van a la cola del local.
@@ -54,7 +62,7 @@ function texturaPieza(p) {
       t = new T.TextureLoader().setCrossOrigin('anonymous').load(p.imagen); t.colorSpace = T.SRGBColorSpace; t.userData.fija = true;
       piezas.texturas.set(p.id, t); return t;
     }
-    const fuente = p.tipo === 'tpv' ? piezas.tpv : p.tipo === 'ipad' ? piezas.ipad : null;
+    const fuente = p.tipo === 'tpv' ? piezas.tpv : p.tipo === 'ipad' ? piezas.ipad : p.tipo === 'caja' ? piezas.caja : null;
     if (!fuente) return null;
     t = new T.CanvasTexture(fuente.lienzo); t.colorSpace = T.SRGBColorSpace; t.userData.fuente = fuente; piezas.texturas.set(p.id, t);
   }
@@ -68,10 +76,89 @@ function pintarPiezas(now) {
     const t = texturaPieza(p); if (!t) continue;
     if (p.tipo === 'ipad') piezas.ipad = t.userData.fuente; // el del local que se ve
     if (p.tipo === 'kiosko') piezas.kiosko = t.userData.fuente;
+    if (p.tipo === 'caja') piezas.caja = t.userData.fuente;
     if (repintar && !t.userData.fija) { t.userData.fuente.pintar(); t.needsUpdate = true; }
-    pano.pintarPantalla(p.id, t);
+    pano.pintarPantalla(p.id, reaccionEn(p.id) || t);
   }
 }
+// Lo que una regla del IF·THEN·DO THAT pinta encima de una pantalla o pieza del local (imagen, vídeo u oferta del agua).
+const reaccionEn = id => (piezas.caja && enPanorama() ? piezas.caja.reaccionDe(id) : null);
+
+// El muffin y el agua de la vitrina: se cogen de la foto y se sueltan en la caja (como en Paseo de Gràcia).
+const capaProductos = document.createElement('div'); capaProductos.className = 'sc-productos'; $('#sc').append(capaProductos);
+const botonesProducto = new Map();
+function cajaDelCentro() { return ((centro && centro.panorama && centro.panorama.piezas) || []).find(x => x.tipo === 'caja') || null; }
+function sobreLaCaja(e) {
+  const caja = cajaDelCentro(); if (!caja) return false;
+  const r = lienzo.getBoundingClientRect();
+  return pano.elegir((e.clientX - r.left) / r.width * 2 - 1, 1 - (e.clientY - r.top) / r.height * 2) === caja.id;
+}
+function botonProducto(prod) {
+  let b = botonesProducto.get(prod.id);
+  if (b) return b;
+  b = document.createElement('button'); b.type = 'button'; b.className = 'sc-producto'; b.dataset.producto = prod.id; b.dataset.icono = prod.id === 'water' ? '💧' : '🧁';
+  b.title = `${prod.nombre} · mantén pulsado y arrástralo a la caja`; b.setAttribute('aria-label', `Coger ${prod.nombre} y llevarlo a la caja`);
+  b.addEventListener('pointerdown', e => {
+    const cajaPz = cajaDelCentro(); if (!cajaPz || !enPanorama()) return;
+    e.preventDefault(); e.stopPropagation(); try { b.setPointerCapture(e.pointerId); } catch { /* sin captura */ }
+    texturaPieza(cajaPz); piezas.caja.coger(prod.id);
+    // Si la caja no se ve, la vista se abre hasta enseñar el producto y la caja juntos.
+    const enPantalla = cajaPz.esquinas.every(([x, y]) => { const q = pano.proyectar(x, y); return q && q.x > 0.02 && q.x < 0.98 && q.y > 0.02 && q.y < 0.98; });
+    if (!enPantalla) pano.encuadrar([...prod.esquinas, ...cajaPz.esquinas]);
+    const fantasma = document.createElement('img'); fantasma.className = 'sc-producto-fantasma'; fantasma.alt = ''; fantasma.src = piezas.caja.imagen(prod.id) || '';
+    document.body.append(fantasma);
+    const mover = ev => { fantasma.style.left = ev.clientX + 'px'; fantasma.style.top = ev.clientY + 'px'; fantasma.classList.toggle('sobre-caja', sobreLaCaja(ev)); };
+    mover(e);
+    const soltar = ev => {
+      b.removeEventListener('pointermove', mover); b.removeEventListener('pointerup', soltar); b.removeEventListener('pointercancel', soltar);
+      fantasma.remove();
+      if (ev.type === 'pointerup' && sobreLaCaja(ev)) { if (piezas.caja.soltar(prod.id)) aviso(`${piezas.caja.nombre(prod.id).split(' · ')[0]} en la cesta · salta su regla del IF·THEN·DO THAT`); }
+      else aviso('Suéltalo en la caja: el TPV de la cesta');
+    };
+    b.addEventListener('pointermove', mover); b.addEventListener('pointerup', soltar); b.addEventListener('pointercancel', soltar);
+  });
+  for (const tipo of ['wheel', 'click']) b.addEventListener(tipo, e => e.stopPropagation());
+  capaProductos.append(b); botonesProducto.set(prod.id, b); return b;
+}
+function colocarProductos() {
+  const lista = (enPanorama() && cajaDelCentro() && centro.panorama.productos) || [];
+  for (const [id, b] of botonesProducto) if (!lista.some(x => x.id === id)) b.hidden = true;
+  if (!lista.length) return;
+  const r = lienzo.getBoundingClientRect(), c = $('#sc').getBoundingClientRect();
+  for (const prod of lista) {
+    const b = botonProducto(prod), pts = prod.esquinas.map(([x, y]) => pano.proyectar(x, y));
+    if (pts.some(q => !q)) { b.hidden = true; continue; }
+    const xs = pts.map(q => q.x * r.width), ys = pts.map(q => q.y * r.height), x0 = Math.min(...xs), y0 = Math.min(...ys);
+    b.hidden = false;
+    b.style.left = (r.left - c.left + x0) + 'px'; b.style.top = (r.top - c.top + y0) + 'px';
+    b.style.width = Math.max(28, Math.max(...xs) - x0) + 'px'; b.style.height = Math.max(28, Math.max(...ys) - y0) + 'px';
+  }
+}
+// Tocar la caja: la cesta, con quitar, vaciar y detener la reacción.
+let ventanaCesta = null;
+function abrirCesta() {
+  const cajaPz = cajaDelCentro(); if (!cajaPz) return null;
+  texturaPieza(cajaPz);
+  if (!ventanaCesta) {
+    ventanaCesta = document.createElement('dialog'); ventanaCesta.className = 'sc-mando sc-cesta'; ventanaCesta.setAttribute('aria-label', 'TPV · cesta');
+    ventanaCesta.innerHTML = '<div class="sc-mando-caja"><header><strong></strong><button class="sc-mando-x" type="button" aria-label="Cerrar">✕</button></header><ul class="sc-cesta-lineas"></ul><p class="sc-cesta-vacia">Arrastra el muffin o una botella de agua de la vitrina hasta esta caja.</p><div class="music-remote-controls"><button type="button" data-cesta="vaciar">Vaciar cesta</button><button type="button" data-cesta="detener">Detener reacción</button></div><p class="sc-cesta-nota">Las reacciones son las reglas de <b>/ifthendothat</b> (en Experto del gemelo de Paseo de Gràcia): música, locución, imagen o vídeo al coger el muffin, al llevarlo a la caja o al entregar agua.</p></div>';
+    ventanaCesta.querySelector('.sc-mando-x').addEventListener('click', () => ventanaCesta.close());
+    ventanaCesta.addEventListener('click', e => { if (e.target === ventanaCesta) ventanaCesta.close(); });
+    ventanaCesta.querySelector('[data-cesta="vaciar"]').addEventListener('click', () => { piezas.caja.vaciar(); pintarCesta(); });
+    ventanaCesta.querySelector('[data-cesta="detener"]').addEventListener('click', () => { piezas.caja.detener(); pintarCesta(); });
+    document.body.append(ventanaCesta);
+  }
+  ventanaCesta.querySelector('strong').textContent = '🛒 TPV · Cesta' + (centro ? ' · ' + centro.nombre : '');
+  pintarCesta(); try { if (!ventanaCesta.open) ventanaCesta.showModal(); } catch { ventanaCesta.setAttribute('open', ''); }
+  return piezas.caja;
+}
+function pintarCesta() {
+  if (!ventanaCesta || !piezas.caja) return;
+  const lineas = piezas.caja.cesta.lines, ul = ventanaCesta.querySelector('.sc-cesta-lineas');
+  ul.replaceChildren(...lineas.map(l => { const li = document.createElement('li'), b = document.createElement('button'); li.textContent = `${l.quantity} × ${piezas.caja.nombre(l.id)} `; b.type = 'button'; b.textContent = 'Quitar'; b.addEventListener('click', () => { piezas.caja.quitar(l.id); pintarCesta(); }); li.append(b); return li; }));
+  ventanaCesta.querySelector('.sc-cesta-vacia').hidden = lineas.length > 0;
+}
+
 // Foco del mando: el TPV del centro que se ve, en el centro y de cerca; al quitarlo, la vista de antes.
 let vistaAntesDelFoco = null;
 function enfocarTPV(on) {
@@ -91,6 +178,7 @@ async function tocarPieza(p) {
   if (p.tipo === 'tpv') { piezas.mando = piezas.mando || crearMandoTPV({ musica: piezas.tpv.musica, alEnfocar: enfocarTPV }); piezas.mando.abrir(centro ? centro.nombre : ''); }
   else if (p.tipo === 'ipad') { if (!texturaPieza(p).userData.fuente.abrir()) aviso('El gestor de colas no está disponible ahora.'); }
   else if (p.tipo === 'kiosko') texturaPieza(p).userData.fuente.abrir();
+  else if (p.tipo === 'caja') abrirCesta();
   else if (p.tipo === 'eink') aviso(`${p.nombre} · ${p.titulo}`);
 }
 
@@ -512,8 +600,9 @@ function bucle(now) {
   animar(now); ponerCamara();
   if (enPanorama()) {
     // Las pantallas de la foto emiten lo mismo que las del 3D (la textura que ya tiene cada una).
-    for (const p of pantallasVisor) pano.pintarPantalla(p.id, p.contenido.material.map);
+    for (const p of pantallasVisor) pano.pintarPantalla(p.id, reaccionEn(p.id) || p.contenido.material.map);
     pintarPiezas(now);
+    colocarProductos();
     pano.resaltar(seleccion);
     pano.render();
   } else renderer.render(scene, camera);
@@ -547,7 +636,9 @@ window.__starbucksCentros = {
   get centro() { return centro && centro.id; }, get modo() { return modo; },
   get panorama() { return enPanorama() ? { cargada: pano.cargada, vista: { ...pano.vista } } : null; },
   get piezas() { return { tpv: piezas.tpv && { sonando: piezas.tpv.sonando, titulo: piezas.tpv.titulo, pistas: piezas.tpv.pistas, propia: piezas.tpv.propia, mando: !!(piezas.mando && piezas.mando.abierto), foco: !!(piezas.mando && piezas.mando.enFoco), ambito: contextPlaylist('music').state().scope }, ipad: piezas.ipad && { pedidos: piezas.ipad.pedidos, sala: globalThis.XpaceIpadCola && globalThis.XpaceIpadCola.sala(), gestor: !!globalThis.XpaceIpadCola }, kiosko: piezas.kiosko && { sala: piezas.kiosko.sala, url: piezas.kiosko.url(), abierto: piezas.kiosko.abierto } }; },
-  tocarPieza: id => { const p = piezaMostrador(id); return p ? tocarPieza(p) : null; }, get programa() { return programaActivo && programaActivo.id; },
+  tocarPieza: id => { const p = piezaMostrador(id); return p ? tocarPieza(p) : null; },
+  // La caja desde la consola y las pruebas: coger y soltar sin arrastrar.
+  caja: { coger: id => { const pz = cajaDelCentro(); if (!pz) return null; texturaPieza(pz); piezas.caja.coger(id); return true; }, soltar: id => (piezas.caja ? piezas.caja.soltar(id) : null), get estado() { return piezas.caja && { cesta: piezas.caja.cesta, quedanAgua: piezas.caja.quedanAgua, reacciones: piezas.caja.reacciones, reglas: piezas.caja.reglas }; }, vaciar: () => piezas.caja && piezas.caja.vaciar() }, get programa() { return programaActivo && programaActivo.id; },
   estado: () => rep && rep.estado(),
   muestras: () => pantallasVisor.map(p => { const m = rep && rep.medioDe(p.id); return m && { pantalla: p.id, src: m.src, t: m.video.currentTime, listo: m.video.readyState, pausado: m.video.paused, ritmo: m.video.playbackRate, imagen: p.contenido.material.map === p.cargando ? 'cargando' : p.contenido.material.map instanceof T.VideoTexture ? (p.contenido.material.map.userData.src === m.src ? 'video' : 'video-anterior') : 'fallo', deriva: m.deriva, ajuste: p.ajuste && p.ajuste.modo, medio: p.ajuste && p.ajuste.medio }; }),
   rep: () => rep,

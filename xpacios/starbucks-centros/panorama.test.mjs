@@ -37,7 +37,7 @@ test('se pide primero la previa y después la buena que admite la tarjeta (8K o 
 
 test('el visor usa la foto en Matrix y monta los tres combos; un local de esta página cambia de centro sin recargar', () => {
   assert.match(visor, /import \{ crearPanorama \} from '\.\/panorama\.mjs/);
-  assert.match(visor, /if \(enPanorama\(\)\) \{[\s\S]*?pano\.pintarPantalla\(p\.id, p\.contenido\.material\.map\)[\s\S]*?pano\.render\(\);\s*\} else renderer\.render\(scene, camera\);/);
+  assert.match(visor, /if \(enPanorama\(\)\) \{[\s\S]*?pano\.pintarPantalla\(p\.id, (?:reaccionEn\(p\.id\) \|\| )?p\.contenido\.material\.map\)[\s\S]*?pano\.render\(\);\s*\} else renderer\.render\(scene, camera\);/);
   assert.match(visor, /import \{ montarCombos \} from '\/assets\/xpace-combos\.mjs/);
   assert.match(visor, /alCambiarCalidad: q => \{[^}]*modo = q === 'matrix' \? 'matrix' : '3d'/);
   assert.match(visor, /if \(u\.pathname !== location\.pathname \|\| !c\) return false;\s*cargarCentro\(c\.id\); return true;/);
@@ -81,7 +81,7 @@ test('las ventanas se mueven, cambian de tamaño, se cierran y vuelven desde el 
 
 test('Diagonal es un clon de Paseo de Gràcia en el mostrador: TPV con el hilo musical e iPad con la gestión de colas', async () => {
   const d634 = centros.find(c => c.id === 'd634').panorama;
-  assert.deepEqual(d634.piezas.filter(p => p.tipo !== 'eink').map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad'], ['D634-KIOSKO', 'kiosko']]);
+  assert.deepEqual(d634.piezas.filter(p => p.tipo !== 'eink').map(p => [p.id, p.tipo]), [['D634-TPV', 'tpv'], ['D634-IPAD', 'ipad'], ['D634-CAJA', 'caja'], ['D634-KIOSKO', 'kiosko']]);
   for (const p of d634.piezas) assert.equal(p.esquinas.length, 4);
   const html = readFileSync(aqui('./index.html'), 'utf8');
   assert.match(html, /window\.XpaceStarbucks=window\.XpaceStarbucks\|\|\{active:\(\)=>document\.documentElement\.dataset\.panorama==='1'\}/);
@@ -223,4 +223,33 @@ test('el mostrador de Diagonal como el de Paseo de Gràcia: iPad horizontal enci
   assert.equal(pz['D634-IPAD'].horizontal, true, 'horizontal, como el de Paseo de Gràcia');
   assert.deepEqual(pz['D634-IPAD'].esquinas, [[3471, 2043], [3598, 2046], [3581, 2117], [3448, 2115]], 'el marco de encima de la vitrina');
   assert.deepEqual(pz['D634-TPV'].esquinas, [[3171, 2095], [3231, 2098], [3196, 2222], [3123, 2217]], 'el TPV donde estaba la cola');
+});
+
+test('la caja de Diagonal: el muffin y el agua de la vitrina a la cesta, con el IF·THEN·DO THAT de Paseo de Gràcia', async () => {
+  const d634 = centros.find(c => c.id === 'd634').panorama, pz = Object.fromEntries(d634.piezas.map(p => [p.id, p]));
+  assert.equal(pz['D634-CAJA'].tipo, 'caja');
+  assert.deepEqual(pz['D634-CAJA'].esquinas, [[2892, 2085], [2934, 2087], [2909, 2187], [2868, 2184]], 'el otro TPV, donde estaba la música');
+  assert.deepEqual(d634.productos.map(p => p.id), ['muffin', 'water'], 'un muffin de la vitrina y las botellas de agua');
+  for (const p of d634.productos) for (const [x, y] of p.esquinas) assert.ok(x > 3300 && x < 3900 && y > 2190 && y < 2590, p.id);
+  // Las mismas reglas, pantallas y oferta que en el gemelo de Paseo de Gràcia.
+  const caja = readFileSync(aqui('./caja-tpv.mjs'), 'utf8');
+  assert.match(caja, /import \{ retailRulebook, createRetailRulePlayer, waterOfferScreens \} from '\.\.\/\.\.\/admira-xp\/scripts\/retail-rules\.mjs/);
+  assert.match(visor, /mapaPantallas\(\{ muro: \(centro\.panorama\.pantallas \|\| \[\]\)\.map\(x => x\.id\), caja: p\.id, ipad: ipad && ipad\.id \}\)/);
+  assert.match(visor, /pano\.pintarPantalla\(p\.id, reaccionEn\(p\.id\) \|\| p\.contenido\.material\.map\);/, 'las reacciones tapan las pantallas del muro');
+  assert.match(visor, /if \(ev\.type === 'pointerup' && sobreLaCaja\(ev\)\) \{ if \(piezas\.caja\.soltar\(prod\.id\)\)/, 'se suelta en la caja');
+  globalThis.localStorage = { getItem: () => null, setItem() {} };
+  const { crearCajaTPV, mapaPantallas } = await import('./caja-tpv.mjs');
+  assert.deepEqual(mapaPantallas({ muro: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'], caja: 'K', ipad: 'I' }), { 'starbucks-wall-01': 'M1', 'starbucks-wall-02': 'M2', 'starbucks-wall-03': 'M3', 'starbucks-wall-04': 'M4', 'starbucks-wall-05': 'M5', 'starbucks-wall-06': 'M6', 'starbucks-tpv-01': 'K', 'starbucks-ipad-01': 'I' });
+  const ctx = new Proxy({}, { get: () => () => {} }), guardado = new Map(), eventos = [];
+  const doc = { documentElement: { lang: 'es' }, body: { append() {} }, createElement: tag => tag === 'canvas' ? { getContext: () => ctx } : { hidden: false, dataset: {}, addEventListener() {}, pause() {}, load() {}, removeAttribute() {} } };
+  const win = { sessionStorage: { getItem: k => guardado.get(k) || null, setItem: (k, v) => guardado.set(k, v) }, CustomEvent: class { constructor(t, o) { this.type = t; this.detail = o.detail; } }, dispatchEvent: e => eventos.push(e) };
+  globalThis.Image = class { set src(v) { this.s = v; } };
+  const libro = { state: () => ({ rules: [] }), selectActions: () => [] };
+  const c = crearCajaTPV({ doc, win, T: {}, clave: 'starbucks-diagonal-634:D634-CAJA', mapa: {}, reglas: () => libro });
+  c.coger('muffin'); assert.equal(c.soltar('muffin'), true); assert.deepEqual(c.cesta.lines, [{ id: 'muffin', quantity: 1 }]);
+  assert.equal(c.soltar('water'), true); assert.equal(c.quedanAgua, 12, 'quedan 12 de 13 botellas');
+  assert.ok(guardado.get('xpaceos.pos-basket.v1:starbucks-diagonal-634:D634-CAJA'), 'la cesta es la de Diagonal, no la de Paseo de Gràcia');
+  assert.deepEqual(eventos.map(e => e.detail.productId), ['muffin', 'water']);
+  c.vaciar(); assert.deepEqual(c.cesta.lines, []); assert.equal(c.quedanAgua, 13);
+  delete globalThis.Image;
 });
