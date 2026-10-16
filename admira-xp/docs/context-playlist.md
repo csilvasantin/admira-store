@@ -48,3 +48,9 @@ Choosing Matrix preserves the venue: an explicit loc/venue outside the Paseo de 
 - Persistence: existing `PROGRAMACION_DB`, CAS revision + idempotent request receipt; tuple project/venue/channel, server-resolved screen.
 - Physical association/migration: [TV ES/EN procedure](https://admira.tv/docs/xpace-local-playlist.md).
 - Verification: unit/API scope, viewer, CSRF, late responses, conflicts, empty and #number cases; Chrome UI components across five controlled QA venue contexts. Production and hardware receipts are recorded separately in the mission; component fixtures are not production delivery.
+
+## Demo de tres ubicaciones / Three-location demo
+
+ES: La demo Starbucks incluye los registros existentes de Paseo de Gràcia 103, Diagonal 634 y Gran de Gràcia 51. Gran de Gràcia conserva su identidad de laboratorio y la autoridad de programación AdmiraXperience, aunque se abra con la marca Starbucks. El mando usa ese ámbito canónico; no crea otra playlist ni concede permisos. La cola de Diagonal es starbucks-diagonal-634, separada de starbucks-paseo-de-gracia. Mostrar la escena no acredita reproducción física.
+
+EN: The Starbucks demo includes the existing Paseo de Gràcia 103, Diagonal 634 and Gran de Gràcia 51 entries. Gran de Gràcia keeps its laboratory identity and AdmiraXperience programming authority, even when opened with Starbucks branding. The remote uses that canonical scope; it neither creates another playlist nor grants permissions. The Diagonal queue is starbucks-diagonal-634, separate from starbucks-paseo-de-gracia. Displaying the scene does not prove physical playback.

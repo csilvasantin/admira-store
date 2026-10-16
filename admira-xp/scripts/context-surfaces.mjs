@@ -1,4 +1,4 @@
-import {contextPlaylist} from './context-playlist-client.mjs?v=local-playlist-349';
+import {contextPlaylist} from './context-playlist-client.mjs?v=three-venues-20261016';
 import {mountContextPlaylistEditor} from './context-playlist-editor.mjs?v=local-playlist-349';
 import {createPainterPool} from './playlist-painter.mjs?v=local-playlist-349';
 import {mountMusicRemote} from './music-remote.mjs?v=local-playlist-349';

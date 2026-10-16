@@ -1,6 +1,9 @@
 export const CONTEXT_PLAYLIST_URL='/admira-xp/api/context-playlist';
 export function playlistContext(href,channelId='music'){
- try{const params=new URL(href).searchParams,projectId=params.get('project'),venueId=params.get('venue')||params.get('loc');
+ try{const url=new URL(href),params=url.searchParams,venueId=params.get('venue')||params.get('loc');let projectId=params.get('project');
+  // The Starbucks demo includes the existing laboratory; its programming still
+  // belongs to AdmiraXperience. Branding must not create a second authority.
+  if(projectId==='starbucks'&&venueId==='lab-gran-de-gracia-51'&&url.pathname==='/xpacios/gran-de-gracia-51/'&&(!params.get('loc')||params.get('loc')===venueId))projectId='admiraxperience';
   if(!projectId||!venueId||![projectId,venueId].every(id=>/^[a-z0-9][a-z0-9_-]{1,79}$/.test(id))||!/^(music|screen-[a-z0-9][a-z0-9-]{0,47})$/.test(channelId))return null;
   return {projectId,venueId,channelId};
  }catch{return null;}
