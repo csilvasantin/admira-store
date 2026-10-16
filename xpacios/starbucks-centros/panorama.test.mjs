@@ -272,3 +272,11 @@ test('el quiosco y el iPad también son ventanas: asa encima para moverlos y esq
   assert.match(visor, /else ipadMovible\(\); \}/, 'al abrir el iPad');
   assert.match(movible, /if \(proporcion\) Object\.assign\(caja\.style, \{ height: 'auto', maxHeight: 'none' \}\);/, 'el alto lo pone la proporción');
 });
+
+test('el editor de la playlist dice qué canciones ya están y enseña la que se añade (el caso del #1985)', () => {
+  const ed = readFileSync(aqui('../../admira-xp/scripts/context-playlist-editor.mjs'), 'utf8');
+  assert.match(ed, /if\(inPlaylist\(item\.id\)\)\{add\.disabled=true;add\.textContent=t\('Ya en la playlist ✓','Already in the playlist ✓'\);/);
+  assert.match(ed, /const inPlaylist=id=>\(client\.state\(\)\.tracks\|\|\[\]\)\.some\(track=>\(track\.stockId\|\|track\.id\)===id\);/);
+  assert.match(ed, /if\(operation==='add'\)showTrack\(id\);/, 'tras añadir, la lista baja hasta la nueva');
+  assert.match(readFileSync(aqui('../../admira-xp/scripts/context-playlist.css'), 'utf8'), /\.context-playlist-editor li\.is-new\{/);
+});

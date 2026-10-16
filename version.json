@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r18.15:08",
-  "deployedAt": "2026-10-16T13:08:50Z",
+  "version": "v.16.10.2026.r19.15:21",
+  "deployedAt": "2026-10-16T13:21:06Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "50c02bc339ad5d2720377382e025c22272e023ce",
-  "gitShort": "50c02bc",
-  "gitFull": "50c02bc339ad5d2720377382e025c22272e023ce",
+  "git": "7b6a3a3387f41ac9c4539af1034a1c9ecf93b68c",
+  "gitShort": "7b6a3a3",
+  "gitFull": "7b6a3a3387f41ac9c4539af1034a1c9ecf93b68c",
   "dirty": false,
   "novedades": [
-    "Visor de centros: el quiosco y el iPad también se mueven y cambian de tamaño, sin perder su forma"
+    "Playlists: el buscador de Stock marca «Ya en la playlist ✓» y, al añadir, la lista baja hasta la canción nueva"
   ]
 }

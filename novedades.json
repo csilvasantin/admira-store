@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r19.15:21": [
+    "Playlists: el buscador de Stock marca «Ya en la playlist ✓» y, al añadir, la lista baja hasta la canción nueva"
+  ],
   "v.16.10.2026.r18.15:08": [
     "Visor de centros: el quiosco y el iPad también se mueven y cambian de tamaño, sin perder su forma"
   ],
