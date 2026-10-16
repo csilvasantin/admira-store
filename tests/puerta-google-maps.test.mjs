@@ -45,13 +45,17 @@ test('elegir Paseo de Gràcia 103 en un combo lleva antes a su calle; los locale
   assert.equal(u.pathname, PAGINA_PUERTA);
   assert.equal(u.searchParams.get('venue'), 'demo-starbucks');
   assert.equal(new URL(u.searchParams.get('next'), O).searchParams.get('quality'), 'matrix', 'la calidad elegida llega al gemelo');
-  // Diagonal 634 también tiene puerta (16-oct-2026); un local sin ella (Gran de Gràcia 51) va directo.
+  // Diagonal 634 y Gran de Gràcia 51 también tienen puerta (16-oct-2026); un local sin ella va directo.
   const d634 = O + '/xpacios/starbucks-centros/?loc=starbucks-diagonal-634&quality=matrix';
   const b = new URL(await conPuerta({ id: 'starbucks-diagonal-634' }, d634, { fetchImpl, origen: O }), O);
   assert.equal(b.pathname, PAGINA_PUERTA); assert.equal(b.searchParams.get('venue'), 'starbucks-diagonal-634');
   assert.equal(b.searchParams.get('next'), '/xpacios/starbucks-centros/?loc=starbucks-diagonal-634&quality=matrix', 'y la puerta lleva a su gemelo');
   const gdg = O + '/xpacios/gran-de-gracia-51/?loc=lab-gran-de-gracia-51';
-  assert.equal(await conPuerta({ id: 'lab-gran-de-gracia-51' }, gdg, { fetchImpl, origen: O }), gdg);
+  const c = new URL(await conPuerta({ id: 'lab-gran-de-gracia-51' }, gdg, { fetchImpl, origen: O }), O);
+  assert.equal(c.pathname, PAGINA_PUERTA); assert.equal(c.searchParams.get('venue'), 'lab-gran-de-gracia-51');
+  assert.equal(c.searchParams.get('next'), '/xpacios/gran-de-gracia-51/?loc=lab-gran-de-gracia-51', 'y la puerta lleva al laboratorio');
+  const sin = O + '/xpacios/altadis-18/?loc=local-sin-puerta';
+  assert.equal(await conPuerta({ id: 'local-sin-puerta' }, sin, { fetchImpl, origen: O }), sin);
   assert.equal(urlPuerta('demo-starbucks', '/admira-xp/?x=1', 'en'), '/xpacios/puerta/?venue=demo-starbucks&next=%2Fadmira-xp%2F%3Fx%3D1&lang=en');
 });
 
@@ -79,4 +83,20 @@ test('Diagonal 634 tiene puerta: su calle en Street View y la fachada de Alta Di
     const [x, y] = proyectar(h, i, { heading: 336, pitch: 6 }, 1, 1265, 750);
     assert.ok(Math.abs(x - marcado[n][0]) < 0.5 && Math.abs(y - marcado[n][1]) < 0.5, `esquina ${n}`);
   });
+});
+
+test('Gran de Gràcia 51 tiene puerta: el portal del número 51, calibrado con la misma proyección', () => {
+  const p = puertaDe(datos.puertas, { venue: 'lab-gran-de-gracia-51' });
+  assert.ok(p, 'puerta del laboratorio');
+  assert.equal(p, puertaDe(datos.puertas, { loc: 'lab-gran-de-gracia-51' }));
+  assert.equal(p.direccion, 'Carrer Gran de Gràcia 51 · 08012 Barcelona');
+  assert.equal(p.entrada.pano, 'Gmb3bqHoEMTDO-Dqp6CkNA'); assert.equal(p.puerta.pano, p.entrada.pano);
+  assert.equal(p.puerta.esquinas.length, 4);
+  // Con el POV de la calibración (237/8, zoom 1, calle de 1265 × 750) las esquinas caen en el portal marcado.
+  const marcado = [[480, 287], [633, 287], [633, 612], [472, 614]];
+  p.puerta.esquinas.forEach(([h, i], n) => {
+    const [x, y] = proyectar(h, i, { heading: 237, pitch: 8 }, 1, 1265, 750);
+    assert.ok(Math.abs(x - marcado[n][0]) < 0.5 && Math.abs(y - marcado[n][1]) < 0.5, `esquina ${n}`);
+  });
+  assert.ok(proyectar(...p.puerta.esquinas[0], p.entrada.pov, p.entrada.pov.zoom, 1265, 750), 'la entrada mira al portal');
 });
