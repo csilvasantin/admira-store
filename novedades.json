@@ -801,5 +801,8 @@
   ],
   "v.16.10.2026.r8.10:19": [
     "Gran de Gràcia: el mando de la demo Starbucks conserva la playlist y los permisos de AdmiraXperience."
+  ],
+  "v.16.10.2026.r9.10:41": [
+    "Diagonal: configura la clave de su sala directamente dentro del quiosco incrustado; verifica el envío con un pedido simulado."
   ]
 }

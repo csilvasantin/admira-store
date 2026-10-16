@@ -3485,5 +3485,11 @@
       "canonicalProject": "admiraxperience"
     },
     "scope": "documentation; no new MCP execution tools"
+  },
+  "embedded_kiosk_provisioning": {
+    "es": "Diagonal 634 → Matrix → toca el quiosco → Configurar quiosco. Comprueba la sala starbucks-diagonal-634, introduce su clave de quiosco gk_ y pulsa Guardar en este quiosco. Se recarga el marco incrustado y la credencial se guarda en su propio contexto; configurarlo en otra pestaña puede no bastar. El campo se vacía; el mensaje sólo confirma envío de configuración, así que verifica un pedido antes de darlo por operativo. No uses la clave de barra gc_. Los pagos son simulados y la cola de Paseo de Gràcia permanece separada.",
+    "en": "Diagonal 634 → Matrix → tap the kiosk → Configure kiosk. Check room starbucks-diagonal-634, enter its gk_ kiosk key and press Save in this kiosk. The embedded frame reloads and saves the credential in its own context; configuring another tab may not be enough. The field is cleared; the status only confirms configuration was sent, so verify an order before reporting readiness. Do not use the gc_ staff key. Payments are simulated and the Paseo de Gràcia queue stays separate.",
+    "room": "starbucks-diagonal-634",
+    "scope": "existing kiosk credential; no new permission or MCP execution tool"
   }
 }

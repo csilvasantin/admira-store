@@ -14,6 +14,16 @@ export function urlKiosko({ sala, marca = 'starbucks', lang = 'es' } = {}) {
   return u.href;
 }
 
+export function urlAprovisionamiento({ sala, clave, marca = 'starbucks', lang = 'es' } = {}) {
+  if (!/^[a-z0-9][a-z0-9-]{1,79}$/.test(sala || '') || !/^gk_[a-f0-9]{24}$/.test(clave || '')) throw new Error('Usa la clave de quiosco de esta sala (gk_).');
+  const u = new URL(urlKiosko({ sala, marca, lang }));
+  // The kiosk consumes the fragment at startup, not on hashchange. A public
+  // nonce forces a fresh document even when the existing iframe URL matches.
+  u.searchParams.set('configurar', crypto.randomUUID());
+  u.hash = new URLSearchParams({ clave }).toString();
+  return u.href;
+}
+
 // El aviso de pedido del quiosco al anfitrión (contrato del README del quiosco): solo de su origen y de su iframe.
 export function pedidoDe(e, ventana) {
   const d = e && e.data;
@@ -59,8 +69,25 @@ export function crearKiosko({ doc = document, sala, marca = 'starbucks', alPedid
     modal = doc.createElement('dialog'); modal.className = 'sc-kiosko'; modal.setAttribute('aria-label', 'Quiosco de pedidos');
     modal.innerHTML = '<div class="sc-kiosko-marco"><iframe title="Quiosco de pedidos" allow="autoplay; fullscreen"></iframe>'
       + '<button class="sc-kiosko-x" type="button" aria-label="Cerrar">✕</button>'
-      + '<a class="sc-kiosko-abrir" target="_blank" rel="noopener">↗ Abrir el quiosco</a></div>';
+      + '<a class="sc-kiosko-abrir" target="_blank" rel="noopener">↗ Abrir el quiosco</a>'
+      + '<details class="sc-kiosko-config"><summary>Configurar quiosco / Configure kiosk</summary><form>'
+      + '<p class="sc-kiosko-sala"></p><label>Clave de quiosco / Kiosk key <input type="password" autocomplete="off" spellcheck="false" required pattern="gk_[a-f0-9]{24}" aria-label="Clave de quiosco de esta sala"></label>'
+      + '<button type="submit">Guardar en este quiosco / Save in this kiosk</button><p class="sc-kiosko-estado" role="status"></p></form></details></div>';
     marco = modal.querySelector('iframe');
+    const config = modal.querySelector('.sc-kiosko-config'), input = config.querySelector('input'), estado = config.querySelector('.sc-kiosko-estado');
+    config.querySelector('.sc-kiosko-sala').textContent = `Sala / Room: ${sala}`;
+    config.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      try {
+        // Configure the actual embedded context: a separate top-level tab can
+        // have different storage. The kiosk consumes/removes its URL fragment.
+        const destino = urlAprovisionamiento({ sala, marca, lang: doc.documentElement.lang === 'en' ? 'en' : 'es', clave: input.value.trim() });
+        input.value = '';
+        // Keep the credential out of the parent iframe's src attribute/history.
+        marco.contentWindow.location.replace(destino);
+        estado.textContent = 'Configuración enviada; comprueba el pedido / Configuration sent; verify an order.';
+      } catch { estado.textContent = 'No se pudo configurar. Comprueba la clave de esta sala / Unable to configure; check this room key.'; }
+    });
     modal.querySelector('.sc-kiosko-x').addEventListener('click', cerrar);
     modal.addEventListener('click', e => { if (e.target === modal) cerrar(); });
     modal.addEventListener('cancel', e => { e.preventDefault(); cerrar(); });
@@ -78,6 +105,8 @@ export function crearKiosko({ doc = document, sala, marca = 'starbucks', alPedid
     if (!modal) return;
     try { if (modal.open) modal.close(); } catch { modal.removeAttribute('open'); }
     marco.src = 'about:blank';
+    modal.querySelector('.sc-kiosko-config input').value = '';
+    modal.querySelector('.sc-kiosko-config').open = false;
   }
   return { lienzo, pintar, sala, url, abrir, cerrar, get abierto() { return !!(modal && modal.open); } };
 }
