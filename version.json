@@ -1,12 +1,12 @@
 {
   "version": "v.16.10.2026.r7.09:55",
-  "deployedAt": "2026-10-16T07:55:44Z",
+  "deployedAt": "2026-10-16T08:11:01Z",
   "deployer": "NeoMBP14",
   "machine": "MacBookProNegro14",
   "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "4ac8eb9dd3ae3f39c4cf143c9134dd47de0daacb",
-  "gitShort": "4ac8eb9",
-  "gitFull": "4ac8eb9dd3ae3f39c4cf143c9134dd47de0daacb",
+  "git": "3a05bad56771d659656fc0e105e03cefcce08cb5",
+  "gitShort": "3a05bad",
+  "gitFull": "3a05bad56771d659656fc0e105e03cefcce08cb5",
   "dirty": false,
   "novedades": [
     "Altadis 18: circuito «Altadis España · 10 Xtancos». Con ?loc= la ficha del gemelo dice el estanco, su ciudad y su dirección, con «Volver al mapa»; ← / → y el recorrido automático recorren sólo los 10 estancos, cada uno con su formato.",
