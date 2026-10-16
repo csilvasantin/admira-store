@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r22.15:38": [
+    "Stock: búsqueda con hashtags combinados (#musica #1983); playlist de Paseo de Gràcia con papelera a la izquierda y la ficha del TPV movible"
+  ],
   "v.16.10.2026.r21.15:26": [
     "Playlists: los previos salen en miniatura también con la hoja de estilos guardada en el navegador"
   ],

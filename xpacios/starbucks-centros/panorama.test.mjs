@@ -285,8 +285,17 @@ test('cada canción de la playlist y de la búsqueda lleva su previo: la carátu
   const ed = readFileSync(aqui('../../admira-xp/scripts/context-playlist-editor.mjs'), 'utf8');
   assert.match(ed, /function preview\(item\)\{const box=make\('span'\);box\.className='context-playlist-thumb';/);
   assert.match(ed, /if\(item\.cover\)\{const img=make\('img'\);img\.width=44;img\.height=44;[^}]*img\.src=item\.cover;/, 'miniatura de 44 px aunque falte la hoja');
-  assert.match(ed, /context-playlist\.css\?v=previos-1/, 'la hoja nueva, no la guardada');
+  assert.match(ed, /context-playlist\.css\?v=previos-\d+'/, 'la hoja nueva, no la guardada');
   assert.match(ed, /row\.append\(preview\(track\)\);/, 'en la lista');
   assert.match(ed, /row\.append\(preview\(item\),name,add,link\);/, 'en la búsqueda');
   assert.match(readFileSync(aqui('../../admira-xp/scripts/context-playlist.css'), 'utf8'), /\.context-playlist-thumb img\{width:100%;height:100%;object-fit:cover/);
+});
+
+test('la playlist de Paseo de Gràcia en el gemelo, igual: papelera a la izquierda en el editor común y la ficha del TPV movible', () => {
+  const css = readFileSync(aqui('../../admira-xp/scripts/context-playlist.css'), 'utf8'), sl = readFileSync(aqui('../../admira-xp/scripts/screen-light.mjs'), 'utf8');
+  assert.match(css, /\.context-playlist-editor li>button\[data-playlist-remove\]\{order:-1;/, 'en todos los editores, no solo en el visor');
+  assert.match(readFileSync(aqui('../../admira-xp/scripts/context-playlist-editor.mjs'), 'utf8'), /context-playlist\.css\?v=previos-2/);
+  assert.match(sl, /c\.node\.style\.transform='translate\('\+Math\.round\(p\.x\+\(c\.offset\?\.x\|\|0\)\)/, 'el gemelo suma el desplazamiento del usuario');
+  assert.match(sl, /kicker\.addEventListener\('pointerdown',e=>\{if\(!c\.remote\|\|e\.button!==0\)return;/, 'se arrastra por la cabecera la ficha con mando');
+  assert.match(readFileSync(aqui('../../admira-xp/index.html'), 'utf8'), /scripts\/screen-light\.css\?v=ficha-movible-1/);
 });

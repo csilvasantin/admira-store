@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r21.15:26",
-  "deployedAt": "2026-10-16T13:26:53Z",
+  "version": "v.16.10.2026.r22.15:38",
+  "deployedAt": "2026-10-16T13:38:36Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "14219760bb8ef5bccb53c96aed4100e35d6fab3f",
-  "gitShort": "1421976",
-  "gitFull": "14219760bb8ef5bccb53c96aed4100e35d6fab3f",
+  "git": "bbe225350fd4265e6fe11bf3255bbfd12c185f60",
+  "gitShort": "bbe2253",
+  "gitFull": "bbe225350fd4265e6fe11bf3255bbfd12c185f60",
   "dirty": false,
   "novedades": [
-    "Playlists: los previos salen en miniatura también con la hoja de estilos guardada en el navegador"
+    "Stock: búsqueda con hashtags combinados (#musica #1983); playlist de Paseo de Gràcia con papelera a la izquierda y la ficha del TPV movible"
   ]
 }

@@ -56,3 +56,8 @@
 .music-remote-controls{display:flex;gap:5px}.music-remote button,.music-remote select{font:inherit;min-height:30px;border:1px solid #8dcab18c;border-radius:6px;background:#12392e;color:#fff;padding:4px 7px}
 .music-remote select{width:100%;min-width:0;text-overflow:ellipsis}.music-remote-controls button{flex:1;padding:4px}.music-remote button:disabled{opacity:.45}
 .music-remote :focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* Ficha con mando: cabecera para moverla y esquina para el tamaño (screen-light.mjs). */
+.matrix-onair-card.has-music-remote .onair-kicker{cursor:grab;touch-action:none;user-select:none}
+.matrix-onair-card.has-music-remote .onair-kicker:active{cursor:grabbing}
+.matrix-onair-card .onair-corner{display:none}
+.matrix-onair-card.has-music-remote .onair-corner{display:block;position:sticky;bottom:0;width:18px;height:18px;margin:-12px -4px 0 auto;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 0 55%,#a2d9c3 55% 62%,transparent 62% 72%,#a2d9c3 72% 79%,transparent 79%);opacity:.85}

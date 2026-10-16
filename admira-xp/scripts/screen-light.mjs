@@ -201,6 +201,18 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
   node.innerHTML='<div class="onair-kicker"><i></i><span></span><b></b></div><strong class="onair-title"></strong><div class="onair-meta"></div><div class="onair-progress"><div class="onair-bar"><i></i></div><span class="onair-time"></span></div><div class="onair-next"></div>';
   cardLayer.append(node);
   c={node,parts:{state:node.querySelector('.onair-kicker span'),label:node.querySelector('.onair-kicker b'),title:node.querySelector('.onair-title'),meta:node.querySelector('.onair-meta'),progress:node.querySelector('.onair-progress'),bar:node.querySelector('.onair-bar i'),time:node.querySelector('.onair-time'),next:node.querySelector('.onair-next')},text:{},size:null};
+  // La ficha con mando (el TPV del hilo musical) se mueve por su cabecera y cambia de tamaño por la esquina, como las
+  // ventanas (Carlos, 16-oct-2026: «tiene que ser movible»). El gemelo la sigue colocando junto a su pantalla y le suma
+  // el desplazamiento; doble clic en la cabecera: a su sitio.
+  const kicker=node.querySelector('.onair-kicker');let drag=null,grow=null;
+  kicker.addEventListener('pointerdown',e=>{if(!c.remote||e.button!==0)return;drag={x:e.clientX,y:e.clientY,ox:c.offset?.x||0,oy:c.offset?.y||0};kicker.setPointerCapture(e.pointerId);e.preventDefault();e.stopPropagation();});
+  kicker.addEventListener('pointermove',e=>{if(!drag)return;c.offset={x:drag.ox+e.clientX-drag.x,y:drag.oy+e.clientY-drag.y};lastCards=0;});
+  const stopDrag=()=>{drag=null;};kicker.addEventListener('pointerup',stopDrag);kicker.addEventListener('pointercancel',stopDrag);
+  kicker.addEventListener('dblclick',()=>{c.offset=null;node.style.width='';node.style.maxWidth='';node.style.maxHeight='';c.size=null;lastCards=0;});
+  const corner=el('span','onair-corner');corner.title='Arrastra para cambiar el tamaño';node.append(corner);
+  corner.addEventListener('pointerdown',e=>{if(e.button!==0)return;const r=node.getBoundingClientRect();grow={x:e.clientX,y:e.clientY,w:r.width,h:r.height};corner.setPointerCapture(e.pointerId);e.preventDefault();e.stopPropagation();});
+  corner.addEventListener('pointermove',e=>{if(!grow)return;const w=Math.max(240,Math.min(win.innerWidth-16,grow.w+e.clientX-grow.x))+'px';node.style.width=w;node.style.maxWidth=w;node.style.maxHeight=Math.max(160,Math.min(win.innerHeight-16,grow.h+e.clientY-grow.y))+'px';c.size=null;lastCards=0;});
+  const stopGrow=()=>{grow=null;};corner.addEventListener('pointerup',stopGrow);corner.addEventListener('pointercancel',stopGrow);
   cards.set(key,c);return c;
  }
  const write=(c,part,value,resize=true)=>{if(c.text[part]===value)return;const shown=!!c.text[part];c.text[part]=value;c.parts[part].textContent=value;c.parts[part].hidden=!value;if(resize||shown!==!!value)c.size=null;};
@@ -230,6 +242,8 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
    c.node.dataset.state=g.state;c.node.dataset.kind=g.kind;
    if(g.kind==='tpv'&&g.playlistId==='physical-music'&&musicControl&&!c.remote){c.node.classList.add('has-music-remote');c.remote=mountMusicRemote(c.node,{music:musicControl,win,t,signal:controls.signal,blocked:()=>busy()||musicBlocked(),onToggle:()=>{c.size=null;lastCards=0;}});}
    if(win.location?.href&&!c.remote&&g.ids.length===1){const id=g.ids[0];contextSurfaces(win)?.ensure(id);c.remote=mountSurfacePlaylistRemote(c.node,id,{win,t,signal:controls.signal,onToggle:()=>{c.size=null;lastCards=0;}});}
+   // La esquina de tamaño, siempre al final de la ficha (el mando se monta después).
+   if(c.remote){const corner=c.node.querySelector(':scope > .onair-corner');if(corner&&c.node.lastElementChild!==corner)c.node.append(corner);}
    c.remote?.update();
    write(c,'state',t(...STATE_COPY[g.state]));write(c,'label',g.label);write(c,'title',g.title);
    write(c,'meta',[g.playlistTitle,g.total>0&&g.index>=0?(g.index+1)+'/'+g.total:g.playlistId==='sincroIA'?g.total+' '+t('piezas','clips'):'',g.stock].filter(Boolean).join(' · '));
@@ -248,7 +262,7 @@ export function mountScreenLight({surface,layer,nodes,previews,groups=()=>[],mus
   const placed=new Map(placeCards(items,{width:surface.clientWidth,height:surface.clientHeight}).map(p=>[p.key,p]));
   for(const [key,c] of cards){
    const p=placed.get(key);c.node.classList.toggle('is-visible',!!p);
-   if(p){c.node.style.transform='translate('+Math.round(p.x)+'px,'+Math.round(p.y)+'px)';c.node.dataset.side=p.side;c.node.style.setProperty('--caret',Math.round(p.caret)+'px');}
+   if(p){c.node.style.transform='translate('+Math.round(p.x+(c.offset?.x||0))+'px,'+Math.round(p.y+(c.offset?.y||0))+'px)';c.node.dataset.side=p.side;c.node.style.setProperty('--caret',Math.round(p.caret)+'px');}
    else if(!list.some(g=>g.key===key)&&key!=='music'){c.remote?.dispose();c.node.remove();cards.delete(key);}
   }
   const lit=new Set(quiet?[]:(hovered?.ids||[]));
