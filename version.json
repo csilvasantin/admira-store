@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r20.15:23",
-  "deployedAt": "2026-10-16T13:23:59Z",
+  "version": "v.16.10.2026.r21.15:26",
+  "deployedAt": "2026-10-16T13:26:53Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "52b63c2142ee2d83febbaec2a74c0e799f051ec1",
-  "gitShort": "52b63c2",
-  "gitFull": "52b63c2142ee2d83febbaec2a74c0e799f051ec1",
+  "git": "14219760bb8ef5bccb53c96aed4100e35d6fab3f",
+  "gitShort": "1421976",
+  "gitFull": "14219760bb8ef5bccb53c96aed4100e35d6fab3f",
   "dirty": false,
   "novedades": [
-    "Playlists: cada canción lleva su previo (carátula de Stock o nota si es solo audio), en la lista y en la búsqueda"
+    "Playlists: los previos salen en miniatura también con la hoja de estilos guardada en el navegador"
   ]
 }
