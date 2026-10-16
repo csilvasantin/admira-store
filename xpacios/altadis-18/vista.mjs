@@ -57,10 +57,14 @@ export function encuadre(pantallas, { fov = 40, aspect = 16 / 9, margen = 1.3, e
  * deja la cámara más cerca del centro de la sala si se da `sala`.
  */
 export const GIRO_CUBO = 0.5;
-export function camaraEncuadre(pantallas, { fov = 40, aspect = 16 / 9, sala = null } = {}) {
+/** Lo mínimo que enseña el encuadre en la escena realista (metros): la pantalla y su sitio. */
+export const MIN_REALISTA = { minAncho: 1.3, minAlto: 0.9 };
+export function camaraEncuadre(pantallas, { fov = 40, aspect = 16 / 9, sala = null, minAncho = 0, minAlto = 0 } = {}) {
   const ps = (pantallas || []).filter(p => p && p.centro);
   const cubo = ps.some(p => p.cubo);
-  const m = encuadre(ps, { fov, aspect, margen: 1.5, minDist: 0.6, el: 0 });
+  // minAncho / minAlto: en la escena realista una pantalla pequeña (la tablet, la góndola LED) se
+  // encuadra con algo del local alrededor (MIN_REALISTA); en el Esquema, 0: llena dos tercios.
+  const m = encuadre(ps, { fov, aspect, margen: 1.5, minDist: 0.6, el: 0, minAncho, minAlto });
   if (!m) return null;
   const el = cubo ? 0.3 : m.objetivo[2] < 1.2 ? 0.22 : 0.1;
   let az = m.az;

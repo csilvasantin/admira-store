@@ -15,7 +15,7 @@
 // Si no responde (404, plazo, no valida), el respaldo es planos/altadis-espana-10.json: copia del
 // índice real (mismos ids, nombres, direcciones y enlaces). En cada carga se prueba primero el real.
 
-import { cargarConRespaldo, ESPACIO_RE, FORMATO_RE, ESPERA_COMPARTIDO_MS, TIPOS } from './espacios.mjs?v=a18-5';
+import { cargarConRespaldo, ESPACIO_RE, FORMATO_RE, ESPERA_COMPARTIDO_MS, TIPOS } from './espacios.mjs?v=a18-6';
 
 export const SCHEMA_CIRCUITO = 'admira.circuito-demo/1';
 export const CIRCUITO = 'altadis_espana';
