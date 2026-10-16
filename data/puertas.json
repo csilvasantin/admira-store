@@ -12,6 +12,18 @@
       "entrada": { "pano": "bNZ9QjiL55gYQ2iyOhSqMw", "pov": { "heading": 223, "pitch": 3, "zoom": 1.6 } },
       "puerta": { "pano": "bNZ9QjiL55gYQ2iyOhSqMw", "esquinas": [[213.833, 6.2399], [238.8572, 5.5457], [238.5509, -4.341], [213.9175, -4.845]] },
       "fuente": "admira-tv/adcelerate/demo/js/outdoor-sites.js · panorama de agosto de 2026, arco STARBUCKS + escaparate del 103"
+    },
+    {
+      "id": "starbucks-diagonal-634",
+      "locales": ["starbucks-diagonal-634"],
+      "loc": "starbucks-diagonal-634",
+      "proyecto": "starbucks",
+      "nombre": "Starbucks Diagonal 634",
+      "direccion": "Avinguda Diagonal 634 · 08017 Barcelona",
+      "posicion": { "lat": 41.391192, "lng": 2.136377 },
+      "entrada": { "pano": "gFiiBKarazJa69Mjl_uFtg", "pov": { "heading": 332, "pitch": 3, "zoom": 1.2 } },
+      "puerta": { "pano": "gFiiBKarazJa69Mjl_uFtg", "esquinas": [[313.5142, 7.4686], [350.6046, 8.6588], [350.2714, -4.0364], [313.997, -4.6419]] },
+      "fuente": "Street View «634 Av. Diagonal» (enero de 2022), calibrado por NeoMacStudio el 16-oct-2026 con la proyección de puertas.mjs: escaparate y toldos de STARBUCKS COFFEE en los bajos de Alta Diagonal. Posición: OpenStreetMap (brand=Starbucks)."
     }
   ]
 }
