@@ -1,14 +1,15 @@
 {
-  "version": "v.16.10.2026.r6.08:37",
-  "deployedAt": "2026-10-16T06:37:48Z",
-  "deployer": "NeoMacStudio",
-  "machine": "MacStudio",
-  "signature": "NeoMacStudio · MacStudio",
-  "git": "10db8eec041c80b645a930731668960e33e882a0",
-  "gitShort": "10db8ee",
-  "gitFull": "10db8eec041c80b645a930731668960e33e882a0",
+  "version": "v.16.10.2026.r7.09:55",
+  "deployedAt": "2026-10-16T07:55:44Z",
+  "deployer": "NeoMBP14",
+  "machine": "MacBookProNegro14",
+  "signature": "NeoMBP14 · MacBookProNegro14",
+  "git": "4ac8eb9dd3ae3f39c4cf143c9134dd47de0daacb",
+  "gitShort": "4ac8eb9",
+  "gitFull": "4ac8eb9dd3ae3f39c4cf143c9134dd47de0daacb",
   "dirty": false,
   "novedades": [
-    "Con la marca Starbucks, la barra de arriba pone una sola vez STARBUCKS, en blanco"
+    "Altadis 18: circuito «Altadis España · 10 Xtancos». Con ?loc= la ficha del gemelo dice el estanco, su ciudad y su dirección, con «Volver al mapa»; ← / → y el recorrido automático recorren sólo los 10 estancos, cada uno con su formato.",
+    "Con ?marca=altadis la galería, la ficha y la barra visten la marca blanca de Altadis (naranja y marrón), y el tipo por defecto es Xtanco."
   ]
 }
