@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r22.15:38",
-  "deployedAt": "2026-10-16T13:38:36Z",
+  "version": "v.16.10.2026.r23.15:49",
+  "deployedAt": "2026-10-16T13:49:16Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "bbe225350fd4265e6fe11bf3255bbfd12c185f60",
-  "gitShort": "bbe2253",
-  "gitFull": "bbe225350fd4265e6fe11bf3255bbfd12c185f60",
+  "git": "1fbe1f18e4342d7b09cab01d31a8382a4c344f2d",
+  "gitShort": "1fbe1f1",
+  "gitFull": "1fbe1f18e4342d7b09cab01d31a8382a4c344f2d",
   "dirty": false,
   "novedades": [
-    "Stock: búsqueda con hashtags combinados (#musica #1983); playlist de Paseo de Gràcia con papelera a la izquierda y la ficha del TPV movible"
+    "Diagonal 634 con su puerta de Google Maps: al elegirlo, su calle en Street View y la fachada lleva a su gemelo"
   ]
 }

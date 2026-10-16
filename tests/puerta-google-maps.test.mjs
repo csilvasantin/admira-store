@@ -15,7 +15,7 @@ test('Paseo de Gràcia 103 tiene puerta: local demo-starbucks, loc alsea-sbux-02
   assert.match(p.direccion, /Passeig de Gràcia 103/);
   assert.equal(p.entrada.pano, 'bNZ9QjiL55gYQ2iyOhSqMw');
   assert.equal(p.puerta.esquinas.length, 4);
-  assert.equal(puertaDe(datos.puertas, { venue: 'starbucks-diagonal-634' }), null, 'Diagonal aún no tiene puerta');
+  assert.notEqual(puertaDe(datos.puertas, { venue: 'starbucks-diagonal-634' }), p, 'Diagonal tiene la suya (16-oct-2026)');
 });
 
 test('la fachada cae donde la pinta admira.tv (DoohSurfaces.project, POV 218,70/5,17, zoom 1,167, 1512 × 917)', () => {
@@ -45,8 +45,13 @@ test('elegir Paseo de Gràcia 103 en un combo lleva antes a su calle; los locale
   assert.equal(u.pathname, PAGINA_PUERTA);
   assert.equal(u.searchParams.get('venue'), 'demo-starbucks');
   assert.equal(new URL(u.searchParams.get('next'), O).searchParams.get('quality'), 'matrix', 'la calidad elegida llega al gemelo');
+  // Diagonal 634 también tiene puerta (16-oct-2026); un local sin ella (Gran de Gràcia 51) va directo.
   const d634 = O + '/xpacios/starbucks-centros/?loc=starbucks-diagonal-634&quality=matrix';
-  assert.equal(await conPuerta({ id: 'starbucks-diagonal-634' }, d634, { fetchImpl, origen: O }), d634);
+  const b = new URL(await conPuerta({ id: 'starbucks-diagonal-634' }, d634, { fetchImpl, origen: O }), O);
+  assert.equal(b.pathname, PAGINA_PUERTA); assert.equal(b.searchParams.get('venue'), 'starbucks-diagonal-634');
+  assert.equal(b.searchParams.get('next'), '/xpacios/starbucks-centros/?loc=starbucks-diagonal-634&quality=matrix', 'y la puerta lleva a su gemelo');
+  const gdg = O + '/xpacios/gran-de-gracia-51/?loc=lab-gran-de-gracia-51';
+  assert.equal(await conPuerta({ id: 'lab-gran-de-gracia-51' }, gdg, { fetchImpl, origen: O }), gdg);
   assert.equal(urlPuerta('demo-starbucks', '/admira-xp/?x=1', 'en'), '/xpacios/puerta/?venue=demo-starbucks&next=%2Fadmira-xp%2F%3Fx%3D1&lang=en');
 });
 
@@ -60,4 +65,18 @@ test('la página de la puerta: clave de Maps desde admira.tv (no copiada aquí),
   assert.match(enlaceMaps({ pano: 'P', pov: { heading: 223, pitch: 3 } }), /^https:\/\/www\.google\.com\/maps\/@\?api=1&map_action=pano&pano=P&heading=223&pitch=3$/);
   assert.match(leer('admira-xp/scripts/project-selector.mjs'), /location\.assign\(await conPuerta\(venue,href\)\)/);
   assert.match(leer('assets/xpace-combos.mjs'), /location\.assign\(await conPuerta\(v, href\)\)/);
+});
+
+test('Diagonal 634 tiene puerta: su calle en Street View y la fachada de Alta Diagonal calibrada con la misma proyección', () => {
+  const p = datos.puertas.find(x => x.locales.includes('starbucks-diagonal-634'));
+  assert.ok(p, 'puerta de Diagonal');
+  assert.equal(p.direccion, 'Avinguda Diagonal 634 · 08017 Barcelona');
+  assert.equal(p.entrada.pano, 'gFiiBKarazJa69Mjl_uFtg'); assert.equal(p.puerta.pano, p.entrada.pano);
+  assert.equal(p.puerta.esquinas.length, 4);
+  // Con el POV de la calibración (336/6, zoom 1, calle de 1265 × 750) las esquinas caen en el escaparate marcado.
+  const marcado = [[373.1, 352.1], [795.5, 342.5], [795.5, 488.4], [373.1, 498.0]];
+  p.puerta.esquinas.forEach(([h, i], n) => {
+    const [x, y] = proyectar(h, i, { heading: 336, pitch: 6 }, 1, 1265, 750);
+    assert.ok(Math.abs(x - marcado[n][0]) < 0.5 && Math.abs(y - marcado[n][1]) < 0.5, `esquina ${n}`);
+  });
 });
