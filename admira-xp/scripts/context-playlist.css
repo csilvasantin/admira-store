@@ -11,3 +11,5 @@
 #screenInfoPop{max-height:min(680px,80vh);overflow:auto}
 .context-surface-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;object-fit:fill}
 .context-surface-canvas[hidden]{display:none!important}
+.context-playlist-editor li.is-new{background:#00704a66;transition:background .6s}
+.context-playlist-editor [data-in-playlist] button{opacity:.75}
