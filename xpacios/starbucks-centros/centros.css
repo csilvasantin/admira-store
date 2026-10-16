@@ -100,3 +100,21 @@ html.ui-limpia #sc .vent,html.ui-limpia #sc .vent-dock{display:none!important}
 .sc-kiosko-abrir{position:absolute;left:50%;bottom:-44px;transform:translateX(-50%);white-space:nowrap;color:#fff;font:600 14px system-ui,sans-serif;text-decoration:none;background:#00704A;padding:7px 14px;border-radius:999px}
 .sc-kiosko-config{position:absolute;z-index:2;top:8px;left:8px;max-width:calc(100% - 16px);padding:8px;border-radius:10px;background:#112d25;color:#fff;font:13px system-ui,sans-serif}
 .sc-kiosko-config summary{cursor:pointer;font-weight:700}.sc-kiosko-config[open]{width:calc(100% - 16px);box-sizing:border-box}.sc-kiosko-config input{box-sizing:border-box;width:100%;margin:8px 0;padding:10px;background:#fff;color:#111;font:inherit;border:1px solid #8acbb0;border-radius:6px}.sc-kiosko-config button{padding:10px;border:1px solid #8acbb0;border-radius:6px;background:#00704a;color:#fff;font:inherit;cursor:pointer}.sc-kiosko-config p{margin:8px 0}
+/* El mando del TPV (mando-tpv.mjs): el de Paseo de Gràcia (music-remote.mjs) en una ventana; ✕, Esc o fuera la cierran. */
+.sc-mando{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:16px;border:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;box-sizing:border-box}
+.sc-mando[open]{display:flex}
+.sc-mando::backdrop{background:transparent}
+.sc-mando-caja{width:min(440px,100%);max-height:min(86vh,720px);overflow:auto;background:#0d1915f2;color:#eef4ef;border:1px solid #2c463c;border-radius:14px;padding:12px 14px 14px;box-shadow:0 18px 50px rgba(0,0,0,.5);font:13px/1.4 system-ui,sans-serif}
+.sc-mando-caja header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.sc-mando-caja header strong{font-size:15px}
+.sc-mando-x{width:32px;height:32px;border-radius:50%;border:1px solid #8dcab18c;background:#12392e;color:#fff;cursor:pointer}
+.sc-mando .music-remote{font:13px/1.4 system-ui,sans-serif;color:#eafff6}
+.sc-mando .music-remote summary{cursor:pointer;font-size:11px;font-weight:750;letter-spacing:.04em;padding:5px 0}
+.sc-mando .music-remote-body{display:grid;gap:8px;padding-top:6px}
+.sc-mando .music-remote-body p{margin:0;white-space:normal;overflow-wrap:anywhere}
+.sc-mando .music-remote-body p:first-child{font-size:11px;color:#b5d1c7}
+.sc-mando .music-remote-controls{display:flex;gap:6px}
+.sc-mando .music-remote button,.sc-mando .music-remote select,.sc-mando .context-playlist-editor input,.sc-mando .context-playlist-editor button{font:inherit;min-height:32px;border:1px solid #8dcab18c;border-radius:6px;background:#12392e;color:#fff;padding:4px 8px}
+.sc-mando .music-remote select{width:100%;min-width:0;text-overflow:ellipsis}
+.sc-mando .music-remote-controls button{flex:1}
+.sc-mando .music-remote button:disabled{opacity:.45}
