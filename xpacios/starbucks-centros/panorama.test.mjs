@@ -284,7 +284,8 @@ test('el editor de la playlist dice qué canciones ya están y enseña la que se
 test('cada canción de la playlist y de la búsqueda lleva su previo: la carátula de Stock o una nota si es solo audio', () => {
   const ed = readFileSync(aqui('../../admira-xp/scripts/context-playlist-editor.mjs'), 'utf8');
   assert.match(ed, /function preview\(item\)\{const box=make\('span'\);box\.className='context-playlist-thumb';/);
-  assert.match(ed, /if\(item\.cover\)\{const img=make\('img'\);img\.src=item\.cover;/);
+  assert.match(ed, /if\(item\.cover\)\{const img=make\('img'\);img\.width=44;img\.height=44;[^}]*img\.src=item\.cover;/, 'miniatura de 44 px aunque falte la hoja');
+  assert.match(ed, /context-playlist\.css\?v=previos-1/, 'la hoja nueva, no la guardada');
   assert.match(ed, /row\.append\(preview\(track\)\);/, 'en la lista');
   assert.match(ed, /row\.append\(preview\(item\),name,add,link\);/, 'en la búsqueda');
   assert.match(readFileSync(aqui('../../admira-xp/scripts/context-playlist.css'), 'utf8'), /\.context-playlist-thumb img\{width:100%;height:100%;object-fit:cover/);
