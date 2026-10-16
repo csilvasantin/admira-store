@@ -192,7 +192,7 @@ function pintarGaleriaCircuito() {
     const led = /LED/i.test(f.nombre) || f.zona === 'cubo';
     return `<li><a class="tarjeta" href="${esc(queryEspacio({ espacio: l.espacio, loc: l.id, lang: st.lang, marca: MARCA }))}" data-loc="${esc(l.id)}" aria-current="${st.local?.id === l.id}">` +
       `<span class="poster">${svgFormato(f)}${poster ? `<img src="${esc(poster)}" alt="" decoding="async">` : ''}<b class="n">${dos(l.tourOrder ?? i + 1)}</b>${led ? '<i class="tec">LED</i>' : ''}</span>` +
-      `<span class="ciudad">${esc(l.ciudad)}</span><span class="nombre">${esc(tituloLocal(l, EN()))}</span>` +
+      `<span class="ciudad">${esc(l.ciudad)}</span><span class="nombre">${esc(tituloLocal(l, EN(), { ciudad: false }))}</span>` +
       (l.direccion ? `<span class="uso">${esc(l.direccion)}</span>` : '') +
       `<span class="px">${esc(f.nombre)} · ${f.ancho} × ${f.alto} px</span>` +
       `<span class="pantallas">${f.pantallas} ${f.pantallas === 1 ? t('pantalla', 'screen') : t('pantallas', 'screens')}${f.grid && f.pantallas > 1 ? ` · ${f.grid.cols} × ${f.grid.rows}` : ''}</span></a></li>`;

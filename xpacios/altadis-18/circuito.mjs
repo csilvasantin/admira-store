@@ -12,8 +12,8 @@
 //   {"schema":"admira.circuito-demo/1","circuito":"altadis_espana","cliente":"Altadis","marca":"altadis",
 //    "locales":[{"id","nombre","direccion","ciudad","coords":[lng,lat],"tourOrder","formato":"cliente-NN",
 //                "espacio":"altadis-xtanco-NN","mapa":"<enlace al mapa centrado en el estanco>"}]}
-// Mientras no exista (404), el respaldo es planos/altadis-espana-10.json: el reparto previsto, sin
-// nombres reales («Estanco de <ciudad>»). En cada carga se prueba primero el real.
+// Si no responde (404, plazo, no valida), el respaldo es planos/altadis-espana-10.json: copia del
+// índice real (mismos ids, nombres, direcciones y enlaces). En cada carga se prueba primero el real.
 
 import { cargarConRespaldo, ESPACIO_RE, FORMATO_RE, ESPERA_COMPARTIDO_MS, TIPOS } from './espacios.mjs?v=a18-5';
 
@@ -21,14 +21,16 @@ export const SCHEMA_CIRCUITO = 'admira.circuito-demo/1';
 export const CIRCUITO = 'altadis_espana';
 export const CIRCUITO_COMPARTIDO = 'https://www.admira.biz/data/xpacios/altadis-espana-10.json';
 export const CIRCUITO_LOCAL = '/xpacios/altadis-18/planos/altadis-espana-10.json';
-// El mapa de admira.biz lee ?circuit= y vuela a ?lng=&lat= con su ?label= (app.js de admira.biz).
+// El mapa de admira.biz: el mismo enlace que publica el índice real, ?circuit=&loc=&marca=.
 export const MAPA_BASE = 'https://www.admira.biz/';
+// «Volver al mapa» sólo lleva a admira.biz: un enlace del índice a otro dominio no se usa.
+export const MAPA_RE = /^https:\/\/www\.admira\.biz\/[^\s"'<>]*$/;
 // Con la marca de un cliente, el tipo de espacio que se enseña por defecto. Altadis: estancos.
 export const TIPO_DE_MARCA = { altadis: 'xtanco' };
 
 const LOC_RE = /^[a-z0-9][a-z0-9_-]{0,80}$/i;
 const texto = v => typeof v === 'string' && v.trim().length > 0;
-const urlSegura = u => typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/i.test(u);
+const mapaValido = u => typeof u === 'string' && MAPA_RE.test(u);
 const coordsValidas = c => Array.isArray(c) && c.length >= 2 && c.slice(0, 2).every(n => typeof n === 'number' && Number.isFinite(n))
   && Math.abs(c[0]) <= 180 && Math.abs(c[1]) <= 90;
 /** Minúsculas, sin tildes y con guiones: «A Coruña» → «a-coruna». */
@@ -65,25 +67,25 @@ export function tipoInicial(search = '') {
 }
 
 // ── Índice del circuito ─────────────────────────────────────────────────────
-/** Enlace al mapa de admira.biz con el circuito y centrado en el local, si trae coordenadas. */
-export function enlaceMapa(local, circuito = CIRCUITO) {
+/** Enlace al mapa de admira.biz con el circuito, el local y la marca, como el del índice real. */
+export function enlaceMapa(local, circuito = CIRCUITO, marca = 'altadis') {
   const p = new URLSearchParams({ circuit: circuito });
-  if (local && coordsValidas(local.coords)) {
-    p.set('lng', String(local.coords[0])); p.set('lat', String(local.coords[1]));
-    if (texto(local.nombre)) p.set('label', local.nombre.trim());
-  }
+  if (local && texto(local.id)) p.set('loc', local.id);
+  if (marca) p.set('marca', marca);
   return `${MAPA_BASE}?${p}`;
 }
 
 /**
  * Locales utilizables del índice, en orden de tour. Se descarta (con su aviso) el que no tiene
  * id, el repetido y el que no abre un Xtanco (altadis-xtanco-NN). El formato sale del espacio,
- * que es lo que se abre; el mapa, del índice si es https y, si no, de las coordenadas.
+ * que es lo que se abre; el mapa, del índice si es de https://www.admira.biz/ y, si no, el
+ * enlace al mapa de ese local (?circuit=&loc=&marca=).
  */
 export function normalizarCircuito(d) {
   const avisos = [], locales = [], ids = new Set();
   const lista = d && Array.isArray(d.locales) ? d.locales : [];
   const circuito = (d && texto(d.circuito) && d.circuito) || CIRCUITO;
+  const marca = (d && texto(d.marca) && d.marca) || 'altadis';
   lista.forEach((l, i) => {
     const id = l && l.id;
     if (!texto(id) || !LOC_RE.test(id)) { avisos.push(`Local ${i + 1} sin id válido`); return; }
@@ -98,14 +100,14 @@ export function normalizarCircuito(d) {
       ciudad: texto(l.ciudad) ? l.ciudad.trim() : '', coords: coordsValidas(l.coords) ? l.coords.slice(0, 2) : null,
       tourOrder: Number.isFinite(l.tourOrder) ? l.tourOrder : null, formato, espacio: m[0], mapa: null,
     };
-    local.mapa = urlSegura(l.mapa) ? l.mapa : enlaceMapa(local, circuito);
+    local.mapa = mapaValido(l.mapa) ? l.mapa : enlaceMapa(local, circuito, marca);
     locales.push(local);
   });
   // Orden de tour; sin tourOrder, al final y en el orden del índice.
   const orden = l => (l.tourOrder == null ? Infinity : l.tourOrder);
   locales.sort((a, b) => orden(a) - orden(b));
   return {
-    circuito, cliente: (d && texto(d.cliente) && d.cliente) || 'Altadis', marca: (d && texto(d.marca) && d.marca) || 'altadis',
+    circuito, cliente: (d && texto(d.cliente) && d.cliente) || 'Altadis', marca,
     nombre: d && d.nombre, version: d && d.version, respaldo: Boolean(d && d.respaldo), locales, avisos,
   };
 }
@@ -194,15 +196,16 @@ export function resolverInicio(circuito, { loc = null, espacio = null } = {}, { 
 
 // ── Textos del local (ES/EN) ────────────────────────────────────────────────
 /**
- * «Estanco <nombre> · <ciudad>». Si el nombre ya empieza por «Estanco» no se repite, y la ciudad
- * no se repite si el nombre ya la dice («Estanco de Madrid»). Sin nombre: «Estanco de <ciudad>».
+ * Nombre del local para la ficha: el nombre real del índice TAL CUAL (en los dos idiomas: es un
+ * nombre propio, «Estanc Gran de Gràcia 61», «El Palacio del Fumador») seguido de « · <ciudad>»
+ * si no la dice ya. Sólo sin nombre propio se usa el genérico «Estanco de <ciudad>» /
+ * «Tobacconist in <ciudad>». `ciudad:false` lo da sin la ciudad (la galería la pone aparte).
  */
-export function tituloLocal(local, en = false) {
+export function tituloLocal(local, en = false, { ciudad: conCiudad = true } = {}) {
   if (!local) return '';
   const ciudad = local.ciudad || '';
-  let base = local.nombre || (en ? `${ciudad} tobacconist` : `Estanco de ${ciudad}`);
-  if (!/^(estanco|tobacconist)\b/i.test(base) && !/\btobacconist$/i.test(base)) base = en ? `Tobacconist ${base}` : `Estanco ${base}`;
-  return ciudad && !slug(base).includes(slug(ciudad)) ? `${base} · ${ciudad}` : base;
+  if (!local.nombre) return ciudad ? (en ? `Tobacconist in ${ciudad}` : `Estanco de ${ciudad}`) : (en ? 'Tobacconist' : 'Estanco');
+  return conCiudad && ciudad && !slug(local.nombre).includes(slug(ciudad)) ? `${local.nombre} · ${ciudad}` : local.nombre;
 }
 
 /** Formato del espacio de un local: cliente-NN (o null). */

@@ -21,7 +21,7 @@ const clon = o => JSON.parse(JSON.stringify(o));
 
 // Reparto previsto del encargo: tourOrder · ciudad · formato.
 const REPARTO = [[1, 'A Coruña', '07'], [2, 'Bilbao', '17'], [3, 'Barcelona', '01'], [4, 'Zaragoza', '16'], [5, 'Madrid', '08'],
-  [6, 'Valencia', '10'], [7, 'Palma', '13'], [8, 'Sevilla', '18'], [9, 'Málaga', '12'], [10, 'Granada', '09']];
+  [6, 'València', '10'], [7, 'Palma', '13'], [8, 'Sevilla', '18'], [9, 'Málaga', '12'], [10, 'Granada', '09']];
 
 // Respuestas falsas de fetch, como en espacios.test.mjs: url → { status, tipo, cuerpo }.
 function falso(mapa) {
@@ -35,12 +35,11 @@ function falso(mapa) {
   return { fetchImpl, pedidas };
 }
 
-// Un índice «real» como el del contrato, con nombres y direcciones (ficticios aquí).
-const REAL = {
-  schema: 'admira.circuito-demo/1', circuito: 'altadis_espana', cliente: 'Altadis', marca: 'altadis',
-  locales: RESPALDO.locales.map(l => ({ ...l, id: l.id, nombre: `Estanco Nº ${l.tourOrder}`, direccion: `Calle Mayor ${l.tourOrder}`,
-    mapa: `https://www.admira.biz/?circuit=altadis_espana&loc=${l.id}` })).reverse(),
-};
+// El índice real del equipo de admira.biz (el respaldo es su copia), en otro orden para probar el
+// orden de tour. GENERICO: un índice sin nombres propios ni direcciones ni enlaces.
+const { respaldo: _r, _nota: _n, ...SIN_MARCA_DE_RESPALDO } = RESPALDO;
+const REAL = { ...clon(SIN_MARCA_DE_RESPALDO), locales: clon(RESPALDO.locales).reverse() };
+const GENERICO = { ...clon(SIN_MARCA_DE_RESPALDO), locales: RESPALDO.locales.map(({ nombre, direccion, mapa, ...l }) => clon(l)) };
 
 test('URL: ?loc= and ?circuito=altadis_espana ask for the circuit; a malformed loc or another circuit do not', () => {
   assert.deepEqual(circuitoDesdeURL('?espacio=altadis-xtanco-08&loc=altadis-es-05-madrid&marca=altadis'), { loc: 'altadis-es-05-madrid', circuito: false, pide: true });
@@ -67,7 +66,7 @@ test('space type with a brand: Altadis opens on Xtanco; an explicit type or spac
   assert.equal(tipoInicial('?tipo=otro&marca=altadis'), 'xtanco');
 });
 
-test('local fallback: the planned split, 10 Xtancos in 10 cities, no real names, valid for the contract', () => {
+test('local fallback: a copy of the real index, the planned split, 10 Xtancos in 10 cities, valid for the contract', () => {
   assert.deepEqual(validarCircuito(RESPALDO), []);
   assert.equal(RESPALDO.schema, SCHEMA_CIRCUITO);
   assert.equal(RESPALDO.circuito, CIRCUITO);
@@ -76,13 +75,14 @@ test('local fallback: the planned split, 10 Xtancos in 10 cities, no real names,
   assert.deepEqual(c.avisos, []);
   assert.deepEqual(c.locales.map(l => [l.tourOrder, l.ciudad, l.formato.slice(-2)]), REPARTO);
   for (const l of c.locales) {
-    assert.equal(l.nombre, `Estanco de ${l.ciudad}`, 'no real name in the fallback');
+    assert.ok(l.nombre && l.direccion, `${l.id}: real name and address, also if admira.biz fails`);
     assert.equal(l.espacio, `altadis-xtanco-${l.formato.slice(-2)}`);
     assert.equal(l.id, `altadis-es-${String(l.tourOrder).padStart(2, '0')}-${slug(l.ciudad)}`);
     assert.ok(formatoDe(INDICE, l.formato), `${l.formato} is one of the 18`);
     const [lng, lat] = l.coords;
     assert.ok(lng > -10 && lng < 4.5 && lat > 35.5 && lat < 44, `${l.ciudad} is in Spain`);
-    assert.match(l.mapa, /^https:\/\/www\.admira\.biz\/\?circuit=altadis_espana&lng=-?[\d.]+&lat=[\d.]+&label=/);
+    assert.equal(l.mapa, `https://www.admira.biz/?circuit=altadis_espana&loc=${l.id}&marca=altadis`, 'same map link as the real index');
+    assert.equal(l.mapa, enlaceMapa(l), 'and the one built when the index brings none');
   }
   assert.equal(new Set(c.locales.map(l => l.formato)).size, 10, 'each estanco a different format');
   assert.equal(c.locales.find(l => l.id === 'altadis-es-05-madrid').espacio, 'altadis-xtanco-08', 'the Madrid link of the brief');
@@ -92,7 +92,7 @@ test('circuit order: tour order whatever the index order, wrap-around arrows, in
   const c = normalizarCircuito(REAL);
   assert.deepEqual(c.locales.map(l => l.tourOrder), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'sorted by tourOrder');
   const madrid = buscarLocal(c, 'altadis-es-05-madrid');
-  assert.equal(vecinoLocal(c, madrid.id, 1).ciudad, 'Valencia');
+  assert.equal(vecinoLocal(c, madrid.id, 1).ciudad, 'València');
   assert.equal(vecinoLocal(c, madrid.id, -1).ciudad, 'Zaragoza');
   assert.equal(vecinoLocal(c, 'altadis-es-10-granada', 1).ciudad, 'A Coruña', 'after the 10th, the 1st');
   assert.equal(vecinoLocal(c, 'altadis-es-01-a-coruna', -1).ciudad, 'Granada');
@@ -115,7 +115,7 @@ test('circuit order: tour order whatever the index order, wrap-around arrows, in
   assert.equal(n.locales.length, 11);
   assert.equal(n.locales.at(-1).id, 'sin-orden', 'without tourOrder, last');
   assert.equal(n.locales.at(-1).formato, 'cliente-03', 'the format follows the space that opens');
-  assert.equal(n.locales.at(-1).mapa, 'https://www.admira.biz/?circuit=altadis_espana', 'only https map links; else the circuit map');
+  assert.equal(n.locales.at(-1).mapa, 'https://www.admira.biz/?circuit=altadis_espana&loc=sin-orden&marca=altadis', 'a bad link becomes the map of that local');
   assert.equal(n.avisos.length, 4);
   assert.ok(n.avisos.some(a => /repetido/.test(a)) && n.avisos.some(a => /no abre un Xtanco/.test(a)) && n.avisos.some(a => /sin id/.test(a)) && n.avisos.some(a => /cliente-04/.test(a)));
   assert.match(validarCircuito({ ...clon(REAL), schema: 'otro' })[0], /admira\.circuito-demo\/1/);
@@ -145,7 +145,7 @@ test('index sources: the real one in admira.biz first; a 404 falls back to the l
   const real = await cargarCircuito({ fetchImpl: falso({ [CIRCUITO_COMPARTIDO]: { cuerpo: REAL }, [CIRCUITO_LOCAL]: { cuerpo: RESPALDO } }).fetchImpl });
   assert.equal(real.fuente, 'compartido');
   assert.equal(real.respaldo, false);
-  assert.equal(real.circuito.locales[4].nombre, 'Estanco Nº 5');
+  assert.equal(real.circuito.locales[4].nombre, 'Estanco Exp. nº 167 · Fuencarral');
   // A real one that does not follow the contract → the copy.
   const otro = await cargarCircuito({ fetchImpl: falso({ [CIRCUITO_COMPARTIDO]: { cuerpo: { ...REAL, schema: 'otro' } }, [CIRCUITO_LOCAL]: { cuerpo: RESPALDO } }).fetchImpl });
   assert.equal(otro.fuente, 'local');
@@ -181,20 +181,41 @@ test('loc: a known local opens with its format; an unknown one is ignored; the f
 test('card texts and links: «Estanco <name> · <city>», its address, the map and shareable URLs', () => {
   const real = normalizarCircuito(REAL), respaldo = normalizarCircuito(RESPALDO);
   const madrid = buscarLocal(real, 'altadis-es-05-madrid');
-  assert.equal(tituloLocal(madrid), 'Estanco Nº 5 · Madrid');
-  assert.equal(tituloLocal({ nombre: 'La Ballena', ciudad: 'Málaga' }), 'Estanco La Ballena · Málaga');
-  assert.equal(tituloLocal({ nombre: 'La Ballena', ciudad: 'Málaga' }, true), 'Tobacconist La Ballena · Málaga');
-  assert.equal(tituloLocal(buscarLocal(respaldo, 'altadis-es-05-madrid')), 'Estanco de Madrid', 'no «Madrid · Madrid»');
-  assert.equal(tituloLocal({ nombre: '', ciudad: 'Sevilla' }), 'Estanco de Sevilla');
-  assert.equal(tituloLocal({ nombre: '', ciudad: 'Sevilla' }, true), 'Sevilla tobacconist');
+  // Real names as they are, in both languages: no «Estanco Estanc…», «Estanco Tabacos Estanco…» or «Tobacconist El Palacio…».
+  const titulos = en => real.locales.map(l => tituloLocal(l, en));
+  assert.deepEqual(titulos(false), [
+    'Estanco Riego de Agua · A Coruña', 'Estanco Exp. nº 2 · Bidebarrieta · Bilbao', 'Estanc Gran de Gràcia 61 · Barcelona',
+    'Estanco nº 53 · San Ignacio de Loyola · Zaragoza', 'Estanco Exp. nº 167 · Fuencarral · Madrid', 'Estanco Del Carmen · València',
+    "Estanc de l'Olivar · Exp. nº 21 · Palma", 'El Palacio del Fumador · Sevilla', 'Tabacos Estanco Larios · Málaga',
+    'Estanco Reyes Católicos · Exp. nº 24 · Granada']);
+  assert.deepEqual(titulos(true), titulos(false), 'a proper name is not translated');
+  for (const t of titulos(false)) assert.doesNotMatch(t, /^(Estanco|Tobacconist) (Estanc|Estanco|Tabacos|El )/, t);
+  assert.equal(tituloLocal(madrid, false, { ciudad: false }), 'Estanco Exp. nº 167 · Fuencarral', 'the gallery puts the city apart');
+  assert.equal(tituloLocal({ nombre: 'Estanco de Madrid', ciudad: 'Madrid' }), 'Estanco de Madrid', 'no «Madrid · Madrid»');
+  // Only the generic name (an index without a proper name) gets «Estanco de / Tobacconist in».
+  const generico = normalizarCircuito(GENERICO);
+  assert.equal(tituloLocal(buscarLocal(generico, 'altadis-es-08-sevilla')), 'Estanco de Sevilla');
+  assert.equal(tituloLocal(buscarLocal(generico, 'altadis-es-08-sevilla'), true), 'Tobacconist in Sevilla');
+  assert.equal(tituloLocal(buscarLocal(generico, 'altadis-es-08-sevilla'), false, { ciudad: false }), 'Estanco de Sevilla');
   assert.equal(tituloLocal(null), '');
-  assert.equal(madrid.direccion, 'Calle Mayor 5');
-  assert.equal(madrid.mapa, 'https://www.admira.biz/?circuit=altadis_espana&loc=altadis-es-05-madrid', 'the map link of the index');
-  assert.equal(enlaceMapa({ nombre: 'Estanco de Madrid', coords: [-3.7038, 40.4168] }), 'https://www.admira.biz/?circuit=altadis_espana&lng=-3.7038&lat=40.4168&label=Estanco+de+Madrid');
-  assert.equal(enlaceMapa({ coords: [500, 0] }), 'https://www.admira.biz/?circuit=altadis_espana');
+  assert.equal(madrid.direccion, 'Calle de Fuencarral 2 · 28004 Madrid');
+  assert.equal(madrid.mapa, 'https://www.admira.biz/?circuit=altadis_espana&loc=altadis-es-05-madrid&marca=altadis', 'the map link of the index');
+  assert.equal(buscarLocal(generico, 'altadis-es-05-madrid').mapa, madrid.mapa, 'without a link, the same one is built');
+  assert.equal(enlaceMapa({ id: 'altadis-es-05-madrid' }), 'https://www.admira.biz/?circuit=altadis_espana&loc=altadis-es-05-madrid&marca=altadis');
+  assert.equal(enlaceMapa(null), 'https://www.admira.biz/?circuit=altadis_espana&marca=altadis');
   assert.equal(queryEspacio({ espacio: 'altadis-xtanco-08', loc: 'altadis-es-05-madrid', marca: 'altadis' }), '?espacio=altadis-xtanco-08&loc=altadis-es-05-madrid&marca=altadis');
   assert.equal(queryEspacio({ circuito: 'altadis_espana', lang: 'en' }), '?circuito=altadis_espana&lang=en');
   assert.equal(queryEspacio({ espacio: 'altadis-cafe-03', lang: 'en', auto: true }), '?espacio=altadis-cafe-03&lang=en&auto=1', 'unchanged without loc');
+});
+
+test('«Volver al mapa» only goes to https://www.admira.biz/: a link to another domain is replaced by the local map', () => {
+  const conMapa = mapa => normalizarCircuito({ ...clon(REAL), locales: [{ ...clon(RESPALDO.locales[4]), mapa }] }).locales[0].mapa;
+  const propio = 'https://www.admira.biz/?circuit=altadis_espana&loc=altadis-es-05-madrid&marca=altadis';
+  assert.equal(conMapa('https://www.admira.biz/mapa.html?circuit=altadis_espana'), 'https://www.admira.biz/mapa.html?circuit=altadis_espana', 'any admira.biz page is fine');
+  for (const ajeno of ['https://evil.example/?circuit=altadis_espana', 'https://www.admira.biz.evil.example/', 'https://admira.biz/', 'https://www.admira.biz@evil.example/',
+    'http://www.admira.biz/', '//www.admira.biz/', 'javascript:alert(1)', 'https://www.admira.biz/"><script>', null]) {
+    assert.equal(conMapa(ajeno), propio, String(ajeno));
+  }
 });
 
 test('the page: local block above the format with «Volver al mapa» ES/EN, circuit mode in the viewer, brand tokens in the CSS', () => {
