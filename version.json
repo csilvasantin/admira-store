@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r17.14:47",
-  "deployedAt": "2026-10-16T12:47:19Z",
+  "version": "v.16.10.2026.r18.15:08",
+  "deployedAt": "2026-10-16T13:08:50Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "8972464ae21ea537a2b29d50c77bf59ed6b678f7",
-  "gitShort": "8972464",
-  "gitFull": "8972464ae21ea537a2b29d50c77bf59ed6b678f7",
+  "git": "50c02bc339ad5d2720377382e025c22272e023ce",
+  "gitShort": "50c02bc",
+  "gitFull": "50c02bc339ad5d2720377382e025c22272e023ce",
   "dirty": false,
   "novedades": [
-    "Visor de centros: el mando del hilo musical y la cesta se mueven y cambian de tamaño; cada canción se quita con la papelera a su izquierda"
+    "Visor de centros: el quiosco y el iPad también se mueven y cambian de tamaño, sin perder su forma"
   ]
 }

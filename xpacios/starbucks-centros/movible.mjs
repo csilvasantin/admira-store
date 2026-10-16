@@ -5,7 +5,9 @@
 const leer = clave => { try { return JSON.parse(localStorage.getItem(clave) || 'null'); } catch { return null; } };
 const guardar = (clave, v) => { try { v ? localStorage.setItem(clave, JSON.stringify(v)) : localStorage.removeItem(clave); } catch { /* sin almacenamiento */ } };
 
-export function hacerMovible(caja, asa, { clave = null, win = globalThis } = {}) {
+// `proporcion` (ancho/alto): ventanas con forma fija (el quiosco 9:16, el iPad 4:3) cambian solo de ancho y su alto
+// lo pone la proporción. `arriba`: margen para el asa que va encima del marco.
+export function hacerMovible(caja, asa, { clave = null, win = globalThis, proporcion = 0, arriba = 0 } = {}) {
   const doc = caja.ownerDocument;
   asa.classList.add('sc-asa'); asa.title = 'Arrastra para mover · doble clic: a su sitio';
   const esquina = doc.createElement('span'); esquina.className = 'vent-esquina'; esquina.title = 'Arrastra para cambiar el tamaño';
@@ -13,9 +15,11 @@ export function hacerMovible(caja, asa, { clave = null, win = globalThis } = {})
   const limitar = (v, a, b) => Math.max(a, Math.min(b, v));
   function poner({ x, y, w, h }) {
     const vw = win.innerWidth, vh = win.innerHeight;
-    const ancho = w ? limitar(w, 260, vw - 8) : caja.getBoundingClientRect().width, alto = h ? limitar(h, 160, vh - 8) : null;
-    Object.assign(caja.style, { position: 'fixed', margin: '0', left: limitar(x, 0, vw - Math.min(ancho, 120)) + 'px', top: limitar(y, 0, vh - 40) + 'px', width: ancho + 'px' });
-    if (alto) Object.assign(caja.style, { height: alto + 'px', maxHeight: 'none' });
+    const maxAncho = proporcion ? Math.min(vw - 8, (vh - arriba - 16) * proporcion) : vw - 8;
+    const ancho = w ? limitar(w, proporcion ? 180 : 260, maxAncho) : caja.getBoundingClientRect().width, alto = !proporcion && h ? limitar(h, 160, vh - 8) : null;
+    Object.assign(caja.style, { position: 'fixed', margin: '0', left: limitar(x, 0, vw - Math.min(ancho, 120)) + 'px', top: limitar(y, arriba, vh - 40) + 'px', width: ancho + 'px' });
+    if (proporcion) Object.assign(caja.style, { height: 'auto', maxHeight: 'none' });
+    else if (alto) Object.assign(caja.style, { height: alto + 'px', maxHeight: 'none' });
     caja.classList.add('sc-movida');
   }
   function soltarSitio() {

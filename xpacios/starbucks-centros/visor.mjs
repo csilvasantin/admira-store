@@ -6,13 +6,13 @@ import { crearPanorama } from './panorama.mjs?v=sc-pano-6';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-3';
-import { crearMandoTPV } from './mando-tpv.mjs?v=sc-mando-3';
-import { hacerMovible } from './movible.mjs?v=sc-movible-1';
+import { crearMandoTPV } from './mando-tpv.mjs?v=sc-mando-4';
+import { hacerMovible } from './movible.mjs?v=sc-movible-2';
 import { crearCajaTPV, mapaPantallas } from './caja-tpv.mjs?v=sc-caja-1';
 // El mismo cliente (la misma URL con su ?v=) que el editor del mando: una sola lectura y la edición se oye al momento.
 import { contextPlaylist } from '/admira-xp/scripts/context-playlist-client.mjs?v=local-playlist-349';
 import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-3';
-import { crearKiosko } from './kiosko.mjs?v=sc-kiosko-2';
+import { crearKiosko } from './kiosko.mjs?v=sc-kiosko-3';
 import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
@@ -164,6 +164,17 @@ function pintarCesta() {
   ventanaCesta.querySelector('.sc-cesta-vacia').hidden = lineas.length > 0;
 }
 
+// La ventana del iPad (la de ipad-cola.js), como las demás: asa encima para moverla y esquina para el tamaño (4:3).
+function ipadMovible() {
+  const caja = document.querySelector('#ipadColaModal .wrap'); if (!caja) return;
+  if (!caja.dataset.movible) {
+    caja.dataset.movible = '1';
+    const asa = document.createElement('div'); asa.className = 'sc-ventana-asa'; asa.textContent = '⠿ iPad · gestión de colas'; caja.prepend(asa);
+    caja.movil = hacerMovible(caja, asa, { clave: 'sc-ipad-v1', proporcion: 4 / 3, arriba: 34 });
+  }
+  caja.movil.restaurar();
+}
+
 // Foco del mando: el TPV del centro que se ve, en el centro y de cerca; al quitarlo, la vista de antes.
 let vistaAntesDelFoco = null;
 function enfocarTPV(on) {
@@ -181,7 +192,7 @@ function enfocarTPV(on) {
 async function tocarPieza(p) {
   // Como en Paseo de Gràcia: el TPV abre su mando (escuchar, pasar canción y editar la playlist del local).
   if (p.tipo === 'tpv') { piezas.mando = piezas.mando || crearMandoTPV({ musica: piezas.tpv.musica, alEnfocar: enfocarTPV }); piezas.mando.abrir(centro ? centro.nombre : ''); }
-  else if (p.tipo === 'ipad') { if (!texturaPieza(p).userData.fuente.abrir()) aviso('El gestor de colas no está disponible ahora.'); }
+  else if (p.tipo === 'ipad') { if (!texturaPieza(p).userData.fuente.abrir()) aviso('El gestor de colas no está disponible ahora.'); else ipadMovible(); }
   else if (p.tipo === 'kiosko') texturaPieza(p).userData.fuente.abrir();
   else if (p.tipo === 'caja') abrirCesta();
   else if (p.tipo === 'eink') aviso(`${p.nombre} · ${p.titulo}`);

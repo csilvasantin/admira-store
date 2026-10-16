@@ -153,3 +153,9 @@ html.ui-limpia .sc-producto{border-color:#9dffd699}
 .sc-mando .context-playlist-editor li>button[data-playlist-remove]{order:-1;flex:0 0 32px;width:32px;min-height:32px;padding:0;font-size:0;line-height:0;display:grid;place-items:center;border-radius:8px}
 .sc-mando .context-playlist-editor li>button[data-playlist-remove]::before{content:"🗑";font-size:15px;line-height:1}
 .sc-mando .context-playlist-editor li>button[data-playlist-remove]:hover:not(:disabled){background:#7a1d1d;border-color:#ff9b9b}
+/* Quiosco e iPad (kiosko.mjs, ipad-cola.js): el asa encima del marco para moverlos; la esquina, para el tamaño. */
+.sc-ventana-asa{position:absolute;left:50%;top:-34px;transform:translateX(-50%);z-index:4;white-space:nowrap;padding:5px 14px;border-radius:999px;background:#0d1915f0;color:#eef4ef;border:1px solid #2c463c;font:600 13px system-ui,sans-serif;cursor:grab;touch-action:none;user-select:none;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.sc-ventana-asa:active{cursor:grabbing}
+.sc-kiosko-marco .vent-esquina,#ipadColaModal .wrap .vent-esquina{z-index:5;right:-6px;bottom:-6px;width:22px;height:22px;background-color:#0d1915cc;border-radius:6px}
+.sc-kiosko-marco.sc-movida{aspect-ratio:9/16}
+#ipadColaModal .wrap.sc-movida{aspect-ratio:4/3}
