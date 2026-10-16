@@ -8,9 +8,10 @@
 // hacemos con el kiosko… un botón pequeño a la izquierda de Hilo musical · con el nombre del centro»): ◎ lleva la
 // vista al TPV y aparta el mando a un lado para verlo; otra vez, vuelve donde estaba.
 import { mountMusicRemote } from '/admira-xp/scripts/music-remote.mjs?v=local-playlist-349';
+import { hacerMovible } from './movible.mjs?v=sc-movible-1';
 
 export function crearMandoTPV({ doc = document, musica, win = globalThis, alEnfocar = null } = {}) {
-  let modal = null, titulo = null, hueco = null, mando = null, foco = null, enFoco = false;
+  let modal = null, titulo = null, hueco = null, mando = null, foco = null, enFoco = false, movil = null;
   function ponerFoco(on) {
     enFoco = !!on && !!alEnfocar;
     if (modal) modal.classList.toggle('sc-mando--foco', enFoco);
@@ -29,11 +30,16 @@ export function crearMandoTPV({ doc = document, musica, win = globalThis, alEnfo
     doc.body.append(modal);
     mando = mountMusicRemote(hueco, { music: musica, win });
     mando.node.open = true;
+    // Se mueve por la cabecera y cambia de tamaño por la esquina, como las demás ventanas.
+    movil = hacerMovible(modal.querySelector('.sc-mando-caja'), modal.querySelector('header'), { clave: 'sc-mando-tpv-v1', win });
+    // Quitar cada canción: la papelera va a la izquierda del título (centros.css), con su nombre al pasar el ratón.
+    const titular = () => hueco.querySelectorAll('[data-playlist-remove]:not([title])').forEach(b => { b.title = 'Quitar de esta playlist (Stock conserva el contenido)'; });
+    new MutationObserver(titular).observe(hueco, { childList: true, subtree: true }); titular();
   }
   function abrir(local = '') {
     montar();
     titulo.textContent = '♪ Hilo musical' + (local ? ' · ' + local : ''); ponerFoco(false);
-    mando.node.open = true; mando.update();
+    mando.node.open = true; mando.update(); movil.restaurar();
     try { if (!modal.open) modal.showModal(); } catch { modal.setAttribute('open', ''); }
     return true;
   }
