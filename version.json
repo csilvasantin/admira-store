@@ -1,12 +1,12 @@
 {
   "version": "v.16.10.2026.r10.11:27",
-  "deployedAt": "2026-10-16T09:27:20Z",
+  "deployedAt": "2026-10-16T09:41:35Z",
   "deployer": "NeoMBP14",
   "machine": "MacBookProNegro14",
   "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "77d61486691a8e1c2d93268a3ed6d20ddba4432f",
-  "gitShort": "77d6148",
-  "gitFull": "77d61486691a8e1c2d93268a3ed6d20ddba4432f",
+  "git": "50d4fe37344dd408c9180d37b3a15b4d3df8c33a",
+  "gitShort": "50d4fe3",
+  "gitFull": "50d4fe37344dd408c9180d37b3a15b4d3df8c33a",
   "dirty": false,
   "novedades": [
     "Altadis 18: modo «Esquema · Realista». En los Xtanco, el gemelo se ve por defecto en un estanco modelado de verdad (Xtanco Best) con las mismas pantallas físicas del formato, sus recortes y el mismo vídeo; la ficha avisa de que la escena es inventada.",
