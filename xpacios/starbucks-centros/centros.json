@@ -387,30 +387,6 @@
             "nombre": "TPV · hilo musical",
             "esquinas": [
               [
-                2892,
-                2085
-              ],
-              [
-                2934,
-                2087
-              ],
-              [
-                2909,
-                2187
-              ],
-              [
-                2868,
-                2184
-              ]
-            ]
-          },
-          {
-            "id": "D634-IPAD",
-            "tipo": "ipad",
-            "nombre": "iPad · gestión de colas",
-            "cola": "starbucks-diagonal-634",
-            "esquinas": [
-              [
                 3171,
                 2095
               ],
@@ -425,6 +401,31 @@
               [
                 3123,
                 2217
+              ]
+            ]
+          },
+          {
+            "id": "D634-IPAD",
+            "tipo": "ipad",
+            "nombre": "iPad · gestión de colas",
+            "cola": "starbucks-diagonal-634",
+            "horizontal": true,
+            "esquinas": [
+              [
+                3471,
+                2043
+              ],
+              [
+                3598,
+                2046
+              ],
+              [
+                3581,
+                2117
+              ],
+              [
+                3448,
+                2115
               ]
             ]
           },

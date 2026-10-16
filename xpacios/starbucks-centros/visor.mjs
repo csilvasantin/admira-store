@@ -2,11 +2,11 @@
 // panorama) con las playlists reproduciéndose de verdad en sus pantallas, en 3D y en Matrix.
 // Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { crearPanorama } from './panorama.mjs?v=sc-pano-4';
+import { crearPanorama } from './panorama.mjs?v=sc-pano-5';
 import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-2';
-import { crearMandoTPV } from './mando-tpv.mjs?v=sc-mando-1';
+import { crearMandoTPV } from './mando-tpv.mjs?v=sc-mando-2';
 // El mismo cliente (la misma URL con su ?v=) que el editor del mando: una sola lectura y la edición se oye al momento.
 import { contextPlaylist } from '/admira-xp/scripts/context-playlist-client.mjs?v=local-playlist-349';
 import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-3';
@@ -72,9 +72,23 @@ function pintarPiezas(now) {
     pano.pintarPantalla(p.id, t);
   }
 }
+// Foco del mando: el TPV del centro que se ve, en el centro y de cerca; al quitarlo, la vista de antes.
+let vistaAntesDelFoco = null;
+function enfocarTPV(on) {
+  if (!enPanorama()) return null;
+  if (!on) { const v = vistaAntesDelFoco; vistaAntesDelFoco = null; return v ? pano.irA(v) : null; }
+  const tpv = ((centro && centro.panorama && centro.panorama.piezas) || []).find(x => x.tipo === 'tpv');
+  if (!tpv) return null;
+  vistaAntesDelFoco = vistaAntesDelFoco || { ...pano.vista };
+  // El centro del hueco que deja el mando apartado: a su izquierda en pantalla ancha, encima en el móvil.
+  const r = lienzo.getBoundingClientRect(), caja = piezas.mando && piezas.mando.nodo && piezas.mando.nodo.querySelector('.sc-mando-caja');
+  const c = caja ? caja.getBoundingClientRect() : null, abajo = c && c.top - r.top > r.height * 0.3 && c.left - r.left < r.width * 0.2;
+  const x = c && !abajo ? Math.max(0.15, (c.left - r.left) / 2 / r.width) : 0.5, y = abajo ? Math.max(0.2, (c.top - r.top) / 2 / r.height) : 0.5;
+  return pano.enfocar(tpv.id, { x, y });
+}
 async function tocarPieza(p) {
   // Como en Paseo de Gràcia: el TPV abre su mando (escuchar, pasar canción y editar la playlist del local).
-  if (p.tipo === 'tpv') { piezas.mando = piezas.mando || crearMandoTPV({ musica: piezas.tpv.musica }); piezas.mando.abrir(centro ? centro.nombre : ''); }
+  if (p.tipo === 'tpv') { piezas.mando = piezas.mando || crearMandoTPV({ musica: piezas.tpv.musica, alEnfocar: enfocarTPV }); piezas.mando.abrir(centro ? centro.nombre : ''); }
   else if (p.tipo === 'ipad') { if (!texturaPieza(p).userData.fuente.abrir()) aviso('El gestor de colas no está disponible ahora.'); }
   else if (p.tipo === 'kiosko') texturaPieza(p).userData.fuente.abrir();
   else if (p.tipo === 'eink') aviso(`${p.nombre} · ${p.titulo}`);
@@ -532,7 +546,7 @@ document.addEventListener('keydown', e => {
 window.__starbucksCentros = {
   get centro() { return centro && centro.id; }, get modo() { return modo; },
   get panorama() { return enPanorama() ? { cargada: pano.cargada, vista: { ...pano.vista } } : null; },
-  get piezas() { return { tpv: piezas.tpv && { sonando: piezas.tpv.sonando, titulo: piezas.tpv.titulo, pistas: piezas.tpv.pistas, propia: piezas.tpv.propia, mando: !!(piezas.mando && piezas.mando.abierto), ambito: contextPlaylist('music').state().scope }, ipad: piezas.ipad && { pedidos: piezas.ipad.pedidos, sala: globalThis.XpaceIpadCola && globalThis.XpaceIpadCola.sala(), gestor: !!globalThis.XpaceIpadCola }, kiosko: piezas.kiosko && { sala: piezas.kiosko.sala, url: piezas.kiosko.url(), abierto: piezas.kiosko.abierto } }; },
+  get piezas() { return { tpv: piezas.tpv && { sonando: piezas.tpv.sonando, titulo: piezas.tpv.titulo, pistas: piezas.tpv.pistas, propia: piezas.tpv.propia, mando: !!(piezas.mando && piezas.mando.abierto), foco: !!(piezas.mando && piezas.mando.enFoco), ambito: contextPlaylist('music').state().scope }, ipad: piezas.ipad && { pedidos: piezas.ipad.pedidos, sala: globalThis.XpaceIpadCola && globalThis.XpaceIpadCola.sala(), gestor: !!globalThis.XpaceIpadCola }, kiosko: piezas.kiosko && { sala: piezas.kiosko.sala, url: piezas.kiosko.url(), abierto: piezas.kiosko.abierto } }; },
   tocarPieza: id => { const p = piezaMostrador(id); return p ? tocarPieza(p) : null; }, get programa() { return programaActivo && programaActivo.id; },
   estado: () => rep && rep.estado(),
   muestras: () => pantallasVisor.map(p => { const m = rep && rep.medioDe(p.id); return m && { pantalla: p.id, src: m.src, t: m.video.currentTime, listo: m.video.readyState, pausado: m.video.paused, ritmo: m.video.playbackRate, imagen: p.contenido.material.map === p.cargando ? 'cargando' : p.contenido.material.map instanceof T.VideoTexture ? (p.contenido.material.map.userData.src === m.src ? 'video' : 'video-anterior') : 'fallo', deriva: m.deriva, ajuste: p.ajuste && p.ajuste.modo, medio: p.ajuste && p.ajuste.medio }; }),
