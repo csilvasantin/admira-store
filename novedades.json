@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r11.12:42": [
+    "Altadis 18: circuito «Starbucks México · 10 cafeterías». Con ?loc=alsea-mx-… la ficha del gemelo dice la cafetería, su ciudad y su dirección, con «Volver al mapa»; ← / → y el recorrido automático recorren sólo los 10 Starbucks, cada uno con su formato, y la galería ?circuito=alsea_mexico&marca=starbucks los enseña con la marca Starbucks.",
+    "El modo circuito tiene ahora un registro de circuitos (Altadis España y Starbucks México), cada uno con su índice de admira.biz y su copia local de respaldo. Altadis España sigue igual, con su modo Realista."
+  ],
   "v.16.10.2026.r10.11:27": [
     "Altadis 18: modo «Esquema · Realista». En los Xtanco, el gemelo se ve por defecto en un estanco modelado de verdad (Xtanco Best) con las mismas pantallas físicas del formato, sus recortes y el mismo vídeo; la ficha avisa de que la escena es inventada.",
     "Los 10 estancos del circuito Altadis España tienen cada uno su acabado (pared, suelo y luz cálida o fría). El modelo se descarga una vez; si falla o tarda más de 12 s, el gemelo cae al esquema de siempre sin error. Starbucks sigue en esquema."
