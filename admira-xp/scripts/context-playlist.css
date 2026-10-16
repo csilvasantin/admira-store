@@ -13,3 +13,6 @@
 .context-surface-canvas[hidden]{display:none!important}
 .context-playlist-editor li.is-new{background:#00704a66;transition:background .6s}
 .context-playlist-editor [data-in-playlist] button{opacity:.75}
+.context-playlist-thumb{flex:0 0 44px;width:44px;height:44px;border-radius:6px;overflow:hidden;display:grid;place-items:center;background:#12392e;color:#9dffd6;font-size:18px;border:1px solid #84d8c644}
+.context-playlist-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.context-playlist-editor>div>div{display:flex;flex-wrap:wrap;align-items:center;gap:6px}

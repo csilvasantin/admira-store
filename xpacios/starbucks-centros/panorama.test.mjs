@@ -280,3 +280,12 @@ test('el editor de la playlist dice qué canciones ya están y enseña la que se
   assert.match(ed, /if\(operation==='add'\)showTrack\(id\);/, 'tras añadir, la lista baja hasta la nueva');
   assert.match(readFileSync(aqui('../../admira-xp/scripts/context-playlist.css'), 'utf8'), /\.context-playlist-editor li\.is-new\{/);
 });
+
+test('cada canción de la playlist y de la búsqueda lleva su previo: la carátula de Stock o una nota si es solo audio', () => {
+  const ed = readFileSync(aqui('../../admira-xp/scripts/context-playlist-editor.mjs'), 'utf8');
+  assert.match(ed, /function preview\(item\)\{const box=make\('span'\);box\.className='context-playlist-thumb';/);
+  assert.match(ed, /if\(item\.cover\)\{const img=make\('img'\);img\.src=item\.cover;/);
+  assert.match(ed, /row\.append\(preview\(track\)\);/, 'en la lista');
+  assert.match(ed, /row\.append\(preview\(item\),name,add,link\);/, 'en la búsqueda');
+  assert.match(readFileSync(aqui('../../admira-xp/scripts/context-playlist.css'), 'utf8'), /\.context-playlist-thumb img\{width:100%;height:100%;object-fit:cover/);
+});
