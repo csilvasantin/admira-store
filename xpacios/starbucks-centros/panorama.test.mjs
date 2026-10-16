@@ -253,3 +253,14 @@ test('la caja de Diagonal: el muffin y el agua de la vitrina a la cesta, con el 
   c.vaciar(); assert.deepEqual(c.cesta.lines, []); assert.equal(c.quedanAgua, 13);
   delete globalThis.Image;
 });
+
+test('el mando y la cesta son ventanas: se mueven por la cabecera, cambian de tamaño y la playlist se quita con la papelera a la izquierda', () => {
+  const movible = readFileSync(aqui('./movible.mjs'), 'utf8'), mando = readFileSync(aqui('./mando-tpv.mjs'), 'utf8'), css = readFileSync(aqui('./centros.css'), 'utf8');
+  assert.match(movible, /asa\.addEventListener\('pointerdown'/, 'arrastrar por la cabecera');
+  assert.match(movible, /esquina\.className = 'vent-esquina'/, 'la esquina para cambiar el tamaño (también con el dedo)');
+  assert.match(movible, /asa\.addEventListener\('dblclick'/, 'doble clic: a su sitio');
+  assert.match(mando, /hacerMovible\(modal\.querySelector\('\.sc-mando-caja'\), modal\.querySelector\('header'\), \{ clave: 'sc-mando-tpv-v1'/);
+  assert.match(visor, /hacerMovible\(ventanaCesta\.querySelector\('\.sc-mando-caja'\), ventanaCesta\.querySelector\('header'\), \{ clave: 'sc-cesta-v1' \}\)/);
+  assert.match(css, /\.sc-mando \.context-playlist-editor li>button\[data-playlist-remove\]\{order:-1;/, 'la papelera, a la izquierda de cada canción');
+  assert.match(css, /button\[data-playlist-remove\]::before\{content:"🗑"/);
+});

@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r16.14:29",
-  "deployedAt": "2026-10-16T12:29:33Z",
+  "version": "v.16.10.2026.r17.14:47",
+  "deployedAt": "2026-10-16T12:47:19Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "ad754b13d3479739a6426e3bc1bfaa74975d211e",
-  "gitShort": "ad754b1",
-  "gitFull": "ad754b13d3479739a6426e3bc1bfaa74975d211e",
+  "git": "8972464ae21ea537a2b29d50c77bf59ed6b678f7",
+  "gitShort": "8972464",
+  "gitFull": "8972464ae21ea537a2b29d50c77bf59ed6b678f7",
   "dirty": false,
   "novedades": [
-    "/demo ifthendothat: dos botellas de agua, una con la voz Good y otra con ElevenLabs (Sara Martín)"
+    "Visor de centros: el mando del hilo musical y la cesta se mueven y cambian de tamaño; cada canción se quita con la papelera a su izquierda"
   ]
 }
