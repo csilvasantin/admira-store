@@ -51,3 +51,19 @@ test('composer wiring: water event and text reactions are offered; demo 14 deliv
  const reg=JSON.parse(fs.readFileSync(new URL('../admira-xp/demos.json',import.meta.url),'utf8')),d=reg.demos.find(x=>x.id==='ifthendothat');
  assert.ok(d.steps.some(s=>s.water==='deliver'));assert.ok(d.cleanup.some(s=>s.water==='giveback'));
 });
+test('the water thanks takes turns: Good (free Mónica file) then ElevenLabs Sara Martín, and says which one is playing',async()=>{
+ const a=defaultWaterRule().do[1];
+ const [good]=voicePlan(a,'es',0),[eleven]=voicePlan(a,'es',1),[again]=voicePlan(a,'es',2);
+ assert.match(good.url,/agua-proximidad-es\.m4a$/);assert.equal(good.calidad,'Good · voz gratuita');
+ assert.match(eleven.url,/agua-proximidad-es-elevenlabs\.m4a$/);assert.equal(eleven.calidad,'ElevenLabs · Sara Martín');assert.match(eleven.voice,/ElevenLabs · Sara Martín/);
+ assert.equal(again.url,good.url,'and back to Good');
+ assert.ok(fs.statSync(new URL('../admira-xp/assets/audio/agua-proximidad-es-elevenlabs.m4a',import.meta.url)).size>20000,'the ElevenLabs file is in the repo: playing it spends no credits');
+ // Without the twin's announcement channel (the venues viewer), the file plays as audio and holds the music.
+ const played=[],held=[];class FakeAudio{constructor(u){this.u=u;played.push(u.split('/').pop());}play(){setTimeout(()=>this.onended(),5);return Promise.resolve();}pause(){}}
+ const win={document:{documentElement:{lang:'es'}},Audio:FakeAudio,XpaceMusicHold:()=>{held.push('hold');return ()=>held.push('release');}};
+ const shows=[];const indicator={show:p=>shows.push(p.calidad),hide(){}};
+ await createVoiceSpeaker(a,{win,indicator}).play();await createVoiceSpeaker(a,{win,indicator}).play();
+ assert.equal(played.length,2);assert.notEqual(played[0],played[1],'one of each voice');
+ assert.deepEqual(new Set(played),new Set(['agua-proximidad-es.m4a','agua-proximidad-es-elevenlabs.m4a']));
+ assert.deepEqual(held,['hold','release','hold','release']);assert.equal(new Set(shows).size,2);
+});

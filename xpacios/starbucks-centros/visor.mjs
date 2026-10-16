@@ -39,6 +39,8 @@ const enPanorama = () => modo === 'matrix' && !!(centro && centro.panorama);
 const OPCIONES_HILO = { lista: contextPlaylist('music') };
 const piezas = { tpv: null, ipad: null, kiosko: null, caja: null, texturas: new Map(), ultima: 0 };
 const hiloDelTPV = () => (piezas.tpv = piezas.tpv || crearHiloTPV(OPCIONES_HILO));
+// Las locuciones de las reglas (el «gracias» del agua) callan el hilo musical mientras suenan, como en el gemelo.
+window.XpaceMusicHold = window.XpaceMusicHold || (() => (piezas.tpv ? piezas.tpv.musica.suppress() : () => {}));
 const piezaMostrador = id => ((centro && centro.panorama && centro.panorama.piezas) || []).find(p => p.id === id) || null;
 function texturaPieza(p) {
   let t = piezas.texturas.get(p.id);
