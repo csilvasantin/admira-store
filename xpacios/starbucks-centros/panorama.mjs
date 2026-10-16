@@ -26,7 +26,7 @@ export function crearPanorama(T, renderer) {
   const cargador = new T.TextureLoader();
   cargador.setCrossOrigin('anonymous');
   const vista = { yaw: 0, pitch: 0, fov: FOV_MAX };
-  let actual = null, cargada = null;
+  let actual = null, cargada = null, base = null;
   // Las pantallas del local sobre la foto (Carlos: «las pantallas no están emitiendo»): un cuadro por pantalla,
   // hijo de la esfera (gira con ella), con el vídeo de su playlist. Esquinas en píxeles de la foto (conf.base).
   const grupo = new T.Group(); esfera.add(grupo);
@@ -73,7 +73,7 @@ export function crearPanorama(T, renderer) {
     // El centro de la foto queda delante (yaw 0).
     esfera.rotation.set(rad(Number(v.sphereX) || 0), -Math.PI / 2 - rad(Number(v.sphereY) || 0), 0);
     // Las pantallas del mural y las piezas del mostrador (TPV con el hilo musical, iPad con la cola).
-    ponerPantallas([...(conf.pantallas || []), ...(conf.piezas || [])], conf.base);
+    ponerPantallas([...(conf.pantallas || []), ...(conf.piezas || [])], conf.base); base = conf.base || null;
     for (const src of fuentesPanorama(conf, renderer.capabilities.maxTextureSize || 4096)) {
       try {
         const t = await textura(src);
@@ -109,6 +109,19 @@ export function crearPanorama(T, renderer) {
     const alzado = Math.atan((0.5 - limitar(y, 0, 1)) * 2 * medio) * 180 / Math.PI;
     return irA({ yaw: Math.atan2(c.x, -c.z) * 180 / Math.PI - lado, pitch: Math.asin(limitar(c.y, -1, 1)) * 180 / Math.PI - alzado, fov }, dur);
   }
+  // Encuadrar varios puntos de la foto (píxeles de conf.base) a la vez: el producto que se coge y la caja.
+  function encuadrar(puntos, { margen = 1.3, dur = 600 } = {}) {
+    if (!base || !puntos.length) return null;
+    esfera.updateMatrixWorld(true);
+    const dirs = puntos.map(([x, y]) => new T.Vector3(...direccion(x, y, base, 1)).applyMatrix4(esfera.matrixWorld).normalize());
+    const c = dirs.reduce((a, v) => a.add(v.clone()), new T.Vector3()).normalize();
+    const yawDe = v => Math.atan2(v.x, -v.z) * 180 / Math.PI, pitchDe = v => Math.asin(limitar(v.y, -1, 1)) * 180 / Math.PI;
+    const cy = yawDe(c), cp = pitchDe(c);
+    let alto = 0, ancho = 0;
+    for (const v of dirs) { const dy = ((yawDe(v) - cy) % 360 + 540) % 360 - 180; ancho = Math.max(ancho, Math.abs(dy)); alto = Math.max(alto, Math.abs(pitchDe(v) - cp)); }
+    const vAncho = 2 * Math.atan(Math.tan(rad(ancho * margen)) / Math.max(0.3, camara.aspect)) * 180 / Math.PI;
+    return irA({ yaw: cy, pitch: cp, fov: limitar(Math.max(2 * alto * margen, vAncho, FOV_MIN), FOV_MIN, FOV_MAX) }, dur);
+  }
   function avanzar(now = performance.now()) {
     if (!anim) return;
     const t = Math.min(1, (now - anim.t0) / anim.dur), e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -127,7 +140,15 @@ export function crearPanorama(T, renderer) {
     get cargada() { return cargada; },
     cargar,
     // Arrastrar: la foto sigue al dedo (los grados por píxel dependen del zoom).
-    enfocar, irA,
+    enfocar, irA, encuadrar,
+    // Dónde cae en pantalla un punto de la foto (píxeles de conf.base): fracciones 0…1 del lienzo, o null detrás.
+    proyectar(x, y) {
+      if (!base) return null;
+      mirar(); esfera.updateMatrixWorld(true);
+      const v = new T.Vector3(...direccion(x, y, base, 99)).applyMatrix4(esfera.matrixWorld), d = new T.Vector3();
+      camara.getWorldDirection(d); if (v.dot(d) <= 0) return null;
+      const n = v.project(camara); return { x: (n.x + 1) / 2, y: (1 - n.y) / 2 };
+    },
     get enMovimiento() { return !!anim; },
     girar(dx, dy, alto) {
       anim = null;

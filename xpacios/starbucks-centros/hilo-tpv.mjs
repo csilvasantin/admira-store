@@ -15,11 +15,11 @@ export function lineas(titulo, max = 20) {
   if (l) out.push(l); return out.slice(0, 3);
 }
 
-export function crearHiloTPV({ doc = document, fetchImpl = (...a) => fetch(...a), origenes = [API, 'https://www.admira.store' + API], lista = null } = {}) {
+export function crearHiloTPV({ doc = document, fetchImpl = (...a) => fetch(...a), origenes = [API, 'https://www.admira.store' + API], lista = null, abreMando = !!lista } = {}) {
   const lienzo = doc.createElement('canvas'); lienzo.width = ANCHO; lienzo.height = ALTO;
   const ctx = lienzo.getContext('2d');
   const audio = new Audio(); audio.preload = 'none'; audio.crossOrigin = 'anonymous'; audio.volume = 0.5;
-  let pistas = [], i = 0, sonando = false, portada = null, portadaDe = '', error = '', propia = false;
+  let pistas = [], i = 0, sonando = false, portada = null, portadaDe = '', error = '', propia = false, callado = 0;
   const oyentes = new Set();
   async function cargar() {
     for (const url of origenes) {
@@ -42,7 +42,7 @@ export function crearHiloTPV({ doc = document, fetchImpl = (...a) => fetch(...a)
   function poner() { const t = actual(); if (!t) return; audio.src = t.url; prepararPortada(); }
   function estado() {
     const t = actual();
-    return { title: t ? t.title : '', url: t ? t.url : '', started: sonando, muted: false, suppressed: false, playing: sonando && !audio.paused, position: audio.currentTime || 0, propia, pistas: pistas.length };
+    return { title: t ? t.title : '', url: t ? t.url : '', started: sonando, muted: false, suppressed: callado > 0, playing: sonando && !audio.paused, position: audio.currentTime || 0, propia, pistas: pistas.length };
   }
   function emitir() { const e = estado(); for (const f of oyentes) { try { f(e); } catch { /* otro oyente */ } } }
   async function reproducir() { try { await audio.play(); sonando = true; } catch { sonando = false; } emitir(); return sonando; }
@@ -78,7 +78,7 @@ export function crearHiloTPV({ doc = document, fetchImpl = (...a) => fetch(...a)
     const ls = t ? lineas(t.title) : [error ? 'Hilo musical no disponible' : 'Cargando la playlist…'];
     ls.forEach((l, n) => ctx.fillText(l, 44, ALTO - 220 + n * 64));
     ctx.fillStyle = '#d7f5e3'; ctx.font = '500 30px system-ui, sans-serif';
-    ctx.fillText(lista ? 'Toca para abrir el mando' : sonando ? 'Toca para silenciar' : 'Toca para escuchar', 44, ALTO - 40);
+    ctx.fillText(abreMando ? 'Toca para abrir el mando' : sonando ? 'Toca para silenciar' : 'Toca para escuchar', 44, ALTO - 40);
     if (sonando && audio.duration > 0) { ctx.fillStyle = '#00e293'; ctx.fillRect(0, ALTO - 10, ANCHO * (audio.currentTime / audio.duration), 10); }
   }
 
@@ -96,6 +96,11 @@ export function crearHiloTPV({ doc = document, fetchImpl = (...a) => fetch(...a)
     async jump(url) { const n = pistas.findIndex(t => t.url === url); if (n < 0) throw Error('Unknown track'); i = n; poner(); return reproducir().then(estado); },
     next() { if (!pistas.length) return false; i = (i + 1) % pistas.length; poner(); void reproducir(); return true; },
     toggle() { void alternar(); },
+    // Una reacción del IF·THEN·DO THAT con sonido calla el hilo mientras dura (como en Paseo de Gràcia).
+    suppress() {
+      callado++; audio.pause(); emitir(); let hecho = false;
+      return () => { if (hecho) return; hecho = true; callado = Math.max(0, callado - 1); if (!callado && sonando) audio.play().catch(() => { sonando = false; }); emitir(); };
+    },
   };
   return {
     lienzo, listo, pintar, musica,

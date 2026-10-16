@@ -430,6 +430,29 @@
             ]
           },
           {
+            "id": "D634-CAJA",
+            "tipo": "caja",
+            "nombre": "TPV · cesta e IF·THEN·DO THAT",
+            "esquinas": [
+              [
+                2892,
+                2085
+              ],
+              [
+                2934,
+                2087
+              ],
+              [
+                2909,
+                2187
+              ],
+              [
+                2868,
+                2184
+              ]
+            ]
+          },
+          {
             "id": "D634-KIOSKO",
             "tipo": "kiosko",
             "nombre": "Quiosco de pedidos",
@@ -550,6 +573,52 @@
               [
                 95,
                 2570
+              ]
+            ]
+          }
+        ],
+        "productos": [
+          {
+            "id": "muffin",
+            "nombre": "Muffin",
+            "esquinas": [
+              [
+                3817,
+                2198
+              ],
+              [
+                3870,
+                2198
+              ],
+              [
+                3870,
+                2252
+              ],
+              [
+                3817,
+                2252
+              ]
+            ]
+          },
+          {
+            "id": "water",
+            "nombre": "Agua · Solán de Cabras",
+            "esquinas": [
+              [
+                3330,
+                2457
+              ],
+              [
+                3437,
+                2457
+              ],
+              [
+                3437,
+                2580
+              ],
+              [
+                3330,
+                2580
               ]
             ]
           }

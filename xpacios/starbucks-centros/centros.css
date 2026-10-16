@@ -129,3 +129,17 @@ html.ui-limpia #sc .vent,html.ui-limpia #sc .vent-dock{display:none!important}
   .sc-mando.sc-mando--foco{justify-content:center;align-items:flex-end;padding:8px}
   .sc-mando.sc-mando--foco .sc-mando-caja{width:100%;max-height:42vh}
 }
+/* La caja (caja-tpv.mjs): el muffin y el agua de la vitrina se cogen de la foto y se sueltan en el TPV de la cesta. */
+.sc-productos{position:absolute;inset:0;pointer-events:none;z-index:3}
+.sc-producto{position:absolute;pointer-events:auto;border:2px dashed #9dffd6cc;border-radius:10px;background:transparent;cursor:grab;touch-action:none;padding:0}
+.sc-producto::after{content:attr(data-icono);position:absolute;top:-12px;left:-12px;width:24px;height:24px;border-radius:50%;background:#00704a;color:#fff;font:14px/24px system-ui,sans-serif;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.sc-producto:hover,.sc-producto:focus-visible{border-color:#9dffd6;background:#00704a33;box-shadow:0 0 0 3px #00704a55}
+.sc-producto[hidden]{display:none}
+.sc-producto-fantasma{position:fixed;z-index:2147483000;width:86px;height:86px;object-fit:contain;transform:translate(-50%,-60%) rotate(-6deg);pointer-events:none;filter:drop-shadow(0 8px 14px rgba(0,0,0,.45));transition:transform .12s}
+.sc-producto-fantasma.sobre-caja{transform:translate(-50%,-60%) scale(1.15);filter:drop-shadow(0 0 12px #00e293)}
+.sc-cesta-lineas{list-style:none;margin:8px 0;padding:0}
+.sc-cesta-lineas li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #2c463c}
+.sc-cesta-lineas button,.sc-cesta .music-remote-controls button{font:inherit;min-height:32px;border:1px solid #8dcab18c;border-radius:6px;background:#12392e;color:#fff;padding:4px 10px;cursor:pointer}
+.sc-cesta .music-remote-controls{display:flex;gap:6px;margin:8px 0}.sc-cesta .music-remote-controls button{flex:1}
+.sc-cesta-vacia,.sc-cesta-nota{margin:6px 0;color:#b5d1c7;font-size:12px}
+html.ui-limpia .sc-producto{border-color:#9dffd699}
