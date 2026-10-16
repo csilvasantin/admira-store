@@ -12,19 +12,27 @@ import { escenaDesdePlano, vistaPuerta, round } from '../gran-de-gracia-51/plano
 import { crearEscena3D } from '../gran-de-gracia-51/escena3d.mjs?v=gdg51-7';
 import {
   cargarIndice, cargarPlanoEspacio, cargarManifiesto, fuentesManifiesto, tituloCampana, conVersion, elegirContenido, posterDe,
-  destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, medidaFisica,
+  destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, formatoDe, medidaFisica,
   textoMontaje, textoPared, textoZona, textoEntrega,
-  STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, dos,
-} from './espacios.mjs?v=a18-4';
-import { uvsFormato } from './recorte.mjs?v=a18-4';
-import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-4';
-import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles } from './vista.mjs?v=a18-4';
+  STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, ESPACIO_RE, dos,
+} from './espacios.mjs?v=a18-5';
+import { uvsFormato } from './recorte.mjs?v=a18-5';
+import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-5';
+import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles } from './vista.mjs?v=a18-5';
+import {
+  circuitoDesdeURL, marcaDesdeURL, tipoInicial, cargarCircuito, buscarLocal, resolverInicio, vecinoLocal, localDeEspacio,
+  tituloLocal, formatoDeLocal, CIRCUITO,
+} from './circuito.mjs?v=a18-5';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const pedido = destinoDesdeURL(location.search);
-const st = { lang: pedido.lang, tipo: pedido.tipo, indice: null, fuenteIndice: null, manifiestos: {}, fuentesMan: {},
-  actual: null, carga: null, auto: false, autoTimer: null, token: 0 };
+// Circuito Altadis España (?loc=, ?circuito=altadis_espana) y marca blanca (?marca=, la aplica el shell).
+const pedidoCircuito = circuitoDesdeURL(location.search);
+const MARCA = marcaDesdeURL(location.search);
+const st = { lang: pedido.lang, tipo: tipoInicial(location.search), indice: null, fuenteIndice: null, manifiestos: {}, fuentesMan: {},
+  actual: null, carga: null, auto: false, autoTimer: null, token: 0,
+  circuito: null, fuenteCircuito: null, enCircuito: false, local: null };
 const t = (es, en) => (st.lang === 'en' ? en : es);
 const EN = () => st.lang === 'en';
 // Las notas internas del Arquitecto (avisos, sincronía) no son para el cliente: sólo con ?notas=1.
@@ -56,6 +64,8 @@ function aplicarTextos() {
 async function arrancar() {
   aplicarTextos();
   status(t('Leyendo los 18 formatos…', 'Reading the 18 formats…'));
+  // El índice del circuito sólo si la URL lo pide; va a la vez que el de formatos (sin loc, nada nuevo).
+  const circuito = pedidoCircuito.pide ? cargarCircuito().catch(e => ({ error: e })) : null;
   try {
     const r = await cargarIndice({ memoria: caidos });
     st.indice = r.datos; st.fuenteIndice = r;
@@ -65,13 +75,15 @@ async function arrancar() {
   const contenido = Promise.all(TIPOS.map(tipo => cargarManifiesto(tipo)
     .then(r => { st.manifiestos[tipo] = r.datos; st.fuentesMan[tipo] = r; })
     .catch(e => { st.fuentesMan[tipo] = { error: e.fallos?.[0]?.error || e.message, fallos: e.fallos || [] }; })));
+  const inicio = circuito ? prepararCircuito(await circuito) : null;
   pintarGaleria();
   pintarFuentes();
   status('');
   await Promise.race([contenido, new Promise(r => setTimeout(r, 1500))]);
   pintarGaleria(); pintarFuentes();
   contenido.then(() => { pintarGaleria(); pintarFuentes(); if (st.actual && medio?.tipo === 'placeholder' && manifiestoDe(st.actual.tipo)) ponerContenido(st.token, { suave: true }); });
-  if (pedido.formato) abrir(pedido.formato, pedido.tipo);
+  if (inicio && inicio.espacio) abrirLocal(inicio.local, inicio.espacio);
+  else if (pedido.formato && !st.enCircuito) abrir(pedido.formato, pedido.tipo);
   if (pedido.auto) alternarRecorrido(true);
   raiz.dataset.listo = '1';
 }
@@ -81,12 +93,67 @@ function pintarFuentes() {
   const fi = st.fuenteIndice, fm = st.fuentesMan[st.tipo], campana = tituloCampana(manifiestoDe(st.tipo), st.lang);
   const cont = !fm ? '' : fm.error ? t('animación de cada formato', 'an animation of each format') : campana ? `«${campana}»` : t('vídeo adaptado a cada formato', 'video adapted to each format');
   $('fuentes').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${st.indice?.version || ''}${cont ? ` · ${t('Contenido', 'Content')}: ${cont}` : ''}`;
-  $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`), fm?.url || (fm?.error ? `${fuentesManifiesto(st.tipo).map(x => x.url).join(' · ')} (${fm.error})` : '')].filter(Boolean).join('\n');
+  const fc = st.enCircuito ? st.fuenteCircuito : null;
+  $('fuentes').title = [fi?.url, ...(fi?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`), fm?.url || (fm?.error ? `${fuentesManifiesto(st.tipo).map(x => x.url).join(' · ')} (${fm.error})` : ''),
+    fc?.url ? `${t('Circuito', 'Circuit')}: ${fc.url}` : '', ...(fc?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`)].filter(Boolean).join('\n');
+}
+
+// ── Circuito Altadis España: 10 estancos, cada uno con su formato ──
+// Se entra con un ?loc= del índice o con ?circuito=altadis_espana. Un loc desconocido se ignora:
+// la página queda como sin loc (y el loc se deja en la URL, por si es de otra cosa).
+function prepararCircuito(r) {
+  st.fuenteCircuito = r && !r.error ? r : { error: r?.error?.message, fallos: r?.error?.fallos || [] };
+  if (!r || r.error || !r.circuito.locales.length) return null;
+  const inicio = resolverInicio(r.circuito, { loc: pedidoCircuito.loc, espacio: pedido.espacio }, { flexible: r.respaldo });
+  if (!inicio.local && !pedidoCircuito.circuito) return null;
+  st.circuito = r.circuito;
+  // El espacio de la URL manda para su local (viene del mapa): el recorrido lo respeta.
+  if (inicio.corregido) st.circuito = { ...st.circuito, locales: st.circuito.locales.map(l => (l.id === inicio.origen ? inicio.local : l)) };
+  st.enCircuito = true; st.tipo = 'xtanco';
+  textosCircuito(true);
+  return inicio.espacio ? inicio : null;
+}
+
+// Cabecera de la galería en modo circuito (y la de siempre al salir).
+const CABECERA = ['galeria-eyebrow', 'galeria-h1', 'galeria-lead2'];
+const cabeceraOriginal = Object.fromEntries(CABECERA.map(id => [id, { ...$(id).dataset }]));
+function textosCircuito(activo) {
+  raiz.toggleAttribute('data-circuito', activo);
+  for (const b of document.querySelectorAll('[data-salir-circuito]')) b.hidden = !activo;
+  const n = st.circuito?.locales.length || 0, cliente = st.circuito?.cliente || 'Altadis';
+  const nuevos = {
+    'galeria-eyebrow': [`${cliente.toUpperCase()} ESPAÑA · CIRCUITO · GEMELOS 3D`, `${cliente.toUpperCase()} SPAIN · CIRCUIT · 3D TWINS`],
+    'galeria-h1': [`${cliente} España · ${n} Xtancos`, `${cliente} Spain · ${n} Xtancos`],
+    'galeria-lead2': [`${n} estancos en ${n} ciudades, cada uno con un formato de pantalla de ${cliente} y su contenido. Elige uno para verlo en 3D; ← y → los recorren en el orden del circuito.`,
+      `${n} tobacconists in ${n} cities, each one with a ${cliente} screen format and its content. Pick one to see it in 3D; ← and → follow the circuit order.`],
+  };
+  for (const id of CABECERA) Object.assign($(id).dataset, activo ? { es: nuevos[id][0], en: nuevos[id][1] } : cabeceraOriginal[id]);
+  aplicarTextos();
+}
+
+/** Sale del circuito (p. ej. para ver un Starbucks): vuelven los 18 formatos y la URL pierde loc y circuito. */
+function salirCircuito() {
+  if (!st.enCircuito) return;
+  st.enCircuito = false; st.local = null;
+  textosCircuito(false);
+  const u = new URL(location.href);
+  u.searchParams.delete('loc'); u.searchParams.delete('circuito');
+  history.replaceState(null, '', u);
+  pintarGaleria(); pintarFuentes();
+  if (st.actual) pintarFichaBasica();
+}
+
+// Abre el gemelo de un local del circuito con su formato (o el espacio que dijo la URL).
+function abrirLocal(local, espacio = local && local.espacio) {
+  const m = ESPACIO_RE.exec(espacio || '');
+  if (!m) return;
+  abrir(`cliente-${m[2]}`, m[1], { local });
 }
 
 // ── Galería ──
 function pintarGaleria() {
   if (!st.indice) return;
+  if (st.enCircuito) return pintarGaleriaCircuito();
   const lista = formatosOrdenados(st.indice);
   $('galeria-titulo').textContent = t(`${lista.length} espacios tipo · uno por formato de Altadis`, `${lista.length} model spaces · one per Altadis format`);
   const html = lista.map(f => {
@@ -97,24 +164,47 @@ function pintarGaleria() {
     const uso = f.uso ? (f.uso[st.lang] || f.uso.es || '') : '';
     // El esquema del formato siempre está debajo; el póster del vídeo lo tapa cuando ha cargado. Una
     // tarjeta nunca se queda vacía (póster lento, caído o sin manifiesto).
-    return `<li><a class="tarjeta" href="${esc(queryEspacio({ espacio: id, lang: st.lang }))}" data-formato="${esc(f.formato)}" aria-current="${st.actual?.formato.formato === f.formato}">` +
+    return `<li><a class="tarjeta" href="${esc(queryEspacio({ espacio: id, lang: st.lang, marca: MARCA }))}" data-formato="${esc(f.formato)}" aria-current="${st.actual?.formato.formato === f.formato}">` +
       `<span class="poster">${svgFormato(f)}${poster ? `<img src="${esc(poster)}" alt="" decoding="async">` : ''}<b class="n">${dos(f.n)}</b>${led ? '<i class="tec">LED</i>' : ''}</span>` +
       `<span class="nombre">${esc(f.nombre)}</span><span class="px">${f.ancho} × ${f.alto} px</span>` +
       `<span class="uso">${esc(uso)}${zona && zona !== uso ? ` · ${esc(zona)}` : ''}</span>` +
       `<span class="pantallas">${f.pantallas} ${f.pantallas === 1 ? t('pantalla', 'screen') : t('pantallas', 'screens')}${f.grid && f.pantallas > 1 ? ` · ${f.grid.cols} × ${f.grid.rows}` : ''}</span></a></li>`;
   }).join('');
-  // Sin volver a pintar si nada cambió: rehacer el HTML reinicia la carga de los pósters.
+  ponerTarjetas(html);
+}
+// Sin volver a pintar si nada cambió: rehacer el HTML reinicia la carga de los pósters.
+function ponerTarjetas(html) {
   if (html === galeriaPintada) return;
   galeriaPintada = html;
   $('tarjetas').innerHTML = html;
   for (const img of $('tarjetas').querySelectorAll('img')) if (img.complete && img.naturalWidth) img.classList.add('ok');
 }
 let galeriaPintada = '';
+
+// Galería del circuito: los estancos en orden de tour, con su ciudad y su formato.
+function pintarGaleriaCircuito() {
+  const locales = st.circuito.locales, m = manifiestoDe('xtanco');
+  $('galeria-titulo').textContent = t(`${locales.length} estancos · ${locales.length} ciudades · un formato de Altadis en cada uno`, `${locales.length} tobacconists · ${locales.length} cities · one Altadis format in each`);
+  const html = locales.map((l, i) => {
+    const f = formatoDe(st.indice, formatoDeLocal(l));
+    if (!f) return '';
+    const poster = conVersion(posterDe(m, f.formato, st.lang), m);
+    const led = /LED/i.test(f.nombre) || f.zona === 'cubo';
+    return `<li><a class="tarjeta" href="${esc(queryEspacio({ espacio: l.espacio, loc: l.id, lang: st.lang, marca: MARCA }))}" data-loc="${esc(l.id)}" aria-current="${st.local?.id === l.id}">` +
+      `<span class="poster">${svgFormato(f)}${poster ? `<img src="${esc(poster)}" alt="" decoding="async">` : ''}<b class="n">${dos(l.tourOrder ?? i + 1)}</b>${led ? '<i class="tec">LED</i>' : ''}</span>` +
+      `<span class="ciudad">${esc(l.ciudad)}</span><span class="nombre">${esc(tituloLocal(l, EN()))}</span>` +
+      (l.direccion ? `<span class="uso">${esc(l.direccion)}</span>` : '') +
+      `<span class="px">${esc(f.nombre)} · ${f.ancho} × ${f.alto} px</span>` +
+      `<span class="pantallas">${f.pantallas} ${f.pantallas === 1 ? t('pantalla', 'screen') : t('pantallas', 'screens')}${f.grid && f.pantallas > 1 ? ` · ${f.grid.cols} × ${f.grid.rows}` : ''}</span></a></li>`;
+  }).join('');
+  ponerTarjetas(html);
+}
 $('tarjetas').addEventListener('load', e => { if (e.target.tagName === 'IMG') e.target.classList.add('ok'); }, true);
 $('tarjetas').addEventListener('click', e => {
-  const a = e.target.closest('a[data-formato]');
+  const a = e.target.closest('a[data-formato], a[data-loc]');
   if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-  e.preventDefault(); abrir(a.dataset.formato, st.tipo);
+  e.preventDefault();
+  if (a.dataset.loc) { const l = buscarLocal(st.circuito, a.dataset.loc); if (l) abrirLocal(l); } else abrir(a.dataset.formato, st.tipo);
 });
 // Un póster que no carga se quita: debajo está el esquema del formato.
 $('tarjetas').addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);
@@ -131,6 +221,11 @@ function actualizarURL() {
   const u = new URL(location.href);
   for (const k of ['espacio', 'formato', 'tipo', 'lang', 'auto']) u.searchParams.delete(k);
   if (st.actual) u.searchParams.set('espacio', st.actual.id); else if (st.tipo !== 'xtanco') u.searchParams.set('tipo', st.tipo);
+  // En el circuito, el local que se ve (loc); en su galería o en un espacio que no es de ningún local, el circuito.
+  if (st.enCircuito) {
+    if (st.local) u.searchParams.set('loc', st.local.id);
+    else { u.searchParams.delete('loc'); u.searchParams.set('circuito', CIRCUITO); }
+  }
   if (st.lang === 'en') u.searchParams.set('lang', 'en');
   if (st.auto) u.searchParams.set('auto', '1');
   history.replaceState(null, '', u);
@@ -140,7 +235,7 @@ function volverGaleria() {
   st.token++;
   alternarRecorrido(false);
   soltarEspacio();
-  st.actual = null;
+  st.actual = null; st.local = null;
   mostrarModo('galeria'); actualizarURL(); pintarGaleria();
   status('');
 }
@@ -313,11 +408,13 @@ function pintar() {
 }
 
 // ── Abrir un espacio ──
-async function abrir(formatoId, tipo) {
+async function abrir(formatoId, tipo, { local } = {}) {
   const r = resolverEspacio(st.indice, formatoId, tipo);
   if (!r) { status(t(`No existe el espacio ${formatoId} · ${tipo}`, `No space ${formatoId} · ${tipo}`), true); return; }
   const token = ++st.token;
   st.actual = r; st.tipo = tipo;
+  // En el circuito, el local que se abre (o el de ese espacio, si lo hay: /espacio 8, la galería).
+  st.local = st.enCircuito ? (local !== undefined ? local : localDeEspacio(st.circuito, r.id)) : null;
   mostrarModo('espacio'); aplicarTextos();
   actualizarURL();
   pintarFichaBasica();
@@ -448,8 +545,25 @@ function pintarFichaBasica() {
   $('f-uso').textContent = `${uso}${zona && zona !== uso ? ` · ${t('zona', 'zone')} ${zona}` : ''}`;
   $('f-studio').href = STUDIO(f.formato);
   $('f-arquitecto').href = ARQUITECTO(f.formato, tipo);
-  $('n-actual').textContent = `${dos(f.n)} / ${dos(st.indice.formatos.length)}`;
+  const n = st.local && st.circuito.locales.length;
+  $('n-actual').textContent = n ? `${dos(st.local.tourOrder ?? st.circuito.locales.indexOf(st.local) + 1)} / ${dos(n)}` : `${dos(f.n)} / ${dos(st.indice.formatos.length)}`;
   for (const b of document.querySelectorAll('[data-tipo]')) b.setAttribute('aria-pressed', String(b.dataset.tipo === tipo));
+  pintarFichaLocal();
+}
+
+// El estanco del circuito, encima del formato: «Estanco <nombre> · <ciudad>», su dirección y «Volver al mapa».
+function pintarFichaLocal() {
+  const l = st.enCircuito ? st.local : null;
+  $('f-local').hidden = !l;
+  raiz.toggleAttribute('data-local', Boolean(l));
+  if (!l) return;
+  const n = st.circuito.locales.length, i = st.circuito.locales.findIndex(x => x.id === l.id);
+  $('f-local-eyebrow').textContent = `${(st.circuito.cliente || 'Altadis').toUpperCase()} ${t('ESPAÑA', 'SPAIN')} · ${t('ESTANCO', 'TOBACCONIST')} ${dos(l.tourOrder ?? i + 1)}/${dos(n)}`;
+  $('f-local-nombre').textContent = tituloLocal(l, EN());
+  $('f-local-dir').textContent = l.direccion || '';
+  const mapa = $('f-mapa');
+  mapa.hidden = !l.mapa;
+  if (l.mapa) mapa.href = l.mapa;
 }
 
 function pintarFicha() {
@@ -514,12 +628,15 @@ function pintarContenido() {
 // ── Navegación, idioma, tipo y recorrido ──
 function paso(d) {
   if (!st.indice) return;
+  // En el circuito, sólo sus estancos, en orden de tour y cada uno con su formato.
+  if (st.enCircuito) { const l = vecinoLocal(st.circuito, st.local?.id, d); if (l) abrirLocal(l); return; }
   const actual = st.actual?.formato.formato;
   abrir(actual ? vecino(st.indice, actual, d) : formatosOrdenados(st.indice)[0].formato, st.tipo);
 }
 
 function cambiarTipo(tipo) {
   if (!TIPOS.includes(tipo) || tipo === st.tipo && (!st.actual || st.actual.tipo === tipo)) return;
+  if (st.enCircuito) salirCircuito();   // el circuito es de estancos: un Starbucks lo deja
   st.tipo = tipo; aplicarTextos();
   pintarFuentes();   // la campaña del tipo (Xtanco: Altadis; Starbucks: Starbucks)
   if (st.actual) abrir(st.actual.formato.formato, tipo); else { actualizarURL(); pintarGaleria(); }
@@ -563,6 +680,7 @@ document.addEventListener('click', e => {
   else if (b.hasAttribute('data-recorrido')) alternarRecorrido();
   else if (b.dataset.paso) paso(Number(b.dataset.paso));
   else if (b.id === 'a-galeria') volverGaleria();
+  else if (b.hasAttribute('data-salir-circuito')) salirCircuito();
   else if (ACCIONES[b.id]) ACCIONES[b.id]();
 });
 // ▤ Avanzado del shell.
@@ -622,5 +740,6 @@ function zoom(f, base) {
   } });
 })();
 
-window.Altadis18 = { st, abrir, paso, cambiarIdioma, cambiarTipo, volverGaleria, ponerVista, info: () => ({ espacio: st.actual?.id || null, medio: medio ? { tipo: medio.tipo, cargando: Boolean(medio.cargando), motivo: medio.motivo || null, w: medio.video?.videoWidth || null, h: medio.video?.videoHeight || null, t: medio.video?.currentTime ?? null, pausado: medio.video ? medio.video.paused : null } : null, pantallas: pantallasFormato().length, enLienzo: s3d ? s3d.enLienzo() : 0, memoria: renderer ? { ...renderer.info.memory } : null, vista: cam.vista }) };
+window.Altadis18 = { st, abrir, paso, cambiarIdioma, cambiarTipo, volverGaleria, ponerVista, salirCircuito, info: () => ({ espacio: st.actual?.id || null,
+  loc: st.local?.id || null, circuito: st.enCircuito, circuitoFuente: st.fuenteCircuito?.fuente || null, medio: medio ? { tipo: medio.tipo, cargando: Boolean(medio.cargando), motivo: medio.motivo || null, w: medio.video?.videoWidth || null, h: medio.video?.videoHeight || null, t: medio.video?.currentTime ?? null, pausado: medio.video ? medio.video.paused : null } : null, pantallas: pantallasFormato().length, enLienzo: s3d ? s3d.enLienzo() : 0, memoria: renderer ? { ...renderer.info.memory } : null, vista: cam.vista }) };
 arrancar();

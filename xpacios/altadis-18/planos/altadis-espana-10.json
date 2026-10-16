@@ -1,0 +1,151 @@
+{
+  "schema": "admira.circuito-demo/1",
+  "circuito": "altadis_espana",
+  "cliente": "Altadis",
+  "marca": "altadis",
+  "nombre": "Altadis España · 10 Xtancos",
+  "respaldo": true,
+  "_nota": "Respaldo de /xpacios/altadis-18/ mientras https://www.admira.biz/data/xpacios/altadis-espana-10.json no exista: el reparto previsto (tourOrder · ciudad · formato), sin nombres ni direcciones reales; coordenadas del centro de cada ciudad. El índice real manda en cuanto se publica. Misión DCL-a6cb621be0ce5932f50960de, 16-oct-2026.",
+  "locales": [
+    {
+      "id": "altadis-es-01-a-coruna",
+      "nombre": "Estanco de A Coruña",
+      "direccion": "",
+      "ciudad": "A Coruña",
+      "coords": [
+        -8.4115,
+        43.3623
+      ],
+      "tourOrder": 1,
+      "formato": "cliente-07",
+      "espacio": "altadis-xtanco-07",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-8.4115&lat=43.3623&label=Estanco+de+A+Coru%C3%B1a"
+    },
+    {
+      "id": "altadis-es-02-bilbao",
+      "nombre": "Estanco de Bilbao",
+      "direccion": "",
+      "ciudad": "Bilbao",
+      "coords": [
+        -2.935,
+        43.263
+      ],
+      "tourOrder": 2,
+      "formato": "cliente-17",
+      "espacio": "altadis-xtanco-17",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-2.935&lat=43.263&label=Estanco+de+Bilbao"
+    },
+    {
+      "id": "altadis-es-03-barcelona",
+      "nombre": "Estanco de Barcelona",
+      "direccion": "",
+      "ciudad": "Barcelona",
+      "coords": [
+        2.1734,
+        41.3851
+      ],
+      "tourOrder": 3,
+      "formato": "cliente-01",
+      "espacio": "altadis-xtanco-01",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=2.1734&lat=41.3851&label=Estanco+de+Barcelona"
+    },
+    {
+      "id": "altadis-es-04-zaragoza",
+      "nombre": "Estanco de Zaragoza",
+      "direccion": "",
+      "ciudad": "Zaragoza",
+      "coords": [
+        -0.8891,
+        41.6488
+      ],
+      "tourOrder": 4,
+      "formato": "cliente-16",
+      "espacio": "altadis-xtanco-16",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-0.8891&lat=41.6488&label=Estanco+de+Zaragoza"
+    },
+    {
+      "id": "altadis-es-05-madrid",
+      "nombre": "Estanco de Madrid",
+      "direccion": "",
+      "ciudad": "Madrid",
+      "coords": [
+        -3.7038,
+        40.4168
+      ],
+      "tourOrder": 5,
+      "formato": "cliente-08",
+      "espacio": "altadis-xtanco-08",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-3.7038&lat=40.4168&label=Estanco+de+Madrid"
+    },
+    {
+      "id": "altadis-es-06-valencia",
+      "nombre": "Estanco de Valencia",
+      "direccion": "",
+      "ciudad": "Valencia",
+      "coords": [
+        -0.3763,
+        39.4699
+      ],
+      "tourOrder": 6,
+      "formato": "cliente-10",
+      "espacio": "altadis-xtanco-10",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-0.3763&lat=39.4699&label=Estanco+de+Valencia"
+    },
+    {
+      "id": "altadis-es-07-palma",
+      "nombre": "Estanco de Palma",
+      "direccion": "",
+      "ciudad": "Palma",
+      "coords": [
+        2.6502,
+        39.5696
+      ],
+      "tourOrder": 7,
+      "formato": "cliente-13",
+      "espacio": "altadis-xtanco-13",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=2.6502&lat=39.5696&label=Estanco+de+Palma"
+    },
+    {
+      "id": "altadis-es-08-sevilla",
+      "nombre": "Estanco de Sevilla",
+      "direccion": "",
+      "ciudad": "Sevilla",
+      "coords": [
+        -5.9845,
+        37.3891
+      ],
+      "tourOrder": 8,
+      "formato": "cliente-18",
+      "espacio": "altadis-xtanco-18",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-5.9845&lat=37.3891&label=Estanco+de+Sevilla"
+    },
+    {
+      "id": "altadis-es-09-malaga",
+      "nombre": "Estanco de Málaga",
+      "direccion": "",
+      "ciudad": "Málaga",
+      "coords": [
+        -4.4214,
+        36.7213
+      ],
+      "tourOrder": 9,
+      "formato": "cliente-12",
+      "espacio": "altadis-xtanco-12",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-4.4214&lat=36.7213&label=Estanco+de+M%C3%A1laga"
+    },
+    {
+      "id": "altadis-es-10-granada",
+      "nombre": "Estanco de Granada",
+      "direccion": "",
+      "ciudad": "Granada",
+      "coords": [
+        -3.5986,
+        37.1773
+      ],
+      "tourOrder": 10,
+      "formato": "cliente-09",
+      "espacio": "altadis-xtanco-09",
+      "mapa": "https://www.admira.biz/?circuit=altadis_espana&lng=-3.5986&lat=37.1773&label=Estanco+de+Granada"
+    }
+  ]
+}

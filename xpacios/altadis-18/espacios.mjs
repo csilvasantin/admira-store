@@ -18,7 +18,7 @@
 
 import { validatePlan } from '../gran-de-gracia-51/plano3d.mjs?v=gdg51-6';
 import { CAMPOS_PRIVADOS } from '../plano-publico.mjs';
-import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-4';
+import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-5';
 
 export const SCHEMA_INDICE = 'admira.espacios-formato/1';
 export const SCHEMA_CONTENIDO = 'admira.espacios-contenido/1';
@@ -294,10 +294,16 @@ export function vecino(indice, formatoId, paso = 1) {
   return lista[((i + paso) % lista.length + lista.length) % lista.length].formato;
 }
 
-/** Query de la URL compartible de un espacio. */
-export function queryEspacio({ espacio, lang = 'es', auto = false } = {}) {
+/**
+ * Query de la URL compartible de un espacio. Con el circuito Altadis España (circuito.mjs), el
+ * local (`loc`) o el circuito; la marca blanca (`marca`) se conserva si la página la trae.
+ */
+export function queryEspacio({ espacio, lang = 'es', auto = false, loc = null, circuito = null, marca = null } = {}) {
   const p = new URLSearchParams();
   if (espacio) p.set('espacio', espacio);
+  if (loc) p.set('loc', loc);
+  else if (circuito) p.set('circuito', circuito);
+  if (marca) p.set('marca', marca);
   if (lang === 'en') p.set('lang', 'en');
   if (auto) p.set('auto', '1');
   const q = p.toString();
