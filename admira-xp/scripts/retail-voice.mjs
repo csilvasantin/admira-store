@@ -8,25 +8,36 @@ export const WATER_THANKS=Object.freeze({es:'Gracias por comprar agua de proximi
 export const VOICE_MODES=Object.freeze(['auto','es','en','both']);
 const audioUrl=file=>new URL('../assets/audio/'+file,import.meta.url).href;
 export const VOICE_CACHE=Object.freeze({
- [WATER_THANKS.es]:Object.freeze({url:audioUrl('agua-proximidad-es.m4a'),language:'es',voice:'macOS Mónica (Estándar)'}),
+ [WATER_THANKS.es]:Object.freeze({url:audioUrl('agua-proximidad-es.m4a'),language:'es',voice:'macOS Mónica (Estándar)',calidad:{es:'Good · voz gratuita',en:'Good · free voice'}}),
  [WATER_THANKS.en]:Object.freeze({url:audioUrl('agua-proximidad-en.m4a'),language:'en',voice:'macOS Daniel (Standard)'})
 });
+// Dos voces que se turnan (Carlos, 16-oct-2026: «que suene una vez good (voz gratuita) y la otra con la voz de chica
+// española de Eleven Labs para que se vea la diferencia»): cada botella entregada, la siguiente. La de ElevenLabs es
+// Sara Martín (KHCvMklQZZo0O30ERnVn, eleven_v4), generada una vez por /admira-xp/announcement-tts (Stock 1724) y
+// servida como fichero: sonar no gasta créditos.
+export const VOICE_TURNS=Object.freeze({
+ [WATER_THANKS.es]:Object.freeze([VOICE_CACHE[WATER_THANKS.es],Object.freeze({url:audioUrl('agua-proximidad-es-elevenlabs.m4a'),language:'es',voice:'ElevenLabs · Sara Martín (eleven_v4)',calidad:{es:'ElevenLabs · Sara Martín',en:'ElevenLabs · Sara Martín'}})])
+});
+let voiceTurn=0;
 const clean=v=>String(v??'').replace(/\s+/g,' ').trim().slice(0,200);
 // auto = idioma de la página (/idioma o el de /demo all) · es · en · both = castellano y después inglés.
 export function voiceLanguages(mode,lang){return mode==='both'?['es','en']:mode==='es'||mode==='en'?[mode]:[lang==='en'?'en':'es'];}
-export function voicePlan(action,lang){
+export function voicePlan(action,lang,turn=0){
  const text={es:clean(action?.text?.es??action?.value)||WATER_THANKS.es,en:clean(action?.text?.en)||WATER_THANKS.en};
- return voiceLanguages(VOICE_MODES.includes(action?.voice)?action.voice:'auto',lang).map(language=>{const t=text[language],c=VOICE_CACHE[t];return {language,text:t,url:c?.url||'',voice:c?.voice||'browser'};});
+ return voiceLanguages(VOICE_MODES.includes(action?.voice)?action.voice:'auto',lang).map(language=>{const t=text[language],turns=VOICE_TURNS[t],c=turns?turns[turn%turns.length]:VOICE_CACHE[t];return {language,text:t,url:c?.url||'',voice:c?.voice||'browser',...(c?.calidad?{calidad:c.calidad[lang==='en'?'en':'es']}:{})};});
 }
 function pickVoice(win,language){
  try{const voices=win.speechSynthesis.getVoices()||[],want=language==='en'?/^(samantha|daniel|karen|serena)/i:/^m[oó]nica/i,pre=language==='en'?/^en/i:/^es/i;
   return voices.find(v=>want.test(v.name)&&pre.test(v.lang))||voices.find(v=>/^es-ES/i.test(v.lang)&&language==='es')||voices.find(v=>pre.test(v.lang))||null;}catch{return null;}
 }
+const playing=new Set();
 function sayOne(p,{win,timeoutMs}){
  return new Promise(resolve=>{let done=false;const finish=phase=>{if(done)return;done=true;clearTimeout(timer);resolve(phase);};const timer=setTimeout(()=>finish('timeout'),timeoutMs);
   const A=win.XpaceAnnouncements;
   if(p.url&&A?.playStock){try{const r=A.playStock(p.url,p.text,{language:p.language,onState:s=>{if(['done','stopped','error'].includes(s.phase))finish(s.phase);}});if(r===false)finish('muted');}catch{finish('error');}return;}
   if(win.dsMasterMute){finish('muted');return;}
+  // Sin el canal de megafonía del gemelo (p. ej. el visor de centros): el mismo fichero, parando el hilo musical.
+  if(p.url&&typeof win.Audio==='function'){const release=win.XpaceMusicHold?.();const a=new win.Audio(p.url);playing.add(a);const end=phase=>{playing.delete(a);release?.();finish(phase);};a.onended=()=>end('done');a.onerror=()=>end('error');try{Promise.resolve(a.play()).catch(()=>end('error'));}catch{end('error');}return;}
   const S=win.speechSynthesis,U=win.SpeechSynthesisUtterance;if(!S||typeof U!=='function'){finish('unsupported');return;}
   const release=win.XpaceMusicHold?.();const u=new U(p.text);u.lang=p.language==='en'?'en-US':'es-ES';const v=pickVoice(win,p.language);if(v)u.voice=v;
   u.onend=()=>{release?.();finish('done');};u.onerror=()=>{release?.();finish('error');};try{S.cancel();S.speak(u);}catch{release?.();finish('error');}
@@ -67,7 +78,7 @@ export function createVoiceIndicator(win=globalThis,{minMs=VOICE_TOAST_MIN_MS,ma
  function el(){if(!doc?.body)return null;if(!doc.getElementById('xpaceVoiceCSS')){const st=doc.createElement('style');st.id='xpaceVoiceCSS';st.textContent=VOICE_CSS;doc.head.append(st);}
   let t=doc.getElementById('xpaceVoiceToast');if(!t){t=doc.createElement('div');t.id='xpaceVoiceToast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');t.innerHTML='<span class="sp">'+SPK+'</span><span class="tx"><small></small><span class="q"></span></span>';doc.body.append(t);}return t;}
  return {show(p){const line=voiceLogLine(p);try{win.XpaceAppendLog?.('bot','AdmiraXPBot',line);}catch{}try{win.XpaceShowResponse?.(line,'ok','local-visual');}catch{}try{win.dispatchEvent?.(new win.CustomEvent('xpace:voiceover',{detail:{phase:'start',...p,line}}));}catch{}
-   const t=el();if(t){clearTimeout(timer);t.querySelector('small').textContent=p.language==='en'?'Voiceover · announcement speaker':'Locución · altavoz de avisos';t.querySelector('.q').textContent=(p.language==='en'?'“':'«')+p.text+(p.language==='en'?'”':'»');t.classList.add('on');shownAt=Date.now();place(t);clearInterval(follow);follow=setInterval(()=>place(t),250);}
+   const t=el();if(t){clearTimeout(timer);t.querySelector('small').textContent=(p.language==='en'?'Voiceover · ':'Locución · ')+(p.calidad||(p.language==='en'?'announcement speaker':'altavoz de avisos'));t.querySelector('.q').textContent=(p.language==='en'?'“':'«')+p.text+(p.language==='en'?'”':'»');t.classList.add('on');shownAt=Date.now();place(t);clearInterval(follow);follow=setInterval(()=>place(t),250);}
    for(const b of doc?.querySelectorAll?.('.matrix-announcement[data-announcement]')||[])b.setAttribute('data-voice-pulse','');},
   hide(){try{win.dispatchEvent?.(new win.CustomEvent('xpace:voiceover',{detail:{phase:'end'}}));}catch{}
    const tour=()=>{try{return win.XpaceDemoTour?.state?.()||null;}catch{return null;}},s0=tour(),idx=s0?.active?s0.index:null,t0=Date.now();
@@ -79,6 +90,6 @@ export function createVoiceIndicator(win=globalThis,{minMs=VOICE_TOAST_MIN_MS,ma
 export function createVoiceSpeaker(action,{win=globalThis,lang=()=>win.document?.documentElement?.lang,timeoutMs=20000,indicator=createVoiceIndicator(win)}={}){
  let stopped=false;
  return {plan:()=>voicePlan(action,lang()),
-  async play(){stopped=false;const out=[];try{for(const p of voicePlan(action,lang())){if(stopped)break;indicator?.show(p);out.push(await sayOne(p,{win,timeoutMs}));}}finally{indicator?.hide();}return out;},
-  stop(){stopped=true;indicator?.hide();try{win.XpaceAnnouncements?.stopStock?.();}catch{}try{win.speechSynthesis?.cancel();}catch{}}};
+  async play(){stopped=false;const out=[],turn=voiceTurn++;try{for(const p of voicePlan(action,lang(),turn)){if(stopped)break;indicator?.show(p);out.push(await sayOne(p,{win,timeoutMs}));}}finally{indicator?.hide();}return out;},
+  stop(){stopped=true;indicator?.hide();try{win.XpaceAnnouncements?.stopStock?.();}catch{}try{win.speechSynthesis?.cancel();}catch{}for(const a of playing){try{a.pause();}catch{}}playing.clear();}};
 }

@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r14.14:15",
-  "deployedAt": "2026-10-16T12:15:22Z",
+  "version": "v.16.10.2026.r15.14:24",
+  "deployedAt": "2026-10-16T12:24:06Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "6bc83dd2ccebeb85e19c0c9f4d4a8819a7a21f3d",
-  "gitShort": "6bc83dd",
-  "gitFull": "6bc83dd2ccebeb85e19c0c9f4d4a8819a7a21f3d",
+  "git": "cb418ea39bb373bac9aaa93e68c1c004ab138934",
+  "gitShort": "cb418ea",
+  "gitFull": "cb418ea39bb373bac9aaa93e68c1c004ab138934",
   "dirty": false,
   "novedades": [
-    "Diagonal 634: la caja con la cesta y el IF·THEN·DO THAT de Paseo de Gràcia; el muffin y el agua de la vitrina se arrastran a la caja"
+    "«Gracias por comprar agua de proximidad» en dos voces que se turnan: Good (Mónica, gratuita) y ElevenLabs (Sara Martín)"
   ]
 }
