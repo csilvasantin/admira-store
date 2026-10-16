@@ -3,6 +3,8 @@
 // gemelo de Paseo de Gràcia (/admira-xp/scripts/totem-kiosko.js), con la sala del local: sus pedidos van a la cola
 // de ese local en admira.tv/gestorColas y salen en su iPad. En la foto 360 se ve su pantalla de bienvenida y, al
 // tocarla, el quiosco se abre en grande. Pago simulado: no se cobra nada.
+import { hacerMovible } from './movible.mjs?v=sc-movible-2';
+
 export const ANCHO = 720, ALTO = 1280;
 export const ORIGEN = 'https://www.ainimation.studio';
 const BASE = ORIGEN + '/xperiencias/kiosko-pedido/';
@@ -62,7 +64,7 @@ export function crearKiosko({ doc = document, sala, marca = 'starbucks', alPedid
   }
   pintar();
 
-  let modal = null, marco = null;
+  let modal = null, marco = null, movil = null;
   const url = (lang = doc.documentElement.lang === 'en' ? 'en' : 'es') => urlKiosko({ sala, marca, lang });
   function montar() {
     if (modal) return;
@@ -74,6 +76,11 @@ export function crearKiosko({ doc = document, sala, marca = 'starbucks', alPedid
       + '<p class="sc-kiosko-sala"></p><label>Clave de quiosco / Kiosk key <input type="password" autocomplete="off" spellcheck="false" required pattern="gk_[a-f0-9]{24}" aria-label="Clave de quiosco de esta sala"></label>'
       + '<button type="submit">Guardar en este quiosco / Save in this kiosk</button><p class="sc-kiosko-estado" role="status"></p></form></details></div>';
     marco = modal.querySelector('iframe');
+    // Ventana como las demás (Carlos, 16-oct-2026: «mueve también el quiosco»): se arrastra por el asa de encima y cambia
+    // de tamaño por la esquina, sin perder su forma vertical (9:16).
+    const caja = modal.querySelector('.sc-kiosko-marco'), asa = doc.createElement('div');
+    asa.className = 'sc-ventana-asa'; asa.textContent = '⠿ Quiosco de pedidos'; caja.prepend(asa);
+    movil = hacerMovible(caja, asa, { clave: 'sc-kiosko-v1', proporcion: 9 / 16, arriba: 34 });
     const config = modal.querySelector('.sc-kiosko-config'), input = config.querySelector('input'), estado = config.querySelector('.sc-kiosko-estado');
     config.querySelector('.sc-kiosko-sala').textContent = `Sala / Room: ${sala}`;
     config.querySelector('form').addEventListener('submit', e => {
@@ -96,7 +103,7 @@ export function crearKiosko({ doc = document, sala, marca = 'starbucks', alPedid
   }
   function abrir() {
     montar();
-    const u = url(); modal.querySelector('.sc-kiosko-abrir').href = u;
+    const u = url(); modal.querySelector('.sc-kiosko-abrir').href = u; movil.restaurar();
     if (marco.src !== u) marco.src = u;
     try { if (!modal.open) modal.showModal(); } catch { modal.setAttribute('open', ''); }
     return true;

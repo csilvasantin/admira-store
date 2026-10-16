@@ -264,3 +264,11 @@ test('el mando y la cesta son ventanas: se mueven por la cabecera, cambian de ta
   assert.match(css, /\.sc-mando \.context-playlist-editor li>button\[data-playlist-remove\]\{order:-1;/, 'la papelera, a la izquierda de cada canción');
   assert.match(css, /button\[data-playlist-remove\]::before\{content:"🗑"/);
 });
+
+test('el quiosco y el iPad también son ventanas: asa encima para moverlos y esquina para el tamaño, sin perder su forma', () => {
+  const kiosko = readFileSync(aqui('./kiosko.mjs'), 'utf8'), movible = readFileSync(aqui('./movible.mjs'), 'utf8');
+  assert.match(kiosko, /hacerMovible\(caja, asa, \{ clave: 'sc-kiosko-v1', proporcion: 9 \/ 16, arriba: 34 \}\)/, 'el quiosco, vertical 9:16');
+  assert.match(visor, /hacerMovible\(caja, asa, \{ clave: 'sc-ipad-v1', proporcion: 4 \/ 3, arriba: 34 \}\)/, 'el iPad, 4:3');
+  assert.match(visor, /else ipadMovible\(\); \}/, 'al abrir el iPad');
+  assert.match(movible, /if \(proporcion\) Object\.assign\(caja\.style, \{ height: 'auto', maxHeight: 'none' \}\);/, 'el alto lo pone la proporción');
+});

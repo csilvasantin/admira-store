@@ -8,7 +8,7 @@
 // hacemos con el kiosko… un botón pequeño a la izquierda de Hilo musical · con el nombre del centro»): ◎ lleva la
 // vista al TPV y aparta el mando a un lado para verlo; otra vez, vuelve donde estaba.
 import { mountMusicRemote } from '/admira-xp/scripts/music-remote.mjs?v=local-playlist-349';
-import { hacerMovible } from './movible.mjs?v=sc-movible-1';
+import { hacerMovible } from './movible.mjs?v=sc-movible-2';
 
 export function crearMandoTPV({ doc = document, musica, win = globalThis, alEnfocar = null } = {}) {
   let modal = null, titulo = null, hueco = null, mando = null, foco = null, enFoco = false, movil = null;
