@@ -1,15 +1,14 @@
 {
-  "version": "v.16.10.2026.r11.12:42",
-  "deployedAt": "2026-10-16T10:51:08Z",
-  "deployer": "NeoMBP14",
-  "machine": "MacBookProNegro14",
-  "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "6928799707d3c3e1f80460e4c221a80a17feaeed",
-  "gitShort": "6928799",
-  "gitFull": "6928799707d3c3e1f80460e4c221a80a17feaeed",
+  "version": "v.16.10.2026.r12.13:37",
+  "deployedAt": "2026-10-16T11:37:49Z",
+  "deployer": "NeoMacStudio",
+  "machine": "MacStudio",
+  "signature": "NeoMacStudio · MacStudio",
+  "git": "61f826727fa9d775a8722186011cbd632e2e6c0e",
+  "gitShort": "61f8267",
+  "gitFull": "61f826727fa9d775a8722186011cbd632e2e6c0e",
   "dirty": false,
   "novedades": [
-    "Altadis 18: circuito «Starbucks México · 10 cafeterías». Con ?loc=alsea-mx-… la ficha del gemelo dice la cafetería, su ciudad y su dirección, con «Volver al mapa»; ← / → y el recorrido automático recorren sólo los 10 Starbucks, cada uno con su formato, y la galería ?circuito=alsea_mexico&marca=starbucks los enseña con la marca Starbucks.",
-    "El modo circuito tiene ahora un registro de circuitos (Altadis España y Starbucks México), cada uno con su índice de admira.biz y su copia local de respaldo. Altadis España sigue igual, con su modo Realista."
+    "Diagonal 634 en Matrix: el TPV abre el mando del hilo musical y su playlist propia se edita como en Paseo de Gràcia"
   ]
 }

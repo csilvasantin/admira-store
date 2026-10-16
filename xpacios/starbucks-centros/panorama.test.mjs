@@ -165,3 +165,42 @@ test('el quiosco de pedidos de la pared de Diagonal: el de Paseo de Gràcia con 
   assert.equal(pedidoDe(msg('https://www.ainimation.studio', { source: 'ainimation-xperiencia', event: 'ready' }), marco), null);
   assert.match(visor, /else if \(p\.tipo === 'kiosko'\) texturaPieza\(p\)\.userData\.fuente\.abrir\(\);/);
 });
+
+test('el hilo musical de cada local se edita como en Paseo de Gràcia: su playlist, su mando y su editor', async () => {
+  // El visor pone proyecto y local en la dirección: de ahí sacan su ámbito la playlist y el editor del mando.
+  assert.match(visor, /actualizarURL\(\{ centro: c\.id, project: local \? 'starbucks' : null, venue: local, loc: null \}\);/);
+  assert.equal(centros.find(c => c.id === 'd634').locales[0], 'starbucks-diagonal-634');
+  assert.equal(centros.find(c => c.id === 'pg103').locales[0], 'alsea-sbux-021');
+  const { playlistContext } = await import('../../admira-xp/scripts/context-playlist-client.mjs');
+  assert.deepEqual(playlistContext('https://www.admira.store/xpacios/starbucks-centros/?centro=d634&project=starbucks&venue=starbucks-diagonal-634'), { projectId: 'starbucks', venueId: 'starbucks-diagonal-634', channelId: 'music' });
+  // El mismo módulo (misma URL con su ?v=) que importa el editor del mando: un solo cliente por canal.
+  const editor = readFileSync(aqui('../../admira-xp/scripts/context-playlist-editor.mjs'), 'utf8');
+  const v = editor.match(/from '\.\/context-playlist-client\.mjs(\?v=[^']+)'/)[1];
+  assert.ok(visor.includes(`import { contextPlaylist } from '/admira-xp/scripts/context-playlist-client.mjs${v}';`));
+  assert.ok(readFileSync(aqui('./mando-tpv.mjs'), 'utf8').includes("import { mountMusicRemote } from '/admira-xp/scripts/music-remote.mjs"), 'el mando de Paseo de Gràcia');
+  assert.match(visor, /if \(p\.tipo === 'tpv'\) \{ piezas\.mando = piezas\.mando \|\| crearMandoTPV\(\{ musica: piezas\.tpv\.musica \}\); piezas\.mando\.abrir\(/);
+
+  // El TPV: la publicada de siempre hasta que llega la del local; la del local manda; vacía, calla.
+  const oidos = [];
+  globalThis.Audio = class { constructor() { this.paused = true; this.currentTime = 0; } addEventListener() {} play() { this.paused = false; oidos.push(this.src); return Promise.resolve(); } pause() { this.paused = true; } removeAttribute(k) { delete this[k]; } };
+  globalThis.Image = class {};
+  const ctx = new Proxy({}, { get: () => () => ({ addColorStop() {} }) });
+  const doc = { createElement: () => ({ getContext: () => ctx }) };
+  const publicada = [{ title: 'PG 1', url: 'https://x/pg1.mp3' }, { title: 'PG 2', url: 'https://x/pg2.mp3' }];
+  let avisar = null; const lista = { subscribe(f) { avisar = f; f({ data: null, tracks: [], error: 'login_required' }); return () => {}; } };
+  const { crearHiloTPV } = await import('./hilo-tpv.mjs');
+  const tpv = crearHiloTPV({ doc, lista, origenes: ['/api'], fetchImpl: async () => ({ ok: true, json: async () => ({ ok: true, tracks: publicada }) }) });
+  await tpv.listo;
+  assert.equal(tpv.propia, false); assert.deepEqual(tpv.musica.getTracks().map(t => t.title), ['PG 1', 'PG 2']);
+  const estados = []; tpv.musica.subscribe(e => estados.push(e));
+  avisar({ data: { revision: 1 }, tracks: [{ title: 'Diagonal 1', url: 'https://x/d1.mp3' }, { title: 'Diagonal 2', url: 'https://x/d2.mp3' }] });
+  assert.equal(tpv.propia, true); assert.deepEqual(tpv.musica.getTracks().map(t => t.title), ['Diagonal 1', 'Diagonal 2']);
+  await tpv.musica.jump('https://x/d2.mp3'); assert.equal(tpv.musica.state().title, 'Diagonal 2'); assert.equal(tpv.sonando, true);
+  assert.equal(tpv.musica.next(), true); assert.equal(tpv.musica.state().title, 'Diagonal 1');
+  avisar({ data: { revision: 2 }, tracks: [{ title: 'Diagonal 1', url: 'https://x/d1.mp3' }, { title: 'Nueva', url: 'https://x/n.mp3' }] });
+  assert.equal(tpv.musica.state().title, 'Diagonal 1', 'la que suena sigue si continúa en la lista');
+  avisar({ data: { revision: 3, empty: true }, tracks: [] });
+  assert.equal(tpv.pistas, 0); assert.equal(tpv.sonando, false, 'playlist vacía: se para, sin relleno automático');
+  assert.ok(estados.length >= 4, 'el mando se entera de cada cambio');
+  delete globalThis.Audio; delete globalThis.Image;
+});
