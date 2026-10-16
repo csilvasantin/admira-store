@@ -1,7 +1,7 @@
 import {installMusicCanvasGesture} from './music-listening.mjs?v=local-playlist-349';
 import {watchPhysicalMusic} from './physical-music-playlist.mjs?v=local-playlist-349';
 import {STARBUCKS_PUBLISHED_TRACKS} from './starbucks-playlist.mjs?v=devices-1';
-import {contextPlaylist} from './context-playlist-client.mjs?v=local-playlist-349';
+import {contextPlaylist} from './context-playlist-client.mjs?v=three-venues-20261016';
 export const STARBUCKS_STORE='starbucks-alsea-paseo-de-gracia';
 export const STARBUCKS_FEED=`https://api.admira.store/hilomusical/next?store=${STARBUCKS_STORE}&since=0`;
 // Physical wall speaker, above and to the left of the emergency-exit sign.
