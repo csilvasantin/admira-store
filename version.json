@@ -1,15 +1,15 @@
 {
-  "version": "v.16.10.2026.r10.11:27",
-  "deployedAt": "2026-10-16T09:41:35Z",
+  "version": "v.16.10.2026.r11.12:42",
+  "deployedAt": "2026-10-16T10:42:00Z",
   "deployer": "NeoMBP14",
   "machine": "MacBookProNegro14",
   "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "50d4fe37344dd408c9180d37b3a15b4d3df8c33a",
-  "gitShort": "50d4fe3",
-  "gitFull": "50d4fe37344dd408c9180d37b3a15b4d3df8c33a",
+  "git": "09150737be178387d05814ab6f4c48db6ae0dc12",
+  "gitShort": "0915073",
+  "gitFull": "09150737be178387d05814ab6f4c48db6ae0dc12",
   "dirty": false,
   "novedades": [
-    "Altadis 18: modo «Esquema · Realista». En los Xtanco, el gemelo se ve por defecto en un estanco modelado de verdad (Xtanco Best) con las mismas pantallas físicas del formato, sus recortes y el mismo vídeo; la ficha avisa de que la escena es inventada.",
-    "Los 10 estancos del circuito Altadis España tienen cada uno su acabado (pared, suelo y luz cálida o fría). El modelo se descarga una vez; si falla o tarda más de 12 s, el gemelo cae al esquema de siempre sin error. Starbucks sigue en esquema."
+    "Altadis 18: circuito «Starbucks México · 10 cafeterías». Con ?loc=alsea-mx-… la ficha del gemelo dice la cafetería, su ciudad y su dirección, con «Volver al mapa»; ← / → y el recorrido automático recorren sólo los 10 Starbucks, cada uno con su formato, y la galería ?circuito=alsea_mexico&marca=starbucks los enseña con la marca Starbucks.",
+    "El modo circuito tiene ahora un registro de circuitos (Altadis España y Starbucks México), cada uno con su índice de admira.biz y su copia local de respaldo. Altadis España sigue igual, con su modo Realista."
   ]
 }

@@ -10,6 +10,7 @@ import {
   circuitoDesdeURL, marcaDesdeURL, tipoInicial, normalizarCircuito, validarCircuito, cargarCircuito, fuentesCircuito,
   buscarLocal, localDeEspacio, vecinoLocal, resolverInicio, tituloLocal, enlaceMapa, formatoDeLocal, slug,
   SCHEMA_CIRCUITO, CIRCUITO, CIRCUITO_COMPARTIDO, CIRCUITO_LOCAL, TIPO_DE_MARCA,
+  CIRCUITOS, defCircuito, circuitoDeLoc, textosCircuito,
 } from './circuito.mjs';
 import { queryEspacio, formatoDe, ESPERA_COMPARTIDO_MS } from './espacios.mjs';
 
@@ -41,13 +42,13 @@ const { respaldo: _r, _nota: _n, ...SIN_MARCA_DE_RESPALDO } = RESPALDO;
 const REAL = { ...clon(SIN_MARCA_DE_RESPALDO), locales: clon(RESPALDO.locales).reverse() };
 const GENERICO = { ...clon(SIN_MARCA_DE_RESPALDO), locales: RESPALDO.locales.map(({ nombre, direccion, mapa, ...l }) => clon(l)) };
 
-test('URL: ?loc= and ?circuito=altadis_espana ask for the circuit; a malformed loc or another circuit do not', () => {
-  assert.deepEqual(circuitoDesdeURL('?espacio=altadis-xtanco-08&loc=altadis-es-05-madrid&marca=altadis'), { loc: 'altadis-es-05-madrid', circuito: false, pide: true });
-  assert.deepEqual(circuitoDesdeURL('?circuito=altadis_espana'), { loc: null, circuito: true, pide: true });
-  assert.deepEqual(circuitoDesdeURL('?circuito=alsea_mexico'), { loc: null, circuito: false, pide: false });
-  assert.deepEqual(circuitoDesdeURL('?loc=../../etc/passwd'), { loc: null, circuito: false, pide: false });
-  assert.deepEqual(circuitoDesdeURL('?loc=<script>'), { loc: null, circuito: false, pide: false });
-  assert.deepEqual(circuitoDesdeURL(''), { loc: null, circuito: false, pide: false }, 'without loc nothing changes');
+test('URL: ?loc= and ?circuito=altadis_espana ask for the circuit; a malformed loc or an unknown circuit do not', () => {
+  assert.deepEqual(circuitoDesdeURL('?espacio=altadis-xtanco-08&loc=altadis-es-05-madrid&marca=altadis'), { loc: 'altadis-es-05-madrid', circuito: false, pide: true, id: 'altadis_espana' });
+  assert.deepEqual(circuitoDesdeURL('?circuito=altadis_espana'), { loc: null, circuito: true, pide: true, id: 'altadis_espana' });
+  assert.deepEqual(circuitoDesdeURL('?circuito=otro_circuito'), { loc: null, circuito: false, pide: false, id: null });
+  assert.deepEqual(circuitoDesdeURL('?loc=../../etc/passwd'), { loc: null, circuito: false, pide: false, id: null });
+  assert.deepEqual(circuitoDesdeURL('?loc=<script>'), { loc: null, circuito: false, pide: false, id: null });
+  assert.deepEqual(circuitoDesdeURL(''), { loc: null, circuito: false, pide: false, id: null }, 'without loc nothing changes');
   assert.equal(marcaDesdeURL('?marca=altadis'), 'altadis');
   assert.equal(marcaDesdeURL('?marca=Altadis'), 'altadis');
   assert.equal(marcaDesdeURL('?marca=alsea'), 'starbucks', 'alsea is Starbucks, as in the shell');
@@ -231,7 +232,7 @@ test('the page: local block above the format with «Volver al mapa» ES/EN, circ
   assert.equal(versiones.size, 1, 'one module version: espacios.mjs is not loaded twice');
   assert.match(read('xpacios/altadis-18/circuito.mjs'), new RegExp(`espacios\\.mjs\\?v=${[...versiones][0]}'`));
   assert.match(html, new RegExp(`visor\\.mjs\\?v=${[...versiones][0]}"`));
-  assert.match(visor, /const circuito = pedidoCircuito\.pide \? cargarCircuito\(\)/, 'the circuit index only when the URL asks for it');
+  assert.match(visor, /const circuito = pedidoCircuito\.pide \? cargarCircuito\(\{ circuito: pedidoCircuito\.id \}\)/, 'the circuit index only when the URL asks for it, the one it names');
   assert.match(visor, /if \(st\.enCircuito\) \{ const l = vecinoLocal\(st\.circuito, st\.local\?\.id, d\)/, 'arrows and the tour follow the circuit');
   assert.match(visor, /if \(st\.local\) u\.searchParams\.set\('loc', st\.local\.id\)/, 'changing space updates loc');
   assert.match(visor, /if \(!inicio\.local && !pedidoCircuito\.circuito\) return null/, 'an unknown loc is ignored');
@@ -252,4 +253,186 @@ test('the shell applies ?marca=altadis on this page: it loads the white label; a
   assert.equal(SHELL.wantsBrand('?espacio=altadis-xtanco-08&loc=altadis-es-05-madrid', memoria()), false, 'a circuit loc alone does not ask for a brand');
   const html = read('xpacios/altadis-18/index.html');
   assert.match(html, /<script defer src="\/assets\/xpace-shell\.js\?v=/, 'the page loads the common shell, which inserts marca-blanca.js');
+});
+
+// ── Varios circuitos: Starbucks México · 10 cafeterías (misión DCL-97f84ae3e5b2cb2311c55101) ──
+const RESPALDO_MX = JSON.parse(read('xpacios/altadis-18/planos/alsea-mexico-10.json'));
+const { respaldo: _rm, _nota: _nm, nombre: _nn, ...SIN_MARCA_MX } = RESPALDO_MX;
+const REAL_MX = { ...clon(SIN_MARCA_MX), locales: clon(RESPALDO_MX.locales).reverse() };
+const MX_COMPARTIDO = 'https://www.admira.biz/data/xpacios/alsea-mexico-10.json';
+const MX_LOCAL = '/xpacios/altadis-18/planos/alsea-mexico-10.json';
+// Reparto del índice de admira.biz (PR clearchannel-tv#93): tourOrder · ciudad · formato.
+const REPARTO_MX = [[1, 'Tijuana', '07'], [2, 'Monterrey', '17'], [3, 'León', '01'], [4, 'Guadalajara', '16'], [5, 'Querétaro', '08'],
+  [6, 'Ciudad de México', '10'], [7, 'Puebla', '13'], [8, 'Oaxaca', '18'], [9, 'Mérida', '12'], [10, 'Cancún', '09']];
+
+test('circuit registry: Altadis España (xtanco, altadis) and Starbucks México (cafe, starbucks), each with its shared index and local copy', () => {
+  assert.deepEqual(Object.keys(CIRCUITOS), ['altadis_espana', 'alsea_mexico']);
+  assert.deepEqual(CIRCUITOS.altadis_espana, { id: 'altadis_espana', compartido: CIRCUITO_COMPARTIDO, local: CIRCUITO_LOCAL, marca: 'altadis', tipo: 'xtanco', prefijo: 'altadis-es-', cliente: 'Altadis' });
+  assert.deepEqual(CIRCUITOS.alsea_mexico, { id: 'alsea_mexico', compartido: MX_COMPARTIDO, local: MX_LOCAL, marca: 'starbucks', tipo: 'cafe', prefijo: 'alsea-mx-', cliente: 'Starbucks (Alsea)', rotulo: 'Starbucks' });
+  assert.equal(CIRCUITO, 'altadis_espana', 'the default stays Altadis España');
+  assert.ok(Object.isFrozen(CIRCUITOS) && Object.isFrozen(CIRCUITOS.alsea_mexico));
+  for (const c of Object.values(CIRCUITOS)) {
+    assert.match(c.compartido, /^https:\/\/www\.admira\.biz\/data\/xpacios\/[a-z-]+-10\.json$/);
+    assert.ok(readFileSync(repo + c.local.slice(1)), `${c.local} exists in the repo`);
+  }
+  assert.equal(defCircuito('alsea_mexico').tipo, 'cafe');
+  for (const raro of ['otro', '', null, undefined, 'toString', '__proto__', 'constructor']) assert.equal(defCircuito(raro), null, String(raro));
+  assert.deepEqual(fuentesCircuito('alsea_mexico'), [
+    { fuente: 'compartido', url: MX_COMPARTIDO, timeoutMs: ESPERA_COMPARTIDO_MS },
+    { fuente: 'local', url: MX_LOCAL },
+  ]);
+  assert.deepEqual(fuentesCircuito('otro'), [], 'nothing outside the registry');
+});
+
+test('choosing the circuit: ?loc= by its prefix, ?circuito= by its name; a loc without a known prefix stays in Altadis España', () => {
+  assert.equal(circuitoDeLoc('alsea-mx-sbux-05-queretaro'), 'alsea_mexico');
+  assert.equal(circuitoDeLoc('altadis-es-05-madrid'), 'altadis_espana');
+  assert.equal(circuitoDeLoc('alsea-sbux-021'), null);
+  assert.equal(circuitoDeLoc(null), null);
+  assert.deepEqual(circuitoDesdeURL('?espacio=altadis-cafe-08&loc=alsea-mx-sbux-05-queretaro&marca=starbucks'), { loc: 'alsea-mx-sbux-05-queretaro', circuito: false, pide: true, id: 'alsea_mexico' });
+  assert.deepEqual(circuitoDesdeURL('?circuito=alsea_mexico&marca=starbucks'), { loc: null, circuito: true, pide: true, id: 'alsea_mexico' });
+  assert.deepEqual(circuitoDesdeURL('?circuito=alsea_mexico&loc=alsea-mx-sbux-01-tijuana'), { loc: 'alsea-mx-sbux-01-tijuana', circuito: true, pide: true, id: 'alsea_mexico' });
+  // The loc prefix wins over another ?circuito= (the map link is the most specific).
+  assert.deepEqual(circuitoDesdeURL('?circuito=altadis_espana&loc=alsea-mx-sbux-01-tijuana'), { loc: 'alsea-mx-sbux-01-tijuana', circuito: false, pide: true, id: 'alsea_mexico' });
+  // A loc without a known prefix: the named circuit, or Altadis España as before the registry.
+  assert.deepEqual(circuitoDesdeURL('?circuito=alsea_mexico&loc=queretaro'), { loc: 'queretaro', circuito: true, pide: true, id: 'alsea_mexico' });
+  assert.deepEqual(circuitoDesdeURL('?loc=alsea-sbux-021'), { loc: 'alsea-sbux-021', circuito: false, pide: true, id: 'altadis_espana' });
+  // The page starts on the circuit's type: Starbucks for alsea_mexico; Altadis keeps Xtanco.
+  assert.equal(tipoInicial('?circuito=alsea_mexico&marca=starbucks'), 'cafe');
+  assert.equal(tipoInicial('?loc=alsea-mx-sbux-05-queretaro'), 'cafe');
+  assert.equal(tipoInicial('?espacio=altadis-cafe-08&loc=alsea-mx-sbux-05-queretaro&marca=starbucks'), 'cafe');
+  assert.equal(tipoInicial('?circuito=altadis_espana'), 'xtanco');
+  assert.equal(tipoInicial('?loc=altadis-es-05-madrid&marca=altadis'), 'xtanco');
+  assert.equal(tipoInicial('?circuito=alsea_mexico&tipo=xtanco'), 'xtanco', 'an explicit ?tipo= still wins');
+  assert.equal(tipoInicial('?circuito=otro&marca=altadis'), 'xtanco');
+});
+
+test('Starbucks México fallback: a copy of the admira.biz index, 10 cafés in 10 Mexican cities, each a different format, valid for the contract', () => {
+  assert.deepEqual(validarCircuito(RESPALDO_MX, 'alsea_mexico'), []);
+  assert.equal(RESPALDO_MX.schema, SCHEMA_CIRCUITO);
+  assert.equal(RESPALDO_MX.circuito, 'alsea_mexico');
+  assert.equal(RESPALDO_MX.marca, 'starbucks');
+  assert.equal(RESPALDO_MX.respaldo, true);
+  const c = normalizarCircuito(RESPALDO_MX);
+  assert.deepEqual(c.avisos, []);
+  assert.deepEqual([c.circuito, c.tipo, c.marca, c.rotulo, c.cliente], ['alsea_mexico', 'cafe', 'starbucks', 'Starbucks', 'Starbucks (Alsea)']);
+  assert.deepEqual(c.locales.map(l => [l.tourOrder, l.ciudad, l.formato.slice(-2)]), REPARTO_MX);
+  for (const l of c.locales) {
+    assert.ok(l.nombre && l.direccion, `${l.id}: real name and address, also if admira.biz fails`);
+    assert.equal(l.espacio, `altadis-cafe-${l.formato.slice(-2)}`);
+    assert.match(l.id, new RegExp(`^alsea-mx-sbux-${String(l.tourOrder).padStart(2, '0')}-[a-z]+$`));
+    assert.ok(formatoDe(INDICE, l.formato), `${l.formato} is one of the 18`);
+    const [lng, lat] = l.coords;
+    assert.ok(lng > -118 && lng < -86 && lat > 14 && lat < 33, `${l.ciudad} is in Mexico`);
+    assert.equal(l.mapa, `https://www.admira.biz/?circuit=alsea_mexico&loc=${l.id}&marca=starbucks`, 'same map link as the real index');
+    assert.equal(l.mapa, enlaceMapa(l, 'alsea_mexico'), 'and the one built when the index brings none (with the Starbucks brand)');
+  }
+  assert.equal(new Set(c.locales.map(l => l.formato)).size, 10, 'each café a different format');
+  // Each index only validates for its own circuit.
+  assert.match(validarCircuito(RESPALDO_MX)[0], /se esperaba altadis_espana/);
+  assert.match(validarCircuito(RESPALDO, 'alsea_mexico')[0], /se esperaba alsea_mexico/);
+  // Xtancos in a Starbucks circuit are dropped with a warning; none left → not usable.
+  const mezcla = { ...clon(REAL_MX), locales: [...clon(REAL_MX.locales), { id: 'alsea-mx-sbux-11-toluca', ciudad: 'Toluca', tourOrder: 11, espacio: 'altadis-xtanco-04' }] };
+  const n = normalizarCircuito(mezcla);
+  assert.equal(n.locales.length, 10);
+  assert.deepEqual(n.avisos, ['El local «alsea-mx-sbux-11-toluca» no abre un Starbucks: «altadis-xtanco-04»']);
+  assert.match(validarCircuito({ ...clon(REAL_MX), locales: RESPALDO.locales }, 'alsea_mexico')[0], /no trae locales que abran un Starbucks/);
+});
+
+test('Starbucks México index sources: admira.biz first; today\'s 404 falls back to the local copy; once published, the real one wins', async () => {
+  const memoria = new Set();
+  const { fetchImpl, pedidas } = falso({ [MX_LOCAL]: { cuerpo: RESPALDO_MX }, [CIRCUITO_LOCAL]: { cuerpo: RESPALDO } });
+  const r = await cargarCircuito({ circuito: 'alsea_mexico', fetchImpl, memoria });
+  assert.deepEqual([r.fuente, r.respaldo, r.circuito.circuito, r.circuito.tipo, r.circuito.locales.length], ['local', true, 'alsea_mexico', 'cafe', 10]);
+  assert.deepEqual(pedidas.map(p => p.url), [MX_COMPARTIDO, MX_LOCAL], 'its own index, never the Altadis one');
+  assert.match(r.fallos[0].error, /HTTP 404|HTML/);
+  assert.equal(memoria.size, 0);
+  const real = await cargarCircuito({ circuito: 'alsea_mexico', fetchImpl: falso({ [MX_COMPARTIDO]: { cuerpo: REAL_MX }, [MX_LOCAL]: { cuerpo: RESPALDO_MX } }).fetchImpl });
+  assert.deepEqual([real.fuente, real.respaldo, real.circuito.locales[0].ciudad], ['compartido', false, 'Tijuana']);
+  // admira.biz answering the Altadis index at the Starbucks URL does not validate → the copy.
+  const cruzado = await cargarCircuito({ circuito: 'alsea_mexico', fetchImpl: falso({ [MX_COMPARTIDO]: { cuerpo: RESPALDO }, [MX_LOCAL]: { cuerpo: RESPALDO_MX } }).fetchImpl });
+  assert.equal(cruzado.fuente, 'local');
+  assert.match(cruzado.fallos[0].error, /no válido/);
+  // Without a circuit, Altadis España as before.
+  const altadis = await cargarCircuito({ fetchImpl: falso({ [CIRCUITO_LOCAL]: { cuerpo: RESPALDO } }).fetchImpl });
+  assert.equal(altadis.circuito.circuito, 'altadis_espana');
+  await assert.rejects(cargarCircuito({ circuito: 'otro', fetchImpl: falso({}).fetchImpl }), /Circuito desconocido/);
+});
+
+test('Starbucks México: the loc opens its café with its format; ← → and the tour visit the 10 in tour order; other types stay out', () => {
+  const c = normalizarCircuito(REAL_MX);
+  const a = resolverInicio(c, { loc: 'alsea-mx-sbux-05-queretaro', espacio: 'altadis-cafe-08' });
+  assert.deepEqual([a.local.ciudad, a.espacio, a.corregido], ['Querétaro', 'altadis-cafe-08', false]);
+  assert.equal(resolverInicio(c, { loc: 'alsea-mx-sbux-05-queretaro' }).espacio, 'altadis-cafe-08');
+  assert.equal(resolverInicio(c, { loc: 'alsea-mx-sbux-05-queretaro', espacio: 'altadis-xtanco-03' }).espacio, 'altadis-cafe-08', 'a Xtanco in the URL does not enter a Starbucks circuit');
+  assert.equal(resolverInicio(c, { espacio: 'altadis-cafe-13' }).local.ciudad, 'Puebla', '?circuito= with a space: its café');
+  assert.deepEqual(resolverInicio(c, { espacio: 'altadis-xtanco-13' }), { local: null, espacio: null, corregido: false, origen: null });
+  assert.deepEqual(resolverInicio(c, { loc: 'altadis-es-05-madrid' }), { local: null, espacio: null, corregido: false, origen: null });
+  const d = resolverInicio(c, { loc: 'alsea-mx-sbux-05-queretaro', espacio: 'altadis-cafe-03' });
+  assert.deepEqual([d.local.espacio, d.local.formato, d.corregido], ['altadis-cafe-03', 'cliente-03', true], 'the URL space wins for its local');
+  let l = vecinoLocal(c, null, 0); const vistos = [];
+  for (let i = 0; i < 10; i++) { vistos.push(`${l.ciudad}:${formatoDeLocal(l)}`); l = vecinoLocal(c, l.id, 1); }
+  assert.deepEqual(vistos, REPARTO_MX.map(([, ciudad, f]) => `${ciudad}:cliente-${f}`));
+  assert.equal(l.ciudad, 'Tijuana', 'after Cancún, Tijuana');
+  assert.equal(vecinoLocal(c, 'alsea-mx-sbux-05-queretaro', -1).ciudad, 'Guadalajara');
+  assert.equal(vecinoLocal(c, 'alsea-mx-sbux-01-tijuana', -1).ciudad, 'Cancún');
+});
+
+test('titles without duplicates: «<name> · <city>» only when the name does not say the city (also as CDMX); gallery and card headers per circuit', () => {
+  const c = normalizarCircuito(RESPALDO_MX);
+  const titulos = c.locales.map(l => tituloLocal(l));
+  assert.deepEqual(titulos, ['Starbucks Tijuana · Plaza Río', 'Starbucks Monterrey · Pabellón M', 'Starbucks León · Poliforum (Blvd. Francisco Villa)',
+    'Starbucks Guadalajara · Centro Gdl', 'Starbucks Querétaro · Constituyentes', 'Starbucks CDMX · Madero', 'Starbucks Puebla · Puebla Centro',
+    'Starbucks Oaxaca · Plaza del Parque', 'Starbucks Mérida · Paseo de Montejo', 'Starbucks Cancún · Puerto Cancún']);
+  assert.deepEqual(c.locales.map(l => tituloLocal(l, true)), titulos, 'a proper name is not translated');
+  for (const [i, t] of titulos.entries()) assert.equal(t.split(c.locales[i].ciudad).length <= 3, true, t);
+  assert.equal(tituloLocal({ nombre: 'Starbucks Polanco', ciudad: 'Ciudad de México', espacio: 'altadis-cafe-10' }), 'Starbucks Polanco · Ciudad de México', 'with the city when the name does not say it');
+  assert.equal(tituloLocal({ nombre: 'Starbucks Arcdmxo', ciudad: 'Ciudad de México' }), 'Starbucks Arcdmxo · Ciudad de México', 'the alias is a whole word');
+  assert.equal(tituloLocal({ ciudad: 'Oaxaca', espacio: 'altadis-cafe-18' }), 'Starbucks Oaxaca', 'generic café name');
+  assert.equal(tituloLocal({ ciudad: 'Oaxaca', espacio: 'altadis-cafe-18' }, true), 'Starbucks Oaxaca');
+  assert.equal(tituloLocal({ espacio: 'altadis-cafe-18' }), 'Starbucks');
+  assert.equal(tituloLocal({ ciudad: 'Sevilla', espacio: 'altadis-xtanco-18' }), 'Estanco de Sevilla', 'Xtanco keeps its generic name');
+
+  const mx = textosCircuito(c);
+  assert.deepEqual(mx.h1, ['Starbucks México · 10 cafeterías', 'Starbucks Mexico · 10 cafés']);
+  assert.deepEqual(mx.eyebrow, ['STARBUCKS MÉXICO · CIRCUITO · GEMELOS 3D', 'STARBUCKS MEXICO · CIRCUIT · 3D TWINS']);
+  assert.deepEqual(mx.titulo, ['10 cafeterías · 10 ciudades · un formato de pantalla en cada una', '10 cafés · 10 cities · one screen format in each']);
+  assert.deepEqual(mx.ficha(5), ['STARBUCKS MÉXICO · CAFETERÍA 05/10', 'STARBUCKS MEXICO · CAFÉ 05/10']);
+  assert.equal(mx.marca, 'STARBUCKS');
+  for (const v of [...mx.h1, ...mx.eyebrow, ...mx.lead2, ...mx.titulo, ...mx.ficha(1)]) assert.doesNotMatch(v, /Altadis|ALTADIS|España|Xtanco|estanco/, v);
+  assert.equal(RESPALDO_MX.nombre, mx.h1[0], 'the fallback says the same name');
+  // Altadis España: exactly the texts it had before the registry.
+  const es = textosCircuito(normalizarCircuito(RESPALDO));
+  assert.deepEqual(es.eyebrow, ['ALTADIS ESPAÑA · CIRCUITO · GEMELOS 3D', 'ALTADIS SPAIN · CIRCUIT · 3D TWINS']);
+  assert.deepEqual(es.h1, ['Altadis España · 10 Xtancos', 'Altadis Spain · 10 Xtancos']);
+  assert.deepEqual(es.lead2, ['10 estancos en 10 ciudades, cada uno con un formato de pantalla de Altadis y su contenido. Elige uno para verlo en 3D; ← y → los recorren en el orden del circuito.',
+    '10 tobacconists in 10 cities, each one with a Altadis screen format and its content. Pick one to see it in 3D; ← and → follow the circuit order.']);
+  assert.deepEqual(es.titulo, ['10 estancos · 10 ciudades · un formato de Altadis en cada uno', '10 tobacconists · 10 cities · one Altadis format in each']);
+  assert.deepEqual(es.ficha(5), ['ALTADIS ESPAÑA · ESTANCO 05/10', 'ALTADIS SPAIN · TOBACCONIST 05/10']);
+  assert.equal(es.marca, 'ALTADIS');
+  assert.equal(RESPALDO.nombre, es.h1[0]);
+});
+
+test('Starbucks México «Volver al mapa» only goes to https://www.admira.biz/; the viewer follows the circuit type; the shell dresses ?marca=starbucks', () => {
+  const conMapa = mapa => normalizarCircuito({ ...clon(REAL_MX), locales: [{ ...clon(RESPALDO_MX.locales[4]), mapa }] }).locales[0].mapa;
+  const propio = 'https://www.admira.biz/?circuit=alsea_mexico&loc=alsea-mx-sbux-05-queretaro&marca=starbucks';
+  assert.equal(conMapa(propio), propio);
+  for (const ajeno of ['https://evil.example/?circuit=alsea_mexico', 'https://www.admira.biz.evil.example/', 'https://admira.biz/', 'https://www.admira.biz@evil.example/',
+    'http://www.admira.biz/', '//www.admira.biz/', 'javascript:alert(1)', 'https://www.admira.biz/"><script>', 'https://www.starbucks.com.mx/', null]) {
+    assert.equal(conMapa(ajeno), propio, String(ajeno));
+  }
+  assert.equal(enlaceMapa({ id: 'alsea-mx-sbux-05-queretaro' }, 'alsea_mexico'), propio);
+  assert.equal(queryEspacio({ espacio: 'altadis-cafe-08', loc: 'alsea-mx-sbux-05-queretaro', marca: 'starbucks' }), '?espacio=altadis-cafe-08&loc=alsea-mx-sbux-05-queretaro&marca=starbucks');
+  const visor = read('xpacios/altadis-18/visor.mjs');
+  assert.match(visor, /st\.enCircuito = true; st\.tipo = st\.circuito\.tipo;/, 'the circuit sets the space type');
+  assert.match(visor, /m = manifiestoDe\(st\.circuito\.tipo\)/, 'gallery posters of the circuit type');
+  assert.match(visor, /u\.searchParams\.set\('circuito', st\.circuito\.circuito\)/, 'the gallery URL names its circuit');
+  assert.doesNotMatch(visor, /\bCIRCUITO\b/, 'no hard-coded circuit left in the viewer');
+  assert.match(visor, /const marcaFicha = st\.enCircuito && st\.local \? textosDeCircuito\(st\.circuito\)\.marca : 'ALTADIS';/, 'the format eyebrow says the circuit brand; ALTADIS outside a circuit');
+  assert.match(visor, /nombreTipo\(tipo\)\.toUpperCase\(\)\.replace\(marcaFicha, ''\)/, 'without repeating it: «STARBUCKS · FORMATO 08/18 · CAFETERÍA»');
+  const require = createRequire(import.meta.url);
+  const SHELL = require(repo + 'assets/xpace-shell.js');
+  const memoria = () => ({ getItem: () => null, setItem() {}, removeItem() {} });
+  assert.ok(SHELL.wantsBrand('?espacio=altadis-cafe-08&loc=alsea-mx-sbux-05-queretaro&marca=starbucks', memoria()));
+  assert.ok(SHELL.wantsBrand('?circuito=alsea_mexico&marca=starbucks', memoria()));
 });

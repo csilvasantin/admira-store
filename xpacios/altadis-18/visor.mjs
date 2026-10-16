@@ -15,14 +15,14 @@ import {
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, formatoDe, medidaFisica,
   textoMontaje, textoPared, textoZona, textoEntrega,
   STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, ESPACIO_RE, dos,
-} from './espacios.mjs?v=a18-6';
-import { uvsFormato } from './recorte.mjs?v=a18-6';
-import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-6';
-import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles, MIN_REALISTA } from './vista.mjs?v=a18-6';
+} from './espacios.mjs?v=a18-7';
+import { uvsFormato } from './recorte.mjs?v=a18-7';
+import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-7';
+import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles, MIN_REALISTA } from './vista.mjs?v=a18-7';
 import {
   circuitoDesdeURL, marcaDesdeURL, tipoInicial, cargarCircuito, buscarLocal, resolverInicio, vecinoLocal, localDeEspacio,
-  tituloLocal, formatoDeLocal, CIRCUITO,
-} from './circuito.mjs?v=a18-6';
+  tituloLocal, formatoDeLocal, textosCircuito as textosDeCircuito,
+} from './circuito.mjs?v=a18-7';
 // Escena realista (misión DCL-a6cb621be0ce5932f50960de): el registro y el montaje son puros; el
 // motor (GLTFLoader, el GLB de 13 MB) se carga aparte y sólo si hace falta.
 import { escenaRealista, elegirModo, modoDesdeURL, soporteRealista, acabadoPorId, MODOS } from '../realista/escenas-realistas.mjs?v=real-1';
@@ -31,7 +31,7 @@ import { montarFormato, escenaMontada } from '../realista/montaje.mjs?v=real-1';
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const pedido = destinoDesdeURL(location.search);
-// Circuito Altadis España (?loc=, ?circuito=altadis_espana) y marca blanca (?marca=, la aplica el shell).
+// Circuitos (?loc=, ?circuito=altadis_espana|alsea_mexico; registro en circuito.mjs) y marca blanca (?marca=, la aplica el shell).
 const pedidoCircuito = circuitoDesdeURL(location.search);
 const MARCA = marcaDesdeURL(location.search);
 const st = { lang: pedido.lang, tipo: tipoInicial(location.search), indice: null, fuenteIndice: null, manifiestos: {}, fuentesMan: {},
@@ -73,7 +73,7 @@ async function arrancar() {
   precargarRealista();   // el GLB baja mientras se leen el índice y el plano
   status(t('Leyendo los 18 formatos…', 'Reading the 18 formats…'));
   // El índice del circuito sólo si la URL lo pide; va a la vez que el de formatos (sin loc, nada nuevo).
-  const circuito = pedidoCircuito.pide ? cargarCircuito().catch(e => ({ error: e })) : null;
+  const circuito = pedidoCircuito.pide ? cargarCircuito({ circuito: pedidoCircuito.id }).catch(e => ({ error: e })) : null;
   try {
     const r = await cargarIndice({ memoria: caidos });
     st.indice = r.datos; st.fuenteIndice = r;
@@ -106,8 +106,8 @@ function pintarFuentes() {
     fc?.url ? `${t('Circuito', 'Circuit')}: ${fc.url}` : '', ...(fc?.fallos || []).map(f => `${t('No se usó', 'Not used')}: ${f.url} (${motivoFallo(f)})`)].filter(Boolean).join('\n');
 }
 
-// ── Circuito Altadis España: 10 estancos, cada uno con su formato ──
-// Se entra con un ?loc= del índice o con ?circuito=altadis_espana. Un loc desconocido se ignora:
+// ── Circuitos: Altadis España (10 estancos) y Starbucks México (10 cafeterías), cada local con su formato ──
+// Se entra con un ?loc= del índice o con ?circuito=<id>. Un loc desconocido se ignora:
 // la página queda como sin loc (y el loc se deja en la URL, por si es de otra cosa).
 function prepararCircuito(r) {
   st.fuenteCircuito = r && !r.error ? r : { error: r?.error?.message, fallos: r?.error?.fallos || [] };
@@ -117,7 +117,7 @@ function prepararCircuito(r) {
   st.circuito = r.circuito;
   // El espacio de la URL manda para su local (viene del mapa): el recorrido lo respeta.
   if (inicio.corregido) st.circuito = { ...st.circuito, locales: st.circuito.locales.map(l => (l.id === inicio.origen ? inicio.local : l)) };
-  st.enCircuito = true; st.tipo = 'xtanco';
+  st.enCircuito = true; st.tipo = st.circuito.tipo;   // Xtanco en Altadis España, Starbucks en Starbucks México
   textosCircuito(true);
   return inicio.espacio ? inicio : null;
 }
@@ -128,13 +128,8 @@ const cabeceraOriginal = Object.fromEntries(CABECERA.map(id => [id, { ...$(id).d
 function textosCircuito(activo) {
   raiz.toggleAttribute('data-circuito', activo);
   for (const b of document.querySelectorAll('[data-salir-circuito]')) b.hidden = !activo;
-  const n = st.circuito?.locales.length || 0, cliente = st.circuito?.cliente || 'Altadis';
-  const nuevos = {
-    'galeria-eyebrow': [`${cliente.toUpperCase()} ESPAÑA · CIRCUITO · GEMELOS 3D`, `${cliente.toUpperCase()} SPAIN · CIRCUIT · 3D TWINS`],
-    'galeria-h1': [`${cliente} España · ${n} Xtancos`, `${cliente} Spain · ${n} Xtancos`],
-    'galeria-lead2': [`${n} estancos en ${n} ciudades, cada uno con un formato de pantalla de ${cliente} y su contenido. Elige uno para verlo en 3D; ← y → los recorren en el orden del circuito.`,
-      `${n} tobacconists in ${n} cities, each one with a ${cliente} screen format and its content. Pick one to see it in 3D; ← and → follow the circuit order.`],
-  };
+  const x = textosDeCircuito(st.circuito);
+  const nuevos = { 'galeria-eyebrow': x.eyebrow, 'galeria-h1': x.h1, 'galeria-lead2': x.lead2 };
   for (const id of CABECERA) Object.assign($(id).dataset, activo ? { es: nuevos[id][0], en: nuevos[id][1] } : cabeceraOriginal[id]);
   aplicarTextos();
 }
@@ -189,10 +184,10 @@ function ponerTarjetas(html) {
 }
 let galeriaPintada = '';
 
-// Galería del circuito: los estancos en orden de tour, con su ciudad y su formato.
+// Galería del circuito: los locales en orden de tour, con su ciudad y su formato (pósters del tipo del circuito).
 function pintarGaleriaCircuito() {
-  const locales = st.circuito.locales, m = manifiestoDe('xtanco');
-  $('galeria-titulo').textContent = t(`${locales.length} estancos · ${locales.length} ciudades · un formato de Altadis en cada uno`, `${locales.length} tobacconists · ${locales.length} cities · one Altadis format in each`);
+  const locales = st.circuito.locales, m = manifiestoDe(st.circuito.tipo);
+  $('galeria-titulo').textContent = t(...textosDeCircuito(st.circuito).titulo);
   const html = locales.map((l, i) => {
     const f = formatoDe(st.indice, formatoDeLocal(l));
     if (!f) return '';
@@ -232,7 +227,7 @@ function actualizarURL() {
   // En el circuito, el local que se ve (loc); en su galería o en un espacio que no es de ningún local, el circuito.
   if (st.enCircuito) {
     if (st.local) u.searchParams.set('loc', st.local.id);
-    else { u.searchParams.delete('loc'); u.searchParams.set('circuito', CIRCUITO); }
+    else { u.searchParams.delete('loc'); u.searchParams.set('circuito', st.circuito.circuito); }
   }
   if (st.lang === 'en') u.searchParams.set('lang', 'en');
   if (st.auto) u.searchParams.set('auto', '1');
@@ -638,7 +633,11 @@ function soltarEspacio() {
 // ── Ficha ──
 function pintarFichaBasica() {
   const { formato: f, tipo } = st.actual;
-  $('f-eyebrow').textContent = `ALTADIS · ${t('FORMATO', 'FORMAT')} ${dos(f.n)}/${dos(st.indice.formatos.length)} · ${nombreTipo(tipo).toUpperCase()}`;
+  // En un circuito, la marca del circuito (ALTADIS · STARBUCKS); fuera, ALTADIS, como siempre. El
+  // tipo sin repetir la marca: «STARBUCKS · FORMATO 08/18 · CAFETERÍA», no «… · CAFETERÍA STARBUCKS».
+  const marcaFicha = st.enCircuito && st.local ? textosDeCircuito(st.circuito).marca : 'ALTADIS';
+  const tipoFicha = nombreTipo(tipo).toUpperCase().replace(marcaFicha, '').replace(/\s+/g, ' ').trim();
+  $('f-eyebrow').textContent = `${marcaFicha} · ${t('FORMATO', 'FORMAT')} ${dos(f.n)}/${dos(st.indice.formatos.length)}${tipoFicha ? ` · ${tipoFicha}` : ''}`;
   $('f-nombre').textContent = f.nombre;
   const uso = f.uso ? (f.uso[st.lang] || f.uso.es) : '', zona = textoZona(f.zona, EN());
   $('f-uso').textContent = `${uso}${zona && zona !== uso ? ` · ${t('zona', 'zone')} ${zona}` : ''}`;
@@ -650,14 +649,14 @@ function pintarFichaBasica() {
   pintarFichaLocal();
 }
 
-// El estanco del circuito, encima del formato: «Estanco <nombre> · <ciudad>», su dirección y «Volver al mapa».
+// El local del circuito, encima del formato: «<nombre> · <ciudad>», su dirección y «Volver al mapa».
 function pintarFichaLocal() {
   const l = st.enCircuito ? st.local : null;
   $('f-local').hidden = !l;
   raiz.toggleAttribute('data-local', Boolean(l));
   if (!l) return;
-  const n = st.circuito.locales.length, i = st.circuito.locales.findIndex(x => x.id === l.id);
-  $('f-local-eyebrow').textContent = `${(st.circuito.cliente || 'Altadis').toUpperCase()} ${t('ESPAÑA', 'SPAIN')} · ${t('ESTANCO', 'TOBACCONIST')} ${dos(l.tourOrder ?? i + 1)}/${dos(n)}`;
+  const i = st.circuito.locales.findIndex(x => x.id === l.id);
+  $('f-local-eyebrow').textContent = t(...textosDeCircuito(st.circuito).ficha(l.tourOrder ?? i + 1));
   $('f-local-nombre').textContent = tituloLocal(l, EN());
   $('f-local-dir').textContent = l.direccion || '';
   const mapa = $('f-mapa');
@@ -736,7 +735,7 @@ function paso(d) {
 
 function cambiarTipo(tipo) {
   if (!TIPOS.includes(tipo) || tipo === st.tipo && (!st.actual || st.actual.tipo === tipo)) return;
-  if (st.enCircuito) salirCircuito();   // el circuito es de estancos: un Starbucks lo deja
+  if (st.enCircuito) salirCircuito();   // un circuito es de un solo tipo (estancos o cafeterías): cambiarlo lo deja
   st.tipo = tipo; aplicarTextos(); precargarRealista();
   pintarFuentes();   // la campaña del tipo (Xtanco: Altadis; Starbucks: Starbucks)
   if (st.actual) abrir(st.actual.formato.formato, tipo); else { actualizarURL(); pintarGaleria(); }
@@ -845,7 +844,7 @@ function zoom(f, base) {
 })();
 
 window.Altadis18 = { st, abrir, paso, cambiarIdioma, cambiarTipo, volverGaleria, ponerVista, salirCircuito, info: () => ({ espacio: st.actual?.id || null,
-  loc: st.local?.id || null, circuito: st.enCircuito, circuitoFuente: st.fuenteCircuito?.fuente || null, medio: medio ? { tipo: medio.tipo, cargando: Boolean(medio.cargando), motivo: medio.motivo || null, w: medio.video?.videoWidth || null, h: medio.video?.videoHeight || null, t: medio.video?.currentTime ?? null, pausado: medio.video ? medio.video.paused : null } : null, pantallas: pantallasFormato().length, enLienzo: s3d ? s3d.enLienzo() : 0, memoria: renderer ? { ...renderer.info.memory } : null, vista: cam.vista,
+  loc: st.local?.id || null, circuito: st.enCircuito, circuitoId: st.enCircuito ? st.circuito.circuito : null, circuitoFuente: st.fuenteCircuito?.fuente || null, medio: medio ? { tipo: medio.tipo, cargando: Boolean(medio.cargando), motivo: medio.motivo || null, w: medio.video?.videoWidth || null, h: medio.video?.videoHeight || null, t: medio.video?.currentTime ?? null, pausado: medio.video ? medio.video.paused : null } : null, pantallas: pantallasFormato().length, enLienzo: s3d ? s3d.enLienzo() : 0, memoria: renderer ? { ...renderer.info.memory } : null, vista: cam.vista,
   escena: s3d ? st.modo : null, motivoEscena: st.eleccion?.motivo || null, errorEscena: st.eleccion?.error || null, acabado: s3d?.acabado || null, arreglos: s3d?.arreglos || null,
   modelo: s3d?.modelo || null, estadoModelo: motor ? motor.estadoModelo(escenaRealista('xtanco')) : null, llamadas: renderer ? renderer.info.render.calls : null, triangulos: renderer ? renderer.info.render.triangles : null }), cambiarEscena };
 arrancar();
