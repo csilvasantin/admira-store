@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r19.15:21",
-  "deployedAt": "2026-10-16T13:21:06Z",
+  "version": "v.16.10.2026.r20.15:23",
+  "deployedAt": "2026-10-16T13:23:59Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "7b6a3a3387f41ac9c4539af1034a1c9ecf93b68c",
-  "gitShort": "7b6a3a3",
-  "gitFull": "7b6a3a3387f41ac9c4539af1034a1c9ecf93b68c",
+  "git": "52b63c2142ee2d83febbaec2a74c0e799f051ec1",
+  "gitShort": "52b63c2",
+  "gitFull": "52b63c2142ee2d83febbaec2a74c0e799f051ec1",
   "dirty": false,
   "novedades": [
-    "Playlists: el buscador de Stock marca «Ya en la playlist ✓» y, al añadir, la lista baja hasta la canción nueva"
+    "Playlists: cada canción lleva su previo (carátula de Stock o nota si es solo audio), en la lista y en la búsqueda"
   ]
 }
