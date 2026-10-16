@@ -178,7 +178,7 @@ test('el hilo musical de cada local se edita como en Paseo de Gràcia: su playli
   const v = editor.match(/from '\.\/context-playlist-client\.mjs(\?v=[^']+)'/)[1];
   assert.ok(visor.includes(`import { contextPlaylist } from '/admira-xp/scripts/context-playlist-client.mjs${v}';`));
   assert.ok(readFileSync(aqui('./mando-tpv.mjs'), 'utf8').includes("import { mountMusicRemote } from '/admira-xp/scripts/music-remote.mjs"), 'el mando de Paseo de Gràcia');
-  assert.match(visor, /if \(p\.tipo === 'tpv'\) \{ piezas\.mando = piezas\.mando \|\| crearMandoTPV\(\{ musica: piezas\.tpv\.musica \}\); piezas\.mando\.abrir\(/);
+  assert.match(visor, /if \(p\.tipo === 'tpv'\) \{ piezas\.mando = piezas\.mando \|\| crearMandoTPV\(\{ musica: piezas\.tpv\.musica, alEnfocar: enfocarTPV \}\); piezas\.mando\.abrir\(/);
 
   // El TPV: la publicada de siempre hasta que llega la del local; la del local manda; vacía, calla.
   const oidos = [];
@@ -203,4 +203,24 @@ test('el hilo musical de cada local se edita como en Paseo de Gràcia: su playli
   assert.equal(tpv.pistas, 0); assert.equal(tpv.sonando, false, 'playlist vacía: se para, sin relleno automático');
   assert.ok(estados.length >= 4, 'el mando se entera de cada cambio');
   delete globalThis.Audio; delete globalThis.Image;
+});
+
+test('el foco del mando: ◎ a la izquierda de «Hilo musical · centro» lleva el TPV al centro del hueco libre, de cerca', () => {
+  const mando = readFileSync(aqui('./mando-tpv.mjs'), 'utf8'), pano = readFileSync(aqui('./panorama.mjs'), 'utf8');
+  assert.match(mando, /<header><button class="sc-mando-foco" type="button" aria-label="Foco: el TPV en el centro, de cerca" aria-pressed="false">◎<\/button><strong><\/strong>/, 'pequeño, a la izquierda del título');
+  assert.match(mando, /foco\.addEventListener\('click', \(\) => \{ const on = !enFoco; ponerFoco\(on\); alEnfocar\(on\); \}\);/);
+  assert.match(visor, /crearMandoTPV\(\{ musica: piezas\.tpv\.musica, alEnfocar: enfocarTPV \}\)/);
+  assert.match(visor, /return pano\.enfocar\(tpv\.id, \{ x, y \}\);/, 'en el centro del hueco que deja el mando');
+  assert.match(visor, /if \(!on\) \{ const v = vistaAntesDelFoco; vistaAntesDelFoco = null; return v \? pano\.irA\(v\) : null; \}/, 'otra vez: la vista de antes');
+  assert.match(pano, /function enfocar\(id, \{ alto = 0\.28, x = 0\.5, y = 0\.5, dur = 700 \} = \{\}\)/);
+  assert.match(pano, /render\(\) \{ avanzar\(\); mirar\(\); renderer\.render\(escena, camara\); \}/, 'el giro es suave');
+  assert.match(pano, /girar\(dx, dy, alto\) \{\n      anim = null;/, 'arrastrar corta el giro');
+  assert.match(readFileSync(aqui('./centros.css'), 'utf8'), /\.sc-mando\.sc-mando--foco\{background:transparent;justify-content:flex-end/, 'con foco, el mando se aparta');
+});
+
+test('el mostrador de Diagonal como el de Paseo de Gràcia: iPad horizontal encima de la vitrina y la música en el TPV de la cola', () => {
+  const pz = Object.fromEntries(centros.find(c => c.id === 'd634').panorama.piezas.map(p => [p.id, p]));
+  assert.equal(pz['D634-IPAD'].horizontal, true, 'horizontal, como el de Paseo de Gràcia');
+  assert.deepEqual(pz['D634-IPAD'].esquinas, [[3471, 2043], [3598, 2046], [3581, 2117], [3448, 2115]], 'el marco de encima de la vitrina');
+  assert.deepEqual(pz['D634-TPV'].esquinas, [[3171, 2095], [3231, 2098], [3196, 2222], [3123, 2217]], 'el TPV donde estaba la cola');
 });

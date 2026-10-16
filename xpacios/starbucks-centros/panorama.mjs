@@ -86,6 +86,36 @@ export function crearPanorama(T, renderer) {
     }
   }
 
+  // Foco (Carlos, 16-oct-2026: «un botón que sea foco y ponga el tpv centrado en el fondo en primer plano, como
+  // hacemos con el kiosko»): la vista va a una pieza, en el centro y de cerca, con un giro corto y suave.
+  let anim = null;
+  function irA(destino, dur = 700) {
+    const desde = { ...vista }, dy = ((((Number(destino.yaw) || 0) - desde.yaw) % 360) + 540) % 360 - 180;
+    anim = { t0: performance.now(), dur, desde, hasta: { yaw: desde.yaw + dy, pitch: limitar(Number(destino.pitch) || 0, -85, 85), fov: limitar(Number(destino.fov) || desde.fov, 12, FOV_MAX) } };
+    return { ...anim.hasta };
+  }
+  // La pieza ocupa `alto` del alto de la pantalla (algo más de un cuarto: entera, de cerca y sin verse borrosa) y
+  // queda en el punto (x, y) de la pantalla, en fracciones (0,5 = centro): el centro del hueco que deja el mando.
+  function enfocar(id, { alto = 0.28, x = 0.5, y = 0.5, dur = 700 } = {}) {
+    const m = cuadros.get(id); if (!m) return null;
+    esfera.updateMatrixWorld(true);
+    const pos = m.geometry.getAttribute('position');
+    const pts = [0, 1, 2, 3].map(i => new T.Vector3().fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld).normalize());
+    const c = pts.reduce((a, v) => a.add(v), new T.Vector3()).normalize();
+    const arriba = pts[0].clone().add(pts[1]).normalize(), abajo = pts[3].clone().add(pts[2]).normalize();
+    const grados = arriba.angleTo(abajo) * 180 / Math.PI;
+    const fov = limitar(grados / alto, 12, FOV_MAX), medio = Math.tan(rad(fov) / 2);
+    const lado = Math.atan((limitar(x, 0, 1) - 0.5) * 2 * medio * camara.aspect) * 180 / Math.PI;
+    const alzado = Math.atan((0.5 - limitar(y, 0, 1)) * 2 * medio) * 180 / Math.PI;
+    return irA({ yaw: Math.atan2(c.x, -c.z) * 180 / Math.PI - lado, pitch: Math.asin(limitar(c.y, -1, 1)) * 180 / Math.PI - alzado, fov }, dur);
+  }
+  function avanzar(now = performance.now()) {
+    if (!anim) return;
+    const t = Math.min(1, (now - anim.t0) / anim.dur), e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    for (const k of ['yaw', 'pitch', 'fov']) vista[k] = anim.desde[k] + (anim.hasta[k] - anim.desde[k]) * e;
+    if (t >= 1) anim = null;
+  }
+
   function mirar() {
     const y = rad(vista.yaw), p = rad(vista.pitch);
     if (camara.fov !== vista.fov) { camara.fov = vista.fov; camara.updateProjectionMatrix(); }
@@ -97,12 +127,16 @@ export function crearPanorama(T, renderer) {
     get cargada() { return cargada; },
     cargar,
     // Arrastrar: la foto sigue al dedo (los grados por píxel dependen del zoom).
+    enfocar, irA,
+    get enMovimiento() { return !!anim; },
     girar(dx, dy, alto) {
+      anim = null;
       const k = vista.fov / Math.max(1, alto);
       vista.yaw -= dx * k;
       vista.pitch = limitar(vista.pitch + dy * k, -85, 85);
     },
-    acercar(factor) { vista.fov = limitar(vista.fov * factor, FOV_MIN, FOV_MAX); },
+    // Tras un foco (más cerca que FOV_MIN) la rueda aleja sin saltos.
+    acercar(factor) { anim = null; vista.fov = limitar(vista.fov * factor, Math.min(FOV_MIN, vista.fov), FOV_MAX); },
     aspecto(a) { camara.aspect = a; camara.updateProjectionMatrix(); },
     get pantallas() { return [...cuadros.keys()]; },
     // La imagen que toca en cada pantalla (la misma textura de vídeo que en el 3D).
@@ -110,6 +144,6 @@ export function crearPanorama(T, renderer) {
     resaltar(id) { for (const [k, m] of cuadros) m.userData.borde.visible = k === id; },
     // Qué pantalla hay bajo el puntero (coordenadas normalizadas -1…1), o null.
     elegir(nx, ny) { mirar(); esfera.updateMatrixWorld(true); rayo.setFromCamera(new T.Vector2(nx, ny), camara); const hit = rayo.intersectObjects([...cuadros.values()], false)[0]; return hit ? hit.object.userData.pantalla : null; },
-    render() { mirar(); renderer.render(escena, camara); },
+    render() { avanzar(); mirar(); renderer.render(escena, camara); },
   };
 }

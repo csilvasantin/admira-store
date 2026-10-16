@@ -4,15 +4,25 @@
 // la playlist del local (Añadir desde Stock, Quitar de esta playlist). El editor toma proyecto y local de la
 // dirección (?project=starbucks&venue=…), que el visor pone al cambiar de centro. Sin sesión, la lista se ve pero no
 // se edita, como en Paseo de Gràcia.
+// Foco (Carlos, 16-oct-2026: «pon un botón que sea foco y ponga el tpv centrado en el fondo en primer plano, como
+// hacemos con el kiosko… un botón pequeño a la izquierda de Hilo musical · con el nombre del centro»): ◎ lleva la
+// vista al TPV y aparta el mando a un lado para verlo; otra vez, vuelve donde estaba.
 import { mountMusicRemote } from '/admira-xp/scripts/music-remote.mjs?v=local-playlist-349';
 
-export function crearMandoTPV({ doc = document, musica, win = globalThis } = {}) {
-  let modal = null, titulo = null, hueco = null, mando = null;
+export function crearMandoTPV({ doc = document, musica, win = globalThis, alEnfocar = null } = {}) {
+  let modal = null, titulo = null, hueco = null, mando = null, foco = null, enFoco = false;
+  function ponerFoco(on) {
+    enFoco = !!on && !!alEnfocar;
+    if (modal) modal.classList.toggle('sc-mando--foco', enFoco);
+    if (foco) { foco.setAttribute('aria-pressed', String(enFoco)); foco.title = enFoco ? 'Volver a la vista de antes' : 'Foco: el TPV en el centro, de cerca'; }
+  }
   function montar() {
     if (modal) return;
     modal = doc.createElement('dialog'); modal.className = 'sc-mando'; modal.setAttribute('aria-label', 'Mando del hilo musical');
-    modal.innerHTML = '<div class="sc-mando-caja"><header><strong></strong><button class="sc-mando-x" type="button" aria-label="Cerrar">✕</button></header><div class="sc-mando-hueco"></div></div>';
-    titulo = modal.querySelector('strong'); hueco = modal.querySelector('.sc-mando-hueco');
+    modal.innerHTML = '<div class="sc-mando-caja"><header><button class="sc-mando-foco" type="button" aria-label="Foco: el TPV en el centro, de cerca" aria-pressed="false">◎</button><strong></strong><button class="sc-mando-x" type="button" aria-label="Cerrar">✕</button></header><div class="sc-mando-hueco"></div></div>';
+    titulo = modal.querySelector('strong'); hueco = modal.querySelector('.sc-mando-hueco'); foco = modal.querySelector('.sc-mando-foco');
+    foco.hidden = !alEnfocar;
+    foco.addEventListener('click', () => { const on = !enFoco; ponerFoco(on); alEnfocar(on); });
     modal.querySelector('.sc-mando-x').addEventListener('click', cerrar);
     modal.addEventListener('click', e => { if (e.target === modal) cerrar(); });
     modal.addEventListener('cancel', e => { e.preventDefault(); cerrar(); });
@@ -22,11 +32,12 @@ export function crearMandoTPV({ doc = document, musica, win = globalThis } = {})
   }
   function abrir(local = '') {
     montar();
-    titulo.textContent = '♪ Hilo musical' + (local ? ' · ' + local : '');
+    titulo.textContent = '♪ Hilo musical' + (local ? ' · ' + local : ''); ponerFoco(false);
     mando.node.open = true; mando.update();
     try { if (!modal.open) modal.showModal(); } catch { modal.setAttribute('open', ''); }
     return true;
   }
-  function cerrar() { if (!modal) return; try { if (modal.open) modal.close(); } catch { modal.removeAttribute('open'); } }
-  return { abrir, cerrar, get abierto() { return !!(modal && modal.open); }, get nodo() { return modal; } };
+  // Al cerrar, la vista se queda donde esté (como el foco del quiosco).
+  function cerrar() { if (!modal) return; ponerFoco(false); try { if (modal.open) modal.close(); } catch { modal.removeAttribute('open'); } }
+  return { abrir, cerrar, get abierto() { return !!(modal && modal.open); }, get enFoco() { return enFoco; }, get nodo() { return modal; } };
 }
