@@ -371,3 +371,9 @@ test('/marca está en la ayuda y las superficies MCP; /brand es alias y Tab comp
   const commands = catalog.features.flatMap(f => f.commands.map(c => c.text));
   for (const c of ['/marca starbucks', '/marca off']) assert.ok(commands.includes(c), `funcionalidades.json: ${c}`);
 });
+
+test('Starbucks lock-up: one white STARBUCKS word when the catalogue logo is only text (Carlos, 16-oct-2026)', () => {
+  const css = read('assets/marca-blanca.css');
+  assert.match(css, /#mb-bar-logo\.mb-starbucks-lockup > svg:has\(text\):not\(:has\(path,circle,ellipse,polygon,polyline,rect,image,use\)\)\{display:none\}/);
+  assert.match(css, /#mb-bar-logo \.mb-starbucks-wordmark\{color:#fff/, 'the white word stays');
+});

@@ -150,3 +150,8 @@
 :root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo.mb-starbucks-lockup{background:#006241;gap:7px;padding:3px 9px 3px 4px;box-sizing:border-box;height:34px;max-width:170px;flex-shrink:0}
 :root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo .mb-starbucks-wordmark{color:#fff;line-height:1;font:800 12px/1 Inter,Arial,sans-serif;letter-spacing:.08em}
 :root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo :is(img,svg){max-width:28px}
+/* Sin imagotipo (Carlos, 16-oct-2026: el logo salía dos veces). El catálogo guarda Starbucks como el texto neutro
+   «STARBUCKS» en un SVG, sin la sirena: en el lock-up se quedaba en miniatura y oscuro junto a la palabra blanca.
+   Si el SVG del catálogo es solo texto, se oculta y queda una sola palabra, la blanca. Un imagotipo de verdad sigue. */
+:root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo.mb-starbucks-lockup > svg:has(text):not(:has(path,circle,ellipse,polygon,polyline,rect,image,use)){display:none}
+:root[data-mb-marca="starbucks"][data-mb-plataforma="store"] #mb-bar-logo.mb-starbucks-lockup:has(> svg:has(text):not(:has(path,circle,ellipse,polygon,polyline,rect,image,use))){padding:3px 12px;justify-content:center}

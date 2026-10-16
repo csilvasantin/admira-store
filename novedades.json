@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r6.08:37": [
+    "Con la marca Starbucks, la barra de arriba pone una sola vez STARBUCKS, en blanco"
+  ],
   "v.16.10.2026.r5.01:06": [
     "Diagonal 634 con su propia cola de pedidos (starbucks-diagonal-634) y un quiosco de pedidos en la pared oscura, clon del de Paseo de Gràcia"
   ],
