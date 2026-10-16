@@ -18,7 +18,7 @@
 
 import { validatePlan } from '../gran-de-gracia-51/plano3d.mjs?v=gdg51-6';
 import { CAMPOS_PRIVADOS } from '../plano-publico.mjs';
-import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-5';
+import { erroresRecorte, lienzoValido, coberturaLienzo } from './recorte.mjs?v=a18-6';
 
 export const SCHEMA_INDICE = 'admira.espacios-formato/1';
 export const SCHEMA_CONTENIDO = 'admira.espacios-contenido/1';
@@ -316,6 +316,8 @@ export const MONTAJES = {
   'sobre-contrabarra': ['sobre la contrabarra', 'above the back counter'], 'pared-fondo': ['en la pared del fondo', 'on the back wall'],
   'junto-caja': ['junto a la caja', 'next to the till'], peana: ['sobre peana', 'on a pedestal'],
   'banda-alta': ['en banda alta', 'high-level strip'], 'cabecera-lineal': ['en la cabecera del lineal', 'at the end of the shelving'],
+  // Escena realista (xpacios/realista/): las pantallas del formato sobre su soporte en la zona de montaje.
+  soporte: ['sobre soporte de exposición', 'on a display stand'],
 };
 export const PAREDES = { F: ['pared del fondo', 'back wall'], D: ['pared derecha', 'right-hand wall'], I: ['pared izquierda', 'left-hand wall'], P: ['fachada', 'front wall'] };
 export const ZONAS_TXT = { mostrador: ['mostrador', 'counter'], mural: ['mural', 'wall display'], columna: ['columna', 'column'], superstretch: ['superstretch', 'superstretch'], cubo: ['cubo', 'cube'] };

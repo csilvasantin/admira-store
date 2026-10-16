@@ -15,14 +15,18 @@ import {
   destinoDesdeURL, resolverEspacio, vecino, queryEspacio, formatosOrdenados, formatoDe, medidaFisica,
   textoMontaje, textoPared, textoZona, textoEntrega,
   STUDIO, ARQUITECTO, TEMA_DE_TIPO, TIPOS, RECORRIDO_MS, RECORRIDO_MAX_MS, ESPACIO_RE, dos,
-} from './espacios.mjs?v=a18-5';
-import { uvsFormato } from './recorte.mjs?v=a18-5';
-import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-5';
-import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles } from './vista.mjs?v=a18-5';
+} from './espacios.mjs?v=a18-6';
+import { uvsFormato } from './recorte.mjs?v=a18-6';
+import { crearPlaceholder, FPS } from './placeholder.mjs?v=a18-6';
+import { camaraEncuadre, svgFormato, fovPara, distanciaEnZona, planosCamara, puntosVisibles, MIN_REALISTA } from './vista.mjs?v=a18-6';
 import {
   circuitoDesdeURL, marcaDesdeURL, tipoInicial, cargarCircuito, buscarLocal, resolverInicio, vecinoLocal, localDeEspacio,
   tituloLocal, formatoDeLocal, CIRCUITO,
-} from './circuito.mjs?v=a18-5';
+} from './circuito.mjs?v=a18-6';
+// Escena realista (misión DCL-a6cb621be0ce5932f50960de): el registro y el montaje son puros; el
+// motor (GLTFLoader, el GLB de 13 MB) se carga aparte y sólo si hace falta.
+import { escenaRealista, elegirModo, modoDesdeURL, soporteRealista, acabadoPorId, MODOS } from '../realista/escenas-realistas.mjs?v=real-1';
+import { montarFormato, escenaMontada } from '../realista/montaje.mjs?v=real-1';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -32,7 +36,9 @@ const pedidoCircuito = circuitoDesdeURL(location.search);
 const MARCA = marcaDesdeURL(location.search);
 const st = { lang: pedido.lang, tipo: tipoInicial(location.search), indice: null, fuenteIndice: null, manifiestos: {}, fuentesMan: {},
   actual: null, carga: null, auto: false, autoTimer: null, token: 0,
-  circuito: null, fuenteCircuito: null, enCircuito: false, local: null };
+  circuito: null, fuenteCircuito: null, enCircuito: false, local: null,
+  // Esquema · Realista: `escena` es lo pedido (URL o conmutador; null = por defecto), `modo` lo que se ve.
+  escena: modoDesdeURL(location.search), modo: 'esquema', eleccion: null };
 const t = (es, en) => (st.lang === 'en' ? en : es);
 const EN = () => st.lang === 'en';
 // Las notas internas del Arquitecto (avisos, sincronía) no son para el cliente: sólo con ?notas=1.
@@ -58,11 +64,13 @@ function aplicarTextos() {
   for (const b of document.querySelectorAll('[data-lang]')) b.setAttribute('aria-pressed', String(b.dataset.lang === st.lang));
   for (const b of document.querySelectorAll('[data-tipo]')) b.setAttribute('aria-pressed', String(b.dataset.tipo === st.tipo));
   for (const b of document.querySelectorAll('[data-recorrido]')) { b.setAttribute('aria-pressed', String(st.auto)); b.textContent = st.auto ? t('❚❚ Recorrido', '❚❚ Tour') : t('▶ Recorrido automático', '▶ Auto tour'); }
+  pintarEscena();
 }
 
 // ── Carga ──
 async function arrancar() {
   aplicarTextos();
+  precargarRealista();   // el GLB baja mientras se leen el índice y el plano
   status(t('Leyendo los 18 formatos…', 'Reading the 18 formats…'));
   // El índice del circuito sólo si la URL lo pide; va a la vez que el de formatos (sin loc, nada nuevo).
   const circuito = pedidoCircuito.pide ? cargarCircuito().catch(e => ({ error: e })) : null;
@@ -228,6 +236,8 @@ function actualizarURL() {
   }
   if (st.lang === 'en') u.searchParams.set('lang', 'en');
   if (st.auto) u.searchParams.set('auto', '1');
+  u.searchParams.delete('escena');
+  if (st.escena) u.searchParams.set('escena', st.escena);
   history.replaceState(null, '', u);
 }
 
@@ -280,9 +290,10 @@ function encuadrar() {
   // La regla (de frente, centrada, dos tercios del cuadro; el cubo en diagonal) vive en vista.mjs y
   // tiene su test en los 36 planos; aquí sólo se ajusta a la zona libre del lienzo.
   const suyas = pantallasFormato(), fov = fovPara(persp.aspect);
-  cam.marco = camaraEncuadre(suyas, { fov, aspect: zona.aspect, sala: escena.sala });
+  const min = escena.realista ? MIN_REALISTA : {};
+  cam.marco = camaraEncuadre(suyas, { fov, aspect: zona.aspect, sala: escena.sala, ...min });
   if (!cam.marco) return;
-  const nominal = camaraEncuadre(suyas, { fov: 40, aspect: 16 / 9, sala: escena.sala }).dist;
+  const nominal = camaraEncuadre(suyas, { fov: 40, aspect: 16 / 9, sala: escena.sala, ...min }).dist;
   const [x, y, h] = cam.marco.objetivo;
   cam.orb = { az: cam.marco.az, el: cam.marco.el, dist: distanciaEnZona(cam.marco.dist, zona.escala, nominal), objetivo: V(x, y, h) };
   despejar();
@@ -407,6 +418,78 @@ function pintar() {
   if (s3d.hayVideo()) invalidar();   // el vídeo del formato pide fotogramas
 }
 
+// ── Esquema · Realista (xpacios/realista/) ──
+// El motor (three.js + GLTFLoader) y el GLB se piden una vez por página y se reutilizan en cada
+// espacio. Un navegador sin WebGL2, con poca memoria o al que el modelo no le llega, va a Esquema.
+let motor = null, cargaMotor = null;
+const motorRealista = () => (cargaMotor ||= import('../realista/escena-realista.mjs?v=real-1').then(m => (motor = m)));
+const esMovil = () => Boolean(globalThis.matchMedia && matchMedia('(pointer: coarse)').matches) || innerWidth < 700;
+const puedeRealista = () => typeof WebGL2RenderingContext !== 'undefined' && !(navigator.deviceMemory && navigator.deviceMemory < 2);
+function soporteActual() {
+  if (!renderer) return puedeRealista() ? { ok: true, motivo: null } : { ok: false, motivo: 'sin-webgl2' };
+  return soporteRealista({ webgl2: renderer.capabilities.isWebGL2, maxTextura: renderer.capabilities.maxTextureSize, memoria: navigator.deviceMemory ?? null });
+}
+const eleccionPara = tipo => { const def = escenaRealista(tipo); return elegirModo({ tipo, pedido: st.escena, estado: def && motor ? motor.estadoModelo(def) : null, soporte: soporteActual() }); };
+
+/** Empieza a bajar el GLB del tipo actual si el modo por defecto va a ser Realista. */
+function precargarRealista() {
+  const def = escenaRealista(st.tipo);
+  if (!def || eleccionPara(st.tipo).modo !== 'realista') return;
+  motorRealista().then(m => m.cargarModelo(def)).catch(() => {});
+}
+
+/** Monta (sin pintar) la escena realista de un espacio, o dice por qué va en Esquema. */
+async function prepararRealista(r, planX, esq) {
+  const def = escenaRealista(r.tipo);
+  let eleccion = eleccionPara(r.tipo);
+  if (eleccion.modo === 'realista') {
+    try {
+      const m = await motorRealista();
+      if (m.estadoModelo(def) !== 'listo') status(t('Preparando la escena realista…', 'Preparing the realistic scene…'));
+      // Pedida a mano (conmutador o ?escena=realista), se le da otro plazo aunque ya tardara.
+      const modelo = await m.esperarModelo(def, { otraVez: st.escena === 'realista' });
+      if (modelo) {
+        const suyas = esq.pantallas.filter(p => p.recorte || p.formato === planX.formato.id);
+        const montado = montarFormato(suyas, def, r.formato);
+        st.eleccion = eleccion;
+        return { listo: true, def, modelo, montado, escena: escenaMontada(def, montado, { id: r.id }), motor: m };
+      }
+      eleccion = elegirModo({ tipo: r.tipo, pedido: null, estado: m.estadoModelo(def), soporte: soporteActual() });
+      if (eleccion.modo === 'realista') eleccion = { modo: 'esquema', motivo: 'lento', disponible: true };
+    } catch (e) { eleccion = { modo: 'esquema', motivo: 'montaje', disponible: true, error: String(e && e.message || e) }; }
+  }
+  st.eleccion = eleccion;
+  return { listo: false };
+}
+
+/** El conmutador Esquema · Realista y la nota de la ficha. */
+function pintarEscena() {
+  const tipo = st.actual?.tipo || st.tipo, def = escenaRealista(tipo);
+  const e = st.actual && st.eleccion ? st.eleccion : eleccionPara(tipo);
+  const visto = st.actual && s3d ? st.modo : e.modo;
+  for (const g of document.querySelectorAll('[data-grupo-escena]')) g.hidden = !def;
+  for (const b of document.querySelectorAll('[data-escena]')) {
+    b.setAttribute('aria-pressed', String(b.dataset.escena === visto));
+    if (b.dataset.escena !== 'realista') { b.title = t('Volúmenes sencillos desde el plano del Arquitecto', 'Simple volumes from the Architect plan'); continue; }
+    b.disabled = !e.disponible;
+    b.title = !e.disponible ? t('La escena realista no está disponible en este navegador', 'The realistic scene is not available in this browser')
+      : e.motivo === 'lento' ? t('El local modelado aún está llegando', 'The modelled shop is still loading')
+      : t('Local modelado con las mismas pantallas del formato', 'A modelled shop with the same format screens');
+  }
+  const nota = $('f-escena');
+  nota.hidden = !(st.actual && s3d && st.modo === 'realista');
+  nota.textContent = def?.nota ? def.nota[st.lang] || def.nota.es : '';
+}
+
+function cambiarEscena(modo) {
+  if (!MODOS.includes(modo)) return;
+  if (modo === 'realista' && !eleccionPara(st.actual?.tipo || st.tipo).disponible) return;
+  st.escena = modo; actualizarURL();
+  if (modo === 'realista') precargarRealista();
+  if (st.actual && modo !== st.modo && escenaRealista(st.actual.tipo)) abrir(st.actual.formato.formato, st.actual.tipo, { local: st.local });
+  else pintarEscena();
+}
+
 // ── Abrir un espacio ──
 async function abrir(formatoId, tipo, { local } = {}) {
   const r = resolverEspacio(st.indice, formatoId, tipo);
@@ -429,13 +512,29 @@ async function abrir(formatoId, tipo, { local } = {}) {
   }
   if (token !== st.token) return;
   if (!asegurarRenderer()) return;
-  soltarEspacio();
-  st.carga = carga; plan = carga.plan;
-  try { escena = escenaDesdePlano(plan); } catch (e) {
+  let esquema;
+  try { esquema = escenaDesdePlano(carga.plan); } catch (e) {
+    soltarEspacio(); st.carga = carga; plan = carga.plan;
     $('f-contenido').textContent = ''; status(t('El plano de este espacio no se puede pintar.', 'The plan of this space cannot be drawn.'), true); estado.title = e.message;
     programarRecorrido(); return;
   }
-  s3d = crearEscena3D(escena, { anisotropia: renderer.capabilities.getMaxAnisotropy(), onCambio: invalidar, tema: TEMA_DE_TIPO[tipo] });
+  // Esquema o Realista. El realista espera al modelo (como mucho 12 s desde que empezó a bajar);
+  // si no llega, falla o el formato no cabe en su zona, Esquema sin error. Mientras, se sigue
+  // viendo el espacio anterior.
+  const real = await prepararRealista(r, carga.plan, esquema);
+  if (token !== st.token) return;
+  soltarEspacio();
+  st.carga = carga; plan = carga.plan;
+  if (real.listo) {
+    try {
+      s3d = real.motor.crearEscenaRealista({ renderer, def: real.def, modelo: real.modelo, escena: real.escena, montado: real.montado,
+        acabado: acabadoPorId(st.local?.id || r.id), movil: esMovil(), anisotropia: renderer.capabilities.getMaxAnisotropy(), onCambio: invalidar });
+      escena = real.escena;
+    } catch (e) { s3d = null; st.eleccion = { modo: 'esquema', motivo: 'montaje', disponible: true, error: String(e && e.message || e) }; }
+  }
+  if (!s3d) { escena = esquema; s3d = crearEscena3D(escena, { anisotropia: renderer.capabilities.getMaxAnisotropy(), onCambio: invalidar, tema: TEMA_DE_TIPO[tipo] }); }
+  st.modo = s3d.realista ? 'realista' : 'esquema';
+  renderer.toneMappingExposure = s3d.realista ? 1 : 1.05;
   prepararTapas();
   redimensionar();
   pintarFicha();
@@ -598,6 +697,7 @@ function pintarFicha() {
   $('f-plano').textContent = `${t('Planos del Arquitecto', 'Architect plans')} · ${plan.version || ''}`;
   $('f-plano').title = `${id} · ${c.fuente === 'compartido' ? 'admira.biz' : t('copia local de admira.store', 'local copy on admira.store')}\n${c.url}` + (c.fallos.length ? `\n${t('No se usó', 'Not used')}: ${c.fallos.map(x => `${x.url} (${motivoFallo(x)})`).join(' · ')}` : '') + (NOTAS && c.avisos.length ? `\n${c.avisos.join('\n')}` : '');
   pintarContenido();
+  pintarEscena();
 }
 
 // Por qué no se usó una fuente, en el idioma de la página (espacios.mjs lo da en castellano).
@@ -637,7 +737,7 @@ function paso(d) {
 function cambiarTipo(tipo) {
   if (!TIPOS.includes(tipo) || tipo === st.tipo && (!st.actual || st.actual.tipo === tipo)) return;
   if (st.enCircuito) salirCircuito();   // el circuito es de estancos: un Starbucks lo deja
-  st.tipo = tipo; aplicarTextos();
+  st.tipo = tipo; aplicarTextos(); precargarRealista();
   pintarFuentes();   // la campaña del tipo (Xtanco: Altadis; Starbucks: Starbucks)
   if (st.actual) abrir(st.actual.formato.formato, tipo); else { actualizarURL(); pintarGaleria(); }
 }
@@ -677,6 +777,7 @@ document.addEventListener('click', e => {
   if (b.dataset.lang) cambiarIdioma(b.dataset.lang);
   else if (b.dataset.tipo) cambiarTipo(b.dataset.tipo);
   else if (b.dataset.vista) ponerVista(b.dataset.vista);
+  else if (b.dataset.escena) cambiarEscena(b.dataset.escena);
   else if (b.hasAttribute('data-recorrido')) alternarRecorrido();
   else if (b.dataset.paso) paso(Number(b.dataset.paso));
   else if (b.id === 'a-galeria') volverGaleria();
@@ -687,6 +788,7 @@ document.addEventListener('click', e => {
 const ACCIONES = {
   'a18-galeria': () => volverGaleria(), 'a18-encuadre': () => ponerVista('encuadre'), 'a18-sala': () => ponerVista('sala'),
   'a18-puerta': () => ponerVista('puerta'), 'a18-recorrido': () => alternarRecorrido(), 'a18-xtanco': () => cambiarTipo('xtanco'), 'a18-cafe': () => cambiarTipo('cafe'),
+  'a18-esquema': () => cambiarEscena('esquema'), 'a18-realista': () => cambiarEscena('realista'),
 };
 
 document.addEventListener('keydown', e => {
@@ -728,12 +830,14 @@ function zoom(f, base) {
 // ── Orden del modo experto: /espacio 15 cafe ──
 (function registrar(intentos = 0) {
   if (!window.XpaceShell?.registerVerb) { if (intentos < 50) setTimeout(() => registrar(intentos + 1), 100); return; }
-  window.XpaceShell.registerVerb({ id: 'espacio', es: 'Espacio Altadis: /espacio <1-18> [xtanco|cafe], siguiente, anterior, galeria o recorrido', en: 'Altadis space: /espacio <1-18> [xtanco|cafe], siguiente, anterior, galeria or recorrido', run: args => {
+  window.XpaceShell.registerVerb({ id: 'espacio', es: 'Espacio Altadis: /espacio <1-18> [xtanco|cafe], siguiente, anterior, galeria, recorrido, realista o esquema', en: 'Altadis space: /espacio <1-18> [xtanco|cafe], siguiente, anterior, galeria, recorrido, realista or esquema', run: args => {
     const [a, b] = String(args || '').trim().toLowerCase().split(/\s+/);
     if (/^sig|^next/.test(a || '')) paso(1);
     else if (/^ant|^prev/.test(a || '')) paso(-1);
     else if (/^gal/.test(a || '')) volverGaleria();
     else if (/^rec|^tour|^auto/.test(a || '')) alternarRecorrido();
+    else if (/^real/.test(a || '')) cambiarEscena('realista');
+    else if (/^esq|^sch/.test(a || '')) cambiarEscena('esquema');
     else if (/^\d{1,2}$/.test(a || '')) abrir(`cliente-${dos(Number(a))}`, TIPOS.includes(b) ? b : st.tipo);
     else if (TIPOS.includes(a)) cambiarTipo(a);
     return st.actual ? st.actual.id : t('galería', 'gallery');
@@ -741,5 +845,7 @@ function zoom(f, base) {
 })();
 
 window.Altadis18 = { st, abrir, paso, cambiarIdioma, cambiarTipo, volverGaleria, ponerVista, salirCircuito, info: () => ({ espacio: st.actual?.id || null,
-  loc: st.local?.id || null, circuito: st.enCircuito, circuitoFuente: st.fuenteCircuito?.fuente || null, medio: medio ? { tipo: medio.tipo, cargando: Boolean(medio.cargando), motivo: medio.motivo || null, w: medio.video?.videoWidth || null, h: medio.video?.videoHeight || null, t: medio.video?.currentTime ?? null, pausado: medio.video ? medio.video.paused : null } : null, pantallas: pantallasFormato().length, enLienzo: s3d ? s3d.enLienzo() : 0, memoria: renderer ? { ...renderer.info.memory } : null, vista: cam.vista }) };
+  loc: st.local?.id || null, circuito: st.enCircuito, circuitoFuente: st.fuenteCircuito?.fuente || null, medio: medio ? { tipo: medio.tipo, cargando: Boolean(medio.cargando), motivo: medio.motivo || null, w: medio.video?.videoWidth || null, h: medio.video?.videoHeight || null, t: medio.video?.currentTime ?? null, pausado: medio.video ? medio.video.paused : null } : null, pantallas: pantallasFormato().length, enLienzo: s3d ? s3d.enLienzo() : 0, memoria: renderer ? { ...renderer.info.memory } : null, vista: cam.vista,
+  escena: s3d ? st.modo : null, motivoEscena: st.eleccion?.motivo || null, errorEscena: st.eleccion?.error || null, acabado: s3d?.acabado || null, arreglos: s3d?.arreglos || null,
+  modelo: s3d?.modelo || null, estadoModelo: motor ? motor.estadoModelo(escenaRealista('xtanco')) : null, llamadas: renderer ? renderer.info.render.calls : null, triangulos: renderer ? renderer.info.render.triangles : null }), cambiarEscena };
 arrancar();
