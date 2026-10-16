@@ -7,7 +7,7 @@ import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-1';
 import { crearColaIPad } from './cola-ipad.mjs?v=sc-cola-3';
-import { crearKiosko } from './kiosko.mjs?v=sc-kiosko-1';
+import { crearKiosko } from './kiosko.mjs?v=sc-kiosko-2';
 import { centroDesdeURL } from './centros.mjs?v=sc-2';
 import { crearReproductor, validarPrograma, ajusteSinRecorte, marcasDe, cicloDe, programaDesdeMCP, piezaDe } from './reproductor.mjs?v=sc-1';
 
