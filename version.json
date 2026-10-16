@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r5.01:06",
-  "deployedAt": "2026-10-15T23:06:11Z",
+  "version": "v.16.10.2026.r6.08:37",
+  "deployedAt": "2026-10-16T06:37:48Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "8374b6f4989c0397cfa34c55edf104e5d2bb5ba9",
-  "gitShort": "8374b6f",
-  "gitFull": "8374b6f4989c0397cfa34c55edf104e5d2bb5ba9",
+  "git": "10db8eec041c80b645a930731668960e33e882a0",
+  "gitShort": "10db8ee",
+  "gitFull": "10db8eec041c80b645a930731668960e33e882a0",
   "dirty": false,
   "novedades": [
-    "Diagonal 634 con su propia cola de pedidos (starbucks-diagonal-634) y un quiosco de pedidos en la pared oscura, clon del de Paseo de Gràcia"
+    "Con la marca Starbucks, la barra de arriba pone una sola vez STARBUCKS, en blanco"
   ]
 }
