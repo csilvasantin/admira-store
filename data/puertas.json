@@ -24,6 +24,18 @@
       "entrada": { "pano": "gFiiBKarazJa69Mjl_uFtg", "pov": { "heading": 332, "pitch": 3, "zoom": 1.2 } },
       "puerta": { "pano": "gFiiBKarazJa69Mjl_uFtg", "esquinas": [[313.5142, 7.4686], [350.6046, 8.6588], [350.2714, -4.0364], [313.997, -4.6419]] },
       "fuente": "Street View «634 Av. Diagonal» (enero de 2022), calibrado por NeoMacStudio el 16-oct-2026 con la proyección de puertas.mjs: escaparate y toldos de STARBUCKS COFFEE en los bajos de Alta Diagonal. Posición: OpenStreetMap (brand=Starbucks)."
+    },
+    {
+      "id": "lab-gran-de-gracia-51",
+      "locales": ["lab-gran-de-gracia-51"],
+      "loc": "lab-gran-de-gracia-51",
+      "proyecto": "starbucks",
+      "nombre": "Gran de Gràcia 51 · laboratorio AdmiraNeXT",
+      "direccion": "Carrer Gran de Gràcia 51 · 08012 Barcelona",
+      "posicion": { "lat": 41.399342, "lng": 2.155917 },
+      "entrada": { "pano": "Gmb3bqHoEMTDO-Dqp6CkNA", "pov": { "heading": 230, "pitch": 4, "zoom": 1.2 } },
+      "puerta": { "pano": "Gmb3bqHoEMTDO-Dqp6CkNA", "esquinas": [[223.0537, 15.4742], [237.0467, 15.9207], [237.0435, -12.5411], [223.3242, -12.351]] },
+      "fuente": "Street View «51 Carrer Gran de Gràcia» (julio de 2026, foto de Google), calibrado por NeoMacStudio el 16-oct-2026 con la proyección de puertas.mjs: portal de madera del número 51, entre la Xarcuteria Pons (49) y belover; el laboratorio está en la 1.ª planta. Posición: OpenStreetMap (Nominatim, house 51)."
     }
   ]
 }

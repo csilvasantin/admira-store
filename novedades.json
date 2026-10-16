@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.16.10.2026.r24.16:15": [
+    "Gran de Gràcia 51 tiene su puerta de Google Maps: el portal del 51 resaltado en Street View y Entrar al laboratorio"
+  ],
   "v.16.10.2026.r23.15:49": [
     "Diagonal 634 con su puerta de Google Maps: al elegirlo, su calle en Street View y la fachada lleva a su gemelo"
   ],
