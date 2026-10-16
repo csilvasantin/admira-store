@@ -1,15 +1,15 @@
 {
-  "version": "v.16.10.2026.r7.09:55",
-  "deployedAt": "2026-10-16T08:11:01Z",
+  "version": "v.16.10.2026.r10.11:27",
+  "deployedAt": "2026-10-16T09:27:20Z",
   "deployer": "NeoMBP14",
   "machine": "MacBookProNegro14",
   "signature": "NeoMBP14 · MacBookProNegro14",
-  "git": "3a05bad56771d659656fc0e105e03cefcce08cb5",
-  "gitShort": "3a05bad",
-  "gitFull": "3a05bad56771d659656fc0e105e03cefcce08cb5",
+  "git": "77d61486691a8e1c2d93268a3ed6d20ddba4432f",
+  "gitShort": "77d6148",
+  "gitFull": "77d61486691a8e1c2d93268a3ed6d20ddba4432f",
   "dirty": false,
   "novedades": [
-    "Altadis 18: circuito «Altadis España · 10 Xtancos». Con ?loc= la ficha del gemelo dice el estanco, su ciudad y su dirección, con «Volver al mapa»; ← / → y el recorrido automático recorren sólo los 10 estancos, cada uno con su formato.",
-    "Con ?marca=altadis la galería, la ficha y la barra visten la marca blanca de Altadis (naranja y marrón), y el tipo por defecto es Xtanco."
+    "Altadis 18: modo «Esquema · Realista». En los Xtanco, el gemelo se ve por defecto en un estanco modelado de verdad (Xtanco Best) con las mismas pantallas físicas del formato, sus recortes y el mismo vídeo; la ficha avisa de que la escena es inventada.",
+    "Los 10 estancos del circuito Altadis España tienen cada uno su acabado (pared, suelo y luz cálida o fría). El modelo se descarga una vez; si falla o tarda más de 12 s, el gemelo cae al esquema de siempre sin error. Starbucks sigue en esquema."
   ]
 }
