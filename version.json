@@ -1,14 +1,14 @@
 {
-  "version": "v.16.10.2026.r24.16:15",
-  "deployedAt": "2026-10-16T14:15:27Z",
+  "version": "v.17.10.2026.r1.20:25",
+  "deployedAt": "2026-10-17T18:25:59Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "f6ab4c5ab17e587e4c1d420a7dbc498ea47405ac",
-  "gitShort": "f6ab4c5",
-  "gitFull": "f6ab4c5ab17e587e4c1d420a7dbc498ea47405ac",
+  "git": "5f24434844292f473b18cad86310e1ba021fb4e7",
+  "gitShort": "5f24434",
+  "gitFull": "5f24434844292f473b18cad86310e1ba021fb4e7",
   "dirty": false,
   "novedades": [
-    "Gran de Gràcia 51 tiene su puerta de Google Maps: el portal del 51 resaltado en Street View y Entrar al laboratorio"
+    "Portada: intro en vídeo «Todo en orden» (15 s), la misma de xpaceos.com con su música original alterna y el botón «Activar sonido», en español y en inglés. Solo con el look por defecto: con una marca blanca activa (Starbucks, Altadis…) no sale. Una vez por sesión; se salta con «Saltar intro» o Esc."
   ]
 }
