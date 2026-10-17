@@ -17,7 +17,7 @@ Al entrar en la portada de xpaceos.com sale a pantalla completa el vídeo «Todo
 - **Ficheros:** `assets/intro-portada.js` (lógica y estilo) y los vídeos de `assets/video/`:
   - español: `intro-xpaceos-a-1080.mp4` (1920 × 1080, 7,97 MB) e `intro-xpaceos-a-720.mp4` (1280 × 720, 5,16 MB);
   - inglés: `intro-xpaceos-a-en-1080.mp4` (1920 × 1080, 7,76 MB) e `intro-xpaceos-a-en-720.mp4` (1280 × 720, 5,06 MB);
-  - música: `intro-xpaceos-a-musica-campanas.m4a` (288 KB) e `intro-xpaceos-a-musica-pulso.m4a` (316 KB), AAC de 15 s, sirven para los dos idiomas.
+  - música: `intro-xpaceos-a-musica-campanas.mp4` (288 KB) e `intro-xpaceos-a-musica-pulso.mp4` (316 KB), AAC de 15 s en contenedor .mp4 (Cloudflare no sirve .m4a por rangos), sirven para los dos idiomas.
   - Desde 1600 píxeles reales de ancho se sirve la de 1080p.
 - **Pruebas:** `tests/intro-portada.test.mjs`.
 - **Cómo se hizo el vídeo:** maqueta animada en HTML, capturada fotograma a fotograma con Chrome sin ventana (30 fps) y codificada en H.264 con AVFoundation en el Mac Studio. La versión en inglés sale de la misma maqueta con `?lang=en`. No cambia el uso del producto: la ayuda, el tutorial y el MCP no cambian.
@@ -35,7 +35,7 @@ The xpaceos.com homepage opens with the full-screen video «All in order» («To
 - **Both sites:** the same script, videos and music on xpaceos.com and admira.store.
 - **Force it:** `https://www.xpaceos.com/?intro=1` (Spanish) or `https://www.xpaceos.com/?lang=en&intro=1` (English).
 - **Close:** «Skip intro ✕» button, Esc key, or automatically at the end. If the video has not started after 4 seconds, it removes itself.
-- **Files:** `assets/intro-portada.js` and, in `assets/video/`, `intro-xpaceos-a-1080.mp4` / `intro-xpaceos-a-720.mp4` (Spanish) and `intro-xpaceos-a-en-1080.mp4` / `intro-xpaceos-a-en-720.mp4` (English), 1920 × 1080 and 1280 × 720, plus `intro-xpaceos-a-musica-campanas.m4a` and `intro-xpaceos-a-musica-pulso.m4a` (15 s AAC, both languages). The 1080p file is served from 1600 physical pixels wide.
+- **Files:** `assets/intro-portada.js` and, in `assets/video/`, `intro-xpaceos-a-1080.mp4` / `intro-xpaceos-a-720.mp4` (Spanish) and `intro-xpaceos-a-en-1080.mp4` / `intro-xpaceos-a-en-720.mp4` (English), 1920 × 1080 and 1280 × 720, plus `intro-xpaceos-a-musica-campanas.mp4` and `intro-xpaceos-a-musica-pulso.mp4` (15 s AAC, both languages). The 1080p file is served from 1600 physical pixels wide.
 - **Tests:** `tests/intro-portada.test.mjs`.
 - Product usage does not change: help, tutorial and MCP are unchanged.
 - **Pending:** port to admira.studio if approved.

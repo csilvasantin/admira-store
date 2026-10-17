@@ -74,6 +74,7 @@ test('la música se alterna en cada intro y se puede fijar o quitar con ?musica=
 test('las dos músicas existen, son distintas y pesan menos de 1 MB', () => {
   const all = Object.values(intro.MUSIC);
   assert.deepEqual(Object.keys(intro.MUSIC), ['campanas', 'pulso']);
+  for (const src of Object.values(intro.MUSIC)) assert.match(src, /\.mp4$/, 'en .mp4: Cloudflare no sirve .m4a por rangos');
   assert.equal(new Set(all).size, 2);
   for (const src of all) {
     const size = statSync(new URL('..' + src, import.meta.url)).size;
