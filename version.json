@@ -1,14 +1,14 @@
 {
-  "version": "v.17.10.2026.r1.20:25",
-  "deployedAt": "2026-10-17T18:25:59Z",
+  "version": "v.17.10.2026.r2.20:31",
+  "deployedAt": "2026-10-17T18:31:29Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "5f24434844292f473b18cad86310e1ba021fb4e7",
-  "gitShort": "5f24434",
-  "gitFull": "5f24434844292f473b18cad86310e1ba021fb4e7",
+  "git": "07b0b56a89fbc85404551b168f7a4e2bf4ca42c2",
+  "gitShort": "07b0b56",
+  "gitFull": "07b0b56a89fbc85404551b168f7a4e2bf4ca42c2",
   "dirty": false,
   "novedades": [
-    "Portada: intro en vídeo «Todo en orden» (15 s), la misma de xpaceos.com con su música original alterna y el botón «Activar sonido», en español y en inglés. Solo con el look por defecto: con una marca blanca activa (Starbucks, Altadis…) no sale. Una vez por sesión; se salta con «Saltar intro» o Esc."
+    "Portada: la música de la intro va en .mp4 para servirse por rangos y entrar sincronizada con el vídeo al pulsar «Activar sonido» (Cloudflare no sirve .m4a por rangos)."
   ]
 }

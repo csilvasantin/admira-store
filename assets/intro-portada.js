@@ -25,7 +25,9 @@
     en: {1080: '/assets/video/intro-xpaceos-a-en-1080.mp4', 720: '/assets/video/intro-xpaceos-a-en-720.mp4'}
   };
   const MUSIC_KEY = 'xpaceos_intro_musica';
-  const MUSIC = {campanas: '/assets/video/intro-xpaceos-a-musica-campanas.m4a', pulso: '/assets/video/intro-xpaceos-a-musica-pulso.m4a'};
+  // .mp4 y no .m4a: admira.store está en Cloudflare, que no guarda .m4a en caché ni lo sirve por rangos (206);
+  // sin rangos, la música no se puede poner en el segundo del vídeo. Mismo audio AAC.
+  const MUSIC = {campanas: '/assets/video/intro-xpaceos-a-musica-campanas.mp4', pulso: '/assets/video/intro-xpaceos-a-musica-pulso.mp4'};
   const BRAND_KEY = 'mb:marca';
   const BRAND_OFF = ['off', 'admira', 'ninguna', 'ninguno', 'none', 'default', 'apagar', 'quitar', 'reset'];
   const has = lang => Object.prototype.hasOwnProperty.call(SOURCES, lang);
