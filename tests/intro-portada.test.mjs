@@ -62,13 +62,16 @@ test('se puede saltar con botón o Esc, en los dos idiomas, y no tapa la portada
   assert.match(src, /pickSource\(win\.innerWidth, win\.devicePixelRatio, lang\)/, 'el vídeo sigue al idioma resuelto');
 });
 
-test('la música se alterna en cada intro y se puede fijar o quitar con ?musica=', () => {
-  assert.equal(intro.pickMusic('', ''), 'campanas');
-  assert.equal(intro.pickMusic('', 'campanas'), 'pulso');
-  assert.equal(intro.pickMusic('', 'pulso'), 'campanas');
-  assert.equal(intro.pickMusic('?musica=pulso', 'pulso'), 'pulso');
-  assert.equal(intro.pickMusic('?musica=0', 'campanas'), '');
-  assert.equal(intro.pickMusic('?musica=otra', 'campanas'), 'pulso', 'un valor desconocido no rompe la alternancia');
+test('una música por idioma: castellano campanas, inglés pulso; ?musica= la fija o la quita', () => {
+  assert.equal(intro.pickMusic('', 'es'), 'campanas');
+  assert.equal(intro.pickMusic('', 'en'), 'pulso');
+  assert.equal(intro.pickMusic('', 'fr'), 'campanas', 'otro idioma: la del castellano');
+  assert.equal(intro.pickMusic('?musica=pulso', 'es'), 'pulso');
+  assert.equal(intro.pickMusic('?musica=0', 'en'), '');
+  assert.equal(intro.pickMusic('?musica=otra', 'en'), 'pulso', 'un valor desconocido no cambia la del idioma');
+  const src = read('assets/intro-portada.js');
+  assert.doesNotMatch(src, /MUSIC_KEY/, 'ya no alterna ni guarda la última');
+  assert.match(src, /const nextTrack = pickMusic\(win\.location\.search, next\);/, 'al cambiar de idioma cambia también la música');
 });
 
 test('las dos músicas existen, son distintas y pesan menos de 1 MB', () => {
@@ -85,7 +88,6 @@ test('las dos músicas existen, son distintas y pesan menos de 1 MB', () => {
 test('el sonido intenta arrancar, queda un botón en los dos idiomas y se para al cerrar', () => {
   const src = read('assets/intro-portada.js');
   for (const text of ['Activar sonido', 'Silenciar', 'Turn sound on', 'Mute']) assert.ok(src.includes(text), text);
-  assert.match(src, /setItem\(MUSIC_KEY, track\)/, 'recuerda cuál sonó para alternar');
   assert.match(src, /audio\.currentTime = video\.currentTime/, 'el audio sigue al vídeo');
   assert.match(src, /p\.catch\(\(\) => \{ soundOn = false; paintSound\(\); \}\)/, 'si el navegador no deja sonar, se queda en silencio con el botón');
   assert.match(src, /if \(audio\) \{ try \{ audio\.pause\(\); \} catch \(_\) \{\} \}/, 'al cerrar se para la música');

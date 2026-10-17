@@ -1,14 +1,14 @@
 {
-  "version": "v.17.10.2026.r3.22:06",
-  "deployedAt": "2026-10-17T20:06:10Z",
+  "version": "v.17.10.2026.r4.22:55",
+  "deployedAt": "2026-10-17T20:55:33Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "c2a1a6dc2006e126e36ad5c5b111d3b6d881ae16",
-  "gitShort": "c2a1a6d",
-  "gitFull": "c2a1a6dc2006e126e36ad5c5b111d3b6d881ae16",
+  "git": "f3df33759bbc7ad73e517f9f6bca7d344cde0699",
+  "gitShort": "f3df337",
+  "gitFull": "f3df33759bbc7ad73e517f9f6bca7d344cde0699",
   "dirty": false,
   "novedades": [
-    "Portada: la intro sale una vez por sesión y por idioma. Al pasar a castellano (o a inglés) sale en ese idioma si aún no se ha visto en él; con la intro en marcha, el vídeo cambia de idioma sin perder el segundo."
+    "Portada: una música por idioma en la intro (castellano «Tic-tac y campanas», inglés «Pulso»); si el idioma cambia con la intro en marcha, cambia también la música en el mismo segundo."
   ]
 }
