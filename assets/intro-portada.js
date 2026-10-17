@@ -1,8 +1,10 @@
 /* XpaceOS · intro de la portada / homepage intro (NeoMacStudio, 17-oct-2026).
    Vídeo «Todo en orden» (15 s, sin sonido) a pantalla completa al entrar en la portada.
-   - Sale una vez por sesión (sessionStorage 'xpaceos_intro_a'), se salta con «Saltar intro» o Esc
-     y se cierra sola al terminar o si el vídeo no arranca.
+   - Sale una vez por sesión y por idioma (sessionStorage 'xpaceos_intro_a' = idiomas vistos, «es,en»),
+     se salta con «Saltar intro» o Esc y se cierra sola al terminar o si el vídeo no arranca.
    - En el idioma de la portada: español o inglés («All in order», 17-oct-2026), con los mismos tiempos.
+     Al cambiar de idioma (botón ESP/ENG o /idioma; evento 'admira:languagechange'), sale en el idioma
+     nuevo si aún no se ha visto en él; si la intro está en marcha, el vídeo cambia sin perder el segundo.
    - No sale con «reducir movimiento».
    - Solo con el look por defecto: si la pestaña tiene una marca blanca activa (?marca=, ?project=, local
      Starbucks o la marca recordada en sessionStorage 'mb:marca', como assets/marca-blanca.js), no sale.
@@ -47,6 +49,9 @@
     const s = String(stored || '').trim().toLowerCase();
     return s && !off(s) ? s : '';
   }
+  // Idiomas en los que ya se vio en esta sesión. El «1» antiguo (antes del 17-oct 20:45) no dice el idioma: cuenta como ninguno.
+  function parseSeen(value) { return String(value || '').split(',').map(v => v.trim()).filter(v => has(v)); }
+
   // Decide si se enseña: ?intro=1 manda sobre todo; ?intro=0, ya vista, menos movimiento, un idioma sin vídeo
   // o una marca blanca activa (la intro es el look por defecto) la quitan.
   function shouldShow(o) {
@@ -83,17 +88,30 @@
   function storage(win, kind) { try { return win[kind]; } catch (_) { return null; } }
 
   function start(win) {
-    const doc = win.document;
     const session = storage(win, 'sessionStorage');
-    let seen = false;
-    try { seen = !!(session && session.getItem(SEEN_KEY)); } catch (_) {}
-    const lang = win.XpaceLang ? win.XpaceLang.resolve({url: win.location.href, storage: storage(win, 'localStorage'), fallback: 'es'}) : 'es';
+    const read = key => { try { return (session && session.getItem(key)) || ''; } catch (_) { return ''; } };
     const reducedMotion = !!(win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    let stored = '';
-    try { stored = (session && session.getItem(BRAND_KEY)) || ''; } catch (_) {}
-    const brand = activeBrand(win.location.search, stored);
-    if (!shouldShow({search: win.location.search, lang, reducedMotion, seen, brand})) return;
-    const t = LABELS[lang] || LABELS.es;
+    const seenNow = () => parseSeen(read(SEEN_KEY));
+    const markSeen = langs => { const all = seenNow(); for (const l of langs) if (has(l) && !all.includes(l)) all.push(l); try { session && session.setItem(SEEN_KEY, all.join(',')); } catch (_) {} };
+    let current = null;
+    const tryOpen = lang => {
+      if (current) return;
+      if (!shouldShow({search: win.location.search, lang, reducedMotion, seen: seenNow().includes(lang), brand: activeBrand(win.location.search, read(BRAND_KEY))})) return;
+      current = open(win, lang, shown => { markSeen(shown); current = null; });
+    };
+    tryOpen(win.XpaceLang ? win.XpaceLang.resolve({url: win.location.href, storage: storage(win, 'localStorage'), fallback: 'es'}) : 'es');
+    // Al pasar a otro idioma: con la intro en marcha cambia el vídeo; si no, sale en ese idioma si aún no se ha visto en él.
+    win.addEventListener('admira:languagechange', ev => {
+      const next = String((ev && ev.detail && ev.detail.lang) || '').toLowerCase();
+      if (!has(next)) return;
+      if (current) current.setLang(next); else tryOpen(next);
+    });
+  }
+
+  function open(win, lang, onClosed) {
+    const doc = win.document;
+    const shown = [lang];
+    let t = LABELS[lang] || LABELS.es;
 
     const style = doc.createElement('style');
     style.textContent = CSS;
@@ -146,7 +164,7 @@
       closed = true;
       clearTimeout(watchdog);
       if (audio) { try { audio.pause(); } catch (_) {} }
-      try { session && session.setItem(SEEN_KEY, '1'); } catch (_) {}
+      onClosed(shown);
       win.removeEventListener('keydown', onKey);
       html.style.overflow = overflow;
       box.classList.add('is-closing');
@@ -171,7 +189,19 @@
       try { skip.focus({preventScroll: true}); } catch (_) {}
     };
     if (doc.body) mount(); else doc.addEventListener('DOMContentLoaded', mount, {once: true});
+
+    // Cambio de idioma con la intro en marcha: el vídeo del otro idioma, en el mismo segundo; la música sigue.
+    function setLang(next) {
+      if (closed || next === lang || !has(next)) return;
+      lang = next; t = LABELS[next] || LABELS.es;
+      if (!shown.includes(next)) shown.push(next);
+      const at = video.currentTime;
+      video.addEventListener('loadedmetadata', () => { try { video.currentTime = at; } catch (_) {} const p = video.play(); if (p && p.catch) p.catch(() => {}); }, {once: true});
+      video.src = pickSource(win.innerWidth, win.devicePixelRatio, next);
+      skip.textContent = t.skip + ' ✕'; box.setAttribute('aria-label', t.aria); paintSound();
+    }
+    return {setLang, get lang() { return lang; }};
   }
 
-  return {SEEN_KEY, SOURCES, MUSIC_KEY, MUSIC, activeBrand, shouldShow, pickSource, pickMusic, start};
+  return {SEEN_KEY, SOURCES, MUSIC_KEY, MUSIC, activeBrand, parseSeen, shouldShow, pickSource, pickMusic, start};
 });

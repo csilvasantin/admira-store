@@ -58,7 +58,7 @@ test('se puede saltar con botón o Esc, en los dos idiomas, y no tapa la portada
   assert.match(src, /video\.addEventListener\('ended', close\)/);
   assert.match(src, /video\.addEventListener\('error', close\)/);
   assert.match(src, /p\.catch\(close\)/);
-  assert.match(src, /setItem\(SEEN_KEY, '1'\)/);
+  assert.match(src, /setItem\(SEEN_KEY, all\.join\(','\)\)/, 'recuerda los idiomas vistos');
   assert.match(src, /pickSource\(win\.innerWidth, win\.devicePixelRatio, lang\)/, 'el vídeo sigue al idioma resuelto');
 });
 
@@ -104,4 +104,17 @@ test('solo con el look por defecto: con una marca blanca activa no sale', () => 
   assert.equal(intro.shouldShow({...base, brand: ''}), true);
   assert.equal(intro.shouldShow({...base, brand: 'starbucks'}), false);
   assert.equal(intro.shouldShow({...base, brand: 'starbucks', search: '?intro=1'}), true, '?intro=1 la fuerza igual');
+});
+
+test('una vez por idioma: al pasar a castellano sale en castellano si aún no se ha visto en él', () => {
+  assert.deepEqual(intro.parseSeen(''), []);
+  assert.deepEqual(intro.parseSeen('1'), [], 'el «1» antiguo no dice el idioma');
+  assert.deepEqual(intro.parseSeen('en'), ['en']);
+  assert.deepEqual(intro.parseSeen('es,en'), ['es', 'en']);
+  assert.deepEqual(intro.parseSeen('fr,en'), ['en']);
+  const src = read('assets/intro-portada.js');
+  assert.match(src, /addEventListener\('admira:languagechange'/, 'sigue el cambio de idioma de la portada y de /idioma');
+  assert.match(src, /if \(current\) current\.setLang\(next\); else tryOpen\(next\)/);
+  assert.match(src, /seen: seenNow\(\)\.includes\(lang\)/, 'vista por idioma');
+  assert.match(src, /const at = video\.currentTime;[\s\S]*video\.currentTime = at/, 'con la intro en marcha cambia el vídeo sin perder el segundo');
 });
