@@ -2,14 +2,25 @@
   "number": 50,
   "id": "native:starbucksWaterRack",
   "name": "Botellero Solán de Cabras Starbucks",
+  "name_en": "Starbucks Solán de Cabras bottle rack",
   "tier": "good",
+  "reference": "PG103-011",
   "geometry_basis": "interpretive_photo_and_panorama",
+  "source_photos": "Panorama Matrix 360 y fotos de Carlos · Starbucks Paseo de Gràcia · 2026-10-17",
+  "workshop_recipe": "admira-xp/tools/taller-3d/recetas/botellero-pg103.json",
   "measured": false,
   "nominal_units": "metres_for_proportions_only",
-  "visual_bottle_count": 19,
   "stock_quantity_verified": false,
+  "rim_height_m": 0.74,
+  "rim_diameter_m": 0.43,
+  "footprint_m": [
+    0.48,
+    0.48
+  ],
+  "origin": "centre",
+  "front": "+Z glTF (Blender -Y)",
+  "visual_bottle_count": 19,
   "bottles_individually_editable": true,
-  "texture_basis": "deterministic_PBR_maps_and_interpreted_print",
   "reference_visible_caps": 13,
-  "mesh_count": 169
+  "mesh_count": 92
 }

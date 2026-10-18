@@ -21,13 +21,8 @@ El `.blend` conserva texto editable, biseles y texturas empaquetadas. La colecci
 
 Revisión del 15/09/2026: el piloto actualizado se publica en `/inventario/#mostrador` y los GLB se integran en Better/Best editable. El laboratorio original permanece como referencia histórica. `verify_counter.py` valida ahora las dos puertas traseras y la identidad permanente 1, por lo que debe ejecutarse sobre los assets regenerados de `inventario/assets/mostrador`. Instalación verificada: `/Applications/Blender.app`, Blender 5.2.2 LTS mediante Homebrew cask oficial.
 
-## Starbucks PG103: botellero y botellas / water rack and bottles
+## Starbucks PG103: botellero y cestas / water rack and baskets
 
-```sh
-python3 admira-xp/tools/xpacios-blender/water_rack_textures.py inventario/assets/catalog/50/textures
-/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python-exit-code 1 --python admira-xp/tools/xpacios-blender/build_water_rack.py -- /absolute/path/to/xpaceos
-```
+ES: El botellero (50) y las cestas trenzadas (53–55) ya no tienen guion propio: los construye el [Taller 3D](../taller-3d/README.md) desde sus recetas (`recetas/botellero-pg103.json` y `recetas/cestas-pg103.json`). El botellero conserva sus 19 botellas editables, la botella suelta (`bottle.glb`, `bottle.blend`) y el tamaño de cesta que usa Matrix · TPV.
 
-Asset50 interpreta la foto y la panorámica de PG103: cesta de varilla negra, soporte fino, cartel AGUA MINERAL y19 botellas PET azules editables. Las proporciones nominales no son medidas de campo y las19 unidades no son stock medido. La impresión del cuello es una recreación aproximada. Los mapas PBR deterministas quedan empaquetados; cada perfil produce GLB y Blender, más botella individual y preview Cycles. La escena de estudio sólo interviene en el render.
-
-Asset50 interprets the PG103 photo/panorama: black wire basket and slender stand, AGUA MINERAL sign,19 editable blue PET bottles. Nominal proportions are not field measurements;19 is visual filling, not verified stock. Neck printing is an approximation. Packed deterministic PBR maps are shared by the three GLB/Blender profiles, standalone bottle and Cycles preview. Studio geometry is added only after model export.
+EN: The water rack (50) and woven baskets (53–55) no longer have their own script: the [3D workshop](../taller-3d/README.md) builds them from their recipes. The water rack keeps its 19 editable bottles, the standalone bottle and the basket size Matrix · POS uses.

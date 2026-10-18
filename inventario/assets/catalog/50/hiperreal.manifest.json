@@ -1,55 +1,43 @@
 {
   "number": 50,
+  "id": "native:starbucksWaterRack",
   "name": "Botellero Solán de Cabras Starbucks",
+  "name_en": "Starbucks Solán de Cabras bottle rack",
   "tier": "hiperreal",
+  "reference": "PG103-011",
+  "geometry_basis": "interpretive_photo_and_panorama",
+  "source_photos": "Panorama Matrix 360 y fotos de Carlos · Starbucks Paseo de Gràcia · 2026-10-17",
+  "workshop_recipe": "admira-xp/tools/taller-3d/recetas/botellero-pg103.json",
+  "measured": false,
+  "nominal_units": "metres_for_proportions_only",
+  "stock_quantity_verified": false,
+  "rim_height_m": 0.74,
+  "rim_diameter_m": 0.43,
+  "footprint_m": [
+    0.48,
+    0.48
+  ],
+  "origin": "centre",
+  "front": "+Z glTF (Blender -Y)",
+  "visual_bottle_count": 19,
+  "bottles_individually_editable": true,
+  "reference_visible_caps": 13,
+  "mesh_count": 776,
   "based_on": "best",
   "batch": 1,
-  "geometry_basis": "interpretive_photo_and_panorama",
-  "measured": false,
-  "material_classes": {
-    "AGUA MINERAL · reference sign": "keep",
-    "Black powder-coated wire · PBR": "keep",
-    "Black rubber feet": "rubber",
-    "Black sign support": "powder",
-    "Cobalt blue PET · interpreted print": "keep",
-    "Solán de Cabras · interpreted white neck print": "keep",
-    "White ribbed polypropylene cap": "plastic",
-    "White tamper band": "plastic"
-  },
-  "jittered_items": 0,
-  "bevel": "source geometry kept",
+  "textures": [
+    "powder_orm_1024.jpg",
+    "powder_normal_1024.jpg",
+    "plastic_orm.jpg"
+  ],
+  "shared_textures": "../../hiperreal-tex/",
   "lods": {
     "web": "./hiperreal.glb",
-    "hd_unreal_nanite": "./hiperreal/hiperreal-hd.glb",
+    "hd": "./hiperreal/hiperreal-hd.glb",
     "blender": "./hiperreal.blend"
   },
   "bytes": {
-    "web": 1029680,
-    "hd": 5738276,
-    "best": 4963656
-  },
-  "shared_textures": "../../hiperreal-tex/",
-  "textures": [
-    "plastic_orm.jpg",
-    "powder_normal_1024.jpg",
-    "powder_orm_1024.jpg"
-  ],
-  "lighting": {
-    "web_hdri": "../47/hiperreal/comfy_cafe_1k.hdr",
-    "cycles_hdri": "Poly Haven comfy_cafe 2K"
-  },
-  "texture_sources_cc0": [
-    "polyhaven:oak_veneer_01",
-    "polyhaven:concrete_floor_02",
-    "polyhaven:plaster_grey_04",
-    "polyhaven:comfy_cafe",
-    "ambientcg:Metal049A",
-    "ambientcg:Cardboard004",
-    "ambientcg:Fingerprints002",
-    "ambientcg:Smear007",
-    "procedural:pastry,powder (XpaceOS)"
-  ],
-  "renders": "./hiperreal/preview/",
-  "pipeline": "/admira-xp/tools/hiperreal/pipeline.py",
-  "guide": "/admira-xp/docs/hiperreal-pipeline.md"
+    "web": 3206960,
+    "hd": 5864480
+  }
 }

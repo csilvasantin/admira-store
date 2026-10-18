@@ -16,7 +16,7 @@ test('batch 1 adds Hiperreal to every Starbucks piece; Matrix stays exclusive to
 
 test('batch 1 web GLBs are light WebP LODs that keep every node and inventory identity of Best',()=>{
  for(const n of TANDA1){
-  const url=new URL(furnitureURL(n,'hiperreal'));assert.equal(url.searchParams.get('v'),'hiperreal-tanda1-20261008-1');
+  const url=new URL(furnitureURL(n,'hiperreal'));assert.equal(url.searchParams.get('v'),'hiperreal-tanda1-20261008-'+(n===50?2:1));// 50: botellero del taller 3D
   const web=glb(url),hd=glb(new URL(`./assets/catalog/${n}/hiperreal/hiperreal-hd.glb`,import.meta.url)),best=glb(new URL(furnitureURL(n,'best')));
   assert.ok(web.bytes.length<=5e6,n+' web GLB ≤ 5 MB');assert.ok(hd.bytes.length>web.bytes.length,n+' HD heavier than web');
   assert.ok(web.doc.extensionsUsed.includes('EXT_texture_webp'));assert.ok(web.doc.images.every(image=>'bufferView' in image&&!image.uri));

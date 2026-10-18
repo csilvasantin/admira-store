@@ -25,19 +25,17 @@ En el inventario / In the inventory: `/inventario/?asset=53`, `54`, `55` muestra
 - Medidas nominales, sin medir en tienda: borde de .60, alto del borde .50 (53) y .84 (54, 55). / Nominal, unmeasured: .60 rim, rim height .50 (53) and .84 (54, 55).
 - Productos: cada vaso o bolsa es un nodo propio con `item_instance` y `stock_quantity_verified: false`. No son existencias. / Each cup or bag is its own node; not stock.
 - Texturas de foto / Photo textures: bolsa 1971 por sus cuatro caras, carteles BE GREEN y Discover 1971, sirena del vaso. Tejido, cuerda y acero son procedurales. Las bolsas de snacks son interpretadas: las fotos no muestran sus marcas de cerca. / Snack bags are interpreted; brands not confirmed.
-- Las fotos originales no se publican porque salen clientes; solo recortes enderezados de objetos en `admira-xp/tools/xpacios-blender/cestas-fuentes/`. / Original photos are not published (customers appear); only object crops are kept.
+- Las fotos originales no se publican porque salen clientes; solo recortes enderezados de objetos en `admira-xp/tools/taller-3d/fuentes/cestas-pg103/`. / Original photos are not published (customers appear); only object crops are kept.
 
 ## Regenerar / Rebuild
 
+ES: Las tres cestas salen del [Taller 3D](taller-3d.md) con la receta `admira-xp/tools/taller-3d/recetas/cestas-pg103.json`, que guarda las esquinas de cada recorte, las texturas y cada pieza. La receta reproduce los modelos publicados nodo a nodo, también las posiciones de la física.
+
+EN: The three baskets come from the [3D workshop](taller-3d.md) recipe `cestas-pg103.json`, which keeps every crop's corners, the textures and each piece. The recipe reproduces the published models node by node, physics poses included.
+
 ```sh
-python3 admira-xp/tools/xpacios-blender/cestas_recortes.py <carpeta de fotos> admira-xp/tools/xpacios-blender/cestas-fuentes   # solo con las fotos originales
-python3 admira-xp/tools/xpacios-blender/cestas_texturas.py admira-xp/tools/xpacios-blender/cestas-fuentes inventario/assets/catalog/cestas/textures
-/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python-exit-code 1 --python admira-xp/tools/xpacios-blender/build_cestas.py -- "$PWD"
+admira-xp/tools/taller-3d/taller.sh admira-xp/tools/taller-3d/recetas/cestas-pg103.json [--fotos <carpeta con las fotos originales>]
 ```
-
-ES: Pillow y NumPy para los dos primeros. Vasos y snacks caen con la física de Blender (Bullet, determinista): por tandas, con el centro de masas en el centro de cada objeto y un cuenco de colisión macizo; el guion falla si algo acaba fuera de la cesta. Las bolsas de café se colocan de pie, en filas.
-
-EN: Pillow and NumPy for the first two. Cups and snacks are dropped with Blender physics (Bullet, deterministic): in batches, with each object's mass centre at its middle and a solid collision bowl; the script fails if anything ends outside the basket. Coffee bags stand in rows.
 
 ## Pendiente / Pending
 

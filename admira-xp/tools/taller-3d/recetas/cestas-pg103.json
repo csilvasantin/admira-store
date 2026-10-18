@@ -1,0 +1,851 @@
+{
+ "schema": "xpaceos.taller-3d.receta/1",
+ "encargo": "cestas-pg103-2026-10-17",
+ "descripcion": "Las tres cestas trenzadas del Starbucks de Paseo de Gràcia, desde las fotos de Carlos del 17-10-2026. / The three woven baskets of the Paseo de Gràcia Starbucks, from Carlos's 17-10-2026 photos.",
+ "local": "alsea-sbux-021",
+ "fotos": {
+  "autor": "Carlos",
+  "lugar": "Starbucks Paseo de Gràcia",
+  "fecha": "2026-10-17",
+  "publicables": false,
+  "nota": "Salen clientes: las fotos originales no se publican; solo recortes de objetos en fuentes/. / Customers appear: only object crops are kept."
+ },
+ "fuentes": "cestas-pg103",
+ "texturas_dir": "inventario/assets/catalog/cestas/textures",
+ "texturas": [
+  {
+   "op": "recorte",
+   "foto": "05-bolsa-1971-frontal.jpg",
+   "esquinas": [
+    [
+     266,
+     250
+    ],
+    [
+     612,
+     250
+    ],
+    [
+     676,
+     1006
+    ],
+    [
+     214,
+     1000
+    ]
+   ],
+   "tam": [
+    540,
+    1024
+   ],
+   "salida": "bolsa-1971-frontal.png"
+  },
+  {
+   "op": "recorte",
+   "foto": "04-bolsa-1971-lateral-preparacion.jpg",
+   "esquinas": [
+    [
+     298,
+     385
+    ],
+    [
+     518,
+     378
+    ],
+    [
+     625,
+     1210
+    ],
+    [
+     296,
+     1215
+    ]
+   ],
+   "tam": [
+    300,
+    1024
+   ],
+   "salida": "bolsa-1971-lateral-a.png"
+  },
+  {
+   "op": "recorte",
+   "foto": "06-bolsa-1971-lateral-historia.jpg",
+   "esquinas": [
+    [
+     362,
+     160
+    ],
+    [
+     650,
+     155
+    ],
+    [
+     700,
+     1110
+    ],
+    [
+     338,
+     1110
+    ]
+   ],
+   "tam": [
+    300,
+    1024
+   ],
+   "salida": "bolsa-1971-lateral-b.png"
+  },
+  {
+   "op": "recorte",
+   "foto": "07-bolsa-1971-trasera.jpg",
+   "esquinas": [
+    [
+     205,
+     218
+    ],
+    [
+     640,
+     205
+    ],
+    [
+     800,
+     1135
+    ],
+    [
+     203,
+     1135
+    ]
+   ],
+   "tam": [
+    540,
+    1024
+   ],
+   "salida": "bolsa-1971-trasera.png"
+  },
+  {
+   "op": "recorte",
+   "foto": "03-cesta-cafe-1971.jpg",
+   "esquinas": [
+    [
+     352,
+     58
+    ],
+    [
+     556,
+     70
+    ],
+    [
+     549,
+     530
+    ],
+    [
+     366,
+     535
+    ]
+   ],
+   "tam": [
+    440,
+    1024
+   ],
+   "salida": "cartel-1971.png"
+  },
+  {
+   "op": "recorte",
+   "foto": "01-cesta-vasos-be-green.jpg",
+   "esquinas": [
+    [
+     178,
+     99
+    ],
+    [
+     500,
+     8
+    ],
+    [
+     489,
+     600
+    ],
+    [
+     298,
+     653
+    ]
+   ],
+   "tam": [
+    440,
+    1024
+   ],
+   "salida": "cartel-be-green.png"
+  },
+  {
+   "op": "recorte",
+   "foto": "02-vaso-reutilizable.jpg",
+   "cilindro": {
+    "cx": 479,
+    "r": 166,
+    "cy": 679,
+    "s0": -42,
+    "medio": 150
+   },
+   "salida": "vaso-sirena.png"
+  },
+  {
+   "op": "tejido",
+   "periodos": 12,
+   "filas": 13,
+   "tupido_hasta": 0.38,
+   "calado_desde": 0.45,
+   "liston": 0.28,
+   "cordones": [
+    0.74
+   ]
+  },
+  {
+   "op": "cuerda",
+   "vueltas": 160
+  },
+  {
+   "op": "acero",
+   "rugosidad": 0.38,
+   "metal": 0.55,
+   "salida": "acero-orm.png"
+  },
+  {
+   "op": "vaso",
+   "fuente": "vaso-sirena.png",
+   "salida": "vaso-caliente.jpg",
+   "cuerpo": [
+    236,
+    236,
+    230
+   ],
+   "tinta": [
+    0,
+    98,
+    65
+   ]
+  },
+  {
+   "op": "vaso",
+   "fuente": "vaso-sirena.png",
+   "salida": "vaso-frio.jpg",
+   "cuerpo": [
+    225,
+    228,
+    226
+   ],
+   "tinta": [
+    0,
+    98,
+    65
+   ],
+   "escala": true
+  },
+  {
+   "op": "foto_retocada",
+   "fuente": "bolsa-1971-frontal.png",
+   "salida": "bolsa-1971-frontal.jpg",
+   "piel": [
+    [
+     300,
+     846,
+     540,
+     1024
+    ],
+    [
+     0,
+     0,
+     70,
+     220
+    ]
+   ],
+   "respetar": [
+    [
+     210,
+     848,
+     334,
+     868
+    ]
+   ],
+   "borrar": [
+    [
+     105,
+     876,
+     460,
+     900
+    ],
+    [
+     120,
+     908,
+     450,
+     936
+    ]
+   ],
+   "referencia": [
+    20,
+    300
+   ],
+   "lineas": [
+    [
+     172,
+     888,
+     380,
+     888,
+     2
+    ],
+    [
+     172,
+     883,
+     172,
+     893,
+     2
+    ],
+    [
+     213.5,
+     883,
+     213.5,
+     893,
+     2
+    ],
+    [
+     255,
+     883,
+     255,
+     893,
+     2
+    ],
+    [
+     296.5,
+     883,
+     296.5,
+     893,
+     2
+    ],
+    [
+     338,
+     883,
+     338,
+     893,
+     2
+    ],
+    [
+     379.5,
+     883,
+     379.5,
+     893,
+     2
+    ]
+   ],
+   "textos": [
+    {
+     "texto": "LIGHT",
+     "x": 139,
+     "y": 888,
+     "tam": 15,
+     "tipo": "condensada-negrita"
+    },
+    {
+     "texto": "DARK",
+     "x": 412,
+     "y": 888,
+     "tam": 15,
+     "tipo": "condensada-negrita"
+    },
+    {
+     "texto": "WHOLE BEAN 100% ARABICA COFFEE",
+     "x": 272,
+     "y": 922,
+     "tam": 21,
+     "tipo": "condensada"
+    }
+   ],
+   "nota": "El pulgar de Carlos tapaba la parte de abajo: se rellena con el verde de la bolsa y se redibujan la escala y la última línea."
+  },
+  {
+   "op": "foto",
+   "fuente": "bolsa-1971-lateral-a.png",
+   "salida": "bolsa-1971-lateral-a.jpg"
+  },
+  {
+   "op": "foto",
+   "fuente": "bolsa-1971-lateral-b.png",
+   "salida": "bolsa-1971-lateral-b.jpg"
+  },
+  {
+   "op": "foto",
+   "fuente": "bolsa-1971-trasera.png",
+   "salida": "bolsa-1971-trasera.jpg"
+  },
+  {
+   "op": "cartel_foto",
+   "fuente": "cartel-be-green.png",
+   "fraccion_visible": 0.81,
+   "tam": [
+    512,
+    1472
+   ],
+   "salida": "cartel-be-green.jpg"
+  },
+  {
+   "op": "cartel_foto",
+   "fuente": "cartel-1971.png",
+   "fraccion_visible": 0.68,
+   "tam": [
+    512,
+    1792
+   ],
+   "salida": "cartel-1971.jpg"
+  },
+  {
+   "op": "cartel_texto",
+   "salida": "cartel-snacks.jpg",
+   "tam": [
+    256,
+    1024
+   ],
+   "fondo": [
+    20,
+    21,
+    22
+   ],
+   "tinta": [
+    232,
+    231,
+    224
+   ],
+   "textos": [
+    {
+     "texto": "REFRIGERIS",
+     "y": 120,
+     "tam": 46
+    },
+    {
+     "texto": "SNACKS",
+     "y": 172,
+     "tam": 46
+    }
+   ],
+   "lineas": [
+    [
+     36,
+     222,
+     220,
+     222,
+     2,
+     [
+      120,
+      121,
+      116
+     ]
+    ],
+    [
+     36,
+     300,
+     160,
+     300,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     196,
+     300,
+     220,
+     300,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     36,
+     420,
+     160,
+     420,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     196,
+     420,
+     220,
+     420,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     36,
+     540,
+     160,
+     540,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     196,
+     540,
+     220,
+     540,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     36,
+     660,
+     160,
+     660,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ],
+    [
+     196,
+     660,
+     220,
+     660,
+     6,
+     [
+      150,
+      151,
+      146
+     ]
+    ]
+   ],
+   "nota": "Sin precios: las líneas solo marcan dónde van. / No prices are invented."
+  },
+  {
+   "op": "bolsa_snack",
+   "salida": "snack-a.jpg",
+   "papel": [
+    240,
+    238,
+    234
+   ],
+   "acento": [
+    200,
+    36,
+    52
+   ],
+   "acento2": [
+    236,
+    130,
+    158
+   ],
+   "palabra": "CHIPS"
+  },
+  {
+   "op": "bolsa_snack",
+   "salida": "snack-b.jpg",
+   "papel": [
+    212,
+    226,
+    58
+   ],
+   "acento": [
+    96,
+    150,
+    40
+   ],
+   "acento2": [
+    244,
+    244,
+    222
+   ],
+   "palabra": "SNACK"
+  },
+  {
+   "op": "bolsa_snack",
+   "salida": "snack-c.jpg",
+   "papel": [
+    242,
+    240,
+    236
+   ],
+   "acento": [
+    120,
+    176,
+    60
+   ],
+   "acento2": [
+    232,
+    150,
+    170
+   ],
+   "palabra": "CRUNCH"
+  }
+ ],
+ "piezas": [
+  {
+   "numero": 53,
+   "id": "native:starbucksCupBasket",
+   "nombre": "Cesta de vasos reutilizables BE GREEN",
+   "nombre_en": "BE GREEN reusable cup basket",
+   "referencia": "PG103-012",
+   "instancia": "sb-cup-basket",
+   "origen": "esquina",
+   "huella": 0.64,
+   "mueble": {
+    "familia": "cesta_trenzada",
+    "borde": [
+     0.5,
+     0.3
+    ],
+    "fondo": [
+     0.24,
+     0.14
+    ],
+    "repeticion": 4
+   },
+   "carteles": [
+    {
+     "nombre": "BE GREEN sign board",
+     "material": "BE GREEN sign · photo print",
+     "textura": "cartel-be-green.jpg",
+     "rugosidad": 0.55,
+     "material_canto": "Sign board edge",
+     "canto": [
+      0.92,
+      0.92,
+      0.9
+     ],
+     "rugosidad_canto": 0.6,
+     "ancho": 0.4,
+     "alto": 1.15,
+     "pos": [
+      0,
+      0.1
+     ],
+     "sobre_fondo": 0.12,
+     "inclinacion": 7,
+     "fuente_textura": "photos_carlos_2026-10-17"
+    }
+   ],
+   "contenido": {
+    "familia": "vasos",
+    "cantidad": 28,
+    "tanda": 4,
+    "semilla": 103,
+    "fuente_textura": "photos_carlos_2026-10-17",
+    "materiales": {
+     "caliente": [
+      "Reusable hot cup · siren print",
+      "vaso-caliente.jpg"
+     ],
+     "frio": [
+      "Reusable cold cup · frosted PP, siren print",
+      "vaso-frio.jpg"
+     ]
+    }
+   },
+   "comparar": {
+    "foto": "01-cesta-vasos-be-green.jpg",
+    "recorte": [
+     140,
+     0,
+     800,
+     1180
+    ]
+   }
+  },
+  {
+   "numero": 54,
+   "id": "native:starbucksSnackBasket",
+   "nombre": "Cesta de snacks Starbucks",
+   "nombre_en": "Starbucks snack basket",
+   "referencia": "PG103-013",
+   "instancia": "sb-snack-basket",
+   "origen": "esquina",
+   "huella": 0.64,
+   "mueble": {
+    "familia": "cesta_trenzada",
+    "borde": [
+     0.84,
+     0.3
+    ],
+    "fondo": [
+     0.58,
+     0.14
+    ],
+    "repeticion": 4
+   },
+   "carteles": [
+    {
+     "nombre": "REFRIGERIS SNACKS sign board",
+     "material": "REFRIGERIS · SNACKS sign",
+     "textura": "cartel-snacks.jpg",
+     "rugosidad": 0.5,
+     "material_canto": "Black sign board",
+     "canto": [
+      0.03,
+      0.03,
+      0.03
+     ],
+     "rugosidad_canto": 0.45,
+     "ancho": 0.1,
+     "alto": 0.32,
+     "pos": [
+      0,
+      0.115
+     ],
+     "z": 1.0,
+     "poste": {
+      "x": 0,
+      "y": 0.12,
+      "alto": 1.18
+     }
+    }
+   ],
+   "contenido": {
+    "familia": "bolsas_almohada",
+    "cantidad": 26,
+    "semilla": 54,
+    "disenos": [
+     "snack-a.jpg",
+     "snack-b.jpg",
+     "snack-c.jpg"
+    ]
+   },
+   "comparar": {
+    "foto": "01-cesta-vasos-be-green.jpg",
+    "recorte": [
+     600,
+     60,
+     960,
+     1000
+    ]
+   }
+  },
+  {
+   "numero": 55,
+   "id": "native:starbucksCoffeeBasket",
+   "nombre": "Cesta de café Starbucks 1971 Dark Roast",
+   "nombre_en": "Starbucks 1971 Dark Roast coffee basket",
+   "referencia": null,
+   "instancia": "sb-coffee-basket",
+   "origen": "esquina",
+   "huella": 0.64,
+   "mueble": {
+    "familia": "cesta_trenzada",
+    "borde": [
+     0.84,
+     0.3
+    ],
+    "fondo": [
+     0.58,
+     0.14
+    ],
+    "repeticion": 4
+   },
+   "carteles": [
+    {
+     "nombre": "Discover 1971 sign board",
+     "material": "Discover 1971 Dark Roast sign · photo print",
+     "textura": "cartel-1971.jpg",
+     "rugosidad": 0.55,
+     "material_canto": "Green sign board edge",
+     "canto": [
+      0.07,
+      0.42,
+      0.33
+     ],
+     "rugosidad_canto": 0.6,
+     "ancho": 0.28,
+     "alto": 0.98,
+     "pos": [
+      0,
+      0.105
+     ],
+     "sobre_fondo": 0.09,
+     "inclinacion": 4,
+     "fuente_textura": "photos_carlos_2026-10-17"
+    }
+   ],
+   "contenido": {
+    "familia": "bolsas_de_pie",
+    "semilla": 55,
+    "bajo_borde": 0.075,
+    "medidas": [
+     0.115,
+     0.065,
+     0.215
+    ],
+    "color_liso": [
+     0.07,
+     0.42,
+     0.33
+    ],
+    "fuente_textura": "photos_carlos_2026-10-17",
+    "caras": {
+     "frente": "bolsa-1971-frontal.jpg",
+     "dorso": "bolsa-1971-trasera.jpg",
+     "lado_a": "bolsa-1971-lateral-a.jpg",
+     "lado_b": "bolsa-1971-lateral-b.jpg"
+    },
+    "nombre_producto": "Starbucks 1971 Dark Roast 250 g bag",
+    "producto": "Starbucks 1971 Dark Roast 250 g whole bean",
+    "filas": [
+     [
+      0.045,
+      0.035,
+      [
+       -0.18,
+       -0.06,
+       0.06,
+       0.18
+      ]
+     ],
+     [
+      -0.045,
+      0.018,
+      [
+       -0.18,
+       -0.06,
+       0.06,
+       0.18
+      ]
+     ],
+     [
+      -0.135,
+      0,
+      [
+       -0.12,
+       0,
+       0.12
+      ]
+     ]
+    ]
+   },
+   "comparar": {
+    "foto": "03-cesta-cafe-1971.jpg",
+    "recorte": [
+     230,
+     0,
+     760,
+     1200
+    ]
+   }
+  }
+ ]
+}

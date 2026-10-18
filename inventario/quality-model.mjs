@@ -10,7 +10,7 @@ export const HIPERREAL_BATCHES=Object.freeze({0:Object.freeze([47]),1:Object.fre
 // Cache revision per piece when a published Hiperreal GLB is rebuilt (2 and 51: authored wood textures keep their own UVs; 27: neutral iron instead of teal; 29: beacon and headlamps as glossy plastic, not glass;
 // r22: 2 amber bottles and the 19/20/23 headlamps/windscreens leave glass in the web LOD -> opaque gloss, HD keeps real glass;
 // r23: 2 front labels stay on their packs (no jitter on flat decals); 4, 6, 17, 18 gain hand-made parts).
-export const HIPERREAL_REVISION=Object.freeze({2:4,51:2,27:2,29:2,30:2,19:2,20:2,23:2,4:2,6:2,17:2,18:2});
+export const HIPERREAL_REVISION=Object.freeze({2:4,50:2,51:2,27:2,29:2,30:2,19:2,20:2,23:2,4:2,6:2,17:2,18:2});
 export const HIPERREAL_ASSET_NUMBERS=Object.freeze(Object.values(HIPERREAL_BATCHES).flat().sort((a,b)=>a-b));
 export function hasHiperreal(number){return HIPERREAL_ASSET_NUMBERS.includes(number);}
 export function hiperrealBatch(number){const entry=Object.entries(HIPERREAL_BATCHES).find(([,numbers])=>numbers.includes(number));return entry?Number(entry[0]):null;}

@@ -347,18 +347,8 @@ model(49, STARBUCKS, g('chair', 'Silla', 'Chair', c('seat', 'Asiento de madera',
       c('backrest', 'Respaldo de madera', 'Wood backrest'), c('side-supports', 'Soportes laterales', 'Side supports', 2,
       ('El modelo representa dos soportes laterales sólidos; no define cuatro patas separadas.',
        'The model represents two solid side supports; it does not define four separate legs.'))))
-model(50, [TOOLS + 'build_water_rack.py', 'inventario/assets/catalog/50/best.manifest.json'],
-    g('rack', 'Estructura del botellero', 'Rack structure', c('basket-rings', 'Aros de cesta', 'Basket rings', 3),
-      c('basket-uprights', 'Varillas verticales de cesta', 'Basket upright wires', 56),
-      c('basket-floor', 'Varillas del fondo', 'Basket floor wires', 34), c('legs', 'Patas metálicas', 'Metal legs', 4),
-      c('feet', 'Pies de goma', 'Rubber feet', 4), c('lower-frame', 'Varillas del marco inferior', 'Lower frame rods', 4),
-      c('diagonal-braces', 'Tirantes diagonales', 'Diagonal braces', 2),
-      c('sign', 'Rótulo AGUA MINERAL', 'AGUA MINERAL sign', children=[c('board', 'Placa', 'Board'), c('print', 'Cara impresa', 'Printed face')])),
-    g('products', 'Productos representativos', 'Representative products',
-      c('bottles', 'Botellas Solán de Cabras', 'Solán de Cabras bottles', 19, VISUAL, [
-          c('body', 'Cuerpo PET azul', 'Blue PET body'), c('tamper-band', 'Precinto blanco', 'White tamper band'),
-          c('printed-collar', 'Collar impreso', 'Printed collar'), c('cap', 'Tapón blanco', 'White cap'),
-          c('cap-ribs', 'Estrías del tapón', 'Cap grip ribs', 36)])))
+# El botellero 50 y las cestas 53–55 salen del taller 3D (admira-xp/tools/taller-3d) desde sus recetas; ver más abajo.
+# The water rack 50 and baskets 53–55 come from the 3D workshop recipes; see below.
 
 
 # Preserve additive permanent models 51 and 52 when regenerating composition.
@@ -425,6 +415,45 @@ MODELS.update({51: {'id': 'native:cafebreriaLibrary',
                                   'quantity': 1,
                                   'unit': 'piece'}]}]}})
 
+# Taller 3D: cesta trenzada sobre soporte con cruceta, cartel y contenido. / 3D workshop: woven basket, stand, sign, contents.
+TALLER = 'admira-xp/tools/taller-3d/'
+PHOTOS = label(
+    'Composición del modelo Best interpretado desde las fotos de Carlos del 17-10-2026. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Medidas nominales, no medidas en tienda.',
+    'Composition of the Best model interpreted from Carlos’s 17-10-2026 photos. Quantities describe one model, not stock or a verified manufacturing bill of materials. Nominal, unmeasured dimensions.')
+
+
+def taller(n, recipe, sign, products, note=PHOTOS):
+    model(n, [TALLER + 'taller.py', TALLER + 'recetas/' + recipe, f'inventario/assets/catalog/{n}/best.manifest.json'],
+          g('basket', 'Cesta trenzada', 'Woven basket',
+            c('woven-wall', 'Pared de cordón negro trenzado', 'Black woven cord wall'), c('basket-floor', 'Fondo de la cesta', 'Basket floor'),
+            c('rope-rim', 'Borde de cuerda enrollada', 'Rolled rope rim'), c('lower-ring', 'Aro inferior de cuerda', 'Lower rope ring')),
+          g('stand', 'Soporte de acero negro', 'Black steel stand',
+            c('top-ring', 'Aro superior', 'Top ring'), c('legs', 'Patas', 'Legs', 4), c('feet', 'Pies', 'Feet', 4),
+            c('floor-cross', 'Cruceta en X a ras de suelo', 'Floor-level X cross brace', 2)),
+          g('sign', 'Cartel', 'Sign', c('sign', *sign, children=[c('board', 'Placa', 'Board'), c('print', 'Cara impresa', 'Printed face')])),
+          g('products', 'Productos representativos', 'Representative products', *products))
+    MODELS[n]['note'] = note
+
+
+taller(50, 'botellero-pg103.json', ('Rótulo AIGUA MINERAL', 'AIGUA MINERAL sign'), [
+    c('bottles', 'Botellas Solán de Cabras', 'Solán de Cabras bottles', 19, VISUAL, [
+        c('body', 'Cuerpo PET azul', 'Blue PET body'), c('tamper-band', 'Precinto blanco', 'White tamper band'),
+        c('printed-collar', 'Collar impreso', 'Printed collar'), c('cap', 'Tapón blanco', 'White cap'),
+        c('cap-ribs', 'Estrías del tapón', 'Cap grip ribs', 36)])],
+    label('Composición del modelo Best del taller 3D: la cesta trenzada de la foto ITIL y del panorama 360, con el tamaño que usa Matrix · TPV. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada.',
+          'Composition of the 3D-workshop Best model: the woven basket of the ITIL photo and 360 panorama, at the size Matrix · POS uses. Quantities describe one model, not stock or a verified manufacturing bill of materials.'))
+taller(53, 'cestas-pg103.json', ('Cartel BE GREEN', 'BE GREEN sign'), [
+    c('hot-cups', 'Vasos reutilizables para caliente con tapa', 'Reusable hot cups with lid', 14, VISUAL),
+    c('cold-cups', 'Vasos reutilizables para frío con tapa cúpula', 'Reusable cold cups with dome lid', 14, VISUAL)])
+taller(54, 'cestas-pg103.json', ('Cartel REFRIGERIS · SNACKS', 'REFRIGERIS · SNACKS sign'), [
+    c('snack-bags', 'Bolsas de snacks (marcas sin confirmar)', 'Snack bags (brands not confirmed)', 26, VISUAL)])
+taller(55, 'cestas-pg103.json', ('Cartel Discover 1971 Dark Roast', 'Discover 1971 Dark Roast sign'), [
+    c('coffee-bags', 'Bolsas Starbucks 1971 Dark Roast 250 g', 'Starbucks 1971 Dark Roast 250 g bags', 11, VISUAL, [
+        c('front', 'Cara frontal', 'Front face'), c('back', 'Trasera', 'Back face'), c('sides', 'Laterales', 'Side gussets', 2),
+        c('top-seal', 'Cierre superior plegado', 'Folded top seal')]),
+    c('hidden-stock', 'Relleno bajo las bolsas visibles', 'Fill under the visible bags')])
+
+
 def validate(data):
     assert len(data['assets']) == len(REGISTRY)
     assert {a['id']: a['number'] for a in data['assets']} == REGISTRY
@@ -452,10 +481,10 @@ def validate(data):
     assert sum(c['quantity'] for c in shelf['groups'][2]['components']) == 45
     assert next(c for c in shelf['groups'][0]['components'] if c['id'] == 'shelves')['quantity'] == 5
     water = next(a for a in data['assets'] if a['number'] == 50)
-    assert water['groups'][1]['components'][0]['quantity'] == 19
+    assert next(g for g in water['groups'] if g['id'] == 'products')['components'][0]['quantity'] == 19
 
 
-data = {'schema_version': 1, 'revision': 'components-20261008-coffee47-1',
+data = {'schema_version': 1, 'revision': 'components-20261018-taller-1',
         'assets': [MODELS[n] for n in sorted(MODELS)]}
 validate(data)
 content = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
