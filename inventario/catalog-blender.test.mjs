@@ -21,7 +21,7 @@ test('water rack keeps editable visual bottle identities and self-contained PBR 
  const manifest=JSON.parse(fs.readFileSync(new URL('./starbucks/manifest.json',import.meta.url)));
  const unit=manifest.units.find(u=>u.itil_code==='PDG103-BOT-01');
  assert.equal(unit.instance_id,'sb-water-rack');assert.equal(unit.asset_number,50);
- assert.equal(manifest.units.length,12);assert.equal(new Set(manifest.units.map(u=>u.asset_number)).size,8);
+ assert.equal(manifest.units.length,15);assert.equal(new Set(manifest.units.map(u=>u.asset_number)).size,11);
  assert.equal(unit.visual_filling.bottle_count,19);assert.equal(unit.stock_quantity,undefined);
  for(const tier of ['good','better','best']){
   const b=fs.readFileSync(new URL(furnitureURL(50,tier))),gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)));

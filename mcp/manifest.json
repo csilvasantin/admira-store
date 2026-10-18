@@ -1104,8 +1104,8 @@
     "new_remote_tools": false
   },
   "starbucks_baskets": {
-    "es": "Starbucks PG103 · cestas trenzadas: tres modelos nuevos desde las fotos de Carlos del 17-10-2026. 53 cesta baja de vasos reutilizables con el cartel BE GREEN y 28 vasos; 54 cesta alta de snacks con su cartel REFRIGERIS · SNACKS y 26 bolsas interpretadas (marcas sin confirmar); 55 cesta alta de café Starbucks 1971 Dark Roast con su cartel y 11 bolsas de 250 g. Texturas de las fotos (bolsa, carteles y sirena del vaso); medidas nominales, sin medir. En el gemelo de Paseo de Gràcia, vasos y snacks junto al pilar y café frente a la estantería: Good y Better dibujan un boceto y Best carga el modelo. Alta como CI en Yokup pendiente.",
-    "en": "Starbucks PG103 · woven baskets: three new models from Carlos's 17-10-2026 photos. 53 low reusable-cup basket with the BE GREEN sign and 28 cups; 54 tall snack basket with its REFRIGERIS · SNACKS sign and 26 interpreted bags (brands not confirmed); 55 tall Starbucks 1971 Dark Roast coffee basket with its sign and 11 250 g bags. Photo textures (bag, signs, cup siren); nominal, unmeasured dimensions. In the Paseo de Gràcia twin, cups and snacks stand by the pillar and coffee faces the shelf: Good and Better draw a sketch and Best loads the model. Yokup CI registration pending.",
+    "es": "Starbucks PG103 · cestas trenzadas: tres modelos nuevos desde las fotos de Carlos del 17-10-2026. 53 cesta baja de vasos reutilizables con el cartel BE GREEN y 28 vasos; 54 cesta alta de snacks con su cartel REFRIGERIS · SNACKS y 26 bolsas interpretadas (marcas sin confirmar); 55 cesta alta de café Starbucks 1971 Dark Roast con su cartel y 11 bolsas de 250 g. Texturas de las fotos (bolsa, carteles y sirena del vaso); medidas nominales, sin medir. En el gemelo de Paseo de Gràcia, vasos y snacks junto al pilar y café frente a la estantería: Good y Better dibujan un boceto y Best carga el modelo. Dadas de alta en Yokup el 18-10-2026: PDG103-CES-01 (vasos), PDG103-CES-02 (snacks) y PDG103-CES-03 (café).",
+    "en": "Starbucks PG103 · woven baskets: three new models from Carlos's 17-10-2026 photos. 53 low reusable-cup basket with the BE GREEN sign and 28 cups; 54 tall snack basket with its REFRIGERIS · SNACKS sign and 26 interpreted bags (brands not confirmed); 55 tall Starbucks 1971 Dark Roast coffee basket with its sign and 11 250 g bags. Photo textures (bag, signs, cup siren); nominal, unmeasured dimensions. In the Paseo de Gràcia twin, cups and snacks stand by the pillar and coffee faces the shelf: Good and Better draw a sketch and Best loads the model. Registered in Yokup on 18-10-2026: PDG103-CES-01 (cups), PDG103-CES-02 (snacks) and PDG103-CES-03 (coffee).",
     "docs": "https://www.xpaceos.com/admira-xp/docs/starbucks-cestas.md",
     "venue": "alsea-sbux-021",
     "catalog": {
@@ -1119,7 +1119,12 @@
       "sb-coffee-basket"
     ],
     "geometry": "interpretive_photo_not_measured",
-    "yokup_ci": "pending"
+    "yokup_ci": {
+      "53": "PDG103-CES-01",
+      "54": "PDG103-CES-02",
+      "55": "PDG103-CES-03",
+      "registered_on": "2026-10-18"
+    }
   },
   "taller_3d": {
     "es": "Taller 3D · recetas: convierte las fotos de una visita en piezas del catálogo (Good, Better, Best y Hiperreal si se pide) desde una receta JSON por encargo, con recortes, texturas, física, manifiestos, render y hoja foto | 3D. Recetas: cestas-pg103 (53–55, reproduce los modelos publicados) y botellero-pg103 (50 rehecho con la cesta trenzada de la foto; conserva las 19 botellas editables y el tamaño de Matrix · TPV; cartel AIGUA MINERAL). Primera fase del Arquitecto automático.",

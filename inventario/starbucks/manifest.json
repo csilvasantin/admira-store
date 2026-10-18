@@ -207,6 +207,76 @@
       "content_fit": "contain",
       "playlist_id": "starbucks-alsea-paseo-de-gracia-ipad",
       "category": "pantalla"
+    },
+    {
+      "itil_code": "PDG103-CES-01",
+      "instance_id": "sb-cup-basket",
+      "name": "Cesta de vasos reutilizables BE GREEN Starbucks",
+      "category": "mobiliario",
+      "asset_number": 53,
+      "model3d": "https://www.xpaceos.com/inventario/assets/catalog/53/best.glb",
+      "master": "https://www.xpaceos.com/inventario/assets/catalog/53/best.blend",
+      "geometry_basis": "Interpretación de las fotos de Carlos del 17-10-2026 con el Taller 3D (receta cestas-pg103); huella nominal 0,64 × 0,64 m, sin medición de campo.",
+      "basis": "Modelo del Taller 3D desde las fotos de Carlos del 17-10-2026, con medidas nominales. Los 28 vasos reutilizables (14 para caliente y 14 para frío) forman una composición visual; las existencias reales son desconocidas. Sirena y cartel BE GREEN sacados de las fotos.",
+      "basis_en": "3D-workshop model from Carlos's 17-10-2026 photos, nominal dimensions. The 28 reusable cups (14 hot, 14 cold) form a visual composition; actual stock is unknown. Siren and BE GREEN sign taken from the photos.",
+      "confirmed_on": "2026-10-18",
+      "visual_filling": {
+        "cup_count": 28,
+        "purpose": "Composición visual; no representa existencias medidas ni stock real."
+      },
+      "reference_number": 12,
+      "reference_id": "PG103-012",
+      "photo": "./photos/N01.webp",
+      "photo_scope": "element",
+      "photo_basis": "Cesta circular negra ancha, varillas verticales, patas finas y crucetas. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "photo_basis_en": "Wide circular black basket with vertical rods, thin legs and cross braces. Real Matrix crop; identification and quantities are limited to visible examples."
+    },
+    {
+      "itil_code": "PDG103-CES-02",
+      "instance_id": "sb-snack-basket",
+      "name": "Cesta de snacks Starbucks",
+      "category": "mobiliario",
+      "asset_number": 54,
+      "model3d": "https://www.xpaceos.com/inventario/assets/catalog/54/best.glb",
+      "master": "https://www.xpaceos.com/inventario/assets/catalog/54/best.blend",
+      "geometry_basis": "Interpretación de las fotos de Carlos del 17-10-2026 con el Taller 3D (receta cestas-pg103); huella nominal 0,64 × 0,64 m, sin medición de campo.",
+      "basis": "Modelo del Taller 3D desde las fotos de Carlos del 17-10-2026, con medidas nominales. Las 26 bolsas de snacks son interpretadas: las fotos no muestran sus marcas de cerca. Composición visual, no existencias.",
+      "basis_en": "3D-workshop model from Carlos's 17-10-2026 photos, nominal dimensions. The 26 snack bags are interpreted: the photos do not show their brands up close. Visual composition, not stock.",
+      "confirmed_on": "2026-10-18",
+      "visual_filling": {
+        "bag_count": 26,
+        "purpose": "Composición visual; no representa existencias medidas ni stock real.",
+        "brands_confirmed": false
+      },
+      "reference_number": 13,
+      "reference_id": "PG103-013",
+      "photo": "./photos/N02.webp",
+      "photo_scope": "element",
+      "photo_basis": "Cesta negra de menor diámetro sobre soporte alto; bolsas de producto. Recorte real de Matrix; identificación y cantidad limitadas a lo visible.",
+      "photo_basis_en": "Smaller black basket on a tall stand, containing product bags. Real Matrix crop; identification and quantities are limited to visible examples."
+    },
+    {
+      "itil_code": "PDG103-CES-03",
+      "instance_id": "sb-coffee-basket",
+      "name": "Cesta de café Starbucks 1971 Dark Roast",
+      "category": "mobiliario",
+      "asset_number": 55,
+      "model3d": "https://www.xpaceos.com/inventario/assets/catalog/55/best.glb",
+      "master": "https://www.xpaceos.com/inventario/assets/catalog/55/best.blend",
+      "geometry_basis": "Interpretación de las fotos de Carlos del 17-10-2026 con el Taller 3D (receta cestas-pg103); huella nominal 0,64 × 0,64 m, sin medición de campo.",
+      "basis": "Modelo del Taller 3D desde las fotos de Carlos del 17-10-2026, con medidas nominales. Las 11 bolsas Starbucks 1971 Dark Roast de 250 g llevan las caras de la bolsa fotografiada; composición visual, no existencias.",
+      "basis_en": "3D-workshop model from Carlos's 17-10-2026 photos, nominal dimensions. The 11 Starbucks 1971 Dark Roast 250 g bags carry the faces of the photographed bag; visual composition, not stock.",
+      "confirmed_on": "2026-10-18",
+      "visual_filling": {
+        "bag_count": 11,
+        "purpose": "Composición visual; no representa existencias medidas ni stock real."
+      },
+      "reference_number": 62,
+      "reference_id": "PG103-062",
+      "photo": "./photos/sb-coffee-basket.webp",
+      "photo_scope": "element",
+      "photo_basis": "Recorte de la foto de Carlos del 17-10-2026, solo la cesta y las bolsas. No está en el panorama 360.",
+      "photo_basis_en": "Crop of Carlos's 17-10-2026 photo, basket and bags only. It is not in the 360 panorama."
     }
   ],
   "record_history": [
@@ -258,6 +328,18 @@
       "description": "Carlos solicita un iPad horizontal virtual en lugar del cartel. Alta de identidad y mapeo; instalación física pendiente.",
       "description_en": "Carlos requests a virtual landscape iPad replacing the sign. Identity and mapping registered; physical installation pending.",
       "kind": "virtual_planned"
+    },
+    {
+      "date": "2026-10-18",
+      "kind": "identity_confirmation",
+      "codes": [
+        "PDG103-CES-01",
+        "PDG103-CES-02",
+        "PDG103-CES-03"
+      ],
+      "description": "Alta en Yokup de las tres cestas trenzadas fotografiadas por Carlos el 17-10-2026 (vasos BE GREEN, snacks y café 1971), con modelos 53, 54 y 55 del Taller 3D.",
+      "description_en": "Yokup registration of the three woven baskets Carlos photographed on 17-10-2026 (BE GREEN cups, snacks and 1971 coffee), with 3D-workshop models 53, 54 and 55.",
+      "source": "https://www.xpaceos.com/admira-xp/docs/starbucks-cestas.md"
     }
   ]
 }

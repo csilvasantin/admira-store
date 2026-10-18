@@ -8,9 +8,9 @@ const document = JSON.parse(await readFile(new URL('./references.json', import.m
 const index = indexReferences(document, manifest.units);
 const base = 'https://www.xpaceos.com/inventario/starbucks/';
 
-test('61 stable photographic references retain their number, identity and real image file', async () => {
-  assert.equal(index.items.length, 61); assert.equal(index.byId.size, 61); assert.equal(index.byNumber.size, 61);
-  assert.deepEqual(index.items.map(reference => reference.reference_number), Array.from({length:61}, (_, i) => i + 1));
+test('62 stable photographic references retain their number, identity and real image file', async () => {
+  assert.equal(index.items.length, 62); assert.equal(index.byId.size, 62); assert.equal(index.byNumber.size, 62);
+  assert.deepEqual(index.items.map(reference => reference.reference_number), Array.from({length:62}, (_, i) => i + 1));
   for (const reference of index.items) {
     assert.equal(reference.reference_id, 'PG103-' + referenceLabel(reference));
     assert.ok(reference.name && reference.name_en); assert.ok(reference.basis && reference.basis_en);
@@ -20,21 +20,21 @@ test('61 stable photographic references retain their number, identity and real i
   }
 });
 
-test('all 12 inventory units map to matching references without renumbering the seven models', () => {
-  assert.equal(index.byCode.size, 12); assert.equal(manifest.units.length, 12);
+test('all 15 inventory units map to matching references without renumbering the seven models', () => {
+  assert.equal(index.byCode.size, 15); assert.equal(manifest.units.length, 15);
   for (const unit of manifest.units) {
     const reference = index.byCode.get(unit.itil_code);
     assert.equal(reference.asset_number, unit.asset_number); assert.equal(reference.reference_id, unit.reference_id);
     assert.equal(reference.reference_number, unit.reference_number); assert.equal(reference.photo, unit.photo);
   }
-  assert.deepEqual([...new Set(manifest.units.map(unit => unit.asset_number))], [44,45,46,47,48,49,50,52]);
+  assert.deepEqual([...new Set(manifest.units.map(unit => unit.asset_number))], [44,45,46,47,48,49,50,52,53,54,55]);
   const sharedType = index.items.filter(reference => reference.asset_number === 48 || reference.asset_number === 49);
   assert.equal(sharedType.length, 6); assert.ok(sharedType.every(reference => reference.photo_scope === 'type' && reference.visible_quantity == null));
 });
 
 test('candidates and products select real-photo records without inventing a CI or 3D model', () => {
   const unregistered = index.items.filter(reference => reference.status !== 'registered');
-  assert.equal(unregistered.length, 49);
+  assert.equal(unregistered.length, 47);
   for (const reference of unregistered) {
     const selection = selectReference(index, manifest.units, new URLSearchParams({ref:reference.reference_id}));
     assert.equal(selection.view, 'references'); assert.equal(selection.reference, reference); assert.equal(selection.unit, null);

@@ -383,9 +383,11 @@
       "reference_number": 12,
       "reference_id": "PG103-012",
       "key": "N01",
-      "name": "Cesto bajo de vasos reutilizables",
-      "name_en": "Low basket of reusable cups",
-      "status": "candidate",
+      "itil_code": "PDG103-CES-01",
+      "asset_number": 53,
+      "name": "Cesta de vasos reutilizables BE GREEN Starbucks",
+      "name_en": "Starbucks BE GREEN reusable cup basket",
+      "status": "registered",
       "photo": "./photos/N01.webp",
       "photo_scope": "element",
       "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
@@ -414,9 +416,11 @@
       "reference_number": 13,
       "reference_id": "PG103-013",
       "key": "N02",
-      "name": "Cesto alto de productos en bolsa",
-      "name_en": "Tall basket of bagged products",
-      "status": "candidate",
+      "itil_code": "PDG103-CES-02",
+      "asset_number": 54,
+      "name": "Cesta de snacks Starbucks",
+      "name_en": "Starbucks snack basket",
+      "status": "registered",
       "photo": "./photos/N02.webp",
       "photo_scope": "element",
       "source": "https://panorama-viewer-d8j.pages.dev/img/starbucks-demo.webp",
@@ -1953,6 +1957,39 @@
       "confidence_en": "Visual sign position; planned virtual iPad",
       "zone": "Sobre el mostrador de preparación, debajo de la pantalla 4",
       "zone_en": "On the preparation counter, below screen 4"
+    },
+    {
+      "reference_number": 62,
+      "reference_id": "PG103-062",
+      "key": "sb-coffee-basket",
+      "itil_code": "PDG103-CES-03",
+      "asset_number": 55,
+      "name": "Cesta de café Starbucks 1971 Dark Roast",
+      "name_en": "Starbucks 1971 Dark Roast coffee basket",
+      "status": "registered",
+      "photo": "./photos/sb-coffee-basket.webp",
+      "photo_scope": "element",
+      "source": "Carlos · foto en tienda 2026-10-17",
+      "source_crop": {
+        "file": "03-cesta-cafe-1971.jpg",
+        "box": [
+          255,
+          525,
+          740,
+          905
+        ]
+      },
+      "photo_pixels": [
+        485,
+        380
+      ],
+      "basis": "Recorte de la foto de Carlos del 17-10-2026, solo la cesta y las bolsas. No está en el panorama 360.",
+      "basis_en": "Crop of Carlos's 17-10-2026 photo, basket and bags only. It is not in the 360 panorama.",
+      "confidence": "alta en identificación visual",
+      "confidence_en": "high visual identification",
+      "visible_quantity": 1,
+      "zone": "Junto a la estantería",
+      "zone_en": "Beside the shelf"
     }
   ]
 }
