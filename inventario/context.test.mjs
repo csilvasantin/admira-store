@@ -14,7 +14,7 @@ test('unknown or mismatched projects never fall back to Estancos or the global c
 });
 test('Starbucks legacy instance types resolve its registered models and match the manifest',()=>{
  for(const unit of manifest.units){const asset=assets.find(a=>a.number===unit.asset_number),instance={id:unit.instance_id,type:'counter'};assert.equal(assetForInstance(instance),asset.id);assert.equal(scopedInstances(asset,[instance]).length,1);}
- const owned=scopedAssets(assets,manifest.units.map(u=>({id:u.instance_id,type:'counter'})));assert.deepEqual(owned.map(a=>a.number),[44,45,46,47,48,49,50,52]);
+ const owned=scopedAssets(assets,manifest.units.map(u=>({id:u.instance_id,type:'counter'})));assert.deepEqual(owned.map(a=>a.number),[44,45,46,47,48,49,50,52,53,54,55]);
 });
 test('deliberate imports belong to the target layout only and keep their source identity',()=>{
  const asset=assets.find(a=>a.number===43),item={id:'imported',type:'custom',sourceAssetId:asset.id.slice(8),img:asset.img};

@@ -1,14 +1,14 @@
 {
-  "version": "v.18.10.2026.r3.13:03",
-  "deployedAt": "2026-10-18T11:03:31Z",
+  "version": "v.18.10.2026.r4.13:45",
+  "deployedAt": "2026-10-18T11:45:24Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "b02b89ccd6a93ee016fe30cc8e50b12aaa50283d",
-  "gitShort": "b02b89c",
-  "gitFull": "b02b89ccd6a93ee016fe30cc8e50b12aaa50283d",
+  "git": "09dabc6399dc2539cd9e599a257f6b97fa880c51",
+  "gitShort": "09dabc6",
+  "gitFull": "09dabc6399dc2539cd9e599a257f6b97fa880c51",
   "dirty": false,
   "novedades": [
-    "Taller 3D: las fotos de una visita se convierten en piezas del catálogo desde una receta (primera fase del Arquitecto automático). El botellero Solán de Cabras del Starbucks de Paseo de Gràcia, rehecho con la cesta trenzada de la foto y el cartel AIGUA MINERAL."
+    "Starbucks Paseo de Gràcia: las tres cestas ya están dadas de alta en Yokup (PDG103-CES-01, -02 y -03) y salen como unidades del inventario, con su ficha ITIL y 3D."
   ]
 }

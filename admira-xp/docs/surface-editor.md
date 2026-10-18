@@ -12,7 +12,7 @@ EN: Inventory → Starbucks PG103 → select a unit → Edit in the model corner
 
 ## Contrato compartido / Shared contract
 
-- Maestro patrimonial / lifecycle master: Yokup. Identidades inmutables del [manifest](https://www.xpaceos.com/inventario/starbucks/manifest.json). `surface-identities.mjs` comprueba correspondencia de las once unidades / tests confirm the eleven-unit mapping.
+- Maestro patrimonial / lifecycle master: Yokup. Identidades inmutables del [manifest](https://www.xpaceos.com/inventario/starbucks/manifest.json). `surface-identities.mjs` comprueba correspondencia de las catorce unidades (once desde el 1-10 y las tres cestas desde el 18-10) / tests confirm the fourteen-unit mapping.
 - Clave / key: `venue/instance/itil_code`, por ejemplo / e.g. `alsea-sbux-021/sb-table-a/PDG103-MES-01`. Las dos mesas comparten GLB 48; cada una tiene acabados separados / shared GLB 48, separate appearances.
 - Superficie / surface: nombre de material GLB; los nombres hexadecimales se normalizan (`#ad855b.014` → `#ad855b`) para coincidir con los materiales de la escena / normalized GLB names match room materials. Edición por material; los subcomponentes que comparten material cambian juntos / editing is per material; parts sharing that material change together.
 - `inventario/surface-state.mjs`: validación de color, UV y paquete por identidad / validation and identity-bound bundle.

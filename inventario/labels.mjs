@@ -31,6 +31,7 @@ const names={
  "Cesta de vasos reutilizables BE GREEN Starbucks": "Starbucks BE GREEN reusable cup basket",
  "Cesta de snacks Starbucks": "Starbucks snack basket",
  "Cesta de café 1971 Dark Roast Starbucks": "Starbucks 1971 Dark Roast coffee basket",
+ "Cesta de café Starbucks 1971 Dark Roast": "Starbucks 1971 Dark Roast coffee basket",
  "Cesta de vasos · BE GREEN": "Cup basket · BE GREEN",
  "Cesta de snacks": "Snack basket",
  "Cesta de café 1971": "1971 coffee basket",

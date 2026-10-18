@@ -4,11 +4,11 @@ ES: Tres piezas nuevas del Starbucks de Paseo de Gràcia (`alsea-sbux-021`), mod
 
 EN: Three new pieces of the Paseo de Gràcia Starbucks (`alsea-sbux-021`), modelled from the photos Carlos took in store on 17-10-2026. All three are black woven-cord baskets on a black steel stand with a floor-level X brace; the photos show the real water rack (50) is the same basket.
 
-| Catálogo / Catalog | Identidad / Identity | Instancia / Instance | Contenido / Contents | Referencia / Reference |
-|---|---|---|---|---|
-| 53 | `native:starbucksCupBasket` | `sb-cup-basket` | Cesta baja, cartel BE GREEN, 28 vasos reutilizables (14 caliente, 14 frío) / low basket, BE GREEN sign, 28 reusable cups | PG103-012, cartel PG103-014 |
-| 54 | `native:starbucksSnackBasket` | `sb-snack-basket` | Cesta alta, cartel REFRIGERIS · SNACKS, 26 bolsas interpretadas / tall basket, sign, 26 interpreted bags | PG103-013, P21 |
-| 55 | `native:starbucksCoffeeBasket` | `sb-coffee-basket` | Cesta alta, cartel Discover 1971, 11 bolsas Starbucks 1971 Dark Roast 250 g / tall basket, sign, 11 bags | — |
+| Catálogo / Catalog | CI Yokup | Identidad / Identity | Instancia / Instance | Contenido / Contents | Referencia / Reference |
+|---|---|---|---|---|---|
+| 53 | `PDG103-CES-01` | `native:starbucksCupBasket` | `sb-cup-basket` | Cesta baja, cartel BE GREEN, 28 vasos reutilizables (14 caliente, 14 frío) / low basket, BE GREEN sign, 28 reusable cups | PG103-012, cartel PG103-014 |
+| 54 | `PDG103-CES-02` | `native:starbucksSnackBasket` | `sb-snack-basket` | Cesta alta, cartel REFRIGERIS · SNACKS, 26 bolsas interpretadas / tall basket, sign, 26 interpreted bags | PG103-013, P21 |
+| 55 | `PDG103-CES-03` | `native:starbucksCoffeeBasket` | `sb-coffee-basket` | Cesta alta, cartel Discover 1971, 11 bolsas Starbucks 1971 Dark Roast 250 g / tall basket, sign, 11 bags | PG103-062 (foto de Carlos, solo la cesta) |
 
 ## En el gemelo / In the twin
 
@@ -39,6 +39,6 @@ admira-xp/tools/taller-3d/taller.sh admira-xp/tools/taller-3d/recetas/cestas-pg1
 
 ## Pendiente / Pending
 
-- Alta de las tres cestas como CI en Yokup (`itil_ci_upsert`, propuesta `PDG103-CES-01/02/03`). Hasta entonces no aparecen entre las unidades de `/inventario/starbucks/` ni en el editor de superficies. / Yokup CI registration pending; until then they are not listed as units nor editable in the surface editor.
+- ~~Alta en Yokup~~: hecha el 18-10-2026 con `itil_ci_upsert` (NeoMacStudio): `PDG103-CES-01/02/03` en `alsea-sbux-021`, grupo «Zona de clientes», posición = instancia. Ya son unidades en `/inventario/starbucks/` y en el editor de superficies. / Registered in Yokup on 18-10-2026; now inventory units and editable in the surface editor.
 - Hiperreal y Matrix para 53–55. / Hiperreal and Matrix for 53–55.
 - Rehacer el botellero (50) con la misma cesta trenzada. / Rebuild the water rack (50) with the same woven basket.
