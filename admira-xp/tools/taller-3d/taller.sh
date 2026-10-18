@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Taller 3D: receta → texturas → piezas (Good, Better, Best y Hiperreal si se pide) → hoja foto | 3D.
-# 3D workshop: recipe → textures → pieces → photo | 3D sheet.
+# Taller 3D: receta → dónde va (plano y CI) → texturas → piezas (Good, Better, Best y Hiperreal si se pide) → hoja foto | 3D.
+# 3D workshop: recipe → placement check → textures → pieces → photo | 3D sheet.
 # Uso / usage: taller.sh RECETA [--fotos CARPETA] [--piezas 53,54] [--salida CATALOGO] [--texturas CARPETA] [--hoja CARPETA]
 #   --fotos     fotos originales (solo hacen falta para rehacer recortes y para la hoja de comparación)
 #   --salida    otro catálogo (por defecto inventario/assets/catalog); --texturas otra carpeta de texturas
@@ -17,6 +17,8 @@ while [ $# -gt 0 ]; do
     *) echo "opción desconocida / unknown option: $1" >&2; exit 2;;
   esac
 done
+# Dónde va: el sitio de cada pieza cabe en el plano publicado y su CI vale para Yokup; si no, no se construye nada.
+python3 "$here/colocacion.py" "$receta"
 "$PY" "$here/texturas.py" "$receta" ${fotos:+--fotos "$fotos"} ${texturas:+--salida "$texturas"}
 "$BLENDER" --background --factory-startup --python-exit-code 1 --python "$here/taller.py" -- "$receta" \
   ${piezas:+--piezas "$piezas"} ${salida:+--salida "$salida"} ${texturas:+--texturas "$texturas"} \

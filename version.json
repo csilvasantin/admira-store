@@ -1,15 +1,15 @@
 {
-  "version": "v.18.10.2026.r5.14:06",
-  "deployedAt": "2026-10-18T12:06:27Z",
+  "version": "v.18.10.2026.r6.14:25",
+  "deployedAt": "2026-10-18T12:25:10Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "5cc3757fe80a17c5afedb31d1b05718c1ab0668c",
-  "gitShort": "5cc3757",
-  "gitFull": "5cc3757fe80a17c5afedb31d1b05718c1ab0668c",
+  "git": "e5f6b35fddbcc1b98964c75fa0e17584684d12ad",
+  "gitShort": "e5f6b35",
+  "gitFull": "e5f6b35fddbcc1b98964c75fa0e17584684d12ad",
   "dirty": false,
   "novedades": [
-    "Taller 3D: acepta las recetas de la orden «detallar» del Arquitecto (admira.biz), con los recortes de objetos dentro de la receta.",
-    "Taller 3D: nueva textura bolsa_foto, la bolsa almohada desde un recorte de foto. El taller se niega a construir una pieza sin número de catálogo."
+    "Taller 3D: colocacion.py comprueba dónde va cada pieza en el plano del local y su alta ITIL antes de construir, e imprime la línea del gemelo y el CI para Yokup.",
+    "La receta de las cestas 53–55 lleva ya su sitio y su código ITIL, iguales al gemelo y a Yokup."
   ]
 }
