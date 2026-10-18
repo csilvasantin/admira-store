@@ -6,6 +6,10 @@ resultado no depende del orden ni de las demás.
 Each recipe lists its textures as named operations; each one has its own seed, so results do not depend
 on order or on the others.
 
+Recetas del Arquitecto (admira.biz, orden «detallar»): traen los recortes dentro, en `fuentes_embebidas`
+({"nombre.png": "data:image/png;base64,…"}); se escriben en fuentes/<encargo>/ antes de las operaciones.
+Recipes from the Architect carry their crops inside `fuentes_embebidas`; they are written to fuentes/ first.
+
 Operaciones / operations:
   recorte       foto + 4 esquinas → recorte enderezado en `fuentes` (solo con la carpeta de fotos originales)
   tejido        pared de cordón trenzado: tejido-basecolor.png (alfa), tejido-normal.png, tejido-orm.png
@@ -17,13 +21,14 @@ Operaciones / operations:
   cartel_foto   cartel fotografiado; la parte tapada se completa con su fondo
   cartel_texto  cartel de texto (sin precios ni datos inventados)
   bolsa_snack   bolsa almohada interpretada, sin marca (frente | dorso)
+  bolsa_foto    bolsa almohada desde un recorte de foto (frente | dorso en espejo)
   pet           cuerpo de PET liso con variación de moldeo
   orm           mapa ORM uniforme (R oclusión, G rugosidad, B metal)
   normal_polvo  normal muy fina de pintura en polvo
 
 python3 texturas.py RECETA [--fotos CARPETA] [--salida CARPETA]   (Pillow + NumPy)
 """
-import sys, json, hashlib, pathlib, numpy as np
+import sys, re, json, base64, hashlib, pathlib, numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 FONTS = pathlib.Path('/System/Library/Fonts')
@@ -53,8 +58,18 @@ class Taller:
         if name.endswith('.jpg'): im.convert('RGB').save(self.out / name, quality=86, optimize=True, progressive=True)
         else: im.save(self.out / name, optimize=True)
 
+    def embebidas(self):
+        """Recortes que trae la receta del Arquitecto → fuentes/<encargo>/ (solo PNG con nombre limpio)."""
+        escritas, embebidas = [], self.receta.get('fuentes_embebidas') or {}
+        if embebidas and not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,120}', str(self.receta.get('fuentes'))): raise SystemExit('«fuentes» debe ser un nombre de carpeta limpio')
+        for nombre, url in embebidas.items():
+            m = re.fullmatch(r'data:image/png;base64,([A-Za-z0-9+/=]+)', url or '')
+            if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,80}\.png', nombre) or not m: raise SystemExit(f'fuente embebida no válida: {nombre}')
+            self.fuentes.mkdir(parents=True, exist_ok=True); (self.fuentes / nombre).write_bytes(base64.b64decode(m.group(1))); escritas.append(nombre)
+        return escritas
+
     def run(self):
-        hechas = []
+        hechas = self.embebidas()
         for op in self.receta['texturas']:
             if op['op'] == 'recorte' and not self.fotos: continue
             getattr(self, 'op_' + op['op'])(op, self.rng(op)); hechas.append(op.get('salida') or op['op'])
@@ -186,6 +201,15 @@ class Taller:
             d.rectangle((half, 0, half + 511, 26), fill=acc2); d.rectangle((half, 486, half + 511, 511), fill=acc2)
         d.text((256, 190), op['palabra'], font=tipo('condensada-negrita', 92), fill=acc, anchor='mm')
         self.save(im.filter(ImageFilter.GaussianBlur(1.2)), op['salida'])
+
+    def op_bolsa_foto(self, op, rng):
+        """Bolsa almohada con la cara fotografiada: frente a la izquierda y dorso en espejo a la derecha (1024 × 512)."""
+        a = Image.fromarray(np.uint8(np.clip(self.flatten(self.load(op['fuente'])), 0, 255)))
+        k = min(512 / a.width, 512 / a.height); cara = a.resize((max(1, round(a.width * k)), max(1, round(a.height * k))), Image.LANCZOS)
+        fondo = tuple(int(v) for v in np.median(np.asarray(a, float).reshape(-1, 3), 0))
+        im = Image.new('RGB', (1024, 512), fondo); x0, y0 = (512 - cara.width) // 2, (512 - cara.height) // 2
+        im.paste(cara, (x0, y0)); im.paste(cara.transpose(Image.FLIP_LEFT_RIGHT), (512 + x0, y0))
+        self.save(im, op['salida'])
 
     def op_pet(self, op, rng):
         S = op.get('tam', 1024); a = np.zeros((S, S, 3)) + op['color'] + rng.normal(0, 1, (S, S))[..., None] * 1.2

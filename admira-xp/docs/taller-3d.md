@@ -1,8 +1,8 @@
 # Taller 3D · recetas / 3D workshop · recipes
 
-ES: El Taller 3D convierte las fotos de una visita en piezas del catálogo: modelos Good, Better y Best (y Hiperreal si se pide), maestros Blender, manifiestos, render de revisión y una hoja foto | 3D. Todo sale de una **receta**: un JSON por encargo que guarda las fotos de origen, los recortes, las texturas y cada pieza. Es la primera fase del Arquitecto automático que pidió Carlos el 18-10-2026; las siguientes llevarán la receta al Arquitecto de admira.biz.
+ES: El Taller 3D convierte las fotos de una visita en piezas del catálogo: modelos Good, Better y Best (y Hiperreal si se pide), maestros Blender, manifiestos, render de revisión y una hoja foto | 3D. Todo sale de una **receta**: un JSON por encargo que guarda las fotos de origen, los recortes, las texturas y cada pieza. Es la primera fase del Arquitecto automático que pidió Carlos el 18-10-2026. La segunda, la orden «detallar» de admira.biz/arquitecto, escribe la receta desde las fotos.
 
-EN: The 3D workshop turns the photos of a visit into catalogue pieces: Good, Better and Best models (and Hiperreal on request), Blender masters, manifests, a review render and a photo | 3D sheet. Everything comes from a **recipe**: one JSON per job holding the source photos, crops, textures and every piece. It is phase one of the automatic Architect Carlos asked for on 18-10-2026.
+EN: The 3D workshop turns the photos of a visit into catalogue pieces: Good, Better and Best models (and Hiperreal on request), Blender masters, manifests, a review render and a photo | 3D sheet. Everything comes from a **recipe**: one JSON per job holding the source photos, crops, textures and every piece. It is phase one of the automatic Architect Carlos asked for on 18-10-2026; phase two, the "detail" order at admira.biz/arquitecto, writes the recipe from the photos.
 
 ## Cómo se usa / How to use
 
@@ -14,6 +14,19 @@ EN: The 3D workshop turns the photos of a visit into catalogue pieces: Good, Bet
    ```
    Hace recortes (solo con `--fotos`), texturas, modelos con física, manifiestos, render y hoja de comparación. `--salida` y `--texturas` permiten un ensayo fuera del catálogo. / Builds crops, textures, physics-driven models, manifests, render and comparison sheet; `--salida`/`--texturas` allow a dry run.
 4. Revisar la hoja foto | 3D; dar de alta la pieza en el inventario y en el layout; publicar con respaldo. / Review the sheet, register the piece, publish with a backup.
+
+## Desde el Arquitecto / From the Architect
+
+ES: La orden `/arquitecto detallar` de https://www.admira.biz/arquitecto.html?orden=detallar prepara la receta sin tocar el repo:
+1. Eliges el local y subes fotos o un vídeo. Las fotos no salen del navegador.
+2. Añades cada pieza: nombre, mueble (`cesta_baja` o `cesta_alta`), contenido (`vasos`, `bolsas_de_pie`, `bolsas_almohada` o `ninguno`), cantidad y cartel si lo lleva. El número de catálogo se propone con el siguiente libre del registro público.
+3. En cada foto marcas 4 esquinas de una cara plana, en cualquier orden. El Arquitecto la endereza y la guarda como recorte con su papel: cartel, logo, frente, dorso, lado o diseño.
+4. Una revisión dice qué cara falta a cada pieza antes de dejar descargar.
+5. Descargas `<encargo>.receta.json` y la ejecutas aquí con `taller.sh`, igual que cualquier otra receta.
+
+La receta lleva solo los recortes de objetos, en `fuentes_embebidas`, y `"publicables": false`. Las fotos originales no viajan nunca.
+
+EN: The `/arquitecto detallar` order prepares the recipe in the browser: pick the venue, upload photos or a video, add each piece, mark 4 corners of a flat face per photo (any order), fix what the review flags and download `<encargo>.receta.json` for `taller.sh`. Only object crops travel, embedded; original photos never leave the browser.
 
 ## Recetas / Recipes
 
@@ -27,6 +40,7 @@ EN: The 3D workshop turns the photos of a visit into catalogue pieces: Good, Bet
 - `encargo`, `descripcion`, `local`: identidad del encargo y del Xpacio. / Job and venue identity.
 - `fotos`: autor, lugar, fecha, `publicables` y nota. / Author, place, date, publishable flag.
 - `fuentes`: carpeta de recortes en `fuentes/`; `texturas_dir`: dónde quedan las texturas. / Crop folder and texture folder.
+- `fuentes_embebidas` (opcional): recortes PNG en data URL, nombre → imagen. El taller los escribe en `fuentes/<encargo>/` antes de nada. Así llegan las recetas del Arquitecto. / Optional PNG data-URL crops written to `fuentes/<encargo>/` first; recipes from the Architect use it.
 - `texturas`: operaciones con nombre, cada una con su semilla:
   - `recorte`: 4 esquinas, o cilindro para un vaso.
   - `tejido`, `cuerda`, `acero`: tejido, cuerda y acero procedurales.
@@ -34,8 +48,9 @@ EN: The 3D workshop turns the photos of a visit into catalogue pieces: Good, Bet
   - `foto` y `foto_retocada`: recorte aplanado; la retocada rellena zonas y redibuja líneas.
   - `cartel_foto` y `cartel_texto`: carteles fotografiados o de texto.
   - `bolsa_snack`, `pet`, `orm`, `normal_polvo`, `collar`: bolsas, PET y mapas.
+  - `bolsa_foto`: el diseño fotografiado de una bolsa almohada, delante y en espejo detrás.
   - EN: named operations, each with its own seed.
-- `piezas`: número e identidad de catálogo, nombres ES/EN, referencia, instancia, `origen` (`esquina` para piezas colocadas en el gemelo, `centro` para el botellero), `huella`, y:
+- `piezas`: número e identidad de catálogo (sin `numero` el taller se niega a construir), nombres ES/EN, referencia, instancia, `origen` (`esquina` para piezas colocadas en el gemelo, `centro` para el botellero), `huella`, y:
   - `mueble`: familia `cesta_trenzada` con `borde` [alto, radio], `fondo` [alto, radio], `repeticion` del tejido y `pie` (apertura de la cruceta).
   - `carteles`: placa con cara impresa, de pie o en `poste`, con inclinación.
   - `contenido`: `vasos` (caen por tandas), `bolsas_almohada` (caen en capas), `bolsas_de_pie` (filas en abanico) o `botellas` (anillos, cada botella con identidad propia).
@@ -65,11 +80,7 @@ EN: Same Best model with clearcoat and the shared CC0 powder/plastic maps; WebP 
 
 ## Siguientes fases / Next phases
 
-1. **Orden «detallar» en el Arquitecto** (admira.biz):
-   - Subes fotos o vídeo y eliges el local.
-   - Admirito arquitecto propone qué objeto es cada uno, dónde va y qué parte sirve de textura.
-   - Al confirmar, genera la receta y la manda al taller.
-   - EN: "detail" order: upload photos, confirm the proposal, the recipe goes to the workshop.
+1. **Orden «detallar» en el Arquitecto** (admira.biz): hecha el 18-10-2026, ver «Desde el Arquitecto». Las esquinas y los papeles los marca una persona; que Admirito arquitecto los proponga queda para más adelante. / Done; corners and roles are marked by hand, an automatic proposal comes later.
 2. **Cierre automático**:
    - El taller prepara el cambio con la hoja foto | 3D.
    - Carlos lo aprueba en el Arquitecto.

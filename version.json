@@ -1,14 +1,15 @@
 {
-  "version": "v.18.10.2026.r4.13:45",
-  "deployedAt": "2026-10-18T11:45:24Z",
+  "version": "v.18.10.2026.r5.14:06",
+  "deployedAt": "2026-10-18T12:06:27Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "09dabc6399dc2539cd9e599a257f6b97fa880c51",
-  "gitShort": "09dabc6",
-  "gitFull": "09dabc6399dc2539cd9e599a257f6b97fa880c51",
+  "git": "5cc3757fe80a17c5afedb31d1b05718c1ab0668c",
+  "gitShort": "5cc3757",
+  "gitFull": "5cc3757fe80a17c5afedb31d1b05718c1ab0668c",
   "dirty": false,
   "novedades": [
-    "Starbucks Paseo de Gràcia: las tres cestas ya están dadas de alta en Yokup (PDG103-CES-01, -02 y -03) y salen como unidades del inventario, con su ficha ITIL y 3D."
+    "Taller 3D: acepta las recetas de la orden «detallar» del Arquitecto (admira.biz), con los recortes de objetos dentro de la receta.",
+    "Taller 3D: nueva textura bolsa_foto, la bolsa almohada desde un recorte de foto. El taller se niega a construir una pieza sin número de catálogo."
   ]
 }

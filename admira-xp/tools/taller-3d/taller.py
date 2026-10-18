@@ -437,6 +437,7 @@ def build(spec, tier, poses):
     return poses
 
 for spec in RECETA['piezas']:
+    if not isinstance(spec.get('numero'), int): raise SystemExit(f"«{spec.get('nombre')}» no tiene número de catálogo: asígnalo en la receta antes de construir.")
     if SOLO and spec['numero'] not in SOLO: continue
     poses = None
     for tier in ('best', 'better', 'good') + (('hiperreal',) if spec.get('hiperreal') else ()):
