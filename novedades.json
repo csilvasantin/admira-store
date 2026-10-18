@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.18.10.2026.r8.18:47": [
+    "Gemelo 3D desde el plano: nueva vista «360 · Matrix» con la foto 360 real del local, si su plano la trae (mismo visor que los centros de Starbucks).",
+    "El plano de Paseo de Gràcia trae ya su 360 (8192 × 4096, con los 6 menús marcados) y la copia pública la conserva."
+  ],
   "v.18.10.2026.r7.16:26": [
     "Gemelo 3D desde el plano: las piezas del catálogo (cestas 53–55 e iPad 52) se pintan con su modelo 3D, colocadas donde dice el plano del local.",
     "El plano de Starbucks Paseo de Gràcia trae el tipo y el elemento del gemelo de cada mueble: la colocación del gemelo sale del plano, pieza a pieza (orden «modelar» del Arquitecto)."

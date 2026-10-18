@@ -1,15 +1,15 @@
 {
-  "version": "v.18.10.2026.r7.16:26",
-  "deployedAt": "2026-10-18T14:26:06Z",
+  "version": "v.18.10.2026.r8.18:47",
+  "deployedAt": "2026-10-18T16:47:32Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "b6f9336b457a2f2fec00c455f74dade5b01f7ff2",
-  "gitShort": "b6f9336",
-  "gitFull": "b6f9336b457a2f2fec00c455f74dade5b01f7ff2",
+  "git": "502e658d168be44b6e5431ed2532b31ff985f76c",
+  "gitShort": "502e658",
+  "gitFull": "502e658d168be44b6e5431ed2532b31ff985f76c",
   "dirty": false,
   "novedades": [
-    "Gemelo 3D desde el plano: las piezas del catálogo (cestas 53–55 e iPad 52) se pintan con su modelo 3D, colocadas donde dice el plano del local.",
-    "El plano de Starbucks Paseo de Gràcia trae el tipo y el elemento del gemelo de cada mueble: la colocación del gemelo sale del plano, pieza a pieza (orden «modelar» del Arquitecto)."
+    "Gemelo 3D desde el plano: nueva vista «360 · Matrix» con la foto 360 real del local, si su plano la trae (mismo visor que los centros de Starbucks).",
+    "El plano de Paseo de Gràcia trae ya su 360 (8192 × 4096, con los 6 menús marcados) y la copia pública la conserva."
   ]
 }

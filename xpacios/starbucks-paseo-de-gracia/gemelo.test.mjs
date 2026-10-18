@@ -19,8 +19,11 @@ test('the repository keeps only the public Starbucks plan: valid geometry, six s
   assert.equal(PUBLICO.id, 'alsea-sbux-021');
   assert.equal(PUBLICO.publico, true);
   assert.equal(PUBLICO.pantallas.length, 6);
-  const texto = JSON.stringify(PUBLICO);
-  for (const campo of CAMPOS_PRIVADOS) assert.ok(!texto.includes(`"${campo}"`), campo);
+  // La foto 360 (panorama) apunta a ficheros que ya son públicos en el visor de centros (paseo-gracia-103.webp, PG103-…):
+  // el número de la calle no puede salir en el resto del plano.
+  const { panorama, ...resto } = PUBLICO, texto = JSON.stringify(resto);
+  assert.ok(panorama && panorama.src.startsWith('/xpacios/starbucks-centros/referencias/'), 'la 360 es la del visor de centros');
+  for (const campo of CAMPOS_PRIVADOS) assert.ok(!JSON.stringify(PUBLICO).includes(`"${campo}"`), campo);
   for (const exacto of ['macstudio-starbucks', 'macmini-starbucks', '103', '08008', 'starbucks-six.json']) assert.ok(!texto.includes(exacto), exacto);
 });
 

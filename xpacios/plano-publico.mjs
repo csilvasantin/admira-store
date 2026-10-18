@@ -30,6 +30,20 @@ export function nombrePublico(nombre = '') {
 const limpiarPersonal = texto => String(texto || '').replace(PERSONAL, '').replace(/\s{2,}/g, ' ').trim();
 const nombreHueco = h => (h.tipo === 'puerta' ? (/doble|pizarra/i.test(`${h.id} ${h.nombre || ''}`) ? 'Puerta doble · pizarras' : 'Puerta') : h.tipo === 'ventana' ? 'Ventana' : 'Hueco');
 
+// Foto 360 del local para la vista Matrix del gemelo (orden «fotos» del Arquitecto, 18-oct-2026): ya es pública (la sirve
+// este sitio), así que pasa, pero sólo con rutas de este sitio o de los dominios del equipo y números limpios.
+const SRC_360 = /^(\/[A-Za-z0-9._\/-]{1,200}\.(?:webp|jpe?g|png)|https:\/\/(?:www\.)?(?:xpaceos\.com|admira\.store|stock\.admira\.store)\/[A-Za-z0-9._\/-]{1,200})$/;
+const n360 = v => (typeof v === 'number' && Number.isFinite(v) ? v : undefined);
+export function panoramaPublico(p) {
+  if (!p || typeof p !== 'object' || !SRC_360.test(p.src || '') || /\.\./.test(p.src)) return null;
+  const base = Array.isArray(p.base) && p.base.length === 2 && p.base.every(v => Number.isInteger(v) && v > 0) ? p.base : null;
+  if (!base) return null;
+  const v = p.vista || {}, vista = Object.fromEntries(['yaw', 'pitch', 'fov', 'sphereX', 'sphereY'].map(k => [k, n360(v[k])]).filter(([, x]) => x !== undefined));
+  const dentro = e => Array.isArray(e) && e.length === 4 && e.every(q => Array.isArray(q) && q.length === 2 && q.every(Number.isFinite) && q[0] >= 0 && q[0] <= base[0] && q[1] >= 0 && q[1] <= base[1]);
+  const pantallas = (Array.isArray(p.pantallas) ? p.pantallas : []).filter(x => x && /^[A-Za-z0-9-]{1,40}$/.test(x.id || '') && dentro(x.esquinas)).map(x => ({ id: x.id, esquinas: x.esquinas }));
+  const extra = k => (SRC_360.test(p[k] || '') && !/\.\./.test(p[k]) ? { [k]: p[k] } : {});
+  return { src: p.src, ...extra('srcMovil'), ...extra('previa'), base, vista, pantallas };
+}
 // Pieza del catálogo de xpaceos: {id: 'native:…', numero}. Nada más pasa a la copia pública.
 const catalogoPublico = c => (c && /^native:[A-Za-z0-9]{1,64}$/.test(c.id || '') && Number.isSafeInteger(c.numero) && c.numero > 0) ? { id: c.id, numero: c.numero } : null;
 export function planoPublico(plan) {
@@ -66,7 +80,7 @@ export function planoPublico(plan) {
     mobiliario: (plan.mobiliario || []).map((m, i) => ({ id: `mueble-${i + 1}`, nombre: limpiarPersonal(m.nombre) || 'Mueble', x: m.x, y: m.y, w: m.w, d: m.d, alto: m.alto,
       ...(m.pared ? { pared: m.pared } : {}), ...(typeof m.tipo === 'string' ? { tipo: m.tipo } : {}), ...(m.base > 0 ? { base: m.base } : {}),
       ...(catalogoPublico(m.catalogo) ? { catalogo: catalogoPublico(m.catalogo) } : {}), ...(/^[a-z0-9][a-z0-9-]{0,63}$/i.test(m.gemelo || '') ? { gemelo: m.gemelo } : {}) })),
-    dispositivos, pantallas,
+    dispositivos, pantallas, ...(panoramaPublico(plan.panorama) ? { panorama: panoramaPublico(plan.panorama) } : {}),
   };
 }
 
