@@ -52,7 +52,10 @@
     "native:starbucksChair": 49,
     "native:starbucksWaterRack": 50,
     "native:cafebreriaLibrary": 51,
-    "native:ipadLandscape": 52
+    "native:ipadLandscape": 52,
+    "native:starbucksCupBasket": 53,
+    "native:starbucksSnackBasket": 54,
+    "native:starbucksCoffeeBasket": 55
   },
   "labels": {
     "pixeria:1781386629046-a7rnyw": "Scooter retro",
@@ -88,6 +91,9 @@
     "native:starbucksChair": "Silla Starbucks",
     "native:starbucksWaterRack": "Botellero Solán de Cabras Starbucks",
     "native:cafebreriaLibrary": "Librería interactiva de Cafebrería",
-    "native:ipadLandscape": "iPad horizontal · Starbucks"
+    "native:ipadLandscape": "iPad horizontal · Starbucks",
+    "native:starbucksCupBasket": "Cesta de vasos reutilizables BE GREEN Starbucks",
+    "native:starbucksSnackBasket": "Cesta de snacks Starbucks",
+    "native:starbucksCoffeeBasket": "Cesta de café 1971 Dark Roast Starbucks"
   }
 }

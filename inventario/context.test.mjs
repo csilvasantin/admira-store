@@ -7,7 +7,7 @@ const assets=numberedCatalog(data.native,stock.items,registry);
 test('Estancos shows assigned furniture and IoT, with stable numbers and no other projects',()=>{
  const context=inventoryContext('https://www.admira.store/inventario/?space=xtanco&project=estancos');
  const owned=scopedAssets(assets,data.layouts.xtanco,context);assert.ok(owned.some(a=>a.category==='IoT'));assert.ok(owned.some(a=>a.category==='Mobiliario'));assert.ok(owned.every(a=>a.number<44));assert.equal(owned.find(a=>a.type==='aroma').number,16);
- assert.equal(scopedAssets(assets,[],context).length,0);assert.equal(scopedAssets(assets,[],inventoryContext('/inventario/')).length,52);
+ assert.equal(scopedAssets(assets,[],context).length,0);assert.equal(scopedAssets(assets,[],inventoryContext('/inventario/')).length,55);
 });
 test('unknown or mismatched projects never fall back to Estancos or the global catalogue',()=>{
  for(const query of ['space=missing','project=unknown','space=starbucks_pg103&project=estancos','space=xtanco&project=starbucks'])assert.deepEqual(scopedAssets(assets,data.layouts.xtanco,inventoryContext('/inventario/?'+query)),[]);

@@ -1103,6 +1103,24 @@
     ],
     "new_remote_tools": false
   },
+  "starbucks_baskets": {
+    "es": "Starbucks PG103 · cestas trenzadas: tres modelos nuevos desde las fotos de Carlos del 17-10-2026. 53 cesta baja de vasos reutilizables con el cartel BE GREEN y 28 vasos; 54 cesta alta de snacks con su cartel REFRIGERIS · SNACKS y 26 bolsas interpretadas (marcas sin confirmar); 55 cesta alta de café Starbucks 1971 Dark Roast con su cartel y 11 bolsas de 250 g. Texturas de las fotos (bolsa, carteles y sirena del vaso); medidas nominales, sin medir. En el gemelo de Paseo de Gràcia, vasos y snacks junto al pilar y café frente a la estantería: Good y Better dibujan un boceto y Best carga el modelo. Alta como CI en Yokup pendiente.",
+    "en": "Starbucks PG103 · woven baskets: three new models from Carlos's 17-10-2026 photos. 53 low reusable-cup basket with the BE GREEN sign and 28 cups; 54 tall snack basket with its REFRIGERIS · SNACKS sign and 26 interpreted bags (brands not confirmed); 55 tall Starbucks 1971 Dark Roast coffee basket with its sign and 11 250 g bags. Photo textures (bag, signs, cup siren); nominal, unmeasured dimensions. In the Paseo de Gràcia twin, cups and snacks stand by the pillar and coffee faces the shelf: Good and Better draw a sketch and Best loads the model. Yokup CI registration pending.",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/starbucks-cestas.md",
+    "venue": "alsea-sbux-021",
+    "catalog": {
+      "53": "native:starbucksCupBasket",
+      "54": "native:starbucksSnackBasket",
+      "55": "native:starbucksCoffeeBasket"
+    },
+    "instances": [
+      "sb-cup-basket",
+      "sb-snack-basket",
+      "sb-coffee-basket"
+    ],
+    "geometry": "interpretive_photo_not_measured",
+    "yokup_ci": "pending"
+  },
   "itil_inventory_link": {
     "es": "Inventory/ITIL unifica Inventario e ITIL en la posición anterior de Inventory, junto a Percepción. Debajo muestra el número total de items propios del Xpacio. La cuadrícula tiene diez subcategorías y elimina la ficha Pixeria. Al pulsar Inventory/ITIL, la lista y la búsqueda aparecen en la segunda columna; seleccionar un objeto muestra su detalle en la tercera. Se conservan las acciones de añadir/eliminar, las identidades, el historial y las fichas editables de Cafebrería. La importación desde PixerIA sigue disponible en Mobiliario → Distribuir. Yokup sigue siendo el maestro ITIL; esta interfaz no acredita vinculación física IoT.",
     "en": "Inventory/ITIL merges Inventory and ITIL at the former Inventory position, next to Perception. Its subtitle shows the total number of items owned by the Xpace. The grid has ten subcategories and removes the Pixeria card. Press Inventory/ITIL for the list and search in the second column; select an object for details in the third. Add/remove actions, identities, history and editable Cafebrería records are retained. PixerIA import remains available under Furniture → Distribute. Yokup remains the ITIL master; this interface does not establish physical IoT binding.",

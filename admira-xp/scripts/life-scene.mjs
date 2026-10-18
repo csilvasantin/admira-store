@@ -30,8 +30,9 @@ function normalizeLifeSnapshot(raw={}){
 // simulation, media player nor animation loop. All dimensions are grid units.
 // Starbucks fixtures whose catalog model (44 barra, 45 caja, 46 vitrina) reproduces the first N
 // procedural parts of XpaceStarbucks.build in Best: body, slats, worktop and rail. Machines, cups
-// and the TPV screen (device 'pos') follow them and remain procedural and live.
-export const STARBUCKS_CATALOG_BODY=Object.freeze({'sb-backbar':10,'sb-pos':43,'sb-pastry':Infinity});
+// and the TPV screen (device 'pos') follow them and remain procedural and live. The three woven
+// baskets (53 vasos, 54 snacks, 55 café) replace their whole procedural sketch with the model.
+export const STARBUCKS_CATALOG_BODY=Object.freeze({'sb-backbar':10,'sb-pos':43,'sb-pastry':Infinity,'sb-cup-basket':Infinity,'sb-snack-basket':Infinity,'sb-coffee-basket':Infinity});
 export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createElement('canvas'),inventory=false,surroundings=false,exteriorY=0,loadCounter=null,loadFurniture=null,assetQuality='better',loadPerson=null}={}){
   let snapshot=normalizeLifeSnapshot(rawSnapshot),signature='',poseSignature='',lighting='day',disposed=false,lastAnimationTime=null;
   let customerNavigation=buildCustomerNavigation(snapshot,{allowOutside:true});

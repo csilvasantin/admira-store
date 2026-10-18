@@ -305,6 +305,48 @@
       "ph": 0.28,
       "status": "virtual_planned",
       "geometry_basis": "nominal_not_measured"
+    },
+    {
+      "id": "native:starbucksCupBasket",
+      "type": "starbucksCupBasket",
+      "name": "Cesta de vasos reutilizables BE GREEN Starbucks",
+      "name_en": "BE GREEN reusable cup basket · Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        0.64,
+        0.64
+      ],
+      "ph": 0.5,
+      "geometry_basis": "interpretive_photo_not_measured"
+    },
+    {
+      "id": "native:starbucksSnackBasket",
+      "type": "starbucksSnackBasket",
+      "name": "Cesta de snacks Starbucks",
+      "name_en": "Snack basket · Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        0.64,
+        0.64
+      ],
+      "ph": 0.84,
+      "geometry_basis": "interpretive_photo_not_measured"
+    },
+    {
+      "id": "native:starbucksCoffeeBasket",
+      "type": "starbucksCoffeeBasket",
+      "name": "Cesta de café 1971 Dark Roast Starbucks",
+      "name_en": "1971 Dark Roast coffee basket · Starbucks",
+      "category": "Mobiliario",
+      "mount": "floor",
+      "fp": [
+        0.64,
+        0.64
+      ],
+      "ph": 0.84,
+      "geometry_basis": "interpretive_photo_not_measured"
     }
   ],
   "layouts": {

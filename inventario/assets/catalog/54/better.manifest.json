@@ -1,0 +1,24 @@
+{
+  "number": 54,
+  "id": "native:starbucksSnackBasket",
+  "name": "Cesta de snacks Starbucks",
+  "name_en": "Starbucks snack basket",
+  "tier": "better",
+  "reference": "PG103-013",
+  "geometry_basis": "interpretive_photo",
+  "source_photos": "Carlos · Starbucks Paseo de Gràcia · 2026-10-17",
+  "measured": false,
+  "nominal_units": "metres_for_proportions_only",
+  "stock_quantity_verified": false,
+  "rim_height_m": 0.84,
+  "rim_diameter_m": 0.6,
+  "footprint_m": [
+    0.64,
+    0.64
+  ],
+  "origin": "footprint_corner",
+  "front": "+Z glTF (Blender -Y)",
+  "visual_bag_count": 26,
+  "snack_brands_confirmed": false,
+  "mesh_count": 43
+}

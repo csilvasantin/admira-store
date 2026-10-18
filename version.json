@@ -1,14 +1,14 @@
 {
-  "version": "v.17.10.2026.r4.22:55",
-  "deployedAt": "2026-10-17T20:55:33Z",
+  "version": "v.18.10.2026.r1.12:34",
+  "deployedAt": "2026-10-18T10:34:58Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "f3df33759bbc7ad73e517f9f6bca7d344cde0699",
-  "gitShort": "f3df337",
-  "gitFull": "f3df33759bbc7ad73e517f9f6bca7d344cde0699",
+  "git": "96e3b10151a4838d0b08e2d3a0ab0227f0d5ede7",
+  "gitShort": "96e3b10",
+  "gitFull": "96e3b10151a4838d0b08e2d3a0ab0227f0d5ede7",
   "dirty": false,
   "novedades": [
-    "Portada: una música por idioma en la intro (castellano «Tic-tac y campanas», inglés «Pulso»); si el idioma cambia con la intro en marcha, cambia también la música en el mismo segundo."
+    "Starbucks Paseo de Gràcia: las tres cestas trenzadas de las fotos de Carlos en el gemelo — vasos reutilizables con el cartel BE GREEN y snacks junto al pilar, café 1971 Dark Roast frente a la estantería (catálogo 53, 54 y 55; Best carga el modelo, Good y Better un boceto)."
   ]
 }
