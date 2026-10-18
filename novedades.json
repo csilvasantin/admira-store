@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.18.10.2026.r5.14:06": [
+    "Taller 3D: acepta las recetas de la orden «detallar» del Arquitecto (admira.biz), con los recortes de objetos dentro de la receta.",
+    "Taller 3D: nueva textura bolsa_foto, la bolsa almohada desde un recorte de foto. El taller se niega a construir una pieza sin número de catálogo."
+  ],
   "v.18.10.2026.r4.13:45": [
     "Starbucks Paseo de Gràcia: las tres cestas ya están dadas de alta en Yokup (PDG103-CES-01, -02 y -03) y salen como unidades del inventario, con su ficha ITIL y 3D."
   ],
