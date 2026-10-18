@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { planoPublico, direccionPublica, nombrePublico, CAMPOS_PRIVADOS } from './plano-publico.mjs';
+import * as PANORAMA from './plano-publico.mjs';
 import { escenaDesdePlano, validatePlan } from './gran-de-gracia-51/plano3d.mjs';
 
 const PUBLICO = JSON.parse(readFileSync(new URL('../data/xpacios/lab-gran-de-gracia-51.json', import.meta.url), 'utf8'));
@@ -59,4 +60,16 @@ test('the public plan keeps furniture type, mount height, catalogue piece and tw
     catalogo: { id: 'native:starbucksCupBasket', numero: 53 }, gemelo: 'sb-cup-basket' });
   assert.equal(ipad.base, 0.96); assert.equal(ipad.catalogo, undefined); assert.equal(ipad.gemelo, undefined);
   assert.ok(!JSON.stringify(planoPublico(plan)).includes('PDG103'));
+});
+
+test('the public plan keeps the venue 360 (already public) with clean paths and numbers, and drops anything else', () => {
+  const { panoramaPublico } = PANORAMA;
+  const bueno = { src: '/xpacios/starbucks-centros/referencias/paseo-gracia-103.webp', srcMovil: '/xpacios/x/y-4k.jpg', previa: 'javascript:alert(1)', base: [8192, 4096],
+    vista: { yaw: 160.5, pitch: -13, fov: 100, sphereX: -3, raro: 'x' }, origen: 'nota privada', pantallas: [{ id: 'PG103-MENU-01', esquinas: [[1, 1], [9, 1], [9, 9], [1, 9]] }, { id: 'fuera', esquinas: [[1, 1], [9999, 1], [9, 9], [1, 9]] }] };
+  const p = panoramaPublico(bueno);
+  assert.deepEqual(Object.keys(p).sort(), ['base', 'pantallas', 'src', 'srcMovil', 'vista']);
+  assert.deepEqual(p.vista, { yaw: 160.5, pitch: -13, fov: 100, sphereX: -3 }); assert.deepEqual(p.pantallas.map(x => x.id), ['PG103-MENU-01']);
+  for (const src of ['https://evil.example/x.jpg', '/../secreto.jpg', 'data:image/jpeg;base64,xx', '']) assert.equal(panoramaPublico({ ...bueno, src }), null, src);
+  assert.equal(panoramaPublico({ ...bueno, base: [8192] }), null);
+  assert.ok(planoPublico({ ...COMPLETO, panorama: bueno }).panorama); assert.equal(planoPublico(COMPLETO).panorama, undefined);
 });

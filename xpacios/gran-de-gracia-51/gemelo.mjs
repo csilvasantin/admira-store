@@ -7,6 +7,9 @@ import { cargarPlano, comprobarSesion, escenaDesdePlano, vistaPuerta, vistaWebca
 import { crearEscena3D } from './escena3d.mjs?v=modelar-1';
 import { estadoSenal, urlAdmiraTv, REFRESCO_MS } from './espejo.mjs?v=gdg51-2';
 import {contextSurfaces,mountSurfacePlaylistRemote,channelForSurface} from '../../admira-xp/scripts/context-surfaces.mjs?v=local-playlist-349';
+// Vista «360» (Matrix): la foto 360 real del local, si el plano la trae (`panorama`, orden «fotos» del Arquitecto,
+// 18-oct-2026). Mismo visor que los centros de Starbucks: una esfera vista desde dentro.
+import { crearPanorama } from '../starbucks-centros/panorama.mjs?v=gemelo-360-1';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -35,7 +38,7 @@ const canvas = $('gemelo-canvas'), stage = $('gemelo'), capa = $('etiquetas');
 const estado = $('estado');
 const status = (texto, error = false) => { estado.textContent = texto; estado.classList.toggle('error', error); };
 
-let escena, s3d, renderer, plan, fuente, acceso = 'publico';
+let escena, s3d, renderer, plan, fuente, acceso = 'publico', pano = null;
 let localSurfaces=null,localRemote=null,localTimer=null;
 const locallyOwned=new Set();
 window.addEventListener('pagehide',()=>{clearInterval(localTimer);localRemote?.dispose();},{once:true});
@@ -176,7 +179,7 @@ function montarVistas() {
   const conWebcam = Boolean(vistaWebcam(escena));
   $('vistas').innerHTML = b('orbital', t('Órbita', 'Orbit')) + (vistaPuerta(escena) ? b('puerta', t('Desde la puerta', 'From the door')) : '') +
     (conWebcam ? b('webcam', 'Webcam') + `<select id="pan" aria-label="${t('Encuadre de la webcam', 'Webcam framing')}">${PANES.map(([p, txt]) => `<option value="${p}">${esc(txt)}</option>`).join('')}</select>` : '') +
-    b('planta', t('Planta', 'Plan')) + `<span class="sep">${t('Alzado', 'Elevation')}</span>${alzados}` +
+    b('planta', t('Planta', 'Plan')) + (conPanorama() ? b('360', t('360 · Matrix', '360 · Matrix')) : '') + `<span class="sep">${t('Alzado', 'Elevation')}</span>${alzados}` +
     `<button type="button" id="ver-etiquetas" aria-pressed="${st.etiquetas}">${t('Etiquetas', 'Labels')}</button>`;
   $('vistas').addEventListener('click', e => {
     const v = e.target.closest('[data-vista]'); if (v) ponerVista(v.dataset.vista);
@@ -196,13 +199,24 @@ function ajustarOrbita() {
   st.orb.dist = r / Math.sin(Math.min(vf, hf) / 2) * 0.95;
 }
 
+// ¿Trae el plano su foto 360? Las esquinas de las pantallas se guardan para pintar su contenido más adelante: de momento
+// la 360 se ve tal cual (con las pantallas reales de la foto), sin cuadros encima.
+const conPanorama = () => !!(plan && plan.panorama && plan.panorama.src && Array.isArray(plan.panorama.base));
+function abrirPanorama() {
+  if (!pano) pano = crearPanorama(T, renderer);
+  pano.aspecto(ancho / alto);
+  const { pantallas, piezas, ...foto } = plan.panorama;
+  pano.cargar(foto).then(invalidar, invalidar);
+  invalidar();
+}
 function ponerVista(nombre, { url = true } = {}) {
   const pared = /^alzado-(.+)$/.exec(nombre || '')?.[1];
+  if (nombre === '360' && !conPanorama()) nombre = 'orbital';
   let def = null;
   if (nombre === 'puerta') def = vistaPuerta(escena);
   else if (nombre === 'webcam') def = vistaWebcam(escena, { pan: st.pan, tilt: st.tilt, panCero: st.calibrar ? (PAN_CERO[plan.id] || 0) : 0 });
   else if (pared) def = vistaAlzado(escena, pared);
-  if (!['orbital', 'planta'].includes(nombre) && !def) nombre = 'orbital';
+  if (!['orbital', 'planta', '360'].includes(nombre) && !def) nombre = 'orbital';
   st.vista = nombre; st.def = def; st.orto = { zoom: 1, panX: 0, panY: 0 };
   if (nombre === 'orbital') { camara = persp; persp.fov = 40; st.orb.az = Number.isFinite(CFG.orbita?.az) ? CFG.orbita.az : Math.PI / 4; st.orb.el = Number.isFinite(CFG.orbita?.el) ? CFG.orbita.el : 0.92; persp.near = 0.05; persp.far = 80; redimensionarCamara(); ajustarOrbita(); }
   else if (def && def.tipo === 'perspectiva') {
@@ -215,6 +229,8 @@ function ponerVista(nombre, { url = true } = {}) {
   $('pan')?.classList.toggle('activo', nombre === 'webcam');
   const nombres = { orbital: t('Órbita · arrastra para girar, rueda o pellizco para acercar', 'Orbit · drag to rotate, wheel or pinch to zoom'), puerta: CFG.puerta ? t(CFG.puerta.es, CFG.puerta.en) : t('Desde la puerta del pasillo · arrastra para mirar alrededor', 'From the corridor door · drag to look around'), webcam: `${t('Webcam PTZ', 'PTZ webcam')} · pan ${st.pan}° · tilt ${st.tilt}° · 72° × 44°${def?.panCero ? ` · ${t('cero del pan calibrado', 'pan zero calibrated')} ${def.panCero}°` : ''} · ${t('compárala con su foto', 'compare with its photo')}`, planta: t('Planta · vista cenital a escala', 'Plan · top view to scale') };
   $('hud').textContent = pared ? `${t('Alzado', 'Elevation')} · ${t('pared', 'wall')} ${pared} · ${def.nombre} · ${num(def.ancho)} × ${num(def.alto)} m · ${t('visto desde dentro, de a (izquierda) a b (derecha)', 'seen from inside, a (left) to b (right)')}` : nombres[nombre];
+  if (nombre === '360') { $('hud').textContent = t('360 · Matrix · la foto real del local · arrastra para mirar alrededor, rueda o pellizco para acercar', '360 · Matrix · the real photo of the venue · drag to look around, wheel or pinch to zoom'); abrirPanorama(); }
+  capa.hidden = nombre === '360';
   stage.dataset.vista = nombre;
   if (url) { const u = new URL(location.href); u.searchParams.set('vista', nombre); if (nombre === 'webcam') u.searchParams.set('pan', String(st.pan)); else u.searchParams.delete('pan'); history.replaceState(null, '', u); }
   redimensionarCamara(); invalidar();
@@ -250,6 +266,7 @@ function zonaLibre(cw = 1, ch = 1) {
 
 function redimensionarCamara() {
   const aspect = ancho / alto;
+  if (pano) pano.aspecto(aspect);
   persp.aspect = aspect;
   const caja = st.vista === 'planta' ? [escena.sala.ancho + 0.6, escena.sala.fondo + 0.6] : st.def?.tipo === 'alzado' ? [st.def.ancho + 0.9, st.def.alto + 0.5] : [1.25, 1];
   const z = zonaLibre(...caja), lw = ancho - z.l - z.r, lh = alto - z.t - z.b;
@@ -303,6 +320,7 @@ function recortar() {
 function pintar() {
   pendiente = false;
   if (!renderer) return;
+  if (st.vista === '360' && pano) { pano.render(); if (pano.enMovimiento) invalidar(); return; }
   colocarCamara(); recortar();
   renderer.render(s3d.scene, camara);
   pintarEtiquetas();
@@ -443,7 +461,7 @@ const punteros = new Map();
 let gesto = null;
 canvas.addEventListener('pointerdown', e => {
   canvas.setPointerCapture?.(e.pointerId); punteros.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  gesto = { x: e.clientX, y: e.clientY, movido: false, orb: { ...st.orb }, mira: { yaw: st.mira.yaw, pitch: st.mira.pitch }, orto: { ...st.orto }, pinza: distancia(), zoom: st.orto.zoom, dist: st.orb.dist, mzoom: st.mira.zoom || 1 };
+  gesto = { x: e.clientX, y: e.clientY, movido: false, fov360: pano ? pano.vista.fov : 0, orb: { ...st.orb }, mira: { yaw: st.mira.yaw, pitch: st.mira.pitch }, orto: { ...st.orto }, pinza: distancia(), zoom: st.orto.zoom, dist: st.orb.dist, mzoom: st.mira.zoom || 1 };
 });
 canvas.addEventListener('pointermove', e => {
   if (!gesto || !punteros.has(e.pointerId)) return;
@@ -452,13 +470,14 @@ canvas.addEventListener('pointermove', e => {
   if (Math.hypot(dx, dy) > 4) gesto.movido = true;
   if (!gesto.movido) return;
   if (punteros.size > 1 && gesto.pinza > 0) { zoom(distancia() / gesto.pinza, gesto); return; }
+  if (st.vista === '360' && pano) { pano.girar(e.clientX - (gesto.lx ?? gesto.x), e.clientY - (gesto.ly ?? gesto.y), alto); gesto.lx = e.clientX; gesto.ly = e.clientY; invalidar(); return; }
   if (st.vista === 'orbital') { st.orb.az = gesto.orb.az + dx * 0.006; st.orb.el = Math.max(0.08, Math.min(1.5, gesto.orb.el + dy * 0.004)); }
   else if (camara === persp) { st.mira.yaw = gesto.mira.yaw - dx * 0.004; st.mira.pitch = Math.max(-1.3, Math.min(1.3, gesto.mira.pitch + dy * 0.004)); }
   else { st.orto.panX = gesto.orto.panX - dx / ancho * (orto.right - orto.left); st.orto.panY = gesto.orto.panY + dy / alto * (orto.top - orto.bottom); redimensionarCamara(); }
   invalidar();
 });
 const soltar = e => {
-  if (gesto && !gesto.movido && punteros.size === 1) elegirEn(e.clientX, e.clientY);
+  if (gesto && !gesto.movido && punteros.size === 1 && st.vista !== '360') elegirEn(e.clientX, e.clientY);
   punteros.delete(e.pointerId); if (!punteros.size) gesto = null;
 };
 canvas.addEventListener('pointerup', soltar);
@@ -466,6 +485,7 @@ canvas.addEventListener('pointercancel', e => { punteros.delete(e.pointerId); ge
 canvas.addEventListener('wheel', e => { e.preventDefault(); zoom(Math.exp(-e.deltaY * 0.0012)); }, { passive: false });
 function distancia() { const [a, b] = [...punteros.values()]; return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0; }
 function zoom(f, base) {
+  if (st.vista === '360' && pano) { if (base && base.fov360) pano.vista.fov = Math.max(30, Math.min(100, base.fov360 / f)); else pano.acercar(1 / f); invalidar(); return; }
   if (st.vista === 'orbital') st.orb.dist = Math.max(1.5, Math.min(30, (base ? base.dist : st.orb.dist) / f));
   else if (camara === persp) st.mira.zoom = Math.max(0.6, Math.min(4, (base ? base.mzoom : st.mira.zoom || 1) * f));
   else st.orto.zoom = Math.max(0.5, Math.min(8, (base ? base.zoom : st.orto.zoom) * f));
@@ -487,7 +507,7 @@ function elegirEn(cx, cy) {
 }
 
 // ── Shell: ▤ Avanzado, idioma y verbos ──
-const ACCIONES = { 'gdg-orbital': () => ponerVista('orbital'), 'gdg-puerta': () => ponerVista('puerta'), 'gdg-webcam': () => ponerVista('webcam'), 'gdg-planta': () => ponerVista('planta'), 'gdg-alzado-f': () => ponerVista('alzado-F'), 'gdg-alzado-i': () => ponerVista('alzado-I'), 'gdg-inventario': () => alternarInventario(true), 'gdg-etiquetas': () => $('ver-etiquetas')?.click() };
+const ACCIONES = { 'gdg-orbital': () => ponerVista('orbital'), 'gdg-puerta': () => ponerVista('puerta'), 'gdg-webcam': () => ponerVista('webcam'), 'gdg-planta': () => ponerVista('planta'), 'gdg-360': () => ponerVista('360'), 'gdg-alzado-f': () => ponerVista('alzado-F'), 'gdg-alzado-i': () => ponerVista('alzado-I'), 'gdg-inventario': () => alternarInventario(true), 'gdg-etiquetas': () => $('ver-etiquetas')?.click() };
 document.addEventListener('click', e => { const a = e.target.closest('[id]'); if (a && ACCIONES[a.id] && !a.closest('#gemelo')) ACCIONES[a.id](); });
 function alternarInventario(forzar) {
   const abierto = forzar ?? $('inventario').hidden;
@@ -501,7 +521,7 @@ if (params.get('inventario') === '1') alternarInventario(true);
 window.addEventListener('admira:languagechange', e => { const next = e.detail?.lang; if (['es', 'en'].includes(next) && next !== (en ? 'en' : 'es')) { const u = new URL(location.href); u.searchParams.set('lang', next); location.assign(u.href); } });
 (function registrar(intentos = 0) {
   if (!window.XpaceShell?.registerVerb) { if (intentos < 50) setTimeout(() => registrar(intentos + 1), 100); return; }
-  window.XpaceShell.registerVerb({ id: 'vista', es: 'Vista del gemelo: orbital, puerta, webcam [pan], planta o alzado <F|D|P|I>', en: 'Twin view: orbital, puerta, webcam [pan], planta or alzado <F|D|P|I>', run: args => {
+  window.XpaceShell.registerVerb({ id: 'vista', es: 'Vista del gemelo: orbital, puerta, webcam [pan], planta, 360 o alzado <F|D|P|I>', en: 'Twin view: orbital, puerta, webcam [pan], planta, 360 or alzado <F|D|P|I>', run: args => {
     const [v, x] = String(args || '').trim().toLowerCase().split(/\s+/);
     if (v === 'alzado' && x) { ponerVista(`alzado-${x.toUpperCase()}`); return st.vista; }
     if (v === 'webcam' && Number.isFinite(Number(x))) st.pan = Number(x);
