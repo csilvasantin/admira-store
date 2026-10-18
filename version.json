@@ -1,14 +1,14 @@
 {
-  "version": "v.18.10.2026.r2.12:38",
-  "deployedAt": "2026-10-18T10:38:11Z",
+  "version": "v.18.10.2026.r3.13:03",
+  "deployedAt": "2026-10-18T11:03:31Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "d1f1a35750a92b5cb559c2aa1033e8d7f17a950e",
-  "gitShort": "d1f1a35",
-  "gitFull": "d1f1a35750a92b5cb559c2aa1033e8d7f17a950e",
+  "git": "b02b89ccd6a93ee016fe30cc8e50b12aaa50283d",
+  "gitShort": "b02b89c",
+  "gitFull": "b02b89ccd6a93ee016fe30cc8e50b12aaa50283d",
   "dirty": false,
   "novedades": [
-    "Gemelo Starbucks: el boceto de las cestas llega también a quien tenía en caché la versión anterior (starbucks-room.js?v=cestas-20261018-1)."
+    "Taller 3D: las fotos de una visita se convierten en piezas del catálogo desde una receta (primera fase del Arquitecto automático). El botellero Solán de Cabras del Starbucks de Paseo de Gràcia, rehecho con la cesta trenzada de la foto y el cartel AIGUA MINERAL."
   ]
 }
