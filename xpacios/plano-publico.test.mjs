@@ -49,3 +49,14 @@ test('public names and addresses keep the street and the city, without numbers, 
   assert.equal(propio.nombre, 'Lab');
   assert.equal(propio.direccion, 'Barcelona');
 });
+
+test('the public plan keeps furniture type, mount height, catalogue piece and twin id, never its ITIL code', () => {
+  const plan = { ...COMPLETO, mobiliario: [{ id: 'cesta', nombre: 'Cesta de vasos', x: 2.04, y: 3.8, w: 0.64, d: 0.64, alto: 0.5, tipo: 'cesta', base: 0,
+    catalogo: { id: 'native:starbucksCupBasket', numero: 53, extra: 'no' }, gemelo: 'sb-cup-basket', itil: 'PDG103-CES-01' },
+    { id: 'ipad', nombre: 'iPad', x: 7.6, y: 0.4, w: 0.65, d: 0.35, alto: 0.3, tipo: 'ipad', base: 0.96, catalogo: { id: 'otro:x', numero: 52 }, gemelo: 'mal id!' }] };
+  const [cesta, ipad] = planoPublico(plan).mobiliario;
+  assert.deepEqual(cesta, { id: 'mueble-1', nombre: 'Cesta de vasos', x: 2.04, y: 3.8, w: 0.64, d: 0.64, alto: 0.5, tipo: 'cesta',
+    catalogo: { id: 'native:starbucksCupBasket', numero: 53 }, gemelo: 'sb-cup-basket' });
+  assert.equal(ipad.base, 0.96); assert.equal(ipad.catalogo, undefined); assert.equal(ipad.gemelo, undefined);
+  assert.ok(!JSON.stringify(planoPublico(plan)).includes('PDG103'));
+});

@@ -195,8 +195,12 @@ export function wallSolids(len, alto, huecos = []) {
   return out;
 }
 
-// ── Clasificación del mobiliario (el plano no trae tipo ni giro) ────────────
+// ── Clasificación del mobiliario ────────────────────────────────────────────
+// Desde la orden «modelar» del Arquitecto (18-oct-2026) el plano puede decir el tipo (`tipo`); si no, se
+// deduce del nombre como antes. `cesta` e `ipad` son piezas del catálogo (`catalogo`).
+export const TIPOS_MUEBLE = ['mesa', 'silla', 'nevera', 'recreativa', 'barra', 'caja', 'vitrina', 'estanteria', 'pilar', 'cesta', 'ipad', 'mueble'];
 export function tipoMueble(m) {
+  if (TIPOS_MUEBLE.includes(m.tipo)) return m.tipo;
   const t = `${m.id} ${m.nombre || ''}`.toLowerCase();
   if (/mesa|desk/.test(t)) return 'mesa';
   if (/silla|chair/.test(t)) return 'silla';
@@ -396,6 +400,22 @@ export function escenaDesdePlano(plan, { colocacion = {} } = {}) {
     sala: { ancho: plan.planta.ancho, fondo: plan.planta.fondo, alto, centro: [plan.planta.ancho / 2, plan.planta.fondo / 2] },
     paredes, pantallas, dispositivos, muebles, grupos };
 }
+
+// ── Colocación como datos: el layout del gemelo 2D/Matrix sale del plano ──────────────────────────
+// Mismas unidades: col = x, row = y, fp = [w, d], origen en la esquina de la huella. Una pieza del catálogo
+// usa su id nativo como tipo; el resto, el tipo del gemelo para su clase de mueble. `base` es la altura de montaje.
+export const TIPO_GEMELO = { barra: 'counter', caja: 'counter', vitrina: 'vending', estanteria: 'shelves', pilar: 'custom', mesa: 'cafeTable',
+  silla: 'chair', nevera: 'fridge', recreativa: 'arcade', mueble: 'custom' };
+export function layoutGemelo(plan) {
+  return (plan.mobiliario || []).map(m => {
+    const tipo = tipoMueble(m), cat = m.catalogo && /^native:/.test(m.catalogo.id || '') ? m.catalogo.id : null;
+    return { id: m.gemelo || m.id, type: cat ? cat.slice(7) : TIPO_GEMELO[tipo] || 'custom', ...(cat ? { inventoryAssetId: cat } : {}),
+      col: m.x, row: m.y, fp: [m.w, m.d], label: m.nombre || m.id, ...(m.base > 0 ? { mountY: m.base } : {}) };
+  });
+}
+// Modelo 3D de una pieza del catálogo de xpaceos (inventario/assets/catalog/<n>/<calidad>.glb, origen en la esquina).
+export const modeloCatalogo = (m, calidad = 'better') => (m.catalogo && Number.isSafeInteger(m.catalogo.numero) && m.catalogo.numero > 0)
+  ? `/inventario/assets/catalog/${m.catalogo.numero}/${calidad}.glb` : null;
 
 // ── Vistas ──────────────────────────────────────────────────────────────────
 // Cámaras en coordenadas del plano: pos/objetivo = [x, y, altura].

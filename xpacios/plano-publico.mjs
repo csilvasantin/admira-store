@@ -30,6 +30,8 @@ export function nombrePublico(nombre = '') {
 const limpiarPersonal = texto => String(texto || '').replace(PERSONAL, '').replace(/\s{2,}/g, ' ').trim();
 const nombreHueco = h => (h.tipo === 'puerta' ? (/doble|pizarra/i.test(`${h.id} ${h.nombre || ''}`) ? 'Puerta doble · pizarras' : 'Puerta') : h.tipo === 'ventana' ? 'Ventana' : 'Hueco');
 
+// Pieza del catálogo de xpaceos: {id: 'native:…', numero}. Nada más pasa a la copia pública.
+const catalogoPublico = c => (c && /^native:[A-Za-z0-9]{1,64}$/.test(c.id || '') && Number.isSafeInteger(c.numero) && c.numero > 0) ? { id: c.id, numero: c.numero } : null;
 export function planoPublico(plan) {
   if (!plan || typeof plan !== 'object') return plan;
   if (plan.publico === true) return plan;
@@ -59,7 +61,11 @@ export function planoPublico(plan) {
     planta: plan.planta, ...(plan.criterios ? { criterios: plan.criterios } : {}),
     paredes: (plan.paredes || []).map(w => ({ id: w.id, nombre: limpiarPersonal(w.nombre) || `Pared ${w.id}`, a: w.a, b: w.b, ...(w.alto ? { alto: w.alto } : {}) })),
     huecos: (plan.huecos || []).map(h => ({ id: h.id, tipo: h.tipo, nombre: nombreHueco(h), pared: h.pared, desde: h.desde, ancho: h.ancho, base: h.base || 0, alto: h.alto })),
-    mobiliario: (plan.mobiliario || []).map((m, i) => ({ id: `mueble-${i + 1}`, nombre: limpiarPersonal(m.nombre) || 'Mueble', x: m.x, y: m.y, w: m.w, d: m.d, alto: m.alto, ...(m.pared ? { pared: m.pared } : {}) })),
+    // Tipo, base, pieza del catálogo y elemento del gemelo son geometría pública (el catálogo de xpaceos ya lo es);
+    // el código ITIL de la pieza, no (orden «modelar» del Arquitecto, 18-oct-2026).
+    mobiliario: (plan.mobiliario || []).map((m, i) => ({ id: `mueble-${i + 1}`, nombre: limpiarPersonal(m.nombre) || 'Mueble', x: m.x, y: m.y, w: m.w, d: m.d, alto: m.alto,
+      ...(m.pared ? { pared: m.pared } : {}), ...(typeof m.tipo === 'string' ? { tipo: m.tipo } : {}), ...(m.base > 0 ? { base: m.base } : {}),
+      ...(catalogoPublico(m.catalogo) ? { catalogo: catalogoPublico(m.catalogo) } : {}), ...(/^[a-z0-9][a-z0-9-]{0,63}$/i.test(m.gemelo || '') ? { gemelo: m.gemelo } : {}) })),
     dispositivos, pantallas,
   };
 }

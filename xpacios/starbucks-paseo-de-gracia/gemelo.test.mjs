@@ -40,7 +40,8 @@ test('the mural doble H hangs over the bar on wall F as V–H–V–V–H–V, c
 
 test('café furniture is recognised and the lab keeps its types', () => {
   const tipos = escenaDesdePlano(PUBLICO).muebles.map(m => m.tipo).sort();
-  assert.deepEqual(tipos, ['barra', 'caja', 'estanteria', 'mesa', 'mesa', 'pilar', 'vitrina']);
+  // Desde el 18-10-2026 el plano trae también las tres cestas y el iPad (piezas del catálogo 52–55).
+  assert.deepEqual(tipos, ['barra', 'caja', 'cesta', 'cesta', 'cesta', 'estanteria', 'ipad', 'mesa', 'mesa', 'pilar', 'vitrina']);
   assert.deepEqual(LAB.mobiliario.map(tipoMueble), ['mesa', 'mesa', 'nevera', 'recreativa', 'mueble', 'silla', 'silla']);
 });
 
