@@ -21,12 +21,13 @@ ES: La orden `/arquitecto detallar` de https://www.admira.biz/arquitecto.html?or
 1. Eliges el local y subes fotos o un vídeo. Las fotos no salen del navegador.
 2. Añades cada pieza: nombre, mueble (`cesta_baja` o `cesta_alta`), contenido (`vasos`, `bolsas_de_pie`, `bolsas_almohada` o `ninguno`), cantidad y cartel si lo lleva. El número de catálogo se propone con el siguiente libre del registro público.
 3. En cada foto marcas 4 esquinas de una cara plana, en cualquier orden. El Arquitecto la endereza y la guarda como recorte con su papel: cartel, logo, frente, dorso, lado o diseño.
-4. Una revisión dice qué cara falta a cada pieza antes de dejar descargar.
-5. Descargas `<encargo>.receta.json` y la ejecutas aquí con `taller.sh`, igual que cualquier otra receta.
+4. **Dónde va:** debajo sale el plano del local (el guardado en el navegador o `data/xpacios/<local>.json`). Eliges la pieza y tocas su sitio; el Arquitecto dice junto a qué mueble queda. El código ITIL se propone con el siguiente libre del inventario público del local (`PDG103-CES-04`…); se puede cambiar a mano.
+5. Una revisión dice qué cara o qué sitio falta a cada pieza antes de dejar descargar. Un solape en el plano es solo aviso: el plano es esquemático.
+6. Descargas `<encargo>.receta.json` y la ejecutas aquí con `taller.sh`, igual que cualquier otra receta.
 
 La receta lleva solo los recortes de objetos, en `fuentes_embebidas`, y `"publicables": false`. Las fotos originales no viajan nunca.
 
-EN: The `/arquitecto detallar` order prepares the recipe in the browser: pick the venue, upload photos or a video, add each piece, mark 4 corners of a flat face per photo (any order), fix what the review flags and download `<encargo>.receta.json` for `taller.sh`. Only object crops travel, embedded; original photos never leave the browser.
+EN: The `/arquitecto detallar` order prepares the recipe in the browser: pick the venue, upload photos or a video, add each piece, mark 4 corners of a flat face per photo (any order), tap each piece's spot on the venue floor plan (its ITIL code is proposed from the public inventory), fix what the review flags and download `<encargo>.receta.json` for `taller.sh`. Only object crops travel, embedded; original photos never leave the browser.
 
 ## Recetas / Recipes
 
@@ -50,12 +51,25 @@ EN: The `/arquitecto detallar` order prepares the recipe in the browser: pick th
   - `bolsa_snack`, `pet`, `orm`, `normal_polvo`, `collar`: bolsas, PET y mapas.
   - `bolsa_foto`: el diseño fotografiado de una bolsa almohada, delante y en espejo detrás.
   - EN: named operations, each with its own seed.
+- `plano` (opcional): `{id, version}` del plano del local sobre el que se colocaron las piezas. / Floor plan used for placement.
 - `piezas`: número e identidad de catálogo (sin `numero` el taller se niega a construir), nombres ES/EN, referencia, instancia, `origen` (`esquina` para piezas colocadas en el gemelo, `centro` para el botellero), `huella`, y:
   - `mueble`: familia `cesta_trenzada` con `borde` [alto, radio], `fondo` [alto, radio], `repeticion` del tejido y `pie` (apertura de la cruceta).
   - `carteles`: placa con cara impresa, de pie o en `poste`, con inclinación.
   - `contenido`: `vasos` (caen por tandas), `bolsas_almohada` (caen en capas), `bolsas_de_pie` (filas en abanico) o `botellas` (anillos, cada botella con identidad propia).
   - `hiperreal`: tanda y mapas compartidos de `inventario/assets/hiperreal-tex/`.
   - `comparar`: foto y recorte para la hoja foto | 3D.
+  - `colocacion` (opcional): `xpacio`, versión del `plano`, `x` e `y` en metros (esquina de la huella), `huella` y `junto_a`. Son las unidades de la rejilla del gemelo: `col = x`, `row = y`, `fp = huella`. / Spot on the venue plan, in twin grid units.
+  - `itil` (opcional): el CI para `itil_ci_upsert` de Yokup: `admira_store_id`, `itil_code`, `name`, `category`, `role` (120 caracteres como mucho), `group_name` y `position` (la instancia). / The Yokup CI.
+
+## Dónde va / Placement (`colocacion.py`)
+
+ES: `taller.sh` empieza por `colocacion.py`, sin dependencias. Comprueba cada `colocacion` contra el plano publicado (`data/xpacios/<xpacio>.json`): dentro de la sala, origen en la esquina y misma huella que la pieza; y cada `itil`: formato del código, sin repetir, `role` de 120 caracteres como mucho y `position` igual a la instancia. Si algo no vale, no se construye nada. Imprime lo que usará el cierre automático:
+- `colocación · gemelo:` la línea del layout del gemelo (`starbucks-room.js`).
+- `colocación · yokup:` el CI para Yokup.
+
+La receta `cestas-pg103` lleva ya el sitio y el CI de 53–55, iguales al gemelo y a Yokup; la prueba `taller-3d.test.mjs` lo vigila.
+
+EN: `taller.sh` starts with `colocacion.py` (stdlib only): placements are checked against the published plan and ITIL records against Yokup's rules; nothing is built if anything fails. It prints the twin layout line and the Yokup CI the automatic close will use.
 
 ## Física / Physics
 
@@ -80,9 +94,9 @@ EN: Same Best model with clearcoat and the shared CC0 powder/plastic maps; WebP 
 
 ## Siguientes fases / Next phases
 
-1. **Orden «detallar» en el Arquitecto** (admira.biz): hecha el 18-10-2026, ver «Desde el Arquitecto». Las esquinas y los papeles los marca una persona; que Admirito arquitecto los proponga queda para más adelante. / Done; corners and roles are marked by hand, an automatic proposal comes later.
+1. **Orden «detallar» en el Arquitecto** (admira.biz): hecha el 18-10-2026, ver «Desde el Arquitecto». Desde la mejora 2 dice también dónde va cada pieza y su código ITIL. Las esquinas y los papeles los marca una persona; que Admirito arquitecto los proponga queda para más adelante. / Done, with placement and ITIL code; corners and roles are marked by hand, an automatic proposal comes later.
 2. **Cierre automático**:
-   - El taller prepara el cambio con la hoja foto | 3D.
+   - El taller prepara el cambio con la hoja foto | 3D, la línea del gemelo y el CI que ya imprime `colocacion.py`.
    - Carlos lo aprueba en el Arquitecto.
    - Se publica con respaldo y se da de alta en Yokup.
    - EN: the workshop prepares the change; Carlos approves; publish with backup and Yokup registration.

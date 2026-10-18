@@ -606,6 +606,26 @@
    "instancia": "sb-cup-basket",
    "origen": "esquina",
    "huella": 0.64,
+   "colocacion": {
+    "xpacio": "alsea-sbux-021",
+    "plano": "2026-10-14-esquematico-1",
+    "x": 2.04,
+    "y": 3.8,
+    "huella": [
+     0.64,
+     0.64
+    ],
+    "junto_a": "Pilar"
+   },
+   "itil": {
+    "admira_store_id": "alsea-sbux-021",
+    "itil_code": "PDG103-CES-01",
+    "name": "Cesta de vasos reutilizables BE GREEN Starbucks",
+    "category": "mobiliario",
+    "role": "Fotos de Carlos 17-10-2026 · modelo 3D interpretativo 53 · vasos de relleno visual, sin stock medido",
+    "group_name": "Zona de clientes",
+    "position": "sb-cup-basket"
+   },
    "mueble": {
     "familia": "cesta_trenzada",
     "borde": [
@@ -678,6 +698,26 @@
    "instancia": "sb-snack-basket",
    "origen": "esquina",
    "huella": 0.64,
+   "colocacion": {
+    "xpacio": "alsea-sbux-021",
+    "plano": "2026-10-14-esquematico-1",
+    "x": 2.74,
+    "y": 4.18,
+    "huella": [
+     0.64,
+     0.64
+    ],
+    "junto_a": "Pilar"
+   },
+   "itil": {
+    "admira_store_id": "alsea-sbux-021",
+    "itil_code": "PDG103-CES-02",
+    "name": "Cesta de snacks Starbucks",
+    "category": "mobiliario",
+    "role": "Fotos de Carlos 17-10-2026 · modelo 3D interpretativo 54 · snacks de relleno visual, marcas sin confirmar",
+    "group_name": "Zona de clientes",
+    "position": "sb-snack-basket"
+   },
    "mueble": {
     "familia": "cesta_trenzada",
     "borde": [
@@ -746,6 +786,26 @@
    "instancia": "sb-coffee-basket",
    "origen": "esquina",
    "huella": 0.64,
+   "colocacion": {
+    "xpacio": "alsea-sbux-021",
+    "plano": "2026-10-14-esquematico-1",
+    "x": 1.08,
+    "y": 4.98,
+    "huella": [
+     0.64,
+     0.64
+    ],
+    "junto_a": "Tazas"
+   },
+   "itil": {
+    "admira_store_id": "alsea-sbux-021",
+    "itil_code": "PDG103-CES-03",
+    "name": "Cesta de café Starbucks 1971 Dark Roast",
+    "category": "mobiliario",
+    "role": "Fotos de Carlos 17-10-2026 · modelo 3D interpretativo 55 · bolsas de relleno visual, sin stock medido",
+    "group_name": "Zona de clientes",
+    "position": "sb-coffee-basket"
+   },
    "mueble": {
     "familia": "cesta_trenzada",
     "borde": [
