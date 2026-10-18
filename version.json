@@ -1,15 +1,15 @@
 {
-  "version": "v.18.10.2026.r6.14:25",
-  "deployedAt": "2026-10-18T12:25:10Z",
+  "version": "v.18.10.2026.r7.16:26",
+  "deployedAt": "2026-10-18T14:26:06Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "e5f6b35fddbcc1b98964c75fa0e17584684d12ad",
-  "gitShort": "e5f6b35",
-  "gitFull": "e5f6b35fddbcc1b98964c75fa0e17584684d12ad",
+  "git": "b6f9336b457a2f2fec00c455f74dade5b01f7ff2",
+  "gitShort": "b6f9336",
+  "gitFull": "b6f9336b457a2f2fec00c455f74dade5b01f7ff2",
   "dirty": false,
   "novedades": [
-    "Taller 3D: colocacion.py comprueba dónde va cada pieza en el plano del local y su alta ITIL antes de construir, e imprime la línea del gemelo y el CI para Yokup.",
-    "La receta de las cestas 53–55 lleva ya su sitio y su código ITIL, iguales al gemelo y a Yokup."
+    "Gemelo 3D desde el plano: las piezas del catálogo (cestas 53–55 e iPad 52) se pintan con su modelo 3D, colocadas donde dice el plano del local.",
+    "El plano de Starbucks Paseo de Gràcia trae el tipo y el elemento del gemelo de cada mueble: la colocación del gemelo sale del plano, pieza a pieza (orden «modelar» del Arquitecto)."
   ]
 }

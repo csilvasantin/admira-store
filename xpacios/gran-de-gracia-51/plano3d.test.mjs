@@ -180,3 +180,29 @@ test('the page loads the shell, registers /redistribucion for the lab, hides the
   assert.match(lista, /href="\/xpacios\/gran-de-gracia-51\/"/);
   assert.ok(!/Gran de Gràcia 51|GDG51|CI ITIL/.test(lista), 'the public listing does not expose the exact address or the inventory');
 });
+
+// ── Orden «modelar» del Arquitecto (18-oct-2026): la colocación del gemelo sale del plano ──
+import { layoutGemelo, modeloCatalogo, tipoMueble, TIPOS_MUEBLE } from './plano3d.mjs';
+import '../../admira-xp/scripts/starbucks-room.js';
+
+test('Paseo de Gràcia: the twin layout comes out of the plan, piece by piece (placement as data)', () => {
+  const plan = JSON.parse(readFileSync(`${repo}data/xpacios/alsea-sbux-021.json`, 'utf8'));
+  const desdePlano = new Map(layoutGemelo(plan).map(i => [i.id, i])), gemelo = globalThis.XpaceStarbucks.layout();
+  assert.equal(desdePlano.size, gemelo.length);
+  for (const it of gemelo) {
+    const p = desdePlano.get(it.id);
+    assert.ok(p, it.id);
+    assert.deepEqual([p.type, p.inventoryAssetId, p.col, p.row, p.fp, p.mountY], [it.type, it.inventoryAssetId, it.col, it.row, it.fp, it.mountY], it.id);
+  }
+});
+
+test('an explicit furniture type wins over the name, and catalogue pieces point at their 3D model', () => {
+  assert.equal(tipoMueble({ id: 'x', nombre: 'Mesa', tipo: 'cesta' }), 'cesta');
+  assert.equal(tipoMueble({ id: 'x', nombre: 'Mesa', tipo: 'inventado' }), 'mesa');
+  assert.ok(TIPOS_MUEBLE.includes('ipad'));
+  assert.equal(modeloCatalogo({ catalogo: { id: 'native:starbucksCupBasket', numero: 53 } }), '/inventario/assets/catalog/53/better.glb');
+  assert.equal(modeloCatalogo({ catalogo: { id: 'native:x', numero: 0 } }), null);
+  assert.equal(modeloCatalogo({}), null);
+  const escena = escenaDesdePlano(JSON.parse(readFileSync(`${repo}data/xpacios/alsea-sbux-021.json`, 'utf8')));
+  assert.deepEqual(escena.muebles.filter(m => m.catalogo).map(m => m.catalogo.numero), [52, 53, 54, 55]);
+});

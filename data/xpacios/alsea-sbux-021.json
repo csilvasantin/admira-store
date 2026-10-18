@@ -1,7 +1,7 @@
 {
  "schema": "admira.xpacio-plano/1",
  "id": "alsea-sbux-021",
- "version": "2026-10-14-esquematico-1",
+ "version": "2026-10-18-colocacion-1",
  "publico": true,
  "nombre": "Starbucks Paseo de Gracia",
  "direccion": "Gracia · Barcelona",
@@ -83,7 +83,9 @@
    "y": 0,
    "w": 10,
    "d": 1,
-   "alto": 0.96
+   "alto": 0.96,
+   "tipo": "barra",
+   "gemelo": "sb-backbar"
   },
   {
    "id": "mueble-2",
@@ -92,7 +94,9 @@
    "y": 3,
    "w": 4,
    "d": 1,
-   "alto": 1.05
+   "alto": 1.05,
+   "tipo": "caja",
+   "gemelo": "sb-pos"
   },
   {
    "id": "mueble-3",
@@ -101,7 +105,9 @@
    "y": 3,
    "w": 6,
    "d": 1,
-   "alto": 1.35
+   "alto": 1.35,
+   "tipo": "vitrina",
+   "gemelo": "sb-pastry"
   },
   {
    "id": "mueble-4",
@@ -110,7 +116,9 @@
    "y": 3,
    "w": 1,
    "d": 3,
-   "alto": 2.1
+   "alto": 2.1,
+   "tipo": "estanteria",
+   "gemelo": "sb-mugs"
   },
   {
    "id": "mueble-5",
@@ -119,7 +127,9 @@
    "y": 3,
    "w": 1,
    "d": 1,
-   "alto": 3.3
+   "alto": 3.3,
+   "tipo": "pilar",
+   "gemelo": "sb-pillar"
   },
   {
    "id": "mueble-6",
@@ -128,7 +138,9 @@
    "y": 6,
    "w": 2,
    "d": 2,
-   "alto": 0.75
+   "alto": 0.75,
+   "tipo": "mesa",
+   "gemelo": "sb-table-a"
   },
   {
    "id": "mueble-7",
@@ -137,7 +149,70 @@
    "y": 6,
    "w": 2,
    "d": 2,
-   "alto": 0.75
+   "alto": 0.75,
+   "tipo": "mesa",
+   "gemelo": "sb-table-b"
+  },
+  {
+   "id": "mueble-8",
+   "nombre": "iPad horizontal",
+   "x": 7.6,
+   "y": 0.4,
+   "w": 0.65,
+   "d": 0.35,
+   "alto": 0.3,
+   "tipo": "ipad",
+   "base": 0.96,
+   "catalogo": {
+    "id": "native:ipadLandscape",
+    "numero": 52
+   },
+   "gemelo": "starbucks-ipad-01"
+  },
+  {
+   "id": "mueble-9",
+   "nombre": "Cesta de vasos · BE GREEN",
+   "x": 2.04,
+   "y": 3.8,
+   "w": 0.64,
+   "d": 0.64,
+   "alto": 0.5,
+   "tipo": "cesta",
+   "catalogo": {
+    "id": "native:starbucksCupBasket",
+    "numero": 53
+   },
+   "gemelo": "sb-cup-basket"
+  },
+  {
+   "id": "mueble-10",
+   "nombre": "Cesta de snacks",
+   "x": 2.74,
+   "y": 4.18,
+   "w": 0.64,
+   "d": 0.64,
+   "alto": 0.84,
+   "tipo": "cesta",
+   "catalogo": {
+    "id": "native:starbucksSnackBasket",
+    "numero": 54
+   },
+   "gemelo": "sb-snack-basket"
+  },
+  {
+   "id": "mueble-11",
+   "nombre": "Cesta de café 1971",
+   "x": 1.08,
+   "y": 4.98,
+   "w": 0.64,
+   "d": 0.64,
+   "alto": 0.84,
+   "tipo": "cesta",
+   "catalogo": {
+    "id": "native:starbucksCoffeeBasket",
+    "numero": 55
+   },
+   "gemelo": "sb-coffee-basket"
   }
  ],
  "dispositivos": [],

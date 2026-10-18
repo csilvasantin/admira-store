@@ -3,7 +3,7 @@
 // pantallas con su captura, players y webcam. Three.js r160 del propio sitio
 // (admira-xp/scripts/premium-three.mjs, el mismo de Better/Best y de SneakerStore).
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
-import { pointOnWall } from './plano3d.mjs?v=gdg51-6';
+import { pointOnWall, modeloCatalogo } from './plano3d.mjs?v=modelar-1';
 
 const GROSOR = 0.08;
 const tipoTexto = (m, re) => (String(m.nombre || '').replace(re, '').trim() || m.id).toUpperCase();
@@ -251,9 +251,28 @@ export function crearEscena3D(escena, { anisotropia = 4, onCambio = () => {}, te
     return g;
   }
 
+  // ── Piezas del catálogo de xpaceos (cestas, iPad…) ──
+  // Su modelo 3D (Better), con el origen en la esquina de la huella y sin giro, como en el gemelo 2D/Matrix.
+  // Mientras carga, o si no carga, un volumen sencillo a su medida. El cargador sólo se pide si hay piezas.
+  let cargador = null;
+  const cargarModelo = url => (cargador ||= import('../../admira-xp/scripts/vendor/GLTFLoader.mjs').then(({ GLTFLoader }) => new GLTFLoader()))
+    .then(l => l.loadAsync(url));
+  const MAPAS = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'alphaMap'];
+  function piezaCatalogo(m) {
+    const g = new T.Group(); g.position.copy(V(m.x, m.y, m.base || 0)); g.userData.mueble = m.id; g.userData.catalogo = m.catalogo.numero;
+    const prov = m.tipo === 'cesta' ? new T.Mesh(own(new T.CylinderGeometry(m.w / 2, m.w * 0.36, m.alto, 24)), mat('#2b2a26')) : box(m.w, m.alto, m.d, M.negro);
+    prov.position.set(m.w / 2, m.alto / 2, m.d / 2); g.add(prov);
+    cargarModelo(modeloCatalogo(m)).then(gltf => {
+      gltf.scene.traverse(o => { if (!o.isMesh) return; own(o.geometry); for (const mm of [].concat(o.material)) { own(mm); for (const k of MAPAS) if (mm[k]) own(mm[k]); } });
+      g.remove(prov); g.add(gltf.scene); onCambio();
+    }).catch(() => { /* se queda el volumen sencillo */ });
+    return g;
+  }
+
   // ── Muebles ──
   const muebles = new Map();
   for (const m of escena.muebles) {
+    if (modeloCatalogo(m)) { const g = piezaCatalogo(m); root.add(g); muebles.set(m.id, g); continue; }
     const g = orientado(m.x + m.w / 2, m.y + m.d / 2, 0, m.yaw); g.userData.mueble = m.id;
     // Medidas en el sistema del mueble: ancho a lo largo de su pared, fondo hacia n.
     const lateral = Math.abs(Math.sin(m.yaw)) > 0.7, W = lateral ? m.d : m.w, D = lateral ? m.w : m.d, H = m.alto;
