@@ -12,7 +12,12 @@
     {id:'sb-mugs',type:'shelves',col:0,row:3,fp:[1,3],label:'Tazas · Café en grano'},
     {id:'sb-pillar',type:'custom',col:2,row:3,fp:[1,1],label:'Pilar'},
     {id:'sb-table-a',type:'cafeTable',col:3,row:6,fp:[2,2],label:'Mesa redonda'},
-    {id:'sb-table-b',type:'cafeTable',col:6,row:6,fp:[2,2],label:'Mesa redonda'}
+    {id:'sb-table-b',type:'cafeTable',col:6,row:6,fp:[2,2],label:'Mesa redonda'},
+    // Cestas trenzadas de las fotos de Carlos (17-10-2026): vasos BE GREEN y snacks junto al pilar,
+    // café 1971 frente a la estantería. Origen en la esquina de su huella de .64; Best carga 53, 54 y 55.
+    {id:'sb-cup-basket',type:'starbucksCupBasket',inventoryAssetId:'native:starbucksCupBasket',col:2.04,row:3.8,fp:[.64,.64],label:'Cesta de vasos · BE GREEN'},
+    {id:'sb-snack-basket',type:'starbucksSnackBasket',inventoryAssetId:'native:starbucksSnackBasket',col:2.74,row:4.18,fp:[.64,.64],label:'Cesta de snacks'},
+    {id:'sb-coffee-basket',type:'starbucksCoffeeBasket',inventoryAssetId:'native:starbucksCoffeeBasket',col:1.08,row:4.98,fp:[.64,.64],label:'Cesta de café 1971'}
   ];
   const C={wall:'#61544b',brick:'#79756a',floor:'#afa99c',wood:'#ad855b',slat:'#745640',stone:'#d3c7ae',steel:'#8f9693',black:'#181c1c',green:'#006241',cream:'#e6dbc5',glass:'#9eccc6',light:'#ffe2a0'};
   function build(items=layout(),{quality='good',moving=false}={}){
@@ -94,6 +99,24 @@
         }}
         for(const zz of [z,z+1.5,z+3])box(x+.85,0,zz,.06,2.34,.04,C.steel);
       }else if(item.id==='sb-pillar')box(x,0,z,.72,3.3,.72,C.cream);
+      else if(item.id==='sb-cup-basket'||item.id==='sb-snack-basket'||item.id==='sb-coffee-basket'){
+        // Boceto de Good y Better; en Best lo sustituye el modelo del catálogo. / Good/Better sketch; Best swaps in the model.
+        const cx=x+.32,cz=z+.32,low=item.id==='sb-cup-basket',base=low?.24:.58,rim=low?.5:.84,cord='#1f2121';
+        for(const [dx,dz] of [[-.2,-.2],[.18,-.2],[-.2,.18],[.18,.18]])box(cx+dx,0,cz+dz,.02,base,.02,C.black);
+        box(cx-.28,0,cz-.01,.56,.015,.02,C.black);box(cx-.01,0,cz-.28,.02,.015,.56,C.black);
+        box(cx-.16,base,cz-.16,.32,.08,.32,cord,{round:true});box(cx-.3,base+.08,cz-.3,.6,rim-base-.08,.6,cord,{round:true});
+        if(low){
+          box(cx-.2,base+.12,cz-.14,.4,1.14,.012,'#0d4c3c');sign('BE GREEN',cx-.19,base+1.0,cz-.124,.38,.11,'#f2f1ec');
+          for(let i=0;i<7;i++)box(cx-.24+(i%4)*.12,rim-.06+(i>3?.05:0),cz-.18+(i%3)*.12,.1,.1,.18,i%2?'#f1f0ea':'#d9dcd9',{round:true});
+        }else if(item.id==='sb-snack-basket'){
+          box(cx-.004,base,cz-.13,.008,1.18-base,.008,C.black);sign('SNACKS',cx-.05,1.02,cz-.124,.1,.08,C.black);
+          ['#eeebe5','#c8dc3a','#cf3a4b','#eeebe5','#9fc04a','#e9a3b5'].forEach((color,i)=>box(cx-.24+(i%3)*.16,rim-.05+(i>2?.07:0),cz-.2+(i%2)*.17,.17,.11,.22,color));
+        }else{
+          box(cx-.14,base+.09,cz-.12,.28,.98,.012,'#0d6e57');sign('1971',cx-.12,base+.86,cz-.106,.24,.12,'#0d6e57');
+          [[-.05,[-.18,-.06,.06,.18]],[.04,[-.18,-.06,.06,.18]],[.13,[-.12,0,.12]]].forEach(([dz,xs],row)=>xs.forEach(dx=>
+            box(cx+dx-.057,rim-.075+(2-row)*.017,cz+dz-.032,.115,.215,.065,'#0b6b4f')));
+        }
+      }
       else if(item.type==='cafeTable'){
         box(x+.4,0,z+.4,.67,.06,.67,C.black,{round:true,appearanceInstance:item.id});box(x+.68,.05,z+.68,.1,.68,.1,C.black,{appearanceInstance:item.id});
         box(x+.12,.74,z+.12,1.25,.085,1.25,C.wood,{round:true,appearanceInstance:item.id});cup(x+.70,.83,z+.5);

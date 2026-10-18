@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "components-20261008-coffee47-1",
+  "revision": "components-20261018-cestas-1",
   "assets": [
     {
       "id": "native:counter",
@@ -5392,6 +5392,529 @@
               },
               "quantity": 1,
               "unit": "piece"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksCupBasket",
+      "number": 53,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/53/best.blend",
+        "admira-xp/tools/xpacios-blender/build_cestas.py",
+        "inventario/assets/catalog/53/best.manifest.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado desde las fotos de Carlos del 17-10-2026. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Medidas nominales, no medidas en tienda.",
+        "en": "Composition of the Best model interpreted from Carlos’s 17-10-2026 photos. Quantities describe one model, not stock or a verified manufacturing bill of materials. Nominal, unmeasured dimensions."
+      },
+      "groups": [
+        {
+          "id": "basket",
+          "label": {
+            "es": "Cesta trenzada",
+            "en": "Woven basket"
+          },
+          "components": [
+            {
+              "id": "woven-wall",
+              "label": {
+                "es": "Pared de cordón negro trenzado",
+                "en": "Black woven cord wall"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "basket-floor",
+              "label": {
+                "es": "Fondo de la cesta",
+                "en": "Basket floor"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rope-rim",
+              "label": {
+                "es": "Borde de cuerda enrollada",
+                "en": "Rolled rope rim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "lower-ring",
+              "label": {
+                "es": "Aro inferior de cuerda",
+                "en": "Lower rope ring"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "stand",
+          "label": {
+            "es": "Soporte de acero negro",
+            "en": "Black steel stand"
+          },
+          "components": [
+            {
+              "id": "top-ring",
+              "label": {
+                "es": "Aro superior",
+                "en": "Top ring"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "floor-cross",
+              "label": {
+                "es": "Cruceta en X a ras de suelo",
+                "en": "Floor-level X cross brace"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "sign",
+          "label": {
+            "es": "Cartel",
+            "en": "Sign"
+          },
+          "components": [
+            {
+              "id": "sign",
+              "label": {
+                "es": "Cartel BE GREEN",
+                "en": "BE GREEN sign"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "board",
+                  "label": {
+                    "es": "Placa",
+                    "en": "Board"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "print",
+                  "label": {
+                    "es": "Cara impresa",
+                    "en": "Printed face"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "hot-cups",
+              "label": {
+                "es": "Vasos reutilizables para caliente con tapa",
+                "en": "Reusable hot cups with lid"
+              },
+              "quantity": 14,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            },
+            {
+              "id": "cold-cups",
+              "label": {
+                "es": "Vasos reutilizables para frío con tapa cúpula",
+                "en": "Reusable cold cups with dome lid"
+              },
+              "quantity": 14,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksSnackBasket",
+      "number": 54,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/54/best.blend",
+        "admira-xp/tools/xpacios-blender/build_cestas.py",
+        "inventario/assets/catalog/54/best.manifest.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado desde las fotos de Carlos del 17-10-2026. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Medidas nominales, no medidas en tienda.",
+        "en": "Composition of the Best model interpreted from Carlos’s 17-10-2026 photos. Quantities describe one model, not stock or a verified manufacturing bill of materials. Nominal, unmeasured dimensions."
+      },
+      "groups": [
+        {
+          "id": "basket",
+          "label": {
+            "es": "Cesta trenzada",
+            "en": "Woven basket"
+          },
+          "components": [
+            {
+              "id": "woven-wall",
+              "label": {
+                "es": "Pared de cordón negro trenzado",
+                "en": "Black woven cord wall"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "basket-floor",
+              "label": {
+                "es": "Fondo de la cesta",
+                "en": "Basket floor"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rope-rim",
+              "label": {
+                "es": "Borde de cuerda enrollada",
+                "en": "Rolled rope rim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "lower-ring",
+              "label": {
+                "es": "Aro inferior de cuerda",
+                "en": "Lower rope ring"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "stand",
+          "label": {
+            "es": "Soporte de acero negro",
+            "en": "Black steel stand"
+          },
+          "components": [
+            {
+              "id": "top-ring",
+              "label": {
+                "es": "Aro superior",
+                "en": "Top ring"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "floor-cross",
+              "label": {
+                "es": "Cruceta en X a ras de suelo",
+                "en": "Floor-level X cross brace"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "sign",
+          "label": {
+            "es": "Cartel",
+            "en": "Sign"
+          },
+          "components": [
+            {
+              "id": "sign",
+              "label": {
+                "es": "Cartel REFRIGERIS · SNACKS",
+                "en": "REFRIGERIS · SNACKS sign"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "board",
+                  "label": {
+                    "es": "Placa",
+                    "en": "Board"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "print",
+                  "label": {
+                    "es": "Cara impresa",
+                    "en": "Printed face"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "snack-bags",
+              "label": {
+                "es": "Bolsas de snacks (marcas sin confirmar)",
+                "en": "Snack bags (brands not confirmed)"
+              },
+              "quantity": 26,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native:starbucksCoffeeBasket",
+      "number": 55,
+      "profile": "best",
+      "basis": "model",
+      "source": [
+        "inventario/assets/catalog/55/best.blend",
+        "admira-xp/tools/xpacios-blender/build_cestas.py",
+        "inventario/assets/catalog/55/best.manifest.json"
+      ],
+      "note": {
+        "es": "Composición del modelo Best interpretado desde las fotos de Carlos del 17-10-2026. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Medidas nominales, no medidas en tienda.",
+        "en": "Composition of the Best model interpreted from Carlos’s 17-10-2026 photos. Quantities describe one model, not stock or a verified manufacturing bill of materials. Nominal, unmeasured dimensions."
+      },
+      "groups": [
+        {
+          "id": "basket",
+          "label": {
+            "es": "Cesta trenzada",
+            "en": "Woven basket"
+          },
+          "components": [
+            {
+              "id": "woven-wall",
+              "label": {
+                "es": "Pared de cordón negro trenzado",
+                "en": "Black woven cord wall"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "basket-floor",
+              "label": {
+                "es": "Fondo de la cesta",
+                "en": "Basket floor"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "rope-rim",
+              "label": {
+                "es": "Borde de cuerda enrollada",
+                "en": "Rolled rope rim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "lower-ring",
+              "label": {
+                "es": "Aro inferior de cuerda",
+                "en": "Lower rope ring"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "stand",
+          "label": {
+            "es": "Soporte de acero negro",
+            "en": "Black steel stand"
+          },
+          "components": [
+            {
+              "id": "top-ring",
+              "label": {
+                "es": "Aro superior",
+                "en": "Top ring"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "legs",
+              "label": {
+                "es": "Patas",
+                "en": "Legs"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "feet",
+              "label": {
+                "es": "Pies",
+                "en": "Feet"
+              },
+              "quantity": 4
+            },
+            {
+              "id": "floor-cross",
+              "label": {
+                "es": "Cruceta en X a ras de suelo",
+                "en": "Floor-level X cross brace"
+              },
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "sign",
+          "label": {
+            "es": "Cartel",
+            "en": "Sign"
+          },
+          "components": [
+            {
+              "id": "sign",
+              "label": {
+                "es": "Cartel Discover 1971 Dark Roast",
+                "en": "Discover 1971 Dark Roast sign"
+              },
+              "quantity": 1,
+              "components": [
+                {
+                  "id": "board",
+                  "label": {
+                    "es": "Placa",
+                    "en": "Board"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "print",
+                  "label": {
+                    "es": "Cara impresa",
+                    "en": "Printed face"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            }
+          ]
+        },
+        {
+          "id": "products",
+          "label": {
+            "es": "Productos representativos",
+            "en": "Representative products"
+          },
+          "components": [
+            {
+              "id": "coffee-bags",
+              "label": {
+                "es": "Bolsas Starbucks 1971 Dark Roast 250 g",
+                "en": "Starbucks 1971 Dark Roast 250 g bags"
+              },
+              "quantity": 11,
+              "note": {
+                "es": "Representación visual; no es una cantidad de stock confirmada.",
+                "en": "Visual representation; not a confirmed stock quantity."
+              },
+              "components": [
+                {
+                  "id": "front",
+                  "label": {
+                    "es": "Cara frontal",
+                    "en": "Front face"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "back",
+                  "label": {
+                    "es": "Trasera",
+                    "en": "Back face"
+                  },
+                  "quantity": 1
+                },
+                {
+                  "id": "sides",
+                  "label": {
+                    "es": "Laterales",
+                    "en": "Side gussets"
+                  },
+                  "quantity": 2
+                },
+                {
+                  "id": "top-seal",
+                  "label": {
+                    "es": "Cierre superior plegado",
+                    "en": "Folded top seal"
+                  },
+                  "quantity": 1
+                }
+              ],
+              "quantity_scope": "per_parent_unit"
+            },
+            {
+              "id": "hidden-stock",
+              "label": {
+                "es": "Relleno bajo las bolsas visibles",
+                "en": "Fill under the visible bags"
+              },
+              "quantity": 1
             }
           ]
         }
