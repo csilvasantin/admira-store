@@ -1,14 +1,14 @@
 {
-  "version": "v.18.10.2026.r1.12:34",
-  "deployedAt": "2026-10-18T10:34:58Z",
+  "version": "v.18.10.2026.r2.12:38",
+  "deployedAt": "2026-10-18T10:38:11Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "96e3b10151a4838d0b08e2d3a0ab0227f0d5ede7",
-  "gitShort": "96e3b10",
-  "gitFull": "96e3b10151a4838d0b08e2d3a0ab0227f0d5ede7",
+  "git": "d1f1a35750a92b5cb559c2aa1033e8d7f17a950e",
+  "gitShort": "d1f1a35",
+  "gitFull": "d1f1a35750a92b5cb559c2aa1033e8d7f17a950e",
   "dirty": false,
   "novedades": [
-    "Starbucks Paseo de Gràcia: las tres cestas trenzadas de las fotos de Carlos en el gemelo — vasos reutilizables con el cartel BE GREEN y snacks junto al pilar, café 1971 Dark Roast frente a la estantería (catálogo 53, 54 y 55; Best carga el modelo, Good y Better un boceto)."
+    "Gemelo Starbucks: el boceto de las cestas llega también a quien tenía en caché la versión anterior (starbucks-room.js?v=cestas-20261018-1)."
   ]
 }

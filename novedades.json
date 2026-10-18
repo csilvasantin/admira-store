@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.18.10.2026.r2.12:38": [
+    "Gemelo Starbucks: el boceto de las cestas llega también a quien tenía en caché la versión anterior (starbucks-room.js?v=cestas-20261018-1)."
+  ],
   "v.18.10.2026.r1.12:34": [
     "Starbucks Paseo de Gràcia: las tres cestas trenzadas de las fotos de Carlos en el gemelo — vasos reutilizables con el cartel BE GREEN y snacks junto al pilar, café 1971 Dark Roast frente a la estantería (catálogo 53, 54 y 55; Best carga el modelo, Good y Better un boceto)."
   ],
