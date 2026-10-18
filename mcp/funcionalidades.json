@@ -3167,6 +3167,28 @@
     "geometry": "interpretive_photo_not_measured",
     "yokup_ci": "pending"
   },
+  "taller_3d": {
+    "es": "Taller 3D · recetas: convierte las fotos de una visita en piezas del catálogo (Good, Better, Best y Hiperreal si se pide) desde una receta JSON por encargo, con recortes, texturas, física, manifiestos, render y hoja foto | 3D. Recetas: cestas-pg103 (53–55, reproduce los modelos publicados) y botellero-pg103 (50 rehecho con la cesta trenzada de la foto; conserva las 19 botellas editables y el tamaño de Matrix · TPV; cartel AIGUA MINERAL). Primera fase del Arquitecto automático.",
+    "en": "3D workshop · recipes: turns the photos of a visit into catalogue pieces (Good, Better, Best and Hiperreal on request) from one JSON recipe per job, with crops, textures, physics, manifests, render and a photo | 3D sheet. Recipes: cestas-pg103 (53–55, reproduces the published models) and botellero-pg103 (50 rebuilt with the photographed woven basket; keeps the 19 editable bottles and the Matrix · POS size; AIGUA MINERAL sign). Phase one of the automatic Architect.",
+    "docs": "https://www.xpaceos.com/admira-xp/docs/taller-3d.md",
+    "tool": "admira-xp/tools/taller-3d/taller.sh",
+    "schema": "xpaceos.taller-3d.receta/1",
+    "recipes": [
+      "admira-xp/tools/taller-3d/recetas/cestas-pg103.json",
+      "admira-xp/tools/taller-3d/recetas/botellero-pg103.json"
+    ],
+    "pieces": {
+      "50": "native:starbucksWaterRack",
+      "53": "native:starbucksCupBasket",
+      "54": "native:starbucksSnackBasket",
+      "55": "native:starbucksCoffeeBasket"
+    },
+    "photos_policy": "object crops only when people appear",
+    "next": [
+      "Arquitecto · detallar",
+      "cierre automático con aprobación de Carlos"
+    ]
+  },
   "itil_inventory_link": {
     "es": "Inventory/ITIL unifica Inventario e ITIL en la posición anterior de Inventory, junto a Percepción. Debajo muestra el número total de items propios del Xpacio. La cuadrícula tiene diez subcategorías y elimina la ficha Pixeria. Al pulsar Inventory/ITIL, la lista y la búsqueda aparecen en la segunda columna; seleccionar un objeto muestra su detalle en la tercera. Se conservan las acciones de añadir/eliminar, las identidades, el historial y las fichas editables de Cafebrería. La importación desde PixerIA sigue disponible en Mobiliario → Distribuir. Yokup sigue siendo el maestro ITIL; esta interfaz no acredita vinculación física IoT.",
     "en": "Inventory/ITIL merges Inventory and ITIL at the former Inventory position, next to Perception. Its subtitle shows the total number of items owned by the Xpace. The grid has ten subcategories and removes the Pixeria card. Press Inventory/ITIL for the list and search in the second column; select an object for details in the third. Add/remove actions, identities, history and editable Cafebrería records are retained. PixerIA import remains available under Furniture → Distribute. Yokup remains the ITIL master; this interface does not establish physical IoT binding.",

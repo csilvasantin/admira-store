@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "components-20261018-cestas-1",
+  "revision": "components-20261018-taller-1",
   "assets": [
     {
       "id": "native:counter",
@@ -5081,82 +5081,109 @@
       "basis": "model",
       "source": [
         "inventario/assets/catalog/50/best.blend",
-        "admira-xp/tools/xpacios-blender/build_water_rack.py",
+        "admira-xp/tools/taller-3d/taller.py",
+        "admira-xp/tools/taller-3d/recetas/botellero-pg103.json",
         "inventario/assets/catalog/50/best.manifest.json"
       ],
       "note": {
-        "es": "Composición del modelo Best interpretado. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada. Los circuitos y mecanismos internos no modelados no se infieren.",
-        "en": "Composition of the interpreted Best model. Quantities describe one model, not stock or a verified manufacturing bill of materials. Unmodeled internal circuits and mechanisms are not inferred."
+        "es": "Composición del modelo Best del taller 3D: la cesta trenzada de la foto ITIL y del panorama 360, con el tamaño que usa Matrix · TPV. Las cantidades describen un modelo, no existencias ni una lista de fabricación verificada.",
+        "en": "Composition of the 3D-workshop Best model: the woven basket of the ITIL photo and 360 panorama, at the size Matrix · POS uses. Quantities describe one model, not stock or a verified manufacturing bill of materials."
       },
       "groups": [
         {
-          "id": "rack",
+          "id": "basket",
           "label": {
-            "es": "Estructura del botellero",
-            "en": "Rack structure"
+            "es": "Cesta trenzada",
+            "en": "Woven basket"
           },
           "components": [
             {
-              "id": "basket-rings",
+              "id": "woven-wall",
               "label": {
-                "es": "Aros de cesta",
-                "en": "Basket rings"
+                "es": "Pared de cordón negro trenzado",
+                "en": "Black woven cord wall"
               },
-              "quantity": 3
-            },
-            {
-              "id": "basket-uprights",
-              "label": {
-                "es": "Varillas verticales de cesta",
-                "en": "Basket upright wires"
-              },
-              "quantity": 56
+              "quantity": 1
             },
             {
               "id": "basket-floor",
               "label": {
-                "es": "Varillas del fondo",
-                "en": "Basket floor wires"
+                "es": "Fondo de la cesta",
+                "en": "Basket floor"
               },
-              "quantity": 34
+              "quantity": 1
+            },
+            {
+              "id": "rope-rim",
+              "label": {
+                "es": "Borde de cuerda enrollada",
+                "en": "Rolled rope rim"
+              },
+              "quantity": 1
+            },
+            {
+              "id": "lower-ring",
+              "label": {
+                "es": "Aro inferior de cuerda",
+                "en": "Lower rope ring"
+              },
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "stand",
+          "label": {
+            "es": "Soporte de acero negro",
+            "en": "Black steel stand"
+          },
+          "components": [
+            {
+              "id": "top-ring",
+              "label": {
+                "es": "Aro superior",
+                "en": "Top ring"
+              },
+              "quantity": 1
             },
             {
               "id": "legs",
               "label": {
-                "es": "Patas metálicas",
-                "en": "Metal legs"
+                "es": "Patas",
+                "en": "Legs"
               },
               "quantity": 4
             },
             {
               "id": "feet",
               "label": {
-                "es": "Pies de goma",
-                "en": "Rubber feet"
+                "es": "Pies",
+                "en": "Feet"
               },
               "quantity": 4
             },
             {
-              "id": "lower-frame",
+              "id": "floor-cross",
               "label": {
-                "es": "Varillas del marco inferior",
-                "en": "Lower frame rods"
-              },
-              "quantity": 4
-            },
-            {
-              "id": "diagonal-braces",
-              "label": {
-                "es": "Tirantes diagonales",
-                "en": "Diagonal braces"
+                "es": "Cruceta en X a ras de suelo",
+                "en": "Floor-level X cross brace"
               },
               "quantity": 2
-            },
+            }
+          ]
+        },
+        {
+          "id": "sign",
+          "label": {
+            "es": "Cartel",
+            "en": "Sign"
+          },
+          "components": [
             {
               "id": "sign",
               "label": {
-                "es": "Rótulo AGUA MINERAL",
-                "en": "AGUA MINERAL sign"
+                "es": "Rótulo AIGUA MINERAL",
+                "en": "AIGUA MINERAL sign"
               },
               "quantity": 1,
               "components": [
@@ -5404,7 +5431,8 @@
       "basis": "model",
       "source": [
         "inventario/assets/catalog/53/best.blend",
-        "admira-xp/tools/xpacios-blender/build_cestas.py",
+        "admira-xp/tools/taller-3d/taller.py",
+        "admira-xp/tools/taller-3d/recetas/cestas-pg103.json",
         "inventario/assets/catalog/53/best.manifest.json"
       ],
       "note": {
@@ -5572,7 +5600,8 @@
       "basis": "model",
       "source": [
         "inventario/assets/catalog/54/best.blend",
-        "admira-xp/tools/xpacios-blender/build_cestas.py",
+        "admira-xp/tools/taller-3d/taller.py",
+        "admira-xp/tools/taller-3d/recetas/cestas-pg103.json",
         "inventario/assets/catalog/54/best.manifest.json"
       ],
       "note": {
@@ -5728,7 +5757,8 @@
       "basis": "model",
       "source": [
         "inventario/assets/catalog/55/best.blend",
-        "admira-xp/tools/xpacios-blender/build_cestas.py",
+        "admira-xp/tools/taller-3d/taller.py",
+        "admira-xp/tools/taller-3d/recetas/cestas-pg103.json",
         "inventario/assets/catalog/55/best.manifest.json"
       ],
       "note": {

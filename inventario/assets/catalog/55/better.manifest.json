@@ -7,6 +7,7 @@
   "reference": null,
   "geometry_basis": "interpretive_photo",
   "source_photos": "Carlos · Starbucks Paseo de Gràcia · 2026-10-17",
+  "workshop_recipe": "admira-xp/tools/taller-3d/recetas/cestas-pg103.json",
   "measured": false,
   "nominal_units": "metres_for_proportions_only",
   "stock_quantity_verified": false,
