@@ -719,11 +719,11 @@
     "en": "Incident + NASA report"
    },
    "shows": {
-    "es": "Abre una incidencia CLI en una pantalla libre, la cierra en la ficha de admira.app y prepara el informe PDF con marca y fotos.",
-    "en": "Opens a CLI incident on a free screen, closes it in the admira.app ticket and prepares the branded PDF report with photos."
+    "es": "Un solo monitor, como un vídeo: Bugito rompe una pantalla del Starbucks, Admirito lo detecta y avisa, Supervisor abre la ficha de admira.app, cierra el popup, documenta y cierra; informe en vista previa.",
+    "en": "Single monitor, like a video: Bugito breaks a Starbucks screen, Admirito detects it and alerts, Supervisor opens the admira.app ticket, closes the popup, documents and closes it; report preview."
    },
    "command": "/crear incidencia · /cerrar incidencia",
-   "duration_s": 45,
+   "duration_s": 170,
    "tour": true,
    "kind": "twin",
    "side_effects": {
@@ -737,7 +737,7 @@
      "mode": "matrix"
     },
     {
-     "incident": true
+     "incidentMono": true
     }
    ]
   },

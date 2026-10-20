@@ -177,7 +177,7 @@ chip=document.createElement('a');chip.className='matrix-incident-chip';chip.data
    press(f.querySelector('[data-ficha="finish"]'));let data;
    // 409: la lleva un técnico en el portal del comercio → no se fuerza; la ficha y la CLI dicen cómo cerrarla.
    try{data=await closeIncident({id,resource:inc.resource,note,by});}catch(e){if(e.status===409&&e.data?.portal_assigned){const tech=(/\(([^)]+)\)/.exec(e.data.error||'')||[])[1]||inc.assignee||'';paintFicha(inc,{phase:t('⚠ La lleva un técnico en el portal','⚠ Held by a technician in the portal')+(tech?' ('+tech+')':'')});step(t('Ficha: ✓ Finalizar → rechazado (técnico del portal)','Ticket: ✓ Finish → refused (portal technician)'));await wait(hold);const err=Error(t('la lleva un técnico en el portal del comercio','it is held by a technician in the store portal')+(tech?' ('+tech+')':''));err.code='portal_assigned';err.technician=tech;err.url=incidentDetailUrl(id);throw err;}throw e;}if(d&&off.has(d.id))setPower(d.id,false);
-   for(let i=0;i<6;i++){inc=await freshInc(id)||inc;if(inc.stage==='cerrada')break;await wait(700);}
+   for(let i=0;i<6;i++){inc=await freshInc(id)||inc;if(inc.stage==='cerrada')break;await wait(700);}if(inc.stage!=='cerrada'&&data&&data.applied!==false)inc={...inc,stage:'cerrada'}; // el POST de cierre respondió OK: la bandeja aún no lo refleja
    paintFicha(inc,{phase:t('✓ Finalizada en admira.app','✓ Finished in admira.app')});step(t('Ficha: ✓ Finalizar → FINALIZADA','Ticket: ✓ Finish → FINISHED'));paint();await wait(hold);
    return {inc,applied:data.applied!==false,deviceId:d?.id};
   }

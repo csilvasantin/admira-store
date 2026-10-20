@@ -173,18 +173,54 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
    await sleep(1500,cancelled);ctx.subLocked=false;paintTexts();return;}
   c?.close?.();doc?.getElementById?.('xpaceDemoIpadPreload')?.remove();return;}
  if(s.waitPos){const t0=Date.now();while(Date.now()-t0<s.waitPos&&!cancelled()){const p=g.XpacePOSExperience?.demo?.state?.()?.phase;if(['completed','error'].includes(p))break;await sleep(400,cancelled);}return;}
+ if(s.incidentMono){await incidentMonoStep(ctx,cancelled);return;}
  if(s.incident){await incidentStep(ctx,cancelled);return;}
  // /demo 24: una cápsula «¿Sabías que…?» GOOD al azar en la tarjeta 480×800 y en una pantalla vertical, con locución.
  if(s.capsula){const m=await import(CAPSULA_MOD);if(s.capsula==='close'){m.closeCapsula();return;}
   const c=await race(m.showCapsule({tipo:s.capsula==='random'?'random':s.capsula,lang:ctx.lang,voice:s.voice!==false,doc:ctx.doc}),cancelled);
   if(c)ctx.sub((ctx.en?'Did you know…? · ':'¿Sabías que…? · ')+c.id+' · GOOD · Nemotron 3 Ultra · 0 €');return;}}
 
-async function incidentStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es;const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-5')).runIncidentDemo(text,o));
+async function incidentStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es;const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-6')).runIncidentDemo(text,o));
  ctx.cmd('/crear incidencia');const r=await run('/crear incidencia',{router:ctx.router,lang:ctx.lang,progress:m=>ctx.sub(m)});
  if(!r?.ok||!r.id){ctx.sub(r?.message||t('No se pudo abrir la incidencia de demo.','The demo incident could not be opened.'));return;}
  if(PROTECTED.test(r.id))return; // imposible (las nuevas tienen id nuevo), pero nunca se cierra una real.
  ctx.created.push(r.id);ctx.sub(r.message.split('\n')[0]);await sleep(4000,cancelled);await closeCreated(ctx);}
-async function closeCreated(ctx){const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-5')).runIncidentDemo(text,o));
+// Demo 15 en un solo monitor (Carlos, 20-oct-2026): coreografía de ~3 min dentro del gemelo, como un vídeo.
+// Bugito (PiP) lanza un popup → la pantalla se pone en rojo con su chip → Admirito (PiP) lo detecta y avisa →
+// Supervisor (PiP) abre la ficha de admira.app, cierra el popup, documenta y cierra → informe en vista previa → fin.
+const PIP_MOD='./demo-pip.mjs?v=mono-2';
+async function incidentMonoStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es,doc=ctx.doc,P=await import(PIP_MOD),w=doc.defaultView;
+ const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-6')).runIncidentDemo(text,o));
+ const say=(m)=>ctx.sub(m,true),wait=ms=>sleep(ms,cancelled,bar);ctx.monoCleanup=()=>P.pipClear(doc);
+ // Escenas de la coreografía en el contador de la tarjeta («paso 3/6»), en vez de los 2 pasos técnicos del registro.
+ const scene=n=>{ctx.stepTotal=6;ctx.stepDone=n-1;paintTexts();ring((n-1)/6);};
+ try{
+  scene(1);say(t('Starbucks Paseo de Gràcia · gemelo Matrix en directo, todo en orden.','Starbucks Paseo de Gràcia · live Matrix twin, all good.'));await wait(13000);if(cancelled())return;
+  scene(2);P.pipShow(doc,'bugito',t('Hola, soy Bugito. Hoy voy a romper una pantalla…','Hi, I am Bugito. Today I am breaking a screen…'),'bl');say(t('Entra Bugito, el diablillo de las pruebas.','Enter Bugito, the testing imp.'));await wait(12000);if(cancelled())return;
+  P.pipSay(doc,'bugito',t('¡Ahí va un popup a una pantalla del lineal!','Here goes a popup onto a shelf screen!'));
+  let thrown=false;const throwIt=()=>{if(thrown)return;thrown=true;const b=[...doc.querySelectorAll('.xdp')][0]?.getBoundingClientRect();
+   P.popupThrow(doc,{title:t('ERROR DEL PLAYER','PLAYER ERROR'),body:t('Actualización bloqueada · pulse Aceptar','Update blocked · press OK'),from:{x:(b?.left||40)+60,y:(b?.top||w.innerHeight-260)+40},to:{x:Math.round(w.innerWidth/2-100),y:Math.round(w.innerHeight/2-60)}});};
+  ctx.cmd('/crear incidencia');
+  const r=await race(run('/crear incidencia',{router:ctx.router,lang:ctx.lang,progress:m=>{if(/c[aá]mara|camera/i.test(m))setTimeout(throwIt,600);}}),cancelled);
+  throwIt();
+  if(!r?.ok||!r.id){say(r?.message||t('No se pudo abrir la incidencia de demo.','The demo incident could not be opened.'));return;}
+  if(PROTECTED.test(r.id))return;ctx.created.push(r.id);
+  await wait(1200);const cr=P.chipRect(doc,r.id);if(cr)P.popupMove(doc,{x:Math.round(cr.left+cr.width/2-100),y:Math.max(60,Math.round(cr.top-90))});
+  let where=(r.message.split(' · ')[1]||'').trim();
+  const chipEl=[...doc.querySelectorAll('.matrix-incident-chip')].find(c=>c.textContent.includes(r.id));const prio=((chipEl?.innerText||'').split('\n')[1]||'').split('·')[1]?.trim().toLowerCase()||'';if(/^\d+$/.test(where))where=t('pantalla ','screen ')+where;
+  scene(3);say(t('Pantalla en rojo: ','Screen in red: ')+r.id+(where?' · '+where:''));P.pipSay(doc,'bugito',t('¡Hecho! Pantalla rota. A ver si alguien se da cuenta…','Done! Screen broken. Let us see if anyone notices…'));await wait(12000);if(cancelled())return;
+  P.pipHide('bugito');await wait(1500);
+  scene(4);P.pipShow(doc,'admirito',t('Admirito vigilando el gemelo… ¡Detectado un popup en ','Admirito watching the twin… Popup detected on ')+(where||t('una pantalla','a screen'))+'!','br');say(t('Admirito, el asistente del gemelo, lo detecta.','Admirito, the twin assistant, detects it.'));await wait(11000);if(cancelled())return;
+  P.pipSay(doc,'admirito',t('Aviso al Supervisor: incidencia ','Alerting Supervisor: incident ')+r.id+t(' abierta',' open')+(prio?t(', prioridad ',', priority ')+prio:'')+'.');await wait(11000);if(cancelled())return;
+  scene(5);P.pipShow(doc,'supervisor',t('Supervisor: recibido. Abro la ficha en admira.app.','Supervisor: received. Opening the ticket in admira.app.'),'bl');say(t('El Supervisor recibe el aviso.','Supervisor receives the alert.'));await wait(8000);if(cancelled())return;
+  P.pipHide('admirito');P.pipSay(doc,'supervisor',t('Cierro el popup del player…','Closing the player popup…'));await wait(4000);P.popupClose(doc);await wait(6000);if(cancelled())return;
+  P.pipSay(doc,'supervisor',t('Documento la causa y cierro la incidencia.','Documenting the cause and closing the incident.'));say(t('Ficha de admira.app: documentar y cerrar.','admira.app ticket: document and close.'));
+  await closeCreated(ctx);
+  P.pipSay(doc,'supervisor',ctx.send?t('Informe enviado.','Report sent.'):t('Informe en vista previa (no se envía).','Report preview (not sent).'));await wait(10000);if(cancelled())return;
+  P.pipHide('supervisor');scene(6);say(t('La pantalla vuelve a la normalidad.','The screen is back to normal.'));await wait(10000);if(cancelled())return;
+  P.endCard(doc,t('Incidencia resuelta · ','Incident resolved · ')+r.id,t('Bugito rompe · Admirito detecta · Supervisor resuelve · Admira XP','Bugito breaks · Admirito detects · Supervisor fixes · Admira XP'));await wait(12000);
+ }finally{P.pipClear(doc);ctx.monoCleanup=null;try{const ed=doc.querySelector('.matrix-incident-editor');if(ed&&!ed.hidden)ed.querySelector('header button')?.click();}catch{}}}
+async function closeCreated(ctx){const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-6')).runIncidentDemo(text,o));
  while(ctx.created.length){const id=ctx.created.shift();if(PROTECTED.test(id))continue;ctx.cmd('/cerrar incidencia '+id);
   // Siempre se cierra la incidencia que abrió la demo: si el primer intento falla (red, ficha ocupada), se reintenta hasta 2 veces.
   let r=null;for(let k=0;k<3;k++){r=await run('/cerrar incidencia '+id,{router:ctx.router,lang:ctx.lang,send:ctx.send,progress:m=>ctx.sub(m)}).catch(e=>({ok:false,message:String(e?.message||e)}));if(r?.ok||/portal|técnico|technician/i.test(r?.message||''))break;await sleep(3000,()=>false);}
