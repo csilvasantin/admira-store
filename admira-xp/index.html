@@ -1259,6 +1259,8 @@ html.ui-limpia :is(body > #kioskOrders, body > #colaAtajos, body > .xp-panel-res
     var hidden = document.body.classList.toggle('xp-left-hidden');   // Experto = dock IZQUIERDO (Telegram+tiles+Condicional)
     exp.classList.toggle('is-active', !hidden);            // activo = dock izquierdo VISIBLE
     exp.setAttribute('aria-pressed', !hidden ? 'true' : 'false');
+    // Al abrir ⌘ Experto, la línea CLI queda lista para escribir (/demo incidencia…) sin clic extra.
+    if(!hidden) setTimeout(function(){ var ta=document.getElementById('telegramComposer'); if(ta){ try{ ta.focus({preventScroll:true}); }catch(e){ ta.focus(); } } }, 350);
     // El Xpacio NO crece ni encoge (los docks se superponen, principio de Carlos 3-oct-2026):
     // solo se recalcula el canvas para recolocar los docks superpuestos.
     if(typeof resizeCanvas === 'function') { try{ resizeCanvas(); }catch(e){} }
@@ -36329,6 +36331,11 @@ window.xtAPI = (function(){
   #telegramDock.compose-start .expert-workspace>.tg-actions{display:flex!important;align-content:flex-start;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;gap:5px;padding:6px 2px;min-width:0;min-height:0;margin:0;overflow:auto}
   #telegramDock.compose-start .expert-workspace #telegramLastResponse{display:block!important;min-width:0;min-height:0;max-height:none;margin:0;border:0;padding:6px;overflow:auto;align-self:stretch;overflow-wrap:anywhere}
   #telegramDock.compose-start #telegramLastResponse:empty::before{content:"LOCAL VIEW";color:#78f3ff;font:10px monospace;letter-spacing:.08em}
+  /* ⌘ Experto con la piel de la suite (Elon, 20-oct-2026): la piel mete .ax-engine-slot como PRIMER hijo de
+     .expert-workspace y convierte la rejilla en flex → la línea CLI (.tg-cli-row) quedaba a 0 px y el textarea
+     tapado por las opciones. La CLI recupera ancho propio (30%, mín. 240 px), redimensionable desde su esquina. */
+  #telegramDock.compose-start .expert-workspace.ax-body>.tg-cli-row{flex:0 0 var(--expert-cli-w,30%)!important;width:auto!important;min-width:240px!important;max-width:60%!important;resize:horizontal;overflow:auto!important}
+  #telegramDock.compose-start .tg-cli-row #telegramComposer{min-height:28px;resize:vertical}
   #telegramDock.compose-start .expert-divider{display:block;position:relative;cursor:col-resize;touch-action:none;min-height:0;outline-offset:-2px}
   .expert-divider::before{content:'';position:absolute;top:5px;bottom:5px;left:5px;width:2px;background:rgba(120,243,255,.3);border-radius:2px}
   .expert-divider:hover::before,.expert-divider:focus-visible::before,.expert-divider.is-dragging::before{background:#78f3ff}
