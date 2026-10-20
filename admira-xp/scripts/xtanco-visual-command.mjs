@@ -82,14 +82,14 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
     const tourActive=!!globalThis.XpaceDemoTour?.active?.(),arg=String(command.text||'').replace(/^\/demo\s*/,'');
     const live=tourActive?(['stop','status'].includes(command.guided)&&!command.native?command.guided:arg==='siguiente'?'next':['pausa','pause'].includes(arg)?'pause':['reanudar','resume','continuar','seguir'].includes(arg)?'resume':langToken(arg)?'language':null):null;
     if(command.guided==='tour'||live){
-      const {handleDemoTour}=await import('./demo-tour.mjs?v=capsula-3');
+      const {handleDemoTour}=await import('./demo-tour.mjs?v=demo-video-1');
       const action=command.guided==='tour'?command.action:live;
       const out=await handleDemoTour({...command,action,...(live==='language'?{lang:langToken(arg)}:{})},{lang,router});if(out)return out;
       if(command.guided==='tour'&&action==='next')return runStoreDemo('/demo siguiente',{lang}); // sin recorrido: el ensayo de la suite conserva «siguiente».
     }
     if(command.guided==='suite'){const f=splitFlags(arg);
-      if(!demoSolution(f.rest))try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=capsula-3');const d=findDemo(await loadDemoRegistry(),arg);
-        if(d&&d.kind!=='suite'){const out=await handleDemoTour({action:'run',id:d.id,send:f.send,...(f.lang?{lang:f.lang}:{})},{lang,router});if(out)return out;}
+      if(!demoSolution(f.rest))try{const {handleDemoTour,loadDemoRegistry,findDemo}=await import('./demo-tour.mjs?v=demo-video-1');const d=findDemo(await loadDemoRegistry(),arg);
+        if(d&&d.kind!=='suite'){const nl=f.lang||nameLang(f.rest);const out=await handleDemoTour({action:'run',id:d.id,send:f.send,...(nl?{lang:nl}:{})},{lang,router});if(out)return out;}
         // /demo 3 en · /demo musica es: la demo de la suite en ese idioma, sin pasar el idioma como texto al motor.
         if(d&&d.kind==='suite'&&f.lang)return runStoreDemo('/demo '+f.rest,{lang:f.lang});}catch{}
     }
@@ -218,3 +218,7 @@ export async function executeVisualCommand(input,{router,moving,lang='es'}={}){
     ? (en?'Good · 8-bit: fused back to the classic twin; HUD and Expert CLI remain in place.':'Good · 8-bit: fusión de vuelta al gemelo clásico; el HUD y el CLI experto permanecen en su sitio.')
     : (en?'Better · 16-bit: fused into the live isometric 3D twin; HUD and Expert CLI remain in place.':'Better · 16-bit: fusión al gemelo 3D isométrico en vivo; el HUD y el CLI experto permanecen en su sitio.')};
 }
+
+// El idioma de la demo lo marca el nombre de la orden (Carlos, 20-oct-2026): /demo incidencia → español,
+// /demo incident → inglés, por encima del ES/EN de la página mientras dura la demo.
+export function nameLang(name){const n=String(name||'').trim().toLowerCase();return n==='incident'?'en':n==='incidencia'?'es':null;}
