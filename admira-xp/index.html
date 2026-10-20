@@ -2945,6 +2945,11 @@ function setMasterMute(on){
 window.setMasterMute=setMasterMute;
 document.addEventListener('click',e=>{ if(e.target&&e.target.closest&&e.target.closest('#pfAudio')){ e.preventDefault(); setMasterMute(!dsMasterMute); } });
 window.addEventListener('load',()=>{ if(dsMasterMute){ try{ setMasterMute(true); }catch(e){} } });
+// Red de seguridad del silencio (Carlos, 20-oct-2026): con el audio silenciado, CUALQUIER audio/vídeo que arranque
+// después (hilo musical, aviso de cierre, canción del TPV, pantallas, locuciones con <audio>) arranca en mute.
+// Las pantallas siguen reproduciendo su vídeo; sólo se les quita el sonido.
+try{ const _play=HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play=function(...a){ try{ if(dsMasterMute&&!this.muted) this.muted=true; }catch(e){} return _play.apply(this,a); }; }catch(e){} // también <audio> sueltos (new Audio())
+document.addEventListener('volumechange',e=>{ const m=e.target; if(dsMasterMute&&m&&(m.tagName==='AUDIO'||m.tagName==='VIDEO')&&!m.muted){ m.muted=true; } },true);
 
 function dsUnpinSurface(surfaceId){
   const matrix=dsMatrixAdapter();if(dsMatrixOwnsScreens()&&matrix?.devices().some(s=>s.id===surfaceId)){void matrix.restoreScreen(surfaceId).catch(error=>showEv(error.message,'#ff8866'));return;}
