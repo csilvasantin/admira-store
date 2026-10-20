@@ -889,6 +889,7 @@
   <div class="spacer"></div>
   <div id="pfToggles" class="pf-toggles" role="group" aria-label="Modos: avanzado, experto">
     <button type="button" class="quad-icon" data-quad-toggle="right" aria-label="Desplegar menú avanzado" aria-expanded="false" title="Menú avanzado">▤</button>
+    <button type="button" class="quad-icon" id="pfAudio" aria-pressed="true" aria-label="Audio silenciado — pulsa para activar el sonido" title="Audio silenciado · pulsa para activar">🔇</button>
     <button type="button" class="quad-icon" id="pfExpert" aria-label="Modo experto — mostrar u ocultar el menú inferior" aria-pressed="false" title="Modo experto · mostrar/ocultar menú inferior">⌘</button>
   </div>
   <button class="btn-save" id="btnConnectScreen" title="Conectar una pantalla física (QR): el escaparate del gemelo se refleja en vivo" style="margin-right:8px" onclick="window.open('conectar.html?screen=escaparate','_blank','noopener')">📺 Pantalla</button>
@@ -907,7 +908,7 @@ html.ui-limpia :is(body > #kioskOrders, body > #colaAtajos, body > .xp-panel-res
 /* En demo (html.xp-demo-video, scripts/demo-tour.mjs) el chip de incidencia es parte del vídeo: se ve. */
 html.ui-limpia:not(.xp-demo-video) :is(.matrix-incident-chip, .matrix-incident-quickclose){display:none!important}
 /* Demo «como un vídeo»: además de lo que oculta la H, fuera docks y paneles ☰ ▤ ⌘ y el chip de versión. */
-html.xp-demo-video :is(#telegramDock, #characterDock, #dockSplitHandle, .quad-left, .quad-right, .xs-panel, .xs-expert, #admira-sello-chip){visibility:hidden!important;pointer-events:none!important}
+html.xp-demo-video :is(.matrix-incident-editor:not(.matrix-ficha), #telegramDock, #characterDock, #dockSplitHandle, .quad-left, .quad-right, .xs-panel, .xs-expert, #admira-sello-chip){visibility:hidden!important;pointer-events:none!important}
 </style>
 <style id="topbarCoreStyle">
   /* Park venue telemetry while Carlos defines the core UI and operational IoT.
@@ -2755,7 +2756,10 @@ try{ window.__xtancoSurfaceWeb=function(id){
 }; }catch(e){}
 // Master mute global: cuando esta activo, silencia bgMusic, dsVideoEl, todos los
 // m.video pineados y los iframes de AdmiraTube. Se controla con /audio mute.
-let dsMasterMute=false;
+// Audio SILENCIADO por defecto (Carlos, 20-oct-2026): música, vídeos de pantallas, locuciones/TTS y caras.
+// Se reactiva con el botón 🔇/🔊 de la barra de arriba, con «/audio unmute» o abriendo con ?audio=1.
+let dsMasterMute=!/[?&](audio|sonido)=(1|on)(&|$)/.test(location.search);
+try{ window.dsMasterMute=dsMasterMute; }catch(e){}
 // Audio por pantalla (toggle en la ficha "i"): por defecto TODAS las pantallas
 // silenciadas; solo suena el hilo musical del Xpacio (bgMusic) si está activo.
 // Desmutear es EXCLUSIVO: solo una pantalla suena a la vez (evita cacofonía).
@@ -2933,8 +2937,19 @@ function setMasterMute(on){
   }catch(e){}
   // Aviso a los módulos: Matrix (hilo, aviso de cierre, altavoces), megafonía y voz de Admirito.
   try{ window.dispatchEvent(new CustomEvent('xpace:master-mute',{detail:{muted:dsMasterMute}})); }catch(e){}
+  try{ const b=document.getElementById('pfAudio'); if(b){ const en=document.documentElement.lang==='en'; b.textContent=dsMasterMute?'🔇':'🔊'; b.setAttribute('aria-pressed',dsMasterMute?'true':'false');
+    b.title=dsMasterMute?(en?'Audio muted · click to unmute':'Audio silenciado · pulsa para activar'):(en?'Audio on · click to mute':'Audio activado · pulsa para silenciar'); b.setAttribute('aria-label',b.title); } }catch(e){}
   return dsMasterMute;
 }
+// Botón 🔇/🔊 y aplicación del silencio por defecto en cuanto la página ha montado sus audios.
+window.setMasterMute=setMasterMute;
+document.addEventListener('click',e=>{ if(e.target&&e.target.closest&&e.target.closest('#pfAudio')){ e.preventDefault(); setMasterMute(!dsMasterMute); } });
+window.addEventListener('load',()=>{ if(dsMasterMute){ try{ setMasterMute(true); }catch(e){} } });
+// Red de seguridad del silencio (Carlos, 20-oct-2026): con el audio silenciado, CUALQUIER audio/vídeo que arranque
+// después (hilo musical, aviso de cierre, canción del TPV, pantallas, locuciones con <audio>) arranca en mute.
+// Las pantallas siguen reproduciendo su vídeo; sólo se les quita el sonido.
+try{ const _play=HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play=function(...a){ try{ if(dsMasterMute&&!this.muted) this.muted=true; }catch(e){} return _play.apply(this,a); }; }catch(e){} // también <audio> sueltos (new Audio())
+document.addEventListener('volumechange',e=>{ const m=e.target; if(dsMasterMute&&m&&(m.tagName==='AUDIO'||m.tagName==='VIDEO')&&!m.muted){ m.muted=true; } },true);
 
 function dsUnpinSurface(surfaceId){
   const matrix=dsMatrixAdapter();if(dsMatrixOwnsScreens()&&matrix?.devices().some(s=>s.id===surfaceId)){void matrix.restoreScreen(surfaceId).catch(error=>showEv(error.message,'#ff8866'));return;}
@@ -32138,7 +32153,7 @@ window.xtAPI = (function(){
     if(!/^(?:good|better|best|matrix)$|^\/(?:convertir|convert|ifthendothat|componer|demo|sincro|sync|sincrototal|synctotal|navidad|christmas|layout|layoiut)(?:@\w+)?(?:\s|$)|^\/mudanza(?:@\w+)?$|^\/(?:aviso|announcement|emision|emisión|enemision|onair)(?:@\w+)?(?:\s|$)|^\/?(?:modo|mode)(?:@\w+)?(?:\s|$)/i.test(text))return null;
     const language=typeof lang==='undefined'?'es':lang;
     try{
-      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=demo-video-1');
+      const {executeVisualCommand}=await import('./scripts/xtanco-visual-command.mjs?v=mono-2');
       return await executeVisualCommand(text,{router:window.__xtancoVisualTiers,moving:window.__xtancoMudanza,lang:language});
     }catch(error){
       return {ok:false,local:true,message:language==='en'?'The local visual command could not load. Please retry.':'No se pudo cargar el comando visual local. Reintenta.'};
@@ -32165,7 +32180,7 @@ window.xtAPI = (function(){
       // /crear incidencia · /cerrar incidencia [INC-…] (/create incident · /close incident): demo guiada en Matrix ·
       // Starbucks con ticket real en Yokup, ficha de admira.app e informe PDF a Carlos (scripts/incident-demo.mjs).
       if(['crear','create','cerrar','close'].includes(cmd)&&/^(incidencia|incident)(\s|$)/i.test(arg)){
-        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-5');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:/^\/(create|close)\b/i.test(text)?'en':/^\/(crear|cerrar)\b/i.test(text)?'es':(typeof lang==='undefined'?'es':lang),progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
+        try{const {runIncidentDemo}=await import('./scripts/incident-demo.mjs?v=cli-incidencia-6');const r=await runIncidentDemo(text,{router:window.__xtancoVisualTiers,lang:/^\/(create|close)\b/i.test(text)?'en':/^\/(crear|cerrar)\b/i.test(text)?'es':(typeof lang==='undefined'?'es':lang),progress:m=>{try{showLastResponse(m,'ok','local-visual');}catch(_){}}});if(r)return r.message;}
         catch(e){return (typeof lang!=='undefined'&&lang==='en'?'Incident demo error: ':'Error en la demo de incidencias: ')+(e&&e.message||e);}
       }
       // /marca <id|off|web> (FLT-101337). Aquí llega de Telegram, el MCP o /twin/cmd: no hay
