@@ -190,6 +190,15 @@ async function closeCreated(ctx){const run=ctx.incident||(async(text,o)=>(await 
   let r=null;for(let k=0;k<3;k++){r=await run('/cerrar incidencia '+id,{router:ctx.router,lang:ctx.lang,send:ctx.send,progress:m=>ctx.sub(m)}).catch(e=>({ok:false,message:String(e?.message||e)}));if(r?.ok||/portal|técnico|technician/i.test(r?.message||''))break;await sleep(3000,()=>false);}
   ctx.results.push(r?.message||'');if(r?.message)ctx.sub(r.message.split('\n').slice(-1)[0]);}}
 
+// Demo «como un vídeo» (Carlos, 20-oct-2026): mientras corre cualquier /demo (una, /demo all o autostart) la
+// interfaz queda limpia como con la H (XpaceInterfaz · html.ui-limpia) y además se pliegan los docks y paneles
+// (html.xp-demo-video, CSS en index.html). El chip de incidencia, la pantalla en rojo, la tarjeta del ticket y la
+// tarjeta de la demo siguen a la vista. Al acabar o con Esc/stop se deja la interfaz como estaba.
+export function demoVideoUi(doc,on,prev){const html=doc?.documentElement,X=globalThis.XpaceInterfaz;if(!html)return null;
+ if(on){const p={oculta:X?!!X.oculta:html.classList.contains('ui-limpia')};html.classList.add('xp-demo-video');try{X?X.ocultar():html.classList.add('ui-limpia');}catch{}return p;}
+ html.classList.remove('xp-demo-video');if(prev&&!prev.oculta){try{X?X.mostrar():html.classList.remove('ui-limpia');}catch{}}
+ try{globalThis.dispatchEvent?.(new Event('resize'));}catch{}return null;}
+
 export async function runTour({ids=null,send=false,lang='es',router=globalThis.__xtancoVisualTiers,exec=globalThis.__xtExec,suite=runStoreDemo,incident=null,doc=globalThis.document,show=globalThis.XpaceShowResponse,reg=null}={}){
  if(S.active)return {ok:false,busy:true};reg=reg||await loadDemoRegistry();
  const list=ids?ids.map(i=>findDemo(reg,String(i))).filter(Boolean):reg.demos.filter(d=>d.tour);if(!list.length)return {ok:false};
@@ -200,7 +209,7 @@ export async function runTour({ids=null,send=false,lang='es',router=globalThis._
   sub:(s,lock)=>{const v=String(s||'');if(lock){const el=S.card?.querySelector?.('.s');if(el)el.textContent=v;ctx.subLocked=true;return;}const el=S.card?.querySelector?.('.c');if(el)el.textContent=(ctx.lastCmd?'› '+ctx.lastCmd+' · ':'')+v;},
   cmd:c=>{ctx.lastCmd=c;const el=S.card?.querySelector?.('.c');if(el)el.textContent='› '+c;}};
  const t=(es,e)=>ctx.en?e:es;S.ctx=ctx;
- const snap=snapshot(ctx);applyPageLang(doc,lang); // /demo all es|en: la página, la CLI y los contenidos hablan el idioma del recorrido
+ const snap=snapshot(ctx);applyPageLang(doc,lang);const uiPrev=demoVideoUi(doc,true); // /demo all es|en: la página, la CLI y los contenidos hablan el idioma del recorrido
  S.onKey=e=>{if(e.key==='Escape'&&S.active){stopTour();}};try{doc?.defaultView?.addEventListener?.('keydown',S.onKey,true);}catch{}
  const shown=[];let resolveDone;S.done=new Promise(r=>resolveDone=r);
  try{for(let i=0;i<list.length&&!S.stop;i++){const d=list[i];S.index=i+1;S.demo=d;const epoch=++S.epoch,cancelled=skipSignal(epoch);
@@ -216,6 +225,7 @@ export async function runTour({ids=null,send=false,lang='es',router=globalThis._
    if(ctx.created.length)await closeCreated(ctx); // una incidencia de demo nunca se queda abierta al saltar.
    shown.push({id:d.id,skipped});}
  }finally{
+  demoVideoUi(doc,false,uiPrev);
   const errors=await restore(ctx,snap);try{doc?.defaultView?.removeEventListener?.('keydown',S.onKey,true);}catch{}unpaint();
   const stopped=S.stop;S.active=false;S.stop=false;S.paused=false;S.demo=null;S.index=0;S.ctx=null;
   // El cierre se escribe ya en el idioma restaurado (no en el del recorrido): «■ Recorrido detenido · 7/16 · gemelo restaurado».
