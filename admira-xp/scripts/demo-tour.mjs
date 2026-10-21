@@ -182,7 +182,7 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
   if(c)ctx.sub((ctx.en?'Did you know…? · ':'¿Sabías que…? · ')+c.id+' · GOOD · Nemotron 3 Ultra · 0 €');return;}}
 
 // /demo conversación (21-oct-2026): hilo de admira.live a la izquierda y chat de GrokBot a la derecha, guion real Elon↔Jobs. Sin red ni claves.
-async function conversationStep(ctx,cancelled){const doc=ctx.doc,P=await import(PIP_MOD),C=await import('./demo-conversacion.mjs?v=conv-1');
+async function conversationStep(ctx,cancelled){const doc=ctx.doc,P=await import(PIP_MOD),C=await import('./demo-conversacion.mjs?v=conv-2');
  await C.runConversation({doc,say:m=>ctx.sub(m,true),scene:(n,t)=>{ctx.stepTotal=t;ctx.stepDone=n-1;paintTexts();ring((n-1)/t);},wait:ms=>sleep(ms,cancelled,bar),cancelled,endCard:(a,b)=>P.endCard(doc,a,b)});
  P.pipClear(doc);}
 async function incidentStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es;const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-6')).runIncidentDemo(text,o));
