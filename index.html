@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.21.10.2026.r1.21:08"/>
+  <meta name="admiranext-version" content="v.21.10.2026.r2.21:14"/>
   <!-- Espejo de www.xpaceos.com (b8caec7), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
@@ -75,6 +75,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   .brand-logo{display:inline-flex;align-items:center;width:150px;min-height:34px;text-decoration:none}
   .brand-logo:hover{text-decoration:none;filter:brightness(1.08)}
   .brand-logo img{display:block;width:100%;height:auto}
+  .store-wordmark{font:600 19px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#e8f1ff;white-space:nowrap}.store-wordmark b{color:#5b9bff;font-weight:600}footer .footer-logo .store-wordmark{font-size:15px}
   .store-wordmark{font:600 19px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#e8f1ff;white-space:nowrap}.store-wordmark b{color:#5b9bff;font-weight:600}footer .footer-logo .store-wordmark{font-size:15px}
   .store-wordmark{font:600 19px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#e8f1ff;white-space:nowrap}.store-wordmark b{color:#5b9bff;font-weight:600}footer .footer-logo .store-wordmark{font-size:15px}
   .store-wordmark{font:600 19px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#e8f1ff;white-space:nowrap}.store-wordmark b{color:#5b9bff;font-weight:600}footer .footer-logo .store-wordmark{font-size:15px}
@@ -890,6 +891,7 @@ const I18N = {
     'demoGate.error': 'access denied',
     'hero.badge': '● IN PRODUCTION · LENOVO EDGE + NVIDIA GPU',
     'hero.pulse': '● IN PRODUCTION · {n} TWINS · {s} SURFACES · {l} LIVE',
+    'hero.pulseIdle': '● IN PRODUCTION · {n} TWINS · {s} SURFACES',
     'hero.title': 'Save money<br>by supervising the <span class="grad">space\'s IoT</span>.',
     'hero.lede': 'XpaceOS supervises and maintains the screens, the background music, the scents and the wifi. One place to see that the space stays on and in order.',
     'hero.tryCta': 'Supervise a space →',
@@ -1076,6 +1078,7 @@ const I18N = {
     'hero.lede': 'XpaceOS vigila y mantiene las pantallas, el hilo musical, los aromas y el wifi. Un solo sitio para ver que el espacio sigue encendido y en orden.',
     'hero.badge': '● EN PRODUCCIÓN · LENOVO EDGE + NVIDIA GPU',
     'hero.pulse': '● EN PRODUCCIÓN · {n} GEMELOS · {s} SUPERFICIES · {l} EN VIVO',
+    'hero.pulseIdle': '● EN PRODUCCIÓN · {n} GEMELOS · {s} SUPERFICIES',
     'hero.tryCta': 'Supervisar un espacio →',
     'hero.demoCta': 'Hablar del mantenimiento',
     'prueba.title': 'Prueba el gemelo — elige cualquiera de los <span id="pr-total">8.775</span> espacios reales',
@@ -1668,7 +1671,7 @@ function renderPulses() {
     pulseSet('pulse-app', live ? fmt('pulse.app', { '{s}': nf(surf), '{l}': nf(live) }) : fmt('pulse.appIdle', { '{s}': nf(surf) }));
     // Badge del hero: la portada abre con la producción real, no con una feria pasada (misión 1175 · DEC-mto70hmjfc95)
     const hp = document.getElementById('hero-pulse');
-    if (hp && gemelosData.length) hp.textContent = fmt('hero.pulse', { '{n}': nf(gemelosData.length), '{s}': nf(surf), '{l}': nf(live) });
+    if (hp && gemelosData.length) hp.textContent = live ? fmt('hero.pulse', { '{n}': nf(gemelosData.length), '{s}': nf(surf), '{l}': nf(live) }) : fmt('hero.pulseIdle', { '{n}': nf(gemelosData.length), '{s}': nf(surf) });
   } else if (gemelosData === 'error') {
     pulseSet('pulse-live', d['pulse.off'], true);
     pulseSet('pulse-app', d['pulse.off'], true);
