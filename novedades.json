@@ -1,5 +1,166 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.18.10.2026.r6.14:24": [
+    "Taller 3D: colocacion.py comprueba dónde va cada pieza en el plano del local y su alta ITIL antes de construir, e imprime la línea del gemelo y el CI para Yokup.",
+    "La receta de las cestas 53–55 lleva ya su sitio y su código ITIL, iguales al gemelo y a Yokup."
+  ],
+  "v.18.10.2026.r5.14:03": [
+    "Taller 3D: acepta las recetas de la orden «detallar» del Arquitecto (admira.biz), con los recortes de objetos dentro de la receta.",
+    "Taller 3D: nueva textura bolsa_foto, la bolsa almohada desde un recorte de foto. El taller se niega a construir una pieza sin número de catálogo."
+  ],
+  "v.18.10.2026.r4.13:44": [
+    "Starbucks Paseo de Gràcia: las tres cestas ya están dadas de alta en Yokup (PDG103-CES-01, -02 y -03) y salen como unidades del inventario, con su ficha ITIL y 3D."
+  ],
+  "v.18.10.2026.r3.13:01": [
+    "Taller 3D: las fotos de una visita se convierten en piezas del catálogo desde una receta (primera fase del Arquitecto automático). El botellero Solán de Cabras del Starbucks de Paseo de Gràcia, rehecho con la cesta trenzada de la foto y el cartel AIGUA MINERAL."
+  ],
+  "v.18.10.2026.r1.12:31": [
+    "Starbucks Paseo de Gràcia: las tres cestas trenzadas de las fotos de Carlos en el gemelo — vasos reutilizables con el cartel BE GREEN y snacks junto al pilar, café 1971 Dark Roast frente a la estantería (catálogo 53, 54 y 55; Best carga el modelo, Good y Better un boceto)."
+  ],
+  "v.17.10.2026.r6.22:55": [
+    "Portada: una música por idioma en la intro (castellano «Tic-tac y campanas», inglés «Pulso»); si el idioma cambia con la intro en marcha, cambia también la música en el mismo segundo."
+  ],
+  "v.17.10.2026.r5.22:06": [
+    "Portada: la intro sale una vez por sesión y por idioma. Al pasar a castellano (o a inglés) sale en ese idioma si aún no se ha visto en él; con la intro en marcha, el vídeo cambia de idioma sin perder el segundo."
+  ],
+  "v.17.10.2026.r4.20:31": [
+    "Portada: la música de la intro va en .mp4 para servirse por rangos y entrar sincronizada con el vídeo al pulsar «Activar sonido» (Cloudflare no sirve .m4a por rangos)."
+  ],
+  "v.17.10.2026.r3.20:25": [
+    "Portada: la intro solo sale con el look por defecto; con una marca blanca activa (?marca=, proyecto, local Starbucks o marca recordada) no sale, para no meter XpaceOS en la demo de un cliente. ?marca=admira es el modo por defecto. Igual en admira.store."
+  ],
+  "v.17.10.2026.r2.19:52": [
+    "Portada: la intro «Todo en orden» ya sale también en inglés («All in order»), en el idioma de la portada.",
+    "Portada: la intro lleva música original y alterna dos bandas sonoras, «Tic-tac y campanas» y «Pulso». Intenta sonar y, si el navegador no deja, queda el botón «Activar sonido». ?musica=campanas|pulso la fija y ?musica=0 la quita."
+  ],
+  "v.17.10.2026.r1.18:01": [
+    "Portada: intro en vídeo «Todo en orden» (15 s, sin sonido) a pantalla completa al entrar; una vez por sesión, se salta con «Saltar intro» o Esc; no sale en inglés ni con «reducir movimiento»; ?intro=1 la fuerza."
+  ],
+  "v.16.10.2026.r13.16:17": [],
+  "v.16.10.2026.r12.15:53": [
+    "Diagonal 634 con su puerta de Google Maps: al elegirlo, su calle en Street View y la fachada lleva a su gemelo"
+  ],
+  "v.16.10.2026.r11.15:09": [
+    "Visor de centros: el quiosco y el iPad también se mueven y cambian de tamaño, sin perder su forma"
+  ],
+  "v.16.10.2026.r10.14:48": [
+    "Mando del hilo musical y cesta movibles; /demo ifthendothat con dos botellas, una con cada voz"
+  ],
+  "v.16.10.2026.r9.14:25": [
+    "«Gracias por comprar agua de proximidad» en dos voces que se turnan: Good (Mónica, gratuita) y ElevenLabs (Sara Martín)"
+  ],
+  "v.16.10.2026.r8.14:17": [
+    "Diagonal 634: la caja con la cesta y el IF·THEN·DO THAT; el muffin y el agua de la vitrina se arrastran a la caja"
+  ],
+  "v.16.10.2026.r7.14:02": [
+    "Diagonal 634: mando del hilo musical con foco ◎, iPad horizontal encima de la vitrina, música en el TPV de la cola y configuración del quiosco"
+  ],
+  "v.15.10.2026.r15.23:58": [
+    "Matrix de Diagonal: las pantallas de la foto 360 emiten y las ventanas se mueven, se redimensionan y se cierran (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r14.23:34": [
+    "La fachada pulsable de la puerta brilla más (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r13.23:03": [
+    "La ficha de la puerta por encima del sello de versión (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r12.23:00": [
+    "La puerta de Google Maps: ficha legible con la marca Starbucks (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r11.22:55": [
+    "La puerta de Google Maps de Starbucks Passeig de Gràcia 103 antes del gemelo (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r10.22:33": [
+    "Centros Starbucks: Matrix es la foto 360 real y los tres combos de la barra en las páginas de los locales (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r9.22:15": [
+    "Gemelo: tres combos en la barra (Xpacio, Local y Calidad) y Matrix se conserva al cambiar a Diagonal 634 (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r8.21:43": [
+    "«alsea» es Starbucks: ?marca=alsea, ?project=alsea y /marca alsea aplican Starbucks (gemelo de admira.store)."
+  ],
+  "v.15.10.2026.r7.20:41": [
+    "Con la marca de un cliente la portada es estricta: el catálogo sólo enseña sus espacios (con Starbucks, 110 Starbucks; ni Xtanco ni genéricos) y el gemelo de referencia y los enlaces abren Starbucks Paseo de Gràcia. Los enlaces del menú no cambian."
+  ],
+  "v.15.10.2026.r6.20:37": [
+    "Portada: la pastilla ENG/ESP mide lo mismo que ☰ y ▤. Con ?marca=starbucks la portada ya filtra en la primera visita."
+  ],
+  "v.15.10.2026.r5.20:32": [
+    "Portada sin modo Experto: en el sitio de ⌘, la pastilla de idioma del mismo tamaño — ENG pasa a inglés y ESP vuelve al castellano. El recorrido de demo nativo (?ax_demo=store) conserva su motor.",
+    "Con la marca de un cliente puesta a mano la portada y las listas de Xpacios sólo enseñan lo suyo; con Starbucks, el gemelo de referencia abre Starbucks Paseo de Gràcia. Como Admira, todo."
+  ],
+  "v.15.10.2026.r4.20:08": [
+    "Proyecto y local con la marca de un cliente: el desplegable de locales ofrece los de esa marca aunque la escena abierta sea de otro proyecto (p. ej. un Xtanco con la marca Starbucks), y elegir uno abre ese local."
+  ],
+  "v.15.10.2026.r3.20:04": [
+    "Proyecto y local: con la marca de un cliente puesta a mano (?marca=starbucks, ?marca=altadis o /marca) sólo se ofrecen sus proyectos: Starbucks → Starbucks; Altadis → Altadis y Estancos.",
+    "Como Admira, sin marca o con la marca que pone el propio proyecto al elegirlo se ofrecen todos; /marca off los vuelve a mostrar."
+  ],
+  "v.15.10.2026.r2.19:51": [
+    "Starbucks · centros: al elegir local en «Proyecto y local» del gemelo Matrix se abre ese centro: Paseo de Gràcia 103, Diagonal 634 o Gran de Gràcia 51 (laboratorio).",
+    "Desde Paseo de Gràcia 103, enlace al gemelo Matrix completo; al cambiar de centro la dirección deja de arrastrar el local de origen."
+  ],
+  "v.15.10.2026.r1.19:30": [
+    "Nuevo /xpacios/starbucks-centros/: Paseo de Gràcia 103 y Diagonal 634 en 3D y en Matrix, con sus playlists sonando de verdad y sincronizadas en las seis pantallas 2 + 1 + 3.",
+    "Paseo de Gràcia 103 con la campaña «Cada café tiene una historia» (mural de 24 s + pieza común de 8 s) o la playlist sincroIA leída en vivo del MCP; Diagonal 634 con su propia adaptación de contenido de marca.",
+    "Controles de reproducción, pausa, reinicio y siguiente pieza; ficha de cada pantalla con su playlist. Gran de Gràcia 51 abre su gemelo; la vinculación física de cada pantalla sigue pendiente."
+  ],
+  "v.14.10.2026.r2.18:50": [
+    "Laboratorio: la mesa larga llega al final de la pared y se junta en L con la otra, y la nevera mira a la sala con la espalda en los paneles 3D, como en las fotos."
+  ],
+  "v.14.10.2026.r1.17:36": [
+    "Gemelos 3D desde el plano también en xpaceos.com: el laboratorio Gran de Gràcia (/xpacios/gran-de-gracia-51/) y Starbucks Paseo de Gracia (/xpacios/starbucks-paseo-de-gracia/).",
+    "Starbucks: barra, caja, vitrina, tazas y el mural doble H como un solo lienzo; el titular «Tu café sigue contigo.» cruza las seis pantallas a la vez.",
+    "⌘ Experto: /redistribucion abre en admira.biz el plano y obras del Xpacio."
+  ],
+  "v.12.10.2026.r1.13:02": [
+    "El gemelo ya no pide «acceder a otros dispositivos de tu red local» al cargar: el aviso de sesión a Telegram dejó de caer al Mac Mini por Tailscale (100.x, que Chrome trata como red local).",
+    "El resumen de sesión al cerrar tampoco usa ya ese respaldo: sólo el bridge público."
+  ],
+  "v.09.10.2026.r4.22:52": [
+    "/demo pantallas y /demo screens llegan al antes | después también en xpaceos.com, donde el Experto común de AdmiraNeXT reclamaba los /demo desconocidos.",
+    "Pantallas virtuales por 4 esquinas: Foto real en SneakerStore, /calibrar · /calibrate y antes | después."
+  ],
+  "v.09.10.2026.r3.22:45": [
+    "/demo pantallas y /demo screens ya funcionan desde el CLI Experto de cualquier página (antes los capturaba el catálogo común de demos).",
+    "Pantallas virtuales por 4 esquinas: Foto real en SneakerStore, /calibrar · /calibrate y antes | después (sello r2)."
+  ],
+  "v.09.10.2026.r2.22:30": [
+    "Pantallas virtuales por 4 esquinas: en SneakerStore, Foto real pinta las 3 TVs de la tienda con la playlist en perspectiva real (matrix3d), sin desbordar el marco.",
+    "/calibrar (/calibrate en inglés) abre el calibrador del Xpacio; Guardar recoloca las pantallas del gemelo al momento.",
+    "/demo pantallas enseña el antes (rectángulo rotado) y el después (4 esquinas) con un barrido sobre la TV grande."
+  ],
+  "v.09.10.2026.r1.05:34": [
+    "Neo prepara sus clips: muffin 3D hiperrealista (web 0,9 MB y HD para Unreal) en el inventario del TPV Starbucks.",
+    "Nuevo IF «Cojo una taza»: la taza verde de la estantería se coge y va a la caja; /demo coger taza hace el gesto y /demo taza sigue abriendo la cámara.",
+    "La regla del agua admite imagen y vídeo de Pixeria en cada botella, con el vídeo sin audio bajo la locución."
+  ],
+  "v.12.10.2026.r2.16:19": [
+    "Demos Android: /demo android, /demo android Fold8 y /demo android watch con el proyecto seleccionado.",
+    "Help web/CLI y MCP documentan versiones, pruebas y tutorial de los cinco pilares.",
+    "Watch demo silencioso y aislado; Fold8 es perfil compatible, sin Samsung One UI."
+  ],
+  "v.13.10.2026.r1.18:22": [
+    "Matrix · Starbucks: cada pantalla arroja sobre la sala la luz de su contenido, en directo.",
+    "Fundido entre piezas y ficha «En emisión» al pasar el ratón: pieza, playlist, posición y siguiente.",
+    "Doble clic acerca la cámara a una pantalla; /emision y /emision luz en el CLI Experto."
+  ],
+  "v.13.10.2026.r2.19:27": [
+    "Starbucks · Good, Better y Best: la pared, el TPV y el iPad reproducen las mismas playlists que Matrix.",
+    "Siguen el estado vivo de MCP, las asignaciones y el reparto /sincro; /emision escena on|off lo apaga.",
+    "Corregido: el TPV se quedaba en pausa en Matrix al recibir su playlist por MCP mientras cargaba."
+  ],
+  "v.13.10.2026.r3.22:09": [
+    "Estanco · Best Hiperreal: cada pantalla de la sala es un player virtual (tótem, pared, LED, portátil, lotería, turnos y tablet).",
+    "Emiten lo que Good tiene fijado, el contenido del Stock con su etiqueta XT-GRACIA-… o la parrilla de la casa; fichas «En emisión».",
+    "Los muebles se levantan: arrastrar, girar con R y soltar; huella verde o roja, imán al hueco libre y Ctrl/⌘+Z.",
+    "Los 43 muebles renderizados de nuevo en Blender, con sombra de suelo; el quiosco del tótem se ve en perspectiva."
+  ],
+  "v.14.10.2026.r3.20:06": [
+    "Experto abre al mínimo y se redimensiona con el tirador compartido.",
+    "/bugito flota en la página; full o avanzado abre el laboratorio.",
+    "Las URLs antiguas de Experto cargan el motor común, sin duplicar comandos."
+  ],
   "v.21.10.2026.r2.21:14": [
     "Portada: si una marca no tiene superficies en vivo, la cabecera no dice «0 en vivo»: sólo gemelos y superficies."
   ],
