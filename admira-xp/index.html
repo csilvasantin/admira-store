@@ -33992,7 +33992,16 @@ window.xtAPI = (function(){
   // ha recibido un gesto, espera al primer toque (el navegador bloquearía la canción). Ver docs/demo-tpv.md.
   (function demoFromUrl(){
     let want='';try{want=String(new URLSearchParams(location.search).get('demo')||'').toLowerCase();}catch{}
-    if(want!=='tpv')return;
+    // ?demo=<id|n> (Carlos, 21-oct-2026): cualquier demo del registro (demos.json), p. ej. ?demo=conversacion o
+    // ?demo=incidencia, se lanza igual que /demo <id> en ⌘ Experto. Arrancan en silencio, sin esperar gesto.
+    want=want.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(!want||!/^[a-z0-9-]{1,32}$/.test(want))return;
+    if(want!=='tpv'){
+      try{const u=new URL(location.href);u.searchParams.delete('demo');history.replaceState(history.state,'',u.href);}catch{}
+      (async()=>{for(let i=0;i<60&&!window.__xtancoVisualTiers;i++)await new Promise(r=>setTimeout(r,500));
+        await new Promise(r=>setTimeout(r,3000));
+        const v=await executeLocalVisualCommand('/demo '+want+(want==='conversacion'?' es':''));if(v)showLastResponse(v.message,v.ok?'ok':'err','local-visual');})();
+      return;}
     try{const u=new URL(location.href);u.searchParams.delete('demo');history.replaceState(history.state,'',u.href);}catch{}
     const en=()=>typeof lang!=='undefined'&&lang==='en';
     const ready=()=>!!(window.__xtancoVisualTiers&&window.XpacePOSExperience?.demo);

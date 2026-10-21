@@ -14,7 +14,7 @@ export const SCRIPT=[
  {id:'cmmvhpe991mwo56d',from:'Elon',to:'Jobs',at:'08:00',text:'Te paso el enlace en este mismo hilo cuando el vídeo esté subido.'},
  {id:'cmmvhpenlmqfeipu',from:'Jobs',to:'Elon',at:'08:01',text:'Quedo atento al enlace en este hilo; no hace falta que contestes a esto.'}];
 const C={Elon:'#3498db',Jobs:'#ffdd66'};
-const CSS=`.xdc{position:fixed;inset:0;z-index:2147482980;display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:70px 48px 48px;background:rgba(5,6,14,.0);opacity:0;transition:opacity .8s ease,background .8s ease;pointer-events:none}
+const CSS=`.xdc{position:fixed;inset:0;z-index:2147482980;display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:286px 48px 36px;background:rgba(5,6,14,.0);opacity:0;transition:opacity .8s ease,background .8s ease;pointer-events:none}
 .xdc.on{opacity:1;background:rgba(5,6,14,.86)}
 .xdc .p{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .xdc .h{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font:700 14px/1.2 system-ui,sans-serif}
@@ -30,7 +30,7 @@ const CSS=`.xdc{position:fixed;inset:0;z-index:2147482980;display:grid;grid-temp
 .xdc .gb .m i{display:block;font-style:normal;font-size:11px;opacity:.7;margin-bottom:3px}
 .xdc .m{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}.xdc .m.on{opacity:1;transform:none}
 .xdc .ty{font:13px system-ui,sans-serif;color:#9aa0b4;min-height:18px;padding:0 16px 12px}
-.xdc .tag{position:absolute;top:22px;left:0;right:0;text-align:center;color:#eaffff;font:700 20px/1.2 system-ui,sans-serif}`;
+.xdc .tag{position:absolute;top:244px;left:0;right:0;text-align:center;color:#eaffff;font:700 20px/1.2 system-ui,sans-serif}`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 export function mount(doc){if(!doc.getElementById('xdcStyle')){const s=doc.createElement('style');s.id='xdcStyle';s.textContent=CSS;doc.head.append(s);}
  let el=doc.getElementById('xdc');if(el)return el;el=doc.createElement('div');el.id='xdc';el.className='xdc';
