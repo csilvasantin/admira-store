@@ -41,6 +41,7 @@ test('sello-y-verja.py marca el espejo: título, cabecera, pie, tarjeta «estás
  assert.match(html,/<h3>admira\.store<\/h3>\s*<div class="who dom"><span class="lbl" data-i18n="platform\.brand">marca<\/span> · <a href="https:\/\/www\.admira\.store\/">admira\.store<\/a>/,'tarjeta «estás aquí»');
  assert.match(html,/→ admira\.store<\/a>/);
  assert.doesNotMatch(html,/xpaceos-logo-transparent\.webp" alt="XpaceOS"/,'ni el logo de XpaceOS en cabecera ni en pie');
+ assert.doesNotMatch(html,/rel="preload" as="image" href="\/assets\/xpaceos-logo-transparent\.webp"/,'sin preload del logo que el espejo no usa (aviso de consola)');
  assert.doesNotMatch(html,/xpace-shell\.js\?v=[A-Za-z0-9._-]+-store"/,'el sello de caché del shell no cambia: Pages sirve los assets con must-revalidate');
  assert.match(shell,/<span class="xs-brand-name">admira\.store<\/span>/);
  assert.match(shell,/version: release \? 'admira\.store ' \+ release : 'admira\.store'/);
