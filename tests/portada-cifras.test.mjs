@@ -8,7 +8,9 @@ const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 test('la cabecera distingue superficies totales y en vivo, en los dos idiomas', () => {
   assert.match(html, /'hero\.pulse': '● EN PRODUCCIÓN · \{n\} GEMELOS · \{s\} SUPERFICIES · \{l\} EN VIVO'/);
   assert.match(html, /'hero\.pulse': '● IN PRODUCTION · \{n\} TWINS · \{s\} SURFACES · \{l\} LIVE'/);
-  assert.match(html, /hp\.textContent = fmt\('hero\.pulse', \{ '\{n\}': nf\(gemelosData\.length\), '\{s\}': nf\(surf\), '\{l\}': nf\(live\) \}\)/);
+  assert.match(html, /hp\.textContent = live \? fmt\('hero\.pulse', \{ '\{n\}': nf\(gemelosData\.length\), '\{s\}': nf\(surf\), '\{l\}': nf\(live\) \}\) : fmt\('hero\.pulseIdle', \{ '\{n\}': nf\(gemelosData\.length\), '\{s\}': nf\(surf\) \}\)/, 'sin vivas, la cabecera no dice «0 en vivo»');
+  assert.match(html, /'hero\.pulseIdle': '● EN PRODUCCIÓN · \{n\} GEMELOS · \{s\} SUPERFICIES'/);
+  assert.match(html, /'hero\.pulseIdle': '● IN PRODUCTION · \{n\} TWINS · \{s\} SURFACES'/);
 });
 
 test('la tarjeta admira.app dice el inventario total y las vivas; sin vivas, lo dice con palabras y no con un 0', () => {
