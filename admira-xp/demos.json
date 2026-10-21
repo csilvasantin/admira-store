@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "title": "Demos del gemelo XpaceOS · Starbucks / XpaceOS twin demos",
- "updated_at": "2026-10-10",
+ "updated_at": "2026-10-21",
  "source": "https://www.admira.store/admira-xp/demos.json",
  "mirror": "https://www.xpaceos.com/admira-xp/demos.json",
  "commands": {
@@ -24,7 +24,7 @@
   },
   "title_card_s": 2,
   "count": 17,
-  "total_s": 351,
+  "total_s": 476,
   "restores": [
    "vista (good/better/best/matrix)",
    "cámara",
@@ -1126,6 +1126,43 @@
    "cleanup": [
     {
      "capsula": "close"
+    }
+   ]
+  },
+  {
+   "n": 25,
+   "id": "conversacion",
+   "icon": "branch",
+   "aliases": [
+    "conversación",
+    "consejo",
+    "consejeros"
+   ],
+   "name": {
+    "es": "Conversación entre consejeros",
+    "en": "Councillor conversation"
+   },
+   "shows": {
+    "es": "Un solo monitor, como un vídeo: Elon y Jobs hablan en tiempo real; a la izquierda el hilo de admira.live, a la derecha el mismo intercambio en GrokBot. Guion de la prueba real del 21-oct-2026.",
+    "en": "Single monitor, like a video: Elon and Jobs talk in real time; admira.live thread on the left, the same exchange in GrokBot on the right. Script from the real 21-Oct-2026 test."
+   },
+   "command": "/demo conversacion · /demo consejo",
+   "duration_s": 75,
+   "tour": false,
+   "tour_skip_reason": {
+    "es": "solo en castellano hasta que Carlos la dé por buena",
+    "en": "Spanish only until Carlos signs it off"
+   },
+   "kind": "twin",
+   "side_effects": {
+    "es": "Ninguno: guion local, no envía mensajes a admira.live ni a los consejeros.",
+    "en": "None: local script, sends no messages to admira.live or councillors."
+   },
+   "owner": "GrokBot · demo-conversacion.mjs",
+   "link": "https://www.admira.live/consejero.html?con=Musk",
+   "steps": [
+    {
+     "conversacion": true
     }
    ]
   }

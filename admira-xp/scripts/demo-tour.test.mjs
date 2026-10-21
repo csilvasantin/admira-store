@@ -9,7 +9,7 @@ test('registry: unique ids/aliases, numbered 1..N, required fields, suite 1–5 
   for(const l of ['es','en']){assert.ok(d.name[l]);assert.ok(d.shows[l]);assert.ok(d.side_effects[l]);}
   for(const a of [d.id,...d.aliases]){assert.ok(!seen.has(a),'duplicate '+a);seen.add(a);}
   if(!d.tour)assert.ok(d.tour_skip_reason?.es&&d.tour_skip_reason?.en,d.id);
-  const waits=d.steps.reduce((a,s)=>a+(s.wait||0)+(s.waitPos||0)+(s.ms||0),0)/1000;if(!d.steps.some(s=>s.incident))assert.ok(Math.abs(waits-d.duration_s)<=d.duration_s*.5+15,d.id+' duration');});
+  const waits=d.steps.reduce((a,s)=>a+(s.wait||0)+(s.waitPos||0)+(s.ms||0),0)/1000;if(!d.steps.some(s=>s.incident||s.incidentMono||s.conversacion))assert.ok(Math.abs(waits-d.duration_s)<=d.duration_s*.5+15,d.id+' duration');});
  assert.deepEqual(reg.demos.slice(0,5).map(d=>[d.kind,d.steps[0].suite]),[1,2,3,4,5].map(n=>['suite','/demo '+n]));
  const solutions=DEMO_SOLUTIONS.flatMap(s=>[s.id,...s.alias]);for(const a of seen)assert.ok(!solutions.includes(a),'collides with /demo '+a);
  assert.equal(reg.tour.count,reg.demos.filter(d=>d.tour).length);assert.equal(reg.tour.total_s,tourTotal(reg));

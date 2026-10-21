@@ -33319,7 +33319,7 @@ window.xtAPI = (function(){
   // sin «incidencia» contestaba con su ayuda y la demo 15 del gemelo (demos.json) nunca arrancaba.
   // Se registra como demo local que corre el registro del gemelo (vista previa: sin --enviar no envía nada).
   function connectTwinIncidentDemo(engine){
-    engine.registerAdapter({id:'store-gemelo-incidencia',demos:['incidencia','incident','itsm'].map(name=>({name,run:async args=>{const r=await executeLocalVisualCommand(['/demo',name,...args].join(' ').trim());const msg=r?r.message:'';if(r)showLastResponse(msg,r.ok?'ok':'err','local-visual');return msg;}}))});
+    engine.registerAdapter({id:'store-gemelo-incidencia',demos:['incidencia','incident','itsm','conversacion','conversación','consejo'].map(name=>({name,run:async args=>{const r=await executeLocalVisualCommand(['/demo',name,...args].join(' ').trim());const msg=r?r.message:'';if(r)showLastResponse(msg,r.ok?'ok':'err','local-visual');return msg;}}))});
   }
   window.AdmiraCommandAdapters.push(connectTwinIncidentDemo);
   if(window.AdmiraExperto)connectTwinIncidentDemo(window.AdmiraExperto);

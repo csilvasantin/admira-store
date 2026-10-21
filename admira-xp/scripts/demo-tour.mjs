@@ -174,12 +174,17 @@ async function step(s,ctx,cancelled){const g=globalThis,m=()=>g.XpaceMatrixOptio
   c?.close?.();doc?.getElementById?.('xpaceDemoIpadPreload')?.remove();return;}
  if(s.waitPos){const t0=Date.now();while(Date.now()-t0<s.waitPos&&!cancelled()){const p=g.XpacePOSExperience?.demo?.state?.()?.phase;if(['completed','error'].includes(p))break;await sleep(400,cancelled);}return;}
  if(s.incidentMono){await incidentMonoStep(ctx,cancelled);return;}
+ if(s.conversacion){await conversationStep(ctx,cancelled);return;}
  if(s.incident){await incidentStep(ctx,cancelled);return;}
  // /demo 24: una cápsula «¿Sabías que…?» GOOD al azar en la tarjeta 480×800 y en una pantalla vertical, con locución.
  if(s.capsula){const m=await import(CAPSULA_MOD);if(s.capsula==='close'){m.closeCapsula();return;}
   const c=await race(m.showCapsule({tipo:s.capsula==='random'?'random':s.capsula,lang:ctx.lang,voice:s.voice!==false,doc:ctx.doc}),cancelled);
   if(c)ctx.sub((ctx.en?'Did you know…? · ':'¿Sabías que…? · ')+c.id+' · GOOD · Nemotron 3 Ultra · 0 €');return;}}
 
+// /demo conversación (21-oct-2026): hilo de admira.live a la izquierda y chat de GrokBot a la derecha, guion real Elon↔Jobs. Sin red ni claves.
+async function conversationStep(ctx,cancelled){const doc=ctx.doc,P=await import(PIP_MOD),C=await import('./demo-conversacion.mjs?v=conv-1');
+ await C.runConversation({doc,say:m=>ctx.sub(m,true),scene:(n,t)=>{ctx.stepTotal=t;ctx.stepDone=n-1;paintTexts();ring((n-1)/t);},wait:ms=>sleep(ms,cancelled,bar),cancelled,endCard:(a,b)=>P.endCard(doc,a,b)});
+ P.pipClear(doc);}
 async function incidentStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es;const run=ctx.incident||(async(text,o)=>(await import('./incident-demo.mjs?v=cli-incidencia-6')).runIncidentDemo(text,o));
  ctx.cmd('/crear incidencia');const r=await run('/crear incidencia',{router:ctx.router,lang:ctx.lang,progress:m=>ctx.sub(m)});
  if(!r?.ok||!r.id){ctx.sub(r?.message||t('No se pudo abrir la incidencia de demo.','The demo incident could not be opened.'));return;}
