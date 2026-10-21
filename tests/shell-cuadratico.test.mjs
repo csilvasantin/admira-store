@@ -183,7 +183,7 @@ test('el componente genera el mismo marcado que el gemelo', () => {
   assert.match(html, /<nav class="quad-menu quad-left xs-panel is-collapsed" id="xsOptions"/);
   assert.match(html, /<nav class="quad-menu quad-right xs-panel is-collapsed" id="xsAdvanced"/);
   assert.match(html, /<section class="quad-menu quad-bottom xs-expert is-collapsed" id="xsExpert"/);
-  assert.match(html, /XpaceOS/);
+  assert.match(html, /XpaceOS|admira\.store/);   // el espejo admira.store pinta su propio nombre (sello-y-verja.py)
   assert.match(html, /\/ ayuda/);
   const en = shell.markup({}, {lang: 'en'}).html;
   assert.match(en, /aria-label="Options"/);

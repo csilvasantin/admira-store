@@ -182,5 +182,62 @@ castellano = (
     f"html lang=es · título ES · {horneados} nodos horneados"
     if titulo else "html lang=es · título sin diccionario"
 )
+# — LA MARCA (Carlos, 21-oct-2026): admira.store tiene que decir «admira.store» en el título, la
+#   cabecera, el pie y la tarjeta «estás aquí». xpaceos.com no se toca: la marca se cambia aquí,
+#   en el espejo, después de cada sincronización. Si el origen cambia y un ancla deja de estar,
+#   el espejado PARA (sys.exit) en vez de publicar un espejo a medias.
+MARCA = "admira.store"
+TITULO_STORE = "admira.store · El sistema operativo del comercio físico"
+WORDMARK = '<span class="store-wordmark" aria-hidden="true">admira<b>.store</b></span>'
+
+
+def exige(texto, viejo, nuevo, donde, veces=1):
+    """Sustituye `viejo` por `nuevo` exigiendo que esté `veces` veces; si ya está `nuevo` (segunda pasada
+    sin sincronizar), no toca nada. Cualquier otra cosa para el espejado."""
+    n = texto.count(viejo)
+    if n == 0 and nuevo in texto:
+        return texto
+    if n != veces:
+        sys.exit(f"✗ Marca admira.store: esperaba {veces} vez/veces «{viejo[:60]}» en {donde} y hay {n}")
+    return texto.replace(viejo, nuevo)
+
+
+# Título y metadatos
+s = re.sub(r'<title>[^<]*</title>', '<title>' + TITULO_STORE + '</title>', s, count=1)
+for meta in ('og:title', 'twitter:title', 'og:image:alt'):
+    s = re.sub(r'(<meta (?:property|name)="' + re.escape(meta) + r'" content=")[^"]*(")', lambda m: m.group(1) + TITULO_STORE + m.group(2), s, count=1)
+s = re.sub(r'(<meta property="og:site_name" content=")[^"]*(")', r'\g<1>' + MARCA + r'\2', s, count=1)
+# Cabecera propia (la que se ve antes de que cargue el shell y sin JS) y pie: la palabra en vez del logo de XpaceOS
+s = exige(s, '<a class="brand-logo" href="#top" aria-label="XpaceOS">\n      <img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS">\n    </a>',
+          '<a class="brand-logo" href="#top" aria-label="' + MARCA + '">' + WORDMARK + '</a>', "la cabecera")
+s = exige(s, '<a class="footer-logo" href="#top" aria-label="XpaceOS"><img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS"></a>',
+          '<a class="footer-logo" href="#top" aria-label="' + MARCA + '">' + WORDMARK + '</a>', "el pie")
+s = exige(s, '<span>© 2026 ADmiraNeXT · XpaceOS</span>', '<span>© 2026 ADmiraNeXT · ' + MARCA + '</span>', "el pie")
+# Tarjeta «estás aquí» (capa C de la suite): aquí estás en admira.store
+s = exige(s, '<h3>admira.live</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>',
+          '<h3>' + MARCA + '</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.admira.store/">' + MARCA + '</a></div>', "la tarjeta «estás aquí»")
+s = exige(s, '<a class="more" href="https://admira.live/" target="_blank" rel="noopener">→ admira.live</a>', '<a class="more" href="https://www.admira.store/">→ ' + MARCA + '</a>', "la tarjeta «estás aquí»")
+# Estilo de la palabra (misma familia que el shell cuadrático)
+s = exige(s, '.brand-logo img{display:block;width:100%;height:auto}',
+          '.brand-logo img{display:block;width:100%;height:auto}\n  .store-wordmark{font:600 19px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#e8f1ff;white-space:nowrap}.store-wordmark b{color:#5b9bff;font-weight:600}footer .footer-logo .store-wordmark{font-size:15px}', "los estilos")
+# El shell común pinta la cabecera en vivo con «XpaceOS»: se le cambia el nombre y la etiqueta de versión.
+SHELL = "assets/xpace-shell.js"
+sh = open(SHELL, encoding="utf-8").read()
+sh = exige(sh, '<span class="xs-brand-name">XpaceOS</span>', '<span class="xs-brand-name">' + MARCA + '</span>', SHELL)
+sh = exige(sh, "data-shell-label-es=\"XpaceOS · volver al inicio\" data-shell-label-en=\"XpaceOS · back to home\" title=\"${T('XpaceOS · volver al inicio', 'XpaceOS · back to home')}\"",
+           "data-shell-label-es=\"admira.store · volver al inicio\" data-shell-label-en=\"admira.store · back to home\" title=\"${T('admira.store · volver al inicio', 'admira.store · back to home')}\"", SHELL)
+sh = exige(sh, "version: release ? 'XpaceOS ' + release : 'XpaceOS'", "version: release ? '" + MARCA + " ' + release : '" + MARCA + "'", SHELL)
+open(SHELL, "w", encoding="utf-8").write(sh)
+# El gemelo (admira-xp) lleva una copia en línea de esa barra, que debe decir lo mismo que el shell.
+GEMELO = "admira-xp/index.html"
+if os.path.exists(GEMELO):
+    g = open(GEMELO, encoding="utf-8").read()
+    g = exige(g, '<span class="xs-brand-name">XpaceOS</span>', '<span class="xs-brand-name">' + MARCA + '</span>', GEMELO)
+    g = g.replace('data-shell-label-es="XpaceOS · volver al inicio" data-shell-label-en="XpaceOS · back to home"', 'data-shell-label-es="admira.store · volver al inicio" data-shell-label-en="admira.store · back to home"')
+    g = g.replace('title="XpaceOS · volver al inicio"', 'title="admira.store · volver al inicio"')
+    open(GEMELO, "w", encoding="utf-8").write(g)
+# (El sello de caché del shell no se toca: Cloudflare Pages sirve los assets con must-revalidate, así que el
+#  fichero nuevo llega sin cambiar la URL y todas las páginas siguen apuntando al mismo sello.)
+
 open(DESTINO, "w", encoding="utf-8").write(s)
-print(f"  sello {SELLO} · espejo de xpaceos@{ORIGEN_SHA} · verja {verja} · {castellano}")
+print(f"  sello {SELLO} · espejo de xpaceos@{ORIGEN_SHA} · verja {verja} · {castellano} · marca {MARCA}")
