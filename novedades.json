@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.21.10.2026.r1.21:08": [
+    "Portada: la cabecera dice cuántas superficies hay y cuántas están en vivo (antes llamaba «en vivo» a todas), y la tarjeta de admira.app ya no enseña un 0: dice el inventario y, si no hay ninguna en vivo, lo dice con palabras.",
+    "El contador de la galería de gemelos usa separador de miles, como el resto de cifras.",
+    "admira.store dice admira.store en título, cabecera, pie y tarjeta «estás aquí»."
+  ],
   "v.18.10.2026.r8.18:47": [
     "Gemelo 3D desde el plano: nueva vista «360 · Matrix» con la foto 360 real del local, si su plano la trae (mismo visor que los centros de Starbucks).",
     "El plano de Paseo de Gràcia trae ya su 360 (8192 × 4096, con los 6 menús marcados) y la copia pública la conserva."
