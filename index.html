@@ -155,7 +155,13 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   .platform-flow b{color:var(--ink)}
 
   .layers{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  .layers.suite{grid-template-columns:repeat(4,1fr);gap:16px}
+  .layers.suite{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+  .layers.suite .layer{padding:22px 18px}
+  .layers.suite .layer h3{font-size:19px;overflow-wrap:anywhere}
+  .layers.suite .layer p b{color:var(--ink);font-weight:600}
+  .layers.suite .layer .pulse{align-items:flex-start}
+  .layers.suite .layer .pulse .gm-dot{flex:none;margin-top:4px}
+  .layers.suite .layer .pulse .pv{white-space:normal;overflow-wrap:anywhere}
   .layer{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px;transition:transform .12s,border-color .12s;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
   .layer:hover{border-color:var(--brand);transform:translateY(-3px)}
   .layer .lnum{position:absolute;top:14px;right:18px;font-family:monospace;font-size:48px;font-weight:800;color:rgba(120,243,255,.10)}
@@ -356,6 +362,9 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   .sec-kicker{display:inline-flex;align-items:center;gap:8px;font-family:monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(255,216,102,.35);border-radius:999px;padding:5px 12px;margin:0 0 16px}
   .sec-kicker.os{color:var(--brand);border-color:rgba(120,243,255,.35)}
 
+  @media (max-width:1100px){
+    .layers.suite{grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
   @media (max-width:900px){
     .layers.suite{grid-template-columns:1fr 1fr}
   }
@@ -601,7 +610,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   <div class="wrap">
     <h2 data-i18n-html="platform.title"><span class="num">01</span>La plataforma AdmiraNext, en producción</h2>
     <div class="sec-kicker" data-i18n="platform.kicker">La suite — productos hermanos, cada uno con su propia web</div>
-    <p class="lede" data-i18n="platform.lede">Lo que corrió de punta a punta en el stand Lenovo × Nvidia es lo que corre hoy. Cuatro productos conectados, en vivo ahora mismo, desde crear el contenido hasta ponerlo en antena y comercializar el espacio.</p>
+    <p class="lede" data-i18n="platform.lede">Lo que corrió de punta a punta en el stand Lenovo × Nvidia es lo que corre hoy. Cinco soluciones conectadas, en vivo ahora mismo: crear el contenido, distribuirlo, emitirlo, mantener las instalaciones y comercializar el espacio.</p>
 
     <div class="platform-lockup">
       <span class="p lenovo">LENOVO</span>
@@ -619,39 +628,47 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
         <h3>admira.studio</h3>
         <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.pixeria.com" target="_blank" rel="noopener">pixeria.com</a></div>
         <div class="pulse" id="pulse-studio"><span class="gm-dot"></span><span class="pv">…</span></div>
-        <p data-i18n="platform.studioCopy">La fábrica de contenido con IA. Entra un encargo; salen audio, música, imagen y vídeo listos para cartelería digital en minutos — el combustible creativo de cada pantalla del espacio.</p>
+        <p data-i18n-html="platform.studioCopy"><b>Creación y Adaptación de Contenidos.</b> La fábrica de contenido con IA. Entra un encargo; salen audio, música, imagen y vídeo listos para cartelería digital en minutos.</p>
         <a class="more" href="https://admira.studio/" target="_blank" rel="noopener">→ admira.studio</a>
       </div>
-      <div class="layer">
+      <div class="layer here">
         <div class="lnum">B</div>
+        <div class="lkind" data-i18n="platform.storeKind">Distribuyendo · estás aquí</div>
+        <h3>admira.store</h3>
+        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>
+        <div class="pulse" id="pulse-live"><span class="gm-dot"></span><span class="pv">…</span></div>
+        <p data-i18n-html="platform.storeCopy"><b>Distribución, Gestión y Visualización.</b> El sistema operativo del comercio físico que estás leyendo. El Gemelo Digital reparte el contenido por cada superficie del espacio y enseña cómo está cada una.</p>
+        <a class="more" href="https://www.admira.store/" target="_blank" rel="noopener">→ admira.store</a>
+      </div>
+      <div class="layer">
+        <div class="lnum">C</div>
         <div class="lkind" data-i18n="platform.tvKind">Emitiendo</div>
         <h3>admira.tv</h3>
         <div class="who dom native"><span class="lbl" data-i18n="platform.brand">marca</span> · <span data-i18n="platform.tvBrand">nativa de Admira</span></div>
         <div class="pulse" id="pulse-tv"><span class="gm-dot"></span><span class="pv">…</span></div>
-        <p data-i18n="platform.tvCopy">El canal DOOH en vivo. Todo lo creado sale a la red de pantallas — parrilla compartida, programación por superficie y la capa en antena que pone el contenido ante audiencias reales.</p>
+        <p data-i18n-html="platform.tvCopy"><b>Reproducción, Emisión y Proof of Play.</b> El canal DOOH en vivo. Lo creado sale a la red de pantallas, con parrilla compartida, programación por superficie y prueba de emisión.</p>
         <a class="more" href="https://admira.tv/" target="_blank" rel="noopener">→ admira.tv</a>
-      </div>
-      <div class="layer here">
-        <div class="lnum">C</div>
-        <div class="lkind" data-i18n="platform.xpaceKind">Distribuyendo · estás aquí</div>
-        <h3>admira.live</h3>
-        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>
-        <div class="pulse" id="pulse-live"><span class="gm-dot"></span><span class="pv">…</span></div>
-        <p data-i18n="platform.xpaceCopy">El sistema operativo del comercio físico que estás leyendo ahora mismo. El Gemelo Digital distribuye ese contenido por cada superficie del espacio físico y convierte cada una en inventario medible.</p>
-        <a class="more" href="https://admira.live/" target="_blank" rel="noopener">→ admira.live</a>
       </div>
       <div class="layer">
         <div class="lnum">D</div>
-        <div class="lkind" data-i18n="platform.appKind">Comercializando</div>
+        <div class="lkind" data-i18n="platform.appKind">Manteniendo</div>
         <h3>admira.app</h3>
+        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.yokup.com" target="_blank" rel="noopener">yokup.com</a></div>
+        <p data-i18n-html="platform.appCopy"><b>Instalaciones, Mantenimiento y Gestión.</b> Personas que cuidan de un mundo conectado: instalar, mantener y gestionar cada pantalla y cada equipo del espacio.</p>
+        <a class="more" href="https://www.admira.app/" target="_blank" rel="noopener">→ admira.app</a>
+      </div>
+      <div class="layer">
+        <div class="lnum">E</div>
+        <div class="lkind" data-i18n="platform.bizKind">Comercializando</div>
+        <h3>admira.biz</h3>
         <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.clearchannel.tv" target="_blank" rel="noopener">clearchannel.tv</a></div>
-        <div class="pulse" id="pulse-app"><span class="gm-dot"></span><span class="pv">…</span></div>
-        <p data-i18n="platform.appCopy">El mercado que lo monetiza todo. Cada superficie visible se convierte en inventario DOOH negociable — demanda programática, precio por impresión y CPM auditado en toda la red.</p>
-        <a class="more" href="https://admira.app/" target="_blank" rel="noopener">→ admira.app</a>
+        <div class="pulse" id="pulse-biz"><span class="gm-dot"></span><span class="pv">…</span></div>
+        <p data-i18n-html="platform.bizCopy"><b>Nuevos ingresos con DooH y Retail Media.</b> El mercado que lo monetiza todo. Cada superficie visible se convierte en inventario DOOH negociable, con demanda programática y CPM auditado.</p>
+        <a class="more" href="https://www.admira.biz/" target="_blank" rel="noopener">→ admira.biz</a>
       </div>
     </div>
 
-    <p class="platform-flow" data-i18n-html="platform.flow"><b>admira.studio</b> creando → <b>admira.tv</b> emitiendo → <b>admira.live</b> distribuyendo → <b>admira.app</b> comercializando. Cuatro soluciones distintas, una sola cadena: un login y un mismo dato de punta a punta.</p>
+    <p class="platform-flow" data-i18n-html="platform.flow"><b>admira.studio</b> crea → <b>admira.store</b> distribuye → <b>admira.tv</b> emite → <b>admira.app</b> mantiene → <b>admira.biz</b> comercializa. Cinco soluciones distintas, una sola cadena: un login y un mismo dato de punta a punta.</p>
   </div>
 </section>
 
@@ -919,19 +936,21 @@ const I18N = {
     'booth.bookDemo': 'Book demo',
     'platform.title': '<span class="num">01</span>The AdmiraNext platform, in production',
     'platform.kicker': 'The suite — sister products, each on its own site',
-    'platform.lede': 'What ran end to end at the Lenovo × Nvidia booth is what runs today. Four connected products, live right now, from creating the content to putting it on air and selling the space.',
+    'platform.lede': 'What ran end to end at the Lenovo × Nvidia booth is what runs today. Five connected solutions, live right now: creating the content, distributing it, putting it on air, maintaining the installations and selling the space.',
     'platform.when': 'IN PRODUCTION · PROVEN AT SHOPTALK EUROPE 2026',
     'platform.brand': 'brand',
     'platform.tvBrand': 'native to Admira',
     'platform.studioKind': 'Creating',
-    'platform.studioCopy': 'The AI content factory. Briefs in; signage-ready audio, music, image and video out in minutes — the creative fuel for every screen in the space.',
-    'platform.tvKind': 'Emitting',
-    'platform.tvCopy': 'The live DOOH channel. Everything created flows onto the network of screens — a shared grid, per-surface scheduling and the on-air layer that puts content in front of real audiences.',
-    'platform.xpaceKind': 'Distributing · you are here',
-    'platform.xpaceCopy': 'The retail operating system you are reading right now. The Digital Twin distributes that content across every surface of the physical space and turns each one into measurable inventory.',
-    'platform.appKind': 'Selling',
-    'platform.appCopy': 'The marketplace that monetizes it all. Every visible surface becomes tradeable DOOH inventory — programmatic demand, per-impression pricing and audited CPM across the whole network.',
-    'platform.flow': '<b>admira.studio</b> creating → <b>admira.tv</b> emitting → <b>admira.live</b> distributing → <b>admira.app</b> selling. Four distinct products, one chain: one login and one shared dataset end to end.',
+    'platform.studioCopy': '<b>Content Creation and Adaptation.</b> The AI content factory. Briefs in; signage-ready audio, music, image and video out in minutes.',
+    'platform.tvKind': 'Broadcasting',
+    'platform.tvCopy': '<b>Playback, Broadcast and Proof of Play.</b> The live DOOH channel. Everything created flows onto the network of screens, with a shared grid, per-surface scheduling and proof of play.',
+    'platform.storeKind': 'Distributing · you are here',
+    'platform.storeCopy': '<b>Distribution, Management and Visualization.</b> The retail operating system you are reading. The Digital Twin spreads the content across every surface of the space and shows how each one is doing.',
+    'platform.appKind': 'Maintaining',
+    'platform.appCopy': '<b>Installations, Maintenance and Management.</b> People who look after a connected world: installing, maintaining and managing every screen and device in the space.',
+    'platform.bizKind': 'Selling',
+    'platform.bizCopy': '<b>New revenue with DooH and Retail Media.</b> The marketplace that monetizes it all. Every visible surface becomes tradeable DOOH inventory, with programmatic demand and audited CPM.',
+    'platform.flow': '<b>admira.studio</b> creates → <b>admira.store</b> distributes → <b>admira.tv</b> broadcasts → <b>admira.app</b> maintains → <b>admira.biz</b> sells. Five distinct solutions, one chain: one login and one shared dataset end to end.',
     'flow.title': 'CONTROL FLOW',
     'flow.oneTitle': '① OPERATOR MONITOR',
     'flow.oneText': 'Digital Twin · Lenovo ThinkEdge + Nvidia GPU',
@@ -988,7 +1007,7 @@ const I18N = {
     'pulse.tv': 'on air: {title}',
     'pulse.tvIdle': 'channel standing by',
     'pulse.live': '{n} twins · {s} surfaces',
-    'pulse.app': '{s} surfaces live as inventory',
+    'pulse.biz': '{s} surfaces live as inventory',
     'pulse.off': 'live signal unreachable',
     'pixer.stockLink': '↗ the whole studio library',
     'pixer.next': '↓ next: Admira XP',
@@ -1102,19 +1121,21 @@ const I18N = {
     'booth.bookDemo': 'Reservar demo',
     'platform.title': '<span class="num">01</span>La plataforma AdmiraNext, en producción',
     'platform.kicker': 'La suite — productos hermanos, cada uno con su propia web',
-    'platform.lede': 'Lo que corrió de punta a punta en el stand Lenovo × Nvidia es lo que corre hoy. Cuatro productos conectados, en vivo ahora mismo, desde crear el contenido hasta ponerlo en antena y comercializar el espacio.',
+    'platform.lede': 'Lo que corrió de punta a punta en el stand Lenovo × Nvidia es lo que corre hoy. Cinco soluciones conectadas, en vivo ahora mismo: crear el contenido, distribuirlo, emitirlo, mantener las instalaciones y comercializar el espacio.',
     'platform.when': 'EN PRODUCCIÓN · DEMOSTRADO EN SHOPTALK EUROPE 2026',
     'platform.brand': 'marca',
     'platform.tvBrand': 'nativa de Admira',
     'platform.studioKind': 'Creando',
-    'platform.studioCopy': 'La fábrica de contenido con IA. Entra un encargo; salen audio, música, imagen y vídeo listos para cartelería digital en minutos — el combustible creativo de cada pantalla del espacio.',
+    'platform.studioCopy': '<b>Creación y Adaptación de Contenidos.</b> La fábrica de contenido con IA. Entra un encargo; salen audio, música, imagen y vídeo listos para cartelería digital en minutos.',
     'platform.tvKind': 'Emitiendo',
-    'platform.tvCopy': 'El canal DOOH en vivo. Todo lo creado sale a la red de pantallas — parrilla compartida, programación por superficie y la capa en antena que pone el contenido ante audiencias reales.',
-    'platform.xpaceKind': 'Distribuyendo · estás aquí',
-    'platform.xpaceCopy': 'El sistema operativo del comercio físico que estás leyendo ahora mismo. El Gemelo Digital distribuye ese contenido por cada superficie del espacio físico y convierte cada una en inventario medible.',
-    'platform.appKind': 'Comercializando',
-    'platform.appCopy': 'El mercado que lo monetiza todo. Cada superficie visible se convierte en inventario DOOH negociable — demanda programática, precio por impresión y CPM auditado en toda la red.',
-    'platform.flow': '<b>admira.studio</b> creando → <b>admira.tv</b> emitiendo → <b>admira.live</b> distribuyendo → <b>admira.app</b> comercializando. Cuatro soluciones distintas, una sola cadena: un login y un mismo dato de punta a punta.',
+    'platform.tvCopy': '<b>Reproducción, Emisión y Proof of Play.</b> El canal DOOH en vivo. Lo creado sale a la red de pantallas, con parrilla compartida, programación por superficie y prueba de emisión.',
+    'platform.storeKind': 'Distribuyendo · estás aquí',
+    'platform.storeCopy': '<b>Distribución, Gestión y Visualización.</b> El sistema operativo del comercio físico que estás leyendo. El Gemelo Digital reparte el contenido por cada superficie del espacio y enseña cómo está cada una.',
+    'platform.appKind': 'Manteniendo',
+    'platform.appCopy': '<b>Instalaciones, Mantenimiento y Gestión.</b> Personas que cuidan de un mundo conectado: instalar, mantener y gestionar cada pantalla y cada equipo del espacio.',
+    'platform.bizKind': 'Comercializando',
+    'platform.bizCopy': '<b>Nuevos ingresos con DooH y Retail Media.</b> El mercado que lo monetiza todo. Cada superficie visible se convierte en inventario DOOH negociable, con demanda programática y CPM auditado.',
+    'platform.flow': '<b>admira.studio</b> crea → <b>admira.store</b> distribuye → <b>admira.tv</b> emite → <b>admira.app</b> mantiene → <b>admira.biz</b> comercializa. Cinco soluciones distintas, una sola cadena: un login y un mismo dato de punta a punta.',
     'flow.title': 'FLUJO DE CONTROL',
     'flow.oneTitle': '① MONITOR DEL OPERADOR',
     'flow.oneText': 'Gemelo Digital · Lenovo ThinkEdge + Nvidia GPU',
@@ -1171,7 +1192,7 @@ const I18N = {
     'pulse.tv': 'en antena: {title}',
     'pulse.tvIdle': 'canal a la espera',
     'pulse.live': '{n} gemelos · {s} superficies',
-    'pulse.app': '{s} superficies vivas como inventario',
+    'pulse.biz': '{s} superficies vivas como inventario',
     'pulse.off': 'sin señal en vivo',
     'pixer.stockLink': '↗ toda la biblioteca del estudio',
     'pixer.next': '↓ siguiente: Admira XP',
@@ -1623,10 +1644,11 @@ async function loadDespacho() {
   renderDespacho();
 }
 
-// ─── Pulso vivo de las cuatro fichas de la suite ────────────────────
+// ─── Pulso vivo de las fichas de la suite ────────────────────
 // Cada producto de la cadena enseña su señal REAL, del mismo dato del que
 // ya vive el resto de la página: studio ← índice del estudio · tv ← qué
-// está en antena ahora mismo · live/app ← catálogo compartido de gemelos.
+// está en antena ahora mismo · store/biz ← catálogo compartido de gemelos.
+// admira.app no lleva pulso: aquí no hay una fuente suya que leer.
 // Ninguna ficha inventa un número: si su fuente no responde, se apaga.
 let onAirData = null; // null = sin pedir · 'error' · {title} · {} = nadie emitiendo
 
@@ -1657,13 +1679,13 @@ function renderPulses() {
     const surf = gemelosData.reduce((n, l) => n + (Array.isArray(l.surfaces) ? l.surfaces.length : 0), 0);
     const live = gemelosData.reduce((n, l) => n + (Array.isArray(l.surfaces) ? l.surfaces.filter(s => s.status === 'live').length : 0), 0);
     pulseSet('pulse-live', fmt('pulse.live', { '{n}': gemelosData.length.toLocaleString(document.documentElement.lang), '{s}': surf.toLocaleString(document.documentElement.lang) }));
-    pulseSet('pulse-app', fmt('pulse.app', { '{s}': live.toLocaleString(document.documentElement.lang) }));
+    pulseSet('pulse-biz', fmt('pulse.biz', { '{s}': live.toLocaleString(document.documentElement.lang) }));
     // Badge del hero: la portada abre con la producción real, no con una feria pasada (misión 1175 · DEC-mto70hmjfc95)
     const hp = document.getElementById('hero-pulse');
     if (hp && gemelosData.length) hp.textContent = fmt('hero.pulse', { '{n}': gemelosData.length.toLocaleString(document.documentElement.lang), '{s}': surf.toLocaleString(document.documentElement.lang) });
   } else if (gemelosData === 'error') {
     pulseSet('pulse-live', d['pulse.off'], true);
-    pulseSet('pulse-app', d['pulse.off'], true);
+    pulseSet('pulse-biz', d['pulse.off'], true);
   }
 }
 
