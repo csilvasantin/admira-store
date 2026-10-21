@@ -12,6 +12,7 @@ test('daily mirror rejects missing or overwritten Store runtime before sync and 
   writeFileSync(join(target,'mcp/manifest.json'),JSON.stringify(manifest));writeFileSync(join(target,'admira-xp/scripts/store-demo-bridge.mjs'),'// obsolete source');assert.notEqual(run().status,0);
   copyFileSync(join(root,'admira-xp/scripts/store-demo-bridge.mjs'),join(target,'admira-xp/scripts/store-demo-bridge.mjs'));
   const html=readFileSync(join(target,'admira-xp/index.html'),'utf8');writeFileSync(join(target,'admira-xp/index.html'),html.replace('scripts/store-demo-avatar.mjs?v=local-autopilot-1','scripts/old-avatar.mjs'));assert.notEqual(run().status,0);
-  const sync=readFileSync(join(root,'sync-desde-xpaceos.sh'),'utf8');assert.ok(sync.indexOf('validate-mirror-contract.mjs')<sync.indexOf('rsync -a --delete'));
+  // Espejo parcial (Carlos, 21-oct-2026): la sincronización ya no borra ni toca los ficheros del contrato; el validador queda para comprobaciones a mano.
+  const sync=readFileSync(join(root,'sync-desde-xpaceos.sh'),'utf8');assert.ok(!sync.includes('--delete'),'el espejo parcial nunca borra');assert.ok(!/admira-xp|xpacios/.test(sync.replace(/^#.*$/gm,'')),'el espejo parcial no toca admira-xp ni xpacios');
  }finally{rmSync(target,{recursive:true,force:true});}
 });

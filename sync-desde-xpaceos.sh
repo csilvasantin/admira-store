@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
 # ============================================================================
-# sync-desde-xpaceos.sh — admira.store es un ESPEJO de www.xpaceos.com.
+# sync-desde-xpaceos.sh — ESPEJO PARCIAL de www.xpaceos.com en admira.store.
 # ----------------------------------------------------------------------------
-# Por qué un espejo y no un gemelo: los dos dominios se sirven por GITHUB PAGES
-# (admira.store responde `server: GitHub.com`, aunque el deploy.sh de al lado
-# diga que el origen es Cloudflare — no lo es; lo que llega a producción es su
-# `git push`). GitHub Pages sólo admite UN dominio por repositorio, así que
-# «mismo origen, dos dominios» no es posible aquí. El gemelo de verdad exige
-# mover xpaceos.com a Cloudflare Pages, como ya se hizo con clearchannel.tv y
-# admira.app. Mientras tanto, esto: copia fiel y reproducible.
+# Decisión de Carlos (21-oct-2026): admira.store y xpaceos.com son GEMELOS que se
+# desarrollan en paralelo (desde el 7-oct cada repo tiene su trabajo propio:
+# cápsulas, media, Altadis-18, realista, SneakerStore ampliado… sólo en el
+# espejo). El antiguo espejo total (rsync --delete de todo) borraría ese trabajo,
+# y el guardián validate-mirror-contract.mjs lo paraba desde el 14-oct. Desde hoy
+# el espejado copia SOLO la portada y lo que la portada necesita, y NUNCA borra:
 #
-# Uso:  ./sync-desde-xpaceos.sh [ruta-al-clon-de-xpaceos]     (por defecto ../xpaceos)
+#   index.html                      la portada
+#   assets/**                       los assets comunes (añade y actualiza; no borra)
+#   lead-form.css, lead-form.js     el formulario de la portada
+#   data/clientes-mapeo.json        el mapeo de clientes de la portada
+#   favicon.ico
+#
+# Lo propio del espejo lo pone después sello-y-verja.py: sello, castellano,
+# metadatos y la marca «admira.store» (también en assets/xpace-shell.js).
+# El sello y las novedades del origen se adoptan (release-signature.json y
+# novedades.json), conservando quién publica el espejo.
+#
+# Uso:  ./sync-desde-xpaceos.sh [ruta-al-clon-de-xpaceos]   (por defecto ../xpaceos)
+#       SYNC_SHA=<commit> fija el commit del origen (la automatización pasa el
+#       último despliegue de Pages completado). SYNC_DRY=1 enseña el plan y no copia.
 #
 # NO se toca xpaceos.com en ningún momento: sólo se lee.
 # ============================================================================
@@ -23,73 +35,69 @@ AQUI="$(pwd)"
 
 echo "→ Actualizando el origen ($ORIGEN)…"
 git -C "$ORIGEN" fetch -q origin
-# La automatización fija SYNC_SHA al último despliegue Pages completado.
-# SYNC_BEFORE se conserva sólo para reconstrucciones históricas explícitas.
 if [ -n "${SYNC_SHA:-}" ]; then
   git -C "$ORIGEN" checkout -q "$SYNC_SHA"
-elif [ -n "${SYNC_BEFORE:-}" ]; then
-  OLD="$(git -C "$ORIGEN" rev-list -n 1 --before="$SYNC_BEFORE" origin/main)"
-  [ -n "$OLD" ] || { echo "✗ no hay commit de xpaceos anterior a «$SYNC_BEFORE»" >&2; exit 1; }
-  git -C "$ORIGEN" checkout -q "$OLD"
 else
   git -C "$ORIGEN" pull -q --ff-only || { echo "✗ El clon de xpaceos ha divergido: resuélvelo antes de espejar." >&2; exit 1; }
 fi
 ORIGEN_FULL_SHA="$(git -C "$ORIGEN" rev-parse HEAD)"
 ORIGEN_SHA="${ORIGEN_FULL_SHA:0:7}"
-echo "  origen en $ORIGEN_SHA${SYNC_BEFORE:+ (antes de $SYNC_BEFORE)}"
+echo "  origen en $ORIGEN_SHA"
 
-# El espejo se construye desde el commit, no desde el working tree del clon.
-# Así una captura de QA o cualquier otro fichero local sin commitear nunca puede
-# colarse accidentalmente en admira.store.
+# Copia limpia del origen (lo publicado, sin ficheros sueltos del clon).
 ORIGEN_LIMPIO="$(mktemp -d)"
 trap 'rm -rf "$ORIGEN_LIMPIO"' EXIT
 git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 
-# Lo PROPIO de admira.store, que el espejo no puede pisar:
-#  · CNAME     — o el dominio se lo queda xpaceos.com y esta web se cae
-#  · gate.js   — la verja de acceso de admira.studio/store/app
-#  · deploy.sh y este script — herramientas del repo, no contenido
-#  · .gitattributes y _redirects — propios de la tienda. Los ficheros >25 MiB que Cloudflare
-#    Pages no admite los quita y redirige a xpaceos .github/cloudflare-grandes.sh al publicar
-#  · release-preflight.test.mjs — prueba de los flujos CI propios de la tienda
-# Fail before deleting a Store-specific demo integration not yet published in XpaceOS.
-node "$AQUI/scripts/validate-mirror-contract.mjs" "$ORIGEN_LIMPIO" "$AQUI"
+# Lo que se espeja: la portada y lo que necesita. Nada más y nada se borra.
+ESPEJO_FICHEROS=(index.html lead-form.css lead-form.js data/clientes-mapeo.json favicon.ico)
+ESPEJO_CARPETAS=(assets)
 
-echo "→ Espejando contenido…"
-rsync -a --delete \
-  --exclude '.git/' \
-  --exclude '.github/' \
-  --exclude 'CNAME' \
-  --exclude 'gate.js' \
-  --exclude 'deploy.sh' \
-  --exclude 'sync-desde-xpaceos.sh' \
-  --exclude 'sello-y-verja.py' \
-  --exclude 'scripts/validate-mirror-contract.mjs' \
-  --exclude '.gitignore' \
-  --exclude 'functions/_live-presence.js' \
-  --exclude 'install-live-presence.py' \
-  --exclude 'docs/live-analytics.md' \
-  --exclude 'tests/' \
-  --exclude '.gitattributes' \
-  --exclude '_redirects' \
-  --exclude 'release-preflight.test.mjs' \
-  "$ORIGEN_LIMPIO"/ ./
+echo "→ Plan del espejo parcial (origen $ORIGEN_SHA):"
+for f in "${ESPEJO_FICHEROS[@]}"; do
+  if [ -f "$ORIGEN_LIMPIO/$f" ]; then echo "  fichero  $f"; else echo "  (no está en el origen) $f"; fi
+done
+for d in "${ESPEJO_CARPETAS[@]}"; do
+  [ -d "$ORIGEN_LIMPIO/$d" ] && echo "  carpeta  $d/ ($(find "$ORIGEN_LIMPIO/$d" -type f | wc -l | tr -d ' ') ficheros, sin borrar los del espejo)"
+done
+if [ "${SYNC_DRY:-}" = "1" ]; then echo "  (SYNC_DRY=1: no se copia nada)"; exit 0; fi
 
-# La portada de admira.store ES la portada de xpaceos.com, en castellano (Carlos,
-# 5-sep-2026: «xpaceos.com y su gemelo digital en castellano que es admira.store»).
-# Hasta hoy este paso promovía la experiencia NVIDIA en inglés a la raíz; sigue
-# viva en /nvidia/, pero la raíz vuelve a ser el gemelo. El castellano lo fija
-# sello-y-verja.py sobre el index.html recién espejado.
+echo "→ Espejando la portada y sus assets…"
+for f in "${ESPEJO_FICHEROS[@]}"; do
+  [ -f "$ORIGEN_LIMPIO/$f" ] || continue
+  mkdir -p "$(dirname "$f")"
+  cp "$ORIGEN_LIMPIO/$f" "$f"
+done
+for d in "${ESPEJO_CARPETAS[@]}"; do
+  [ -d "$ORIGEN_LIMPIO/$d" ] || continue
+  rsync -a "$ORIGEN_LIMPIO/$d/" "./$d/"     # sin borrar: lo propio del espejo se queda
+done
 
-# Sello canónico (norma 07) + reposición de la verja, en un solo paso.
 SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' "$ORIGEN_LIMPIO/index.html" | head -1)"
 [ -n "$SELLO" ] || { echo "✗ El origen publicado no declara versión" >&2; exit 1; }
+
+# Sello y novedades del origen, conservando quién publica el espejo.
+SELLO="$SELLO" ORIGEN_LIMPIO="$ORIGEN_LIMPIO" python3 - <<'PYSELLO'
+import json, os
+from pathlib import Path
+sello = os.environ['SELLO']; origen = Path(os.environ['ORIGEN_LIMPIO'])
+firma = json.loads(Path('release-signature.json').read_text())
+firma['version'] = sello
+Path('release-signature.json').write_text(json.dumps(firma, ensure_ascii=False, indent=2) + '\n')
+try:
+    suyas = json.loads((origen / 'novedades.json').read_text())
+    mias = json.loads(Path('novedades.json').read_text())
+    nuevas = {k: v for k, v in suyas.items() if k != '_como' and k not in mias}
+    if nuevas:   # las novedades del origen que faltan van arriba; el resto se queda como estaba
+        como = mias.pop('_como', suyas.get('_como', ''))
+        mias = {'_como': como, **nuevas, **mias}
+        Path('novedades.json').write_text(json.dumps(mias, ensure_ascii=False, indent=2) + '\n')
+except FileNotFoundError:
+    pass
+PYSELLO
+
 SELLO="$SELLO" ORIGEN_SHA="$ORIGEN_SHA" python3 "$AQUI/sello-y-verja.py"
-
 python3 install-live-presence.py
-
-# El repo original genera version.json al desplegar; git archive no incluye ese
-# archivo generado. Firmar el espejo con la misma release y el commit fuente.
 ORIGEN_FULL_SHA="$ORIGEN_FULL_SHA" SELLO="$SELLO" python3 - <<'PYVERSION'
 import json,os
 from datetime import datetime,timezone
@@ -97,9 +105,8 @@ from pathlib import Path
 signature=json.loads(Path('release-signature.json').read_text())
 version=os.environ['SELLO']; source=os.environ['ORIGEN_FULL_SHA']
 assert signature['version']==version
-out={**signature,'deployedAt':datetime.now(timezone.utc).isoformat(),'git':source,'gitFull':source,'gitShort':source[:7],'dirty':False,'mirrorOf':'https://www.xpaceos.com/','locale':'es'}
+out={**signature,'deployedAt':datetime.now(timezone.utc).isoformat(),'git':source,'gitFull':source,'gitShort':source[:7],'dirty':False,'mirrorOf':'https://www.xpaceos.com/','mirror':'parcial: portada y assets comunes','locale':'es'}
 Path('version.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
 PYVERSION
-
 echo "→ Listo. Revisa con:  git status --short | head"
-echo "   y publica con:     ./deploy.sh"
+echo "   y publica con:     git push (Cloudflare Pages publica al llegar a main)"

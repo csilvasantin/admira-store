@@ -20,6 +20,16 @@
 (function (root) {
   'use strict';
 
+  // Native demos preserve the current project selector and existing adapter providers.
+  function nativeDemoContext() {
+    const selected = root.document?.querySelector('#projectSelector');
+    const params = new URL(root.location.href).searchParams;
+    return {project: selected?.value || params.get('project') || params.get('proyecto') || ''};
+  }
+  root.AdmiraIOSDemoContext = root.AdmiraIOSDemoContext || nativeDemoContext;
+  root.AdmiraAndroidDemoContext = root.AdmiraAndroidDemoContext || root.AdmiraIOSDemoContext;
+  // End native demo context.
+
   // Clave antigua del estado abierto/cerrado. Ya no se restaura: los paneles entran CERRADOS en
   // cada carga (Carlos, 3-oct-2026). Se borra al arrancar; el tamaño sí se recuerda
   // (xpaceos_shell_size_v1:<panel>).
@@ -44,7 +54,7 @@
   // Verbos que viven en el gemelo (su /help: helpSections() de admira-xp/index.html). Fuera
   // del gemelo se guardan en sessionStorage, se abre el gemelo y se ejecutan allí al cargar.
   const TWIN_VERBS = [
-    'reset', 'demo', 'resumen', 'summary', 'day',
+    'reset', 'demo', 'calibrar', 'calibrate', 'resumen', 'summary', 'day',
     'gente', 'people', 'personal', 'staff', 'clientes', 'customers', 'status', 'stock', 'turno',
     'hire', 'train', 'restock', 'nuevomiembro', 'echarmiembro', 'report', 'velocidad', 'dvr',
     'envivo', 'calendario', 'resetaudiencia', 'ad', 'upgrade', 'aforo', 'visit', 'save',
@@ -565,7 +575,7 @@
     } catch (_) { return false; }
   }
   const AVATAR_LOADER = 'https://www.admiranext.com/assets/avatar.js?v=' +
-    (nativeStoreLaunch() ? '20261012-unified-1' : '20261014-personajes-2');
+    (nativeStoreLaunch() ? '20261012-unified-1' : '20261007-pill-1');
   function avatarKey() {
     try { return 'da-avatar:' + ((root.location && root.location.host) || ''); } catch (_) { return 'da-avatar:'; }
   }
@@ -646,7 +656,7 @@
     root.XpaceShell = Object.assign(shared, {inline: true});
     let enIframe = false;
     try { enIframe = root.self !== root.top; } catch (_) { enIframe = true; }
-    if (!enIframe) {cargarCargador();const engine=doc.createElement('script');engine.src='https://www.admiranext.com/suite/loader.js?v=20261012-unified-1';doc.head.appendChild(engine);}
+    if (!enIframe) {cargarCargador();const engine=doc.createElement('script');engine.src='/suite/loader.js?v=20261014-suite-validation-1';doc.head.appendChild(engine);}
     return;
   }
   if (root.XpaceShell) return;
@@ -813,6 +823,15 @@
     return true;
   }
 
+  // Pantallas virtuales por 4 esquinas (admira-xp/docs/calibrador-pantallas.md). /calibrar abre el calibrador
+  // del Xpacio activo (el que publica window.XpaceFotoReal; si la página no tiene foto, Sneakers Store) y
+  // guarda sus esquinas en ese gemelo. /calibrate es el alias en inglés y abre el calibrador en inglés.
+  const fotoXpacio = () => (root.XpaceFotoReal && root.XpaceFotoReal.xpacio) || 'sneakers-store-santa-rosa-19';
+  const calibrarURL = idioma => '/admira-xp/calibrador-pantallas.html?xpacio=' + encodeURIComponent(fotoXpacio()) + '&idioma=' + idioma;
+  function pantallasDemo() {
+    if (root.XpaceFotoReal && root.XpaceFotoReal.abrir) { root.XpaceFotoReal.abrir('demo'); return lang() === 'en' ? 'Virtual screens · before | after on the real photo' : 'Pantallas virtuales · antes | después sobre la foto real'; }
+    root.location.assign('/xpacios/sneakerstore/?vista=foto&modo=demo&lang=' + lang()); return 'Sneakers Store · /demo pantallas';
+  }
   async function run(text) {
     if(root.AdmiraExperto)return root.AdmiraExperto.exec(text,doc.getElementById('xsLog'));
     log(T('Motor de comandos cargando. Inténtalo de nuevo.','Command engine loading. Try again.'));
@@ -875,7 +894,7 @@
   function suiteExperto() {
     if (root.top !== root.self || /(^|[?&])embed=/.test(location.search)) return;
     if (esPortada(root)) return; // portada sin modo Experto: ni ⌘ ni el motor común
-    const V = '20261014-personajes-2', BASE = 'https://www.admiranext.com/suite/experto';
+    const V = '20261014-suite-validation-1', BASE = 'https://www.admiranext.com/suite/experto';
     const host = location.hostname.replace(/^www\./, '');
     const nativeDemo = /^(admira\.store|xpaceos\.com)$/.test(host) && new URLSearchParams(location.search).get('ax_demo') === 'store';
     if (doc.querySelector('script[src^="' + BASE + '.js"]')) return;
@@ -976,7 +995,12 @@
         root.addEventListener('pagehide',()=>resize.dispose(),{once:true});
       }
     }).catch(error=>console.warn('xpace-shell resize',error));
-    registerVerb({id:'demo',es:'/demo taza: cámara; /demo kiosko: pedido, pago simulado, cola y taza.',en:'/demo taza: camera; /demo kiosko: order, simulated payment, queue and mug.',run:async args=>/^(?:creador|creator)(?:\s|$)/i.test(args)?(location.assign('https://admira.studio/creador/?demo=creador&lang='+lang()+(/(?:^|\s)(todo|full)$/.test(args)?'&mode=full&intent=full':'')),'Demo Creador · Sneaker Xtore'):/^global(?:\s|$)/i.test(args)?(location.assign('https://www.admira.biz/demo/?lang='+lang()),'Demo global · Sneakers Store'):/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=2')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
+    for (const [id, idioma] of [['calibrar', 'es'], ['calibrate', 'en']]) registerVerb({id, es: 'Calibrar las pantallas virtuales del Xpacio por sus 4 esquinas', en: 'Calibrate the Xpace virtual screens by their 4 corners', run: () => {
+      const url = calibrarURL(idioma), w = root.open(url, '_blank');
+      if (w) w.opener = null; else location.assign(url);
+      return idioma === 'en' ? 'Calibrator open · ' + fotoXpacio() + ' · Save stores the corners in this twin' : 'Calibrador abierto · ' + fotoXpacio() + ' · Guardar deja las esquinas en este gemelo';
+    }});
+    registerVerb({id:'demo',es:'/demo taza: cámara; /demo kiosko: pedido, pago simulado, cola y taza; /demo pantallas: antes · después de las pantallas virtuales.',en:'/demo taza: camera; /demo kiosko: order, simulated payment, queue and mug; /demo screens: virtual screens before · after.',run:async args=>/^(?:pantallas|screens)(?:\s|$)/i.test(args)?pantallasDemo():/^global(?:\s|$)/i.test(args)?(location.assign('https://www.admira.biz/demo/?lang='+lang()),'Demo global · Sneakers Store'):/^kiosko(?:\s|$)|^quiosco(?:\s|$)/i.test(args)?(await import('/assets/kiosko-demo.mjs?v=2')).runKioskoDemo(args.replace(/^\S+\s*/,''),lang()):(await import('/assets/taza-demo.mjs?v=1')).runTazaDemo(args,lang())});
     wireCli();
     suiteExperto();
     registerVerb({

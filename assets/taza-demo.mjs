@@ -1,6 +1,7 @@
 /** Shared browser-only mug demo. No project switch or device write. */
 export function runTazaDemo(args,lang='es'){
  const en=lang==='en',a=String(args||'').trim().toLowerCase().split(/\s+/);
+ if(/^(coger|coge|pick)\b/.test(a[0])&&/taza|mug/.test(a.join(' ')))return en?'/demo coger taza runs in the Starbucks twin (/admira-xp/, Matrix): it picks up the shelf mug and fires IF “I pick up a mug”.':'/demo coger taza funciona en el gemelo Starbucks (/admira-xp/, Matrix): coge la taza de la estantería y lanza IF «Cojo una taza».';
  if(a[0]!=='taza'||a.length>2||a[1]&&!['cerrar','close','off'].includes(a[1]))return en?'Use /demo taza or /demo taza close.':'Usa /demo taza o /demo taza cerrar.';
  let box=document.getElementById('suite-taza-camera');
  if(a[1]){box?.remove();return en?'Mug camera closed.':'Cámara de la taza cerrada.';}
