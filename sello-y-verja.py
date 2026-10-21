@@ -228,6 +228,8 @@ s = exige(s, '<span>© 2026 ADmiraNeXT · XpaceOS</span>', '<span>© 2026 ADmira
 s = exige(s, '<h3>admira.live</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>',
           '<h3>' + MARCA + '</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.admira.store/">' + MARCA + '</a></div>', "la tarjeta «estás aquí»")
 s = exige(s, '<a class="more" href="https://admira.live/" target="_blank" rel="noopener">→ admira.live</a>', '<a class="more" href="https://www.admira.store/">→ ' + MARCA + '</a>', "la tarjeta «estás aquí»")
+# El logo de XpaceOS ya no se usa en el espejo: su preload sobra (Chrome avisa en la consola en cada carga).
+s = re.sub(r'[ \t]*<link rel="preload" as="image" href="/assets/xpaceos-logo-transparent\.webp"[^>]*>\n?', '', s, count=1)
 # Estilo de la palabra (misma familia que el shell cuadrático)
 s = exige(s, '.brand-logo img{display:block;width:100%;height:auto}',
           '.brand-logo img{display:block;width:100%;height:auto}\n  .store-wordmark{font:600 19px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#e8f1ff;white-space:nowrap}.store-wordmark b{color:#5b9bff;font-weight:600}footer .footer-logo .store-wordmark{font-size:15px}', "los estilos")
