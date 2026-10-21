@@ -124,7 +124,7 @@
     const section = cfg.section ? `<span class="xs-section"${bilingual(lang, cfg.section)}</span>` : '';
     const bar = `<div id="topBar" class="show xs-bar" data-xpace-shell>
   <button type="button" class="quad-icon" id="pfOptions" data-quad-toggle="left" aria-controls="xsOptions" aria-expanded="false" data-shell-label-es="Opciones" data-shell-label-en="Options" aria-label="${T('Opciones', 'Options')}" title="${T('Opciones', 'Options')}">☰</button>
-  <span class="xs-brand-wrap"><a class="xs-brand" href="${esc(cfg.home)}" data-shell-label-es="XpaceOS · volver al inicio" data-shell-label-en="XpaceOS · back to home" title="${T('XpaceOS · volver al inicio', 'XpaceOS · back to home')}"><span class="xs-brand-name">XpaceOS</span></a>${section}</span>
+  <span class="xs-brand-wrap"><a class="xs-brand" href="${esc(cfg.home)}" data-shell-label-es="admira.store · volver al inicio" data-shell-label-en="admira.store · back to home" title="${T('admira.store · volver al inicio', 'admira.store · back to home')}"><span class="xs-brand-name">admira.store</span></a>${section}</span>
   <div class="spacer"></div>
   <div id="pfToggles" class="pf-toggles" role="group" aria-label="${portada ? T('Menú avanzado e idioma', 'Advanced menu and language') : T('Modos: avanzado, experto', 'Modes: advanced, expert')}">
     <button type="button" class="quad-icon" data-quad-toggle="right" aria-controls="xsAdvanced" aria-expanded="false" data-shell-label-es="Desplegar menú avanzado" data-shell-label-en="Open advanced menu" aria-label="${T('Desplegar menú avanzado', 'Open advanced menu')}" title="${T('Menú avanzado', 'Advanced menu')}">▤</button>
@@ -665,7 +665,7 @@
     const cfg = normalizeConfig(root.XPACE_SHELL, script ? script.dataset : {});
     const release = (doc.querySelector('meta[name="admiranext-version"]') || {}).content || '';
     const tpl = doc.createElement('template');
-    tpl.innerHTML = markup(cfg, {lang: lang(), version: release ? 'XpaceOS ' + release : 'XpaceOS', portada: esPortada(root)}).html;
+    tpl.innerHTML = markup(cfg, {lang: lang(), version: release ? 'admira.store ' + release : 'admira.store', portada: esPortada(root)}).html;
     const nodes = [...tpl.content.children];
     const bar = nodes[0];
     const [options, advanced, expert] = [...nodes[1].children];
