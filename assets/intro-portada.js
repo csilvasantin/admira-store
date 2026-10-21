@@ -23,6 +23,10 @@
 })(typeof window !== 'undefined' ? window : null, function () {
   'use strict';
   const SEEN_KEY = 'xpaceos_intro_a';
+  // Una vez por VISITANTE (Carlos, 21-oct-2026): además de la sesión, se recuerda en localStorage 30 días
+  // qué idiomas vio ({t, langs}); ?intro=1 la fuerza igual. Quien llega por primera vez la ve.
+  const SEEN_LOCAL = 'xpaceos_intro_vista';
+  const SEEN_DAYS = 30;
   const SOURCES = {
     es: {1080: '/assets/video/intro-xpaceos-a-1080.mp4', 720: '/assets/video/intro-xpaceos-a-720.mp4'},
     en: {1080: '/assets/video/intro-xpaceos-a-en-1080.mp4', 720: '/assets/video/intro-xpaceos-a-en-720.mp4'}
@@ -87,20 +91,39 @@
 .xp-intro-bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:#78f3ff}`;
 
   function storage(win, kind) { try { return win[kind]; } catch (_) { return null; } }
+  // Idiomas vistos según localStorage: vale si hace menos de SEEN_DAYS días.
+  function recordada(raw, now) {
+    try {
+      const o = JSON.parse(raw || 'null');
+      if (!o || !Array.isArray(o.langs) || !Number.isFinite(o.t)) return [];
+      return (Number(now) - o.t) < SEEN_DAYS * 86400000 ? o.langs.filter(has) : [];
+    } catch (_) { return []; }
+  }
+  // Primero se pinta la portada; la intro (y su vídeo) arranca justo después del primer pintado.
+  function afterFirstPaint(win, fn) {
+    if (win && typeof win.requestAnimationFrame === 'function') win.requestAnimationFrame(() => win.requestAnimationFrame(fn));
+    else fn();
+  }
 
   function start(win) {
     const session = storage(win, 'sessionStorage');
+    const local = storage(win, 'localStorage');
     const read = key => { try { return (session && session.getItem(key)) || ''; } catch (_) { return ''; } };
+    const readLocal = () => { try { return (local && local.getItem(SEEN_LOCAL)) || ''; } catch (_) { return ''; } };
     const reducedMotion = !!(win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const seenNow = () => parseSeen(read(SEEN_KEY));
-    const markSeen = langs => { const all = seenNow(); for (const l of langs) if (has(l) && !all.includes(l)) all.push(l); try { session && session.setItem(SEEN_KEY, all.join(',')); } catch (_) {} };
+    const seenNow = () => { const all = parseSeen(read(SEEN_KEY)); for (const l of recordada(readLocal(), Date.now())) if (!all.includes(l)) all.push(l); return all; };
+    const markSeen = langs => {
+      const all = seenNow(); for (const l of langs) if (has(l) && !all.includes(l)) all.push(l);
+      try { session && session.setItem(SEEN_KEY, all.join(',')); } catch (_) {}
+      try { local && local.setItem(SEEN_LOCAL, JSON.stringify({t: Date.now(), langs: all})); } catch (_) {}
+    };
     let current = null;
     const tryOpen = lang => {
       if (current) return;
       if (!shouldShow({search: win.location.search, lang, reducedMotion, seen: seenNow().includes(lang), brand: activeBrand(win.location.search, read(BRAND_KEY))})) return;
       current = open(win, lang, shown => { markSeen(shown); current = null; });
     };
-    tryOpen(win.XpaceLang ? win.XpaceLang.resolve({url: win.location.href, storage: storage(win, 'localStorage'), fallback: 'es'}) : 'es');
+    afterFirstPaint(win, () => tryOpen(win.XpaceLang ? win.XpaceLang.resolve({url: win.location.href, storage: storage(win, 'localStorage'), fallback: 'es'}) : 'es'));
     // Al pasar a otro idioma: con la intro en marcha cambia el vídeo; si no, sale en ese idioma si aún no se ha visto en él.
     win.addEventListener('admira:languagechange', ev => {
       const next = String((ev && ev.detail && ev.detail.lang) || '').toLowerCase();
@@ -208,5 +231,5 @@
     return {setLang, get lang() { return lang; }};
   }
 
-  return {SEEN_KEY, SOURCES, MUSIC, MUSIC_BY_LANG, activeBrand, parseSeen, shouldShow, pickSource, pickMusic, start};
+  return {SEEN_KEY, SOURCES, MUSIC, MUSIC_BY_LANG, activeBrand, parseSeen, shouldShow, pickSource, pickMusic, start, recordada, afterFirstPaint, SEEN_LOCAL, SEEN_DAYS};
 });
