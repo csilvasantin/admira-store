@@ -207,6 +207,17 @@ s = re.sub(r'<title>[^<]*</title>', '<title>' + TITULO_STORE + '</title>', s, co
 for meta in ('og:title', 'twitter:title', 'og:image:alt'):
     s = re.sub(r'(<meta (?:property|name)="' + re.escape(meta) + r'" content=")[^"]*(")', lambda m: m.group(1) + TITULO_STORE + m.group(2), s, count=1)
 s = re.sub(r'(<meta property="og:site_name" content=")[^"]*(")', r'\g<1>' + MARCA + r'\2', s, count=1)
+# El título que de verdad se ve lo pone applyLanguage() desde el diccionario I18N (title: en es y en en):
+# se cambia en los dos bloques; si no están, el espejado para.
+TITULO_STORE_EN = "admira.store · The operating system of physical retail"
+def titulo_del_bloque(texto, idioma, nuevo):
+    patron = re.compile(r"(\n\s*" + idioma + r":\s*\{[^\n]*\n(?:(?!\n\s*(?:es|en):\s*\{).)*?\btitle:\s*')[^']*(')", re.S)
+    texto, n = patron.subn(lambda m: m.group(1) + nuevo + m.group(2), texto, count=1)
+    if n != 1:
+        sys.exit(f"✗ Marca admira.store: no encuentro title: en el bloque I18N «{idioma}»")
+    return texto
+s = titulo_del_bloque(s, "es", TITULO_STORE)
+s = titulo_del_bloque(s, "en", TITULO_STORE_EN)
 # Cabecera propia (la que se ve antes de que cargue el shell y sin JS) y pie: la palabra en vez del logo de XpaceOS
 s = exige(s, '<a class="brand-logo" href="#top" aria-label="XpaceOS">\n      <img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS">\n    </a>',
           '<a class="brand-logo" href="#top" aria-label="' + MARCA + '">' + WORDMARK + '</a>', "la cabecera")
