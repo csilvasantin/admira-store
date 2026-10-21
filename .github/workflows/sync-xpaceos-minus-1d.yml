@@ -46,7 +46,8 @@ jobs:
           export SYNC_SHA
           bash ./sync-desde-xpaceos.sh ../xpaceos
           git add -A
-          if git diff --cached --quiet; then
+          # version.json cambia siempre (deployedAt): si es lo único, no hay nada que espejar.
+          if git diff --cached --quiet -- . ':(exclude)version.json'; then
             echo "sin cambios"
             exit 0
           fi
