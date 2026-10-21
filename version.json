@@ -1,12 +1,12 @@
 {
   "version": "v.18.10.2026.r8.18:47",
-  "deployedAt": "2026-10-21T18:39:53Z",
+  "deployedAt": "2026-10-21T18:48:41Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "git": "102621e527261144da431d402f8d58bd9af6fd0e",
-  "gitShort": "102621e",
-  "gitFull": "102621e527261144da431d402f8d58bd9af6fd0e",
+  "git": "210d602a483b0c9956a6f67984848208b35f6890",
+  "gitShort": "210d602",
+  "gitFull": "210d602a483b0c9956a6f67984848208b35f6890",
   "dirty": false,
   "novedades": [
     "Gemelo 3D desde el plano: nueva vista «360 · Matrix» con la foto 360 real del local, si su plano la trae (mismo visor que los centros de Starbucks).",
