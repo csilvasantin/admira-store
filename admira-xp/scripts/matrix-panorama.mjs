@@ -1,11 +1,11 @@
-import {registerInteractiveScreens} from './ainimation-delivery.mjs?v=ainimation-delivery-1';
+import {registerInteractiveScreens} from './ainimation-delivery.mjs?v=ainimation-totem-2';
 import {mountMusicListeningButton} from './music-listening.mjs?v=local-playlist-349';
 import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=local-playlist-349';
 import {WATER_VIEW} from './pos-water.mjs?v=water-finish-3';
 import {createRetailMediaDisplay} from './retail-media-display.mjs?v=xtore-ux-3';
 import {mountPOSExperience,POS_EXPERIENCE_VIEW} from './matrix-pos-experience.mjs?v=starbucks-defaults-1';
 import {mountPersonAnnouncements} from './matrix-person-announcements.mjs?v=una-lectura-1';
-import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=starbucks-defaults-1';
+import {mountWallAvatar} from './matrix-wall-avatar.mjs?v=ainimation-totem-2';
 import {watchIPadPlaylist} from './ipad-physical-playlist.mjs?v=shared-ipad-20261015';
 import {STARBUCKS_IPAD_ID,STARBUCKS_IPAD_VIEW,withStarbucksIPad} from './starbucks-ipad.mjs?v=ipad-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
@@ -341,7 +341,7 @@ export async function mountMatrixPanorama(root,{onReady=()=>{},signal,lang='es'}
    }
    deviceEditor.refresh();remoteState=state;
   },onStatus:state=>{if(disposed)return;toolbar.querySelector('.matrix-remote-status').textContent=state.error?t('MCP sin conexión · se conserva el último estado','MCP offline · keeping last state'):t('MCP conectado · revisión ','MCP connected · revision ')+state.revision;}});
-  releaseInteractive=registerInteractiveScreens({root:surface,host:id=>nodes.get(id),blocked:id=>incidents?.off.has(id),focus:id=>{const p=model.players.find(p=>p.id===id);if(p?.corners){yaw=p.corners.reduce((n,c)=>n+c.yaw,0)/4;pitch=p.corners.reduce((n,c)=>n+c.pitch,0)/4;fov=30;renderKey='';}}});
+  releaseInteractive=registerInteractiveScreens({root:surface,host:id=>id==='starbucks-avatar-wall'?wallAvatar.element:nodes.get(id),blocked:id=>id==='starbucks-avatar-wall'?wallAvatar.off:incidents?.off.has(id),focus:id=>{if(id==='starbucks-avatar-wall'){focusAvatar();return;}const p=model.players.find(p=>p.id===id);if(p?.corners){yaw=p.corners.reduce((n,c)=>n+c.yaw,0)/4;pitch=p.corners.reduce((n,c)=>n+c.pitch,0)/4;fov=30;renderKey='';}}});
   message(t('Panorama 360° · arrastra para mirar · rueda para zoom','360° panorama · drag to look · scroll to zoom'));onReady();
  }catch(error){if(!disposed){message(t('No se pudo cargar el panorama. Reintenta desde Matrix.','Could not load panorama. Retry Matrix.'));onReady(String(error?.message||error));}}
  return dispose;

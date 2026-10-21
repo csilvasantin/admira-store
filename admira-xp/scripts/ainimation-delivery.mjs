@@ -1,6 +1,6 @@
 export const AINIMATION_API='https://ainimation-interactive-library-preview.csilvasantin.workers.dev/api';
 export const AINIMATION_LOCATION='alsea-sbux-021';
-export const AINIMATION_SCREEN_IDS=['starbucks-ipad-01'];
+export const AINIMATION_SCREEN_IDS=['starbucks-avatar-wall','starbucks-ipad-01'];
 export function validateDelivery(data,id,location){
  if(!/^[a-f0-9]{64}$/.test(id)||location!==AINIMATION_LOCATION||data?.id!==id||data.destination?.id!==location||data.destination?.kind!=='virtual'||(!AINIMATION_SCREEN_IDS.includes(data.destination.screen?.id)||data.destination.screen?.touch!==true)||typeof data.title!=='string'||data.title.length>80)throw Error('Entrega o destino no válido / Invalid delivery or destination');
  const url=new URL(data.playerUrl);if(url.href!==AINIMATION_API+'/deliveries/'+id+'/player')throw Error('Player no permitido / Player not allowed');

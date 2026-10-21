@@ -1,4 +1,4 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=ainimation-delivery-1';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=ainimation-totem-2';
 import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=good-matrix-6161';
 import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=local-playlist-349';
 import {createVisualTiers,requestedTier,matrixVenueAllowed} from './xtanco-visual-tiers.mjs?v=matrix-venue-guard-349';
