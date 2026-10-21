@@ -32,6 +32,9 @@ test('sello-y-verja.py marca el espejo: título, cabecera, pie, tarjeta «estás
  const html=readFileSync(join(dir,'index.html'),'utf8'),shell=readFileSync(join(dir,'assets','xpace-shell.js'),'utf8');
  assert.match(html,/<title>admira\.store · El sistema operativo del comercio físico<\/title>/);
  assert.match(html,/<meta property="og:site_name" content="admira\.store">/);
+ assert.match(html,/\n\s*es:\s*\{[\s\S]*?title: 'admira\.store · El sistema operativo del comercio físico'/,'título ES del diccionario (lo pone applyLanguage)');
+ assert.match(html,/\n\s*en:\s*\{[\s\S]*?title: 'admira\.store · The operating system of physical retail'/,'título EN del diccionario');
+ assert.doesNotMatch(html,/title: 'XpaceOS\.com the Operative System of Retailers'/);
  assert.match(html,/<a class="brand-logo" href="#top" aria-label="admira\.store"><span class="store-wordmark"/,'cabecera propia con la palabra admira.store');
  assert.match(html,/<a class="footer-logo" href="#top" aria-label="admira\.store"><span class="store-wordmark"/,'pie con la palabra');
  assert.match(html,/© 2026 ADmiraNeXT · admira\.store/);
