@@ -5004,9 +5004,9 @@
       "/demo capsula <tipología> <good|better|best>",
       "/demo capsula help"
     ],
-    "count": 24,
+    "count": 25,
     "tour_count": 17,
-    "tour_total_s": 351,
+    "tour_total_s": 476,
     "languages": [
       "es",
       "en"
@@ -5217,6 +5217,14 @@
         "es": "Cápsula «¿Sabías que…?»",
         "en": "“Did you know…?” capsule",
         "tour": true
+      },
+      {
+        "n": 25,
+        "id": "conversacion",
+        "icon": "branch",
+        "es": "Conversación entre consejeros",
+        "en": "Councillor conversation",
+        "tour": false
       }
     ],
     "es": "Registro único de demos (admira-xp/demos.json): /demo help o /demo ayuda las lista numeradas; /demo all o /demo todas enseña seguidas las del recorrido. /demo all es|en (ESP/ENG, --idioma) elige el idioma de la tarjeta, la CLI y los contenidos (causas y notas de la incidencia, ensayos de la suite); sin argumento sigue /idioma y al terminar vuelve el anterior. Tarjeta flotante de cristal con los colores de la marca blanca, icono animado por demo con anillo de pasos, Pausa/Siguiente/Detener, píldora ES/EN y barra con brillo; se arrastra por el asa (ratón o táctil, recuerda la posición; doble clic: arriba al centro) y respeta prefers-reduced-motion. /demo pausa y /demo reanudar; /demo next salta, /demo stop o Esc detiene y el gemelo vuelve a su estado inicial. Las 1–5 son del motor común de la suite. La incidencia de demo crea y cierra un ticket CLI nuevo y su informe sólo se envía con --enviar.",
