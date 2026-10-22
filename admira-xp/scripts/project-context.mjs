@@ -20,13 +20,17 @@ export function projectUrl(href,id,currentQuality){
   const adapter=ADAPTERS[id];if(!adapter)throw new RangeError('No linked rendering adapter for this project');
   const url=new URL(href),p=url.searchParams;
   const requested=currentQuality||p.get('visual')||p.get('quality')||'better';
-  // Matrix opens the Starbucks venue. Best has no Cafebrería adapter yet.
-  const quality=id==='starbucks'?requested:requested==='matrix'||(id==='cafebreria'&&requested==='best')?'better':requested;
+  // Matrix opens a concrete venue: Starbucks and, since FLT-102615, the Sneakers Store
+  // (its own 360° capture inside the twin). Best has no Cafebrería adapter yet.
+  const matrixVenue=id==='starbucks'||id==='sneakers-store';
+  const quality=matrixVenue?requested:requested==='matrix'||(id==='cafebreria'&&requested==='best')?'better':requested;
   for(const key of ['loc','quality','visual','play','from','virtualPlayer','twinOrigin','twinSession','analyzerOrigin'])p.delete(key);
   url.hash='';p.set('project',id);p.set('circuit',adapter.circuit);p.set('autostart',adapter.vertical);
   p.set('quality',['good','better','best','matrix'].includes(quality)?quality:'better');
   if(adapter.loc)p.set('loc',adapter.loc);
   if(id==='cafebreria')url.pathname='/xpacios/cafebreria/';
-  if(id==='sneakers-store')url.pathname='/xpacios/sneakerstore/';
+  // Sneakers Store in Matrix stays in the twin (/admira-xp/); other tiers keep its own page.
+  if(id==='sneakers-store'&&quality!=='matrix')url.pathname='/xpacios/sneakerstore/';
+  if(id==='sneakers-store'&&quality==='matrix')p.delete('autostart');
   return url.href;
 }

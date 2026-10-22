@@ -1,8 +1,17 @@
-export function matrixVenueAllowed(search=''){
+// Matrix venues: each one is a concrete store with its own 360° capture. The
+// generic entry (no loc/venue, or another project) keeps opening the Starbucks demo. Mirrors
+// window.__xpaceMatrixVenue in index.html (early boot, before any module loads).
+export const MATRIX_VENUES=Object.freeze({
+ 'alsea-sbux-021':Object.freeze({loc:'alsea-sbux-021',project:'starbucks',venues:['alsea-sbux-021','demo-starbucks'],es:'Starbucks Alsea',en:'Starbucks Alsea'}),
+ 'sneakers-store-santa-rosa-19':Object.freeze({loc:'sneakers-store-santa-rosa-19',project:'sneakers-store',venues:['sneakers-store-santa-rosa-19'],es:'Sneakers Store · Santa Rosa 19',en:'Sneakers Store · Santa Rosa 19'})
+});
+export function matrixVenue(search=''){
  const p=new URLSearchParams(search),loc=p.get('loc'),venue=p.get('venue'),project=p.get('project');
- if(!loc&&!venue)return true;
- return (!loc||loc==='alsea-sbux-021')&&(!venue||['alsea-sbux-021','demo-starbucks'].includes(venue))&&(!project||project==='starbucks');
+ if(!loc&&!venue)return Object.values(MATRIX_VENUES).find(v=>v.project===project)?.loc||'alsea-sbux-021';
+ for(const v of Object.values(MATRIX_VENUES))if((!loc||loc===v.loc)&&(!venue||v.venues.includes(venue))&&(!project||project===v.project))return v.loc;
+ return null;
 }
+export function matrixVenueAllowed(search=''){return matrixVenue(search)!==null;}
 export const TIER_STORAGE_KEY='xtanco_visual_tier_v2';
 export function requestedTier(search='',storage){
   const params=new URLSearchParams(search);
@@ -18,10 +27,10 @@ export function requestedTier(search='',storage){
  * Openers receive {signal,requestId}; async view events echo that requestId.
  * Views must cancel pending work on abort/close and never reopen after abort.
  */
-export function createVisualTiers({openBetter,closeBetter,subscribeBetter,openBest,closeBest,subscribeBest,openMatrix,closeMatrix,subscribeMatrix,storage,onChange=()=>{},onBestRequested=()=>{}}){
+export function createVisualTiers({openBetter,closeBetter,subscribeBetter,openBest,closeBest,subscribeBest,openMatrix,closeMatrix,subscribeMatrix,storage,onChange=()=>{},onBestRequested=()=>{},matrixNotice=()=>'Matrix · Starbucks Alsea · captura 360° y mapeo local de players.'}){
   const views={better:{open:openBetter,close:closeBetter},best:{open:openBest,close:closeBest},matrix:{open:openMatrix,close:closeMatrix}};
   const previewNotice='Best · Avenida Admira · mobiliario editable y visitantes en vivo.';
-  const tierNotice=tier=>tier==='best'?previewNotice:tier==='matrix'?'Matrix · Starbucks Alsea · captura 360° y mapeo local de players.':'';
+  const tierNotice=tier=>tier==='best'?previewNotice:tier==='matrix'?matrixNotice():'';
   const isPreview=tier=>tier==='best'||tier==='matrix';
   const tierLabel=tier=>({good:'Good',better:'Better',best:'Best',matrix:'Matrix'})[tier];
   let mode='good',busy=false,notice='',error='',active=null,sequence=0,disposed=false;

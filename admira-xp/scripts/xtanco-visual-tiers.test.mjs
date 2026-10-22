@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {TIER_STORAGE_KEY,requestedTier,createVisualTiers,matrixVenueAllowed} from './xtanco-visual-tiers.mjs';
+import {TIER_STORAGE_KEY,requestedTier,createVisualTiers,matrixVenueAllowed,matrixVenue,MATRIX_VENUES} from './xtanco-visual-tiers.mjs';
 
 function memoryStorage(entries={}){
   const values=new Map(Object.entries(entries)),reads=[],writes=[];
@@ -239,7 +239,7 @@ function selectorHarness({search='',storage=memoryStorage(),storageBlocked=false
   class MutationObserver {constructor(callback){this.callback=callback;}observe(node,options){this.node=node;this.options=options;observers.push(this);}}
   const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},MutationObserver,__xtancoVisualState:()=>({vertical})};Object.defineProperty(window,'localStorage',{get(){if(storageBlocked)throw Error('denied');return storage;}});
   document.documentElement={lang:'es'};
-  const context=vm.createContext({interfaceTranslator,document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,matrixVenueAllowed,...life,
+  const context=vm.createContext({interfaceTranslator,document,window,location:{search},URLSearchParams,createVisualTiers,requestedTier,matrixVenueAllowed,matrixVenue,MATRIX_VENUES,...life,
     openGoodView:good.openLifeView,closeGoodView:good.closeLifeView,subscribeGoodView:good.subscribeLifeView,
     openBestView:best.openLifeView,closeBestView:best.closeLifeView,subscribeBestView:best.subscribeLifeView,
     openMatrixView:matrix.openLifeView,closeMatrixView:matrix.closeLifeView,subscribeMatrixView:matrix.subscribeLifeView});
@@ -381,4 +381,19 @@ test('Matrix requests for an explicit different venue remain in that venue and u
  for(const search of ['?project=starbucks&loc=qa349-starbucks-b&quality=matrix','?venue=qa349-office&visual=matrix','?loc=alsea-sbux-021&venue=other&quality=matrix']){
   const h=selectorHarness({search});assert.equal(h.body.dataset.xtancoTier,'better');assert.equal(h.matrix.calls.open,0);assert.equal(h.life.calls.open,1);await h.window.__xtancoVisualTiers.choose('matrix');assert.equal(h.matrix.calls.open,0);assert.equal(h.body.dataset.xtancoTier,'better');
  }
+});
+
+test('Matrix venues: Sneakers Store · Santa Rosa 19 opens its own Matrix and Starbucks keeps its routing (FLT-102615)',()=>{
+  const sneakers='sneakers-store-santa-rosa-19';
+  for(const search of ['?loc='+sneakers,'?quality=matrix&loc='+sneakers+'&project=sneakers-store','?visual=matrix&loc='+sneakers+'&venue='+sneakers,'?project=sneakers-store&quality=matrix','?venue='+sneakers]){
+    assert.equal(matrixVenue(search),sneakers,search);assert.equal(matrixVenueAllowed(search),true,search);
+  }
+  for(const search of ['','?quality=matrix','?project=starbucks&venue=demo-starbucks','?loc=alsea-sbux-021','?project=estancos'])assert.equal(matrixVenue(search),'alsea-sbux-021',search);
+  for(const search of ['?loc='+sneakers+'&project=starbucks','?loc=alsea-sbux-021&project=sneakers-store','?loc='+sneakers+'&venue=demo-starbucks','?loc=sneakers-store-otra','?loc=altadis-bcn-1']){
+    assert.equal(matrixVenue(search),null,search);assert.equal(matrixVenueAllowed(search),false,search);
+  }
+  assert.equal(requestedTier('?loc='+sneakers),'matrix');
+  assert.equal(requestedTier('?quality=matrix&loc='+sneakers+'&project=sneakers-store'),'matrix');
+  assert.deepEqual(Object.keys(MATRIX_VENUES),['alsea-sbux-021',sneakers]);
+  assert.equal(MATRIX_VENUES[sneakers].project,'sneakers-store');
 });

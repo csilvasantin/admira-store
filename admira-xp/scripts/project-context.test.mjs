@@ -14,3 +14,9 @@ test('a project label cannot impersonate a linked Starbucks venue',()=>{assert.e
 test('current UI quality wins over a stale share-link value',()=>{assert.equal(new URL(projectUrl(base,'starbucks','matrix')).searchParams.get('quality'),'matrix');assert.equal(new URL(projectUrl(base,'estancos','matrix')).searchParams.get('quality'),'better');});
 
 test("Sneakers Store keeps its own venue and adapter",()=>{const u=new URL(projectUrl(base,"sneakers-store"));assert.equal(u.pathname,"/xpacios/sneakerstore/");assert.equal(projectContext(u.href).id,"sneakers-store");assert.equal(u.searchParams.get("loc"),"sneakers-store-santa-rosa-19");});
+test('Sneakers Store keeps Matrix and stays in the twin; other tiers keep its own page (FLT-102615)',()=>{
+  const m=new URL(projectUrl(base,'sneakers-store','matrix'));
+  assert.equal(m.searchParams.get('quality'),'matrix');assert.equal(m.pathname,'/admira-xp/');assert.equal(m.searchParams.get('loc'),'sneakers-store-santa-rosa-19');assert.equal(m.searchParams.has('autostart'),false);assert.equal(m.searchParams.get('project'),'sneakers-store');
+  const b=new URL(projectUrl(base,'sneakers-store','better'));
+  assert.equal(b.searchParams.get('quality'),'better');assert.equal(b.pathname,'/xpacios/sneakerstore/');assert.equal(b.searchParams.get('autostart'),'sneakerstore');
+});

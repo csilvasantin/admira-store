@@ -9,8 +9,9 @@ export function tierPlate(mode){
   const tier=TIER_HUD[mode];
   return tier?`${tier.index} · ${tier.name} · ${tier.bits} BITS`:'';
 }
-export function mountTierHud(dialog,{mode,stage}={}){
-  const base=TIER_HUD[mode];
+export function mountTierHud(dialog,{mode,stage,caption,captionEn}={}){
+  // A concrete venue (Matrix · Sneakers Store) may name itself; Starbucks keeps the default copy.
+  const base=TIER_HUD[mode]&&caption?{...TIER_HUD[mode],caption,captionEn:captionEn||caption}:TIER_HUD[mode];
   const tier=globalThis.XpaceStarbucks?.active()&&mode!=='matrix'?{...base,caption:'Starbucks · Paseo de Gracia 103 · reconstrucción desde Matrix',captionEn:'Starbucks · Paseo de Gracia 103 · reconstruction from Matrix'}:base;
   if(!dialog||!tier)return {setStatus(){},dispose(){}};
   const scene=stage||dialog.querySelector('.best-stage,.life-stage')||dialog;

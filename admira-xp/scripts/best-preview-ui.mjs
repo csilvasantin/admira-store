@@ -6,7 +6,7 @@ import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
 import {mountFurnitureLift} from './furniture-lift.mjs?v=hiperreal-vivo-1';
 import {createXtancoPlayers} from './xtanco-players.mjs?v=hiperreal-vivo-1';
 import {mountBestOnAir} from './best-onair.mjs?v=local-playlist-349';
-import {mountTierHud} from './tier-hud.mjs?v=20261006-alsea-repair-1';
+import {mountTierHud} from './tier-hud.mjs?v=sneakers-matrix-1';
 import {mountMatrixExterior} from './matrix-exterior.mjs?v=exterior-1';
 import {attachFloatingPanel} from './floating-panels.mjs?v=windows-menu-1';
 

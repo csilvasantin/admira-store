@@ -15,11 +15,17 @@
   // Resolve the Starbucks entry before the first paint; never reveal the arcade on a timer.
   (function(){
     var q=new URLSearchParams(location.search),visual=q.get('visual')??q.get('quality');
-    window.__xpaceMatrixVenueAllowed=function(search){
+    // Matrix venues (mirror of MATRIX_VENUES in scripts/xtanco-visual-tiers.mjs): the
+    // Starbucks demo and, since 22-oct-2026 (FLT-102615), the Sneakers Store of Santa Rosa 19.
+    var MATRIX_VENUES=[{loc:'alsea-sbux-021',project:'starbucks',venues:['alsea-sbux-021','demo-starbucks'],es:'Starbucks',en:'Starbucks'},{loc:'sneakers-store-santa-rosa-19',project:'sneakers-store',venues:['sneakers-store-santa-rosa-19'],es:'Sneakers Store',en:'Sneakers Store'}];
+    window.__xpaceMatrixVenue=function(search){
       var p=new URLSearchParams(search==null?location.search:search),loc=p.get('loc'),venue=p.get('venue'),project=p.get('project');
-      if(!loc&&!venue)return true;
-      return (!loc||loc==='alsea-sbux-021')&&(!venue||['alsea-sbux-021','demo-starbucks'].includes(venue))&&(!project||project==='starbucks');
+      if(!loc&&!venue){for(var j=0;j<MATRIX_VENUES.length;j++)if(MATRIX_VENUES[j].project===project)return MATRIX_VENUES[j].loc;return 'alsea-sbux-021';}
+      for(var i=0;i<MATRIX_VENUES.length;i++){var v=MATRIX_VENUES[i];if((!loc||loc===v.loc)&&(!venue||v.venues.indexOf(venue)>=0)&&(!project||project===v.project))return v.loc;}
+      return null;
     };
+    window.__xpaceMatrixVenueAllowed=function(search){return window.__xpaceMatrixVenue(search)!==null;};
+    window.__xpaceMatrixVenueName=function(){var id=window.__xpaceMatrixVenue();for(var i=0;i<MATRIX_VENUES.length;i++)if(MATRIX_VENUES[i].loc===id)return MATRIX_VENUES[i];return MATRIX_VENUES[0];};
 
     // Estancos Altadis BCN: cada uno entra en SU escena de estanco (FLT-101401;
     // antes, FLT-101352, todos compartían la cafetería), nunca en Matrix (Matrix =
@@ -38,7 +44,7 @@
     if(!window.__xpaceMatrixVenueAllowed()){q.delete('visual');q.set('quality','better');try{history.replaceState(history.state,'',location.pathname+'?'+q.toString()+location.hash);}catch(e){}return;}
     window.__xpaceMatrixEntry=true;document.documentElement.classList.add('matrix-entry','matrix-boot');
     var ready=false,failed=false,timer;
-    function fail(){if(ready)return;failed=true;var box=document.getElementById('matrixEntryStatus');if(!box)return;box.hidden=false;box.replaceChildren();var es=document.documentElement.lang==='es',text=document.createElement('p'),retry=document.createElement('button');text.textContent=es?'No se pudo abrir Starbucks. Vuelve a intentarlo.':'Could not open Starbucks. Please try again.';retry.textContent=es?'Reintentar Matrix':'Retry Matrix';retry.onclick=function(){location.reload();};box.append(text,retry);}
+    function fail(){if(ready)return;failed=true;var box=document.getElementById('matrixEntryStatus');if(!box)return;box.hidden=false;box.replaceChildren();var es=document.documentElement.lang==='es',text=document.createElement('p'),retry=document.createElement('button');var name=window.__xpaceMatrixVenueName()[es?'es':'en'];text.textContent=es?'No se pudo abrir '+name+'. Vuelve a intentarlo.':'Could not open '+name+'. Please try again.';retry.textContent=es?'Reintentar Matrix':'Retry Matrix';retry.onclick=function(){location.reload();};box.append(text,retry);}
     window.__xpaceMatrixBoot={ready:function(){ready=true;clearTimeout(timer);document.documentElement.classList.remove('matrix-boot','adm-direct');document.getElementById('matrixEntryStatus')?.remove();},fail:fail};
     document.addEventListener('DOMContentLoaded',function(){if(ready)return;var box=document.createElement('section');box.id='matrixEntryStatus';box.hidden=true;box.setAttribute('role','alert');document.body.append(box);if(failed)fail();timer=setTimeout(fail,25000);},{once:true});
   })();
@@ -4689,8 +4695,10 @@ function stopFaceLoop(){ if(FACE_LOOP){ FACE_LOOP.stop=true; if(FACE_LOOP.timer)
 //    Cada 20s manda presencia + género + edad medidos por la cámara (LIVE_FACE).
 //    loc/screen configurables por ?audloc= &audscreen= o localStorage (default xtanco).
 const AUDIENCE_URL='https://api.admira.store/audience';
-const AUD_CFG={ loc:(new URLSearchParams(location.search).get('audloc')||localStorage.getItem('xp_aud_loc')||'xtanco'),
-                screen:(new URLSearchParams(location.search).get('audscreen')||localStorage.getItem('xp_aud_screen')||'xtanco-totem') };
+// Matrix de la Sneakers Store (FLT-102615): la cámara mide para su pantalla horizontal.
+const AUD_VENUE_DEFAULT=(window.__xpaceMatrixVenue?.()==='sneakers-store-santa-rosa-19')?{loc:'sneakers-store-santa-rosa-19',screen:'sneakers-store-santa-rosa-19-screen'}:null;
+const AUD_CFG={ loc:(new URLSearchParams(location.search).get('audloc')||AUD_VENUE_DEFAULT?.loc||localStorage.getItem('xp_aud_loc')||'xtanco'),
+                screen:(new URLSearchParams(location.search).get('audscreen')||AUD_VENUE_DEFAULT?.screen||localStorage.getItem('xp_aud_screen')||'xtanco-totem') };
 let AUD_TIMER=null;
 function sendAudienceSample(){
   try{
@@ -4702,6 +4710,13 @@ function sendAudienceSample(){
 }
 function startAudienceSender(){ if(AUD_TIMER) return; sendAudienceSample(); AUD_TIMER=setInterval(sendAudienceSample,20000); }
 function stopAudienceSender(){ if(AUD_TIMER){ clearInterval(AUD_TIMER); AUD_TIMER=null; } }
+// Cámara del navegador para las vistas Matrix (matrix-sneakers.mjs): misma LiveCam,
+// misma inferencia local (LIVE_FACE) y mismo envío a /audience con AUD_CFG.
+window.__xpaceLiveCamera={
+  async start(){const on=await setLiveCamState(true);if(on)void startFaceLoop();return !!LIVE_CAM.active;},
+  async stop(){await setLiveCamState(false);stopFaceLoop();return false;},
+  state(){return {active:!!LIVE_CAM.active,requesting:!!LIVE_CAM.requesting,error:LIVE_CAM.error||LIVE_FACE.err||'',ready:LIVE_FACE.ready,loading:LIVE_FACE.loading,faces:LIVE_FACE.faces||0,gender:LIVE_FACE.gender||'',ageBucket:LIVE_FACE.ageBucket||'',emotion:LIVE_FACE.emotion||'',sending:!!AUD_TIMER,loc:AUD_CFG.loc,screen:AUD_CFG.screen,endpoint:AUDIENCE_URL};}
+};
 
 // ── /generovideo: las DOS pantallas siguen el sexo detectado en cámara ─────
 // Hombre → "Money For Nothing" + overlay HOMBRE · Mujer → "Take On Me" + MUJER.
@@ -27835,6 +27850,12 @@ function loop(){
 // Matrix represents this concrete venue even when opened from the generic entry.
 window.__xtancoEnterStarbucks=()=>{
   if(!window.__xpaceMatrixVenueAllowed())return false;
+  // Sneakers Store · Santa Rosa 19 has its own Matrix (matrix-sneakers.mjs): keep its loc.
+  if(window.__xpaceMatrixVenue()==='sneakers-store-santa-rosa-19'){
+    const url=new URL(location.href);
+    if(url.searchParams.get('loc')!=='sneakers-store-santa-rosa-19'||!url.searchParams.get('project')){url.searchParams.set('loc','sneakers-store-santa-rosa-19');url.searchParams.set('project','sneakers-store');url.searchParams.set('circuit','sneakerstore');history.replaceState(history.state,'',url);}
+    return true;
+  }
   if(isStarbucksVenue())return true;
   const url=new URL(location.href);url.searchParams.set('loc','alsea-sbux-021');
   url.searchParams.delete('play');url.searchParams.delete('autostart');
@@ -36647,7 +36668,7 @@ window.addEventListener('pageshow',()=>{if(!window.__shelfProductsRuntime)instal
 <script type="module" src="scripts/scene-playlists.mjs?v=local-playlist-349"></script>
 <script type="module" src="scripts/context-playlist-ui.mjs?v=local-playlist-349"></script>
 <link rel="stylesheet" href="scripts/context-playlist.css?v=previos-2">
-<script type="module" src="scripts/xtanco-premium-ui.mjs?v=ainimation-totem-2"></script>
+<script type="module" src="scripts/xtanco-premium-ui.mjs?v=sneakers-matrix-1"></script>
 <script type="module" src="scripts/expert-composer.mjs?v=person-voice-1"></script>
 <script type="module" src="scripts/dock-scroll-guard.mjs?v=hueco-360-1"></script>
 <link rel="stylesheet" href="scripts/side-panel-resize.css?v=20261006-alsea-repair-1">
