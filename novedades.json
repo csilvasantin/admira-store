@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.22.10.2026.r3.11:51": [
+    "Corrección: se retira de producción un módulo en desarrollo de la Sneakers Store (segmentado-core.mjs) que entró por error en el commit de la indexación; su trabajo sigue en su rama."
+  ],
   "v.22.10.2026.r2.11:45": [
     "Indexación coherente: robots.txt y sitemap.xml propios de admira.store (antes eran los de XpaceOS copiados). Se indexa solo lo público: gemelo, Xpacios y MCP.",
     "La portada y las páginas tras login llevan noindex,nofollow (la portada manda al login, no tenía sentido pedir indexarla); canonicals apuntando a admira.store.",
