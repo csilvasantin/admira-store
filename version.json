@@ -1,16 +1,16 @@
 {
-  "version": "v.22.10.2026.r1.11:07",
-  "deployedAt": "2026-10-22T09:07:34Z",
+  "version": "v.22.10.2026.r2.11:45",
+  "deployedAt": "2026-10-22T09:45:52Z",
   "deployer": "SubNeoMBP16",
   "machine": "MacBookPro16",
   "signature": "SubNeoMBP16 · MacBookPro16",
-  "git": "2c48082d8378526d09cfe9b74943c70fa878d4ef",
-  "gitShort": "2c48082",
-  "gitFull": "2c48082d8378526d09cfe9b74943c70fa878d4ef",
+  "git": "979b32325693cc715a3a76cbe419daefd74139c7",
+  "gitShort": "979b323",
+  "gitFull": "979b32325693cc715a3a76cbe419daefd74139c7",
   "dirty": false,
   "novedades": [
-    "Cerrada la fuga del login: una ruta inexistente con extensión (/zzz.txt, /qqq.json…) ya no devuelve la portada privada; responde 404 real (404.html en la raíz y regla en el perímetro).",
-    "/llms.txt es ahora un fichero de texto de verdad que remite a mcp.admira.store/llms.txt y a /mcp/.",
-    "Las rutas públicas (gemelo, Xpacios, MCP, version.json, robots, sitemap) siguen abiertas; la portada sigue pidiendo login."
+    "Indexación coherente: robots.txt y sitemap.xml propios de admira.store (antes eran los de XpaceOS copiados). Se indexa solo lo público: gemelo, Xpacios y MCP.",
+    "La portada y las páginas tras login llevan noindex,nofollow (la portada manda al login, no tenía sentido pedir indexarla); canonicals apuntando a admira.store.",
+    "El espejo desde xpaceos.com ya no puede pisar robots, sitemap, llms.txt ni 404.html, y un test lo vigila."
   ]
 }
