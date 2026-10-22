@@ -166,8 +166,10 @@ export function mountSegmented({document,t,en,channels,status=()=>{}}){
     if(!dialog.open)dialog.showModal();
     if(!state.open){state.open=true;state.lane='neutral';state.kind=null;note(t('La API de IEU exige sesión (401 sin ella) y la Cúpula no guarda credencial: el vídeo entra compartiendo la pestaña de Puerta Cam, como en Xtore. El bus se lee en público; publicar en él pide clave de flota (no va en el navegador).','The IEU API requires a session (401 without it) and the Vault holds no credential: video comes from sharing the Puerta Cam tab, as in Xtore. The bus is read publicly; publishing to it needs a fleet key (never in the browser).'));
       $('seg-source').textContent=t('Sin fuente · elige una','No source · choose one');$('seg-audience').textContent='0';
-      await Promise.all([loadMatrix(),loadStock()]);if(!state.open)return;
+      // La fuente elegida arranca ya; matriz y Stock llegan detrás y re-resuelven el contenido del carril actual.
       state.timers=[setInterval(tick,250),setInterval(pollBus,1000)];void pollBus();void mountMetahuman();applyLane(null);
+      $('seg-matrix').textContent=t('cargando matriz y Stock…','loading matrix and Stock…');
+      void Promise.all([loadMatrix(),loadStock()]).then(()=>{if(!state.open)return;for(const s of Object.values(screens))s.signature='';applyLane(state.kind);});
     }
     if(mode==='demo')demo();else if(mode==='video')demoVideo();else if(mode==='bus'){stopSource();state.source='bus';pick('seg-bus');$('seg-source').textContent=t('Bus mcp-tv · lo que publique el productor de la Puerta Cam','mcp-tv bus · whatever the Puerta Cam producer publishes');camStatus(t('Leyendo el bus público; sin productor queda en neutral.','Reading the public bus; without a producer it stays neutral.'));}
     else if(mode==='cam'||mode==='share')void shareTab();
