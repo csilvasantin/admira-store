@@ -50,3 +50,12 @@ Registry: each receiver now includes `scene.item`, `scene.type` and `scene.apert
 `/xpacios/pantalla/` retains its stable links and embeds `/admira-xp/` with exact loc/screen, `quality=better` and `ainimationScene=1`. Existing embedded-player access rules are retained. The same-parent readiness message checks origin, source window, location and screen. AINimation delivery metadata exposes the server-registered scene binding. No credential, playlist, fleet command or physical device changes are introduced.
 
 ES/EN: Mostrar en esta pantalla / Show on this screen; tocar los botones / touch buttons; Restaurar pantalla / Restore screen. The camera moves inside the 3D scene to frame the assigned screen; the Codex side panel is never moved or resized.
+
+
+### Production acceptance of native 3D binding · 22 October 2026
+
+ES: Publicado y verificado desde el navegador interno, sin mover ni redimensionar el panel. Xtanco Barcelona, Xtanco, Xtanco Valencia, Admira Loterías y Admira Prensa pasaron las cinco pruebas: preparar desde AINimation autenticado, aplicar a su apertura 3D, tocar «Ver la carta» y llegar a «¿Qué te apetece?», restaurar y ver el mismo mueble con su contenido de base. La capa HTML desaparece al restaurar. Los IDs y enlaces anteriores se conservan y se reutilizan de forma idempotente. El giro de cámara y Enfocar en 3D se comprobaron en Prensa. Un envío de Valencia fue rechazado al abrirlo contra Prensa.
+
+EN: Published and verified in the internal browser without moving or resizing its side panel. All five venues passed: prepare from the authenticated AINimation Creator, apply to the native 3D aperture, touch “Ver la carta” and reach “¿Qué te apetece?”, restore and see the same furniture and base display. Restore removes the HTML overlay. Previous IDs and links are retained and reused idempotently. Camera orbit and Focus in 3D were checked in Prensa. A Valencia delivery was rejected against Prensa.
+
+Source release: Store `70f1d90`, deployment `6ac091f7.admira-store.pages.dev`; library Worker `4c1dfde4-aa78-4e0b-b51e-54830a0292bd`; MCP help Worker `b368fd26-a169-44bc-aa33-82bbaf2af4fb`. Checks: 128 Store, 78 AINimation and 1 actual-MCP help contract pass. Exact metadata and per-screen results: https://www.ainimation.studio/docs/five-touch-3d-verification.json. The layout remains an interpreted virtual scene; no physical-player acknowledgement is claimed.
