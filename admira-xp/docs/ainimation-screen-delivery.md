@@ -75,3 +75,7 @@ ES: Una acción «Preparar 5 envíos» en producción preparó los cinco resulta
 EN: One “Prepare 5 deliveries” action in production prepared all five results and links with no errors, from revision 8 of “Prueba Director · catálogo y cesta”. All five metadata records confirm the same content. Each native Better 3D scene passed assignment, catalog, Chocolate Director + oat milk basket (€4.80), and restoration. All were left restored. Internal browser only; the panel was neither moved nor resized. Partial retry was checked separately with controlled local responses: retain four links and retry only the fifth.
 
 [Resultados, enlaces y comprobaciones / Results, links and checks](bulk-touch-delivery-verification.json).
+
+Historial comprobado en producción: los cinco resultados y enlaces del lote de revisión 8 reaparecen al cerrar el envío, volver de Director y recargar el Creador. Tras recargar se consultó sin iniciar sesión; la vuelta de Director conservó la cuenta verificada. Los tres proyectos siguen en la biblioteca. Navegador interno, sin mover ni redimensionar el panel.
+
+History verified in production: all five revision-8 batch results and links reappear after closing delivery, returning from Director and reloading Creator. After reload, History was opened without signing in; the Director return preserved the verified account. All three projects remain in the library. Internal browser only, with no panel movement or resizing. [Evidencia / Evidence](delivery-history-verification.json).
