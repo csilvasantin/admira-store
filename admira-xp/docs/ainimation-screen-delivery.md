@@ -67,3 +67,11 @@ Production check (2026-10-22): revision 5 of “Prueba Director · catálogo y c
 Acceso Google: [guía y contrato](ainimation-google-signin.md). / Google sign-in: [guide and contract](ainimation-google-signin.md).
 
 Director: [guía y sesión del Creador / guide and Creator session](ainimation-director.md).
+
+## Envío múltiple comprobado / Verified multiple delivery · 22 October 2026
+
+ES: Una acción «Preparar 5 envíos» en producción preparó los cinco resultados y enlaces, sin errores, desde la revisión 8 de «Prueba Director · catálogo y cesta». Se comprobó la misma versión en los cinco metadatos, asignación dentro de cada escena Better 3D, catálogo, cesta con Chocolate Director + avena (4,80 €) y restauración. Todas quedaron restauradas. Navegador interno, sin mover ni redimensionar el panel. El reintento parcial se probó aparte con respuestas controladas locales: conserva cuatro enlaces y reintenta sólo el quinto.
+
+EN: One “Prepare 5 deliveries” action in production prepared all five results and links with no errors, from revision 8 of “Prueba Director · catálogo y cesta”. All five metadata records confirm the same content. Each native Better 3D scene passed assignment, catalog, Chocolate Director + oat milk basket (€4.80), and restoration. All were left restored. Internal browser only; the panel was neither moved nor resized. Partial retry was checked separately with controlled local responses: retain four links and retry only the fifth.
+
+[Resultados, enlaces y comprobaciones / Results, links and checks](bulk-touch-delivery-verification.json).
