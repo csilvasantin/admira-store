@@ -32,6 +32,17 @@ export function redact(value,depth=0){
   if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).slice(0,60).map(([k,v])=>[k,redact(v,depth+1)]));
   return value;
 }
+// El token, aunque se guardara con otras mayúsculas o espacios alrededor del nombre (22-oct-2026: el diagnóstico decía
+// not_configured con el secreto ya guardado).
+export function cameraToken(env){
+  if(env?.IEU_CAMERA_TOKEN)return env.IEU_CAMERA_TOKEN;
+  const key=Object.keys(env||{}).find(k=>typeof env[k]==='string'&&env[k]&&k.trim().toUpperCase()==='IEU_CAMERA_TOKEN');
+  return key?env[key]:'';
+}
+// Nombres (nunca valores) de las variables que parecen de este directo: el diagnóstico los enseña si falta el token,
+// para ver si llegó con otro nombre o no llegó a producción.
+export function relatedVariables(env){return Object.keys(env||{}).filter(k=>typeof env[k]==='string'&&/IEU|CAM/i.test(k)).sort();}
+
 // Puerta Cam en IEU: pendiente de leer en el diagnóstico con el token puesto (no se inventa un ID).
 export const PUERTA_CAM_REQUEST=null;
 export function streamRequest(env,fallback=PUERTA_CAM_REQUEST){
@@ -77,8 +88,12 @@ export async function onRequest({request,env},fetcher=fetch){
   if(request.method==='POST'&&request.headers.get('Origin')!==url.origin)return reply({ok:false,error:'origin'},403);
   const session=await readSession(request,env,site,fetcher);
   if(!session||session.lectura)return reply({ok:false,error:'login_required',login:LOGIN_PATH},401);
-  if(!env.IEU_CAMERA_TOKEN)return reply({ok:false,error:'not_configured'},503);
-  const auth={Authorization:'Bearer '+env.IEU_CAMERA_TOKEN,Accept:'application/json'};
+  const token=cameraToken(env);
+  if(!token){
+    const diagnostic=request.method==='GET'&&url.searchParams.get('diagnostico')==='1'&&session.superuser;
+    return reply({ok:false,error:'not_configured',...(diagnostic?{variables:relatedVariables(env)}:{})},503);
+  }
+  const auth={Authorization:'Bearer '+token,Accept:'application/json'};
   if(request.method==='GET'){
     if(url.searchParams.get('diagnostico')!=='1')return reply({ok:false,error:'not_found'},404);
     if(!session.superuser)return reply({ok:false,error:'forbidden'},403);
