@@ -46,7 +46,9 @@ test('el apex manda al login del canónico', async () => {
 
 test('el gemelo y los assets salen sin sesión', async () => {
   assert.equal((await perimetro(ctx('https://www.xpaceos.com/admira-xp/'), noFetch)).status, 200);
-  assert.equal((await perimetro(ctx('https://www.xpaceos.com/assets/logo.png'), noFetch)).status, 200);
+  // El asset sale con su tipo real: un .png que llegara como HTML sería la portada en fallback (404 desde el 22-oct-2026).
+  const png = {request:new Request('https://www.xpaceos.com/assets/logo.png'), env, next:async () => new Response('x', {headers:{'content-type':'image/png'}})};
+  assert.equal((await perimetro(png, noFetch)).status, 200);
 });
 
 test('una cookie falsificada no abre nada', async () => {
@@ -240,4 +242,33 @@ test('una sesión de Google con el correo de agente, sin huella, no entra', asyn
   const todos = async () => Response.json({ok:true, allowed:true, superuser:true});
   const r = await perimetro(pide('https://www.xpaceos.com/', {headers:{Cookie:await sesion('agentes@silicio.admiranext.com')}}), todos);
   assert.equal(r.status, 302);
+});
+
+// ── Fuga del login (DEC-mvjb0o1k2pn8, 22-oct-2026): un asset inexistente no devuelve la portada ──
+const fallbackPortada = (url, headers = {}) => ({
+  request:new Request(url, {headers}), env,
+  next:async () => new Response('<html>portada privada</html>', {status:200, headers:{'content-type':'text/html; charset=utf-8'}})
+});
+const assetReal = (url, type) => ({
+  request:new Request(url), env,
+  next:async () => new Response('x', {status:200, headers:{'content-type':type}})
+});
+
+test('un asset que no existe y vuelve como HTML (fallback a index.html) es 404, no la portada', async () => {
+  for (const path of ['/zzz.txt', '/qqq.json', '/help/zzz.css', '/llms.txt']) {
+    const r = await perimetro(fallbackPortada('https://www.admira.store' + path), noFetch);
+    assert.equal(r.status, 404, path);
+    assert.doesNotMatch(await r.text(), /portada/, path);
+  }
+});
+
+test('los assets reales y las páginas públicas siguen saliendo', async () => {
+  assert.equal((await perimetro(assetReal('https://www.admira.store/assets/logo.png', 'image/png'), noFetch)).status, 200);
+  assert.equal((await perimetro(assetReal('https://www.admira.store/version.json', 'application/json'), noFetch)).status, 200);
+  assert.equal((await perimetro(assetReal('https://www.admira.store/robots.txt', 'text/plain'), noFetch)).status, 200);
+  assert.equal((await perimetro(fallbackPortada('https://www.admira.store/admira-xp/'), noFetch)).status, 200);
+  assert.equal((await perimetro(fallbackPortada('https://www.admira.store/xpacios/'), noFetch)).status, 200);
+  assert.equal((await perimetro(fallbackPortada('https://www.admira.store/mcp/'), noFetch)).status, 200);
+  const raiz = await perimetro(fallbackPortada('https://www.admira.store/'), noFetch);
+  assert.equal(raiz.status, 302);
 });

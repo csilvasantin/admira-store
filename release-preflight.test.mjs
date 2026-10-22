@@ -28,3 +28,14 @@ test('CI rejects stale static version and mismatched signature before producing 
     }finally{rmSync(fixture,{recursive:true,force:true});}
   }
 });
+
+test('404 real y llms.txt de texto: sin ellos Pages sirve la portada privada a cualquier ruta inexistente (DEC-mvjb0o1k2pn8)', () => {
+  const notFound = readFileSync(join(root, '404.html'), 'utf8');
+  assert.match(notFound, /href="\/auth\/login"/);
+  assert.doesNotMatch(notFound, /admiranext-version|gemelo|catálogo|clientes/i);
+  assert.ok(notFound.length < 4000, '404.html debe ser mínimo, sin contenido privado');
+  const llms = readFileSync(join(root, 'llms.txt'), 'utf8');
+  assert.match(llms, /https:\/\/mcp\.admira\.store\/llms\.txt/);
+  assert.match(llms, /\/mcp\//);
+  assert.doesNotMatch(llms, /<html|<!doctype/i);
+});

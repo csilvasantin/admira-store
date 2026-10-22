@@ -1,0 +1,16 @@
+# admira.store
+
+> admira.store es el escaparate del sistema operativo del comercio físico de Admira: el gemelo digital XpaceOS, los Xpacios y el servidor MCP. La portada es privada (login de Google gestionado en AdmiraNeXT).
+
+## Para agentes
+
+- Servidor MCP y su llms.txt canónico: https://mcp.admira.store/llms.txt
+- Página del MCP (humanos y bots): https://www.admira.store/mcp/
+- Gemelo digital público (incrustable): https://www.admira.store/admira-xp/
+- Xpacios: https://www.admira.store/xpacios/
+- Versión desplegada: https://www.admira.store/version.json
+
+## Acceso
+
+- Personas: https://www.admira.store/auth/login
+- El resto de rutas exige sesión; lo que no existe responde 404.

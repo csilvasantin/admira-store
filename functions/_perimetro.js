@@ -594,6 +594,19 @@ async function renewSession(response, session, env, site) {
 }
 
 // Punto de entrada del middleware de Pages.
+// FUGA DEL LOGIN (Carlos, 22-oct-2026, DEC-mvjb0o1k2pn8): un asset que no existe
+// (/zzz.txt, /qqq.json, /help/zzz.css) pasa sin sesión por tener extensión, y
+// Cloudflare Pages, sin 404.html, contesta a lo inexistente con index.html: la
+// portada PRIVADA entera, 200 y 135 KB, sin login. Ahora hay 404.html en la raíz
+// y, por si el fallback vuelve, un asset (ruta con extensión que no es .html)
+// que llega como HTML es la portada disfrazada: 404.
+function sinPortadaComoFallback(pathname, response) {
+  if (isDocumentPath(pathname) || !response || response.status !== 200) return response;
+  const type = String(response.headers.get('content-type') || '').toLowerCase();
+  if (!type.includes('text/html')) return response;
+  return new Response('Not found', {status:404, headers:{'content-type':'text/plain; charset=utf-8', 'cache-control':'no-store', 'x-robots-tag':'noindex, nofollow'}});
+}
+
 export async function perimetro(context, fetchImpl = fetch) {
   const {request, env} = context;
   const url = new URL(request.url);
@@ -621,7 +634,7 @@ export async function perimetro(context, fetchImpl = fetch) {
       const session = await readSession(request, env, site, fetchImpl);
       return renewSession(await context.next(), session, env, site);
     }
-    return context.next();
+    return sinPortadaComoFallback(url.pathname, await context.next());
   }
   if (humanEntry && site.hosts.includes(url.hostname) && url.hostname !== site.hosts[0]) return redirect(`https://${site.hosts[0]}${url.pathname}${url.search}`);
   const session = await readSession(request, env, site, fetchImpl);
