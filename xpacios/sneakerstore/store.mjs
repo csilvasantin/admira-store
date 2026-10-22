@@ -98,11 +98,11 @@ function openIeuTab(){
   try{if(twin&&twin.location.href==='about:blank')twin.location.href=DIGITAL_TWIN_URL;}catch{/* Ya es la pestaña de IEU: no se recarga. */}
   if(!twin)window.open(DIGITAL_TWIN_URL,'_blank','noopener');
 }
-// Puerta Cam como en IEU (Carlos, 22-oct-2026): tarjeta del dispositivo sobre la puerta y «Ver stream» con el vídeo de
-// la calle en una ventana flotante, desde la pestaña de IEU compartida. Se carga aparte: si falla, IoT Gallery vuelve
-// al camino del segmentador.
+// Puerta Cam como en IEU (Carlos, 22-oct-2026): tarjeta del dispositivo sobre la puerta y «Ver stream» con el directo
+// de la calle en una ventana flotante, firmado por nuestro servidor con el token de cámaras de IEU. Se carga aparte: si
+// falla, IoT Gallery vuelve al camino del segmentador.
 let puerta=null;
-const puertaReady=import('./puerta-cam-ui.mjs?v=puerta-cam-2').then(({mountPuertaCam})=>puerta=mountPuertaCam({document,t,stage:$('store-stage'),openIeu:openIeuTab,storage:(()=>{try{return localStorage;}catch{return null;}})()})).catch(error=>{console.warn('Puerta Cam no disponible',error);return null;});
+const puertaReady=import('./puerta-cam-ui.mjs?v=puerta-cam-3').then(({mountPuertaCam})=>puerta=mountPuertaCam({document,t,stage:$('store-stage'),storage:(()=>{try{return localStorage;}catch{return null;}})()})).catch(error=>{console.warn('Puerta Cam no disponible',error);return null;});
 window.addEventListener('pagehide',()=>puerta?.dispose(),{once:true});
 function openOutdoorCamera(){
   if(puerta){puerta.open();return Promise.resolve();}

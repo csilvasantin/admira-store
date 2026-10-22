@@ -1,37 +1,17 @@
-// Puerta Cam (IEU · Santa Rosa 19) en admira.store (Carlos, 22-oct-2026). Dos fuentes para el vídeo de la calle:
-// - directa: el servidor de admira.store pide a IEU un enlace firmado con su token de cámaras
-//   (functions/xpacios/sneakerstore/puerta-cam-stream.js) y se reproduce aquí con hls.js, sin abrir IEU;
-// - de reserva, la pestaña de IEU compartida, como en el segmentador (admira.tv/mcp/xtore-demo-setup.md).
-// Un solo dueño del vídeo: la ventana del stream y «Contenido segmentado» lo reutilizan, así Chrome pregunta una
-// vez como mucho. El recorte (el recuadro del vídeo dentro de la pestaña) solo vale para la pestaña compartida.
-export const CROP_KEY='sneakerstore.puertaCam.crop.v1';
+// Puerta Cam (IEU · Santa Rosa 19) en admira.store (Carlos, 22-oct-2026). El servidor de admira.store pide a IEU un
+// enlace firmado al directo con su token de cámaras (functions/xpacios/sneakerstore/puerta-cam-stream.js) y aquí se
+// reproduce con hls.js, sin abrir IEU. Un solo dueño del vídeo: la ventana Puerta Cam y «Contenido segmentado» lo
+// reutilizan. La ventana es solo directo; compartir la pestaña de IEU queda únicamente para el segmentado.
 export const STREAM_ENDPOINT='/xpacios/sneakerstore/puerta-cam-stream';
 export const HLS_URL='https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.light.min.mjs';
-const unit=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=1;
-
-// Dos esquinas en coordenadas 0..1 del fotograma, en cualquier orden. Un recuadro diminuto es un clic suelto.
-export function cropFromCorners(a,b,{min=.04}={}){
-  if(![a?.x,a?.y,b?.x,b?.y].every(unit))return null;
-  const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y),w=Math.abs(a.x-b.x),h=Math.abs(a.y-b.y);
-  return w>=min&&h>=min?{x,y,w,h}:null;
-}
-export function parseCrop(text){
-  try{const c=JSON.parse(text);return c&&[c.x,c.y,c.w,c.h].every(unit)&&c.w>0&&c.h>0&&c.x+c.w<=1+1e-9&&c.y+c.h<=1+1e-9?{x:c.x,y:c.y,w:c.w,h:c.h}:null;}catch{return null;}
-}
-// Rectángulo de origen en píxeles del vídeo; sin recorte, el fotograma entero.
-export function sourceRect(crop,width,height){
-  if(!crop)return {sx:0,sy:0,sw:width,sh:height};
-  return {sx:Math.round(crop.x*width),sy:Math.round(crop.y*height),sw:Math.max(1,Math.round(crop.w*width)),sh:Math.max(1,Math.round(crop.h*height))};
-}
 
 export const SHARE_OPTIONS={video:{displaySurface:'browser',frameRate:{ideal:10,max:15}},audio:false,monitorTypeSurfaces:'exclude',selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'};
 
 // Error con código: login_required, not_configured, camera_not_configured, ieu_*… (o hls_unsupported).
 export class StreamError extends Error{constructor(code,login=''){super(code);this.code=code;this.login=login;}}
 
-export function createPuertaCam({navigator=globalThis.navigator,document=globalThis.document,fetcher=globalThis.fetch?.bind(globalThis),loadHls=()=>import(HLS_URL),storage=null,onChange=()=>{}}={}){
-  let stream=null,source=null,pending=null,crop=null,player=null;
-  try{crop=parseCrop(storage?.getItem(CROP_KEY));}catch{}
+export function createPuertaCam({navigator=globalThis.navigator,document=globalThis.document,fetcher=globalThis.fetch?.bind(globalThis),loadHls=()=>import(HLS_URL),onChange=()=>{}}={}){
+  let stream=null,source=null,pending=null,player=null;
   const live=()=>!!stream&&stream.getVideoTracks().some(track=>track.readyState==='live');
   function release(){stream=null;source=null;closePlayer();onChange();}
   function closePlayer(){const p=player;player=null;if(!p)return;try{p.hls?.destroy();}catch{}p.video.pause();p.video.removeAttribute('src');p.video.load();}
@@ -60,7 +40,7 @@ export function createPuertaCam({navigator=globalThis.navigator,document=globalT
     if(!pending)pending=playDirect().catch(e=>{if(player&&source!=='direct')closePlayer();throw e instanceof StreamError?e:new StreamError(e?.message||'play_failed');}).finally(()=>{pending=null;});
     return pending;
   }
-  // Pestaña de IEU compartida. Con direct=true (el segmentado) intenta antes el directo, sin selector.
+  // Pestaña de IEU compartida, solo para el segmentado; con direct=true intenta antes el directo, sin selector.
   async function share({direct=false}={}){
     if(live())return stream;
     if(direct)try{return await connect();}catch{}
@@ -70,6 +50,5 @@ export function createPuertaCam({navigator=globalThis.navigator,document=globalT
     return pending;
   }
   function stop(){const old=stream;stream=null;source=null;old?.getTracks().forEach(track=>track.stop());closePlayer();if(old)onChange();}
-  function setCrop(next){crop=next;try{next?storage?.setItem(CROP_KEY,JSON.stringify(next)):storage?.removeItem(CROP_KEY);}catch{}onChange();}
-  return {connect,share,stop,setCrop,get stream(){return live()?stream:null;},get live(){return live();},get source(){return live()?source:null;},get crop(){return crop;}};
+  return {connect,share,stop,get stream(){return live()?stream:null;},get live(){return live();},get source(){return live()?source:null;}};
 }

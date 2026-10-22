@@ -1,10 +1,11 @@
-// Puerta Cam como en IEU (Carlos, 22-oct-2026): tarjeta sobre la puerta y «Ver stream» con el vídeo de la calle de la
-// pestaña de IEU compartida, recortado al recuadro de la cámara.
+// Puerta Cam como en IEU (Carlos, 22-oct-2026): tarjeta sobre la puerta y «Ver stream» con el directo de la calle que
+// firma nuestro servidor con el token de cámaras de IEU. La ventana es solo directo: nunca pide capturar la pantalla.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {PerspectiveCamera,Vector3} from '../../admira-xp/scripts/premium-three.mjs';
-import {CROP_KEY,cropFromCorners,parseCrop,sourceRect,createPuertaCam,SHARE_OPTIONS,STREAM_ENDPOINT,HLS_URL} from './puerta-cam.mjs';
+import {createPuertaCam,SHARE_OPTIONS,STREAM_ENDPOINT,HLS_URL} from './puerta-cam.mjs';
+import {directProblem} from './puerta-cam-ui.mjs';
 import {PUERTA_CAM_ANCHOR,directionOf,hotspotAt} from './hotspots.mjs';
 
 const read=f=>readFileSync(new URL(f,import.meta.url),'utf8');
@@ -12,19 +13,8 @@ function fakeStream(){
   const track={readyState:'live',listeners:{},stop(){this.readyState='ended';},addEventListener(type,fn){this.listeners[type]=fn;}};
   return {track,getVideoTracks:()=>[track],getTracks:()=>[track]};
 }
-function memoryStorage(){const map=new Map();return {getItem:k=>map.has(k)?map.get(k):null,setItem:(k,v)=>map.set(k,String(v)),removeItem:k=>map.delete(k),map};}
 
-test('el recorte sale de dos esquinas en cualquier orden y descarta clics sueltos o datos rotos',()=>{
-  assert.deepEqual(cropFromCorners({x:.6,y:.3},{x:.3,y:.05}),{x:.3,y:.05,w:.3,h:.25});
-  assert.equal(cropFromCorners({x:.5,y:.5},{x:.51,y:.52}),null,'un clic suelto no es un recuadro');
-  assert.equal(cropFromCorners({x:-1,y:.5},{x:.5,y:.6}),null);assert.equal(cropFromCorners(null,{x:.5,y:.6}),null);
-  assert.deepEqual(parseCrop('{"x":0.3,"y":0.05,"w":0.3,"h":0.25}'),{x:.3,y:.05,w:.3,h:.25});
-  for(const bad of ['', 'null', '{"x":0.8,"y":0,"w":0.5,"h":0.2}', '{"x":0.1,"y":0.1,"w":0,"h":0.2}', '{"x":"0.1","y":0,"w":0.2,"h":0.2}'])assert.equal(parseCrop(bad),null,bad);
-  assert.deepEqual(sourceRect(null,1920,1080),{sx:0,sy:0,sw:1920,sh:1080},'sin recorte, toda la pestaña');
-  assert.deepEqual(sourceRect({x:.25,y:.1,w:.5,h:.3},1920,1080),{sx:480,sy:108,sw:960,sh:324});
-});
-
-test('la pestaña de IEU se comparte una sola vez para la ventana y el segmentado, y se libera al dejar de compartir',async()=>{
+test('el segmentado comparte la pestaña de IEU una sola vez y la libera al dejar de compartir',async()=>{
   let calls=0,last=null;const changes=[];
   const navigator={mediaDevices:{getDisplayMedia:async options=>{calls++;assert.deepEqual(options,SHARE_OPTIONS);return last=fakeStream();}}};
   const cam=createPuertaCam({navigator,onChange:()=>changes.push(cam.live)});
@@ -37,15 +27,6 @@ test('la pestaña de IEU se comparte una sola vez para la ventana y el segmentad
   await assert.rejects(createPuertaCam({navigator:{}}).share(),/share_unsupported/);
 });
 
-test('el recorte se recuerda en este navegador y uno guardado roto se ignora',()=>{
-  const storage=memoryStorage();
-  const cam=createPuertaCam({navigator:{},storage});assert.equal(cam.crop,null);
-  cam.setCrop({x:.3,y:.05,w:.3,h:.25});assert.deepEqual(parseCrop(storage.getItem(CROP_KEY)),{x:.3,y:.05,w:.3,h:.25});
-  assert.deepEqual(createPuertaCam({navigator:{},storage}).crop,{x:.3,y:.05,w:.3,h:.25},'vuelve al recargar');
-  cam.setCrop(null);assert.equal(storage.getItem(CROP_KEY),null);
-  storage.setItem(CROP_KEY,'{roto');assert.equal(createPuertaCam({navigator:{},storage}).crop,null);
-});
-
 test('la tarjeta Puerta Cam va sobre la puerta de IoT Gallery, centrada en la vista inicial de Entrada',()=>{
   assert.equal(PUERTA_CAM_ANCHOR.scene,'entrada');
   const d=directionOf(PUERTA_CAM_ANCHOR);assert.equal(hotspotAt('entrada',d),'iot-gallery');
@@ -54,10 +35,10 @@ test('la tarjeta Puerta Cam va sobre la puerta de IoT Gallery, centrada en la vi
   assert.ok(x>600&&x<720,'centrada en la puerta: x='+x);assert.ok(y>260&&y<360,'bajo el rótulo: y='+y);
 });
 
-test('la tienda carga Puerta Cam aparte; IoT Gallery y «Ver stream» abren la ventana del stream con la misma pestaña que el segmentado',()=>{
+test('la tienda carga Puerta Cam aparte; IoT Gallery y «Ver stream» abren la ventana del directo, que comparte vídeo con el segmentado',()=>{
   const store=read('./store.mjs'),ui=read('./puerta-cam-ui.mjs'),seg=read('./segmentado-ui.mjs'),panorama=read('./panorama.mjs');
   assert.doesNotMatch(store,/^\s*import\s[^;]*\/puerta-cam(-ui)?\.mjs/m,'nada de import estático: si falla, la tienda sigue');
-  assert.match(store,/import\('\.\/puerta-cam-ui\.mjs\?v=puerta-cam-2'\)\.then\(/);assert.match(store,/\.catch\(error=>\{console\.warn\('Puerta Cam no disponible',error\);return null;\}\)/);
+  assert.match(store,/import\('\.\/puerta-cam-ui\.mjs\?v=puerta-cam-3'\)\.then\(/);assert.match(store,/\.catch\(error=>\{console\.warn\('Puerta Cam no disponible',error\);return null;\}\)/);
   assert.match(store,/if\(puerta\)\{puerta\.open\(\);return Promise\.resolve\(\);\}/,'IoT Gallery abre la ventana Puerta Cam');
   assert.match(store,/mountSegmented\(\{document,t,en,channels,status,puertaCam:puerta\?\.cam\|\|null\}\)/);
   assert.match(store,/void puertaReady\.then\(p=>p\?\.attach\(panorama\)\)/,'la tarjeta se ancla a la 360');
@@ -66,10 +47,10 @@ test('la tienda carga Puerta Cam aparte; IoT Gallery y «Ver stream» abren la v
   assert.match(seg,/direct\?t\('Directo de IEU · detector COCO-SSD en el navegador'/,'el segmentado dice de dónde sale el vídeo');
   assert.match(ui,/movableWindow\(win,handle,\{key:'sneakerstore\.puertaCam\.window\.v1',bounds:stage,storage,closeButton:winClose,onClose:closeWindow\}\)/,'ventana movible y con cierre');
   assert.match(ui,/chip\.textContent=live\?t\('TRANSMITIENDO','STREAMING'\):t\('EN IEU','IN IEU'\)/,'solo «transmitiendo» cuando llega vídeo de verdad');
-  assert.match(ui,/if\(!cam\.live&&DIRECT_DOWN\.has\(directError\)\)\{openIeu\(\);shareButton\.focus\(\);\}/,'sin directo, IEU y a compartir como antes');
-  assert.match(ui,/cam\.connect\(\)\.then\(/,'«Ver stream» pide primero el directo');
-  assert.match(ui,/sourceRect\(cropping\|\|cam\.source!=='tab'\?null:cam\.crop,/,'el recorte solo vale para la pestaña compartida');
-  assert.match(ui,/await cam\.share\(\{direct:false\}\)/,'el botón de compartir abre el selector');
+  assert.match(ui,/cam\.connect\(\)\.then\(/,'«Ver stream» pide el directo');
+  // Capturar la pantalla «no es lo que queremos» (Carlos, 22-oct-2026): la ventana no comparte pestañas ni abre IEU.
+  assert.doesNotMatch(ui,/cam\.share\(|getDisplayMedia|openIeu|Compartir pestaña|Recortar/);
+  assert.doesNotMatch(store,/mountPuertaCam\(\{[^}]*openIeu/);
   assert.match(panorama,/anchor\(element,point\)\{/);assert.match(panorama,/renderer\.render\(scene,camera\);placeAnchors\(\);\}/);
 });
 
@@ -99,4 +80,12 @@ test('sin sesión, sin token o con IEU caído el directo dice por qué, y el seg
     const s=await h.cam.share({direct:true});assert.equal(h.calls.filter(c=>c.picker).length,1,'después, el selector de la pestaña');assert.equal(h.cam.source,'tab');assert.equal(h.cam.stream,s);
   }
   const h=directHarness({supported:false});await assert.rejects(h.cam.connect(),e=>e.code==='hls_unsupported');
+});
+
+test('sin directo, la ventana dice por qué en palabras y no ofrece capturar la pantalla',()=>{
+  const t=(es)=>es;
+  assert.match(directProblem('login_required',t),/has entrado en admira\.store/);
+  for(const code of ['not_configured','camera_not_configured'])assert.match(directProblem(code,t),/pendiente de configurar/);
+  assert.match(directProblem('hls_unsupported',t),/no puede reproducir/);
+  for(const code of ['ieu_401','ieu_unreachable','play_failed','http_200'])assert.match(directProblem(code,t),/IEU no ha dado el directo/);
 });
