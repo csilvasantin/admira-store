@@ -11,3 +11,34 @@ html.store-hud-hidden #store-stage,html.store-hud-hidden #model-canvas,html.stor
 html.store-hud-hidden #store-stage{border-color:transparent!important;box-shadow:none!important;outline:none!important}
 html.store-hud-hidden #model-canvas,html.store-hud-hidden #photo-canvas{outline:none!important}
 html.store-hud-hidden dialog::backdrop{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+
+/* Contenido segmentado · Puerta Cam → carril → player virtual + MetaHuman */
+#segmented-dialog{max-width:1180px}
+.seg-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,.8fr);gap:14px 18px}
+.seg-grid h3{margin:0 0 8px;font-size:14px;color:#a2b7ae;font-weight:600}
+.seg-stage{position:relative;aspect-ratio:16/9;background:#000;border:1px solid #284338;border-radius:6px;overflow:hidden}
+.seg-stage video,.seg-stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.seg-stage canvas[hidden],.seg-stage video[hidden]{display:none!important}
+#seg-overlay{pointer-events:none}
+.seg-sources{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.seg-sources button{padding:7px 10px;font-size:12px}
+.seg-sources button[aria-pressed=true]{background:#1b5035;border-color:#35ed88}
+#seg-cam-status,#seg-mh-status,#seg-note{font:12px ui-monospace,monospace;color:#b3c7bc;margin:6px 0}
+.seg-links{font-size:12px;margin:4px 0}
+.seg-state .seg-lane{display:flex;align-items:center;gap:10px;font-size:26px;margin:4px 0 10px}
+.seg-state .seg-lane strong{font-size:22px;color:#35ed88}
+.seg-state dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:12px}
+.seg-state dt{color:#7f968b}.seg-state dd{margin:0;color:#e7f2ed;word-break:break-word}
+.seg-screens{display:grid;grid-template-columns:3fr 1fr;gap:10px}
+.seg-screens figure{margin:0;background:#000;border:1px solid #284338;border-radius:6px;overflow:hidden}
+.seg-screens figure.landscape{aspect-ratio:16/9}.seg-screens figure.portrait{aspect-ratio:9/16;max-height:260px}
+.seg-screens video,.seg-screens img{width:100%;height:100%;object-fit:contain;display:block}
+.seg-screens figcaption{font:11px ui-monospace,monospace;color:#b3c7bc;padding:5px 8px;background:#071015}
+.seg-mh-stage{aspect-ratio:9/16;max-height:320px;background:#000;border:1px solid #284338;border-radius:6px;overflow:hidden}
+#seg-mh{width:100%;height:100%;border:0;display:block}
+.seg-caption{font-size:13px;color:#dbffec;min-height:1.4em}
+.seg-voice{font-size:12px;color:#b3c7bc}
+@media(max-width:820px){.seg-grid{grid-template-columns:1fr}.seg-screens{grid-template-columns:2fr 1fr}}
+
+/* La tarjeta gana un tercer botón (Contenido segmentado): ancho y salto de línea sin romper el embed */
+.store-caption{max-width:470px}.store-caption div{flex-wrap:wrap;gap:10px 14px}

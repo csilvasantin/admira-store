@@ -67,5 +67,55 @@
     "sourceImagesUnchanged": true,
     "alignment": "approximate photographic perspective; foreground masks",
     "sharedClockWith3D": true
+  },
+  "segmented_content": {
+    "url": "https://www.admira.store/xpacios/sneakerstore/?segmentado=demo",
+    "order": "Carlos, 2026-10-22: Puerta Cam (IEU) en tiempo real segmenta el player virtual y activa el MetaHuman",
+    "camera": {
+      "twin": "https://digitaltwin.ieu.ai/",
+      "api": "/api/* y /hub/sites responden 401 sin sesión Google; /mcp/tokens sirve la SPA; la Cúpula no guarda credencial IEU (22-oct-2026)",
+      "browser_source": "pestaña compartida con getDisplayMedia (Store → Entrada → Puerta Cam → Ver stream), igual que Xtore",
+      "no_token_in_html": true
+    },
+    "classifier": {
+      "model": "COCO-SSD 2.2.3 mobilenet_v2 sobre TensorFlow.js 4.22.0 (mismo que admira.tv/videoanalytics/xtore)",
+      "classes": [
+        "person",
+        "car",
+        "motorcycle",
+        "bicycle"
+      ],
+      "min_score": 0.45,
+      "presence_grace_ms": 1500,
+      "neutral_hold_ms": 6000
+    },
+    "bus": {
+      "read": "https://mcp-tv.admira.store/audience/sneakers-store-santa-rosa-19-screen (público, CORS *)",
+      "write": "requiere clave de flota: no se publica desde el navegador",
+      "audience_report": "POST https://api.admira.store/audience {loc,screen,faces,kind,lane}"
+    },
+    "matrix": {
+      "source": "https://brain.digitalavatar.ai/segmentation?target=sneakers-store-santa-rosa-19-screen",
+      "kind_rules": [
+        "r-persona",
+        "r-coche",
+        "r-moto",
+        "r-bici"
+      ],
+      "resolution": "assets explícitos → tag del Stock (stock.admira.store/stock/index.json) por formato → playlist de la ficha"
+    },
+    "metahuman": {
+      "stream": "https://neo-digitalavatar.csilvasantin.workers.dev/uiless.html",
+      "probe": "<img> cross-origin images/favicon-32x32.png (no fetch no-cors)",
+      "fallback": "https://digitalavatar.ai/best.html?kiosk=1&embed=1&audio=off&listen=0 + speechSynthesis",
+      "say": "POST https://brain.digitalavatar.ai/metahuman/say {room:'xtanco',text}",
+      "min_gap_ms": 10000
+    },
+    "modes": {
+      "cam": "pestaña compartida",
+      "bus": "lectura del bus",
+      "demo": "secuencia simulada",
+      "video": "clips del Stock con el detector real"
+    }
   }
 }
