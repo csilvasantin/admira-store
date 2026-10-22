@@ -1,6 +1,7 @@
+import {findTouchSurface,projectTouchSurface} from './ainimation-surface.mjs?v=scene-3d-1';
 import {createLibraryRuntime} from '../../inventario/cafebreria/library-runtime.mjs?v=windows-menu-1';
 import * as T from './premium-three.mjs';
-import {createLifeScene} from './life-scene.mjs?v=good-matrix-6161';
+import {createLifeScene} from './life-scene.mjs?v=ainimation-scene-1';
 import {createMatrixEnvironmentRoom} from '../../inventario/matrix-rendering.mjs?v=hiperreal-r23-20261008-1';
 import {numericPartForHit,createPartHighlight} from './shelf-parts.mjs?v=shelf-products-1';
 import {inventoryIdFor} from './furniture-asset.mjs?v=hiperreal-r23-20261008-1';
@@ -49,7 +50,8 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   }
   const initial=mappedCameraFrame(model.snapshot);
   const current={zoom:1,angle:initial.angle,elevation:initial.elevation,panX:0,panY:0};let desired={...current},mode='mapped',framing='mapped';
-  const angleLimit=v=>stockCamera?v:clamp(v,.10,Math.PI/2-.10),zoomLimit=v=>clamp(v,stockCamera?.25:.7,stockCamera?24:3.2);
+  let focusedScreen=false;
+  const angleLimit=v=>stockCamera?v:clamp(v,.10,Math.PI/2-.10),zoomLimit=v=>clamp(v,stockCamera?.25:.7,stockCamera?24:focusedScreen?16:3.2);
   const cameraState=()=>Object.freeze({mode,registration:framing==='mapped'?mappedCameraFrame(model.snapshot,width,height).registration:'room-fit',...desired});
   function changeMode(next){if(mode!==next){mode=next;onCameraChange(cameraState());}}
   const haloGeometry=new T.RingGeometry(.55,.59,64),haloMaterial=new T.MeshBasicMaterial({color:'#4d967a',transparent:true,opacity:.85,depthWrite:false,side:T.DoubleSide});
@@ -83,8 +85,8 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
     return {minX,maxX,minY,maxY};
   }
   // «Ver» en el inventario: anima la órbita existente hasta encuadrar la caja del objeto.
-  function frameObject(object,{margin=1.4,angle:fixedAngle,elevation:fixedElevation,clip=false}={}){
-    if(disposed||!object)return false;
+  function frameObject(object,{margin=1.4,angle:fixedAngle,elevation:fixedElevation,clip=false,maxZoom=null}={}){
+    if(disposed||!object)return false;focusedScreen=!!maxZoom;
     model.scene.updateMatrixWorld(true);const box=new T.Box3().setFromObject(object);if(box.isEmpty())return false;
     const s=stockCamera==='furniture'?snapshot:model.snapshot,radius=Math.max(Math.hypot(s.cols,s.rows),s.wallHeight)*2.8;
     const angle=Number.isFinite(fixedAngle)?fixedAngle:desired.angle,elevation=Number.isFinite(fixedElevation)?clamp(fixedElevation,.02,Math.PI/2-.001):clamp(desired.elevation,.35,1.0),aim=new T.Vector3(s.cols*.5,stockCamera==='furniture'?s.wallHeight/2:.65,s.rows*.5);
@@ -92,7 +94,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
     const ext={minX:Infinity,maxX:-Infinity,minY:Infinity,maxY:-Infinity};
     for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){const p=new T.Vector3(x,y,z).applyMatrix4(cam.matrixWorldInverse);ext.minX=Math.min(ext.minX,p.x);ext.maxX=Math.max(ext.maxX,p.x);ext.minY=Math.min(ext.minY,p.y);ext.maxY=Math.max(ext.maxY,p.y);}
     const fit=fitBoxFrame(roomExtents(cam,s),ext,width/height,margin);
-    desired={...desired,angle,elevation,zoom:zoomLimit(fit.zoom),panX:fit.panX,panY:fit.panY};framing='room-fit';clipBox=clip?box.clone().expandByScalar(.02):null;mode='free';onCameraChange(cameraState());return true;
+    desired={...desired,angle,elevation,zoom:maxZoom?clamp(fit.zoom,.7,maxZoom):zoomLimit(fit.zoom),panX:fit.panX,panY:fit.panY};framing='room-fit';clipBox=clip?box.clone().expandByScalar(.02):null;mode='free';onCameraChange(cameraState());return true;
   }
   function pick(x,y,objects){
     const bounds=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((x-bounds.left)/bounds.width*2-1,-(y-bounds.top)/bounds.height*2+1),camera);
@@ -165,7 +167,7 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   };
   for(const [event,handler]of Object.entries(handlers))canvas.addEventListener(event,handler,{passive:false});
   function preset(name){
-    clipBox=null;desired={zoom:1,angle:Math.PI/4,elevation:.64,panX:0,panY:0};framing=name==='mapped'?'mapped':'room-fit';
+    focusedScreen=false;clipBox=null;desired={zoom:1,angle:Math.PI/4,elevation:.64,panX:0,panY:0};framing=name==='mapped'?'mapped':'room-fit';
     if(name==='mapped'){const mapped=mappedCameraFrame(model.snapshot,width,height);Object.assign(desired,{angle:mapped.angle,elevation:mapped.elevation});Object.assign(current,desired);}
     if(name==='floor')desired.elevation=stockCamera?Math.PI/2-.001:1.12;if(stockCamera&&name==='front')Object.assign(desired,{angle:Math.PI/2,elevation:.02});if(name==='detail')Object.assign(desired,{zoom:1.65,angle:.88,elevation:.51});
     const next=name==='mapped'?'mapped':'free';mode=next;onCameraChange(cameraState());frameCamera();
@@ -208,5 +210,5 @@ export function createLifeRenderer({canvas,snapshot,getPlayer=()=>null,getSurfac
   const libraries=createLibraryRuntime({canvas,scene:model.scene,viewer:libraryViewer,isEditing:()=>!!editor});
   resize(canvas.clientWidth||1000,canvas.clientHeight||700);
   onCameraChange(cameraState());
-  return {invalidateShadows:()=>{renderer.shadowMap.needsUpdate=true;},frameObject,pick,screenAt,screenHighlight,clearClip,project,get clipping(){return !!clipBox;},setEditor,setEditorOverlay,setPartMode,selectPart,selectItem,resize,update,render,preset,rotate,zoomBy,setLighting,clearSelection,dispose,get bestPeopleCount(){return peopleStatus().ready;},get bestPeopleStatus(){return peopleStatus();},get blenderAssets(){return model.world.children.filter(o=>o.userData.assetStatus==='ready').length;},get blenderCounters(){return model.world.children.filter(o=>o.userData.type==='counter'&&o.userData.assetStatus==='ready').length;},get snapshot(){return model.snapshot;},get cameraState(){return cameraState();}};
+  return {touchSurface:id=>projectTouchSurface({world:model.world,actors:model.actors,camera,canvas,id}),hasTouchSurface:id=>!!findTouchSurface(model.world,id),focusTouchSurface:id=>{const mesh=findTouchSurface(model.world,id);return mesh?frameObject(mesh.parent,{margin:1.65,angle:1.12,elevation:.37,maxZoom:16}):false;},invalidateShadows:()=>{renderer.shadowMap.needsUpdate=true;},frameObject,pick,screenAt,screenHighlight,clearClip,project,get clipping(){return !!clipBox;},setEditor,setEditorOverlay,setPartMode,selectPart,selectItem,resize,update,render,preset,rotate,zoomBy,setLighting,clearSelection,dispose,get bestPeopleCount(){return peopleStatus().ready;},get bestPeopleStatus(){return peopleStatus();},get blenderAssets(){return model.world.children.filter(o=>o.userData.assetStatus==='ready').length;},get blenderCounters(){return model.world.children.filter(o=>o.userData.type==='counter'&&o.userData.assetStatus==='ready').length;},get snapshot(){return model.snapshot;},get cameraState(){return cameraState();}};
 }

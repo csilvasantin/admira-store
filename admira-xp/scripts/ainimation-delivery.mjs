@@ -1,4 +1,4 @@
-import {receiverFor} from './ainimation-receivers.mjs?v=five-touch-1';
+import {receiverFor} from './ainimation-receivers.mjs?v=scene-3d-1';
 export const AINIMATION_API='https://ainimation-interactive-library-preview.csilvasantin.workers.dev/api';
 export const AINIMATION_LOCATION='alsea-sbux-021';
 export const AINIMATION_SCREEN_IDS=['starbucks-avatar-wall','starbucks-ipad-01'];
@@ -7,7 +7,7 @@ export function validateDelivery(data,id,location){
  const url=new URL(data.playerUrl);if(url.href!==AINIMATION_API+'/deliveries/'+id+'/player')throw Error('Player no permitido / Player not allowed');
  return data;
 }
-export function registerInteractiveScreens({win=window,root,host,blocked=()=>false,focus=()=>{},location=AINIMATION_LOCATION}){
+export function registerInteractiveScreens({win=window,root,host,blocked=()=>false,focus=()=>{},refocus=false,location=AINIMATION_LOCATION}){
  const doc=root.ownerDocument,t=(es,en)=>doc.documentElement.lang==='en'?en:es;let current;
  function stop(){if(!current)return;current.frame.src='about:blank';current.frame.remove();current.panel.remove();current=null;}
  const registry={has:id=>(location===AINIMATION_LOCATION?AINIMATION_SCREEN_IDS.includes(id):!!receiverFor(location,id))&&!!host(id),stop,show(data){
@@ -18,7 +18,7 @@ export function registerInteractiveScreens({win=window,root,host,blocked=()=>fal
   const status=doc.createElement('span');status.setAttribute('role','status');status.textContent=t('En pantalla virtual: ','On virtual screen: ')+data.destination.screen.name+' · '+data.title;
   const enlarge=doc.createElement('button'),restore=doc.createElement('button');enlarge.textContent=t('Abrir pantalla','Open screen');restore.textContent=t('Restaurar pantalla','Restore screen');
   enlarge.onclick=()=>{const d=doc.createElement('dialog'),f=frame.cloneNode(),b=doc.createElement('button');d.style.cssText='position:fixed;inset:0;margin:auto;box-sizing:border-box;width:min(1000px,96vw);height:92svh;padding:12px;background:#001b0d;color:#b8ee77;border:1px solid #39ff14';f.removeAttribute('data-ainimation-screen');f.style.cssText='display:block;width:100%;height:calc(100% - 52px);border:0;background:#102621';b.textContent=t('Cerrar pantalla','Close screen');b.onclick=()=>{d.close();d.remove();};d.addEventListener('cancel',e=>{e.preventDefault();b.click();});d.append(b,f);doc.body.append(d);d.showModal();};
-  for(const b of [enlarge,restore])b.style.cssText='min-height:44px;padding:10px;border:1px solid #39ff14;background:#002a13;color:#b8ee77;font:700 13px monospace';restore.onclick=stop;panel.append(status,enlarge,restore);parent.append(frame);root.append(panel);current={frame,panel};focus(id);return{screen:id,virtual:true};
+  for(const b of [enlarge,restore])b.style.cssText='min-height:44px;padding:10px;border:1px solid #39ff14;background:#002a13;color:#b8ee77;font:700 13px monospace';restore.onclick=stop;panel.append(status);if(refocus){const focusButton=doc.createElement('button');focusButton.textContent=t('Enfocar en 3D','Focus in 3D');focusButton.style.cssText=enlarge.style.cssText;focusButton.onclick=()=>focus(id);panel.append(focusButton);}panel.append(enlarge,restore);parent.append(frame);root.append(panel);current={frame,panel};focus(id);return{screen:id,virtual:true};
  }};
  win.XpaceAINimation=registry;win.dispatchEvent(new win.Event('xpace:ainimation-ready'));
  return()=>{stop();if(win.XpaceAINimation===registry)delete win.XpaceAINimation;};
@@ -36,5 +36,5 @@ export async function receiveDelivery(win=window,request=fetch){
  }catch(error){status.textContent=error.message;}
 }
 if(typeof window!=='undefined'&&typeof document!=='undefined'){
- const start=()=>void receiveDelivery();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+ const start=()=>{if(new URLSearchParams(window.location.search).get('ainimationScene')==='1'&&!window.XpaceAINimation)window.addEventListener('xpace:ainimation-ready',()=>void receiveDelivery(),{once:true});else void receiveDelivery();};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 }

@@ -1,3 +1,4 @@
+import {findTouchSurface,projectTouchSurface} from './ainimation-surface.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -68,14 +69,14 @@ test('missing projection is explicitly room-fit and never claims exact Canvas re
 const rendererSource=fs.readFileSync(new URL('./life-renderer.mjs',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'').replace('export function createLifeRenderer','function createLifeRenderer');
 function harness(options={}){
-  const handlers=new Map(),states=[],calls={media:0,animate:0,disposed:0},canvas={clientWidth:800,clientHeight:500,
+  const handlers=new Map(),states=[],calls={media:0,animate:0,disposed:0},canvas={dataset:{},clientWidth:800,clientHeight:500,
     addEventListener:(type,handler)=>handlers.set(type,handler),removeEventListener:type=>handlers.delete(type),
     setPointerCapture(){},getBoundingClientRect:()=>({left:0,top:0,width:800,height:500})};
-  const model={snapshot:snapshot(),scene:new Three.Scene(),world:new Three.Group(),actors:new Three.Group(),
+  const model={screenPreviewIds:[],snapshot:snapshot(),scene:new Three.Scene(),world:new Three.Group(),actors:new Three.Group(),
     update(value){this.snapshot=value;},animate(){calls.animate++;},refreshMedia(){calls.media++;},setLighting(){},dispose(){calls.disposed++;}};
   model.scene.add(model.world,model.actors);
   const T={...Three,WebGLRenderer:class{constructor(){this.shadowMap={};}setClearColor(){}setPixelRatio(){}setSize(){}render(scene,camera){calls.camera=camera;}dispose(){}forceContextLoss(){}}};
-  const context=vm.createContext({T,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,fitBoxFrame,createLibraryRuntime:()=>({reconcile(){},select:()=>false,dispose(){}}),numericPartForHit,createPartHighlight,inventoryIdFor,performance:{now:()=>0}});
+  const context=vm.createContext({T,findTouchSurface,projectTouchSurface,createLifeScene:(_,sceneOptions)=>{calls.sceneOptions=sceneOptions;return model;},mappedCameraFrame,fitBoxFrame,createLibraryRuntime:()=>({reconcile(){},select:()=>false,dispose(){}}),numericPartForHit,createPartHighlight,inventoryIdFor,performance:{now:()=>0}});
   vm.runInContext(rendererSource,context);
   const viewer=context.createLifeRenderer({canvas,snapshot:model.snapshot,onCameraChange:state=>states.push(state),...options});
   return {viewer,states,calls,model,handlers,emit(type,properties={}){handlers.get(type)({button:0,pointerId:1,clientX:100,clientY:100,preventDefault(){},...properties});}};
@@ -133,4 +134,9 @@ test('stock camera can frame a bookcase frontally, clip foreground and restore t
  const h=harness({stockCamera:true}),shelf=new Three.Mesh(new Three.BoxGeometry(1.6,1.1,.28),new Three.MeshBasicMaterial());shelf.position.set(12,1.7,.25);h.model.world.add(shelf);
  assert.equal(h.viewer.frameObject(shelf,{angle:Math.PI/2,elevation:.04,margin:2.4,clip:true}),true);assert.equal(h.viewer.clipping,true);near(h.viewer.cameraState.angle,Math.PI/2);assert.ok(h.viewer.cameraState.zoom>3.2);
  for(let i=0;i<100;i++)h.viewer.render(i);assert.ok(h.calls.camera.near>.1);h.viewer.clearClip();assert.equal(h.viewer.clipping,false);h.viewer.preset('home');h.viewer.render(100);assert.equal(h.calls.camera.near,.1);h.viewer.dispose();
+});
+
+test('enfocar una pantalla 3D permite acercar y alejar sin saltar al límite general; Home recupera la cámara normal',()=>{
+ const h=harness(),panel=new Three.Group(),face=new Three.Mesh(new Three.PlaneGeometry(.84,.4725),new Three.MeshBasicMaterial());face.userData.ainimationScreen='touch';panel.position.set(3,1.3,3);panel.add(face);h.model.world.add(panel);
+ assert.equal(h.viewer.focusTouchSurface('missing'),false);assert.equal(h.viewer.focusTouchSurface('touch'),true);const zoom=h.viewer.cameraState.zoom;assert.ok(zoom>3.2&&zoom<=16);h.viewer.zoomBy(.9);near(h.viewer.cameraState.zoom,zoom*.9);h.viewer.preset('mapped');near(h.viewer.cameraState.zoom,1);face.geometry.dispose();face.material.dispose();h.viewer.dispose();
 });

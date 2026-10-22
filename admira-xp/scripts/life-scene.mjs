@@ -1,3 +1,4 @@
+import {TOUCH_RECEIVERS} from './ainimation-receivers.mjs?v=scene-3d-1';
 import {createSurfaceBinding,connectAppearance} from './surface-materials.mjs?v=surfaces-1';
 import {appearanceIdentity} from '../../inventario/starbucks/surface-identities.mjs';
 import * as T from './premium-three.mjs';
@@ -224,6 +225,25 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
     }
   }
 
+  function bindTouchScreen(root,item){
+    const receiver=TOUCH_RECEIVERS.find(r=>r.location===snapshot.venue&&r.scene.item===item.id&&r.scene.type===item.type);
+    if(!receiver)return;
+    const [w,d]=item.fp||FOOTPRINTS[item.type]||[1,1],portrait=receiver.orientation==='portrait';
+    const panel=group(root,w/2,portrait?1.36:1.29,portrait?d/2+.10:d*.90);
+    panel.name='ainimation-panel:'+receiver.screen;panel.rotation.x=portrait?-.08:-.18;
+    const width=portrait?.59:.84,height=portrait?1.05:.4725;
+    box(panel,0,0,0,width+.055,height+.055,.07,palette.teal);
+    if(!portrait)box(root,w/2,1.10,d*.88,.075,.24,.08,palette.brass);
+    const map=texture(640,portrait?1140:360,(c,cw,ch)=>{
+      c.fillStyle='#102621';c.fillRect(0,0,cw,ch);c.textAlign='center';c.textBaseline='middle';
+      c.fillStyle='#b8ee77';c.font='bold 34px sans-serif';c.fillText(receiver.name,cw/2,ch*.40,cw*.9);
+      c.fillStyle='#e8f1e9';c.font='26px sans-serif';c.fillText(receiver.label,cw/2,ch*.56,cw*.9);
+    },worldResources);
+    const face=surface(panel,map,0,0,.039,width,height);
+    face.name='ainimation-screen:'+receiver.screen;
+    face.userData={dynamic:true,ainimationScreen:receiver.screen,screenTarget:receiver.screen,location:receiver.location,aperture:receiver.scene.aperture};
+  }
+
   function furniture(item){
     if(item.hidden===true||item.presentationExcluded===true)return;
     const root=group(world,item.col,0,item.row);root.name=`furniture:${item.id}`;
@@ -367,6 +387,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
       }
     }
     if(item.type!=='door')batch(root);
+    bindTouchScreen(root,item);
     const loader=loadFurniture?()=>loadFurniture(item):item.type==='counter'?loadCounter:null;
     if(loader){
       root.userData.assetStatus='loading';
@@ -379,7 +400,7 @@ export function createLifeScene(rawSnapshot,{canvasFactory=()=>document.createEl
         asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='existing_shared_player'){o.material=mediaMaterial;o.userData.liveMedia=true;o.userData.surfaceId=item.type==='metahuman'?'metahuman':item.type==='tft'?'escaparate':'inventory:'+item.id;}});
         asset.traverse(o=>{if(o.isMesh&&o.userData.mediaSurface==='landscape_ipad'){o.userData.liveMedia=true;o.userData.surfaceId=item.id;o.userData.screenTarget=item.id;o.userData.previewOnly=true;}});
         if(asset.userData.pixeria)asset.traverse(o=>{if(o.isMesh){own(o.geometry,worldResources);for(const m of Array.isArray(o.material)?o.material:[o.material]){own(m,worldResources);for(const v of Object.values(m))if(v?.isTexture)own(v,worldResources);}}});
-        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);bindSurfaces(asset,item.id);root.userData.assetStatus='ready';root.userData.assetSource=item.source==='PixerIA'?'PixerIA':'Blender';
+        root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});root.clear();root.add(asset);bindTouchScreen(root,item);bindSurfaces(asset,item.id);root.userData.assetStatus='ready';root.userData.assetSource=item.source==='PixerIA'?'PixerIA':'Blender';
       }).catch(()=>{if(!disposed&&root.parent===world)root.userData.assetStatus='fallback';});
     }
     return root;

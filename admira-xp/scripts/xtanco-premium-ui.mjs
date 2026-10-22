@@ -1,6 +1,6 @@
-import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=sneakers-matrix-1';
-import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=good-matrix-6161';
-import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=local-playlist-349';
+import {openMatrixView,closeMatrixView,subscribeMatrixView} from './matrix-preview-ui.mjs?v=ainimation-scene-1';
+import {openLifeView,closeLifeView,subscribeLifeView} from './life-ui.mjs?v=ainimation-scene-1';
+import {openBestView,closeBestView,subscribeBestView} from './best-preview-ui.mjs?v=ainimation-scene-1';
 import {createVisualTiers,requestedTier,matrixVenueAllowed,matrixVenue,MATRIX_VENUES} from './xtanco-visual-tiers.mjs?v=sneakers-matrix-1';
 import {createTierControls,updateTierControls} from './visual-tier-controls.mjs?v=options-language-1';
 

@@ -1,4 +1,4 @@
-import {registerInteractiveScreens} from './ainimation-delivery.mjs?v=ainimation-totem-2';
+import {registerInteractiveScreens} from './ainimation-delivery.mjs?v=scene-3d-1';
 import {mountMusicListeningButton} from './music-listening.mjs?v=local-playlist-349';
 import {acquireMusicVisual,TPV_MUSIC_ID} from './music-visual.mjs?v=local-playlist-349';
 import {WATER_VIEW} from './pos-water.mjs?v=water-finish-3';

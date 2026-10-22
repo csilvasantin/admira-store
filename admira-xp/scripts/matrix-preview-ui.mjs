@@ -1,4 +1,4 @@
-import {mountMatrixPanorama} from './matrix-panorama.mjs?v=ainimation-totem-2';
+import {mountMatrixPanorama} from './matrix-panorama.mjs?v=ainimation-scene-1';
 import {mountTierHud} from './tier-hud.mjs?v=sneakers-matrix-1';
 import {matrixVenue,MATRIX_VENUES} from './xtanco-visual-tiers.mjs?v=sneakers-matrix-1';
 // Venues with their own Matrix module; the rest (generic entry) is the Starbucks capture.

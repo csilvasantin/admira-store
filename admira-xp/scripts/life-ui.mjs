@@ -1,3 +1,4 @@
+import {mountSceneInteractive} from './ainimation-scene.mjs?v=scene-3d-1';
 import {interfaceTranslator} from './interface-language.mjs?v=options-language-1';
 import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
 import {mountTierHud} from './tier-hud.mjs?v=sneakers-matrix-1';
@@ -66,7 +67,7 @@ const copy=interfaceTranslator([
   ["Cerrar Componentes de la estantería", "Close Shelf components"],
   ["Redimensionar Componentes de la estantería", "Resize Shelf components"]
 ]);
-let stopLanguage;
+let stopLanguage,interactiveScreen;
 const listeners=new Set();
 const announce=(busy=false,error='',reason='')=>{for(const listener of listeners)listener({open:!!dialog,busy,error,reason,requestId});};
 function subscribeLifeView(listener){listeners.add(listener);return ()=>listeners.delete(listener);}
@@ -80,6 +81,7 @@ function clearSceneToolbar(){sceneSlot()?.replaceChildren();}
 function parkSceneToolbar(toolbar){const slot=sceneSlot();if(slot&&toolbar)slot.replaceChildren(toolbar);}
 function pressGroup(buttons,button){for(const other of buttons){const on=other===button;other.setAttribute('aria-pressed',String(on));if(on)other.classList.add('is-active');else other.classList.remove('is-active');}}
 function close(reason=''){
+  interactiveScreen?.dispose();interactiveScreen=null;
   delete window.XpaceSceneScreens;stopLanguage?.();stopLanguage=null;generation++;cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
   removeAbort?.();removeAbort=null;
   closeLifeEditor();closeShelfPanel();for(const window of floatingWindows.splice(0))window.dispose();selectionWindow=null;for(const unregister of windowEntries.splice(0))unregister();viewer?.dispose();viewer=null;hud?.dispose();hud=null;clearSceneToolbar();dialog?.close();dialog?.remove();dialog=null;
@@ -194,7 +196,7 @@ async function open(options={}){
   }
   function fail(message){
     cancelAnimationFrame(frame);clearTimeout(pending);resizeObserver?.disconnect();resizeObserver=null;
-    closeLifeEditor();closeShelfPanel();select(null);
+    interactiveScreen?.dispose();interactiveScreen=null;closeLifeEditor();closeShelfPanel();select(null);
     viewer?.dispose();viewer=null;loading.hidden=false;loading.classList.add('life-error');loading.querySelector('h2').textContent='El 3D no está disponible';loading.querySelector('p').textContent=message;
     const retry=loading.querySelector('.life-retry');retry.hidden=false;retry.onclick=()=>{
       if(ticket!==generation||options.signal?.aborted)return;
@@ -216,7 +218,7 @@ async function open(options={}){
       pending=setTimeout(connect,180);return;
     }
     try{
-      const {createLifeRenderer}=await import('./life-renderer.mjs?v=good-matrix-6161');if(ticket!==generation)return;
+      const {createLifeRenderer}=await import('./life-renderer.mjs?v=ainimation-scene-1');if(ticket!==generation)return;
       viewer=createLifeRenderer({canvas,assetQuality:best?'best':'better',snapshot:input,getPlayer:()=>window.__xtoreWindowPlayer,getSurfacePreview:()=>window.__shelfScreenPreview?.draw,getScreenPreview:()=>window.XpaceScreenMedia?.draw,onSelect:data=>{if(ticket===generation)select(data);},onCameraChange:state=>{
         if(ticket!==generation||!dialog)return;
         const mapped=state.mode==='mapped';dialog.dataset.camera=mapped?'mapped':'free';
@@ -224,6 +226,7 @@ async function open(options={}){
         for(const button of presetButtons){const on=mapped&&button.dataset.preset==='mapped';button.setAttribute('aria-pressed',String(on));if(on)button.classList.add('is-active');else button.classList.remove('is-active');}
       }});
       window.XpaceSceneScreens={screenAt:(x,y)=>viewer?.screenAt(x,y),screenHighlight:id=>viewer?.screenHighlight(id),previewScreen:(id,track)=>window.XpaceScreenMedia.preview(id,track),restoreScreen:id=>window.XpaceScreenMedia.restore(id)};
+      interactiveScreen=mountSceneInteractive({root:dialog,stage,viewer,location:input.venue});
       if(best&&!venue&&!cafe&&sourceState?.vertical==='xtanco')void openShelfPanel(ticket,viewer);
       if(dialog.dataset.light)viewer.setLighting(dialog.dataset.light);
       resizeObserver=new ResizeObserver(()=>{if(viewer&&dialog){const rect=dialog.querySelector('.life-stage').getBoundingClientRect();viewer.resize(rect.width,rect.height);}});resizeObserver.observe(dialog.querySelector('.life-stage'));
@@ -236,7 +239,7 @@ async function open(options={}){
             if(now-lastStatus>=1000){const count=current.inside??0;const en=document.documentElement?.lang==='en';const status=furnitureEditor?(en?'Distribute · simulation paused':'Distribuir · simulación pausada'):current.moving
               ? (en?'Moving mode · floor and walls only':'Mudanza activa · solo suelo y paredes')
               : en?`Twin connected · ${count} ${count===1?'customer':'customers'} in the simulation`:`Gemelo conectado · ${count} ${count===1?'cliente':'clientes'} en la simulación`;dialog.querySelector('.life-state').textContent=status;hud?.setStatus(status);lastStatus=now;}
-            viewer.render(now);
+            viewer.render(now);interactiveScreen?.update();
           }
           frame=requestAnimationFrame(tick);
         }catch(error){console.warn('[Xtanco 3D]',error);fail('No se ha podido dibujar la escena. Puedes reintentar sin reiniciar el gemelo.');}
