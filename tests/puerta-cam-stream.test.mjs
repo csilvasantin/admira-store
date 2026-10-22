@@ -1,6 +1,6 @@
 // Directo de Puerta Cam sin abrir IEU (Carlos, 22-oct-2026): el servidor pide el enlace con el token de cámaras.
 import test from 'node:test';import assert from 'node:assert/strict';
-import {onRequest,streamUrlFrom,redact,streamRequest,IEU,LOGIN_PATH} from '../functions/xpacios/sneakerstore/puerta-cam-stream.js';
+import {onRequest,streamUrlFrom,redact,streamRequest,cameraToken,relatedVariables,IEU,LOGIN_PATH} from '../functions/xpacios/sneakerstore/puerta-cam-stream.js';
 import {siteForHost} from '../functions/_perimetro.js';
 
 const origin='https://www.admira.store',site=siteForHost('www.admira.store'),path='/xpacios/sneakerstore/puerta-cam-stream';
@@ -80,4 +80,18 @@ test('el diagnóstico es solo para administradores y enseña lo que pide IEU sin
   const noAdmin=await call({method:'GET',query:'?diagnostico=1',email:'colaborador@admira.com',env:{...env,WHITELIST_SITE_TOKEN:'w'}});
   assert.equal(noAdmin.res.status,403);assert.equal(noAdmin.ieuCalls.length,0);
   const sinParam=await call({method:'GET',env});assert.equal(sinParam.res.status,404);
+});
+
+test('sin token, el diagnóstico de un administrador enseña qué variables de IEU llegan (solo nombres) y un nombre con espacios o minúsculas vale',async()=>{
+  const env={' ieu_camera_token ':TOKEN,IEU_PUERTA_CAM_STREAM:CAMERA,OTRA:'x',CAMARAS:{binding:true}};
+  assert.equal(cameraToken(env),TOKEN);assert.equal(cameraToken({IEU_CAMERA_TOKEN:TOKEN}),TOKEN);assert.equal(cameraToken({IEU_TOKEN:TOKEN}),'');
+  assert.deepEqual(relatedVariables(env),[' ieu_camera_token ','IEU_PUERTA_CAM_STREAM'],'solo cadenas; los bindings no');
+  const ok=await call({env});assert.equal(ok.res.status,200);assert.equal(ok.ieuCalls[0].options.headers.Authorization,'Bearer '+TOKEN);
+  const sinToken={IEU_TOKEN:TOKEN,IEU_PUERTA_CAM_STREAM:CAMERA};
+  const diag=await call({method:'GET',query:'?diagnostico=1',env:sinToken});
+  assert.equal(diag.res.status,503);assert.deepEqual(diag.body,{ok:false,error:'not_configured',variables:['IEU_PUERTA_CAM_STREAM','IEU_TOKEN']});
+  assert.equal(JSON.stringify(diag.body).includes(TOKEN),false,'nunca valores');
+  const post=await call({env:sinToken});assert.deepEqual(post.body,{ok:false,error:'not_configured'},'fuera del diagnóstico no se enseñan nombres');
+  const noAdmin=await call({method:'GET',query:'?diagnostico=1',email:'colaboradora@admira.com',env:{...sinToken,WHITELIST_SITE_TOKEN:'w'}});
+  assert.deepEqual(noAdmin.body,{ok:false,error:'not_configured'},'ni a quien no es administrador');
 });
