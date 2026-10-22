@@ -2,6 +2,7 @@ import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {createCampaignOverlay} from './next-step/panorama-overlay.mjs?v=surface-fit-1';
 import {PANORAMA_MAP} from './next-step/panorama-map.mjs?v=surface-fit-1';
 import {angularPhotographMaterial} from '../../admira-xp/scripts/panorama-surface.mjs?v=surface-fit-1';
+import {hotspotAt} from './hotspots.mjs?v=iot-gallery-1';
 
 // Store-owned IEU photographs only. Camera streams and credentials stay in IEU.
 export const SCENES = {
@@ -10,7 +11,7 @@ export const SCENES = {
   fondo: {es:'Fondo',en:'Rear',url:'./panoramas/fondo.jpg',yaw:Math.PI},
 };
 
-export function createPanorama({canvas,onState=()=>{},onError=()=>{}}) {
+export function createPanorama({canvas,onState=()=>{},onError=()=>{},onHotspot=()=>{}}) {
   const renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'});
   renderer.outputColorSpace=T.SRGBColorSpace;
   const scene=new T.Scene(),camera=new T.PerspectiveCamera(85,1,.1,20);
@@ -20,6 +21,9 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{}}) {
   const cache=new Map(),pending=new Map(),loader=new T.TextureLoader();
   let active=false,disposed=false,current='',request=0,yaw=0,pitch=0,drag=null;
   let campaign=null,overlay=null;
+  const ray=new T.Raycaster(),ndc=new T.Vector2();
+  // Punto pulsable bajo el puntero (hotspots.mjs): un clic sin arrastre lo abre; al pasar por encima, el cursor lo dice.
+  function spotAt(e){if(!active||!current)return null;const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return null;ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);camera.updateMatrixWorld();ray.setFromCamera(ndc,camera);return hotspotAt(current,ray.ray.direction);}
   function refreshOverlay(){if(overlay){scene.remove(overlay.group);overlay.dispose();overlay=null;}if(campaign&&current&&material.map){overlay=createCampaignOverlay(current,campaign,material.map);scene.add(overlay.group);}canvas.dataset.campaign=campaign?'next-step':'';}
   function render(){if(!active||disposed)return;camera.lookAt(Math.cos(pitch)*Math.cos(yaw),Math.sin(pitch),Math.cos(pitch)*Math.sin(yaw));canvas.dataset.yaw=String(yaw);canvas.dataset.pitch=String(pitch);canvas.dataset.fov=String(camera.fov);canvas.dataset.mapping='angular-aperture-v1';renderer.render(scene,camera);}
   function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();render();}
@@ -46,8 +50,8 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{}}) {
   function zoom(factor){camera.fov=T.MathUtils.clamp(camera.fov/factor,35,95);camera.updateProjectionMatrix();render();}
   const handlers={
     pointerdown(e){if(e.button!==0)return;drag={id:e.pointerId,x:e.clientX,y:e.clientY,yaw,pitch};canvas.setPointerCapture(e.pointerId);canvas.focus();},
-    pointermove(e){if(drag?.id!==e.pointerId)return;yaw=drag.yaw-(e.clientX-drag.x)*.003;pitch=T.MathUtils.clamp(drag.pitch+(e.clientY-drag.y)*.003,-1.35,1.35);render();},
-    pointerup(){drag=null;},pointercancel(){drag=null;},
+    pointermove(e){if(drag?.id!==e.pointerId){if(!drag)canvas.style.cursor=spotAt(e)?'pointer':'';return;}yaw=drag.yaw-(e.clientX-drag.x)*.003;pitch=T.MathUtils.clamp(drag.pitch+(e.clientY-drag.y)*.003,-1.35,1.35);render();},
+    pointerup(e){const d=drag;drag=null;if(d?.id===e.pointerId&&Math.hypot(e.clientX-d.x,e.clientY-d.y)<6){const id=spotAt(e);if(id)onHotspot(id);}},pointercancel(){drag=null;},
     wheel(e){e.preventDefault();zoom(Math.exp(-e.deltaY*.001));},
     keydown(e){if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft')yaw-=.12;if(e.key==='ArrowRight')yaw+=.12;if(e.key==='ArrowUp')pitch=Math.min(1.35,pitch+.1);if(e.key==='ArrowDown')pitch=Math.max(-1.35,pitch-.1);if(e.key==='+')zoom(1.15);if(e.key==='-')zoom(1/1.15);render();}
   };
