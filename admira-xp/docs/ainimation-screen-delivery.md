@@ -20,3 +20,22 @@ The byte-identical registry is `assets/interactive-receivers.mjs` in AINimation 
 | `xtanco-valencia` | `JTIXtanco_CarrerdeColon_22_Mostrador_1` |
 | `admira-loterias` | `SinProyecto_GranVia_32_Mostrador_1` |
 | `admira-prensa` | `SinProyecto_PlazadeCibeles_Mostrador_1` |
+
+
+## Production verification · 22 October 2026 · Internal browser
+
+ES: La cuenta Google terminó validándose. Se preparó un envío autenticado para cada uno de los cinco receptores, se mostró en su vista de producción, el toque en «Ver la carta» llegó a «¿Qué te apetece?» y Restaurar pantalla quitó el iframe y recuperó «Sin contenido asignado». Los cinco pasaron; los metadatos públicos confirman ubicación, ID IoT y capacidad táctil. Se utilizó la copia de prueba afinada en Director; el proyecto original se conserva.
+
+EN: The Google account finished verifying. An authenticated delivery was prepared for each of the five receivers, shown in its production view, and “Ver la carta” reached “¿Qué te apetece?”. Restore screen removed the overlay iframe and recovered “No content assigned”. All five passed; public metadata confirms the exact location, IoT ID and touch capability. The test copy edited in Director was used; the original project is preserved.
+
+Scope: dedicated virtual screen views. Calibrated bindings to 3D scene surfaces and physical player playback remain pending. The side panel position and size were preserved during this verification.
+
+| Xpacio | Delivery receipt | Assigned / Navigated / Restored |
+|---|---|---|
+| `xtanco-bcn` | `7bb6d789e1b7415abb6b04ce27128e07495941e9dd244cabb8312011cd74ee83` | Yes / Yes / Yes |
+| `xtanco` | `f4abdff9e6ec4946988478baa9ce91f84c76ce23b785460b8992b4c1324a503c` | Yes / Yes / Yes |
+| `xtanco-valencia` | `8df10992abc54021bfd2a31fa6cd7a6106cd9af71a7d4ea8a3cc0ae02780ce17` | Yes / Yes / Yes |
+| `admira-loterias` | `f7d3b9fde5cd41009500bb24f8b8fd5726801b29a3e648ce8445d72313bde900` | Yes / Yes / Yes |
+| `admira-prensa` | `6c5602c4f7e24a5f8e76651681d026fe52f00da99200471d963bbca67a130ea6` | Yes / Yes / Yes |
+
+Detailed evidence: https://www.ainimation.studio/docs/five-touch-receiver-verification.json
