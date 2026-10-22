@@ -1,10 +1,14 @@
-# XpaceOS — www.xpaceos.com
+# admira.store — robots.txt PROPIO de admira.store (lo mantiene este repo; sync-desde-xpaceos.sh NO lo toca).
+# admira.store es privado (login de Google gestionado en AdmiraNeXT) salvo las rutas públicas que
+# usan players, decks y agentes. Se indexa solo lo público. (Carlos, 22-oct-2026, misión FLT-102618)
 User-agent: *
-Allow: /
-# Paneles internos / operativos (no indexar)
-Disallow: /control/
-Disallow: /backoffice/
+Disallow: /
+Allow: /admira-xp/
+Allow: /xpacios/
+Allow: /mcp/
+Allow: /llms.txt
+# Paneles operativos del gemelo: públicos para los players, pero sin valor para buscadores
 Disallow: /admira-xp/xpl.html
 Disallow: /admira-xp/inventario.html
 
-Sitemap: https://www.xpaceos.com/sitemap.xml
+Sitemap: https://www.admira.store/sitemap.xml

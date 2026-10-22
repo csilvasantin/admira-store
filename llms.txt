@@ -8,9 +8,15 @@
 - Página del MCP (humanos y bots): https://www.admira.store/mcp/
 - Gemelo digital público (incrustable): https://www.admira.store/admira-xp/
 - Xpacios: https://www.admira.store/xpacios/
+- Mapa del sitio (solo lo público): https://www.admira.store/sitemap.xml
 - Versión desplegada: https://www.admira.store/version.json
+
+## Hermanos
+
+- www.xpaceos.com (el origen del gemelo digital, portada pública): https://www.xpaceos.com/llms.txt
+- admira.tv (distribuir): https://admira.tv/llms.txt · admira.studio (crear) · clearchannel.tv (vender)
 
 ## Acceso
 
 - Personas: https://www.admira.store/auth/login
-- El resto de rutas exige sesión; lo que no existe responde 404.
+- El resto de rutas exige sesión y va en noindex; lo que no existe responde 404. robots.txt solo permite /admira-xp/, /xpacios/, /mcp/ y /llms.txt.

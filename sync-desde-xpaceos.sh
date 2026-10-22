@@ -52,6 +52,15 @@ git -C "$ORIGEN" archive HEAD | tar -x -C "$ORIGEN_LIMPIO"
 # Lo que se espeja: la portada y lo que necesita. Nada más y nada se borra.
 ESPEJO_FICHEROS=(index.html lead-form.css lead-form.js data/clientes-mapeo.json favicon.ico)
 ESPEJO_CARPETAS=(assets)
+# PROPIOS de admira.store (Carlos, 22-oct-2026, FLT-102618): su indexación es distinta de la de
+# xpaceos.com (privado salvo gemelo/Xpacios/MCP), así que estos ficheros NUNCA vienen del origen.
+# Hasta hoy robots.txt y sitemap.xml eran los de XpaceOS copiados por el espejo total antiguo.
+PROPIOS_DEL_ESPEJO=(robots.txt sitemap.xml llms.txt 404.html)
+for f in "${ESPEJO_FICHEROS[@]}"; do
+  for p in "${PROPIOS_DEL_ESPEJO[@]}"; do
+    [ "$f" = "$p" ] && { echo "✖ $f es propio de admira.store: no se espeja desde xpaceos" >&2; exit 1; }
+  done
+done
 
 echo "→ Plan del espejo parcial (origen $ORIGEN_SHA):"
 for f in "${ESPEJO_FICHEROS[@]}"; do
@@ -72,6 +81,9 @@ for d in "${ESPEJO_CARPETAS[@]}"; do
   [ -d "$ORIGEN_LIMPIO/$d" ] || continue
   rsync -a "$ORIGEN_LIMPIO/$d/" "./$d/"     # sin borrar: lo propio del espejo se queda
 done
+# Guarda: si por lo que sea el espejo trajera la indexación de XpaceOS, parar antes de publicarla.
+grep -q 'XpaceOS' robots.txt && { echo "✖ robots.txt dice XpaceOS: el espejo ha pisado la indexación propia de admira.store" >&2; exit 1; }
+grep -q 'xpaceos.com' sitemap.xml && { echo "✖ sitemap.xml lista xpaceos.com: el espejo ha pisado el sitemap propio de admira.store" >&2; exit 1; }
 
 SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' "$ORIGEN_LIMPIO/index.html" | head -1)"
 [ -n "$SELLO" ] || { echo "✗ El origen publicado no declara versión" >&2; exit 1; }

@@ -39,3 +39,24 @@ test('404 real y llms.txt de texto: sin ellos Pages sirve la portada privada a c
   assert.match(llms, /\/mcp\//);
   assert.doesNotMatch(llms, /<html|<!doctype/i);
 });
+
+test('indexación propia de admira.store: robots/sitemap no son los de XpaceOS, la portada privada va noindex y el sync no los espeja (FLT-102618)', () => {
+  const robots = readFileSync(join(root, 'robots.txt'), 'utf8');
+  assert.doesNotMatch(robots, /XpaceOS|xpaceos\.com/);
+  assert.match(robots, /^Disallow: \/$/m);
+  for (const pub of ['/admira-xp/', '/xpacios/', '/mcp/', '/llms.txt']) assert.match(robots, new RegExp('^Allow: ' + pub.replace(/[./]/g, '\\$&') + '$', 'm'), pub);
+  assert.match(robots, /^Sitemap: https:\/\/www\.admira\.store\/sitemap\.xml$/m);
+  const sitemap = readFileSync(join(root, 'sitemap.xml'), 'utf8');
+  assert.doesNotMatch(sitemap, /xpaceos\.com/);
+  assert.match(sitemap, /<loc>https:\/\/www\.admira\.store\/admira-xp\/<\/loc>/);
+  assert.match(sitemap, /<loc>https:\/\/www\.admira\.store\/mcp\/<\/loc>/);
+  assert.doesNotMatch(sitemap, /<loc>https:\/\/www\.admira\.store\/<\/loc>/, 'la portada es privada: fuera del sitemap');
+  const index = readFileSync(join(root, 'index.html'), 'utf8');
+  assert.match(index, /<meta name="robots" content="noindex,nofollow">/);
+  assert.match(index, /<link rel="canonical" href="https:\/\/www\.admira\.store\/">/);
+  const sync = readFileSync(join(root, 'sync-desde-xpaceos.sh'), 'utf8');
+  assert.match(sync, /PROPIOS_DEL_ESPEJO=\(robots\.txt sitemap\.xml llms\.txt 404\.html\)/);
+  assert.doesNotMatch(sync.match(/ESPEJO_FICHEROS=\(([^)]*)\)/)[1], /robots\.txt|sitemap\.xml|llms\.txt|404\.html/);
+  const verja = readFileSync(join(root, 'sello-y-verja.py'), 'utf8');
+  assert.match(verja, /noindex,nofollow/);
+});

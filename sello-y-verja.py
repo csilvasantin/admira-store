@@ -161,6 +161,12 @@ if es_block:
     if titulo:
         s = re.sub(r'(<meta property="og:title" content=")[^"]*(")', lambda m: m.group(1) + titulo.replace('"', '&quot;') + m.group(2), s, count=1)
 s = re.sub(r'(<meta property="og:locale" content=")[^"]+(")', r'\1es_ES\2', s, count=1)
+# La portada de admira.store es PRIVADA (302 al login): no se indexa, diga lo que diga el origen
+# (Carlos, 22-oct-2026, FLT-102618). Lo público (gemelo, Xpacios, MCP) va en robots.txt y sitemap.xml propios.
+if re.search(r'<meta name="robots"', s):
+    s = re.sub(r'<meta name="robots"[^>]*>', '<meta name="robots" content="noindex,nofollow">', s, count=1)
+else:
+    s = re.sub(r'(<head[^>]*>)', r'\1\n<meta name="robots" content="noindex,nofollow">', s, count=1)
 s = re.sub(r'<link rel="canonical" href="[^"]+">', '<link rel="canonical" href="https://www.admira.store/">', s, count=1)
 s = re.sub(r'(<meta property="og:url" content=")[^"]+(")', r'\1https://www.admira.store/\2', s, count=1)
 if titulo:
