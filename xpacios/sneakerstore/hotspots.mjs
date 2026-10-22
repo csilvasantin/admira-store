@@ -5,6 +5,12 @@ export const HOTSPOTS={
   entrada:[{id:'iot-gallery',yaw:[-.30,.40],pitch:[-.48,.42]}],
 };
 
+// Tarjeta Puerta Cam (como el dispositivo de IEU): centrada en la puerta, bajo el rótulo WWW.IOT.GALLERY.
+export const PUERTA_CAM_ANCHOR={scene:'entrada',yaw:.05,pitch:.12};
+
+// Dirección del mundo para unos ángulos (la inversa de hotspotAt).
+export function directionOf({yaw,pitch}){return {x:Math.cos(pitch)*Math.cos(yaw),y:Math.sin(pitch),z:Math.cos(pitch)*Math.sin(yaw)};}
+
 export function hotspotAt(scene,direction){
   const spots=HOTSPOTS[scene];if(!spots||!direction)return null;
   const length=Math.hypot(direction.x,direction.y,direction.z);if(!length)return null;

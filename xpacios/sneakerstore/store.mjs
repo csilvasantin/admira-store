@@ -4,7 +4,7 @@ import {compatibleTrack,measuredFormat} from './screen-format.mjs?v=surface-fit-
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {referenceStorage} from './layout-reference.mjs?v=rear-8';
 import {createStoreScene} from './scene.mjs?v=surface-fit-1';
-import {createPanorama,SCENES} from './panorama.mjs?v=iot-gallery-1';
+import {createPanorama,SCENES} from './panorama.mjs?v=puerta-cam-1';
 import {createLifeRenderer} from '../../admira-xp/scripts/life-renderer.mjs';
 import {createImportedBridge} from '../../admira-xp/scripts/imported-space.mjs';
 import {mountDistribuit} from '../../admira-xp/scripts/distribuit-ui.mjs';
@@ -50,7 +50,7 @@ function showPhoto(id='entrada'){
       $('scene-kind').textContent=(loading?t('Cargando · ','Loading · '):t('Tienda real 360 · ','Real store 360 · '))+SCENES[id][en?'en':'es'];
       if(!loading){$('photo-canvas').dataset.scene=id;modeControls('photo');}
     },onError:()=>{showModel();$('tour-hint').textContent=t('Fotografía no disponible · planta 3D abierta','Photograph unavailable · 3D floor plan opened');},onHotspot:id=>{if(id==='iot-gallery')void openOutdoorCamera();}});
-    $('tour-hint').textContent=t('Fotografía 360 · arrastra o usa las flechas para mirar alrededor','360 photograph · drag or use arrow keys to look around');modeControls('photo');panorama.setCampaign(campaignDemo);panorama.show(id);
+    $('tour-hint').textContent=t('Fotografía 360 · arrastra o usa las flechas para mirar alrededor','360 photograph · drag or use arrow keys to look around');modeControls('photo');panorama.setCampaign(campaignDemo);panorama.show(id);void puertaReady.then(p=>p?.attach(panorama));
   }catch{showModel();}
 }
 $('rear-toggle').textContent=t('Fondo LED','Rear LED');$('rear-toggle').onclick=showRear;
@@ -87,18 +87,26 @@ $('show-playlist').onclick=openPlaylist;$('close-playlist').onclick=()=>$('playl
 // la 360 en negro, la tienda sigue y el botón dice que no está disponible.
 let segmented=null;
 const SEGMENTED_UNAVAILABLE=()=>t('Contenido segmentado no disponible ahora','Segmented content unavailable right now');
-const segmentedReady=import('./segmentado-ui.mjs?v=puerta-1').then(({mountSegmented})=>segmented=mountSegmented({document,t,en,channels,status})).catch(error=>{console.warn('Contenido segmentado no disponible',error);$('show-segmented').disabled=true;$('show-segmented').title=SEGMENTED_UNAVAILABLE();return null;});
+const segmentedReady=import('./segmentado-ui.mjs?v=puerta-cam-1').then(async({mountSegmented})=>{const puerta=await puertaReady;return segmented=mountSegmented({document,t,en,channels,status,puertaCam:puerta?.cam||null});}).catch(error=>{console.warn('Contenido segmentado no disponible',error);$('show-segmented').disabled=true;$('show-segmented').title=SEGMENTED_UNAVAILABLE();return null;});
 function openSegmented(mode){return segmentedReady.then(s=>s?s.open(mode):status(SEGMENTED_UNAVAILABLE()));}
 // IoT Gallery (Carlos, 22-oct-2026): la puerta del fondo de Entrada abre la cámara exterior como el segmentador
 // (admira.tv/mcp/xtore-demo-setup.md): Digital Twin de IEU en su pestaña de nombre fijo, sin recargarla si ya está
-// abierta, y «Contenido segmentado» en el paso Puerta Cam. Si ya se comparte, se enseña. IEU no tiene enlace directo.
+// abierta, y su vídeo compartido en la ventana Puerta Cam. IEU no tiene enlace directo a la cámara.
 const DIGITAL_TWIN_URL='https://digitaltwin.ieu.ai/',DIGITAL_TWIN_TAB='xtore-demo-digitaltwin';
+function openIeuTab(){
+  let twin=null;try{twin=window.open('',DIGITAL_TWIN_TAB);}catch{}
+  try{if(twin&&twin.location.href==='about:blank')twin.location.href=DIGITAL_TWIN_URL;}catch{/* Ya es la pestaña de IEU: no se recarga. */}
+  if(!twin)window.open(DIGITAL_TWIN_URL,'_blank','noopener');
+}
+// Puerta Cam como en IEU (Carlos, 22-oct-2026): tarjeta del dispositivo sobre la puerta y «Ver stream» con el vídeo de
+// la calle en una ventana flotante, desde la pestaña de IEU compartida. Se carga aparte: si falla, IoT Gallery vuelve
+// al camino del segmentador.
+let puerta=null;
+const puertaReady=import('./puerta-cam-ui.mjs?v=puerta-cam-1').then(({mountPuertaCam})=>puerta=mountPuertaCam({document,t,stage:$('store-stage'),openIeu:openIeuTab,storage:(()=>{try{return localStorage;}catch{return null;}})()})).catch(error=>{console.warn('Puerta Cam no disponible',error);return null;});
+window.addEventListener('pagehide',()=>puerta?.dispose(),{once:true});
 function openOutdoorCamera(){
-  if(segmented?.state.source!=='share'){
-    let twin=null;try{twin=window.open('',DIGITAL_TWIN_TAB);}catch{}
-    try{if(twin&&twin.location.href==='about:blank')twin.location.href=DIGITAL_TWIN_URL;}catch{/* Ya es la pestaña de IEU: no se recarga. */}
-    if(!twin)window.open(DIGITAL_TWIN_URL,'_blank','noopener');
-  }
+  if(puerta){puerta.open();return Promise.resolve();}
+  if(segmented?.state.source!=='share')openIeuTab();
   return openSegmented('puerta');
 }
 $('show-segmented').textContent=t('Contenido segmentado','Segmented content');$('show-segmented').onclick=()=>void openSegmented();window.addEventListener('pagehide',()=>segmented?.dispose(),{once:true});

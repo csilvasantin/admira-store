@@ -28,7 +28,7 @@ test('en Entrada, el rótulo y la puerta de IoT Gallery son pulsables; paredes, 
 
 test('la 360 solo abre un punto con un clic, no al arrastrar para mirar, y el cursor lo anuncia',()=>{
   const panorama=read('./panorama.mjs');
-  assert.match(panorama,/import \{hotspotAt\} from '\.\/hotspots\.mjs\?v=iot-gallery-1'/);
+  assert.match(panorama,/import \{hotspotAt,directionOf\} from '\.\/hotspots\.mjs\?v=puerta-cam-1'/);
   assert.match(panorama,/pointerup\(e\)\{const d=drag;drag=null;if\(d\?\.id===e\.pointerId&&Math\.hypot\(e\.clientX-d\.x,e\.clientY-d\.y\)<6\)\{const id=spotAt\(e\);if\(id\)onHotspot\(id\);\}\}/);
   assert.match(panorama,/if\(!drag\)canvas\.style\.cursor=spotAt\(e\)\?'pointer':''/);
 });
@@ -40,7 +40,7 @@ test('IoT Gallery abre IEU en la pestaña del segmentador sin recargarla y lleva
   assert.match(store,/DIGITAL_TWIN_URL='https:\/\/digitaltwin\.ieu\.ai\/',DIGITAL_TWIN_TAB='xtore-demo-digitaltwin'/);
   assert.match(store,/twin=window\.open\('',DIGITAL_TWIN_TAB\)/);
   assert.match(store,/if\(twin&&twin\.location\.href==='about:blank'\)twin\.location\.href=DIGITAL_TWIN_URL/,'solo navega una pestaña nueva y vacía');
-  assert.match(store,/if\(segmented\?\.state\.source!=='share'\)\{/,'si Puerta Cam ya se comparte, no se toca IEU');
+  assert.match(store,/if\(segmented\?\.state\.source!=='share'\)openIeuTab\(\);/,'si Puerta Cam ya se comparte, no se toca IEU');
   assert.match(store,/return openSegmented\('puerta'\);/);assert.match(store,/SEGMENTED_MODES=\{puerta:'puerta',/);
   assert.match(ui,/else if\(mode==='puerta'&&state\.source!=='share'\)\{camStatus\(t\('Cámara exterior: en la pestaña de IEU abre Store → Entrada → Puerta Cam → Ver stream y pulsa «Compartir Puerta Cam»\.'/);
   assert.match(ui,/\$\('seg-share'\)\.focus\(\);\}/);
