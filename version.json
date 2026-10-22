@@ -1,14 +1,17 @@
 {
   "version": "v.22.10.2026.r4.17:37",
+  "deployedAt": "2026-10-22T15:52:33Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "deployedAt": "2026-10-22T15:41:47.288886+00:00",
-  "git": "f891520883f95d8a2b66117b8b023f459160e8c1",
-  "gitFull": "f891520883f95d8a2b66117b8b023f459160e8c1",
-  "gitShort": "f891520",
+  "git": "72f7f209121deb4d6edf9202479eda0e9be32d2b",
+  "gitShort": "72f7f20",
+  "gitFull": "72f7f209121deb4d6edf9202479eda0e9be32d2b",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "novedades": [
+    "Portada más ligera: el canal en directo ya no carga el reproductor al entrar; enseña el póster de la pieza en antena y el reproductor se carga al pulsar.",
+    "Antes, cada visita nueva descargaba toda la programación del canal (cientos de MB); ahora solo un póster.",
+    "Texto del bloque del canal traducido (español e inglés).",
+    "Corregido el bloque LIVE, que quedaba oculto por un nombre repetido en el código."
+  ]
 }
