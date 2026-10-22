@@ -1,12 +1,12 @@
 {
   "version": "v.22.10.2026.r4.17:37",
-  "deployedAt": "2026-10-22T17:49:11Z",
+  "deployedAt": "2026-10-22T18:12:49Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "git": "c4a2436bd212c563388a7aaaf44b6b9decfab81b",
-  "gitShort": "c4a2436",
-  "gitFull": "c4a2436bd212c563388a7aaaf44b6b9decfab81b",
+  "git": "8693a08e197c04068f07933e7b6f2f1baeae6ef3",
+  "gitShort": "8693a08",
+  "gitFull": "8693a08e197c04068f07933e7b6f2f1baeae6ef3",
   "dirty": false,
   "novedades": [
     "Portada más ligera: el canal en directo ya no carga el reproductor al entrar; enseña el póster de la pieza en antena y el reproductor se carga al pulsar.",
