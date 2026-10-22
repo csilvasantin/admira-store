@@ -107,11 +107,12 @@ export function mountSegmented({document,t,en,channels,status=()=>{},puertaCam=n
     if(!navigator.mediaDevices?.getDisplayMedia){camStatus(t('Este navegador no permite compartir pestañas. Usa Chrome de escritorio.','This browser cannot share tabs. Use desktop Chrome.'));return;}
     camStatus(t('Elige la pestaña de digitaltwin.ieu.ai con Store → Entrada → Puerta Cam → Ver stream.','Choose the digitaltwin.ieu.ai tab with Store → Entrada → Puerta Cam → View stream.'));
     // La pestaña de IEU la comparte una sola vez puerta-cam.mjs (la ventana Puerta Cam de la 360 usa la misma).
-    try{state.stream=puertaCam?await puertaCam.share():await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:{ideal:10,max:15}},audio:false,monitorTypeSurfaces:'exclude',selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'});}
+    try{state.stream=puertaCam?await puertaCam.share({direct:true}):await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:{ideal:10,max:15}},audio:false,monitorTypeSurfaces:'exclude',selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'});}
     catch(e){camStatus(t('No se compartió la pestaña: ','Tab not shared: ')+e.message);return;}
     state.source='share';pick('seg-share');cam.srcObject=state.stream;cam.hidden=false;await cam.play().catch(()=>{});
     state.stream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(state.source==='share'){stopSource();camStatus(t('Pestaña dejada de compartir.','Tab sharing ended.'));}});
-    $('seg-source').textContent=t('Pestaña compartida · detector COCO-SSD en el navegador','Shared tab · COCO-SSD detector in the browser');
+    const direct=puertaCam?.source==='direct';if(direct)camStatus('');
+    $('seg-source').textContent=direct?t('Directo de IEU · detector COCO-SSD en el navegador','IEU live stream · COCO-SSD detector in the browser'):t('Pestaña compartida · detector COCO-SSD en el navegador','Shared tab · COCO-SSD detector in the browser');
     runDetector();
   }
   function demoVideo(){

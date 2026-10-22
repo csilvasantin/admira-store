@@ -1,9 +1,12 @@
-// Puerta Cam (IEU · Santa Rosa 19) en admira.store (Carlos, 22-oct-2026). El vídeo de la calle llega compartiendo la
-// pestaña de IEU, como en el segmentador (admira.tv/mcp/xtore-demo-setup.md): IEU exige sesión y su guía
-// (admira.tv/mcp/ieu-puertacam-autostart.md) no admite copiar sesiones ni URLs privadas del stream.
-// Un solo dueño de esa pestaña compartida: la ventana del stream y «Contenido segmentado» la reutilizan, así
-// Chrome pregunta una vez. El recorte (el recuadro del vídeo dentro de la pestaña) se guarda en este navegador.
+// Puerta Cam (IEU · Santa Rosa 19) en admira.store (Carlos, 22-oct-2026). Dos fuentes para el vídeo de la calle:
+// - directa: el servidor de admira.store pide a IEU un enlace firmado con su token de cámaras
+//   (functions/xpacios/sneakerstore/puerta-cam-stream.js) y se reproduce aquí con hls.js, sin abrir IEU;
+// - de reserva, la pestaña de IEU compartida, como en el segmentador (admira.tv/mcp/xtore-demo-setup.md).
+// Un solo dueño del vídeo: la ventana del stream y «Contenido segmentado» lo reutilizan, así Chrome pregunta una
+// vez como mucho. El recorte (el recuadro del vídeo dentro de la pestaña) solo vale para la pestaña compartida.
 export const CROP_KEY='sneakerstore.puertaCam.crop.v1';
+export const STREAM_ENDPOINT='/xpacios/sneakerstore/puerta-cam-stream';
+export const HLS_URL='https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.light.min.mjs';
 const unit=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=1;
 
 // Dos esquinas en coordenadas 0..1 del fotograma, en cualquier orden. Un recuadro diminuto es un clic suelto.
@@ -23,21 +26,50 @@ export function sourceRect(crop,width,height){
 
 export const SHARE_OPTIONS={video:{displaySurface:'browser',frameRate:{ideal:10,max:15}},audio:false,monitorTypeSurfaces:'exclude',selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'};
 
-export function createPuertaCam({navigator=globalThis.navigator,storage=null,onChange=()=>{}}={}){
-  let stream=null,pending=null,crop=null;
+// Error con código: login_required, not_configured, camera_not_configured, ieu_*… (o hls_unsupported).
+export class StreamError extends Error{constructor(code,login=''){super(code);this.code=code;this.login=login;}}
+
+export function createPuertaCam({navigator=globalThis.navigator,document=globalThis.document,fetcher=globalThis.fetch?.bind(globalThis),loadHls=()=>import(HLS_URL),storage=null,onChange=()=>{}}={}){
+  let stream=null,source=null,pending=null,crop=null,player=null;
   try{crop=parseCrop(storage?.getItem(CROP_KEY));}catch{}
   const live=()=>!!stream&&stream.getVideoTracks().some(track=>track.readyState==='live');
-  function release(){stream=null;onChange();}
-  async function share(){
-    if(live())return stream;
-    if(pending)return pending;
-    if(!navigator?.mediaDevices?.getDisplayMedia)throw Error('share_unsupported');
-    pending=navigator.mediaDevices.getDisplayMedia(SHARE_OPTIONS).then(next=>{
-      stream=next;next.getVideoTracks()[0]?.addEventListener('ended',()=>{if(stream===next)release();});onChange();return next;
-    }).finally(()=>{pending=null;});
+  function release(){stream=null;source=null;closePlayer();onChange();}
+  function closePlayer(){const p=player;player=null;if(!p)return;try{p.hls?.destroy();}catch{}p.video.pause();p.video.removeAttribute('src');p.video.load();}
+  function adopt(next,kind){stream=next;source=kind;next.getVideoTracks()[0]?.addEventListener('ended',()=>{if(stream===next)release();});onChange();return next;}
+  // Directo de IEU: enlace firmado de nuestro servidor, reproducido con hls.js (o HLS nativo) y convertido en
+  // MediaStream con captureStream. IEU sirve con CORS abierto, así que el vídeo se puede analizar.
+  async function playDirect(){
+    const r=await fetcher(STREAM_ENDPOINT,{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'}});
+    const data=await r.json().catch(()=>null);
+    if(!r.ok||!data?.ok||typeof data.url!=='string')throw new StreamError(data?.error||'http_'+r.status,data?.login||'');
+    const video=Object.assign(document.createElement('video'),{muted:true,playsInline:true,crossOrigin:'anonymous'});
+    const p={video,hls:null};closePlayer();player=p;
+    if(video.canPlayType('application/vnd.apple.mpegurl'))video.src=data.url;
+    else{
+      const {default:Hls}=await loadHls();if(!Hls?.isSupported?.())throw new StreamError('hls_unsupported');
+      p.hls=new Hls({lowLatencyMode:true,liveDurationInfinity:true});p.hls.loadSource(data.url);p.hls.attachMedia(video);
+      // Un enlace caducado (12 h) o un corte de red cierran el directo; el siguiente «Ver stream» pide otro.
+      p.hls.on(Hls.Events.ERROR,(_,d)=>{if(d?.fatal&&player===p)stop();});
+    }
+    await video.play();
+    if(player!==p)throw new StreamError('cancelled');
+    return adopt(video.captureStream(),'direct');
+  }
+  function connect(){
+    if(live())return Promise.resolve(stream);
+    if(!pending)pending=playDirect().catch(e=>{if(player&&source!=='direct')closePlayer();throw e instanceof StreamError?e:new StreamError(e?.message||'play_failed');}).finally(()=>{pending=null;});
     return pending;
   }
-  function stop(){const old=stream;stream=null;old?.getTracks().forEach(track=>track.stop());if(old)onChange();}
+  // Pestaña de IEU compartida. Con direct=true (el segmentado) intenta antes el directo, sin selector.
+  async function share({direct=false}={}){
+    if(live())return stream;
+    if(direct)try{return await connect();}catch{}
+    if(pending)return pending;
+    if(!navigator?.mediaDevices?.getDisplayMedia)throw Error('share_unsupported');
+    pending=navigator.mediaDevices.getDisplayMedia(SHARE_OPTIONS).then(next=>adopt(next,'tab')).finally(()=>{pending=null;});
+    return pending;
+  }
+  function stop(){const old=stream;stream=null;source=null;old?.getTracks().forEach(track=>track.stop());closePlayer();if(old)onChange();}
   function setCrop(next){crop=next;try{next?storage?.setItem(CROP_KEY,JSON.stringify(next)):storage?.removeItem(CROP_KEY);}catch{}onChange();}
-  return {share,stop,setCrop,get stream(){return live()?stream:null;},get live(){return live();},get crop(){return crop;}};
+  return {connect,share,stop,setCrop,get stream(){return live()?stream:null;},get live(){return live();},get source(){return live()?source:null;},get crop(){return crop;}};
 }
