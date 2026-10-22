@@ -1,16 +1,17 @@
+import {receiverFor} from './ainimation-receivers.mjs?v=five-touch-1';
 export const AINIMATION_API='https://ainimation-interactive-library-preview.csilvasantin.workers.dev/api';
 export const AINIMATION_LOCATION='alsea-sbux-021';
 export const AINIMATION_SCREEN_IDS=['starbucks-avatar-wall','starbucks-ipad-01'];
 export function validateDelivery(data,id,location){
- if(!/^[a-f0-9]{64}$/.test(id)||location!==AINIMATION_LOCATION||data?.id!==id||data.destination?.id!==location||data.destination?.kind!=='virtual'||(!AINIMATION_SCREEN_IDS.includes(data.destination.screen?.id)||data.destination.screen?.touch!==true)||typeof data.title!=='string'||data.title.length>80)throw Error('Entrega o destino no válido / Invalid delivery or destination');
+ if(!/^[a-f0-9]{64}$/.test(id)||!(location===AINIMATION_LOCATION?AINIMATION_SCREEN_IDS.includes(data?.destination?.screen?.id):receiverFor(location,data?.destination?.screen?.id))||data?.id!==id||data.destination?.id!==location||data.destination?.kind!=='virtual'||data.destination.screen?.touch!==true||typeof data.title!=='string'||data.title.length>80)throw Error('Entrega o destino no válido / Invalid delivery or destination');
  const url=new URL(data.playerUrl);if(url.href!==AINIMATION_API+'/deliveries/'+id+'/player')throw Error('Player no permitido / Player not allowed');
  return data;
 }
-export function registerInteractiveScreens({win=window,root,host,blocked=()=>false,focus=()=>{}}){
+export function registerInteractiveScreens({win=window,root,host,blocked=()=>false,focus=()=>{},location=AINIMATION_LOCATION}){
  const doc=root.ownerDocument,t=(es,en)=>doc.documentElement.lang==='en'?en:es;let current;
  function stop(){if(!current)return;current.frame.src='about:blank';current.frame.remove();current.panel.remove();current=null;}
- const registry={has:id=>AINIMATION_SCREEN_IDS.includes(id)&&!!host(id),stop,show(data){
-  validateDelivery(data,data?.id,AINIMATION_LOCATION);
+ const registry={has:id=>(location===AINIMATION_LOCATION?AINIMATION_SCREEN_IDS.includes(id):!!receiverFor(location,id))&&!!host(id),stop,show(data){
+  validateDelivery(data,data?.id,location);
   const id=data.destination.screen.id,parent=host(id);if(!registry.has(id)||blocked(id))throw Error(t('La pantalla no está disponible o está apagada.','The screen is unavailable or powered off.'));
   stop();const frame=doc.createElement('iframe');frame.title=data.title;frame.src=data.playerUrl;frame.setAttribute('sandbox','allow-scripts');frame.referrerPolicy='no-referrer';frame.dataset.ainimationScreen=id;frame.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;z-index:20;background:#102621;pointer-events:auto';
   const panel=doc.createElement('div');panel.className='ainimation-screen-controls';panel.style.cssText='position:absolute;bottom:16px;left:16px;max-width:calc(100% - 32px);z-index:5000;background:#001d10;color:#b8ee77;border:1px solid #39ff14;padding:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font:13px monospace';
@@ -30,7 +31,7 @@ export async function receiveDelivery(win=window,request=fetch){
  let data;const ready=()=>{apply.disabled=!data||!win.XpaceAINimation?.has(data.destination.screen.id);};win.addEventListener('xpace:ainimation-ready',ready);
  function hide(){win.removeEventListener('xpace:ainimation-ready',ready);frame.src='about:blank';d.close();d.remove();}
  close.onclick=hide;d.addEventListener('cancel',e=>{e.preventDefault();hide();});
- try{if(!/^[a-f0-9]{64}$/.test(id))throw Error(t('Enlace no válido','Invalid link'));const r=await request(AINIMATION_API+'/deliveries/'+id,{signal:AbortSignal.timeout(30000),credentials:'omit',referrerPolicy:'no-referrer'});if(!r.ok)throw Error(t('No se pudo recuperar el envío.','Could not retrieve delivery.'));data=validateDelivery(await r.json(),id,q.get('loc'));h.textContent=data.title;status.textContent=data.destination.name+' · '+data.destination.screen.name+'. '+t('Revisa el recorrido. Al mostrarlo, Restaurar pantalla recupera la programación anterior.','Review the journey. After displaying it, Restore screen reveals the previous schedule.');frame.title=data.title;frame.src=data.playerUrl;frame.style.display='block';ready();
+ try{if(!/^[a-f0-9]{64}$/.test(id))throw Error(t('Enlace no válido','Invalid link'));const r=await request(AINIMATION_API+'/deliveries/'+id,{signal:AbortSignal.timeout(30000),credentials:'omit',referrerPolicy:'no-referrer'});if(!r.ok)throw Error(t('No se pudo recuperar el envío.','Could not retrieve delivery.'));data=validateDelivery(await r.json(),id,q.get('loc'));if(q.has('screen')&&q.get('screen')!==data.destination.screen.id)throw Error(t('La pantalla del enlace no coincide con el envío.','The link screen does not match the delivery.'));h.textContent=data.title;status.textContent=data.destination.name+' · '+data.destination.screen.name+'. '+t('Revisa el recorrido. Al mostrarlo, Restaurar pantalla recupera la programación anterior.','Review the journey. After displaying it, Restore screen reveals the previous schedule.');frame.title=data.title;frame.src=data.playerUrl;frame.style.display='block';ready();
   apply.onclick=()=>{try{win.XpaceAINimation.show(data);hide();}catch(error){status.textContent=error.message;}};
  }catch(error){status.textContent=error.message;}
 }
