@@ -23,5 +23,5 @@ test('el botón, la acción sneakers-segmented, /segmentado, ?segmentado= y page
 });
 
 test('index.html pide la versión nueva de store.mjs',()=>{
-  assert.match(html,/<script type="module" src="\.\/store\.mjs\?v=puerta-cam-2">/);
+  assert.match(html,/<script type="module" src="\.\/store\.mjs\?v=puerta-cam-3">/);
 });
