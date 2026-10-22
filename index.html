@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.22.10.2026.r1.11:26"/>
-  <!-- Espejo de www.xpaceos.com (a2a34d3), sincronizado con
+  <meta name="admiranext-version" content="v.22.10.2026.r4.17:37"/>
+  <!-- Espejo de www.xpaceos.com (f891520), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
@@ -393,6 +393,18 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
     padding:11px 15px;border-bottom:1px solid rgba(120,243,255,.16);background:rgba(2,8,13,.6)}
   .live-demo-k{font-family:monospace;font-size:11px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase}
   .live-demo-frame{display:block;width:100%;aspect-ratio:16/9;border:0;background:#000}
+  .live-demo-stage{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+  .live-demo-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+  .live-demo-play{position:absolute;inset:0;width:100%;height:100%;border:0;cursor:pointer;color:#fff;font:inherit;
+    font-size:15px;letter-spacing:.04em;display:flex;align-items:center;justify-content:center;gap:12px;
+    background:linear-gradient(180deg,rgba(2,8,13,.1),rgba(2,8,13,.55))}
+  .live-demo-play:hover,.live-demo-play:focus-visible{background:linear-gradient(180deg,rgba(2,8,13,.05),rgba(2,8,13,.4));
+    outline:2px solid rgba(120,243,255,.6);outline-offset:-2px}
+  .live-demo-play-ic{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;
+    background:rgba(255,255,255,.92);color:#02080d;font-size:20px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .live-demo-now{position:absolute;left:0;right:0;bottom:0;padding:8px 14px;font-family:monospace;font-size:11px;letter-spacing:.06em;
+    color:#dff6ff;background:linear-gradient(180deg,transparent,rgba(2,8,13,.85));pointer-events:none;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .live-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;
     border:1px solid rgba(255,80,80,.55);background:rgba(2,8,13,.72);
     color:#ffd9d9;font-family:monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
@@ -538,11 +550,18 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
          ese es el argumento. Si no hay señal, no se pinta nada. -->
     <figure class="live-demo" id="liveDemo" hidden>
       <div class="live-demo-hd"><span class="live-tag"><i></i><span id="liveTag">LIVE</span></span>
-        <span class="live-demo-k">This is the channel running right now — not a recording</span></div>
-      <iframe class="live-demo-frame" title="XpaceOS live channel"
-              src="https://admira.tv/canal?screen=xpaceos-web&embed=mupi&chrome=0&shot=0"
-              loading="lazy" referrerpolicy="no-referrer"
-              sandbox="allow-scripts allow-same-origin"></iframe>
+        <span class="live-demo-k" data-i18n="live.k">Este es el canal en emisión ahora mismo, no una grabación. Se carga al pulsar.</span></div>
+      <!-- Fachada del canal (22-oct-2026): el reproductor de admira.tv es un player de quiosco y
+           se descarga TODA la programación (cientos de MB). En la portada se enseña el póster
+           de la pieza en antena y el reproductor solo se carga al pulsar. -->
+      <div class="live-demo-stage" id="liveStage">
+        <img class="live-demo-poster" id="livePoster" alt="" decoding="async" loading="lazy" hidden>
+        <button type="button" class="live-demo-play" id="livePlay">
+          <span class="live-demo-play-ic" aria-hidden="true">&#9654;</span>
+          <span data-i18n="live.play">Ver el canal en directo</span>
+        </button>
+        <div class="live-demo-now" id="liveNow" hidden></div>
+      </div>
     </figure>
 
     <div class="booth-grid">
@@ -906,6 +925,8 @@ const I18N = {
     'hero.howCta': 'How it works',
     'booth.title': '<span class="num">00</span>Case study — the booth was the demo',
     'booth.lede': 'We did not bring a slide deck. We brought the system running. The XpaceOS booth at Shoptalk was controlled live by the Digital Twin — screens, music, lighting, scent — from a single monitor that any visitor could touch to see the physical space change in real time. What ran in that booth is now the standard XpaceOS deployment.',
+    'live.k': 'This is the channel running right now — not a recording. It loads when you press play.',
+    'live.play': 'Watch the live channel',
     'booth.when': 'CASE STUDY · SHOPTALK EUROPE · JUN 9-11 2026 · FIRA BARCELONA',
     'booth.cardTitle': 'XpaceOS booth — the twin controlling the space',
     'booth.cardCopy': 'A monitor in the booth runs the Digital Twin of the booth itself. Touch a screen in the twin → the physical screen changes. Turn up the volume in the twin → the booth gets louder. Activate the scent diffuser from the twin → the booth smells like fresh coffee.',
@@ -1091,6 +1112,8 @@ const I18N = {
     'hero.howCta': 'Cómo funciona',
     'booth.title': '<span class="num">00</span>Caso de éxito — el stand fue la demo',
     'booth.lede': 'No llevamos una presentación. Llevamos el sistema corriendo. El propio stand de XpaceOS en Shoptalk estuvo controlado en directo por el Gemelo Digital — pantallas, música, iluminación, aroma — desde un único monitor que cualquier visitante podía tocar y ver cómo cambiaba el espacio físico en tiempo real. Lo que corrió en aquel stand es hoy el despliegue estándar de XpaceOS.',
+    'live.k': 'Este es el canal en emisión ahora mismo, no una grabación. Se carga al pulsar.',
+    'live.play': 'Ver el canal en directo',
     'booth.when': 'CASO DE ÉXITO · SHOPTALK EUROPE · 9–11 JUN 2026 · FIRA BARCELONA',
     'booth.cardTitle': 'Stand XpaceOS — el gemelo controlando el espacio',
     'booth.cardCopy': 'Un monitor en el stand corre el Gemelo Digital del propio stand. Toca una pantalla en el gemelo → cambia la pantalla física. Sube el volumen en el gemelo → suena más en el stand. Activa el difusor de aroma desde el gemelo → huele a café recién hecho.',
@@ -1889,6 +1912,26 @@ window.addEventListener('pagehide', () => window.clearTimeout(nextShootingStarTi
       fig.hidden=!enAntena;
       tag.textContent = n>0 ? ('LIVE · '+n+' screen'+(n>1?'s':'')+' emitting')
                             : 'LIVE · channel on air';
+      // Póster de la pieza en antena (Stock sirve poster.jpg por id). Sin reproductor hasta pulsar.
+      var it=enAntena&&canal.item||null, id=it&&it.id?String(it.id):'';
+      if(id&&id!==lastId){
+        lastId=id;
+        if(poster){ poster.hidden=false; poster.onerror=function(){ poster.hidden=true; };
+          poster.src='https://stock.admira.store/stock/'+encodeURIComponent(id)+'/poster.jpg'; poster.alt=it.title||''; }
+        if(pieza){ pieza.textContent=it.title||''; pieza.hidden=!it.title; }
+      }
+    });
+  }
+  var lastId='', poster=document.getElementById('livePoster'), pieza=document.getElementById('liveNow'),
+      play=document.getElementById('livePlay'), stage=document.getElementById('liveStage');
+  if(play&&stage){
+    play.addEventListener('click', function(){
+      if(stage.querySelector('iframe')) return;
+      var f=document.createElement('iframe');
+      f.className='live-demo-frame'; f.title='XpaceOS live channel';
+      f.src='https://admira.tv/canal?screen=xpaceos-web&embed=mupi&chrome=0&shot=0';
+      f.referrerPolicy='no-referrer'; f.setAttribute('sandbox','allow-scripts allow-same-origin');
+      stage.replaceChildren(f);
     });
   }
   refresh(); setInterval(refresh, 60000);

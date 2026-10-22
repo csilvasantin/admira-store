@@ -1,5 +1,21 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.22.10.2026.r4.17:37": [
+    "Portada más ligera: el canal en directo ya no carga el reproductor al entrar; enseña el póster de la pieza en antena y el reproductor se carga al pulsar.",
+    "Antes, cada visita nueva descargaba toda la programación del canal (cientos de MB); ahora solo un póster.",
+    "Texto del bloque del canal traducido (español e inglés).",
+    "Corregido el bloque LIVE, que quedaba oculto por un nombre repetido en el código."
+  ],
+  "v.22.10.2026.r3.17:27": [
+    "Portada más ligera: el canal en directo ya no carga el reproductor al entrar; enseña el póster de la pieza en antena y el reproductor se carga al pulsar.",
+    "Antes, cada visita nueva descargaba toda la programación del canal (cientos de MB); ahora solo un póster.",
+    "Texto del bloque del canal traducido (español e inglés)."
+  ],
+  "v.22.10.2026.r2.11:51": [
+    "Matrix de la Sneakers Store · Santa Rosa 19: el gemelo con loc=sneakers-store-santa-rosa-19 abre por defecto en Matrix con la foto 360° real de la tienda, ya no en el Starbucks.",
+    "Sus dos pantallas virtuales sobre la foto: la horizontal (LCD gigante y LED del fondo) y la vertical de la entrada, cada una con su playlist.",
+    "Segmentación por cámara: la tarjeta enciende la cámara, estima sexo y edad en el dispositivo y envía la audiencia a /audience para la pantalla de la tienda; enlace a Segmentación en directo."
+  ],
   "v.22.10.2026.r1.11:26": [
     "llms.txt real en la raíz (texto plano) para los agentes: qué es XpaceOS, /mcp/, gemelo, Xpacios, sitemap y el MCP canónico de mcp.admira.store.",
     "404 real: el espejo de Cloudflare Pages (xpaceos.pages.dev) devolvía la portada entera a cualquier ruta inexistente con extensión; ahora 404.html y la regla del perímetro responden 404. En www.xpaceos.com (GitHub Pages) el 404 ya era correcto.",
