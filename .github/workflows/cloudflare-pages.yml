@@ -10,7 +10,7 @@ on:
   push:
     branches: [main]
   workflow_run:
-    workflows: ["Espejo XpaceOS publicado en castellano"]
+    workflows: ["Espejo XpaceOS publicado en castellano", "Espejo parcial de XpaceOS (portada y assets comunes)"]
     types: [completed]
   workflow_dispatch:
 
