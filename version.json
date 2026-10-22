@@ -1,16 +1,14 @@
 {
-  "version": "v.22.10.2026.r2.11:45",
-  "deployedAt": "2026-10-22T09:45:52Z",
+  "version": "v.22.10.2026.r1.11:26",
   "deployer": "SubNeoMBP16",
   "machine": "MacBookPro16",
   "signature": "SubNeoMBP16 · MacBookPro16",
-  "git": "979b32325693cc715a3a76cbe419daefd74139c7",
-  "gitShort": "979b323",
-  "gitFull": "979b32325693cc715a3a76cbe419daefd74139c7",
+  "deployedAt": "2026-10-22T10:11:19.421739+00:00",
+  "git": "a2a34d3849c699b192a242cb80245305081f8457",
+  "gitFull": "a2a34d3849c699b192a242cb80245305081f8457",
+  "gitShort": "a2a34d3",
   "dirty": false,
-  "novedades": [
-    "Indexación coherente: robots.txt y sitemap.xml propios de admira.store (antes eran los de XpaceOS copiados). Se indexa solo lo público: gemelo, Xpacios y MCP.",
-    "La portada y las páginas tras login llevan noindex,nofollow (la portada manda al login, no tenía sentido pedir indexarla); canonicals apuntando a admira.store.",
-    "El espejo desde xpaceos.com ya no puede pisar robots, sitemap, llms.txt ni 404.html, y un test lo vigila."
-  ]
+  "mirrorOf": "https://www.xpaceos.com/",
+  "mirror": "parcial: portada y assets comunes",
+  "locale": "es"
 }

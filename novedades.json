@@ -1,5 +1,10 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.22.10.2026.r1.11:26": [
+    "llms.txt real en la raíz (texto plano) para los agentes: qué es XpaceOS, /mcp/, gemelo, Xpacios, sitemap y el MCP canónico de mcp.admira.store.",
+    "404 real: el espejo de Cloudflare Pages (xpaceos.pages.dev) devolvía la portada entera a cualquier ruta inexistente con extensión; ahora 404.html y la regla del perímetro responden 404. En www.xpaceos.com (GitHub Pages) el 404 ya era correcto.",
+    "Nada cambia para la portada pública, el gemelo, los Xpacios ni el MCP."
+  ],
   "v.22.10.2026.r3.11:51": [
     "Corrección: se retira de producción un módulo en desarrollo de la Sneakers Store (segmentado-core.mjs) que entró por error en el commit de la indexación; su trabajo sigue en su rama."
   ],
