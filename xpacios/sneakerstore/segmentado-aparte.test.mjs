@@ -9,7 +9,7 @@ const store=read('./store.mjs'),html=read('./index.html');
 
 test('store.mjs no importa Contenido segmentado de forma estática: un fallo suyo no para la tienda 360',()=>{
   assert.doesNotMatch(store,/^\s*import\s[^;]*segmentado-ui\.mjs/m,'nada de import estático del segmentado');
-  assert.match(store,/import\('\.\/segmentado-ui\.mjs\?v=puerta-1'\)\.then\(/,'se carga con import() dinámico');
+  assert.match(store,/import\('\.\/segmentado-ui\.mjs\?v=puerta-cam-1'\)\.then\(/,'se carga con import() dinámico');
   assert.match(store,/\.catch\(error=>\{console\.warn\('Contenido segmentado no disponible',error\);\$\('show-segmented'\)\.disabled=true;/,'si falla, el botón queda desactivado y la tienda sigue');
 });
 
@@ -23,5 +23,5 @@ test('el botón, la acción sneakers-segmented, /segmentado, ?segmentado= y page
 });
 
 test('index.html pide la versión nueva de store.mjs',()=>{
-  assert.match(html,/<script type="module" src="\.\/store\.mjs\?v=iot-gallery-1">/);
+  assert.match(html,/<script type="module" src="\.\/store\.mjs\?v=puerta-cam-1">/);
 });

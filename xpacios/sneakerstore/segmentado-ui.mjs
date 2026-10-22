@@ -8,7 +8,7 @@ import {createDetector} from './segmentado-detector.mjs';
 const DEMO_CLIPS=['https://stock.admira.store/stock/1792348829074-s04vy7/asset.mp4','https://stock.admira.store/stock/1792158948542-al54yo/asset.mp4'];
 const IMAGE_MS=8000;
 
-export function mountSegmented({document,t,en,channels,status=()=>{}}){
+export function mountSegmented({document,t,en,channels,status=()=>{},puertaCam=null}){
   const $=id=>document.getElementById(id),lang=en?'en':'es';
   const dialog=$('segmented-dialog'),cam=$('seg-cam-video'),stage=$('seg-cam-canvas'),overlay=$('seg-overlay'),mh=$('seg-mh');
   const screens={horizontal:{video:$('seg-video-h'),image:$('seg-image-h'),caption:$('seg-caption-h'),items:[],index:0,timer:0},vertical:{video:$('seg-video-v'),image:$('seg-image-v'),caption:$('seg-caption-v'),items:[],index:0,timer:0}};
@@ -97,7 +97,7 @@ export function mountSegmented({document,t,en,channels,status=()=>{}}){
   // ── Fuentes de cámara ─────────────────────────────────────────────────────────────────────────────
   function stopSource(){
     state.source=null;state.detecting=false;
-    state.stream?.getTracks().forEach(track=>track.stop());state.stream=null;
+    if(state.stream&&state.stream!==puertaCam?.stream)state.stream.getTracks().forEach(track=>track.stop());state.stream=null;
     cam.pause();cam.srcObject=null;cam.removeAttribute('src');cam.load();cam.hidden=true;stage.hidden=true;overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);
     for(const b of ['seg-share','seg-bus','seg-demo','seg-video-demo'])$(b).setAttribute('aria-pressed','false');
   }
@@ -106,7 +106,8 @@ export function mountSegmented({document,t,en,channels,status=()=>{}}){
     stopSource();
     if(!navigator.mediaDevices?.getDisplayMedia){camStatus(t('Este navegador no permite compartir pestañas. Usa Chrome de escritorio.','This browser cannot share tabs. Use desktop Chrome.'));return;}
     camStatus(t('Elige la pestaña de digitaltwin.ieu.ai con Store → Entrada → Puerta Cam → Ver stream.','Choose the digitaltwin.ieu.ai tab with Store → Entrada → Puerta Cam → View stream.'));
-    try{state.stream=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:{ideal:10,max:15}},audio:false,monitorTypeSurfaces:'exclude',selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'});}
+    // La pestaña de IEU la comparte una sola vez puerta-cam.mjs (la ventana Puerta Cam de la 360 usa la misma).
+    try{state.stream=puertaCam?await puertaCam.share():await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:{ideal:10,max:15}},audio:false,monitorTypeSurfaces:'exclude',selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'});}
     catch(e){camStatus(t('No se compartió la pestaña: ','Tab not shared: ')+e.message);return;}
     state.source='share';pick('seg-share');cam.srcObject=state.stream;cam.hidden=false;await cam.play().catch(()=>{});
     state.stream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(state.source==='share'){stopSource();camStatus(t('Pestaña dejada de compartir.','Tab sharing ended.'));}});

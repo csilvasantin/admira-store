@@ -2,7 +2,7 @@ import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import {createCampaignOverlay} from './next-step/panorama-overlay.mjs?v=surface-fit-1';
 import {PANORAMA_MAP} from './next-step/panorama-map.mjs?v=surface-fit-1';
 import {angularPhotographMaterial} from '../../admira-xp/scripts/panorama-surface.mjs?v=surface-fit-1';
-import {hotspotAt} from './hotspots.mjs?v=iot-gallery-1';
+import {hotspotAt,directionOf} from './hotspots.mjs?v=puerta-cam-1';
 
 // Store-owned IEU photographs only. Camera streams and credentials stay in IEU.
 export const SCENES = {
@@ -21,11 +21,17 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{},onHotspot=(
   const cache=new Map(),pending=new Map(),loader=new T.TextureLoader();
   let active=false,disposed=false,current='',request=0,yaw=0,pitch=0,drag=null;
   let campaign=null,overlay=null;
-  const ray=new T.Raycaster(),ndc=new T.Vector2();
+  const ray=new T.Raycaster(),ndc=new T.Vector2(),probe=new T.Vector3(),anchors=new Set();
+  // Elementos HTML pegados a un punto de una foto (la tarjeta Puerta Cam): se recolocan en cada render y avisan con
+  // data-in-view si su punto está delante y dentro del cuadro; quien los crea decide si se ven.
+  function placeAnchors(){const r=canvas.getBoundingClientRect();for(const a of anchors){let on=active&&!!current&&a.scene===current&&r.width>0&&r.height>0;
+    if(on){const d=directionOf(a);probe.set(d.x,d.y,d.z).multiplyScalar(5).project(camera);on=probe.z<1&&Math.abs(probe.x)<=1&&Math.abs(probe.y)<=1;
+      if(on){a.element.style.setProperty('--anchor-x',((probe.x+1)/2*r.width).toFixed(1)+'px');a.element.style.setProperty('--anchor-y',((1-probe.y)/2*r.height).toFixed(1)+'px');}}
+    a.element.dataset.inView=String(on);}}
   // Punto pulsable bajo el puntero (hotspots.mjs): un clic sin arrastre lo abre; al pasar por encima, el cursor lo dice.
   function spotAt(e){if(!active||!current)return null;const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return null;ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);camera.updateMatrixWorld();ray.setFromCamera(ndc,camera);return hotspotAt(current,ray.ray.direction);}
   function refreshOverlay(){if(overlay){scene.remove(overlay.group);overlay.dispose();overlay=null;}if(campaign&&current&&material.map){overlay=createCampaignOverlay(current,campaign,material.map);scene.add(overlay.group);}canvas.dataset.campaign=campaign?'next-step':'';}
-  function render(){if(!active||disposed)return;camera.lookAt(Math.cos(pitch)*Math.cos(yaw),Math.sin(pitch),Math.cos(pitch)*Math.sin(yaw));canvas.dataset.yaw=String(yaw);canvas.dataset.pitch=String(pitch);canvas.dataset.fov=String(camera.fov);canvas.dataset.mapping='angular-aperture-v1';renderer.render(scene,camera);}
+  function render(){if(!active||disposed)return;camera.lookAt(Math.cos(pitch)*Math.cos(yaw),Math.sin(pitch),Math.cos(pitch)*Math.sin(yaw));canvas.dataset.yaw=String(yaw);canvas.dataset.pitch=String(pitch);canvas.dataset.fov=String(camera.fov);canvas.dataset.mapping='angular-aperture-v1';renderer.render(scene,camera);placeAnchors();}
   function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();render();}
   function textureFor(id){
     if(cache.has(id))return Promise.resolve(cache.get(id));
@@ -57,5 +63,5 @@ export function createPanorama({canvas,onState=()=>{},onError=()=>{},onHotspot=(
   };
   for(const [name,fn]of Object.entries(handlers))canvas.addEventListener(name,fn,{passive:false});
   const observer=new ResizeObserver(resize);observer.observe(canvas);
-  return {show,zoom,render,setCampaign(next){const changed=next!==campaign;campaign=next;if(changed&&campaign&&current){yaw=PANORAMA_MAP[current].yaw;pitch=0;}if(changed)refreshOverlay();render();},get current(){return current;},hide(){active=false;++request;canvas.hidden=true;drag=null;},dispose(){disposed=true;active=false;++request;overlay?.dispose();observer.disconnect();for(const[name,fn]of Object.entries(handlers))canvas.removeEventListener(name,fn);for(const texture of cache.values())texture.dispose();geometry.dispose();material.dispose();renderer.dispose();renderer.forceContextLoss();}};
+  return {show,zoom,render,setCampaign(next){const changed=next!==campaign;campaign=next;if(changed&&campaign&&current){yaw=PANORAMA_MAP[current].yaw;pitch=0;}if(changed)refreshOverlay();render();},get current(){return current;},anchor(element,point){const a={element,...point};anchors.add(a);placeAnchors();return {remove(){anchors.delete(a);}};},hide(){active=false;++request;canvas.hidden=true;drag=null;placeAnchors();},dispose(){disposed=true;active=false;++request;overlay?.dispose();observer.disconnect();for(const[name,fn]of Object.entries(handlers))canvas.removeEventListener(name,fn);for(const texture of cache.values())texture.dispose();geometry.dispose();material.dispose();renderer.dispose();renderer.forceContextLoss();}};
 }

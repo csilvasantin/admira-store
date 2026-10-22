@@ -42,3 +42,19 @@ html.store-hud-hidden dialog::backdrop{visibility:hidden!important;opacity:0!imp
 
 /* La tarjeta gana un tercer botón (Contenido segmentado): ancho y salto de línea sin romper el embed */
 .store-caption{max-width:470px}.store-caption div{flex-wrap:wrap;gap:10px 14px}
+/* Puerta Cam (22-oct-2026): tarjeta del dispositivo sobre la puerta de Entrada, como en IEU, y ventana flotante del stream. */
+.puerta-card{position:absolute;left:var(--anchor-x,50%);top:var(--anchor-y,50%);transform:translateX(-50%);z-index:3;width:270px;padding:12px 14px 14px;background:#1c2229d9;border:1px solid #ffffff2e;border-radius:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px #0008;color:#f2f6f8}
+.puerta-card[data-in-view="false"],.puerta-card[data-closed="true"]{display:none}
+.puerta-card-head{display:flex;align-items:center;justify-content:space-between;font-size:15px}
+.puerta-card-meta{display:flex;justify-content:space-between;margin:8px 0 10px;padding-bottom:8px;border-bottom:1px solid #ffffff1f;font-size:11px;color:#b6c3c9}
+.puerta-chip{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;font:700 9px system-ui;letter-spacing:.06em;background:#3a4650;color:#cdd8de}
+.puerta-chip[data-live="true"]{background:#2e9d5a;color:#fff}
+.puerta-x{width:28px;height:28px;padding:0;border-radius:50%;background:#ffffff1a;border:1px solid #ffffff33;color:#fff;font-size:16px;line-height:1}
+.puerta-card-stream{padding:7px 18px;border-radius:999px;background:#ffffff14;border-color:#ffffff40;color:#fff;font-size:12px}
+.puerta-window{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:4;width:min(560px,calc(100% - 32px));max-height:calc(100% - 36px);overflow:auto;padding:10px 12px 12px;background:#0b141bf2;border:1px solid #2c5c43;border-radius:10px;box-shadow:0 14px 40px #000a}
+.puerta-window.xp-window-moved{left:var(--xp-window-left)!important;top:var(--xp-window-top)!important;transform:none!important}
+.puerta-window-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}.puerta-window-head b{flex:1}.puerta-window-head .puerta-chip{margin:0}
+.puerta-view{background:#000;border-radius:6px;overflow:hidden}.puerta-canvas{width:100%;height:auto;display:block;cursor:crosshair;touch-action:auto}
+.puerta-help{padding:14px;color:#c6d4cc;font-size:13px}.puerta-help p{margin:0 0 12px}
+.puerta-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.puerta-actions button{padding:7px 12px;font-size:12px}.puerta-primary{border-color:#35ed88}
+.puerta-hint{margin:8px 0 0;font:12px ui-monospace,monospace;color:#9fe8bf}.puerta-hint:empty{display:none}
