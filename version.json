@@ -1,14 +1,16 @@
 {
   "version": "v.22.10.2026.r1.11:26",
-  "deployer": "SubNeoMBP16",
-  "machine": "MacBookPro16",
-  "signature": "SubNeoMBP16 · MacBookPro16",
-  "deployedAt": "2026-10-22T10:11:19.421739+00:00",
-  "git": "a2a34d3849c699b192a242cb80245305081f8457",
-  "gitFull": "a2a34d3849c699b192a242cb80245305081f8457",
-  "gitShort": "a2a34d3",
+  "deployedAt": "2026-10-22T15:22:25Z",
+  "deployer": "DeepAgentX",
+  "machine": "MacStudio",
+  "signature": "DeepAgentX · MacStudio",
+  "git": "6eff0b78f869aa8855cfa6fd77c52799f774b4b6",
+  "gitShort": "6eff0b7",
+  "gitFull": "6eff0b78f869aa8855cfa6fd77c52799f774b4b6",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "novedades": [
+    "llms.txt real en la raíz (texto plano) para los agentes: qué es XpaceOS, /mcp/, gemelo, Xpacios, sitemap y el MCP canónico de mcp.admira.store.",
+    "404 real: el espejo de Cloudflare Pages (xpaceos.pages.dev) devolvía la portada entera a cualquier ruta inexistente con extensión; ahora 404.html y la regla del perímetro responden 404. En www.xpaceos.com (GitHub Pages) el 404 ya era correcto.",
+    "Nada cambia para la portada pública, el gemelo, los Xpacios ni el MCP."
+  ]
 }
