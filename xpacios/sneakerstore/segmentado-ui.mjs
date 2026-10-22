@@ -173,6 +173,8 @@ export function mountSegmented({document,t,en,channels,status=()=>{}}){
     }
     if(mode==='demo')demo();else if(mode==='video')demoVideo();else if(mode==='bus'){stopSource();state.source='bus';pick('seg-bus');$('seg-source').textContent=t('Bus mcp-tv · lo que publique el productor de la Puerta Cam','mcp-tv bus · whatever the Puerta Cam producer publishes');camStatus(t('Leyendo el bus público; sin productor queda en neutral.','Reading the public bus; without a producer it stays neutral.'));}
     else if(mode==='cam'||mode==='share')void shareTab();
+    // Cámara exterior desde IoT Gallery: como el segmentador, IEU ya está abierto en su pestaña; aquí se comparte.
+    else if(mode==='puerta'&&state.source!=='share'){camStatus(t('Cámara exterior: en la pestaña de IEU abre Store → Entrada → Puerta Cam → Ver stream y pulsa «Compartir Puerta Cam».','Outdoor camera: in the IEU tab open Store → Entrada → Puerta Cam → View stream, then press “Share Puerta Cam”.'));$('seg-share').focus();}
     return state;
   }
   function close(){
