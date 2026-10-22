@@ -58,3 +58,6 @@ html.store-hud-hidden dialog::backdrop{visibility:hidden!important;opacity:0!imp
 .puerta-help{padding:14px;color:#c6d4cc;font-size:13px}.puerta-help p{margin:0 0 12px}
 .puerta-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.puerta-actions button{padding:7px 12px;font-size:12px}.puerta-primary{border-color:#35ed88}
 .puerta-hint{margin:8px 0 0;font:12px ui-monospace,monospace;color:#9fe8bf}.puerta-hint:empty{display:none}
+.puerta-login{display:inline-block;margin:0 0 6px;padding:7px 12px;border:1px solid #35ed88;border-radius:5px;font-size:12px;text-decoration:none}.puerta-connecting{color:#9fe8bf}.puerta-source{align-self:center;margin-left:auto;color:#8fa79b;font:11px ui-monospace,monospace}
+/* hidden manda dentro de la ventana y la tarjeta: sin vídeo no se enseñan lienzo ni botones de recorte. */
+.puerta-window [hidden],.puerta-card [hidden]{display:none!important}
