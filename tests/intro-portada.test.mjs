@@ -1,5 +1,6 @@
 // Intro en vídeo de la portada (17-oct-2026): una vez por sesión, se salta, respeta «reducir movimiento»,
-// sale en el idioma de la portada (español o inglés) y sirve 1080p o 720p. Contrato: admira-xp/docs/intro-portada.md.
+// sale en el idioma de la portada (español o inglés) y sirve 1080p o 720p. Desde el 23-oct-2026 arranca con un
+// póster y el vídeo se descarga solo si el visitante lo pide (?intro=1 lo arranca directo). Contrato: admira-xp/docs/intro-portada.md.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
@@ -50,6 +51,34 @@ test('los vídeos de los dos idiomas existen, son distintos y pesan menos de 10 
   }
 });
 
+test('con póster y vídeo bajo demanda: el vídeo no existe hasta pulsar «Ver la intro»; ?intro=1 lo arranca directo', () => {
+  assert.equal(intro.modo(''), 'poster');
+  assert.equal(intro.modo('?lang=en'), 'poster');
+  assert.equal(intro.modo('?intro=0'), 'poster', 'con ?intro=0 ni sale; si saliera, con póster');
+  assert.equal(intro.modo('?intro=1'), 'auto', 'para enseñarla: el vídeo directamente, como antes');
+  assert.equal(intro.pickPoster('es'), intro.POSTERS.es);
+  assert.equal(intro.pickPoster('en'), '/assets/video/intro-xpaceos-a-en-poster.jpg');
+  assert.equal(intro.pickPoster('fr'), intro.POSTERS.es, 'sin póster en ese idioma, el español');
+  const posters = Object.values(intro.POSTERS);
+  assert.equal(new Set(posters).size, 2);
+  for (const src of posters) {
+    const size = statSync(new URL('..' + src, import.meta.url)).size;
+    assert.ok(size > 5_000 && size < 60_000, src + ' pesa ' + size + ' (un póster, no un vídeo)');
+  }
+  const src = read('assets/intro-portada.js');
+  assert.match(src, /let video = null;/, 'sin vídeo al abrir');
+  assert.match(src, /play\.addEventListener\('click', \(\) => startVideo\(8000\)\)/, 'el vídeo se crea al pulsar, con 8 s de margen');
+  assert.match(src, /if \(arranque === 'auto'\) startVideo\(4000\);/, 'con ?intro=1 arranca al momento, con los 4 s de siempre');
+  assert.match(src, /poster\.setAttribute\('fetchpriority', 'high'\)/, 'el póster es lo primero que se pide');
+  assert.match(src, /video\.addEventListener\('playing', \(\) => poster\.remove\(\), \{once: true\}\)/, 'el póster se queda hasta el primer fotograma');
+  assert.match(src, /poster\.src = pickPoster\(next\);/, 'al cambiar de idioma cambia el póster');
+  assert.match(src, /const pre = doc\.getElementById\('xp-intro-pre'\);\n    const box = pre \|\| doc\.createElement\('div'\);/, 'adopta el marco que pintó la portada');
+  assert.match(src, /const poster = \(pre && pre\.querySelector\('\.xp-intro-poster'\)\) \|\| doc\.createElement\('img'\);/, 'y su póster, sin volver a pedirlo');
+  assert.match(src, /if \(!box\.parentNode\) doc\.body\.appendChild\(box\);/);
+  assert.match(src, /if \(!current\) \{ const pre = win\.document\.getElementById\('xp-intro-pre'\); if \(pre\) pre\.remove\(\); \}/, 'si al final no sale, el marco se quita');
+  for (const text of ['Ver la intro · 15 s', 'Watch the intro · 15 s']) assert.ok(src.includes(text), text);
+});
+
 test('se puede saltar con botón o Esc, en los dos idiomas, y no tapa la portada si el vídeo no arranca', () => {
   const src = read('assets/intro-portada.js');
   assert.match(src, /Saltar intro/);
@@ -58,6 +87,7 @@ test('se puede saltar con botón o Esc, en los dos idiomas, y no tapa la portada
   assert.match(src, /video\.addEventListener\('ended', close\)/);
   assert.match(src, /video\.addEventListener\('error', close\)/);
   assert.match(src, /p\.catch\(close\)/);
+  assert.match(src, /watchdog = win\.setTimeout\(\(\) => \{ if \(!\(video\.currentTime > 0\)\) close\(\); \}, espera\)/, 'si el vídeo no arranca, se quita sola');
   assert.match(src, /setItem\(SEEN_KEY, all\.join\(','\)\)/, 'recuerda los idiomas vistos');
   assert.match(src, /pickSource\(win\.innerWidth, win\.devicePixelRatio, lang\)/, 'el vídeo sigue al idioma resuelto');
 });
@@ -91,6 +121,7 @@ test('el sonido intenta arrancar, queda un botón en los dos idiomas y se para a
   assert.match(src, /audio\.currentTime = video\.currentTime/, 'el audio sigue al vídeo');
   assert.match(src, /p\.catch\(\(\) => \{ soundOn = false; paintSound\(\); \}\)/, 'si el navegador no deja sonar, se queda en silencio con el botón');
   assert.match(src, /if \(audio\) \{ try \{ audio\.pause\(\); \} catch \(_\) \{\} \}/, 'al cerrar se para la música');
+  assert.match(src, /audio = new win\.Audio\(MUSIC\[track\]\);[\s\S]*actions\.prepend\(sound\);/, 'la música y su botón llegan con el vídeo, no con el póster');
 });
 
 test('solo con el look por defecto: con una marca blanca activa no sale', () => {
@@ -119,4 +150,21 @@ test('una vez por idioma: al pasar a castellano sale en castellano si aún no se
   assert.match(src, /if \(current\) current\.setLang\(next\); else tryOpen\(next\)/);
   assert.match(src, /seen: seenNow\(\)\.includes\(lang\)/, 'vista por idioma');
   assert.match(src, /const at = video\.currentTime;[\s\S]*video\.currentTime = at/, 'con la intro en marcha cambia el vídeo sin perder el segundo');
+});
+
+test('una vez por visitante: lo visto se recuerda 30 días en localStorage y arranca tras el primer pintado', () => {
+  const now = Date.parse('2026-10-21T20:00:00Z');
+  assert.deepEqual(intro.recordada(JSON.stringify({t: now - 86400000, langs: ['es']}), now), ['es'], 'ayer: vista');
+  assert.deepEqual(intro.recordada(JSON.stringify({t: now - 31 * 86400000, langs: ['es', 'en']}), now), [], 'hace 31 días: vuelve a salir');
+  assert.deepEqual(intro.recordada('', now), []);
+  assert.deepEqual(intro.recordada('{basura', now), []);
+  assert.deepEqual(intro.recordada(JSON.stringify({t: now, langs: ['fr', 'en']}), now), ['en'], 'solo idiomas con vídeo');
+  assert.equal(intro.SEEN_DAYS, 30); assert.equal(intro.SEEN_LOCAL, 'xpaceos_intro_vista');
+  const src = read('assets/intro-portada.js');
+  assert.match(src, /local && local\.setItem\(SEEN_LOCAL, JSON\.stringify\(\{t: Date\.now\(\), langs: all\}\)\)/, 'al verla se apunta con fecha');
+  assert.match(src, /for \(const l of recordada\(readLocal\(\), Date\.now\(\)\)\)/, 'lo recordado cuenta como visto');
+  assert.match(src, /afterFirstPaint\(win, \(\) => \{\n\s+tryOpen\(/, 'la intro arranca después del primer pintado');
+  let llamadas = 0; const fake = {requestAnimationFrame: fn => { llamadas++; fn(); }};
+  let corrio = false; intro.afterFirstPaint(fake, () => { corrio = true; }); assert.ok(corrio); assert.equal(llamadas, 2);
+  corrio = false; intro.afterFirstPaint({}, () => { corrio = true; }); assert.ok(corrio, 'sin rAF, corre igual');
 });
