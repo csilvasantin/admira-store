@@ -1,14 +1,14 @@
 {
   "version": "v.23.10.2026.r4.08:27",
+  "deployedAt": "2026-10-23T06:46:16Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "deployedAt": "2026-10-23T06:33:24.215836+00:00",
-  "git": "959c7ee6dec0fff0d8cbef1a2880bd74f2186092",
-  "gitFull": "959c7ee6dec0fff0d8cbef1a2880bd74f2186092",
-  "gitShort": "959c7ee",
+  "git": "8694642f1cc0a1e218838616dbebae7d84308d68",
+  "gitShort": "8694642",
+  "gitFull": "8694642f1cc0a1e218838616dbebae7d84308d68",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "novedades": [
+    "Portada: las hojas de estilo del sistema de diseño se piden a su dirección final, sin la redirección que retrasaba la primera pintura."
+  ]
 }
