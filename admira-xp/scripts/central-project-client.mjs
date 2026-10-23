@@ -9,11 +9,13 @@ export class ProjectClient {
  async context(){if(!validAccess(this.access)){this.clear();throw Error('SESSION_EXPIRED');}const r=await this.fetchImpl(CENTRAL+'/api/xpace/context',{headers:{Authorization:'Bearer '+this.access.token},credentials:'omit',cache:'no-store'});if(r.status===401){this.clear();throw Error('SESSION_EXPIRED');}if(!r.ok)throw Error('CENTRAL_UNAVAILABLE');return r.json();}
  async disconnect(){const old=this.access;this.clear();if(old)await this.fetchImpl(CENTRAL+'/api/xpace/connect',{method:'DELETE',headers:{Authorization:'Bearer '+old.token},credentials:'omit'}).catch(()=>{});}
 }
+// AdmiraXperience (Carlos, 23-oct-2026): GarageXperience · Santa Rosa 4 es la tienda de /xpacios/sneakerstore/
+// y SpaceXperience · Planeta 7 es /Xsuperman/; las dos llegan del registro central con project=admiraxperience.
 export function venueUrl(href,venue,project,quality,{publicDemo=false,language}={}){
  const source=new URL(venue.xpace_url),current=new URL(href);
  const sneakers=project.id==='sneakers-store'&&project.circuit==='sneakerstore'&&source.pathname==='/xpacios/sneakerstore/';
  const cafeDemo=publicDemo&&venue.demo===true&&venue.id==='demo-cafebreria'&&project.id==='cafebreria'&&project.circuit==='cafebreria';
- if(!['https://www.xpaceos.com','https://www.admira.store'].includes(source.origin)||!(source.pathname==='/admira-xp/'||/^\/xpacios\/[a-z0-9-]+\/$/.test(source.pathname))||source.username||source.password||venue.project_id!==project.id)throw Error('Invalid venue');
+ if(!['https://www.xpaceos.com','https://www.admira.store'].includes(source.origin)||!(source.pathname==='/admira-xp/'||/^\/xpacios\/[a-z0-9-]+\/$/.test(source.pathname)||source.pathname==='/Xsuperman/')||source.username||source.password||venue.project_id!==project.id)throw Error('Invalid venue');
  // The two language domains serve the same renderer; the central association
  // supplies the venue. Quality, language and browser layout remain local.
  source.host=current.host;source.protocol=current.protocol;
