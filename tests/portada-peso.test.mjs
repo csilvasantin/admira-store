@@ -33,3 +33,14 @@ test('la intro lleva su sello nuevo (póster y vídeo bajo demanda)', () => {
   assert.match(html, /intro-portada\.js\?v=20261023-intro-poster-1/);
   assert.doesNotMatch(html, /intro-portada\.js\?v=20261021-intro-una-vez-1/);
 });
+
+test('el póster de la intro se pide desde la cabecera solo si la intro va a salir, en el idioma de la portada', () => {
+  const i = html.indexOf("l.rel='preload';l.as='image'");
+  assert.ok(i > 0, 'hay un preload del póster');
+  assert.ok(html.indexOf('/assets/xpace-lang.js') < i, 'después de resolver el idioma');
+  assert.ok(i < html.indexOf('googletagmanager.com/gtm.js'), 'y antes de todo lo demás');
+  assert.match(html, /l\.href='\/assets\/video\/intro-xpaceos-a'\+\(lang==='en'\?'-en':''\)\+'-poster\.jpg'/);
+  for (const cond of ["if(i==='0')return;", "prefers-reduced-motion: reduce", "sessionStorage.getItem('mb:marca')", "sessionStorage.getItem('xpaceos_intro_a')", "localStorage.getItem('xpaceos_intro_vista')", "30\*86400000"]) {
+    assert.ok(html.includes(cond.replace('\\*', '*')), 'condición: ' + cond);
+  }
+});
