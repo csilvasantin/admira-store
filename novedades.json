@@ -1,5 +1,8 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.23.10.2026.r3.08:14": [
+    "Portada: el póster de la intro se pinta con la primera pintada (marco mínimo al abrir la página) y el guion de la intro lo adopta; antes llegaba 3 a 4 s después."
+  ],
   "v.23.10.2026.r2.08:00": [
     "Portada: el póster de la intro se pide desde la cabecera cuando la intro va a salir, para que aparezca antes (el elemento más grande de la primera pantalla); si no va a salir, no se pide nada."
   ],

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.23.10.2026.r2.08:00"/>
-  <!-- Espejo de www.xpaceos.com (df6ac4b), sincronizado con
+  <meta name="admiranext-version" content="v.23.10.2026.r3.08:14"/>
+  <!-- Espejo de www.xpaceos.com (7b1b6e1), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
@@ -63,6 +63,7 @@
   }
   var l=document.createElement('link');l.rel='preload';l.as='image';l.setAttribute('fetchpriority','high');
   l.href='/assets/video/intro-xpaceos-a'+(lang==='en'?'-en':'')+'-poster.jpg';document.head.appendChild(l);
+  window.__xpIntro={lang:lang,poster:l.href};
 }catch(e){}})();
 </script>
 
@@ -492,6 +493,16 @@ w.XpaceAnalyticsCargar=cargar;
 <script defer src="/assets/intro-portada.js?v=20261023-intro-poster-1"></script>
 </head>
 <body id="top">
+<!-- Si la intro va a salir (lo decide el guion de la cabecera, window.__xpIntro), su póster se pinta YA, con la primera
+     pintada: un marco mínimo con el póster. El guion de la intro (diferido) lo adopta y le añade los botones. Sin esto el
+     póster llegaba 3–4 s después del primer pintado (Lighthouse, 23-oct-2026: «render delay»). -->
+<script>
+(function(){var p=window.__xpIntro;if(!p)return;var d=document,b=d.createElement('div');b.id='xp-intro-pre';b.className='xp-intro';
+b.setAttribute('style','position:fixed;inset:0;z-index:100000;background:#02080d');
+var i=d.createElement('img');i.className='xp-intro-poster';i.alt='';i.width=1280;i.height=720;i.decoding='async';i.setAttribute('fetchpriority','high');
+i.setAttribute('style','position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#02080d');i.src=p.poster;
+b.appendChild(i);d.body.appendChild(b);})();
+</script>
 <a class="skip-link" href="#main-content" data-i18n="skip">Saltar al contenido</a>
 
 <!-- Google Tag Manager (noscript) -->

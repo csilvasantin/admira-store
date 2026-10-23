@@ -137,7 +137,11 @@
       if (!shouldShow({search: win.location.search, lang, reducedMotion, seen: seenNow().includes(lang), brand: activeBrand(win.location.search, read(BRAND_KEY))})) return;
       current = open(win, lang, shown => { markSeen(shown); current = null; });
     };
-    afterFirstPaint(win, () => tryOpen(win.XpaceLang ? win.XpaceLang.resolve({url: win.location.href, storage: storage(win, 'localStorage'), fallback: 'es'}) : 'es'));
+    afterFirstPaint(win, () => {
+      tryOpen(win.XpaceLang ? win.XpaceLang.resolve({url: win.location.href, storage: storage(win, 'localStorage'), fallback: 'es'}) : 'es');
+      // Si la portada pintó el marco con el póster pero aquí se decide que no sale, se quita.
+      if (!current) { const pre = win.document.getElementById('xp-intro-pre'); if (pre) pre.remove(); }
+    });
     // Al pasar a otro idioma: con la intro en marcha cambia el vídeo; si no, sale en ese idioma si aún no se ha visto en él.
     win.addEventListener('admira:languagechange', ev => {
       const next = String((ev && ev.detail && ev.detail.lang) || '').toLowerCase();
@@ -154,17 +158,21 @@
 
     const style = doc.createElement('style');
     style.textContent = CSS;
-    const box = doc.createElement('div');
+    // Si la portada ya pintó el marco con el póster (guion al principio de <body>, window.__xpIntro), se adopta:
+    // el póster no se vuelve a pedir y no hay salto. Si no, se crea aquí.
+    const pre = doc.getElementById('xp-intro-pre');
+    const box = pre || doc.createElement('div');
+    if (pre) { pre.removeAttribute('id'); pre.removeAttribute('style'); }
     box.className = 'xp-intro';
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-label', t.aria);
     // Póster: un fotograma, no el vídeo. El vídeo se crea en startVideo() (al pulsar, o al momento con ?intro=1):
     // hasta entonces no se descarga ni un byte de él.
-    const poster = doc.createElement('img');
+    const poster = (pre && pre.querySelector('.xp-intro-poster')) || doc.createElement('img');
     poster.className = 'xp-intro-poster'; poster.alt = ''; poster.width = 1280; poster.height = 720; poster.decoding = 'async';
-    poster.setAttribute('fetchpriority', 'high');
-    poster.src = pickPoster(lang);
+    poster.setAttribute('fetchpriority', 'high'); poster.removeAttribute('style');
+    if (poster.getAttribute('src') !== pickPoster(lang)) poster.src = pickPoster(lang);
     const play = doc.createElement('button');
     play.type = 'button'; play.className = 'xp-intro-play';
     const paintPlay = () => { play.textContent = ''; const ic = doc.createElement('span'); ic.className = 'xp-intro-play-ic'; ic.setAttribute('aria-hidden', 'true'); ic.textContent = '▶'; const tx = doc.createElement('span'); tx.textContent = t.play; play.append(ic, tx); };
@@ -241,7 +249,7 @@
 
     (doc.head || html).appendChild(style);
     const mount = () => {
-      doc.body.appendChild(box);
+      if (!box.parentNode) doc.body.appendChild(box);
       html.style.overflow = 'hidden';
       if (arranque === 'auto') startVideo(4000);
       else { try { play.focus({preventScroll: true}); } catch (_) {} }
