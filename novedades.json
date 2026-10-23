@@ -1,5 +1,11 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.23.10.2026.r1.07:53": [
+    "Portada más ligera, segunda vuelta: la intro arranca con un póster y el vídeo (5 a 8 MB) solo se descarga si el visitante pulsa «Ver la intro». Al pulsar, la música suena desde el primer segundo.",
+    "Google Analytics se carga con el primer gesto del visitante o 4 s después de cargar la página, no antes del primer pintado.",
+    "El catálogo de gemelos y la biblioteca del Stock se piden al acercarse a sus bloques (o 8 s después de cargar), con una carga perezosa compartida.",
+    "?intro=1 sigue arrancando la intro con el vídeo directamente, para enseñarla."
+  ],
   "v.22.10.2026.r4.17:37": [
     "Portada más ligera: el canal en directo ya no carga el reproductor al entrar; enseña el póster de la pieza en antena y el reproductor se carga al pulsar.",
     "Antes, cada visita nueva descargaba toda la programación del canal (cientos de MB); ahora solo un póster.",

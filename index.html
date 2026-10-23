@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.22.10.2026.r4.17:37"/>
-  <!-- Espejo de www.xpaceos.com (f891520), sincronizado con
+  <meta name="admiranext-version" content="v.23.10.2026.r1.07:53"/>
+  <!-- Espejo de www.xpaceos.com (d7b4804), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
-<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
 <!-- Dominios propios: LaLiga bloquea workers.dev/r2.dev en horas de fútbol (FLT-1633). -->
 <link rel="dns-prefetch" href="https://brain.digitalavatar.ai">
 <link rel="dns-prefetch" href="https://api.admira.store">
@@ -48,9 +48,16 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied' });
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+// Analytics aplazado (23-oct-2026): el contenedor (≈170 KB) ya no compite con la primera pintada. Se carga con el
+// primer gesto del visitante (toque, tecla, scroll) o 4 s después de «load», lo que llegue antes. Las visitas más
+// cortas que eso no llegan a Google Analytics; las cuenta igual Web Analytics de Cloudflare (sin script).
+(function(w,d,s,l,i){var hecho=false;
+function cargar(){if(hecho)return;hecho=true;w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
 var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}
+['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){w.addEventListener(ev,cargar,{once:true,passive:true});});
+w.addEventListener('load',function(){setTimeout(cargar,4000);});
+w.XpaceAnalyticsCargar=cargar;
 })(window,document,'script','dataLayer','GTM-KD696XW');
 </script>
 <!-- End Google Tag Manager -->
@@ -458,8 +465,8 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 </script>
 <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261009-esquinas-3">
 <script defer src="/assets/xpace-shell.js?v=20261016-logo-1" data-section="" data-section-en=""></script>
-<!-- Intro en vídeo «Todo en orden» / «All in order» (15 s), en el idioma de la portada: una vez por sesión, se puede saltar. Contrato: admira-xp/docs/intro-portada.md -->
-<script defer src="/assets/intro-portada.js?v=20261021-intro-una-vez-1"></script>
+<!-- Intro en vídeo «Todo en orden» / «All in order» (15 s), en el idioma de la portada: una vez por visitante, con póster y vídeo bajo demanda, se puede saltar. Contrato: admira-xp/docs/intro-portada.md -->
+<script defer src="/assets/intro-portada.js?v=20261023-intro-poster-1"></script>
 </head>
 <body id="top">
 <a class="skip-link" href="#main-content" data-i18n="skip">Saltar al contenido</a>
@@ -1382,8 +1389,31 @@ async function loadGemelos() {
   if (typeof renderPulses === 'function') renderPulses();
 }
 renderGemelos();
-// El catálogo (2,7 MB de JSON) se pide después del primer pintado (Carlos, 21-oct-2026): la portada aparece y luego llegan las tarjetas.
-(window.requestAnimationFrame ? requestAnimationFrame(() => setTimeout(loadGemelos, 0)) : loadGemelos());
+// Carga perezosa compartida (23-oct-2026): dispara `fn` una sola vez cuando alguno de los bloques `ids` se acerca a la
+// pantalla (400 px de margen) o, como red de seguridad, `espera` ms después de «load» con la pestaña a la vista (hay
+// contextos —pestaña en segundo plano, documento sin pintar— donde el observador no llega a disparar). Así la primera
+// pintada no paga lo que el visitante aún no mira. Devuelve la función de arranque por si hay que forzarla.
+function cargaPerezosa(ids, fn, espera = 8000) {
+  let hecho = false;
+  const start = () => { if (hecho) return; hecho = true; fn(); };
+  const hosts = ids.map(id => document.getElementById(id)).filter(Boolean);
+  if ('IntersectionObserver' in window && hosts.length) {
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) { io.disconnect(); start(); }
+    }, { rootMargin: '400px' });
+    hosts.forEach(h => io.observe(h));
+  }
+  const red = () => {
+    const ir = () => setTimeout(start, espera);
+    if (document.visibilityState === 'hidden') document.addEventListener('visibilitychange', ir, { once: true });
+    else ir();
+  };
+  if (document.readyState === 'complete') red(); else window.addEventListener('load', red, { once: true });
+  return start;
+}
+// El resumen del catálogo (≈240 KB de JSON) se pide al acercarse a «Prueba el gemelo» o al catálogo en vivo, o 8 s
+// después de «load». Hasta el 22-oct se pedía nada más pintar (21-oct): pesaba en toda visita, se mirase o no.
+cargaPerezosa(['prueba', 'gemelos'], loadGemelos);
 
 // ─── Prueba el gemelo · catálogo navegable + gemelo embebido ─────────
 // Opción 2 de la ventana DEC-mto70hmjfc95, elegida por Carlos (misión yokup 1206).
@@ -1732,28 +1762,9 @@ async function loadOnAir() {
 }
 
 renderPixStock();
-// Carga perezosa CON RED DE SEGURIDAD: el observador dispara al acercarse
-// cualquiera de las dos secciones que beben del índice, pero hay contextos
-// (pestaña en segundo plano, documento sin pintar) donde nunca llega a
-// disparar y la tira se quedaba en "Cargando…" para siempre. El plazo de
-// 6 s —ya pasada la primera pintada— garantiza el dato.
-(() => {
-  let started = false;
-  const start = () => {
-    if (started) return;
-    started = true;
-    loadPixStock().then(loadOnAir);
-    loadDespacho();
-  };
-  const hosts = ['plataforma', 'pixstock', 'despacho'].map(id => document.getElementById(id)).filter(Boolean);
-  if ('IntersectionObserver' in window && hosts.length) {
-    const io = new IntersectionObserver(entries => {
-      if (entries.some(e => e.isIntersecting)) { io.disconnect(); start(); }
-    }, { rootMargin: '400px' });
-    hosts.forEach(h => io.observe(h));
-  }
-  setTimeout(start, 6000);
-})();
+// El índice del Stock (≈300 KB) y el despacho: al acercarse a la plataforma, al Stock o al despacho, o 8 s después de
+// «load» (red de seguridad de cargaPerezosa). Antes el plazo eran 6 s desde el script: caía dentro de la primera visita.
+cargaPerezosa(['plataforma', 'pixstock', 'despacho'], () => { loadPixStock().then(loadOnAir); loadDespacho(); });
 
 // Idioma: ?lang= → xtanco_lang (migra xpaceosLang una vez) → castellano. Sigue /idioma de ⌘ Experto.
 const portadaLanguage = window.XpaceLang

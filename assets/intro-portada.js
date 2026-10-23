@@ -2,6 +2,9 @@
    Vídeo «Todo en orden» (15 s, sin sonido) a pantalla completa al entrar en la portada.
    - Sale una vez por sesión y por idioma (sessionStorage 'xpaceos_intro_a' = idiomas vistos, «es,en»),
      se salta con «Saltar intro» o Esc y se cierra sola al terminar o si el vídeo no arranca.
+   - Con póster y vídeo bajo demanda (Carlos, 23-oct-2026): primero sale un fotograma de la intro (≈27 KB) con el botón
+     «Ver la intro · 15 s»; el vídeo (5–8 MB) solo se descarga si el visitante lo pide. Como hay un clic, la música puede
+     sonar desde el primer segundo. ?intro=1 la arranca directamente con el vídeo, como antes, para enseñarla.
    - En el idioma de la portada: español o inglés («All in order», 17-oct-2026), con los mismos tiempos.
      Al cambiar de idioma (botón ESP/ENG o /idioma; evento 'admira:languagechange'), sale en el idioma
      nuevo si aún no se ha visto en él; si la intro está en marcha, el vídeo cambia sin perder el segundo.
@@ -13,7 +16,7 @@
    - 1080p en pantallas grandes, 720p en el resto.
    - Música: una por idioma (Carlos, 17-oct-2026): castellano con «Tic-tac y campanas» e inglés con «Pulso»;
      si el idioma cambia con la intro en marcha, cambia también la música en el mismo segundo.
-     Intenta sonar; si el navegador no deja (lo normal sin un clic), queda el botón «Activar sonido».
+     Intenta sonar; si el navegador no deja, queda el botón «Activar sonido».
      ?musica=campanas|pulso la fija y ?musica=0 la quita. El audio va aparte y se ajusta al vídeo.
    Contrato / contract: admira-xp/docs/intro-portada.md */
 (function (root, factory) {
@@ -31,6 +34,8 @@
     es: {1080: '/assets/video/intro-xpaceos-a-1080.mp4', 720: '/assets/video/intro-xpaceos-a-720.mp4'},
     en: {1080: '/assets/video/intro-xpaceos-a-en-1080.mp4', 720: '/assets/video/intro-xpaceos-a-en-720.mp4'}
   };
+  // Póster por idioma: el fotograma del segundo 10 («Pantallas, música, aroma y wifi.»), 1280 × 720, ≈27 KB.
+  const POSTERS = {es: '/assets/video/intro-xpaceos-a-poster.jpg', en: '/assets/video/intro-xpaceos-a-en-poster.jpg'};
   // .mp4 y no .m4a: admira.store está en Cloudflare, que no guarda .m4a en caché ni lo sirve por rangos (206);
   // sin rangos, la música no se puede poner en el segundo del vídeo. Mismo audio AAC.
   const MUSIC = {campanas: '/assets/video/intro-xpaceos-a-musica-campanas.mp4', pulso: '/assets/video/intro-xpaceos-a-musica-pulso.mp4'};
@@ -38,8 +43,8 @@
   const BRAND_OFF = ['off', 'admira', 'ninguna', 'ninguno', 'none', 'default', 'apagar', 'quitar', 'reset'];
   const has = lang => Object.prototype.hasOwnProperty.call(SOURCES, lang);
   const LABELS = {
-    es: {skip: 'Saltar intro', soundOn: 'Activar sonido', soundOff: 'Silenciar', aria: 'Intro de XpaceOS: antes de abrir fallan las pantallas, la música, el aroma y el wifi, y XpaceOS los deja en orden.'},
-    en: {skip: 'Skip intro', soundOn: 'Turn sound on', soundOff: 'Mute', aria: 'XpaceOS intro: before opening, screens, music, scent and wifi fail, and XpaceOS puts them back in order.'}
+    es: {skip: 'Saltar intro', play: 'Ver la intro · 15 s', soundOn: 'Activar sonido', soundOff: 'Silenciar', aria: 'Intro de XpaceOS: antes de abrir fallan las pantallas, la música, el aroma y el wifi, y XpaceOS los deja en orden.'},
+    en: {skip: 'Skip intro', play: 'Watch the intro · 15 s', soundOn: 'Turn sound on', soundOff: 'Mute', aria: 'XpaceOS intro: before opening, screens, music, scent and wifi fail, and XpaceOS puts them back in order.'}
   };
 
   // Marca blanca activa, con las mismas prioridades que assets/marca-blanca.js: ?marca= > proyecto > recordada.
@@ -64,11 +69,15 @@
     if (intro === '0') return false;
     return has(o.lang) && !o.reducedMotion && !o.seen && !o.brand;
   }
+  // Cómo arranca (23-oct-2026): «poster» = fotograma y botón, el vídeo solo si lo piden (lo normal);
+  // «auto» = el vídeo directamente, como hasta el 22-oct, solo con ?intro=1 (para enseñarla).
+  function modo(search) { return new URLSearchParams(search || '').get('intro') === '1' ? 'auto' : 'poster'; }
   // El vídeo del idioma (español si no hay otro); píxeles reales de ancho: desde 1600 va la de 1080p.
   function pickSource(width, dpr, lang) {
     const set = has(lang) ? SOURCES[lang] : SOURCES.es;
     return (Number(width) || 0) * (Number(dpr) || 1) >= 1600 ? set[1080] : set[720];
   }
+  function pickPoster(lang) { return POSTERS[has(lang) ? lang : 'es']; }
 
   // Una música por idioma: castellano «Tic-tac y campanas», inglés «Pulso». ?musica=campanas|pulso la fija; ?musica=0 la quita.
   const MUSIC_BY_LANG = {es: 'campanas', en: 'pulso'};
@@ -83,6 +92,11 @@
 .xp-intro{position:fixed;inset:0;z-index:100000;background:#02080d;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .6s ease}
 .xp-intro.is-closing{opacity:0}
 .xp-intro video{width:100%;height:100%;object-fit:contain;background:#02080d}
+.xp-intro-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#02080d}
+.xp-intro-play{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:12px 24px 12px 12px;border:1px solid rgba(120,243,255,.6);border-radius:999px;background:rgba(2,8,13,.74);color:#dff8ff;font:600 14px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.xp-intro-play:hover{border-color:#78f3ff;background:rgba(2,8,13,.92)}
+.xp-intro-play:focus-visible{outline:2px solid #ffd866;outline-offset:3px}
+.xp-intro-play-ic{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#78f3ff;color:#02080d;font-size:16px;padding-left:3px}
 .xp-intro-actions{position:absolute;right:max(20px,env(safe-area-inset-right,0px));bottom:max(24px,env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
 .xp-intro-skip,.xp-intro-sound{padding:10px 16px;border:1px solid rgba(120,243,255,.45);border-radius:8px;background:rgba(2,8,13,.6);color:#dff8ff;font:600 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .xp-intro-skip:hover,.xp-intro-sound:hover{border-color:#78f3ff}
@@ -99,7 +113,7 @@
       return (Number(now) - o.t) < SEEN_DAYS * 86400000 ? o.langs.filter(has) : [];
     } catch (_) { return []; }
   }
-  // Primero se pinta la portada; la intro (y su vídeo) arranca justo después del primer pintado.
+  // Primero se pinta la portada; la intro (y su póster) arranca justo después del primer pintado.
   function afterFirstPaint(win, fn) {
     if (win && typeof win.requestAnimationFrame === 'function') win.requestAnimationFrame(() => win.requestAnimationFrame(fn));
     else fn();
@@ -136,6 +150,7 @@
     const doc = win.document;
     const shown = [lang];
     let t = LABELS[lang] || LABELS.es;
+    const arranque = modo(win.location.search);
 
     const style = doc.createElement('style');
     style.textContent = CSS;
@@ -144,10 +159,17 @@
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-label', t.aria);
-    const video = doc.createElement('video');
-    video.muted = true; video.defaultMuted = true; video.playsInline = true; video.autoplay = true;
-    video.setAttribute('muted', ''); video.setAttribute('playsinline', ''); video.preload = 'auto';
-    video.src = pickSource(win.innerWidth, win.devicePixelRatio, lang);
+    // Póster: un fotograma, no el vídeo. El vídeo se crea en startVideo() (al pulsar, o al momento con ?intro=1):
+    // hasta entonces no se descarga ni un byte de él.
+    const poster = doc.createElement('img');
+    poster.className = 'xp-intro-poster'; poster.alt = ''; poster.width = 1280; poster.height = 720; poster.decoding = 'async';
+    poster.setAttribute('fetchpriority', 'high');
+    poster.src = pickPoster(lang);
+    const play = doc.createElement('button');
+    play.type = 'button'; play.className = 'xp-intro-play';
+    const paintPlay = () => { play.textContent = ''; const ic = doc.createElement('span'); ic.className = 'xp-intro-play-ic'; ic.setAttribute('aria-hidden', 'true'); ic.textContent = '▶'; const tx = doc.createElement('span'); tx.textContent = t.play; play.append(ic, tx); };
+    paintPlay();
+    let video = null;
     const skip = doc.createElement('button');
     skip.type = 'button'; skip.className = 'xp-intro-skip'; skip.textContent = t.skip + ' ✕';
     const bar = doc.createElement('div');
@@ -155,7 +177,7 @@
     const actions = doc.createElement('div');
     actions.className = 'xp-intro-actions';
 
-    // Música aparte del vídeo: la del idioma, ajustada al tiempo del vídeo.
+    // Música aparte del vídeo: la del idioma, ajustada al tiempo del vídeo. Se crea con el vídeo.
     let track = pickMusic(win.location.search, lang);
     let audio = null, soundOn = false, triedAuto = false;
     const sound = doc.createElement('button');
@@ -163,19 +185,9 @@
     const paintSound = () => { sound.textContent = soundOn ? '🔇 ' + t.soundOff : '🔊 ' + t.soundOn; sound.setAttribute('aria-pressed', String(soundOn)); };
     const syncPlay = () => { try { audio.currentTime = video.currentTime; } catch (_) {} return audio.play(); };
     const tryOn = () => { soundOn = true; paintSound(); const p = syncPlay(); if (p && p.catch) p.catch(() => { soundOn = false; paintSound(); }); };
-    if (track) {
-      audio = new win.Audio(MUSIC[track]);
-      audio.preload = 'auto';
-      // Primero intenta con sonido; si el navegador no deja, se queda en silencio con el botón a la vista.
-      video.addEventListener('playing', () => { if (!triedAuto) { triedAuto = true; tryOn(); } else if (soundOn) syncPlay(); });
-      video.addEventListener('pause', () => audio.pause());
-      video.addEventListener('timeupdate', () => { if (soundOn && !audio.paused && Math.abs(audio.currentTime - video.currentTime) > 0.25) audio.currentTime = video.currentTime; });
-      sound.addEventListener('click', () => { if (soundOn) { soundOn = false; audio.pause(); paintSound(); } else tryOn(); });
-      paintSound();
-      actions.append(sound);
-    }
+    sound.addEventListener('click', () => { if (!audio) return; if (soundOn) { soundOn = false; audio.pause(); paintSound(); } else tryOn(); });
     actions.append(skip);
-    box.append(video, actions, bar);
+    box.append(poster, play, actions, bar);
 
     const html = doc.documentElement, overflow = html.style.overflow;
     let closed = false, watchdog = 0;
@@ -188,48 +200,80 @@
       win.removeEventListener('keydown', onKey);
       html.style.overflow = overflow;
       box.classList.add('is-closing');
-      win.setTimeout(() => { try { video.pause(); } catch (_) {} box.remove(); style.remove(); }, 650);
+      win.setTimeout(() => { if (video) { try { video.pause(); } catch (_) {} } box.remove(); style.remove(); }, 650);
     }
     function onKey(e) { if (e.key === 'Escape') close(); }
 
     skip.addEventListener('click', close);
     win.addEventListener('keydown', onKey);
-    video.addEventListener('ended', close);
-    video.addEventListener('error', close);
-    video.addEventListener('timeupdate', () => { if (video.duration) bar.style.width = (100 * video.currentTime / video.duration) + '%'; });
-    // Si en 4 s no ha empezado (red lenta, autoplay bloqueado), no tapa la portada.
-    watchdog = win.setTimeout(() => { if (!(video.currentTime > 0)) close(); }, 4000);
+
+    // Crea el vídeo y lo arranca. `espera`: si en esos ms no ha empezado (red lenta, reproducción bloqueada), no tapa la portada.
+    function startVideo(espera) {
+      if (video || closed) return;
+      play.remove();
+      video = doc.createElement('video');
+      video.muted = true; video.defaultMuted = true; video.playsInline = true; video.autoplay = true;
+      video.setAttribute('muted', ''); video.setAttribute('playsinline', ''); video.preload = 'auto';
+      video.src = pickSource(win.innerWidth, win.devicePixelRatio, lang);
+      video.addEventListener('ended', close);
+      video.addEventListener('error', close);
+      video.addEventListener('timeupdate', () => { if (video.duration) bar.style.width = (100 * video.currentTime / video.duration) + '%'; });
+      // El póster se queda encima hasta que el vídeo pinta su primer fotograma: sin negro entre medias.
+      video.addEventListener('playing', () => poster.remove(), {once: true});
+      if (track) {
+        audio = new win.Audio(MUSIC[track]);
+        audio.preload = 'auto';
+        // Intenta sonar al arrancar (tras el clic en «Ver la intro» el navegador lo permite); si no deja, queda el botón.
+        video.addEventListener('playing', () => { if (!triedAuto) { triedAuto = true; tryOn(); } else if (soundOn) syncPlay(); });
+        video.addEventListener('pause', () => audio.pause());
+        video.addEventListener('timeupdate', () => { if (soundOn && !audio.paused && Math.abs(audio.currentTime - video.currentTime) > 0.25) audio.currentTime = video.currentTime; });
+        paintSound();
+        actions.prepend(sound);
+      }
+      box.insertBefore(video, poster);
+      watchdog = win.setTimeout(() => { if (!(video.currentTime > 0)) close(); }, espera);
+      const p = video.play();
+      if (p && p.catch) p.catch(close);
+      try { skip.focus({preventScroll: true}); } catch (_) {}
+    }
+    // Bajo demanda: el visitante pide el vídeo. Con un clic por medio hay más margen (8 s) para que llegue.
+    play.addEventListener('click', () => startVideo(8000));
 
     (doc.head || html).appendChild(style);
     const mount = () => {
       doc.body.appendChild(box);
       html.style.overflow = 'hidden';
-      const p = video.play();
-      if (p && p.catch) p.catch(close);
-      try { skip.focus({preventScroll: true}); } catch (_) {}
+      if (arranque === 'auto') startVideo(4000);
+      else { try { play.focus({preventScroll: true}); } catch (_) {} }
     };
     if (doc.body) mount(); else doc.addEventListener('DOMContentLoaded', mount, {once: true});
 
     // Cambio de idioma con la intro en marcha: el vídeo del otro idioma, en el mismo segundo; la música sigue.
+    // Con solo el póster a la vista, cambian el póster y los textos.
     function setLang(next) {
       if (closed || next === lang || !has(next)) return;
       lang = next; t = LABELS[next] || LABELS.es;
       if (!shown.includes(next)) shown.push(next);
-      const at = video.currentTime;
-      video.addEventListener('loadedmetadata', () => { try { video.currentTime = at; } catch (_) {} const p = video.play(); if (p && p.catch) p.catch(() => {}); }, {once: true});
-      video.src = pickSource(win.innerWidth, win.devicePixelRatio, next);
+      poster.src = pickPoster(next);
+      if (video) {
+        const at = video.currentTime;
+        video.addEventListener('loadedmetadata', () => { try { video.currentTime = at; } catch (_) {} const p = video.play(); if (p && p.catch) p.catch(() => {}); }, {once: true});
+        video.src = pickSource(win.innerWidth, win.devicePixelRatio, next);
+      }
       // Y la música del otro idioma, en el mismo punto, si suena.
       const nextTrack = pickMusic(win.location.search, next);
-      if (audio && nextTrack && nextTrack !== track) {
+      if (nextTrack && nextTrack !== track) {
         track = nextTrack;
-        audio.pause();
-        audio.src = MUSIC[nextTrack];
-        if (soundOn) audio.addEventListener('canplay', () => { if (!closed && soundOn) syncPlay(); }, {once: true});
+        if (audio) {
+          audio.pause();
+          audio.src = MUSIC[nextTrack];
+          if (soundOn) audio.addEventListener('canplay', () => { if (!closed && soundOn) syncPlay(); }, {once: true});
+        }
       }
-      skip.textContent = t.skip + ' ✕'; box.setAttribute('aria-label', t.aria); paintSound();
+      skip.textContent = t.skip + ' ✕'; box.setAttribute('aria-label', t.aria); paintPlay(); paintSound();
     }
     return {setLang, get lang() { return lang; }};
   }
 
-  return {SEEN_KEY, SOURCES, MUSIC, MUSIC_BY_LANG, activeBrand, parseSeen, shouldShow, pickSource, pickMusic, start, recordada, afterFirstPaint, SEEN_LOCAL, SEEN_DAYS};
+  return {SEEN_KEY, SOURCES, POSTERS, MUSIC, MUSIC_BY_LANG, activeBrand, parseSeen, shouldShow, modo, pickSource, pickPoster, pickMusic, start, recordada, afterFirstPaint, SEEN_LOCAL, SEEN_DAYS};
 });
