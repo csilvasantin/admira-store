@@ -1,14 +1,14 @@
 {
   "version": "v.23.10.2026.r2.08:00",
+  "deployedAt": "2026-10-23T06:17:41Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "deployedAt": "2026-10-23T06:06:38.356919+00:00",
-  "git": "df6ac4bcf9b2af070cef1a1428872aef40170bdd",
-  "gitFull": "df6ac4bcf9b2af070cef1a1428872aef40170bdd",
-  "gitShort": "df6ac4b",
+  "git": "94551309a02adfdd491809320c869ff9e24316e6",
+  "gitShort": "9455130",
+  "gitFull": "94551309a02adfdd491809320c869ff9e24316e6",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "novedades": [
+    "Portada: el póster de la intro se pide desde la cabecera cuando la intro va a salir, para que aparezca antes (el elemento más grande de la primera pantalla); si no va a salir, no se pide nada."
+  ]
 }
