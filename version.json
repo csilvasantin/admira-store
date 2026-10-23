@@ -1,14 +1,14 @@
 {
   "version": "v.23.10.2026.r3.08:14",
+  "deployedAt": "2026-10-23T06:21:20Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "deployedAt": "2026-10-23T06:19:42.894424+00:00",
-  "git": "7b1b6e1df7d81e623e3e82c1a3669bbc75e92e4a",
-  "gitFull": "7b1b6e1df7d81e623e3e82c1a3669bbc75e92e4a",
-  "gitShort": "7b1b6e1",
+  "git": "8a99f359c85b6ccd6c4374dd609faeccaf3e7537",
+  "gitShort": "8a99f35",
+  "gitFull": "8a99f359c85b6ccd6c4374dd609faeccaf3e7537",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "novedades": [
+    "Portada: el póster de la intro se pinta con la primera pintada (marco mínimo al abrir la página) y el guion de la intro lo adopta; antes llegaba 3 a 4 s después."
+  ]
 }
