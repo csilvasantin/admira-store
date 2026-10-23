@@ -1,5 +1,5 @@
-import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-2';
-import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=tres-combos-1';
+import {ADAPTERS,projectContext} from './project-context.mjs?v=projects-3';
+import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './central-project-client.mjs?v=tres-combos-2';
 import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs?v=alsea-1';
 // Un local con puerta de Google Maps pasa primero por su calle (Carlos, 15-oct-2026).
 import {conPuerta} from '../../assets/puertas.mjs?v=puerta-1';

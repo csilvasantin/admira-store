@@ -1,14 +1,15 @@
 {
-  "version": "v.23.10.2026.r5.08:54",
-  "deployedAt": "2026-10-23T07:04:45Z",
-  "deployer": "DeepAgentX",
+  "version": "v.23.10.2026.r6.22:24",
+  "deployedAt": "2026-10-23T20:24:53Z",
+  "deployer": "NeoMacStudio",
   "machine": "MacStudio",
-  "signature": "DeepAgentX · MacStudio",
-  "git": "0b010a2e7e2caa840bc773c5791aad50c8a13613",
-  "gitShort": "0b010a2",
-  "gitFull": "0b010a2e7e2caa840bc773c5791aad50c8a13613",
+  "signature": "NeoMacStudio · MacStudio",
+  "git": "fee9da4985946cd6f1a7fca56e17d9dfae530427",
+  "gitShort": "fee9da4",
+  "gitFull": "fee9da4985946cd6f1a7fca56e17d9dfae530427",
   "dirty": false,
   "novedades": [
-    "Portada: las dos hojas del sistema de diseño viajan dentro del paquete publicado (se copian en cada despliegue), así la primera pintura no espera a otro servidor."
+    "AdmiraXperience en lugar de Sneakers Store: la tienda de Santa Rosa 4 es la GarageXperience y la SpaceXperience de Planeta 7 abre Xsuperman.",
+    "El selector de Xpacios y locales acepta las dos direcciones nuevas del registro central."
   ]
 }
