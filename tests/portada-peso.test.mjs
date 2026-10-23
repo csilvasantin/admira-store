@@ -40,6 +40,11 @@ test('el póster de la intro se pide desde la cabecera solo si la intro va a sal
   assert.ok(html.indexOf('/assets/xpace-lang.js') < i, 'después de resolver el idioma');
   assert.ok(i < html.indexOf('googletagmanager.com/gtm.js'), 'y antes de todo lo demás');
   assert.match(html, /l\.href='\/assets\/video\/intro-xpaceos-a'\+\(lang==='en'\?'-en':''\)\+'-poster\.jpg'/);
+  assert.match(html, /window\.__xpIntro=\{lang:lang,poster:l\.href\};/, 'y deja dicho que la intro sale');
+  const pre = html.indexOf("b.id='xp-intro-pre'");
+  assert.ok(pre > 0 && pre < html.indexOf('<a class="skip-link"'), 'el marco con el póster se pinta nada más abrir <body>');
+  assert.match(html, /var p=window\.__xpIntro;if\(!p\)return;/, 'solo si la intro sale');
+  assert.match(html, /i\.src=p\.poster;/);
   for (const cond of ["if(i==='0')return;", "prefers-reduced-motion: reduce", "sessionStorage.getItem('mb:marca')", "sessionStorage.getItem('xpaceos_intro_a')", "localStorage.getItem('xpaceos_intro_vista')", "30\*86400000"]) {
     assert.ok(html.includes(cond.replace('\\*', '*')), 'condición: ' + cond);
   }

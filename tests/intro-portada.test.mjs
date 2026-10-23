@@ -72,6 +72,10 @@ test('con póster y vídeo bajo demanda: el vídeo no existe hasta pulsar «Ver 
   assert.match(src, /poster\.setAttribute\('fetchpriority', 'high'\)/, 'el póster es lo primero que se pide');
   assert.match(src, /video\.addEventListener\('playing', \(\) => poster\.remove\(\), \{once: true\}\)/, 'el póster se queda hasta el primer fotograma');
   assert.match(src, /poster\.src = pickPoster\(next\);/, 'al cambiar de idioma cambia el póster');
+  assert.match(src, /const pre = doc\.getElementById\('xp-intro-pre'\);\n    const box = pre \|\| doc\.createElement\('div'\);/, 'adopta el marco que pintó la portada');
+  assert.match(src, /const poster = \(pre && pre\.querySelector\('\.xp-intro-poster'\)\) \|\| doc\.createElement\('img'\);/, 'y su póster, sin volver a pedirlo');
+  assert.match(src, /if \(!box\.parentNode\) doc\.body\.appendChild\(box\);/);
+  assert.match(src, /if \(!current\) \{ const pre = win\.document\.getElementById\('xp-intro-pre'\); if \(pre\) pre\.remove\(\); \}/, 'si al final no sale, el marco se quita');
   for (const text of ['Ver la intro · 15 s', 'Watch the intro · 15 s']) assert.ok(src.includes(text), text);
 });
 
@@ -159,7 +163,7 @@ test('una vez por visitante: lo visto se recuerda 30 días en localStorage y arr
   const src = read('assets/intro-portada.js');
   assert.match(src, /local && local\.setItem\(SEEN_LOCAL, JSON\.stringify\(\{t: Date\.now\(\), langs: all\}\)\)/, 'al verla se apunta con fecha');
   assert.match(src, /for \(const l of recordada\(readLocal\(\), Date\.now\(\)\)\)/, 'lo recordado cuenta como visto');
-  assert.match(src, /afterFirstPaint\(win, \(\) => tryOpen\(/, 'la intro arranca después del primer pintado');
+  assert.match(src, /afterFirstPaint\(win, \(\) => \{\n\s+tryOpen\(/, 'la intro arranca después del primer pintado');
   let llamadas = 0; const fake = {requestAnimationFrame: fn => { llamadas++; fn(); }};
   let corrio = false; intro.afterFirstPaint(fake, () => { corrio = true; }); assert.ok(corrio); assert.equal(llamadas, 2);
   corrio = false; intro.afterFirstPaint({}, () => { corrio = true; }); assert.ok(corrio, 'sin rAF, corre igual');
