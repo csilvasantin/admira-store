@@ -1,14 +1,14 @@
 {
   "version": "v.23.10.2026.r5.08:54",
+  "deployedAt": "2026-10-23T07:04:45Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "deployedAt": "2026-10-23T07:01:17.260408+00:00",
-  "git": "a2d1dd19ed9feab71d09ca2b5733b4da40cfd13f",
-  "gitFull": "a2d1dd19ed9feab71d09ca2b5733b4da40cfd13f",
-  "gitShort": "a2d1dd1",
+  "git": "0b010a2e7e2caa840bc773c5791aad50c8a13613",
+  "gitShort": "0b010a2",
+  "gitFull": "0b010a2e7e2caa840bc773c5791aad50c8a13613",
   "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "novedades": [
+    "Portada: las dos hojas del sistema de diseño viajan dentro del paquete publicado (se copian en cada despliegue), así la primera pintura no espera a otro servidor."
+  ]
 }
