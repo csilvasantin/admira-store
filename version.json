@@ -1,12 +1,12 @@
 {
   "version": "v.23.10.2026.r3.08:14",
-  "deployedAt": "2026-10-23T06:21:36Z",
+  "deployedAt": "2026-10-23T06:23:16Z",
   "deployer": "DeepAgentX",
   "machine": "MacStudio",
   "signature": "DeepAgentX · MacStudio",
-  "git": "b2404ff777136d2b3006d1d261d86df59770eb7e",
-  "gitShort": "b2404ff",
-  "gitFull": "b2404ff777136d2b3006d1d261d86df59770eb7e",
+  "git": "64624cfdfc9c31ca03d7059cf8e340666d93cfdc",
+  "gitShort": "64624cf",
+  "gitFull": "64624cfdfc9c31ca03d7059cf8e340666d93cfdc",
   "dirty": false,
   "novedades": [
     "Portada: el póster de la intro se pinta con la primera pintada (marco mínimo al abrir la página) y el guion de la intro lo adopta; antes llegaba 3 a 4 s después."
