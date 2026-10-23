@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="admiranext-version" content="v.23.10.2026.r1.07:53"/>
-  <!-- Espejo de www.xpaceos.com (d7b4804), sincronizado con
+  <meta name="admiranext-version" content="v.23.10.2026.r2.08:00"/>
+  <!-- Espejo de www.xpaceos.com (df6ac4b), sincronizado con
        sync-desde-xpaceos.sh. No editar a mano: el siguiente espejado lo pisa. -->
 <!-- Resource hints — abre conexiones a orígenes críticos antes de necesitarlos (Morfeo, Track A SEO/perf) -->
 <link rel="preconnect" href="https://csilvasantin.github.io" crossorigin>
@@ -42,6 +42,29 @@
 <script defer src="/lead-form.js"></script>
 <!-- Idioma compartido con ⌘ Experto (/idioma ESP|ENG): clave xtanco_lang y evento admira:languagechange. -->
 <script src="/assets/xpace-lang.js?v=20261005-idioma-1"></script>
+<!-- Póster de la intro (23-oct-2026): si la intro va a salir, su póster (≈27 KB, el elemento más grande de la primera
+     pantalla) se pide ya desde aquí; descubierto desde el guion diferido llegaba 4 s tarde (Lighthouse). Si no va a salir,
+     no se pide nada. Las mismas condiciones que assets/intro-portada.js, en corto; ?intro=1 lo pide igual (sale seguro). -->
+<script>
+(function(){try{
+  var q=new URLSearchParams(location.search),i=q.get('intro');
+  if(i==='0')return;
+  var off=/^(off|admira|ninguna|ninguno|none|default|apagar|quitar|reset)$/;
+  var lang=window.XpaceLang?XpaceLang.resolve({url:location.href,storage:localStorage,fallback:'es'}):'es';
+  if(lang!=='es'&&lang!=='en')return;
+  if(i!=='1'){
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var m=q.get('marca');if(m!=null){m=m.trim().toLowerCase();if(m&&!off.test(m))return;}
+    else if(q.get('project')||/^alsea-sbux-/.test(q.get('loc')||''))return;
+    else{var mb=(sessionStorage.getItem('mb:marca')||'').trim().toLowerCase();if(mb&&!off.test(mb))return;}
+    if((sessionStorage.getItem('xpaceos_intro_a')||'').split(',').indexOf(lang)>=0)return;
+    var v=JSON.parse(localStorage.getItem('xpaceos_intro_vista')||'null');
+    if(v&&v.langs&&v.langs.indexOf(lang)>=0&&Date.now()-v.t<30*86400000)return;
+  }
+  var l=document.createElement('link');l.rel='preload';l.as='image';l.setAttribute('fetchpriority','high');
+  l.href='/assets/video/intro-xpaceos-a'+(lang==='en'?'-en':'')+'-poster.jpg';document.head.appendChild(l);
+}catch(e){}})();
+</script>
 
 <!-- Google Tag Manager -->
 <script>
