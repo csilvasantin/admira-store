@@ -45,6 +45,8 @@ jobs:
           mkdir -p _site
           git archive HEAD | tar -x -C _site
           rm -rf _site/.github _site/tests
+          # Hojas del sistema de diseño dentro del paquete (23-oct-2026, igual que xpaceos): ver .github/hojas-diseno-al-paquete.sh
+          bash .github/hojas-diseno-al-paquete.sh _site
           release="$(sed -n 's/.*admiranext-version.*content="\(v\.[^"]*\)".*/\1/p' index.html | head -1)"
           deployer="$(jq -r '.deployer // empty' release-signature.json)"
           machine="$(jq -r '.machine // empty' release-signature.json)"
