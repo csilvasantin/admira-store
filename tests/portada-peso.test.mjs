@@ -49,3 +49,10 @@ test('el póster de la intro se pide desde la cabecera solo si la intro va a sal
     assert.ok(html.includes(cond.replace('\\*', '*')), 'condición: ' + cond);
   }
 });
+
+test('las hojas del sistema de diseño se piden al destino final, sin pasar por la redirección de github.io', () => {
+  assert.match(html, /<link rel="stylesheet" href="https:\/\/www\.carlossilva\.info\/admira-design\/tokens\.css">/);
+  assert.match(html, /<link rel="stylesheet" href="https:\/\/www\.carlossilva\.info\/admira-design\/nav\.css">/);
+  assert.match(html, /<link rel="preconnect" href="https:\/\/www\.carlossilva\.info" crossorigin>/);
+  assert.doesNotMatch(html, /csilvasantin\.github\.io\/admira-design/);
+});
