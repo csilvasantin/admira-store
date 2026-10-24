@@ -136,7 +136,7 @@
 
 /* Barra cuadrática común en pantalla completa (24-oct-2026): el cuerpo vive bajo la barra como caja fija
    con transform, así todo lo position:fixed de la página se recoloca sin tocar su CSS. */
-html[data-xpace-shell="on"] body.xs-page{position:fixed;top:var(--xs-bar-h);left:0;right:0;bottom:0;width:auto;height:auto;min-height:0;margin:0;padding:0!important;overflow:hidden;transform:translateZ(0)}
+html[data-xpace-shell="on"] body.xs-page{position:fixed;top:var(--xs-bar-h);left:0;right:0;bottom:0;width:auto;height:auto;min-height:0;margin:0;padding:0!important;overflow:visible;transform:translateZ(0)}
 html[data-xpace-shell="on"] body.xs-page>#topBar.xs-bar,html[data-xpace-shell="on"] body.xs-page>.xs-layer{top:calc(-1*var(--xs-bar-h))}
 </style>
   <script defer src="https://www.pixeria.com/assets/analytics.js?v=20260714-coverage"></script>
