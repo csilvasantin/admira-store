@@ -71,16 +71,17 @@ test('as Admira, by default, or with the brand a project applied on its own, eve
  }
 });
 
-test('three combos: choosing the Starbucks Xpace applies its brand at once and opens the Venue combo',async()=>{
+test('three combos: choosing the Starbucks Xpace applies its brand at once and opens its first venue without asking (24-oct-2026)',async()=>{
  const aplicadas=[];
  const h=await harness({catalogo:cuatro,ventana:{AdmiraMarca:{aplicarProyecto:id=>aplicadas.push(id)}}});
  const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
  let abierto=0;venue.showPicker=()=>{abierto++;};
  project.value='starbucks';project.listeners.get('change')();await new Promise(setImmediate);await new Promise(setImmediate);
- assert.deepEqual(aplicadas,['starbucks'],'the look and feel changes before a venue is chosen');
- assert.equal(h.destinations.length,0,'two venues: nothing opens until one is chosen');
- assert.equal(abierto,1,'the Venue combo opens by itself');
+ assert.deepEqual([...new Set(aplicadas)],['starbucks'],'the look and feel changes before a venue is chosen (and again on the way out)');
+ assert.equal(h.destinations.length,1,'two venues: the first one opens at once');
+ assert.equal(new URL(h.destinations[0]).searchParams.get('venue'),'demo-starbucks');
+ assert.equal(abierto,0,'the Venue combo does not need to open');
  assert.deepEqual(venue.options.slice(1).map(o=>o.value),['demo-starbucks','starbucks-diagonal-634']);
  venue.value='starbucks-diagonal-634';venue.listeners.get('change')();await new Promise(setImmediate);
- assert.equal(new URL(h.destinations[0]).pathname,'/xpacios/starbucks-centros/');
+ assert.equal(new URL(h.destinations[1]).pathname,'/xpacios/starbucks-centros/');
 });
