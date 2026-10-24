@@ -21,7 +21,6 @@ export const SHELL_EXCEPTIONS = {
   // Pantalla completa: escenarios, visores y apps inmersivas; una barra encima cortaría la escena.
   'nvidia/index.html': 'Pantalla completa: incrusta el gemelo a toda pantalla en un iframe para el stand NVIDIA.',
   'Xcaixa/index.html': 'Pantalla completa: Xperience inmersiva Xpacio Sucursal con su propio HUD.',
-  'Xsuperman/index.html': 'Pantalla completa: Xperience inmersiva Xpacio Planeta 7 con su propio HUD.',
   'xpacios/grok/index.html': 'Pantalla completa: Xpacio Grok heredado de Pixeria, tras su verja; escena a toda pantalla.',
   'xpacios/xtanco-barcelona/index.html': 'Pantalla completa: Xpacio heredado de Pixeria, tras su verja; escena a toda pantalla.',
   'xpacios/xtanco-valencia/index.html': 'Pantalla completa: Xpacio heredado de Pixeria, tras su verja; escena a toda pantalla.',
