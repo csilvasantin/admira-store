@@ -1,14 +1,14 @@
 {
-  "version": "v.24.10.2026.r2.08:39",
-  "deployedAt": "2026-10-24T06:39:16Z",
+  "version": "v.24.10.2026.r3.08:49",
+  "deployedAt": "2026-10-24T06:49:56Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "bc324e13b081fde6b715426d0e1ba6a631c28c1e",
-  "gitShort": "bc324e1",
-  "gitFull": "bc324e13b081fde6b715426d0e1ba6a631c28c1e",
+  "git": "796ef4a6f4ea2098a9ea9b4132caeb689e3d663d",
+  "gitShort": "796ef4a",
+  "gitFull": "796ef4a6f4ea2098a9ea9b4132caeb689e3d663d",
   "dirty": false,
   "novedades": [
-    "Xsuperman (SpaceXperience · Planeta 7) lleva la barra cuadrática común: el menú superior nunca se pierde."
+    "La barra cuadrática común llega a todas las páginas a pantalla completa (NVIDIA, Xcaixa, Grok, Xtanco Barcelona y Valencia, Crear, Xperiencias, XpaceScan, emulador MUPI): el menú superior nunca se pierde."
   ]
 }

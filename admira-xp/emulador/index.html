@@ -42,7 +42,16 @@
   #drop{position:fixed;inset:0;z-index:80;background:#0bf3;border:3px dashed var(--acc);display:none;align-items:center;justify-content:center;font:700 22px var(--mono);color:#fff}
   #drop.show{display:flex}
   a{color:var(--acc2)}
+
+/* Barra cuadrática común en pantalla completa (24-oct-2026): el cuerpo vive bajo la barra como caja fija
+   con transform, así todo lo position:fixed de la página se recoloca sin tocar su CSS. */
+html[data-xpace-shell="on"] body.xs-page{position:fixed;top:var(--xs-bar-h);left:0;right:0;bottom:0;width:auto;height:auto;min-height:0;margin:0;padding:0!important;overflow:hidden;transform:translateZ(0)}
+html[data-xpace-shell="on"] body.xs-page>#topBar.xs-bar,html[data-xpace-shell="on"] body.xs-page>.xs-layer{top:calc(-1*var(--xs-bar-h))}
 </style>
+<!-- Barra cuadrática común: nunca se pierde el menú superior (Carlos, 24-oct-2026). -->
+<script>window.XPACE_SHELL={section:{es:'Emulador MUPI · admira.tv en la calle',en:'MUPI emulator · admira.tv on the street'},options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'/',es:'Portada',en:'Home'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
+<script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
 </head>
 <body>
 <div id="stage">
