@@ -1,14 +1,14 @@
 {
   "version": "v.24.10.2026.r5.10:28",
-  "deployedAt": "2026-10-24T08:28:31Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "a2fd014d640f45f66d4fedd6a5045139c8eee0f4",
-  "gitShort": "a2fd014",
-  "gitFull": "a2fd014d640f45f66d4fedd6a5045139c8eee0f4",
+  "deployedAt": "2026-10-24T09:32:36.170711+00:00",
+  "git": "8e8b443ef4661b24d56568a324dd456c51b22fa6",
+  "gitFull": "8e8b443ef4661b24d56568a324dd456c51b22fa6",
+  "gitShort": "8e8b443",
   "dirty": false,
-  "novedades": [
-    "Al elegir un Xpacio se entra directamente en su primer local; el combo Local sirve para cambiar después. El proyecto AdmiraXperience se llama Admira."
-  ]
+  "mirrorOf": "https://www.xpaceos.com/",
+  "mirror": "parcial: portada y assets comunes",
+  "locale": "es"
 }
