@@ -1,5 +1,9 @@
 {
   "_como": "Novedades del sello (2-4 líneas, español). Clave = sello exacto (v.DD.MM.AAAA.rN.HH:MM); .default si el sello aún no tiene entrada. El deploy las escribe en /version.json.novedades[] y el cargador común https://www.admiranext.com/assets/sello-novedades.js las enseña al pasar el ratón por el sello.",
+  "v.24.10.2026.r1.08:28": [
+    "AdmiraXperience con sus tres Xpacios: GarageXperience · Santa Rosa 4 (página propia, gemelo pendiente), SpaceXperience · Planeta 7 y Sneakers Store · Santa Rosa 19.",
+    "La tienda de zapatillas recupera su nombre; Xsuperman se presenta como SpaceXperience."
+  ],
   "v.23.10.2026.r6.22:24": [
     "AdmiraXperience en lugar de Sneakers Store: la tienda de Santa Rosa 4 es la GarageXperience y la SpaceXperience de Planeta 7 abre Xsuperman.",
     "El selector de Xpacios y locales acepta las dos direcciones nuevas del registro central."
