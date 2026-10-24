@@ -1,15 +1,14 @@
 {
-  "version": "v.24.10.2026.r1.08:28",
-  "deployedAt": "2026-10-24T06:28:45Z",
+  "version": "v.24.10.2026.r2.08:39",
+  "deployedAt": "2026-10-24T06:39:16Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "614c0c2e126ed582fd2cd562f73855b327b77320",
-  "gitShort": "614c0c2",
-  "gitFull": "614c0c2e126ed582fd2cd562f73855b327b77320",
+  "git": "bc324e13b081fde6b715426d0e1ba6a631c28c1e",
+  "gitShort": "bc324e1",
+  "gitFull": "bc324e13b081fde6b715426d0e1ba6a631c28c1e",
   "dirty": false,
   "novedades": [
-    "AdmiraXperience con sus tres Xpacios: GarageXperience · Santa Rosa 4 (página propia, gemelo pendiente), SpaceXperience · Planeta 7 y Sneakers Store · Santa Rosa 19.",
-    "La tienda de zapatillas recupera su nombre; Xsuperman se presenta como SpaceXperience."
+    "Xsuperman (SpaceXperience · Planeta 7) lleva la barra cuadrática común: el menú superior nunca se pierde."
   ]
 }
