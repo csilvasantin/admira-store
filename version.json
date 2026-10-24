@@ -1,14 +1,14 @@
 {
-  "version": "v.24.10.2026.r3.08:49",
-  "deployedAt": "2026-10-24T06:49:56Z",
+  "version": "v.24.10.2026.r4.08:56",
+  "deployedAt": "2026-10-24T06:56:45Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "796ef4a6f4ea2098a9ea9b4132caeb689e3d663d",
-  "gitShort": "796ef4a",
-  "gitFull": "796ef4a6f4ea2098a9ea9b4132caeb689e3d663d",
+  "git": "f71bb651c1865a8cd341b9b1ebe5bc02a9b2b870",
+  "gitShort": "f71bb65",
+  "gitFull": "f71bb651c1865a8cd341b9b1ebe5bc02a9b2b870",
   "dirty": false,
   "novedades": [
-    "La barra cuadrática común llega a todas las páginas a pantalla completa (NVIDIA, Xcaixa, Grok, Xtanco Barcelona y Valencia, Crear, Xperiencias, XpaceScan, emulador MUPI): el menú superior nunca se pierde."
+    "Barra cuadrática sin recorte en las páginas a pantalla completa: el cuerpo ya no la corta."
   ]
 }
