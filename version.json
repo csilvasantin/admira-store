@@ -1,14 +1,14 @@
 {
-  "version": "v.24.10.2026.r4.08:56",
-  "deployedAt": "2026-10-24T06:56:45Z",
+  "version": "v.24.10.2026.r5.10:28",
+  "deployedAt": "2026-10-24T08:28:31Z",
   "deployer": "NeoMacStudio",
   "machine": "MacStudio",
   "signature": "NeoMacStudio · MacStudio",
-  "git": "f71bb651c1865a8cd341b9b1ebe5bc02a9b2b870",
-  "gitShort": "f71bb65",
-  "gitFull": "f71bb651c1865a8cd341b9b1ebe5bc02a9b2b870",
+  "git": "a2fd014d640f45f66d4fedd6a5045139c8eee0f4",
+  "gitShort": "a2fd014",
+  "gitFull": "a2fd014d640f45f66d4fedd6a5045139c8eee0f4",
   "dirty": false,
   "novedades": [
-    "Barra cuadrática sin recorte en las páginas a pantalla completa: el cuerpo ya no la corta."
+    "Al elegir un Xpacio se entra directamente en su primer local; el combo Local sirve para cambiar después. El proyecto AdmiraXperience se llama Admira."
   ]
 }

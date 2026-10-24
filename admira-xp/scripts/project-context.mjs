@@ -5,7 +5,7 @@ export const ADAPTERS = Object.freeze({
   // AdmiraXperience (Carlos, 23/24-oct-2026): tres locales en Gràcia. Sin local elegido abre su tienda (Sneakers Store ·
   // Santa Rosa 19, /xpacios/sneakerstore/); GarageXperience · Santa Rosa 4 (/xpacios/garagexperience/) y SpaceXperience ·
   // Planeta 7 (/Xsuperman/) llegan por el registro central (admiranext.com/api/xpace/demos).
-  admiraxperience: {circuit:'admiraxperience',vertical:'sneakerstore',label:'AdmiraXperience',venueEs:'Sneakers Store · Santa Rosa 19 · Barcelona',venueEn:'Sneakers Store · Santa Rosa 19 · Barcelona',loc:'sneakers-store-santa-rosa-19',linked:true},
+  admiraxperience: {circuit:'admiraxperience',vertical:'sneakerstore',label:'Admira',venueEs:'Sneakers Store · Santa Rosa 19 · Barcelona',venueEn:'Sneakers Store · Santa Rosa 19 · Barcelona',loc:'sneakers-store-santa-rosa-19',linked:true},
   estancos: {circuit:'estancos',vertical:'xtanco',label:'Xtanco',venueEs:'Gran de Gràcia · escena de demostración',venueEn:'Gran de Gràcia · demo scene',linked:false},
   cafebreria: {circuit:'cafebreria',vertical:'cafeteria',label:'Cafebrería',venueEs:'Cafebrería · escena de demostración',venueEn:'Cafebrería · demo scene',linked:false},
   starbucks: {circuit:'alsea_starbucks',vertical:'cafeteria',label:'Starbucks',venueEs:'Paseo de Gracia 103 · Barcelona',venueEn:'Paseo de Gracia 103 · Barcelona',loc:STARBUCKS_LOCATION,linked:true}
