@@ -18,20 +18,7 @@ const read = path => readFileSync(join(repo, path), 'utf8');
 const TWIN = 'admira-xp/index.html';
 // Páginas sin la barra, cada una con su motivo. Revisadas una a una (1-oct-2026).
 export const SHELL_EXCEPTIONS = {
-  // Pantalla completa: escenarios, visores y apps inmersivas; una barra encima cortaría la escena.
-  'nvidia/index.html': 'Pantalla completa: incrusta el gemelo a toda pantalla en un iframe para el stand NVIDIA.',
-  'Xcaixa/index.html': 'Pantalla completa: Xperience inmersiva Xpacio Sucursal con su propio HUD.',
-  'xpacios/grok/index.html': 'Pantalla completa: Xpacio Grok heredado de Pixeria, tras su verja; escena a toda pantalla.',
-  'xpacios/xtanco-barcelona/index.html': 'Pantalla completa: Xpacio heredado de Pixeria, tras su verja; escena a toda pantalla.',
-  'xpacios/xtanco-valencia/index.html': 'Pantalla completa: Xpacio heredado de Pixeria, tras su verja; escena a toda pantalla.',
-  'xpacios/crear/index.html': 'Pantalla completa: generador de Xpacios heredado de Pixeria, tras su verja.',
-  'xpacios/crear/phone.html': 'Pantalla completa: captura desde el móvil para el generador (abre con QR).',
-  'xperiencias/batcueva/index.html': 'Pantalla completa: Xperiencia inmersiva La Batcueva.',
-  'xperiencias/sheldon/index.html': 'Pantalla completa: Xperiencia inmersiva Sheldon.',
-  'xperiencias/soledad/index.html': 'Pantalla completa: Xperiencia inmersiva Soledad.',
-  'scan/pelicula.html': 'Pantalla completa: reproductor de la película del gemelo de XpaceScan.',
-  'scan/visor.html': 'Pantalla completa: visor isométrico 3D del gemelo de XpaceScan.',
-  'admira-xp/emulador/index.html': 'Pantalla completa: emulador Street View de admira.tv sobre el MUPI real.',
+  // Pantalla completa: desde el 24-oct-2026 (Carlos) todas llevan la barra común; el cuerpo baja bajo ella.
   // Redirecciones inmediatas: no pintan nada.
   'CPM.html': 'Redirección inmediata a /cpm/.',
   'Nvidia.html': 'Redirección inmediata a /nvidia/.',

@@ -245,7 +245,16 @@
 </style>
   <script defer src="https://www.pixeria.com/assets/analytics.js?v=20260714-coverage"></script>
   <script defer src="https://www.pixeria.com/assets/consent.js?v=20260714-universal"></script>
-<link rel="stylesheet" href="/cenital-panel.css?v=destinations-1"><script src="/cenital-panel.js?v=destinations-1"></script><style>#xtanco-overview{display:none;left:20px;right:auto;bottom:25px;width:210px}body.touring #xtanco-overview{display:block}#xtanco-overview #minimap{position:static;display:block;width:150px;height:150px;margin:auto;border:0;background:transparent;padding:0}#xtanco-overview .cenital-body{height:155px}</style></head>
+<link rel="stylesheet" href="/cenital-panel.css?v=destinations-1"><script src="/cenital-panel.js?v=destinations-1"></script><style>#xtanco-overview{display:none;left:20px;right:auto;bottom:25px;width:210px}body.touring #xtanco-overview{display:block}#xtanco-overview #minimap{position:static;display:block;width:150px;height:150px;margin:auto;border:0;background:transparent;padding:0}#xtanco-overview .cenital-body{height:155px}
+/* Barra cuadrática común en pantalla completa (24-oct-2026): el cuerpo vive bajo la barra como caja fija
+   con transform, así todo lo position:fixed de la página se recoloca sin tocar su CSS. */
+html[data-xpace-shell="on"] body.xs-page{position:fixed;top:var(--xs-bar-h);left:0;right:0;bottom:0;width:auto;height:auto;min-height:0;margin:0;padding:0!important;overflow:hidden;transform:translateZ(0)}
+html[data-xpace-shell="on"] body.xs-page>#topBar.xs-bar,html[data-xpace-shell="on"] body.xs-page>.xs-layer{top:calc(-1*var(--xs-bar-h))}
+</style><!-- Barra cuadrática común: nunca se pierde el menú superior (Carlos, 24-oct-2026). -->
+<script>window.XPACE_SHELL={section:{es:'Xtanco Barcelona',en:'Xtanco Barcelona'},options:[{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'},{href:'/',es:'Portada',en:'Home'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
+<script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
+</head>
 <body>
 <canvas id="c"></canvas>
 <div id="loading"><div class="ring"></div><div>Construyendo Xtanco Barcelona…</div></div>
