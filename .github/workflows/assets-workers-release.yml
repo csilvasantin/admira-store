@@ -1,0 +1,58 @@
+name: Release Assets workers
+on:
+  workflow_dispatch:
+    inputs:
+      api_sha:
+        description: Verified full commit SHA in csilvasantin/pixer-worker
+        required: true
+      mcp_sha:
+        description: Verified full commit SHA in csilvasantin/xpaceos-mcp
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: assets-workers-release
+  cancel-in-progress: false
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: csilvasantin/pixer-worker
+          ref: ${{ inputs.api_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify and deploy API
+        env:
+          EXPECTED_SHA: ${{ inputs.api_sha }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          npm test
+          npx --yes wrangler@4.154.0 deploy
+  mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: csilvasantin/xpaceos-mcp
+          ref: ${{ inputs.mcp_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify and deploy MCP help
+        env:
+          EXPECTED_SHA: ${{ inputs.mcp_sha }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          node --test assets-finish-2d-help.test.mjs
+          npx --yes wrangler@4.154.0 deploy
