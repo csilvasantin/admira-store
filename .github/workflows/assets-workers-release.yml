@@ -50,6 +50,8 @@ jobs:
           PART_2: ${{ secrets.ASSETS_MCP_BUNDLE_2 }}
           PART_3: ${{ secrets.ASSETS_MCP_BUNDLE_3 }}
           PART_4: ${{ secrets.ASSETS_MCP_BUNDLE_4 }}
+          PART_5: ${{ secrets.ASSETS_MCP_BUNDLE_5 }}
+          PART_6: ${{ secrets.ASSETS_MCP_BUNDLE_6 }}
           EXPECTED_SHA: ${{ inputs.mcp_sha }}
           BUNDLE_SHA256: ${{ inputs.mcp_bundle_sha256 }}
         run: |
@@ -57,7 +59,7 @@ jobs:
           import os,base64,gzip,hashlib,tarfile,io,pathlib,re
           expected=os.environ['EXPECTED_SHA']; digest=os.environ['BUNDLE_SHA256']
           assert re.fullmatch('[0-9a-f]{40}',expected) and re.fullmatch('[0-9a-f]{64}',digest)
-          data=base64.b64decode(''.join(os.environ['PART_'+str(i)] for i in range(1,5)),validate=True)
+          data=base64.b64decode(''.join(os.environ['PART_'+str(i)] for i in range(1,7)),validate=True)
           assert hashlib.sha256(data).hexdigest()==digest
           root=pathlib.Path('worker'); root.mkdir()
           with tarfile.open(fileobj=io.BytesIO(gzip.decompress(data))) as archive:
