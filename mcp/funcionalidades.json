@@ -5999,5 +5999,87 @@
     "location": "alsea-sbux-021",
     "scope": "virtual screens only; no physical acknowledgement",
     "newRemoteTools": false
+  },
+  "assets_finish_2d": {
+    "status": "implemented",
+    "schema": "admira.sprite/1",
+    "guide": "/admira-xp/docs/assets-finish-2d.md",
+    "paletteModes": [
+      "original",
+      "auto",
+      "custom"
+    ],
+    "paletteCounts": [
+      8,
+      16,
+      32
+    ],
+    "default": {
+      "palette": "auto",
+      "colors": 16,
+      "width": 64,
+      "height": 64
+    },
+    "size": {
+      "presets": [
+        32,
+        64,
+        128,
+        256
+      ],
+      "min": 16,
+      "max": 256,
+      "perView": true,
+      "aspect": "fit without stretching; nearest neighbor"
+    },
+    "export": [
+      "PNG",
+      "JSON",
+      "ZIP with PNG + JSON"
+    ],
+    "views": {
+      "default": "all",
+      "order": [
+        "front-right",
+        "front-left",
+        "back-left",
+        "back-right"
+      ],
+      "singleView": "explicit selection; source.frames remains 4"
+    },
+    "preserved": [
+      "session source",
+      "fp",
+      "ph",
+      "alpha",
+      "original Stock publishing"
+    ],
+    "anchor": {
+      "x": 0.5,
+      "y": 1
+    },
+    "consumer": "Use contentRect and fp/ph; do not infer physical size from frame dimensions.",
+    "newMcpTools": false,
+    "paidRequestsForFinishing": false,
+    "stockWritesForExport": false,
+    "description_es": "Acabado 2D (preparado en local; pendiente de publicación): en Resultado, compara el original con el acabado. Elige paleta Original, Automática o Personalizada de 8/16/32 colores, compartida entre las caras. Tamaño por cara: 32, 64, 128 o 256 px; personalizado de 16 a 256 px por lado, sin deformar y con apoyo centrado abajo. Descargar PNG + JSON entrega un ZIP con hoja horizontal y metadatos admira.sprite/1: caras, orden, huella fp, altura ph, punto de apoyo y región de contenido. Hoja completa conserva las cuatro caras; Solo la cara visible exporta una explícitamente. Los cambios parten del original y no recalculan huella ni altura, ni llaman a la IA o al Stock. Publicar original como Mobiliario mantiene la publicación existente del original; el acabado es una descarga independiente.",
+    "description_en": "2D finish (prepared locally; publication pending): under Result, compare the session original with the finish. Choose Original, Automatic or Custom palette with 8/16/32 colors shared across views. Per-view size: 32, 64, 128 or 256 px; custom dimensions from 16 to 256 px per side, without stretching and with a bottom-center anchor. Download PNG + JSON produces a ZIP containing a horizontal sheet and admira.sprite/1 metadata: views, order, footprint fp, display height ph, anchor and content region. Complete sheet retains all four views; Current view only explicitly exports one. Changes derive from the original, never recalculate footprint or display height, and make no AI or Stock requests. Publish original as furniture retains existing original publishing; the finish is a separate download.",
+    "release": "v.27.10.2026.r2.23:49",
+    "goodReader": {
+      "url": "https://www.xpaceos.com/admira-xp/?loc=xtanco-generic&project=estancos&quality=good&autostart=xtanco",
+      "action": "Advanced → Assets 2D / Avanzadas → Assets 2D",
+      "localSave": true,
+      "retains": [
+        "fp",
+        "ph",
+        "frames",
+        "facing",
+        "anchor",
+        "contentRect",
+        "source identity"
+      ],
+      "height": "historical Good scale, independent of exported canvas"
+    },
+    "stockMetadata": "Optional validated sprite descriptor, bound to PNG bytes; conflicts do not overwrite identity."
   }
 }

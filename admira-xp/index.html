@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script type="module" src="/admira-xp/scripts/sprite-import.mjs?v=20261027-1"></script>
 <script>if(new URLSearchParams(location.search).get('autostart')==='sneakerstore'){location.replace('/xpacios/sneakerstore/'+location.search);}</script>
   <link rel="stylesheet" href="scripts/media-drag.css?v=20261006-alsea-repair-2">
   <link rel="stylesheet" data-expert-legibility href="/assets/expert-legibility.css?v=20261006-alsea-repair-1">
@@ -9167,9 +9168,11 @@ function loadLayout(){
 }
 function saveLayout(){
   const data=JSON.stringify(shopLayout);
+  const rollback=[];
   try{
     const prefix=getLayoutStoragePrefix();
     const keys=getLayoutSlotKeys(prefix);
+    if(shopLayout.some(it=>it.localOnly)) for(const key of [keys.current,keys.backup,keys.schema,keys.staffPos,keys.staffZones,'xpace_creator_template'])rollback.push([key,localStorage.getItem(key)]);
     localStorage.setItem(keys.current,data);
     localStorage.setItem(keys.backup,data);
     persistLayoutSchema(keys);
@@ -9192,10 +9195,12 @@ function saveLayout(){
         localStorage.setItem('xpace_creator_template',JSON.stringify(tpl));
         console.log('[Layout] ✓ Saved Creator template ('+shopLayout.length+' items)');
       }
-    }catch(tplErr){console.warn('[Layout] Template save error:',tplErr);}
+    }catch(tplErr){console.warn('[Layout] Template save error:',tplErr);if(shopLayout.some(it=>it.localOnly))throw tplErr;}
     console.log('[Layout] ✓ Saved current layout ('+shopLayout.length+' items)');
-  }catch(e){console.warn('[Layout] Save error:',e);}
+  }catch(e){for(const [key,value] of rollback){try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}catch(_){}}console.warn('[Layout] Save error:',e);return false;}
+  if(shopLayout.some(it=>it.localOnly))return true;
   reportLayoutLiveDebounced();   // mirror EN VIVO a pixeria (debounced para no agotar KV)
+  return true;
 }
 // Reporta la distribución a pixeria tras editar, con anti-rebote: mientras
 // arrastras/colocas no spamea; ~1.2s después del último cambio sube el estado
@@ -13121,12 +13126,13 @@ window.mupiCamOpenGallery=mupiCamOpenGallery; window.mupiCamCloseGallery=mupiCam
 // librería; pixeria.com/assets hace lo mismo → back-and-forth. (Carlos 2026-06-11)
 function distroBase(){ try{ return window.LAYOUT_BASE || PIXERIA_STOCK_BASE; }catch(_){ return 'https://api.admira.store'; } }
 function distroCleanFurniture(){
+  if(shopLayout.some(it=>it.localOnly))throw new Error(lang==='en'?'Local Assets must be shared explicitly before distributing this layout.':'Los Assets locales deben compartirse explícitamente antes de distribuir esta sala.');
   return (typeof shopLayout!=='undefined'?shopLayout:[]||[]).map(it=>{
     const o={ id:it.id, type:it.type, col:it.col, row:it.row, sx:it.sx||1, sy:it.sy||1 };
     if(it.label) o.label=it.label;
     if(it.rot) o.rot=it.rot;
     if(it.flipX) o.flipX=true;
-    if(it.custom){ o.custom=true; if(it.img) o.img=it.img; if(it.fp) o.fp=it.fp; if(it.ph) o.ph=it.ph; }
+    if(it.custom){ o.custom=true; if(it.img) o.img=it.img; if(it.fp) o.fp=it.fp; if(it.ph) o.ph=it.ph; Object.assign(o,spriteItemFields(it)); }
     return o;
   });
 }
@@ -18878,7 +18884,7 @@ function drawShop(){
     }
     cx.save();cx.beginPath();cx.rect(SHOP.x,SHOP.y,Math.max(SHOP.w,W-SHOP.x),Math.max(SHOP.h,H-SHOP.y));cx.clip();
     window.XpaceStarbucks.draw(cx,ISO,toIso,shopFurnitureVisible?renderLayout:[],actors,document.body.classList.contains('xtanco-mudanza'));
-    if(shopFurnitureVisible)for(const item of renderLayout)if(item.source==='PixerIA')drawCustomFurni(item);
+    if(shopFurnitureVisible)for(const item of renderLayout)if(item.source==='PixerIA'||item.sprite)drawCustomFurni(item);
     cx.restore();return;
   }
   const premiumView=window.__xtancoPremiumView;
@@ -19301,7 +19307,7 @@ function drawShop(){
       if(item.type==='led'||item.type==='tft') continue;
       if(item.type==='aroma'&&!editorSceneActive) continue;
       const d=item.type==='rug'?-999:item.type==='aroma'?-1200:isoDepth(item.col,item.row+1);
-      entities.push({type:item.type,col:item.col,row:item.row,depth:d,layoutId:item.id,sx:item.sx||1,sy:item.sy||1,flipX:item.flipX||false,rot:item.rot||0,wallY:(typeof item.wallY==='number'?item.wallY:undefined),img:item.img,fp:item.fp,ph:item.ph,label:item.label});
+      entities.push({type:item.type,col:item.col,row:item.row,depth:d,layoutId:item.id,sx:item.sx||1,sy:item.sy||1,flipX:item.flipX||false,rot:item.rot||0,wallY:(typeof item.wallY==='number'?item.wallY:undefined),img:item.img,fp:item.fp,ph:item.ph,label:item.label,...spriteItemFields(item)});
     }
   }
 
@@ -23954,6 +23960,8 @@ function drawCustomFurni(e){
   const rec=getCustomFurniImage(e.img);
   let topY=p.y-Math.max(12,(e.ph||46));   // por defecto (placeholder)
   if(rec&&rec.loaded&&rec.img.naturalWidth>0){
+    let spriteDraw=null;
+    if(e.sprite){if(!window.AdmiraSprite)return;try{spriteDraw=window.AdmiraSprite.drawInfo(e.sprite,rec.img,{rot:e.rot||0,fw,fd,ph:e.ph||46,tileW:ISO.tileW,wallH:ISO.wallH});}catch(_){return;}}
     const ar=rec.img.naturalWidth/rec.img.naturalHeight;
     // #1 ESCALA POR HUELLA: ancho ∝ √(área de la huella)·tile; alto por aspect.
     // Un 2×2 se ve el doble que un 1×1. ph (si el asset lo trae) es multiplicador
@@ -23964,6 +23972,7 @@ function drawCustomFurni(e){
     const maxH=ISO.wallH*0.85, minH=12;
     if(h>maxH){ w*=maxH/h; h=maxH; }
     else if(h<minH){ w*=minH/h; h=minH; }
+    if(spriteDraw){w=spriteDraw.width;h=spriteDraw.height;}
     // #2 PEANA: elipse de contacto ceñida bajo la base → se apoya, no "flota".
     cx.save();
     cx.fillStyle='rgba(0,0,0,0.30)';
@@ -23974,7 +23983,7 @@ function drawCustomFurni(e){
     cx.translate(p.x,p.y);
     if(e.flipX) cx.scale(-1,1);
     cx.imageSmoothingEnabled=false;
-    cx.drawImage(rec.img,-w/2,-h,w,h);
+    if(spriteDraw)cx.drawImage(rec.img,spriteDraw.sx,spriteDraw.sy,spriteDraw.sw,spriteDraw.sh,spriteDraw.dx,spriteDraw.dy,w,h);else cx.drawImage(rec.img,-w/2,-h,w,h);
     cx.restore();
     topY=p.y-h;
   } else {
@@ -23991,6 +24000,9 @@ function drawCustomFurni(e){
 }
 // Coloca un mueble 'custom' (imagen importada) en el Xpacio. Reusa la
 // búsqueda de hueco libre de addCreatorFurniture.
+function spriteItemFields(item){
+  const out={};if(item&&item.sprite)out.sprite=JSON.parse(JSON.stringify(item.sprite));if(item&&item.localOnly===true)out.localOnly=true;for(const k of ['sourceAssetId','inventoryAssetId'])if(typeof item?.[k]==='string')out[k]=item[k];return out;
+}
 function addCustomFurni(opts){
   opts=opts||{};
   if(!opts.img) return null;
@@ -24008,21 +24020,31 @@ function addCustomFurni(opts){
       }
     }
   }
+  if(opts.sprite){
+    if(!window.AdmiraSprite)throw new Error('Sprite reader is loading');
+    opts={...opts,...window.AdmiraSprite.placement(opts),sprite:window.AdmiraSprite.normalize(opts.sprite)};
+    const occupied=new Set();for(const old of shopLayout){if(['led','tft','rug','aroma'].includes(old.type))continue;const box=getFurnitureFootprint(old);for(let x=box.col;x<box.col+box.w;x++)for(let y=box.row;y<box.row+box.d;y++)occupied.add(x+','+y);}
+    let free=null;for(let y=0;y+opts.fp[1]<=ISO.rows&&!free;y++)for(let x=0;x+opts.fp[0]<=ISO.cols&&!free;x++){let ok=true;for(let a=x;a<x+Math.ceil(opts.fp[0]);a++)for(let b=y;b<y+Math.ceil(opts.fp[1]);b++)if(occupied.has(a+','+b))ok=false;if(ok)free=[x,y];}
+    if(!free)throw new Error(lang==='en'?'No free footprint in this room':'No hay una huella libre en esta sala');[col,row]=free;
+  }
   const item={
-    id:'custom_'+Date.now().toString(36).slice(-5),
+    id:opts.sprite?'custom_'+crypto.randomUUID():'custom_'+Date.now().toString(36).slice(-5),
     type:'custom', custom:true,
     col, row, sx:1, sy:1, rot:0,
     img:opts.img,
     label:opts.label||'Importado',
     fp:Array.isArray(opts.fp)&&opts.fp.length===2?opts.fp:[1,1],
     ph:opts.ph||46,
+    ...spriteItemFields(opts),
   };
+  const previousSelection=edSelIdx,previousStaffSelection=edStaffSelIdx;
   shopLayout.push(item);
   edSelIdx=shopLayout.length-1; edStaffSelIdx=-1;
-  try{ saveLayout(); }catch(_){}
+  try{if(saveLayout()===false)throw new Error('storage');}catch(error){shopLayout.pop();edSelIdx=previousSelection;edStaffSelIdx=previousStaffSelection;throw new Error(lang==='en'?'Could not save this asset in the browser':'No se pudo guardar este asset en el navegador');}
   try{ buildWalkGrid(); }catch(_){}
   return item;
 }
+window.AdmiraSpriteHost={active:()=>!!G&&(state===S.GAME||state===S.EDITOR||state===S.PAUSE),add:opts=>addCustomFurni(opts),items:()=>JSON.parse(JSON.stringify(shopLayout.filter(item=>item.sprite)))};
 
 // ── MAGAZINE RACK (revistero) ────────────────────────────────
 // Entity wrapper: rotation-aware (footprint swaps with rot so the rack reads
@@ -27956,7 +27978,7 @@ window.__xtancoFurnitureEditor={
     if(signal?.aborted)throw Error('cancelled');
     await checkPixeriaFurniture(asset);
     if(signal?.aborted)throw Error('cancelled');
-    const item={id:'pixeria_'+crypto.randomUUID(),type:'custom',custom:true,source:'PixerIA',sourceAssetId:asset.assetId,label:asset.label,fp:[...asset.fp],img:asset.img,modelUrl:asset.modelUrl,ph:asset.ph,col:0,row:0,rot:0,sx:1,sy:1,locked:false};
+    const item={id:'pixeria_'+crypto.randomUUID(),type:'custom',custom:true,source:'PixerIA',sourceAssetId:asset.assetId,label:asset.label,fp:[...asset.fp],img:asset.img,modelUrl:asset.modelUrl,ph:asset.ph,col:0,row:0,rot:0,sx:1,sy:1,locked:false,...spriteItemFields(asset)};
     return this.mutate({signal,roomId,action:'add',item});
   }
 };
@@ -30213,7 +30235,8 @@ window.xtAPI = (function(){
         label:'🎨 Pixeria',
         status:isEs?'último → gemelo':'latest → twin',
         customAction:'pixerai'
-      }
+      },
+      {label:'Assets 2D',status:'PNG + JSON',customAction:'assets2d'}
     ];
   }
 
@@ -30276,7 +30299,7 @@ window.xtAPI = (function(){
         img:m.url,
         label:m.title||(m.tags&&m.tags.length?m.tags[0]:'Pixeria'),
         fp:Array.isArray(m.fp)?m.fp:[1,1],
-        ph:m.ph||46,
+        ph:m.ph||46,sourceAssetId:m.id,...spriteItemFields(m),
       });
       if(it){
         if(typeof showEv==='function') showEv('🎨 "'+it.label+'" importado de Pixeria','#7dffb5');
@@ -32277,6 +32300,7 @@ window.xtAPI = (function(){
         const parts2=(arg||'').trim().split(/\s+/).filter(Boolean);
         const sub=(parts2[0]||'').toLowerCase();
         const customs=()=>shopLayout.map((it,i)=>({it,i})).filter(x=>x.it&&x.it.type==='custom');
+        if(['archivos','files','assets2d'].includes(sub)){window.AdmiraSprite?.openImport();return isEs?'Selecciona el PNG y su JSON de Assets.':'Select the Assets PNG and its JSON.';}
         if(!sub) return isEs
           ? 'Importador de mobiliario · catálogo Pixeria (nube).\nUso:\n/importar catalogo  → lista los elementos de pixeria.com\n/importar <n>  → coloca el elemento nº n del catálogo en el Xpacio\n/importar url <imgURL> | <nombre>  → coloca una imagen suelta\n/importar lista  → muebles importados en el Xpacio\n/importar quitar <n>  → elimina el importado nº n'
           : 'Furniture importer · Pixeria cloud catalog.\nUsage:\n/importar catalogo  → list elements from pixeria.com\n/importar <n>  → place catalog element n in the Xpace\n/importar url <imgURL> | <name>  → place a loose image\n/importar lista  → imported items in the Xpace\n/importar quitar <n>  → remove imported item n';
@@ -32300,7 +32324,7 @@ window.xtAPI = (function(){
           if(n<1||n>IMPORT_CATALOG.length) return isEs?('Indica un nº entre 1 y '+IMPORT_CATALOG.length+'.'):'Out of range.';
           const m=IMPORT_CATALOG[n-1];
           const nm=m.title||(m.tags&&m.tags.length?m.tags[0]:'Elemento');
-          const it=addCustomFurni({img:m.url,label:nm,fp:Array.isArray(m.fp)?m.fp:[1,1],ph:m.ph||46});
+          const it=addCustomFurni({img:m.url,label:nm,fp:Array.isArray(m.fp)?m.fp:[1,1],ph:m.ph||46,sourceAssetId:m.id,...spriteItemFields(m)});
           return it?('✅ '+(isEs?'Colocado':'Placed')+' "'+it.label+'" '+(isEs?'en':'at')+' ('+it.col+','+it.row+').'):'No se pudo colocar.';
         }
         if(sub==='demo'){
@@ -33921,6 +33945,7 @@ window.xtAPI = (function(){
         else if(kind==='menu'&&typeof doAction==='function'&&G) doAction('menu');
         else if(kind==='anonymizer') openAnonymizer();
         else if(kind==='pixerai') openPixerAi();
+        else if(kind==='assets2d') window.AdmiraSprite?.openImport();
         else if(kind==='telegram' && typeof window.toggleTelegramDock==='function') window.toggleTelegramDock();
         return;
       }
@@ -33950,6 +33975,7 @@ window.xtAPI = (function(){
         else if(kind==='menu'&&typeof doAction==='function'&&G) doAction('menu');
         else if(kind==='anonymizer') openAnonymizer();
         else if(kind==='pixerai') openPixerAi();
+        else if(kind==='assets2d') window.AdmiraSprite?.openImport();
         else if(kind==='telegram' && typeof window.toggleTelegramDock==='function') window.toggleTelegramDock();
         return;
       }

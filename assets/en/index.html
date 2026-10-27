@@ -4,7 +4,7 @@
 <script>if(["xpaceos.com","www.xpaceos.com"].includes(location.hostname))location.replace("https://www.admira.store"+location.pathname+location.search+location.hash);</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="admiranext-version" content="v.27.10.2026.r1.21:40">
+  <meta name="admiranext-version" content="v.27.10.2026.r2.23:49">
   <title>Assets · 2D pixel art</title>
   <meta name="description" content="Assets · 2D pixel art: create furniture and elements for XpaceOS digital twins.">
   <meta name="theme-color" content="#0b1117">
@@ -333,6 +333,8 @@
 <script defer src="/assets/generator/ui-locale.js?v=20261027-assets-1"></script>
 <script>document.addEventListener('DOMContentLoaded',()=>{const b=document.createElement('button');b.id='lang-toggle';b.hidden=true;b.onclick=()=>{const u=new URL(location.href);u.pathname=document.documentElement.lang==='en'?'/assets/':'/assets/en/';location.assign(u);};document.body.append(b);});</script>
 <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
+<link rel="stylesheet" href="/assets/generator/finish-2d.css?v=finish2d-20261027-1">
+<script type="module" src="/assets/generator/finish-2d.mjs?v=finish2d-20261027-1"></script>
 </head>
 <body>
   <!-- Cuadratura: los paneles entran cerrados en cada carga (sin parpadeo) y se superponen al contenido -->
@@ -455,7 +457,7 @@
               </div>
               <div class="furni-progress-bar"><div class="furni-progress-indet"></div></div>
             </div>
-            <button class="button primary" id="furni-publish-btn" style="width:100%;margin-top:12px;" disabled>Publish as Furniture (furni)</button>
+            <button class="button primary" id="furni-publish-btn" style="width:100%;margin-top:12px;" disabled>Publish original as Furniture (furni)</button>
             <div id="output" class="output" style="display:none;"></div>
             <div id="output-actions" style="display:none; margin-top:14px; gap:8px;">
               <button class="button primary" id="admira-buy-btn" onclick="useInSignage()" style="width:100%; margin-bottom:6px;">Buy airtime in Admira</button>
@@ -1652,16 +1654,23 @@
       const s = furniPreviewState; const damero = 'background:repeating-conic-gradient(#2a2f36 0% 25%, #161a1f 0% 50%) 50% / 16px 16px;';
       const box = '<div style="width:128px;height:128px;border-radius:4px;' + damero + window.furniFrameStyle(s.url, s.frames, s.idx) + '"></div>';
       let ctl = '';
-      if (s.frames > 1) ctl = '<button type="button" class="button secondary" id="furni-rotate-btn" style="margin-top:8px;font-size:12px;">↻ girar (cara ' + (s.idx + 1) + '/' + s.frames + ')</button>';
+      if (s.frames > 1) ctl = '<button type="button" class="button secondary" id="furni-rotate-btn" style="margin-top:8px;font-size:12px;">↻ rotate (view ' + (s.idx + 1) + '/' + s.frames + ')</button>';
       p.innerHTML = box + '<div style="margin-left:10px;font-size:12px;color:#9fe7ff;">' + (s.label || '') + '</div>' + ctl;
       const rb = document.getElementById('furni-rotate-btn');
-      if (rb) rb.onclick = () => { furniPreviewState.idx = (furniPreviewState.idx + 1) % furniPreviewState.frames; furniRenderPreview(); };
+      if (rb) rb.onclick = () => { furniPreviewState.idx = (furniPreviewState.idx + 1) % furniPreviewState.frames; furniRenderPreview(); window.dispatchEvent(new CustomEvent('assets:furni-view', {detail:{face:furniPreviewState.idx}})); };
     }
-    function furniSetPreview(src, label, frames) {
+    function furniSetPreview(src, label, frames, options = {}) {
       furniPreviewState = { url: src, frames: frames || 1, idx: 0, label: label };
       furniRenderPreview();
       document.getElementById('furni-publish-btn').disabled = false;
+      const source = {src, frames:frames || 1, provisional:options.provisional === true};
+      window.AssetsFinishHost.lastSource = source;
+      window.dispatchEvent(new CustomEvent('assets:furni-source', {detail:source}));
     }
+    window.AssetsFinishHost = {
+      lastSource:null,
+      context:() => ({title:(document.getElementById('furni-title').value || 'Sprite').trim(), fp:[Number(document.getElementById('furni-fpw').value),Number(document.getElementById('furni-fpd').value)], ph:Number(document.getElementById('furni-ph').value)})
+    };
     function furniSetStatus(t) { const s = document.getElementById('furni-status'); if (s) s.textContent = t || ''; }
     // Barra de progreso de generación (indeterminada + cronómetro), como en música/video.
     let _furniProgT = null, _furniProgStart = 0;
@@ -1752,7 +1761,7 @@
           furniAsset = { base64: front.dataUrl.split(',')[1], mime: 'image/png', frames: 1 };
           furniAutoFootprint(front.w, front.h);
           furniMaybeAutoTitle(prompt);
-          furniSetPreview(front.dataUrl, 'IA · cara 1/4 lista · generando el resto…', 1);
+          furniSetPreview(front.dataUrl, 'IA · cara 1/4 lista · generando el resto…', 1, {provisional:true});
           furniSetStatus('Cara 1/4 lista. Generando la espalda…');
           furniProgressPhase('🎨 CARA 2/2 · ESPALDA');
           // Misma pieza, rotada: insistimos en idéntico objeto/colores/materiales
@@ -1777,7 +1786,7 @@
           furniSetPreview(out.dataUrl, 'IA · ' + out.w + '×' + out.h + ' · fondo recortado', 1);
           furniSetStatus("✅ Sprite with transparent background ready. Review and publish.");
         }
-      } catch (e) { furniSetStatus("AI error: " + e.message); alert("Generation failed: " + e.message); }
+      } catch (e) { window.dispatchEvent(new CustomEvent('assets:furni-source-error')); furniSetStatus("AI error: " + e.message); alert("Generation failed: " + e.message); }
       finally { furniProgressDone(); btn.disabled = false; btn.textContent = old; }
     }
     async function furniPublish() {
@@ -1804,6 +1813,7 @@
         price: price,
         comment: 'Mobiliario creado en Admira Studio · tipo:furni' + (frames > 1 ? ' · ' + frames + ' caras (girable)' : '')
       };
+      if(furniAsset.mime==='image/png'&&furniAsset.base64&&window.AssetsFinishHost?.spriteForOriginal){try{payload.sprite=window.AssetsFinishHost.spriteForOriginal(furniAsset);}catch(error){furniSetStatus('Sprite: '+error.message);return;}}
       if (furniAsset.base64) { payload.base64 = furniAsset.base64; payload.mime = furniAsset.mime; }
       else if (furniAsset.sourceUrl) { payload.sourceUrl = furniAsset.sourceUrl; payload.mime = furniAsset.mime || null; }
       const btn = document.getElementById('furni-publish-btn'); btn.disabled = true; const old = btn.textContent; btn.textContent = '⏳ publicando…';
@@ -1823,6 +1833,8 @@
           const t = document.getElementById('furni-title'); if (t) { t.value = ''; t.dataset.autofill = '1'; }
           const pr = document.getElementById('furni-prompt'); if (pr) pr.value = '';
           furniAsset = null;
+          window.AssetsFinishHost.lastSource = null;
+          window.dispatchEvent(new CustomEvent('assets:furni-clear'));
           const prev = document.getElementById('furni-preview'); if (prev) prev.innerHTML = "Upload a PNG or generate with AI…";
           const pb = document.getElementById('furni-publish-btn'); if (pb) pb.disabled = true;
           const phh = document.getElementById('furni-ph'); if (phh) { phh.value = '46'; delete phh.dataset.userset; }
@@ -1940,7 +1952,7 @@
       const st={ cols:14, rows:8, sel:'counter', selFurni:null, items:[], staff:[], _n:1, wall:'#e0d4b8', floor:'#b8bcc0' };
       const $=id=>document.getElementById(id);
       function status(msg,col){ const s=$('distro-status'); if(s){ s.textContent=msg||''; s.style.color=col||'var(--muted)'; } }
-      function distroItemOut(i){ const o={ id:i.id, type:i.type, col:i.col, row:i.row, sx:i.sx||1, sy:i.sy||1, label:i.label }; if(i.rot) o.rot=i.rot; if(i.plv&&i.plv!=='auto') o.plv=i.plv; if(i.type==='custom'){ o.custom=true; if(i.img)o.img=i.img; if(i.fp)o.fp=i.fp; if(i.ph)o.ph=i.ph; if(i.frames>1){ o.frames=i.frames; o.orientation=i.orientation||0; } } return o; }
+      function distroItemOut(i){ const o={ id:i.id, type:i.type, col:i.col, row:i.row, sx:i.sx||1, sy:i.sy||1, label:i.label }; if(i.rot) o.rot=i.rot; if(i.plv&&i.plv!=='auto') o.plv=i.plv; if(i.type==='custom'){ if(i.sprite)o.sprite=JSON.parse(JSON.stringify(i.sprite));if(i.localOnly)o.localOnly=true;if(i.sourceAssetId)o.sourceAssetId=i.sourceAssetId; o.custom=true; if(i.img)o.img=i.img; if(i.fp)o.fp=i.fp; if(i.ph)o.ph=i.ph; if(i.frames>1){ o.frames=i.frames; o.orientation=i.orientation||0; } } return o; }
       // PLV: creatividades fijables por pantalla (LED/TFT). 'auto' = targeting reactivo.
       const PLV_OPTS=[['auto','Auto (reactivo al aforo)'],['chuches','🍬 Chuches'],['vapeo','💨 Vapeo'],['prensa','📰 Prensa · Lotería'],['perfume_m','🧴 Perfume hombre'],['perfume_f','💄 Perfume mujer']];
       function isScreenType(t){ return t==='led'||t==='tft'; }
@@ -2140,7 +2152,7 @@
               card.onclick=()=>import('/assets/generator/furniture/editor.mjs').then(m=>m.openFurniture(it));g.append(card);return;
             }
             const url=it.url||it.src||''; if(!url) return; const title=it.title||it.prompt||'Mueble';
-            const fp=Array.isArray(it.fp)?it.fp:[1,1]; const price=furniDisplayPrice(it); const frames=it.frames||1;
+            const fp=Array.isArray(it.fp)?it.fp:[1,1]; const price=furniDisplayPrice(it); const frames=it.sprite?.frames||it.frames||1;
             const card=document.createElement('div'); card.style.cssText='background:#0b1117;border:1px solid #28323a;border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;';
             card.innerHTML='<div style="height:90px;background:repeating-conic-gradient(#1a1f26 0% 25%, #12161b 0% 50%) 50% / 14px 14px;border-radius:6px;overflow:hidden;'+window.furniFrameStyle(url,frames,0)+'"></div>'+
               '<div data-ui-content style="font-size:12px;font-weight:600;color:#dfe;line-height:1.2;min-height:28px;">'+title+((frames>1)?' <span title="girable · '+frames+' caras">🔄</span>':'')+'</div>'+
@@ -2149,7 +2161,7 @@
             const own=isOwned(url);
             btn.textContent=own?'✓ En mis muebles':'🛒 Comprar';
             btn.disabled=own; btn.style.cssText='width:100%;font-size:12px;padding:6px;'+(own?'opacity:.65;':'');
-            btn.onclick=()=>buyFurni({ url, title, fp, ph:it.ph||46, price, frames, frameW:it.frameW||null }, btn);
+            btn.onclick=()=>buyFurni({ url, title, fp, ph:it.ph||46, price, frames, sourceAssetId:it.id, ...(it.sprite?{sprite:it.sprite}:{}), frameW:it.frameW||null }, btn);
             card.appendChild(btn); g.appendChild(card);
           });
         }catch(e){ g.innerHTML='<div style="grid-column:1/-1;color:#e06a6a;text-align:center;padding:14px;">❌ '+e.message+'</div>'; }
@@ -2198,7 +2210,7 @@
           owned.forEach(o=>{
             const active=(st.sel==='custom'&&st.selFurni&&st.selFurni.url===o.url);
             const b=document.createElement('button'); b.type='button'; b.title=o.title||'mueble comprado';
-            b.innerHTML='<span style="display:inline-block;width:15px;height:15px;vertical-align:middle;margin-right:3px;'+window.furniFrameStyle(o.img||o.url,o.frames||1,0)+'"></span>'+String(o.title||'mueble').slice(0,12)+((o.frames>1)?' 🔄':'');
+            b.innerHTML='<span style="display:inline-block;width:15px;height:15px;vertical-align:middle;margin-right:3px;'+window.furniFrameStyle(o.img||o.url,o.sprite?.frames||o.frames||1,0)+'"></span>'+String(o.title||'mueble').slice(0,12)+((o.frames>1)?' 🔄':'');
             b.style.cssText='font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid '+(active?'var(--cyan)':'#3a5a3a')+';background:'+(active?'rgba(0,200,255,.12)':'rgba(20,40,25,.4)')+';color:#cfe;';
             b.onclick=()=>{ st.sel='custom'; st.selFurni=o; renderPalette(); };
             p.appendChild(b);
@@ -2223,7 +2235,7 @@
       }
       function placeAt(col,row){
         let item;
-        if(st.sel==='custom'&&st.selFurni){ item={ id:'custom-'+(st._n++), type:'custom', col, row, sx:1, sy:1, rot:0, label:st.selFurni.title||'mueble', img:(st.selFurni.img||st.selFurni.url), fp:st.selFurni.fp||[1,1], ph:st.selFurni.ph||46, frames:st.selFurni.frames||1, orientation:0, custom:true }; }
+        if(st.sel==='custom'&&st.selFurni){ item={ id:'custom-'+(st._n++), type:'custom', col, row, sx:1, sy:1, rot:0, label:st.selFurni.title||'mueble', img:(st.selFurni.img||st.selFurni.url), fp:st.selFurni.fp||[1,1], ph:st.selFurni.ph||46, ...(st.selFurni.sprite?{sprite:JSON.parse(JSON.stringify(st.selFurni.sprite))}:{}), frames:st.selFurni.sprite?.frames||st.selFurni.frames||1, orientation:0, custom:true }; }
         else if(st.sel){ item={ id:st.sel+'-'+(st._n++), type:st.sel, col, row, sx:1, sy:1, rot:0, label:(FMAP[st.sel]&&FMAP[st.sel].label)||st.sel }; }
         else { status("Choose a palette item to place.",'#e0a14a'); return; }
         const fp=fpFor(item);
@@ -2360,7 +2372,7 @@
             el.innerHTML='<span style="display:flex;flex-direction:column;align-items:center;line-height:1;"><span style="font-size:'+Math.round(CELL*0.6)+'px;color:#2ee06a;font-weight:700;">'+dir+'</span><span style="font-size:9px;">🚪</span></span>';
             el.title='Puerta · entrada/salida — la gente entra '+dirTxt+' · arrastra para mover · doble-clic para borrar';
           } else if(it.type==='custom'&&it.img){
-            el.innerHTML='<div style="width:92%;height:92%;'+window.furniFrameStyle(it.img,it.frames||1,it.orientation||0)+'"></div>';
+            el.innerHTML='<div style="width:92%;height:92%;'+window.furniFrameStyle(it.img,it.sprite?.frames||it.frames||1,it.sprite?(it.rot||0):(it.orientation||0))+'"></div>';
             el.title=(it.label||'mueble')+' ('+it.col+','+it.row+') '+w+'×'+d+' — arrastra para mover · doble-clic para borrar';
           } else {
             el.textContent=iconFor(it.type);
@@ -2738,7 +2750,7 @@
         st.cols=Math.max(6,Math.min(24,cfg.cols||14)); st.rows=Math.max(4,Math.min(16,cfg.rows||8));
         st.wall=cfg.longWallColor&&cfg.longWallColor!=='transparent'?cfg.longWallColor:'#e0d4b8';
         st.floor=cfg.floorColor&&cfg.floorColor!=='transparent'?cfg.floorColor:'#b8bcc0';
-        st.items=(d.furniture||[]).filter(i=>i&&i.type&&i.col<st.cols&&i.row<st.rows).map(i=>{ const o={ id:i.id||(i.type+'-'+(st._n++)), type:i.type, col:i.col|0, row:i.row|0, sx:i.sx||1, sy:i.sy||1, rot:i.rot||0, label:i.label||i.type }; if(i.plv) o.plv=i.plv; if(i.type==='custom'){ o.custom=true; if(i.img)o.img=i.img; if(i.fp)o.fp=i.fp; if(i.ph)o.ph=i.ph; if(i.frames>1){ o.frames=i.frames; o.orientation=i.orientation||0; } } return o; });
+        st.items=(d.furniture||[]).filter(i=>i&&i.type&&i.col<st.cols&&i.row<st.rows).map(i=>{ const o={ id:i.id||(i.type+'-'+(st._n++)), type:i.type, col:i.col|0, row:i.row|0, sx:i.sx||1, sy:i.sy||1, rot:i.rot||0, label:i.label||i.type }; if(i.plv) o.plv=i.plv; if(i.type==='custom'){ if(i.sprite)o.sprite=JSON.parse(JSON.stringify(i.sprite));if(i.localOnly)o.localOnly=true;if(i.sourceAssetId)o.sourceAssetId=i.sourceAssetId; o.custom=true; if(i.img)o.img=i.img; if(i.fp)o.fp=i.fp; if(i.ph)o.ph=i.ph; if(i.frames>1){ o.frames=i.frames; o.orientation=i.orientation||0; } } return o; });
         // Todo Xpacio tiene entrada/salida: si la distribución no trae puerta, la
         // ponemos por defecto en el borde izquierdo (se ve marcada con su flecha).
         if(!st.items.some(i=>i.type==='door')) st.items.push({ id:'door-'+(st._n++), type:'door', col:0, row:Math.max(0,st.rows-2), sx:1, sy:1, label:'Puerta' });
@@ -3020,7 +3032,7 @@
         if(!owned.length)return;
         owned.forEach(o=>{
           const sel=EDIT.item&&EDIT.item.url===o.url;
-          box.appendChild(editRecentBtn(window.furniFrameStyle(o.img||o.url,o.frames||1,0), o.title||'mueble', sel, ()=>openEdit(o)));
+          box.appendChild(editRecentBtn(window.furniFrameStyle(o.img||o.url,o.sprite?.frames||o.frames||1,0), o.title||'mueble', sel, ()=>openEdit(o)));
         });
       }
       // Últimos 3 de un tipo del Stock. image → al editor; video/música/audio → abrir/previsualizar.
@@ -3091,6 +3103,7 @@
         renderEdit();
       }
       function trimEdit(){
+        if(EDIT.item?.sprite){editStatus(document.documentElement.lang==='en'?'Keep the shared frame boundaries. Prepare a new finish in Creation to resize this sheet.':'Conserva los límites de las caras. Prepara un nuevo acabado en Creación para redimensionar la hoja.');return;}
         if(EDIT.tainted||!EDIT.sc.width){ editStatus("Cannot crop (no pixel access).",'#e0a14a'); return; }
         const w=EDIT.sc.width,h=EDIT.sc.height,g=EDIT.sc.getContext('2d');
         let data; try{ data=g.getImageData(0,0,w,h).data; }catch(e){ editStatus('No puedo recortar (CORS).','#e0a14a'); return; }
@@ -3110,7 +3123,8 @@
         const fp=[Math.max(1,Math.min(6,+$('edit-fpw').value||1)), Math.max(1,Math.min(6,+$('edit-fpd').value||1))];
         editStatus('⏳ guardando…');
         try{
-          const patch={ ph, fp }; if(dataUrl && dataUrl.length<700000) patch.img=dataUrl;
+          const patch={ ph, fp }; if(dataUrl && dataUrl.length<(EDIT.item.sprite?4200000:700000)) patch.img=dataUrl;
+          if(EDIT.item.sprite&&patch.img)patch.sprite=await window.AssetsFinishHost.editedSprite(EDIT.item.sprite,patch.img);
           const r=await fetch(dBase()+'/xpacio/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ id:xpacioId(), url:EDIT.item.url, patch })});
           const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.error||('HTTP '+r.status));
           wallet=d.wallet||wallet; EDIT.item=ownedFurni().find(o=>o.url===EDIT.item.url)||EDIT.item;

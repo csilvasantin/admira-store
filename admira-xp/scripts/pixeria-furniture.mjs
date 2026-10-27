@@ -1,3 +1,4 @@
+import {spriteFields,spritePlacement} from '../../assets/sprite-contract.mjs?v=20261027-1';
 import * as T from './premium-three.mjs';
 import {GLTFLoader} from './vendor/GLTFLoader.mjs';
 
@@ -11,7 +12,8 @@ export function pixeriaFurnitureAsset(value){
   if(!model&&!image)return null;
   let dimensions;try{dimensions=JSON.parse(value.prompt||'{}').dimensionsCm;}catch{}
   const fp=Array.isArray(value.fp)&&value.fp.length===2&&value.fp.every(n=>Number.isFinite(n)&&n>=.1&&n<=10)?[...value.fp]:Array.isArray(dimensions)&&dimensions.length===3&&dimensions.slice(0,2).every(n=>Number.isFinite(n)&&n>=10&&n<=1000)?dimensions.slice(0,2).map(n=>n/100):[1,1];
-  return {assetId:value.id,label:String(value.title||'PixerIA').slice(0,120),fp,source:'PixerIA',assetUrl:url,modelUrl:model?url:null,img:model?posterURL(value.poster)||posterURL(value.thumbnail):url,format:model?'3D':'image',ph:Math.max(12,Math.min(200,Number(value.ph)||46))};
+  let sprite={};try{sprite=spriteFields(value);if(value.sprite)spritePlacement(value);}catch{return null;}
+  return {assetId:value.id,label:String(value.title||'PixerIA').slice(0,120),fp,source:'PixerIA',assetUrl:url,modelUrl:model?url:null,img:model?posterURL(value.poster)||posterURL(value.thumbnail):url,...sprite,sourceAssetId:value.id,format:model?'3D':'image',ph:Math.max(12,Math.min(200,Number(value.ph)||46))};
 }
 async function modelBuffer(url){
   if(!assetURL(url))throw Error('asset');

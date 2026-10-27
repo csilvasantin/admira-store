@@ -1,8 +1,10 @@
+import {spriteFields,spritePlacement} from '../assets/sprite-contract.mjs?v=20261027-1';
 export const STOCK_URL='https://api.admira.store/stock/list?type=furni&limit=200';
 export function safeAsset(url){try{const u=new URL(url);return u.protocol==='https:'&&u.hostname==='api.admira.store'&&u.pathname.startsWith('/stock/asset/')?u.href:null;}catch{return null;}}
 export function fromPixeria(item){
  if(item?.type!=='furni'||typeof item.id!=='string'||!safeAsset(item.url))return null;
- return {id:'pixeria:'+item.id,type:'custom',name:String(item.title||'Mueble Pixeria').slice(0,120),category:'Pixeria',mount:'floor',source:'Pixeria',views:/4 caras/.test(item.comment||'')?4:1,img:safeAsset(item.url),fp:Array.isArray(item.fp)?item.fp.slice(0,2).map(v=>Math.max(.1,Math.min(10,Number(v)||1))):[1,1],ph:Math.max(12,Math.min(200,Number(item.ph)||46))};
+ let sprite={};try{sprite=spriteFields(item);if(item.sprite)spritePlacement(item);}catch{return null;}
+ return {...sprite,sourceAssetId:item.id,id:'pixeria:'+item.id,type:'custom',name:String(item.title||'Mueble Pixeria').slice(0,120),category:'Pixeria',mount:'floor',source:'Pixeria',views:item.sprite?item.sprite.frames:(/4 caras/.test(item.comment||'')?4:1),img:safeAsset(item.url),fp:Array.isArray(item.fp)?item.fp.slice(0,2).map(v=>Math.max(.1,Math.min(10,Number(v)||1))):[1,1],ph:Math.max(12,Math.min(200,Number(item.ph)||46))};
 }
 // Starbucks instance IDs belong to their registered models, independently of legacy scene types.
 const registeredInstances={"sb-backbar":"native:starbucksBackbar","sb-pos":"native:starbucksCounter","sb-pastry":"native:starbucksDisplay","sb-mugs":"native:starbucksShelves","sb-table-a":"native:starbucksTable","sb-table-b":"native:starbucksTable","sb-chair-1":"native:starbucksChair","sb-chair-2":"native:starbucksChair","sb-chair-3":"native:starbucksChair","sb-chair-4":"native:starbucksChair","sb-water-rack":"native:starbucksWaterRack","sb-cup-basket":"native:starbucksCupBasket","sb-snack-basket":"native:starbucksSnackBasket","sb-coffee-basket":"native:starbucksCoffeeBasket","starbucks-ipad-01":"native:ipadLandscape"};
