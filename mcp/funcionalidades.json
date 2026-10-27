@@ -57,7 +57,9 @@
     "docs": "https://www.xpaceos.com/help/funcionalidades/",
     "catalog": "https://www.xpaceos.com/mcp/funcionalidades.json",
     "cli": "https://www.xpaceos.com/help/cli/",
-    "mcp": "https://www.xpaceos.com/mcp/"
+    "mcp": "https://www.xpaceos.com/mcp/",
+    "assets_generator": "https://www.admira.store/assets/",
+    "assets_generator_en": "https://www.admira.store/assets/en/"
   },
   "parity_contract": [
     "Good, Better y Best deben ser vistas del mismo estado operativo, con los mismos IDs.",

@@ -1,8 +1,8 @@
 {
-  "version": "v.24.10.2026.r5.10:28",
-  "deployer": "NeoMacStudio",
+  "version": "v.27.10.2026.r1.21:40",
+  "deployer": "DeepAgent Codex",
   "machine": "MacStudio",
-  "signature": "NeoMacStudio · MacStudio",
+  "signature": "DeepAgent Codex · MacStudio",
   "deployedAt": "2026-10-24T09:32:36.170711+00:00",
   "git": "8e8b443ef4661b24d56568a324dd456c51b22fa6",
   "gitFull": "8e8b443ef4661b24d56568a324dd456c51b22fa6",
@@ -10,5 +10,8 @@
   "dirty": false,
   "mirrorOf": "https://www.xpaceos.com/",
   "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  "locale": "es",
+  "novedades": [
+    "Assets · generador 2D trasladado a admira.store/assets; Admira Studio centrado en importar, crear y adaptar multimedia."
+  ]
 }
