@@ -3558,6 +3558,86 @@
     "catalogue": "https://api.admira.store/stock/list?type=furni&limit=200",
     "identity": "Existing Stock ids, externalRef, footprints and dimensions are retained.",
     "authentication": "Existing site session; short-lived generation bearer verified by the site perimeter.",
-    "localState": "Browser storage is scoped to each origin. Published Stock objects remain shared; local wallet/device keys are not copied automatically."
+    "localState": "Browser storage is scoped to each origin. Published Stock objects remain shared; local wallet/device keys are not copied automatically.",
+    "finish2d": {
+      "status": "implemented",
+      "schema": "admira.sprite/1",
+      "guide": "/admira-xp/docs/assets-finish-2d.md",
+      "paletteModes": [
+        "original",
+        "auto",
+        "custom"
+      ],
+      "paletteCounts": [
+        8,
+        16,
+        32
+      ],
+      "default": {
+        "palette": "auto",
+        "colors": 16,
+        "width": 64,
+        "height": 64
+      },
+      "size": {
+        "presets": [
+          32,
+          64,
+          128,
+          256
+        ],
+        "min": 16,
+        "max": 256,
+        "perView": true,
+        "aspect": "fit without stretching; nearest neighbor"
+      },
+      "export": [
+        "PNG",
+        "JSON",
+        "ZIP with PNG + JSON"
+      ],
+      "views": {
+        "default": "all",
+        "order": [
+          "front-right",
+          "front-left",
+          "back-left",
+          "back-right"
+        ],
+        "singleView": "explicit selection; source.frames remains 4"
+      },
+      "preserved": [
+        "session source",
+        "fp",
+        "ph",
+        "alpha",
+        "original Stock publishing"
+      ],
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "consumer": "Use contentRect and fp/ph; do not infer physical size from frame dimensions.",
+      "newMcpTools": false,
+      "paidRequestsForFinishing": false,
+      "stockWritesForExport": false,
+      "release": "v.27.10.2026.r2.23:49",
+      "goodReader": {
+        "url": "https://www.xpaceos.com/admira-xp/?loc=xtanco-generic&project=estancos&quality=good&autostart=xtanco",
+        "action": "Advanced → Assets 2D / Avanzadas → Assets 2D",
+        "localSave": true,
+        "retains": [
+          "fp",
+          "ph",
+          "frames",
+          "facing",
+          "anchor",
+          "contentRect",
+          "source identity"
+        ],
+        "height": "historical Good scale, independent of exported canvas"
+      },
+      "stockMetadata": "Optional validated sprite descriptor, bound to PNG bytes; conflicts do not overwrite identity."
+    }
   }
 }

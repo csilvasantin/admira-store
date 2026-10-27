@@ -1,9 +1,9 @@
 {
-  "version": "v.27.10.2026.r1.21:40",
+  "version": "v.27.10.2026.r2.23:49",
   "deployer": "DeepAgent Codex",
   "machine": "MacStudio",
   "signature": "DeepAgent Codex · MacStudio",
   "novedades": [
-    "Assets · generador 2D trasladado a admira.store/assets; Admira Studio centrado en importar, crear y adaptar multimedia."
+    "Acabado 2D: paleta y tamaño por cara, PNG + JSON y lector Good con huella, altura y cuatro caras conservadas."
   ]
 }

@@ -1,0 +1,39 @@
+#assets-finish-2d{margin-top:12px;min-width:0;color:var(--ink)}
+#assets-finish-2d *{box-sizing:border-box}
+#assets-finish-2d [hidden]{display:none!important}
+#assets-finish-2d .finish-heading{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+#assets-finish-2d h5{font-family:inherit;font-weight:600;font-size:14px;line-height:1.4;color:var(--cyan);margin:0}
+#assets-finish-2d .finish-hint{color:var(--muted);font-size:11px;margin:6px 0;line-height:1.5}
+#assets-finish-2d .finish-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 14px}
+#assets-finish-2d figure{margin:0;min-width:0}
+#assets-finish-2d figcaption{font-size:11px;color:var(--muted);margin-bottom:6px;overflow-wrap:anywhere}
+#assets-finish-2d .finish-checker{min-height:200px;display:grid;place-items:center;padding:8px;border:1px solid var(--line);border-radius:5px;background:repeating-conic-gradient(#1c2a20 0% 25%,#111d14 0% 50%) 50% / 16px 16px}
+#assets-finish-2d #furni-preview{display:grid!important;justify-items:center;align-content:center;min-width:0;width:100%;gap:8px;color:var(--muted)!important}
+#assets-finish-2d #furni-preview>div{max-width:100%;margin-left:0!important;overflow-wrap:anywhere}
+#assets-finish-2d canvas{max-width:100%;max-height:175px;image-rendering:pixelated;object-fit:contain}
+#assets-finish-2d .finish-controls{display:grid;gap:14px}
+#assets-finish-2d fieldset{border:0;min-width:0;padding:0;margin:0}
+#assets-finish-2d legend,#assets-finish-2d label{font-size:12px;color:var(--ink)}
+#assets-finish-2d legend{margin-bottom:7px}
+#assets-finish-2d .finish-palette-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#assets-finish-2d select,#assets-finish-2d input[type=number]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:7px;min-height:36px;min-width:0;width:100%}
+#assets-finish-2d #finish-mode{flex:1;min-width:100px}
+#assets-finish-2d .finish-counts{display:flex;gap:3px}
+#assets-finish-2d .finish-counts button{padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--muted);font:inherit;cursor:pointer;min-height:36px}
+#assets-finish-2d .finish-counts button[aria-pressed=true]{background:var(--cyan);color:var(--bg)}
+#assets-finish-2d .finish-swatches{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin-top:8px}
+#assets-finish-2d input[type=color]{appearance:none;width:100%;min-width:0;height:26px;padding:0;border:0;background:transparent;cursor:pointer}
+#assets-finish-2d input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+#assets-finish-2d input[type=color]::-webkit-color-swatch{border:1px solid var(--line);border-radius:3px}
+#assets-finish-2d .finish-dimensions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#assets-finish-2d .finish-dimensions input{display:block;margin-top:4px}
+#assets-finish-2d .finish-export{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
+#assets-finish-2d .finish-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+#assets-finish-2d .finish-actions button{font:inherit;font-size:11px;border-radius:5px;border:1px solid var(--line);background:var(--bg-soft);color:var(--ink);padding:9px 10px;cursor:pointer;min-height:36px}
+#assets-finish-2d .finish-actions .finish-primary{background:var(--cyan);color:var(--bg)}
+#assets-finish-2d button:disabled,#assets-finish-2d input:disabled,#assets-finish-2d select:disabled{opacity:.5;cursor:default}
+#assets-finish-2d .finish-status{font-size:11px;color:var(--muted);margin:9px 0;min-height:17px;overflow-wrap:anywhere}
+#assets-finish-2d .finish-error{color:#ffb3a5}
+#assets-finish-2d details{margin-top:10px;font-size:11px}
+#assets-finish-2d pre{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;max-width:100%}
+@media(pointer:coarse){#assets-finish-2d button,#assets-finish-2d select,#assets-finish-2d input[type=number]{min-height:44px}#assets-finish-2d input[type=color]{height:36px}}
