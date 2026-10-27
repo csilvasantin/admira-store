@@ -6,7 +6,7 @@
   "transport": "streamable-http",
   "server": {
     "name": "xpaceos-mcp",
-    "version": "2.12.93",
+    "version": "2.12.113",
     "health": "https://mcp.admira.store/",
     "tool_count": 35
   },
@@ -3544,5 +3544,20 @@
     "location": "alsea-sbux-021",
     "scope": "virtual screens only; no physical acknowledgement",
     "newRemoteTools": false
+  },
+  "assets_generator": {
+    "schema": "admira.assets/1",
+    "url": "https://www.admira.store/assets/",
+    "english": "https://www.admira.store/assets/en/",
+    "mirror": "https://www.xpaceos.com/assets/",
+    "source": {
+      "repository": "csilvasantin/admira-studio",
+      "commit": "d21164a85f9a7f55347d0a9e7b5f03a926bb70ea",
+      "path": "crear/index.html"
+    },
+    "catalogue": "https://api.admira.store/stock/list?type=furni&limit=200",
+    "identity": "Existing Stock ids, externalRef, footprints and dimensions are retained.",
+    "authentication": "Existing site session; short-lived generation bearer verified by the site perimeter.",
+    "localState": "Browser storage is scoped to each origin. Published Stock objects remain shared; local wallet/device keys are not copied automatically."
   }
 }

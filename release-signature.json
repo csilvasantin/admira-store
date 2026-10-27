@@ -1,6 +1,9 @@
 {
-  "version": "v.24.10.2026.r5.10:28",
-  "deployer": "NeoMacStudio",
+  "version": "v.27.10.2026.r1.21:40",
+  "deployer": "DeepAgent Codex",
   "machine": "MacStudio",
-  "signature": "NeoMacStudio · MacStudio"
+  "signature": "DeepAgent Codex · MacStudio",
+  "novedades": [
+    "Assets · generador 2D trasladado a admira.store/assets; Admira Studio centrado en importar, crear y adaptar multimedia."
+  ]
 }

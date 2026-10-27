@@ -467,9 +467,41 @@ async function rejectLecturaWrite(request, env, site, fetchImpl) {
 }
 
 // Rutas /auth/* del perímetro. Devuelve null si la petición no es suya.
+// Assets generation has its own short-lived audience; it never exposes the session cookie.
+export async function createAssetsApiToken(env,site,session,now=Math.floor(Date.now()/1000)) {
+  if(!env.PERIMETRO_SIGNING_KEY||!session||session.lectura)throw Error('login_required');
+  const exp=now+900;
+  const payload=base64url(encoder.encode(JSON.stringify({v:1,aud:'assets:api.admira.store',site:site.id,email:session.email,iat:now,exp,...(session.agent?{agent:await agentFingerprint(env)}:{})})));
+  return {token:payload+'.'+await hmac(env.PERIMETRO_SIGNING_KEY,'assets-api:'+payload),exp};
+}
+export async function verifyAssetsApiToken(token,env,site,fetchImpl=fetch,now=Math.floor(Date.now()/1000)) {
+  try {
+    if(!env.PERIMETRO_SIGNING_KEY||typeof token!=='string'||token.length>4096)return null;
+    const at=token.lastIndexOf('.'),payload=token.slice(0,at);
+    if(at<1||!sameValue(token.slice(at+1),await hmac(env.PERIMETRO_SIGNING_KEY,'assets-api:'+payload)))return null;
+    const d=JSON.parse(new TextDecoder().decode(decodeBase64url(payload)));
+    if(d.v!==1||d.aud!=='assets:api.admira.store'||d.site!==site.id||!Number.isInteger(d.iat)||!Number.isInteger(d.exp)||d.exp<=now||d.iat>now+60||d.exp-d.iat>900)return null;
+    const email=normalEmail(d.email);if(!email)return null;
+    if(email===AGENT_EMAIL){if(!d.agent||!sameValue(d.agent,await agentFingerprint(env)))return null;}
+    else if(!(await emailAllowed(env,site.id,email,fetchImpl)))return null;
+    return {email,exp:d.exp};
+  }catch{return null;}
+}
+
 export async function handleAuth(request, env, site, fetchImpl = fetch, waitUntil = null) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/auth/')) return null;
+
+  if(url.pathname==='/auth/api-token'&&request.method==='GET') {
+    const session=await readSession(request,env,site,fetchImpl);
+    if(!session||session.lectura)return Response.json({ok:false,error:'login_required'},{status:401,headers:{'Cache-Control':'no-store'}});
+    return Response.json(await createAssetsApiToken(env,site,session),{headers:{'Cache-Control':'no-store'}});
+  }
+  if(url.pathname==='/auth/verify'&&request.method==='POST') {
+    let value;try{const text=await request.text();if(text.length>8192)throw Error('large');value=JSON.parse(text);}catch{return Response.json({ok:false},{status:400,headers:{'Cache-Control':'no-store'}});}
+    const session=await verifyAssetsApiToken(value.token,env,site,fetchImpl);
+    return Response.json(session?{ok:true,...session}:{ok:false},{status:session?200:401,headers:{'Cache-Control':'no-store'}});
+  }
 
   if (url.pathname === '/auth/lectura') return lecturaEntrada(request, env, site, fetchImpl);
   if (url.pathname === '/auth/agente') return agente(request, env, site, fetchImpl, waitUntil);

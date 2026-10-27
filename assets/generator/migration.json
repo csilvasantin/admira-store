@@ -1,0 +1,15 @@
+{
+  "schema": "admira.assets/1",
+  "url": "https://www.admira.store/assets/",
+  "english": "https://www.admira.store/assets/en/",
+  "mirror": "https://www.xpaceos.com/assets/",
+  "source": {
+    "repository": "csilvasantin/admira-studio",
+    "commit": "d21164a85f9a7f55347d0a9e7b5f03a926bb70ea",
+    "path": "crear/index.html"
+  },
+  "catalogue": "https://api.admira.store/stock/list?type=furni&limit=200",
+  "identity": "Existing Stock ids, externalRef, footprints and dimensions are retained.",
+  "authentication": "Existing site session; short-lived generation bearer verified by the site perimeter.",
+  "localState": "Browser storage is scoped to each origin. Published Stock objects remain shared; local wallet/device keys are not copied automatically."
+}
