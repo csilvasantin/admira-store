@@ -1135,5 +1135,10 @@
   ],
   "v.16.10.2026.r9.10:41": [
     "Diagonal: configura la clave de su sala directamente dentro del quiosco incrustado; verifica el envío con un pedido simulado."
+  ],
+  "v.27.10.2026.r1.21:40": [
+    "Assets · generador 2D de pixel art trasladado desde Studio a admira.store/assets.",
+    "Subida de PNG, transparencia, edición y publicación en el mismo Stock; sesión de Store para IA.",
+    "Studio queda centrado en importar, crear y adaptar contenidos multimedia."
   ]
 }
