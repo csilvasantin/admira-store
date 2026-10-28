@@ -1,17 +1,17 @@
 {
-  "version": "v.27.10.2026.r1.21:40",
+  "version": "v.27.10.2026.r2.23:49",
   "deployer": "DeepAgent Codex",
   "machine": "MacStudio",
   "signature": "DeepAgent Codex · MacStudio",
-  "deployedAt": "2026-10-24T09:32:36.170711+00:00",
-  "git": "8e8b443ef4661b24d56568a324dd456c51b22fa6",
-  "gitFull": "8e8b443ef4661b24d56568a324dd456c51b22fa6",
-  "gitShort": "8e8b443",
+  "novedades": [
+    "Acabado 2D: paleta y tamaño por cara, PNG + JSON y lector Good con huella, altura y cuatro caras conservadas."
+  ],
+  "deployedAt": "2026-10-28T11:20:59.972173+00:00",
+  "git": "67f2a7c1f6ec34e0502edacd76d2fb3f6b0467e0",
+  "gitFull": "67f2a7c1f6ec34e0502edacd76d2fb3f6b0467e0",
+  "gitShort": "67f2a7c",
   "dirty": false,
   "mirrorOf": "https://www.xpaceos.com/",
   "mirror": "parcial: portada y assets comunes",
-  "locale": "es",
-  "novedades": [
-    "Assets · generador 2D trasladado a admira.store/assets; Admira Studio centrado en importar, crear y adaptar multimedia."
-  ]
+  "locale": "es"
 }
