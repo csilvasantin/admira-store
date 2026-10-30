@@ -3,6 +3,11 @@ import {parseTourArg,findDemo,demoHelp,tourTotal,runTour,handleDemoTour,loadDemo
 import {parseVisualCommand,executeVisualCommand,DEMO_SOLUTIONS} from './xtanco-visual-command.mjs';
 const reg=JSON.parse(readFileSync(new URL('../demos.json',import.meta.url),'utf8'));
 const fast=r=>({...r,tour:{...r.tour,title_card_s:0},demos:r.demos.map(d=>({...d,steps:(d.steps||[]).map(s=>s.wait!=null?{wait:1}:s.waitPos?{waitPos:5}:s)}))});
+// La demo 15 corre dentro del gemelo («un solo monitor») con ~2 min de esperas fijas: su paso real se ejecuta aquí sobre un DOM mínimo y con el reloj simulado.
+function stubDoc(){let doc;const el=()=>({style:{setProperty(){}},classList:{add(){},remove(){},toggle(){},contains:()=>false},dataset:{},ownerDocument:doc,setAttribute(){},addEventListener(){},append(){},remove(){},querySelector:()=>el(),querySelectorAll:()=>[],getBoundingClientRect:()=>({left:0,right:0,top:0,bottom:0,width:0,height:0})});
+ doc={documentElement:{...el(),lang:'es'},head:el(),body:el(),defaultView:{innerWidth:1280,innerHeight:720,addEventListener(){},removeEventListener(){}},createElement:el,getElementById:()=>null,querySelector:()=>null,querySelectorAll:()=>[]};return doc;}
+async function onFakeClock(t,start){t.mock.timers.enable({apis:['setTimeout','Date']});globalThis.requestAnimationFrame=()=>0;let done=false;const end=()=>{done=true;},p=start();p.then(end,end);
+ try{while(!done){t.mock.timers.tick(1000);await new Promise(setImmediate);}return await p;}finally{delete globalThis.requestAnimationFrame;t.mock.timers.reset();}}
 
 test('registry: unique ids/aliases, numbered 1..N, required fields, suite 1–5 keep the engine numbers',()=>{
  const seen=new Set();reg.demos.forEach((d,i)=>{assert.equal(d.n,i+1);for(const k of ['id','name','shows','command','duration_s','side_effects','owner','link','steps'])assert.ok(d[k]!=null&&d[k]!=='',d.id+' '+k);
@@ -24,13 +29,13 @@ test('/demo help lists every demo numbered with how to run it; parse keeps tpv n
  assert.equal(findDemo(reg,'7').id,'sincro');assert.equal(findDemo(reg,'colas').id,'ipad');assert.equal(findDemo(reg,'nada'),null);
 });
 
-test('/demo all runs the tour in order, skips with next, restores the twin and previews the incident report (never closes other tickets)',async()=>{
+test('/demo all runs the tour in order, skips with next, restores the twin and previews the incident report (never closes other tickets)',async t=>{
  const r=fast(reg),cmds=[],suite=[],inc=[];let mode='matrix';
  const router={get mode(){return mode;},async choose(m){mode=m;return {ok:true};}};
  const incident=async(text,o)=>{inc.push([text,o.send]);return /crear/.test(text)?{ok:true,id:'INC-TEST01',message:'🛠 INC-TEST01'}:{ok:true,message:'✓ cerrada\n📄 vista previa'};};
  const exec=async c=>{cmds.push(c);if(['good','better','best','matrix'].includes(c))mode=c;return 'ok';};
- const p=runTour({reg:r,router,exec,incident,suite:async(t)=>{suite.push(t);return {message:'ok'};},doc:null,show:null});
- const out=await p;assert.equal(out.stopped,false);assert.equal(out.shown.length,r.demos.filter(d=>d.tour).length);
+ const out=await onFakeClock(t,()=>runTour({reg:r,router,exec,incident,suite:async(x)=>{suite.push(x);return {message:'ok'};},doc:stubDoc(),show:null}));
+ assert.equal(out.stopped,false);assert.equal(out.shown.length,r.demos.filter(d=>d.tour).length);
  assert.deepEqual(suite.filter(t=>t!=='/demo stop'),['/demo 1','/demo 2','/demo 3','/demo 4','/demo 5']);
  assert.deepEqual(inc,[['/crear incidencia',undefined],['/cerrar incidencia INC-TEST01',false]]);
  assert.ok(!cmds.some(c=>/INC-CFHI7Z/i.test(c)));assert.ok(cmds.includes('/navidad off')&&cmds.includes('/ifthendothat off'));
@@ -56,14 +61,23 @@ test('executeVisualCommand: /demo help answers from the registry, /demo 6 runs t
  assert.equal(await handleDemoTour({action:'next'},{}),null);
 });
 
-test('demo 15 always closes its own ticket (retries a failed close) and restore hides the iPad shortcut it caused',async()=>{
+test('demo 15 always closes its own ticket (retries a failed close) and restore hides the iPad shortcut it caused',async t=>{
  const r=fast(reg);let mode='matrix',closes=0,untouched=0,touched=false;const router={get mode(){return mode;},async choose(m){mode=m;}};
  const incident=async(text)=>{if(/crear/.test(text))return {ok:true,id:'INC-TEST03',message:'x'};closes++;if(closes===1)throw Error('red caída');return {ok:true,message:'✓ cerrada'};};
  globalThis.XpaceIpadCola={on:()=>true,touched:()=>touched,untouch(){untouched++;touched=false;},open(){touched=true;},close(){},command(){},url:()=>'about:blank'};
- try{const out=await runTour({reg:r,ids:['incidencia','ipad'],router,exec:async()=>{},incident,doc:null,show:null});
+ try{const out=await onFakeClock(t,()=>runTour({reg:r,ids:['incidencia','ipad'],router,exec:async()=>{},incident,doc:stubDoc(),show:null}));
   assert.equal(closes,2);assert.match(out.message,/cerrada/);assert.equal(untouched,1);assert.equal(touched,false);
   const ipad=reg.demos.find(d=>d.id==='ipad');assert.deepEqual(ipad.preload,[{ipad:'preload'}]);
  }finally{delete globalThis.XpaceIpadCola;}
+});
+
+test('stopping or skipping while demo 15 is still opening its ticket waits for its id and closes it',async t=>{
+ for(const [cancel,id] of [[stopTour,'INC-TEST04'],[nextDemo,'INC-TEST05']]){
+  const r=fast(reg),inc=[],pause=ms=>new Promise(s=>setTimeout(s,ms));let mode='matrix';const router={get mode(){return mode;},async choose(m){mode=m;}};
+  const incident=async text=>{inc.push(text);if(!/crear/.test(text))return {ok:true,message:'✓ cerrada'};await pause(2000);cancel();await pause(5000);return {ok:true,id,message:'x'};};
+  const out=await onFakeClock(t,()=>runTour({reg:r,ids:['incidencia'],router,exec:async()=>{},incident,doc:stubDoc(),show:null}));
+  assert.deepEqual(inc,['/crear incidencia','/cerrar incidencia '+id],cancel.name);assert.match(out.message,/cerrada/);
+ }
 });
 
 import {splitFlags,pauseTour,clampPos,applyPageLang,setTourLanguage} from './demo-tour.mjs?v=capsula-3';

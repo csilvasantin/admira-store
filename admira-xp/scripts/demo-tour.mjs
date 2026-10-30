@@ -206,7 +206,8 @@ async function incidentMonoStep(ctx,cancelled){const t=(es,e)=>ctx.en?e:es,doc=c
   let thrown=false;const throwIt=()=>{if(thrown)return;thrown=true;const b=[...doc.querySelectorAll('.xdp')][0]?.getBoundingClientRect();
    P.popupThrow(doc,{title:t('ERROR DEL PLAYER','PLAYER ERROR'),body:t('Actualización bloqueada · pulse Aceptar','Update blocked · press OK'),from:{x:(b?.left||40)+60,y:(b?.top||w.innerHeight-260)+40},to:{x:Math.round(w.innerWidth/2-100),y:Math.round(w.innerHeight/2-60)}});};
   ctx.cmd('/crear incidencia');
-  const r=await race(run('/crear incidencia',{router:ctx.router,lang:ctx.lang,progress:m=>{if(/c[aá]mara|camera/i.test(m))setTimeout(throwIt,600);}}),cancelled);
+  // Sin race: aunque se detenga o se salte mientras se abre, hay que conocer su id para cerrarla después (como incidentStep).
+  const r=await run('/crear incidencia',{router:ctx.router,lang:ctx.lang,progress:m=>{if(/c[aá]mara|camera/i.test(m))setTimeout(throwIt,600);}}).catch(e=>({ok:false,message:String(e?.message||e)}));
   throwIt();
   if(!r?.ok||!r.id){say(r?.message||t('No se pudo abrir la incidencia de demo.','The demo incident could not be opened.'));return;}
   if(PROTECTED.test(r.id))return;ctx.created.push(r.id);
