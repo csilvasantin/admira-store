@@ -1,0 +1,22 @@
+name: Tests
+
+# Toda rama de trabajo pasa la suite completa, con la misma puerta que el despliegue
+# (scripts/ci-tests.mjs). main y vista-previa/** la pasan dentro de cloudflare-pages.yml.
+
+on:
+  push:
+    branches-ignore: [main, 'vista-previa/**']
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/ci-tests.mjs

@@ -31,6 +31,9 @@ jobs:
           repository: csilvasantin/xpaceos
           path: xpaceos
           fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Espejar la última versión publicada y hornear castellano
         working-directory: store
         env:
@@ -51,6 +54,8 @@ jobs:
             echo "sin cambios"
             exit 0
           fi
+          # Puerta de tests (Carlos, 30-oct-2026): un fallo nuevo para aquí, sin tocar main ni producción.
+          node scripts/ci-tests.mjs
           SELLO="$(sed -n 's/.*admiranext-version[^>]*content="\([^"]*\)".*/\1/p' index.html | head -1)"
           git commit -m "espejo parcial de xpaceos (portada y assets) · ${SELLO} · origen ${SYNC_SHA:0:7}"
           git push origin HEAD:main

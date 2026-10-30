@@ -1,0 +1,4 @@
+{
+  "_como": "Fallos ya conocidos que no paran la publicación. Clave: <fichero>::<nombre del test>. Valor: el motivo. Un fallo que no esté aquí para el despliegue y el espejo (scripts/ci-tests.mjs). Al arreglar uno, quítalo.",
+  "fallos": {}
+}
