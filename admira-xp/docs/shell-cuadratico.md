@@ -90,7 +90,7 @@ Guardián: `tests/shell-cuadratico.test.mjs` recorre todos los `.html`. Cada uno
 |---|---|
 | `nvidia/` | Pantalla completa: el gemelo a toda pantalla en un iframe para el stand NVIDIA. |
 | `Xcaixa/`, `Xsuperman/` | Xperiences inmersivas con su propio HUD. |
-| `xpacios/grok/`, `xpacios/xtanco-barcelona/`, `xpacios/xtanco-valencia/`, `xpacios/crear/`, `xpacios/crear/phone.html` | Apps heredadas de Pixeria a pantalla completa (la captura del móvil se abre con QR). `grok` y `crear` exigen sesión; ver [perimetro-publico.md](perimetro-publico.md). |
+| `xpacios/grok/`, `xpacios/xtanco-barcelona/`, `xpacios/xtanco-valencia/`, `xpacios/crear/`, `xpacios/crear/phone.html` | Apps heredadas de Pixeria a pantalla completa (la captura del móvil se abre con QR). Exigen sesión; ver [perimetro-publico.md](perimetro-publico.md). |
 | `xperiencias/batcueva/`, `xperiencias/sheldon/`, `xperiencias/soledad/` | Xperiencias inmersivas a pantalla completa. |
 | `scan/pelicula.html`, `scan/visor.html` | Reproductor y visor 3D de XpaceScan a pantalla completa. |
 | `admira-xp/emulador/` | Emulador Street View a pantalla completa. |

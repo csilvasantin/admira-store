@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {perimetro, siteForHost, isPublicPath, safeReturnTo} from '../functions/_perimetro.js';
+import {perimetro, siteForHost, isPublicPath, safeReturnTo, servedPath} from '../functions/_perimetro.js';
 
 const env = {PERIMETRO_SIGNING_KEY:'k'.repeat(64), WHITELIST_SITE_TOKEN:'t'.repeat(64)};
 const ctx = (url, headers = {}) => ({
@@ -274,19 +274,61 @@ test('los assets reales y las páginas públicas siguen saliendo', async () => {
 });
 
 // ── /xpacios es público salvo sus herramientas internas (Carlos, 30-oct-2026) ──
-test('crear y grok las cierra el servidor; el resto de /xpacios sigue público', async () => {
-  for (const ruta of ['/xpacios/crear', '/xpacios/crear/', '/xpacios/crear/phone.html', '/xpacios/grok', '/xpacios/grok/']) {
-    assert.ok(!isPublicPath(ruta), ruta);
+test('crear, grok y los dos Xtanco los cierra el servidor; el resto de /xpacios sigue público', async () => {
+  const privadas = ['/xpacios/crear', '/xpacios/crear/', '/xpacios/crear/phone.html', '/xpacios/grok', '/xpacios/grok/', '/xpacios/xtanco-barcelona/', '/xpacios/xtanco-barcelona/?xpacio=x&go=decorar', '/xpacios/xtanco-valencia/'];
+  for (const ruta of privadas) {
+    assert.ok(!isPublicPath(ruta.split('?')[0]), ruta);
     const r = await perimetro(fallbackPortada('https://www.admira.store' + ruta, {Accept:'*/*'}), noFetch);
     assert.equal(r.status, 302, ruta);
     assert.match(r.headers.get('location'), /\/auth\/login/, ruta);
   }
-  for (const ruta of ['/xpacios', '/xpacios/', '/xpacios/xtanco-barcelona/', '/xpacios/xtanco-valencia/', '/xpacios/crear-otro/', '/xpacios/grokbot/']) {
+  for (const ruta of ['/xpacios', '/xpacios/', '/xpacios/sneakerstore/', '/xpacios/crear-otro/', '/xpacios/grokbot/', '/xpacios/xtanco-otro/']) {
     assert.ok(isPublicPath(ruta), ruta);
     assert.equal((await perimetro(fallbackPortada('https://www.admira.store' + ruta, {'Sec-Fetch-Dest':'document', Accept:'text/html'}), noFetch)).status, 200, ruta);
   }
   // Sus assets no son páginas: siguen saliendo sin sesión, como todos.
   assert.equal((await perimetro(assetReal('https://www.admira.store/xpacios/crear/modelo.bin', 'application/octet-stream'), noFetch)).status, 200);
+  // Con sesión y permiso, abren.
+  const f = lista(['ana@admira.com']);
+  const Cookie = await sesion('ana@admira.com', 'admira-store');
+  for (const ruta of ['/xpacios/crear/', '/xpacios/xtanco-barcelona/']) {
+    const r = await perimetro(fallbackPortada('https://www.admira.store' + ruta, {Cookie, 'Sec-Fetch-Dest':'document', Accept:'text/html'}), f);
+    assert.equal(r.status, 200, ruta);
+    assert.equal(r.headers.get('cache-control'), 'private, no-store', ruta);
+  }
+});
+
+test('se decide sobre la ruta que se va a servir, no sobre cómo llega escrita', () => {
+  const casos = {
+    '/': '/', '/mcp/': '/mcp/', '/mcp': '/mcp', '/xpacios/crear/phone.html': '/xpacios/crear/phone.html',
+    '/xpacios//crear/': '/xpacios/crear/', '/xpacios/%63rear/': '/xpacios/crear/', '/xpacios/crear%2F': '/xpacios/crear/',
+    '/mcp/..%2Fleads.html': '/leads.html', '/mcp/..%252Fleads.html': '/leads.html', '/mcp/..%5Cleads.html': '/leads.html',
+    '/mcp/%2e%2e%2f': '/', '/mcp/..': '/', '/mcp/.': '/mcp/', '/assets/mi%20logo.png': '/assets/mi logo.png',
+    '/mcp/%3F%2F..%2F..%2Fleads.html': '/leads.html', '/mal%ZZcodificada/': '/',
+  };
+  for (const [entrada, esperada] of Object.entries(casos)) assert.equal(servedPath(entrada), esperada, entrada);
+});
+
+test('codificar la ruta o doblar barras no abre nada privado', async () => {
+  const DOCUMENTO = {'Sec-Fetch-Dest':'document', Accept:'text/html'};
+  for (const ruta of [
+    '/xpacios//crear/', '/xpacios/%63rear/', '/xpacios/crear%2F', '/xpacios/crear/%2e/', '/xpacios//grok/', '/xpacios/%67rok/',
+    '/mcp/..%2Fleads.html', '/mcp/..%2F', '/mcp/..%252Fleads.html', '/mcp/..%5Cleads.html', '/mcp/%3F%2F..%2F..%2Fleads.html',
+    '/xpacios/..%2Finventario/', '/admira-xp//', '/admira-xp/%69ndex.html', '/mcp/mal%ZZ',
+  ]) {
+    for (const headers of [DOCUMENTO, {Accept:'*/*'}]) {
+      // Sin cabeceras de documento, /admira-xp// es el gemelo incrustado: público como siempre.
+      if (ruta.startsWith('/admira-xp') && headers !== DOCUMENTO) continue;
+      const r = await perimetro(fallbackPortada('https://www.admira.store' + ruta, headers), noFetch);
+      assert.equal(r.status, 302, `${ruta} ${JSON.stringify(headers)}`);
+      assert.match(r.headers.get('location'), /\/auth\/login/, ruta);
+    }
+  }
+  // Una ruta pública escrita con acentos o codificada sigue abriendo.
+  for (const ruta of ['/xpacios/caf%C3%A9/', '/mcp//', '/%6Dcp/']) {
+    assert.equal((await perimetro(fallbackPortada('https://www.admira.store' + ruta, DOCUMENTO), noFetch)).status, 200, ruta);
+  }
+  assert.equal((await perimetro(assetReal('https://www.admira.store/assets/mi%20logo.png', 'image/png'), noFetch)).status, 200);
 });
 
 // ── Solicitar acceso desde el login (Carlos, 30-oct-2026) ──

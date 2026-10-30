@@ -35,11 +35,34 @@ test('todo lo que anuncian el sitemap y llms.txt es público para el servidor', 
   assert.deepEqual(anunciadas.filter((ruta) => !isPublicPath(ruta)), []);
 });
 
-test('robots.txt y sitemap no ofrecen las herramientas internas', () => {
+test('robots.txt y sitemap no ofrecen las apps internas', () => {
   const robots = leer('robots.txt');
-  assert.match(robots, /^Disallow: \/xpacios\/crear\/$/m);
-  assert.match(robots, /^Disallow: \/xpacios\/grok\/$/m);
-  assert.doesNotMatch(leer('sitemap.xml'), /\/xpacios\/(crear|grok)\//);
+  for (const app of ['crear', 'grok', 'xtanco-barcelona', 'xtanco-valencia']) {
+    assert.match(robots, new RegExp(`^Disallow: /xpacios/${app}/$`, 'm'), app);
+    assert.ok(!isPublicPath(`/xpacios/${app}/`), app);
+  }
+  assert.doesNotMatch(leer('sitemap.xml'), /\/xpacios\/(crear|grok|xtanco-)/);
+});
+
+// El índice de Xpacios es compartido y /xpacios/ es pública: leer es libre, escribir no.
+test('crear un Xpacio pide sesión antes de tocar el índice compartido', () => {
+  const html = leer('xpacios/index.html');
+  const inicio = html.indexOf('async function newXpacio(){');
+  const fin = html.indexOf('document.getElementById("newXpacioBtn")');
+  assert.ok(inicio > 0 && fin > inicio);
+  const crear = html.slice(inicio, fin);
+  assert.ok(crear.indexOf('/auth/session') >= 0, 'comprueba la sesión');
+  assert.ok(crear.indexOf('/auth/session') < crear.indexOf('prompt('), 'antes de preguntar nada');
+  assert.ok(crear.indexOf('/auth/session') < crear.indexOf('saveIndex('), 'antes de escribir');
+  assert.match(crear, /\/auth\/login\?return_to=/);
+});
+
+// Cada navegador que abre una de estas páginas cuenta como pantalla real de la flota.
+test('ninguna página pública de /xpacios envía presencia ni proof-of-play de la flota', () => {
+  const emisoras = paginas('xpacios')
+    .filter((pagina) => isPublicPath('/' + pagina.replace(/index\.html$/, '')))
+    .filter((pagina) => /\/xpl\/ping|FLEET\.pix\+"\/emit"/.test(leer(pagina)));
+  assert.deepEqual(emisoras, []);
 });
 
 test('/xpacios/ sigue a la marca blanca: sin colores fijos en el titular ni en las tarjetas destacadas', () => {

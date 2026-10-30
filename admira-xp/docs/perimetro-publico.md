@@ -11,13 +11,17 @@ Lógica: `functions/_perimetro.js`. Pruebas: `tests/perimetro.test.mjs`, `tests/
 | Ruta | Acceso |
 |---|---|
 | `/mcp/` | Público. |
-| `/xpacios/` y sus Xpacios | Público. Xtanco Barcelona y Xtanco Valencia son públicos, pero van en `noindex`. |
-| `/xpacios/crear/` y `/xpacios/grok/` | Exigen sesión, y es el servidor quien lo hace. |
+| `/xpacios/` y sus Xpacios | Público. Crear un Xpacio desde el índice pide sesión, porque escribe en un índice compartido. |
+| `/xpacios/crear/`, `/xpacios/grok/`, `/xpacios/xtanco-barcelona/` y `/xpacios/xtanco-valencia/` | Exigen sesión, y es el servidor quien lo hace. |
 | `/admira-xp/` | Una persona que lo abre directamente entra con sesión; incrustado en un iframe no la necesita. |
 | Resto de páginas (`/`, `/inventario/`, `/help/`…) | Exigen sesión. |
 | Assets (`.js`, `.css`, imágenes, `.json`…) | Sin sesión, porque los usan players, decks y agentes. |
 
 Ninguna página de `/xpacios/` lleva verja propia. La antigua, heredada de Pixeria, se ejecutaba en el navegador, contradecía al servidor y se saltaba con `?gate=off`.
+
+Los dos Xtanco no pueden ser públicos: cada navegador que los abre actúa como nodo real de la flota (presencia, emisión y proof-of-play) y guarda decoración compartida.
+
+El perímetro decide sobre la ruta que de verdad se va a servir: Pages la decodifica y limpia después, así que `/xpacios//crear/` o `/xpacios/%63rear/` cuentan como `/xpacios/crear/` (`servedPath`).
 
 ### Lo interno no se publica
 
@@ -52,6 +56,7 @@ Una rama `vista-previa/<nombre>` pasa por el mismo proceso y publica en `*.admir
 ### Pendiente
 
 - El aviso de privacidad del formulario es breve: falta una política publicada con los datos legales del responsable.
+- `api.admira.store` y `xpl.admira.store` aceptan escrituras sin autenticar (`/layout/report`, `/signage/now`, `/emit`, `/xpl/ping`). Cerrar estas páginas evita que un visitante las use sin querer, no que alguien las llame directamente.
 - El bloque de `robots.txt` que gestiona Cloudflare antepone `Allow: /` para todos, y empata con nuestro `Disallow: /`. Se ajusta en el panel de Cloudflare; las páginas privadas no dependen de esto, porque redirigen al login.
 
 ## EN
@@ -61,13 +66,17 @@ Una rama `vista-previa/<nombre>` pasa por el mismo proceso y publica en `*.admir
 | Route | Access |
 |---|---|
 | `/mcp/` | Public. |
-| `/xpacios/` and its Xpaces | Public. Xtanco Barcelona and Xtanco Valencia are public but `noindex`. |
-| `/xpacios/crear/` and `/xpacios/grok/` | Require a session, enforced by the server. |
+| `/xpacios/` and its Xpaces | Public. Creating a Xpace from the index asks for a session, because it writes to a shared index. |
+| `/xpacios/crear/`, `/xpacios/grok/`, `/xpacios/xtanco-barcelona/` and `/xpacios/xtanco-valencia/` | Require a session, enforced by the server. |
 | `/admira-xp/` | A person opening it directly signs in; embedded in an iframe it needs no session. |
 | Other pages (`/`, `/inventario/`, `/help/`…) | Require a session. |
 | Assets (`.js`, `.css`, images, `.json`…) | No session, because players, decks and agents use them. |
 
 No `/xpacios/` page carries its own gate. The old one, inherited from Pixeria, ran in the browser, contradicted the server and could be skipped with `?gate=off`.
+
+The two Xtanco pages cannot be public: every browser opening them acts as a real fleet node (presence, emission and proof-of-play) and saves shared decoration.
+
+The perimeter decides on the path that will really be served: Pages decodes and cleans it afterwards, so `/xpacios//crear/` or `/xpacios/%63rear/` count as `/xpacios/crear/` (`servedPath`).
 
 ### Internal files are not published
 
@@ -102,4 +111,5 @@ A `vista-previa/<name>` branch goes through the same process and publishes to `*
 ### Pending
 
 - The form's privacy notice is brief: a published policy with the controller's legal details is still missing.
+- `api.admira.store` and `xpl.admira.store` accept unauthenticated writes (`/layout/report`, `/signage/now`, `/emit`, `/xpl/ping`). Closing these pages stops a visitor using them by accident, not someone calling them directly.
 - The `robots.txt` block managed by Cloudflare prepends `Allow: /` for everyone, which ties with our `Disallow: /`. It is adjusted in the Cloudflare dashboard; private pages do not depend on it, because they redirect to sign-in.

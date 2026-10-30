@@ -67,10 +67,12 @@ export const SITES = {
 // /avatar-ask es solo el proxy del cerebro (FLT-101350): sin esto el POST, al no
 // llevar extensión, se trataría como documento y el perímetro lo mandaría al login.
 export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask'];
-// Herramientas internas heredadas de Pixeria dentro de /xpacios (Carlos, 30-oct-2026): crear un Xpacio, con
-// su captura desde el móvil, y el laboratorio Grok. Las cerraba una verja en la propia página, que solo
-// disimula porque el HTML ya ha viajado; ahora las cierra el servidor, como al resto de lo privado.
-export const PRIVATE_PREFIXES = ['/xpacios/crear', '/xpacios/grok'];
+// Apps internas heredadas de Pixeria dentro de /xpacios (Carlos, 30-oct-2026): crear un Xpacio, con su captura
+// desde el móvil, el laboratorio Grok y los dos Xtanco. Cada navegador que abre un Xtanco actúa como nodo real
+// de la flota (presencia, emisión y proof-of-play) y guarda decoración compartida: un visitante anónimo
+// ensuciaría esos datos. Las cerraba una verja en la propia página, que solo disimula porque el HTML ya ha
+// viajado; ahora las cierra el servidor, como al resto de lo privado.
+export const PRIVATE_PREFIXES = ['/xpacios/crear', '/xpacios/grok', '/xpacios/xtanco-barcelona', '/xpacios/xtanco-valencia'];
 
 export function siteForHost(hostname) {
   const host = String(hostname || '').toLowerCase();
@@ -87,6 +89,32 @@ const underPrefix = (pathname, prefix) => pathname === prefix || pathname.starts
 export function isPublicPath(pathname) {
   if (PRIVATE_PREFIXES.some((prefix) => underPrefix(pathname, prefix))) return false;
   return PUBLIC_PREFIXES.some((prefix) => underPrefix(pathname, prefix));
+}
+
+// La ruta que de verdad se va a servir. Pages decodifica y limpia la ruta después de este middleware:
+// /xpacios//crear/ o /xpacios/%63rear/ sirven /xpacios/crear/ aunque por fuera no lo parezcan. Por eso se
+// decide sobre esto y no sobre la ruta tal como llega. Va a mano y no con new URL(): decodificada, una
+// «?» cortaría la ruta ahí y /mcp/%3F%2F..%2F..%2Fleads.html pasaría por /mcp/.
+export function servedPath(pathname) {
+  let path = String(pathname || '/');
+  for (let pass = 0; pass < 3; pass += 1) {
+    let decoded;
+    try { decoded = decodeURIComponent(path); } catch (_) {
+      // Mal codificada de entrada: no se puede saber qué es, así que se trata como privada.
+      if (pass === 0) return '/';
+      break;
+    }
+    if (decoded === path) break;
+    path = decoded;
+  }
+  path = path.replace(/\\/g, '/');
+  const segments = [];
+  for (const segment of path.split('/')) {
+    if (segment === '' || segment === '.') continue;
+    if (segment === '..') segments.pop(); else segments.push(segment);
+  }
+  if (!segments.length) return '/';
+  return '/' + segments.join('/') + (/\/(\.{0,2})$/.test(path) ? '/' : '');
 }
 
 // Documento = lo que sirve una página: raíz, carpeta, .html o ruta sin
@@ -733,20 +761,21 @@ export async function perimetro(context, fetchImpl = fetch) {
   const authResponse = await handleAuth(request, env, site, fetchImpl, waitUntil);
   if (authResponse) return authResponse;
 
+  const path = servedPath(url.pathname);
   // Manda la RUTA, no lo que diga el cliente: con Accept:*/* un bot se llevaba
   // la página entera en Pixeria hasta el 1-sep-2026 (FLT-1484).
-  const wantsDocument = isDocumentPath(url.pathname) ||
+  const wantsDocument = isDocumentPath(path) ||
     request.headers.get('Sec-Fetch-Dest') === 'document' ||
     (request.headers.get('Accept') || '').includes('text/html');
   // Only the interactive top-level application enters with an identified user.
   // Embedded players, decks, public help and assets retain their public contract.
-  const humanEntry = ['/admira-xp', '/admira-xp/', '/admira-xp/index.html'].includes(url.pathname) && request.headers.get('Sec-Fetch-Dest') === 'document';
-  if (!wantsDocument || (isPublicPath(url.pathname) && !humanEntry)) {
-    if (['/admira-xp/advertising-image', '/admira-xp/announcement-tts', '/admira-xp/advertising-video', '/admira-xp/media-job'].includes(url.pathname)) {
+  const humanEntry = ['/admira-xp', '/admira-xp/', '/admira-xp/index.html'].includes(path) && request.headers.get('Sec-Fetch-Dest') === 'document';
+  if (!wantsDocument || (isPublicPath(path) && !humanEntry)) {
+    if (['/admira-xp/advertising-image', '/admira-xp/announcement-tts', '/admira-xp/advertising-video', '/admira-xp/media-job'].includes(path)) {
       const session = await readSession(request, env, site, fetchImpl);
       return renewSession(await context.next(), session, env, site);
     }
-    return sinPortadaComoFallback(url.pathname, await context.next());
+    return sinPortadaComoFallback(path, await context.next());
   }
   if (humanEntry && site.hosts.includes(url.hostname) && url.hostname !== site.hosts[0]) return redirect(`https://${site.hosts[0]}${url.pathname}${url.search}`);
   const session = await readSession(request, env, site, fetchImpl);
