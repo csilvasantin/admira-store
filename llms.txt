@@ -18,5 +18,6 @@
 
 ## Acceso
 
-- Personas: https://www.admira.store/auth/login
-- El resto de rutas exige sesión y va en noindex; lo que no existe responde 404. robots.txt solo permite /admira-xp/, /xpacios/, /mcp/ y /llms.txt.
+- Personas: https://www.admira.store/auth/login (quien no tiene cuenta autorizada puede solicitar acceso desde ahí).
+- Público: /admira-xp/ (la persona entra con sesión; incrustado no la necesita), /xpacios/ salvo /xpacios/crear/ y /xpacios/grok/, y /mcp/.
+- Las demás páginas exigen sesión y van en noindex. Los assets que esas páginas usan (.js, .css, imágenes, .json) se sirven sin sesión; lo interno del repo no se publica. robots.txt solo permite /admira-xp/, /xpacios/, /mcp/ y /llms.txt.

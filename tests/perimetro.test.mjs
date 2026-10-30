@@ -272,3 +272,130 @@ test('los assets reales y las páginas públicas siguen saliendo', async () => {
   const raiz = await perimetro(fallbackPortada('https://www.admira.store/'), noFetch);
   assert.equal(raiz.status, 302);
 });
+
+// ── /xpacios es público salvo sus herramientas internas (Carlos, 30-oct-2026) ──
+test('crear y grok las cierra el servidor; el resto de /xpacios sigue público', async () => {
+  for (const ruta of ['/xpacios/crear', '/xpacios/crear/', '/xpacios/crear/phone.html', '/xpacios/grok', '/xpacios/grok/']) {
+    assert.ok(!isPublicPath(ruta), ruta);
+    const r = await perimetro(fallbackPortada('https://www.admira.store' + ruta, {Accept:'*/*'}), noFetch);
+    assert.equal(r.status, 302, ruta);
+    assert.match(r.headers.get('location'), /\/auth\/login/, ruta);
+  }
+  for (const ruta of ['/xpacios', '/xpacios/', '/xpacios/xtanco-barcelona/', '/xpacios/xtanco-valencia/', '/xpacios/crear-otro/', '/xpacios/grokbot/']) {
+    assert.ok(isPublicPath(ruta), ruta);
+    assert.equal((await perimetro(fallbackPortada('https://www.admira.store' + ruta, {'Sec-Fetch-Dest':'document', Accept:'text/html'}), noFetch)).status, 200, ruta);
+  }
+  // Sus assets no son páginas: siguen saliendo sin sesión, como todos.
+  assert.equal((await perimetro(assetReal('https://www.admira.store/xpacios/crear/modelo.bin', 'application/octet-stream'), noFetch)).status, 200);
+});
+
+// ── Solicitar acceso desde el login (Carlos, 30-oct-2026) ──
+const solicitud = (campos, headers = {Origin:'https://www.admira.store'}, base = 'https://www.admira.store') => {
+  const body = new FormData();
+  for (const [campo, valor] of Object.entries(campos)) body.set(campo, valor);
+  return {request:new Request(base + '/auth/solicitar-acceso', {method:'POST', body, headers}), env, next:async () => new Response('x')};
+};
+const completa = {name:'Ana Prueba', email:'ana@example.com', company:'Ejemplo SL', notes:'Quiero ver el gemelo', consent:'1', return_to:'/xpacios/crear/'};
+const recogeLeads = (leads, respuesta = () => Response.json({ok:true})) => async (url, opts = {}) => {
+  leads.push({url:String(url), origin:opts.headers?.Origin, body:JSON.parse(opts.body)});
+  return respuesta();
+};
+
+test('el login ofrece solicitar acceso con consentimiento obligatorio y sin aflojar su CSP', async () => {
+  const r = await perimetro(ctx('https://www.admira.store/auth/login?return_to=%2Fxpacios%2Fcrear%2F'), noFetch);
+  const html = await r.text();
+  assert.match(html, /<form method="post" action="\/auth\/solicitar-acceso">/);
+  assert.match(html, /name="return_to" value="\/xpacios\/crear\/"/);
+  assert.match(html, /<input type="checkbox" name="consent" value="1" required>/);
+  assert.match(html, /info@admira\.com/);
+  assert.match(html, /¿No tienes acceso\? Solicítalo/);
+  const csp = r.headers.get('content-security-policy');
+  assert.doesNotMatch(csp, /unsafe-inline'[^;]*script|script-src[^;]*unsafe/);
+  assert.match(csp, /form-action 'self'/);
+  const en = await perimetro(ctx('https://www.admira.store/auth/login?return_to=%2Fmcp%2F%3Flang%3Den'), noFetch);
+  assert.match(await en.text(), /No access\? Request it/);
+});
+
+test('una solicitud completa llega al mismo /lead, con su origen, y no da sesión', async () => {
+  const leads = [];
+  const r = await perimetro(solicitud(completa), recogeLeads(leads));
+  assert.equal(r.status, 200);
+  assert.match(await r.text(), /Solicitud recibida/);
+  assert.equal(r.headers.get('set-cookie'), null);
+  assert.equal(leads.length, 1);
+  assert.equal(leads[0].url, 'https://api.admira.store/lead');
+  assert.equal(leads[0].origin, 'https://www.admira.store');
+  const {body} = leads[0];
+  assert.equal(body.name, 'Ana Prueba');
+  assert.equal(body.email, 'ana@example.com');
+  assert.equal(body.company, 'Ejemplo SL');
+  assert.equal(body.consent, true);
+  assert.equal(body.source, 'admira-store-login');
+  assert.match(body.notes, /Solicitud de acceso a admira\.store/);
+  assert.match(body.notes, /ruta pedida: \/xpacios\/crear\//);
+  assert.match(body.notes, /Quiero ver el gemelo/);
+});
+
+test('sin nombre, email válido o consentimiento no sale nada y se conserva lo escrito', async () => {
+  const casos = [
+    [{...completa, name:' '}, /Pon tu nombre/],
+    [{...completa, email:'no-es-un-correo'}, /Pon un email válido/],
+    [{...completa, consent:''}, /Marca la casilla/],
+  ];
+  for (const [campos, aviso] of casos) {
+    const leads = [];
+    const r = await perimetro(solicitud(campos), recogeLeads(leads));
+    assert.equal(r.status, 400);
+    assert.deepEqual(leads, []);
+    const html = await r.text();
+    assert.match(html, aviso);
+    assert.match(html, /<details class="ask" open>/);
+    assert.match(html, /Ejemplo SL/);
+  }
+  const sinCasilla = {...completa};
+  delete sinCasilla.consent;
+  assert.equal((await perimetro(solicitud(sinCasilla), noFetch)).status, 400);
+});
+
+test('lo escrito vuelve escapado', async () => {
+  const r = await perimetro(solicitud({...completa, company:'"><script>alert(1)</script>', consent:''}), noFetch);
+  const html = await r.text();
+  assert.doesNotMatch(html, /<script>alert/);
+  assert.match(html, /&quot;&gt;&lt;script&gt;alert\(1\)/);
+});
+
+test('el campo trampa contesta como si nada y no envía', async () => {
+  const leads = [];
+  const r = await perimetro(solicitud({...completa, web:'https://spam.example'}), recogeLeads(leads));
+  assert.equal(r.status, 200);
+  assert.match(await r.text(), /Solicitud recibida/);
+  assert.deepEqual(leads, []);
+});
+
+test('si /lead falla se avisa y se conserva lo escrito', async () => {
+  const caido = await perimetro(solicitud(completa), recogeLeads([], () => new Response('x', {status:500})));
+  assert.equal(caido.status, 502);
+  const html = await caido.text();
+  assert.match(html, /No se pudo enviar/);
+  assert.match(html, /Ana Prueba/);
+  assert.equal((await perimetro(solicitud(completa), noFetch)).status, 502);
+});
+
+test('otro origen no puede enviar, GET vuelve al login y la vista en inglés contesta en inglés', async () => {
+  const ajeno = await perimetro(solicitud(completa, {Origin:'https://evil.example'}), noFetch);
+  assert.equal(ajeno.status, 403);
+  const get = await perimetro(ctx('https://www.admira.store/auth/solicitar-acceso'), noFetch);
+  assert.equal(get.status, 302);
+  assert.equal(get.headers.get('location'), '/auth/login');
+  const leads = [];
+  const en = await perimetro(solicitud({...completa, return_to:'/mcp/?lang=en'}), recogeLeads(leads));
+  assert.match(await en.text(), /Request received/);
+  assert.equal(leads[0].body.source, 'admira-store-login');
+});
+
+test('cada web firma su solicitud', async () => {
+  const leads = [];
+  await perimetro(solicitud(completa, {Origin:'https://www.xpaceos.com'}, 'https://www.xpaceos.com'), recogeLeads(leads));
+  assert.equal(leads[0].body.source, 'xpaceos-login');
+  assert.match(leads[0].body.notes, /Solicitud de acceso a XpaceOS/);
+});

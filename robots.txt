@@ -10,5 +10,8 @@ Allow: /llms.txt
 # Paneles operativos del gemelo: públicos para los players, pero sin valor para buscadores
 Disallow: /admira-xp/xpl.html
 Disallow: /admira-xp/inventario.html
+# Herramientas internas de /xpacios: exigen sesión
+Disallow: /xpacios/crear/
+Disallow: /xpacios/grok/
 
 Sitemap: https://www.admira.store/sitemap.xml

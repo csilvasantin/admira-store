@@ -1,38 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- ═══════════════ VERJA DE ACCESO · PIXERIA CERRADO HASTA LANZAMIENTO ═══════════════
-       Reutiliza la MISMA verja del ecosistema (admira.live / admiranext.com): auth-gate.js,
-       login con Google + misma whitelist de usuarios (worker admira-whitelist). Verja ACTIVA
-       por defecto. ?gate=off es un escape SOLO para esa carga (no persiste), por si el login
-       falla. Mientras esté cerrado: meta noindex + robots.txt Disallow.
-       PARA REABRIR EL SITIO EL DÍA DEL LANZAMIENTO: borrar TODO este bloque (marcadores
-       GATE-INICIO … GATE-FIN) de cada .html, restaurar robots.public.txt → robots.txt y
-       borrar /auth-gate.js. Ver checklist en el PR de la verja. -->
-  <!-- GATE-INICIO -->
-  <meta name="robots" content="noindex, nofollow">
-  <script>
-  (function(){
-    var GATE_DEFAULT = 'on';                       // verja activa — sitio cerrado
-    var on = GATE_DEFAULT;
-    try{
-      var q = new URLSearchParams(location.search).get('gate');
-      if(q==='on'||q==='off') on = q;              // escape puntual, solo esta carga
-    }catch(e){}
-    if(on!=='on') return;                          // sitio normal SOLO con ?gate=off explícito
-    var s=document.createElement('script'); s.src='https://www.pixeria.com/auth-gate.js';
-    (document.head||document.documentElement).appendChild(s);
-    // Si a los 10s el gate sigue bloqueando y no hay sesión, lo más probable es que el
-    // origen aún no esté autorizado en Google → mensaje claro en pantalla.
-    setTimeout(function(){
-      if(!document.documentElement.classList.contains('gate-locked')) return;
-      var el=document.getElementById('admira-err');
-      if(el && !el.textContent) el.textContent='\u2716 SI EL LOGIN NO ABRE: ORIGEN www.pixeria.com PENDIENTE DE AUTORIZAR EN GOOGLE CLOUD';
-    }, 10000);
-  })();
-  </script>
-  <!-- GATE-FIN -->
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Xpacios · XpaceOS Locations · Pixeria</title>
@@ -44,14 +12,17 @@
 <meta property="og:description" content="Genera el gemelo isométrico de tu local desde una foto, coloca las pantallas y gestiónalas en remoto.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="XpaceOS">
-<meta property="og:url" content="https://www.xpaceos.com/xpacios/">
+<meta property="og:url" content="https://www.admira.store/xpacios/">
 <meta property="og:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Xpacios · XpaceOS Locations">
 <meta name="twitter:description" content="Genera el gemelo isométrico de tu local desde una foto y gestiona las pantallas en remoto.">
 <meta name="twitter:image" content="https://www.xpaceos.com/assets/xpaceos-logo-card.jpg">
 <style>
-  :root{ --matrix:#00ff41; --matrix-deep:#00b82e; --bg:#020602; --panel:#06120a; --line:rgba(0,255,65,.18); --muted:#5f8f6f; --ink:#cfeed6; --spine:#50c8ff; }
+  :root{ --matrix:#00ff41; --matrix-deep:#00b82e; --bg:#020602; --panel:#06120a; --line:rgba(0,255,65,.18); --muted:#5f8f6f; --ink:#cfeed6; --spine:#50c8ff; --titulo:#eafff0; --isla:#0b1b15; --isla-borde:#2c6d46; }
+  /* Con marca blanca, los colores escritos a mano también leen la marca (Carlos, 30-oct-2026): si no, el titular
+     y las tarjetas destacadas quedan ilegibles sobre el fondo del cliente. --mb-* y --mbx-* los pone assets/marca-blanca.js. */
+  :root[data-mb-marca]:not([data-mb-alcance="barra"]){ --matrix:var(--mbx-brand); --matrix-deep:var(--mbx-brand); --spine:var(--mbx-accent); --titulo:var(--mbx-ink); --isla:var(--mb-superficie); --isla-borde:var(--mb-borde); }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{background:radial-gradient(120% 90% at 50% -10%,#04120a,#020602);color:var(--ink);
@@ -65,7 +36,7 @@
   header .home{color:var(--muted);font-size:12px;border:1px solid var(--line);border-radius:7px;padding:6px 10px}
   header .home:hover{border-color:var(--matrix);color:var(--ink)}
   .wrap{max-width:1040px;margin:0 auto;padding:26px 22px}
-  .hero h1{font-size:26px;margin:6px 0 8px;color:#eafff0;letter-spacing:.3px}
+  .hero h1{font-size:26px;margin:6px 0 8px;color:var(--titulo);letter-spacing:.3px}
   .hero h1 .x{color:var(--spine)}
   .hero p{color:var(--ink);opacity:.82;font-size:14px;line-height:1.6;max-width:680px}
   .hero .steps{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
@@ -83,7 +54,7 @@
   .card:hover{border-color:var(--matrix);transform:translateY(-2px)}
   .card .thumb{aspect-ratio:16/10;background:#040d07 center/cover;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:30px}
   .card .meta{padding:11px 13px}
-  .card .nm{font-weight:700;color:#eafff0;font-size:14px;word-break:break-word}
+  .card .nm{font-weight:700;color:var(--titulo);font-size:14px;word-break:break-word}
   .card .loc{color:var(--muted);font-size:11px;margin-top:3px}
   .card .row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:var(--muted)}
   .card .chip{border:1px solid var(--line);border-radius:999px;padding:2px 8px}
@@ -92,7 +63,7 @@
   @keyframes pulse{50%{opacity:.35}}
   .card .acts{display:flex;gap:6px;margin-top:10px}
   .card .act{flex:1;text-align:center;font-size:11px;border:1px solid var(--line);border-radius:8px;padding:7px 4px;color:var(--ink);background:rgba(0,255,65,.05);cursor:pointer}
-  .card .act:hover{border-color:var(--matrix);color:#eafff0}
+  .card .act:hover{border-color:var(--matrix);color:var(--titulo)}
   .card .act.bcn{background:rgba(255,77,166,.08)}.card .act.bcn:hover{border-color:#ff4da6}
   .card.new{display:flex;align-items:center;justify-content:center;border-style:dashed;min-height:150px;color:var(--matrix);font-size:14px;font-weight:700}
   .card.new:hover{background:rgba(0,255,65,.05)}
@@ -100,9 +71,8 @@
   .empty b{color:var(--ink)}
   .foot{text-align:center;color:var(--muted);font-size:10.5px;margin-top:40px;letter-spacing:.06em}
   .foot a{color:var(--muted)}
+  .destacado{border:1px solid var(--isla-borde);padding:24px;margin:20px 0;background:var(--isla)}
 </style>
-  <script defer src="https://www.pixeria.com/assets/analytics.js?v=20260714-coverage"></script>
-  <script defer src="https://www.pixeria.com/assets/consent.js?v=20260714-universal"></script>
 <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261007-native-demo-control-2">
 <script defer src="/assets/xpace-shell.js?v=20261016-logo-1" data-section="/ Xpacios" data-section-en="/ Xpacios"></script>
 </head>
@@ -126,8 +96,8 @@
   </div>
 
   <h2 class="sec">Xpacios destacados</h2>
-  <section style="border:1px solid #2c6d46;padding:24px;margin:20px 0;background:#0b1b15"><p>ADMIRAXPERIENCE · TRES XPACIOS EN GRÀCIA / THREE XPACES IN GRÀCIA</p><h2>AdmiraXperience</h2><p>GarageXperience · Santa Rosa 4 (gemelo pendiente / twin pending) · SpaceXperience · Planeta 7 · Sneakers Store · Santa Rosa 19.</p><a href="/xpacios/garagexperience/">GarageXperience →</a> · <a href="/Xsuperman/">SpaceXperience →</a> · <a href="/xpacios/sneakerstore/">Sneakers Store →</a></section>
-  <section style="border:1px solid #2c6d46;padding:24px;margin:20px 0;background:#0b1b15"><p>SNEAKERSTORE · NUEVA CATEGORÍA / NEW CATEGORY</p><h2>Sneakers Store · Santa Rosa 19</h2><p>Tienda de zapatillas · gemelo 3D editable y playlist Pixeria / Sneaker store · editable 3D twin and Pixeria playlist.</p><a href="/xpacios/sneakerstore/">Entrar en Sneakers Store / Enter Sneakers Store →</a> · <a href="https://www.admira.biz/demo/">Demo global</a></section>
+  <section class="destacado"><p>ADMIRAXPERIENCE · TRES XPACIOS EN GRÀCIA / THREE XPACES IN GRÀCIA</p><h2>AdmiraXperience</h2><p>GarageXperience · Santa Rosa 4 (gemelo pendiente / twin pending) · SpaceXperience · Planeta 7 · Sneakers Store · Santa Rosa 19.</p><a href="/xpacios/garagexperience/">GarageXperience →</a> · <a href="/Xsuperman/">SpaceXperience →</a> · <a href="/xpacios/sneakerstore/">Sneakers Store →</a></section>
+  <section class="destacado"><p>SNEAKERSTORE · NUEVA CATEGORÍA / NEW CATEGORY</p><h2>Sneakers Store · Santa Rosa 19</h2><p>Tienda de zapatillas · gemelo 3D editable y playlist Pixeria / Sneaker store · editable 3D twin and Pixeria playlist.</p><a href="/xpacios/sneakerstore/">Entrar en Sneakers Store / Enter Sneakers Store →</a> · <a href="https://www.admira.biz/demo/">Demo global</a></section>
 <div class="grid">
     <div class="card" style="border-color:rgba(120,243,255,.5)">
       <a class="thumb" href="/xpacios/gran-de-gracia-51/" style="text-decoration:none;background:radial-gradient(circle at 50% 35%,#0f4a3a,#071a16 58%,#030807);font-size:0;position:relative">
@@ -230,7 +200,7 @@
     </div>
     <div class="card">
       <a class="thumb" href="/xpacios/xtanco-valencia/" style="text-decoration:none;background:linear-gradient(135deg,#0a1a2e,#04070d);font-size:0;position:relative">
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--spine)">🏪 <b style="color:#eafff0">Xtanco Valencia</b> · original</div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#50c8ff">🏪 <b style="color:#eafff0">Xtanco Valencia</b> · original</div>
       </a>
       <div class="meta">
         <div class="nm">Xtanco Valencia</div>
@@ -244,7 +214,7 @@
     </div>
     <div class="card" style="border-color:rgba(80,200,255,.35)">
       <a class="thumb" href="/xpacios/grok/" style="text-decoration:none;background:linear-gradient(135deg,#0a1a2e,#04070d);font-size:0;position:relative">
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--spine)">✨ <b style="color:#eafff0">Xtanco · Grok</b> · UX mejorada</div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#50c8ff">✨ <b style="color:#eafff0">Xtanco · Grok</b> · UX mejorada</div>
       </a>
       <div class="meta">
         <div class="nm">Xtanco Valencia · Grok</div>

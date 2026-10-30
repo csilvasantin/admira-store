@@ -67,6 +67,10 @@ export const SITES = {
 // /avatar-ask es solo el proxy del cerebro (FLT-101350): sin esto el POST, al no
 // llevar extensión, se trataría como documento y el perímetro lo mandaría al login.
 export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask'];
+// Herramientas internas heredadas de Pixeria dentro de /xpacios (Carlos, 30-oct-2026): crear un Xpacio, con
+// su captura desde el móvil, y el laboratorio Grok. Las cerraba una verja en la propia página, que solo
+// disimula porque el HTML ya ha viajado; ahora las cierra el servidor, como al resto de lo privado.
+export const PRIVATE_PREFIXES = ['/xpacios/crear', '/xpacios/grok'];
 
 export function siteForHost(hostname) {
   const host = String(hostname || '').toLowerCase();
@@ -78,13 +82,17 @@ export function siteForHost(hostname) {
   return null;
 }
 
+const underPrefix = (pathname, prefix) => pathname === prefix || pathname.startsWith(prefix + '/');
+
 export function isPublicPath(pathname) {
-  return PUBLIC_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(prefix + '/'));
+  if (PRIVATE_PREFIXES.some((prefix) => underPrefix(pathname, prefix))) return false;
+  return PUBLIC_PREFIXES.some((prefix) => underPrefix(pathname, prefix));
 }
 
 // Documento = lo que sirve una página: raíz, carpeta, .html o ruta sin
 // extensión. Los assets (.js, .css, .png, .glb, .json…) pasan sin perímetro:
-// los necesitan las rutas públicas y no son páginas que se puedan leer.
+// los necesitan las rutas públicas y no son páginas que se puedan leer. Por eso
+// lo interno del repo (.md, .sh, .py…) no se publica: .github/quitar-internos.sh.
 export function isDocumentPath(pathname) {
   if (pathname.endsWith('/')) return true;
   const last = pathname.slice(pathname.lastIndexOf('/') + 1);
@@ -299,15 +307,83 @@ function secureHeaders() {
   };
 }
 
-function loginPage(site, origin, nonce, error, automatic = true, en = false) {
-  const accent = site.accent;
-  return `<!doctype html><html lang="${en ? 'en' : 'es'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(site.name)} · ${en ? 'Access' : 'Acceso'}</title><style>
-  :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,#14202a,${site.background} 70%);color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:36px 30px;border:1px solid ${accent}55;border-radius:16px;background:#070c10e6;box-shadow:0 25px 80px #000b;text-align:center}.mark{color:${accent};font:700 12px ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase}h1{margin:16px 0 8px;font-size:26px}p{margin:0 0 24px;color:#9fb1bb;line-height:1.55}.picker{display:flex;justify-content:center;min-height:44px;max-width:100%;overflow:hidden}.error{margin-top:18px;color:#ff8f7a;font:600 13px ui-monospace,monospace;line-height:1.5}.foot{margin-top:24px;color:#5d707b;font:11px ui-monospace,monospace}@media (max-width:430px){body{padding:16px}.box{padding:28px 18px}}</style></head><body><main class="box"><div class="mark">${escapeHtml(site.name)} · ${en ? 'secure access' : 'perímetro de seguridad'}</div><h1>${en ? 'Continue with Google' : 'Acceso con Google'}</h1><p>${en ? 'Use your Admira Google account. We keep your session for 30 days of use in this browser so you can create images and announcements without signing in again. Permissions are checked in AdmiraNeXT.' : 'Accede con tu cuenta Google de Admira. Conservamos tu sesión durante 30 días de uso en este navegador para crear imágenes y locuciones sin volver a iniciar sesión. Los permisos se comprueban en AdmiraNeXT.'}</p><div id="g_id_onload" data-client_id="${CLIENT_ID}" data-login_uri="${escapeHtml(origin)}/auth/callback" data-nonce="${escapeHtml(nonce)}" data-ux_mode="redirect" data-auto_prompt="${automatic ? 'true' : 'false'}" data-auto_select="${automatic ? 'true' : 'false'}" data-hd="admira.com"></div><div class="picker"><div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="continue_with" data-size="large" data-ux_mode="redirect"></div></div>${error ? `<div class="error">${escapeHtml(error)}</div>` : ''}<div class="foot">Permisos: AdmiraNeXT · admira.live/usuarios</div></main><script src="https://accounts.google.com/gsi/client" async defer></script></body></html>`;
+// Salida del login para quien no tiene cuenta autorizada (Carlos, 30-oct-2026). Sin JavaScript: el CSP de
+// esta página no lo admite y un formulario normal basta. El servidor reenvía la solicitud al mismo POST /lead
+// de los formularios de contacto (KV + aviso por Telegram). La casilla es obligatoria: sin ella no sale nada.
+// dominio propio: LaLiga bloquea workers.dev en horas de fútbol, FLT-1633
+const LEAD_URL = 'https://api.admira.store/lead';
+const LEAD_INTEREST = 'Content Distribution · Digital Twin · xpaceos.com';
+const ACCESS_TEXT = {
+  es:{
+    summary:'¿No tienes acceso? Solicítalo', name:'Nombre', email:'Email', company:'Empresa', notes:'¿Qué necesitas ver?',
+    consent:'Acepto que ADmiraNeXT use estos datos para responder a esta solicitud.',
+    privacy:'Solo los usaremos para contestarte. Para consultarlos o borrarlos, escribe a info@admira.com.',
+    send:'Enviar solicitud', thanksTitle:'Solicitud recibida', thanks:'Te responderemos por correo. El acceso lo concede un responsable de AdmiraNeXT.', back:'Volver al acceso',
+    errName:'Pon tu nombre.', errEmail:'Pon un email válido.', errConsent:'Marca la casilla para poder enviar la solicitud.', errSend:'No se pudo enviar. Inténtalo de nuevo en unos minutos.'
+  },
+  en:{
+    summary:'No access? Request it', name:'Name', email:'Email', company:'Company', notes:'What do you need to see?',
+    consent:'I agree ADmiraNeXT may use these details to answer this request.',
+    privacy:'We will only use them to reply to you. To see or delete them, write to info@admira.com.',
+    send:'Send request', thanksTitle:'Request received', thanks:'We will reply by email. Access is granted by an AdmiraNeXT administrator.', back:'Back to sign-in',
+    errName:'Enter your name.', errEmail:'Enter a valid email.', errConsent:'Tick the box to send the request.', errSend:'It could not be sent. Please try again in a few minutes.'
+  }
+};
+
+function accessRequestStyles(accent) {
+  return `.ask{margin-top:22px;border-top:1px solid #ffffff1a;padding-top:16px;text-align:left}.ask summary{cursor:pointer;color:${accent};font:600 13px ui-monospace,monospace;text-align:center}.ask form{margin-top:16px}.ask label{display:block;margin:0 0 6px;font:600 12px ui-monospace,monospace;color:#9fb1bb}.ask input:not([type=checkbox]),.ask textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ffffff2a;background:#0008;color:#fff;font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin-bottom:12px}.ask textarea{min-height:70px;resize:vertical}.ask .consent{display:flex;gap:8px;align-items:flex-start;font:12px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#c8d4da;margin-bottom:8px}.ask .privacy{margin:0 0 14px;font-size:12px;line-height:1.45;color:#9fb1bb}.ask button{width:100%;padding:11px;border-radius:8px;border:1px solid ${accent};background:transparent;color:${accent};font:700 13px ui-monospace,monospace;cursor:pointer}.ask .error{margin:0 0 12px}.ask .hp{position:absolute;left:-9999px}`;
 }
 
-function loginResponse(site, origin, returnTo, error = '', status = 401, automatic = true) {
+function accessRequestForm(returnTo, en, access) {
+  const text = ACCESS_TEXT[en ? 'en' : 'es'];
+  const values = access?.values || {};
+  return `<details class="ask"${access?.error ? ' open' : ''}><summary>${text.summary}</summary><form method="post" action="/auth/solicitar-acceso">${access?.error ? `<div class="error" role="alert">${escapeHtml(access.error)}</div>` : ''}<input type="hidden" name="return_to" value="${escapeHtml(returnTo)}"><div class="hp" aria-hidden="true"><label for="ask-web">Web</label><input id="ask-web" name="web" tabindex="-1" autocomplete="off"></div><label for="ask-name">${text.name}</label><input id="ask-name" name="name" maxlength="120" autocomplete="name" required value="${escapeHtml(values.name)}"><label for="ask-email">${text.email}</label><input id="ask-email" name="email" type="email" maxlength="160" autocomplete="email" required value="${escapeHtml(values.email)}"><label for="ask-company">${text.company}</label><input id="ask-company" name="company" maxlength="120" autocomplete="organization" value="${escapeHtml(values.company)}"><label for="ask-notes">${text.notes}</label><textarea id="ask-notes" name="notes" maxlength="400">${escapeHtml(values.notes)}</textarea><label class="consent"><input type="checkbox" name="consent" value="1" required><span>${text.consent}</span></label><p class="privacy">${text.privacy}</p><button>${text.send}</button></form></details>`;
+}
+
+function accessThanks(site, en) {
+  const text = ACCESS_TEXT[en ? 'en' : 'es'];
+  return new Response(`<!doctype html><html lang="${en ? 'en' : 'es'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(site.name)} · ${text.thanksTitle}</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:${site.background};color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:36px 30px;border:1px solid ${site.accent}55;border-radius:16px;background:#070c10e6;text-align:center}h1{margin:0 0 10px;font-size:24px}p{margin:0 0 22px;color:#9fb1bb;line-height:1.55}a{color:${site.accent}}</style></head><body><main class="box"><h1>${text.thanksTitle}</h1><p>${text.thanks}</p><a href="/auth/login?signed_out=1${en ? '&amp;lang=en' : ''}">${text.back}</a></main></body></html>`, {status:200, headers:secureHeaders()});
+}
+
+// POST /auth/solicitar-acceso. Solo reenvía la solicitud: no da sesión ni permisos.
+async function solicitarAcceso(request, site, fetchImpl) {
+  const url = new URL(request.url);
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== 'null' && origin !== url.origin) return new Response('Origen no válido', {status:403, headers:{'cache-control':'no-store'}});
+  let form;
+  try { form = await request.formData(); } catch (_) { form = new FormData(); }
+  const field = (name, max) => String(form.get(name) || '').trim().slice(0, max);
+  const returnTo = safeReturnTo(field('return_to', 1024) || '/');
+  const en = new URL(returnTo, url.origin).searchParams.get('lang') === 'en';
+  const text = ACCESS_TEXT[en ? 'en' : 'es'];
+  // Campo trampa, invisible para las personas: a un bot se le responde como si hubiera ido bien.
+  if (field('web', 200)) return accessThanks(site, en);
+  const values = {name:field('name', 120), email:field('email', 160), company:field('company', 120), notes:field('notes', 400)};
+  const email = normalEmail(values.email);
+  const error = !values.name ? text.errName : !email ? text.errEmail : form.get('consent') !== '1' ? text.errConsent : '';
+  if (error) return loginResponse(site, url.origin, returnTo, '', 400, false, {error, values});
+  const notes = [`Solicitud de acceso a ${site.name}`, returnTo === '/' ? '' : `ruta pedida: ${returnTo}`, values.notes].filter(Boolean).join(' · ');
+  try {
+    const sent = await fetchImpl(LEAD_URL, {
+      method:'POST', headers:{'Content-Type':'application/json', Origin:url.origin},
+      body:JSON.stringify({name:values.name, email, company:values.company, interest:LEAD_INTEREST, notes:notes.slice(0, 500), consent:true, source:`${site.id}-login`})
+    });
+    if (!sent.ok) throw new Error(`lead ${sent.status}`);
+  } catch (_) {
+    return loginResponse(site, url.origin, returnTo, '', 502, false, {error:text.errSend, values});
+  }
+  return accessThanks(site, en);
+}
+
+function loginPage(site, origin, nonce, error, automatic = true, en = false, returnTo = '/', access = null) {
+  const accent = site.accent;
+  return `<!doctype html><html lang="${en ? 'en' : 'es'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(site.name)} · ${en ? 'Access' : 'Acceso'}</title><style>
+  :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,#14202a,${site.background} 70%);color:#e9f1f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.box{width:100%;max-width:430px;padding:36px 30px;border:1px solid ${accent}55;border-radius:16px;background:#070c10e6;box-shadow:0 25px 80px #000b;text-align:center}.mark{color:${accent};font:700 12px ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase}h1{margin:16px 0 8px;font-size:26px}p{margin:0 0 24px;color:#9fb1bb;line-height:1.55}.picker{display:flex;justify-content:center;min-height:44px;max-width:100%;overflow:hidden}.error{margin-top:18px;color:#ff8f7a;font:600 13px ui-monospace,monospace;line-height:1.5}.foot{margin-top:24px;color:#5d707b;font:11px ui-monospace,monospace}${accessRequestStyles(accent)}@media (max-width:430px){body{padding:16px}.box{padding:28px 18px}}</style></head><body><main class="box"><div class="mark">${escapeHtml(site.name)} · ${en ? 'secure access' : 'perímetro de seguridad'}</div><h1>${en ? 'Continue with Google' : 'Acceso con Google'}</h1><p>${en ? 'Use your Admira Google account. We keep your session for 30 days of use in this browser so you can create images and announcements without signing in again. Permissions are checked in AdmiraNeXT.' : 'Accede con tu cuenta Google de Admira. Conservamos tu sesión durante 30 días de uso en este navegador para crear imágenes y locuciones sin volver a iniciar sesión. Los permisos se comprueban en AdmiraNeXT.'}</p><div id="g_id_onload" data-client_id="${CLIENT_ID}" data-login_uri="${escapeHtml(origin)}/auth/callback" data-nonce="${escapeHtml(nonce)}" data-ux_mode="redirect" data-auto_prompt="${automatic ? 'true' : 'false'}" data-auto_select="${automatic ? 'true' : 'false'}" data-hd="admira.com"></div><div class="picker"><div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="continue_with" data-size="large" data-ux_mode="redirect"></div></div>${error ? `<div class="error">${escapeHtml(error)}</div>` : ''}${accessRequestForm(returnTo, en, access)}<div class="foot">Permisos: AdmiraNeXT · admira.live/usuarios</div></main><script src="https://accounts.google.com/gsi/client" async defer></script></body></html>`;
+}
+
+function loginResponse(site, origin, returnTo, error = '', status = 401, automatic = true, access = null) {
   const nonce = base64url(crypto.getRandomValues(new Uint8Array(32)));
-  const response = new Response(loginPage(site, origin, nonce, error, automatic && !error, new URL(safeReturnTo(returnTo), origin).searchParams.get('lang') === 'en'), {status, headers:secureHeaders()});
+  const response = new Response(loginPage(site, origin, nonce, error, automatic && !error, new URL(safeReturnTo(returnTo), origin).searchParams.get('lang') === 'en', safeReturnTo(returnTo), access), {status, headers:secureHeaders()});
   // SameSite=None: Google vuelve con un POST desde accounts.google.com y una
   // cookie Lax no viajaría en esa petición entre sitios.
   response.headers.append('Set-Cookie', `${NONCE_COOKIE}=${nonce}; Path=/; Max-Age=${CHALLENGE_TTL_SECONDS}; HttpOnly; Secure; SameSite=None`);
@@ -514,6 +590,10 @@ export async function handleAuth(request, env, site, fetchImpl = fetch, waitUnti
     const returnTo = safeReturnTo(url.searchParams.get('return_to') || '/');
     if (await readSession(request, env, site, fetchImpl)) return redirect(returnTo);
     return loginResponse(site, url.origin, returnTo, '', 401, url.searchParams.get('signed_out') !== '1');
+  }
+
+  if (url.pathname === '/auth/solicitar-acceso') {
+    return request.method === 'POST' ? solicitarAcceso(request, site, fetchImpl) : redirect('/auth/login');
   }
 
   if (url.pathname === '/auth/callback' && request.method === 'POST') {
