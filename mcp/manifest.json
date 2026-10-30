@@ -12,7 +12,7 @@
   },
   "auth": {
     "lectura": "none",
-    "escritura": "Authorization: Bearer <clave de flota AdmiraNeXT> (register_device, publish_asset, matrix_playlist_update, matrix_configure, matrix_music_next, matrix_announcement, matrix_device_layout, playlist_play, playlist_add, playlist_remove, playlist_reorder, playlist_settings, hotspot_bind, sincro_set, screen_unplug, screen_plug, incident_open)",
+    "escritura": "Authorization: Bearer <clave de flota AdmiraNeXT> (register_device, publish_asset, matrix_playlist_update, matrix_configure, matrix_music_next, matrix_announcement, matrix_device_layout, playlist_play, matrix_preview, playlist_add, playlist_remove, playlist_reorder, playlist_settings, hotspot_bind, sincro_set, screen_unplug, screen_plug, incident_open)",
     "identidad": "https://www.admiranext.com/mcp/identidad-flota.mjs",
     "directorio": "https://www.admiranext.com/mcp/#directorio"
   },

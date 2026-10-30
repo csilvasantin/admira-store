@@ -75,9 +75,9 @@
     <code class="url" id="ep">https://mcp.admira.store/mcp</code>
     <button class="copy" onclick="copyEp()">Copiar</button>
   </div>
-  <p style="color:var(--mut);font-size:13.5px;margin:8px 2px 0">Transporte: <span class="pill">MCP Streamable HTTP</span> · <code>POST /mcp</code> (JSON-RPC) · salud en <code>GET /</code>. Lecturas sin clave; <code>register_device</code> y <code>publish_asset</code> exigen la <a href="https://www.admiranext.com/mcp/#identidad">clave de flota AdmiraNeXT</a> (<code>Authorization: Bearer</code>) y quedan firmadas por el agente. <code>quien_soy</code> dice quién eres. Directorio de la suite: <a href="https://www.admiranext.com/mcp/#directorio">admiranext.com/mcp</a>.</p>
+  <p style="color:var(--mut);font-size:13.5px;margin:8px 2px 0">Transporte: <span class="pill">MCP Streamable HTTP</span> · <code>POST /mcp</code> (JSON-RPC) · salud en <code>GET /</code>. Lecturas sin clave; las escrituras (<code>register_device</code>, <code>publish_asset</code>, Matrix, playlists, pantallas e incidencias: lista en <code>auth.escritura</code> de <a href="/mcp/manifest.json">manifest.json</a>) exigen la <a href="https://www.admiranext.com/mcp/#identidad">clave de flota AdmiraNeXT</a> (<code>Authorization: Bearer</code>) y quedan firmadas por el agente. <code>quien_soy</code> dice quién eres. Directorio de la suite: <a href="https://www.admiranext.com/mcp/#directorio">admiranext.com/mcp</a>.</p>
 
-  <h2>Herramientas <small style="font-weight:400;color:var(--mut);font-size:13px">· 32 en v2.7.0 · identidad, red, catálogo, XpaceScan, XPL, antena, ayuda y galaxia</small></h2>
+  <h2>Herramientas <small style="font-weight:400;color:var(--mut);font-size:13px">· 35 · identidad, red, catálogo, XpaceScan, XPL, antena, ayuda, galaxia, Matrix, playlists e incidencias</small></h2>
 <h2>Demo de tienda · cámara y cuatro pantallas</h2><div class="card"><p>En el Xtanco enlazado, la cámara de la esquina activa/desactiva:1 player,2 calle original,3 estadísticas y pantalla de turnos solo recuadros. Sin datos, espera. <a href="https://admira.tv/help/#xtore-demo-pantallas">Help y minitutorial</a>. Usa el enlace existente, sin nuevas tools MCP.</p></div>
 <h2>Audiencia de sesión Xtore</h2><div class="card"><p>Real, en la tienda enlazada, usa pasos de Puerta Cam como objetivo de visitantes virtuales. Entran y salen indican sentido por la calle, no aforo físico.</p><p><a href="https://admira.tv/mcp/xtore-audience-session.md">Contrato y estado de Pixeria</a> · <a href="https://admira.tv/help/#xtore-audiencia">Help</a>. Transporte entre ventanas; no añade una tool MCP de lectura remota de sesión.</p></div>
   <div class="card" id="tools">
@@ -97,6 +97,25 @@
     <div class="tool"><b>signage_feed</b><span>Lo último que ha salido a la red de pantallas: pieza, tipo, destino y hora.</span></div>
     <div class="tool"><b>help</b><span>Guía para humanos embebida en el backend, entera o por tema (gemelo, escanea, xpl, emite, alta, mcp, galaxia, método).</span></div>
     <div class="tool"><b>galaxy</b><span>Directorio conectable de servidores, hubs, autenticación, identificadores y flujos de la Galaxia Admira. Filtra por elemento o flujo.</span></div>
+    <div class="tool"><b>matrix_state</b><span>Lee el estado compartido de Matrix · Starbucks: playlists de pared, TPV y música, controles, revisión y últimos 50 cambios firmados.</span></div>
+    <div class="tool"><b>matrix_playlist_update</b><span>Añade, quita, ordena o vacía contenido de una playlist virtual de Starbucks; no borra Stock ni publica en equipos físicos. Con clave.</span></div>
+    <div class="tool"><b>matrix_configure</b><span>Configura funciones existentes de Matrix · Starbucks: reproducir o pausar, modo de sincronía, rótulos y silenciar la música. Con clave.</span></div>
+    <div class="tool"><b>matrix_music_next</b><span>Pasa a la siguiente canción en las páginas Matrix abiertas, sin tocar el silencio. Con clave.</span></div>
+    <div class="tool"><b>matrix_announcement</b><span>Lanza el aviso de cierre de las 22 h en las páginas Matrix abiertas y silencia la música mientras suena. Con clave y expected_revision.</span></div>
+    <div class="tool"><b>matrix_device_layout</b><span>Guarda playlists propias y las asigna a las pantallas virtuales de Starbucks; no publica en equipos físicos. Con clave y expected_revision.</span></div>
+    <div class="tool"><b>playlist_list</b><span>Lee las playlists de hilo, pantallas, TPV, iPad y sincro-ia, con sus condiciones y asignaciones.</span></div>
+    <div class="tool"><b>playlist_add</b><span>Añade contenido publicado de Pixeria por número de Stock, título, hashtag o asset id. Con clave.</span></div>
+    <div class="tool"><b>playlist_remove</b><span>Quita una entrada de una playlist sin borrar el medio. Con clave.</span></div>
+    <div class="tool"><b>playlist_reorder</b><span>Reordena todas las entradas de una playlist. Con clave.</span></div>
+    <div class="tool"><b>hotspot_bind</b><span>Vincula el hotspot EXIT de Starbucks a «siguiente canción», el único vínculo admitido. Con clave.</span></div>
+    <div class="tool"><b>sincro_set</b><span>Asigna seis contenidos distintos de Stock a las pantallas 1–6 para Sincro IA. Con clave y revisión.</span></div>
+    <div class="tool"><b>screen_unplug</b><span>Demo virtual de Starbucks: desenchufa una pantalla y abre su incidencia en Yokup; no actúa sobre la corriente física. Con clave y revisión.</span></div>
+    <div class="tool"><b>screen_plug</b><span>Demo virtual de Starbucks: vuelve a enchufar la pantalla y resuelve su incidencia; no actúa sobre la corriente física. Con clave y revisión.</span></div>
+    <div class="tool"><b>incident_open</b><span>Abre una incidencia MANUAL real de Starbucks en Yokup y devuelve su id INC. Con clave.</span></div>
+    <div class="tool"><b>pixeria_search</b><span>Busca vídeos publicados de Pixeria por título, hashtag exacto, número de Stock o asset id. Lectura pública; no publica.</span></div>
+    <div class="tool"><b>playlist_play</b><span>Salta a un contenido guardado en los dispositivos virtuales de su playlist y continúa la lista; no publica en equipos físicos. Con clave y expected_revision.</span></div>
+    <div class="tool"><b>matrix_preview</b><span>Previsualiza un vídeo en dispositivos virtuales seleccionados o recarga su playlist guardada desde el inicio; no edita lo guardado. Con clave y expected_revision.</span></div>
+    <div class="tool"><b>playlist_settings</b><span>Activa o desactiva el bucle de una playlist compartida #playlistUUID. Con clave y la revisión de esa playlist.</span></div>
   </div>
 
   <h2 id="funcionalidades">Catálogo funcional numerado</h2>

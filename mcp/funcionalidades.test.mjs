@@ -192,7 +192,7 @@ test('cada herramienta referenciada existe en el manifest y respeta su clasifica
   const declaration = manifest.auth.escritura.match(/\(([^)]+)\)/);
   assert.ok(declaration, 'El manifest debe declarar las herramientas de escritura');
   const writes = new Set(declaration[1].split(',').map(name => name.trim()));
-  assert.deepEqual([...writes].sort(), ["hotspot_bind", "incident_open", "matrix_announcement", "matrix_configure", "matrix_device_layout", "matrix_music_next", "matrix_playlist_update", "playlist_add", "playlist_remove", "playlist_reorder", "publish_asset", "register_device", "screen_plug", "screen_unplug", "sincro_set"]);
+  assert.deepEqual([...writes].sort(), ["hotspot_bind", "incident_open", "matrix_announcement", "matrix_configure", "matrix_device_layout", "matrix_music_next", "matrix_playlist_update", "matrix_preview", "playlist_add", "playlist_play", "playlist_remove", "playlist_reorder", "playlist_settings", "publish_asset", "register_device", "screen_plug", "screen_unplug", "sincro_set"]);
   assert.match(manifest.auth.escritura, /Authorization: Bearer/);
   for (const item of catalog.features) {
     assert.ok(Array.isArray(item.mcp.tools), item.id);

@@ -75,7 +75,10 @@
         "screen_unplug",
         "screen_plug",
         "incident_open",
-        "pixeria_search"
+        "pixeria_search",
+        "playlist_play",
+        "matrix_preview",
+        "playlist_settings"
       ],
       "static_catalog": {
         "url": "https://www.xpaceos.com/mcp/funcionalidades.json",
