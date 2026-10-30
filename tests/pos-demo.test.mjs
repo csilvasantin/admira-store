@@ -10,7 +10,9 @@ test('an old pending song cannot mark a cancelled or newer demo as completed',as
 test('camera takes the shortest yaw route and music failure reports the accepted basket',async()=>{assert.equal(interpolateView({yaw:170,pitch:0,fov:65},{yaw:-170,pitch:0,fov:65},.5).yaw,180);const h=harness({play:async()=>{throw Error('blocked');}});h.demo.start();h.advance(6400);await new Promise(setImmediate);assert.equal(h.demo.state().error,'audio');assert.equal(h.calls.filter(x=>x==='basket').length,1);});
 test('native TPV help remains separate from local Store selection and a bad router cannot start a journey',async()=>{
  for(const [input,expected] of [['/DEMO TPV',{guided:'tpv'}],['/demo@bot tpv',{guided:'tpv'}],['/demo off',{guided:'stop'}],['/demo tpv off',{guided:'stop',native:true}],['/demo status',{guided:'status'}]])assert.deepEqual(parseVisualCommand(input),expected);
- for(const input of ['/demo','/demo nonsense'])assert.equal(parseVisualCommand(input).guided,'suite');
+ // /demo a secas lista el registro de demos desde el 8-oct-2026 (57a97a3); ni eso ni una orden desconocida arrancan un recorrido.
+ assert.deepEqual(parseVisualCommand('/demo'),{guided:'tour',action:'help'});
+ assert.equal(parseVisualCommand('/demo nonsense').guided,'suite');
  let started=0,stopped=0;globalThis.XpacePOSExperience={demo:{start:()=>{started++;return {ok:true};},stop:()=>stopped++,state:()=>({phase:'idle'})}};
  try{
   await executeVisualCommand('/demo off');assert.equal(stopped,1);

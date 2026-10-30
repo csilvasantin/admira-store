@@ -6,8 +6,13 @@ import vm from 'node:vm';
 const read = file => readFileSync(new URL('../' + file, import.meta.url), 'utf8');
 const source = read('assets/xpace-shell.js');
 const base = 'https://www.admiranext.com/assets/avatar.js?v=';
-const fresh = base + '20261007-native-demo-control-1';
-const old = base + '20261014-personajes-2';
+// Los dos pines vienen de xpaceos con el espejo diario (assets/**) y admiranext.com sirve el mismo avatar.js con
+// cualquier ?v=: lo que se comprueba es a quién toca cada uno, no su valor. Por eso se leen del propio shell.
+const pins = source.match(/avatar\.js\?v=' \+\s*\(nativeStoreLaunch\(\) \? '([^']+)' : '([^']+)'\)/);
+assert.ok(pins, 'el shell elige el pin del avatar según nativeStoreLaunch()');
+const fresh = base + pins[1];
+const old = base + pins[2];
+assert.notEqual(fresh, old, 'con un solo pin estos tests no distinguirían las dos ramas');
 const flush = async () => {for (let i=0;i<12;i++) await Promise.resolve();};
 
 // Execute the entire shipped IIFE. A real topBar with no generated shell marker
