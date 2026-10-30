@@ -3,4 +3,5 @@
 import {perimetro} from './_perimetro.js';
 
 import {withPresence} from "./_live-presence.js";
-export const onRequest = async (context) => withPresence(await perimetro(context));
+import {withTransportSecurity} from './_seguridad.js';
+export const onRequest = async (context) => withTransportSecurity(withPresence(await perimetro(context)));

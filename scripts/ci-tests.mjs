@@ -74,12 +74,20 @@ for (const f of nuevos) console.log(`  ✖ NUEVO  ${f.clave}\n           ${f.err
 for (const c of arreglados) console.log(`  ✓ ya pasa, quítalo de ${LISTA}: ${c}`);
 
 if (enActions) {
-  for (const f of nuevos.slice(0, 40)) {
+  for (const f of nuevos.slice(0, 10)) {
     console.log(`::error file=${escaparPropiedad(f.fichero)},line=${f.linea},title=${escaparPropiedad('Test nuevo en rojo')}::${escaparMensaje(`${f.clave}\n${f.error}`)}`);
   }
   if (arreglados.length) console.log(`::warning title=${escaparPropiedad(`Quitar de ${LISTA}`)}::${escaparMensaje(arreglados.join('\n'))}`);
-  const detalle = fallos.map((f) => `${f.clave}\n    ${f.error}`).join('\n').slice(0, 60_000);
-  console.log(`::notice title=${escaparPropiedad('Resumen de tests')}::${escaparMensaje(`${titular}\n${detalle}`)}`);
+  // GitHub corta cada anotación a unos 4 KB y admite 10 por paso: el resumen va en trozos, sin el detalle si no cabe.
+  const trozos = [titular];
+  for (const f of fallos) {
+    const linea = `${f.clave}\n    ${f.error.slice(0, 160)}`;
+    if (trozos.at(-1).length + linea.length > 3500) trozos.push(linea);
+    else trozos[trozos.length - 1] += `\n${linea}`;
+  }
+  for (const [i, trozo] of trozos.slice(0, 8).entries()) {
+    console.log(`::notice title=${escaparPropiedad(`Resumen de tests ${i + 1}`)}::${escaparMensaje(trozo)}`);
+  }
   if (process.env.GITHUB_STEP_SUMMARY) {
     const lineas = [`### Tests\n\n${titular}\n`];
     if (nuevos.length) lineas.push('**Fallos nuevos**\n', ...nuevos.map((f) => `- \`${f.clave}\`: ${f.error}`), '');
