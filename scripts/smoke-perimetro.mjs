@@ -47,15 +47,16 @@ const CASOS = [
   {ruta: '/admira-xp/docs/matrix-mcp.md', estado: 200},
   // Los medios siguen admitiendo rangos: el vídeo depende de ello. En pages.dev no los hay ni sin perímetro.
   ...(new URL(base).hostname.endsWith('.pages.dev') ? [] : [
-    {ruta: '/admira-xp/assets/videos/precarga_amiga500.mp4', cabeceras: {Range: 'bytes=0-1023'}, estado: 206},
+    // La caché del dominio puede guardar una copia anterior a HSTS: aquí solo importa el rango.
+    {ruta: '/admira-xp/assets/videos/precarga_amiga500.mp4', cabeceras: {Range: 'bytes=0-1023'}, estado: 206, sinHsts: true},
   ]),
-  // Interno: no forma parte de lo publicado (.github/quitar-internos.sh).
+  // Interno: no forma parte de lo publicado y el perímetro lo niega (.github/quitar-internos.sh, isInternalPath).
   ...['/AGENTS.md', '/HANDOFF.md', '/README.md', '/deploy.sh', '/sync-desde-xpaceos.sh', '/sello-y-verja.py',
     '/install-live-presence.py', '/.gitattributes', '/.gitignore', '/scripts/google-redirects.sh', '/release-preflight.test.mjs',
     '/scan/worker/.wrangler/cache/wrangler-account.json', '/admira-xp/docs/handoffs/2026-10-09-sneakerstore-demo.md',
     '/xpacios/CHANGELOG.md'].map((ruta) => ({ruta, estado: 404})),
   // El login tiene salida para quien no tiene cuenta autorizada.
-  {ruta: '/auth/login', cabeceras: PAGINA, estado: 401, conTexto: '/auth/solicitar-acceso'},
+  {ruta: '/auth/login', cabeceras: PAGINA, estado: 401, conTexto: '/auth/solicitar-acceso', sinTexto: '__cf_email__'},
   {
     ruta: '/auth/solicitar-acceso',
     cabeceras: {'Content-Type': 'application/x-www-form-urlencoded', Origin: new URL(base).origin},
@@ -91,7 +92,7 @@ async function comprobar(caso) {
     redirect: 'manual',
   });
   if (r.status !== caso.estado) problemas.push(`estado ${r.status}, esperado ${caso.estado}`);
-  if (!/max-age=\d+/.test(r.headers.get('strict-transport-security') || '')) problemas.push('sin HSTS');
+  if (!caso.sinHsts && !/max-age=\d+/.test(r.headers.get('strict-transport-security') || '')) problemas.push('sin HSTS');
   if (caso.destino && !caso.destino.test(r.headers.get('location') || '')) problemas.push(`destino ${r.headers.get('location') || 'ninguno'}`);
   if (caso.conTexto || caso.sinTexto) {
     const texto = await r.text();

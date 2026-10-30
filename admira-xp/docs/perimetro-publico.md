@@ -27,6 +27,8 @@ El perímetro decide sobre la ruta que de verdad se va a servir: Pages la decodi
 
 Como los assets no piden sesión, lo interno se queda fuera del paquete: `.github/quitar-internos.sh` quita instrucciones de agentes, handoffs, scripts (`.sh`, `.py`), tests, fuentes y configuración de workers. Se conserva lo que la web enlaza: `admira-xp/docs/`, `mcp/`, `admira-xp/scripts/best-production.md` y las licencias de los modelos.
 
+Además, el perímetro lo niega con un 404 (`isInternalPath`), porque Pages conserva hasta 7 días, en cada centro de datos, las copias de despliegues anteriores que alguien pidió y las sigue sirviendo con un 200. Un test obliga a que la regla del script y la del perímetro coincidan.
+
 El repositorio es público: lo que no se publica en la web sigue visible en GitHub. Nada confidencial debe vivir en este repo.
 
 ### HSTS
@@ -81,6 +83,8 @@ The perimeter decides on the path that will really be served: Pages decodes and 
 ### Internal files are not published
 
 Because assets need no session, internal files stay out of the package: `.github/quitar-internos.sh` removes agent instructions, handoffs, scripts (`.sh`, `.py`), tests, sources and worker configuration. What the site links to stays: `admira-xp/docs/`, `mcp/`, `admira-xp/scripts/best-production.md` and the model licences.
+
+The perimeter also denies them with a 404 (`isInternalPath`), because Pages keeps copies from earlier deployments that someone requested for up to 7 days, in each data centre, and keeps serving them with a 200. A test forces the script's rule and the perimeter's rule to match.
 
 The repository is public: what the site does not publish remains visible on GitHub. Nothing confidential should live in this repo.
 

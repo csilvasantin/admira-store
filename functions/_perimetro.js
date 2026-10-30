@@ -91,6 +91,19 @@ export function isPublicPath(pathname) {
   return PUBLIC_PREFIXES.some((prefix) => underPrefix(pathname, prefix));
 }
 
+// Lo interno del repo: la misma regla que .github/quitar-internos.sh, y un test obliga a que coincidan. No basta
+// con sacarlo del paquete (Carlos, 30-oct-2026): Pages conserva hasta 7 días, en cada centro de datos, los assets
+// de despliegues anteriores que alguien pidió (s-maxage=604800) y los sigue sirviendo con un 200 aunque ya no existan.
+const INTERNAL_DIRS = ['/.claude', '/.github', '/docs', '/scripts', '/scan/worker', '/tests', '/admira-xp/docs/handoffs'];
+const INTERNAL_FILE = /(^|\/)(wrangler\.toml|\.gitignore|\.gitattributes|\.gitkeep|\.nojekyll)$|\.(sh|py)$|\.test\.(mjs|js|py)$/;
+const LINKED_MARKDOWN = /^\/(admira-xp\/docs|mcp)\/|^\/admira-xp\/scripts\/best-production\.md$|\/LICENSE[^/]*$/i;
+export function isInternalPath(path) {
+  const clean = path.replace(/\/$/, '');
+  if (INTERNAL_DIRS.some((dir) => underPrefix(clean, dir))) return true;
+  if (/(^|\/)\.wrangler(\/|$)/.test(clean) || INTERNAL_FILE.test(clean)) return true;
+  return clean.endsWith('.md') && !LINKED_MARKDOWN.test(clean);
+}
+
 // La ruta que de verdad se va a servir. Pages decodifica y limpia la ruta después de este middleware:
 // /xpacios//crear/ o /xpacios/%63rear/ sirven /xpacios/crear/ aunque por fuera no lo parezcan. Por eso se
 // decide sobre esto y no sobre la ruta tal como llega. Va a mano y no con new URL(): decodificada, una
@@ -120,7 +133,7 @@ export function servedPath(pathname) {
 // Documento = lo que sirve una página: raíz, carpeta, .html o ruta sin
 // extensión. Los assets (.js, .css, .png, .glb, .json…) pasan sin perímetro:
 // los necesitan las rutas públicas y no son páginas que se puedan leer. Por eso
-// lo interno del repo (.md, .sh, .py…) no se publica: .github/quitar-internos.sh.
+// lo interno del repo (.md, .sh, .py…) no se publica y se niega: isInternalPath.
 export function isDocumentPath(pathname) {
   if (pathname.endsWith('/')) return true;
   const last = pathname.slice(pathname.lastIndexOf('/') + 1);
@@ -338,6 +351,7 @@ function secureHeaders() {
 // Salida del login para quien no tiene cuenta autorizada (Carlos, 30-oct-2026). Sin JavaScript: el CSP de
 // esta página no lo admite y un formulario normal basta. El servidor reenvía la solicitud al mismo POST /lead
 // de los formularios de contacto (KV + aviso por Telegram). La casilla es obligatoria: sin ella no sale nada.
+// email_off: Cloudflare ofusca los correos con un script que el CSP de esta página bloquea, y se vería «[email protected]».
 // dominio propio: LaLiga bloquea workers.dev en horas de fútbol, FLT-1633
 const LEAD_URL = 'https://api.admira.store/lead';
 const LEAD_INTEREST = 'Content Distribution · Digital Twin · xpaceos.com';
@@ -345,14 +359,14 @@ const ACCESS_TEXT = {
   es:{
     summary:'¿No tienes acceso? Solicítalo', name:'Nombre', email:'Email', company:'Empresa', notes:'¿Qué necesitas ver?',
     consent:'Acepto que ADmiraNeXT use estos datos para responder a esta solicitud.',
-    privacy:'Solo los usaremos para contestarte. Para consultarlos o borrarlos, escribe a info@admira.com.',
+    privacy:'Solo los usaremos para contestarte. Para consultarlos o borrarlos, escribe a <!--email_off-->info@admira.com<!--/email_off-->.',
     send:'Enviar solicitud', thanksTitle:'Solicitud recibida', thanks:'Te responderemos por correo. El acceso lo concede un responsable de AdmiraNeXT.', back:'Volver al acceso',
     errName:'Pon tu nombre.', errEmail:'Pon un email válido.', errConsent:'Marca la casilla para poder enviar la solicitud.', errSend:'No se pudo enviar. Inténtalo de nuevo en unos minutos.'
   },
   en:{
     summary:'No access? Request it', name:'Name', email:'Email', company:'Company', notes:'What do you need to see?',
     consent:'I agree ADmiraNeXT may use these details to answer this request.',
-    privacy:'We will only use them to reply to you. To see or delete them, write to info@admira.com.',
+    privacy:'We will only use them to reply to you. To see or delete them, write to <!--email_off-->info@admira.com<!--/email_off-->.',
     send:'Send request', thanksTitle:'Request received', thanks:'We will reply by email. Access is granted by an AdmiraNeXT administrator.', back:'Back to sign-in',
     errName:'Enter your name.', errEmail:'Enter a valid email.', errConsent:'Tick the box to send the request.', errSend:'It could not be sent. Please try again in a few minutes.'
   }
@@ -744,6 +758,10 @@ function sinPortadaComoFallback(pathname, response) {
   if (isDocumentPath(pathname) || !response || response.status !== 200) return response;
   const type = String(response.headers.get('content-type') || '').toLowerCase();
   if (!type.includes('text/html')) return response;
+  return notFound();
+}
+
+function notFound() {
   return new Response('Not found', {status:404, headers:{'content-type':'text/plain; charset=utf-8', 'cache-control':'no-store', 'x-robots-tag':'noindex, nofollow'}});
 }
 
@@ -762,6 +780,7 @@ export async function perimetro(context, fetchImpl = fetch) {
   if (authResponse) return authResponse;
 
   const path = servedPath(url.pathname);
+  if (isInternalPath(path)) return notFound();
   // Manda la RUTA, no lo que diga el cliente: con Accept:*/* un bot se llevaba
   // la página entera en Pixeria hasta el 1-sep-2026 (FLT-1484).
   const wantsDocument = isDocumentPath(path) ||
