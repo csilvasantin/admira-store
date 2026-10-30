@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {perimetro, siteForHost, isPublicPath, safeReturnTo, servedPath} from '../functions/_perimetro.js';
+import {perimetro, siteForHost, isPublicPath, isInternalPath, safeReturnTo, servedPath} from '../functions/_perimetro.js';
 
 const env = {PERIMETRO_SIGNING_KEY:'k'.repeat(64), WHITELIST_SITE_TOKEN:'t'.repeat(64)};
 const ctx = (url, headers = {}) => ({
@@ -296,6 +296,27 @@ test('crear, grok y los dos Xtanco los cierra el servidor; el resto de /xpacios 
     assert.equal(r.status, 200, ruta);
     assert.equal(r.headers.get('cache-control'), 'private, no-store', ruta);
   }
+});
+
+// Pages conserva hasta 7 días los assets de despliegues anteriores y los sigue sirviendo con un 200 (30-oct-2026).
+test('lo interno da 404 aunque Pages aún conserve una copia, con sesión o sin ella', async () => {
+  const conservado = (ruta, headers = {}) => assetReal('https://www.admira.store' + ruta, 'text/plain');
+  for (const ruta of ['/AGENTS.md', '/HANDOFF.md', '/README.md', '/deploy.sh', '/sello-y-verja.py', '/.gitattributes', '/scripts/google-redirects.sh', '/release-preflight.test.mjs', '/scan/worker/.wrangler/cache/wrangler-account.json', '/admira-xp/docs/handoffs/2026-10-09-sneakerstore-demo.md', '/xpacios/CHANGELOG.md', '/admira-xp/tools/taller-3d/taller.py', '/%64eploy.sh', '/mcp/..%2FAGENTS.md', '/deploy.sh/']) {
+    const r = await perimetro(conservado(ruta), noFetch);
+    assert.equal(r.status, 404, ruta);
+    assert.equal(r.headers.get('cache-control'), 'no-store', ruta);
+    assert.equal(await r.text(), 'Not found', ruta);
+  }
+  const Cookie = await sesion('ana@admira.com', 'admira-store');
+  const conSesion = {request:new Request('https://www.admira.store/deploy.sh', {headers:{Cookie}}), env, next:async () => new Response('secreto', {headers:{'content-type':'text/plain'}})};
+  assert.equal((await perimetro(conSesion, lista(['ana@admira.com']))).status, 404);
+});
+
+test('lo que la web enlaza no cuenta como interno', async () => {
+  for (const ruta of ['/admira-xp/docs/matrix-mcp.md', '/mcp/demo-engine.md', '/admira-xp/scripts/best-production.md', '/admira-xp/assets/people/best-v1/LICENSE.md', '/mcp/manifest.json', '/doc/', '/llms.txt', '/index.html', '/admira-xp/scripts/demo-tour.mjs']) {
+    assert.ok(!isInternalPath(ruta), ruta);
+  }
+  assert.equal((await perimetro(assetReal('https://www.admira.store/admira-xp/docs/matrix-mcp.md', 'text/markdown'), noFetch)).status, 200);
 });
 
 test('se decide sobre la ruta que se va a servir, no sobre cómo llega escrita', () => {

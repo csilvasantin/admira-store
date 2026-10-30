@@ -7,6 +7,7 @@ import {mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, wri
 import {tmpdir} from 'node:os';
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {isInternalPath} from '../functions/_perimetro.js';
 import {withTransportSecurity} from '../functions/_seguridad.js';
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -54,6 +55,13 @@ test('el paquete sale sin lo interno y con todo lo que la web necesita', () => {
       !f.startsWith('admira-xp/docs/') && !f.startsWith('mcp/') &&
       f !== 'admira-xp/scripts/best-production.md' && !/(^|\/)LICENSE[^/]*$/i.test(f));
     assert.deepEqual(markdownFuera, [], 'markdown que la web no enlaza');
+
+    // El perímetro niega exactamente lo mismo que el script quita: si no, una copia que Pages
+    // aún conserve seguiría saliendo, o una página real dejaría de abrirse.
+    const seguidos = execFileSync('git', ['ls-files'], {cwd: repo, encoding: 'utf8', maxBuffer: 1 << 28}).split('\n').filter(Boolean);
+    const quitados = seguidos.filter((f) => !conjunto.has(f));
+    assert.deepEqual(quitados.filter((f) => !isInternalPath('/' + f)), [], 'el script lo quita y el perímetro lo dejaría pasar');
+    assert.deepEqual(publicados.filter((f) => isInternalPath('/' + f)), [], 'el script lo publica y el perímetro lo niega');
 
     for (const necesario of [
       'index.html', 'robots.txt', 'sitemap.xml', 'llms.txt', '404.html', '_headers', '_redirects', 'gate.js',

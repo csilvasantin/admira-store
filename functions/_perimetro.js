@@ -91,6 +91,19 @@ export function isPublicPath(pathname) {
   return PUBLIC_PREFIXES.some((prefix) => underPrefix(pathname, prefix));
 }
 
+// Lo interno del repo: la misma regla que .github/quitar-internos.sh, y un test obliga a que coincidan. No basta
+// con sacarlo del paquete (Carlos, 30-oct-2026): Pages conserva hasta 7 días, en cada centro de datos, los assets
+// de despliegues anteriores que alguien pidió (s-maxage=604800) y los sigue sirviendo con un 200 aunque ya no existan.
+const INTERNAL_DIRS = ['/.claude', '/.github', '/docs', '/scripts', '/scan/worker', '/tests', '/admira-xp/docs/handoffs'];
+const INTERNAL_FILE = /(^|\/)(wrangler\.toml|\.gitignore|\.gitattributes|\.gitkeep|\.nojekyll)$|\.(sh|py)$|\.test\.(mjs|js|py)$/;
+const LINKED_MARKDOWN = /^\/(admira-xp\/docs|mcp)\/|^\/admira-xp\/scripts\/best-production\.md$|\/LICENSE[^/]*$/i;
+export function isInternalPath(path) {
+  const clean = path.replace(/\/$/, '');
+  if (INTERNAL_DIRS.some((dir) => underPrefix(clean, dir))) return true;
+  if (/(^|\/)\.wrangler(\/|$)/.test(clean) || INTERNAL_FILE.test(clean)) return true;
+  return clean.endsWith('.md') && !LINKED_MARKDOWN.test(clean);
+}
+
 // La ruta que de verdad se va a servir. Pages decodifica y limpia la ruta después de este middleware:
 // /xpacios//crear/ o /xpacios/%63rear/ sirven /xpacios/crear/ aunque por fuera no lo parezcan. Por eso se
 // decide sobre esto y no sobre la ruta tal como llega. Va a mano y no con new URL(): decodificada, una
@@ -120,7 +133,7 @@ export function servedPath(pathname) {
 // Documento = lo que sirve una página: raíz, carpeta, .html o ruta sin
 // extensión. Los assets (.js, .css, .png, .glb, .json…) pasan sin perímetro:
 // los necesitan las rutas públicas y no son páginas que se puedan leer. Por eso
-// lo interno del repo (.md, .sh, .py…) no se publica: .github/quitar-internos.sh.
+// lo interno del repo (.md, .sh, .py…) no se publica y se niega: isInternalPath.
 export function isDocumentPath(pathname) {
   if (pathname.endsWith('/')) return true;
   const last = pathname.slice(pathname.lastIndexOf('/') + 1);
@@ -744,6 +757,10 @@ function sinPortadaComoFallback(pathname, response) {
   if (isDocumentPath(pathname) || !response || response.status !== 200) return response;
   const type = String(response.headers.get('content-type') || '').toLowerCase();
   if (!type.includes('text/html')) return response;
+  return notFound();
+}
+
+function notFound() {
   return new Response('Not found', {status:404, headers:{'content-type':'text/plain; charset=utf-8', 'cache-control':'no-store', 'x-robots-tag':'noindex, nofollow'}});
 }
 
@@ -762,6 +779,7 @@ export async function perimetro(context, fetchImpl = fetch) {
   if (authResponse) return authResponse;
 
   const path = servedPath(url.pathname);
+  if (isInternalPath(path)) return notFound();
   // Manda la RUTA, no lo que diga el cliente: con Accept:*/* un bot se llevaba
   // la página entera en Pixeria hasta el 1-sep-2026 (FLT-1484).
   const wantsDocument = isDocumentPath(path) ||
