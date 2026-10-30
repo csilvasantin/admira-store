@@ -21,13 +21,13 @@ Corriendo sobre **Lenovo edge** + **Nvidia GPU**.
 
 ## Stack
 
-- HTML estático servido por GitHub Pages
-- Custom domain `www.xpaceos.com` vía CNAME
+- HTML estático y Pages Functions en Cloudflare Pages (`admira-store`), con login de Google en servidor (`functions/_perimetro.js`)
+- Dominio `www.admira.store`
 - Métricas live consumidas desde workers Cloudflare (`pixer-eleven`) y Tailscale Funnel (`suno-local`)
 
 ## Editar
 
-Es un único `index.html`. Edita y haz push — GitHub Pages publica en menos de 1 minuto.
+La portada y `assets/` llegan del espejo diario de XpaceOS (`sync-desde-xpaceos.sh`): no se editan aquí. Cualquier otro cambio entra por `main`, que pasa los tests, despliega en Cloudflare Pages y comprueba la web. Contrato: [`admira-xp/docs/perimetro-publico.md`](admira-xp/docs/perimetro-publico.md).
 
 ## Personas y robots / People and robots
 

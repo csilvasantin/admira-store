@@ -19,3 +19,9 @@ Matrix MCP: estado compartido en `https://mcp.admira.store/matrix/starbucks`, ed
 ## Compatibilidad acumulada (Carlos, 2-oct-2026)
 
 Cada mejora debe conservar el histórico y las funciones ya entregadas en las soluciones: identidades, datos, preferencias e historial CLI. La marca blanca /marca (/brand) y el cambio de look and feel deben seguir disponibles en Experto. Mantener el shell y su registro extensible; /avatarDigital es la integración del consejero Woz (FLT-101350), no sustituirla ni anunciarla publicada antes de verificar su entrega. Documentar y comprobar regresiones al ampliar el inventario.
+
+## Publicación y perímetro (Carlos, 30-oct-2026)
+
+Antes de entregar, ejecuta `node scripts/ci-tests.mjs` desde un clon con finales de línea LF (`git clone -c core.autocrlf=false -c core.eol=lf`): un fallo que no esté en `tests/fallos-conocidos.json` para el despliegue y el espejo diario. Si arreglas uno conocido, quítalo de la lista; si tienes que añadir uno, pon el motivo. En Windows, además, fallan por el entorno los tests que necesitan `jq`, Python o rutas POSIX. Una rama `vista-previa/<nombre>` publica una vista previa con el mismo proceso, sin tocar producción. Qué es público, qué no se publica y qué se comprueba tras desplegar: `admira-xp/docs/perimetro-publico.md`.
+
+Before delivering, run `node scripts/ci-tests.mjs` from an LF checkout: a failure missing from `tests/fallos-conocidos.json` stops the deployment and the daily mirror. Remove a known failure once fixed; give a reason when adding one. A `vista-previa/<name>` branch publishes a preview through the same process without touching production. Contract: `admira-xp/docs/perimetro-publico.md`.
