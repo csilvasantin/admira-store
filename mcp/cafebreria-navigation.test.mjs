@@ -8,9 +8,10 @@ test('Cafebrería dropdown route agrees with the bilingual public contract and s
  const route=manifest.project_selection.cafebreria_demo;
  assert.equal(route.destination,'https://www.admira.store/xpacios/cafebreria/');
  assert.equal(route.venue_id,'demo-cafebreria');assert.equal(route.mode,'public demo only');
- for(const path of ['admira-xp/help.html','help/index.html','help/cli/index.html','admira-xp/docs/project-selection.md']){
+ for(const path of ['admira-xp/help.html','help/index.html','help/cli/index.html','admira-xp/docs/project-selection.md','mcp/llms.txt']){
   const text=await read(path);assert.ok(text.includes(route.es),path+' ES');assert.ok(text.includes(route.en),path+' EN');
  }
- assert.ok((await read('admira-xp/index.html')).includes('scripts/project-selector.mjs?v=topbar-20261005-1'));
- assert.ok((await read('admira-xp/scripts/project-selector.mjs')).includes('central-project-client.mjs?v=topbar-20261005-1'));
+ // La versión exacta del selector la fija tests/tres-combos.test.mjs; aquí basta con que el gemelo lo cargue con su versión.
+ assert.match(await read('admira-xp/index.html'),/scripts\/project-selector\.mjs\?v=[\w-]+/);
+ assert.match(await read('admira-xp/scripts/project-selector.mjs'),/central-project-client\.mjs\?v=[\w-]+/);
 });
