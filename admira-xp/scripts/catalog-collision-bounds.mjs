@@ -52,7 +52,8 @@ export const CATALOG_COLLISION_BOUNDS=Object.freeze({
   "native:starbucksChair":Object.freeze([0,0.6,0,0.48]),
   "native:starbucksWaterRack":Object.freeze([-0.236,0.236,-0.236,0.236]),
   "native:starbucksCupBasket":Object.freeze([-0.012,0.644,-0.001,0.654]),
-  "native:starbucksSnackBasket":Object.freeze([-0.025,0.641,-0.001,0.654]),
+  "native:starbucksSnackBasket":Object.freeze([-0.025403,0.641,-0.001,0.654]),
   "native:starbucksCoffeeBasket":Object.freeze([-0.001,0.641,-0.001,0.641]),
   "native:cafebreriaLibrary":Object.freeze([0,1.6,0,0.28]),
+  "native:ipadLandscape":Object.freeze([0,0.32,0,0.18]),
 });
