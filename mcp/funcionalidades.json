@@ -5223,7 +5223,7 @@
       {
         "n": 25,
         "id": "conversacion",
-        "icon": "branch",
+        "icon": "users",
         "es": "Conversación entre consejeros",
         "en": "Councillor conversation",
         "tour": false
