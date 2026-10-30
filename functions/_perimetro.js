@@ -351,6 +351,7 @@ function secureHeaders() {
 // Salida del login para quien no tiene cuenta autorizada (Carlos, 30-oct-2026). Sin JavaScript: el CSP de
 // esta página no lo admite y un formulario normal basta. El servidor reenvía la solicitud al mismo POST /lead
 // de los formularios de contacto (KV + aviso por Telegram). La casilla es obligatoria: sin ella no sale nada.
+// email_off: Cloudflare ofusca los correos con un script que el CSP de esta página bloquea, y se vería «[email protected]».
 // dominio propio: LaLiga bloquea workers.dev en horas de fútbol, FLT-1633
 const LEAD_URL = 'https://api.admira.store/lead';
 const LEAD_INTEREST = 'Content Distribution · Digital Twin · xpaceos.com';
@@ -358,14 +359,14 @@ const ACCESS_TEXT = {
   es:{
     summary:'¿No tienes acceso? Solicítalo', name:'Nombre', email:'Email', company:'Empresa', notes:'¿Qué necesitas ver?',
     consent:'Acepto que ADmiraNeXT use estos datos para responder a esta solicitud.',
-    privacy:'Solo los usaremos para contestarte. Para consultarlos o borrarlos, escribe a info@admira.com.',
+    privacy:'Solo los usaremos para contestarte. Para consultarlos o borrarlos, escribe a <!--email_off-->info@admira.com<!--/email_off-->.',
     send:'Enviar solicitud', thanksTitle:'Solicitud recibida', thanks:'Te responderemos por correo. El acceso lo concede un responsable de AdmiraNeXT.', back:'Volver al acceso',
     errName:'Pon tu nombre.', errEmail:'Pon un email válido.', errConsent:'Marca la casilla para poder enviar la solicitud.', errSend:'No se pudo enviar. Inténtalo de nuevo en unos minutos.'
   },
   en:{
     summary:'No access? Request it', name:'Name', email:'Email', company:'Company', notes:'What do you need to see?',
     consent:'I agree ADmiraNeXT may use these details to answer this request.',
-    privacy:'We will only use them to reply to you. To see or delete them, write to info@admira.com.',
+    privacy:'We will only use them to reply to you. To see or delete them, write to <!--email_off-->info@admira.com<!--/email_off-->.',
     send:'Send request', thanksTitle:'Request received', thanks:'We will reply by email. Access is granted by an AdmiraNeXT administrator.', back:'Back to sign-in',
     errName:'Enter your name.', errEmail:'Enter a valid email.', errConsent:'Tick the box to send the request.', errSend:'It could not be sent. Please try again in a few minutes.'
   }

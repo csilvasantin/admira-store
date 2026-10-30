@@ -370,7 +370,7 @@ test('el login ofrece solicitar acceso con consentimiento obligatorio y sin aflo
   assert.match(html, /<form method="post" action="\/auth\/solicitar-acceso">/);
   assert.match(html, /name="return_to" value="\/xpacios\/crear\/"/);
   assert.match(html, /<input type="checkbox" name="consent" value="1" required>/);
-  assert.match(html, /info@admira\.com/);
+  assert.match(html, /<!--email_off-->info@admira\.com<!--\/email_off-->/, 'Cloudflare no debe ofuscarlo: su script no pasa el CSP');
   assert.match(html, /¿No tienes acceso\? Solicítalo/);
   const csp = r.headers.get('content-security-policy');
   assert.doesNotMatch(csp, /unsafe-inline'[^;]*script|script-src[^;]*unsafe/);

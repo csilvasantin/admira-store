@@ -56,7 +56,7 @@ const CASOS = [
     '/scan/worker/.wrangler/cache/wrangler-account.json', '/admira-xp/docs/handoffs/2026-10-09-sneakerstore-demo.md',
     '/xpacios/CHANGELOG.md'].map((ruta) => ({ruta, estado: 404})),
   // El login tiene salida para quien no tiene cuenta autorizada.
-  {ruta: '/auth/login', cabeceras: PAGINA, estado: 401, conTexto: '/auth/solicitar-acceso'},
+  {ruta: '/auth/login', cabeceras: PAGINA, estado: 401, conTexto: '/auth/solicitar-acceso', sinTexto: '__cf_email__'},
   {
     ruta: '/auth/solicitar-acceso',
     cabeceras: {'Content-Type': 'application/x-www-form-urlencoded', Origin: new URL(base).origin},
