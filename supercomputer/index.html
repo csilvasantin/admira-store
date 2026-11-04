@@ -23,6 +23,9 @@ button,input,select{font:inherit;color:inherit}
 .spacer{flex:1}
 .estado{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:11px;white-space:nowrap}
 .estado i{width:8px;height:8px;border-radius:50%;background:var(--mut)}
+.estadoCol{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.simbox{pointer-events:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mut);cursor:pointer;user-select:none}.simbox input{accent-color:#ffce3a;cursor:pointer}.simbox small{opacity:.7}
+.estado.sim{border-color:#ffce3a}.estado.sim i{background:#ffce3a;box-shadow:0 0 10px #ffce3a}
 .estado.on i{background:var(--green);box-shadow:0 0 10px var(--green);animation:pulso 1.6s infinite}.estado.off i{background:var(--red)}
 @keyframes pulso{50%{opacity:.35}}
 .panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:14px;max-height:calc(100% - var(--xs-bar-h,0px) - 150px);overflow:auto}
@@ -87,7 +90,8 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 <header class="hud top">
   <div class="brand"><b>Super<span>computer</span></b><small>LA STORE DE METAHUMAN · 7 VENTILADORES · ADMIRA.TV</small></div>
   <span class="spacer"></span>
-  <span class="estado" id="estado"><i></i><span id="estadoTxt">Conectando…</span></span>
+  <div class="estadoCol"><span class="estado" id="estado"><i></i><span id="estadoTxt">Conectando…</span></span>
+  <label class="simbox" title="Prueba el gemelo digital sin METAHUMAN encendido"><input type="checkbox" id="simMode"> Solo gemelo · simulación <small>Digital twin only · sim</small></label></div>
 </header>
 
 <section class="hud panel izq" aria-label="Pantallas">
@@ -164,6 +168,21 @@ const DISPOSICION={
 };
 
 let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
+// ── Modo «solo gemelo» (simulación): el gemelo funciona sin el PC real (Carlos, 4-nov-2026) ──
+const SIM_KEY='admira.supercomputer.sim';
+let SIM=localStorage.getItem(SIM_KEY)==='1', simInforme=null;
+function simAplicar(parte,valor){
+  simInforme={...(simInforme||{}),[parte]:parte==='escena'?{...valor,epoch:valor.epoch||Date.now()}:JSON.parse(JSON.stringify(valor))};
+  estado={...(estado||{}),informe:{...(estado?.informe||{}),...simInforme}};
+}
+function simPlaceholder(n){
+  simPlaceholder.c=simPlaceholder.c||{};if(simPlaceholder.c[n])return simPlaceholder.c[n];
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const g=cv.getContext('2d');
+  const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'hsl('+(n*51)%360+',80%,45%)');gr.addColorStop(1,'#05070d');
+  g.fillStyle=gr;g.fillRect(0,0,256,256);g.fillStyle='#fff';g.font='bold 120px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(String(n),128,120);
+  g.font='600 20px system-ui,sans-serif';g.fillStyle='rgba(255,255,255,.75)';g.fillText('SIM',128,200);
+  return simPlaceholder.c[n]=cv;
+}
 let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
 
 // ── Utilidades ──
@@ -218,6 +237,7 @@ $('aplicarEscena').onclick=async()=>{
   if(escena.modo==='sincro')e.paso=escena.paso;
   if(escena.modo==='identificar')delete e.piezas;
   else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
+  if(SIM){simAplicar('escena',e);editandoEscena=false;pintarModos();toast('Aplicado en gemelo (sim)');api('escena',e).catch(()=>{});return;}
   try{$('aplicarEscena').disabled=true;await api('escena',e);editandoEscena=false;toast('Escena enviada a METAHUMAN');refrescar();}
   catch(err){toast(soloLectura?'Tu acceso es de solo lectura':'No se pudo enviar: '+err.message,true);}
   finally{$('aplicarEscena').disabled=false;}
@@ -239,10 +259,12 @@ $('velocidad').oninput=e=>{luz.velocidad=+e.target.value;$('velocidadV').textCon
 $('sigue').onchange=e=>{luz.sigueVideo=e.target.checked;editandoLuz=true;};
 async function enviarLuz(){
   const ventiladores=Object.fromEntries(Object.entries(luz.ventiladores||{}).map(([n,v])=>[n,{efecto:v.efecto,color:hex((v.colores&&v.colores[0])||v.color),brillo:v.brillo,velocidad:v.velocidad}]));
-  await api('luz',{efecto:luz.efecto,color:hex(luz.color),brillo:luz.brillo,velocidad:luz.velocidad,sigueVideo:luz.sigueVideo,ventiladores});
+  const cuerpo={efecto:luz.efecto,color:hex(luz.color),brillo:luz.brillo,velocidad:luz.velocidad,sigueVideo:luz.sigueVideo,ventiladores};
+  if(SIM){simAplicar('luz',cuerpo);api('luz',cuerpo).catch(()=>{});return;}
+  await api('luz',cuerpo);
 }
 $('aplicarLuz').onclick=async()=>{
-  try{$('aplicarLuz').disabled=true;await enviarLuz();editandoLuz=false;toast('Iluminación enviada');refrescar();}
+  try{$('aplicarLuz').disabled=true;await enviarLuz();editandoLuz=false;toast(SIM?'Aplicado en gemelo (sim)':'Iluminación enviada');refrescar();}
   catch(err){toast(soloLectura?'Tu acceso es de solo lectura':'No se pudo enviar: '+err.message,true);}
   finally{$('aplicarLuz').disabled=false;}
 };
@@ -257,7 +279,7 @@ function pintarDetalle(){
   if(!seleccionado)return;
   const n=seleccionado,f=(estado?.informe?.fans||[]).find(x=>x.n===n)||{},e=estado?.informe?.escena;
   $('dTit').textContent='Ventilador '+n;
-  $('dImg').src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
+  $('dImg').onerror=()=>{if(SIM){$('dImg').onerror=null;$('dImg').src=simPlaceholder(n).toDataURL();}};$('dImg').src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
   const pieza=e?(e.modo==='independiente'?(e.ids?.[n]||[])[0]:e.piezas?.[0]):null;
   const filas=[['Puerto · posición',f.port!=null?`${f.port} · ${f.index}`:'—'],['RPM',f.rpm??'—'],['Fotogramas/s',f.fps??'—'],['Enviados',f.sent??'—'],['Errores USB',f.errors??'—'],['Modo',e?.modo||'—'],['Pieza',pieza?piezaTxt(pieza):'Playlist del canal']];
   $('dKv').innerHTML=filas.map(([k,v])=>`<div class="kv"><span>${k}</span><b>${String(v).replace(/[<&]/g,'')}</b></div>`).join('');
@@ -314,8 +336,8 @@ for(let n=1;n<=7;n++)crearVentilador(n);
 function actualizarTexturas(){
   for(let n=1;n<=7;n++){
     const v=vents[n];
-    loader.load(API+'/miniatura/'+n+'.jpg?t='+Date.now(),tex=>{tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;},undefined,()=>{});
-    const img=document.querySelector(`img[data-mini="${n}"]`);if(img)img.src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
+    loader.load(API+'/miniatura/'+n+'.jpg?t='+Date.now(),tex=>{tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;},undefined,()=>{if(!SIM)return;const tex=new THREE.CanvasTexture(simPlaceholder(n));tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;});
+    const img=document.querySelector(`img[data-mini="${n}"]`);if(img){img.onerror=()=>{if(SIM){img.onerror=null;img.src=simPlaceholder(n).toDataURL();}};img.src=API+'/miniatura/'+n+'.jpg?t='+Date.now();}
   }
   if(seleccionado)$('dImg').src=API+'/miniatura/'+seleccionado+'.jpg?t='+Date.now();
 }
@@ -366,9 +388,11 @@ bucle();
 async function refrescar(){
   try{
     estado=await api('estado');
+    if(SIM&&!estado.enLinea&&simInforme)estado.informe={...(estado.informe||{}),...simInforme};
     const on=estado.enLinea,visto=estado.visto?Math.round((estado.ahora-estado.visto)/1000):null;
     $('estado').className='estado '+(on?'on':'off');
     $('estadoTxt').textContent=on?'METAHUMAN en línea':(visto==null?'METAHUMAN sin conectar':'Sin señal · hace '+visto+' s');
+    if(SIM&&!on){$('estado').className='estado sim';$('estadoTxt').textContent='Gemelo en simulación · PC apagado';}
     const d=estado.deseado||{},inf=estado.informe||{};
     // Hora de METAHUMAN vista desde aquí: su reloj no tiene por qué coincidir con el del navegador.
     if(inf.at&&estado.visto)desfasePC=(inf.at-estado.visto)-(Date.now()-estado.ahora);
@@ -383,7 +407,8 @@ async function refrescar(){
     for(const f of inf.fans||[]){const m=document.querySelector(`[data-meta="${f.n}"]`);if(m)m.textContent=`${f.rpm??'—'} rpm · ${f.fps??0} fps`;}
     pintarDetalle();
   }catch(err){
-    if(err.message!=='login'){$('estado').className='estado off';
+    if(SIM&&err.message!=='login'){estado={...(estado||{}),enLinea:false,informe:{...(estado?.informe||{}),...(simInforme||{})}};$('estado').className='estado sim';$('estadoTxt').textContent='Gemelo en simulación · sin nube';}
+    else if(err.message!=='login'){$('estado').className='estado off';
       $('estadoTxt').textContent=err.message==='not_configured'?'Nube sin configurar (falta SUPERCOMPUTER_PROXY_KEY)':'Sin conexión con la nube';}
   }finally{$('carga').classList.add('hide');}
 }
@@ -392,6 +417,9 @@ async function cargarStock(){
   catch{stock=[];}
   pintarModos();
 }
+$('simMode').checked=SIM;
+$('simMode').onchange=e=>{SIM=e.target.checked;localStorage.setItem(SIM_KEY,SIM?'1':'0');toast(SIM?'Modo solo gemelo activado (simulación)':'Modo simulación desactivado');if(SIM&&!simInforme){simAplicar('luz',luz);simAplicar('escena',escena);}refrescar();actualizarTexturas();};
+if(SIM){simAplicar('luz',luz);simAplicar('escena',escena);}
 pintarModos();pintarLuz();cargarStock();refrescar();
 setInterval(refrescar,2500);setInterval(actualizarTexturas,3000);actualizarTexturas();
 </script>
