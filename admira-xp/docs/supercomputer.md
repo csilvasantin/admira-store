@@ -33,9 +33,12 @@ esta función (`PROXY_KEY` = secreto de Pages `SUPERCOMPUTER_PROXY_KEY`). Ningun
 Extender, sincro e identificar los pinta la página de escena del puente con un reloj común (no son
 players de admira.tv). Circuito de admira.tv: `supercomputer`.
 
-**Disposición física** (confirmada por Carlos el 4-nov-2026 con Identificar): 1-2-3 en columna en el
-cristal lateral (1 arriba), 4-5-6 en la fila de abajo (6 delante, 4 detrás) y 7 trasero. Es la
-constante `DISPOSICION` del gemelo.
+**Disposición física** (confirmada por Carlos el 4-nov-2026 con Identificar y una foto de METAHUMAN
+vista desde la ventana principal): 1-2-3 en columna en el panel de cristal de la derecha (delante), con el
+1 arriba y las pantallas hacia dentro; 4-5-6 en el suelo, caras arriba, con el 4 detrás (izquierda) y el 6
+delante (derecha); 7 trasero, arriba a la izquierda junto a la placa. Arriba, el radiador del AIO con tres
+ventiladores sin pantalla. Es la constante `DISPOSICION` del gemelo (ventana principal = +x, placa = −x,
+delante = −z).
 
 ## Iluminación
 
