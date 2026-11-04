@@ -1,12 +1,12 @@
 {
   "version": "v.27.10.2026.r2.23:49",
-  "deployedAt": "2026-11-04T16:28:39Z",
+  "deployedAt": "2026-11-04T16:48:38Z",
   "deployer": "GrokBot",
   "machine": "box",
   "signature": "GrokBot · box",
-  "git": "73868d077759d99f77b3662bcdf3afb994dfa236",
-  "gitShort": "73868d0",
-  "gitFull": "73868d077759d99f77b3662bcdf3afb994dfa236",
+  "git": "1639bf0753ad5de753b5bb968e82e113c193233e",
+  "gitShort": "1639bf0",
+  "gitFull": "1639bf0753ad5de753b5bb968e82e113c193233e",
   "dirty": false,
   "novedades": [
     "Acabado 2D: paleta y tamaño por cara, PNG + JSON y lector Good con huella, altura y cuatro caras conservadas."
