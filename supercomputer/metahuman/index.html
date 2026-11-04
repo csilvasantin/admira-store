@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SuperComputer_Metahuman · gemelo digital · admira.store</title>
+<meta name="description" content="Gemelo digital de la Supercomputer: los 7 ventiladores con pantalla de METAHUMAN, sus contenidos de admira.tv y su iluminación, en vivo.">
+<link rel="canonical" href="https://www.admira.store/supercomputer/">
+<link rel="icon" href="/favicon.ico">
+<meta name="theme-color" content="#04060d">
+<style>
+:root{--bg:#04060d;--panel:rgba(8,12,24,.92);--ink:#eef4ff;--mut:#8a98b3;--ice:#8fd6ff;--gold:#ffce3a;--green:#3df08a;--red:#ff5470;--line:rgba(143,214,255,.18);--line2:rgba(143,214,255,.34)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(--ink);font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit;color:inherit}
+#c{position:fixed;left:0;top:var(--xs-bar-h,0px);width:100%;height:calc(100% - var(--xs-bar-h,0px));display:block;touch-action:none}
+.hud{position:fixed;z-index:5}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.top{top:var(--xs-bar-h,0px);left:0;right:0;display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(180deg,rgba(4,6,13,.95),transparent);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand b{font:800 18px/1 system-ui,sans-serif;letter-spacing:.01em}.brand b span{color:var(--ice)}.brand small{display:block;color:var(--mut);font-size:10px;margin-top:3px;letter-spacing:.06em}
+.spacer{flex:1}
+.estado{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:11px;white-space:nowrap}
+.estado i{width:8px;height:8px;border-radius:50%;background:var(--mut)}
+.estado.on i{background:var(--green);box-shadow:0 0 10px var(--green);animation:pulso 1.6s infinite}.estado.off i{background:var(--red)}
+@keyframes pulso{50%{opacity:.35}}
+.panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:14px;max-height:calc(100% - var(--xs-bar-h,0px) - 150px);overflow:auto}
+.izq{top:calc(70px + var(--xs-bar-h,0px));left:16px;width:318px}
+.der{top:calc(70px + var(--xs-bar-h,0px));right:16px;width:300px}
+.panel h2{margin:0 0 10px;font:700 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--mut)}
+.panel h2 em{font-style:normal;color:var(--ice)}
+.modos{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.modo,.efecto{border:1px solid var(--line);background:rgba(143,214,255,.03);border-radius:10px;padding:8px 9px;text-align:left;cursor:pointer}
+.modo b{display:block;font-size:13px}.modo small{color:var(--mut);font-size:10px}.modo.ancho{grid-column:1/-1}
+.modo:hover,.efecto:hover{border-color:var(--line2)}
+.modo.on,.efecto.on{border-color:var(--ice);background:rgba(143,214,255,.11);box-shadow:inset 0 0 0 1px rgba(143,214,255,.25)}
+.desc{color:var(--mut);font-size:11.5px;margin:10px 0 2px}
+.campo{display:grid;gap:5px;margin-top:10px}
+.campo label,.fila label{font-size:10px;color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+select,input[type=number]{width:100%;background:#0a1122;border:1px solid var(--line);border-radius:8px;padding:7px 8px}
+select:focus,input:focus{outline:1px solid var(--ice)}
+.fila{display:grid;grid-template-columns:72px 1fr;gap:8px;align-items:center;margin-top:6px}
+.fila.f3{grid-template-columns:72px 1fr 34px}
+input[type=range]{width:100%;accent-color:var(--ice)}
+.val{font:11px ui-monospace,Menlo,monospace;color:var(--ice);text-align:right}
+.efectos{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.efecto{padding:7px 4px;text-align:center;font-size:11px}
+.color{display:flex;gap:8px;align-items:center}
+.color input[type=color]{width:40px;height:30px;border:1px solid var(--line);border-radius:8px;background:none;padding:0;cursor:pointer}
+.swatches{display:flex;gap:5px;flex-wrap:wrap}.swatches button{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.25);cursor:pointer}
+.check{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12px;color:var(--ink)}
+.aplicar{margin-top:12px;width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(90deg,#2b6cff,#8fd6ff);color:#04101f;font-weight:800;cursor:pointer}
+.aplicar:disabled{opacity:.45;cursor:default}
+.pendiente{margin-top:8px;font-size:11px;color:var(--gold);min-height:15px}
+.tira{left:0;right:0;bottom:0;display:flex;justify-content:center;gap:10px;padding:10px 12px 14px;background:linear-gradient(0deg,rgba(4,6,13,.95),transparent);overflow-x:auto}
+.vent{flex:0 0 auto;width:96px;text-align:center;cursor:pointer;border:0;background:none;padding:0}
+.vent .disco{position:relative;width:84px;height:84px;margin:0 auto;border-radius:50%;padding:4px;background:conic-gradient(var(--anillo,#334) 0 100%)}
+.vent img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#000;display:block}
+.vent b{display:block;font-size:11px;margin-top:5px}.vent small{display:block;color:var(--mut);font:9.5px ui-monospace,Menlo,monospace}
+.vent.sel .disco{outline:2px solid var(--ice);outline-offset:3px}
+.detalle{top:var(--xs-bar-h,0px);right:0;width:330px;height:calc(100% - var(--xs-bar-h,0px));z-index:8;padding:18px;background:rgba(6,10,22,.97);backdrop-filter:blur(16px);border-left:1px solid var(--line);transform:translateX(102%);transition:transform .22s;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.detalle.open{transform:none}
+.cerrar{align-self:flex-end;border:0;background:none;color:var(--mut);cursor:pointer;font-size:18px}
+.detalle img{width:220px;height:220px;border-radius:50%;object-fit:cover;align-self:center;background:#000;border:4px solid var(--anillo,#334)}
+.detalle h3{margin:0;font:800 22px/1.1 system-ui,sans-serif}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:11px;color:var(--mut)}.kv b{color:var(--ink);text-align:right}
+.toast{left:50%;bottom:150px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:9px 14px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}.toast.error{border-color:var(--red);color:#ffc2cc}
+.carga{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:var(--bg);color:var(--ice);font:11px ui-monospace,Menlo,monospace;letter-spacing:.14em}.carga.hide{display:none}
+@media(max-width:900px){
+  #c{height:44vh}
+  .izq,.der{position:fixed;left:8px;right:8px;width:auto;top:auto;max-height:none;border-radius:12px}
+  .izq{bottom:calc(126px + 23vh);height:20vh}.der{bottom:120px;height:22vh}
+  .brand small{display:none}.tira{justify-content:flex-start}
+  .vent{width:78px}.vent .disco{width:68px;height:68px}
+}
+</style>
+<script>window.XPACE_SHELL={section:{es:'Supercomputer · gemelo digital',en:'Supercomputer · digital twin'},options:[{href:'https://admira.tv/',es:'admira.tv',en:'admira.tv'},{href:'/admira-xp/',es:'Gemelo Admira XP',en:'Admira XP twin'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
+<script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
+</head>
+<body>
+<canvas id="c" aria-label="Gemelo 3D de la Supercomputer con sus 7 ventiladores"></canvas>
+<div class="carga" id="carga">ENCENDIENDO LA SUPERCOMPUTER…</div>
+
+<header class="hud top">
+  <div class="brand"><b>Super<span>computer</span></b><small>SUPERCOMPUTER_METAHUMAN · FONDO 3V + PLACA/RAM · ABAJO 3H · ADMIRA.TV</small></div>
+  <span class="spacer"></span>
+  <span class="estado" id="estado"><i></i><span id="estadoTxt">Conectando…</span></span>
+</header>
+
+<section class="hud panel izq" aria-label="Pantallas">
+  <h2>PANTALLAS · <em>SCREENS</em></h2>
+  <div class="modos" id="modos">
+    <button class="modo" data-modo="independiente"><b>Independiente</b><small>Independent</small></button>
+    <button class="modo" data-modo="repetir"><b>Repetir</b><small>Repeat</small></button>
+    <button class="modo" data-modo="extender"><b>Extender</b><small>Extend · Adaptar · Adapt</small></button>
+    <button class="modo" data-modo="sincro"><b>Sincro</b><small>Sync</small></button>
+    <button class="modo ancho" data-modo="identificar"><b>Identificar</b><small>Identify · cada pantalla enseña su número</small></button>
+  </div>
+  <p class="desc" id="desc"></p>
+  <div id="opciones"></div>
+  <button class="aplicar" id="aplicarEscena">Aplicar a los ventiladores</button>
+  <div class="pendiente" id="pendEscena"></div>
+</section>
+
+<section class="hud panel der" aria-label="Iluminación">
+  <h2>ILUMINACIÓN · <em>LIGHTING</em></h2>
+  <div class="efectos" id="efectos"></div>
+  <div class="campo"><label>Color</label>
+    <div class="color"><input type="color" id="color" value="#00d26a"><div class="swatches" id="swatches"></div></div>
+  </div>
+  <div class="fila f3"><label>Brillo</label><input type="range" id="brillo" min="0" max="4" step="1" value="4"><span class="val" id="brilloV">4</span></div>
+  <div class="fila f3"><label>Velocidad</label><input type="range" id="velocidad" min="0" max="4" step="1" value="2"><span class="val" id="velocidadV">2</span></div>
+  <label class="check"><input type="checkbox" id="sigue"> La luz sigue al vídeo en sincro · <span style="color:var(--mut)">light follows video</span></label>
+  <button class="aplicar" id="aplicarLuz">Aplicar iluminación</button>
+  <div class="pendiente" id="pendLuz"></div>
+</section>
+
+<nav class="hud tira" id="tira" aria-label="Ventiladores"></nav>
+
+<aside class="hud detalle" id="detalle" aria-label="Ventilador">
+  <button class="cerrar" id="cerrar" aria-label="Cerrar">✕</button>
+  <img id="dImg" alt="">
+  <h3 id="dTit">Ventilador</h3>
+  <div id="dKv"></div>
+  <div class="campo"><label>Color propio de este ventilador</label>
+    <div class="color"><input type="color" id="dColor" value="#ffffff"><button class="efecto" id="dColorOn">Usar</button><button class="efecto" id="dColorOff">Quitar</button></div>
+  </div>
+</aside>
+<div class="hud toast" id="toast"></div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+const API='/supercomputer/api';
+const STOCK='https://api.admira.store/stock/list?limit=300';
+const $=id=>document.getElementById(id);
+
+// ── Modos y efectos (mismos nombres que el puente: admira-tv/tools/player-ventiladores/escena.mjs) ──
+const MODOS={
+  independiente:'Cada ventilador es un player de admira.tv con su propia pieza.',
+  repetir:'La misma pieza en los 7 a la vez, en sincronía exacta.',
+  extender:'Una pieza estirada sobre los 7 como un mural: cada ventilador muestra su tesela.',
+  sincro:'La pieza pasa de un ventilador al siguiente sin perder el hilo. Con varias piezas, desfilan en carrusel.',
+  identificar:'Cada pantalla enseña su número, su puerto y su posición, para ubicar los ventiladores en la caja.'
+};
+const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
+const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b26bff','#ffffff'];
+
+// SuperComputer_Metahuman (native:supercomputer-metahuman) · disposición física CANÓNICA (Carlos, 4-nov-2026,
+// layout-physical-metahuman.json + mapping.json del bridge TL LCD). Cristal = +x, fondo = -x, delante = +z.
+// FONDO: placa ASRock Z790 PG Riptide + 2× Lexar ARES RGB + 4-5-6 VERTICALES apilados (4 arriba), mirando al cristal.
+// ABAJO: bloque separado 1-2-3 HORIZONTALES en fila (izq→der vistos desde el cristal), caras hacia arriba.
+// 7 (temperatura): enabled:false, oculto.
+const DISPOSICION={
+  1:{p:[0.7,0.18,1.65],n:[0,1,0]},2:{p:[0.7,0.18,0.05],n:[0,1,0]},3:{p:[0.7,0.18,-1.55],n:[0,1,0]},
+  4:{p:[-1.6,4.75,1.75],n:[1,0,0]},5:{p:[-1.6,3.2,1.75],n:[1,0,0]},6:{p:[-1.6,1.65,1.75],n:[1,0,0]},
+  7:{p:[-0.3,4.4,-2.55],n:[0,0,1],enabled:false}
+};
+
+let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
+let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
+
+// ── Utilidades ──
+const hex=c=>Array.isArray(c)?'#'+c.map(v=>Number(v).toString(16).padStart(2,'0')).join(''):(c||'#ffffff');
+function toast(t,error){const el=$('toast');el.textContent=t;el.className='hud toast show'+(error?' error':'');clearTimeout(toast.t);toast.t=setTimeout(()=>el.className='hud toast',2600);}
+async function api(ruta,cuerpo){
+  const r=await fetch(API+'/'+ruta,cuerpo?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(cuerpo)}:{cache:'no-store'});
+  if(r.status===401){location.href='/auth/login?return_to='+encodeURIComponent('/supercomputer/');throw new Error('login');}
+  const d=await r.json().catch(()=>({}));
+  if(r.status===403&&d.error==='read_only'){soloLectura=true;}
+  if(!r.ok||d.ok===false)throw new Error(d.error||('HTTP '+r.status));
+  return d;
+}
+function piezaTxt(id){const s=stock.find(x=>x.id===id);return s?('#'+s.num+' · '+s.title):id;}
+function opcionesStock(sel){
+  return '<option value="">— elige pieza —</option>'+stock.map(s=>`<option value="${s.id}"${s.id===sel?' selected':''}>#${s.num} · ${String(s.title).replace(/[<&"]/g,'').slice(0,58)}</option>`).join('');
+}
+
+// ── Panel de pantallas ──
+function pintarModos(){
+  document.querySelectorAll('.modo').forEach(b=>b.classList.toggle('on',b.dataset.modo===escena.modo));
+  $('desc').textContent=MODOS[escena.modo]||'';
+  const o=$('opciones');
+  if(escena.modo==='independiente'){
+    o.innerHTML=[1,2,3,4,5,6,7].map(n=>`<div class="fila"><label>Vent. ${n}</label><select data-ind="${n}">${opcionesStock((escena.ids[n]||[])[0])}</select></div>`).join('');
+  }else if(escena.modo==='repetir'){
+    o.innerHTML=`<div class="campo"><label>Pieza en los 7</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>`;
+  }else if(escena.modo==='extender'){
+    o.innerHTML=`<div class="campo"><label>Pieza del mural</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>
+      <div class="fila"><label>Ajuste</label><select id="ajuste"><option value="cubrir">Cubrir · cover</option><option value="estirar">Estirar · stretch</option><option value="contener">Contener · contain</option></select></div>
+      <div class="fila f3"><label>Columnas</label><input type="range" id="columnas" min="1" max="7" value="${escena.columnas||7}"><span class="val" id="columnasV">${escena.columnas||7}</span></div>`;
+    $('ajuste').value=escena.ajuste||'cubrir';
+    $('columnas').oninput=e=>{$('columnasV').textContent=e.target.value;escena.columnas=+e.target.value;editandoEscena=true;};
+    $('ajuste').onchange=e=>{escena.ajuste=e.target.value;editandoEscena=true;};
+  }else if(escena.modo==='identificar'){
+    o.innerHTML='';
+  }else{
+    const n=Math.max(1,escena.piezas.length);
+    o.innerHTML=Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label><select data-pieza="${i}">${opcionesStock(escena.piezas[i])}</select></div>`).join('')+
+      `<div class="fila f3"><label>Paso</label><input type="range" id="paso" min="1" max="30" value="${escena.paso||4}"><span class="val" id="pasoV">${escena.paso||4} s</span></div>`;
+    $('paso').oninput=e=>{$('pasoV').textContent=e.target.value+' s';escena.paso=+e.target.value;editandoEscena=true;};
+  }
+  o.querySelectorAll('select[data-ind]').forEach(s=>s.onchange=()=>{escena.ids[s.dataset.ind]=s.value?[s.value]:[];editandoEscena=true;});
+  o.querySelectorAll('select[data-pieza]').forEach(s=>s.onchange=()=>{const i=+s.dataset.pieza;const p=escena.piezas.slice();p[i]=s.value;escena.piezas=p.filter(Boolean);editandoEscena=true;if(escena.modo==='sincro')pintarModos();});
+}
+document.querySelectorAll('.modo').forEach(b=>b.onclick=()=>{escena.modo=b.dataset.modo;editandoEscena=true;pintarModos();});
+$('aplicarEscena').onclick=async()=>{
+  const e={modo:escena.modo};
+  if(escena.modo==='independiente')e.ids=escena.ids;
+  else e.piezas=escena.piezas;
+  if(escena.modo==='extender'){e.ajuste=escena.ajuste;e.columnas=escena.columnas;}
+  if(escena.modo==='sincro')e.paso=escena.paso;
+  if(escena.modo==='identificar')delete e.piezas;
+  else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
+  try{$('aplicarEscena').disabled=true;await api('escena',e);editandoEscena=false;toast('Escena enviada a METAHUMAN');refrescar();}
+  catch(err){toast(soloLectura?'Tu acceso es de solo lectura':'No se pudo enviar: '+err.message,true);}
+  finally{$('aplicarEscena').disabled=false;}
+};
+
+// ── Panel de iluminación ──
+$('efectos').innerHTML=EFECTOS.map(([k,t])=>`<button class="efecto" data-efecto="${k}">${t}</button>`).join('');
+$('swatches').innerHTML=SWATCHES.map(c=>`<button style="background:${c}" data-c="${c}" aria-label="${c}"></button>`).join('');
+function pintarLuz(){
+  document.querySelectorAll('.efecto[data-efecto]').forEach(b=>b.classList.toggle('on',b.dataset.efecto===luz.efecto));
+  $('color').value=hex(luz.color);$('brillo').value=luz.brillo;$('brilloV').textContent=luz.brillo;
+  $('velocidad').value=luz.velocidad;$('velocidadV').textContent=luz.velocidad;$('sigue').checked=!!luz.sigueVideo;
+}
+document.querySelectorAll('.efecto[data-efecto]').forEach(b=>b.onclick=()=>{luz.efecto=b.dataset.efecto;editandoLuz=true;pintarLuz();});
+$('swatches').onclick=e=>{const c=e.target.dataset.c;if(!c)return;luz.color=c;if(luz.efecto==='apagado')luz.efecto='fijo';editandoLuz=true;pintarLuz();};
+$('color').oninput=e=>{luz.color=e.target.value;editandoLuz=true;};
+$('brillo').oninput=e=>{luz.brillo=+e.target.value;$('brilloV').textContent=luz.brillo;editandoLuz=true;};
+$('velocidad').oninput=e=>{luz.velocidad=+e.target.value;$('velocidadV').textContent=luz.velocidad;editandoLuz=true;};
+$('sigue').onchange=e=>{luz.sigueVideo=e.target.checked;editandoLuz=true;};
+async function enviarLuz(){
+  const ventiladores=Object.fromEntries(Object.entries(luz.ventiladores||{}).map(([n,v])=>[n,{efecto:v.efecto,color:hex((v.colores&&v.colores[0])||v.color),brillo:v.brillo,velocidad:v.velocidad}]));
+  await api('luz',{efecto:luz.efecto,color:hex(luz.color),brillo:luz.brillo,velocidad:luz.velocidad,sigueVideo:luz.sigueVideo,ventiladores});
+}
+$('aplicarLuz').onclick=async()=>{
+  try{$('aplicarLuz').disabled=true;await enviarLuz();editandoLuz=false;toast('Iluminación enviada');refrescar();}
+  catch(err){toast(soloLectura?'Tu acceso es de solo lectura':'No se pudo enviar: '+err.message,true);}
+  finally{$('aplicarLuz').disabled=false;}
+};
+
+// ── Tira de ventiladores y detalle ──
+$('tira').innerHTML=[1,2,3,4,5,6,7].map(n=>`<button class="vent" data-n="${n}"><div class="disco"><img alt="Ventilador ${n}" data-mini="${n}"></div><b>Ventilador ${n}</b><small data-meta="${n}">—</small></button>`).join('');
+$('tira').onclick=e=>{const b=e.target.closest('.vent');if(b)abrir(+b.dataset.n);};
+$('cerrar').onclick=()=>{$('detalle').classList.remove('open');seleccionado=null;marcarSel();};
+function marcarSel(){document.querySelectorAll('.vent').forEach(v=>v.classList.toggle('sel',+v.dataset.n===seleccionado));}
+function abrir(n){seleccionado=n;marcarSel();$('detalle').classList.add('open');pintarDetalle();}
+function pintarDetalle(){
+  if(!seleccionado)return;
+  const n=seleccionado,f=(estado?.informe?.fans||[]).find(x=>x.n===n)||{},e=estado?.informe?.escena;
+  $('dTit').textContent='Ventilador '+n;
+  $('dImg').src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
+  const pieza=e?(e.modo==='independiente'?(e.ids?.[n]||[])[0]:e.piezas?.[0]):null;
+  const filas=[['Puerto · posición',f.port!=null?`${f.port} · ${f.index}`:'—'],['RPM',f.rpm??'—'],['Fotogramas/s',f.fps??'—'],['Enviados',f.sent??'—'],['Errores USB',f.errors??'—'],['Modo',e?.modo||'—'],['Pieza',pieza?piezaTxt(pieza):'Playlist del canal']];
+  $('dKv').innerHTML=filas.map(([k,v])=>`<div class="kv"><span>${k}</span><b>${String(v).replace(/[<&]/g,'')}</b></div>`).join('');
+  const propia=luz.ventiladores?.[n];
+  $('dColor').value=hex((propia?.colores&&propia.colores[0])||propia?.color||luz.color);
+}
+$('dColorOn').onclick=async()=>{if(!seleccionado)return;luz.ventiladores={...luz.ventiladores,[seleccionado]:{efecto:'fijo',color:$('dColor').value,brillo:luz.brillo,velocidad:luz.velocidad}};try{await enviarLuz();toast('Color del ventilador '+seleccionado+' enviado');}catch(err){toast('No se pudo enviar: '+err.message,true);}};
+$('dColorOff').onclick=async()=>{if(!seleccionado)return;const v={...luz.ventiladores};delete v[seleccionado];luz.ventiladores=v;try{await enviarLuz();toast('Ventilador '+seleccionado+' vuelve a la luz general');}catch(err){toast('No se pudo enviar: '+err.message,true);}};
+
+// ── Escena 3D ──
+const canvas=$('c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(34,1,.1,200);camera.position.set(14.5,10,15.5);
+const controls=new OrbitControls(camera,canvas);controls.target.set(0,2.9,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
+scene.add(new THREE.HemisphereLight(0x9fc6ff,0x0a0f1e,.9));
+const sol=new THREE.DirectionalLight(0xffffff,1.1);sol.position.set(6,12,8);scene.add(sol);
+// Suelo de la store
+const suelo=new THREE.Mesh(new THREE.CircleGeometry(12,64),new THREE.MeshStandardMaterial({color:0x070c18,roughness:.85,metalness:.2}));suelo.rotation.x=-Math.PI/2;scene.add(suelo);
+const rejilla=new THREE.GridHelper(24,24,0x1d3a6b,0x0e1a33);rejilla.position.y=.002;scene.add(rejilla);
+// Caja: cristal templado y perfiles de aluminio oscuro
+const caja=new THREE.Group();scene.add(caja);
+const W=4.2,H=6.1,D=5.6;
+const cristal=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),new THREE.MeshPhysicalMaterial({color:0x9fc6ff,transparent:true,opacity:.08,roughness:.05,metalness:0,side:THREE.DoubleSide,depthWrite:false}));cristal.position.y=H/2;caja.add(cristal);
+const aristas=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),new THREE.LineBasicMaterial({color:0x5f86c4,transparent:true,opacity:.55}));aristas.position.y=H/2;caja.add(aristas);
+const placa=new THREE.Mesh(new THREE.BoxGeometry(.12,H-1.2,D-1.4),new THREE.MeshStandardMaterial({color:0x0b1222,roughness:.6,metalness:.5,transparent:true,opacity:.6}));placa.position.set(-W/2+.15,H/2+.4,-0.95);placa.scale.set(1,3.6/(H-1.2),2.9/(D-1.4));caja.add(placa);
+
+
+// Ventiladores
+const loader=new THREE.TextureLoader();loader.setCrossOrigin('use-credentials');
+const vents={};
+function crearVentilador(n){
+  const g=new THREE.Group(),d=DISPOSICION[n];g.visible=d.enabled!==false;
+  const marco=new THREE.Mesh(new THREE.BoxGeometry(1.42,1.42,.24),new THREE.MeshStandardMaterial({color:0x0c111d,roughness:.5,metalness:.6}));g.add(marco);
+  const hueco=new THREE.Mesh(new THREE.CylinderGeometry(.66,.66,.26,48,1,true),new THREE.MeshStandardMaterial({color:0x05070d,side:THREE.DoubleSide}));hueco.rotation.x=Math.PI/2;g.add(hueco);
+  const aspas=new THREE.Group();
+  for(let i=0;i<9;i++){const a=new THREE.Mesh(new THREE.BoxGeometry(.5,.12,.02),new THREE.MeshStandardMaterial({color:0x1b2235,transparent:true,opacity:.75}));a.position.x=.38;const p=new THREE.Group();p.rotation.z=i*Math.PI*2/9;a.rotation.x=.5;p.add(a);aspas.add(p);}
+  aspas.position.z=.04;g.add(aspas);
+  const lcdMat=new THREE.MeshBasicMaterial({color:0x111111});
+  const lcd=new THREE.Mesh(new THREE.CircleGeometry(.36,48),lcdMat);lcd.position.z=.14;g.add(lcd);
+  const anilloMat=new THREE.MeshBasicMaterial({color:0x223344});
+  const anillo=new THREE.Mesh(new THREE.TorusGeometry(.66,.035,12,72),anilloMat);anillo.position.z=.13;g.add(anillo);
+  const halo=new THREE.Mesh(new THREE.RingGeometry(.69,.86,72),new THREE.MeshBasicMaterial({color:0x223344,transparent:true,opacity:.28,blending:THREE.AdditiveBlending,depthWrite:false}));halo.position.z=.135;g.add(halo);
+  g.position.set(...d.p);g.lookAt(new THREE.Vector3(...d.p).add(new THREE.Vector3(...d.n)));
+  g.userData.n=n;caja.add(g);
+  vents[n]={g,aspas,lcd,lcdMat,anilloMat,halo,tex:null};
+}
+for(let n=1;n<=7;n++)crearVentilador(n);
+// RAM Lexar ARES RGB DDR5 ×2 sobre la placa, a la derecha del zócalo, con barra superior iluminada.
+const zocalo=new THREE.Mesh(new THREE.BoxGeometry(.18,.75,.75),new THREE.MeshStandardMaterial({color:0x3a4252,metalness:.7,roughness:.35}));zocalo.position.set(-W/2+.3,3.9,-1.4);caja.add(zocalo);
+const ramRGB=[];[0xff3df2,0x3dd8ff].forEach((c,i)=>{const z=-0.75+i*.22;
+  const barra=new THREE.Mesh(new THREE.BoxGeometry(.28,1.5,.1),new THREE.MeshStandardMaterial({color:0x11151f,metalness:.6,roughness:.4}));barra.position.set(-W/2+.35,3.7,z);caja.add(barra);
+  const tira=new THREE.Mesh(new THREE.BoxGeometry(.3,.16,.12),new THREE.MeshBasicMaterial({color:c}));tira.position.set(-W/2+.35,4.53,z);caja.add(tira);ramRGB.push(tira);});
+function actualizarTexturas(){
+  for(let n=1;n<=7;n++){
+    const v=vents[n];
+    loader.load(API+'/miniatura/'+n+'.jpg?t='+Date.now(),tex=>{tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;},undefined,()=>{});
+    const img=document.querySelector(`img[data-mini="${n}"]`);if(img)img.src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
+  }
+  if(seleccionado)$('dImg').src=API+'/miniatura/'+seleccionado+'.jpg?t='+Date.now();
+}
+// Clic en un ventilador 3D → detalle
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
+canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(ptr,camera);
+  const hit=ray.intersectObjects(Object.values(vents).map(v=>v.g),true)[0];if(!hit)return;let o=hit.object;while(o&&!o.userData.n)o=o.parent;if(o)abrir(o.userData.n);});
+
+// Color que muestra cada anillo, imitando el efecto del controlador (para el gemelo, no es medida).
+function colorAnillo(n,t){
+  const inf=estado?.informe,l=(inf?.luz)||luz,e=inf?.escena,propia=l?.ventiladores?.[n]||l;
+  if(!l||propia.efecto==='apagado')return new THREE.Color(0x0b0f18);
+  const brillo=(propia.brillo??4)/4,vel=.25+(propia.velocidad??2)*.25,base=new THREE.Color(hex((propia.colores&&propia.colores[0])||propia.color));
+  let c=base.clone();
+  if(l.sigueVideo&&e?.modo==='sincro'&&!activoSincro(e,n))return new THREE.Color(0x0b0f18);
+  switch(propia.efecto){
+    case 'arcoiris':c.setHSL((t*.12*vel+n*.14)%1,1,.55);break;
+    case 'ciclo':c.setHSL((t*.1*vel)%1,1,.55);break;
+    case 'respirar':c.multiplyScalar(.2+.8*(.5+.5*Math.sin(t*2*vel)));break;
+    case 'meteoro':case 'carrera':case 'ola':{const fase=(t*vel*1.4-n*.45)%7;c.multiplyScalar(.15+.85*Math.max(0,1-Math.abs(((fase%7)+7)%7-3.5)/1.6));break;}
+  }
+  return c.multiplyScalar(Math.max(.08,brillo));
+}
+function activoSincro(e,n){
+  const orden=e.orden||[1,2,3,4,5,6,7],pos=orden.indexOf(n);if(pos<0)return false;
+  const paso=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/(e.paso||4)),N=orden.length;
+  return ((((pos-paso)%N)+N)%N)<(e.piezas||[]).length;
+}
+
+function tamano(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener('resize',tamano);tamano();
+const reloj=new THREE.Clock();
+function bucle(){
+  requestAnimationFrame(bucle);
+  const t=reloj.getElapsedTime();
+  for(let n=1;n<=7;n++){
+    const v=vents[n],f=(estado?.informe?.fans||[]).find(x=>x.n===n),rpm=f?.rpm||600;
+    v.aspas.rotation.z-=rpm/600*.06;
+    const c=colorAnillo(n,t);v.anilloMat.color.copy(c);v.halo.material.color.copy(c);
+    const el=document.querySelector(`.vent[data-n="${n}"] .disco`);if(el)el.style.setProperty('--anillo','#'+c.getHexString());
+  }
+  if(seleccionado)$('dImg').style.borderColor='#'+colorAnillo(seleccionado,t).getHexString();
+  controls.update();renderer.render(scene,camera);
+}
+bucle();
+
+// ── Estado en vivo ──
+async function refrescar(){
+  try{
+    estado=await api('estado');
+    const on=estado.enLinea,visto=estado.visto?Math.round((estado.ahora-estado.visto)/1000):null;
+    $('estado').className='estado '+(on?'on':'off');
+    $('estadoTxt').textContent=on?'METAHUMAN en línea':(visto==null?'METAHUMAN sin conectar':'Sin señal · hace '+visto+' s');
+    const d=estado.deseado||{},inf=estado.informe||{};
+    // Hora de METAHUMAN vista desde aquí: su reloj no tiene por qué coincidir con el del navegador.
+    if(inf.at&&estado.visto)desfasePC=(inf.at-estado.visto)-(Date.now()-estado.ahora);
+    // Los controles enseñan lo más reciente: lo pedido aquí o lo que la máquina ya aplicó (también
+    // puede cambiar en local, desde config.json o su API).
+    const vigente=(Number(inf.revision)||0)>=(Number(d.revision)||0)?inf:d;
+    if(!editandoEscena&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
+    if(!editandoLuz&&(vigente.luz||d.luz)){const l=vigente.luz||d.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{}};pintarLuz();}
+    const aplicando=d.revision&&inf.revision!==undefined&&d.revision>inf.revision;
+    $('pendEscena').textContent=aplicando?'Aplicando en METAHUMAN…':(d.por?'Último cambio: '+d.por:'');
+    $('pendLuz').textContent=aplicando?'Aplicando en METAHUMAN…':'';
+    for(const f of inf.fans||[]){const m=document.querySelector(`[data-meta="${f.n}"]`);if(m)m.textContent=`${f.rpm??'—'} rpm · ${f.fps??0} fps`;}
+    pintarDetalle();
+  }catch(err){
+    if(err.message!=='login'){$('estado').className='estado off';
+      $('estadoTxt').textContent=err.message==='not_configured'?'Nube sin configurar (falta SUPERCOMPUTER_PROXY_KEY)':'Sin conexión con la nube';}
+  }finally{$('carga').classList.add('hide');}
+}
+async function cargarStock(){
+  try{const d=await fetch(STOCK).then(r=>r.json());stock=(d.items||[]).filter(x=>x&&x.id&&['video','image'].includes(x.type)).map(x=>({id:x.id,num:x.num,title:x.title||x.id,type:x.type}));}
+  catch{stock=[];}
+  pintarModos();
+}
+pintarModos();pintarLuz();cargarStock();refrescar();
+setInterval(refrescar,2500);setInterval(actualizarTexturas,3000);actualizarTexturas();
+</script>
+</body>
+</html>
