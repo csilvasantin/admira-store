@@ -299,6 +299,10 @@ $('aplicarLuz').onclick=async()=>{
 $('tira').innerHTML=[1,2,3,4,5,6,7].map(n=>`<button class="vent" data-n="${n}"><div class="disco"><img alt="Ventilador ${n}" data-mini="${n}"></div><b>Ventilador ${n}</b><small data-meta="${n}">—</small></button>`).join('');
 $('tira').onclick=e=>{const b=e.target.closest('.vent');if(b)abrir(+b.dataset.n);};
 $('cerrar').onclick=()=>{$('detalle').classList.remove('open');seleccionado=null;marcarSel();};
+let ultimoToque=0;
+['pointerdown','focusin','keydown'].forEach(ev=>document.addEventListener(ev,e=>{if(e.target.closest&&e.target.closest('#opciones,#detalle'))ultimoToque=Date.now();},true));
+function interactuando(){const a=document.activeElement;return (a&&a.matches&&a.matches('select,input')&&a.closest('#opciones,#detalle'))||Date.now()-ultimoToque<4000;}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&seleccionado&&!(document.activeElement&&document.activeElement.tagName==='SELECT')){$('detalle').classList.remove('open');seleccionado=null;marcarSel();}});
 function marcarSel(){document.querySelectorAll('.vent').forEach(v=>v.classList.toggle('sel',+v.dataset.n===seleccionado));}
 function abrir(n){seleccionado=n;marcarSel();$('detalle').classList.add('open');pintarDetalle();}
 function pintarDetalle(){
@@ -309,6 +313,11 @@ function pintarDetalle(){
   const pieza=e?(e.modo==='independiente'?(e.ids?.[n]||[])[0]:e.piezas?.[0]):null;
   const filas=[['Puerto · posición',f.port!=null?`${f.port} · ${f.index}`:'—'],['RPM',f.rpm??'—'],['Fotogramas/s',f.fps??'—'],['Enviados',f.sent??'—'],['Errores USB',f.errors??'—'],['Modo',e?.modo||'—'],['Pieza',pieza?piezaTxt(pieza):'Playlist del canal']];
   $('dKv').innerHTML=filas.map(([k,v])=>`<div class="kv"><span>${k}</span><b>${String(v).replace(/[<&]/g,'')}</b></div>`).join('');
+  let ps=$('dPieza');if(!ps){ps=document.createElement('div');ps.id='dPieza';ps.className='campo';$('dKv').after(ps);}
+  if(escena.modo==='independiente'){ps.innerHTML=`<label>Contenido de este ventilador</label><select data-dind="${n}">${opcionesStock((escena.ids[n]||[])[0])}</select><button class="btn" id="dPiezaOk" style="margin-top:6px">Aplicar</button>`;
+    ps.querySelector('select').onchange=ev=>{escena.ids[n]=ev.target.value?[ev.target.value]:[];editandoEscena=true;const l=document.querySelector(`#opciones select[data-ind="${n}"]`);if(l)l.value=ev.target.value;};
+    $('dPiezaOk').onclick=()=>$('aplicarEscena').click();}
+  else ps.innerHTML='<small>Elige «Independiente» para asignar contenido por ventilador.</small>';
   const propia=luz.ventiladores?.[n];
   $('dColor').value=hex((propia?.colores&&propia.colores[0])||propia?.color||luz.color);
 }
@@ -461,13 +470,13 @@ async function refrescar(){
     // Los controles enseñan lo más reciente: lo pedido aquí o lo que la máquina ya aplicó (también
     // puede cambiar en local, desde config.json o su API).
     const vigente=(Number(inf.revision)||0)>=(Number(d.revision)||0)?inf:d;
-    if(!editandoEscena&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
+    if(!editandoEscena&&!interactuando()&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
     if(!editandoLuz&&(vigente.luz||d.luz)){const l=vigente.luz||d.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{}};pintarLuz();}
     const aplicando=d.revision&&inf.revision!==undefined&&d.revision>inf.revision;
     $('pendEscena').textContent=aplicando?'Aplicando en METAHUMAN…':(d.por?'Último cambio: '+d.por:'');
     $('pendLuz').textContent=aplicando?'Aplicando en METAHUMAN…':'';
     for(const f of inf.fans||[]){const m=document.querySelector(`[data-meta="${f.n}"]`);if(m)m.textContent=`${f.rpm??'—'} rpm · ${f.fps??0} fps`;}
-    pintarDetalle();
+    if(!interactuando())pintarDetalle();
   }catch(err){
     if(SIM&&err.message!=='login'){estado={...(estado||{}),enLinea:false,informe:{...(estado?.informe||{}),...(simInforme||{})}};$('estado').className='estado sim';$('estadoTxt').textContent='Gemelo en simulación · sin nube';}
     else if(err.message!=='login'){$('estado').className='estado off';
