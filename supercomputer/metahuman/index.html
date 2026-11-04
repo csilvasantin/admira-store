@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SuperComputer_Metahuman · gemelo digital · admira.store</title>
 <meta name="description" content="Gemelo digital de la Supercomputer: los 7 ventiladores con pantalla de METAHUMAN, sus contenidos de admira.tv y su iluminación, en vivo.">
-<link rel="canonical" href="https://www.admira.store/supercomputer/">
+<link rel="canonical" href="https://www.admira.store/supercomputer/metahuman/">
 <link rel="icon" href="/favicon.ico">
 <meta name="theme-color" content="#04060d">
 <style>
@@ -81,6 +81,7 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 <script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
 </head>
 <body>
+<div id="boot" style="position:fixed;left:50%;top:46%;transform:translate(-50%,-50%);font:600 14px/1 ui-monospace,monospace;letter-spacing:.35em;color:#3df2ff;text-shadow:0 0 12px #3df2ff,0 0 24px #ff3df2;pointer-events:none;z-index:5;transition:opacity .8s">BOOTING METAHUMAN CORE…</div>
 <canvas id="c" aria-label="Gemelo 3D de la Supercomputer con sus 7 ventiladores"></canvas>
 <div class="carga" id="carga">ENCENDIENDO LA SUPERCOMPUTER…</div>
 
@@ -135,6 +136,11 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 <script type="module">
 import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {EffectComposer} from "three/addons/postprocessing/EffectComposer.js";
+import {RenderPass} from "three/addons/postprocessing/RenderPass.js";
+import {UnrealBloomPass} from "three/addons/postprocessing/UnrealBloomPass.js";
+import {OutputPass} from "three/addons/postprocessing/OutputPass.js";
+import {RoomEnvironment} from "three/addons/environments/RoomEnvironment.js";
 
 const API='/supercomputer/api';
 const STOCK='https://api.admira.store/stock/list?limit=300';
@@ -269,21 +275,49 @@ $('dColorOff').onclick=async()=>{if(!seleccionado)return;const v={...luz.ventila
 // ── Escena 3D ──
 const canvas=$('c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(34,1,.1,200);camera.position.set(14.5,10,15.5);
-const controls=new OrbitControls(camera,canvas);controls.target.set(0,2.9,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
-scene.add(new THREE.HemisphereLight(0x9fc6ff,0x0a0f1e,.9));
-const sol=new THREE.DirectionalLight(0xffffff,1.1);sol.position.set(6,12,8);scene.add(sol);
-// Suelo de la store
-const suelo=new THREE.Mesh(new THREE.CircleGeometry(12,64),new THREE.MeshStandardMaterial({color:0x070c18,roughness:.85,metalness:.2}));suelo.rotation.x=-Math.PI/2;scene.add(suelo);
-const rejilla=new THREE.GridHelper(24,24,0x1d3a6b,0x0e1a33);rejilla.position.y=.002;scene.add(rejilla);
-// Caja: cristal templado y perfiles de aluminio oscuro
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x02030a);scene.fog=new THREE.FogExp2(0x02030a,.045);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const pmrem=new THREE.PMREMGenerator(renderer);scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
+const camera=new THREE.PerspectiveCamera(32,1,.1,200);camera.position.set(11.5,5.2,13.5);
+const controls=new OrbitControls(camera,canvas);controls.target.set(0,3,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
+scene.add(new THREE.HemisphereLight(0x6fa8ff,0x05020f,.45));
+const sol=new THREE.DirectionalLight(0xffffff,.8);sol.position.set(6,12,8);scene.add(sol);
+const rimC=new THREE.PointLight(0x3df2ff,40,30);rimC.position.set(-7,6,-6);scene.add(rimC);
+const rimM=new THREE.PointLight(0xff3df2,40,30);rimM.position.set(7,4,-5);scene.add(rimM);
+const rimB=new THREE.SpotLight(0x8a7dff,60,30,.5,.6);rimB.position.set(0,14,6);scene.add(rimB);
+// Cámara ciber: suelo de cristal negro + rejilla neón
+const suelo=new THREE.Mesh(new THREE.CircleGeometry(40,96),new THREE.MeshPhysicalMaterial({color:0x020309,roughness:.12,metalness:.9,clearcoat:1,clearcoatRoughness:.05}));suelo.rotation.x=-Math.PI/2;scene.add(suelo);
+const rejilla=new THREE.GridHelper(60,60,0xff3df2,0x0e6f88);rejilla.position.y=.004;rejilla.material.transparent=true;rejilla.material.opacity=.55;rejilla.material.blending=THREE.AdditiveBlending;scene.add(rejilla);
+const rej2=new THREE.GridHelper(60,240,0x0a2a3a,0x0a2a3a);rej2.position.y=.003;rej2.material.transparent=true;rej2.material.opacity=.35;scene.add(rej2);
+// Anillos de escaneo bajo la caja
+const anillosScan=[];[3.6,4.4,5.4].forEach((r,i)=>{const m=new THREE.Mesh(new THREE.RingGeometry(r,r+.05,128),new THREE.MeshBasicMaterial({color:i%2?0xff3df2:0x3df2ff,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.y=.01+i*.002;scene.add(m);anillosScan.push(m);});
+const pulso=new THREE.Mesh(new THREE.RingGeometry(.98,1,128),new THREE.MeshBasicMaterial({color:0x3df2ff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));pulso.rotation.x=-Math.PI/2;pulso.position.y=.02;scene.add(pulso);
+// Partículas flotantes
+const NP=900,pg=new THREE.BufferGeometry(),pp=new Float32Array(NP*3);for(let i=0;i<NP;i++){const r=4+Math.random()*16,a=Math.random()*6.283;pp[i*3]=Math.cos(a)*r;pp[i*3+1]=Math.random()*12;pp[i*3+2]=Math.sin(a)*r;}
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));const particulas=new THREE.Points(pg,new THREE.PointsMaterial({color:0x7fe9ff,size:.05,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(particulas);
+// Caja: cristal templado y perfiles de aluminio
 const caja=new THREE.Group();scene.add(caja);
 const W=4.2,H=6.1,D=5.6;
-const cristal=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),new THREE.MeshPhysicalMaterial({color:0x9fc6ff,transparent:true,opacity:.08,roughness:.05,metalness:0,side:THREE.DoubleSide,depthWrite:false}));cristal.position.y=H/2;caja.add(cristal);
-const aristas=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),new THREE.LineBasicMaterial({color:0x5f86c4,transparent:true,opacity:.55}));aristas.position.y=H/2;caja.add(aristas);
-const placa=new THREE.Mesh(new THREE.BoxGeometry(.12,H-1.2,D-1.4),new THREE.MeshStandardMaterial({color:0x0b1222,roughness:.6,metalness:.5,transparent:true,opacity:.6}));placa.position.set(-W/2+.15,H/2+.4,-0.95);placa.scale.set(1,3.6/(H-1.2),2.9/(D-1.4));caja.add(placa);
-
+const cristal=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),new THREE.MeshPhysicalMaterial({color:0xaad4ff,transparent:true,opacity:.12,roughness:.02,metalness:.1,clearcoat:1,envMapIntensity:2.2,side:THREE.DoubleSide,depthWrite:false}));cristal.position.y=H/2;caja.add(cristal);
+const alu=new THREE.MeshStandardMaterial({color:0x8a93a6,metalness:1,roughness:.28});
+const ex=[[-1,-1],[1,-1],[-1,1],[1,1]];
+ex.forEach(([x,z])=>{const v=new THREE.Mesh(new THREE.BoxGeometry(.09,H,.09),alu);v.position.set(x*W/2,H/2,z*D/2);caja.add(v);});
+[0,H].forEach(y=>{[-1,1].forEach(z=>{const m=new THREE.Mesh(new THREE.BoxGeometry(W,.09,.09),alu);m.position.set(0,y,z*D/2);caja.add(m);});[-1,1].forEach(x=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.09,.09,D),alu);m.position.set(x*W/2,y,0);caja.add(m);});});
+// Tiras LED en las aristas
+const ledMat=[new THREE.MeshBasicMaterial({color:0x3df2ff}),new THREE.MeshBasicMaterial({color:0xff3df2})];
+const aristas=new THREE.Group();caja.add(aristas);
+[-1,1].forEach(z=>{const m=new THREE.Mesh(new THREE.BoxGeometry(W,.025,.025),ledMat[0]);m.position.set(0,.06,z*(D/2+.05));aristas.add(m);const m2=new THREE.Mesh(new THREE.BoxGeometry(W,.025,.025),ledMat[1]);m2.position.set(0,H-.06,z*(D/2+.05));aristas.add(m2);});
+ex.forEach(([x,z],i)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.025,H,.025),ledMat[i%2]);m.position.set(x*(W/2+.05),H/2,z*(D/2+.05));aristas.add(m);});
+// Placa base detallada (fondo)
+const placa=new THREE.Group();caja.add(placa);
+const px=-W/2+.15,pcy=H/2+.4,pcz=-0.95;
+const pcb=new THREE.Mesh(new THREE.BoxGeometry(.06,3.6,2.9),new THREE.MeshStandardMaterial({color:0x0a1424,roughness:.45,metalness:.6}));pcb.position.set(px,pcy,pcz);placa.add(pcb);
+const chipM=new THREE.MeshStandardMaterial({color:0x141a24,metalness:.8,roughness:.3});
+const cpu=new THREE.Mesh(new THREE.BoxGeometry(.12,.8,.8),new THREE.MeshStandardMaterial({color:0xb8c0cc,metalness:1,roughness:.2}));cpu.position.set(px+.08,pcy+.55,pcz-.1);placa.add(cpu);
+[[.4,-.5,.5,.5],[-.6,.6,.4,.6],[-1.2,-.8,.3,.3],[-.9,.2,.25,.25],[1.1,-1,.6,.22],[-1.4,.9,.2,.5]].forEach(([y,z,h,d])=>{const c=new THREE.Mesh(new THREE.BoxGeometry(.08,h,d),chipM);c.position.set(px+.06,pcy+y,pcz+z);placa.add(c);});
+const trazaMat=new THREE.LineBasicMaterial({color:0x3df2ff,transparent:true,opacity:.55,blending:THREE.AdditiveBlending});
+const tp=[];for(let i=0;i<46;i++){let y=pcy+(Math.random()-.5)*3.4,z=pcz+(Math.random()-.5)*2.7;const y2=y+(Math.random()-.5)*1.2,z2=z+(Math.random()-.5)*1.2;tp.push(px+.035,y,z,px+.035,y2,z,px+.035,y2,z,px+.035,y2,z2);}
+const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.Float32BufferAttribute(tp,3));placa.add(new THREE.LineSegments(tg,trazaMat));
 
 // Ventiladores
 const loader=new THREE.TextureLoader();loader.setCrossOrigin('use-credentials');
@@ -309,7 +343,7 @@ for(let n=1;n<=7;n++)crearVentilador(n);
 const zocalo=new THREE.Mesh(new THREE.BoxGeometry(.18,.75,.75),new THREE.MeshStandardMaterial({color:0x3a4252,metalness:.7,roughness:.35}));zocalo.position.set(-W/2+.3,3.9,-1.4);caja.add(zocalo);
 const ramRGB=[];[0xff3df2,0x3dd8ff].forEach((c,i)=>{const z=-0.75+i*.22;
   const barra=new THREE.Mesh(new THREE.BoxGeometry(.28,1.5,.1),new THREE.MeshStandardMaterial({color:0x11151f,metalness:.6,roughness:.4}));barra.position.set(-W/2+.35,3.7,z);caja.add(barra);
-  const tira=new THREE.Mesh(new THREE.BoxGeometry(.3,.16,.12),new THREE.MeshBasicMaterial({color:c}));tira.position.set(-W/2+.35,4.53,z);caja.add(tira);ramRGB.push(tira);});
+  const tira=new THREE.Mesh(new THREE.BoxGeometry(.3,.16,.12),new THREE.MeshBasicMaterial({color:c}));tira.position.set(-W/2+.35,4.53,z);caja.add(tira);ramRGB.push(tira);const hl=new THREE.Mesh(new THREE.BoxGeometry(.04,1.3,.11),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.6}));hl.position.set(-W/2+.5,3.7,z);caja.add(hl);ramRGB.push(hl);});
 function actualizarTexturas(){
   for(let n=1;n<=7;n++){
     const v=vents[n];
@@ -344,7 +378,8 @@ function activoSincro(e,n){
   return ((((pos-paso)%N)+N)%N)<(e.piezas||[]).length;
 }
 
-function tamano(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));const bloom=new UnrealBloomPass(new THREE.Vector2(512,512),.9,.5,.55);composer.addPass(bloom);composer.addPass(new OutputPass());
+function tamano(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
 addEventListener('resize',tamano);tamano();
 const reloj=new THREE.Clock();
 function bucle(){
@@ -357,7 +392,13 @@ function bucle(){
     const el=document.querySelector(`.vent[data-n="${n}"] .disco`);if(el)el.style.setProperty('--anillo','#'+c.getHexString());
   }
   if(seleccionado)$('dImg').style.borderColor='#'+colorAnillo(seleccionado,t).getHexString();
-  controls.update();renderer.render(scene,camera);
+  ramRGB.forEach((m,i)=>m.material.color.setHSL((t*.15+i*.25+Math.sin(t*3+i)*.05)%1,1,.5+.15*Math.sin(t*4+i)));
+  ledMat[0].color.setHSL((.5+.05*Math.sin(t))%1,1,.45+.1*Math.sin(t*2));ledMat[1].color.setHSL((.85+.05*Math.sin(t*1.3))%1,1,.45+.1*Math.cos(t*2));
+  anillosScan.forEach((m,i)=>{m.rotation.z=t*(i%2?-.2:.3);});const k=(t*.35)%1;pulso.scale.setScalar(2+k*9);pulso.material.opacity=.8*(1-k);
+  particulas.rotation.y=t*.02;particulas.position.y=Math.sin(t*.4)*.2;
+  trazaMat.opacity=.35+.25*Math.sin(t*2.5);
+  if(t>1.2){const bt=document.getElementById('boot');if(bt&&bt.style.opacity!=='0'){bt.style.opacity='0';setTimeout(()=>bt.remove(),900);}}
+  controls.update();composer.render();
 }
 bucle();
 
