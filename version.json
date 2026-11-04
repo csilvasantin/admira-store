@@ -1,17 +1,14 @@
 {
   "version": "v.27.10.2026.r2.23:49",
-  "deployer": "DeepAgent Codex",
-  "machine": "MacStudio",
-  "signature": "DeepAgent Codex · MacStudio",
+  "deployedAt": "2026-11-04T16:28:19Z",
+  "deployer": "GrokBot",
+  "machine": "box",
+  "signature": "GrokBot · box",
+  "git": "3dad6c6e027b1fde06b876075c2c05e6e34ec026",
+  "gitShort": "3dad6c6",
+  "gitFull": "3dad6c6e027b1fde06b876075c2c05e6e34ec026",
+  "dirty": false,
   "novedades": [
     "Acabado 2D: paleta y tamaño por cara, PNG + JSON y lector Good con huella, altura y cuatro caras conservadas."
-  ],
-  "deployedAt": "2026-10-28T11:20:59.972173+00:00",
-  "git": "67f2a7c1f6ec34e0502edacd76d2fb3f6b0467e0",
-  "gitFull": "67f2a7c1f6ec34e0502edacd76d2fb3f6b0467e0",
-  "gitShort": "67f2a7c",
-  "dirty": false,
-  "mirrorOf": "https://www.xpaceos.com/",
-  "mirror": "parcial: portada y assets comunes",
-  "locale": "es"
+  ]
 }
