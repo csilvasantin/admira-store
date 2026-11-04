@@ -182,13 +182,32 @@ function simAplicar(parte,valor){
   simInforme={...(simInforme||{}),[parte]:parte==='escena'?{...valor,epoch:valor.epoch||Date.now()}:JSON.parse(JSON.stringify(valor))};
   estado={...(estado||{}),informe:{...(estado?.informe||{}),...simInforme}};
 }
+function simPieza(n){
+  const e=(SIM&&simInforme?.escena)||escena||{};const p=e.piezas||[];
+  if(e.modo==='independiente')return (e.ids?.[n]||e.ids?.[String(n)]||[])[0]||null;
+  if(e.modo==='repetir'||e.modo==='extender')return p[0]||null;
+  if(e.modo==='sincro')return p.length?p[(n-1)%p.length]:null;
+  return null;
+}
 function simPlaceholder(n){
-  simPlaceholder.c=simPlaceholder.c||{};if(simPlaceholder.c[n])return simPlaceholder.c[n];
+  const e=(SIM&&simInforme?.escena)||escena||{};const id=simPieza(n);const it=id?stock.find(s=>s.id===id):null;
+  const k=n+'|'+(e.modo||'')+'|'+(id||'')+'|'+(it?.title||'');
+  simPlaceholder.c=simPlaceholder.c||{};if(simPlaceholder.c[k])return simPlaceholder.c[k];
   const cv=document.createElement('canvas');cv.width=cv.height=256;const g=cv.getContext('2d');
-  const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'hsl('+(n*51)%360+',80%,45%)');gr.addColorStop(1,'#05070d');
-  g.fillStyle=gr;g.fillRect(0,0,256,256);g.fillStyle='#fff';g.font='bold 120px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(String(n),128,120);
-  g.font='600 20px system-ui,sans-serif';g.fillStyle='rgba(255,255,255,.75)';g.fillText('SIM',128,200);
-  return simPlaceholder.c[n]=cv;
+  let h=n*51;if(id){h=0;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))>>>0;}
+  const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'hsl('+h%360+',80%,45%)');gr.addColorStop(1,'#05070d');
+  g.fillStyle=gr;g.fillRect(0,0,256,256);g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';
+  if(id){
+    g.font='bold 64px system-ui,sans-serif';g.fillText(it?.num!=null?'#'+it.num:'▶',128,92);
+    const t=String(it?.title||id);g.font='600 22px system-ui,sans-serif';
+    const w=t.split(/\s+/);let l='',ls=[];for(const x of w){if(g.measureText(l+' '+x).width>210&&l){ls.push(l);l=x;}else l=l?l+' '+x:x;}ls.push(l);
+    ls.slice(0,3).forEach((x,i)=>g.fillText(x.slice(0,22),128,146+i*26));
+    g.font='600 15px system-ui,sans-serif';g.fillStyle='rgba(255,255,255,.75)';g.fillText('SIM · '+(e.modo||'')+' · V'+n,128,232);
+  }else{
+    g.font='bold 120px system-ui,sans-serif';g.fillText(String(n),128,120);
+    g.font='600 20px system-ui,sans-serif';g.fillStyle='rgba(255,255,255,.75)';g.fillText(e.modo==='identificar'?'SIM · identificar':'SIM · sin pieza',128,200);
+  }
+  return simPlaceholder.c[k]=cv;
 }
 let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
 
@@ -244,7 +263,7 @@ $('aplicarEscena').onclick=async()=>{
   if(escena.modo==='sincro')e.paso=escena.paso;
   if(escena.modo==='identificar')delete e.piezas;
   else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
-  if(SIM){simAplicar('escena',e);editandoEscena=false;pintarModos();toast('Aplicado en gemelo (sim)');api('escena',e).catch(()=>{});return;}
+  if(SIM){simAplicar('escena',e);editandoEscena=false;pintarModos();actualizarTexturas();toast('Aplicado en gemelo (sim)');api('escena',e).catch(()=>{});return;}
   try{$('aplicarEscena').disabled=true;await api('escena',e);editandoEscena=false;toast('Escena enviada a METAHUMAN');refrescar();}
   catch(err){toast(soloLectura?'Tu acceso es de solo lectura':'No se pudo enviar: '+err.message,true);}
   finally{$('aplicarEscena').disabled=false;}
@@ -286,7 +305,7 @@ function pintarDetalle(){
   if(!seleccionado)return;
   const n=seleccionado,f=(estado?.informe?.fans||[]).find(x=>x.n===n)||{},e=estado?.informe?.escena;
   $('dTit').textContent='Ventilador '+n;
-  $('dImg').onerror=()=>{if(SIM){$('dImg').onerror=null;$('dImg').src=simPlaceholder(n).toDataURL();}};$('dImg').src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
+  $('dImg').onerror=()=>{if(SIM){$('dImg').onerror=null;$('dImg').src=simPlaceholder(n).toDataURL();}};$('dImg').src=SIM?simPlaceholder(n).toDataURL():API+'/miniatura/'+n+'.jpg?t='+Date.now();
   const pieza=e?(e.modo==='independiente'?(e.ids?.[n]||[])[0]:e.piezas?.[0]):null;
   const filas=[['Puerto · posición',f.port!=null?`${f.port} · ${f.index}`:'—'],['RPM',f.rpm??'—'],['Fotogramas/s',f.fps??'—'],['Enviados',f.sent??'—'],['Errores USB',f.errors??'—'],['Modo',e?.modo||'—'],['Pieza',pieza?piezaTxt(pieza):'Playlist del canal']];
   $('dKv').innerHTML=filas.map(([k,v])=>`<div class="kv"><span>${k}</span><b>${String(v).replace(/[<&]/g,'')}</b></div>`).join('');
@@ -371,10 +390,11 @@ const ramRGB=[];[0xff3df2,0x3dd8ff].forEach((c,i)=>{const z=-0.75+i*.22;
 function actualizarTexturas(){
   for(let n=1;n<=7;n++){
     const v=vents[n];
+    if(SIM){const tex=new THREE.CanvasTexture(simPlaceholder(n));tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;const im=document.querySelector(`img[data-mini="${n}"]`);if(im){im.onerror=null;im.src=simPlaceholder(n).toDataURL();}continue;}
     loader.load(API+'/miniatura/'+n+'.jpg?t='+Date.now(),tex=>{tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;},undefined,()=>{if(!SIM)return;const tex=new THREE.CanvasTexture(simPlaceholder(n));tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;});
     const img=document.querySelector(`img[data-mini="${n}"]`);if(img){img.onerror=()=>{if(SIM){img.onerror=null;img.src=simPlaceholder(n).toDataURL();}};img.src=API+'/miniatura/'+n+'.jpg?t='+Date.now();}
   }
-  if(seleccionado)$('dImg').src=API+'/miniatura/'+seleccionado+'.jpg?t='+Date.now();
+  if(seleccionado)$('dImg').src=SIM?simPlaceholder(seleccionado).toDataURL():API+'/miniatura/'+seleccionado+'.jpg?t='+Date.now();
 }
 // Clic en un ventilador 3D → detalle
 const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
