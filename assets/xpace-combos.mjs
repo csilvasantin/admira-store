@@ -6,6 +6,7 @@
 import { ProjectClient, venueUrl } from '../admira-xp/scripts/central-project-client.mjs?v=tres-combos-1';
 import { marcaQueLimita, proyectosPermitidos } from '../admira-xp/scripts/marca-proyectos.mjs?v=alsea-1';
 import { conPuerta } from './puertas.mjs?v=puerta-1';
+import { COMPUTER_ID, COMPUTER_PROJECT, COMPUTER_VENUES, computerVenue } from './computer-xpace.mjs?v=computer-1';
 
 export const CALIDADES = [['good', 'Good'], ['better', 'Better'], ['best', 'Best'], ['matrix', 'Matrix']];
 const leer = k => { try { return sessionStorage.getItem(k); } catch { return null; } };
@@ -30,7 +31,7 @@ export function montarCombos({ proyecto, local, calidad, alCambiarCalidad, alCam
     caja = document.createElement('div');
     caja.className = 'xpace-combos'; caja.setAttribute('data-xpace-combos', '');
     caja.style.cssText = 'display:flex;align-items:center;gap:6px;min-width:0;flex:0 1 auto';
-    for (const [id, es, en] of [['xpacio', 'Xpacio', 'Xpace'], ['local', 'Local', 'Venue'], ['calidad', 'Calidad', 'Quality']]) {
+    for (const [id, es, en] of [['xpacio', 'Xpaces', 'Xpaces'], ['local', 'Local', 'Venue'], ['calidad', 'Calidad', 'Quality']]) {
       const label = document.createElement('label'); label.className = 'topbar-combo'; label.dataset.combo = id;
       const span = document.createElement('span'); span.className = 'picker-label'; span.dataset.es = es; span.dataset.en = en;
       const s = document.createElement('select'); s.setAttribute('aria-label', es);
@@ -55,12 +56,12 @@ export function montarCombos({ proyecto, local, calidad, alCambiarCalidad, alCam
   function pintar() {
     if (!caja || !caja.isConnected) { if (!crear()) return; }
     for (const span of caja.querySelectorAll('[data-es]')) span.textContent = ingles() ? span.dataset.en : span.dataset.es;
-    sel.xpacio.setAttribute('aria-label', texto('Xpacio', 'Xpace')); sel.local.setAttribute('aria-label', texto('Local', 'Venue')); sel.calidad.setAttribute('aria-label', texto('Calidad', 'Quality'));
+    sel.xpacio.setAttribute('aria-label', 'Xpaces'); sel.local.setAttribute('aria-label', texto('Local', 'Venue')); sel.calidad.setAttribute('aria-label', texto('Calidad', 'Quality'));
     const marca = marcaQueLimita({ marca: leer('mb:marca'), manual: leer('mb:manual') });
     const proyectos = proyectosPermitidos(marca, catalog.projects), pid = proyectoActual();
-    sel.xpacio.replaceChildren(new Option(texto('Escoge un Xpacio', 'Choose a Xpace'), ''), ...proyectos.map(p => new Option(p.name, p.id)));
-    sel.xpacio.value = proyectos.some(p => p.id === pid) ? pid : '';
-    const locales = catalog.venues.filter(v => v.project_id === pid);
+    sel.xpacio.replaceChildren(new Option(texto('Escoge un Xpacio', 'Choose a Xpace'), ''), ...proyectos.map(p => new Option(p.name, p.id)), new Option(COMPUTER_PROJECT.name, COMPUTER_ID));
+    sel.xpacio.value = pid === COMPUTER_ID || proyectos.some(p => p.id === pid) ? pid : '';
+    const locales = pid === COMPUTER_ID ? COMPUTER_VENUES : catalog.venues.filter(v => v.project_id === pid);
     sel.local.replaceChildren(new Option(texto('Escoge un local', 'Choose a venue'), ''), ...locales.map(v => new Option(nombreLocal(v, catalog.projects), v.id)));
     sel.local.value = pendiente ? '' : localActual();
     sel.local.disabled = !locales.length;
@@ -75,6 +76,7 @@ export function montarCombos({ proyecto, local, calidad, alCambiarCalidad, alCam
 
   function elegirXpacio(id) {
     if (!id) return;
+    if (id === COMPUTER_ID) { pendiente = id; pintar(); abrirLocal(); return; }
     aplicarMarca(id);
     const locales = catalog.venues.filter(v => v.project_id === id);
     if (locales.length === 1) { pendiente = id; elegirLocal(locales[0].id); return; }
@@ -83,6 +85,7 @@ export function montarCombos({ proyecto, local, calidad, alCambiarCalidad, alCam
   }
 
   async function elegirLocal(id) {
+    if (proyectoActual() === COMPUTER_ID) { const cv = computerVenue(id); if (cv) location.assign(cv.url); return; }
     const pid = proyectoActual(), p = catalog.projects.find(x => x.id === pid), v = catalog.venues.find(x => x.id === id && x.project_id === pid);
     if (!p || !v) return;
     let href;

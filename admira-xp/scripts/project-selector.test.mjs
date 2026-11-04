@@ -47,7 +47,7 @@ test('account expiry still clears authorized selections on the timer',async()=>{
 
 const cuatro={projects:[{id:'starbucks',name:'Starbucks',circuit:'alsea_starbucks'},{id:'altadis',name:'Altadis',circuit:'altadis_bcn'},{id:'estancos',name:'Estancos',circuit:'estancos'},{id:'cafebreria',name:'Cafebrería',circuit:'cafebreria'}],
  venues:[{id:'demo-starbucks',project_id:'starbucks',name:'Paseo de Gràcia 103',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021'},{id:'starbucks-diagonal-634',project_id:'starbucks',name:'Diagonal 634',demo:true,xpace_url:'https://www.admira.store/xpacios/starbucks-centros/?loc=starbucks-diagonal-634'},{id:'altadis-bcn-001',project_id:'altadis',name:'Estanco 1',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco&loc=altadis-bcn-001'},{id:'demo-xtanco',project_id:'estancos',name:'Xtanco',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco'},{id:'demo-cafebreria',project_id:'cafebreria',name:'Cafebrería',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria'}]};
-const proyectos=h=>h.element('projectSelector').options.slice(1).map(o=>o.value);
+const proyectos=h=>h.element('projectSelector').options.slice(1).map(o=>o.value).filter(v=>v!=='computer');
 test('entering with the Starbucks brand (?marca=starbucks) the selector offers only Starbucks',async()=>{
  const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
  assert.deepEqual(proyectos(h),['starbucks']);
@@ -84,4 +84,14 @@ test('three combos: choosing the Starbucks Xpace applies its brand at once and o
  assert.deepEqual(venue.options.slice(1).map(o=>o.value),['demo-starbucks','starbucks-diagonal-634']);
  venue.value='starbucks-diagonal-634';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(new URL(h.destinations[1]).pathname,'/xpacios/starbucks-centros/');
+});
+
+test('Xpaces offers Computer, whose venues Metahuman and PC-Cocina open the Supercomputer twins (4-nov-2026)',async()=>{
+ const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
+ const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
+ assert.equal(project.options.at(-1).value,'computer');assert.equal(project.options.at(-1).text,'Computer');
+ project.value='computer';project.listeners.get('change')();await new Promise(setImmediate);
+ assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['metahuman','Metahuman'],['pc-cocina','PC-Cocina']]);
+ venue.value='pc-cocina';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(h.destinations.at(-1),'/supercomputer/pc-cocina/');
 });

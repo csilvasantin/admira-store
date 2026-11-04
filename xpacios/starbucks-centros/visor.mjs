@@ -3,7 +3,7 @@
 // Matrix (Carlos, 15-oct-2026) es la foto 360 real del local (panorama.mjs) si el centro la tiene.
 import * as T from '../../admira-xp/scripts/premium-three.mjs';
 import { crearPanorama } from './panorama.mjs?v=sc-pano-6';
-import { montarCombos } from '/assets/xpace-combos.mjs?v=puerta-1';
+import { montarCombos } from '/assets/xpace-combos.mjs?v=computer-1';
 import { montarVentanas } from './ventanas.mjs?v=sc-vent-2';
 import { crearHiloTPV } from './hilo-tpv.mjs?v=sc-tpv-3';
 import { crearMandoTPV } from './mando-tpv.mjs?v=sc-mando-4';
