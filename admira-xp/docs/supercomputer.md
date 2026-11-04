@@ -96,3 +96,5 @@ column on the glass side (1 on top), 4-5-6 in the bottom row (6 at the front) an
 Help (web, tutorial, CLI) and the MCP catalog (`mcp/`) describe it. Pending: the real MCP server
 (`xpaceos-mcp`, private repository) and the Yokup record (needs a Yokup credential).
 Simulation mode («Solo gemelo · simulación», `localStorage` key `admira.supercomputer.sim`): a checkbox under the status badge on `/supercomputer/` and `/supercomputer/metahuman/` lets the twin apply scene/lighting locally (toast «Aplicado en gemelo (sim)», yellow badge «Gemelo en simulación · PC apagado», placeholder thumbnails) while METAHUMAN is off; the cloud call is still attempted but never blocks.
+
+Sim pseudostream cache: with «Solo gemelo · simulación» on, each fan (3D, strip, detail) shows the real piece from `api.admira.store/stock/list` (`thumbnail` poster first, then `url` video/image) downloaded **once** into Cache API `admira-sc-sim-v1` (key = asset url) with an on-screen progress bar, then replayed from cache («✓ en caché»); it is gemelo-only, never PC bridge frames, and the SIM title card remains only as fallback when no media URL exists.
