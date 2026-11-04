@@ -95,3 +95,4 @@ Identify mode shows each fan's number, port and position on its own screen. Conf
 column on the glass side (1 on top), 4-5-6 in the bottom row (6 at the front) and 7 at the rear.
 Help (web, tutorial, CLI) and the MCP catalog (`mcp/`) describe it. Pending: the real MCP server
 (`xpaceos-mcp`, private repository) and the Yokup record (needs a Yokup credential).
+Simulation mode («Solo gemelo · simulación», `localStorage` key `admira.supercomputer.sim`): a checkbox under the status badge on `/supercomputer/` and `/supercomputer/metahuman/` lets the twin apply scene/lighting locally (toast «Aplicado en gemelo (sim)», yellow badge «Gemelo en simulación · PC apagado», placeholder thumbnails) while METAHUMAN is off; the cloud call is still attempted but never blocks.
