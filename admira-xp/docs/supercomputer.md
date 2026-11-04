@@ -28,9 +28,14 @@ esta función (`PROXY_KEY` = secreto de Pages `SUPERCOMPUTER_PROXY_KEY`). Ningun
 | Repetir | repeat, espejo | Un solo player (`supercomputer-ventiladores`) cuyos fotogramas van a los 7 a la vez. |
 | Extender | extend, adaptar, adapt, estirar | Una pieza estirada sobre los 7 como un mural. Ajuste cubrir/estirar/contener y nº de columnas. |
 | Sincro | sync, relevo | La pieza pasa de un ventilador al siguiente cada `paso` segundos sin reiniciarse; con varias piezas desfilan en carrusel. |
+| Identificar | identify | Cada pantalla enseña su número, su puerto y su posición, para ubicar los ventiladores en la caja. |
 
-Extender y sincro los pinta la página de escena del puente con un reloj común (no son players de
-admira.tv). Circuito de admira.tv: `supercomputer`.
+Extender, sincro e identificar los pinta la página de escena del puente con un reloj común (no son
+players de admira.tv). Circuito de admira.tv: `supercomputer`.
+
+**Disposición física** (confirmada por Carlos el 4-nov-2026 con Identificar): 1-2-3 en columna en el
+cristal lateral (1 arriba), 4-5-6 en la fila de abajo (6 delante, 4 detrás) y 7 trasero. Es la
+constante `DISPOSICION` del gemelo.
 
 ## Iluminación
 
@@ -43,18 +48,27 @@ carrera; color, brillo 0–4, velocidad 0–4, color propio por ventilador y «l
 | Método | Ruta | Quién | Cuerpo / respuesta |
 |---|---|---|---|
 | GET | `/supercomputer/api/estado` | sesión | `{deseado, informe, enLinea, visto}` |
-| GET | `/supercomputer/api/miniatura/<1-7>.jpg` | sesión | JPEG 160×160 |
-| POST | `/supercomputer/api/escena` | sesión, misma web | `{modo, ids?, piezas?, paso?, ajuste?, columnas?, orden?}` |
+| GET | `/supercomputer/api/miniatura/<1-7>.jpg` | sesión | JPEG 400×400, calidad 40 (unos 5–15 KB), cada 3 s |
+| POST | `/supercomputer/api/escena` | sesión, misma web | `{modo, ids?, piezas?, paso?, ajuste?, columnas?, orden?}` (`modo` también `identificar`) |
 | POST | `/supercomputer/api/luz` | sesión, misma web | `{efecto, color, brillo, velocidad, sigueVideo, ventiladores?}` |
 | POST | `/supercomputer/api/maquina` | Bearer `sc_…` | `{informe, miniaturas}` → `{deseado}` |
 
 Una sesión de solo lectura ve el estado pero no cambia nada (403).
 
+## Ayuda y MCP
+
+Sección `#supercomputer` en la ayuda web (`admira-xp/help.html`), el tutorial (`help/index.html`) y la
+ayuda CLI (`help/cli/index.html`); clave `supercomputer` en `mcp/manifest.json` y `mcp/funcionalidades.json`,
+párrafo en `mcp/llms.txt` y tarjeta en `mcp/`. No hay herramienta MCP que cambie escena o luz: se usa el
+gemelo o la API con sesión.
+
 ## Pendiente
 
-- Ayuda web, tutorial, CLI y MCP (`mcp/`, `xpaceos-mcp`) aún no describen la Supercomputer.
-- La disposición física de los ventiladores en el 3D (`DISPOSICION` en la página) es una suposición
-  razonable: columna lateral (puerto 0), fila inferior (puerto 1) y trasero (puerto 2). Falta confirmarla.
+- Servidor MCP real (`csilvasantin/xpaceos-mcp`, `mcp.admira.store`): repositorio privado; hace falta acceso
+  a GitHub desde la máquina que lo despliegue.
+- Registro en Yokup: hace falta una credencial individual o la clave de flota (`https://yokup.com/mcp`).
+- El reloj de METAHUMAN iba 48 s adelantado (servicio de hora de Windows parado). La nube y el gemelo lo
+  compensan; arreglarlo en Windows lo hace Carlos.
 
 ---
 
@@ -74,4 +88,7 @@ meteor, wave and racing; colour, brightness, speed, per-fan colour and "light fo
 The machine reaches the cloud through `www.admira.store/supercomputer/api/maquina` (not `*.workers.dev`,
 which Spanish ISPs block at times). The `supercomputer` Worker (Durable Object, no KV writes) only accepts
 the machine key and this function's proxy key; neither reaches the browser. API contract: see the table above.
-Pending: web help, tutorial, CLI and MCP entries, and confirming the fans' physical layout in the 3D view.
+Identify mode shows each fan's number, port and position on its own screen. Confirmed layout: 1-2-3 in a
+column on the glass side (1 on top), 4-5-6 in the bottom row (6 at the front) and 7 at the rear.
+Help (web, tutorial, CLI) and the MCP catalog (`mcp/`) describe it. Pending: the real MCP server
+(`xpaceos-mcp`, private repository) and the Yokup record (needs a Yokup credential).

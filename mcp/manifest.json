@@ -3639,5 +3639,127 @@
       },
       "stockMetadata": "Optional validated sprite descriptor, bound to PNG bytes; conflicts do not overwrite identity."
     }
+  },
+  "supercomputer": {
+    "status": "live",
+    "since": "2026-11-04",
+    "lead": "Woz",
+    "twin": "https://www.admira.store/supercomputer/",
+    "guide": "https://www.admira.store/admira-xp/docs/supercomputer.md",
+    "bridge": "https://github.com/csilvasantin/admira-tv/tree/main/tools/player-ventiladores",
+    "machine": "METAHUMAN",
+    "physical_control": true,
+    "devices": "7 × Lian Li UNI FAN TL LCD (round 400×400 LCD + RGB ring) on a UNI FAN TL controller",
+    "layout": {
+      "glass_side_column_top_to_bottom": [
+        1,
+        2,
+        3
+      ],
+      "bottom_row_front_to_rear": [
+        6,
+        5,
+        4
+      ],
+      "rear": [
+        7
+      ],
+      "confirmed": "2026-11-04 with Identify mode"
+    },
+    "admira_tv": {
+      "circuit": "supercomputer",
+      "screens_independent": [
+        "supercomputer-ventilador-1",
+        "supercomputer-ventilador-2",
+        "supercomputer-ventilador-3",
+        "supercomputer-ventilador-4",
+        "supercomputer-ventilador-5",
+        "supercomputer-ventilador-6",
+        "supercomputer-ventilador-7"
+      ],
+      "screen_repeat": "supercomputer-ventiladores",
+      "player": "AdmiraWindowsPlayer/tl-lcd-2.0"
+    },
+    "modes": {
+      "independiente": {
+        "aliases": [
+          "independent",
+          "autónomo"
+        ],
+        "es": "Cada ventilador es un player de admira.tv con su pieza (?ids=).",
+        "en": "Each fan is an admira.tv player with its own piece (?ids=)."
+      },
+      "repetir": {
+        "aliases": [
+          "repeat",
+          "espejo"
+        ],
+        "es": "La misma pieza en los 7 a la vez.",
+        "en": "The same piece on all 7 at once."
+      },
+      "extender": {
+        "aliases": [
+          "extend",
+          "adaptar",
+          "adapt",
+          "estirar"
+        ],
+        "es": "Una pieza estirada sobre los 7 como un mural (ajuste, columnas, orden).",
+        "en": "One piece stretched across the 7 as a wall (fit, columns, order)."
+      },
+      "sincro": {
+        "aliases": [
+          "sync",
+          "relevo"
+        ],
+        "es": "La pieza pasa de un ventilador al siguiente cada paso sin reiniciarse; varias piezas = carrusel.",
+        "en": "The piece moves from fan to fan every step without restarting; several pieces = carousel."
+      },
+      "identificar": {
+        "aliases": [
+          "identify"
+        ],
+        "es": "Cada pantalla enseña su número, puerto y posición.",
+        "en": "Each screen shows its number, port and position."
+      }
+    },
+    "lighting": {
+      "effects": [
+        "apagado",
+        "fijo",
+        "arcoiris",
+        "respirar",
+        "ciclo",
+        "meteoro",
+        "pista",
+        "ola",
+        "carrera"
+      ],
+      "fields": [
+        "efecto",
+        "color",
+        "brillo 0-4 o %",
+        "velocidad 0-4",
+        "ventiladores.<n>",
+        "sigueVideo"
+      ],
+      "note": "respirar is a group effect (whole controller port)"
+    },
+    "api": {
+      "session": [
+        "GET /supercomputer/api/estado",
+        "GET /supercomputer/api/miniatura/<1-7>.jpg",
+        "POST /supercomputer/api/escena",
+        "POST /supercomputer/api/luz"
+      ],
+      "machine": "POST /supercomputer/api/maquina (Bearer machine key; reported state + thumbnails → desired state)",
+      "read_only_sessions": "GET only (403 on writes)"
+    },
+    "mcp": {
+      "tools": [],
+      "gap": "No MCP tool changes the scene or the lighting yet: use the twin or the session API. xpaceos-mcp (mcp.admira.store) not updated: private repo, needs GitHub access."
+    },
+    "es": "Abre /supercomputer/ (con sesión). La Supercomputer es la store de METAHUMAN: 7 ventiladores Lian Li UNI FAN TL LCD con pantalla redonda de 400×400 y anillo RGB, en un gemelo 3D con cada pantalla en vivo. Pantallas: Independiente (cada ventilador es un player de admira.tv, supercomputer-ventilador-1…7, con su pieza del Stock), Repetir (la misma pieza en los 7 a la vez), Extender o Adaptar (una pieza estirada sobre los 7 como un mural; ajuste cubrir, estirar o contener y nº de columnas), Sincro (la pieza pasa de un ventilador al siguiente cada paso sin reiniciarse; con varias piezas, carrusel) e Identificar (cada pantalla enseña su número, puerto y posición). Iluminación: apagado, fijo, arcoíris, respirar, ciclo, meteoro, ola y carrera, con color, brillo, velocidad, color propio por ventilador (pulsa un ventilador) y la luz que sigue al vídeo en sincro. METAHUMAN aplica cada cambio en unos 3 s; el anillo del gemelo imita el efecto, no lo mide. Una sesión de solo lectura ve el estado pero no lo cambia. Disposición confirmada: 1-2-3 en el cristal lateral (1 arriba), 4-5-6 abajo (6 delante) y 7 trasero.",
+    "en": "Open /supercomputer/ (session required). The Supercomputer is METAHUMAN's store: 7 Lian Li UNI FAN TL LCD fans with a round 400×400 screen and an RGB ring, in a 3D twin with every screen live. Screens: Independent (each fan is an admira.tv player, supercomputer-ventilador-1…7, with its own Stock piece), Repeat (the same piece on all 7 at once), Extend or Adapt (one piece stretched across the 7 as a wall; cover, stretch or contain and number of columns), Sync (the piece moves from fan to fan every step without restarting; several pieces form a carousel) and Identify (each screen shows its number, port and position). Lighting: off, static, rainbow, breathing, cycle, meteor, wave and racing, with colour, brightness, speed, per-fan colour (click a fan) and light that follows the video in sync. METAHUMAN applies each change in about 3 s; the twin's ring imitates the effect, it does not measure it. A read-only session can watch but not change. Confirmed layout: 1-2-3 on the glass side (1 on top), 4-5-6 at the bottom (6 at the front) and 7 at the rear."
   }
 }

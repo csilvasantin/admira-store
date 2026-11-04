@@ -32,7 +32,7 @@ button,input,select{font:inherit;color:inherit}
 .panel h2 em{font-style:normal;color:var(--ice)}
 .modos{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .modo,.efecto{border:1px solid var(--line);background:rgba(143,214,255,.03);border-radius:10px;padding:8px 9px;text-align:left;cursor:pointer}
-.modo b{display:block;font-size:13px}.modo small{color:var(--mut);font-size:10px}
+.modo b{display:block;font-size:13px}.modo small{color:var(--mut);font-size:10px}.modo.ancho{grid-column:1/-1}
 .modo:hover,.efecto:hover{border-color:var(--line2)}
 .modo.on,.efecto.on{border-color:var(--ice);background:rgba(143,214,255,.11);box-shadow:inset 0 0 0 1px rgba(143,214,255,.25)}
 .desc{color:var(--mut);font-size:11.5px;margin:10px 0 2px}
@@ -97,6 +97,7 @@ input[type=range]{width:100%;accent-color:var(--ice)}
     <button class="modo" data-modo="repetir"><b>Repetir</b><small>Repeat</small></button>
     <button class="modo" data-modo="extender"><b>Extender</b><small>Extend · Adaptar · Adapt</small></button>
     <button class="modo" data-modo="sincro"><b>Sincro</b><small>Sync</small></button>
+    <button class="modo ancho" data-modo="identificar"><b>Identificar</b><small>Identify · cada pantalla enseña su número</small></button>
   </div>
   <p class="desc" id="desc"></p>
   <div id="opciones"></div>
@@ -144,13 +145,15 @@ const MODOS={
   independiente:'Cada ventilador es un player de admira.tv con su propia pieza.',
   repetir:'La misma pieza en los 7 a la vez, en sincronía exacta.',
   extender:'Una pieza estirada sobre los 7 como un mural: cada ventilador muestra su tesela.',
-  sincro:'La pieza pasa de un ventilador al siguiente sin perder el hilo. Con varias piezas, desfilan en carrusel.'
+  sincro:'La pieza pasa de un ventilador al siguiente sin perder el hilo. Con varias piezas, desfilan en carrusel.',
+  identificar:'Cada pantalla enseña su número, su puerto y su posición, para ubicar los ventiladores en la caja.'
 };
 const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
 const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b26bff','#ffffff'];
 
-// Disposición física en la caja (ventilador n → posición y hacia dónde mira). Puerto 0: columna lateral;
-// puerto 1: fila inferior; puerto 2: trasero. Si en METAHUMAN están de otra forma, se cambia aquí.
+// Disposición física en la caja (ventilador n → posición y hacia dónde mira), confirmada por Carlos el
+// 4-nov-2026 con el modo Identificar: 1-2-3 en columna en el cristal lateral (1 arriba); 4-5-6 en la fila
+// de abajo (6 delante, 4 detrás); 7 trasero. Delante = +z, cristal = +x.
 const DISPOSICION={
   1:{p:[2.05,4.55,0.6],n:[1,0,0]},2:{p:[2.05,3.0,0.6],n:[1,0,0]},3:{p:[2.05,1.45,0.6],n:[1,0,0]},
   4:{p:[-0.2,0.18,-1.55],n:[0,1,0]},5:{p:[-0.2,0.18,0.05],n:[0,1,0]},6:{p:[-0.2,0.18,1.65],n:[0,1,0]},
@@ -192,6 +195,8 @@ function pintarModos(){
     $('ajuste').value=escena.ajuste||'cubrir';
     $('columnas').oninput=e=>{$('columnasV').textContent=e.target.value;escena.columnas=+e.target.value;editandoEscena=true;};
     $('ajuste').onchange=e=>{escena.ajuste=e.target.value;editandoEscena=true;};
+  }else if(escena.modo==='identificar'){
+    o.innerHTML='';
   }else{
     const n=Math.max(1,escena.piezas.length);
     o.innerHTML=Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label><select data-pieza="${i}">${opcionesStock(escena.piezas[i])}</select></div>`).join('')+
@@ -208,7 +213,8 @@ $('aplicarEscena').onclick=async()=>{
   else e.piezas=escena.piezas;
   if(escena.modo==='extender'){e.ajuste=escena.ajuste;e.columnas=escena.columnas;}
   if(escena.modo==='sincro')e.paso=escena.paso;
-  if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
+  if(escena.modo==='identificar')delete e.piezas;
+  else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
   try{$('aplicarEscena').disabled=true;await api('escena',e);editandoEscena=false;toast('Escena enviada a METAHUMAN');refrescar();}
   catch(err){toast(soloLectura?'Tu acceso es de solo lectura':'No se pudo enviar: '+err.message,true);}
   finally{$('aplicarEscena').disabled=false;}
