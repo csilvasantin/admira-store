@@ -158,7 +158,7 @@ const DISPOSICION={
 };
 
 let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
-let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false;
+let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
 
 // ── Utilidades ──
 const hex=c=>Array.isArray(c)?'#'+c.map(v=>Number(v).toString(16).padStart(2,'0')).join(''):(c||'#ffffff');
@@ -327,7 +327,7 @@ function colorAnillo(n,t){
 }
 function activoSincro(e,n){
   const orden=e.orden||[1,2,3,4,5,6,7],pos=orden.indexOf(n);if(pos<0)return false;
-  const paso=Math.floor(Math.max(0,(Date.now()-(e.epoch||0))/1000)/(e.paso||4)),N=orden.length;
+  const paso=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/(e.paso||4)),N=orden.length;
   return ((((pos-paso)%N)+N)%N)<(e.piezas||[]).length;
 }
 
@@ -356,8 +356,13 @@ async function refrescar(){
     $('estado').className='estado '+(on?'on':'off');
     $('estadoTxt').textContent=on?'METAHUMAN en línea':(visto==null?'METAHUMAN sin conectar':'Sin señal · hace '+visto+' s');
     const d=estado.deseado||{},inf=estado.informe||{};
-    if(!editandoEscena&&(d.escena||inf.escena)){const e=d.escena||inf.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
-    if(!editandoLuz&&(d.luz||inf.luz)){const l=d.luz||inf.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{}};pintarLuz();}
+    // Hora de METAHUMAN vista desde aquí: su reloj no tiene por qué coincidir con el del navegador.
+    if(inf.at&&estado.visto)desfasePC=(inf.at-estado.visto)-(Date.now()-estado.ahora);
+    // Los controles enseñan lo más reciente: lo pedido aquí o lo que la máquina ya aplicó (también
+    // puede cambiar en local, desde config.json o su API).
+    const vigente=(Number(inf.revision)||0)>=(Number(d.revision)||0)?inf:d;
+    if(!editandoEscena&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
+    if(!editandoLuz&&(vigente.luz||d.luz)){const l=vigente.luz||d.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{}};pintarLuz();}
     const aplicando=d.revision&&inf.revision!==undefined&&d.revision>inf.revision;
     $('pendEscena').textContent=aplicando?'Aplicando en METAHUMAN…':(d.por?'Último cambio: '+d.por:'');
     $('pendLuz').textContent=aplicando?'Aplicando en METAHUMAN…':'';
