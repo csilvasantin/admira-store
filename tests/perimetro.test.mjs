@@ -33,6 +33,19 @@ test('la pregunta del avatar no exige sesión y no abre la portada', async () =>
   assert.equal((await perimetro(ctx('https://abc.xpaceos.pages.dev/avatar-ask', {Accept:'*/*'}), noFetch)).status, 200);
 });
 
+test('Supercomputer: la API llega a su función (que comprueba sesión o clave); el gemelo pide login', async () => {
+  assert.ok(isPublicPath('/supercomputer/api'));
+  assert.ok(isPublicPath('/supercomputer/api/maquina'));
+  assert.ok(!isPublicPath('/supercomputer/'));
+  assert.ok(!isPublicPath('/supercomputer/apifalsa'));
+  const maquina = await perimetro({...ctx('https://www.admira.store/supercomputer/api/maquina', {Accept:'application/json', Authorization:'Bearer sc_prueba'}),
+    next:async () => Response.json({ok:true})}, noFetch);
+  assert.equal(maquina.status, 200);
+  const gemelo = await perimetro(ctx('https://www.admira.store/supercomputer/', {Accept:'text/html'}), noFetch);
+  assert.equal(gemelo.status, 302);
+  assert.equal(gemelo.headers.get('location'), 'https://www.admira.store/auth/login?return_to=%2Fsupercomputer%2F');
+});
+
 test('sin sesión, la portada redirige al login y no entrega el HTML', async () => {
   const r = await perimetro(ctx('https://www.xpaceos.com/inventario/', {Accept:'*/*'}), noFetch);
   assert.equal(r.status, 302);

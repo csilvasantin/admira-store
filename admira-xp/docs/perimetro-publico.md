@@ -14,6 +14,8 @@ Lógica: `functions/_perimetro.js`. Pruebas: `tests/perimetro.test.mjs`, `tests/
 | `/xpacios/` y sus Xpacios | Público. Crear un Xpacio desde el índice pide sesión, porque escribe en un índice compartido. |
 | `/xpacios/crear/`, `/xpacios/grok/`, `/xpacios/xtanco-barcelona/` y `/xpacios/xtanco-valencia/` | Exigen sesión, y es el servidor quien lo hace. |
 | `/admira-xp/` | Una persona que lo abre directamente entra con sesión; incrustado en un iframe no la necesita. |
+| `/supercomputer/` | Exige sesión: el gemelo de la Supercomputer manda sobre equipos reales (pantallas y luces de METAHUMAN). |
+| `/supercomputer/api/*` | El perímetro la deja pasar y la función comprueba la sesión (gemelo) o la clave Bearer de la máquina (`/maquina`). Ver `admira-xp/docs/supercomputer.md`. |
 | Resto de páginas (`/`, `/inventario/`, `/help/`…) | Exigen sesión. |
 | Assets (`.js`, `.css`, imágenes, `.json`…) | Sin sesión, porque los usan players, decks y agentes. |
 
@@ -71,6 +73,8 @@ Una rama `vista-previa/<nombre>` pasa por el mismo proceso y publica en `*.admir
 | `/xpacios/` and its Xpaces | Public. Creating a Xpace from the index asks for a session, because it writes to a shared index. |
 | `/xpacios/crear/`, `/xpacios/grok/`, `/xpacios/xtanco-barcelona/` and `/xpacios/xtanco-valencia/` | Require a session, enforced by the server. |
 | `/admira-xp/` | A person opening it directly signs in; embedded in an iframe it needs no session. |
+| `/supercomputer/` | Requires a session: the Supercomputer twin controls real devices (METAHUMAN's screens and lights). |
+| `/supercomputer/api/*` | The perimeter lets it through and the function checks the session (twin) or the machine's Bearer key (`/maquina`). See `admira-xp/docs/supercomputer.md`. |
 | Other pages (`/`, `/inventario/`, `/help/`…) | Require a session. |
 | Assets (`.js`, `.css`, images, `.json`…) | No session, because players, decks and agents use them. |
 

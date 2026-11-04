@@ -66,7 +66,11 @@ export const SITES = {
 // players, decks y agentes. Cerrarlas rompería esos iframes y enlaces.
 // /avatar-ask es solo el proxy del cerebro (FLT-101350): sin esto el POST, al no
 // llevar extensión, se trataría como documento y el perímetro lo mandaría al login.
-export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask'];
+// /supercomputer/api (Carlos, 4-nov-2026): la API del gemelo de la Supercomputer. La llama también el
+// puente de METAHUMAN, que no tiene sesión de navegador sino su clave Bearer; por eso la función
+// (functions/supercomputer/api/[[path]].js) comprueba ella misma la sesión o la clave. La página
+// /supercomputer/ NO es pública: underPrefix no la incluye.
+export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask', '/supercomputer/api'];
 // Apps internas heredadas de Pixeria dentro de /xpacios (Carlos, 30-oct-2026): crear un Xpacio, con su captura
 // desde el móvil, el laboratorio Grok y los dos Xtanco. Cada navegador que abre un Xtanco actúa como nodo real
 // de la flota (presencia, emisión y proof-of-play) y guarda decoración compartida: un visitante anónimo
