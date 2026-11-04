@@ -86,7 +86,7 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 <div class="carga" id="carga">ENCENDIENDO LA SUPERCOMPUTER…</div>
 
 <header class="hud top">
-  <div class="brand"><b>Super<span>computer</span></b><small>SUPERCOMPUTER_METAHUMAN · FONDO 3V + PLACA/RAM · ABAJO 3H · ADMIRA.TV</small></div>
+  <div class="brand"><b>Super<span>computer</span></b><small>SUPERCOMPUTER_METAHUMAN · DELANTE 1-2-3 · ABAJO 4-5-6 · DETRÁS 7 · ADMIRA.TV</small></div>
   <span class="spacer"></span>
   <span class="estado" id="estado"><i></i><span id="estadoTxt">Conectando…</span></span>
 </header>
@@ -157,15 +157,17 @@ const MODOS={
 const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
 const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b26bff','#ffffff'];
 
-// SuperComputer_Metahuman (native:supercomputer-metahuman) · disposición física CANÓNICA (Carlos, 4-nov-2026,
-// layout-physical-metahuman.json + mapping.json del bridge TL LCD). Cristal = +x, fondo = -x, delante = +z.
-// FONDO: placa ASRock Z790 PG Riptide + 2× Lexar ARES RGB + 4-5-6 VERTICALES apilados (4 arriba), mirando al cristal.
-// ABAJO: bloque separado 1-2-3 HORIZONTALES en fila (izq→der vistos desde el cristal), caras hacia arriba.
-// 7 (temperatura): enabled:false, oculto.
+// SuperComputer_Metahuman (native:supercomputer-metahuman) · disposición física CANÓNICA, confirmada por Carlos el
+// 4-nov-2026 con el modo Identificar (cada pantalla pinta su número) y una foto de METAHUMAN desde la ventana
+// principal. Numeración del puente: 1-3 = puerto 0, 4-6 = puerto 1, 7 = puerto 2 (la de /supercomputer/api).
+// Ejes: cristal/ventana principal = +x, fondo con la placa = -x, delante = -z, detrás = +z.
+// DELANTE (derecha vista desde el cristal): 1-2-3 VERTICALES en columna (1 arriba), pantallas hacia dentro.
+// ABAJO: 4-5-6 HORIZONTALES, caras arriba: 4 detrás (izquierda), 6 delante (derecha).
+// DETRÁS, arriba a la izquierda junto a la placa: 7, activo (recibe fotogramas y gira como los demás).
 const DISPOSICION={
-  1:{p:[0.7,0.18,1.65],n:[0,1,0]},2:{p:[0.7,0.18,0.05],n:[0,1,0]},3:{p:[0.7,0.18,-1.55],n:[0,1,0]},
-  4:{p:[-1.6,4.75,1.75],n:[1,0,0]},5:{p:[-1.6,3.2,1.75],n:[1,0,0]},6:{p:[-1.6,1.65,1.75],n:[1,0,0]},
-  7:{p:[-0.3,4.4,-2.55],n:[0,0,1],enabled:false}
+  1:{p:[0.55,4.6,-2.65],n:[0,0,1]},2:{p:[0.55,3.1,-2.65],n:[0,0,1]},3:{p:[0.55,1.6,-2.65],n:[0,0,1]},
+  4:{p:[0.75,0.18,1.6],n:[0,1,0]},5:{p:[0.75,0.18,0.1],n:[0,1,0]},6:{p:[0.75,0.18,-1.4],n:[0,1,0]},
+  7:{p:[-0.6,4.6,2.65],n:[0,0,-1]}
 };
 
 let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
