@@ -5,6 +5,23 @@ import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs?v=alsea-
 import {conPuerta} from '../../assets/puertas.mjs?v=puerta-1';
 // Xpace «Computer» (Carlos, 4-nov-2026): sus locales son los gemelos Supercomputer Metahuman y PC-Cocina (mismo dato que assets/computer-xpace.mjs).
 const COMPUTER_ID='computer',COMPUTER_PROJECT={id:COMPUTER_ID,name:'Computer'},COMPUTER_VENUES=[{id:'metahuman',name:'Metahuman',url:'/supercomputer/metahuman/'},{id:'pc-cocina',name:'PC-Cocina',url:'/supercomputer/pc-cocina/'}],computerVenue=id=>COMPUTER_VENUES.find(v=>v.id===id)||null;
+
+// Carlos (4-nov-2026): «no hay que cambiar la interface de admira.store» — el gemelo Computer se incrusta en el
+// área de contenido bajo la barra Xpaces (iframe), sin salir del shell. Las URLs directas /supercomputer/… siguen valiendo.
+let computerChosen='';
+function embedComputer(cv){
+ computerChosen=cv.id;
+ if(typeof document.createElement!=='function'){location.assign(cv.url);return;}
+ let pane=document.getElementById('computerPane');
+ if(!pane||!pane.tagName){pane=document.createElement('div');pane.id='computerPane';document.body.appendChild(pane);}
+ const bar=document.getElementById('topBar'),top=bar&&bar.getBoundingClientRect?Math.round(bar.getBoundingClientRect().bottom):48;
+ pane.style.cssText=`position:fixed;left:0;right:0;bottom:0;top:${top}px;z-index:9000;background:#000;`;
+ let f=pane.querySelector('iframe');
+ if(!f){f=document.createElement('iframe');f.title='Computer';f.allow='fullscreen; autoplay; xr-spatial-tracking';f.allowFullscreen=true;f.style.cssText='border:0;width:100%;height:100%;display:block';pane.appendChild(f);}
+ if(f.getAttribute('src')!==cv.url)f.setAttribute('src',cv.url);
+ try{const u=new URL(location.href);u.searchParams.set('xpace',COMPUTER_ID);u.searchParams.set('venue',cv.id);history.replaceState(null,'',u.pathname+u.search+u.hash);}catch{}
+ try{window.addEventListener('resize',()=>{const b=document.getElementById('topBar');if(b&&pane.isConnected)pane.style.top=Math.round(b.getBoundingClientRect().bottom)+'px';});}catch{}
+}
 const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip');
 let storage;try{storage=sessionStorage;}catch{}
 const leerMarca=k=>{try{return storage&&typeof storage.getItem==='function'?storage.getItem(k):null;}catch{return null;}};
@@ -34,7 +51,7 @@ function draw(){
  // Con una marca que limita y una escena de otro proyecto, los locales son los de la marca (si es uno solo).
  venuesDe=project?project.id:(limitado&&visibles.length===1?visibles[0].id:(limitado?'':id));
  if(pendingProject===COMPUTER_ID)venuesDe=COMPUTER_ID;
- venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));if(venuesDe===COMPUTER_ID)for(const v of COMPUTER_VENUES)venueSelect.add(new Option(v.name,v.id));for(const v of catalog.venues.filter(v=>v.project_id===venuesDe))venueSelect.add(new Option(nombreLocal(v),v.id));venueSelect.value=venue?.id||'';venueSelect.disabled=venuesDe===COMPUTER_ID?false:busy||venueSelect.options.length<2;
+ venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));if(venuesDe===COMPUTER_ID)for(const v of COMPUTER_VENUES)venueSelect.add(new Option(v.name,v.id));for(const v of catalog.venues.filter(v=>v.project_id===venuesDe))venueSelect.add(new Option(nombreLocal(v),v.id));venueSelect.value=venuesDe===COMPUTER_ID?computerChosen:(venue?.id||'');venueSelect.disabled=venuesDe===COMPUTER_ID?false:busy||venueSelect.options.length<2;
  chip.textContent=(catalog.projects.find(p=>p.id===sceneId())?.name||text('Choose project','Elegir proyecto'))+(mode==='demo'?' · Demo':'');chip.title=chip.textContent;
  $('projectVenueName').textContent=venue?.name||'—';
  const aviso=limitado?' · '+text(`${nombreMarca(marca)} brand: only its projects · /marca off shows them all`,`Marca ${nombreMarca(marca)}: sólo sus proyectos · /marca off los muestra todos`):'';
@@ -51,7 +68,7 @@ function draw(){
 }
 async function load(){busy=true;error='';draw();try{catalog=mode==='account'?await client.context():await client.demos();}catch(e){pendingProject='';catalog={projects:[],venues:[]};error=e.message==='SESSION_EXPIRED'?text('Connection expired or revoked. Reconnect with AdmiraNext.','Conexión caducada o revocada. Reconecta con AdmiraNext.'):text('AdmiraNext is unavailable. Your selection has not changed.','AdmiraNext no está disponible. Tu selección no ha cambiado.');}finally{busy=false;last='';draw();}}
 async function navigate(projectId,venueId){busy=true;draw();try{if(mode==='account')catalog=await client.context();const project=proyectosPermitidos(marcaLimite(),catalog.projects).find(p=>p.id===projectId),venues=catalog.venues.filter(v=>v.project_id===projectId);if(!project)throw Error('SESSION_EXPIRED');const venue=venues.find(v=>v.id===venueId)||venues[0]||null;if(!venue){pendingProject=project.id;error=venues.length?text('Choose the venue to open.','Escoge el local que quieres abrir.'):text('This project has no associated venue.','Este proyecto no tiene un local asociado.');return;}chosenProject=project.id;const href=venueUrl(location.href,venue,project,chosenQuality(),{publicDemo:mode==='demo',language:english()?'en':'es'});try{const dest=new URL(href);const id=dest.searchParams.get('loc')==='alsea-sbux-021'?'starbucks':(dest.searchParams.get('project')||'');if(id&&window.AdmiraMarca&&typeof window.AdmiraMarca.aplicarProyecto==='function')window.AdmiraMarca.aplicarProyecto(id);if(id&&typeof window.dispatchEvent==='function')window.dispatchEvent(new CustomEvent('xpaceos:project-change',{detail:{id}}));}catch(err){}location.assign(await conPuerta(venue,href));}catch(e){if(e.message==='SESSION_EXPIRED'){catalog={projects:[],venues:[]};pendingProject='';}error=e.message==='SESSION_EXPIRED'?text('Access changed. Reconnect with AdmiraNext.','El acceso ha cambiado. Reconecta con AdmiraNext.'):text('Unable to verify the selected venue.','No se pudo verificar el local seleccionado.');}finally{busy=false;last='';draw();}}
-select.addEventListener('change',()=>{const id=select.value;if(!id)return;if(id===COMPUTER_ID){pendingProject=COMPUTER_ID;last='';draw();abrirLocal();return;}aplicarMarca(id);navigate(id).then(()=>{if(pendingProject===id)abrirLocal();});});venueSelect.addEventListener('change',()=>{const cv=venuesDe===COMPUTER_ID&&computerVenue(venueSelect.value);if(cv){location.assign(cv.url);return;}if(venueSelect.value)navigate(venuesDe||select.value,venueSelect.value);});
+select.addEventListener('change',()=>{const id=select.value;if(!id)return;if(id===COMPUTER_ID){pendingProject=COMPUTER_ID;last='';draw();abrirLocal();return;}aplicarMarca(id);navigate(id).then(()=>{if(pendingProject===id)abrirLocal();});});venueSelect.addEventListener('change',()=>{const cv=venuesDe===COMPUTER_ID&&computerVenue(venueSelect.value);if(cv){embedComputer(cv);last='';draw();return;}if(venueSelect.value)navigate(venuesDe||select.value,venueSelect.value);});
 $('projectRefresh').onclick=load;
 $('projectDisconnect').onclick=async()=>{await client.disconnect();pendingProject='';catalog={projects:[],venues:[]};error=text('Disconnected. Reconnect or choose public demos.','Desconectado. Reconecta o elige demos públicas.');last='';draw();};
 $('projectDemos').onclick=async()=>{await client.disconnect();mode='demo';await load();};
@@ -63,4 +80,5 @@ $('projectConnect').onclick=()=>{
 chip.addEventListener('click',()=>{select.focus({preventScroll:true});try{if(typeof select.showPicker==='function')select.showPicker();}catch{}});
 window.addEventListener('xpaceos:project-change',()=>{last='';draw();});try{document.addEventListener('admira:marca',()=>{last='';draw();});}catch{}window.addEventListener('resize',draw);new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 setInterval(()=>{if(mode==='account'&&client.access&&!validAccess(client.access)){client.clear();pendingProject='';catalog={projects:[],venues:[]};error=text('Connection expired. Reconnect with AdmiraNext.','Conexión caducada. Reconecta con AdmiraNext.');}draw();},1000);
+try{const q=new URL(location.href).searchParams,cv=q.get('xpace')===COMPUTER_ID&&computerVenue(q.get('venue'));if(cv){pendingProject=COMPUTER_ID;embedComputer(cv);}}catch{}
 load();

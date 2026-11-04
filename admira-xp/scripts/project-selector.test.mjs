@@ -93,5 +93,5 @@ test('Xpaces offers Computer, whose venues Metahuman and PC-Cocina open the Supe
  project.value='computer';project.listeners.get('change')();await new Promise(setImmediate);
  assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['metahuman','Metahuman'],['pc-cocina','PC-Cocina']]);
  venue.value='pc-cocina';venue.listeners.get('change')();await new Promise(setImmediate);
- assert.equal(h.destinations.at(-1),'/supercomputer/pc-cocina/');
+ assert.equal(h.destinations.at(-1),'/supercomputer/pc-cocina/'); // harness sin createElement → fallback
 });
