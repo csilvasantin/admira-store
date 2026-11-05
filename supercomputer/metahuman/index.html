@@ -89,7 +89,7 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 <div class="carga" id="carga">ENCENDIENDO LA SUPERCOMPUTER…</div>
 
 <header class="hud top">
-  <div class="brand"><b>Super<span>computer</span></b><small>SUPERCOMPUTER_METAHUMAN · DELANTE 1-2-3 · ABAJO 4-5-6 · DETRÁS 7 · ADMIRA.TV</small></div>
+  <div class="brand"><b>Super<span>computer</span></b><small>SUPERCOMPUTER_METAHUMAN · IZQ 1-2-3 · SUELO 6-5-4 · PSU 7 · CRISTAL FRONTAL+LATERAL · ADMIRA.TV</small></div>
   <span class="spacer"></span>
   <div class="estadoCol"><span class="estado" id="estado"><i></i><span id="estadoTxt">Conectando…</span></span>
   <label class="simbox" title="Prueba el gemelo digital sin METAHUMAN encendido"><input type="checkbox" id="simMode"> Solo gemelo · simulación <small>Digital twin only · sim</small></label></div>
@@ -161,17 +161,20 @@ const MODOS={
 const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
 const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b26bff','#ffffff'];
 
-// SuperComputer_Metahuman (native:supercomputer-metahuman) · disposición física CANÓNICA, confirmada por Carlos el
-// 4-nov-2026 con el modo Identificar (cada pantalla pinta su número) y una foto de METAHUMAN desde la ventana
-// principal. Numeración del puente: 1-3 = puerto 0, 4-6 = puerto 1, 7 = puerto 2 (la de /supercomputer/api).
-// Ejes: cristal/ventana principal = +x, fondo con la placa = -x, delante = -z, detrás = +z.
-// DELANTE (derecha vista desde el cristal): 1-2-3 VERTICALES en columna (1 arriba), pantallas hacia dentro.
-// ABAJO: 4-5-6 HORIZONTALES, caras arriba: 4 detrás (izquierda), 6 delante (derecha).
-// DETRÁS, arriba a la izquierda junto a la placa: 7, activo (recibe fotogramas y gira como los demás).
+// SuperComputer_Metahuman (native:supercomputer-metahuman) · disposición física CANÓNICA, corregida por Carlos
+// 5-nov-2026: verticales a la IZQUIERDA de la placa; suelo Extender 6→5→4; fan 7 en zona PSU/conectividad;
+// cristal SOLO frontal + lateral. Numeración puente: 1-3 = puerto 0, 4-6 = puerto 1, 7 = puerto 2.
+// Ejes THREE.js (mirando por el cristal frontal (−z) y lateral (−x)):
+//   +x = derecha (pared de la placa), −x = izquierda (cristal lateral)
+//   −z = delante (cristal frontal), +z = detrás (PSU / conectividad / I/O)
+//   +y = arriba
+// IZQ de la placa, cerca del frontal: 1↑ 2 3↓ VERTICALES (pantallas hacia −x, se leen por el lateral).
+// SUELO, caras arriba, ruta física Extender: 6 (junto a 3) → 5 → 4 (hacia el fondo); NO 4,5,6 L→R.
+// DETRÁS / PSU+conectividad: 7 (sube desde 4). Orden Extender: [1,2,3,6,5,4,7].
 const DISPOSICION={
-  1:{p:[0.55,4.6,-2.65],n:[0,0,1]},2:{p:[0.55,3.1,-2.65],n:[0,0,1]},3:{p:[0.55,1.6,-2.65],n:[0,0,1]},
-  4:{p:[0.75,0.18,1.6],n:[0,1,0]},5:{p:[0.75,0.18,0.1],n:[0,1,0]},6:{p:[0.75,0.18,-1.4],n:[0,1,0]},
-  7:{p:[-0.6,4.6,2.65],n:[0,0,-1]}
+  1:{p:[-0.35,4.55,-2.15],n:[-1,0,0]},2:{p:[-0.35,3.05,-2.15],n:[-1,0,0]},3:{p:[-0.35,1.55,-2.15],n:[-1,0,0]},
+  6:{p:[-0.35,0.18,-1.35],n:[0,1,0]},5:{p:[-0.35,0.18,0.25],n:[0,1,0]},4:{p:[-0.35,0.18,1.85],n:[0,1,0]},
+  7:{p:[1.15,4.35,2.45],n:[0,0,-1]}
 };
 
 let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
@@ -374,8 +377,8 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=T
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x02030a);scene.fog=new THREE.FogExp2(0x02030a,.045);
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
 const pmrem=new THREE.PMREMGenerator(renderer);scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
-const camera=new THREE.PerspectiveCamera(32,1,.1,200);camera.position.set(11.5,5.2,13.5);
-const controls=new OrbitControls(camera,canvas);controls.target.set(0,3,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
+const camera=new THREE.PerspectiveCamera(32,1,.1,200);camera.position.set(-10.5,5.4,-11.5);
+const controls=new OrbitControls(camera,canvas);controls.target.set(0,3.05,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
 scene.add(new THREE.HemisphereLight(0x6fa8ff,0x05020f,.45));
 const sol=new THREE.DirectionalLight(0xffffff,.8);sol.position.set(6,12,8);scene.add(sol);
 const rimC=new THREE.PointLight(0x3df2ff,40,30);rimC.position.set(-7,6,-6);scene.add(rimC);
@@ -391,10 +394,20 @@ const pulso=new THREE.Mesh(new THREE.RingGeometry(.98,1,128),new THREE.MeshBasic
 // Partículas flotantes
 const NP=900,pg=new THREE.BufferGeometry(),pp=new Float32Array(NP*3);for(let i=0;i<NP;i++){const r=4+Math.random()*16,a=Math.random()*6.283;pp[i*3]=Math.cos(a)*r;pp[i*3+1]=Math.random()*12;pp[i*3+2]=Math.sin(a)*r;}
 pg.setAttribute('position',new THREE.BufferAttribute(pp,3));const particulas=new THREE.Points(pg,new THREE.PointsMaterial({color:0x7fe9ff,size:.05,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(particulas);
-// Caja: cristal templado y perfiles de aluminio
+// Caja: cristal SOLO frontal (−z) + lateral (−x); resto paneles sólidos (aluminio/acero).
 const caja=new THREE.Group();scene.add(caja);
 const W=4.2,H=6.1,D=5.6;
-const cristal=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),new THREE.MeshPhysicalMaterial({color:0xaad4ff,transparent:true,opacity:.12,roughness:.02,metalness:.1,clearcoat:1,envMapIntensity:2.2,side:THREE.DoubleSide,depthWrite:false}));cristal.position.y=H/2;caja.add(cristal);
+const glassMat=new THREE.MeshPhysicalMaterial({color:0xaad4ff,transparent:true,opacity:.12,roughness:.02,metalness:.1,clearcoat:1,envMapIntensity:2.2,side:THREE.DoubleSide,depthWrite:false});
+const solidMat=new THREE.MeshStandardMaterial({color:0x12161f,metalness:.85,roughness:.38});
+const topMat=new THREE.MeshStandardMaterial({color:0x0a0d14,metalness:.7,roughness:.45});
+// Frontal glass (−z) and left/lateral glass (−x)
+const glassFront=new THREE.Mesh(new THREE.BoxGeometry(W-.08,H-.08,.02),glassMat);glassFront.position.set(0,H/2,-D/2);caja.add(glassFront);
+const glassLeft=new THREE.Mesh(new THREE.BoxGeometry(.02,H-.08,D-.08),glassMat);glassLeft.position.set(-W/2,H/2,0);caja.add(glassLeft);
+// Solid right (+x), back (+z), top, bottom
+const panelRight=new THREE.Mesh(new THREE.BoxGeometry(.06,H-.08,D-.08),solidMat);panelRight.position.set(W/2,H/2,0);caja.add(panelRight);
+const panelBack=new THREE.Mesh(new THREE.BoxGeometry(W-.08,H-.08,.06),solidMat);panelBack.position.set(0,H/2,D/2);caja.add(panelBack);
+const panelTop=new THREE.Mesh(new THREE.BoxGeometry(W-.08,.06,D-.08),topMat);panelTop.position.set(0,H,0);caja.add(panelTop);
+const panelBot=new THREE.Mesh(new THREE.BoxGeometry(W-.08,.06,D-.08),solidMat);panelBot.position.set(0,.03,0);caja.add(panelBot);
 const alu=new THREE.MeshStandardMaterial({color:0x8a93a6,metalness:1,roughness:.28});
 const ex=[[-1,-1],[1,-1],[-1,1],[1,1]];
 ex.forEach(([x,z])=>{const v=new THREE.Mesh(new THREE.BoxGeometry(.09,H,.09),alu);v.position.set(x*W/2,H/2,z*D/2);caja.add(v);});
@@ -404,16 +417,19 @@ const ledMat=[new THREE.MeshBasicMaterial({color:0x3df2ff}),new THREE.MeshBasicM
 const aristas=new THREE.Group();caja.add(aristas);
 [-1,1].forEach(z=>{const m=new THREE.Mesh(new THREE.BoxGeometry(W,.025,.025),ledMat[0]);m.position.set(0,.06,z*(D/2+.05));aristas.add(m);const m2=new THREE.Mesh(new THREE.BoxGeometry(W,.025,.025),ledMat[1]);m2.position.set(0,H-.06,z*(D/2+.05));aristas.add(m2);});
 ex.forEach(([x,z],i)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.025,H,.025),ledMat[i%2]);m.position.set(x*(W/2+.05),H/2,z*(D/2+.05));aristas.add(m);});
-// Placa base detallada (fondo)
+// Placa base en pared DERECHA (+x), mirando hacia −x (cámara / interior)
 const placa=new THREE.Group();caja.add(placa);
-const px=-W/2+.15,pcy=H/2+.4,pcz=-0.95;
+const px=W/2-.15,pcy=H/2+.4,pcz=-0.95;
 const pcb=new THREE.Mesh(new THREE.BoxGeometry(.06,3.6,2.9),new THREE.MeshStandardMaterial({color:0x0a1424,roughness:.45,metalness:.6}));pcb.position.set(px,pcy,pcz);placa.add(pcb);
 const chipM=new THREE.MeshStandardMaterial({color:0x141a24,metalness:.8,roughness:.3});
-const cpu=new THREE.Mesh(new THREE.BoxGeometry(.12,.8,.8),new THREE.MeshStandardMaterial({color:0xb8c0cc,metalness:1,roughness:.2}));cpu.position.set(px+.08,pcy+.55,pcz-.1);placa.add(cpu);
-[[.4,-.5,.5,.5],[-.6,.6,.4,.6],[-1.2,-.8,.3,.3],[-.9,.2,.25,.25],[1.1,-1,.6,.22],[-1.4,.9,.2,.5]].forEach(([y,z,h,d])=>{const c=new THREE.Mesh(new THREE.BoxGeometry(.08,h,d),chipM);c.position.set(px+.06,pcy+y,pcz+z);placa.add(c);});
+const cpu=new THREE.Mesh(new THREE.BoxGeometry(.12,.8,.8),new THREE.MeshStandardMaterial({color:0xb8c0cc,metalness:1,roughness:.2}));cpu.position.set(px-.08,pcy+.55,pcz-.1);placa.add(cpu);
+[[.4,-.5,.5,.5],[-.6,.6,.4,.6],[-1.2,-.8,.3,.3],[-.9,.2,.25,.25],[1.1,-1,.6,.22],[-1.4,.9,.2,.5]].forEach(([y,z,h,d])=>{const c=new THREE.Mesh(new THREE.BoxGeometry(.08,h,d),chipM);c.position.set(px-.06,pcy+y,pcz+z);placa.add(c);});
 const trazaMat=new THREE.LineBasicMaterial({color:0x3df2ff,transparent:true,opacity:.55,blending:THREE.AdditiveBlending});
-const tp=[];for(let i=0;i<46;i++){let y=pcy+(Math.random()-.5)*3.4,z=pcz+(Math.random()-.5)*2.7;const y2=y+(Math.random()-.5)*1.2,z2=z+(Math.random()-.5)*1.2;tp.push(px+.035,y,z,px+.035,y2,z,px+.035,y2,z,px+.035,y2,z2);}
+const tp=[];for(let i=0;i<46;i++){let y=pcy+(Math.random()-.5)*3.4,z=pcz+(Math.random()-.5)*2.7;const y2=y+(Math.random()-.5)*1.2,z2=z+(Math.random()-.5)*1.2;tp.push(px-.035,y,z,px-.035,y2,z,px-.035,y2,z,px-.035,y2,z2);}
 const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.Float32BufferAttribute(tp,3));placa.add(new THREE.LineSegments(tg,trazaMat));
+// Bloque PSU / alimentación en trasera-inferior (+z, mid/right)
+const psu=new THREE.Mesh(new THREE.BoxGeometry(1.4,.9,1.1),new THREE.MeshStandardMaterial({color:0x0b0e14,metalness:.75,roughness:.4}));psu.position.set(.55,.55,D/2-.7);caja.add(psu);
+const psuFace=new THREE.Mesh(new THREE.BoxGeometry(1.15,.55,.04),new THREE.MeshStandardMaterial({color:0x1a2030,metalness:.5,roughness:.5}));psuFace.position.set(.55,.55,D/2-.12);caja.add(psuFace);
 
 // Ventiladores
 const loader=new THREE.TextureLoader();loader.setCrossOrigin('use-credentials');
@@ -435,11 +451,11 @@ function crearVentilador(n){
   vents[n]={g,aspas,lcd,lcdMat,anilloMat,halo,tex:null};
 }
 for(let n=1;n<=7;n++)crearVentilador(n);
-// RAM Lexar ARES RGB DDR5 ×2 sobre la placa, a la derecha del zócalo, con barra superior iluminada.
-const zocalo=new THREE.Mesh(new THREE.BoxGeometry(.18,.75,.75),new THREE.MeshStandardMaterial({color:0x3a4252,metalness:.7,roughness:.35}));zocalo.position.set(-W/2+.3,3.9,-1.4);caja.add(zocalo);
+// RAM Lexar ARES RGB DDR5 ×2 sobre la placa (pared +x), hacia el interior (−x del zócalo).
+const zocalo=new THREE.Mesh(new THREE.BoxGeometry(.18,.75,.75),new THREE.MeshStandardMaterial({color:0x3a4252,metalness:.7,roughness:.35}));zocalo.position.set(W/2-.3,3.9,-1.4);caja.add(zocalo);
 const ramRGB=[];[0xff3df2,0x3dd8ff].forEach((c,i)=>{const z=-0.75+i*.22;
-  const barra=new THREE.Mesh(new THREE.BoxGeometry(.28,1.5,.1),new THREE.MeshStandardMaterial({color:0x11151f,metalness:.6,roughness:.4}));barra.position.set(-W/2+.35,3.7,z);caja.add(barra);
-  const tira=new THREE.Mesh(new THREE.BoxGeometry(.3,.16,.12),new THREE.MeshBasicMaterial({color:c}));tira.position.set(-W/2+.35,4.53,z);caja.add(tira);ramRGB.push(tira);const hl=new THREE.Mesh(new THREE.BoxGeometry(.04,1.3,.11),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.6}));hl.position.set(-W/2+.5,3.7,z);caja.add(hl);ramRGB.push(hl);});
+  const barra=new THREE.Mesh(new THREE.BoxGeometry(.28,1.5,.1),new THREE.MeshStandardMaterial({color:0x11151f,metalness:.6,roughness:.4}));barra.position.set(W/2-.35,3.7,z);caja.add(barra);
+  const tira=new THREE.Mesh(new THREE.BoxGeometry(.3,.16,.12),new THREE.MeshBasicMaterial({color:c}));tira.position.set(W/2-.35,4.53,z);caja.add(tira);ramRGB.push(tira);const hl=new THREE.Mesh(new THREE.BoxGeometry(.04,1.3,.11),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.6}));hl.position.set(W/2-.5,3.7,z);caja.add(hl);ramRGB.push(hl);});
 function actualizarTexturas(){
   for(let n=1;n<=7;n++){
     const v=vents[n];
