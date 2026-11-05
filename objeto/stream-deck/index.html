@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Objeto · Stream Deck XL · gemelo 3D · admira.store</title>
-<meta name="description" content="Gemelo 3D del Elgato Stream Deck XL conectado a METAHUMAN (32 teclas LCD, Indiana Jones en vivo en simulación). Serial CL37J1A02733 · admira.tv.">
+<meta name="description" content="Gemelo 3D del Elgato Stream Deck XL en METAHUMAN (32 teclas LCD con cara desde foto desk · Indiana Jones). Puente USB pendiente. Serial CL37J1A02733 · admira.tv.">
 <link rel="canonical" href="https://www.admira.store/objeto/stream-deck/">
 <link rel="icon" href="/favicon.ico">
 <meta name="theme-color" content="#04060d">
@@ -50,8 +50,8 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
   <div class="brand"><b>Objeto · <span>Stream Deck</span></b><small>CL37J1A02733 · METAHUMAN · ADMIRA.TV · 8×4 LCD</small></div>
   <span class="spacer"></span>
   <div class="estadoCol">
-    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Gemelo 3D · sim</span></span>
-    <span class="hint">Puente USB / demos admira.tv pendiente · USB bridge pending</span>
+    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto METAHUMAN · live bridge USB pendiente</span></span>
+    <span class="hint">Teclas = face-live.png (foto desk) · puente USB / demos admira.tv aún pendiente</span>
   </div>
 </header>
 
@@ -62,10 +62,10 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
   <div class="kv"><span>Serial</span><b>CL37J1A02733</b></div>
   <div class="kv"><span>Teclas</span><b>32 · 8 cols × 4 rows</b></div>
   <div class="kv"><span>Host</span><b>METAHUMAN</b></div>
-  <div class="kv"><span>Arte activo</span><b>Indiana Jones · cols 2–6</b></div>
+  <div class="kv"><span>Arte activo</span><b>face-live · 8×4 foto METAHUMAN</b></div>
   <div class="kv"><span>Silueta</span><b>v2 · stand ~42°</b></div>
   <div class="kv"><span>Tecla</span><b id="keyInfo">— (clic en una tecla)</b></div>
-  <p class="desc">Arrastra para orbitar · rueda para zoom. Clic en una tecla LCD para resaltar su índice (fila, columna). El mural Indiana Jones cubre las columnas 2–6 (índices 1–5); el resto está oscuro. Silueta v2: chasis mate redondeado + stand cuña hueco + cable USB. Sin puente USB todavía: este gemelo es simulación.</p>
+  <p class="desc">Arrastra para orbitar · rueda para zoom. Clic en una tecla LCD para resaltar su índice (fila, columna). Las caras LCD emiten el recorte 8×4 de la foto METAHUMAN (<code>face-live.png</code>): Indiana Jones visible como en el deck físico; columnas oscuras de la foto quedan oscuras. Silueta v2 intacta. Honestidad: el puente USB en vivo sigue pendiente — esto es cara desde foto, no stream USB.</p>
   <div class="fotos">
     <img class="foto" src="perfil-metahuman.png" alt="Perfil METAHUMAN: slab + stand cuña + teclas claras">
     <img class="foto" src="metahuman-desk.jpg" alt="Stream Deck XL en el escritorio METAHUMAN con Indiana Jones">
@@ -82,8 +82,7 @@ import {RoundedBoxGeometry} from "three/addons/geometries/RoundedBoxGeometry.js"
 
 const $=id=>document.getElementById(id);
 const COLS=8,ROWS=4;
-// Indiana Jones spans cols 2–6 (1-index) → indices 1–5; all 4 rows.
-const ACTIVE_COL0=1,ACTIVE_COL1=5;
+// Atlas face-live.png cubre las 32 teclas (8×4). Oscuras en la foto = oscuras en el gemelo.
 
 function toast(t){const el=$('toast');el.textContent=t;el.className='hud toast show';clearTimeout(toast.t);toast.t=setTimeout(()=>el.className='hud toast',2200);}
 
@@ -91,22 +90,23 @@ const canvas=$('c');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.08;
+renderer.toneMapping=THREE.NoToneMapping;
+renderer.toneMappingExposure=1.0;
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x02030a);
-scene.fog=new THREE.FogExp2(0x02030a,.032);
+scene.fog=new THREE.FogExp2(0x02030a,.012);
 const pmrem=new THREE.PMREMGenerator(renderer);
-scene.environment=pmrem.fromScene(new RoomEnvironment(),.02).texture;
+scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
 
-// Cámara ¾: perfil del stand + cara con mural legible (foto METAHUMAN)
+// Cámara ¾ frente a la cara LCD (normal ~ -Z tras tilt -42°) · mural legible
 const camera=new THREE.PerspectiveCamera(34,1,.05,80);
-camera.position.set(3.55,2.05,3.35);
+// ¾ frente a la cara LCD (mural legible + perfil stand)
+camera.position.set(1.85,2.65,-3.05);
 const controls=new OrbitControls(camera,canvas);
-controls.target.set(0,0.72,0.05);
+controls.target.set(0,0.88,-0.08);
 controls.enableDamping=true;
 controls.minDistance=2.0;
 controls.maxDistance=11;
@@ -123,8 +123,9 @@ sol.shadow.camera.top=4;sol.shadow.camera.bottom=-4;
 sol.shadow.bias=-0.0004;
 scene.add(sol);
 const rim=new THREE.PointLight(0x3df2ff,22,26);rim.position.set(-4.2,2.8,-2.8);scene.add(rim);
-const warm=new THREE.PointLight(0xff8a4a,14,22);warm.position.set(2.8,1.8,3.2);scene.add(warm);
-const keyGlow=new THREE.PointLight(0xff6a3a,6,5);keyGlow.position.set(0,1.1,0.35);scene.add(keyGlow);
+const warm=new THREE.PointLight(0xffd8c0,2.5,16);warm.position.set(2.2,2.8,-2.8);scene.add(warm);
+const keyGlow=new THREE.PointLight(0xffe8d8,0.6,3.5);keyGlow.position.set(0,1.45,-0.55);scene.add(keyGlow);
+const faceFill=new THREE.DirectionalLight(0xffffff,0.85);faceFill.position.set(0.2,3.5,-4.5);scene.add(faceFill);
 
 // Escritorio mate (desk mat)
 const desk=new THREE.Mesh(
@@ -289,7 +290,7 @@ deck.add(usbPort);
   root.add(sh);
 })();
 
-// Teclas 8×4 — keycaps claros/glossy ligeramente elevados
+// Teclas 8×4 — rim negro opaco + LCD ENCIMA (como XL real; mural dominante)
 const KEY=0.305,GAP=0.048,KEY_H=0.055;
 const gridW=COLS*KEY+(COLS-1)*GAP;
 const gridD=ROWS*KEY+(ROWS-1)*GAP;
@@ -297,45 +298,45 @@ const originX=-gridW/2+KEY/2;
 const originZ=-gridD/2+KEY/2+0.04; // sesgo hacia abajo (logo arriba = -Z)
 
 const keys=[];
-const darkLcdMat=new THREE.MeshPhysicalMaterial({
-  color:0x04060a,roughness:.35,metalness:.15,
-  emissive:0x020308,emissiveIntensity:.4
-});
-const capMatBase={
-  color:0x2a2e36,roughness:.12,metalness:.05,
-  clearcoat:1,clearcoatRoughness:.08,
-  transmission:0.22,thickness:0.4,transparent:true,opacity:0.88,
-  ior:1.45
-};
+const darkLcdMat=new THREE.MeshBasicMaterial({color:0x05070c,side:THREE.DoubleSide});
 
 function keyPos(col,row){
   return {x:originX+col*(KEY+GAP),z:originZ+row*(KEY+GAP)};
 }
-function isActive(col){return col>=ACTIVE_COL0&&col<=ACTIVE_COL1;}
 
+/** Atlas 8×4 (face-live.png): una textura por tecla. Regiones oscuras de la foto = teclas oscuras. */
 function makeKeyTextures(img){
-  const aCols=ACTIVE_COL1-ACTIVE_COL0+1;
   const out={};
-  for(let col=ACTIVE_COL0;col<=ACTIVE_COL1;col++){
+  for(let col=0;col<COLS;col++){
     for(let row=0;row<ROWS;row++){
       const cv=document.createElement('canvas');
       cv.width=256;cv.height=256;
       const g=cv.getContext('2d');
-      const sx=((col-ACTIVE_COL0)/aCols)*img.width;
+      const sx=(col/COLS)*img.width;
       const sy=(row/ROWS)*img.height;
-      const sw=img.width/aCols;
+      const sw=img.width/COLS;
       const sh=img.height/ROWS;
-      g.fillStyle='#100806';g.fillRect(0,0,256,256);
+      g.fillStyle='#05070c';g.fillRect(0,0,256,256);
       try{g.drawImage(img,sx,sy,sw,sh,0,0,256,256);}catch(e){}
-      const grd=g.createRadialGradient(128,128,50,128,128,145);
-      grd.addColorStop(0,'rgba(0,0,0,0)');grd.addColorStop(1,'rgba(0,0,0,.28)');
-      g.fillStyle=grd;g.fillRect(0,0,256,256);
       const tex=new THREE.CanvasTexture(cv);
       tex.colorSpace=THREE.SRGBColorSpace;
+      tex.anisotropy=4;
       out[col+','+row]=tex;
     }
   }
   return out;
+}
+
+function meanLuma(tex){
+  // Heurística ligera: si el canvas es muy oscuro, trata como inactiva
+  const img=tex.image; if(!img||!img.getContext) return 1;
+  try{
+    const g=img.getContext('2d');
+    const d=g.getImageData(64,64,128,128).data;
+    let s=0,n=0;
+    for(let i=0;i<d.length;i+=16){s+=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];n++;}
+    return s/(n*255);
+  }catch(e){return 1;}
 }
 
 function buildKeys(texMap){
@@ -343,43 +344,43 @@ function buildKeys(texMap){
     for(let col=0;col<COLS;col++){
       const g=new THREE.Group();
       const {x,z}=keyPos(col,row);
-      g.position.set(x,BODY_H/2+0.01+KEY_H/2,z);
+      g.position.set(x,BODY_H/2+0.012+KEY_H/2,z);
 
-      // Keycap clara redondeada (glow lateral como en la foto)
-      const capMat=new THREE.MeshPhysicalMaterial({...capMatBase});
-      const cap=new THREE.Mesh(
-        new RoundedBoxGeometry(KEY,KEY_H,KEY,3,0.035),
-        capMat
+      // Rim/cuerpo negro OPACO (sin transmission/clearcoat)
+      const rimMat=new THREE.MeshStandardMaterial({
+        color:0x0a0c10,roughness:.78,metalness:.03
+      });
+      // Cuerpo más bajo que el LCD para evitar z-fighting con la cara del RoundedBox
+      const body=new THREE.Mesh(
+        new RoundedBoxGeometry(KEY,KEY_H*0.72,KEY,2,0.03),
+        rimMat
       );
-      cap.castShadow=true;
-      g.add(cap);
+      body.position.y=-KEY_H*0.14; // top cuerpo ≈ 0.22*KEY_H ≪ LCD en KEY_H/2
+      body.castShadow=true;
+      g.add(body);
 
-      const active=isActive(col);
+      const tex=texMap[col+','+row];
+      const luma=tex?meanLuma(tex):0;
+      const active=!!tex && luma>0.07;
       let lcdMat;
-      if(active&&texMap[col+','+row]){
-        lcdMat=new THREE.MeshStandardMaterial({
-          map:texMap[col+','+row],
-          emissiveMap:texMap[col+','+row],
-          emissive:0xffffff,
-          emissiveIntensity:0.85,
-          roughness:.45,metalness:0
+      if(tex){
+        // MeshBasic en la cara SUPERIOR — Indiana Jones nítido, sin wash naranja
+        lcdMat=new THREE.MeshBasicMaterial({
+          map:tex, toneMapped:false, side:THREE.DoubleSide, polygonOffset:true,
+          polygonOffsetFactor:-1, polygonOffsetUnits:-1
         });
-        // Tinte suave del clearcoat según mural (glow lateral)
-        capMat.emissive=new THREE.Color(0xff6a3a);
-        capMat.emissiveIntensity=0.15;
-        capMat.color=new THREE.Color(0x3a3030);
       }else{
         lcdMat=darkLcdMat.clone();
-        capMat.color=new THREE.Color(0x15181f);
-        capMat.transmission=0.12;
-        capMat.opacity=0.92;
       }
-      const lcd=new THREE.Mesh(new THREE.PlaneGeometry(KEY*0.82,KEY*0.82),lcdMat);
+
+      // LCD claramente ENCIMA del cuerpo (margen real, no 0.001 z-fight)
+      const lcd=new THREE.Mesh(new THREE.PlaneGeometry(KEY*0.9,KEY*0.9),lcdMat);
       lcd.rotation.x=-Math.PI/2;
-      lcd.position.y=KEY_H/2-0.006;
+      lcd.position.y=KEY_H/2+0.001; // contrato tests + visual: body top queda ~0.22*KEY_H debajo
+      lcd.renderOrder=3;
       g.add(lcd);
 
-      g.userData={col,row,active,lcd,cap,baseY:g.position.y};
+      g.userData={col,row,active,lcd,rim:body,baseY:g.position.y};
       deck.add(g);
       keys.push(g);
     }
@@ -419,27 +420,38 @@ function bucle(){
   requestAnimationFrame(bucle);
   const t=reloj.getElapsedTime();
   rim.intensity=18+5*Math.sin(t*1.3);
-  keyGlow.intensity=5+2*Math.sin(t*0.9);
+  keyGlow.intensity=0.5+0.15*Math.sin(t*0.9);
   if(selected)selected.rotation.y=Math.sin(t*3)*0.035;
   controls.update();renderer.render(scene,camera);
 }
 
-const muralUrl='indiana-jones.png';
-const img=new Image();
-img.crossOrigin='anonymous';
-img.onload=()=>{
+// Cara live = foto desk METAHUMAN (8×4). Fallback: indiana-jones.png (recorte mural).
+const faceLiveUrl='face-live.png';
+const fallbackUrl='indiana-jones.png';
+
+function bootWith(img, label){
   buildKeys(makeKeyTextures(img));
   $('carga').classList.add('hide');
   bucle();
-  toast('Gemelo Stream Deck v2 · silueta XL');
-};
+  toast(label);
+}
+
+const img=new Image();
+img.crossOrigin='anonymous';
+img.onload=()=>bootWith(img,'Cara live · face-live.png (foto METAHUMAN)');
 img.onerror=()=>{
-  buildKeys({});
-  $('carga').classList.add('hide');
-  bucle();
-  toast('Gemelo sin mural (falta indiana-jones.png)');
+  const fb=new Image();
+  fb.crossOrigin='anonymous';
+  fb.onload=()=>bootWith(fb,'Fallback indiana-jones.png (sin face-live)');
+  fb.onerror=()=>{
+    buildKeys({});
+    $('carga').classList.add('hide');
+    bucle();
+    toast('Gemelo sin mural (faltan face-live.png / indiana-jones.png)');
+  };
+  fb.src=fallbackUrl;
 };
-img.src=muralUrl;
+img.src=faceLiveUrl;
 </script>
 </body>
 </html>
