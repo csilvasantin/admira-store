@@ -3,25 +3,32 @@ import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './centr
 import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs?v=alsea-1';
 // Un local con puerta de Google Maps pasa primero por su calle (Carlos, 15-oct-2026).
 import {conPuerta} from '../../assets/puertas.mjs?v=puerta-1';
-// Xpace «Computer» (Carlos, 4-nov-2026): sus locales son los gemelos Supercomputer Metahuman y PC-Cocina (mismo dato que assets/computer-xpace.mjs).
+// Xpace «Computer» (Carlos, 4-nov-2026): locales = gemelos Supercomputer Metahuman y PC-Cocina (assets/computer-xpace.mjs).
 const COMPUTER_ID='computer',COMPUTER_PROJECT={id:COMPUTER_ID,name:'Computer'},COMPUTER_VENUES=[{id:'metahuman',name:'Metahuman',url:'/supercomputer/metahuman/'},{id:'pc-cocina',name:'PC-Cocina',url:'/supercomputer/pc-cocina/'}],computerVenue=id=>COMPUTER_VENUES.find(v=>v.id===id)||null;
+// Xpace «Objeto» (Carlos, 5-nov-2026): locales = gemelos de objetos físicos (Stream Deck XL en METAHUMAN).
+const OBJET_ID='objeto',OBJET_PROJECT={id:OBJET_ID,name:'Objeto'},OBJET_VENUES=[{id:'stream-deck',name:'Stream Deck',url:'/objeto/stream-deck/'}],objetoVenue=id=>OBJET_VENUES.find(v=>v.id===id)||null;
 
-// Carlos (4-nov-2026): «no hay que cambiar la interface de admira.store» — el gemelo Computer se incrusta en el
-// área de contenido bajo la barra Xpaces (iframe), sin salir del shell. Las URLs directas /supercomputer/… siguen valiendo.
-let computerChosen='';
-function embedComputer(cv){
- computerChosen=cv.id;
+// Carlos (4-nov-2026): «no hay que cambiar la interface de admira.store» — el gemelo se incrusta bajo la
+// barra Xpaces (iframe), sin salir del shell. URLs directas /supercomputer/… y /objeto/… siguen valiendo.
+let computerChosen='',objetoChosen='';
+const XPACE_TWIN_PANES=['computerPane','objetoPane'];
+function hideTwinPanes(except){for(const id of XPACE_TWIN_PANES){if(id===except)continue;const p=document.getElementById(id);if(p&&p.tagName&&p.style)p.style.display='none';}}
+function embedXpaceTwin(paneId,title,xpaceId,cv,chosenRef){
+ chosenRef.v=cv.id;
  if(typeof document.createElement!=='function'){location.assign(cv.url);return;}
- let pane=document.getElementById('computerPane');
- if(!pane||!pane.tagName){pane=document.createElement('div');pane.id='computerPane';document.body.appendChild(pane);}
+ hideTwinPanes(paneId);
+ let pane=document.getElementById(paneId);
+ if(!pane||!pane.tagName){pane=document.createElement('div');pane.id=paneId;document.body.appendChild(pane);}
  const bar=document.getElementById('topBar'),top=bar&&bar.getBoundingClientRect?Math.round(bar.getBoundingClientRect().bottom):48;
- pane.style.cssText=`position:fixed;left:0;right:0;bottom:0;top:${top}px;z-index:9000;background:#000;`;
+ pane.style.cssText=`position:fixed;left:0;right:0;bottom:0;top:${top}px;z-index:9000;background:#000;display:block;`;
  let f=pane.querySelector('iframe');
- if(!f){f=document.createElement('iframe');f.title='Computer';f.allow='fullscreen; autoplay; xr-spatial-tracking';f.allowFullscreen=true;f.style.cssText='border:0;width:100%;height:100%;display:block';pane.appendChild(f);}
+ if(!f){f=document.createElement('iframe');f.title=title;f.allow='fullscreen; autoplay; xr-spatial-tracking';f.allowFullscreen=true;f.style.cssText='border:0;width:100%;height:100%;display:block';pane.appendChild(f);}
  if(f.getAttribute('src')!==cv.url)f.setAttribute('src',cv.url);
- try{const u=new URL(location.href);u.searchParams.set('xpace',COMPUTER_ID);u.searchParams.set('venue',cv.id);history.replaceState(null,'',u.pathname+u.search+u.hash);}catch{}
+ try{const u=new URL(location.href);u.searchParams.set('xpace',xpaceId);u.searchParams.set('venue',cv.id);history.replaceState(null,'',u.pathname+u.search+u.hash);}catch{}
  try{window.addEventListener('resize',()=>{const b=document.getElementById('topBar');if(b&&pane.isConnected)pane.style.top=Math.round(b.getBoundingClientRect().bottom)+'px';});}catch{}
 }
+function embedComputer(cv){embedXpaceTwin('computerPane','Computer',COMPUTER_ID,cv,{set v(id){computerChosen=id;},get v(){return computerChosen;}});}
+function embedObjeto(cv){embedXpaceTwin('objetoPane','Objeto',OBJET_ID,cv,{set v(id){objetoChosen=id;},get v(){return objetoChosen;}});}
 const $=id=>document.getElementById(id),select=$('projectSelector'),venueSelect=$('projectVenueSelector'),chip=$('projectContextChip');
 let storage;try{storage=sessionStorage;}catch{}
 const leerMarca=k=>{try{return storage&&typeof storage.getItem==='function'?storage.getItem(k):null;}catch{return null;}};
@@ -47,11 +54,11 @@ function draw(){
  const stamp=JSON.stringify([catalog,mode,error,busy,english(),id,sceneId(),venue?.id,marca]);if(stamp===last)return;last=stamp;
  put('projectSelectorLabel',text('Projects · AdmiraNext','Proyectos · AdmiraNext'));put('projectVenueLabel',text('Venue','Local'));
  select.replaceChildren(new Option(text('Choose a Xpace','Escoge un Xpacio'),''));
- for(const p of visibles){const o=new Option(p.name,p.id);select.add(o);}if(visibles.length)select.add(new Option(COMPUTER_PROJECT.name,COMPUTER_ID));select.value=pendingProject===COMPUTER_ID?COMPUTER_ID:(project?.id||'');select.disabled=busy||!visibles.length;
+ for(const p of visibles){const o=new Option(p.name,p.id);select.add(o);}if(visibles.length){select.add(new Option(COMPUTER_PROJECT.name,COMPUTER_ID));select.add(new Option(OBJET_PROJECT.name,OBJET_ID));}select.value=pendingProject===COMPUTER_ID||pendingProject===OBJET_ID?pendingProject:(project?.id||'');select.disabled=busy||!visibles.length;
  // Con una marca que limita y una escena de otro proyecto, los locales son los de la marca (si es uno solo).
  venuesDe=project?project.id:(limitado&&visibles.length===1?visibles[0].id:(limitado?'':id));
- if(pendingProject===COMPUTER_ID)venuesDe=COMPUTER_ID;
- venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));if(venuesDe===COMPUTER_ID)for(const v of COMPUTER_VENUES)venueSelect.add(new Option(v.name,v.id));for(const v of catalog.venues.filter(v=>v.project_id===venuesDe))venueSelect.add(new Option(nombreLocal(v),v.id));venueSelect.value=venuesDe===COMPUTER_ID?computerChosen:(venue?.id||'');venueSelect.disabled=venuesDe===COMPUTER_ID?false:busy||venueSelect.options.length<2;
+ if(pendingProject===COMPUTER_ID)venuesDe=COMPUTER_ID;if(pendingProject===OBJET_ID)venuesDe=OBJET_ID;
+ venueSelect.replaceChildren(new Option(text('Choose a venue','Escoge un local'),''));if(venuesDe===COMPUTER_ID)for(const v of COMPUTER_VENUES)venueSelect.add(new Option(v.name,v.id));if(venuesDe===OBJET_ID)for(const v of OBJET_VENUES)venueSelect.add(new Option(v.name,v.id));for(const v of catalog.venues.filter(v=>v.project_id===venuesDe))venueSelect.add(new Option(nombreLocal(v),v.id));venueSelect.value=venuesDe===COMPUTER_ID?computerChosen:venuesDe===OBJET_ID?objetoChosen:(venue?.id||'');venueSelect.disabled=venuesDe===COMPUTER_ID||venuesDe===OBJET_ID?false:busy||venueSelect.options.length<2;
  chip.textContent=(catalog.projects.find(p=>p.id===sceneId())?.name||text('Choose project','Elegir proyecto'))+(mode==='demo'?' · Demo':'');chip.title=chip.textContent;
  $('projectVenueName').textContent=venue?.name||'—';
  const aviso=limitado?' · '+text(`${nombreMarca(marca)} brand: only its projects · /marca off shows them all`,`Marca ${nombreMarca(marca)}: sólo sus proyectos · /marca off los muestra todos`):'';
@@ -68,7 +75,7 @@ function draw(){
 }
 async function load(){busy=true;error='';draw();try{catalog=mode==='account'?await client.context():await client.demos();}catch(e){pendingProject='';catalog={projects:[],venues:[]};error=e.message==='SESSION_EXPIRED'?text('Connection expired or revoked. Reconnect with AdmiraNext.','Conexión caducada o revocada. Reconecta con AdmiraNext.'):text('AdmiraNext is unavailable. Your selection has not changed.','AdmiraNext no está disponible. Tu selección no ha cambiado.');}finally{busy=false;last='';draw();}}
 async function navigate(projectId,venueId){busy=true;draw();try{if(mode==='account')catalog=await client.context();const project=proyectosPermitidos(marcaLimite(),catalog.projects).find(p=>p.id===projectId),venues=catalog.venues.filter(v=>v.project_id===projectId);if(!project)throw Error('SESSION_EXPIRED');const venue=venues.find(v=>v.id===venueId)||venues[0]||null;if(!venue){pendingProject=project.id;error=venues.length?text('Choose the venue to open.','Escoge el local que quieres abrir.'):text('This project has no associated venue.','Este proyecto no tiene un local asociado.');return;}chosenProject=project.id;const href=venueUrl(location.href,venue,project,chosenQuality(),{publicDemo:mode==='demo',language:english()?'en':'es'});try{const dest=new URL(href);const id=dest.searchParams.get('loc')==='alsea-sbux-021'?'starbucks':(dest.searchParams.get('project')||'');if(id&&window.AdmiraMarca&&typeof window.AdmiraMarca.aplicarProyecto==='function')window.AdmiraMarca.aplicarProyecto(id);if(id&&typeof window.dispatchEvent==='function')window.dispatchEvent(new CustomEvent('xpaceos:project-change',{detail:{id}}));}catch(err){}location.assign(await conPuerta(venue,href));}catch(e){if(e.message==='SESSION_EXPIRED'){catalog={projects:[],venues:[]};pendingProject='';}error=e.message==='SESSION_EXPIRED'?text('Access changed. Reconnect with AdmiraNext.','El acceso ha cambiado. Reconecta con AdmiraNext.'):text('Unable to verify the selected venue.','No se pudo verificar el local seleccionado.');}finally{busy=false;last='';draw();}}
-select.addEventListener('change',()=>{const id=select.value;if(!id)return;if(id===COMPUTER_ID){pendingProject=COMPUTER_ID;last='';draw();abrirLocal();return;}aplicarMarca(id);navigate(id).then(()=>{if(pendingProject===id)abrirLocal();});});venueSelect.addEventListener('change',()=>{const cv=venuesDe===COMPUTER_ID&&computerVenue(venueSelect.value);if(cv){embedComputer(cv);last='';draw();return;}if(venueSelect.value)navigate(venuesDe||select.value,venueSelect.value);});
+select.addEventListener('change',()=>{const id=select.value;if(!id)return;if(id===COMPUTER_ID||id===OBJET_ID){pendingProject=id;last='';draw();abrirLocal();return;}hideTwinPanes();aplicarMarca(id);navigate(id).then(()=>{if(pendingProject===id)abrirLocal();});});venueSelect.addEventListener('change',()=>{const cv=venuesDe===COMPUTER_ID&&computerVenue(venueSelect.value);if(cv){embedComputer(cv);last='';draw();return;}const ov=venuesDe===OBJET_ID&&objetoVenue(venueSelect.value);if(ov){embedObjeto(ov);last='';draw();return;}if(venueSelect.value){hideTwinPanes();navigate(venuesDe||select.value,venueSelect.value);}});
 $('projectRefresh').onclick=load;
 $('projectDisconnect').onclick=async()=>{await client.disconnect();pendingProject='';catalog={projects:[],venues:[]};error=text('Disconnected. Reconnect or choose public demos.','Desconectado. Reconecta o elige demos públicas.');last='';draw();};
 $('projectDemos').onclick=async()=>{await client.disconnect();mode='demo';await load();};
@@ -80,5 +87,5 @@ $('projectConnect').onclick=()=>{
 chip.addEventListener('click',()=>{select.focus({preventScroll:true});try{if(typeof select.showPicker==='function')select.showPicker();}catch{}});
 window.addEventListener('xpaceos:project-change',()=>{last='';draw();});try{document.addEventListener('admira:marca',()=>{last='';draw();});}catch{}window.addEventListener('resize',draw);new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 setInterval(()=>{if(mode==='account'&&client.access&&!validAccess(client.access)){client.clear();pendingProject='';catalog={projects:[],venues:[]};error=text('Connection expired. Reconnect with AdmiraNext.','Conexión caducada. Reconecta con AdmiraNext.');}draw();},1000);
-try{const q=new URL(location.href).searchParams,cv=q.get('xpace')===COMPUTER_ID&&computerVenue(q.get('venue'));if(cv){pendingProject=COMPUTER_ID;embedComputer(cv);}}catch{}
+try{const q=new URL(location.href).searchParams;const cv=q.get('xpace')===COMPUTER_ID&&computerVenue(q.get('venue'));if(cv){pendingProject=COMPUTER_ID;embedComputer(cv);}const ov=q.get('xpace')===OBJET_ID&&objetoVenue(q.get('venue'));if(ov){pendingProject=OBJET_ID;embedObjeto(ov);}}catch{}
 load();

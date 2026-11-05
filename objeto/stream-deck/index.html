@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Objeto · Stream Deck XL · gemelo 3D · admira.store</title>
+<meta name="description" content="Gemelo 3D del Elgato Stream Deck XL conectado a METAHUMAN (32 teclas LCD, Indiana Jones en vivo en simulación). Serial CL37J1A02733 · admira.tv.">
+<link rel="canonical" href="https://www.admira.store/objeto/stream-deck/">
+<link rel="icon" href="/favicon.ico">
+<meta name="theme-color" content="#04060d">
+<style>
+:root{--bg:#04060d;--panel:rgba(8,12,24,.92);--ink:#eef4ff;--mut:#8a98b3;--ice:#8fd6ff;--gold:#ffce3a;--green:#3df08a;--red:#ff5470;--line:rgba(143,214,255,.18);--line2:rgba(143,214,255,.34)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(--ink);font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+#c{position:fixed;left:0;top:var(--xs-bar-h,0px);width:100%;height:calc(100% - var(--xs-bar-h,0px));display:block;touch-action:none}
+.hud{position:fixed;z-index:5}
+.top{top:var(--xs-bar-h,0px);left:0;right:0;display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(180deg,rgba(4,6,13,.95),transparent);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand b{font:800 18px/1 system-ui,sans-serif;letter-spacing:.01em}.brand b span{color:var(--ice)}.brand small{display:block;color:var(--mut);font-size:10px;margin-top:3px;letter-spacing:.06em}
+.spacer{flex:1}
+.estado{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:11px;white-space:nowrap}
+.estado i{width:8px;height:8px;border-radius:50%;background:var(--mut)}
+.estado.sim{border-color:var(--gold)}.estado.sim i{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.estadoCol{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.hint{color:var(--mut);font-size:10.5px;max-width:260px;text-align:right}
+.panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:14px;max-height:calc(100% - var(--xs-bar-h,0px) - 120px);overflow:auto}
+.izq{top:calc(70px + var(--xs-bar-h,0px));left:16px;width:300px}
+.panel h2{margin:0 0 10px;font:700 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--mut)}
+.panel h2 em{font-style:normal;color:var(--ice)}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:11px;color:var(--mut)}.kv b{color:var(--ink);text-align:right;font-family:ui-monospace,Menlo,monospace}
+.desc{color:var(--mut);font-size:11.5px;margin:10px 0 0}
+.toast{left:50%;bottom:28px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:9px 14px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}
+.carga{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:var(--bg);color:var(--ice);font:11px ui-monospace,Menlo,monospace;letter-spacing:.14em}.carga.hide{display:none}
+.foto{width:100%;border-radius:10px;border:1px solid var(--line);margin-top:10px;display:block}
+@media(max-width:800px){.izq{left:8px;right:8px;width:auto;max-height:34vh}.brand small,.hint{display:none}}
+</style>
+<script>window.XPACE_SHELL={section:{es:'Objeto · Stream Deck',en:'Object · Stream Deck'},options:[{href:'https://admira.tv/',es:'admira.tv',en:'admira.tv'},{href:'/admira-xp/',es:'Gemelo Admira XP',en:'Admira XP twin'},{href:'/objeto/',es:'Objetos',en:'Objects'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
+<script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
+</head>
+<body>
+<canvas id="c" aria-label="Gemelo 3D del Elgato Stream Deck XL"></canvas>
+<div class="carga" id="carga">ENCENDIENDO STREAM DECK…</div>
+
+<header class="hud top">
+  <div class="brand"><b>Objeto · <span>Stream Deck</span></b><small>CL37J1A02733 · METAHUMAN · ADMIRA.TV · 8×4 LCD</small></div>
+  <span class="spacer"></span>
+  <div class="estadoCol">
+    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Gemelo 3D · sim</span></span>
+    <span class="hint">Puente USB / demos admira.tv pendiente · USB bridge pending</span>
+  </div>
+</header>
+
+<section class="hud panel izq" aria-label="Ficha">
+  <h2>DISPOSITIVO · <em>DEVICE</em></h2>
+  <div class="kv"><span>Modelo</span><b>Elgato Stream Deck XL</b></div>
+  <div class="kv"><span>USB</span><b>VID_0FD9 · PID_006C</b></div>
+  <div class="kv"><span>Serial</span><b>CL37J1A02733</b></div>
+  <div class="kv"><span>Teclas</span><b>32 · 8 cols × 4 rows</b></div>
+  <div class="kv"><span>Host</span><b>METAHUMAN</b></div>
+  <div class="kv"><span>Arte activo</span><b>Indiana Jones · cols 2–6</b></div>
+  <div class="kv"><span>Tecla</span><b id="keyInfo">— (clic en una tecla)</b></div>
+  <p class="desc">Arrastra para orbitar · rueda para zoom. Clic en una tecla LCD para resaltar su índice (fila, columna). El mural Indiana Jones cubre las columnas 2–6 (índices 1–5); el resto está oscuro. Sin puente USB todavía: este gemelo es simulación.</p>
+  <img class="foto" src="metahuman-desk.jpg" alt="Stream Deck XL en el escritorio METAHUMAN con Indiana Jones">
+</section>
+<div class="hud toast" id="toast"></div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {RoomEnvironment} from "three/addons/environments/RoomEnvironment.js";
+
+const $=id=>document.getElementById(id);
+const COLS=8,ROWS=4;
+// Indiana Jones spans cols 2–6 (1-index) → indices 1–5; all 4 rows.
+const ACTIVE_COL0=1,ACTIVE_COL1=5;
+
+function toast(t){const el=$('toast');el.textContent=t;el.className='hud toast show';clearTimeout(toast.t);toast.t=setTimeout(()=>el.className='hud toast',2200);}
+
+const canvas=$('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x02030a);
+scene.fog=new THREE.FogExp2(0x02030a,.035);
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
+
+const camera=new THREE.PerspectiveCamera(35,1,.05,80);
+camera.position.set(0,3.2,5.4);
+const controls=new OrbitControls(camera,canvas);
+controls.target.set(0,0.55,0);
+controls.enableDamping=true;
+controls.minDistance=2.2;
+controls.maxDistance=12;
+controls.maxPolarAngle=Math.PI*0.495;
+
+scene.add(new THREE.HemisphereLight(0x6fa8ff,0x05020f,.55));
+const sol=new THREE.DirectionalLight(0xffffff,.85);sol.position.set(4,8,5);scene.add(sol);
+const rim=new THREE.PointLight(0x3df2ff,28,24);rim.position.set(-4,3,-3);scene.add(rim);
+const warm=new THREE.PointLight(0xff8a4a,18,20);warm.position.set(3,2,3);scene.add(warm);
+
+// Desk plane
+const desk=new THREE.Mesh(
+  new THREE.CircleGeometry(18,96),
+  new THREE.MeshPhysicalMaterial({color:0x12161e,roughness:.55,metalness:.35,clearcoat:.4})
+);
+desk.rotation.x=-Math.PI/2;desk.position.y=-0.02;scene.add(desk);
+const grid=new THREE.GridHelper(24,48,0x1a3a4a,0x0c1a24);
+grid.position.y=0.001;grid.material.transparent=true;grid.material.opacity=.45;scene.add(grid);
+
+// ── Stream Deck XL (procedural) ──
+// Real-ish proportions: ~312×120×25 mm face; stand tilt ~20°.
+const deck=new THREE.Group();
+scene.add(deck);
+deck.rotation.x=-THREE.MathUtils.degToRad(18); // stand angle facing camera
+
+const BODY_W=3.12,BODY_D=1.20,BODY_H=0.22;
+const chassisMat=new THREE.MeshStandardMaterial({color:0x0a0c10,roughness:.42,metalness:.55});
+const chassis=new THREE.Mesh(new THREE.BoxGeometry(BODY_W,BODY_H,BODY_D),chassisMat);
+chassis.position.y=BODY_H/2;deck.add(chassis);
+
+// Slightly inset faceplate
+const face=new THREE.Mesh(
+  new THREE.BoxGeometry(BODY_W-0.04,0.02,BODY_D-0.04),
+  new THREE.MeshStandardMaterial({color:0x11141a,roughness:.35,metalness:.4})
+);
+face.position.y=BODY_H+0.005;deck.add(face);
+
+// Logo strip (top bezel)
+const logoCv=document.createElement('canvas');logoCv.width=512;logoCv.height=64;
+const lg=logoCv.getContext('2d');
+lg.fillStyle='#0a0c10';lg.fillRect(0,0,512,64);
+lg.fillStyle='#eef4ff';lg.font='700 28px system-ui,sans-serif';lg.textAlign='center';lg.textBaseline='middle';
+lg.fillText('◉  STREAM DECK',256,34);
+const logoTex=new THREE.CanvasTexture(logoCv);logoTex.colorSpace=THREE.SRGBColorSpace;
+const logo=new THREE.Mesh(
+  new THREE.PlaneGeometry(1.4,0.12),
+  new THREE.MeshBasicMaterial({map:logoTex,transparent:true})
+);
+logo.rotation.x=-Math.PI/2;logo.position.set(0,BODY_H+0.02,-(BODY_D/2-0.12));deck.add(logo);
+
+// Stand (rear support)
+const stand=new THREE.Mesh(
+  new THREE.BoxGeometry(BODY_W*0.55,0.08,0.55),
+  new THREE.MeshStandardMaterial({color:0x080a0e,roughness:.5,metalness:.4})
+);
+stand.position.set(0,0.04,BODY_D*0.28);deck.add(stand);
+
+// Keys 8×4
+const KEY=0.30,GAP=0.055,KEY_H=0.04;
+const gridW=COLS*KEY+(COLS-1)*GAP;
+const gridD=ROWS*KEY+(ROWS-1)*GAP;
+const originX=-gridW/2+KEY/2;
+const originZ=-gridD/2+KEY/2+0.02; // slight forward bias under logo
+
+const keys=[];
+const darkMat=new THREE.MeshPhysicalMaterial({
+  color:0x05070c,roughness:.18,metalness:.85,clearcoat:1,clearcoatRoughness:.08,
+  reflectivity:0.9
+});
+const frameMat=new THREE.MeshStandardMaterial({color:0x1a1e28,roughness:.4,metalness:.5});
+
+function keyPos(col,row){
+  return {
+    x:originX+col*(KEY+GAP),
+    z:originZ+row*(KEY+GAP)
+  };
+}
+
+function isActive(col,row){return col>=ACTIVE_COL0&&col<=ACTIVE_COL1;}
+
+const loader=new THREE.TextureLoader();
+const muralUrl='indiana-jones.png';
+
+function makeKeyTextures(img){
+  const aCols=ACTIVE_COL1-ACTIVE_COL0+1; // 5
+  const out={};
+  for(let col=ACTIVE_COL0;col<=ACTIVE_COL1;col++){
+    for(let row=0;row<ROWS;row++){
+      const cv=document.createElement('canvas');
+      cv.width=256;cv.height=256;
+      const g=cv.getContext('2d');
+      const sx=((col-ACTIVE_COL0)/aCols)*img.width;
+      const sy=(row/ROWS)*img.height;
+      const sw=img.width/aCols;
+      const sh=img.height/ROWS;
+      g.fillStyle='#100806';g.fillRect(0,0,256,256);
+      try{g.drawImage(img,sx,sy,sw,sh,0,0,256,256);}catch(e){}
+      // soft vignette like LCD under clear keycap
+      const grd=g.createRadialGradient(128,128,60,128,128,140);
+      grd.addColorStop(0,'rgba(0,0,0,0)');grd.addColorStop(1,'rgba(0,0,0,.35)');
+      g.fillStyle=grd;g.fillRect(0,0,256,256);
+      const tex=new THREE.CanvasTexture(cv);
+      tex.colorSpace=THREE.SRGBColorSpace;
+      out[col+','+row]=tex;
+    }
+  }
+  return out;
+}
+
+function buildKeys(texMap){
+  for(let row=0;row<ROWS;row++){
+    for(let col=0;col<COLS;col++){
+      const g=new THREE.Group();
+      const {x,z}=keyPos(col,row);
+      g.position.set(x,BODY_H+0.02+KEY_H/2,z);
+      // Raised keycap rim
+      const rimM=new THREE.Mesh(new THREE.BoxGeometry(KEY,KEY_H,KEY),frameMat);
+      g.add(rimM);
+      const active=isActive(col,row);
+      let lcdMat;
+      if(active&&texMap[col+','+row]){
+        lcdMat=new THREE.MeshBasicMaterial({map:texMap[col+','+row]});
+      }else{
+        lcdMat=darkMat.clone();
+      }
+      const lcd=new THREE.Mesh(new THREE.PlaneGeometry(KEY*0.86,KEY*0.86),lcdMat);
+      lcd.rotation.x=-Math.PI/2;lcd.position.y=KEY_H/2+0.001;
+      g.add(lcd);
+      g.userData={col,row,active,lcd,baseY:g.position.y};
+      deck.add(g);
+      keys.push(g);
+    }
+  }
+}
+
+let selected=null;
+function selectKey(k){
+  if(selected&&selected!==k)selected.position.y=selected.userData.baseY;
+  selected=k;
+  if(!k){$('keyInfo').textContent='— (clic en una tecla)';return;}
+  k.position.y=k.userData.baseY+0.03;
+  const {row,col,active}=k.userData;
+  $('keyInfo').textContent=`fila ${row}, col ${col} · idx ${row*COLS+col}${active?' · mural':' · oscura'}`;
+  toast(`Tecla (${row}, ${col})`);
+}
+
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
+canvas.addEventListener('pointerdown',e=>{
+  const r=canvas.getBoundingClientRect();
+  ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
+  ray.setFromCamera(ptr,camera);
+  const hit=ray.intersectObjects(keys,true)[0];
+  if(!hit){selectKey(null);return;}
+  let o=hit.object;while(o&&o.userData.col==null)o=o.parent;
+  if(o)selectKey(o);
+});
+
+function tamano(){
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+}
+addEventListener('resize',tamano);tamano();
+
+const reloj=new THREE.Clock();
+function bucle(){
+  requestAnimationFrame(bucle);
+  const t=reloj.getElapsedTime();
+  rim.intensity=24+6*Math.sin(t*1.4);
+  if(selected)selected.rotation.y=Math.sin(t*3)*0.04;
+  controls.update();renderer.render(scene,camera);
+}
+
+const img=new Image();
+img.crossOrigin='anonymous';
+img.onload=()=>{
+  const texMap=makeKeyTextures(img);
+  buildKeys(texMap);
+  $('carga').classList.add('hide');
+  bucle();
+  toast('Gemelo Stream Deck listo · sim');
+};
+img.onerror=()=>{
+  buildKeys({});
+  $('carga').classList.add('hide');
+  bucle();
+  toast('Gemelo sin mural (falta indiana-jones.png)');
+};
+img.src=muralUrl;
+</script>
+</body>
+</html>

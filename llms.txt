@@ -7,6 +7,7 @@
 - Servidor MCP y su llms.txt canónico: https://mcp.admira.store/llms.txt
 - Página del MCP (humanos y bots): https://www.admira.store/mcp/
 - Gemelo digital público (incrustable): https://www.admira.store/admira-xp/
+- Objeto · Stream Deck (gemelo 3D público): https://www.admira.store/objeto/stream-deck/
 - Xpacios: https://www.admira.store/xpacios/
 - Mapa del sitio (solo lo público): https://www.admira.store/sitemap.xml
 - Versión desplegada: https://www.admira.store/version.json
@@ -19,5 +20,5 @@
 ## Acceso
 
 - Personas: https://www.admira.store/auth/login (quien no tiene cuenta autorizada puede solicitar acceso desde ahí).
-- Público: /admira-xp/ (la persona entra con sesión; incrustado no la necesita), /xpacios/ salvo sus apps internas (/xpacios/crear/, /xpacios/grok/, /xpacios/xtanco-barcelona/ y /xpacios/xtanco-valencia/), y /mcp/.
-- Las demás páginas exigen sesión y van en noindex. Los assets que esas páginas usan (.js, .css, imágenes, .json) se sirven sin sesión; lo interno del repo no se publica. robots.txt solo permite /admira-xp/, /xpacios/, /mcp/ y /llms.txt.
+- Público: /objeto/ (gemelo Stream Deck), /admira-xp/ (la persona entra con sesión; incrustado no la necesita), /xpacios/ salvo sus apps internas (/xpacios/crear/, /xpacios/grok/, /xpacios/xtanco-barcelona/ y /xpacios/xtanco-valencia/), y /mcp/.
+- Las demás páginas exigen sesión y van en noindex. Los assets que esas páginas usan (.js, .css, imágenes, .json) se sirven sin sesión; lo interno del repo no se publica. robots.txt solo permite /admira-xp/, /xpacios/, /mcp/, /objeto/ y /llms.txt.

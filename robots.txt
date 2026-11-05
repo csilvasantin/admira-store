@@ -6,6 +6,7 @@ Disallow: /
 Allow: /admira-xp/
 Allow: /xpacios/
 Allow: /mcp/
+Allow: /objeto/
 Allow: /llms.txt
 # Paneles operativos del gemelo: públicos para los players, pero sin valor para buscadores
 Disallow: /admira-xp/xpl.html
