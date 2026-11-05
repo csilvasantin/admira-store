@@ -38,6 +38,10 @@ test('Supercomputer: la API llega a su función (que comprueba sesión o clave);
   assert.ok(isPublicPath('/supercomputer/api/maquina'));
   assert.ok(!isPublicPath('/supercomputer/'));
   assert.ok(!isPublicPath('/supercomputer/apifalsa'));
+  assert.ok(isPublicPath('/objeto/'));
+  assert.ok(isPublicPath('/objeto/stream-deck/'));
+  assert.ok(isPublicPath('/objeto/stream-deck/index.html'));
+
   const maquina = await perimetro({...ctx('https://www.admira.store/supercomputer/api/maquina', {Accept:'application/json', Authorization:'Bearer sc_prueba'}),
     next:async () => Response.json({ok:true})}, noFetch);
   assert.equal(maquina.status, 200);
