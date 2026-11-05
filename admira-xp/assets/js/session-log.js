@@ -1,4 +1,5 @@
 // session-log.js — log de partida + resumen al cerrar.
+// OFF 5-nov-2026 (Carlos): return temprano — no envía SESIÓN FINALIZADA a Telegram hasta nueva orden.
 //
 // Acumula durante toda la vida de la pestaña:
 //   - startedAt (timestamp)
@@ -16,6 +17,10 @@
 
 (function(){
   if(typeof window==='undefined') return;
+  // Carlos 5-nov-2026: sin avisos Telegram al abrir/cerrar admira.store / AdmiraXP
+  // («cada vez que se abre suena un audio en Telegram, quitalo»). Hasta nueva orden.
+  // Rollback: quitar este return y restaurar el envío a bridge.admira.store/telegram/send.
+  return;
   try {
     const url=new URL(window.location.href);
     if(url.searchParams.get('nolog')==='1') return;
