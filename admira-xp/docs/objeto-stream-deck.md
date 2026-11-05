@@ -69,3 +69,20 @@ Carlos: v1 “looks nothing like it.” Procedural remodel (no Blender):
 - **Shipped:** 3D twin v2 + LCD face-live (badge “Face from METAHUMAN photo · USB live bridge pending”), Objeto → Stream Deck selector, docs/help/MCP snippet, public perimeter `/objeto/`.
 - **Pending:** USB / player bridge to push admira.tv demos onto the real keys. Honest: keys already match the photo; live USB stream does not.
 - 5-nov-2026: face-live.png v3 rehecho desde foto close-up METAHUMAN (warp de perspectiva, solo inset LCD, cols 0/6/7 apagadas como en el físico). Cámara más frontal. Puente USB pendiente.
+
+## Puente EN VIVO (5-nov-2026)
+
+- **Publicador** (METAHUMAN): `C:\Users\csilv\admira-tv\tools\streamdeck-bridge\puente.py`, cada ~2,5 s lee
+  `%APPDATA%\Elgato\StreamDeck\ProfilesV3\<perfil>.sdProfile\manifest.json` → `Pages.Current`, carga las
+  `Controllers[0].Actions` (`"col,row"`) de esa página y compone un atlas 1024×512 (8×4 · 128 px) con
+  `States[State].Image`. Si el hash no cambia solo manda latido. POST a `/objeto/stream-deck/api/face`
+  con el mismo Bearer `sc_…` que los ventiladores (la clave no sale nunca en logs).
+- **Nube**: Worker `supercomputer` (Durable Object), rutas `POST /streamdeck`, `GET /streamdeck/face.png`
+  (ETag), `GET /streamdeck/estado`. En línea = latido < 15 s.
+- **Pages**: `functions/objeto/stream-deck/api/[[path]].js`. GET `face.png` / `estado` son públicos (la
+  función firma con `SUPERCOMPUTER_PROXY_KEY` en el servidor); POST exige Bearer.
+- **Gemelo**: arranca con `face-live.png` y sondea `api/face.png` cada 2,5 s (If-None-Match); badge
+  verde «EN VIVO · METAHUMAN» o «Foto fija / sin puente».
+- **Parar**: `schtasks /End /TN AdmiraStreamDeckBridge` y `schtasks /Change /TN AdmiraStreamDeckBridge /DISABLE`.
+- **Límites**: es el perfil Elgato, no HID crudo; imágenes dinámicas de plugins (Key Creator, contadores,
+  títulos dibujados por el software) no aparecen; carpetas/multipágina siguen `Pages.Current` del perfil.

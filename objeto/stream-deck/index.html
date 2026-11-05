@@ -21,6 +21,7 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
 .spacer{flex:1}
 .estado{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:11px;white-space:nowrap}
 .estado i{width:8px;height:8px;border-radius:50%;background:var(--mut)}
+.estado.vivo{border-color:#3ddc84}.estado.vivo i{background:#3ddc84;box-shadow:0 0 10px #3ddc84}
 .estado.sim{border-color:var(--gold)}.estado.sim i{background:var(--gold);box-shadow:0 0 10px var(--gold)}
 .estadoCol{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .hint{color:var(--mut);font-size:10.5px;max-width:260px;text-align:right}
@@ -50,8 +51,8 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
   <div class="brand"><b>Objeto · <span>Stream Deck</span></b><small>CL37J1A02733 · METAHUMAN · ADMIRA.TV · 8×4 LCD</small></div>
   <span class="spacer"></span>
   <div class="estadoCol">
-    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto METAHUMAN (5-nov) · live bridge USB pendiente</span></span>
-    <span class="hint">Teclas = face-live.png (foto desk) · puente USB / demos admira.tv aún pendiente</span>
+    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto METAHUMAN · foto fija / sin puente</span></span>
+    <span class="hint" id="estadoHint">Puente en vivo: perfil Elgato (ProfilesV3) de METAHUMAN, no HID crudo</span>
   </div>
 </header>
 
@@ -65,7 +66,7 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
   <div class="kv"><span>Arte activo</span><b>face-live · 8×4 foto METAHUMAN</b></div>
   <div class="kv"><span>Silueta</span><b>v2 · stand ~42°</b></div>
   <div class="kv"><span>Tecla</span><b id="keyInfo">— (clic en una tecla)</b></div>
-  <p class="desc">Arrastra para orbitar · rueda para zoom. Clic en una tecla LCD para resaltar su índice (fila, columna). Las caras LCD emiten el recorte 8×4 de la foto METAHUMAN (<code>face-live.png</code>): Indiana Jones visible como en el deck físico; columnas oscuras de la foto quedan oscuras. Silueta v2 intacta. Honestidad: el puente USB en vivo sigue pendiente — esto es cara desde foto, no stream USB.</p>
+  <p class="desc">Arrastra para orbitar · rueda para zoom. Clic en una tecla LCD para resaltar su índice (fila, columna). Las caras LCD emiten el recorte 8×4 de la foto METAHUMAN (<code>face-live.png</code>): Indiana Jones visible como en el deck físico; columnas oscuras de la foto quedan oscuras. Silueta v2 intacta. Con el puente encendido, las teclas siguen EN VIVO la página activa del perfil Elgato de METAHUMAN (iconos del perfil ProfilesV3, cada ~3 s). Honestidad: es un puente de perfil Elgato, no lectura HID cruda; imágenes dinámicas de plugins (Key Creator, contadores) no salen. Sin puente: foto fija.</p>
   <div class="fotos">
     <img class="foto" src="perfil-metahuman.png" alt="Perfil METAHUMAN: slab + stand cuña + teclas claras">
     <img class="foto" src="metahuman-desk.jpg" alt="Stream Deck XL en el escritorio METAHUMAN con Indiana Jones">
@@ -434,11 +435,50 @@ function bootWith(img, label){
   $('carga').classList.add('hide');
   bucle();
   toast(label);
+  vivo();
+}
+
+// Puente EN VIVO: METAHUMAN sube la cara del perfil Elgato activo; aquí se sondea cada 2,5 s.
+const LIVE_URL='/objeto/stream-deck/api/face.png';
+let liveEtag=null,liveVisto=0;
+function aplicarCara(img){
+  const texMap=makeKeyTextures(img);
+  for(const k of keys){
+    const {col,row,lcd}=k.userData,tex=texMap[col+','+row];
+    if(lcd.material.map)lcd.material.map.dispose();
+    lcd.material.dispose();
+    lcd.material=new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+    k.userData.active=meanLuma(tex)>0.02;
+  }
+}
+function pintarEstado(enVivo){
+  const e=$('estado');
+  e.className='estado '+(enVivo?'vivo':'sim');
+  $('estadoTxt').textContent=enVivo?'EN VIVO · METAHUMAN':'Foto fija / sin puente';
+}
+async function vivo(){
+  try{
+    const h={};if(liveEtag)h['If-None-Match']=liveEtag;
+    const r=await fetch(LIVE_URL+'?t='+Date.now(),{headers:h,cache:'no-store'});
+    if(r.status===200||r.status===304){
+      liveVisto=Number(r.headers.get('x-visto'))||liveVisto;
+      const enLinea=r.headers.get('x-en-linea')==='1';
+      if(r.status===200){
+        const et=r.headers.get('etag');
+        const blob=await r.blob(),u=URL.createObjectURL(blob),im=new Image();
+        await new Promise((ok,ko)=>{im.onload=ok;im.onerror=ko;im.src=u;});
+        if(et!==liveEtag){aplicarCara(im);if(enLinea)toast('Cara EN VIVO desde METAHUMAN');}
+        liveEtag=et;URL.revokeObjectURL(u);
+      }
+      pintarEstado(enLinea);
+    }else pintarEstado(false);
+  }catch(e){pintarEstado(false);}
+  setTimeout(vivo,2500);
 }
 
 const img=new Image();
 img.crossOrigin='anonymous';
-img.onload=()=>bootWith(img,'Cara live · face-live.png (foto METAHUMAN)');
+img.onload=()=>bootWith(img,'Cara de respaldo · face-live.png (foto METAHUMAN)');
 img.onerror=()=>{
   const fb=new Image();
   fb.crossOrigin='anonymous';
@@ -448,6 +488,7 @@ img.onerror=()=>{
     $('carga').classList.add('hide');
     bucle();
     toast('Gemelo sin mural (faltan face-live.png / indiana-jones.png)');
+    vivo();
   };
   fb.src=fallbackUrl;
 };

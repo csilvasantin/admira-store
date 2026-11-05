@@ -24,7 +24,9 @@ test('el gemelo Stream Deck es HUD 3D con serial METAHUMAN e Indiana Jones', () 
   assert.match(html, /three@0\.160\.0/);
   assert.match(html, /OrbitControls/);
   assert.match(html, /Cara desde foto METAHUMAN/);
-  assert.match(html, /live bridge USB pendiente/);
+  assert.match(html, /EN VIVO · METAHUMAN/);
+  assert.match(html, /\/objeto\/stream-deck\/api\/face\.png/);
+  assert.match(html, /If-None-Match/);
   assert.match(html, /canonical" href="https:\/\/www\.admira\.store\/objeto\/stream-deck\/"/);
   assert.ok(existsSync(join(root, 'objeto/stream-deck/face-live.png')));
   assert.ok(existsSync(join(root, 'objeto/stream-deck/indiana-jones.png')));
