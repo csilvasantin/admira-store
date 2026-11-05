@@ -50,7 +50,7 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
   <div class="brand"><b>Objeto · <span>Stream Deck</span></b><small>CL37J1A02733 · METAHUMAN · ADMIRA.TV · 8×4 LCD</small></div>
   <span class="spacer"></span>
   <div class="estadoCol">
-    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto METAHUMAN · live bridge USB pendiente</span></span>
+    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto METAHUMAN (5-nov) · live bridge USB pendiente</span></span>
     <span class="hint">Teclas = face-live.png (foto desk) · puente USB / demos admira.tv aún pendiente</span>
   </div>
 </header>
@@ -104,7 +104,7 @@ scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
 // Cámara ¾ frente a la cara LCD (normal ~ -Z tras tilt -42°) · mural legible
 const camera=new THREE.PerspectiveCamera(34,1,.05,80);
 // ¾ frente a la cara LCD (mural legible + perfil stand)
-camera.position.set(1.85,2.65,-3.05);
+camera.position.set(0.35,2.45,-3.4); // frontal como mirar el deck físico
 const controls=new OrbitControls(camera,canvas);
 controls.target.set(0,0.88,-0.08);
 controls.enableDamping=true;
@@ -361,7 +361,7 @@ function buildKeys(texMap){
 
       const tex=texMap[col+','+row];
       const luma=tex?meanLuma(tex):0;
-      const active=!!tex && luma>0.07;
+      const active=!!tex && luma>0.02;
       let lcdMat;
       if(tex){
         // MeshBasic en la cara SUPERIOR — Indiana Jones nítido, sin wash naranja

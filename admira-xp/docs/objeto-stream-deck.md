@@ -68,3 +68,4 @@ Carlos: v1 “looks nothing like it.” Procedural remodel (no Blender):
 
 - **Shipped:** 3D twin v2 + LCD face-live (badge “Face from METAHUMAN photo · USB live bridge pending”), Objeto → Stream Deck selector, docs/help/MCP snippet, public perimeter `/objeto/`.
 - **Pending:** USB / player bridge to push admira.tv demos onto the real keys. Honest: keys already match the photo; live USB stream does not.
+- 5-nov-2026: face-live.png v3 rehecho desde foto close-up METAHUMAN (warp de perspectiva, solo inset LCD, cols 0/6/7 apagadas como en el físico). Cámara más frontal. Puente USB pendiente.
