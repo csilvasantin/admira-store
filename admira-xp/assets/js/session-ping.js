@@ -1,4 +1,5 @@
 // session-ping.js — anuncia por Telegram cada nueva sesion del juego.
+// OFF 5-nov-2026 (Carlos): return temprano — no envía a Telegram hasta nueva orden.
 //
 // Cuando game.html carga:
 //   1. Comprueba sessionStorage('xtanco_session_pinged') → si ya envió, sale
@@ -13,6 +14,10 @@
 
 (function(){
   if(typeof window==='undefined') return;
+  // Carlos 5-nov-2026: sin avisos Telegram al abrir/cerrar admira.store / AdmiraXP
+  // («cada vez que se abre suena un audio en Telegram, quitalo»). Hasta nueva orden.
+  // Rollback: quitar este return y restaurar el envío a bridge.admira.store/telegram/send.
+  return;
   try {
     // 1. Sessionstorage flag — solo 1 ping por sesión
     if(sessionStorage.getItem('xtanco_session_pinged')==='1') return;

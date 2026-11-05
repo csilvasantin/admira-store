@@ -123,3 +123,7 @@ A `vista-previa/<name>` branch goes through the same process and publishes to `*
 - The form's privacy notice is brief: a published policy with the controller's legal details is still missing.
 - `api.admira.store` and `xpl.admira.store` accept unauthenticated writes (`/layout/report`, `/signage/now`, `/emit`, `/xpl/ping`). Closing these pages stops a visitor using them by accident, not someone calling them directly.
 - The `robots.txt` block managed by Cloudflare prepends `Allow: /` for everyone, which ties with our `Disallow: /`. It is adjusted in the Cloudflare dashboard; private pages do not depend on it, because they redirect to sign-in.
+
+## Telemetría Telegram (sesión)
+
+**OFF desde 5-nov-2026 (Carlos):** `session-ping.js` y `session-log.js` no envían «NUEVA SESIÓN» / «SESIÓN FINALIZADA» a Telegram. Rollback: quitar el `return` temprano en ambos ficheros.
