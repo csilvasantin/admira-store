@@ -26,6 +26,10 @@ test('el gemelo Stream Deck es HUD 3D con serial METAHUMAN e Indiana Jones', () 
   assert.match(html, /canonical" href="https:\/\/www\.admira\.store\/objeto\/stream-deck\/"/);
   assert.ok(existsSync(join(root, 'objeto/stream-deck/indiana-jones.png')));
   assert.ok(existsSync(join(root, 'objeto/stream-deck/metahuman-desk.jpg')));
+  assert.ok(existsSync(join(root, 'objeto/stream-deck/perfil-metahuman.png')));
+  assert.match(html, /RoundedBoxGeometry/);
+  assert.match(html, /FACE_TILT\s*=\s*42/);
+  assert.match(html, /perfil-metahuman\.png/);
 });
 
 test('el selector incrusta Objeto→Stream Deck sin salir del shell', () => {
