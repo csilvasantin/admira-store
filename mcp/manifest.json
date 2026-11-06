@@ -3641,6 +3641,14 @@
     }
   },
   "supercomputer": {
+    "pc_cocina": {
+      "twin": "https://www.admira.store/supercomputer/pc-cocina/",
+      "machine": "PC-COCINA",
+      "since": "2026-11-06",
+      "modes_extra": ["secuencia"],
+      "es": "Supercomputer PC-Cocina (/supercomputer/pc-cocina/, con sesión): copia independiente para los 7 ventiladores TL LCD de PC-COCINA (el 1 en la pared trasera, 2-3-4 en el suelo y 5-6-7 a la derecha de la placa). Añade el modo Secuencia: el vídeo se reproduce entero en el ventilador 1, luego en el 2… hasta el 7, y vuelve a empezar; la luz acompaña al vídeo y solo brilla el ventilador que lo tiene. La duración la mide el puente al cargar el vídeo.",
+      "en": "Supercomputer PC-Cocina (/supercomputer/pc-cocina/, session required): independent copy for PC-COCINA's 7 TL LCD fans (1 on the rear wall, 2-3-4 on the floor, 5-6-7 right of the motherboard). Adds Sequence mode: the video plays in full on fan 1, then on fan 2… up to 7, and loops; the light follows the video and only the fan playing it is lit. The bridge measures the duration when it loads the video."
+    },
     "status": "live",
     "since": "2026-11-04",
     "lead": "Woz",
