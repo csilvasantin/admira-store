@@ -38,6 +38,10 @@ test('Supercomputer: la API llega a su función (que comprueba sesión o clave);
   assert.ok(isPublicPath('/supercomputer/api/maquina'));
   assert.ok(!isPublicPath('/supercomputer/'));
   assert.ok(!isPublicPath('/supercomputer/apifalsa'));
+  assert.ok(isPublicPath('/supercomputer/pc-cocina/api'));
+  assert.ok(isPublicPath('/supercomputer/pc-cocina/api/maquina'));
+  assert.ok(!isPublicPath('/supercomputer/pc-cocina/'));
+  assert.ok(!isPublicPath('/supercomputer/pc-cocina/apifalsa'));
   assert.ok(isPublicPath('/objeto/'));
   assert.ok(isPublicPath('/objeto/stream-deck/'));
   assert.ok(isPublicPath('/objeto/stream-deck/index.html'));
@@ -45,6 +49,9 @@ test('Supercomputer: la API llega a su función (que comprueba sesión o clave);
   const maquina = await perimetro({...ctx('https://www.admira.store/supercomputer/api/maquina', {Accept:'application/json', Authorization:'Bearer sc_prueba'}),
     next:async () => Response.json({ok:true})}, noFetch);
   assert.equal(maquina.status, 200);
+  const maquinaCocina = await perimetro({...ctx('https://www.admira.store/supercomputer/pc-cocina/api/maquina', {Accept:'application/json', Authorization:'Bearer sc_prueba'}),
+    next:async () => Response.json({ok:true})}, noFetch);
+  assert.equal(maquinaCocina.status, 200);
   const gemelo = await perimetro(ctx('https://www.admira.store/supercomputer/', {Accept:'text/html'}), noFetch);
   assert.equal(gemelo.status, 302);
   assert.equal(gemelo.headers.get('location'), 'https://www.admira.store/auth/login?return_to=%2Fsupercomputer%2F');

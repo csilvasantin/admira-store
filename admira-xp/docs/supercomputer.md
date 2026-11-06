@@ -65,6 +65,30 @@ ayuda CLI (`help/cli/index.html`); clave `supercomputer` en `mcp/manifest.json` 
 párrafo en `mcp/llms.txt` y tarjeta en `mcp/`. No hay herramienta MCP que cambie escena o luz: se usa el
 gemelo o la API con sesión.
 
+## PC-COCINA (copia independiente, 6-nov-2026)
+
+Mismo diseño que METAHUMAN, con todas las piezas separadas para que no se pisen:
+
+| Pieza | METAHUMAN | PC-COCINA |
+|---|---|---|
+| Gemelo | `/supercomputer/` y `/supercomputer/metahuman/` | `/supercomputer/pc-cocina/` |
+| API (Pages) | `/supercomputer/api/*` | `/supercomputer/pc-cocina/api/*` |
+| Ruta pública en el perímetro | `/supercomputer/api` | `/supercomputer/pc-cocina/api` (`functions/_perimetro.js`) |
+| Worker | `supercomputer` | `supercomputer-pc-cocina` (mismo `worker.mjs`, otro nombre y otro Durable Object) |
+| Secreto de Pages | `SUPERCOMPUTER_PROXY_KEY` | `SUPERCOMPUTER_PC_COCINA_PROXY_KEY` |
+| Clave de la máquina | `~/.admira_supercomputer_key` | `~/.admira_supercomputer_pc_cocina_key` |
+| Pantallas de admira.tv | `supercomputer-ventilador(es)…` | `supercomputer-pc-cocina-ventilador(es)…` |
+
+Estado verificado el 6-nov-2026: Worker desplegado, secretos cargados (`MAQUINA_KEY`, `PROXY_KEY` y el de Pages),
+y el puente de PC-COCINA (`AdmiraNeXT\player-ventiladores-pc-cocina`) emitiendo a los 7 ventiladores e informando
+a su Worker. Pages solo aplica un secreto nuevo al publicar, así que el gemelo de PC-COCINA funciona a partir de
+la primera publicación posterior. Hasta que la ruta del perímetro esté publicada, el puente llama al Worker por
+`*.workers.dev`; después debe volver a `www.admira.store/supercomputer/pc-cocina/api`.
+
+Pendiente en PC-COCINA: el puente numera 7 ventiladores (el 1 es el único del puerto 0) y el gemelo pinta 6; hay
+que confirmar con Identificar cuál es el de temperatura y ajustar `DISPOSICION`. El arranque automático
+(`autoarranque.ps1`) y la pausa de L-Connect (pide permiso de administrador) están por hacer.
+
 ## Pendiente
 
 - Servidor MCP real (`csilvasantin/xpaceos-mcp`, `mcp.admira.store`): repositorio privado; hace falta acceso
@@ -98,3 +122,5 @@ Help (web, tutorial, CLI) and the MCP catalog (`mcp/`) describe it. Pending: the
 Simulation mode («Solo gemelo · simulación», `localStorage` key `admira.supercomputer.sim`): a checkbox under the status badge on `/supercomputer/` and `/supercomputer/metahuman/` lets the twin apply scene/lighting locally (toast «Aplicado en gemelo (sim)», yellow badge «Gemelo en simulación · PC apagado», placeholder thumbnails) while METAHUMAN is off; the cloud call is still attempted but never blocks.
 
 Sim pseudostream cache: with «Solo gemelo · simulación» on, each fan (3D, strip, detail) shows the real piece from `api.admira.store/stock/list` (`thumbnail` poster first, then `url` video/image) downloaded **once** into Cache API `admira-sc-sim-v1` (key = asset url) with an on-screen progress bar, then replayed from cache («✓ en caché»); it is gemelo-only, never PC bridge frames, and the SIM title card remains only as fallback when no media URL exists.
+
+PC-COCINA (6-nov-2026) is an independent copy with the same design: twin `/supercomputer/pc-cocina/`, API `/supercomputer/pc-cocina/api/*` (public in the perimeter so its bridge can `POST /maquina` with its Bearer key), Worker `supercomputer-pc-cocina`, Pages secret `SUPERCOMPUTER_PC_COCINA_PROXY_KEY`, machine key `~/.admira_supercomputer_pc_cocina_key` and admira.tv screens `supercomputer-pc-cocina-ventilador(es)…`. Verified: Worker deployed, secrets set, bridge emitting to its 7 fans and reporting to its Worker. Pending: confirm which fan is the temperature one (the bridge numbers 7, the twin draws 6), autostart and pausing L-Connect.
