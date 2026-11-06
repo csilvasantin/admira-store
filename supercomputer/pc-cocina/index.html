@@ -50,6 +50,13 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 .color input[type=color]{width:40px;height:30px;border:1px solid var(--line);border-radius:8px;background:none;padding:0;cursor:pointer}
 .swatches{display:flex;gap:5px;flex-wrap:wrap}.swatches button{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.25);cursor:pointer}
 .check{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12px;color:var(--ink)}
+.destinos{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.destino{border:1px solid var(--line);background:rgba(143,214,255,.03);border-radius:10px;padding:6px 8px;text-align:left;cursor:pointer}
+.destino b{display:block;font-size:12px}.destino small{color:var(--mut);font-size:9.5px}
+.destino.on{border-color:var(--ice);background:rgba(143,214,255,.11)}.destino.sin small{color:var(--gold)}
+.mini{margin-top:6px;border:1px solid var(--line);background:none;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer}
+.bloqueado{opacity:.4;pointer-events:none}
+.panel [hidden]{display:none!important}
 .aplicar{margin-top:12px;width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(90deg,#2b6cff,#8fd6ff);color:#04101f;font-weight:800;cursor:pointer}
 .aplicar:disabled{opacity:.45;cursor:default}
 .pendiente{margin-top:8px;font-size:11px;color:var(--gold);min-height:15px}
@@ -102,19 +109,30 @@ input[type=range]{width:100%;accent-color:var(--ice)}
   </div>
   <p class="desc" id="desc"></p>
   <div id="opciones"></div>
+  <div class="campo" id="audio"><label>Audio · sound — un solo ventilador suena</label>
+    <div class="fila"><label>Suena</label><select id="audioVent"></select></div>
+    <div class="fila"><label>Salida</label><select id="audioSalida"></select></div>
+    <div class="fila f3"><label>Volumen</label><input type="range" id="audioVol" min="0" max="100" step="5" value="100"><span class="val" id="audioVolV">100</span></div>
+    <p class="desc" id="audioDesc" style="margin:2px 0 0"></p>
+  </div>
   <button class="aplicar" id="aplicarEscena">Aplicar a los ventiladores</button>
   <div class="pendiente" id="pendEscena"></div>
 </section>
 
 <section class="hud panel der" aria-label="Iluminación">
   <h2>ILUMINACIÓN · <em>LIGHTING</em></h2>
+  <div class="destinos" id="destinos"></div>
+  <p class="desc" id="destinoDesc" style="margin-top:0"></p>
+  <button class="mini" id="seguirGeneral" hidden>Seguir la luz general · follow main light</button>
+  <div id="controlesLuz">
   <div class="efectos" id="efectos"></div>
   <div class="campo"><label>Color</label>
     <div class="color"><input type="color" id="color" value="#00d26a"><div class="swatches" id="swatches"></div></div>
   </div>
   <div class="fila f3"><label>Brillo</label><input type="range" id="brillo" min="0" max="4" step="1" value="4"><span class="val" id="brilloV">4</span></div>
   <div class="fila f3"><label>Velocidad</label><input type="range" id="velocidad" min="0" max="4" step="1" value="2"><span class="val" id="velocidadV">2</span></div>
-  <label class="check"><input type="checkbox" id="sigue"> La luz sigue al vídeo en sincro · <span style="color:var(--mut)">light follows video</span></label>
+  </div>
+  <label class="check" id="sigueFila"><input type="checkbox" id="sigue"> La luz sigue al vídeo en sincro · <span style="color:var(--mut)">light follows video</span></label>
   <button class="aplicar" id="aplicarLuz">Aplicar iluminación</button>
   <div class="pendiente" id="pendLuz"></div>
 </section>
@@ -170,7 +188,7 @@ const DISPOSICION={
   5:{p:[-1.9,4.2,-2.4],n:[1,0,0]},6:{p:[-1.9,2.75,-2.4],n:[1,0,0]},7:{p:[-1.9,1.3,-2.4],n:[1,0,0]}
 };
 
-let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
+let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{},dispositivos:{}};
 let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
 
 // ── Utilidades ──
@@ -217,10 +235,33 @@ function pintarModos(){
       `<div class="fila f3"><label>Paso</label><input type="range" id="paso" min="1" max="30" value="${escena.paso||4}"><span class="val" id="pasoV">${escena.paso||4} s</span></div>`;
     $('paso').oninput=e=>{$('pasoV').textContent=e.target.value+' s';escena.paso=+e.target.value;editandoEscena=true;};
   }
+  pintarAudio();
   o.querySelectorAll('select[data-ind]').forEach(s=>s.onchange=()=>{escena.ids[s.dataset.ind]=s.value?[s.value]:[];editandoEscena=true;});
   o.querySelectorAll('select[data-pieza]').forEach(s=>s.onchange=()=>{const i=+s.dataset.pieza;const p=escena.piezas.slice();p[i]=s.value;escena.piezas=p.filter(Boolean);editandoEscena=true;if(escena.modo==='sincro')pintarModos();});
 }
 document.querySelectorAll('.modo').forEach(b=>b.onclick=()=>{escena.modo=b.dataset.modo;editandoEscena=true;pintarModos();});
+
+// ── Audio (escena.audio del puente: escena.mjs · normalizarAudio) ──
+// Como mucho suena un ventilador (su Chrome es el único sin silenciar). La salida es el nombre del dispositivo de
+// Windows que informa el puente; vacía = la predeterminada del PC.
+const audioDe=e=>({ventilador:0,salida:'',volumen:1,...(e?.audio||{})});
+function pintarAudio(){
+  const a=audioDe(escena),inf=estado?.informe?.audio,repetir=escena.modo==='repetir',identificar=escena.modo==='identificar';
+  $('audioVent').innerHTML=`<option value="0">Sin sonido · mute</option>`+(repetir?`<option value="1">Con sonido · sound on</option>`
+    :VENTILADORES.map(n=>`<option value="${n}">Ventilador ${n}</option>`).join(''));
+  $('audioVent').value=String(repetir&&a.ventilador>0?1:a.ventilador);
+  const salidas=[...new Set([...(inf?.salidas||[]),a.salida].filter(Boolean))];
+  $('audioSalida').innerHTML=`<option value="">Predeterminada del PC · default</option>`+salidas.map(s=>`<option>${s.replace(/[<&]/g,'')}</option>`).join('');
+  $('audioSalida').value=a.salida;
+  $('audioVol').value=Math.round(a.volumen*100);$('audioVolV').textContent=Math.round(a.volumen*100);
+  $('audio').classList.toggle('bloqueado',identificar);
+  const suena=inf?.suena||[];
+  $('audioDesc').textContent=identificar?'Identificar no tiene vídeo.':!inf?'':
+    (suena.length?'Ahora suena: '+suena.map(s=>s.replace(/^.*?(\d+)$/,'ventilador $1').replace('supercomputer-pc-cocina-ventiladores','los 7')).join(', ')+(inf.salida?' · '+inf.salida:' · salida predeterminada'):'Ahora no suena ningún ventilador.');
+}
+$('audioVent').onchange=e=>{escena.audio={...audioDe(escena),ventilador:+e.target.value};editandoEscena=true;};
+$('audioSalida').onchange=e=>{escena.audio={...audioDe(escena),salida:e.target.value};editandoEscena=true;};
+$('audioVol').oninput=e=>{$('audioVolV').textContent=e.target.value;escena.audio={...audioDe(escena),volumen:+e.target.value/100};editandoEscena=true;};
 $('aplicarEscena').onclick=async()=>{
   const e={modo:escena.modo};
   if(escena.modo==='independiente')e.ids=escena.ids;
@@ -228,6 +269,7 @@ $('aplicarEscena').onclick=async()=>{
   if(escena.modo==='extender'){e.ajuste=escena.ajuste;e.columnas=escena.columnas;}
   if(escena.modo==='sincro')e.paso=escena.paso;
   if(escena.modo==='secuencia')e.piezas=escena.piezas.slice(0,1);   // un solo vídeo; su duración la mide el puente
+  e.audio=audioDe(escena);
   if(escena.modo==='identificar')delete e.piezas;
   else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
   try{$('aplicarEscena').disabled=true;await api('escena',e);editandoEscena=false;toast('Escena enviada a PC-COCINA');refrescar();}
@@ -236,22 +278,61 @@ $('aplicarEscena').onclick=async()=>{
 };
 
 // ── Panel de iluminación ──
+// Destino de los controles: la luz general (ventiladores y todo lo que no tenga luz propia) o una de las otras luces de
+// la caja, que el puente controla por el Strimer Plus (los dos cables) o, cuando tenga driver, por SMBus (la memoria).
+// Mismo contrato que el puente: luz.dispositivos.{grafica,placa,memoria} (escena.mjs · normalizarLuz / luzDispositivo).
+const DISPOSITIVOS={
+  grafica:{t:'Cable gráfica',s:'Strimer · GPU cable'},
+  placa:{t:'Cable 24 pines',s:'Strimer · 24-pin cable'},
+  memoria:{t:'Memoria',s:'RAM · 2 × DDR5'}
+};
+let destino='general';
+const infoDisp=k=>estado?.informe?.dispositivos?.[k]||null;
+const sinControl=k=>k!=='general'&&infoDisp(k)?.conectado===false;
+function pintarDestinos(){
+  $('destinos').innerHTML=[['general',{t:'General',s:'Ventiladores y el resto · all'}],...Object.entries(DISPOSITIVOS)].map(([k,d])=>{
+    const propia=k!=='general'&&luz.dispositivos?.[k];
+    const sub=sinControl(k)?'sin control · no control':(propia?'luz propia · own':d.s);
+    return `<button class="destino${k===destino?' on':''}${sinControl(k)?' sin':''}" data-destino="${k}"><b>${d.t}</b><small>${sub}</small></button>`;
+  }).join('');
+  const info=infoDisp(destino),propia=destino!=='general'&&luz.dispositivos?.[destino];
+  $('destinoDesc').textContent=destino==='general'?'Los ventiladores y las luces sin luz propia (cables y memoria).'
+    :sinControl(destino)?(info.motivo||'El puente no controla esta luz.')
+    :(propia?'Luz propia: no sigue a la general.':'Sigue la luz general. Cambia algo para darle luz propia.');
+  $('seguirGeneral').hidden=!propia;
+  $('controlesLuz').classList.toggle('bloqueado',sinControl(destino));
+  $('sigueFila').hidden=destino!=='general';
+}
+$('destinos').onclick=e=>{const b=e.target.closest('.destino');if(!b)return;destino=b.dataset.destino;pintarLuz();};
+$('seguirGeneral').onclick=()=>{const d={...luz.dispositivos};delete d[destino];luz.dispositivos=d;editandoLuz=true;pintarLuz();};
+// Lo que enseñan los controles: la luz propia del destino o, si no tiene, la general.
+const vista=()=>destino!=='general'&&luz.dispositivos?.[destino]||luz;
+// Cambiar algo con un dispositivo elegido le da luz propia (copia de la general la primera vez).
+function editar(f){
+  if(destino==='general')f(luz);
+  else{const d={...luz.dispositivos};d[destino]={...(d[destino]||{efecto:luz.efecto,color:hex(luz.color),brillo:luz.brillo,velocidad:luz.velocidad})};f(d[destino]);luz.dispositivos=d;}
+  editandoLuz=true;pintarLuz();
+}
 $('efectos').innerHTML=EFECTOS.map(([k,t])=>`<button class="efecto" data-efecto="${k}">${t}</button>`).join('');
 $('swatches').innerHTML=SWATCHES.map(c=>`<button style="background:${c}" data-c="${c}" aria-label="${c}"></button>`).join('');
 function pintarLuz(){
-  document.querySelectorAll('.efecto[data-efecto]').forEach(b=>b.classList.toggle('on',b.dataset.efecto===luz.efecto));
-  $('color').value=hex(luz.color);$('brillo').value=luz.brillo;$('brilloV').textContent=luz.brillo;
-  $('velocidad').value=luz.velocidad;$('velocidadV').textContent=luz.velocidad;$('sigue').checked=!!luz.sigueVideo;
+  const v=vista();
+  document.querySelectorAll('.efecto[data-efecto]').forEach(b=>b.classList.toggle('on',b.dataset.efecto===v.efecto));
+  $('color').value=hex((v.colores&&v.colores[0])||v.color);$('brillo').value=v.brillo;$('brilloV').textContent=v.brillo;
+  $('velocidad').value=v.velocidad;$('velocidadV').textContent=v.velocidad;$('sigue').checked=!!luz.sigueVideo;
+  pintarDestinos();
 }
-document.querySelectorAll('.efecto[data-efecto]').forEach(b=>b.onclick=()=>{luz.efecto=b.dataset.efecto;editandoLuz=true;pintarLuz();});
-$('swatches').onclick=e=>{const c=e.target.dataset.c;if(!c)return;luz.color=c;if(luz.efecto==='apagado')luz.efecto='fijo';editandoLuz=true;pintarLuz();};
-$('color').oninput=e=>{luz.color=e.target.value;editandoLuz=true;};
-$('brillo').oninput=e=>{luz.brillo=+e.target.value;$('brilloV').textContent=luz.brillo;editandoLuz=true;};
-$('velocidad').oninput=e=>{luz.velocidad=+e.target.value;$('velocidadV').textContent=luz.velocidad;editandoLuz=true;};
+document.querySelectorAll('.efecto[data-efecto]').forEach(b=>b.onclick=()=>editar(o=>{o.efecto=b.dataset.efecto;}));
+$('swatches').onclick=e=>{const c=e.target.dataset.c;if(!c)return;editar(o=>{o.color=c;delete o.colores;if(o.efecto==='apagado')o.efecto='fijo';});};
+$('color').oninput=e=>editar(o=>{o.color=e.target.value;delete o.colores;});
+$('brillo').oninput=e=>editar(o=>{o.brillo=+e.target.value;});
+$('velocidad').oninput=e=>editar(o=>{o.velocidad=+e.target.value;});
 $('sigue').onchange=e=>{luz.sigueVideo=e.target.checked;editandoLuz=true;};
+const luzPlana=v=>({efecto:v.efecto,color:hex((v.colores&&v.colores[0])||v.color),brillo:v.brillo,velocidad:v.velocidad});
 async function enviarLuz(){
-  const ventiladores=Object.fromEntries(Object.entries(luz.ventiladores||{}).map(([n,v])=>[n,{efecto:v.efecto,color:hex((v.colores&&v.colores[0])||v.color),brillo:v.brillo,velocidad:v.velocidad}]));
-  await api('luz',{efecto:luz.efecto,color:hex(luz.color),brillo:luz.brillo,velocidad:luz.velocidad,sigueVideo:luz.sigueVideo,ventiladores});
+  const ventiladores=Object.fromEntries(Object.entries(luz.ventiladores||{}).map(([n,v])=>[n,luzPlana(v)]));
+  const dispositivos=Object.fromEntries(Object.entries(luz.dispositivos||{}).map(([k,v])=>[k,luzPlana(v)]));
+  await api('luz',{efecto:luz.efecto,color:hex(luz.color),brillo:luz.brillo,velocidad:luz.velocidad,sigueVideo:luz.sigueVideo,ventiladores,dispositivos});
 }
 $('aplicarLuz').onclick=async()=>{
   try{$('aplicarLuz').disabled=true;await enviarLuz();editandoLuz=false;toast('Iluminación enviada');refrescar();}
@@ -311,13 +392,41 @@ const arcoiris=(()=>{const c=document.createElement('canvas');c.width=256;c.heig
   for(let i=0;i<256;i++){g.fillStyle=`hsl(${Math.round(i*1.4)},100%,58%)`;g.fillRect(i,0,1,64);}
   g.fillStyle='rgba(0,0,0,.55)';for(let y=0;y<64;y+=8)g.fillRect(0,y+5,256,3);
   const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;})();
-const rgb=(w,h,d)=>new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshBasicMaterial({map:arcoiris}));
+// Otras luces (6-nov-2026): cada una con su material, que imita la luz que le manda el puente (luz propia o la
+// general). La memoria, mientras el puente no la controle, enseña su arcoíris de fábrica.
+const disp={};
+function luzRgb(k,w,h,d){
+  const tex=arcoiris.clone();tex.wrapS=THREE.RepeatWrapping;tex.needsUpdate=true;
+  const mat=new THREE.MeshBasicMaterial({map:tex});
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.userData.disp=k;
+  (disp[k]=disp[k]||{mallas:[],mats:[],tex:[]}).mallas.push(m);disp[k].mats.push(mat);disp[k].tex.push(tex);
+  return m;
+}
 const gpu=new THREE.Mesh(new THREE.BoxGeometry(1.7,.42,3.3),metal(0x141a2a,{roughness:.4,metalness:.7}));gpu.position.set(-W/2+1.06,1.85,PZ+.2);caja.add(gpu);
 const aio=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.3,40),metal(0x1a2236,{roughness:.3,metalness:.8}));aio.rotation.z=Math.PI/2;aio.position.set(-1.8,3.75,PZ+.9);caja.add(aio);
 const espejo=new THREE.Mesh(new THREE.RingGeometry(.16,.42,48),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:.8,side:THREE.DoubleSide}));espejo.rotation.y=Math.PI/2;espejo.position.set(-1.64,3.75,PZ+.9);caja.add(espejo);
-for(const z of [PZ+.1,PZ-.1]){const ram=rgb(.32,1.25,.09);ram.position.set(-1.88,3.8,z);caja.add(ram);}
-const peine24=rgb(.9,1.3,.16);peine24.position.set(-1.5,3.35,PZ-1.45);caja.add(peine24);
-const peinePcie=rgb(.7,.42,2.1);peinePcie.position.set(-.55,1.42,PZ+.75);caja.add(peinePcie);
+for(const z of [PZ+.1,PZ-.1]){const ram=luzRgb('memoria',.32,1.25,.09);ram.position.set(-1.88,3.8,z);caja.add(ram);}
+const peine24=luzRgb('placa',.9,1.3,.16);peine24.position.set(-1.5,3.35,PZ-1.45);caja.add(peine24);
+const peinePcie=luzRgb('grafica',.7,.42,2.1);peinePcie.position.set(-.55,1.42,PZ+.75);caja.add(peinePcie);
+// Color de cada luz en el instante t: misma imitación que los anillos (para el gemelo, no es medida).
+function pintarLuces(t){
+  const inf=estado?.informe,l=inf?.luz||(estado?luz:null);
+  for(const [k,d] of Object.entries(disp)){
+    const fabrica=!l||sinControl(k)||(inf&&!inf.dispositivos);   // sin luz, sin control o puente antiguo: arcoíris de fábrica
+    const p=fabrica?{efecto:'arcoiris',brillo:3,velocidad:2}:(l.dispositivos?.[k]||l);
+    const brillo=Math.max(.12,(p.brillo??4)/4),vel=.25+(p.velocidad??2)*.25;
+    const arco=['arcoiris','ciclo'].includes(p.efecto);
+    d.mats.forEach((m,i)=>{
+      if(!!m.map!==arco){m.map=arco?d.tex[i]:null;m.needsUpdate=true;}
+      if(arco){d.tex[i].offset.x=(t*.12*vel)%1;m.color.setScalar(brillo);return;}
+      if(p.efecto==='apagado'){m.color.set(0x0b0f18);return;}
+      const c=new THREE.Color(hex((p.colores&&p.colores[0])||p.color));
+      if(p.efecto==='respirar')c.multiplyScalar(.2+.8*(.5+.5*Math.sin(t*2*vel)));
+      else if(['meteoro','carrera','ola','pista'].includes(p.efecto))c.multiplyScalar(.25+.75*(.5+.5*Math.sin(t*3*vel+i)));
+      m.color.copy(c.multiplyScalar(brillo));
+    });
+  }
+}
 // Radiador del AIO en el techo, con sus tres ventiladores sin pantalla.
 const radiador=new THREE.Mesh(new THREE.BoxGeometry(1.5,.22,4.4),new THREE.MeshStandardMaterial({color:0x0d1322,roughness:.5,metalness:.6}));radiador.position.set(-.2,H-.3,-.2);caja.add(radiador);
 for(const z of [-1.65,-.2,1.25]){const r=new THREE.Mesh(new THREE.TorusGeometry(.6,.03,8,48),new THREE.MeshBasicMaterial({color:0x4a3a8a}));r.rotation.x=Math.PI/2;r.position.set(-.2,H-.43,z);caja.add(r);}
@@ -352,7 +461,10 @@ function actualizarTexturas(){
 // Clic en un ventilador 3D → detalle
 const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
 canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(ptr,camera);
-  const hit=ray.intersectObjects(Object.values(vents).map(v=>v.g),true)[0];if(!hit)return;let o=hit.object;while(o&&!o.userData.n)o=o.parent;if(o)abrir(o.userData.n);});
+  const luces=Object.values(disp).flatMap(d=>d.mallas);
+  const hit=ray.intersectObjects([...Object.values(vents).map(v=>v.g),...luces],true)[0];if(!hit)return;
+  if(hit.object.userData.disp){destino=hit.object.userData.disp;pintarLuz();toast(DISPOSITIVOS[destino].t+': elige su luz en Iluminación');return;}
+  let o=hit.object;while(o&&!o.userData.n)o=o.parent;if(o)abrir(o.userData.n);});
 
 // Color que muestra cada anillo, imitando el efecto del controlador (para el gemelo, no es medida).
 // En secuencia la luz acompaña siempre al vídeo, como en el puente: solo el activo, y en fijo si la general
@@ -400,6 +512,7 @@ function bucle(){
     const el=document.querySelector(`.vent[data-n="${n}"] .disco`);if(el)el.style.setProperty('--anillo','#'+c.getHexString());
   }
   if(seleccionado)$('dImg').style.borderColor='#'+colorAnillo(seleccionado,t).getHexString();
+  pintarLuces(t);
   controls.update();renderer.render(scene,camera);
 }
 bucle();
@@ -418,7 +531,8 @@ async function refrescar(){
     // puede cambiar en local, desde config.json o su API).
     const vigente=(Number(inf.revision)||0)>=(Number(d.revision)||0)?inf:d;
     if(!editandoEscena&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
-    if(!editandoLuz&&(vigente.luz||d.luz)){const l=vigente.luz||d.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{}};pintarLuz();}
+    if(!editandoLuz&&(vigente.luz||d.luz)){const l=vigente.luz||d.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{},dispositivos:l.dispositivos||{}};pintarLuz();}
+    else pintarDestinos();
     const aplicando=d.revision&&inf.revision!==undefined&&d.revision>inf.revision;
     $('pendEscena').textContent=aplicando?'Aplicando en PC-COCINA…':(d.por?'Último cambio: '+d.por:'');
     $('pendLuz').textContent=aplicando?'Aplicando en PC-COCINA…':'';
