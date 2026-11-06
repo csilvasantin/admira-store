@@ -493,7 +493,7 @@ function bootWith(img, label){
 // Aquí se sondea /api/estado (JSON pequeño) cada 2,5 s y solo se baja face.png cuando cambia el hash.
 const LIVE_URL='/objeto/stream-deck/api/face.png';
 const ESTADO_URL='/objeto/stream-deck/api/estado';
-let liveEtag=null,liveVisto=0;
+let liveEtag=null,liveVisto=0,relojNube=0; // relojNube = ahora de la nube − Date.now(): el reloj de este PC puede ir adelantado
 function pintarFicha(st){
   const vivo=!!st&&st.enLinea;
   $('arteInfo').textContent=vivo?'EN VIVO · perfil Elgato':'face-live · 8×4 foto METAHUMAN';
@@ -505,7 +505,7 @@ function pintarFicha(st){
 function pintarVisto(){
   const el=$('vistoInfo');
   if(!liveVisto){el.textContent='—';return;}
-  const s=Math.max(0,Math.round((Date.now()-liveVisto)/1000));
+  const s=Math.max(0,Math.round((Date.now()+relojNube-liveVisto)/1000));
   el.textContent=s<60?`hace ${s} s`:s<3600?`hace ${Math.round(s/60)} min`:`hace ${Math.round(s/3600)} h`;
   el.className=enVivo&&s<15?'vivo':'';
 }
@@ -543,6 +543,7 @@ async function vivo(){
     const st=r.ok?await r.json():null;
     if(st&&st.ok){
       liveVisto=Number(st.visto)||liveVisto;
+      if(Number(st.ahora))relojNube=Number(st.ahora)-Date.now();
       pintarEstado(st.enLinea);
       keysMeta=(st.keys&&typeof st.keys==='object')?st.keys:{};
       pintarFicha(st);
