@@ -92,6 +92,46 @@ tienen pantalla y vídeo (no hay ventilador de temperatura). Confirmado el 6-nov
 PC-COCINA y Carlos). Es la constante `DISPOSICION`
 de `supercomputer/pc-cocina/index.html`, con los números del puente (puerto y posición en la cadena).
 
+### PC-COCINA · luces de la caja y audio (6-nov-2026)
+
+**Luces de la caja** (`luz.dispositivos`, mismas claves en el puente, la nube y el gemelo; `escena.mjs` ·
+`normalizarLuz` / `luzDispositivo`). Sin luz propia, cada una sigue a la luz general, como los ventiladores; no
+sigue el relevo de sincro/secuencia, que es de los ventiladores.
+
+| Clave | Alias | Qué es | Control |
+|---|---|---|---|
+| `grafica` | gpu, pcie | Cable Strimer Plus de la gráfica | USB `0CF2:A200`, puertos 6-11 (canal 2) |
+| `placa` | atx, 24pin | Cable Strimer Plus de 24 pines de la placa | USB `0CF2:A200`, puertos 0-5 (canal 1) |
+| `memoria` | ram, dram | 2 × DDR5 Lexar `LD5U16G72C34LA` (controlador ENE) | **Sin control**: va por SMBus y el puente no tiene driver para ese bus |
+
+Los puertos de cada cable se comprobaron con la webcam de PC-COCINA (apagando un canal cada vez). El protocolo
+del Strimer es el de `sgtaziz/lian-li-linux` (MIT, `strimer_plus.rs`): informe 0xE0, modo/velocidad/brillo por
+característica y 27 colores por puerto en orden R, B, G. El puente informa en `informe.dispositivos` si controla
+cada luz y, si no, por qué (`motivo`); el gemelo lo enseña y bloquea los controles de la memoria.
+
+**Audio** (`escena.audio`, `escena.mjs` · `normalizarAudio`): `{ ventilador, salida, volumen }`. Como mucho suena
+un ventilador (`0` = ninguno; en Repetir hay un solo canal y cualquier número es «con sonido»). Solo su Chrome
+arranca sin `--mute-audio`, con `muted=0&volume=` en el canal (contrato del player) o `audio=1&volumen=` en la
+página de escena; los demás van callados. `salida` es el nombre del dispositivo de Windows (vacío = el
+predeterminado); la página lo busca por nombre y usa `setSinkId`, para lo que el puente concede el permiso de
+micrófono solo a ese Chrome y solo si se pidió una salida concreta. `informe.audio` trae `suena` (qué player
+suena) y `salidas` (los puntos de reproducción de Windows).
+
+Estado verificado el 6-nov-2026 en PC-COCINA: el puente controla los dos cables (gráfica en rojo/arcoíris y 24
+pines en azul/verde, vistos con la webcam) y suena solo el ventilador 1 por la salida predeterminada (micrófono
+de la webcam: −36 dBFS con sonido frente a −47 dBFS silenciado). Pendiente: desplegar el Worker
+`supercomputer-pc-cocina` con la `escena.mjs` nueva (marca `luces: 'con-dispositivos'` en `/salud` y `/estado`);
+hasta entonces la nube descarta `luz.dispositivos` y `escena.audio`, y un cambio desde el gemelo los apaga. La
+memoria necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
+
+PC-COCINA case lights and audio (6-Nov-2026): `luz.dispositivos.{grafica,placa,memoria}` follow the main light
+unless they have their own. Both Strimer Plus cables (USB `0CF2:A200`; ports 6-11 graphics card, 0-5 24-pin) are
+controlled; the memory (2× Lexar DDR5, ENE) is not yet (SMBus, no driver), so it keeps its factory rainbow and
+the twin locks its controls. `escena.audio { ventilador, salida, volumen }`: at most one fan plays sound (0 =
+none); only its Chrome runs without `--mute-audio`, the output is chosen by Windows device name (empty = default)
+through `setSinkId`. Pending: deploy Worker `supercomputer-pc-cocina` with the new `escena.mjs`; until then the
+cloud drops `luz.dispositivos` and `escena.audio`.
+
 ## Pendiente
 
 - Servidor MCP real (`csilvasantin/xpaceos-mcp`, `mcp.admira.store`): repositorio privado; hace falta acceso
