@@ -425,8 +425,9 @@ function selectKey(k){
     $('keyInfo').textContent=`(${row},${col}) ${f.titulo?'«'+f.titulo+'» · ':''}${f.accion}${f.estados?' · estado '+f.estados:''}`;
     toast(`${f.titulo||'(sin título)'} · ${f.accion}${f.nombre&&f.nombre!==f.accion?' · '+f.nombre:''}`);
   }else{
-    $('keyInfo').textContent=`fila ${row}, col ${col} · idx ${row*COLS+col}${enVivo?' · sin acción':active?' · mural':' · oscura'}`;
-    toast(enVivo?`Tecla (${row}, ${col}) · sin acción en el perfil`:`Tecla (${row}, ${col})`);
+    const hayFicha=Object.keys(keysMeta).length>0;
+    $('keyInfo').textContent=`fila ${row}, col ${col} · idx ${row*COLS+col}${hayFicha?' · sin acción':active?' · mural':' · oscura'}`;
+    toast(hayFicha?`Tecla (${row}, ${col}) · sin acción en el perfil`:`Tecla (${row}, ${col})${enVivo?' · ficha no disponible aún':''}`);
   }
 }
 
@@ -453,7 +454,7 @@ canvas.addEventListener('pointermove',e=>{
   if(k!==tipK){
     tipK=k;const {row,col}=k.userData,f=fichaTecla(col,row);
     tip.innerHTML=f?`<b>${esc(f.titulo||'(sin título)')}</b><span>${esc(f.accion)}${f.estados?' · '+f.estados:''} · (${row},${col})</span>`
-      :`<b>Tecla (${row},${col})</b><span>${enVivo?'sin acción en el perfil':'foto fija · sin ficha'}</span>`;
+      :`<b>Tecla (${row},${col})</b><span>${Object.keys(keysMeta).length?'sin acción en el perfil':enVivo?'ficha no disponible aún':'foto fija · sin ficha'}</span>`;
   }
   tip.className='tip show';
 });
