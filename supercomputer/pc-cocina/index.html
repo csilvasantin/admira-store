@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Supercomputer PC-Cocina · gemelo digital · admira.store</title>
-<meta name="description" content="Gemelo digital de la Supercomputer: los 6 ventiladores con pantalla de PC-COCINA, sus contenidos de admira.tv y su iluminación, en vivo.">
+<meta name="description" content="Gemelo digital de la Supercomputer: los 7 ventiladores con pantalla de PC-COCINA, sus contenidos de admira.tv y su iluminación, en vivo.">
 <link rel="canonical" href="https://www.admira.store/supercomputer/">
 <link rel="icon" href="/favicon.ico">
 <meta name="theme-color" content="#04060d">
@@ -81,11 +81,11 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 <script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
 </head>
 <body>
-<canvas id="c" aria-label="Gemelo 3D de la Supercomputer con sus 6 ventiladores de contenido"></canvas>
+<canvas id="c" aria-label="Gemelo 3D de la Supercomputer con sus 7 ventiladores de contenido"></canvas>
 <div class="carga" id="carga">ENCENDIENDO LA SUPERCOMPUTER…</div>
 
 <header class="hud top">
-  <div class="brand"><b>Super<span>computer</span></b><small>LA STORE DE PC-COCINA · 6 VENTILADORES · ADMIRA.TV</small></div>
+  <div class="brand"><b>Super<span>computer</span></b><small>LA STORE DE PC-COCINA · 7 VENTILADORES · ADMIRA.TV</small></div>
   <span class="spacer"></span>
   <span class="estado" id="estado"><i></i><span id="estadoTxt">Conectando…</span></span>
 </header>
@@ -143,23 +143,30 @@ const $=id=>document.getElementById(id);
 // ── Modos y efectos (mismos nombres que el puente: admira-tv/tools/player-ventiladores/escena.mjs) ──
 const MODOS={
   independiente:'Cada ventilador es un player de admira.tv con su propia pieza.',
-  repetir:'La misma pieza en los 6 a la vez, en sincronía exacta.',
-  extender:'Una pieza estirada sobre los 6 como un mural: cada ventilador muestra su tesela.',
+  repetir:'La misma pieza en los 7 a la vez, en sincronía exacta.',
+  extender:'Una pieza estirada sobre los 7 como un mural: cada ventilador muestra su tesela.',
   sincro:'La pieza pasa de un ventilador al siguiente sin perder el hilo. Con varias piezas, desfilan en carrusel.',
   identificar:'Cada pantalla enseña su número, su puerto y su posición, para ubicar los ventiladores en la caja.'
 };
 const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
 const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b26bff','#ffffff'];
 
-// Disposición física de PC-COCINA (ver comentario en DISPOSICION).
+// Disposición física de PC-COCINA (Carlos, foto del 6-nov-2026), vista desde el cristal delantero (+x; el fondo es −x,
+// la izquierda +z y la derecha −z). Los 7 ventiladores tienen pantalla y vídeo; el número es el del puente (puerto y
+// posición en la cadena): 1 = único del puerto 0; 2-3-4 = puerto 1; 5-6-7 = puerto 2.
+//  · 1: solo, en la pared del fondo a la izquierda de la placa, sobre los conectores de corriente, mirando al frente.
+//  · 2-3-4: en el suelo, horizontales, caras arriba, de izquierda a derecha.
+//  · 5-6-7: en la pared derecha, en vertical, de arriba abajo, mirando hacia dentro.
+// Asignación por grupos según la foto y la prueba de Lucas del 4-nov (primero horizontales, luego verticales); el
+// orden dentro de cada grupo está por confirmar con Identificar. Si hay que corregirlo, solo se toca esta tabla.
+const VENTILADORES=[1,2,3,4,5,6,7];
 const DISPOSICION={
-  // PC-COCINA (verificado por Lucas el 4-nov-2026): 1-2-3 horizontales (izq->der), 4-5-6 verticales (arriba->abajo).
-  // El 7.o ventilador (temperatura) no se usa.
-  1:{p:[0.75,0.18,1.75],n:[0,1,0]},2:{p:[0.75,0.18,0.2],n:[0,1,0]},3:{p:[0.75,0.18,-1.35],n:[0,1,0]},
-  4:{p:[0.55,4.2,-3.14],n:[0,0,1]},5:{p:[0.55,2.75,-3.14],n:[0,0,1]},6:{p:[0.55,1.3,-3.14],n:[0,0,1]}
+  1:{p:[-1.92,3.75,2.15],n:[1,0,0]},
+  2:{p:[0.45,0.18,1.75],n:[0,1,0]},3:{p:[0.45,0.18,0.2],n:[0,1,0]},4:{p:[0.45,0.18,-1.35],n:[0,1,0]},
+  5:{p:[0.55,4.2,-3.14],n:[0,0,1]},6:{p:[0.55,2.75,-3.14],n:[0,0,1]},7:{p:[0.55,1.3,-3.14],n:[0,0,1]}
 };
 
-let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:6}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
+let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
 let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
 
 // ── Utilidades ──
@@ -184,13 +191,13 @@ function pintarModos(){
   $('desc').textContent=MODOS[escena.modo]||'';
   const o=$('opciones');
   if(escena.modo==='independiente'){
-    o.innerHTML=[1,2,3,4,5,6].map(n=>`<div class="fila"><label>Vent. ${n}</label><select data-ind="${n}">${opcionesStock((escena.ids[n]||[])[0])}</select></div>`).join('');
+    o.innerHTML=VENTILADORES.map(n=>`<div class="fila"><label>Vent. ${n}</label><select data-ind="${n}">${opcionesStock((escena.ids[n]||[])[0])}</select></div>`).join('');
   }else if(escena.modo==='repetir'){
-    o.innerHTML=`<div class="campo"><label>Pieza en los 6</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>`;
+    o.innerHTML=`<div class="campo"><label>Pieza en los 7</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>`;
   }else if(escena.modo==='extender'){
     o.innerHTML=`<div class="campo"><label>Pieza del mural</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>
       <div class="fila"><label>Ajuste</label><select id="ajuste"><option value="cubrir">Cubrir · cover</option><option value="estirar">Estirar · stretch</option><option value="contener">Contener · contain</option></select></div>
-      <div class="fila f3"><label>Columnas</label><input type="range" id="columnas" min="1" max="6" value="${escena.columnas||6}"><span class="val" id="columnasV">${escena.columnas||6}</span></div>`;
+      <div class="fila f3"><label>Columnas</label><input type="range" id="columnas" min="1" max="7" value="${escena.columnas||7}"><span class="val" id="columnasV">${escena.columnas||7}</span></div>`;
     $('ajuste').value=escena.ajuste||'cubrir';
     $('columnas').oninput=e=>{$('columnasV').textContent=e.target.value;escena.columnas=+e.target.value;editandoEscena=true;};
     $('ajuste').onchange=e=>{escena.ajuste=e.target.value;editandoEscena=true;};
@@ -198,7 +205,7 @@ function pintarModos(){
     o.innerHTML='';
   }else{
     const n=Math.max(1,escena.piezas.length);
-    o.innerHTML=Array.from({length:Math.min(6,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label><select data-pieza="${i}">${opcionesStock(escena.piezas[i])}</select></div>`).join('')+
+    o.innerHTML=Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label><select data-pieza="${i}">${opcionesStock(escena.piezas[i])}</select></div>`).join('')+
       `<div class="fila f3"><label>Paso</label><input type="range" id="paso" min="1" max="30" value="${escena.paso||4}"><span class="val" id="pasoV">${escena.paso||4} s</span></div>`;
     $('paso').oninput=e=>{$('pasoV').textContent=e.target.value+' s';escena.paso=+e.target.value;editandoEscena=true;};
   }
@@ -244,7 +251,7 @@ $('aplicarLuz').onclick=async()=>{
 };
 
 // ── Tira de ventiladores y detalle ──
-$('tira').innerHTML=[1,2,3,4,5,6].map(n=>`<button class="vent" data-n="${n}"><div class="disco"><img alt="Ventilador ${n}" data-mini="${n}"></div><b>Ventilador ${n}</b><small data-meta="${n}">—</small></button>`).join('');
+$('tira').innerHTML=VENTILADORES.map(n=>`<button class="vent" data-n="${n}"><div class="disco"><img alt="Ventilador ${n}" data-mini="${n}"></div><b>Ventilador ${n}</b><small data-meta="${n}">—</small></button>`).join('');
 $('tira').onclick=e=>{const b=e.target.closest('.vent');if(b)abrir(+b.dataset.n);};
 $('cerrar').onclick=()=>{$('detalle').classList.remove('open');seleccionado=null;marcarSel();};
 function marcarSel(){document.querySelectorAll('.vent').forEach(v=>v.classList.toggle('sel',+v.dataset.n===seleccionado));}
@@ -267,9 +274,9 @@ $('dColorOff').onclick=async()=>{if(!seleccionado)return;const v={...luz.ventila
 const canvas=$('c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();
-// Cámara como en la foto: centrada frente a la ventana principal y por encima, para ver de cara
-// tanto la columna 1-2-3 (mira hacia atrás) como el 7 (mira hacia delante).
-const camera=new THREE.PerspectiveCamera(34,1,.1,200);camera.position.set(15.5,8.2,0.9);
+// Cámara como en la foto de PC-COCINA: delante del cristal, algo a la izquierda y por encima, para ver la placa
+// del fondo con el ventilador 1, la columna 5-6-7 de la derecha y los 2-3-4 del suelo.
+const camera=new THREE.PerspectiveCamera(34,1,.1,200);camera.position.set(15,7.6,3.2);
 const controls=new OrbitControls(camera,canvas);controls.target.set(0,2.5,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
 scene.add(new THREE.HemisphereLight(0x9fc6ff,0x0a0f1e,.9));
 const sol=new THREE.DirectionalLight(0xffffff,1.1);sol.position.set(6,12,8);scene.add(sol);
@@ -281,9 +288,27 @@ const caja=new THREE.Group();scene.add(caja);
 const W=4.2,H=5.4,D=6.6;   // fondo (x), alto (y), ancho delante-detrás (z): más ancha que alta, como PC-COCINA
 const cristal=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),new THREE.MeshPhysicalMaterial({color:0x9fc6ff,transparent:true,opacity:.08,roughness:.05,metalness:0,side:THREE.DoubleSide,depthWrite:false}));cristal.position.y=H/2;caja.add(cristal);
 const aristas=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),new THREE.LineBasicMaterial({color:0x5f86c4,transparent:true,opacity:.55}));aristas.position.y=H/2;caja.add(aristas);
-const placa=new THREE.Mesh(new THREE.BoxGeometry(.12,H-1.3,D-2.6),new THREE.MeshStandardMaterial({color:0x0b1222,roughness:.6,metalness:.5,transparent:true,opacity:.6}));placa.position.set(-W/2+.15,H/2+.15,.6);caja.add(placa);
-const gpu=new THREE.Mesh(new THREE.BoxGeometry(1.6,.35,3.4),new THREE.MeshStandardMaterial({color:0x141a2a,roughness:.4,metalness:.7}));gpu.position.set(-.9,2.05,.35);caja.add(gpu);
-const aio=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.3,40),new THREE.MeshStandardMaterial({color:0x1a2236,roughness:.3,metalness:.8}));aio.rotation.z=Math.PI/2;aio.position.set(-1.75,3.85,.5);caja.add(aio);
+// Interior según la foto de PC-COCINA (6-nov-2026): placa al fondo, a la derecha del centro; a su izquierda los
+// conectores de corriente con el ventilador 1 encima; gráfica horizontal delante de la placa; bomba del AIO, RAM y
+// los dos peines de cables RGB (24 pines junto a la RAM y PCIe de la gráfica).
+const metal=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.5,metalness:.6,...o});
+const PZ=-1.05,PW=3.3,PY=3.0,PH=3.9;   // placa: centro y tamaño en z (ancho) e y (alto)
+const placa=new THREE.Mesh(new THREE.BoxGeometry(.12,PH,PW),metal(0x0b1222,{transparent:true,opacity:.75}));placa.position.set(-W/2+.15,PY,PZ);caja.add(placa);
+const panel=new THREE.Mesh(new THREE.BoxGeometry(.1,2.3,1.9),metal(0x090e1a));panel.position.set(-W/2+.12,1.75,2.15);caja.add(panel);
+for(const [y,z] of [[2.5,1.68],[2.5,2.62],[1.8,1.68],[1.8,2.62],[1.1,1.68],[1.1,2.62]]){
+  const pasacables=new THREE.Mesh(new THREE.BoxGeometry(.06,.42,.62),metal(0x02040a,{roughness:.9}));pasacables.position.set(-W/2+.2,y,z);caja.add(pasacables);
+}
+const arcoiris=(()=>{const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');
+  for(let i=0;i<256;i++){g.fillStyle=`hsl(${Math.round(i*1.4)},100%,58%)`;g.fillRect(i,0,1,64);}
+  g.fillStyle='rgba(0,0,0,.55)';for(let y=0;y<64;y+=8)g.fillRect(0,y+5,256,3);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;})();
+const rgb=(w,h,d)=>new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshBasicMaterial({map:arcoiris}));
+const gpu=new THREE.Mesh(new THREE.BoxGeometry(1.7,.42,3.3),metal(0x141a2a,{roughness:.4,metalness:.7}));gpu.position.set(-W/2+1.06,1.85,PZ+.35);caja.add(gpu);
+const aio=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.3,40),metal(0x1a2236,{roughness:.3,metalness:.8}));aio.rotation.z=Math.PI/2;aio.position.set(-1.8,3.75,PZ+1.0);caja.add(aio);
+const espejo=new THREE.Mesh(new THREE.RingGeometry(.16,.42,48),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:.8,side:THREE.DoubleSide}));espejo.rotation.y=Math.PI/2;espejo.position.set(-1.64,3.75,PZ+1.0);caja.add(espejo);
+for(const z of [PZ+.25,PZ+.05]){const ram=rgb(.32,1.25,.09);ram.position.set(-1.88,3.8,z);caja.add(ram);}
+const peine24=rgb(.9,1.3,.16);peine24.position.set(-1.5,3.35,PZ-1.2);caja.add(peine24);
+const peinePcie=rgb(.7,.42,2.1);peinePcie.position.set(-.55,1.42,PZ+.75);caja.add(peinePcie);
 // Radiador del AIO en el techo, con sus tres ventiladores sin pantalla.
 const radiador=new THREE.Mesh(new THREE.BoxGeometry(1.5,.22,4.4),new THREE.MeshStandardMaterial({color:0x0d1322,roughness:.5,metalness:.6}));radiador.position.set(-.2,H-.3,-.2);caja.add(radiador);
 for(const z of [-1.65,-.2,1.25]){const r=new THREE.Mesh(new THREE.TorusGeometry(.6,.03,8,48),new THREE.MeshBasicMaterial({color:0x4a3a8a}));r.rotation.x=Math.PI/2;r.position.set(-.2,H-.43,z);caja.add(r);}
@@ -306,9 +331,9 @@ function crearVentilador(n){
   g.userData.n=n;caja.add(g);
   vents[n]={g,aspas,lcd,lcdMat,anilloMat,halo,tex:null};
 }
-for(let n=1;n<=6;n++)crearVentilador(n);
+for(const n of VENTILADORES)crearVentilador(n);
 function actualizarTexturas(){
-  for(let n=1;n<=6;n++){
+  for(const n of VENTILADORES){
     const v=vents[n];
     loader.load(API+'/miniatura/'+n+'.jpg?t='+Date.now(),tex=>{tex.colorSpace=THREE.SRGBColorSpace;v.tex?.dispose();v.tex=tex;v.lcdMat.map=tex;v.lcdMat.color.set(0xffffff);v.lcdMat.needsUpdate=true;},undefined,()=>{});
     const img=document.querySelector(`img[data-mini="${n}"]`);if(img)img.src=API+'/miniatura/'+n+'.jpg?t='+Date.now();
@@ -336,7 +361,7 @@ function colorAnillo(n,t){
   return c.multiplyScalar(Math.max(.08,brillo));
 }
 function activoSincro(e,n){
-  const orden=e.orden||[1,2,3,4,5,6],pos=orden.indexOf(n);if(pos<0)return false;
+  const orden=e.orden||VENTILADORES,pos=orden.indexOf(n);if(pos<0)return false;
   const paso=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/(e.paso||4)),N=orden.length;
   return ((((pos-paso)%N)+N)%N)<(e.piezas||[]).length;
 }
@@ -347,7 +372,7 @@ const reloj=new THREE.Clock();
 function bucle(){
   requestAnimationFrame(bucle);
   const t=reloj.getElapsedTime();
-  for(let n=1;n<=6;n++){
+  for(const n of VENTILADORES){
     const v=vents[n],f=(estado?.informe?.fans||[]).find(x=>x.n===n),rpm=f?.rpm||600;
     v.aspas.rotation.z-=rpm/600*.06;
     const c=colorAnillo(n,t);v.anilloMat.color.copy(c);v.halo.material.color.copy(c);
