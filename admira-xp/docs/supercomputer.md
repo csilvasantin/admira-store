@@ -81,13 +81,15 @@ Mismo diseño que METAHUMAN, con todas las piezas separadas para que no se pisen
 
 Estado verificado el 6-nov-2026: Worker desplegado, secretos cargados (`MAQUINA_KEY`, `PROXY_KEY` y el de Pages),
 y el puente de PC-COCINA (`AdmiraNeXT\player-ventiladores-pc-cocina`) emitiendo a los 7 ventiladores e informando
-a su Worker. Pages solo aplica un secreto nuevo al publicar, así que el gemelo de PC-COCINA funciona a partir de
-la primera publicación posterior. Hasta que la ruta del perímetro esté publicada, el puente llama al Worker por
-`*.workers.dev`; después debe volver a `www.admira.store/supercomputer/pc-cocina/api`.
+a su Worker por `www.admira.store/supercomputer/pc-cocina/api` (ruta pública publicada en el PR #189). El puente
+arranca solo al iniciar sesión (tarea «Admira Player Ventiladores», que para L-Connect antes de emitir).
 
-Pendiente en PC-COCINA: el puente numera 7 ventiladores (el 1 es el único del puerto 0) y el gemelo pinta 6; hay
-que confirmar con Identificar cuál es el de temperatura y ajustar `DISPOSICION`. El arranque automático
-(`autoarranque.ps1`) y la pausa de L-Connect (pide permiso de administrador) están por hacer.
+**Disposición de PC-COCINA** (foto de Carlos del 6-nov-2026, vista desde el cristal delantero): placa base al
+fondo; a su izquierda, los conectores de corriente con el **ventilador 1** encima (el único del puerto 0); a la
+derecha, **5-6-7** en vertical, de arriba abajo; en el suelo, **2-3-4** horizontales, de izquierda a derecha. Los 7
+tienen pantalla y vídeo (no hay ventilador de temperatura). La asignación por grupos sale de la foto y de la prueba
+de Lucas del 4-nov; el orden dentro de cada grupo está por confirmar con Identificar. Es la constante `DISPOSICION`
+de `supercomputer/pc-cocina/index.html`, con los números del puente (puerto y posición en la cadena).
 
 ## Pendiente
 
@@ -123,4 +125,4 @@ Simulation mode («Solo gemelo · simulación», `localStorage` key `admira.supe
 
 Sim pseudostream cache: with «Solo gemelo · simulación» on, each fan (3D, strip, detail) shows the real piece from `api.admira.store/stock/list` (`thumbnail` poster first, then `url` video/image) downloaded **once** into Cache API `admira-sc-sim-v1` (key = asset url) with an on-screen progress bar, then replayed from cache («✓ en caché»); it is gemelo-only, never PC bridge frames, and the SIM title card remains only as fallback when no media URL exists.
 
-PC-COCINA (6-nov-2026) is an independent copy with the same design: twin `/supercomputer/pc-cocina/`, API `/supercomputer/pc-cocina/api/*` (public in the perimeter so its bridge can `POST /maquina` with its Bearer key), Worker `supercomputer-pc-cocina`, Pages secret `SUPERCOMPUTER_PC_COCINA_PROXY_KEY`, machine key `~/.admira_supercomputer_pc_cocina_key` and admira.tv screens `supercomputer-pc-cocina-ventilador(es)…`. Verified: Worker deployed, secrets set, bridge emitting to its 7 fans and reporting to its Worker. Pending: confirm which fan is the temperature one (the bridge numbers 7, the twin draws 6), autostart and pausing L-Connect.
+PC-COCINA (6-nov-2026) is an independent copy with the same design: twin `/supercomputer/pc-cocina/`, API `/supercomputer/pc-cocina/api/*` (public in the perimeter so its bridge can `POST /maquina` with its Bearer key), Worker `supercomputer-pc-cocina`, Pages secret `SUPERCOMPUTER_PC_COCINA_PROXY_KEY`, machine key `~/.admira_supercomputer_pc_cocina_key` and admira.tv screens `supercomputer-pc-cocina-ventilador(es)…`. Verified: Worker deployed, secrets set, bridge emitting to its 7 fans and reporting to its Worker. The bridge starts on login (scheduled task that stops L-Connect first). Layout (photo, 6-nov-2026, seen through the front glass): motherboard at the back; fan 1 alone on the back wall left of the board, above the power connectors; 5-6-7 vertical on the right wall, top to bottom; 2-3-4 horizontal on the floor, left to right. All 7 show video. Order within each group still to be confirmed with Identify.
