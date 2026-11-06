@@ -34,7 +34,8 @@ Carlos: el v1 «no se parece en nada». Remodel procedural (sin Blender):
 ### Estado
 
 - **Entregado:** gemelo 3D v2 + LCD face-live (badge «Cara desde foto METAHUMAN · live bridge USB pendiente»), selector Objeto → Stream Deck, docs/help/MCP snippet, perímetro público `/objeto/`.
-- **Pendiente:** puente USB / player para emitir demos de admira.tv en las teclas reales (sin bridge todavía). Honestidad: las teclas ya coinciden con la foto; el stream USB en vivo no.
+- **Puente EN VIVO (5-nov-2026):** ver sección al final. **Ficha de teclas y títulos (6-nov-2026):** ver sección al final.
+- **Pendiente:** pulsaciones físicas en el gemelo (HID) y pulsar una tecla desde el gemelo (no hay API de Elgato para ello).
 
 Canonical: https://www.admira.store/objeto/stream-deck/
 
@@ -67,7 +68,8 @@ Carlos: v1 “looks nothing like it.” Procedural remodel (no Blender):
 ### Status
 
 - **Shipped:** 3D twin v2 + LCD face-live (badge “Face from METAHUMAN photo · USB live bridge pending”), Objeto → Stream Deck selector, docs/help/MCP snippet, public perimeter `/objeto/`.
-- **Pending:** USB / player bridge to push admira.tv demos onto the real keys. Honest: keys already match the photo; live USB stream does not.
+- **LIVE bridge (5 Nov 2026)** and **key records + titles (6 Nov 2026):** see the sections at the end.
+- **Pending:** physical key presses on the twin (HID) and pressing a key from the twin (no Elgato API for it).
 - 5-nov-2026: face-live.png v3 rehecho desde foto close-up METAHUMAN (warp de perspectiva, solo inset LCD, cols 0/6/7 apagadas como en el físico). Cámara más frontal. Puente USB pendiente.
 
 ## Puente EN VIVO (5-nov-2026)
@@ -86,3 +88,35 @@ Carlos: v1 “looks nothing like it.” Procedural remodel (no Blender):
 - **Parar**: `schtasks /End /TN AdmiraStreamDeckBridge` y `schtasks /Change /TN AdmiraStreamDeckBridge /DISABLE`.
 - **Límites**: es el perfil Elgato, no HID crudo; imágenes dinámicas de plugins (Key Creator, contadores,
   títulos dibujados por el software) no aparecen; carpetas/multipágina siguen `Pages.Current` del perfil.
+
+## Ficha de teclas y títulos (6-nov-2026)
+
+- **Títulos pintados**: `puente.py` dibuja sobre cada icono el título del perfil como lo hace el software Elgato
+  (líneas, incluidas las vacías; `TitleAlignment` top/middle/bottom; `TitleColor`; `FontSize` escalado de 96 a 128 px;
+  `OutlineThickness` como contorno negro; `ShowTitle:false` lo oculta; fuente del perfil si existe en Windows, si no
+  Arial negrita). Un título más ancho que la tecla encoge hasta caber.
+- **Ficha por tecla**: junto a la cara, el puente manda `keys` («col,fila» → `{n: nombre de la acción, u: UUID sin
+  `com.elgato.streamdeck.`, t: título, s: nº de estados, i: estado activo}`), `pageName`, `profileName`, `pages`,
+  `pageIndex` y `folder` (la página activa es una carpeta: tiene «Volver» en 0,0). Solo viaja cuando cambia la cara.
+- **Nube**: `POST /streamdeck` guarda la ficha (máx. 32 teclas, textos recortados) y `GET /streamdeck/estado` la
+  devuelve: `{ok, ahora, enLinea, visto, serial, pageId, keyCount, hash, pageName, profileName, pages, pageIndex, folder, keys}`.
+- **Gemelo**: sondea `api/estado` cada 2,5 s y solo baja `api/face.png` cuando cambia `hash`. Al pasar el ratón por
+  una tecla, tooltip con título y acción en castellano (Atajo de teclado, Abrir app, Abrir web, Multimedia, Carpeta,
+  Volver, Dormir pantallas, Brillo, Multiacción…); al hacer clic, la ficha fija `(fila,col) «título» · acción · estado`.
+  La ficha del dispositivo enseña además Perfil, Página (o «carpeta»), nº de acciones y «Visto hace N s» en verde si está en línea.
+- **Prueba local sin subir nada**: `python puente.py --png salida.png` deja el atlas y `salida.png.json` con la ficha.
+- **URLs**: https://www.admira.store/objeto/stream-deck/api/estado · https://www.admira.store/objeto/stream-deck/api/face.png
+
+## Key records and titles (6 Nov 2026)
+
+- **Painted titles**: `puente.py` draws each key's profile title over its icon the way the Elgato software does
+  (lines, blank ones included; `TitleAlignment`; `TitleColor`; `FontSize` scaled from 96 to 128 px; `OutlineThickness`
+  as a black outline; `ShowTitle:false` hides it; the profile font when Windows has it, else Arial bold). Titles wider
+  than the key shrink to fit.
+- **Per-key record**: next to the face the bridge sends `keys` ("col,row" → `{n: action name, u: UUID without
+  `com.elgato.streamdeck.`, t: title, s: state count, i: active state}`), `pageName`, `profileName`, `pages`, `pageIndex`
+  and `folder`. It travels only when the face changes.
+- **Cloud**: `POST /streamdeck` stores the record (max 32 keys, trimmed strings) and `GET /streamdeck/estado` returns it.
+- **Twin**: polls `api/estado` every 2.5 s and downloads `api/face.png` only when `hash` changes. Hovering a key shows a
+  tooltip with title and action; clicking pins `(row,col) "title" · action · state` in the panel, which also shows
+  Profile, Page (or "folder"), action count and "seen N s ago" (green while online).

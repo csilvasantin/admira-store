@@ -45,3 +45,16 @@ test('el selector incrusta Objeto→Stream Deck sin salir del shell', () => {
   assert.match(selector, /objetoPane/);
   assert.match(selector, /\/objeto\/stream-deck\//);
 });
+
+test('el gemelo pinta la ficha de cada tecla que manda el puente (6-nov-2026)', () => {
+  assert.match(html, /\/objeto\/stream-deck\/api\/estado/);
+  assert.match(html, /keysMeta/);
+  assert.match(html, /fichaTecla/);
+  assert.match(html, /id="tip"/);
+  assert.match(html, /id="perfilInfo"/);
+  assert.match(html, /id="paginaInfo"/);
+  assert.match(html, /id="vistoInfo"/);
+  assert.match(html, /'profile\.openchild':'Carpeta'/);
+  // La cara solo se baja cuando cambia el hash de la nube (el ETag es el hash entre comillas).
+  assert.match(html, /'"'\+st\.hash\+'"'!==liveEtag/);
+});
