@@ -151,19 +151,21 @@ const MODOS={
 const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
 const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b26bff','#ffffff'];
 
-// Disposición física de PC-COCINA (Carlos, foto del 6-nov-2026), vista desde el cristal delantero (+x; el fondo es −x,
-// la izquierda +z y la derecha −z). Los 7 ventiladores tienen pantalla y vídeo; el número es el del puente (puerto y
-// posición en la cadena): 1 = único del puerto 0; 2-3-4 = puerto 1; 5-6-7 = puerto 2.
-//  · 1: solo, en la pared del fondo a la izquierda de la placa, sobre los conectores de corriente, mirando al frente.
+// Disposición física de PC-COCINA (Carlos, foto y capturas anotadas del 6-nov-2026), vista por el cristal grande
+// (+x). La pared de la placa es −x; la izquierda (+z) es la trasera de la caja y la derecha (−z) la delantera.
+// Los 7 ventiladores tienen pantalla y vídeo; el número es el del puente (puerto y posición en la cadena):
+// 1 = único del puerto 0; 2-3-4 = puerto 1; 5-6-7 = puerto 2.
+//  · 1: solo, en la pared trasera (izquierda), arriba, de lado y mirando hacia dentro.
 //  · 2-3-4: en el suelo, horizontales, caras arriba, de izquierda a derecha.
-//  · 5-6-7: en la pared derecha, en vertical, de arriba abajo, mirando hacia dentro.
+//  · 5-6-7: en la pared de la placa, en columna justo a su derecha (junto al peine de 24 pines), de arriba
+//    abajo y mirando de frente.
 // Confirmado el 6-nov-2026 con Identificar: el 5 y el 7 vistos con la webcam de PC-COCINA, el 1 por su vídeo y el
 // suelo 2-3-4 (izq->der) por Carlos. Si cambia el cableado, solo se toca esta tabla.
 const VENTILADORES=[1,2,3,4,5,6,7];
 const DISPOSICION={
-  1:{p:[-1.92,3.75,2.15],n:[1,0,0]},
+  1:{p:[-0.95,3.75,3.14],n:[0,0,-1]},
   2:{p:[0.45,0.18,1.75],n:[0,1,0]},3:{p:[0.45,0.18,0.2],n:[0,1,0]},4:{p:[0.45,0.18,-1.35],n:[0,1,0]},
-  5:{p:[0.55,4.2,-3.14],n:[0,0,1]},6:{p:[0.55,2.75,-3.14],n:[0,0,1]},7:{p:[0.55,1.3,-3.14],n:[0,0,1]}
+  5:{p:[-1.9,4.2,-2.4],n:[1,0,0]},6:{p:[-1.9,2.75,-2.4],n:[1,0,0]},7:{p:[-1.9,1.3,-2.4],n:[1,0,0]}
 };
 
 let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{}};
@@ -274,9 +276,9 @@ $('dColorOff').onclick=async()=>{if(!seleccionado)return;const v={...luz.ventila
 const canvas=$('c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();
-// Cámara como en la foto de PC-COCINA: delante del cristal, algo a la izquierda y por encima, para ver la placa
-// del fondo con el ventilador 1, la columna 5-6-7 de la derecha y los 2-3-4 del suelo.
-const camera=new THREE.PerspectiveCamera(34,1,.1,200);camera.position.set(15,7.6,3.2);
+// Cámara como en la foto de PC-COCINA: delante del cristal grande, algo a la derecha y por encima, para ver de cara la
+// placa con la columna 5-6-7, el ventilador 1 de la pared trasera (izquierda) y los 2-3-4 del suelo.
+const camera=new THREE.PerspectiveCamera(34,1,.1,200);camera.position.set(14.5,7.4,-3);
 const controls=new OrbitControls(camera,canvas);controls.target.set(0,2.5,0);controls.enableDamping=true;controls.minDistance=7;controls.maxDistance=28;controls.maxPolarAngle=Math.PI*.49;
 scene.add(new THREE.HemisphereLight(0x9fc6ff,0x0a0f1e,.9));
 const sol=new THREE.DirectionalLight(0xffffff,1.1);sol.position.set(6,12,8);scene.add(sol);
@@ -288,26 +290,26 @@ const caja=new THREE.Group();scene.add(caja);
 const W=4.2,H=5.4,D=6.6;   // fondo (x), alto (y), ancho delante-detrás (z): más ancha que alta, como PC-COCINA
 const cristal=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),new THREE.MeshPhysicalMaterial({color:0x9fc6ff,transparent:true,opacity:.08,roughness:.05,metalness:0,side:THREE.DoubleSide,depthWrite:false}));cristal.position.y=H/2;caja.add(cristal);
 const aristas=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),new THREE.LineBasicMaterial({color:0x5f86c4,transparent:true,opacity:.55}));aristas.position.y=H/2;caja.add(aristas);
-// Interior según la foto de PC-COCINA (6-nov-2026): placa al fondo, a la derecha del centro; a su izquierda los
-// conectores de corriente con el ventilador 1 encima; gráfica horizontal delante de la placa; bomba del AIO, RAM y
-// los dos peines de cables RGB (24 pines junto a la RAM y PCIe de la gráfica).
+// Interior según la foto de PC-COCINA (6-nov-2026): en la pared del fondo, de izquierda a derecha, los conectores de
+// corriente (pasacables), la placa y la columna 5-6-7; gráfica horizontal delante de la placa; bomba del AIO, RAM y
+// los dos peines de cables RGB (24 pines en el borde derecho de la placa y PCIe de la gráfica).
 const metal=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.5,metalness:.6,...o});
-const PZ=-1.05,PW=3.3,PY=3.0,PH=3.9;   // placa: centro y tamaño en z (ancho) e y (alto)
+const PZ=0.15,PW=3.2,PY=3.0,PH=3.9;   // placa: centro y tamaño en z (ancho) e y (alto)
 const placa=new THREE.Mesh(new THREE.BoxGeometry(.12,PH,PW),metal(0x0b1222,{transparent:true,opacity:.75}));placa.position.set(-W/2+.15,PY,PZ);caja.add(placa);
-const panel=new THREE.Mesh(new THREE.BoxGeometry(.1,2.3,1.9),metal(0x090e1a));panel.position.set(-W/2+.12,1.75,2.15);caja.add(panel);
-for(const [y,z] of [[2.5,1.68],[2.5,2.62],[1.8,1.68],[1.8,2.62],[1.1,1.68],[1.1,2.62]]){
-  const pasacables=new THREE.Mesh(new THREE.BoxGeometry(.06,.42,.62),metal(0x02040a,{roughness:.9}));pasacables.position.set(-W/2+.2,y,z);caja.add(pasacables);
+const panel=new THREE.Mesh(new THREE.BoxGeometry(.1,4.2,1.3),metal(0x090e1a));panel.position.set(-W/2+.12,2.7,2.55);caja.add(panel);
+for(const [y,z] of [[3.6,2.27],[3.6,2.83],[2.7,2.27],[2.7,2.83],[1.8,2.27],[1.8,2.83]]){
+  const pasacables=new THREE.Mesh(new THREE.BoxGeometry(.06,.55,.42),metal(0x02040a,{roughness:.9}));pasacables.position.set(-W/2+.2,y,z);caja.add(pasacables);
 }
 const arcoiris=(()=>{const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');
   for(let i=0;i<256;i++){g.fillStyle=`hsl(${Math.round(i*1.4)},100%,58%)`;g.fillRect(i,0,1,64);}
   g.fillStyle='rgba(0,0,0,.55)';for(let y=0;y<64;y+=8)g.fillRect(0,y+5,256,3);
   const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;})();
 const rgb=(w,h,d)=>new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshBasicMaterial({map:arcoiris}));
-const gpu=new THREE.Mesh(new THREE.BoxGeometry(1.7,.42,3.3),metal(0x141a2a,{roughness:.4,metalness:.7}));gpu.position.set(-W/2+1.06,1.85,PZ+.35);caja.add(gpu);
-const aio=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.3,40),metal(0x1a2236,{roughness:.3,metalness:.8}));aio.rotation.z=Math.PI/2;aio.position.set(-1.8,3.75,PZ+1.0);caja.add(aio);
-const espejo=new THREE.Mesh(new THREE.RingGeometry(.16,.42,48),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:.8,side:THREE.DoubleSide}));espejo.rotation.y=Math.PI/2;espejo.position.set(-1.64,3.75,PZ+1.0);caja.add(espejo);
-for(const z of [PZ+.25,PZ+.05]){const ram=rgb(.32,1.25,.09);ram.position.set(-1.88,3.8,z);caja.add(ram);}
-const peine24=rgb(.9,1.3,.16);peine24.position.set(-1.5,3.35,PZ-1.2);caja.add(peine24);
+const gpu=new THREE.Mesh(new THREE.BoxGeometry(1.7,.42,3.3),metal(0x141a2a,{roughness:.4,metalness:.7}));gpu.position.set(-W/2+1.06,1.85,PZ+.2);caja.add(gpu);
+const aio=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.3,40),metal(0x1a2236,{roughness:.3,metalness:.8}));aio.rotation.z=Math.PI/2;aio.position.set(-1.8,3.75,PZ+.9);caja.add(aio);
+const espejo=new THREE.Mesh(new THREE.RingGeometry(.16,.42,48),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:.8,side:THREE.DoubleSide}));espejo.rotation.y=Math.PI/2;espejo.position.set(-1.64,3.75,PZ+.9);caja.add(espejo);
+for(const z of [PZ+.1,PZ-.1]){const ram=rgb(.32,1.25,.09);ram.position.set(-1.88,3.8,z);caja.add(ram);}
+const peine24=rgb(.9,1.3,.16);peine24.position.set(-1.5,3.35,PZ-1.45);caja.add(peine24);
 const peinePcie=rgb(.7,.42,2.1);peinePcie.position.set(-.55,1.42,PZ+.75);caja.add(peinePcie);
 // Radiador del AIO en el techo, con sus tres ventiladores sin pantalla.
 const radiador=new THREE.Mesh(new THREE.BoxGeometry(1.5,.22,4.4),new THREE.MeshStandardMaterial({color:0x0d1322,roughness:.5,metalness:.6}));radiador.position.set(-.2,H-.3,-.2);caja.add(radiador);
