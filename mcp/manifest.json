@@ -3770,10 +3770,14 @@
     },
     "twin": "https://www.admira.store/objeto/stream-deck/",
     "guide": "https://www.admira.store/admira-xp/docs/objeto-stream-deck.md",
-    "status": "sim",
+    "status": "live",
+    "api": {
+      "estado": "https://www.admira.store/objeto/stream-deck/api/estado",
+      "face": "https://www.admira.store/objeto/stream-deck/api/face.png"
+    },
     "pending": [
-      "usb-bridge",
-      "admira.tv-demos"
+      "hid-key-presses",
+      "press-from-twin"
     ],
     "device": {
       "model": "Elgato Stream Deck XL",
@@ -3783,7 +3787,7 @@
       "keys": "8x4",
       "host": "METAHUMAN"
     },
-    "es": "Abre /objeto/stream-deck/ (público). Xpace Objeto en el selector Xpaces, paralelo a Computer: local Stream Deck = gemelo 3D del Elgato Stream Deck XL de METAHUMAN (VID_0FD9 PID_006C, serial CL37J1A02733, 32 teclas LCD 8×4). Cara LCD = face-live.png (atlas 8×4 desde foto desk METAHUMAN · Indiana Jones como en el deck físico); columnas oscuras de la foto quedan oscuras. OrbitControls, estado «Cara desde foto METAHUMAN · live bridge USB pendiente». Puente USB en vivo aún pendiente. Desde el selector, Objeto→Stream Deck se incrusta en iframe bajo la barra.",
-    "en": "Open /objeto/stream-deck/ (public). Objeto (Object) Xpace in the Xpaces selector, parallel to Computer: Stream Deck venue = 3D twin of METAHUMAN's Elgato Stream Deck XL (VID_0FD9 PID_006C, serial CL37J1A02733, 32 LCD keys 8×4). LCD face = face-live.png (8×4 atlas from METAHUMAN desk photo · Indiana Jones as on the physical deck); dark photo regions stay dark. OrbitControls, status “Face from METAHUMAN photo · USB live bridge pending”. Live USB bridge still pending. From the selector, Objeto→Stream Deck embeds in an iframe under the bar."
+    "es": "Abre /objeto/stream-deck/ (público). Xpace Objeto en el selector Xpaces, paralelo a Computer: local Stream Deck = gemelo 3D del Elgato Stream Deck XL de METAHUMAN (VID_0FD9 PID_006C, serial CL37J1A02733, 32 teclas LCD 8×4). Cara LCD = face-live.png (atlas 8×4 desde foto desk METAHUMAN · Indiana Jones como en el deck físico); columnas oscuras de la foto quedan oscuras. OrbitControls. Puente EN VIVO (desde el 5-nov-2026): METAHUMAN sube cada ~3 s la página activa del perfil Elgato (ProfilesV3) y el gemelo la pinta con badge verde «EN VIVO · METAHUMAN»; si el puente duerme, badge ámbar «Foto fija / sin puente». Desde el 6-nov-2026 las teclas llevan sus títulos pintados como en el deck físico y el gemelo recibe la ficha de cada tecla: al pasar el ratón aparece título y acción (Atajo, Abrir app, Abrir web, Carpeta…), al hacer clic se fija en la ficha junto a perfil, página, nº de acciones y «visto hace N s». Límites: perfil Elgato, no HID crudo; imágenes dinámicas de plugins y pulsaciones físicas no se ven. API pública: /objeto/stream-deck/api/estado (JSON con keys) y /objeto/stream-deck/api/face.png (ETag). Desde el selector, Objeto→Stream Deck se incrusta en iframe bajo la barra.",
+    "en": "Open /objeto/stream-deck/ (public). Objeto (Object) Xpace in the Xpaces selector, parallel to Computer: Stream Deck venue = 3D twin of METAHUMAN's Elgato Stream Deck XL (VID_0FD9 PID_006C, serial CL37J1A02733, 32 LCD keys 8×4). LCD face = face-live.png (8×4 atlas from METAHUMAN desk photo · Indiana Jones as on the physical deck); dark photo regions stay dark. OrbitControls. LIVE bridge (since 5 Nov 2026): METAHUMAN uploads the active page of the Elgato profile (ProfilesV3) every ~3 s and the twin paints it with a green “EN VIVO · METAHUMAN” badge; when the bridge sleeps, amber “Foto fija / sin puente”. Since 6 Nov 2026 keys carry their titles painted as on the physical deck and the twin receives each key’s record: hovering shows title and action (Hotkey, Open app, Open website, Folder…), clicking pins it in the panel next to profile, page, action count and “seen N s ago”. Limits: Elgato profile, not raw HID; dynamic plugin images and physical presses are not shown. Public API: /objeto/stream-deck/api/estado (JSON with keys) and /objeto/stream-deck/api/face.png (ETag). From the selector, Objeto→Stream Deck embeds in an iframe under the bar."
   }
 }
