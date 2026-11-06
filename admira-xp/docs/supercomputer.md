@@ -127,6 +127,12 @@ Los ventiladores que esperan dejan la pieza parada al principio; el activo y la 
 audio acompaña al ventilador que se ve. Comprobado en PC-COCINA: con `cada: 10` el activo cambia cada 10 s. Sequence
 switch: `escena.cada` 0 = on end, otherwise seconds per fan from the start of the piece; images 10 s.
 
+**Luz y contenido, por separado** (Carlos, 6-nov): la nube guarda la escena con el reloj a cero (`epoch: 0`) y la reenvía
+con cada cambio, también con los de luz; el puente (`escena.mjs` · `mismoContenido`) conserva su reloj si modo, piezas,
+orden, paso, cada… son los mismos (no cuentan el reloj, la duración medida ni el audio). Antes, cambiar el color de la bomba
+reiniciaba la secuencia. Comprobado en PC-COCINA: cambio de la bomba desde el gemelo con el mismo `epoch` antes y después.
+Lighting and content are independent: the bridge keeps its clock when the content is unchanged.
+
 **Contenidos** (gemelo, 6-nov por la tarde): las piezas salen del índice completo del Stock
 (`https://stock.admira.store/stock/index.json`, el mismo de `functions/admira-xp/media-catalog.js`; `stock/list` se corta en
 200), solo vídeo e imagen y sin las ocultas. Encima de las piezas hay un filtro por tag (con las piezas de cada uno; se
