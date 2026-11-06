@@ -71,6 +71,14 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 .opcion img,.opcion i{width:64px;height:64px;border-radius:7px;object-fit:cover;background:#000;flex:0 0 auto}
 .opcion b{display:block;font-size:12px;line-height:1.3;max-height:2.6em;overflow:hidden}.opcion small{display:block;color:var(--mut);font-size:10px;margin-top:2px}
 .panel [hidden]{display:none!important}
+.relevo{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}
+.pasos{display:flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:10px;padding:3px;cursor:pointer}
+.pasos.on{border-color:var(--ice);background:rgba(143,214,255,.11);box-shadow:inset 0 0 0 1px rgba(143,214,255,.25)}
+.pasos button{width:28px;height:28px;border:0;border-radius:7px;background:rgba(143,214,255,.08);cursor:pointer;font-size:16px;line-height:1}
+.pasos button:hover{background:rgba(143,214,255,.2)}
+.panel .pasos input{width:56px;text-align:center;padding:5px 2px;-moz-appearance:textfield}
+.pasos input::-webkit-inner-spin-button,.pasos input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.pasos small{color:var(--mut);font-size:11px;padding-right:4px}
 .aplicar{margin-top:12px;width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(90deg,#2b6cff,#8fd6ff);color:#04101f;font-weight:800;cursor:pointer}
 .aplicar:disabled{opacity:.45;cursor:default}
 .pendiente{margin-top:8px;font-size:11px;color:var(--gold);min-height:15px}
@@ -291,9 +299,22 @@ function pintarModos(){
   }else if(escena.modo==='identificar'){
     o.innerHTML='';
   }else if(escena.modo==='secuencia'){
-    const d=estado?.informe?.escena?.modo==='secuencia'?Number(estado.informe.escena.duracion)||0:0;
+    // Cambio de ventilador: al acabar la pieza (cada=0, por defecto) o cada x segundos (escena.cada del puente).
+    const cada=Number(escena.cada)>0?Number(escena.cada):0;
     o.innerHTML=filaTag()+`<div class="campo"><label>Vídeo · entero en cada ventilador, del 1 al 7</label>${botonPieza('pieza',0,escena.piezas[0],'— elige pieza —')}</div>`+
-      (d?`<p class="desc">Dura ${d.toFixed(1)} s · una vuelta a los 7 tarda ${Math.round(d*7)} s.</p>`:'');
+      `<div class="campo"><label>Cambio de ventilador · switch</label><div class="relevo">
+        <button type="button" class="efecto${cada?'':' on'}" id="cadaFin">Al acabar · on end</button>
+        <div class="pasos${cada?' on':''}" id="cadaPasos" title="Segundos en cada ventilador">
+          <button type="button" data-paso="-1" aria-label="Un segundo menos">‹</button>
+          <input id="cadaS" type="number" min="1" max="3600" step="1" inputmode="numeric" value="${cada||ultimoCada}" aria-label="Segundos en cada ventilador">
+          <button type="button" data-paso="1" aria-label="Un segundo más">›</button><small>s</small>
+        </div></div></div><p class="desc" id="cadaDesc"></p>`;
+    pintarCada();
+    $('cadaFin').onclick=()=>{escena.cada=0;editandoEscena=true;pintarCada();};
+    $('cadaPasos').onclick=e=>{const b=e.target.closest('[data-paso]');if(b)ponerCada((Number(escena.cada)>0?Number(escena.cada):ultimoCada)+Number(b.dataset.paso));else if(e.target.id!=='cadaS'&&!(escena.cada>0))ponerCada(ultimoCada);};
+    $('cadaS').onfocus=()=>{if(!(escena.cada>0))ponerCada(+$('cadaS').value||ultimoCada,false);};
+    $('cadaS').oninput=()=>{const v=parseInt($('cadaS').value,10);if(v>0)ponerCada(v,false);};
+    $('cadaS').onchange=()=>ponerCada(parseInt($('cadaS').value,10)||ultimoCada);
   }else{
     const n=Math.max(1,escena.piezas.length);
     o.innerHTML=filaTag()+Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label>${botonPieza('pieza',i,escena.piezas[i],i?'— otra pieza (opcional) —':'— elige pieza —')}</div>`).join('')+
@@ -306,6 +327,25 @@ function pintarModos(){
   pintadaEscena=JSON.stringify(escena);
 }
 document.querySelectorAll('.modo').forEach(b=>b.onclick=()=>{escena.modo=b.dataset.modo;editandoEscena=true;pintarModos();});
+
+// ── Secuencia: segundos en cada ventilador ──
+let ultimoCada=10;   // lo que enseña «‹ x › s» mientras está en «Al acabar»; 10 por defecto
+function ponerCada(v,repintar=true){
+  v=Math.max(1,Math.min(3600,Math.round(Number(v)||ultimoCada)));
+  escena.cada=v;ultimoCada=v;editandoEscena=true;
+  if(repintar&&$('cadaS'))$('cadaS').value=v;
+  pintarCada();
+}
+function pintarCada(){
+  if(!$('cadaDesc'))return;
+  const cada=Number(escena.cada)>0?Number(escena.cada):0;
+  $('cadaFin').classList.toggle('on',!cada);$('cadaPasos').classList.toggle('on',!!cada);
+  const inf=estado?.informe?.escena,d=inf?.modo==='secuencia'&&inf.piezas?.[0]===escena.piezas[0]?Number(inf.duracion)||0:0;
+  const pieza=stock.find(x=>x.id===escena.piezas[0]);
+  $('cadaDesc').textContent=cada?`${cada} s en cada ventilador, desde el principio de la pieza · una vuelta a los 7 tarda ${cada*7} s.`
+    :d?`Pasa al siguiente al acabar: dura ${d.toFixed(1)} s · una vuelta a los 7 tarda ${Math.round(d*7)} s.`
+    :pieza?.type==='image'?'Una imagen no se acaba: 10 s en cada ventilador (o los que pongas).':'Pasa al siguiente al acabar la pieza.';
+}
 
 // ── Audio (escena.audio del puente: escena.mjs · normalizarAudio) ──
 // Como mucho suena un ventilador (su Chrome es el único sin silenciar). La salida es el nombre del dispositivo de
@@ -338,7 +378,7 @@ $('aplicarEscena').onclick=async()=>{
   else e.piezas=escena.piezas;
   if(escena.modo==='extender'){e.ajuste=escena.ajuste;e.columnas=escena.columnas;}
   if(escena.modo==='sincro')e.paso=escena.paso;
-  if(escena.modo==='secuencia')e.piezas=escena.piezas.slice(0,1);   // un solo vídeo; su duración la mide el puente
+  if(escena.modo==='secuencia'){e.piezas=escena.piezas.slice(0,1);e.cada=Number(escena.cada)>0?Number(escena.cada):0;}   // un solo vídeo; su duración la mide el puente
   e.audio=audioDe(escena);
   if(escena.modo==='identificar')delete e.piezas;
   else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
@@ -568,10 +608,10 @@ function activoSincro(e,n){
   const paso=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/(e.paso||4)),N=orden.length;
   return ((((pos-paso)%N)+N)%N)<(e.piezas||[]).length;
 }
-// Secuencia (mismo cálculo que escena.mjs · turnoSecuencia del puente): la pieza entera en cada ventilador, en
-// orden; `duracion` la mide el puente al cargar el vídeo (mientras no llega, `paso`).
+// Secuencia (mismo cálculo que escena.mjs · turnoSecuencia del puente): la pieza en cada ventilador, en orden, `cada`
+// segundos si se pidió; si no, lo que dura (`duracion`, la mide el puente) y 10 s si no se sabe (una imagen).
 function turnoSecuencia(e){
-  const orden=e.orden||VENTILADORES,d=e.duracion>0?e.duracion:(e.paso||4);
+  const orden=e.orden||VENTILADORES,d=e.cada>0?e.cada:(e.duracion>0?e.duracion:10);
   const vuelta=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/d);
   return orden[vuelta%orden.length];
 }
