@@ -243,7 +243,8 @@ const logo=new THREE.Mesh(
   new THREE.MeshBasicMaterial({map:logoTex,transparent:true,depthWrite:false})
 );
 logo.rotation.x=-Math.PI/2;
-logo.position.set(0,BODY_H/2+0.02,-(BODY_D/2-0.11));
+logo.rotation.z=Math.PI; // misma orientación que los LCD
+logo.position.set(0,BODY_H/2+0.02,(BODY_D/2-0.11)); // bezel superior = borde alto (+Z)
 deck.add(logo);
 
 // Puerto USB-C (rebaje trasero)
@@ -304,13 +305,16 @@ const KEY=0.305,GAP=0.048,KEY_H=0.055;
 const gridW=COLS*KEY+(COLS-1)*GAP;
 const gridD=ROWS*KEY+(ROWS-1)*GAP;
 const originX=-gridW/2+KEY/2;
-const originZ=-gridD/2+KEY/2+0.04; // sesgo hacia abajo (logo arriba = -Z)
+const originZ=-gridD/2+KEY/2-0.04; // sesgo hacia abajo (logo arriba = +Z, el borde alto del stand)
 
 const keys=[];
 const darkLcdMat=new THREE.MeshBasicMaterial({color:0x05070c,side:THREE.DoubleSide});
 
+// Orientación (6-nov-2026): la cámara mira desde -Z, así que +X queda a la izquierda y el borde +Z (alto)
+// arriba. La fila 0 / columna 0 del perfil Elgato (arriba-izquierda en el deck físico) va por tanto a
+// +Z / +X, y cada LCD gira 180° sobre su normal para que los títulos se lean derechos.
 function keyPos(col,row){
-  return {x:originX+col*(KEY+GAP),z:originZ+row*(KEY+GAP)};
+  return {x:originX+(COLS-1-col)*(KEY+GAP),z:originZ+(ROWS-1-row)*(KEY+GAP)};
 }
 
 /** Atlas 8×4 (face-live.png): una textura por tecla. Regiones oscuras de la foto = teclas oscuras. */
@@ -385,6 +389,7 @@ function buildKeys(texMap){
       // LCD claramente ENCIMA del cuerpo (margen real, no 0.001 z-fight)
       const lcd=new THREE.Mesh(new THREE.PlaneGeometry(KEY*0.9,KEY*0.9),lcdMat);
       lcd.rotation.x=-Math.PI/2;
+      lcd.rotation.z=Math.PI; // texto derecho visto desde la cámara (ver keyPos)
       lcd.position.y=KEY_H/2+0.001; // contrato tests + visual: body top queda ~0.22*KEY_H debajo
       lcd.renderOrder=3;
       g.add(lcd);
