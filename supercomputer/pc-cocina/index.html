@@ -97,7 +97,8 @@ input[type=range]{width:100%;accent-color:var(--ice)}
     <button class="modo" data-modo="repetir"><b>Repetir</b><small>Repeat</small></button>
     <button class="modo" data-modo="extender"><b>Extender</b><small>Extend · Adaptar · Adapt</small></button>
     <button class="modo" data-modo="sincro"><b>Sincro</b><small>Sync</small></button>
-    <button class="modo ancho" data-modo="identificar"><b>Identificar</b><small>Identify · cada pantalla enseña su número</small></button>
+    <button class="modo" data-modo="secuencia"><b>Secuencia</b><small>Sequence · entero, de uno en uno</small></button>
+    <button class="modo" data-modo="identificar"><b>Identificar</b><small>Identify · su número</small></button>
   </div>
   <p class="desc" id="desc"></p>
   <div id="opciones"></div>
@@ -146,6 +147,7 @@ const MODOS={
   repetir:'La misma pieza en los 7 a la vez, en sincronía exacta.',
   extender:'Una pieza estirada sobre los 7 como un mural: cada ventilador muestra su tesela.',
   sincro:'La pieza pasa de un ventilador al siguiente sin perder el hilo. Con varias piezas, desfilan en carrusel.',
+  secuencia:'El vídeo se reproduce entero en el 1, luego entero en el 2… hasta el 7, y vuelta a empezar. La luz acompaña al vídeo: solo brilla el ventilador que lo tiene.',
   identificar:'Cada pantalla enseña su número, su puerto y su posición, para ubicar los ventiladores en la caja.'
 };
 const EFECTOS=[['apagado','Apagado'],['fijo','Fijo'],['arcoiris','Arcoíris'],['respirar','Respirar'],['ciclo','Ciclo'],['meteoro','Meteoro'],['ola','Ola'],['carrera','Carrera']];
@@ -205,6 +207,10 @@ function pintarModos(){
     $('ajuste').onchange=e=>{escena.ajuste=e.target.value;editandoEscena=true;};
   }else if(escena.modo==='identificar'){
     o.innerHTML='';
+  }else if(escena.modo==='secuencia'){
+    const d=estado?.informe?.escena?.modo==='secuencia'?Number(estado.informe.escena.duracion)||0:0;
+    o.innerHTML=`<div class="campo"><label>Vídeo · entero en cada ventilador, del 1 al 7</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>`+
+      (d?`<p class="desc">Dura ${d.toFixed(1)} s · una vuelta a los 7 tarda ${Math.round(d*7)} s.</p>`:'');
   }else{
     const n=Math.max(1,escena.piezas.length);
     o.innerHTML=Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label><select data-pieza="${i}">${opcionesStock(escena.piezas[i])}</select></div>`).join('')+
@@ -221,6 +227,7 @@ $('aplicarEscena').onclick=async()=>{
   else e.piezas=escena.piezas;
   if(escena.modo==='extender'){e.ajuste=escena.ajuste;e.columnas=escena.columnas;}
   if(escena.modo==='sincro')e.paso=escena.paso;
+  if(escena.modo==='secuencia')e.piezas=escena.piezas.slice(0,1);   // un solo vídeo; su duración la mide el puente
   if(escena.modo==='identificar')delete e.piezas;
   else if(escena.modo!=='independiente'&&!e.piezas.length){toast('Elige al menos una pieza',true);return;}
   try{$('aplicarEscena').disabled=true;await api('escena',e);editandoEscena=false;toast('Escena enviada a PC-COCINA');refrescar();}
@@ -348,12 +355,17 @@ canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect();ptr.s
   const hit=ray.intersectObjects(Object.values(vents).map(v=>v.g),true)[0];if(!hit)return;let o=hit.object;while(o&&!o.userData.n)o=o.parent;if(o)abrir(o.userData.n);});
 
 // Color que muestra cada anillo, imitando el efecto del controlador (para el gemelo, no es medida).
+// En secuencia la luz acompaña siempre al vídeo, como en el puente: solo el activo, y en fijo si la general
+// está apagada o es «respirar» (efecto de grupo).
 function colorAnillo(n,t){
-  const inf=estado?.informe,l=(inf?.luz)||luz,e=inf?.escena,propia=l?.ventiladores?.[n]||l;
+  const inf=estado?.informe,l=(inf?.luz)||luz,e=inf?.escena,secuencia=e?.modo==='secuencia';
+  let propia=l?.ventiladores?.[n]||l;
+  if(secuencia&&propia&&['apagado','respirar'].includes(propia.efecto))propia={...propia,efecto:'fijo'};
   if(!l||propia.efecto==='apagado')return new THREE.Color(0x0b0f18);
-  const brillo=(propia.brillo??4)/4,vel=.25+(propia.velocidad??2)*.25,base=new THREE.Color(hex((propia.colores&&propia.colores[0])||propia.color));
+  const brillo=(propia.brillo||4)/4,vel=.25+(propia.velocidad??2)*.25,base=new THREE.Color(hex((propia.colores&&propia.colores[0])||propia.color));
   let c=base.clone();
   if(l.sigueVideo&&e?.modo==='sincro'&&!activoSincro(e,n))return new THREE.Color(0x0b0f18);
+  if(secuencia&&turnoSecuencia(e)!==n)return new THREE.Color(0x0b0f18);
   switch(propia.efecto){
     case 'arcoiris':c.setHSL((t*.12*vel+n*.14)%1,1,.55);break;
     case 'ciclo':c.setHSL((t*.1*vel)%1,1,.55);break;
@@ -366,6 +378,13 @@ function activoSincro(e,n){
   const orden=e.orden||VENTILADORES,pos=orden.indexOf(n);if(pos<0)return false;
   const paso=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/(e.paso||4)),N=orden.length;
   return ((((pos-paso)%N)+N)%N)<(e.piezas||[]).length;
+}
+// Secuencia (mismo cálculo que escena.mjs · turnoSecuencia del puente): la pieza entera en cada ventilador, en
+// orden; `duracion` la mide el puente al cargar el vídeo (mientras no llega, `paso`).
+function turnoSecuencia(e){
+  const orden=e.orden||VENTILADORES,d=e.duracion>0?e.duracion:(e.paso||4);
+  const vuelta=Math.floor(Math.max(0,(Date.now()+desfasePC-(e.epoch||0))/1000)/d);
+  return orden[vuelta%orden.length];
 }
 
 function tamano(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
