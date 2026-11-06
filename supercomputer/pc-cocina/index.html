@@ -167,7 +167,7 @@ const hex=c=>Array.isArray(c)?'#'+c.map(v=>Number(v).toString(16).padStart(2,'0'
 function toast(t,error){const el=$('toast');el.textContent=t;el.className='hud toast show'+(error?' error':'');clearTimeout(toast.t);toast.t=setTimeout(()=>el.className='hud toast',2600);}
 async function api(ruta,cuerpo){
   const r=await fetch(API+'/'+ruta,cuerpo?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(cuerpo)}:{cache:'no-store'});
-  if(r.status===401){location.href='/auth/login?return_to='+encodeURIComponent('/supercomputer/');throw new Error('login');}
+  if(r.status===401){location.href='/auth/login?return_to='+encodeURIComponent('/supercomputer/pc-cocina/');throw new Error('login');}
   const d=await r.json().catch(()=>({}));
   if(r.status===403&&d.error==='read_only'){soloLectura=true;}
   if(!r.ok||d.ok===false)throw new Error(d.error||('HTTP '+r.status));
@@ -380,7 +380,7 @@ async function refrescar(){
     pintarDetalle();
   }catch(err){
     if(err.message!=='login'){$('estado').className='estado off';
-      $('estadoTxt').textContent=err.message==='not_configured'?'Nube sin configurar (falta SUPERCOMPUTER_PROXY_KEY)':'Sin conexión con la nube';}
+      $('estadoTxt').textContent=err.message==='not_configured'?'Nube sin configurar (falta SUPERCOMPUTER_PC_COCINA_PROXY_KEY)':'Sin conexión con la nube';}
   }finally{$('carga').classList.add('hide');}
 }
 async function cargarStock(){

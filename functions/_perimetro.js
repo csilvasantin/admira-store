@@ -71,7 +71,9 @@ export const SITES = {
 // puente de METAHUMAN, que no tiene sesión de navegador sino su clave Bearer; por eso la función
 // (functions/supercomputer/api/[[path]].js) comprueba ella misma la sesión o la clave. La página
 // /supercomputer/ NO es pública: underPrefix no la incluye.
-export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask', '/supercomputer/api', '/objeto'];
+// /supercomputer/pc-cocina/api (6-nov-2026): lo mismo para la copia de PC-COCINA. Sin ella, el POST /maquina de su
+// puente acababa en el login (302) y la máquina no llegaba a su Worker. La página /supercomputer/pc-cocina/ sigue privada.
+export const PUBLIC_PREFIXES = ['/admira-xp', '/xpacios', '/mcp', '/avatar-ask', '/supercomputer/api', '/supercomputer/pc-cocina/api', '/objeto'];
 // Apps internas heredadas de Pixeria dentro de /xpacios (Carlos, 30-oct-2026): crear un Xpacio, con su captura
 // desde el móvil, el laboratorio Grok y los dos Xtanco. Cada navegador que abre un Xtanco actúa como nodo real
 // de la flota (presencia, emisión y proof-of-play) y guarda decoración compartida: un visitante anónimo
