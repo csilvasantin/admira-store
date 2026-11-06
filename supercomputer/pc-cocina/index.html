@@ -56,6 +56,20 @@ input[type=range]{width:100%;accent-color:var(--ice)}
 .destino.on{border-color:var(--ice);background:rgba(143,214,255,.11)}.destino.sin small{color:var(--gold)}
 .mini{margin-top:6px;border:1px solid var(--line);background:none;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer}
 .bloqueado{opacity:.4;pointer-events:none}
+.pieza{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;background:#0a1122;border:1px solid var(--line);border-radius:8px;padding:4px 8px 4px 4px;cursor:pointer;text-align:left}
+.pieza:hover{border-color:var(--line2)}
+.pieza img,.pieza i{width:36px;height:36px;border-radius:6px;object-fit:cover;background:#000;flex:0 0 auto}
+.pieza span{flex:1;min-width:0;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pieza::after{content:'▾';color:var(--mut);font-size:11px}
+.pop{position:fixed;z-index:30;width:360px;max-height:62vh;display:none;flex-direction:column;background:rgba(6,10,22,.98);border:1px solid var(--line2);border-radius:12px;box-shadow:0 14px 44px rgba(0,0,0,.6)}
+.pop.open{display:flex}
+.pop input{margin:8px 8px 4px;background:#0a1122;border:1px solid var(--line);border-radius:8px;padding:8px}
+.pop .nota{padding:0 10px 6px;color:var(--mut);font-size:10.5px}
+.lista{overflow:auto;padding:0 6px 6px}
+.opcion{display:flex;gap:9px;align-items:center;width:100%;padding:5px;border:0;border-radius:8px;background:none;text-align:left;cursor:pointer}
+.opcion:hover,.opcion.on{background:rgba(143,214,255,.11)}
+.opcion img,.opcion i{width:64px;height:64px;border-radius:7px;object-fit:cover;background:#000;flex:0 0 auto}
+.opcion b{display:block;font-size:12px;line-height:1.3;max-height:2.6em;overflow:hidden}.opcion small{display:block;color:var(--mut);font-size:10px;margin-top:2px}
 .panel [hidden]{display:none!important}
 .aplicar{margin-top:12px;width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(90deg,#2b6cff,#8fd6ff);color:#04101f;font-weight:800;cursor:pointer}
 .aplicar:disabled{opacity:.45;cursor:default}
@@ -81,6 +95,7 @@ input[type=range]{width:100%;accent-color:var(--ice)}
   .izq{bottom:calc(126px + 23vh);height:20vh}.der{bottom:120px;height:22vh}
   .brand small{display:none}.tira{justify-content:flex-start}
   .vent{width:78px}.vent .disco{width:68px;height:68px}
+  .pop{left:8px!important;right:8px;width:auto}
 }
 </style>
 <script>window.XPACE_SHELL={section:{es:'Supercomputer · gemelo digital',en:'Supercomputer · digital twin'},options:[{href:'https://admira.tv/',es:'admira.tv',en:'admira.tv'},{href:'/admira-xp/',es:'Gemelo Admira XP',en:'Admira XP twin'}]};</script>
@@ -149,6 +164,11 @@ input[type=range]{width:100%;accent-color:var(--ice)}
   </div>
 </aside>
 <div class="hud toast" id="toast"></div>
+<div class="pop" id="piezasPop" role="dialog" aria-label="Elegir pieza del Stock">
+  <input id="piezasBuscar" type="search" placeholder="Buscar por título, #número o tag · search" autocomplete="off">
+  <div class="nota" id="piezasNota"></div>
+  <div class="lista" id="piezasLista" role="listbox"></div>
+</div>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
@@ -156,7 +176,10 @@ import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 const API='/supercomputer/pc-cocina/api';
-const STOCK='https://api.admira.store/stock/list?limit=300';
+const STOCK='https://api.admira.store/stock/list?limit=300';   // respaldo: solo las 200 más recientes
+// Índice completo del Stock (el mismo que usa functions/admira-xp/media-catalog.js): todas las piezas con sus tags y
+// su portada, ~370 KB comprimido. Se carga una vez al abrir el gemelo.
+const STOCK_INDICE='https://stock.admira.store/stock/index.json';
 const $=id=>document.getElementById(id);
 
 // ── Modos y efectos (mismos nombres que el puente: admira-tv/tools/player-ventiladores/escena.mjs) ──
@@ -173,23 +196,25 @@ const SWATCHES=['#00d26a','#8fd6ff','#2b6cff','#ffce3a','#ff6a3d','#ff2d78','#b2
 
 // Disposición física de PC-COCINA (Carlos, foto y capturas anotadas del 6-nov-2026), vista por el cristal grande
 // (+x). La pared de la placa es −x; la izquierda (+z) es la trasera de la caja y la derecha (−z) la delantera.
-// Los 7 ventiladores tienen pantalla y vídeo; el número es el del puente (puerto y posición en la cadena):
-// 1 = único del puerto 0; 2-3-4 = puerto 1; 5-6-7 = puerto 2.
+// Los 7 ventiladores tienen pantalla y vídeo; el número es el del puente: 1 = único del puerto 0; 2-3-4 = puerto 1;
+// 5-6-7 = puerto 2, con la numeración lógica de su config.json («numeracion»: {"2:0": 7, "2:2": 5}) para que la
+// secuencia suba desde el suelo: la cadena del puerto 2 va de arriba abajo.
 //  · 1: solo, en la pared trasera (izquierda), arriba, de lado y mirando hacia dentro.
 //  · 2-3-4: en el suelo, horizontales, caras arriba, de izquierda a derecha.
-//  · 5-6-7: en la pared de la placa, en columna justo a su derecha (junto al peine de 24 pines), de arriba
-//    abajo y mirando de frente.
-// Confirmado el 6-nov-2026 con Identificar: el 5 y el 7 vistos con la webcam de PC-COCINA, el 1 por su vídeo y el
-// suelo 2-3-4 (izq->der) por Carlos. Si cambia el cableado, solo se toca esta tabla.
+//  · 5-6-7: en la pared de la placa, en columna justo a su derecha (junto al peine de 24 pines), de ABAJO ARRIBA
+//    (el 5 junto al 4 del suelo, el 7 arriba) y mirando de frente.
+// Confirmado el 6-nov-2026 con Identificar: el 1 por su vídeo y el suelo 2-3-4 (izq->der) por Carlos; la columna,
+// con la webcam de PC-COCINA (por la tarde, tras la numeración lógica, el de abajo enseña el 5). Si cambia el
+// cableado, se tocan esta tabla y «numeracion».
 const VENTILADORES=[1,2,3,4,5,6,7];
 const DISPOSICION={
   1:{p:[-0.95,3.75,3.14],n:[0,0,-1]},
   2:{p:[0.45,0.18,1.75],n:[0,1,0]},3:{p:[0.45,0.18,0.2],n:[0,1,0]},4:{p:[0.45,0.18,-1.35],n:[0,1,0]},
-  5:{p:[-1.9,4.2,-2.4],n:[1,0,0]},6:{p:[-1.9,2.75,-2.4],n:[1,0,0]},7:{p:[-1.9,1.3,-2.4],n:[1,0,0]}
+  5:{p:[-1.9,1.3,-2.4],n:[1,0,0]},6:{p:[-1.9,2.75,-2.4],n:[1,0,0]},7:{p:[-1.9,4.2,-2.4],n:[1,0,0]}
 };
 
 let estado=null, escena={modo:'independiente',ids:{},piezas:[],paso:4,ajuste:'cubrir',columnas:7}, luz={efecto:'fijo',color:'#00d26a',brillo:4,velocidad:2,sigueVideo:false,ventiladores:{},dispositivos:{}};
-let stock=[], editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
+let stock=[], pintadaEscena='', editandoEscena=false, editandoLuz=false, seleccionado=null, soloLectura=false, desfasePC=0;
 
 // ── Utilidades ──
 const hex=c=>Array.isArray(c)?'#'+c.map(v=>Number(v).toString(16).padStart(2,'0')).join(''):(c||'#ffffff');
@@ -203,9 +228,49 @@ async function api(ruta,cuerpo){
   return d;
 }
 function piezaTxt(id){const s=stock.find(x=>x.id===id);return s?('#'+s.num+' · '+s.title):id;}
-function opcionesStock(sel){
-  return '<option value="">— elige pieza —</option>'+stock.map(s=>`<option value="${s.id}"${s.id===sel?' selected':''}>#${s.num} · ${String(s.title).replace(/[<&"]/g,'').slice(0,58)}</option>`).join('');
+const esc=t=>String(t??'').replace(/[<&"]/g,c=>({'<':'&lt;','&':'&amp;','"':'&quot;'}[c]));
+// Tag elegido encima de las piezas (preferencia de quien mira: se recuerda en este navegador).
+let tagFiltro=(()=>{try{return localStorage.getItem('admira.supercomputer.pccocina.tag')||'';}catch{return '';}})();
+let tagsOrdenados=[];
+function filaTag(){
+  if(!stock.length)return '';
+  const opciones=tagsOrdenados.map(([t,n])=>`<option value="${esc(t)}"${t===tagFiltro?' selected':''}>${esc(t)} (${n})</option>`).join('');
+  return `<div class="fila"><label>Tag</label><select id="tagFiltro" aria-label="Filtrar las piezas por tag"><option value="">Todos · all (${stock.length})</option>${opciones}</select></div>`;
 }
+// Botón de pieza: su portada y su título; al pulsarlo se abre la lista con portadas.
+function botonPieza(tipo,clave,sel,vacio){
+  const p=stock.find(x=>x.id===sel);
+  const img=p?.thumb?`<img src="${esc(p.thumb)}" alt="" loading="lazy">`:'<i></i>';
+  return `<button type="button" class="pieza" data-${tipo}="${clave}" data-id="${esc(sel||'')}" data-vacio="${esc(vacio)}">${img}<span>${sel?esc(piezaTxt(sel)):esc(vacio)}</span></button>`;
+}
+let popBoton=null;
+const pasaTag=p=>!tagFiltro||p.tags.includes(tagFiltro);
+function pintarLista(){
+  const q=$('piezasBuscar').value.trim().toLowerCase(),actual=popBoton?.dataset.id||'';
+  const casa=p=>!q||('#'+p.num).includes(q)||String(p.title).toLowerCase().includes(q)||p.tags.some(t=>t.toLowerCase().includes(q));
+  const todas=stock.filter(p=>pasaTag(p)&&casa(p)),MAX=250,vistas=todas.slice(0,MAX);
+  $('piezasNota').textContent=(tagFiltro?'Tag «'+tagFiltro+'» · ':'')+todas.length+' piezas'+(todas.length>MAX?' · se ven '+MAX+': afina la búsqueda':'');
+  const fila=p=>`<button type="button" class="opcion${p.id===actual?' on':''}" data-elige="${esc(p.id)}" role="option">${p.thumb?`<img src="${esc(p.thumb)}" alt="" loading="lazy">`:'<i></i>'}<span><b>#${p.num??''} · ${esc(p.title)}</b><small>${p.type==='image'?'Imagen':'Vídeo'}${p.tags.length?' · '+esc(p.tags.slice(0,4).join(' · ')):''}</small></span></button>`;
+  $('piezasLista').innerHTML=`<button type="button" class="opcion" data-elige=""><i></i><span><b>${esc(popBoton?.dataset.vacio||'— ninguna —')}</b></span></button>`+vistas.map(fila).join('');
+}
+function abrirPiezas(b){
+  popBoton=b;const pop=$('piezasPop'),r=b.getBoundingClientRect();
+  pop.classList.add('open');$('piezasBuscar').value='';pintarLista();
+  const alto=Math.min(pop.offsetHeight,innerHeight*.62),arriba=r.bottom+6+alto>innerHeight;
+  pop.style.left=Math.max(8,Math.min(r.left,innerWidth-pop.offsetWidth-8))+'px';
+  pop.style.top=(arriba?Math.max(8,r.top-6-alto):r.bottom+6)+'px';
+  $('piezasBuscar').focus();
+}
+function cerrarPiezas(){$('piezasPop').classList.remove('open');popBoton=null;}
+function elegirPieza(b,id){
+  if(b.dataset.ind){escena.ids[b.dataset.ind]=id?[id]:[];}
+  else{const i=+b.dataset.pieza,p=escena.piezas.slice();p[i]=id;escena.piezas=p.filter(Boolean);}
+  editandoEscena=true;pintarModos();
+}
+$('piezasBuscar').oninput=pintarLista;
+$('piezasLista').onclick=e=>{const o=e.target.closest('[data-elige]');if(!o||!popBoton)return;const b=popBoton;cerrarPiezas();elegirPieza(b,o.dataset.elige);};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarPiezas();});
+document.addEventListener('pointerdown',e=>{if(popBoton&&!e.target.closest('#piezasPop,.pieza'))cerrarPiezas();});
 
 // ── Panel de pantallas ──
 function pintarModos(){
@@ -213,11 +278,11 @@ function pintarModos(){
   $('desc').textContent=MODOS[escena.modo]||'';
   const o=$('opciones');
   if(escena.modo==='independiente'){
-    o.innerHTML=VENTILADORES.map(n=>`<div class="fila"><label>Vent. ${n}</label><select data-ind="${n}">${opcionesStock((escena.ids[n]||[])[0])}</select></div>`).join('');
+    o.innerHTML=filaTag()+VENTILADORES.map(n=>`<div class="fila"><label>Vent. ${n}</label>${botonPieza('ind',n,(escena.ids[n]||[])[0],'Playlist del canal')}</div>`).join('');
   }else if(escena.modo==='repetir'){
-    o.innerHTML=`<div class="campo"><label>Pieza en los 7</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>`;
+    o.innerHTML=filaTag()+`<div class="campo"><label>Pieza en los 7</label>${botonPieza('pieza',0,escena.piezas[0],'— elige pieza —')}</div>`;
   }else if(escena.modo==='extender'){
-    o.innerHTML=`<div class="campo"><label>Pieza del mural</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>
+    o.innerHTML=filaTag()+`<div class="campo"><label>Pieza del mural</label>${botonPieza('pieza',0,escena.piezas[0],'— elige pieza —')}</div>
       <div class="fila"><label>Ajuste</label><select id="ajuste"><option value="cubrir">Cubrir · cover</option><option value="estirar">Estirar · stretch</option><option value="contener">Contener · contain</option></select></div>
       <div class="fila f3"><label>Columnas</label><input type="range" id="columnas" min="1" max="7" value="${escena.columnas||7}"><span class="val" id="columnasV">${escena.columnas||7}</span></div>`;
     $('ajuste').value=escena.ajuste||'cubrir';
@@ -227,17 +292,18 @@ function pintarModos(){
     o.innerHTML='';
   }else if(escena.modo==='secuencia'){
     const d=estado?.informe?.escena?.modo==='secuencia'?Number(estado.informe.escena.duracion)||0:0;
-    o.innerHTML=`<div class="campo"><label>Vídeo · entero en cada ventilador, del 1 al 7</label><select data-pieza="0">${opcionesStock(escena.piezas[0])}</select></div>`+
+    o.innerHTML=filaTag()+`<div class="campo"><label>Vídeo · entero en cada ventilador, del 1 al 7</label>${botonPieza('pieza',0,escena.piezas[0],'— elige pieza —')}</div>`+
       (d?`<p class="desc">Dura ${d.toFixed(1)} s · una vuelta a los 7 tarda ${Math.round(d*7)} s.</p>`:'');
   }else{
     const n=Math.max(1,escena.piezas.length);
-    o.innerHTML=Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label><select data-pieza="${i}">${opcionesStock(escena.piezas[i])}</select></div>`).join('')+
+    o.innerHTML=filaTag()+Array.from({length:Math.min(7,n+1)},(_,i)=>`<div class="fila"><label>${i?'Pieza '+(i+1):'Pieza'}</label>${botonPieza('pieza',i,escena.piezas[i],i?'— otra pieza (opcional) —':'— elige pieza —')}</div>`).join('')+
       `<div class="fila f3"><label>Paso</label><input type="range" id="paso" min="1" max="30" value="${escena.paso||4}"><span class="val" id="pasoV">${escena.paso||4} s</span></div>`;
     $('paso').oninput=e=>{$('pasoV').textContent=e.target.value+' s';escena.paso=+e.target.value;editandoEscena=true;};
   }
   pintarAudio();
-  o.querySelectorAll('select[data-ind]').forEach(s=>s.onchange=()=>{escena.ids[s.dataset.ind]=s.value?[s.value]:[];editandoEscena=true;});
-  o.querySelectorAll('select[data-pieza]').forEach(s=>s.onchange=()=>{const i=+s.dataset.pieza;const p=escena.piezas.slice();p[i]=s.value;escena.piezas=p.filter(Boolean);editandoEscena=true;if(escena.modo==='sincro')pintarModos();});
+  o.querySelectorAll('.pieza').forEach(b=>b.onclick=()=>popBoton===b?cerrarPiezas():abrirPiezas(b));
+  const tf=$('tagFiltro');if(tf)tf.onchange=()=>{tagFiltro=tf.value;try{localStorage.setItem('admira.supercomputer.pccocina.tag',tagFiltro);}catch{}};
+  pintadaEscena=JSON.stringify(escena);
 }
 document.querySelectorAll('.modo').forEach(b=>b.onclick=()=>{escena.modo=b.dataset.modo;editandoEscena=true;pintarModos();});
 
@@ -255,6 +321,10 @@ function pintarAudio(){
   $('audioSalida').value=a.salida;
   $('audioVol').value=Math.round(a.volumen*100);$('audioVolV').textContent=Math.round(a.volumen*100);
   $('audio').classList.toggle('bloqueado',identificar);
+  pintarSuena();
+}
+function pintarSuena(){
+  const inf=estado?.informe?.audio,identificar=escena.modo==='identificar';
   const suena=inf?.suena||[];
   $('audioDesc').textContent=identificar?'Identificar no tiene vídeo.':!inf?'':
     (suena.length?'Ahora suena: '+suena.map(s=>s.replace(/^.*?(\d+)$/,'ventilador $1').replace('supercomputer-pc-cocina-ventiladores','los 7')).join(', ')+(inf.salida?' · '+inf.salida:' · salida predeterminada'):'Ahora no suena ningún ventilador.');
@@ -537,7 +607,8 @@ async function refrescar(){
     // Los controles enseñan lo más reciente: lo pedido aquí o lo que la máquina ya aplicó (también
     // puede cambiar en local, desde config.json o su API).
     const vigente=(Number(inf.revision)||0)>=(Number(d.revision)||0)?inf:d;
-    if(!editandoEscena&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};pintarModos();}
+    if(!editandoEscena&&!popBoton&&(vigente.escena||d.escena)){const e=vigente.escena||d.escena;escena={...escena,...e,ids:{...(e.ids||{})},piezas:[...(e.piezas||[])]};if(JSON.stringify(escena)!==pintadaEscena)pintarModos();}
+    pintarSuena();
     if(!editandoLuz&&(vigente.luz||d.luz)){const l=vigente.luz||d.luz;luz={...luz,...l,color:hex((l.colores&&l.colores[0])||l.color),ventiladores:l.ventiladores||{},dispositivos:l.dispositivos||{}};pintarLuz();}
     else pintarDestinos();
     const aplicando=d.revision&&inf.revision!==undefined&&d.revision>inf.revision;
@@ -551,8 +622,16 @@ async function refrescar(){
   }finally{$('carga').classList.add('hide');}
 }
 async function cargarStock(){
-  try{const d=await fetch(STOCK).then(r=>r.json());stock=(d.items||[]).filter(x=>x&&x.id&&['video','image'].includes(x.type)).map(x=>({id:x.id,num:x.num,title:x.title||x.id,type:x.type}));}
-  catch{stock=[];}
+  const segura=u=>/^https:\/\/(stock|api)\.admira\.store\//.test(String(u||''))?String(u):'';
+  const vale=x=>x&&x.id&&!x.oculto&&['video','image'].includes(x.type);
+  const pieza=x=>({id:x.id,num:x.num,title:x.title||x.id,type:x.type,tags:(Array.isArray(x.tags)?x.tags:[]).filter(t=>typeof t==='string'&&t),
+    thumb:segura(x.thumbnail)||segura(x.poster)||(x.type==='image'?segura(x.url):'')});
+  try{const d=await fetch(STOCK_INDICE).then(r=>{if(!r.ok)throw new Error('indice');return r.json();});
+    stock=(d.items||[]).filter(vale).map(pieza).sort((a,b)=>(b.num||0)-(a.num||0));}
+  catch{try{const d=await fetch(STOCK).then(r=>r.json());stock=(d.items||[]).filter(vale).map(pieza);}catch{stock=[];}}
+  const cuenta={};for(const p of stock)for(const t of p.tags)cuenta[t]=(cuenta[t]||0)+1;
+  tagsOrdenados=Object.entries(cuenta).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'es'));
+  if(tagFiltro&&!cuenta[tagFiltro])tagFiltro='';
   pintarModos();
 }
 pintarModos();pintarLuz();cargarStock();refrescar();

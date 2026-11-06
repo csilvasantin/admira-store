@@ -87,10 +87,12 @@ arranca solo al iniciar sesión (tarea «Admira Player Ventiladores», que para 
 
 **Disposición de PC-COCINA** (foto de Carlos del 6-nov-2026, vista desde el cristal delantero): placa base al
 fondo; a su izquierda, los conectores de corriente con el **ventilador 1** encima (el único del puerto 0); a la
-derecha, **5-6-7** en vertical, de arriba abajo; en el suelo, **2-3-4** horizontales, de izquierda a derecha. Los 7
+derecha, **5-6-7** en vertical, de abajo arriba (el 5 junto al 4); en el suelo, **2-3-4** horizontales, de izquierda a derecha. Los 7
 tienen pantalla y vídeo (no hay ventilador de temperatura). Confirmado el 6-nov con Identificar (webcam de
 PC-COCINA y Carlos). Es la constante `DISPOSICION`
-de `supercomputer/pc-cocina/index.html`, con los números del puente (puerto y posición en la cadena).
+de `supercomputer/pc-cocina/index.html`, con los números del puente. La cadena del puerto 2 va de arriba abajo, así que el
+puente de PC-COCINA la renumera en su `config.json` (`"numeracion": {"2:0": 7, "2:2": 5}`, 6-nov por la tarde, a petición de
+Carlos): así las secuencias y el relevo suben del 4 al 5, 6 y 7 sin saltar. Comprobado con Identificar y la webcam.
 
 ### PC-COCINA · luces de la caja y audio (6-nov-2026)
 
@@ -117,6 +119,12 @@ y con `0x83` en azul, el aro de la bomba; RPM leídas: radiador ~1380-1440, bomb
 La placa (ASRock Polychrome USB `26CE:01A2`) tenía todas sus zonas en arcoíris, pero apagarla no cambió nada visible: la
 memoria no va por ella (sigue siendo SMBus) y se dejó como estaba.
 
+**Contenidos** (gemelo, 6-nov por la tarde): las piezas salen del índice completo del Stock
+(`https://stock.admira.store/stock/index.json`, el mismo de `functions/admira-xp/media-catalog.js`; `stock/list` se corta en
+200), solo vídeo e imagen y sin las ocultas. Encima de las piezas hay un filtro por tag (con las piezas de cada uno; se
+recuerda en el navegador) y el selector de pieza enseña la portada (`thumbnail`/`poster`) con buscador por título, #número o
+tag. Content: full Stock index, tag filter above the pieces and a piece picker with covers and search.
+
 **Audio** (`escena.audio`, `escena.mjs` · `normalizarAudio`): `{ ventilador, salida, volumen }`. Como mucho suena
 un ventilador (`0` = ninguno; en Repetir hay un solo canal y cualquier número es «con sonido»). Solo su Chrome
 arranca sin `--mute-audio`, con `muted=0&volume=` en el canal (contrato del player) o `audio=1&volumen=` en la
@@ -132,8 +140,10 @@ de la webcam: −36 dBFS con sonido frente a −47 dBFS silenciado). Worker `sup
 desplegar, como el de la mañana. Comprobado con peticiones reales por `/supercomputer/pc-cocina/api`: guarda
 `escena.audio` (el puente aplicó el sonido del ventilador 1 llegado del gemelo) y `luz.dispositivos` (el alias `gpu`
 llega como `grafica`). **Tras cada despliegue, comprobar la marca `luces: 'con-dispositivos'` en `/estado`** (la
-contesta el Durable Object; `/salud` solo prueba el Worker) y, si falta, pasar a un DO con otro nombre. Ventiladores de arriba y bomba: el puente los controla desde el 6-nov por la tarde; la nube necesita la `escena.mjs` con
-`superiores` y `bomba` (marca `luces: 'con-galahad'` en `/estado`) para guardar su luz propia. Pendiente: la memoria
+contesta el Durable Object; `/salud` solo prueba el Worker) y, si falta, pasar a un DO con otro nombre. Ventiladores de arriba y bomba: el puente los controla desde el 6-nov por la tarde, y la nube guarda su luz propia desde el
+Worker `833a1aef` con el Durable Object `pc-cocina-3` (el `pc-cocina-2` siguió con el código viejo tras desplegar, como los
+anteriores; marca `luces: 'con-galahad'` en `/estado`). Comprobado con peticiones reales: `radiador` y `pump` llegan como
+`superiores` y `bomba`. Pendiente: la memoria
 necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
 
 PC-COCINA case lights and audio (6-Nov-2026): `luz.dispositivos.{grafica,placa,memoria}` follow the main light
@@ -145,8 +155,8 @@ through `setSinkId`. Worker `supercomputer-pc-cocina` deployed on 6-Nov (version
 Object `pc-cocina-2` (the previous one kept the old code after deploying); verified with real requests. After each
 deploy, check the `luces: 'con-dispositivos'` marker on `/estado` (answered by the Durable Object). Pending: memory
 control needs an SMBus driver. Top fans (radiator) and pump: Galahad II Trinity AIO (USB `0416:7373`,
-`0x85` / `0x83`), `luz.dispositivos.superiores` / `bomba`; the cloud needs the `escena.mjs` that knows them (marker
-`luces: 'con-galahad'`).
+`0x85` / `0x83`), `luz.dispositivos.superiores` / `bomba`; deployed with Worker `833a1aef` on a fresh Durable Object
+`pc-cocina-3` (marker `luces: 'con-galahad'`), verified with real requests.
 
 ## Pendiente
 
