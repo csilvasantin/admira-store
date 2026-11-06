@@ -119,18 +119,23 @@ suena) y `salidas` (los puntos de reproducción de Windows).
 
 Estado verificado el 6-nov-2026 en PC-COCINA: el puente controla los dos cables (gráfica en rojo/arcoíris y 24
 pines en azul/verde, vistos con la webcam) y suena solo el ventilador 1 por la salida predeterminada (micrófono
-de la webcam: −36 dBFS con sonido frente a −47 dBFS silenciado). Pendiente: desplegar el Worker
-`supercomputer-pc-cocina` con la `escena.mjs` nueva (marca `luces: 'con-dispositivos'` en `/salud` y `/estado`);
-hasta entonces la nube descarta `luz.dispositivos` y `escena.audio`, y un cambio desde el gemelo los apaga. La
-memoria necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
+de la webcam: −36 dBFS con sonido frente a −47 dBFS silenciado). Worker `supercomputer-pc-cocina` desplegado el
+6-nov (versión `546dd9a0`) con un Durable Object nuevo, `pc-cocina-2`: el anterior siguió con el código viejo tras
+desplegar, como el de la mañana. Comprobado con peticiones reales por `/supercomputer/pc-cocina/api`: guarda
+`escena.audio` (el puente aplicó el sonido del ventilador 1 llegado del gemelo) y `luz.dispositivos` (el alias `gpu`
+llega como `grafica`). **Tras cada despliegue, comprobar la marca `luces: 'con-dispositivos'` en `/estado`** (la
+contesta el Durable Object; `/salud` solo prueba el Worker) y, si falta, pasar a un DO con otro nombre. Pendiente:
+la memoria necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
 
 PC-COCINA case lights and audio (6-Nov-2026): `luz.dispositivos.{grafica,placa,memoria}` follow the main light
 unless they have their own. Both Strimer Plus cables (USB `0CF2:A200`; ports 6-11 graphics card, 0-5 24-pin) are
 controlled; the memory (2× Lexar DDR5, ENE) is not yet (SMBus, no driver), so it keeps its factory rainbow and
 the twin locks its controls. `escena.audio { ventilador, salida, volumen }`: at most one fan plays sound (0 =
 none); only its Chrome runs without `--mute-audio`, the output is chosen by Windows device name (empty = default)
-through `setSinkId`. Pending: deploy Worker `supercomputer-pc-cocina` with the new `escena.mjs`; until then the
-cloud drops `luz.dispositivos` and `escena.audio`.
+through `setSinkId`. Worker `supercomputer-pc-cocina` deployed on 6-Nov (version `546dd9a0`) on a fresh Durable
+Object `pc-cocina-2` (the previous one kept the old code after deploying); verified with real requests. After each
+deploy, check the `luces: 'con-dispositivos'` marker on `/estado` (answered by the Durable Object). Pending: memory
+control needs an SMBus driver.
 
 ## Pendiente
 
