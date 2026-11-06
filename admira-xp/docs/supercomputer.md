@@ -102,12 +102,20 @@ sigue el relevo de sincro/secuencia, que es de los ventiladores.
 |---|---|---|---|
 | `grafica` | gpu, pcie | Cable Strimer Plus de la gráfica | USB `0CF2:A200`, puertos 6-11 (canal 2) |
 | `placa` | atx, 24pin | Cable Strimer Plus de 24 pines de la placa | USB `0CF2:A200`, puertos 0-5 (canal 1) |
+| `superiores` | arriba, radiador, techo, top | Los 3 ventiladores del radiador (arriba, sin pantalla) | AIO Galahad II Trinity, USB `0416:7373`, orden `0x85` |
+| `bomba` | pump, aio | Los aros de la bomba de la AIO | Galahad II Trinity, orden `0x83` (los dos aros) |
 | `memoria` | ram, dram | 2 × DDR5 Lexar `LD5U16G72C34LA` (controlador ENE) | **Sin control**: va por SMBus y el puente no tiene driver para ese bus |
 
 Los puertos de cada cable se comprobaron con la webcam de PC-COCINA (apagando un canal cada vez). El protocolo
 del Strimer es el de `sgtaziz/lian-li-linux` (MIT, `strimer_plus.rs`): informe 0xE0, modo/velocidad/brillo por
 característica y 27 colores por puerto en orden R, B, G. El puente informa en `informe.dispositivos` si controla
 cada luz y, si no, por qué (`motivo`); el gemelo lo enseña y bloquea los controles de la memoria.
+
+Galahad II Trinity (sgtaziz/lian-li-linux, `galahad2_trinity.rs`, MIT): informe 0x01 de 64 bytes; solo luz y lectura de RPM
+(saludo `0x81`), nunca velocidades. Comprobado el 6-nov con la webcam: con `0x85` en rojo se tiñe de rojo el techo de la caja,
+y con `0x83` en azul, el aro de la bomba; RPM leídas: radiador ~1380-1440, bomba ~2500 (`informe.dispositivos.*.rpm`).
+La placa (ASRock Polychrome USB `26CE:01A2`) tenía todas sus zonas en arcoíris, pero apagarla no cambió nada visible: la
+memoria no va por ella (sigue siendo SMBus) y se dejó como estaba.
 
 **Audio** (`escena.audio`, `escena.mjs` · `normalizarAudio`): `{ ventilador, salida, volumen }`. Como mucho suena
 un ventilador (`0` = ninguno; en Repetir hay un solo canal y cualquier número es «con sonido»). Solo su Chrome
@@ -124,8 +132,9 @@ de la webcam: −36 dBFS con sonido frente a −47 dBFS silenciado). Worker `sup
 desplegar, como el de la mañana. Comprobado con peticiones reales por `/supercomputer/pc-cocina/api`: guarda
 `escena.audio` (el puente aplicó el sonido del ventilador 1 llegado del gemelo) y `luz.dispositivos` (el alias `gpu`
 llega como `grafica`). **Tras cada despliegue, comprobar la marca `luces: 'con-dispositivos'` en `/estado`** (la
-contesta el Durable Object; `/salud` solo prueba el Worker) y, si falta, pasar a un DO con otro nombre. Pendiente:
-la memoria necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
+contesta el Durable Object; `/salud` solo prueba el Worker) y, si falta, pasar a un DO con otro nombre. Ventiladores de arriba y bomba: el puente los controla desde el 6-nov por la tarde; la nube necesita la `escena.mjs` con
+`superiores` y `bomba` (marca `luces: 'con-galahad'` en `/estado`) para guardar su luz propia. Pendiente: la memoria
+necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
 
 PC-COCINA case lights and audio (6-Nov-2026): `luz.dispositivos.{grafica,placa,memoria}` follow the main light
 unless they have their own. Both Strimer Plus cables (USB `0CF2:A200`; ports 6-11 graphics card, 0-5 24-pin) are
@@ -135,7 +144,9 @@ none); only its Chrome runs without `--mute-audio`, the output is chosen by Wind
 through `setSinkId`. Worker `supercomputer-pc-cocina` deployed on 6-Nov (version `546dd9a0`) on a fresh Durable
 Object `pc-cocina-2` (the previous one kept the old code after deploying); verified with real requests. After each
 deploy, check the `luces: 'con-dispositivos'` marker on `/estado` (answered by the Durable Object). Pending: memory
-control needs an SMBus driver.
+control needs an SMBus driver. Top fans (radiator) and pump: Galahad II Trinity AIO (USB `0416:7373`,
+`0x85` / `0x83`), `luz.dispositivos.superiores` / `bomba`; the cloud needs the `escena.mjs` that knows them (marker
+`luces: 'con-galahad'`).
 
 ## Pendiente
 
