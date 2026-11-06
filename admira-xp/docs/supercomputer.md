@@ -119,6 +119,20 @@ y con `0x83` en azul, el aro de la bomba; RPM leídas: radiador ~1380-1440, bomb
 La placa (ASRock Polychrome USB `26CE:01A2`) tenía todas sus zonas en arcoíris, pero apagarla no cambió nada visible: la
 memoria no va por ella (sigue siendo SMBus) y se dejó como estaba.
 
+**Secuencia · cambio de ventilador** (`escena.cada`, `escena.mjs` · `turnoSecuencia`, Carlos 6-nov): `0` = al acabar la
+pieza (por defecto, lo de siempre); `1`–`3600` = segundos en cada ventilador, que empieza la pieza desde el principio (si
+dura más se corta, si dura menos vuelve a empezar). Una imagen, o un vídeo aún sin medir, está 10 s en cada uno (antes,
+`paso`). En el gemelo: «Al acabar» o «Cada ‹ x › s», con flechas de un segundo o escribiendo el número (10 por defecto).
+Los ventiladores que esperan dejan la pieza parada al principio; el activo y la página que suena siguen el turno, así el
+audio acompaña al ventilador que se ve. Comprobado en PC-COCINA: con `cada: 10` el activo cambia cada 10 s. Sequence
+switch: `escena.cada` 0 = on end, otherwise seconds per fan from the start of the piece; images 10 s.
+
+**Luz y contenido, por separado** (Carlos, 6-nov): la nube guarda la escena con el reloj a cero (`epoch: 0`) y la reenvía
+con cada cambio, también con los de luz; el puente (`escena.mjs` · `mismoContenido`) conserva su reloj si modo, piezas,
+orden, paso, cada… son los mismos (no cuentan el reloj, la duración medida ni el audio). Antes, cambiar el color de la bomba
+reiniciaba la secuencia. Comprobado en PC-COCINA: cambio de la bomba desde el gemelo con el mismo `epoch` antes y después.
+Lighting and content are independent: the bridge keeps its clock when the content is unchanged.
+
 **Contenidos** (gemelo, 6-nov por la tarde): las piezas salen del índice completo del Stock
 (`https://stock.admira.store/stock/index.json`, el mismo de `functions/admira-xp/media-catalog.js`; `stock/list` se corta en
 200), solo vídeo e imagen y sin las ocultas. Encima de las piezas hay un filtro por tag (con las piezas de cada uno; se
@@ -142,7 +156,9 @@ desplegar, como el de la mañana. Comprobado con peticiones reales por `/superco
 llega como `grafica`). **Tras cada despliegue, comprobar la marca `luces: 'con-dispositivos'` en `/estado`** (la
 contesta el Durable Object; `/salud` solo prueba el Worker) y, si falta, pasar a un DO con otro nombre. Ventiladores de arriba y bomba: el puente los controla desde el 6-nov por la tarde, y la nube guarda su luz propia desde el
 Worker `833a1aef` con el Durable Object `pc-cocina-3` (el `pc-cocina-2` siguió con el código viejo tras desplegar, como los
-anteriores; marca `luces: 'con-galahad'` en `/estado`). Comprobado con peticiones reales: `radiador` y `pump` llegan como
+anteriores; marca `luces: 'con-galahad'` en `/estado`). Desde `cada`, el Worker pasa su versión al Durable Object
+(`x-supercomputer-version`) y el DO se reinicia solo (`ctx.abort`) si la suya es más vieja: ya no hace falta cambiarlo de
+nombre en cada despliegue (esa vez se pasó a `pc-cocina-4`, el último a mano). Comprobado con peticiones reales: `radiador` y `pump` llegan como
 `superiores` y `bomba`. Pendiente: la memoria
 necesita un driver de SMBus (p. ej. OpenRGB con PawnIO) y está sin decidir.
 
