@@ -112,7 +112,15 @@ test('Xpaces offers PortAventura with its 4 venues, linked to the protected DMZ 
  const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
  assert.equal(project.options.at(-1).value,'portaventura');assert.equal(project.options.at(-1).text,'PortAventura');
  project.value='portaventura';project.listeners.get('change')();await new Promise(setImmediate);
- assert.deepEqual(venue.options.slice(1).map(o=>o.value),['store','restaurante','hotel','atraccion']);
+ assert.deepEqual(venue.options.slice(1).map(o=>o.value),['store','restaurant','hotel','atracciones']);
  venue.value='hotel';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(h.destinations.at(-1),'https://www.portaventuranext.com/dmz/netflixventura/hotel');
+});
+
+test('PortAventura shows Style (Netflix live; Universal, Sony, Skydance coming soon) between Venue and Quality',async()=>{
+ const h=await harness({catalogo:cuatro});
+ const project=h.element('projectSelector'),style=h.element('projectStyleSelector');
+ project.value='portaventura';project.listeners.get('change')();await new Promise(setImmediate);
+ assert.deepEqual(style.options.map(o=>o.value),['netflix','universal','sony','skydance']);
+ assert.equal(style.value,'netflix');assert.equal(h.element('topbarStyle').hidden,false);
 });
