@@ -3580,6 +3580,15 @@ function switchDSVideo(idx){
    const queue=saved[channel];if(!queue.some(x=>x.id===t.id))queue.push(t);persist();return name;},
   async move(channel,id,before){const list=channel==='music'?SONG_LIST:VIDEO_LIST,current=currentDSVideoName(),from=list.indexOf(id);if(from<0||id===before)return;list.splice(from,1);const at=before?list.indexOf(before):-1;list.splice(at<0?list.length:at,0,id);if(channel==='screens')dsVideoIdx=Math.max(0,VIDEO_LIST.indexOf(current));persist();}
  };
+ // VozContenido (admira.studio/vozcontenido, 9-nov-2026): los vídeos del Stock con etiqueta
+ // «storeos» entran solos en la playlist de pantallas del gemelo (admira.store y xpaceos.com).
+ // No se guardan en localStorage: cada carga relee el Stock y trae los nuevos.
+ window.XpaceStoreosStock=(async()=>{let items=[];
+  for(const src of ['https://stock.admira.store/stock/index.json?t='+Math.floor(Date.now()/60000),'https://api.admira.store/stock/list?limit=200']){
+   try{const r=await fetch(src,{cache:'no-store'});if(!r.ok)continue;const d=await r.json();if(Array.isArray(d.items)){items=d.items;break;}}catch(_){}}
+  const picked=items.filter(it=>it&&/^[a-zA-Z0-9-]{1,100}$/.test(String(it.id||''))&&(it.type==='video'||/^video\//.test(it.mime||''))&&Array.isArray(it.tags)&&it.tags.includes('storeos')).slice(0,30);
+  const names=[];for(const it of picked){try{names.push(register({id:it.id,kind:'video',title:it.title||it.id,url:'https://api.admira.store/stock/asset/'+it.id}));}catch(_){}}
+  if(names.length)window.dispatchEvent(new Event('xpace:playlist'));return names;})();
 })();
 
 function nextDSVideo(){ switchDSVideo(dsVideoIdx+1); }
