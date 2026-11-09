@@ -47,7 +47,7 @@ test('account expiry still clears authorized selections on the timer',async()=>{
 
 const cuatro={projects:[{id:'starbucks',name:'Starbucks',circuit:'alsea_starbucks'},{id:'altadis',name:'Altadis',circuit:'altadis_bcn'},{id:'estancos',name:'Estancos',circuit:'estancos'},{id:'cafebreria',name:'Cafebrería',circuit:'cafebreria'}],
  venues:[{id:'demo-starbucks',project_id:'starbucks',name:'Paseo de Gràcia 103',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria&loc=alsea-sbux-021'},{id:'starbucks-diagonal-634',project_id:'starbucks',name:'Diagonal 634',demo:true,xpace_url:'https://www.admira.store/xpacios/starbucks-centros/?loc=starbucks-diagonal-634'},{id:'altadis-bcn-001',project_id:'altadis',name:'Estanco 1',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco&loc=altadis-bcn-001'},{id:'demo-xtanco',project_id:'estancos',name:'Xtanco',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=xtanco'},{id:'demo-cafebreria',project_id:'cafebreria',name:'Cafebrería',demo:true,xpace_url:'https://www.xpaceos.com/admira-xp/?autostart=cafeteria'}]};
-const proyectos=h=>h.element('projectSelector').options.slice(1).map(o=>o.value).filter(v=>v!=='computer'&&v!=='objeto');
+const proyectos=h=>h.element('projectSelector').options.slice(1).map(o=>o.value).filter(v=>v!=='computer'&&v!=='objeto'&&v!=='portaventura');
 test('entering with the Starbucks brand (?marca=starbucks) the selector offers only Starbucks',async()=>{
  const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
  assert.deepEqual(proyectos(h),['starbucks']);
@@ -100,9 +100,19 @@ test('Xpaces offers Computer, whose venues Metahuman and PC-Cocina open the Supe
 test('Xpaces offers Objeto, whose venue Stream Deck opens the Objeto twin (5-nov-2026)',async()=>{
  const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
  const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
- assert.equal(project.options.at(-1).value,'objeto');assert.equal(project.options.at(-1).text,'Objeto');
+ assert.equal(project.options.at(-2).value,'objeto');assert.equal(project.options.at(-2).text,'Objeto');
  project.value='objeto';project.listeners.get('change')();await new Promise(setImmediate);
  assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['stream-deck','Stream Deck']]);
  venue.value='stream-deck';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(h.destinations.at(-1),'/objeto/stream-deck/'); // harness sin createElement → fallback
+});
+
+test('Xpaces offers PortAventura with its 4 venues, linked to the protected DMZ (9-nov-2026)',async()=>{
+ const h=await harness({catalogo:cuatro});
+ const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
+ assert.equal(project.options.at(-1).value,'portaventura');assert.equal(project.options.at(-1).text,'PortAventura');
+ project.value='portaventura';project.listeners.get('change')();await new Promise(setImmediate);
+ assert.deepEqual(venue.options.slice(1).map(o=>o.value),['store','restaurante','hotel','atraccion']);
+ venue.value='hotel';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(h.destinations.at(-1),'https://www.portaventuranext.com/dmz/netflixventura/hotel');
 });
