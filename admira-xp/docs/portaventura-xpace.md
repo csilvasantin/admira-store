@@ -5,11 +5,13 @@ ES: En admira.store/admira-xp, combo **Xpaces → PortAventura**; el combo **Ven
 | Venue | id | URL (DMZ, Cloudflare Access) |
 |---|---|---|
 | Store · Stranger Things | `store` | https://www.portaventuranext.com/dmz/netflix/strangerthings/merchandising |
-| Restaurante · Benny's Burgers | `restaurante` | https://www.portaventuranext.com/dmz/netflixventura/restaurante |
+| Restaurant · Benny's Burgers | `restaurant` (alias `restaurante`) | https://www.portaventuranext.com/dmz/netflixventura/restaurante |
 | Hotel · Casa Creel | `hotel` | https://www.portaventuranext.com/dmz/netflixventura/hotel |
-| Atracción | `atraccion` | https://www.portaventuranext.com/dmz/netflixventura (provisional: aún no hay ruta propia) |
+| Atracciones | `atracciones` (alias `atraccion`) | https://www.portaventuranext.com/dmz/netflixventura (provisional: aún no hay ruta propia) |
 
-Enlace directo: `/admira-xp/?xpace=portaventura&venue=hotel`.
+**Style** (entre Venue y Quality): `netflix` (contenido actual), `universal`, `sony`, `skydance` (paleta propia y «próximamente», sin logos ni arte de esas marcas). Parámetro `&style=`.
+
+Enlace directo: `/admira-xp/?xpace=portaventura&venue=hotel&style=netflix`.
 
 Perímetro: este repo es público; aquí solo hay enlaces. El código vive en el repo privado `csilvasantin/portaventura-next`. Sin sesión de Access la DMZ responde 403; si el navegador no envía la cookie de Access dentro del iframe, usar el botón de abrir.
 
