@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Objeto · Stream Deck XL · gemelo 3D · admira.store</title>
-<meta name="description" content="Gemelo 3D del Elgato Stream Deck XL en METAHUMAN (32 teclas LCD). Teclas EN VIVO desde el perfil Elgato de METAHUMAN, con títulos y ficha de cada tecla; foto fija si el puente duerme. Serial CL37J1A02733 · admira.tv.">
+<meta name="description" content="Gemelo 3D del Elgato Stream Deck XL en AdmiraNeXT01 (antes METAHUMAN, 32 teclas LCD). Teclas EN VIVO desde el perfil Elgato de AdmiraNeXT01, con títulos y ficha de cada tecla; en salvapantallas, REPOSO con la pieza de la playlist admira-tv-streamdeck; foto fija si el puente duerme. Serial CL37J1A02733 · admira.tv.">
 <link rel="canonical" href="https://www.admira.store/objeto/stream-deck/">
 <link rel="icon" href="/favicon.ico">
 <meta name="theme-color" content="#04060d">
@@ -23,6 +23,13 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
 .estado i{width:8px;height:8px;border-radius:50%;background:var(--mut)}
 .estado.vivo{border-color:#3ddc84}.estado.vivo i{background:#3ddc84;box-shadow:0 0 10px #3ddc84}
 .estado.sim{border-color:var(--gold)}.estado.sim i{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.estado.reposo{border-color:#b58cff}.estado.reposo i{background:#b58cff;box-shadow:0 0 10px #b58cff;animation:latido 2.4s ease-in-out infinite}
+@keyframes latido{50%{opacity:.35}}
+.reposoCard{right:16px;bottom:76px;width:300px;display:none;gap:10px;align-items:center;background:var(--panel);backdrop-filter:blur(14px);border:1px solid #b58cff;border-radius:14px;padding:10px}
+.reposoCard.show{display:flex}.reposoCard img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#0a0e16;flex:none}
+.reposoCard small{display:block;color:#b58cff;font:700 10px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.12em}.reposoCard b{display:block;font-size:12.5px;margin:3px 0}.reposoCard span{color:var(--mut);font-size:10.5px}
+.kv b.reposo{color:#b58cff}
+@media(max-width:800px){.reposoCard{left:8px;right:8px;width:auto;bottom:64px}}
 .estadoCol{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .hint{color:var(--mut);font-size:10.5px;max-width:260px;text-align:right}
 .panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:14px;max-height:calc(100% - var(--xs-bar-h,0px) - 120px);overflow:auto}
@@ -52,11 +59,11 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
 <div class="carga" id="carga">ENCENDIENDO STREAM DECK…</div>
 
 <header class="hud top">
-  <div class="brand"><b>Objeto · <span>Stream Deck</span></b><small>CL37J1A02733 · METAHUMAN · ADMIRA.TV · 8×4 LCD</small></div>
+  <div class="brand"><b>Objeto · <span>Stream Deck</span></b><small>CL37J1A02733 · AdmiraNeXT01 · ADMIRA.TV · 8×4 LCD</small></div>
   <span class="spacer"></span>
   <div class="estadoCol">
-    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto METAHUMAN · foto fija / sin puente</span></span>
-    <span class="hint" id="estadoHint">Puente en vivo: perfil Elgato (ProfilesV3) de METAHUMAN, no HID crudo</span>
+    <span class="estado sim" id="estado"><i></i><span id="estadoTxt">Cara desde foto AdmiraNeXT01 · foto fija / sin puente</span></span>
+    <span class="hint" id="estadoHint">Puente en vivo: perfil Elgato (ProfilesV3) de AdmiraNeXT01, no HID crudo</span>
   </div>
 </header>
 
@@ -66,19 +73,24 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
   <div class="kv"><span>USB</span><b>VID_0FD9 · PID_006C</b></div>
   <div class="kv"><span>Serial</span><b>CL37J1A02733</b></div>
   <div class="kv"><span>Teclas</span><b>32 · 8 cols × 4 rows</b></div>
-  <div class="kv"><span>Host</span><b>METAHUMAN</b></div>
-  <div class="kv"><span>Arte activo</span><b id="arteInfo">face-live · 8×4 foto METAHUMAN</b></div>
+  <div class="kv"><span>Host</span><b title="Antes METAHUMAN">AdmiraNeXT01</b></div>
+  <div class="kv"><span>Arte activo</span><b id="arteInfo">face-live · 8×4 foto AdmiraNeXT01</b></div>
   <div class="kv"><span>Perfil</span><b id="perfilInfo">—</b></div>
   <div class="kv"><span>Página</span><b id="paginaInfo">—</b></div>
   <div class="kv"><span>Visto</span><b id="vistoInfo">—</b></div>
+  <div class="kv"><span>Reposo</span><b id="reposoInfo">—</b></div>
   <div class="kv"><span>Silueta</span><b>v2 · stand ~42°</b></div>
   <div class="kv"><span>Tecla</span><b id="keyInfo">— (clic en una tecla)</b></div>
-  <p class="desc">Arrastra para orbitar · rueda para zoom. Pasa el ratón por una tecla para ver su título y clic para fijar su ficha: fila, columna, título y acción del perfil Elgato (Hotkey, Open, Website, carpeta…). Con el puente encendido, las teclas siguen EN VIVO la página activa del perfil Elgato de METAHUMAN (iconos y títulos del perfil ProfilesV3, cada ~3 s). Sin puente: recorte 8×4 de la foto METAHUMAN (<code>face-live.png</code>), con Indiana Jones como en el deck físico. Honestidad: es un puente de perfil Elgato, no lectura HID cruda; imágenes dinámicas de plugins (Key Creator, contadores) no salen y las pulsaciones físicas no se ven.</p>
+  <p class="desc">Arrastra para orbitar · rueda para zoom. Pasa el ratón por una tecla para ver su título y clic para fijar su ficha: fila, columna, título y acción del perfil Elgato (Hotkey, Open, Website, carpeta…). Con el puente encendido, las teclas siguen EN VIVO la página activa del perfil Elgato de AdmiraNeXT01 (iconos y títulos del perfil ProfilesV3, cada ~3 s). Cuando el deck entra en salvapantallas (3 min sin tocarlo), el puente avisa y el gemelo muestra <b>REPOSO · playlist</b> con la pieza en emisión de la playlist <code>admira-tv-streamdeck</code> de admira.tv. Sin puente: recorte 8×4 de la foto del escritorio de AdmiraNeXT01, antes METAHUMAN (<code>face-live.png</code>), con Indiana Jones como en el deck físico. Honestidad: es un puente de perfil Elgato, no lectura HID cruda; imágenes dinámicas de plugins (Key Creator, contadores) no salen y las pulsaciones físicas no se ven.</p>
   <div class="fotos">
-    <img class="foto" src="perfil-metahuman.png" alt="Perfil METAHUMAN: slab + stand cuña + teclas claras">
-    <img class="foto" src="metahuman-desk.jpg" alt="Stream Deck XL en el escritorio METAHUMAN con Indiana Jones">
+    <img class="foto" src="perfil-metahuman.png" alt="Perfil AdmiraNeXT01 (antes METAHUMAN): slab + stand cuña + teclas claras">
+    <img class="foto" src="metahuman-desk.jpg" alt="Stream Deck XL en el escritorio de AdmiraNeXT01 (antes METAHUMAN) con Indiana Jones">
   </div>
 </section>
+<aside class="hud reposoCard" id="reposoCard" aria-live="polite" aria-label="Pieza en emisión en reposo">
+  <img id="reposoPoster" alt="" hidden>
+  <div><small id="reposoTit">REPOSO · PLAYLIST</small><b id="reposoPieza">—</b><span id="reposoSub">—</span></div>
+</aside>
 <div class="hud toast" id="toast"></div>
 <div class="tip" id="tip" role="tooltip"></div>
 
@@ -88,6 +100,7 @@ import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import {RoomEnvironment} from "three/addons/environments/RoomEnvironment.js";
 import {RoundedBoxGeometry} from "three/addons/geometries/RoundedBoxGeometry.js";
+import {leerReposo,haceCuanto} from "./reposo.mjs?v=20261110";
 
 const $=id=>document.getElementById(id);
 const COLS=8,ROWS=4;
@@ -145,7 +158,7 @@ desk.rotation.x=-Math.PI/2;desk.position.y=0;desk.receiveShadow=true;scene.add(d
 const grid=new THREE.GridHelper(22,44,0x1a3a4a,0x0c1a24);
 grid.position.y=0.002;grid.material.transparent=true;grid.material.opacity=.28;scene.add(grid);
 
-// ── Stream Deck XL v2 (procedural · silueta METAHUMAN) ──
+// ── Stream Deck XL v2 (procedural · silueta AdmiraNeXT01, antes METAHUMAN) ──
 // Proporciones aprox. reales · tilt ~42° · stand cuña magnética hueca
 const FACE_TILT=42; // grados respecto al escritorio
 const BODY_W=3.26,BODY_D=1.32,BODY_H=0.23;
@@ -477,7 +490,7 @@ function bucle(){
   controls.update();renderer.render(scene,camera);
 }
 
-// Cara live = foto desk METAHUMAN (8×4). Fallback: indiana-jones.png (recorte mural).
+// Cara live = foto desk AdmiraNeXT01, antes METAHUMAN (8×4). Fallback: indiana-jones.png (recorte mural).
 const faceLiveUrl='face-live.png';
 const fallbackUrl='indiana-jones.png';
 
@@ -489,14 +502,14 @@ function bootWith(img, label){
   vivo();
 }
 
-// Puente EN VIVO: METAHUMAN sube la cara del perfil Elgato activo y la ficha de sus teclas.
+// Puente EN VIVO: AdmiraNeXT01 (antes METAHUMAN) sube la cara del perfil Elgato activo y la ficha de sus teclas.
 // Aquí se sondea /api/estado (JSON pequeño) cada 2,5 s y solo se baja face.png cuando cambia el hash.
 const LIVE_URL='/objeto/stream-deck/api/face.png';
 const ESTADO_URL='/objeto/stream-deck/api/estado';
 let liveEtag=null,liveVisto=0,relojNube=0; // relojNube = ahora de la nube − Date.now(): el reloj de este PC puede ir adelantado
 function pintarFicha(st){
   const vivo=!!st&&st.enLinea;
-  $('arteInfo').textContent=vivo?'EN VIVO · perfil Elgato':'face-live · 8×4 foto METAHUMAN';
+  $('arteInfo').textContent=vivo?'EN VIVO · perfil Elgato':'face-live · 8×4 foto AdmiraNeXT01';
   $('arteInfo').className=vivo?'vivo':'';
   $('perfilInfo').textContent=st&&st.profileName?st.profileName:'—';
   const pag=st&&(st.pageName||(st.pages>0?`página ${st.pageIndex+1}/${st.pages}`:''));
@@ -520,11 +533,29 @@ function aplicarCara(img){
     k.userData.active=meanLuma(tex)>0.02;
   }
 }
-function pintarEstado(enLinea){
+function pintarEstado(enLinea,reposo=null){
   enVivo=!!enLinea;
   const e=$('estado');
-  e.className='estado '+(enLinea?'vivo':'sim');
-  $('estadoTxt').textContent=enLinea?'EN VIVO · METAHUMAN':'Foto fija / sin puente';
+  e.className='estado '+(reposo?'reposo':enLinea?'vivo':'sim');
+  $('estadoTxt').textContent=reposo?'REPOSO · playlist':enLinea?'EN VIVO · AdmiraNeXT01':'Foto fija / sin puente';
+  e.title=reposo?'Salvapantallas del Stream Deck: playlist '+reposo.playlist.screen:'';
+  pintarReposo(reposo);
+}
+// REPOSO (10-nov-2026): el deck está en salvapantallas con la playlist admira-tv-streamdeck. Sin señal, nada cambia.
+let reposoActual=null;
+function pintarReposo(r){
+  reposoActual=r;
+  const card=$('reposoCard'),info=$('reposoInfo');
+  if(!r){card.classList.remove('show');info.textContent='—';info.className='';return;}
+  const p=r.pieza,ahora=Date.now()+relojNube;
+  const n=p&&p.index!=null?`${p.index+1}/${p.total||r.playlist.total||'?'}`:'';
+  $('reposoTit').textContent=`REPOSO · ${r.playlist.name}`;
+  $('reposoPieza').textContent=p?(p.title||p.id):'Salvapantallas en marcha';
+  $('reposoSub').textContent=[p&&p.sub,n&&'pieza '+n,r.desde&&'reposo '+haceCuanto(r.desde,ahora)].filter(Boolean).join(' · ')||r.playlist.screen;
+  const im=$('reposoPoster');
+  if(p&&p.poster){if(im.getAttribute('src')!==p.poster)im.src=p.poster;im.alt=p.title||'';im.hidden=false;}else{im.hidden=true;im.removeAttribute('src');}
+  info.textContent=`playlist${n?' · '+n:''}${r.desde?' · '+haceCuanto(r.desde,ahora):''}`;info.className='reposo';
+  card.classList.add('show');
 }
 async function bajarCara(){
   const h={};if(liveEtag)h['If-None-Match']=liveEtag;
@@ -533,7 +564,7 @@ async function bajarCara(){
   const et=r.headers.get('etag');
   const blob=await r.blob(),u=URL.createObjectURL(blob),im=new Image();
   await new Promise((ok,ko)=>{im.onload=ok;im.onerror=ko;im.src=u;});
-  if(et!==liveEtag){aplicarCara(im);if(enVivo)toast('Cara EN VIVO desde METAHUMAN');}
+  if(et!==liveEtag){aplicarCara(im);if(enVivo)toast('Cara EN VIVO desde AdmiraNeXT01');}
   liveEtag=et;URL.revokeObjectURL(u);
   return true;
 }
@@ -544,7 +575,7 @@ async function vivo(){
     if(st&&st.ok){
       liveVisto=Number(st.visto)||liveVisto;
       if(Number(st.ahora))relojNube=Number(st.ahora)-Date.now();
-      pintarEstado(st.enLinea);
+      pintarEstado(st.enLinea,leerReposo(st));
       keysMeta=(st.keys&&typeof st.keys==='object')?st.keys:{};
       pintarFicha(st);
       // La cara solo se baja si el hash de la nube no es el que ya pintamos (el ETag es "hash").
@@ -558,7 +589,7 @@ async function vivo(){
 
 const img=new Image();
 img.crossOrigin='anonymous';
-img.onload=()=>bootWith(img,'Cara de respaldo · face-live.png (foto METAHUMAN)');
+img.onload=()=>bootWith(img,'Cara de respaldo · face-live.png (foto AdmiraNeXT01)');
 img.onerror=()=>{
   const fb=new Image();
   fb.crossOrigin='anonymous';
