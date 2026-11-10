@@ -1,2 +1,7 @@
 # Los archivos de más de 25 MiB (maestros .blend, GLB HD…) no se listan a mano: al publicar,
 # .github/cloudflare-grandes.sh los quita del paquete y antepone aquí su 302 a la copia de XpaceOS.
+
+# Alias del gemelo AdmiraNeXT01 (antes Metahuman). La ruta canónica sigue siendo /supercomputer/metahuman/.
+/supercomputer/admiranext01 /supercomputer/metahuman/ 301
+/supercomputer/admiranext01/ /supercomputer/metahuman/ 301
+/supercomputer/admiranext01/* /supercomputer/metahuman/:splat 301

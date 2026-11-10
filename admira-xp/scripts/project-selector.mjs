@@ -3,8 +3,9 @@ import {CENTRAL,ProjectClient,connectCentral,venueUrl,validAccess} from './centr
 import {marcaQueLimita,proyectosPermitidos} from './marca-proyectos.mjs?v=alsea-1';
 // Un local con puerta de Google Maps pasa primero por su calle (Carlos, 15-oct-2026).
 import {conPuerta} from '../../assets/puertas.mjs?v=puerta-1';
-// Xpace «Computer» (Carlos, 4-nov-2026): locales = gemelos Supercomputer Metahuman y PC-Cocina (assets/computer-xpace.mjs).
-const COMPUTER_ID='computer',COMPUTER_PROJECT={id:COMPUTER_ID,name:'Computer'},COMPUTER_VENUES=[{id:'metahuman',name:'Metahuman',url:'/supercomputer/metahuman/'},{id:'pc-cocina',name:'PC-Cocina',url:'/supercomputer/pc-cocina/'}],computerVenue=id=>COMPUTER_VENUES.find(v=>v.id===id)||null;
+// Xpace «Computer» (Carlos, 4-nov-2026 / renombre 10-nov-2026): locales = gemelos Supercomputer AdmiraNeXT01 (antes Metahuman) y PC-Cocina (assets/computer-xpace.mjs).
+// Se conserva el id «metahuman» y /supercomputer/metahuman/ para no romper enlaces; alias admiranext01.
+const COMPUTER_ID='computer',COMPUTER_PROJECT={id:COMPUTER_ID,name:'Computer'},COMPUTER_VENUES=[{id:'metahuman',name:'AdmiraNeXT01',url:'/supercomputer/metahuman/'},{id:'pc-cocina',name:'PC-Cocina',url:'/supercomputer/pc-cocina/'}],COMPUTER_ALIAS={admiranext01:'metahuman'},computerVenue=id=>COMPUTER_VENUES.find(v=>v.id===(COMPUTER_ALIAS[id]||id))||null;
 // Xpace «Objeto» (Carlos, 5-nov-2026): locales = gemelos de objetos físicos (Stream Deck XL en METAHUMAN).
 const OBJET_ID='objeto',OBJET_PROJECT={id:OBJET_ID,name:'Objeto'},OBJET_VENUES=[{id:'stream-deck',name:'Stream Deck',url:'/objeto/stream-deck/'}],objetoVenue=id=>OBJET_VENUES.find(v=>v.id===id)||null;
 

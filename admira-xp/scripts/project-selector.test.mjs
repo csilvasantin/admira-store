@@ -86,15 +86,27 @@ test('three combos: choosing the Starbucks Xpace applies its brand at once and o
  assert.equal(new URL(h.destinations[1]).pathname,'/xpacios/starbucks-centros/');
 });
 
-test('Xpaces offers Computer, whose venues Metahuman and PC-Cocina open the Supercomputer twins (4-nov-2026)',async()=>{
+test('Xpaces offers Computer, whose venues AdmiraNeXT01 (id metahuman) and PC-Cocina open the Supercomputer twins (10-nov-2026)',async()=>{
  const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
  const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
  const computer=project.options.find(o=>o.value==='computer');
  assert.ok(computer);assert.equal(computer.text,'Computer');
  project.value='computer';project.listeners.get('change')();await new Promise(setImmediate);
- assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['metahuman','Metahuman'],['pc-cocina','PC-Cocina']]);
+ assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['metahuman','AdmiraNeXT01'],['pc-cocina','PC-Cocina']]);
+ venue.value='metahuman';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(h.destinations.at(-1),'/supercomputer/metahuman/');
  venue.value='pc-cocina';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(h.destinations.at(-1),'/supercomputer/pc-cocina/'); // harness sin createElement → fallback
+});
+
+test('Computer venue alias admiranext01 still opens the AdmiraNeXT01 twin (id metahuman)',async()=>{
+ const h=await harness({catalogo:cuatro,ventana:{},});
+ // Recreate the URL bootstrap: the module reads location at load, so drive computerVenue via the change path
+ // after choosing Computer, using the alias as if ?xpace=computer&venue=admiranext01.
+ const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
+ project.value='computer';project.listeners.get('change')();await new Promise(setImmediate);
+ venue.value='admiranext01';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(h.destinations.at(-1),'/supercomputer/metahuman/');
 });
 
 test('Xpaces offers Objeto, whose venue Stream Deck opens the Objeto twin (5-nov-2026)',async()=>{
