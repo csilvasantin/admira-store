@@ -16,15 +16,16 @@ test('Objeto Xpace apunta al gemelo Stream Deck', () => {
   assert.match(xpace, /url: '\/objeto\/stream-deck\/'/);
 });
 
-test('el gemelo Stream Deck es HUD 3D con serial METAHUMAN e Indiana Jones', () => {
+test('el gemelo Stream Deck es HUD 3D con serial AdmiraNeXT01 (antes METAHUMAN) e Indiana Jones', () => {
   assert.match(html, /CL37J1A02733/);
   assert.match(html, /Objeto · <span>Stream Deck<\/span>/);
   assert.match(html, /face-live\.png/);
   assert.match(html, /indiana-jones\.png/);
   assert.match(html, /three@0\.160\.0/);
   assert.match(html, /OrbitControls/);
-  assert.match(html, /Cara desde foto METAHUMAN/);
-  assert.match(html, /EN VIVO · METAHUMAN/);
+  assert.match(html, /Cara desde foto AdmiraNeXT01/);
+  assert.match(html, /EN VIVO · AdmiraNeXT01/);
+  assert.doesNotMatch(html, /EN VIVO · METAHUMAN|<b>METAHUMAN<\/b>|· METAHUMAN ·/);
   assert.match(html, /\/objeto\/stream-deck\/api\/face\.png/);
   assert.match(html, /If-None-Match/);
   assert.match(html, /canonical" href="https:\/\/www\.admira\.store\/objeto\/stream-deck\/"/);
