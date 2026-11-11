@@ -6,7 +6,7 @@
 <title>1 · Tu espacio · Crea tu gemelo · admira.store</title>
 <link rel="canonical" href="https://www.admira.store/xpacios/gemelo/1/">
 <link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
-<link rel="stylesheet" href="/xpacios/gemelo/gemelo.css?v=20261111-2">
+<link rel="stylesheet" href="/xpacios/gemelo/gemelo.css?v=20261111-3">
 <script>window.XPACE_SHELL={section:{es:'Crea tu gemelo · 1',en:'Create your twin · 1'},options:[{href:'/xpacios/gemelo/',es:'Crea tu gemelo',en:'Create your twin'},{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'}]};</script>
 <link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
 <script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
@@ -24,7 +24,8 @@
     <label>Sector<select id="sector"></select></label>
   </div>
 
-  <div id="plantillas"></div>
+  <div class="gm-sec-t">Empieza desde una plantilla (opcional)</div>
+  <div class="gm-opciones" id="plantillas"></div>
 
   <div class="gm-sec-t">Fondo del gemelo</div>
   <div class="gm-opciones" id="fondos">
@@ -41,15 +42,30 @@
     <button class="gm-bot" id="sig" disabled>Siguiente: pantallas y muebles →</button>
   </div>
 </main>
-<script src="/xpacios/gemelo/gemelo.js?v=20261111-2"></script>
+<script src="/xpacios/gemelo/gemelo.js?v=20261111-3"></script>
 <script>
   const $ = id => document.getElementById(id);
   let b = Gemelo.carga();
   $('sector').innerHTML = Object.entries(Gemelo.SECTORES).map(([k, v]) => '<option value="' + k + '">' + v + '</option>').join('');
   $('nombre').value = b.nombre; $('ciudad').value = b.ciudad; $('sector').value = b.sector;
 
+  // Plantillas por sector: el local ya amueblado, con pantallas y muebles típicos, listo para ajustar en el paso 2.
+  const PL = Gemelo.PLANTILLAS;
+  $('plantillas').innerHTML = Object.entries(PL).map(([k, P]) =>
+    '<button type="button" class="gm-op" data-plantilla="' + k + '"><big>' + P.e + '</big><b>' + P.n + '</b><small>' + P.d + '</small><div class="gm-mini" data-mini="' + k + '"></div></button>').join('') +
+    '<button type="button" class="gm-op" data-plantilla=""><big>⬜</big><b>En blanco</b><small>Sin elementos: los colocas tú en el paso 2.</small></button>';
+  document.querySelectorAll('[data-mini]').forEach(el => Gemelo.pinta(el, Gemelo.aplicaPlantilla({}, el.dataset.mini), {iso: true}));
+  document.querySelectorAll('[data-plantilla]').forEach(x => x.addEventListener('click', () => {
+    const k = x.dataset.plantilla;
+    if (k === b.plantilla) return;
+    if (b.items.length && !confirm('La plantilla sustituye los ' + b.items.length + ' elementos que ya has colocado. ¿Seguir?')) return;
+    b = k ? Gemelo.aplicaPlantilla(b, k) : Object.assign(b, {plantilla: '', items: []});
+    $('sector').value = b.sector; guarda();
+  }));
+
   function refresca() {
     Gemelo.pasos($('pasos'), 1, b);
+    document.querySelectorAll('[data-plantilla]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.plantilla === b.plantilla)));
     document.querySelectorAll('[data-fondo]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.fondo === b.fondo.tipo)));
     const conImg = b.fondo.tipo !== 'rejilla';
     $('prevWrap').hidden = !(conImg && b.fondo.img);

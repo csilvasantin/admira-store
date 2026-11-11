@@ -27,6 +27,37 @@
   };
   const SECTORES = {tienda:'Tienda', restaurante:'Restaurante', hotel:'Hotel', estanco:'Estanco', oficina:'Oficina', otro:'Otro'};
 
+  // Plantillas por sector (mejora 3, Neo 11-nov-2026): se empieza con el local ya amueblado y se ajusta.
+  // Coordenadas en fracción del plano (x, y), giro en grados. Nombres genéricos: ninguna marca de cliente.
+  const PLANTILLAS = {
+    tienda: {n:'Tienda de zapatillas', e:'👟', sector:'tienda', w:4, h:3, d:'Escaparate con videowall, muro de producto, probadores y caja.', items:[
+      ['escaparate',.5,.03,0,'Escaparate'], ['videowall',.5,.09,0,'Videowall escaparate'], ['entrada',.5,.985,0,''],
+      ['estanteria',.04,.3,90,'Muro de producto'], ['estanteria',.04,.62,90,'Muro de producto'], ['estanteria',.96,.3,90,'Muro de producto'],
+      ['mesa',.4,.45,0,'Mesa novedades'], ['mesa',.6,.45,0,'Mesa novedades'], ['totem',.3,.85,0,'Tótem entrada'],
+      ['probador',.92,.62,0,'Probador'], ['probador',.92,.8,0,'Probador'], ['mostrador',.62,.85,0,'Caja'], ['pantalla',.62,.75,0,'Pantalla caja'],
+      ['sensor',.5,.93,0,'Contador de personas']]},
+    restaurante: {n:'Hamburguesería', e:'🍔', sector:'restaurante', w:4, h:3, d:'Menu boards sobre la barra, mesas de sala y tótem de pedido.', items:[
+      ['mostrador',.5,.1,0,'Barra'], ['pantalla',.32,.03,0,'Menu board 1'], ['pantalla',.5,.03,0,'Menu board 2'], ['pantalla',.68,.03,0,'Menu board 3'],
+      ['totem',.15,.8,0,'Tótem de pedido'], ['totem',.85,.8,0,'Tótem de pedido'],
+      ['mesa',.25,.4,0,''], ['mesa',.45,.4,0,''], ['mesa',.65,.4,0,''], ['mesa',.25,.62,0,''], ['mesa',.45,.62,0,''], ['mesa',.65,.62,0,''],
+      ['sofa',.92,.45,90,'Banco corrido'], ['pantalla',.97,.7,90,'Pantalla sala'], ['entrada',.5,.985,0,''], ['sensor',.5,.92,0,'Cámara aforo']]},
+    hotel: {n:'Hotel · recepción', e:'🏨', sector:'hotel', w:4, h:3, d:'Recepción con pantalla de bienvenida, lobby, videowall y ascensores.', items:[
+      ['mostrador',.5,.18,0,'Recepción'], ['pantalla',.5,.06,0,'Bienvenida'], ['videowall',.04,.45,90,'Videowall lobby'],
+      ['sofa',.3,.55,0,'Lobby'], ['sofa',.3,.75,0,'Lobby'], ['mesa',.3,.65,0,''],
+      ['totem',.75,.6,0,'Directorio / check-in'], ['pantalla',.96,.25,90,'Pantalla ascensores'], ['entrada',.96,.45,90,'Ascensores'],
+      ['entrada',.5,.985,0,''], ['sensor',.5,.9,0,'Cámara entrada']]},
+    estanco: {n:'Estanco', e:'🚬', sector:'estanco', w:4, h:3, d:'Mostrador con pantallas de precio, lineales y escaparate.', items:[
+      ['mostrador',.5,.3,0,'Mostrador'], ['estanteria',.5,.12,0,'Lineal tras mostrador'], ['pantalla',.3,.04,0,'Pantalla precios'], ['pantalla',.7,.04,0,'Pantalla precios'],
+      ['estanteria',.04,.6,90,'Lineal'], ['estanteria',.96,.6,90,'Lineal'], ['pantalla',.5,.38,0,'Pantalla mostrador'],
+      ['escaparate',.5,.95,0,'Escaparate'], ['entrada',.82,.985,0,''], ['totem',.2,.8,0,'Tótem promo']]},
+  };
+  function aplicaPlantilla(b, clave) {
+    const P = PLANTILLAS[clave]; if (!P) return normaliza(b);
+    return normaliza(Object.assign({}, b, {plantilla: clave, sector: P.sector,
+      fondo: b.fondo && b.fondo.img ? b.fondo : {tipo:'rejilla', img:null, w:P.w, h:P.h},
+      items: P.items.map(([t, x, y, r, n], i) => ({id:'p' + i, t, x, y, r, n}))}));
+  }
+
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const num = (v, d) => (Number.isFinite(Number(v)) ? Number(v) : d);
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -186,7 +217,7 @@
     return '<iframe src="' + enlace(id) + '&embed=1" width="100%" height="560" style="border:0;border-radius:12px" loading="lazy" title="Gemelo digital · admira.store" allowfullscreen></iframe>';
   }
 
-  const Gemelo = {API, pasos, enlace, iframe, TIPOS, SECTORES, MAX_ITEMS, ID_VALIDO, esc, slug, nuevoId, normaliza, cuenta, pasoListo,
+  const Gemelo = {API, pasos, enlace, iframe, PLANTILLAS, aplicaPlantilla, TIPOS, SECTORES, MAX_ITEMS, ID_VALIDO, esc, slug, nuevoId, normaliza, cuenta, pasoListo,
     carga, guarda, borra, reduceImagen, pinta, sesion, publica, publicable, cargaPublicado};
   if (typeof module === 'object' && module.exports) module.exports = Gemelo;
   else root.Gemelo = Gemelo;

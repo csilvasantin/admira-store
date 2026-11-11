@@ -59,3 +59,19 @@ test('el índice de Xpacios ofrece el asistente y abre los gemelos en su visor',
   assert.match(idx, /x\.kind==="gemelo"\) return gemeloHTML\(x\)/);
   assert.match(idx, /\/xpacios\/gemelo\/ver\/\?id=/);
 });
+
+test('plantillas por sector: amueblan el local, con pantallas, sin marcas de cliente y conservando la foto', () => {
+  const claves = Object.keys(G.PLANTILLAS);
+  assert.deepEqual(claves, ['tienda', 'restaurante', 'hotel', 'estanco']);
+  for (const k of claves) {
+    const b = G.aplicaPlantilla({nombre: 'Mi local'}, k);
+    assert.equal(b.plantilla, k);
+    assert.equal(b.nombre, 'Mi local');
+    assert.equal(b.items.length, G.PLANTILLAS[k].items.length, k + ': todos los elementos son de tipos conocidos');
+    assert.ok(G.cuenta(b).pantallas >= 3, k + ': lleva pantallas');
+    assert.doesNotMatch(JSON.stringify(G.PLANTILLAS[k]), /benny|creel|netflix|stranger|starbucks|xtanco|portaventura/i);
+  }
+  const conFoto = G.aplicaPlantilla({fondo: {tipo: 'foto', img: 'data:image/jpeg;base64,AAAA', w: 9, h: 6}}, 'hotel');
+  assert.equal(conFoto.fondo.img, 'data:image/jpeg;base64,AAAA');
+  assert.match(leer('./1/index.html'), /data-plantilla=/);
+});
