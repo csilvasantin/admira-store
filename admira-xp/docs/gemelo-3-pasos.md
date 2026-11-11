@@ -22,3 +22,10 @@ Tres páginas separadas, sin anclas:
 ## EN
 
 Three separate pages: `/xpacios/gemelo/1/` (name, city, sector and a photo, floor plan or grid), `/2/` (place screens and furniture: click to add, drag to move, rename, rotate, duplicate, remove, undo, 3D view) and `/3/` (review and publish; publishing requires a session). Each published twin opens at `/xpacios/gemelo/ver/?id=<id>`. The draft lives in `localStorage` until published; publishing writes `gemelo-<id>`, `gemelo-<id>-foto` and the shared `xpacios-index` entry (`kind:"gemelo"`) through `api.admira.store /layout/report`.
+
+## Compartir e incrustar / Share and embed (mejora 2, 11-nov-2026)
+
+- En el visor, «🔗 Compartir»: copiar enlace, WhatsApp, LinkedIn y código `<iframe>` para insertar el gemelo en otra web (`&embed=1`; también se detecta dentro de un iframe). Incrustado se ve solo el gemelo y la firma «Hecho con admira.store». En móvil abre el menú nativo de compartir.
+- Vista previa al compartir: `functions/xpacios/gemelo/ver/[[path]].js` escribe en el servidor `<title>`, descripción, `og:*` y `twitter:*` del gemelo (los robots de WhatsApp/LinkedIn no ejecutan JS). Imagen: `/xpacios/gemelo/og?id=<id>` (`functions/xpacios/gemelo/og.js`) sirve la foto o plano publicado; sin foto, 302 a la tarjeta genérica. Lógica común: `functions/xpacios/gemelo/_compartir.js`. Test: `xpacios/gemelo/compartir.test.mjs`.
+
+EN: the viewer's «Share» copies the link, opens WhatsApp/LinkedIn and gives an `<iframe>` embed code (`&embed=1`). The server writes the twin's title, description and Open Graph/Twitter tags; `/xpacios/gemelo/og?id=` serves the published photo or plan as preview image.

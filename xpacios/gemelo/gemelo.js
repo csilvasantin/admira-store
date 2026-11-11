@@ -179,7 +179,14 @@
         : '<li><span><b>' + n + '</b>' + t + '</span></li>')).join('');
   }
 
-  const Gemelo = {API, pasos, TIPOS, SECTORES, MAX_ITEMS, ID_VALIDO, esc, slug, nuevoId, normaliza, cuenta, pasoListo,
+  // Enlace público y código para incrustar el gemelo en otra web.
+  const ORIGEN = 'https://www.admira.store';
+  function enlace(id) { return ORIGEN + '/xpacios/gemelo/ver/?id=' + encodeURIComponent(id); }
+  function iframe(id) {
+    return '<iframe src="' + enlace(id) + '&embed=1" width="100%" height="560" style="border:0;border-radius:12px" loading="lazy" title="Gemelo digital · admira.store" allowfullscreen></iframe>';
+  }
+
+  const Gemelo = {API, pasos, enlace, iframe, TIPOS, SECTORES, MAX_ITEMS, ID_VALIDO, esc, slug, nuevoId, normaliza, cuenta, pasoListo,
     carga, guarda, borra, reduceImagen, pinta, sesion, publica, publicable, cargaPublicado};
   if (typeof module === 'object' && module.exports) module.exports = Gemelo;
   else root.Gemelo = Gemelo;
