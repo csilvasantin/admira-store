@@ -26,6 +26,7 @@
 
   <div class="gm-sec-t">Empieza desde una plantilla (opcional)</div>
   <div class="gm-opciones" id="plantillas"></div>
+  <p class="gm-nota"><a href="#" id="plDeshacer" hidden>↶ Deshacer: recuperar los elementos que tenías</a></p>
 
   <div class="gm-sec-t">Fondo del gemelo</div>
   <div class="gm-opciones" id="fondos">
@@ -42,7 +43,7 @@
     <button class="gm-bot" id="sig" disabled>Siguiente: pantallas y muebles →</button>
   </div>
 </main>
-<script src="/xpacios/gemelo/gemelo.js?v=20261111-3"></script>
+<script src="/xpacios/gemelo/gemelo.js?v=20261111-4"></script>
 <script>
   const $ = id => document.getElementById(id);
   let b = Gemelo.carga();
@@ -58,9 +59,12 @@
   document.querySelectorAll('[data-plantilla]').forEach(x => x.addEventListener('click', () => {
     const k = x.dataset.plantilla;
     if (k === b.plantilla) return;
-    if (b.items.length && !confirm('La plantilla sustituye los ' + b.items.length + ' elementos que ya has colocado. ¿Seguir?')) return;
+    // Sin diálogo de confirmación: navegadores integrados y webviews lo cancelan solos. Se aplica y se ofrece deshacer.
+    const previo = b.items.length ? {plantilla: b.plantilla, sector: b.sector, items: b.items.slice()} : null;
     b = k ? Gemelo.aplicaPlantilla(b, k) : Object.assign(b, {plantilla: '', items: []});
     $('sector').value = b.sector; guarda();
+    $('plDeshacer').hidden = !previo;
+    $('plDeshacer').onclick = e => { e.preventDefault(); Object.assign(b, previo); $('sector').value = b.sector; $('plDeshacer').hidden = true; guarda(); };
   }));
 
   function refresca() {

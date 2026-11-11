@@ -74,4 +74,7 @@ test('plantillas por sector: amueblan el local, con pantallas, sin marcas de cli
   const conFoto = G.aplicaPlantilla({fondo: {tipo: 'foto', img: 'data:image/jpeg;base64,AAAA', w: 9, h: 6}}, 'hotel');
   assert.equal(conFoto.fondo.img, 'data:image/jpeg;base64,AAAA');
   assert.match(leer('./1/index.html'), /data-plantilla=/);
+  // Los navegadores integrados cancelan confirm(): cambiar de plantilla se deshace, no se pregunta.
+  assert.doesNotMatch(leer('./1/index.html'), /confirm\(/);
+  assert.match(leer('./1/index.html'), /id="plDeshacer"/);
 });
