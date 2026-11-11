@@ -90,7 +90,8 @@
       <span>📷 1 foto</span><span>🧠 profundidad en el navegador</span><span>📐 vista isométrica</span><span>🖥️ coloca pantallas</span><span>💾 guarda el Xpacio</span><span>🛰️ gestiona en remoto</span>
     </div>
     <div class="cta-row">
-      <button class="cta" id="newXpacioBtn">＋ Nuevo Xpacio</button>
+      <a class="cta" href="/xpacios/gemelo/">✨ Crea tu gemelo en 3 pasos</a>
+      <button class="cta ghost" id="newXpacioBtn">＋ Nuevo Xpacio</button>
       <a class="cta ghost" href="/xpacios/crear/">📷 Generar desde una foto</a>
       <a class="cta ghost" href="https://www.pixeria.com/signage.html">🖥️ Ver signage</a>
     </div>
@@ -260,7 +261,17 @@
     location.href=BASE+"?xpacio="+encodeURIComponent(id)+"&go=decorar";
   }
   document.getElementById("newXpacioBtn").addEventListener("click",newXpacio);
-  function cardHTML(x){ return `<div class="card">
+  // Gemelos del asistente «Crea tu gemelo en 3 pasos» (/xpacios/gemelo/): se abren en su propio visor.
+  function gemeloHTML(x){ const v="/xpacios/gemelo/ver/?id="+encodeURIComponent(x.id); return `<div class="card">
+      <a class="thumb" href="${v}" style="text-decoration:none;background:linear-gradient(135deg,#2a120a,#0c0604);font-size:0;position:relative">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#ff6a3d">✨ <b style="color:#fbe9e2">${esc(x.name)}</b></div>
+      </a>
+      <div class="meta">
+        <div class="nm">${esc(x.name)}</div>
+        <div class="loc">${esc(x.city||"Gemelo propio")} · gemelo en 3 pasos · ${fmtDate(x.createdAt)}</div>
+        <div class="acts"><a class="act" href="${v}">🧊 Ver gemelo</a></div>
+      </div></div>`; }
+  function cardHTML(x){ if(x&&x.kind==="gemelo") return gemeloHTML(x); return `<div class="card">
       <a class="thumb" href="${BASE}?xpacio=${encodeURIComponent(x.id)}" style="text-decoration:none;background:linear-gradient(135deg,#26122a,#0c0510);font-size:0;position:relative">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#ff4da6">🏬 <b style="color:#ffe6f2">${esc(x.name)}</b></div>
       </a>

@@ -16,6 +16,7 @@ Lógica: `functions/_perimetro.js`. Pruebas: `tests/perimetro.test.mjs`, `tests/
 | `/admira-xp/` | Una persona que lo abre directamente entra con sesión; incrustado en un iframe no la necesita. |
 | `/supercomputer/` | Exige sesión: el gemelo de la Supercomputer manda sobre equipos reales (pantallas y luces de METAHUMAN). |
 | `/supercomputer/api/*` | El perímetro la deja pasar y la función comprueba la sesión (gemelo) o la clave Bearer de la máquina (`/maquina`). Ver `admira-xp/docs/supercomputer.md`. |
+| `/xpacios/gemelo/` | Público: «Crea tu gemelo en 3 pasos» y el visor de cada gemelo. Publicar pide sesión. Ver `admira-xp/docs/gemelo-3-pasos.md`. |
 | `/objeto/` | Público: gemelo 3D del Stream Deck XL (simulación; sin control de hardware todavía). Ver `admira-xp/docs/objeto-stream-deck.md`. |
 | Xpace «PortAventura» (`?xpace=portaventura&venue=store|restaurante|hotel|atraccion`) | Solo enlaces: incrusta y abre las URL de la zona protegida (DMZ, Cloudflare Access) de portaventuranext.com. Ningún código ni contenido de PortAventura vive en este repo; sin sesión de Access la DMZ responde 403. Ver `admira-xp/docs/portaventura-xpace.md`. |
 | Resto de páginas (`/`, `/inventario/`, `/help/`…) | Exigen sesión. |
@@ -77,6 +78,7 @@ Una rama `vista-previa/<nombre>` pasa por el mismo proceso y publica en `*.admir
 | `/admira-xp/` | A person opening it directly signs in; embedded in an iframe it needs no session. |
 | `/supercomputer/` | Requires a session: the Supercomputer twin controls real devices (METAHUMAN's screens and lights). |
 | `/supercomputer/api/*` | The perimeter lets it through and the function checks the session (twin) or the machine's Bearer key (`/maquina`). See `admira-xp/docs/supercomputer.md`. |
+| `/xpacios/gemelo/` | Public: «Create your twin in 3 steps» and each twin's viewer. Publishing requires a session. See `admira-xp/docs/gemelo-3-pasos.md`. |
 | `/objeto/` | Public: Stream Deck XL 3D twin (simulation; no hardware control yet). See `admira-xp/docs/objeto-stream-deck.md`. |
 | «PortAventura» Xpace (`?xpace=portaventura&venue=…`) | Links only: embeds/opens the protected (DMZ, Cloudflare Access) URLs of portaventuranext.com. No PortAventura code or content lives in this repo; without an Access session the DMZ returns 403. See `admira-xp/docs/portaventura-xpace.md`. |
 | Other pages (`/`, `/inventario/`, `/help/`…) | Require a session. |

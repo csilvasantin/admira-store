@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3 · Publicar · Crea tu gemelo · admira.store</title>
+<link rel="canonical" href="https://www.admira.store/xpacios/gemelo/3/">
+<link rel="icon" href="/favicon.ico?v=20260522-r2" sizes="any">
+<link rel="stylesheet" href="/xpacios/gemelo/gemelo.css?v=20261111-1">
+<script>window.XPACE_SHELL={section:{es:'Crea tu gemelo · 3',en:'Create your twin · 3'},options:[{href:'/xpacios/gemelo/',es:'Crea tu gemelo',en:'Create your twin'},{href:'/xpacios/',es:'Todos los Xpacios',en:'All Xpaces'}]};</script>
+<link rel="stylesheet" href="/assets/xpace-shell.css?v=20261016-logo-1">
+<script defer src="/assets/xpace-shell.js?v=20261016-logo-1"></script>
+</head>
+<body>
+<header data-shell-replace></header>
+<main class="gm-wrap">
+  <ol id="pasos"></ol>
+  <h1>3 · <em>Publicar</em></h1>
+  <p class="gm-sub">Revisa tu gemelo. Al publicarlo aparece en Xpacios con su propio enlace.</p>
+
+  <div class="gm-resumen">
+    <div class="gm-caja">
+      <dl id="datos"></dl>
+      <div class="gm-pie" style="margin-top:18px">
+        <button class="gm-bot" id="publicar">🚀 Publicar gemelo</button>
+      </div>
+      <p class="gm-nota" id="estado"></p>
+      <div id="hecho" hidden>
+        <p><b>¡Publicado!</b> Tu gemelo ya está en Xpacios.</p>
+        <p><a class="gm-bot" id="verLink" href="#">Abrir el gemelo →</a></p>
+        <p class="gm-nota"><a href="/xpacios/">Ver todos los Xpacios</a> · <a href="#" id="otro">Crear otro gemelo</a></p>
+      </div>
+    </div>
+    <div class="gm-escena"><div id="plano"></div></div>
+  </div>
+
+  <div class="gm-pie">
+    <a class="gm-bot gm-sec" href="/xpacios/gemelo/2/">← 2 · Pantallas y muebles</a>
+  </div>
+</main>
+<script src="/xpacios/gemelo/gemelo.js?v=20261111-1"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  let b = Gemelo.carga();
+  const falta = Gemelo.pasoListo(b, 3);
+  if (falta < 3) location.replace('/xpacios/gemelo/' + falta + '/');
+  const esc = Gemelo.esc;
+
+  function pinta() {
+    Gemelo.pasos($('pasos'), 3, b);
+    Gemelo.pinta($('plano'), b, {iso: true});
+    const n = Gemelo.cuenta(b);
+    const fondo = {foto: 'Foto del local', plano: 'Plano', rejilla: 'Cuadrícula'}[b.fondo.tipo];
+    $('datos').innerHTML = '<dt>Nombre</dt><dd>' + esc(b.nombre) + '</dd>' +
+      '<dt>Ciudad</dt><dd>' + esc(b.ciudad || '—') + '</dd>' +
+      '<dt>Sector</dt><dd>' + esc(Gemelo.SECTORES[b.sector]) + '</dd>' +
+      '<dt>Fondo</dt><dd>' + fondo + '</dd>' +
+      '<dt>Pantallas</dt><dd>' + n.pantallas + '</dd>' +
+      '<dt>Muebles</dt><dd>' + n.muebles + '</dd>';
+    if (b.publicado) $('publicar').textContent = '🔄 Actualizar gemelo publicado';
+  }
+  function hecho() {
+    $('hecho').hidden = false; $('verLink').href = '/xpacios/gemelo/ver/?id=' + encodeURIComponent(b.id);
+  }
+  $('publicar').addEventListener('click', async () => {
+    const s = await Gemelo.sesion();
+    if (!s) { location.href = '/auth/login?return_to=' + encodeURIComponent('/xpacios/gemelo/3/'); return; }
+    $('publicar').disabled = true; $('estado').className = 'gm-nota'; $('estado').textContent = 'Publicando…';
+    try { b = await Gemelo.publica(b); $('estado').textContent = ''; pinta(); hecho(); }
+    catch (e) { $('estado').className = 'gm-nota gm-err'; $('estado').textContent = 'No se pudo publicar: ' + e.message + '. Tu borrador sigue guardado; vuelve a intentarlo.'; }
+    $('publicar').disabled = false;
+  });
+  $('otro').addEventListener('click', e => { e.preventDefault(); Gemelo.borra(); location.href = '/xpacios/gemelo/1/'; });
+  pinta();
+  if (b.publicado && b.id) hecho();
+  // Sin sesión se avisa antes de pulsar: publicar lleva al login (y desde ahí se puede pedir acceso).
+  Gemelo.sesion().then(s => { if (!s) $('estado').textContent = 'Para publicar te pediremos iniciar sesión. Tu borrador no se pierde.'; });
+</script>
+</body>
+</html>
