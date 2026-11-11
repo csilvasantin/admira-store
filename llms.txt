@@ -9,6 +9,7 @@
 - Gemelo digital público (incrustable): https://www.admira.store/admira-xp/
 - Objeto · Stream Deck (gemelo 3D público): https://www.admira.store/objeto/stream-deck/
 - Xpacios: https://www.admira.store/xpacios/
+- Crea tu gemelo en 3 pasos: https://www.admira.store/xpacios/gemelo/
 - Mapa del sitio (solo lo público): https://www.admira.store/sitemap.xml
 - Versión desplegada: https://www.admira.store/version.json
 

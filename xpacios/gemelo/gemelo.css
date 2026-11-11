@@ -1,0 +1,68 @@
+/* Crea tu gemelo en 3 pasos · estilos comunes de /xpacios/gemelo/ */
+:root{--gm-bg:#0c0604;--gm-panel:#170c08;--gm-line:rgba(255,106,61,.22);--gm-acc:#ff6a3d;--gm-ink:#fbe9e2;--gm-muted:#b08f84;--gm-pant:#5fd0ff}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(120% 80% at 50% -10%,#2a120a,var(--gm-bg));color:var(--gm-ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--gm-acc)}
+.gm-wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
+.gm-pasos{display:flex;gap:8px;margin:0 0 22px;padding:0;list-style:none;flex-wrap:wrap}
+.gm-pasos li{flex:1;min-width:150px}
+.gm-pasos a,.gm-pasos span{display:block;border:1px solid var(--gm-line);border-radius:12px;padding:10px 14px;color:var(--gm-muted);text-decoration:none;font-size:14px}
+.gm-pasos b{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;border:1px solid currentColor;margin-right:8px;font-size:13px}
+.gm-pasos .gm-hecho a{color:var(--gm-ink)}
+.gm-pasos .gm-hecho b{background:var(--gm-acc);border-color:var(--gm-acc);color:#1a0a05}
+.gm-pasos .gm-actual span{border-color:var(--gm-acc);color:var(--gm-ink);background:rgba(255,106,61,.08)}
+h1{font-size:clamp(24px,4vw,36px);margin:0 0 8px;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--gm-acc)}
+.gm-sub{color:var(--gm-muted);margin:0 0 24px;line-height:1.5;max-width:720px}
+.gm-caja{background:var(--gm-panel);border:1px solid var(--gm-line);border-radius:16px;padding:18px}
+.gm-campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.gm-campos label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--gm-muted)}
+input[type=text],select{background:#0f0705;border:1px solid var(--gm-line);border-radius:10px;color:var(--gm-ink);padding:11px 12px;font:inherit;font-size:15px}
+input[type=text]:focus,select:focus{outline:2px solid var(--gm-acc);outline-offset:1px}
+.gm-opciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:6px}
+.gm-op{border:1px solid var(--gm-line);border-radius:14px;padding:14px;cursor:pointer;background:#0f0705;color:var(--gm-ink);text-align:left;font:inherit}
+.gm-op:hover{border-color:var(--gm-acc)}
+.gm-op[aria-pressed=true]{border-color:var(--gm-acc);background:rgba(255,106,61,.1)}
+.gm-op big{display:block;font-size:26px;margin-bottom:6px}
+.gm-op small{display:block;color:var(--gm-muted);margin-top:4px;line-height:1.4}
+.gm-bot{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gm-acc);background:var(--gm-acc);color:#1a0a05;font:inherit;font-weight:650;font-size:15px;padding:12px 20px;border-radius:12px;cursor:pointer;text-decoration:none}
+.gm-bot:disabled{opacity:.4;cursor:not-allowed}
+.gm-bot.gm-sec{background:transparent;color:var(--gm-acc)}
+.gm-pie{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.gm-nota{color:var(--gm-muted);font-size:13px}
+.gm-sec-t{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--gm-muted);margin:22px 0 10px}
+.gm-prev{max-width:420px;margin-top:14px}
+/* Plano */
+.gm-escena{perspective:1600px;padding:6px}
+.gm-plano{position:relative;width:100%;background:#1b0f0b center/100% 100% no-repeat;border:1px solid var(--gm-line);border-radius:8px;transform-style:preserve-3d;transition:transform .6s ease;user-select:none;touch-action:none}
+.gm-plano.gm-rejilla{background-color:#140a07;background-image:linear-gradient(rgba(255,106,61,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(255,106,61,.13) 1px,transparent 1px)!important;background-size:5% 6.667%!important}
+.gm-plano.gm-iso{transform:rotateX(56deg) rotateZ(-38deg) scale(.82)}
+.gm-el{position:absolute;transform:translate(-50%,-50%);background:rgba(255,106,61,.55);border:1px solid #ffb59c;border-radius:3px;transform-style:preserve-3d;cursor:grab}
+.gm-el.gm-pant{background:rgba(95,208,255,.6);border-color:#bfeeff;box-shadow:0 0 12px rgba(95,208,255,.7)}
+.gm-el.gm-sel{outline:2px dashed #fff;outline-offset:3px}
+.gm-et{position:absolute;left:50%;bottom:100%;transform:translate(-50%,-3px);white-space:nowrap;font-size:12px;background:rgba(12,6,4,.82);color:var(--gm-ink);padding:2px 6px;border-radius:6px;pointer-events:none}
+.gm-alzado{display:none}
+.gm-iso .gm-alzado{display:block;position:absolute;left:0;right:0;bottom:50%;height:var(--alto);transform-origin:bottom;transform:rotateX(-90deg);background:linear-gradient(#ffb59c,#c8481f);opacity:.92;border-radius:2px 2px 0 0}
+.gm-iso .gm-pant .gm-alzado{background:linear-gradient(135deg,#bff1ff,#2a8fd0 60%,#0b3c66);box-shadow:0 0 16px rgba(95,208,255,.9)}
+.gm-iso .gm-et{transform:translate(-50%,-3px) translateZ(calc(var(--alto) + 8px)) rotateZ(38deg) rotateX(-56deg)}
+.gm-paleta{display:flex;flex-wrap:wrap;gap:8px}
+.gm-paleta button{border:1px solid var(--gm-line);background:#0f0705;color:var(--gm-ink);border-radius:10px;padding:8px 10px;font:inherit;font-size:13px;cursor:pointer}
+.gm-paleta button[aria-pressed=true]{border-color:var(--gm-acc);background:rgba(255,106,61,.16)}
+.gm-paleta button.gm-p{border-color:rgba(95,208,255,.35)}
+.gm-edit{display:grid;grid-template-columns:1fr 280px;gap:16px;align-items:start}
+@media (max-width:820px){.gm-edit{grid-template-columns:1fr}}
+.gm-ficha{display:flex;flex-direction:column;gap:10px}
+.gm-ficha .gm-fila{display:flex;gap:8px}
+.gm-ficha button{flex:1;border:1px solid var(--gm-line);background:#0f0705;color:var(--gm-ink);border-radius:10px;padding:9px;font:inherit;font-size:13px;cursor:pointer}
+.gm-cuenta{display:flex;gap:10px;flex-wrap:wrap}
+.gm-chip{border:1px solid var(--gm-line);border-radius:999px;padding:4px 10px;font-size:13px;color:var(--gm-muted)}
+.gm-chip b{color:var(--gm-ink)}
+.gm-ok{border-color:#3fbf7f!important;background:rgba(63,191,127,.1)!important}
+.gm-err{color:#ff8d7a}
+.gm-resumen{display:grid;grid-template-columns:1fr 1.4fr;gap:18px;align-items:start}
+@media (max-width:820px){.gm-resumen{grid-template-columns:1fr}}
+.gm-resumen dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px}
+.gm-resumen dt{color:var(--gm-muted)}
+.gm-resumen dd{margin:0}
