@@ -29,3 +29,9 @@ Three separate pages: `/xpacios/gemelo/1/` (name, city, sector and a photo, floo
 - Vista previa al compartir: `functions/xpacios/gemelo/ver/[[path]].js` escribe en el servidor `<title>`, descripción, `og:*` y `twitter:*` del gemelo (los robots de WhatsApp/LinkedIn no ejecutan JS). Imagen: `/xpacios/gemelo/og?id=<id>` (`functions/xpacios/gemelo/og.js`) sirve la foto o plano publicado; sin foto, 302 a la tarjeta genérica. Lógica común: `functions/xpacios/gemelo/_compartir.js`. Test: `xpacios/gemelo/compartir.test.mjs`.
 
 EN: the viewer's «Share» copies the link, opens WhatsApp/LinkedIn and gives an `<iframe>` embed code (`&embed=1`). The server writes the twin's title, description and Open Graph/Twitter tags; `/xpacios/gemelo/og?id=` serves the published photo or plan as preview image.
+
+## Plantillas por sector / Sector templates (mejora 3, 11-nov-2026)
+
+Paso 1 ofrece «Empieza desde una plantilla»: Tienda de zapatillas, Hamburguesería, Hotel · recepción, Estanco o En blanco, cada una con miniatura 3D. Aplicarla fija el sector y coloca pantallas y muebles típicos (que luego se ajustan en el paso 2); si ya había elementos, pide confirmación. Conserva la foto o plano si ya se subió. Fuente: `PLANTILLAS` en `xpacios/gemelo/gemelo.js`. Nombres genéricos: ninguna marca de cliente (Benny's, Casa Creel, etc. viven en la DMZ de PortAventura).
+
+EN: step 1 offers sector templates (sneaker shop, burger restaurant, hotel reception, tobacconist, blank). Applying one sets the sector and places typical screens and furniture, keeping any uploaded photo or plan.

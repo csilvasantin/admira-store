@@ -37,7 +37,7 @@ input[type=text]:focus,select:focus{outline:2px solid var(--gm-acc);outline-offs
 /* Plano */
 .gm-escena{perspective:1600px;padding:6px}
 .gm-plano{position:relative;width:100%;background:#1b0f0b center/100% 100% no-repeat;border:1px solid var(--gm-line);border-radius:8px;transform-style:preserve-3d;transition:transform .6s ease;user-select:none;touch-action:none}
-.gm-plano.gm-rejilla{background-color:#140a07;background-image:linear-gradient(rgba(255,106,61,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(255,106,61,.13) 1px,transparent 1px)!important;background-size:5% 6.667%!important}
+.gm-plano.gm-rejilla{background-color:#3b261c;background-image:linear-gradient(rgba(255,190,160,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,190,160,.2) 1px,transparent 1px)!important;background-size:5% 6.667%!important}
 .gm-plano.gm-iso{transform:rotateX(56deg) rotateZ(-38deg) scale(.82)}
 .gm-el{position:absolute;transform:translate(-50%,-50%);background:rgba(255,106,61,.55);border:1px solid #ffb59c;border-radius:3px;transform-style:preserve-3d;cursor:grab}
 .gm-el.gm-pant{background:rgba(95,208,255,.6);border-color:#bfeeff;box-shadow:0 0 12px rgba(95,208,255,.7)}
@@ -66,3 +66,9 @@ input[type=text]:focus,select:focus{outline:2px solid var(--gm-acc);outline-offs
 .gm-resumen dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px}
 .gm-resumen dt{color:var(--gm-muted)}
 .gm-resumen dd{margin:0}
+/* Miniatura 3D de cada plantilla (paso 1) */
+.gm-mini{margin:10px -6px -6px;pointer-events:none;font-size:0}
+.gm-mini .gm-et{display:none}
+.gm-mini.gm-plano{border-radius:4px}
+.gm-mini.gm-iso{transform:rotateX(56deg) rotateZ(-38deg) scale(.7)}
+.gm-mini .gm-alzado{height:calc(var(--alto) * .35)}
