@@ -19,6 +19,7 @@ Lógica: `functions/_perimetro.js`. Pruebas: `tests/perimetro.test.mjs`, `tests/
 | `/xpacios/gemelo/` | Público: «Crea tu gemelo en 3 pasos» y el visor de cada gemelo. Publicar pide sesión. Ver `admira-xp/docs/gemelo-3-pasos.md`. |
 | `/objeto/` | Público: gemelo 3D del Stream Deck XL (simulación; sin control de hardware todavía). Ver `admira-xp/docs/objeto-stream-deck.md`. |
 | Xpace «PortAventura» (`?xpace=portaventura&venue=store|restaurante|hotel|atraccion`) | Solo enlaces: incrusta y abre las URL de la zona protegida (DMZ, Cloudflare Access) de portaventuranext.com. Ningún código ni contenido de PortAventura vive en este repo; sin sesión de Access la DMZ responde 403. Ver `admira-xp/docs/portaventura-xpace.md`. |
+| `/portaventura/` | Exige sesión (por defecto). Gemelos propios de los 4 espacios; la DMZ solo se enlaza. Ver `admira-xp/docs/portaventura-seccion.md`. |
 | Resto de páginas (`/`, `/inventario/`, `/help/`…) | Exigen sesión. |
 | Assets (`.js`, `.css`, imágenes, `.json`…) | Sin sesión, porque los usan players, decks y agentes. |
 
