@@ -67,3 +67,9 @@ test('Barra superior: audio a la derecha de experto y menús por encima del geme
   assert.match(html, /body\.xp-twin-open \.quad-menu/);
   assert.match(readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8'), /xp-twin-open/);
 });
+test('Casa Creel ?maqueta=1: nada del cómic se pinta mientras carga la 3D (Neo 12-nov-2026)', () => {
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  const head = html.slice(0, html.indexOf('</head>'));
+  assert.ok(head.indexOf('classList.add("solo-maqueta")') > -1 && head.indexOf('classList.add("solo-maqueta")') < head.indexOf('stylesheet'));
+  assert.match(head, /\.solo-maqueta body :not\(dialog,dialog \*\)\{visibility:hidden\}/);
+});
