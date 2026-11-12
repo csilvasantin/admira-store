@@ -83,7 +83,7 @@ window.addEventListener('pagehide', () => clearInterval(statusTimer), { once: tr
 
 window.addEventListener('message', event => {
   if (event.origin !== feedOrigin || event.source !== feed.contentWindow || event.data?.type !== 'admira:galleon:frame') return;
-  const { landscape, portrait } = event.data;
+  const { landscape, portrait, playing } = event.data;
   if (!(landscape instanceof ImageBitmap) || !(portrait instanceof ImageBitmap)) return;
   try {
     if (landscape.width !== 720 || landscape.height !== 384 || portrait.width !== 480 || portrait.height !== 640) return;
@@ -94,7 +94,7 @@ window.addEventListener('message', event => {
       texture.needsUpdate = true;
     });
     lastFrame = Date.now();
-    status.textContent = 'Señal de playout de Admira TV';
+    status.textContent = playing ? 'Señal de playout de Admira TV' : 'Sin contenido en reproducción';
   } finally {
     landscape.close();
     portrait.close();

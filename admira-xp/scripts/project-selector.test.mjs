@@ -109,14 +109,16 @@ test('Computer venue alias admiranext01 still opens the AdmiraNeXT01 twin (id me
  assert.equal(h.destinations.at(-1),'/supercomputer/metahuman/');
 });
 
-test('Xpaces offers Objeto, whose venue Stream Deck opens the Objeto twin (5-nov-2026)',async()=>{
+test('Xpaces offers Objeto and opens the selected hardware twin',async()=>{
  const h=await harness({catalogo:cuatro,marca:{'mb:marca':'starbucks','mb:manual':'1'}});
  const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
  assert.equal(project.options.at(-2).value,'objeto');assert.equal(project.options.at(-2).text,'Objeto');
  project.value='objeto';project.listeners.get('change')();await new Promise(setImmediate);
- assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['stream-deck','Stream Deck']]);
+ assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['stream-deck','Stream Deck'],['galleon-100','Corsair Galleon 100 SD']]);
  venue.value='stream-deck';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(h.destinations.at(-1),'/objeto/stream-deck/'); // harness sin createElement → fallback
+ venue.value='galleon-100';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(h.destinations.at(-1),'/objeto/galleon-100/');
 });
 
 test('Xpaces offers PortAventura with its 4 venues, linked to the protected DMZ (9-nov-2026)',async()=>{
