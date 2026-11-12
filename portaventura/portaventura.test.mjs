@@ -37,3 +37,7 @@ test('Xpace PortAventura: sin página intermedia, carga directa del destino prop
   assert.match(sel, /if\(st\.live\)abrir\(\)/);
   for (const h of ['/portaventura/store/hawkins/', '/portaventura/restaurante/bennys/', '/portaventura/hotel/casa-creel/?maqueta=1', '/portaventura/hotel/casa-creel/dentro/']) assert.ok(sel.includes(`here:'${h}'`), h);
 });
+test('Casa Creel: pantalla de fondo con fondo Stranger Things y conexión solo a admira.tv', () => {
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.match(html, /id="creel-pantalla"/); assert.match(html, /pantalla\.js/);
+  const js = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(js, /admira\\\.tv\$/); assert.match(js, /get\("tv"\)/);
+});
