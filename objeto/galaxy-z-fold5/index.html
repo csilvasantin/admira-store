@@ -16,6 +16,8 @@
     .fold-controls label { display: flex; align-items: center; gap: 10px; flex: 1; min-width: min(280px, 100%); }
     .fold-controls input { flex: 1; accent-color: #91bdff; }
     .fold-controls :is(button, select) { color: inherit; font: inherit; background: #182844; border: 1px solid #58729c; border-radius: 7px; padding: 7px 12px; cursor: pointer; }
+    .fold-orientation { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .fold-orientation button[aria-pressed="true"] { background: #28446e; border-color: #91bdff; }
     .fold-controls output { min-width: 43px; font-variant-numeric: tabular-nums; }
     .fold-playlist label { min-width: min(200px, 100%); flex-wrap: wrap; }
     .fold-playlist select { flex: 1; min-width: 0; }
@@ -40,6 +42,10 @@
           <label>Apertura <input id="fold-angle" type="range" min="0" max="180" value="180"><output id="fold-value" for="fold-angle">180°</output></label>
           <button type="button" id="fold-close">Plegar</button>
           <button type="button" id="fold-open">Abrir</button>
+          <div class="fold-orientation" role="group" aria-label="Orientación del teléfono">
+            <button type="button" data-fold-orientation="portrait" aria-pressed="true">Vertical</button>
+            <button type="button" data-fold-orientation="landscape" aria-pressed="false">Horizontal</button>
+          </div>
         </div>
         <div class="fold-controls fold-playlist">
           <label>Playlist del gemelo <select id="playlist"></select></label>
@@ -51,6 +57,6 @@
     </div>
   </main>
   <iframe id="feed" allow="autoplay" src="https://admira.tv/galleon.html" tabindex="-1" title="Señal de Admira TV del Fold5"></iframe>
-  <script type="module" src="./fold.mjs?v=20261112-admira-tv"></script>
+  <script type="module" src="./fold.mjs?v=20261112-fold-orientation"></script>
 </body>
 </html>

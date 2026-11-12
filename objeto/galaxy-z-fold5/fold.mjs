@@ -56,10 +56,14 @@ const coverTexture = new THREE.CanvasTexture(coverDisplay);
 coverTexture.colorSpace = THREE.SRGBColorSpace;
 const interiorTextures = [];
 const phone = new THREE.Group();
+const hinge = new THREE.Group();
 const left = new THREE.Group();
 const right = new THREE.Group();
-phone.add(left, right);
-scene.add(phone);
+const orientation = new THREE.Group();
+hinge.add(left);
+phone.add(hinge, right);
+orientation.add(phone);
+scene.add(orientation);
 
 function rounded(group, dimensions, position, material, radius) {
   const mesh = new THREE.Mesh(new RoundedBoxGeometry(...dimensions, 3, radius), material);
@@ -71,6 +75,9 @@ function rounded(group, dimensions, position, material, radius) {
 // Escala 1:100. Mitades del chasis de 129,9 × 154,9 mm y perfil de 6,1 mm abierto.
 const height = 1.549, depth = .061, gap = .009;
 const width = (1.299 - gap) / 2;
+// Pivot just beyond the inner glass so the two inner screens face each other when shut.
+hinge.position.z = .038;
+left.position.z = -hinge.position.z;
 for (const [group, sign] of [[left, -1], [right, 1]]) {
   const x = sign * (width / 2 + gap / 2);
   rounded(group, [width, height, depth], [x, 0, 0], body, .026);
@@ -101,14 +108,24 @@ for (const y of [.59, .455, .32]) {
 function setAngle(value) {
   angle.value = String(value);
   angleValue.value = value + '°';
-  left.rotation.y = (value - 180) * Math.PI / 180;
-  left.position.z = (180 - value) / 180 * depth * 1.1;
-  phone.position.x = -.27 * (180 - value) / 180;
+  const rotation = THREE.MathUtils.degToRad(180 - value);
+  hinge.rotation.y = rotation;
+  const outsideEdge = width + gap / 2;
+  const leftEdge = Math.min(-outsideEdge * Math.cos(rotation), -gap / 2 * Math.cos(rotation));
+  phone.position.x = -(outsideEdge + leftEdge) / 2;
 }
 angle.addEventListener('input', () => setAngle(Number(angle.value)));
 document.querySelector('#fold-close').onclick = () => setAngle(0);
 document.querySelector('#fold-open').onclick = () => setAngle(180);
 setAngle(180);
+
+const orientationButtons = document.querySelectorAll('[data-fold-orientation]');
+for (const button of orientationButtons) {
+  button.addEventListener('click', () => {
+    orientation.rotation.z = button.dataset.foldOrientation === 'landscape' ? Math.PI / 2 : 0;
+    for (const option of orientationButtons) option.setAttribute('aria-pressed', String(option === button));
+  });
+}
 
 const feed = document.querySelector('#feed');
 const importer = document.querySelector('#importer');
