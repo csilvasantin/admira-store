@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { addObjectFloor } from '../floor-grid.mjs?v=1';
 import { attachGalleonPlaylist } from './playlist.mjs';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -11,6 +12,7 @@ const feed = document.querySelector('#feed');
 const feedOrigin = new URL(feed.src).origin;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#10182b');
+addObjectFloor(scene, -.128, .5);
 const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 40);
 camera.position.set(1.55, 4.7, 5.3);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });

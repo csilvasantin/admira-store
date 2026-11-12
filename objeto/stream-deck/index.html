@@ -97,6 +97,7 @@ body{background:radial-gradient(ellipse at 50% 0,#14234a,#04060d 62%);color:var(
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from "three";
+import { addObjectFloor } from "../floor-grid.mjs?v=1";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import {RoomEnvironment} from "three/addons/environments/RoomEnvironment.js";
 import {RoundedBoxGeometry} from "three/addons/geometries/RoundedBoxGeometry.js";
@@ -155,8 +156,7 @@ const desk=new THREE.Mesh(
   new THREE.MeshPhysicalMaterial({color:0x1a1e26,roughness:.82,metalness:.08,clearcoat:.12})
 );
 desk.rotation.x=-Math.PI/2;desk.position.y=0;desk.receiveShadow=true;scene.add(desk);
-const grid=new THREE.GridHelper(22,44,0x1a3a4a,0x0c1a24);
-grid.position.y=0.002;grid.material.transparent=true;grid.material.opacity=.28;scene.add(grid);
+addObjectFloor(scene, .002, .5);
 
 // ── Stream Deck XL v2 (procedural · silueta AdmiraNeXT01, antes METAHUMAN) ──
 // Proporciones aprox. reales · tilt ~42° · stand cuña magnética hueca

@@ -19,6 +19,7 @@
     .fold-orientation { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .fold-orientation button[aria-pressed="true"] { background: #28446e; border-color: #91bdff; }
     .fold-controls output { min-width: 43px; font-variant-numeric: tabular-nums; }
+    .fold-content label { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; }
     .fold-playlist label { min-width: min(200px, 100%); flex-wrap: wrap; }
     .fold-playlist select { flex: 1; min-width: 0; }
     #importer { display: block; width: 100%; height: 640px; box-sizing: border-box; border: 1px solid #26344a; border-radius: 14px; background: #0a0c12; }
@@ -47,6 +48,17 @@
             <button type="button" data-fold-orientation="landscape" aria-pressed="false">Horizontal</button>
           </div>
         </div>
+        <div class="fold-controls fold-content">
+          <label>Giro del contenido
+            <select id="content-rotation">
+              <option value="auto">Automático</option>
+              <option value="0">0°</option>
+              <option value="90">90°</option>
+              <option value="180">180°</option>
+              <option value="270">270°</option>
+            </select>
+          </label>
+        </div>
         <div class="fold-controls fold-playlist">
           <label>Playlist del gemelo <select id="playlist"></select></label>
           <button type="button" id="previous" aria-label="Pieza anterior">◀</button>
@@ -57,6 +69,6 @@
     </div>
   </main>
   <iframe id="feed" allow="autoplay" src="https://admira.tv/galleon.html" tabindex="-1" title="Señal de Admira TV del Fold5"></iframe>
-  <script type="module" src="./fold.mjs?v=20261112-fold-orientation"></script>
+  <script type="module" src="./fold.mjs?v=20261112-object-grid"></script>
 </body>
 </html>

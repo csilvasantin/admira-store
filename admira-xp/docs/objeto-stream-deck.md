@@ -6,6 +6,8 @@ Proyecto dirigido por **Woz** (Consejo AdmiraNext) para **Carlos** (AdmiraNeXT).
 
 ## ES
 
+Stream Deck XL, Galleon 100 SD y Galaxy Z Fold5 comparten un suelo de rejilla 3D. Arrastra el modelo para orbitar.
+
 El Xpace **Objeto** vive en el selector Xpaces de admira.store, paralelo a **Computer**. Su primer local es **Stream Deck**: el gemelo 3D del Elgato Stream Deck XL físico conectado a AdmiraNeXT01.
 
 | Pieza | Dónde | Qué hace |
@@ -42,6 +44,8 @@ Carlos: el v1 «no se parece en nada». Remodel procedural (sin Blender):
 Canonical: https://www.admira.store/objeto/stream-deck/
 
 ## EN
+
+Stream Deck XL, Galleon 100 SD and Galaxy Z Fold5 share a 3D floor grid. Drag the model to orbit.
 
 The **Objeto** (Object) Xpace sits in the admira.store Xpaces selector, parallel to **Computer**. Its first venue is **Stream Deck**: a 3D twin of the physical Elgato Stream Deck XL on AdmiraNeXT01.
 
