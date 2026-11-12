@@ -8,7 +8,10 @@
     body { margin: 0; background: #0c1322; color: #eef3fb; font: 15px/1.5 system-ui, sans-serif; }
     main { padding: calc(var(--xs-bar-h, 0px) + 20px) clamp(14px, 3vw, 36px) calc(80px + env(safe-area-inset-bottom)); }
     h1 { margin: 0 0 3px; font-size: clamp(21px, 4vw, 32px); }
-    #status { margin: 0 0 16px; color: #a5b8cc; }
+    .fold-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; margin-bottom: 16px; }
+    #status { margin: 0; color: #a5b8cc; }
+    .remote-eyes { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid #58729c; border-radius: 7px; background: #182844; color: inherit; text-decoration: none; }
+    .remote-eyes:hover, .remote-eyes:focus-visible { background: #28446e; border-color: #91bdff; }
     .fold-workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 435px); gap: 20px; align-items: start; }
     .fold-scene { min-width: 0; overflow: hidden; border: 1px solid #26344a; border-radius: 14px; background: #101c32; }
     #fold5 { display: block; width: 100%; height: min(54vh, 600px); min-height: 265px; touch-action: none; }
@@ -32,9 +35,12 @@
 </head>
 <body>
   <main>
-    <header>
-      <h1>Samsung Galaxy Z Fold5</h1>
-      <p id="status" role="status">Esperando la señal de Admira TV</p>
+    <header class="fold-heading">
+      <div>
+        <h1>Samsung Galaxy Z Fold5</h1>
+        <p id="status" role="status">Esperando la señal de Admira TV</p>
+      </div>
+      <a class="remote-eyes" href="https://www.admiranext.com/ojosremotos" target="_blank" rel="noopener noreferrer">Ojos Remotos <span aria-hidden="true">↗</span></a>
     </header>
     <div class="fold-workspace">
       <section class="fold-scene" aria-label="Galaxy Z Fold5">
