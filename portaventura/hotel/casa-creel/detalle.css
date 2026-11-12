@@ -122,3 +122,4 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-pantalla[data-quien=Vecna]:not([data-nivel=lejos]) .cp-cielo{background:radial-gradient(ellipse at 50% 60%,#cf2549,#6b1041 40%,#150b27 80%)}
 #creel-pantalla[data-quien=Once][data-nivel=puerta] .cp-cielo{background:radial-gradient(ellipse at 50% 110%,#7ad8ff,#1d4f8a 40%,#06122e 85%);animation:none}
 #creel-pantalla[data-quien=Once][data-nivel=puerta] .cp-titulo{transform:none;-webkit-text-stroke-color:#9be3ff;text-shadow:0 0 14px #3fd2ff}
+.creel-casa{width:30px;height:30px;font-size:15px;background:#ef9f7d;border-color:#fff;z-index:2;touch-action:none;cursor:move}
