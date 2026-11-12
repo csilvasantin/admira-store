@@ -7,7 +7,7 @@ test('4 espacios en orden, foco en store y restaurante', () => {
   for (const x of PA.ESPACIOS) assert.match(x.dmz, /^https:\/\/www\.portaventuranext\.com\/dmz\//);
 });
 test('store y restaurante tienen gemelo válido para el creador', () => {
-  for (const id of ['store', 'restaurante']) { const b = Gemelo.normaliza(PA.borrador(PA.espacio(id))); assert.equal(b.items.length, PA.espacio(id).gemelo.items.length); assert.ok(Gemelo.cuenta(b).pantallas >= 4); }
+  for (const id of ['restaurante']) { const b = Gemelo.normaliza(PA.borrador(PA.espacio(id))); assert.equal(b.items.length, PA.espacio(id).gemelo.items.length); assert.ok(Gemelo.cuenta(b).pantallas >= 4); }
 });
 test('hotel = interactivo de la cocina; zona 2 = 5 PCs y 8 pantallas', () => {
   assert.equal(PA.espacio('hotel').interactivo, '/supercomputer/pc-cocina/');
@@ -19,4 +19,8 @@ test('ninguna página incrusta la DMZ (Access no deja iframes)', () => {
   assert.doesNotMatch(js, /iframe[^>]*x\.dmz/);
   const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8');
   assert.match(sel, /f\.src=cv\.here\|\|cv\.url/);
+});
+test('la store es la tienda física 2D/3D (Hawkins), no el ecommerce', () => {
+  const x = PA.espacio('store'); assert.equal(x.tienda, '/portaventura/store/hawkins/'); assert.deepEqual(x.vistas.map(v => v[0]), ['2d', '3d', 'recorrido']);
+  const html = readFileSync(new URL('./store/hawkins/index.html', import.meta.url), 'utf8'); assert.match(html, /^<!doctype html>/i); assert.match(html, /maqueta-3d\.js/);
 });

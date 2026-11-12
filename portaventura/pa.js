@@ -6,8 +6,9 @@
   'use strict';
   const DMZ = 'https://www.portaventuranext.com';
   const ESPACIOS = [
-    {id:'store', n:'Store', sub:'Stranger Things · merchandising', e:'🛍️', foco:true, color:'#e50914', dmz:DMZ + '/dmz/netflix/strangerthings/merchandising',
-      d:'Tienda de merchandising: escaparate con videowall, muros de producto, probadores y caja con pantalla. El gemelo enseña dónde va cada pantalla y qué emite.',
+    {id:'store', n:'Store', sub:'Stranger Things · Hawkins Supply Co.', e:'🛍️', foco:true, color:'#e50914', dmz:DMZ + '/dmz/netflixventura/store', ecommerce:DMZ + '/dmz/netflix/strangerthings/merchandising',
+      tienda:'/portaventura/store/hawkins/', vistas:[['2d','Planta 2D'], ['3d','Maqueta 3D'], ['recorrido','Primera persona']],
+      d:'La tienda física de Stranger Things (Showcase Mall, Las Vegas) en planta 2D, maqueta 3D y recorrido en primera persona: de la escalera mecánica al salón Byers, Hawkins High, Vecna y el Demogorgon.',
       gemelo:{nombre:'Store · Stranger Things', sector:'tienda', w:4, h:3, items:[
         ['escaparate',.5,.03,0,'Escaparate'], ['videowall',.5,.09,0,'Videowall Hawkins'], ['entrada',.5,.985,0,''],
         ['estanteria',.04,.28,90,'Camisetas'], ['estanteria',.04,.6,90,'Sudaderas'], ['estanteria',.96,.28,90,'Coleccionables'],
