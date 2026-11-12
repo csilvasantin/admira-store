@@ -77,3 +77,7 @@ test('Casa Creel: botón «Hotel» al lado de Once para seleccionarlo y moverlo 
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
   assert.match(esc, /🏠 Hotel/); assert.match(esc, /field\.append\(hotelBtn\)/); assert.match(esc, /select\(actor\.id\)/);
 });
+test('Casa Creel: grabar posición de hotel y personajes (localStorage) y Reiniciar la borra (Neo 12-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /Grabar posición/); assert.match(esc, /localStorage\.setItem\(GUARDA/); assert.match(esc, /localStorage\.getItem\(GUARDA/); assert.match(esc, /localStorage\.removeItem\(GUARDA/);
+});
