@@ -897,8 +897,8 @@
   <div class="spacer"></div>
   <div id="pfToggles" class="pf-toggles" role="group" aria-label="Modos: avanzado, experto">
     <button type="button" class="quad-icon" data-quad-toggle="right" aria-label="Desplegar menú avanzado" aria-expanded="false" title="Menú avanzado">▤</button>
-    <button type="button" class="quad-icon" id="pfAudio" aria-pressed="true" aria-label="Audio silenciado — pulsa para activar el sonido" title="Audio silenciado · pulsa para activar">🔇</button>
     <button type="button" class="quad-icon" id="pfExpert" aria-label="Modo experto — mostrar u ocultar el menú inferior" aria-pressed="false" title="Modo experto · mostrar/ocultar menú inferior">⌘</button>
+    <button type="button" class="quad-icon" id="pfAudio" aria-pressed="true" aria-label="Audio silenciado — pulsa para activar el sonido" title="Audio silenciado · pulsa para activar">🔇</button>
   </div>
   <button class="btn-save" id="btnConnectScreen" title="Conectar una pantalla física (QR): el escaparate del gemelo se refleja en vivo" style="margin-right:8px" onclick="window.open('conectar.html?screen=escaparate','_blank','noopener')">📺 Pantalla</button>
   <button class="btn-quit" id="btnQuit" title="Cerrar audios y videos, volver al menú principal">⏻ Quit</button>
@@ -1033,6 +1033,8 @@ html.xp-demo-video :is(.matrix-incident-editor:not(.matrix-ficha), #telegramDock
   /* Experto ⌘ = dock IZQUIERDO (Telegram + tiles + Condicional).  Avanzado ▤ = dock DERECHO (Equipo/Clientes). */
   body.xp-left-hidden #telegramDock,body.xp-left-hidden #dockSplitHandle,body.xp-left-hidden #eraVerticalDock{display:none !important}
   body.xp-right-hidden #characterDock{display:none !important}
+  /* Neo 12-nov-2026: con un gemelo abierto (Computer/Objeto/PortAventura, z-index 9000) los menús Opciones, Avanzado y Experto quedaban debajo. */
+  body.xp-twin-open .quad-menu,body.xp-twin-open #telegramDock,body.xp-twin-open #dockSplitHandle,body.xp-twin-open #eraVerticalDock,body.xp-twin-open #characterDock{z-index:9600 !important}
 </style>
 <nav class="quad-menu quad-left is-collapsed" aria-label="Opciones">
   <div class="qm-title">Opciones</div>

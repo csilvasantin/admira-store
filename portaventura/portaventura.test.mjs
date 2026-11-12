@@ -60,3 +60,9 @@ test('Casa Creel: pantalla centrada detrás del hotel y selección + flechas par
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /creelScene\.house/);
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'); assert.match(esc, /function select\(/); assert.match(esc, /ArrowLeft/);
 });
+test('Barra superior: audio a la derecha de experto y menús por encima del gemelo abierto (Neo 12-nov-2026)', () => {
+  const html = readFileSync(new URL('../admira-xp/index.html', import.meta.url), 'utf8');
+  assert.ok(html.indexOf('id="pfExpert"') < html.indexOf('id="pfAudio"'));
+  assert.match(html, /body\.xp-twin-open \.quad-menu/);
+  assert.match(readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8'), /xp-twin-open/);
+});
