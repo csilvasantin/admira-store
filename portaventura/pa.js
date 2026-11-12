@@ -1,5 +1,5 @@
 // Sección PortAventura de admira.store (Neo, 12-nov-2026): los 4 espacios de NetflixVentura, cada uno en su página.
-// Foco en Store y Restaurante (gemelo propio + pantallas). Hotel = interactivo de la cocina (PC-Cocina, AdmiraNeXT05).
+// Foco en Store y Restaurante (gemelo propio + pantallas). Hotel = Casa Creel (copia de admira-next-web).
 // Atracción = previo en la zona 2 de AdmiraNeXT: muro de 8 pantallas en los 5 PCs AdmiraNeXT01-05.
 // Nada de código ni contenido privado de PortAventura: lo de verdad vive en la DMZ de portaventuranext.com y aquí solo se enlaza.
 (function (root) {
@@ -24,8 +24,10 @@
         ['mesa',.25,.4,0,''], ['mesa',.45,.4,0,''], ['mesa',.65,.4,0,''], ['mesa',.25,.62,0,''], ['mesa',.45,.62,0,''], ['mesa',.65,.62,0,''],
         ['sofa',.92,.45,90,'Banco corrido'], ['pantalla',.97,.7,90,'Pantalla Serie 1984'], ['entrada',.5,.985,0,''], ['sensor',.5,.92,0,'Cámara aforo']]},
       pantallas:[['Menu boards 1-3','Carta, precios y combos del día'], ['Tótems de pedido','Pedido sin cola'], ['Pantalla Serie 1984','Botellas y latas de personajes propios'], ['Cámara aforo','Ocupación de sala en vivo']]},
-    {id:'hotel', n:'Hotel', sub:'Casa Creel', e:'🏨', color:'#8a5cff', dmz:DMZ + '/dmz/netflixventura/hotel', interactivo:'/supercomputer/pc-cocina/',
-      d:'El hotel se enseña con el interactivo de la cocina: el gemelo del PC-Cocina (AdmiraNeXT05), con sus ventiladores con pantalla y su luz en vivo.'},
+    {id:'hotel', n:'Hotel', sub:'Casa Creel', e:'🏨', color:'#8a5cff', dmz:DMZ + '/dmz/netflixventura/hotel', tienda:'/portaventura/hotel/casa-creel/', rutas:true,
+      vistas:[['dentro/', 'Hotel por dentro'], ['', 'Expediente Hawkins (cómic)']],
+      d:'La Casa Creel convertida en hotel: cuatro suites, una por campanada, que cruzan al Mundo del Revés. Y el cómic Expediente Hawkins.',
+      pantallas:[['Recepción','Bienvenida y check-in con el expediente Hawkins'], ['Pasillos','Ambiente de la casa Creel'], ['Habitaciones','Contenido tematizado por planta']]},
     {id:'atraccion', n:'Atracción', sub:'NetflixVentura · previo en la zona 2', e:'🎢', color:'#00c2a8', dmz:DMZ + '/dmz/netflixventura',
       d:'Previo en la zona 2 de AdmiraNeXT: el muro de 8 pantallas repartido en los 5 PCs AdmiraNeXT01 a 05. Cada espacio tiene su tramo del muro.'},
   ];
