@@ -114,11 +114,13 @@ test('Xpaces offers Objeto and opens the selected hardware twin',async()=>{
  const project=h.element('projectSelector'),venue=h.element('projectVenueSelector');
  assert.equal(project.options.at(-2).value,'objeto');assert.equal(project.options.at(-2).text,'Objeto');
  project.value='objeto';project.listeners.get('change')();await new Promise(setImmediate);
- assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['stream-deck','Stream Deck'],['galleon-100','Corsair Galleon 100 SD']]);
+ assert.deepEqual(venue.options.slice(1).map(o=>[o.value,o.text]),[['stream-deck','Stream Deck'],['galleon-100','Corsair Galleon 100 SD'],['galaxy-z-fold5','Samsung Galaxy Z Fold5']]);
  venue.value='stream-deck';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(h.destinations.at(-1),'/objeto/stream-deck/'); // harness sin createElement → fallback
  venue.value='galleon-100';venue.listeners.get('change')();await new Promise(setImmediate);
  assert.equal(h.destinations.at(-1),'/objeto/galleon-100/');
+ venue.value='galaxy-z-fold5';venue.listeners.get('change')();await new Promise(setImmediate);
+ assert.equal(h.destinations.at(-1),'/objeto/galaxy-z-fold5/');
 });
 
 test('Xpaces offers PortAventura with its 4 venues, linked to the protected DMZ (9-nov-2026)',async()=>{
