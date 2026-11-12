@@ -3,17 +3,20 @@
 // Sin señal: fondo propio de Stranger Things (cielo rojo del Mundo del Revés, esporas y luces del alfabeto).
 (() => {
   const el = document.getElementById("creel-pantalla"); if (!el) return;
-  // Pantalla física de pie en el borde del fondo de la base: cada fotograma se coloca en el lado más lejano
-  // a la cámara (siempre detrás del hotel). La vista es ortográfica, así que basta una transformación afín.
-  const W = 1200, ALTO = 15; // px del lienzo de la pantalla · altura en unidades de tablero (≈ 37 cm)
+  // Pantalla física de pie al final de la base, centrada detrás del hotel y de cara al espectador (Neo, 12-nov-2026). La vista es ortográfica, así que basta una transformación afín.
+  const W = 1200, ALTO = 15, LARGO = 40; // px del lienzo · alto y ancho en unidades de tablero (≈ 37 × 100 cm)
   addEventListener("creel-camara", ({detail:k}) => {
     const v = el.parentElement.getBoundingClientRect(); if (!v.width) return;
     const P = (x, y, z) => [(.5 + (x * k.cx - z * k.sx) * k.zoom / k.aspect * .5) * v.width,
                             (.5 - (-x * k.sx * k.sy + (y - k.center) * k.cy - z * k.cx * k.sy) * k.zoom * .5) * v.height];
-    const bordes = [[[-k.bx,-k.bz],[k.bx,-k.bz], -k.cx], [[-k.bx,k.bz],[k.bx,k.bz], k.cx], [[-k.bx,-k.bz],[-k.bx,k.bz], -k.sx], [[k.bx,-k.bz],[k.bx,k.bz], k.sx]];
-    let [a, b] = bordes.reduce((m, e) => e[2] < m[2] ? e : m);
+    // Siempre centrada detrás del hotel según el espectador: frente a la cámara, al final de la base.
+    const casa = (window.creelScene && creelScene.house) || {x:0, z:0};
+    const dx = -k.sx, dz = -k.cx; // dirección que se aleja de la cámara, en el suelo
+    const t = Math.min(dx ? ((dx > 0 ? k.bx : -k.bx) - casa.x) / dx : Infinity, dz ? ((dz > 0 ? k.bz : -k.bz) - casa.z) / dz : Infinity);
+    const c = [casa.x + dx * t, casa.z + dz * t], L = LARGO / 2;
+    let a = [c[0] - k.cx * L, c[1] + k.sx * L], b = [c[0] + k.cx * L, c[1] - k.sx * L];
     if (P(a[0], 0, a[1])[0] > P(b[0], 0, b[1])[0]) [a, b] = [b, a];
-    const largo = Math.hypot(b[0] - a[0], b[1] - a[1]), H = Math.round(W * ALTO / largo);
+    const H = Math.round(W * ALTO / LARGO);
     const p0 = P(a[0], ALTO, a[1]), p1 = P(b[0], ALTO, b[1]), p2 = P(a[0], 0, a[1]);
     el.style.height = H + "px";
     el.style.transform = `matrix(${(p1[0]-p0[0])/W},${(p1[1]-p0[1])/W},${(p2[0]-p0[0])/H},${(p2[1]-p0[1])/H},${p0[0]},${p0[1]})`;
