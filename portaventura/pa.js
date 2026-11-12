@@ -16,8 +16,8 @@
         ['probador',.92,.62,0,'Probador'], ['probador',.92,.8,0,'Probador'], ['mostrador',.62,.85,0,'Caja'], ['pantalla',.62,.75,0,'Pantalla caja'],
         ['pantalla',.96,.45,90,'Pantalla lateral'], ['sensor',.5,.93,0,'Contador de personas']]},
       pantallas:[['Videowall Hawkins','Tráiler y ambiente de la serie en bucle'], ['Tótem personaliza','Merch personalizado: el visitante crea su camiseta'], ['Pantalla caja','Promos y combos de la tienda'], ['Pantalla lateral','Colección del momento y stock']]},
-    {id:'restaurante', n:'Restaurante', sub:"Benny's Burgers", e:'🍔', foco:true, color:'#ffb000', dmz:DMZ + '/dmz/netflixventura/restaurante',
-      d:'Diner de los 80: menu boards sobre la barra, tótems de pedido, sala con pantalla y la «Serie 1984» de botellas y latas.',
+    {id:'restaurante', n:'Restaurante', sub:"Benny's Burgers", e:'🍔', foco:true, color:'#ffb000', dmz:DMZ + '/dmz/netflixventura/restaurante', tienda:'/portaventura/restaurante/bennys/',
+      d:'El diner de los 80 en gemelo 3D: carta en los menu boards, pedido, portal al Mundo del Revés y la «Serie 1984» de botellas y latas.',
       gemelo:{nombre:"Restaurante · Benny's Burgers", sector:'restaurante', w:4, h:3, items:[
         ['mostrador',.5,.1,0,'Barra'], ['pantalla',.32,.03,0,'Menu board 1'], ['pantalla',.5,.03,0,'Menu board 2'], ['pantalla',.68,.03,0,'Menu board 3'],
         ['totem',.15,.8,0,'Tótem de pedido'], ['totem',.85,.8,0,'Tótem de pedido'],

@@ -24,3 +24,8 @@ test('la store es la tienda física 2D/3D (Hawkins), no el ecommerce', () => {
   const x = PA.espacio('store'); assert.equal(x.tienda, '/portaventura/store/hawkins/'); assert.deepEqual(x.vistas.map(v => v[0]), ['2d', '3d', 'recorrido']);
   const html = readFileSync(new URL('./store/hawkins/index.html', import.meta.url), 'utf8'); assert.match(html, /^<!doctype html>/i); assert.match(html, /maqueta-3d\.js/);
 });
+test('el restaurante es el gemelo 3D de Benny\'s, con todo en local', () => {
+  assert.equal(PA.espacio('restaurante').tienda, '/portaventura/restaurante/bennys/');
+  const html = readFileSync(new URL('./restaurante/bennys/index.html', import.meta.url), 'utf8');
+  assert.match(html, /^<!doctype html>/i); assert.match(html, /import\('\.\/diner\.js'\)/); assert.doesNotMatch(html, /["']\/demo\//);
+});

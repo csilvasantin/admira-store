@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="es">
+<head><!-- Benny's Burgers (restaurante NetflixVentura): gemelo 3D. Copia de admira-next-web demo/PortAventuraNeXT (12-nov-2026). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Benny's Burgers · NetflixVentura Restaurante</title>
+<meta name="description" content="Gemelo digital 3D del restaurante de Hawkins en PortAventuraNext: carta en 3D, pedido desde la mesa y portal al Upside Down.">
+<style>
+:root{color-scheme:dark;--ink:#f8ead3;--dim:#b2a598;--signal:#ff624f;--green:#82f7ad;--blue:#3aa8ff;--line:#3a2b2e;--bg:#0e0c10;font-family:system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 65% 30%,#291319 0%,var(--bg) 55%);color:var(--ink);transition:background .8s}
+body.upside{background:radial-gradient(ellipse at 30% 30%,#14202e 0%,#06080c 60%)}
+a{color:inherit}button,a{-webkit-tap-highlight-color:transparent}button,input,select{font:inherit;color:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,canvas:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--green);outline-offset:3px}button:disabled{cursor:default;opacity:.5}
+header,main,footer{max-width:1280px;margin:auto;padding-inline:clamp(16px,4vw,56px)}header{height:76px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+header nav{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}header nav a{text-decoration:none}header nav a[aria-current]{color:var(--signal)}
+.mono,.tag,button,.cta{font-family:ui-monospace,monospace}.mono,.tag{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase}.tag{color:var(--signal)}.dim{color:var(--dim)}
+main{padding-top:clamp(26px,5vw,62px);padding-bottom:35px}.intro{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:24px}
+h1{font:italic 900 clamp(2.7rem,8vw,7rem)/.88 Georgia,serif;letter-spacing:-.05em;margin:8px 0 12px;color:#ffddd2;text-shadow:0 0 6px #ff2340,0 0 28px #ff234099,2px 2px #8f211f}h1 small{display:block;font:800 clamp(1rem,2.6vw,2rem) "Arial Black",Impact,sans-serif;letter-spacing:.32em;color:#cfe9ff;text-shadow:0 0 14px var(--blue);margin-top:10px}
+p{margin:0;line-height:1.55}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,290px);gap:16px}.game,.panel,.card{border:1px solid var(--line);background:#171216}.game{min-width:0}
+body.upside .game,body.upside .panel,body.upside .card{background:#10151d;border-color:#26354a}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;background:#1e171b}body.upside .bar{background:#141c27}.modes{display:flex;flex-wrap:wrap;gap:4px}
+.mode,.item,.move,.action,.chip{border:1px solid #493439;background:#20181d;padding:8px 11px;text-decoration:none;font-size:.78rem}.mode[aria-pressed=true],.chip[aria-pressed=true]{background:var(--signal);color:#160e11;border-color:var(--signal);font-weight:bold}
+.scene{position:relative;background:#07060a}canvas{display:block;width:100%;aspect-ratio:16/10;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}
+.loading{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--dim);pointer-events:none}.loading[hidden]{display:none}
+.hint{position:absolute;left:10px;bottom:10px;background:#000a;border:1px solid #ffffff1a;padding:5px 9px;pointer-events:none}
+.hud{min-height:50px;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-top:1px solid var(--line);gap:10px;flex-wrap:wrap}
+.panel{padding:16px;display:flex;flex-direction:column;gap:8px}.panel h2,.card h2{font:700 1.5rem Georgia;margin:0}.item{width:100%;text-align:left;display:flex;gap:8px;align-items:center}.item[aria-pressed=true]{border-color:var(--signal);background:#372023}.index{color:var(--signal)}.detail{min-height:92px;font-size:.89rem;color:var(--dim)}
+.lights{display:flex;gap:4px}.lights input{flex:1;min-width:0;background:#0e0c10;border:1px solid #493439;padding:8px;text-transform:uppercase;font-family:ui-monospace,monospace;font-size:.8rem}
+.controls{display:flex;gap:4px;flex-wrap:wrap}.move{padding:5px 9px;min-width:35px}.action{color:var(--green)}.action.portal{color:#ff9a8a;border-color:#8f3a35}body.upside .action.portal{color:#9fd0ff;border-color:#36557a}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:16px;border:1px solid var(--line);background:var(--line)}.kpi{background:#120f13;padding:12px}.kpi b{display:block;font:700 1.45rem Georgia;margin-top:4px}body.upside .kpi{background:#0c1118}
+.carta{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;margin-top:16px}.card{padding:16px}
+.dishes{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:12px}
+.dish{display:flex;flex-direction:column;gap:6px;border:1px solid #493439;background:#20181d;padding:12px}.dish[aria-current=true]{border-color:var(--signal);background:#2c1b1f}body.upside .dish{background:#141c27;border-color:#2b3b52}
+.dish strong{font:700 1.05rem Georgia}.dish p{font-size:.82rem;color:var(--dim);flex:1}.dish .row{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}.dish .row>span:last-child{display:flex;gap:4px}.price{font-family:ui-monospace,monospace;color:#ffd27a;white-space:nowrap}
+.dish button{border:1px solid #6b4a4f;background:transparent;padding:6px 9px;font-size:.74rem}.dish .add{color:var(--green);border-color:#3e7a55}
+.lines{margin:10px 0;min-height:46px}.line{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.9rem}.line button{border:0;background:none;color:var(--dim);padding:0 4px}
+.total{display:flex;justify-content:space-between;align-items:center;font:800 1.3rem Georgia;margin:10px 0}
+label{display:block;margin:10px 0 4px}select{width:100%;background:#0e0c10;border:1px solid #493439;padding:8px}.pay{display:flex;gap:4px;margin-top:4px}.pay .chip{flex:1}
+.cta{width:100%;margin-top:12px;padding:13px;border:0;background:linear-gradient(90deg,#c8102e,#ff624f);color:#fff;font-weight:800;letter-spacing:.06em}
+.ticket{margin-top:12px;padding:14px;background:#f8ead3;color:#160e11;text-align:center;font-family:ui-monospace,monospace}.ticket code{display:block;font-size:1.6rem;font-weight:800;letter-spacing:.15em;margin:4px 0}
+footer{padding-block:12px 28px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+@media(max-width:860px){.layout,.carta{grid-template-columns:1fr}.intro{display:block}.intro>.mono{display:block;margin-top:10px}.panel{display:grid;grid-template-columns:1fr 1fr}.panel>.tag,.panel>h2,.detail,.lights,.panel>.mono{grid-column:1/-1}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:440px){.bar,.hud{align-items:flex-start;flex-wrap:wrap}.tag,.mono{letter-spacing:.08em}header nav{gap:8px}.hint{display:none}}
+</style><style>
+.nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
+.nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
+.nv-quad summary,.nv-quad button{display:inline-flex;align-items:center;min-height:36px;padding:6px 9px;border:1px solid #805260;border-radius:5px;background:#2a192c;color:#ffe9df;cursor:pointer;font:inherit;text-decoration:none}
+.nv-quad summary::-webkit-details-marker{display:none}
+.nv-quad summary{position:relative;justify-content:center;min-width:36px;font-size:16px}.nv-quad .nv-wordmark{color:inherit;white-space:nowrap;font-weight:750;text-decoration:none}.nv-quad .nv-wordmark:hover{text-decoration:underline}.nv-quad .nv-wordmark b{color:#ffb3a4}.nv-quad .nv-edition{color:#e8bdab;font-size:11px;white-space:nowrap;margin-inline-start:auto;padding-inline-start:16px;margin-inline-end:var(--nv-edition-inset,0px)}@media(max-width:640px){.nv-quad .nv-edition{display:none}}
+.nv-quad[data-visit-map] .nv-wordmark,.nv-quad details:first-child[open] + .nv-wordmark{margin-inline-start:var(--nv-wordmark-offset,0px)}
+.nv-quad [data-tooltip]::after{content:attr(data-tooltip);position:absolute;z-index:2;top:calc(100% + 5px);right:0;visibility:hidden;opacity:0;transition:opacity .12s .35s;pointer-events:none;white-space:nowrap;padding:5px 8px;border-radius:4px;background:#140d18;color:#ffe9df;border:1px solid #805260;font:650 12px/1.35 system-ui,sans-serif}
+.nv-quad details:first-child summary::after{left:0;right:auto}
+.nv-quad [data-tooltip]:hover::after,.nv-quad [data-tooltip]:focus-visible::after{visibility:visible;opacity:1}
+.nv-quad summary[aria-expanded=true],.nv-quad details[open] summary{border-color:#ffb3a4}
+.nv-quad :focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
+.nv-quad .nv-panel{position:fixed;top:var(--nv-top,60px);width:min(330px,100vw);max-height:calc(100dvh - var(--nv-top,60px));overflow:auto;padding:16px;background:#22152a;border:1px solid #805260;box-shadow:0 9px 30px #0009}
+.nv-quad .nv-left,.nv-quad .nv-right{bottom:0;width:var(--nv-size,min-content);min-width:112px;max-width:calc(100vw - 24px);padding-inline:16px}
+.nv-quad .nv-left{left:0}.nv-quad .nv-right{right:0}.nv-quad .nv-bottom{top:auto;bottom:0;left:0;width:100%;height:var(--nv-size,58px);max-height:50dvh;padding:12px 16px 6px}
+.nv-quad .nv-bottom form{align-items:center;flex-wrap:nowrap;margin:0}.nv-quad .nv-bottom label{white-space:nowrap}.nv-quad .nv-brand{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:32vw}
+.nv-quad .nv-grip{position:absolute;touch-action:none;display:block;z-index:1;background:#ae6978}
+.nv-quad .nv-left .nv-grip,.nv-quad .nv-right .nv-grip{top:0;bottom:0;width:8px;cursor:ew-resize}
+.nv-quad .nv-left .nv-grip{right:0}.nv-quad .nv-right .nv-grip{left:0}
+.nv-quad .nv-bottom .nv-grip{top:0;left:0;right:0;height:6px;cursor:ns-resize}
+.nv-quad .nv-panel a{display:block;color:#ffc5ad;padding:7px 0;text-decoration:underline}.nv-quad .nv-panel a[aria-current]{font-weight:900}.nv-quad form{display:flex;gap:8px}.nv-quad input{min-width:0;flex:1 1 0;background:#130e19;color:#fff;border:1px solid #805260;padding:8px;font:inherit}.nv-quad output{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+</style>
+</head>
+<body><div class="nv-quad" role="navigation" aria-label="Navegación de NetflixVentura">
+  <details><summary aria-label="Opciones" data-tooltip="Opciones"><span aria-hidden="true">☰</span></summary><div class="nv-panel nv-left"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Opciones" aria-orientation="vertical"></div><a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflixventura/visita" target="_top">Mapa de la visita</a><a href="/portaventura/store/" target="_top">Store</a><a href="/portaventura/hotel/" target="_top">Hotel</a><a href="/portaventura/restaurante/" target="_top" aria-current="page">Restaurante</a><a href="/portaventura/atraccion/" target="_top">Atracción</a></div></details>
+  <a class="nv-wordmark" href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/" target="_top">PortAventura <b>NeXT</b></a><span class="nv-spacer"></span>
+  <span class="nv-brand" hidden></span>
+  <details><summary aria-label="Avanzado" data-tooltip="Avanzado"><span aria-hidden="true">▤</span></summary><div class="nv-panel nv-right"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Avanzado" aria-orientation="vertical"></div>
+    <a href="/portaventura/store/hawkins/?vista=2d" target="_top">Planta de Hawkins</a>
+    <a href="/portaventura/store/hawkins/?vista=recorrido" target="_top">Recorrido en primera persona</a>
+    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/dmz/netflix/detalle" target="_top">Cómic de Casa Creel</a>
+    <a href="https://www.admiranext.com/portaventura/hotel//dentro" target="_top">Hotel Casa Creel por dentro</a>
+    <a href="https://www.admiranext.com/portaventura/restaurante//marketing" target="_top">Restaurante: marketing y Serie 1984</a>
+    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflix/dia-visitante" target="_top">Día del visitante</a>
+  </div></details>
+  <details><summary aria-label="Experto" data-tooltip="Experto"><span aria-hidden="true">⌘</span></summary><div class="nv-panel nv-bottom"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Experto" aria-orientation="horizontal"></div>
+    <form><label for="nv-command">Comando CLI</label><input id="nv-command" autocomplete="off" enterkeyhint="go" placeholder="brand stranger things · mapa"></form>
+    <output aria-live="polite">/mapa · /store · /hotel · /restaurante · /atraccion</output>
+  </div></details>
+  
+</div><script>
+(() => {
+  const shell = document.querySelector('.nv-quad');
+  const panels = [...shell.querySelectorAll('details')];
+  const options = panels[0];
+  const optionsButton = options.querySelector('summary');
+  const optionsRail = options.querySelector('.nv-left');
+  const wordmark = shell.querySelector('.nv-wordmark');
+  const isMap = shell.hasAttribute('data-visit-map');
+  function alignToolbar() {
+    shell.style.setProperty('--nv-top', shell.offsetHeight + 'px');
+    if (!options.open && !isMap) return;
+    const toolbarStyle = getComputedStyle(shell);
+    const start = optionsButton.getBoundingClientRect().right + parseFloat(toolbarStyle.columnGap);
+    const end = shell.getBoundingClientRect().right - parseFloat(toolbarStyle.paddingRight);
+    const railEdge = options.open ? optionsRail.getBoundingClientRect().right : start;
+    const target = Math.min(Math.max(start, railEdge), end - wordmark.offsetWidth);
+    let wordmarkStart = target;
+    if (isMap) {
+      const map = document.querySelector('main');
+      const mapLeft = map.getBoundingClientRect().left;
+      map.style.setProperty('--nv-map-inset', Math.max(0, target - mapLeft) + 'px');
+      wordmarkStart = map.querySelector('header .eyebrow').getBoundingClientRect().left;
+      const buttonEdge = map.querySelector('#invert').getBoundingClientRect().right;
+      shell.style.setProperty('--nv-edition-inset', Math.max(0, end - buttonEdge) + 'px');
+    }
+    shell.style.setProperty('--nv-wordmark-offset', Math.max(0, wordmarkStart - start) + 'px');
+  }
+  const toolbarObserver = new ResizeObserver(alignToolbar);
+  toolbarObserver.observe(shell);
+  toolbarObserver.observe(optionsRail);
+  for (const panel of panels) panel.addEventListener('toggle', () => {
+    if (!panel.open) return;
+    panel.querySelector(".nv-grip").dispatchEvent(new Event("nv-measure"));
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || event.defaultPrevented) return;
+    const open = event.target.closest?.('details') || panels.findLast(panel => panel.open);
+    if (open) { open.open = false; open.querySelector('summary').focus(); }
+  });
+  for (const grip of shell.querySelectorAll('.nv-grip')) {
+    const pane = grip.parentElement;
+    const bottom = pane.classList.contains('nv-bottom');
+    const reverse = bottom || pane.classList.contains('nv-right');
+    const measure = () => bottom ? pane.offsetHeight : pane.offsetWidth;
+    let minimum = bottom ? 58 : 112;
+    const bounds = () => [minimum, Math.max(minimum, bottom ? innerHeight / 2 : Math.min(720, innerWidth - (isMap && pane === optionsRail ? 240 : 24)))];
+    function resize(size) {
+      const [min, max] = bounds();
+      const value = Math.round(Math.max(min, Math.min(max, size)));
+      pane.style.setProperty('--nv-size', value + 'px');
+      grip.setAttribute('aria-valuemin', min);
+      grip.setAttribute('aria-valuemax', Math.round(max));
+      grip.setAttribute('aria-valuenow', value);
+    }
+    grip.addEventListener('nv-measure', () => {
+      pane.style.removeProperty('--nv-size');
+      minimum = measure();
+      resize(minimum);
+    });
+    let drag;
+    grip.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      drag = {id:event.pointerId, start:bottom ? event.clientY : event.clientX, size:measure()};
+      grip.setPointerCapture(event.pointerId);
+    });
+    grip.addEventListener('pointermove', event => {
+      if (drag?.id !== event.pointerId) return;
+      const delta = (bottom ? event.clientY : event.clientX) - drag.start;
+      resize(drag.size + (reverse ? -delta : delta));
+    });
+    grip.addEventListener('lostpointercapture', () => { drag = undefined; });
+    grip.addEventListener('keydown', event => {
+      const keys = bottom ? ['ArrowUp','ArrowDown'] : ['ArrowLeft','ArrowRight'];
+      if (!keys.includes(event.key)) return;
+      event.preventDefault();
+      const delta = event.key === keys[0] ? -20 : 20;
+      resize(measure() + (reverse ? -delta : delta));
+    });
+  }
+  const brand = shell.querySelector('.nv-brand');
+  const cli = shell.querySelector('input');
+  const output = shell.querySelector('output');
+  function showBrand(name) {
+    brand.textContent = name;
+    brand.hidden = !name;
+  }
+  try { showBrand(sessionStorage.getItem('netflixventura-brand') || ''); } catch {}
+  shell.querySelector('form').addEventListener('submit', event => {
+    event.preventDefault();
+    const routes = {"mapa":"https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflixventura/visita","store":"/portaventura/store/","hotel":"/portaventura/hotel/","restaurante":"/portaventura/restaurante/","atraccion":"/portaventura/atraccion/"};
+    const input = cli.value.trim();
+    const raw = input.startsWith('/') ? input.slice(1).trimStart() : input;
+    const [verb, ...args] = raw.split(/\s+/);
+    const command = verb.toLowerCase();
+    if (command === 'brand' && args.length) {
+      const requested = args.join(' ').slice(0, 64);
+      const name = requested.toLowerCase() === 'stranger things' ? 'Stranger Things' : requested;
+      showBrand(name);
+      try { sessionStorage.setItem('netflixventura-brand', name); } catch {}
+      cli.value = '';
+      cli.placeholder = output.textContent = 'Marca activa · ' + name;
+    } else if (Object.hasOwn(routes, command) && !args.length) {
+      location.assign(routes[command]);
+    } else {
+      cli.value = '';
+      cli.placeholder = output.textContent = 'Comandos · brand stranger things · mapa · store · hotel · restaurante · atraccion';
+    }
+  });
+})();
+</script>
+<main>
+<div class="intro"><div><div class="tag" id="where">Hawkins, Indiana · 1984</div><h1>Benny's<small>Burgers</small></h1><p>Cena en Hawkins. Cuando parpadean las luces, el comedor cruza al otro lado.</p></div><span class="mono dim">Gemelo digital 3D · prototipo</span></div>
+<div class="layout">
+<section class="game" aria-label="Restaurante explorable en 3D">
+<div class="bar"><span class="mono" id="open">Comedor <span class="index">●</span> Abierto</span><div class="modes" aria-label="Modo visual">
+<button class="mode" data-mode="8" aria-pressed="false">8 bits</button><button class="mode" data-mode="16" aria-pressed="false">16 bits</button><button class="mode" data-mode="32" aria-pressed="true">32 / Matrix</button>
+</div></div>
+<div class="scene"><canvas id="diner" tabindex="0" aria-label="Restaurante 3D. Arrastra para girar, rueda o + y − para acercar, flechas para mover la cámara. Haz clic en los números para visitar cada zona; también puedes elegirlas en el panel."></canvas>
+<div class="loading mono" id="loading" role="status">Cargando Benny's en 3D…</div><span class="hint mono dim" id="hint">Arrastra · clic en los números</span></div>
+<div class="hud"><span class="mono dim" id="status" role="status">Sala · Arrastra para mirar, toca una zona</span>
+<div class="controls" aria-label="Controles de cámara"><button class="move" id="left" aria-label="Girar a la izquierda">↶</button><button class="move" id="right" aria-label="Girar a la derecha">↷</button><button class="move" id="zin" aria-label="Acercar">+</button><button class="move" id="zout" aria-label="Alejar">−</button><button class="move" id="home" aria-label="Vista general">⌂</button><button class="action" id="music" aria-pressed="false">♫ Jukebox</button><button class="action portal" id="portal">Cruzar el portal</button></div></div>
+</section>
+<aside class="panel" aria-labelledby="explore"><span class="tag">Plano del restaurante</span><h2 id="explore">Explora Benny's</h2>
+<button class="item" data-zone="barra" aria-pressed="false"><span class="index">01</span> Barra de batidos</button>
+<button class="item" data-zone="reservados" aria-pressed="false"><span class="index">02</span> Reservados</button>
+<button class="item" data-zone="cocina" aria-pressed="false"><span class="index">03</span> Cocina</button>
+<button class="item" data-zone="jukebox" aria-pressed="false"><span class="index">04</span> Jukebox</button>
+<button class="item" data-zone="luces" aria-pressed="false"><span class="index">05</span> Pared de luces</button>
+<button class="item" data-zone="portal" aria-pressed="false"><span class="index">06</span> Portal</button>
+<p class="detail" id="detail" aria-live="polite">Selecciona una zona o pide un plato de la carta: aparecerá en 3D sobre la barra.</p>
+<form class="lights" id="lights" aria-label="Mensaje en la pared de luces"><input id="msg" maxlength="20" placeholder="Mensaje al otro lado" value="RUN" aria-label="Mensaje para la pared de luces"><button class="action" type="submit">Encender</button></form>
+</aside></div>
+
+<div class="kpis" aria-label="Gemelo digital · datos simulados">
+<div class="kpi"><span class="mono dim">Aforo</span><b id="kAforo">38 / 96</b></div>
+<div class="kpi"><span class="mono dim">En cocina</span><b id="kCocina">3</b></div>
+<div class="kpi"><span class="mono dim">Tiempo medio</span><b id="kTiempo">7 min</b></div>
+<div class="kpi"><span class="mono dim">Ticket medio</span><b id="kTicket">21,40 €</b></div>
+</div>
+
+<div class="carta">
+<section class="card" aria-labelledby="cartaT"><span class="tag">Carta de Hawkins</span><h2 id="cartaT">¿Qué vas a cenar?</h2><div class="dishes" id="dishes"></div></section>
+<section class="card" aria-labelledby="pedidoT"><span class="tag">Desde tu mesa</span><h2 id="pedidoT">Tu pedido</h2>
+<div class="lines" id="lines"><p class="dim">Aún no hay platos. Añade algo de la carta.</p></div>
+<div class="total"><span>Total</span><span id="total">0,00 €</span></div>
+<label for="name">Nombre en la comanda</label>
+<input id="name" maxlength="14" value="ONCE" style="width:100%;background:#0e0c10;border:1px solid #493439;padding:8px;text-transform:uppercase">
+<label for="table">Mesa</label><select id="table"></select>
+<div class="pay" role="group" aria-label="Forma de pago"><button class="chip" id="pEur" aria-pressed="true">€ Tarjeta</button><button class="chip" id="pTok" aria-pressed="false">🪙 Tokens NetflixVentura</button></div>
+<button class="cta" id="order" disabled>Simular pedido</button>
+<div id="ticket" role="status"></div>
+</section>
+</div>
+</main>
+<footer class="mono dim"><span>/netflixventura/restaurante</span><span>Concepto de restaurante · Stranger Things · simulación sin pagos reales</span></footer>
+<script type="module">
+const DISHES = [
+  {id:'burger', n:"Hamburguesa Benny's", d:'Doble de vacuno, queso fundido, lechuga y tomate. La de siempre en Hawkins.', p:12.9, ico:'🍔'},
+  {id:'gofres', n:'Gofres de Once', d:'Torre de tres pisos con nata, sirope, gominolas y chocolate.', p:8.5, ico:'🧇'},
+  {id:'batido', n:'Batido Scoops Ahoy', d:'Fresa y nata con guinda y pajita de rayas. ¡Ahoy!', p:6.9, ico:'🥤'},
+  {id:'pizza', n:'Pizza Surfer Boy', d:'Pepperoni y albahaca. Entera o por porciones para compartir.', p:14.5, ico:'🍕'},
+  {id:'patatas', n:'Patatas Demogorgon', d:'Crujientes, en su cucurucho, con salsa roja del portal.', p:4.9, ico:'🍟'},
+  {id:'copa', n:'Copa del Otro Lado', d:'Mora, cereza y ceniza helada con regaliz. Solo para valientes.', p:7.5, ico:'🍨'}
+];
+const ZONES = {
+  barra:{n:'Barra de batidos', t:'Seis taburetes frente al pase de cocina. El plato que elijas en la carta gira aquí, en 3D, bajo el foco.'},
+  reservados:{n:'Reservados', t:'Tres reservados de vinilo rojo junto a la ventana. Se pide desde la mesa con la pulsera o la app y el pedido llega con tu nombre.'},
+  cocina:{n:'Cocina', t:'Pase con lámparas de calor. Cada pedido cuelga su comanda en el raíl y la pantalla de la carta avisa cuando está listo.'},
+  jukebox:{n:'Jukebox', t:'Hilo musical de Hawkins: sintetizadores de los 80 que cambian con la hora y el aforo. Pulsa ♫ Jukebox para que suene.'},
+  luces:{n:'Pared de luces', t:'Escribe un mensaje y la pared lo deletrea bombilla a bombilla. También avisa cuando tu pedido está listo.'},
+  portal:{n:'Portal', t:'La grieta se abre al fondo del comedor. Crúzala para cenar en el Upside Down: misma sala, sin nadie, con esporas.'}
+};
+const TABLES = ['Reservado 1','Reservado 2','Reservado 3','Barra','Mesa del portal','Para llevar'];
+const $ = id => document.getElementById(id);
+const eur = v => v.toFixed(2).replace('.', ',') + ' €';
+const params = new URLSearchParams(location.search);
+let diner = null, current = null, payTokens = false, pending = 3;
+const order = [];
+
+function status(text){ $('status').textContent = text; }
+function selectZone(zone, auto = false){
+  const z = ZONES[zone]; if(!z) return;
+  current = zone;
+  document.querySelectorAll('.item').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.zone === zone)));
+  $('detail').textContent = z.t;
+  if(zone === 'portal' && diner && !auto){ crossPortal(); }
+  else status('Explorando · ' + z.n);
+  if(zone === 'luces' && diner) diner.spell($('msg').value || 'HOLA');
+  if(zone === 'jukebox' && !musicOn && !auto) toggleMusic();
+  diner?.focus(zone);
+}
+const toScene = () => { const r = $('diner').getBoundingClientRect(); if(r.top < 0 || r.bottom > innerHeight) $('diner').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center'}); };
+function showDish(id, auto = false){
+  const d = DISHES.find(x => x.id === id); if(!d) return;
+  if(!auto) toScene();
+  document.querySelectorAll('.dish').forEach(c => c.setAttribute('aria-current', String(c.dataset.id === id)));
+  document.querySelectorAll('.item').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  $('detail').textContent = d.ico + ' ' + d.n + ' · ' + d.d;
+  status('En la barra · ' + d.n);
+  diner?.showDish(id);
+}
+function crossPortal(){
+  if(!diner) return;
+  diner.crossPortal();
+  portalSound();
+  status('Cruzando el portal…');
+}
+function onPortal(upside){
+  document.body.classList.toggle('upside', upside);
+  $('where').textContent = upside ? 'Hawkins · Upside Down' : 'Hawkins, Indiana · 1984';
+  $('open').innerHTML = upside ? 'Comedor <span class="index">●</span> Al otro lado' : 'Comedor <span class="index">●</span> Abierto';
+  $('portal').textContent = upside ? 'Volver a Hawkins' : 'Cruzar el portal';
+  status(upside ? 'Upside Down · Las luces te guían' : 'Señal recuperada · Hawkins');
+  $('kAforo').textContent = upside ? '0 / 96' : aforo + ' / 96';
+}
+
+// ---- carta y pedido ----
+function renderDishes(){
+  $('dishes').innerHTML = '';
+  for(const d of DISHES){
+    const card = document.createElement('article');
+    card.className = 'dish'; card.dataset.id = d.id; card.setAttribute('aria-current','false');
+    card.innerHTML = `<strong>${d.ico} ${d.n}</strong><p>${d.d}</p><div class="row"><span class="price">${eur(d.p)}</span><span><button class="see" aria-label="Ver ${d.n} en 3D">Ver 3D</button><button class="add" aria-label="Añadir ${d.n}">+ Añadir</button></span></div>`;
+    card.querySelector('.see').onclick = () => showDish(d.id);
+    card.querySelector('.add').onclick = () => { addDish(d.id); showDish(d.id); };
+    $('dishes').appendChild(card);
+  }
+}
+function addDish(id){
+  const line = order.find(l => l.id === id);
+  line ? line.q++ : order.push({id, q:1});
+  $('ticket').replaceChildren();
+  renderOrder();
+}
+function renderOrder(){
+  const box = $('lines'); box.innerHTML = '';
+  if(!order.length){ box.innerHTML = '<p class="dim">Aún no hay platos. Añade algo de la carta.</p>'; }
+  for(const l of order){
+    const d = DISHES.find(x => x.id === l.id);
+    const row = document.createElement('div'); row.className = 'line';
+    row.innerHTML = `<span>${l.q} × ${d.n}</span><span>${eur(d.p * l.q)} <button aria-label="Quitar ${d.n}">✕</button></span>`;
+    row.querySelector('button').onclick = () => { l.q--; if(l.q <= 0) order.splice(order.indexOf(l), 1); renderOrder(); };
+    box.appendChild(row);
+  }
+  $('total').textContent = eur(total());
+  $('order').disabled = !order.length;
+}
+const total = () => order.reduce((s, l) => s + DISHES.find(x => x.id === l.id).p * l.q, 0);
+function choosePay(tokens){
+  payTokens = tokens;
+  $('pTok').setAttribute('aria-pressed', String(tokens));
+  $('pEur').setAttribute('aria-pressed', String(!tokens));
+}
+$('pEur').onclick = () => choosePay(false);
+$('pTok').onclick = () => choosePay(true);
+$('table').innerHTML = TABLES.map(t => `<option>${t}</option>`).join('');
+let aforo = 38;
+$('order').onclick = () => {
+  const code = 'BNY-' + String(Math.floor(1000 + Math.random() * 9000));
+  const name = ($('name').value || 'HAWKINS').toUpperCase();
+  const t = document.createElement('div'); t.className = 'ticket';
+  t.innerHTML = `<div>Comanda en cocina</div><code>${code}</code><div>${name} · ${$('table').value}</div><div>${payTokens ? eur(total()) + ' de referencia · conversión a tokens pendiente' : eur(total()) + ' · tarjeta (simulado)'}</div>`;
+  $('ticket').replaceChildren(t);
+  const avg = 21.4 * 0.8 + total() * 0.2;
+  $('kTicket').textContent = eur(avg);
+  $('kCocina').textContent = String(++pending);
+  order.length = 0; renderOrder();
+  status('Comanda ' + code + ' en cocina');
+  diner?.orderPlaced(code);
+  if(diner){ diner.focus('cocina'); toScene(); }
+  setTimeout(() => {
+    $('kCocina').textContent = String(--pending);
+    status('Pedido ' + code + ' listo · mira la pared de luces');
+    t.firstElementChild.textContent = '¡Listo! Llega a tu mesa';
+    if(diner){ diner.orderReady(code); diner.focus('luces'); }
+  }, 6000);
+};
+
+// ---- hilo musical (sintetizador original) ----
+let audio = null, musicOn = false, musicTimer = 0, master = null;
+function ctx(){ return audio ||= new (window.AudioContext || window.webkitAudioContext)(); }
+function toggleMusic(){
+  musicOn = !musicOn;
+  $('music').setAttribute('aria-pressed', String(musicOn));
+  diner?.setMusic(musicOn);
+  if(!musicOn){ clearInterval(musicTimer); master?.gain.setTargetAtTime(0, audio.currentTime, 0.2); return; }
+  const c = ctx(); c.resume();
+  master = c.createGain(); master.gain.value = 0.07;
+  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1300; lp.Q.value = 7;
+  lp.connect(master); master.connect(c.destination);
+  const chords = [[57,60,64,67],[53,57,60,64],[48,52,55,59],[55,59,62,65]];
+  const pat = [0,2,1,3,2,1,3,2];
+  const step = 0.15; let i = 0, next = c.currentTime + 0.05;
+  const voice = (f, t, len, type, gain) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.012); g.gain.exponentialRampToValueAtTime(0.001, t + len);
+    o.connect(g); g.connect(lp); o.start(t); o.stop(t + len + 0.05);
+  };
+  const hz = n => 440 * 2 ** ((n - 69) / 12);
+  musicTimer = setInterval(() => {
+    while(next < c.currentTime + 0.3){
+      const ch = chords[Math.floor(i / 16) % 4];
+      voice(hz(ch[pat[i % 8]] + (i % 16 >= 8 ? 12 : 0)), next, step * 1.7, 'sawtooth', 0.45);
+      if(i % 8 === 0) voice(hz(ch[0] - 24), next, step * 7.5, 'square', 0.3);
+      lp.frequency.setTargetAtTime(900 + 700 * (0.5 + 0.5 * Math.sin(next * 0.4)), next, 0.3);
+      next += step; i++;
+    }
+  }, 90);
+}
+function portalSound(){
+  const c = ctx(); c.resume();
+  const len = 1.8, buf = c.createBuffer(1, c.sampleRate * len, c.sampleRate), data = buf.getChannelData(0);
+  for(let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+  const src = c.createBufferSource(); src.buffer = buf;
+  const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 3;
+  bp.frequency.setValueAtTime(200, c.currentTime); bp.frequency.exponentialRampToValueAtTime(2600, c.currentTime + 0.9); bp.frequency.exponentialRampToValueAtTime(120, c.currentTime + len);
+  const g = c.createGain(); g.gain.value = 0.12;
+  const o = c.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(90, c.currentTime); o.frequency.exponentialRampToValueAtTime(32, c.currentTime + len);
+  const og = c.createGain(); og.gain.setValueAtTime(0.25, c.currentTime); og.gain.exponentialRampToValueAtTime(0.001, c.currentTime + len);
+  src.connect(bp); bp.connect(g); g.connect(c.destination); o.connect(og); og.connect(c.destination);
+  src.start(); o.start(); o.stop(c.currentTime + len);
+}
+
+// ---- controles ----
+document.querySelectorAll('.item').forEach(b => b.onclick = () => selectZone(b.dataset.zone));
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.mode').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+  diner?.setMode(Number(b.dataset.mode));
+  status('Modo visual · ' + b.textContent);
+});
+$('left').onclick = () => diner?.rotate(0.3);
+$('right').onclick = () => diner?.rotate(-0.3);
+$('zin').onclick = () => diner?.zoom(1 / 1.2);
+$('zout').onclick = () => diner?.zoom(1.2);
+$('home').onclick = () => { diner?.focus('sala'); status('Sala · vista general'); document.querySelectorAll('.item').forEach(b => b.setAttribute('aria-pressed','false')); };
+$('music').onclick = toggleMusic;
+$('portal').onclick = () => { current = 'portal'; crossPortal(); diner?.focus('portal'); };
+$('lights').onsubmit = e => { e.preventDefault(); if(diner){ diner.focus('luces'); const s = diner.spell($('msg').value || 'HOLA'); status('Pared de luces · ' + Math.ceil(s) + ' s de mensaje'); } };
+
+renderDishes(); renderOrder();
+try {
+  const { createDiner } = await import('./diner.js');
+  diner = createDiner($('diner'), {
+    menu: DISHES,
+    onPick: zone => selectZone(zone),
+    onHover: zone => { if(zone) status(ZONES[zone].n + ' · clic para visitar'); },
+    onPortal
+  });
+  $('loading').hidden = true;
+  const v = Number(params.get('vista'));
+  if([8,16,32].includes(v)) document.querySelector(`.mode[data-mode="${v}"]`).click();
+  if(params.get('plato')) showDish(params.get('plato'), true);
+  else if(ZONES[params.get('zona')]) selectZone(params.get('zona'), true);
+  if(params.get('lado') === 'upside') diner.crossPortal();
+} catch(err) {
+  console.error(err);
+  $('loading').textContent = 'El 3D no está disponible en este dispositivo. La carta y el pedido siguen funcionando.';
+  $('hint').hidden = true;
+}
+</script>
+</body>
+</html>
