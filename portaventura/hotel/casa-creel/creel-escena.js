@@ -36,6 +36,9 @@ const creelScene = (() => {
   let active = -1;
   let turnTo = () => {};
   let lastAnimation;
+  let moved = () => {};
+  let camera = null;
+  const home = new Map();
   let audio;
   const sound = document.getElementById("creel-sound");
   let soundOn = false;
@@ -132,7 +135,24 @@ const creelScene = (() => {
     pin.setAttribute("aria-label", pin.title);
     pin.setAttribute("aria-pressed", "false");
     pin.tabIndex = -1;
-    pin.addEventListener("click", () => activate(actor, false));
+    pin.addEventListener("click", () => { if (!pin.dataset.arrastrado) activate(actor, false); delete pin.dataset.arrastrado; });
+    // Arrastrar el personaje por el tablero (simulador de la cámara: quién se acerca a la casa).
+    pin.addEventListener("pointerdown", event => {
+      if (event.button !== 0 || !camera) return;
+      event.preventDefault(); event.stopPropagation();
+      pin.setPointerCapture(event.pointerId);
+      const start = [event.clientX, event.clientY];
+      const mover = ev => {
+        if (Math.hypot(ev.clientX - start[0], ev.clientY - start[1]) < 4 && !pin.dataset.arrastrado) return;
+        pin.dataset.arrastrado = "1";
+        const p = toBoard(ev.clientX, ev.clientY); if (p) moveActor(actor.id, p.x, p.z);
+      };
+      const soltar = () => {
+        pin.removeEventListener("pointermove", mover); pin.removeEventListener("pointerup", soltar); pin.removeEventListener("pointercancel", soltar);
+        if (pin.dataset.arrastrado && distance(actor) < NEAR) activate(actor, false);
+      };
+      pin.addEventListener("pointermove", mover); pin.addEventListener("pointerup", soltar); pin.addEventListener("pointercancel", soltar);
+    });
     pins.push(pin);
     layers.append(pin);
 
@@ -146,11 +166,39 @@ const creelScene = (() => {
     field.append(button);
   }
 
+  // ── Presencia: distancia a la casa (centro del tablero) en cm. La cámara real alimentará lo mismo con moveActor. ──
+  const NEAR = 9, MID = 16; // unidades de tablero (×2,5 cm): 22 cm y 40 cm
+  const distance = a => Math.hypot(a.x, a.z);
+  function toBoard(clientX, clientY) {
+    const {cx,sx,cy,sy,zoom,aspect,center} = camera; if (sy < .05) return null;
+    const r = viewer.getBoundingClientRect();
+    const u = ((clientX - r.left) / r.width * 100 - 50) / 50 * aspect / zoom;
+    const v = (50 - (clientY - r.top) / r.height * 100) / 50 / zoom;
+    const w = (v - (1.84 - center) * cy) / sy;
+    const bx = board.width / board.unitCm / 2 - .5, bz = board.depth / board.unitCm / 2 - .5;
+    return {x: Math.max(-bx, Math.min(bx, u * cx - w * sx)), z: Math.max(-bz, Math.min(bz, -u * sx - w * cx))};
+  }
+  // Manda quien se mueve (el que se acerca), como hará la cámara con la persona que entra en plano.
+  function presence(id) {
+    const near = cast.map(a => ({id:a.id, name:a.name, effect:a.effect, cm:Math.round(distance(a) * board.unitCm)}));
+    const first = id == null ? {id:-1, name:"", cm:Infinity} : near[id];
+    const nivel = first.cm < NEAR * board.unitCm ? "puerta" : first.cm < MID * board.unitCm ? "cerca" : "lejos";
+    const detail = {nivel, quien:first.name, id:first.id, cerca:near.filter(a => a.cm < MID * board.unitCm).map(a => a.name), cm:Number.isFinite(first.cm) ? first.cm : null};
+    window.dispatchEvent(new CustomEvent("creel-presencia", {detail}));
+  }
+  function moveActor(id, x, z) {
+    const a = cast[id]; if (!a) return;
+    if (!home.has(id)) home.set(id, [a.x, a.z]);
+    a.x = x; a.z = z; moved(); presence(id);
+  }
+
   return {
-    cast,board,
+    cast,board,moveActor,presence,
+    onMove(callback) { moved = callback; },
     bindCamera(callback) { turnTo = callback; },
     setVisible(visible) { layers.hidden = !visible; field.hidden = !visible; portal.hidden = !visible; },
     project({cx,sx,cy,sy,zoom,aspect,center}) {
+      camera = {cx,sx,cy,sy,zoom,aspect,center};
       cast.forEach(({id,x,y,z}) => {
         const h = y + 1.84 - center;
         pins[id].style.left = `${50 + (x * cx - z * sx) * zoom / aspect * 50}%`;
@@ -162,6 +210,7 @@ const creelScene = (() => {
     },
     reset() {
       state.clear();
+      if (home.size) { for (const [id,[x,z]] of home) { cast[id].x = x; cast[id].z = z; } home.clear(); moved(); presence(); }
       active = -1;
       pins.concat(selectors).forEach(button => button.setAttribute("aria-pressed","false"));
       delete viewer.dataset.effect;

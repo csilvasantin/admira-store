@@ -188,9 +188,11 @@
     gl.bufferData(gl.ARRAY_BUFFER, ground, gl.STATIC_DRAW);
 
     const figureBuffer = gl.createBuffer();
-    const figures = figureGeometry();
+    let figures = figureGeometry();
     gl.bindBuffer(gl.ARRAY_BUFFER, figureBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, figures, gl.STATIC_DRAW);
+    // Personajes arrastrables (12-nov-2026): al moverse uno se rehacen las figuras y se repinta.
+    creelScene.onMove(() => { figures = figureGeometry(); gl.bindBuffer(gl.ARRAY_BUFFER, figureBuffer); gl.bufferData(gl.ARRAY_BUFFER, figures, gl.DYNAMIC_DRAW); cancelAnimationFrame(frame); draw(); });
 
     function bind(buffer) {
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
