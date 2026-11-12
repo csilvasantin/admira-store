@@ -7,10 +7,16 @@
     '<h1>' + x.e + ' ' + esc(x.n) + ' <em>' + esc(x.sub) + '</em>' + (x.foco ? '<span class="pa-foco">FOCO</span>' : '') + '</h1>' +
     '<p class="gm-sub">' + esc(x.d) + '</p><div class="pa-acc">' +
     '<a class="pa-pri" href="' + esc(x.dmz) + '" target="_blank" rel="noopener">Entrar en la DMZ ↗</a>';
-  if (x.gemelo) h += '<button type="button" id="vista">✏️ Vista plano</button><button type="button" id="duplicar">➕ Duplicar en el creador</button>';
+  if (x.ecommerce) h += '<a href="' + esc(x.ecommerce) + '" target="_blank" rel="noopener">Ecommerce merch ↗</a>';
+  if (x.gemelo && !x.tienda) h += '<button type="button" id="vista">✏️ Vista plano</button><button type="button" id="duplicar">➕ Duplicar en el creador</button>';
   if (x.interactivo) h += '<a href="' + x.interactivo + '" target="_blank" rel="noopener">Abrir el interactivo ↗</a>';
   h += '<a href="/portaventura/">Los 4 espacios</a></div>';
-  if (x.gemelo) {
+  if (x.tienda) {
+    h += '<div class="pa-acc" id="vistas">' + x.vistas.map(([v, n], i) => '<button type="button" data-v="' + v + '"' + (i ? '' : ' class="pa-pri"') + '>' + n + '</button>').join('') + '</div>' +
+      '<iframe class="pa-frame" id="tienda" title="Store Stranger Things" src="' + x.tienda + '?vista=2d" allow="fullscreen" allowfullscreen></iframe>' +
+      '<h3>Pantallas</h3><ul class="pa-lista">' + x.pantallas.map(([n, d]) => '<li><b>📺 ' + esc(n) + '</b><span>' + esc(d) + '</span></li>').join('') + '</ul>' +
+      '<p class="pa-nota">En la zona 2 la store sale en las pantallas 02a y 02b. <a href="/portaventura/atraccion/">Ver el previo</a>.</p>';
+  } else if (x.gemelo) {
     h += '<div class="pa-grid"><div class="gm-escena gm-vista"><div id="plano"></div></div><div><div class="gm-cuenta" id="cuenta"></div><h3>Pantallas</h3><ul class="pa-lista">' +
       x.pantallas.map(([n, d]) => '<li><b>📺 ' + esc(n) + '</b><span>' + esc(d) + '</span></li>').join('') + '</ul>' +
       '<p class="pa-nota">En la zona 2 este espacio sale en las pantallas ' + PA.ZONA2.flatMap(p => p.pant).filter(s => s.ve === x.id).map(s => s.id).join(' y ') + '. <a href="/portaventura/atraccion/">Ver el previo</a>.</p></div></div>';
@@ -23,7 +29,9 @@
       '<div class="pa-cards">' + PA.ESPACIOS.filter(e => e.id !== x.id).map(e => '<a class="pa-card" style="--c:' + e.color + '" href="/portaventura/' + e.id + '/"><div class="pa-e">' + e.e + '</div><h2>' + esc(e.n) + '</h2><p>' + esc(e.sub) + '</p></a>').join('') + '</div>';
   }
   el.innerHTML = h;
-  if (x.gemelo) {
+  const vs = document.getElementById('vistas');
+  if (vs) vs.onclick = ev => { const v = ev.target.dataset && ev.target.dataset.v; if (!v) return; document.getElementById('tienda').src = x.tienda + '?vista=' + v; for (const k of vs.children) k.classList.toggle('pa-pri', k === ev.target); };
+  if (x.gemelo && !x.tienda) {
     const b = Gemelo.normaliza(PA.borrador(x)); let iso = true;
     const pinta = () => { Gemelo.pinta(document.getElementById('plano'), b, {iso}); document.getElementById('vista').textContent = iso ? '✏️ Vista plano' : '🧊 Vista 3D'; };
     const n = Gemelo.cuenta(b); document.getElementById('cuenta').textContent = n.pantallas + ' pantallas · ' + n.muebles + ' muebles';
