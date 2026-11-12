@@ -5,8 +5,8 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 
 const canvas = document.querySelector('#keyboard');
 const status = document.querySelector('#status');
-const horizontalOutput = document.querySelector('#landscape-output').getContext('2d', { alpha: false });
-const verticalOutput = document.querySelector('#portrait-output').getContext('2d', { alpha: false });
+const horizontalOutput = document.querySelector('#landscape-output')?.getContext('2d', { alpha: false });
+const verticalOutput = document.querySelector('#portrait-output')?.getContext('2d', { alpha: false });
 const feed = document.querySelector('#feed');
 const feedOrigin = new URL(feed.src).origin;
 const scene = new THREE.Scene();
@@ -168,12 +168,12 @@ window.addEventListener('message', event => {
   try {
     if (landscape.width !== 720 || landscape.height !== 384 || portrait.width !== 480 || portrait.height !== 640) return;
     lcd.context.drawImage(landscape, 0, 0);
-    horizontalOutput.drawImage(landscape, 0, 0);
+    horizontalOutput?.drawImage(landscape, 0, 0);
     lcd.texture.needsUpdate = true;
     keys.forEach(({ pixels, context, texture }, index) => {
       const column = index % 3, row = Math.floor(index / 3);
       context.drawImage(portrait, column * 160, row * 160, 160, 160, 0, 0, 160, 160);
-      verticalOutput.drawImage(pixels, column * 168, row * 168);
+      verticalOutput?.drawImage(pixels, column * 168, row * 168);
       texture.needsUpdate = true;
     });
     lastFrame = Date.now();
