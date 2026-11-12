@@ -41,3 +41,8 @@ test('Casa Creel: pantalla de fondo con fondo Stranger Things y conexión solo a
   const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.match(html, /id="creel-pantalla"/); assert.match(html, /pantalla\.js/);
   const js = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(js, /admira\\\.tv\$/); assert.match(js, /get\("tv"\)/);
 });
+test('Casa Creel: personajes arrastrables y presencia (distancia a la casa) que manda en la pantalla', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /moveActor/); assert.match(esc, /creel-presencia/); assert.match(esc, /pointerdown/);
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /addEventListener\("creel-presencia"/);
+});

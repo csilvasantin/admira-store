@@ -112,3 +112,13 @@ dialog::backdrop{background:#0d0a10e0}
 @keyframes cp-luz{0%,60%,100%{opacity:1}70%,90%{opacity:.15}}
 @keyframes cp-rayo{0%,93%,100%{filter:none}95%{filter:brightness(2.2) saturate(.6)}}
 @media(prefers-reduced-motion:reduce){#creel-pantalla *{animation:none!important}}
+.creel-pin{touch-action:none;cursor:grab}.creel-pin:active{cursor:grabbing}
+#creel-pantalla .cp-msg{position:absolute;left:0;right:0;top:58%;text-align:center;font:800 clamp(10px,1.6vw,18px) ui-monospace,monospace;letter-spacing:.2em;color:#fff;text-shadow:0 0 12px #ff2a1f;opacity:0;transition:opacity .3s}
+#creel-pantalla[data-nivel=cerca] .cp-msg,#creel-pantalla[data-nivel=puerta] .cp-msg{opacity:1}
+#creel-pantalla[data-nivel=cerca] .cp-luces b{animation-duration:.6s}
+#creel-pantalla[data-nivel=puerta] .cp-cielo{background:radial-gradient(ellipse at 50% 110%,#ff6a5c,#c3101f 30%,#3a0410 70%,#000);animation:cp-rayo 1.4s infinite}
+#creel-pantalla[data-nivel=puerta] .cp-luces b{animation-duration:.25s}
+#creel-pantalla[data-nivel=puerta] .cp-titulo{transform:scaleY(-1)}
+#creel-pantalla[data-quien=Vecna]:not([data-nivel=lejos]) .cp-cielo{background:radial-gradient(ellipse at 50% 60%,#cf2549,#6b1041 40%,#150b27 80%)}
+#creel-pantalla[data-quien=Once][data-nivel=puerta] .cp-cielo{background:radial-gradient(ellipse at 50% 110%,#7ad8ff,#1d4f8a 40%,#06122e 85%);animation:none}
+#creel-pantalla[data-quien=Once][data-nivel=puerta] .cp-titulo{transform:none;-webkit-text-stroke-color:#9be3ff;text-shadow:0 0 14px #3fd2ff}

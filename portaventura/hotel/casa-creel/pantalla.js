@@ -9,8 +9,16 @@
   if (tv) {
     const f = document.createElement("iframe");
     f.src = tv; f.title = "admira.tv · pantalla de la Casa Creel"; f.allow = "autoplay; fullscreen"; f.tabIndex = -1;
-    el.replaceChildren(f); el.dataset.fuente = "admira.tv"; return;
+    el.replaceChildren(f); el.dataset.fuente = "admira.tv";
+    addEventListener("creel-presencia", ({detail:d}) => { el.dataset.nivel = d.nivel; try { f.contentWindow.postMessage({type:"creel-presencia", ...d}, new URL(tv).origin); } catch (e) {} });
+    return;
   }
+  // Lo que pasa en la pantalla según quién se acerca a la casa (personaje arrastrado hoy; la cámara mañana).
+  const MSG = {cerca: q => `${q.toUpperCase()} SE ACERCA…`, puerta: q => q === "Vecna" ? "VECNA ESTÁ AQUÍ · CORRE" : q === "Once" ? "ONCE PROTEGE LA CASA" : `${q.toUpperCase()} EN LA PUERTA · EL MUNDO DEL REVÉS`};
+  addEventListener("creel-presencia", ({detail:d}) => {
+    el.dataset.nivel = d.nivel; el.dataset.quien = d.quien;
+    const m = el.querySelector(".cp-msg"); if (m) m.textContent = d.nivel === "lejos" ? "" : MSG[d.nivel](d.quien);
+  });
   el.dataset.fuente = "fondo";
   const esporas = el.querySelector(".cp-esporas");
   for (let i = 0; i < 38; i++) {
