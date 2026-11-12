@@ -25,7 +25,7 @@ light.position.set(2, 6, -3);
 scene.add(light);
 
 const chassis = new THREE.MeshStandardMaterial({ color: '#121519', roughness: .78 });
-const keycap = new THREE.MeshStandardMaterial({ color: '#272c33', roughness: .72 });
+const keycap = new THREE.MeshStandardMaterial({ color: '#30343c', roughness: .72 });
 const deck = new THREE.Group();
 scene.add(deck);
 
@@ -37,7 +37,7 @@ function box(width, height, depth, material, x, y, z, radius = .04) {
 }
 
 box(5.68, .25, 1.96, chassis, 0, 0, 0, .09);
-const rest = new THREE.MeshStandardMaterial({ color: '#17161a', roughness: .93 });
+const rest = new THREE.MeshStandardMaterial({ color: '#211f24', roughness: .93 });
 const trim = new THREE.MeshStandardMaterial({ color: '#34333b', roughness: .65 });
 box(5.65, .15, 1.21, rest, 0, -.041, 1.58, .075);
 box(.13, .015, .48, trim, 0, .039, 1.93, .006);
@@ -172,8 +172,9 @@ window.addEventListener('message', event => {
       texture.needsUpdate = true;
     });
     lastFrame = Date.now();
-    status.textContent = ready?.landscape && ready?.portrait ? 'Emitiendo en la pantalla superior y en las 12 teclas'
+    const message = ready?.landscape && ready?.portrait ? 'Emitiendo en la pantalla superior y en las 12 teclas'
       : playing ? 'Cargando la otra orientación…' : 'Cargando la playlist de prueba…';
+    if (status.textContent !== message) status.textContent = message;
   } finally {
     landscape.close();
     portrait.close();

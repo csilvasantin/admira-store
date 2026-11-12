@@ -62,7 +62,8 @@ function rounded(group, dimensions, position, material, radius) {
 }
 
 // Escala 1:100. Mitades del chasis de 129,9 × 154,9 mm y perfil de 6,1 mm abierto.
-const width = .6495, height = 1.549, depth = .061, gap = .009;
+const height = 1.549, depth = .061, gap = .009;
+const width = (1.299 - gap) / 2;
 for (const [group, sign] of [[left, -1], [right, 1]]) {
   const x = sign * (width / 2 + gap / 2);
   rounded(group, [width, height, depth], [x, 0, 0], body, .026);
