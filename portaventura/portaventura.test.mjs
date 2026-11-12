@@ -35,6 +35,5 @@ test('el hotel es Casa Creel (no el PC-Cocina), con todo en local', () => {
 test('Xpace PortAventura: sin página intermedia, carga directa del destino propio (Neo 12-nov-2026)', () => {
   const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8');
   assert.match(sel, /if\(st\.live\)abrir\(\)/);
-  for (const h of ['/portaventura/store/hawkins/', '/portaventura/restaurante/bennys/', '/portaventura/hotel/casa-creel/dentro/', '/portaventura/atraccion/stranger-things/']) assert.ok(sel.includes(`here:'${h}'`), h);
-  const html = readFileSync(new URL('./atraccion/stranger-things/index.html', import.meta.url), 'utf8'); assert.doesNotMatch(html, /["']\/demo\//);
+  for (const h of ['/portaventura/store/hawkins/', '/portaventura/restaurante/bennys/', '/portaventura/hotel/casa-creel/?maqueta=1', '/portaventura/hotel/casa-creel/dentro/']) assert.ok(sel.includes(`here:'${h}'`), h);
 });

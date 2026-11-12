@@ -14,7 +14,7 @@
     h += (x.vistas ? '<div class="pa-acc" id="vistas">' + x.vistas.map(([v, n], i) => '<button type="button" data-v="' + v + '"' + (i ? '' : ' class="pa-pri"') + '>' + n + '</button>').join('') + '</div>' : '') +
       '<iframe class="pa-frame" id="tienda" title="' + esc(x.n + ' · ' + x.sub) + '" src="' + x.tienda + (x.vistas ? (x.rutas ? '' : '?vista=') + x.vistas[0][0] : '') + '" allow="fullscreen" allowfullscreen></iframe>' +
       '<h3>Pantallas</h3><ul class="pa-lista">' + x.pantallas.map(([n, d]) => '<li><b>📺 ' + esc(n) + '</b><span>' + esc(d) + '</span></li>').join('') + '</ul>' +
-      '<p class="pa-nota">En la zona 2 sale en las pantallas ' + PA.ZONA2.flatMap(p => p.pant).filter(s => s.ve === x.id).map(s => s.id).join(' y ') + '. <a href="/portaventura/atraccion/">Ver el previo</a>.</p>';
+      (x.muro ? '<h3>Previo en la zona 2</h3><div id="muro"></div>' : '') + '<p class="pa-nota">En la zona 2 sale en las pantallas ' + PA.ZONA2.flatMap(p => p.pant).filter(s => s.ve === x.id).map(s => s.id).join(' y ') + '. <a href="/portaventura/atraccion/">Ver el previo</a>.</p>';
   } else if (x.gemelo) {
     h += '<div class="pa-grid"><div class="gm-escena gm-vista"><div id="plano"></div></div><div><div class="gm-cuenta" id="cuenta"></div><h3>Pantallas</h3><ul class="pa-lista">' +
       x.pantallas.map(([n, d]) => '<li><b>📺 ' + esc(n) + '</b><span>' + esc(d) + '</span></li>').join('') + '</ul>' +

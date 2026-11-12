@@ -67,6 +67,8 @@
     draw();
   });
   document.getElementById("close-creel").addEventListener("click", () => dialog.close());
+  // admira.store (12-nov-2026): ?maqueta=1 abre directamente la Casa Creel 3D con los personajes, a pantalla completa.
+  if (/[?&]maqueta=1/.test(location.search)) { document.documentElement.classList.add("solo-maqueta"); document.getElementById("open-creel").click(); }
   dialog.addEventListener("close", () => cancelAnimationFrame(frame));
   slider.addEventListener("input", () => selectStage(Number(slider.value)));
   controls["remove-piece"].onclick = () => selectStage(stage - 1);

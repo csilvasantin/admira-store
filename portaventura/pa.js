@@ -25,11 +25,12 @@
         ['sofa',.92,.45,90,'Banco corrido'], ['pantalla',.97,.7,90,'Pantalla Serie 1984'], ['entrada',.5,.985,0,''], ['sensor',.5,.92,0,'Cámara aforo']]},
       pantallas:[['Menu boards 1-3','Carta, precios y combos del día'], ['Tótems de pedido','Pedido sin cola'], ['Pantalla Serie 1984','Botellas y latas de personajes propios'], ['Cámara aforo','Ocupación de sala en vivo']]},
     {id:'hotel', n:'Hotel', sub:'Casa Creel', e:'🏨', color:'#8a5cff', dmz:DMZ + '/dmz/netflixventura/hotel', tienda:'/portaventura/hotel/casa-creel/', rutas:true,
-      vistas:[['dentro/', 'Hotel por dentro'], ['', 'Expediente Hawkins (cómic)']],
-      d:'La Casa Creel convertida en hotel: cuatro suites, una por campanada, que cruzan al Mundo del Revés. Y el cómic Expediente Hawkins.',
+      vistas:[['?maqueta=1', 'Casa Creel 3D'], ['', 'Expediente Hawkins (cómic)']],
+      d:'La Casa Creel en 3D vista desde fuera, con los 13 personajes alrededor: encuentra las tres pistas para abrir el portal. Y el cómic Expediente Hawkins.',
       pantallas:[['Recepción','Bienvenida y check-in con el expediente Hawkins'], ['Pasillos','Ambiente de la casa Creel'], ['Habitaciones','Contenido tematizado por planta']]},
-    {id:'atraccion', n:'Atracción', sub:'NetflixVentura · previo en la zona 2', e:'🎢', color:'#00c2a8', dmz:DMZ + '/dmz/netflixventura',
-      d:'Previo en la zona 2 de AdmiraNeXT: el muro de 8 pantallas repartido en los 5 PCs AdmiraNeXT01 a 05. Cada espacio tiene su tramo del muro.'},
+    {id:'atraccion', n:'Atracción', sub:'La casa que gira de noche', e:'🎢', color:'#00c2a8', dmz:DMZ + '/dmz/netflixventura', tienda:'/portaventura/hotel/casa-creel/dentro/', muro:true,
+      pantallas:[['Reloj de pie','Cuenta las cuatro campanadas'], ['Suites 1959','Cada suite cruza al Mundo del Revés a su hora'], ['Ático','El portal se abre en la cuarta']],
+      d:'Recorrido por dentro de la Casa Creel: cuatro estancias, una por campanada, que cruzan al Mundo del Revés. Debajo, el previo en la zona 2 (AdmiraNeXT01 a 05).'},
   ];
   // Zona 2: muro Planeta 7 (fuente: admira-next-web demo/mural-layout.mjs). Qué espacio ve cada pantalla en el previo.
   const ZONA2 = [
