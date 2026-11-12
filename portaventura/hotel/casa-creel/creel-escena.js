@@ -235,8 +235,8 @@ const creelScene = (() => {
     onMove(callback) { moved = callback; },
     bindCamera(callback) { turnTo = callback; },
     setVisible(visible) { layers.hidden = !visible; field.hidden = !visible; portal.hidden = !visible; },
-    project({cx,sx,cy,sy,zoom,aspect,center}) {
-      camera = {cx,sx,cy,sy,zoom,aspect,center};
+    project({cx,sx,cy,sy,zoom,aspect,center,suelo = 0}) {
+      camera = {cx,sx,cy,sy,zoom,aspect,center,suelo};
       window.dispatchEvent(new CustomEvent("creel-camara", {detail:{...camera, bx:board.width / board.unitCm / 2, bz:board.depth / board.unitCm / 2}}));
       cast.forEach(({id,x,y,z}) => {
         const h = y + 1.84 - center;

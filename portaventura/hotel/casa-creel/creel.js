@@ -34,7 +34,7 @@
     const progress = stage === 0 || duration === 0 || startedAt === undefined
       ? 1 : Math.min(1, (time - startedAt) / duration);
     renderer(stage, Math.max(0, progress), yaw, pitch);
-    if (progress < 1) frame = requestAnimationFrame(draw);
+    if (progress < 1 || (stage === 6 && window.creelPantalla && !reducedMotion.matches)) frame = requestAnimationFrame(draw);
   }
 
   function selectStage(value, animate = true) {
@@ -195,6 +195,48 @@
     // Personajes arrastrables (12-nov-2026): al moverse uno se rehacen las figuras y se repinta.
     creelScene.onMove(() => { figures = figureGeometry(); gl.bindBuffer(gl.ARRAY_BUFFER, figureBuffer); gl.bufferData(gl.ARRAY_BUFFER, figures, gl.DYNAMIC_DRAW); cancelAnimationFrame(frame); draw(); });
 
+    // Pantalla de fondo (12-nov-2026): un quad 3D de pie en el borde trasero de la base (z = -boardZ), con la
+    // textura del lienzo de pantalla.js. Forma parte de la escena: gira con la parrilla y la oculta la casa.
+    const P = window.creelPantalla;
+    let screen = null;
+    if (P) {
+      const sp = gl.createProgram();
+      const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); gl.attachShader(sp, s); gl.deleteShader(s); };
+      sh(gl.VERTEX_SHADER, `attribute vec3 point; attribute vec2 uv; uniform vec3 center, right, up, view; uniform vec2 scale; varying vec2 vuv;
+        void main(){ vec3 p = point - center; gl_Position = vec4(dot(p,right)*scale.x, dot(p,up)*scale.y, -dot(p,view)*0.024, 1.0); vuv = uv; }`);
+      sh(gl.FRAGMENT_SHADER, `precision mediump float; uniform sampler2D tex; varying vec2 vuv; void main(){ gl_FragColor = texture2D(tex, vuv); }`);
+      gl.linkProgram(sp);
+      const su = Object.fromEntries(["center", "right", "up", "view", "scale", "tex"].map(n => [n, gl.getUniformLocation(sp, n)]));
+      const sa = {point: gl.getAttribLocation(sp, "point"), uv: gl.getAttribLocation(sp, "uv")};
+      const x0 = -P.ANCHO / 2, x1 = P.ANCHO / 2, z = -boardZ + .02, y0 = y, y1 = y + P.ALTO, f = .35; // f: grosor del marco
+      const quad = (a, b, c, d, uvs) => [a, b, c, a, c, d].map((p, i) => [...p, ...uvs[[0, 1, 2, 0, 2, 3][i]]]).flat();
+      const cara = [[0, 1], [1, 1], [1, 0], [0, 0]], negro = [[.001, .001], [.001, .001], [.001, .001], [.001, .001]];
+      const data = new Float32Array([
+        ...quad([x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z], cara),
+        ...quad([x0 - f, y0, z - .05], [x1 + f, y0, z - .05], [x1 + f, y1 + f, z - .05], [x0 - f, y1 + f, z - .05], negro),
+      ]);
+      const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      screen = (u) => {
+        gl.useProgram(sp);
+        for (const i of Object.values(attributes)) gl.disableVertexAttribArray(i);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.vertexAttribPointer(sa.point, 3, gl.FLOAT, false, 20, 0); gl.vertexAttribPointer(sa.uv, 2, gl.FLOAT, false, 20, 12);
+        gl.enableVertexAttribArray(sa.point); gl.enableVertexAttribArray(sa.uv);
+        gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, P.pinta());
+        gl.uniform1i(su.tex, 0);
+        for (const n of ["center", "right", "up", "view"]) gl.uniform3fv(su[n], u[n]);
+        gl.uniform2fv(su.scale, u.scale);
+        gl.drawArrays(gl.TRIANGLES, 0, 12);
+        gl.disableVertexAttribArray(sa.point); gl.disableVertexAttribArray(sa.uv);
+        gl.useProgram(program);
+      };
+    }
+
     function bind(buffer) {
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.vertexAttribPointer(attributes.point, 3, gl.FLOAT, false, 20, 0);
@@ -249,7 +291,8 @@
         gl.uniform3f(uniforms.offset, 0, 0, 0);
         bind(figureBuffer);
         gl.drawArrays(gl.TRIANGLES, 0, figures.byteLength / 20);
-        creelScene.project({cx,sx,cy,sy,zoom,aspect,center});
+        if (screen) screen({center:[0, center, 0], right:[cx, 0, -sx], up:[-sx * sy, cy, -cx * sy], view:[sx * cy, sy, cx * cy], scale:[zoom / aspect, zoom]});
+        creelScene.project({cx,sx,cy,sy,zoom,aspect,center,suelo:y});
       }
     };
   }
