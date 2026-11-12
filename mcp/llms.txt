@@ -996,3 +996,12 @@ Guía: https://www.admira.store/admira-xp/docs/objeto-stream-deck.md · Gemelo: 
 
 Open /objeto/stream-deck/ (public). Objeto (Object) Xpace in the Xpaces selector, parallel to Computer: Stream Deck venue = 3D twin of AdmiraNeXT01's (formerly METAHUMAN) Elgato Stream Deck XL (VID_0FD9 PID_006C, serial CL37J1A02733, 32 LCD keys 8×4). LCD face = face-live.png (8×4 atlas from AdmiraNeXT01 desk photo · Indiana Jones as on the physical deck); dark photo regions stay dark. OrbitControls. LIVE bridge (since 5 Nov 2026): AdmiraNeXT01 uploads the active page of the Elgato profile (ProfilesV3) every ~3 s and the twin paints it with a green “EN VIVO · AdmiraNeXT01” badge; when the bridge sleeps, amber “Foto fija / sin puente”. Since 10 Nov 2026, when the deck enters its screensaver (3 min untouched; admira.tv playlist admira-tv-streamdeck), the bridge sends the «reposo» signal and the twin shows a violet “REPOSO · playlist” badge with the piece on air (title, piece number and poster); without the signal the twin is unchanged. Since 6 Nov 2026 keys carry their titles painted as on the physical deck and the twin receives each key’s record: hovering shows title and action (Hotkey, Open app, Open website, Folder…), clicking pins it in the panel next to profile, page, action count and “seen N s ago”. Limits: Elgato profile, not raw HID; dynamic plugin images and physical presses are not shown. Public API: /objeto/stream-deck/api/estado (JSON with keys) and /objeto/stream-deck/api/face.png (ETag). From the selector, Objeto→Stream Deck embeds in an iframe under the bar.
 Guide: https://www.admira.store/admira-xp/docs/objeto-stream-deck.md · Twin: https://www.admira.store/objeto/stream-deck/
+
+## Objeto · Galaxy Z Fold5
+
+Abre Objeto → Samsung Galaxy Z Fold5. Escribe un número o una etiqueta de Stock, revisa el previo Sony y pulsa Importar. Usa la playlist del gemelo para cambiar de pieza. Abierto muestra la variante horizontal y plegado muestra la vertical. La playlist vive en tu navegador.
+
+Open Object → Samsung Galaxy Z Fold5. Enter a Stock item number or tag, check the Sony preview and select Importar. Use the twin playlist to change items. The open twin shows landscape and the folded twin shows portrait. The playlist is stored in your browser.
+
+Twin: https://www.admira.store/objeto/galaxy-z-fold5/
+Guide: https://www.admira.store/admira-xp/docs/objeto-fold5.md

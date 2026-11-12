@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { attachGalleonPlaylist } from '../galleon-100/playlist.mjs?v=20261112-fold5';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
@@ -48,6 +49,12 @@ function displayTexture() {
 }
 
 const wallpaper = displayTexture();
+const coverDisplay = document.createElement('canvas');
+coverDisplay.width = 480;
+coverDisplay.height = 1240;
+const coverTexture = new THREE.CanvasTexture(coverDisplay);
+coverTexture.colorSpace = THREE.SRGBColorSpace;
+const interiorTextures = [];
 const phone = new THREE.Group();
 const left = new THREE.Group();
 const right = new THREE.Group();
@@ -69,6 +76,7 @@ for (const [group, sign] of [[left, -1], [right, 1]]) {
   rounded(group, [width, height, depth], [x, 0, 0], body, .026);
   rounded(group, [width - .022, height - .024, .009], [x, 0, .031], glass, .004);
   const texture = wallpaper.clone();
+  interiorTextures.push(texture);
   texture.repeat.x = .5;
   texture.offset.x = sign < 0 ? 0 : .5;
   texture.needsUpdate = true;
@@ -77,7 +85,8 @@ for (const [group, sign] of [[left, -1], [right, 1]]) {
   group.add(surface);
 }
 
-const cover = new THREE.Mesh(new THREE.PlaneGeometry(width - .079, height - .084), new THREE.MeshBasicMaterial({ map: wallpaper }));
+const coverMaterial = new THREE.MeshBasicMaterial({ map: wallpaper });
+const cover = new THREE.Mesh(new THREE.PlaneGeometry(width - .079, height - .084), coverMaterial);
 cover.rotation.y = Math.PI;
 cover.position.set(-(width + gap) / 2, 0, -.036);
 left.add(cover);
@@ -100,6 +109,59 @@ angle.addEventListener('input', () => setAngle(Number(angle.value)));
 document.querySelector('#fold-close').onclick = () => setAngle(0);
 document.querySelector('#fold-open').onclick = () => setAngle(180);
 setAngle(180);
+
+const feed = document.querySelector('#feed');
+const importer = document.querySelector('#importer');
+const status = document.querySelector('#status');
+const origin = new URL(feed.src).origin;
+const subscribe = attachGalleonPlaylist(feed, importer, status, {
+  storageKey: 'admira-fold5-playlist-v1',
+  loadingMessage: 'Cargando las pantallas del Fold5…',
+});
+feed.addEventListener('load', subscribe);
+let lastFrame = 0;
+const watchdog = setInterval(() => {
+  if (Date.now() - lastFrame > 3000) {
+    if (status.textContent !== 'Esperando la señal de Admira TV') status.textContent = 'Esperando la señal de Admira TV';
+    subscribe();
+  }
+}, 1500);
+window.addEventListener('pagehide', () => clearInterval(watchdog), { once: true });
+
+function drawScreen(surface, frame) {
+  const context = surface.getContext('2d');
+  const scale = Math.min(surface.width / frame.width, surface.height / frame.height);
+  const width = frame.width * scale;
+  const height = frame.height * scale;
+  context.fillStyle = '#050810';
+  context.fillRect(0, 0, surface.width, surface.height);
+  context.drawImage(frame, (surface.width - width) / 2, (surface.height - height) / 2, width, height);
+}
+
+window.addEventListener('message', event => {
+  if (event.origin !== origin || event.source !== feed.contentWindow || event.data?.type !== 'admira:galleon:frame') return;
+  const { landscape, portrait, ready } = event.data;
+  if (!(landscape instanceof ImageBitmap) || !(portrait instanceof ImageBitmap)) return;
+  try {
+    if (landscape.width !== 720 || landscape.height !== 384 || portrait.width !== 480 || portrait.height !== 640) return;
+    lastFrame = Date.now();
+    if (ready?.landscape) {
+      drawScreen(wallpaper.image, landscape);
+      interiorTextures.forEach(texture => { texture.needsUpdate = true; });
+    }
+    if (ready?.portrait) {
+      drawScreen(coverDisplay, portrait);
+      coverTexture.needsUpdate = true;
+      coverMaterial.map = coverTexture;
+    }
+    const message = ready?.landscape && ready?.portrait ? 'Emitiendo en la pantalla interior y en la cubierta'
+      : 'Cargando las pantallas del Fold5…';
+    if (status.textContent !== message) status.textContent = message;
+  } finally {
+    landscape.close();
+    portrait.close();
+  }
+});
 
 function resize() {
   const { width, height } = canvas.getBoundingClientRect();
