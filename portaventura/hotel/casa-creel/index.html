@@ -7,6 +7,7 @@
 <title>Expediente Hawkins · PortAventura NeXT</title>
 <link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css">
 <script defer src="/portaventura/hotel/casa-creel/comic.js"></script>
+<script defer src="/portaventura/hotel/casa-creel/pantalla.js"></script>
 <style>
 .nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
 .nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
@@ -197,6 +198,7 @@
     </header>
     <div class="model-grid">
       <div class="viewer">
+        <div id="creel-pantalla" aria-label="Pantalla de fondo (admira.tv)"><div class="cp-cielo"></div><div class="cp-esporas"></div><div class="cp-titulo">STRANGER THINGS</div><div class="cp-sub">HAWKINS · CASA CREEL</div><div class="cp-luces"></div><span class="cp-marca">admira.tv · sin señal</span></div>
         <canvas id="creel-canvas" aria-label="Casa Creel en 3D. Usa los botones de giro o arrastra para cambiar la vista."></canvas>
         <img id="creel-fallback" src="/portaventura/hotel/casa-creel/creel-respaldo.jpg" alt="Render de la maqueta conceptual de la Casa Creel">
         <div id="creel-atmosphere" aria-hidden="true"></div>
