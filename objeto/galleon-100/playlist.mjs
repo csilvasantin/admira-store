@@ -19,12 +19,15 @@ function stockItem(item) {
   return null;
 }
 
-export function attachGalleonPlaylist(feed, importer, status) {
+export function attachGalleonPlaylist(feed, importer, status, {
+  storageKey = STORAGE_KEY,
+  loadingMessage = 'Cargando pantalla horizontal y mosaico vertical…',
+} = {}) {
   const origin = new URL(feed.src).origin;
   const picker = document.querySelector('#playlist');
   let entries = initial.slice(), current = 0, sequence = 0, imageTimer;
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const saved = JSON.parse(localStorage.getItem(storageKey));
     if (Array.isArray(saved)) entries = entries.concat(saved.slice(0, 30).filter(row =>
       row && typeof row.title === 'string' && stockItem(row.landscape) && stockItem(row.portrait)));
   } catch {}
@@ -33,7 +36,7 @@ export function attachGalleonPlaylist(feed, importer, status) {
     current = (index + entries.length) % entries.length;
     sequence++;
     picker.value = String(current);
-    status.textContent = 'Cargando pantalla horizontal y mosaico vertical…';
+    status.textContent = loadingMessage;
     sync();
     clearTimeout(imageTimer);
     if (entries[current].landscape.type === 'image') imageTimer = setTimeout(() => select(current + 1), 12000);
@@ -78,7 +81,7 @@ export function attachGalleonPlaylist(feed, importer, status) {
       known.add(row.landscape.id);
       return true;
     }));
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries.slice(initial.length))); } catch {}
+    try { localStorage.setItem(storageKey, JSON.stringify(entries.slice(initial.length))); } catch {}
     const index = entries.findIndex(row => row.landscape.id === first);
     render();
     if (index >= 0) select(index);
