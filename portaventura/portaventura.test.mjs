@@ -51,3 +51,8 @@ test('Casa Creel: el hotel se mueve en X e Y y la presencia se mide desde él', 
   assert.match(esc, /moveHouse/); assert.match(esc, /Math\.hypot\(a\.x - house\.x, a\.z - house\.z\)/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8'), /uniforms\.offset, creelScene\.house\.x/);
 });
+test('Casa Creel: la pantalla va en la escena, de pie en el borde más lejano de la base', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /creel-camara/); assert.match(pan, /matrix\(/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'), /new CustomEvent\("creel-camara"/);
+});

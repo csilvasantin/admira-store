@@ -223,6 +223,7 @@ const creelScene = (() => {
     setVisible(visible) { layers.hidden = !visible; field.hidden = !visible; portal.hidden = !visible; },
     project({cx,sx,cy,sy,zoom,aspect,center}) {
       camera = {cx,sx,cy,sy,zoom,aspect,center};
+      window.dispatchEvent(new CustomEvent("creel-camara", {detail:{...camera, bx:board.width / board.unitCm / 2, bz:board.depth / board.unitCm / 2}}));
       cast.forEach(({id,x,y,z}) => {
         const h = y + 1.84 - center;
         pins[id].style.left = `${50 + (x * cx - z * sx) * zoom / aspect * 50}%`;

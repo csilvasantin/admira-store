@@ -123,3 +123,11 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-pantalla[data-quien=Once][data-nivel=puerta] .cp-cielo{background:radial-gradient(ellipse at 50% 110%,#7ad8ff,#1d4f8a 40%,#06122e 85%);animation:none}
 #creel-pantalla[data-quien=Once][data-nivel=puerta] .cp-titulo{transform:none;-webkit-text-stroke-color:#9be3ff;text-shadow:0 0 14px #3fd2ff}
 .creel-casa{width:30px;height:30px;font-size:15px;background:#ef9f7d;border-color:#fff;z-index:2;touch-action:none;cursor:move}
+/* Pantalla en la escena (Neo, 12-nov-2026): pegada al borde del fondo de la base, de pie; pantalla.js la coloca */
+#creel-pantalla{left:0;top:0;right:auto;width:1200px;transform-origin:0 0;border-width:14px;border-radius:4px;box-shadow:0 0 0 2px #3a3346,0 0 120px #ff2a2a66}
+#creel-pantalla .cp-titulo{font-size:110px;-webkit-text-stroke-width:3px}
+#creel-pantalla .cp-sub{top:calc(22% + 125px);font-size:26px}
+#creel-pantalla .cp-msg{font-size:44px}
+#creel-pantalla .cp-luces b{font-size:24px}
+#creel-pantalla .cp-marca{font-size:18px}
+#creel-pantalla .cp-esporas i{width:8px;height:8px}
