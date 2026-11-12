@@ -22,6 +22,15 @@
     .galleon-outputs figure { margin: 0; padding: 8px; border: 1px solid #26344a; border-radius: 9px; background: #111b2d; }
     .galleon-outputs figcaption { margin-bottom: 5px; color: #e5edf8; font-size: 11px; }
     .galleon-outputs canvas { display: block; width: 100%; height: clamp(110px, 19vh, 170px); object-fit: contain; border-radius: 5px; background: #05080e; }
+    .galleon-lighting { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; margin: 0; padding: 9px 12px 13px; border: 0; border-top: 1px solid #26344a; }
+    .galleon-lighting [hidden] { display: none; }
+    .galleon-lighting legend { padding: 0 4px; margin-left: 8px; color: #a9bfdc; font-size: 12px; }
+    .galleon-lighting label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+    .galleon-lighting input { accent-color: #91bdff; }
+    .galleon-lighting input[type=range] { width: min(100px, 24vw); }
+    .galleon-lighting input[type=color] { width: 29px; height: 26px; padding: 2px; background: #182439; border: 1px solid #435779; border-radius: 4px; }
+    .galleon-lighting select { color: inherit; background: #182439; border: 1px solid #435779; border-radius: 5px; padding: 4px 6px; }
+    .galleon-lighting a { color: #b1d2ff; font-size: 11px; }
     #importer { display: block; width: 100%; height: 610px; border: 1px solid #26344a; border-radius: 14px; background: #0a0c12; }
     @media (max-width: 900px) { .galleon-workspace { grid-template-columns: 1fr; padding-inline: 14px; } #keyboard { height: min(37vh, 390px); } }
     #feed { position: absolute; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; }
@@ -51,11 +60,19 @@
             <canvas id="portrait-output" width="496" height="664" aria-label="Emisión vertical del Galleon dividida en 12 teclas"></canvas>
           </figure>
         </div>
+        <fieldset class="galleon-lighting">
+          <legend>Iluminación del gemelo</legend>
+          <label><input id="rgb-on" type="checkbox" checked> RGB</label>
+          <label>Brillo <input id="rgb-brightness" type="range" min="0" max="100" value="75"><output id="rgb-level" for="rgb-brightness">75 %</output></label>
+          <label>Modo <select id="rgb-mode"><option value="gradient">Degradado</option><option value="solid">Color fijo</option></select></label>
+          <label id="rgb-swatch" hidden>Color <input id="rgb-color" type="color" value="#4ea7ff"></label>
+          <a href="https://corsair.com/web-hub/" target="_blank" rel="noopener noreferrer">Teclado físico ↗</a>
+        </fieldset>
       </section>
       <iframe id="importer" src="https://admira.tv/mando?embed=galleon&amp;screen=corsair-galleon-100" title="Importador de contenido del Galleon"></iframe>
     </div>
   </main>
   <iframe id="feed" allow="autoplay" src="https://admira.tv/galleon.html" tabindex="-1" title="Señal del player Galleon"></iframe>
-  <script type="module" src="./twin.mjs?v=20261112-salidas"></script>
+  <script type="module" src="./twin.mjs?v=20261112-rgb"></script>
 </body>
 </html>
