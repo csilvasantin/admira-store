@@ -32,3 +32,9 @@ test('el hotel es Casa Creel (no el PC-Cocina), con todo en local', () => {
   const x = PA.espacio('hotel'); assert.equal(x.tienda, '/portaventura/hotel/casa-creel/'); assert.equal(x.interactivo, undefined);
   for (const f of ['./hotel/casa-creel/index.html', './hotel/casa-creel/dentro/index.html']) { const html = readFileSync(new URL(f, import.meta.url), 'utf8'); assert.match(html, /^<!doctype html>/i); assert.doesNotMatch(html, /["']\/demo\//); }
 });
+test('Xpace PortAventura: sin página intermedia, carga directa del destino propio (Neo 12-nov-2026)', () => {
+  const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8');
+  assert.match(sel, /if\(st\.live\)abrir\(\)/);
+  for (const h of ['/portaventura/store/hawkins/', '/portaventura/restaurante/bennys/', '/portaventura/hotel/casa-creel/dentro/', '/portaventura/atraccion/stranger-things/']) assert.ok(sel.includes(`here:'${h}'`), h);
+  const html = readFileSync(new URL('./atraccion/stranger-things/index.html', import.meta.url), 'utf8'); assert.doesNotMatch(html, /["']\/demo\//);
+});
