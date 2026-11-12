@@ -164,7 +164,7 @@ const creelScene = (() => {
     button.textContent = `${actor.id + 1} · ${actor.name}`;
     button.title = actor.zone;
     button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => activate(actor, true));
+    button.addEventListener("click", () => { activate(actor, true); select(actor.id); });
     selectors.push(button);
     field.append(button);
   }
@@ -209,10 +209,16 @@ const creelScene = (() => {
   let sel = null;
   function select(which) {
     sel = which;
-    handle.classList.toggle("creel-sel", which === "casa");
+    handle.classList.toggle("creel-sel", which === "casa"); hotelBtn.setAttribute("aria-pressed", String(which === "casa"));
     pins.forEach((pin, i) => pin.classList.toggle("creel-sel", which === i));
   }
   handle.addEventListener("click", () => select("casa"));
+  // Botón «Hotel» al lado de Once (Neo, 12-nov-2026): lo selecciona para moverlo con las flechas (o arrastrar 🏠).
+  const hotelBtn = document.createElement("button");
+  hotelBtn.type = "button"; hotelBtn.className = "creel-hotel-btn"; hotelBtn.textContent = "🏠 Hotel";
+  hotelBtn.title = "Seleccionar el hotel y moverlo con las flechas"; hotelBtn.setAttribute("aria-pressed", "false");
+  hotelBtn.addEventListener("click", () => { select("casa"); handle.focus({preventScroll:true}); });
+  field.append(hotelBtn);
   document.addEventListener("keydown", e => {
     if (sel == null || layers.hidden || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key]; if (!d) return;

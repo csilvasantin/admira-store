@@ -73,3 +73,7 @@ test('Casa Creel ?maqueta=1: nada del cómic se pinta mientras carga la 3D (Neo 
   assert.ok(head.indexOf('classList.add("solo-maqueta")') > -1 && head.indexOf('classList.add("solo-maqueta")') < head.indexOf('stylesheet'));
   assert.match(head, /\.solo-maqueta body :not\(dialog,dialog \*\)\{visibility:hidden\}/);
 });
+test('Casa Creel: botón «Hotel» al lado de Once para seleccionarlo y moverlo (Neo 12-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /🏠 Hotel/); assert.match(esc, /field\.append\(hotelBtn\)/); assert.match(esc, /select\(actor\.id\)/);
+});
