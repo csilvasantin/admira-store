@@ -3,6 +3,22 @@
 // Sin señal: fondo propio de Stranger Things (cielo rojo del Mundo del Revés, esporas y luces del alfabeto).
 (() => {
   const el = document.getElementById("creel-pantalla"); if (!el) return;
+  // Pantalla física de pie en el borde del fondo de la base: cada fotograma se coloca en el lado más lejano
+  // a la cámara (siempre detrás del hotel). La vista es ortográfica, así que basta una transformación afín.
+  const W = 1200, ALTO = 15; // px del lienzo de la pantalla · altura en unidades de tablero (≈ 37 cm)
+  addEventListener("creel-camara", ({detail:k}) => {
+    const v = el.parentElement.getBoundingClientRect(); if (!v.width) return;
+    const P = (x, y, z) => [(.5 + (x * k.cx - z * k.sx) * k.zoom / k.aspect * .5) * v.width,
+                            (.5 - (-x * k.sx * k.sy + (y - k.center) * k.cy - z * k.cx * k.sy) * k.zoom * .5) * v.height];
+    const bordes = [[[-k.bx,-k.bz],[k.bx,-k.bz], -k.cx], [[-k.bx,k.bz],[k.bx,k.bz], k.cx], [[-k.bx,-k.bz],[-k.bx,k.bz], -k.sx], [[k.bx,-k.bz],[k.bx,k.bz], k.sx]];
+    let [a, b] = bordes.reduce((m, e) => e[2] < m[2] ? e : m);
+    if (P(a[0], 0, a[1])[0] > P(b[0], 0, b[1])[0]) [a, b] = [b, a];
+    const largo = Math.hypot(b[0] - a[0], b[1] - a[1]), H = Math.round(W * ALTO / largo);
+    const p0 = P(a[0], ALTO, a[1]), p1 = P(b[0], ALTO, b[1]), p2 = P(a[0], 0, a[1]);
+    el.style.height = H + "px";
+    el.style.transform = `matrix(${(p1[0]-p0[0])/W},${(p1[1]-p0[1])/W},${(p2[0]-p0[0])/H},${(p2[1]-p0[1])/H},${p0[0]},${p0[1]})`;
+    el.hidden = false;
+  });
   const pedida = new URLSearchParams(location.search).get("tv") || window.CREEL_TV || "";
   let tv = null;
   try { const u = new URL(pedida); if (u.protocol === "https:" && /(^|\.)admira\.tv$/.test(u.hostname)) tv = u.href; } catch (e) {}
