@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="es">
+<head><!-- Hotel Casa Creel (NetflixVentura). Copia de admira-next-web demo/PortAventuraNeXT (12-nov-2026). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Casa Creel · Hotel por dentro · NetflixVentura</title>
+<meta name="description" content="Recorrido interior del hotel Casa Creel: suites que giran entre 1959 y el Upside Down y la noche de las cuatro campanadas.">
+<style>
+:root{color-scheme:dark;--ink:#f5e7d7;--dim:#c4acaa;--red:#ff695e;--line:#3e333a;--bg:#101015;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:radial-gradient(ellipse at 55% -15%,#472026 0,transparent 58%),var(--bg);font:16px/1.48 system-ui,sans-serif;transition:background .8s}
+body.upside{background:radial-gradient(ellipse at 40% -10%,#14243c 0,transparent 60%),#06080c}
+a{color:inherit}button,input{font:inherit;color:inherit}button{cursor:pointer}
+button:focus-visible,a:focus-visible,canvas:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.masthead{padding:14px max(18px,calc((100vw - 1320px)/2));display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid var(--line);font:700 11px var(--mono);letter-spacing:.14em;background:#171316}
+.masthead a{text-decoration:none;color:var(--dim)}.masthead i{color:var(--red);font-style:normal}
+main{max-width:1320px;margin:auto;padding:18px max(18px,2vw) 30px}
+.eyebrow{font:800 10px/1.4 var(--mono);letter-spacing:.17em;margin:0;color:var(--red)}
+h1{font:italic 900 clamp(2rem,5vw,3.6rem)/1 Georgia,serif;margin:6px 0 6px;letter-spacing:-.03em}
+h1 em{font-weight:normal;color:var(--red)}
+.lead{margin:0 0 16px;color:var(--dim);max-width:70ch}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,320px);gap:14px}
+.scene{position:relative;align-self:start;border:1px solid var(--line);background:#050508;min-width:0}
+canvas#casa{display:block;width:100%;aspect-ratio:16/10;touch-action:none;cursor:grab}canvas#casa:active{cursor:grabbing}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--dim);pointer-events:none}.loading[hidden]{display:none}
+.hud{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:2px;background:#000a;border:1px solid #ffffff1a;padding:7px 10px;pointer-events:none}
+.hud strong{font:700 1.05rem Georgia}.hud span{font:700 10px var(--mono);letter-spacing:.14em;color:var(--red)}
+body.upside .hud span{color:#8fb8ff}
+#plano{position:absolute;right:10px;top:10px;width:120px;height:134px;background:#000b;border:1px solid #ffffff22;cursor:pointer}
+.aviso{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);max-width:min(90%,560px);text-align:center;background:#130b0ee6;border:1px solid #78525a;padding:9px 14px;font-size:.9rem}
+body.upside .aviso{background:#0b1220e6;border-color:#35507a}
+.aviso[hidden]{display:none}
+.pad{position:absolute;left:10px;bottom:10px;display:grid;grid-template-columns:repeat(3,38px);gap:4px}
+.pad button{height:34px;border:1px solid #ffffff2a;background:#000a;font:700 14px var(--mono);touch-action:none}
+.pad [data-move="w"]{grid-column:2;grid-row:1}.pad [data-move="arrowleft"]{grid-column:1;grid-row:2}.pad [data-move="s"]{grid-column:2;grid-row:2}.pad [data-move="arrowright"]{grid-column:3;grid-row:2}
+.hint{position:absolute;right:10px;bottom:10px;background:#000a;border:1px solid #ffffff1a;padding:5px 9px;font:700 10px var(--mono);letter-spacing:.08em;color:var(--dim);pointer-events:none}
+aside.panel{border:1px solid var(--line);background:#1a1418;padding:14px;display:flex;flex-direction:column;gap:12px}
+body.upside aside.panel{background:#10151d;border-color:#26354a}
+.panel h2{font:700 1.2rem Georgia;margin:0}
+.reloj{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.reloj b{font:800 2.2rem var(--mono);letter-spacing:.04em}
+.reloj small{font:700 10px var(--mono);letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.action,.chip{border:1px solid #78525a;background:#38232b;padding:7px 10px;font-size:.78rem;font-weight:700}
+.action:not(:disabled):hover,.chip:hover{background:#673c43}.action:disabled{opacity:.5;cursor:default}
+.action.main{background:linear-gradient(90deg,#9c1a2a,#ff624f);border:0;color:#fff}
+.chip[aria-pressed=true]{background:#7a2a33;border-color:var(--red)}
+body.upside .action,body.upside .chip{background:#16243a;border-color:#35507a}body.upside .chip[aria-pressed=true]{background:#24406b;border-color:#8fb8ff}
+#suites{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+#suites li{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:6px}
+#suites b{display:block;font-size:.88rem}#suites small{font:700 10px var(--mono);letter-spacing:.12em;color:var(--red);text-transform:uppercase}
+body.upside #suites small{color:#8fb8ff}
+.luces{display:flex;gap:4px}.luces input{flex:1;min-width:0;background:#0e0c10;border:1px solid #493439;padding:7px;text-transform:uppercase;font:700 .8rem var(--mono)}
+.luces output{font:700 10px var(--mono);letter-spacing:.14em;color:var(--dim)}
+.salas{display:flex;flex-wrap:wrap;gap:4px}.salas .chip{font-size:.72rem;padding:5px 7px}
+.panel p,.panel small{margin:0;color:var(--dim);font-size:.82rem}
+.relato{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:14px;border:1px solid var(--line);background:var(--line)}
+.relato div{background:#141015;padding:12px}.relato b{font:800 10px var(--mono);letter-spacing:.14em;color:var(--red)}.relato p{margin:4px 0 0;font-size:.85rem;color:var(--dim)}
+body.upside .relato div{background:#0c1119}
+footer{margin:14px 0 0;color:var(--dim);font:700 9px var(--mono);letter-spacing:.14em}
+@media (max-width:860px){.layout{grid-template-columns:1fr}.relato{grid-template-columns:1fr 1fr}#plano{width:90px;height:100px}.hint{display:none}}
+</style><style>
+.nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
+.nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
+.nv-quad summary,.nv-quad button{display:inline-flex;align-items:center;min-height:36px;padding:6px 9px;border:1px solid #805260;border-radius:5px;background:#2a192c;color:#ffe9df;cursor:pointer;font:inherit;text-decoration:none}
+.nv-quad summary::-webkit-details-marker{display:none}
+.nv-quad summary{position:relative;justify-content:center;min-width:36px;font-size:16px}.nv-quad .nv-wordmark{color:inherit;white-space:nowrap;font-weight:750;text-decoration:none}.nv-quad .nv-wordmark:hover{text-decoration:underline}.nv-quad .nv-wordmark b{color:#ffb3a4}.nv-quad .nv-edition{color:#e8bdab;font-size:11px;white-space:nowrap;margin-inline-start:auto;padding-inline-start:16px;margin-inline-end:var(--nv-edition-inset,0px)}@media(max-width:640px){.nv-quad .nv-edition{display:none}}
+.nv-quad[data-visit-map] .nv-wordmark,.nv-quad details:first-child[open] + .nv-wordmark{margin-inline-start:var(--nv-wordmark-offset,0px)}
+.nv-quad [data-tooltip]::after{content:attr(data-tooltip);position:absolute;z-index:2;top:calc(100% + 5px);right:0;visibility:hidden;opacity:0;transition:opacity .12s .35s;pointer-events:none;white-space:nowrap;padding:5px 8px;border-radius:4px;background:#140d18;color:#ffe9df;border:1px solid #805260;font:650 12px/1.35 system-ui,sans-serif}
+.nv-quad details:first-child summary::after{left:0;right:auto}
+.nv-quad [data-tooltip]:hover::after,.nv-quad [data-tooltip]:focus-visible::after{visibility:visible;opacity:1}
+.nv-quad summary[aria-expanded=true],.nv-quad details[open] summary{border-color:#ffb3a4}
+.nv-quad :focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
+.nv-quad .nv-panel{position:fixed;top:var(--nv-top,60px);width:min(330px,100vw);max-height:calc(100dvh - var(--nv-top,60px));overflow:auto;padding:16px;background:#22152a;border:1px solid #805260;box-shadow:0 9px 30px #0009}
+.nv-quad .nv-left,.nv-quad .nv-right{bottom:0;width:var(--nv-size,min-content);min-width:112px;max-width:calc(100vw - 24px);padding-inline:16px}
+.nv-quad .nv-left{left:0}.nv-quad .nv-right{right:0}.nv-quad .nv-bottom{top:auto;bottom:0;left:0;width:100%;height:var(--nv-size,58px);max-height:50dvh;padding:12px 16px 6px}
+.nv-quad .nv-bottom form{align-items:center;flex-wrap:nowrap;margin:0}.nv-quad .nv-bottom label{white-space:nowrap}.nv-quad .nv-brand{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:32vw}
+.nv-quad .nv-grip{position:absolute;touch-action:none;display:block;z-index:1;background:#ae6978}
+.nv-quad .nv-left .nv-grip,.nv-quad .nv-right .nv-grip{top:0;bottom:0;width:8px;cursor:ew-resize}
+.nv-quad .nv-left .nv-grip{right:0}.nv-quad .nv-right .nv-grip{left:0}
+.nv-quad .nv-bottom .nv-grip{top:0;left:0;right:0;height:6px;cursor:ns-resize}
+.nv-quad .nv-panel a{display:block;color:#ffc5ad;padding:7px 0;text-decoration:underline}.nv-quad .nv-panel a[aria-current]{font-weight:900}.nv-quad form{display:flex;gap:8px}.nv-quad input{min-width:0;flex:1 1 0;background:#130e19;color:#fff;border:1px solid #805260;padding:8px;font:inherit}.nv-quad output{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+</style>
+</head>
+<body><div class="nv-quad" role="navigation" aria-label="Navegación de NetflixVentura">
+  <details><summary aria-label="Opciones" data-tooltip="Opciones"><span aria-hidden="true">☰</span></summary><div class="nv-panel nv-left"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Opciones" aria-orientation="vertical"></div><a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflixventura/visita" target="_top">Mapa de la visita</a><a href="/portaventura/store/" target="_top">Store</a><a href="/portaventura/hotel/" target="_top">Hotel</a><a href="/portaventura/restaurante/" target="_top">Restaurante</a><a href="/portaventura/atraccion/" target="_top">Atracción</a></div></details>
+  <a class="nv-wordmark" href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/" target="_top">PortAventura <b>NeXT</b></a><span class="nv-spacer"></span>
+  <span class="nv-brand" hidden></span>
+  <details><summary aria-label="Avanzado" data-tooltip="Avanzado"><span aria-hidden="true">▤</span></summary><div class="nv-panel nv-right"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Avanzado" aria-orientation="vertical"></div>
+    <a href="/portaventura/store/hawkins/?vista=2d" target="_top">Planta de Hawkins</a>
+    <a href="/portaventura/store/hawkins/?vista=recorrido" target="_top">Recorrido en primera persona</a>
+    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/dmz/netflix/detalle" target="_top">Cómic de Casa Creel</a>
+    <a href="/portaventura/hotel/casa-creel/dentro/">Hotel Casa Creel por dentro</a>
+    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflixventura/restaurante/marketing" target="_top">Restaurante: marketing y Serie 1984</a>
+    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflix/dia-visitante" target="_top">Día del visitante</a>
+  </div></details>
+  <details><summary aria-label="Experto" data-tooltip="Experto"><span aria-hidden="true">⌘</span></summary><div class="nv-panel nv-bottom"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Experto" aria-orientation="horizontal"></div>
+    <form><label for="nv-command">Comando CLI</label><input id="nv-command" autocomplete="off" enterkeyhint="go" placeholder="brand stranger things · mapa"></form>
+    <output aria-live="polite">/mapa · /store · /hotel · /restaurante · /atraccion</output>
+  </div></details>
+  
+</div><script>
+(() => {
+  const shell = document.querySelector('.nv-quad');
+  const panels = [...shell.querySelectorAll('details')];
+  const options = panels[0];
+  const optionsButton = options.querySelector('summary');
+  const optionsRail = options.querySelector('.nv-left');
+  const wordmark = shell.querySelector('.nv-wordmark');
+  const isMap = shell.hasAttribute('data-visit-map');
+  function alignToolbar() {
+    shell.style.setProperty('--nv-top', shell.offsetHeight + 'px');
+    if (!options.open && !isMap) return;
+    const toolbarStyle = getComputedStyle(shell);
+    const start = optionsButton.getBoundingClientRect().right + parseFloat(toolbarStyle.columnGap);
+    const end = shell.getBoundingClientRect().right - parseFloat(toolbarStyle.paddingRight);
+    const railEdge = options.open ? optionsRail.getBoundingClientRect().right : start;
+    const target = Math.min(Math.max(start, railEdge), end - wordmark.offsetWidth);
+    let wordmarkStart = target;
+    if (isMap) {
+      const map = document.querySelector('main');
+      const mapLeft = map.getBoundingClientRect().left;
+      map.style.setProperty('--nv-map-inset', Math.max(0, target - mapLeft) + 'px');
+      wordmarkStart = map.querySelector('header .eyebrow').getBoundingClientRect().left;
+      const buttonEdge = map.querySelector('#invert').getBoundingClientRect().right;
+      shell.style.setProperty('--nv-edition-inset', Math.max(0, end - buttonEdge) + 'px');
+    }
+    shell.style.setProperty('--nv-wordmark-offset', Math.max(0, wordmarkStart - start) + 'px');
+  }
+  const toolbarObserver = new ResizeObserver(alignToolbar);
+  toolbarObserver.observe(shell);
+  toolbarObserver.observe(optionsRail);
+  for (const panel of panels) panel.addEventListener('toggle', () => {
+    if (!panel.open) return;
+    panel.querySelector(".nv-grip").dispatchEvent(new Event("nv-measure"));
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || event.defaultPrevented) return;
+    const open = event.target.closest?.('details') || panels.findLast(panel => panel.open);
+    if (open) { open.open = false; open.querySelector('summary').focus(); }
+  });
+  for (const grip of shell.querySelectorAll('.nv-grip')) {
+    const pane = grip.parentElement;
+    const bottom = pane.classList.contains('nv-bottom');
+    const reverse = bottom || pane.classList.contains('nv-right');
+    const measure = () => bottom ? pane.offsetHeight : pane.offsetWidth;
+    let minimum = bottom ? 58 : 112;
+    const bounds = () => [minimum, Math.max(minimum, bottom ? innerHeight / 2 : Math.min(720, innerWidth - (isMap && pane === optionsRail ? 240 : 24)))];
+    function resize(size) {
+      const [min, max] = bounds();
+      const value = Math.round(Math.max(min, Math.min(max, size)));
+      pane.style.setProperty('--nv-size', value + 'px');
+      grip.setAttribute('aria-valuemin', min);
+      grip.setAttribute('aria-valuemax', Math.round(max));
+      grip.setAttribute('aria-valuenow', value);
+    }
+    grip.addEventListener('nv-measure', () => {
+      pane.style.removeProperty('--nv-size');
+      minimum = measure();
+      resize(minimum);
+    });
+    let drag;
+    grip.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      drag = {id:event.pointerId, start:bottom ? event.clientY : event.clientX, size:measure()};
+      grip.setPointerCapture(event.pointerId);
+    });
+    grip.addEventListener('pointermove', event => {
+      if (drag?.id !== event.pointerId) return;
+      const delta = (bottom ? event.clientY : event.clientX) - drag.start;
+      resize(drag.size + (reverse ? -delta : delta));
+    });
+    grip.addEventListener('lostpointercapture', () => { drag = undefined; });
+    grip.addEventListener('keydown', event => {
+      const keys = bottom ? ['ArrowUp','ArrowDown'] : ['ArrowLeft','ArrowRight'];
+      if (!keys.includes(event.key)) return;
+      event.preventDefault();
+      const delta = event.key === keys[0] ? -20 : 20;
+      resize(measure() + (reverse ? -delta : delta));
+    });
+  }
+  const brand = shell.querySelector('.nv-brand');
+  const cli = shell.querySelector('input');
+  const output = shell.querySelector('output');
+  function showBrand(name) {
+    brand.textContent = name;
+    brand.hidden = !name;
+  }
+  try { showBrand(sessionStorage.getItem('netflixventura-brand') || ''); } catch {}
+  shell.querySelector('form').addEventListener('submit', event => {
+    event.preventDefault();
+    const routes = {"mapa":"https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflixventura/visita","store":"/portaventura/store/","hotel":"/portaventura/hotel/","restaurante":"/portaventura/restaurante/","atraccion":"/portaventura/atraccion/"};
+    const input = cli.value.trim();
+    const raw = input.startsWith('/') ? input.slice(1).trimStart() : input;
+    const [verb, ...args] = raw.split(/\s+/);
+    const command = verb.toLowerCase();
+    if (command === 'brand' && args.length) {
+      const requested = args.join(' ').slice(0, 64);
+      const name = requested.toLowerCase() === 'stranger things' ? 'Stranger Things' : requested;
+      showBrand(name);
+      try { sessionStorage.setItem('netflixventura-brand', name); } catch {}
+      cli.value = '';
+      cli.placeholder = output.textContent = 'Marca activa · ' + name;
+    } else if (Object.hasOwn(routes, command) && !args.length) {
+      location.assign(routes[command]);
+    } else {
+      cli.value = '';
+      cli.placeholder = output.textContent = 'Comandos · brand stranger things · mapa · store · hotel · restaurante · atraccion';
+    }
+  });
+})();
+</script>
+<header class="masthead">
+  <a href="/portaventura/hotel/" target="_top">← Volver a la Casa Creel</a>
+  <span>HOTEL · CASA CREEL</span>
+</header>
+<main>
+  <p class="eyebrow">HOTEL · CASA CREEL · RECORRIDO INTERIOR</p>
+  <h1>La casa que <em>gira</em> de noche</h1>
+  <p class="lead">Entra en la Casa Creel convertida en hotel. Cuatro suites, una por campanada: cada una vive en 1959 y, cuando suena su hora en el reloj de pie, cruza al Upside Down. En la cuarta, el portal del ático se abre.</p>
+  <div class="layout">
+    <div class="scene">
+      <canvas id="casa" tabindex="0" aria-label="Interior 3D de la Casa Creel. Usa W A S D o las flechas para moverte y arrastra para mirar."></canvas>
+      <div id="cargando" class="loading">Abriendo la casa…</div>
+      <div class="hud" aria-live="polite"><span id="era">1959</span><strong id="sala">Vestíbulo</strong></div>
+      <canvas id="plano" width="120" height="134" aria-label="Plano de la casa. Pulsa una estancia para ir."></canvas>
+      <p id="aviso" class="aviso" role="status" hidden></p>
+      <div class="pad" aria-label="Moverse">
+        <button type="button" data-move="w" aria-label="Avanzar">▲</button>
+        <button type="button" data-move="arrowleft" aria-label="Girar a la izquierda">◀</button>
+        <button type="button" data-move="s" aria-label="Retroceder">▼</button>
+        <button type="button" data-move="arrowright" aria-label="Girar a la derecha">▶</button>
+      </div>
+      <span class="hint">W A S D · FLECHAS · ARRASTRA PARA MIRAR</span>
+    </div>
+    <aside class="panel" aria-label="Noche en el hotel">
+      <div>
+        <p class="eyebrow">LA NOCHE DE LAS CUATRO CAMPANADAS</p>
+        <div class="reloj"><b id="hora">23:00</b><small id="progreso">0 / 4 campanadas</small></div>
+      </div>
+      <div class="row">
+        <button type="button" class="action main" id="noche">▶ Empezar la noche</button>
+        <button type="button" class="action" id="amanecer">Amanecer</button>
+        <button type="button" class="action" id="sonido" aria-pressed="false">Activar sonido</button>
+      </div>
+      <div><small>Ir a una campanada</small><div class="row" id="campanadas"></div></div>
+      <div>
+        <h2>Suites</h2>
+        <small>El reloj decide cuándo gira cada habitación. Desde el walkie de la mesilla puedes girarla tú o volver a 1959.</small>
+        <ul id="suites"></ul>
+      </div>
+      <div>
+        <h2>Pared de luces</h2>
+        <small>En la recepción no hay teléfono: el hotel te habla con bombillas.</small>
+        <form class="luces" id="luces"><input id="luces-input" maxlength="14" placeholder="Escribe un mensaje" aria-label="Mensaje para la pared de luces"><button class="action">Enviar</button></form>
+        <output id="luces-texto"></output>
+      </div>
+      <div><small>Estancias</small><div class="salas" id="salas"></div></div>
+    </aside>
+  </div>
+  <section class="relato" aria-label="Las cuatro campanadas">
+    <div><b>00:00 · I</b><p>Las luces parpadean. La Suite Virginia cruza al Otro Lado.</p></div>
+    <div><b>01:00 · II</b><p>La radio WSQK de recepción se enciende sola. Gira la Suite Alice.</p></div>
+    <div><b>02:00 · III</b><p>El reloj de pie del salón suena fuerte. Gira la Suite Victor.</p></div>
+    <div><b>03:00 · IV</b><p>Gira la Suite Henry, la casa entera cruza y el portal del ático se abre.</p></div>
+  </section>
+  <footer>ESTUDIO CONCEPTUAL · STRANGER THINGS BY NETFLIXVENTURA · HOTEL CASA CREEL · PROTOTIPO INTERACTIVO</footer>
+</main>
+<script type="module" src="/portaventura/hotel/casa-creel/dentro.js"></script>
+</body>
+</html>
