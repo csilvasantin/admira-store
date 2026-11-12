@@ -7,7 +7,7 @@ import {conPuerta} from '../../assets/puertas.mjs?v=puerta-1';
 // Se conserva el id «metahuman» y /supercomputer/metahuman/ para no romper enlaces; alias admiranext01.
 const COMPUTER_ID='computer',COMPUTER_PROJECT={id:COMPUTER_ID,name:'Computer'},COMPUTER_VENUES=[{id:'metahuman',name:'AdmiraNeXT01',url:'/supercomputer/metahuman/'},{id:'pc-cocina',name:'PC-Cocina',url:'/supercomputer/pc-cocina/'}],COMPUTER_ALIAS={admiranext01:'metahuman'},computerVenue=id=>COMPUTER_VENUES.find(v=>v.id===(COMPUTER_ALIAS[id]||id))||null;
 // Xpace «Objeto» (Carlos, 5-nov-2026): locales = gemelos de objetos físicos (Stream Deck XL en METAHUMAN).
-const OBJET_ID='objeto',OBJET_PROJECT={id:OBJET_ID,name:'Objeto'},OBJET_VENUES=[{id:'stream-deck',name:'Stream Deck',url:'/objeto/stream-deck/'}],objetoVenue=id=>OBJET_VENUES.find(v=>v.id===id)||null;
+const OBJET_ID='objeto',OBJET_PROJECT={id:OBJET_ID,name:'Objeto'},OBJET_VENUES=[{id:'stream-deck',name:'Stream Deck',url:'/objeto/stream-deck/'},{id:'galleon-100',name:'Corsair Galleon 100 SD',url:'/objeto/galleon-100/'}],objetoVenue=id=>OBJET_VENUES.find(v=>v.id===id)||null;
 
 // Carlos (4-nov-2026): «no hay que cambiar la interface de admira.store» — el gemelo se incrusta bajo la
 // barra Xpaces (iframe), sin salir del shell. URLs directas /supercomputer/… y /objeto/… siguen valiendo.
