@@ -56,8 +56,9 @@ test('Casa Creel: la pantalla va en la escena, de pie en el borde más lejano de
   assert.match(pan, /creel-camara/); assert.match(pan, /matrix\(/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'), /new CustomEvent\("creel-camara"/);
 });
-test('Casa Creel: pantalla centrada detrás del hotel y selección + flechas para hotel y personajes', () => {
-  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /creelScene\.house/);
+test('Casa Creel: pantalla pegada al borde trasero de la parrilla (gira con ella) y selección + flechas', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /window\.creelPantalla/); assert.doesNotMatch(pan, /creelScene\.house/);
+  const cr = readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8'); assert.match(cr, /-boardZ/); assert.match(cr, /creelPantalla/);
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'); assert.match(esc, /function select\(/); assert.match(esc, /ArrowLeft/);
 });
 test('Barra superior: audio a la derecha de experto y menús por encima del gemelo abierto (Neo 12-nov-2026)', () => {
