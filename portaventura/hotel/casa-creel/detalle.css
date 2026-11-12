@@ -131,3 +131,4 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-pantalla .cp-luces b{font-size:24px}
 #creel-pantalla .cp-marca{font-size:18px}
 #creel-pantalla .cp-esporas i{width:8px;height:8px}
+.creel-pin.creel-sel{outline:3px solid #5fd0ff;outline-offset:3px;box-shadow:0 0 18px #5fd0ff}

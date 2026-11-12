@@ -110,6 +110,7 @@ const creelScene = (() => {
 
   function activate(actor, focusCamera) {
     active = actor.id;
+    select(actor.id);
     pins.forEach((pin,i) => pin.setAttribute("aria-pressed", String(i === active)));
     selectors.forEach((button,i) => button.setAttribute("aria-pressed", String(i === active)));
     if (focusCamera) turnTo(actor);
@@ -142,7 +143,7 @@ const creelScene = (() => {
     pin.addEventListener("pointerdown", event => {
       if (event.button !== 0 || !camera) return;
       event.preventDefault(); event.stopPropagation();
-      pin.setPointerCapture(event.pointerId);
+      pin.setPointerCapture(event.pointerId); select(actor.id);
       const start = [event.clientX, event.clientY];
       const mover = ev => {
         if (Math.hypot(ev.clientX - start[0], ev.clientY - start[1]) < 4 && !pin.dataset.arrastrado) return;
@@ -204,13 +205,26 @@ const creelScene = (() => {
   handle.type = "button"; handle.className = "creel-pin creel-casa"; handle.textContent = "🏠";
   handle.title = "Mover el hotel: arrastra o usa las flechas"; handle.setAttribute("aria-label", handle.title);
   layers.append(handle);
-  handle.addEventListener("keydown", e => {
+  // Selección (Neo, 12-nov-2026): clic en el hotel o en un personaje y flechas para moverlo en X e Y (Mayús = ×4).
+  let sel = null;
+  function select(which) {
+    sel = which;
+    handle.classList.toggle("creel-sel", which === "casa");
+    pins.forEach((pin, i) => pin.classList.toggle("creel-sel", which === i));
+  }
+  handle.addEventListener("click", () => select("casa"));
+  document.addEventListener("keydown", e => {
+    if (sel == null || layers.hidden || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key]; if (!d) return;
-    e.preventDefault(); moveHouse(house.x + d[0], house.z + d[1]);
+    e.preventDefault();
+    const n = e.shiftKey ? 4 : 1;
+    if (sel === "casa") moveHouse(house.x + d[0] * n, house.z + d[1] * n);
+    else { const a = cast[sel], bx = board.width / board.unitCm / 2 - .5, bz = board.depth / board.unitCm / 2 - .5;
+      moveActor(sel, Math.max(-bx, Math.min(bx, a.x + d[0] * n)), Math.max(-bz, Math.min(bz, a.z + d[1] * n))); }
   });
   handle.addEventListener("pointerdown", event => {
     if (event.button !== 0 || !camera) return;
-    event.preventDefault(); event.stopPropagation(); handle.setPointerCapture(event.pointerId); handle.focus();
+    event.preventDefault(); event.stopPropagation(); handle.setPointerCapture(event.pointerId); select("casa");
     const mover = ev => { const p = toBoard(ev.clientX, ev.clientY, 0); if (p) moveHouse(p.x, p.z); };
     const soltar = () => { handle.removeEventListener("pointermove", mover); handle.removeEventListener("pointerup", soltar); handle.removeEventListener("pointercancel", soltar); };
     handle.addEventListener("pointermove", mover); handle.addEventListener("pointerup", soltar); handle.addEventListener("pointercancel", soltar);

@@ -56,3 +56,7 @@ test('Casa Creel: la pantalla va en la escena, de pie en el borde más lejano de
   assert.match(pan, /creel-camara/); assert.match(pan, /matrix\(/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'), /new CustomEvent\("creel-camara"/);
 });
+test('Casa Creel: pantalla centrada detrás del hotel y selección + flechas para hotel y personajes', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /creelScene\.house/);
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'); assert.match(esc, /function select\(/); assert.match(esc, /ArrowLeft/);
+});
