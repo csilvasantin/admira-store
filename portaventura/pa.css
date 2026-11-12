@@ -1,0 +1,30 @@
+/* Sección PortAventura · admira.store */
+.pa-nav .gm-actual span{border-color:var(--pa,#e50914)}
+.pa-chip{display:inline-block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--pa,#e50914);margin-bottom:6px}
+.pa-foco{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--pa,#e50914);color:#fff;font-size:11px;letter-spacing:.08em}
+.pa-acc{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.pa-acc a,.pa-acc button{padding:10px 16px;border-radius:10px;border:1px solid var(--pa,#e50914);background:transparent;color:var(--gm-ink);font:inherit;font-size:14px;text-decoration:none;cursor:pointer}
+.pa-acc .pa-pri{background:var(--pa,#e50914);color:#fff;font-weight:700}
+.pa-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.pa-grid{grid-template-columns:1fr}}
+.pa-lista{list-style:none;margin:0;padding:0}
+.pa-lista li{border-bottom:1px solid var(--gm-line);padding:10px 0;font-size:14px}
+.pa-lista b{display:block;color:var(--gm-ink)}
+.pa-lista span{color:var(--gm-muted)}
+.pa-frame{width:100%;height:min(72vh,720px);border:1px solid var(--gm-line);border-radius:14px;background:#000}
+.pa-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 26px}
+.pa-card{display:block;border:1px solid var(--gm-line);border-top:4px solid var(--c);border-radius:14px;padding:16px;background:var(--gm-panel);color:var(--gm-ink);text-decoration:none}
+.pa-card:hover{border-color:var(--c)}
+.pa-card .pa-e{font-size:30px}
+.pa-card h2{margin:6px 0 2px;font-size:20px}
+.pa-card p{margin:6px 0 0;color:var(--gm-muted);font-size:13px;line-height:1.45}
+.pa-muro{display:flex;gap:10px;align-items:flex-end;overflow-x:auto;padding:8px 2px 4px}
+.pa-pc{flex:1 1 0;min-width:120px}
+.pa-pc:nth-child(1),.pa-pc:nth-child(3){flex-grow:1}.pa-pc:nth-child(2),.pa-pc:nth-child(4),.pa-pc:nth-child(5){flex-grow:1.4}
+.pa-pants{display:flex;gap:4px}
+.pa-pant{aspect-ratio:16/9;min-width:0;border-radius:6px;border:2px solid #222;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 55%,#000),#07070b);box-shadow:0 0 18px color-mix(in srgb,var(--c) 45%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:12px;padding:4px;overflow:hidden}
+.pa-pc:nth-child(1) .pa-pant,.pa-pc:nth-child(3) .pa-pant{aspect-ratio:32/9}
+.pa-pant small{opacity:.6;font-family:ui-monospace,monospace;font-size:10px}
+.pa-pcn{margin-top:6px;font:11px ui-monospace,monospace;color:var(--gm-muted);text-align:center}
+.pa-compacto .pa-pant span{font-size:10px}
+.pa-nota{color:var(--gm-muted);font-size:13px;line-height:1.5}
