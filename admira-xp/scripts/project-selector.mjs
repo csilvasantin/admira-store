@@ -21,7 +21,9 @@ const PA_STYLES=[{id:'netflix',name:'Netflix',live:true,c1:'#e50914',c2:'#2a0508
 let paStyle='netflix';
 let computerChosen='',objetoChosen='',paChosen='';
 const XPACE_TWIN_PANES=['computerPane','objetoPane','portaventuraPane'];
-function hideTwinPanes(except){for(const id of XPACE_TWIN_PANES){if(id===except)continue;const p=document.getElementById(id);if(p&&p.tagName&&p.style)p.style.display='none';}}
+function hideTwinPanes(except){for(const id of XPACE_TWIN_PANES){if(id===except)continue;const p=document.getElementById(id);if(p&&p.tagName&&p.style)p.style.display='none';}if(typeof setTimeout==='function')setTimeout(syncTwinOpen,0);}
+// Con un gemelo abierto, body.xp-twin-open sube los menús (Opciones, Avanzado, Experto) por encima del panel (Neo, 12-nov-2026).
+function syncTwinOpen(){const b=document.body;if(!b||!b.classList)return;b.classList.toggle('xp-twin-open',XPACE_TWIN_PANES.some(id=>{const p=document.getElementById(id);return !!(p&&p.style&&p.style.display&&p.style.display!=='none');}));}
 function embedXpaceTwin(paneId,title,xpaceId,cv,chosenRef){
  chosenRef.v=cv.id;
  if(typeof document.createElement!=='function'){location.assign(cv.url);return;}
