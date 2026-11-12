@@ -219,6 +219,24 @@ const creelScene = (() => {
   hotelBtn.title = "Seleccionar el hotel y moverlo con las flechas"; hotelBtn.setAttribute("aria-pressed", "false");
   hotelBtn.addEventListener("click", () => { select("casa"); handle.focus({preventScroll:true}); });
   field.append(hotelBtn);
+  // Grabar posición (Neo, 12-nov-2026): hotel + personajes en localStorage; se recupera al cargar. «Reiniciar escena» la borra.
+  const GUARDA = "creel-posicion-v1";
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button"; saveBtn.className = "creel-guardar-btn"; saveBtn.textContent = "💾 Grabar posición";
+  saveBtn.title = "Guarda dónde están el hotel y los personajes para la próxima vez";
+  saveBtn.addEventListener("click", () => {
+    try { localStorage.setItem(GUARDA, JSON.stringify({casa:[house.x, house.z], cast:cast.map(a => [a.x, a.z])})); saveBtn.textContent = "✓ Posición grabada"; }
+    catch { saveBtn.textContent = "No se pudo grabar"; }
+    setTimeout(() => { saveBtn.textContent = "💾 Grabar posición"; }, 1800);
+  });
+  field.append(saveBtn);
+  try {
+    const g = JSON.parse(localStorage.getItem(GUARDA) || "null");
+    if (g && Array.isArray(g.cast)) {
+      if (Array.isArray(g.casa)) { house.x = +g.casa[0] || 0; house.z = +g.casa[1] || 0; }
+      g.cast.forEach(([x, z], id) => { const a = cast[id]; if (!a || !Number.isFinite(x) || !Number.isFinite(z) || (a.x === x && a.z === z)) return; home.set(id, [a.x, a.z]); a.x = x; a.z = z; });
+    }
+  } catch { /* posición grabada ilegible: se ignora */ }
   document.addEventListener("keydown", e => {
     if (sel == null || layers.hidden || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key]; if (!d) return;
@@ -257,6 +275,7 @@ const creelScene = (() => {
     },
     reset() {
       state.clear();
+      try { localStorage.removeItem(GUARDA); } catch {}
       if (house.x || house.z) { house.x = 0; house.z = 0; lastMoved = null; moved(); presence(); }
       if (home.size) { for (const [id,[x,z]] of home) { cast[id].x = x; cast[id].z = z; } home.clear(); moved(); presence(); }
       active = -1;
