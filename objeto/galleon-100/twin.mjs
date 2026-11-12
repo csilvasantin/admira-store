@@ -65,8 +65,8 @@ function lettering(text, x, z, size, angle = 0, color = '#e7ecf5') {
 lettering('C O R S A I R', -.04, -.9, 25);
 lettering('C O R S A I R', 0, 1.93, 23, -Math.PI / 2);
 
-const rgb = ['#5f397b', '#50428f', '#255f9a', '#186f91', '#27806e'].map(color =>
-  new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: .22, roughness: .6 }));
+const palette = ['#d36aff', '#8b83ff', '#48a6ff', '#46c7ef', '#61e6a8'].map(value => new THREE.Color(value));
+const rgb = palette.map(() => new THREE.MeshStandardMaterial({ roughness: .6 }));
 const pitch = .233, left = -2.72;
 function key(label, unit, z, units = 1, rowSpan = .224) {
   const width = units * pitch - .018;
@@ -100,7 +100,7 @@ key('↑', 16.6, .343);
 row(.6, ['←', '↓', '→'], 15.6);
 
 const dialMaterial = new THREE.MeshStandardMaterial({ color: '#2b2b34', roughness: .7, metalness: .35 });
-const dialRing = new THREE.MeshBasicMaterial({ color: '#b8c8fc' });
+const dialRing = new THREE.MeshBasicMaterial();
 for (const x of [2.085, 2.56]) {
   const dial = new THREE.Mesh(new THREE.CylinderGeometry(.103, .106, .096, 36), dialMaterial);
   dial.position.set(x, .225, -.744);
@@ -109,6 +109,50 @@ for (const x of [2.085, 2.56]) {
   ring.position.set(x, .167, -.744);
   deck.add(dial, ring);
 }
+
+const rgbOn = document.querySelector('#rgb-on');
+const rgbBrightness = document.querySelector('#rgb-brightness');
+const rgbLevel = document.querySelector('#rgb-level');
+const rgbMode = document.querySelector('#rgb-mode');
+const rgbColor = document.querySelector('#rgb-color');
+const rgbSwatch = document.querySelector('#rgb-swatch');
+const rgbKey = 'admira-galleon-rgb-v1';
+try {
+  const saved = JSON.parse(localStorage.getItem(rgbKey));
+  if (saved) {
+    rgbOn.checked = saved.on !== false;
+    if (Number.isFinite(saved.brightness)) rgbBrightness.value = String(saved.brightness);
+    if (saved.mode === 'solid') rgbMode.value = 'solid';
+    if (/^#[0-9a-f]{6}$/i.test(saved.color)) rgbColor.value = saved.color;
+  }
+} catch {}
+
+const unlit = new THREE.Color('#22242a');
+function applyLighting() {
+  const on = rgbOn.checked, brightness = Number(rgbBrightness.value), mode = rgbMode.value, color = rgbColor.value;
+  const power = on ? brightness / 100 : 0;
+  const custom = new THREE.Color(color);
+  rgb.forEach((material, index) => {
+    const hue = mode === 'solid' ? custom : palette[index];
+    material.color.copy(unlit).lerp(hue, power * .5);
+    material.emissive.copy(hue);
+    material.emissiveIntensity = power * .8;
+  });
+  dialRing.color.copy(unlit).lerp(mode === 'solid' ? custom : palette[1], power);
+  rgbLevel.value = brightness + ' %';
+  rgbSwatch.hidden = mode !== 'solid';
+}
+for (const field of [rgbOn, rgbBrightness, rgbMode, rgbColor]) {
+  field.addEventListener('input', applyLighting);
+  field.addEventListener('change', () => {
+    try {
+      localStorage.setItem(rgbKey, JSON.stringify({
+        on: rgbOn.checked, brightness: Number(rgbBrightness.value), mode: rgbMode.value, color: rgbColor.value,
+      }));
+    } catch {}
+  });
+}
+applyLighting();
 
 const labels = new THREE.CanvasTexture(legend);
 labels.colorSpace = THREE.SRGBColorSpace;
