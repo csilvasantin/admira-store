@@ -39,6 +39,8 @@ const creelScene = (() => {
   let moved = () => {};
   let camera = null;
   const home = new Map();
+  const house = {x:0, z:0};
+  const handle = document.createElement("button");
   let audio;
   const sound = document.getElementById("creel-sound");
   let soundOn = false;
@@ -168,13 +170,13 @@ const creelScene = (() => {
 
   // ── Presencia: distancia a la casa (centro del tablero) en cm. La cámara real alimentará lo mismo con moveActor. ──
   const NEAR = 9, MID = 16; // unidades de tablero (×2,5 cm): 22 cm y 40 cm
-  const distance = a => Math.hypot(a.x, a.z);
-  function toBoard(clientX, clientY) {
+  const distance = a => Math.hypot(a.x - house.x, a.z - house.z);
+  function toBoard(clientX, clientY, alto = 1.84) {
     const {cx,sx,cy,sy,zoom,aspect,center} = camera; if (sy < .05) return null;
     const r = viewer.getBoundingClientRect();
     const u = ((clientX - r.left) / r.width * 100 - 50) / 50 * aspect / zoom;
     const v = (50 - (clientY - r.top) / r.height * 100) / 50 / zoom;
-    const w = (v - (1.84 - center) * cy) / sy;
+    const w = (v - (alto - center) * cy) / sy;
     const bx = board.width / board.unitCm / 2 - .5, bz = board.depth / board.unitCm / 2 - .5;
     return {x: Math.max(-bx, Math.min(bx, u * cx - w * sx)), z: Math.max(-bz, Math.min(bz, -u * sx - w * cx))};
   }
@@ -189,11 +191,33 @@ const creelScene = (() => {
   function moveActor(id, x, z) {
     const a = cast[id]; if (!a) return;
     if (!home.has(id)) home.set(id, [a.x, a.z]);
-    a.x = x; a.z = z; moved(); presence(id);
+    a.x = x; a.z = z; lastMoved = id; moved(); presence(id);
   }
 
+  // Mover la casa: asa 🏠 arrastrable y flechas del teclado (X e Y del tablero). La presencia se mide desde aquí.
+  function moveHouse(x, z) {
+    const bx = board.width / board.unitCm / 2 - 6, bz = board.depth / board.unitCm / 2 - 5;
+    house.x = Math.max(-bx, Math.min(bx, x)); house.z = Math.max(-bz, Math.min(bz, z));
+    moved(); if (lastMoved != null) presence(lastMoved);
+  }
+  let lastMoved = null;
+  handle.type = "button"; handle.className = "creel-pin creel-casa"; handle.textContent = "🏠";
+  handle.title = "Mover el hotel: arrastra o usa las flechas"; handle.setAttribute("aria-label", handle.title);
+  layers.append(handle);
+  handle.addEventListener("keydown", e => {
+    const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key]; if (!d) return;
+    e.preventDefault(); moveHouse(house.x + d[0], house.z + d[1]);
+  });
+  handle.addEventListener("pointerdown", event => {
+    if (event.button !== 0 || !camera) return;
+    event.preventDefault(); event.stopPropagation(); handle.setPointerCapture(event.pointerId); handle.focus();
+    const mover = ev => { const p = toBoard(ev.clientX, ev.clientY, 0); if (p) moveHouse(p.x, p.z); };
+    const soltar = () => { handle.removeEventListener("pointermove", mover); handle.removeEventListener("pointerup", soltar); handle.removeEventListener("pointercancel", soltar); };
+    handle.addEventListener("pointermove", mover); handle.addEventListener("pointerup", soltar); handle.addEventListener("pointercancel", soltar);
+  });
+
   return {
-    cast,board,moveActor,presence,
+    cast,board,house,moveActor,moveHouse,presence,
     onMove(callback) { moved = callback; },
     bindCamera(callback) { turnTo = callback; },
     setVisible(visible) { layers.hidden = !visible; field.hidden = !visible; portal.hidden = !visible; },
@@ -205,11 +229,14 @@ const creelScene = (() => {
         pins[id].style.top = `${50 - (-x * sx * sy + h * cy - z * cx * sy) * zoom * 50}%`;
       });
       const towerHeight = 9.7 - center;
-      portal.style.left = "50%";
-      portal.style.top = `${50 - towerHeight * cy * zoom * 50}%`;
+      portal.style.left = `${50 + (house.x * cx - house.z * sx) * zoom / aspect * 50}%`;
+      portal.style.top = `${50 - (-house.x * sx * sy + towerHeight * cy - house.z * cx * sy) * zoom * 50}%`;
+      handle.style.left = `${50 + (house.x * cx - house.z * sx) * zoom / aspect * 50}%`;
+      handle.style.top = `${50 - (-house.x * sx * sy + (0 - center) * cy - house.z * cx * sy) * zoom * 50}%`;
     },
     reset() {
       state.clear();
+      if (house.x || house.z) { house.x = 0; house.z = 0; lastMoved = null; moved(); presence(); }
       if (home.size) { for (const [id,[x,z]] of home) { cast[id].x = x; cast[id].z = z; } home.clear(); moved(); presence(); }
       active = -1;
       pins.concat(selectors).forEach(button => button.setAttribute("aria-pressed","false"));

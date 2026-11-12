@@ -129,12 +129,12 @@
     }
     attach(gl.VERTEX_SHADER, `
       attribute vec3 point, normal, color;
-      uniform vec3 center, right, up, view;
+      uniform vec3 center, right, up, view, offset;
       uniform vec2 scale;
       uniform float lift;
       varying vec3 shade, position;
       void main() {
-        vec3 p = point - center + vec3(0.0, lift, 0.0);
+        vec3 p = point + offset - center + vec3(0.0, lift, 0.0);
         gl_Position = vec4(dot(p,right)*scale.x, dot(p,up)*scale.y, -dot(p,view)*0.024, 1.0);
         float light = max(dot(normal, normalize(vec3(-0.4,0.9,0.75))), 0.0);
         shade = pow(max(color, vec3(0.005)), vec3(0.56)) * (0.53 + light * 0.49);
@@ -144,6 +144,7 @@
       precision mediump float;
       varying vec3 shade, position;
       uniform float plan;
+      uniform vec2 casa;
       void main() {
         vec3 base = shade;
         if (plan > 0.5) {
@@ -153,7 +154,7 @@
           float lake = 1.0 - smoothstep(0.80,1.0,length((p-vec2(10.0,2.4))/vec2(2.2,4.2)));
           base = mix(vec3(0.18,0.22,0.27),vec3(0.13,0.39,0.43),lake);
           base += grid * vec3(0.085,0.12,0.12);
-          float outline = max(abs(p.x-1.0)/6.7,abs(p.y-0.5)/4.0);
+          float outline = max(abs(p.x-casa.x-1.0)/6.7,abs(p.y-casa.y-0.5)/4.0);
           base += smoothstep(0.92,0.95,outline)*(1.0-smoothstep(0.97,1.0,outline))*vec3(.43,.23,.17);
         }
         gl_FragColor = vec4(base,1.0);
@@ -163,7 +164,7 @@
     gl.useProgram(program);
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0, 0, 0, 0);
-    const uniforms = Object.fromEntries(["center", "right", "up", "view", "scale", "lift", "plan"]
+    const uniforms = Object.fromEntries(["center", "right", "up", "view", "scale", "lift", "plan", "offset", "casa"]
       .map(name => [name, gl.getUniformLocation(program, name)]));
     const attributes = Object.fromEntries(["point", "normal", "color"].map(name => [name, gl.getAttribLocation(program, name)]));
     const meshBuffer = gl.createBuffer();
@@ -226,10 +227,14 @@
       gl.uniform3f(uniforms.view, sx * cy, sy, cx * cy);
       gl.uniform2f(uniforms.scale, zoom / aspect, zoom);
       gl.uniform1f(uniforms.lift, 0);
+      gl.uniform3f(uniforms.offset, 0, 0, 0);
+      gl.uniform2f(uniforms.casa, creelScene.house.x, creelScene.house.z);
       gl.uniform1f(uniforms.plan, 1);
       bind(groundBuffer);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       gl.uniform1f(uniforms.plan, 0);
+      // La casa se puede mover en X e Y sobre la base (12-nov-2026): solo su malla lleva el desplazamiento.
+      gl.uniform3f(uniforms.offset, creelScene.house.x, 0, creelScene.house.z);
       bind(meshBuffer);
       for (let i = 0; i < visible; i++) {
         const group = stages[i];
@@ -241,6 +246,7 @@
       }
       if (visible === 6) {
         gl.uniform1f(uniforms.lift, 0);
+        gl.uniform3f(uniforms.offset, 0, 0, 0);
         bind(figureBuffer);
         gl.drawArrays(gl.TRIANGLES, 0, figures.byteLength / 20);
         creelScene.project({cx,sx,cy,sy,zoom,aspect,center});

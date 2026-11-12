@@ -46,3 +46,8 @@ test('Casa Creel: personajes arrastrables y presencia (distancia a la casa) que 
   assert.match(esc, /moveActor/); assert.match(esc, /creel-presencia/); assert.match(esc, /pointerdown/);
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /addEventListener\("creel-presencia"/);
 });
+test('Casa Creel: el hotel se mueve en X e Y y la presencia se mide desde él', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /moveHouse/); assert.match(esc, /Math\.hypot\(a\.x - house\.x, a\.z - house\.z\)/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8'), /uniforms\.offset, creelScene\.house\.x/);
+});
