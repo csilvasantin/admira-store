@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { addObjectFloor } from '../floor-grid.mjs?v=1';
 import { attachGalleonPlaylist } from '../galleon-100/playlist.mjs?v=20261112-fold5';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -6,6 +7,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 const canvas = document.querySelector('#fold5');
 const angle = document.querySelector('#fold-angle');
 const angleValue = document.querySelector('#fold-value');
+const contentRotation = document.querySelector('#content-rotation');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#101c32');
 const camera = new THREE.PerspectiveCamera(34, 1, .01, 20);
@@ -16,6 +18,7 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.minDistance = 1.8;
 controls.maxDistance = 6;
+controls.maxPolarAngle = Math.PI / 2;
 scene.add(new THREE.HemisphereLight('#f0f6ff', '#323754', 3));
 const light = new THREE.DirectionalLight('#dceaff', 2.8);
 light.position.set(2, 3, 4);
@@ -105,6 +108,16 @@ for (const y of [.59, .455, .32]) {
   right.add(lens);
 }
 
+const floorHeight = -height / 2 - .003;
+addObjectFloor(scene, floorHeight, .24);
+const phoneBounds = new THREE.Box3();
+
+function placeOnFloor() {
+  orientation.position.y = 0;
+  phoneBounds.setFromObject(orientation);
+  orientation.position.y = floorHeight - phoneBounds.min.y + .003;
+}
+
 function setAngle(value) {
   angle.value = String(value);
   angleValue.value = value + '°';
@@ -113,6 +126,7 @@ function setAngle(value) {
   const outsideEdge = width + gap / 2;
   const leftEdge = Math.min(-outsideEdge * Math.cos(rotation), -gap / 2 * Math.cos(rotation));
   phone.position.x = -(outsideEdge + leftEdge) / 2;
+  placeOnFloor();
 }
 angle.addEventListener('input', () => setAngle(Number(angle.value)));
 document.querySelector('#fold-close').onclick = () => setAngle(0);
@@ -123,6 +137,8 @@ const orientationButtons = document.querySelectorAll('[data-fold-orientation]');
 for (const button of orientationButtons) {
   button.addEventListener('click', () => {
     orientation.rotation.z = button.dataset.foldOrientation === 'landscape' ? Math.PI / 2 : 0;
+    placeOnFloor();
+    drawContent();
     for (const option of orientationButtons) option.setAttribute('aria-pressed', String(option === button));
   });
 }
@@ -143,17 +159,47 @@ const watchdog = setInterval(() => {
     subscribe();
   }
 }, 1500);
-window.addEventListener('pagehide', () => clearInterval(watchdog), { once: true });
+const frames = { landscape: null, portrait: null };
+window.addEventListener('pagehide', () => {
+  clearInterval(watchdog);
+  for (const kind of Object.keys(frames)) {
+    frames[kind]?.close();
+    frames[kind] = null;
+  }
+});
 
-function drawScreen(surface, frame) {
+function drawScreen(surface, frame, rotation) {
   const context = surface.getContext('2d');
-  const scale = Math.min(surface.width / frame.width, surface.height / frame.height);
+  const sideways = Math.abs(Math.sin(rotation)) > .5;
+  const scale = sideways
+    ? Math.min(surface.width / frame.height, surface.height / frame.width)
+    : Math.min(surface.width / frame.width, surface.height / frame.height);
   const width = frame.width * scale;
   const height = frame.height * scale;
   context.fillStyle = '#050810';
   context.fillRect(0, 0, surface.width, surface.height);
-  context.drawImage(frame, (surface.width - width) / 2, (surface.height - height) / 2, width, height);
+  context.save();
+  context.translate(surface.width / 2, surface.height / 2);
+  context.rotate(rotation);
+  context.drawImage(frame, -width / 2, -height / 2, width, height);
+  context.restore();
 }
+
+function drawContent() {
+  const rotation = contentRotation.value === 'auto'
+    ? orientation.rotation.z
+    : THREE.MathUtils.degToRad(Number(contentRotation.value));
+  if (frames.landscape) {
+    drawScreen(wallpaper.image, frames.landscape, rotation);
+    interiorTextures.forEach(texture => { texture.needsUpdate = true; });
+  }
+  if (frames.portrait) {
+    drawScreen(coverDisplay, frames.portrait, rotation);
+    coverTexture.needsUpdate = true;
+    coverMaterial.map = coverTexture;
+  }
+}
+contentRotation.addEventListener('change', drawContent);
 
 window.addEventListener('message', event => {
   if (event.origin !== origin || event.source !== feed.contentWindow || event.data?.type !== 'admira:galleon:frame') return;
@@ -162,21 +208,18 @@ window.addEventListener('message', event => {
   try {
     if (landscape.width !== 720 || landscape.height !== 384 || portrait.width !== 480 || portrait.height !== 640) return;
     lastFrame = Date.now();
-    if (ready?.landscape) {
-      drawScreen(wallpaper.image, landscape);
-      interiorTextures.forEach(texture => { texture.needsUpdate = true; });
+    for (const kind of Object.keys(frames)) {
+      if (!ready?.[kind]) continue;
+      frames[kind]?.close();
+      frames[kind] = event.data[kind];
     }
-    if (ready?.portrait) {
-      drawScreen(coverDisplay, portrait);
-      coverTexture.needsUpdate = true;
-      coverMaterial.map = coverTexture;
-    }
+    drawContent();
     const message = ready?.landscape && ready?.portrait ? 'Emitiendo en la pantalla interior y en la cubierta'
       : 'Cargando las pantallas del Fold5…';
     if (status.textContent !== message) status.textContent = message;
   } finally {
-    landscape.close();
-    portrait.close();
+    if (frames.landscape !== landscape) landscape.close();
+    if (frames.portrait !== portrait) portrait.close();
   }
 });
 
