@@ -140,3 +140,6 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-lluvia{pointer-events:none}
 .viewer[data-clima=sol]{background:radial-gradient(ellipse at 50% 45%,#4a3d36,#1a1512 73%)}
 .viewer[data-clima=lluvia],.viewer[data-clima=tormenta]{background:radial-gradient(ellipse at 50% 45%,#262c3a,#0d1017 73%)}
+.creel-tv{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.creel-tv input{flex:1 1 160px;min-width:0;padding:7px 8px;border:1px solid var(--line,#5a3a40);border-radius:5px;background:#120e14;color:inherit;font:12px ui-monospace,monospace}
+.creel-tv small{flex:1 0 100%;opacity:.7}
