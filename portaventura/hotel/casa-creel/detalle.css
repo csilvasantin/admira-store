@@ -132,6 +132,7 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-pantalla .cp-marca{font-size:18px}
 #creel-pantalla .cp-esporas i{width:8px;height:8px}
 .creel-pin.creel-sel{outline:3px solid #5fd0ff;outline-offset:3px;box-shadow:0 0 18px #5fd0ff}
+.creel-pin.creel-en-zona{border-color:#ffb347;background:#5a1d12;box-shadow:0 0 0 2px #100915b0,0 0 16px #ff8a3d}
 /* Clima (Neo, 13-nov-2026): iconos para forzar el clima y lluvia sobre la maqueta */
 .creel-clima{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
 .creel-clima-t{font:700 11px/1 ui-monospace,monospace;letter-spacing:.12em;color:var(--muted,#c9a9a0);margin-right:4px}

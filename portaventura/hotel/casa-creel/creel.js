@@ -152,6 +152,8 @@
       varying vec3 shade, position;
       uniform float plan;
       uniform vec2 casa;
+      uniform vec4 zona;
+      uniform float zonaOn;
       void main() {
         vec3 base = shade;
         if (plan > 0.5) {
@@ -161,6 +163,11 @@
           float lake = 1.0 - smoothstep(0.80,1.0,length((p-vec2(10.0,2.4))/vec2(2.2,4.2)));
           base = mix(vec3(0.18,0.22,0.27),vec3(0.13,0.39,0.43),lake);
           base += grid * vec3(0.085,0.12,0.12);
+          // Zona de influencia de la puerta (6 × 4 cuadrados): ámbar en espera, rojo Hawkins con alguien dentro.
+          float inz = step(zona.x, p.x) * step(p.x, zona.z) * step(zona.y, p.y) * step(p.y, zona.w);
+          vec3 tinte = zonaOn > 0.5 ? vec3(0.95,0.30,0.22) : vec3(0.98,0.72,0.28);
+          base = mix(base, tinte, inz * (zonaOn > 0.5 ? 0.62 : 0.38));
+          base += inz * grid * vec3(0.25,0.18,0.10);
           float outline = max(abs(p.x-casa.x-1.0)/6.7,abs(p.y-casa.y-0.5)/4.0);
           base += smoothstep(0.92,0.95,outline)*(1.0-smoothstep(0.97,1.0,outline))*vec3(.43,.23,.17);
         }
@@ -171,7 +178,7 @@
     gl.useProgram(program);
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0, 0, 0, 0);
-    const uniforms = Object.fromEntries(["center", "right", "up", "view", "scale", "lift", "plan", "offset", "casa"]
+    const uniforms = Object.fromEntries(["center", "right", "up", "view", "scale", "lift", "plan", "offset", "casa", "zona", "zonaOn"]
       .map(name => [name, gl.getUniformLocation(program, name)]));
     const attributes = Object.fromEntries(["point", "normal", "color"].map(name => [name, gl.getAttribLocation(program, name)]));
     const meshBuffer = gl.createBuffer();
@@ -278,6 +285,9 @@
       gl.uniform1f(uniforms.lift, 0);
       gl.uniform3f(uniforms.offset, 0, 0, 0);
       gl.uniform2f(uniforms.casa, creelScene.house.x, creelScene.house.z);
+      const zr = creelScene.zone();
+      gl.uniform4f(uniforms.zona, zr.x0, zr.z0, zr.x1, zr.z1);
+      gl.uniform1f(uniforms.zonaOn, zr.actor >= 0 ? 1 : 0);
       gl.uniform1f(uniforms.plan, 1);
       bind(groundBuffer);
       gl.drawArrays(gl.TRIANGLES, 0, 6);

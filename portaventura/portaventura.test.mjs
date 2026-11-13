@@ -118,3 +118,22 @@ test('Hotel Creel: foto del protagonista en cada botón sin cambiar su tamaño (
   assert.ok(existsSync(new URL('./hotel/casa-creel/fotos/lego-once.webp', import.meta.url)));
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-ficha-foto\{flex:none;width:28px;height:34px/);
 });
+
+test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y manda la cara del personaje a la pantalla (Carlos, 13-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /const ZONE = \{cols: 6, rows: 4, cell: 5 \/ board\.unitCm\}/);
+  assert.match(esc, /z0 = house\.z \+ 4\.5/);                       // pegada al borde delantero de la huella del hotel
+  assert.match(esc, /new CustomEvent\("creel-zona"/);
+  assert.match(esc, /presence\(id\); updateZone\(id\);/);            // al arrastrar un personaje se reevalúa la zona
+  assert.match(esc, /zone\(\) \{ return \{\.\.\.zoneRect\(\), actor: zoneActor\}; \}/);
+  assert.match(esc, /creel-en-zona/);
+  const js = readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8');
+  assert.match(js, /uniform vec4 zona;/); assert.match(js, /uniform float zonaOn;/);
+  assert.match(js, /gl\.uniform4f\(uniforms\.zona, zr\.x0, zr\.z0, zr\.x1, zr\.z1\)/);
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /addEventListener\("creel-zona"/);
+  assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
+  assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-9/);
+});
