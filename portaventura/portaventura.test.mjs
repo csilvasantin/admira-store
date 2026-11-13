@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-12/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-13/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -177,4 +177,23 @@ test('Hotel Creel: todo ajustado a la cuadrícula de 5 cm: zona y hotel a las l�
   const cm = [...esc.matchAll(/\["[^"]+", "[A-Z]\d\d", ([\d.]+), ([\d.]+),/g)].map(m => [Number(m[1]), Number(m[2])]);
   assert.equal(cm.length, 13);
   for (const [x, z] of cm) { assert.equal(((x - 60) / 2.5) % 2 && 1, 1, x); assert.equal(((z - 45) / 2.5) % 2 && 1, 1, z); }
+});
+
+test('Hotel Creel: el clima no viene elegido; al elegirlo aparecen los datos del Sol; hora junto a la temperatura y cara a la derecha (Carlos, 13-nov-2026)', () => {
+  const clima = readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8');
+  assert.match(clima, /activo: false\}/);
+  assert.match(clima, /clima\.activo = true; aplica\(\);/);
+  assert.match(clima, /String\(clima\.activo && b\.dataset\.clima === \(clima\.forzado \|\| "real"\)\)/);
+  const sol = readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8');
+  assert.match(sol, /if \(!activo\) return;/);
+  assert.match(sol, /addEventListener\("creel-clima", \(\{detail\}\) => \{ activo = !!detail\.activo; if \(barra\) barra\.hidden = !activo; pinta\(\); \}\);/);
+  assert.match(sol, /if \(barra\) barra\.hidden = true;/);
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /if \(!C \|\| !C\.activo\) return;/);                                   // cielo solo con clima elegido
+  assert.match(pan, /g\.fillText\(hora, 26 \+ g\.measureText\(linea\)\.width \+ 30, H \* \.44\);/); // hora a la derecha de la temperatura
+  assert.match(pan, /g\.font = "800 40px ui-monospace, monospace";/);
+  assert.doesNotMatch(pan, /800 64px/);
+  assert.match(pan, /const h = H \* \.42, w = h \* \.82, x = W - 26 - w, y = H \* \.40/);  // retrato donde estaba la hora
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  assert.match(html, /data-clima="real" title="Clima real de PortAventura" aria-pressed="false"/);
 });

@@ -10,7 +10,8 @@
   const capa = document.getElementById("creel-sol"), g = capa && capa.getContext("2d");
   const slider = document.getElementById("creel-hora"), salida = document.getElementById("creel-hora-out"), ahora = document.getElementById("creel-ahora"), info = document.getElementById("creel-sol-info");
   const estado = {min: 0, vivo: true};
-  let cam = null;
+  let cam = null, activo = false; // los datos del Sol solo se enseñan con un clima elegido (clima.js)
+  const barra = document.querySelector(".creel-solbar");
 
   // Minutos del día en Madrid ⇄ instante real de hoy.
   const madrid = new Intl.DateTimeFormat("en-GB", {timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
@@ -57,6 +58,7 @@
     const w = capa.clientWidth, h = capa.clientHeight; if (!w) return;
     if (capa.width !== w || capa.height !== h) { capa.width = w; capa.height = h; }
     g.clearRect(0, 0, w, h);
+    if (!activo) return;
     // Órbita del día: de día, línea dorada; de noche (bajo el horizonte), no se dibuja.
     g.lineWidth = 2; g.setLineDash([6, 6]); g.strokeStyle = "rgba(255,210,110,.55)"; g.beginPath();
     let dentro = false;
@@ -87,6 +89,8 @@
   if (slider) slider.addEventListener("input", () => fija(+slider.value, false));
   if (ahora) ahora.addEventListener("click", () => fija(minutoAhora(), true));
   addEventListener("creel-camara", ({detail}) => { cam = detail; pinta(); });
+  addEventListener("creel-clima", ({detail}) => { activo = !!detail.activo; if (barra) barra.hidden = !activo; pinta(); });
+  if (barra) barra.hidden = true;
   addEventListener("resize", pinta);
   setInterval(() => { if (estado.vivo) fija(minutoAhora(), true); }, 30000);
 

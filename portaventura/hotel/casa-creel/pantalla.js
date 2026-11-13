@@ -20,7 +20,8 @@
     img.src = rutas[0]; caras.set(slug, img); return img;
   }
   function retrato(img, nombre, s) {
-    const h = H * .46, w = h * .82, x = W / 2 - w / 2, y = H * .36, r = 18;
+    // A la derecha, donde antes iba la hora (Carlos, 13-nov-2026); el nombre encima.
+    const h = H * .42, w = h * .82, x = W - 26 - w, y = H * .40, r = 18;
     const marco = () => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
     g.save(); g.shadowColor = "#ff2a1f"; g.shadowBlur = 34 + Math.sin(s * 3) * 10; g.fillStyle = "#1a0509"; marco(); g.fill(); g.restore();
     g.save(); marco(); g.clip();
@@ -30,8 +31,8 @@
     } else { g.fillStyle = "#3a0a12"; g.fillRect(x, y, w, h); g.fillStyle = "#ffb3a8"; g.font = "800 40px ui-monospace, monospace"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(nombre.toUpperCase(), x + w / 2, y + h / 2); }
     g.restore();
     g.lineWidth = 5; g.strokeStyle = "#ff3326"; marco(); g.stroke();
-    g.font = "800 34px ui-monospace, monospace"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 14;
-    g.fillText(nombre.toUpperCase() + " · " + (estado.cara.texto || "EN LA PUERTA"), W / 2, y + h + 40); g.shadowBlur = 0;
+    g.font = "800 26px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "alphabetic"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 14;
+    g.fillText(nombre.toUpperCase() + " · " + (estado.cara.texto || "EN LA PUERTA"), W - 26, y - 14); g.shadowBlur = 0;
   }
   const esporas = Array.from({length: 46}, () => ({x: Math.random(), y: Math.random(), v: .02 + Math.random() * .05, r: 2 + Math.random() * 4}));
   const colores = ["#ff4a3d", "#ffd23f", "#3fd2ff", "#5dff8a", "#ff6ad5"];
@@ -56,7 +57,7 @@
     g.font = "700 28px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "#ffb3a8"; g.shadowBlur = 0;
     g.fillText("H A W K I N S   ·   H O T E L   C R E E L", W / 2, H * .35);
     if (estado.cara) retrato(cara(estado.cara.slug), estado.cara.quien, s);
-    else if (nivel !== "lejos") { g.font = "800 46px ui-monospace, monospace"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 16; g.fillText(MSG[nivel](quien), W / 2, H * .72); g.shadowBlur = 0; }
+    if (nivel !== "lejos") { g.font = "800 46px ui-monospace, monospace"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 16; g.fillText(MSG[nivel](quien), W / 2, H * .72); g.shadowBlur = 0; }
     const paso = nivel === "puerta" ? .25 : nivel === "cerca" ? .6 : 3;
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((l, i) => {
       const x = W * .05 + i * (W * .9 / 25), y = H * .88, on = ((s + i * .37) % paso) / paso < .7;
@@ -71,7 +72,7 @@
   // Clima real (clima.js, 13-nov-2026): IF sol/nubes/lluvia/tormenta THEN la pantalla lo pinta, con temperatura y hora.
   const gotas = Array.from({length: 220}, () => ({x: Math.random(), y: Math.random(), v: .5 + Math.random() * .7, l: 18 + Math.random() * 26}));
   function cielo(s) {
-    const C = window.creelClima && window.creelClima.clima; if (!C) return;
+    const C = window.creelClima && window.creelClima.clima; if (!C || !C.activo) return;
     const tipo = C.tipo;
     if (tipo === "sol") {
       // El Sol va fuera, en 3D sobre la pantalla (sol.js, Neo 13-nov-2026); aquí solo su luz cálida.
@@ -96,11 +97,14 @@
   function hud() {
     const K = window.creelClima; if (!K) return;
     const C = K.clima, t = C.temp == null ? "— °C" : `${Math.round(C.temp)} °C`;
-    g.save(); g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = 10; g.fillStyle = "#fff";
-    g.font = "800 64px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "top"; g.fillText(window.creelSol ? window.creelSol.etiqueta() : K.hora(), W - 26, H * .44);
-    g.font = "800 50px ui-monospace, monospace"; g.textAlign = "left"; g.fillText(`${K.ICONO[C.tipo]} ${t}`, 26, H * .44);
-    g.font = "600 20px ui-monospace, monospace"; g.fillStyle = "rgba(255,255,255,.75)";
-    g.fillText(`PORTAVENTURA · ${K.NOMBRE[C.tipo].toUpperCase()}${C.forzado ? " · FORZADO" : C.prevision ? " · PREVISIÓN" : C.ok ? " · EN DIRECTO" : ""}`, 28, H * .44 + 62);
+    // Temperatura y, a su derecha, la hora; más pequeño (Carlos, 13-nov-2026). El icono y el nombre del clima, solo si está elegido.
+    const hora = window.creelSol ? window.creelSol.etiqueta() : K.hora();
+    g.save(); g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = 10; g.fillStyle = "#fff"; g.textAlign = "left"; g.textBaseline = "top";
+    g.font = "800 40px ui-monospace, monospace";
+    const linea = `${C.activo ? K.ICONO[C.tipo] + " " : ""}${t}`; g.fillText(linea, 26, H * .44);
+    g.fillStyle = "#ffd9c7"; g.fillText(hora, 26 + g.measureText(linea).width + 30, H * .44);
+    g.font = "600 16px ui-monospace, monospace"; g.fillStyle = "rgba(255,255,255,.75)";
+    g.fillText(`PORTAVENTURA${C.activo ? " · " + K.NOMBRE[C.tipo].toUpperCase() : ""}${C.activo && C.forzado ? " · FORZADO" : C.prevision ? " · PREVISIÓN" : C.ok ? " · EN DIRECTO" : ""}`, 28, H * .44 + 50);
     g.restore();
   }
 
