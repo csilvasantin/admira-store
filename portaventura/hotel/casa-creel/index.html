@@ -7,11 +7,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Expediente Hawkins · PortAventura NeXT</title>
-<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-24">
-<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-24"></script>
-<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-24"></script>
-<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-24"></script>
-<script defer src="/portaventura/hotel/casa-creel/sol.js?v=20261113-24"></script>
+<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-25">
+<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-25"></script>
+<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-25"></script>
+<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-25"></script>
+<script defer src="/portaventura/hotel/casa-creel/sol.js?v=20261113-25"></script>
 <style>
 .nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
 .nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
@@ -219,7 +219,8 @@
       </div>
       <aside class="model-notes">
         <p id="model-status" role="status">Preparando maqueta…</p>
-        <h3 id="stage-name">Plano de implantación</h3>
+        <h3 id="stage-name" role="button" tabindex="0" aria-expanded="false" aria-controls="stage-body" title="Mostrar u ocultar la etapa y los mandos de la maqueta">Plano de implantación</h3>
+        <div id="stage-body" hidden>
         <p id="stage-detail">El hotel emerge como hito interpretativo dentro de Mediterrània.</p>
         <label for="stage">Etapa <output id="stage-number" for="stage">0 / 6</output></label>
         <input type="range" id="stage" min="0" max="6" value="0" disabled>
@@ -232,6 +233,7 @@
           <button id="reset-model" class="action" disabled>Reiniciar</button>
           <a class="action model-interior" href="/portaventura/hotel/casa-creel/dentro/">Interior</a>
           <button id="front-model" class="action" disabled>Frontal</button>
+        </div>
         </div>
         <section class="creel-mission" aria-label="Reglas de la escena">
           <div class="creel-mission-title"><strong>IF · THEN · DO THAT</strong><span id="creel-clues">0 / 3 pistas</span></div>
@@ -270,11 +272,11 @@
       </aside>
     </div>
   </dialog>
-  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-24"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-24"></script>
-  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-24"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-24"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-24"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-25"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-25"></script>
+  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-25"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-25"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-25"></script>
   <footer>ESTUDIO CONCEPTUAL · STRANGER THINGS · ZONA 1 DE 6</footer>
 </main>
 </body>

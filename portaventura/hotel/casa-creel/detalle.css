@@ -170,3 +170,10 @@ dialog::backdrop{background:#0d0a10e0}
 /* Foto del protagonista dentro del botón, sin cambiar su tamaño (Neo, 13-nov-2026) */
 #creel-cast .creel-ficha-foto{flex:none;width:28px;height:34px;object-fit:cover;object-position:50% 15%;border-radius:4px;background:#2a192c}
 #creel-cast .creel-ficha.con-foto svg{display:none}
+
+/* Etapa plegable (Carlos, 13-nov-2026): el titular manda. */
+#stage-name{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;user-select:none}
+#stage-name::after{content:"▾";font-size:.8em;opacity:.7;transition:transform .2s}
+#stage-name[aria-expanded=false]::after{transform:rotate(-90deg)}
+#stage-name:focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
+#stage-body[hidden]{display:none}

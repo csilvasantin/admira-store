@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-24/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-25/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -262,4 +262,15 @@ test('Modo experto: /presentation y /presentaciones saltan a la presentación DM
   const creel = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
   assert.match(creel, /\['presentation', 'presentaciones', 'presentación', 'presentacion'\]\.includes\(command\)/);
   assert.match(creel, /window\.open\('https:\/\/www\.portaventuranext\.com\/dmz\/presentation\/', '_blank', 'noopener'\)/);
+});
+
+test('Hotel Creel: el bloque de etapa va plegado y el titular lo despliega u oculta (Carlos, 13-nov-2026)', () => {
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  assert.match(html, /<h3 id="stage-name" role="button" tabindex="0" aria-expanded="false" aria-controls="stage-body"/);
+  assert.match(html, /<div id="stage-body" hidden>\s*<p id="stage-detail">/);
+  const js = readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8');
+  assert.match(js, /stageName\.addEventListener\("click", \(\) => pliega\(stageBody\.hidden\)\);/);
+  assert.match(js, /localStorage\.setItem\("creel-etapa-abierta"/);
+  const css = readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8');
+  assert.match(css, /#stage-name\[aria-expanded=false\]::after\{transform:rotate\(-90deg\)\}/);
 });
