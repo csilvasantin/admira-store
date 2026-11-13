@@ -207,7 +207,7 @@ const creelScene = (() => {
   function moveActor(id, x, z) {
     const a = cast[id]; if (!a) return;
     if (!home.has(id)) home.set(id, [a.x, a.z]);
-    a.x = x; a.z = z; lastMoved = id; moved(); presence(id); updateZone(id);
+    a.x = x; a.z = z; lastMoved = id; moved(); presence(id); updateZone(id); grabarPronto();
   }
 
   // ── Zona de influencia de la puerta (Carlos, 13-nov-2026): 6 × 4 cuadrados de 5 cm de la cuadrícula, pegados al
@@ -235,7 +235,7 @@ const creelScene = (() => {
   function moveHouse(x, z) {
     const bx = board.width / board.unitCm / 2 - 6, bz = board.depth / board.unitCm / 2 - 5;
     house.x = Math.max(-bx, Math.min(bx, x)); house.z = Math.max(-bz, Math.min(bz, z));
-    moved(); if (lastMoved != null) presence(lastMoved); updateZone();
+    moved(); if (lastMoved != null) presence(lastMoved); updateZone(); grabarPronto();
   }
   let lastMoved = null;
   handle.type = "button"; handle.className = "creel-pin creel-casa"; handle.textContent = "🏠";
@@ -256,16 +256,22 @@ const creelScene = (() => {
   hotelBtn.addEventListener("click", () => { select("casa"); handle.focus({preventScroll:true}); });
   field.append(hotelBtn);
   // Grabar posición (Neo, 12-nov-2026): hotel + personajes en localStorage; se recupera al cargar. «Reiniciar escena» la borra.
+  // Desde el 13-nov-2026 (Carlos) va entre «Activar sonido» y «Reiniciar escena» y se graba SOLA la última posición
+  // cada vez que se mueve el hotel o un personaje; el botón sigue valiendo para grabar a mano y enseña el estado.
   const GUARDA = "creel-posicion-v1";
   const saveBtn = document.createElement("button");
-  saveBtn.type = "button"; saveBtn.className = "creel-guardar-btn"; saveBtn.textContent = "💾 Grabar posición";
-  saveBtn.title = "Guarda dónde están el hotel y los personajes para la próxima vez";
-  saveBtn.addEventListener("click", () => {
-    try { localStorage.setItem(GUARDA, JSON.stringify({casa:[house.x, house.z], cast:cast.map(a => [a.x, a.z])})); saveBtn.textContent = "✓ Posición grabada"; }
+  saveBtn.type = "button"; saveBtn.className = "action creel-guardar-btn"; saveBtn.textContent = "💾 Grabar posición";
+  saveBtn.title = "La última posición del hotel y de los personajes se graba sola; pulsa para grabarla ahora";
+  let saveTimer, saveLabel;
+  function grabar(auto) {
+    try { localStorage.setItem(GUARDA, JSON.stringify({casa:[house.x, house.z], cast:cast.map(a => [a.x, a.z])})); saveBtn.textContent = auto ? "✓ Posición grabada" : "✓ Grabada ahora"; }
     catch { saveBtn.textContent = "No se pudo grabar"; }
-    setTimeout(() => { saveBtn.textContent = "💾 Grabar posición"; }, 1800);
-  });
-  field.append(saveBtn);
+    clearTimeout(saveLabel); saveLabel = setTimeout(() => { saveBtn.textContent = "💾 Grabar posición"; }, 1800);
+  }
+  const grabarPronto = () => { clearTimeout(saveTimer); saveTimer = setTimeout(() => grabar(true), 400); };
+  saveBtn.addEventListener("click", () => { clearTimeout(saveTimer); grabar(false); });
+  const missionControls = document.querySelector(".creel-mission-controls");
+  if (missionControls) missionControls.insertBefore(saveBtn, document.getElementById("creel-reset")); else field.append(saveBtn);
   try {
     const g = JSON.parse(localStorage.getItem(GUARDA) || "null");
     if (g && Array.isArray(g.cast)) {
@@ -314,6 +320,7 @@ const creelScene = (() => {
     },
     reset() {
       state.clear();
+      clearTimeout(saveTimer);
       try { localStorage.removeItem(GUARDA); } catch {}
       if (house.x || house.z) { house.x = 0; house.z = 0; lastMoved = null; moved(); presence(); }
       if (home.size) { for (const [id,[x,z]] of home) { cast[id].x = x; cast[id].z = z; } home.clear(); moved(); presence(); }
