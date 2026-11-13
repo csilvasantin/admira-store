@@ -11,6 +11,22 @@
   const tipoDe = c => c >= 95 ? "tormenta" : (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || (c >= 71 && c <= 77) || c === 85 || c === 86 ? "lluvia" : c >= 2 ? "nubes" : "sol";
   const hora = () => new Intl.DateTimeFormat("es-ES", {hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid"}).format(new Date());
   const regla = document.getElementById("creel-clima-regla"), botones = [...document.querySelectorAll("[data-clima]")], tira = document.getElementById("creel-prevision");
+  // Previsión plegable (Carlos, 14-nov-2026): la tira por horas va escondida; la línea «Sale hh:mm · se pone hh:mm»
+  // la despliega u oculta al pulsarla. Se recuerda en este navegador.
+  const solInfo = document.getElementById("creel-sol-info");
+  let previsionAbierta = (() => { try { return localStorage.getItem("creel-prevision-abierta") === "1"; } catch (e) { return false; } })();
+  function pliegaPrevision(open) {
+    previsionAbierta = !!open;
+    try { localStorage.setItem("creel-prevision-abierta", previsionAbierta ? "1" : "0"); } catch (e) {}
+    if (solInfo) solInfo.setAttribute("aria-expanded", String(previsionAbierta));
+    pintaTira();
+  }
+  if (solInfo) {
+    solInfo.setAttribute("role", "button"); solInfo.tabIndex = 0; solInfo.setAttribute("aria-controls", "creel-prevision"); solInfo.setAttribute("aria-expanded", String(previsionAbierta));
+    solInfo.title = "Mostrar u ocultar la previsión por horas";
+    solInfo.addEventListener("click", () => pliegaPrevision(!previsionAbierta));
+    solInfo.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pliegaPrevision(!previsionAbierta); } });
+  }
   // Previsión por horas (Neo, 13-nov-2026): el slider de 24 h de sol.js elige la hora; fuera de «ahora» manda la previsión.
   let actual = null, horas = [], hSel = null;
   function eligeHora(d) {
@@ -22,7 +38,7 @@
   }
   function pintaTira() {
     if (!tira) return;
-    if (!horas.length) { tira.hidden = true; return; }
+    if (!horas.length || !previsionAbierta) { tira.hidden = true; return; }
     tira.hidden = false;
     const ya = hSel != null ? hSel : (window.creelSol ? Math.floor(window.creelSol.estado.min / 60) : -1);
     tira.replaceChildren(...horas.map((x, h) => {

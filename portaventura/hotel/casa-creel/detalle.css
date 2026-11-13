@@ -177,3 +177,9 @@ dialog::backdrop{background:#0d0a10e0}
 #stage-name[aria-expanded=false]::after{transform:rotate(-90deg)}
 #stage-name:focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
 #stage-body[hidden]{display:none}
+/* Previsión plegable (Carlos, 14-nov-2026): la línea del Sol manda; en modo maqueta sobra «MAQUETA 3D · n piezas». */
+#creel-sol-info{cursor:pointer;user-select:none}
+#creel-sol-info[role=button]::after{content:" ▾";opacity:.7}
+#creel-sol-info[aria-expanded=true]::after{content:" ▴"}
+#creel-sol-info:focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
+.solo-maqueta #model-status{display:none}
