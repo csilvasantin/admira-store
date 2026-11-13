@@ -10,7 +10,8 @@
     main { padding-top: var(--xs-bar-h, 0px); padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
     main > header { padding: 16px 24px; }
     h1 { margin: 0; font-size: 19px; }
-    #status { margin: 5px 0 0; color: #a5b8cc; }
+    #status, #physical { margin: 5px 0 0; color: #a5b8cc; }
+    #physical { font-size: 12px; color: #8fa6c2; }
     .galleon-workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 435px); gap: 20px; padding: 0 24px 24px; align-items: start; }
     .galleon-scene { min-width: 0; background: #10182b; border: 1px solid #26344a; border-radius: 14px; overflow: hidden; }
     #keyboard { display: block; width: 100%; height: min(38vh, 430px); min-height: 220px; touch-action: none; }
@@ -41,12 +42,12 @@
 </head>
 <body>
   <main>
-    <header><h1>Corsair Galleon 100 SD</h1><p id="status" role="status">Esperando la señal de Admira TV</p></header>
+    <header><h1>Corsair Galleon 100 SD</h1><p id="status" role="status">Esperando la señal de Admira TV</p><p id="physical" role="status">Teclado físico: consultando…</p></header>
     <div class="galleon-workspace">
       <section class="galleon-scene" aria-label="Galleon 100 SD">
         <canvas id="keyboard" aria-label="Gemelo 3D del teclado Corsair Galleon 100 SD"></canvas>
         <div class="galleon-controls">
-          <label>Playlist de prueba <select id="playlist"></select></label>
+          <label>Señal <select id="playlist"></select></label>
           <button type="button" id="previous" aria-label="Pieza anterior">◀</button>
           <button type="button" id="next" aria-label="Pieza siguiente">▶</button>
         </div>
@@ -73,6 +74,6 @@
     </div>
   </main>
   <iframe id="feed" allow="autoplay" src="https://admira.tv/galleon.html" tabindex="-1" title="Señal del player Galleon"></iframe>
-  <script type="module" src="./twin.mjs?v=20261112-object-grid"></script>
+  <script type="module" src="./twin.mjs?v=20261113-live"></script>
 </body>
 </html>

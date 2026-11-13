@@ -19,20 +19,34 @@ function stockItem(item) {
   return null;
 }
 
+// «Señal real»: el gemelo enseña lo mismo que el teclado físico (playout o playlist propia de corsair-galleon-100).
+// La playlist de prueba es opcional: sólo manda cuando alguien la elige aquí (encargo #7569, Neo, 13-nov-2026).
+export const LIVE = 'live';
+
 export function attachGalleonPlaylist(feed, importer, status, {
   storageKey = STORAGE_KEY,
   loadingMessage = 'Cargando pantalla horizontal y mosaico vertical…',
+  liveMessage = 'Señal real del player · esperando a Admira TV…',
 } = {}) {
   const origin = new URL(feed.src).origin;
   const picker = document.querySelector('#playlist');
-  let entries = initial.slice(), current = 0, sequence = 0, imageTimer;
+  let entries = initial.slice(), current = -1, sequence = 0, imageTimer;
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
     if (Array.isArray(saved)) entries = entries.concat(saved.slice(0, 30).filter(row =>
       row && typeof row.title === 'string' && stockItem(row.landscape) && stockItem(row.portrait)));
   } catch {}
 
+  function live() {
+    current = -1;
+    picker.value = LIVE;
+    status.textContent = liveMessage;
+    clearTimeout(imageTimer);
+    sync();
+  }
+
   function select(index) {
+    if (!entries.length) return live();
     current = (index + entries.length) % entries.length;
     sequence++;
     picker.value = String(current);
@@ -44,17 +58,19 @@ export function attachGalleonPlaylist(feed, importer, status, {
 
   function sync() {
     feed.contentWindow?.postMessage({ type: 'admira:galleon:subscribe' }, origin);
-    feed.contentWindow?.postMessage({ type: 'admira:galleon:select', sequence, ...entries[current] }, origin);
+    if (current < 0) feed.contentWindow?.postMessage({ type: 'admira:galleon:live' }, origin);
+    else feed.contentWindow?.postMessage({ type: 'admira:galleon:select', sequence, ...entries[current] }, origin);
   }
 
   function render() {
-    picker.replaceChildren(...entries.map((entry, index) => new Option(entry.title, String(index))));
-    picker.value = String(current);
+    picker.replaceChildren(new Option('Señal real del player (lo mismo que el teclado)', LIVE),
+      ...entries.map((entry, index) => new Option('Prueba · ' + entry.title, String(index))));
+    picker.value = current < 0 ? LIVE : String(current);
   }
 
-  picker.onchange = () => select(Number(picker.value));
-  document.querySelector('#previous').onclick = () => select(current - 1);
-  document.querySelector('#next').onclick = () => select(current + 1);
+  picker.onchange = () => picker.value === LIVE ? live() : select(Number(picker.value));
+  document.querySelector('#previous').onclick = () => current < 0 ? select(entries.length - 1) : (current === 0 ? live() : select(current - 1));
+  document.querySelector('#next').onclick = () => current < 0 ? select(0) : (current === entries.length - 1 ? live() : select(current + 1));
 
   window.addEventListener('message', event => {
     if (event.origin !== origin) return;

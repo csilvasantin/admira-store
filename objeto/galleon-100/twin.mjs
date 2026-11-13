@@ -197,6 +197,23 @@ for (const display of [lcd, ...keys]) {
 }
 
 const subscribe = attachGalleonPlaylist(feed, document.querySelector('#importer'), status);
+// Teclado físico: lo que late el adaptador USB del Mac Studio en /signage/now (nunca lo que diga el gemelo).
+const physical = document.querySelector('#physical');
+async function pollPhysical() {
+  try {
+    const response = await fetch('https://api.admira.store/signage/now?screen=corsair-galleon-100', { cache: 'no-store', signal: AbortSignal.timeout(6000) });
+    const now = await response.json();
+    const seen = Number(now?.lastSeen) || 0, age = seen ? Math.round((Date.now() - seen) / 1000) : null;
+    const output = now?.health?.output;
+    if (physical) physical.textContent = !seen ? 'Teclado físico: sin latido todavía'
+      : age > 45 ? 'Teclado físico: sin señal desde hace ' + (age < 3600 ? age + ' s' : Math.round(age / 3600) + ' h')
+      : output === 'yielded' || now?.standby ? 'Teclado físico: conectado, cediendo el USB (Elgato o controlador Starbucks)'
+      : 'Teclado físico: en antena' + (now?.item?.title ? ' · ' + String(now.item.title).slice(0, 60) : '');
+  } catch { if (physical) physical.textContent = 'Teclado físico: estado no disponible'; }
+}
+void pollPhysical();
+const physicalTimer = setInterval(pollPhysical, 15000);
+window.addEventListener('pagehide', () => clearInterval(physicalTimer), { once: true });
 feed.addEventListener('load', subscribe);
 let lastFrame = 0;
 const statusTimer = setInterval(() => {
@@ -223,8 +240,11 @@ window.addEventListener('message', event => {
       texture.needsUpdate = true;
     });
     lastFrame = Date.now();
-    const message = ready?.landscape && ready?.portrait ? 'Emitiendo en la pantalla superior y en las 12 teclas'
-      : playing ? 'Cargando la otra orientación…' : 'Cargando la playlist de prueba…';
+    const air = event.data.onAir && typeof event.data.onAir === 'object' ? event.data.onAir : null;
+    const piece = air?.title ? ' · ' + String(air.title).slice(0, 80) + (air.total > 1 ? ' (' + (air.index + 1) + '/' + air.total + ')' : '') : '';
+    const source = air?.source === 'twin' ? 'Playlist de prueba' : air?.source === 'playout' ? 'Playout de la flota' : 'Señal real del teclado';
+    const message = ready?.landscape && ready?.portrait ? source + ' · en la pantalla superior y en las 12 teclas' + piece
+      : playing ? source + ' · cargando la otra orientación…' + piece : air?.source === 'twin' ? 'Cargando la playlist de prueba…' : 'Señal real del player · sin contenido en antena todavía';
     if (status.textContent !== message) status.textContent = message;
   } finally {
     landscape.close();
