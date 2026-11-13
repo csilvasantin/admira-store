@@ -200,15 +200,21 @@ const subscribe = attachGalleonPlaylist(feed, document.querySelector('#importer'
 // Teclado físico: lo que late el adaptador USB del Mac Studio en /signage/now (nunca lo que diga el gemelo).
 const physical = document.querySelector('#physical');
 async function pollPhysical() {
+  // La presencia viva está en /signage/screens (reloj de presencia del worker); /signage/now sólo aporta
+  // la pieza y el standby cuando el KV los ha guardado, que no siempre es al instante.
   try {
-    const response = await fetch('https://api.admira.store/signage/now?screen=corsair-galleon-100', { cache: 'no-store', signal: AbortSignal.timeout(6000) });
-    const now = await response.json();
-    const seen = Number(now?.lastSeen) || 0, age = seen ? Math.round((Date.now() - seen) / 1000) : null;
+    const [screens, now] = await Promise.all([
+      fetch('https://api.admira.store/signage/screens', { cache: 'no-store', signal: AbortSignal.timeout(6000) }).then(r => r.json()).catch(() => null),
+      fetch('https://api.admira.store/signage/now?screen=corsair-galleon-100', { cache: 'no-store', signal: AbortSignal.timeout(6000) }).then(r => r.json()).catch(() => null),
+    ]);
+    const presence = (screens?.screens || []).find(entry => entry?.screen === 'corsair-galleon-100') || null;
+    const age = presence ? Number(presence.age_seconds) : (Number(now?.lastSeen) ? Math.round((Date.now() - Number(now.lastSeen)) / 1000) : null);
     const output = now?.health?.output;
-    if (physical) physical.textContent = !seen ? 'Teclado físico: sin latido todavía'
+    if (!physical) return;
+    physical.textContent = age === null || !Number.isFinite(age) ? 'Teclado físico: sin latido todavía'
       : age > 45 ? 'Teclado físico: sin señal desde hace ' + (age < 3600 ? age + ' s' : Math.round(age / 3600) + ' h')
       : output === 'yielded' || now?.standby ? 'Teclado físico: conectado, cediendo el USB (Elgato o controlador Starbucks)'
-      : 'Teclado físico: en antena' + (now?.item?.title ? ' · ' + String(now.item.title).slice(0, 60) : '');
+      : 'Teclado físico: en antena' + (presence?.version ? ' · ' + presence.version : '') + (now?.item?.title ? ' · ' + String(now.item.title).slice(0, 60) : '');
   } catch { if (physical) physical.textContent = 'Teclado físico: estado no disponible'; }
 }
 void pollPhysical();

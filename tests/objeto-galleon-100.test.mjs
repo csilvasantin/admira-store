@@ -29,6 +29,8 @@ test('por defecto el gemelo enseña la señal real (la misma que el teclado) y l
 
 test('el gemelo cuenta la fuente en antena y el estado del teclado físico desde /signage/now, nunca desde sí mismo', () => {
   assert.match(twin, /https:\/\/api\.admira\.store\/signage\/now\?screen=corsair-galleon-100/);
+  assert.match(twin, /https:\/\/api\.admira\.store\/signage\/screens/);
+  assert.match(twin, /entry\?\.screen === 'corsair-galleon-100'/);
   assert.match(twin, /Teclado físico: en antena/);
   assert.match(twin, /cediendo el USB/);
   assert.match(twin, /air\?\.source === 'twin' \? 'Playlist de prueba' : air\?\.source === 'playout' \? 'Playout de la flota' : 'Señal real del teclado'/);
