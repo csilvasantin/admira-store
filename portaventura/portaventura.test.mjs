@@ -90,7 +90,7 @@ test('Casa Creel: clima real de PortAventura (Open-Meteo) en la pantalla y icono
 });
 test('Casa Creel: pantalla LED de lado a lado (+20 % alto), título arriba y botón Conectar admira.tv (Neo 13-nov-2026)', () => {
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
-  assert.match(pan, /const ANCHO = 48, ALTO = 18;/); assert.match(pan, /g\.translate\(W \/ 2, H \* \.2\)/); assert.match(pan, /localStorage\.setItem\("creel-tv"/);
+  assert.match(pan, /const ANCHO = 48, ALTO = 18;/); assert.match(pan, /g\.translate\(W \/ 2, H \* \.13\)/); assert.match(pan, /localStorage\.setItem\("creel-tv"/);
   const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.match(html, /Conectar admira\.tv/); assert.match(html, /id="creel-tv-url"/);
   const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8'); assert.match(sel, /topSync/);
 });
@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-18/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-19/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -219,4 +219,10 @@ test('Hotel Creel en modo maqueta: sin cabecera del diálogo y el título baja a
   assert.match(css, /\.solo-maqueta \.creel-rotulo\{display:block\}/);
   const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
   assert.match(html, /<div class="creel-rotulo" aria-hidden="true"><p class="eyebrow">ANEXO · LA SEÑAL<\/p><h2>Hotel Creel<\/h2><\/div>/);
+});
+
+test('Hotel Creel: el título STRANGER THINGS y HAWKINS · HOTEL CREEL van más arriba en la pantalla (Carlos, 13-nov-2026)', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /g\.translate\(W \/ 2, H \* \.13\)/);
+  assert.match(pan, /H O T E L   C R E E L", W \/ 2, H \* \.265\)/);
 });
