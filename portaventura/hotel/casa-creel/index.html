@@ -48,7 +48,7 @@
   </div></details>
   <details><summary aria-label="Experto" data-tooltip="Experto"><span aria-hidden="true">⌘</span></summary><div class="nv-panel nv-bottom"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Experto" aria-orientation="horizontal"></div>
     <form><label for="nv-command">Comando CLI</label><input id="nv-command" autocomplete="off" enterkeyhint="go" placeholder="brand stranger things · mapa"></form>
-    <output aria-live="polite">/mapa · /store · /hotel · /restaurante · /atraccion</output>
+    <output aria-live="polite">/mapa · /store · /hotel · /restaurante · /atraccion · /presentation</output>
   </div></details>
   
 </div><script>
@@ -146,7 +146,12 @@
     const raw = input.startsWith('/') ? input.slice(1).trimStart() : input;
     const [verb, ...args] = raw.split(/\s+/);
     const command = verb.toLowerCase();
-    if (command === 'brand' && args.length) {
+    if (['presentation', 'presentaciones', 'presentación', 'presentacion'].includes(command)) {
+      // Presentación de PortAventura NeXT en la DMZ (Access): pestaña nueva (Carlos, 13-nov-2026).
+      window.open('https://www.portaventuranext.com/dmz/presentation/', '_blank', 'noopener');
+      cli.value = '';
+      cli.placeholder = output.textContent = 'Presentación · portaventuranext.com/dmz/presentation ↗';
+    } else if (command === 'brand' && args.length) {
       const requested = args.join(' ').slice(0, 64);
       const name = requested.toLowerCase() === 'stranger things' ? 'Stranger Things' : requested;
       showBrand(name);
