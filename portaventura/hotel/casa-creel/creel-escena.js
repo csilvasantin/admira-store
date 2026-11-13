@@ -40,6 +40,8 @@ const creelScene = (() => {
   let camera = null;
   const home = new Map();
   const house = {x:0, z:0};
+  // Slug del personaje (fotos/<slug>.jpg · fotos/lego-<slug>.webp): «Sr. Whatsit» → sr-whatsit.
+  const slugOf = a => a.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const handle = document.createElement("button");
   let audio;
   const sound = document.getElementById("creel-sound");
@@ -168,7 +170,7 @@ const creelScene = (() => {
     // Foto del protagonista en el botón (Neo, 13-nov-2026), mismo tamaño: primero la foto hiperrealista
     // fotos/<slug>.jpg; si no está, la minifigura del set (fotos/lego-<slug>.webp); si tampoco, la ilustración.
     {
-      const slug = actor.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const slug = slugOf(actor);
       const foto = document.createElement("img"), rutas = [`/portaventura/hotel/casa-creel/fotos/${slug}.jpg`, `/portaventura/hotel/casa-creel/fotos/lego-${slug}.webp`];
       foto.alt = ""; foto.className = "creel-ficha-foto"; foto.decoding = "async";
       foto.onload = () => button.classList.add("con-foto");
@@ -205,14 +207,35 @@ const creelScene = (() => {
   function moveActor(id, x, z) {
     const a = cast[id]; if (!a) return;
     if (!home.has(id)) home.set(id, [a.x, a.z]);
-    a.x = x; a.z = z; lastMoved = id; moved(); presence(id);
+    a.x = x; a.z = z; lastMoved = id; moved(); presence(id); updateZone(id);
+  }
+
+  // ── Zona de influencia de la puerta (Carlos, 13-nov-2026): 6 × 4 cuadrados de 5 cm de la cuadrícula, pegados al
+  // porche (borde delantero de la huella del hotel, z = casa + 4,5) y centrados en la puerta. El suelo la pinta de
+  // otro color (creel.js) y, si un personaje entra arrastrado, su cara sale en la pantalla gigante (pantalla.js). ──
+  const ZONE = {cols: 6, rows: 4, cell: 5 / board.unitCm};
+  function zoneRect() {
+    const w = ZONE.cols * ZONE.cell, d = ZONE.rows * ZONE.cell, cx = house.x + 1, z0 = house.z + 4.5;
+    return {x0: cx - w / 2, x1: cx + w / 2, z0, z1: z0 + d};
+  }
+  const inZone = a => { const r = zoneRect(); return a.x >= r.x0 && a.x <= r.x1 && a.z >= r.z0 && a.z <= r.z1; };
+  let zoneActor = -1;
+  function updateZone(movedId) {
+    const inside = cast.filter(inZone).map(a => a.id);
+    // Manda quien acaba de entrar arrastrado; si se va, se queda el que ya estaba. Quien empieza la escena dentro
+    // (Lucas, en la entrada) no enciende la pantalla: la cara sale al ARRASTRAR a alguien hasta la puerta.
+    zoneActor = movedId != null && inside.includes(movedId) ? movedId : inside.includes(zoneActor) ? zoneActor : -1;
+    pins.forEach((pin, i) => pin.classList.toggle("creel-en-zona", inside.includes(i)));
+    const a = zoneActor >= 0 ? cast[zoneActor] : null;
+    window.dispatchEvent(new CustomEvent("creel-zona", {detail: {id: zoneActor, quien: a ? a.name : "", slug: a ? slugOf(a) : "", dentro: inside.map(i => cast[i].name), rect: zoneRect()}}));
+    moved();
   }
 
   // Mover la casa: asa 🏠 arrastrable y flechas del teclado (X e Y del tablero). La presencia se mide desde aquí.
   function moveHouse(x, z) {
     const bx = board.width / board.unitCm / 2 - 6, bz = board.depth / board.unitCm / 2 - 5;
     house.x = Math.max(-bx, Math.min(bx, x)); house.z = Math.max(-bz, Math.min(bz, z));
-    moved(); if (lastMoved != null) presence(lastMoved);
+    moved(); if (lastMoved != null) presence(lastMoved); updateZone();
   }
   let lastMoved = null;
   handle.type = "button"; handle.className = "creel-pin creel-casa"; handle.textContent = "🏠";
@@ -250,6 +273,7 @@ const creelScene = (() => {
       g.cast.forEach(([x, z], id) => { const a = cast[id]; if (!a || !Number.isFinite(x) || !Number.isFinite(z) || (a.x === x && a.z === z)) return; home.set(id, [a.x, a.z]); a.x = x; a.z = z; });
     }
   } catch { /* posición grabada ilegible: se ignora */ }
+  queueMicrotask(() => updateZone());
   document.addEventListener("keydown", e => {
     if (sel == null || layers.hidden || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key]; if (!d) return;
@@ -269,6 +293,8 @@ const creelScene = (() => {
 
   return {
     cast,board,house,moveActor,moveHouse,presence,
+    zone() { return {...zoneRect(), actor: zoneActor}; },
+    zoneCells: ZONE,
     onMove(callback) { moved = callback; },
     bindCamera(callback) { turnTo = callback; },
     setVisible(visible) { layers.hidden = !visible; field.hidden = !visible; portal.hidden = !visible; },
@@ -291,6 +317,7 @@ const creelScene = (() => {
       try { localStorage.removeItem(GUARDA); } catch {}
       if (house.x || house.z) { house.x = 0; house.z = 0; lastMoved = null; moved(); presence(); }
       if (home.size) { for (const [id,[x,z]] of home) { cast[id].x = x; cast[id].z = z; } home.clear(); moved(); presence(); }
+      updateZone();
       active = -1;
       pins.concat(selectors).forEach(button => button.setAttribute("aria-pressed","false"));
       delete viewer.dataset.effect;
