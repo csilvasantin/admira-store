@@ -9,6 +9,48 @@
   const g = lienzo.getContext("2d");
   // cara: quien está en la zona de la puerta manda; si no hay nadie, la figura elegida (clic en su ficha o en su pin).
   const estado = {nivel: "lejos", quien: "", cara: null, caraZona: null, caraSel: null};
+  // Contenido de admira.tv en la pared (Carlos, 13-nov-2026): la playlist de la pantalla LED (hotel-creel, la del mando)
+  // se reproduce en bucle detrás del título con tinte Hawkins; vídeo mudo, imágenes su tiempo; se relee cada minuto.
+  const PLAYLIST_API = "https://admira.tv/api/playlist?screen=hotel-creel";
+  let lista = [], listaNombre = "", listaRev = null, idx = -1, media = null, mediaOk = false, mediaTimer = null;
+  function siguiente() {
+    clearTimeout(mediaTimer); mediaTimer = null;
+    if (media && media.tagName === "VIDEO") { try { media.pause(); media.removeAttribute("src"); media.load(); } catch (e) {} }
+    media = null; mediaOk = false;
+    if (!lista.length) return;
+    idx = (idx + 1) % lista.length;
+    const it = lista[idx], esVideo = it.assetType !== "image", el = document.createElement(esVideo ? "video" : "img");
+    el.crossOrigin = "anonymous";
+    if (esVideo) {
+      el.muted = true; el.playsInline = true; el.preload = "auto"; el.loop = false;
+      el.onended = siguiente; el.onerror = siguiente;
+      el.oncanplay = () => { mediaOk = true; el.play().catch(() => {}); };
+      mediaTimer = setTimeout(siguiente, (Math.max(2, Number(it.seconds) || 10) + 8) * 1000);
+    } else {
+      el.onload = () => { mediaOk = true; mediaTimer = setTimeout(siguiente, Math.max(2, Number(it.seconds) || 10) * 1000); };
+      el.onerror = siguiente;
+    }
+    el.src = it.asset; media = el;
+  }
+  async function cargaLista() {
+    try {
+      const d = await (await fetch(PLAYLIST_API, {cache: "no-store"})).json(), dr = d && d.draft;
+      if (!d || !d.ok || !dr || !Array.isArray(dr.items) || dr.rev === listaRev) return;
+      listaRev = dr.rev; listaNombre = String(dr.name || "");
+      lista = dr.items.filter(i => i && /^https:\/\//.test(i.asset || "") && ["video", "image", "animation"].includes(i.assetType));
+      idx = -1; siguiente();
+    } catch (e) { /* sin red o sin CORS: se queda el fondo rojo */ }
+  }
+  cargaLista(); setInterval(cargaLista, 60000);
+  function fondoContenido() {
+    if (!media || !mediaOk || (media.tagName === "VIDEO" && media.readyState < 2)) return false;
+    const mw = media.videoWidth || media.naturalWidth, mh = media.videoHeight || media.naturalHeight;
+    if (!mw || !mh) return false;
+    const k = Math.max(W / mw, H / mh), dw = mw * k, dh = mh * k;
+    try { g.drawImage(media, (W - dw) / 2, (H - dh) / 2, dw, dh); } catch (e) { return false; }
+    g.fillStyle = "rgba(140,11,20,.42)"; g.fillRect(0, 0, W, H); // tinte Hawkins
+    return true;
+  }
   // Cara del personaje que entra en la zona de la puerta (Carlos, 13-nov-2026): fotos/<slug>.jpg → lego-<slug>.webp.
   const caras = new Map();
   function cara(slug) {
@@ -48,6 +90,7 @@
     const c = once ? ["#7ad8ff", "#1d4f8a", "#06122e"] : vecna ? ["#cf2549", "#6b1041", "#150b27"] : nivel === "puerta" ? ["#ff6a5c", "#c3101f", "#3a0410"] : ["#ff3b2f", "#8c0b14", "#2a0308"];
     fondo.addColorStop(0, c[0]); fondo.addColorStop(.35, c[1]); fondo.addColorStop(1, c[2]);
     g.fillStyle = fondo; g.fillRect(0, 0, W, H);
+    const conContenido = fondoContenido();
     if (rayo) { g.fillStyle = "rgba(255,240,240,.35)"; g.fillRect(0, 0, W, H); }
     cielo(s);
     g.fillStyle = "rgba(243,230,255,.75)";
@@ -70,7 +113,7 @@
       g.globalAlpha = on ? 1 : nombre ? .12 : .18; g.fillStyle = colores[i % 5]; g.shadowColor = colores[i % 5]; g.shadowBlur = on ? (nombre ? 26 : 18) : 0;
       g.beginPath(); g.arc(x, y, 12, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = "#1a0a0a"; g.font = "700 13px Georgia, serif"; g.textAlign = "center"; g.fillText(l, x, y + 4.5); g.globalAlpha = 1;
     });
-    g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText("admira.tv · sin señal", W - 16, H - 12);
+    g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText(conContenido && lista[idx] ? "admira.tv · " + String(lista[idx].title || listaNombre).slice(0, 60) : "admira.tv · sin señal", W - 16, H - 12);
     hud();
     return lienzo;
   }
@@ -118,16 +161,14 @@
   let tv = null;
   // Botón «Conectar admira.tv» (Neo 13-nov-2026): la URL se guarda en este navegador (localStorage creel-tv).
   const valida = v => { try { const u = new URL(v); return u.protocol === "https:" && /(^|\.)admira\.tv$/.test(u.hostname) ? u.href : null; } catch (e) { return null; } };
-  // Por defecto (Carlos, 13-nov-2026) la pantalla gigante va conectada al kiosko /creel de admira.tv, que reproduce la
-  // playlist «hotel-creel» del mando con el título, las luces y los personajes. «Desconectar» guarda «off» y vuelve al
-  // lienzo local; «Conectar» con otra URL https de admira.tv la sustituye.
-  const TV_DEFECTO = "https://admira.tv/creel/";
-  const guardada = () => { try { return localStorage.getItem("creel-tv") || ""; } catch (e) { return ""; } };
-  const elegida = new URLSearchParams(location.search).get("tv") || window.CREEL_TV || guardada();
-  tv = elegida === "off" ? null : valida(elegida || TV_DEFECTO);
+  // La pantalla es la PARED de la escena (Carlos, 13-nov-2026): pinta ella misma el contenido de admira.tv en su textura
+  // 3D, así el hotel y los personajes quedan delante y nada la atraviesa. El iframe (Conectar admira.tv) queda como
+  // opción manual: al estar por encima del lienzo, tapa lo que tenga delante.
+  const guardada = () => { try { const v = localStorage.getItem("creel-tv") || ""; return v === "off" ? "" : v; } catch (e) { return ""; } };
+  tv = valida(new URLSearchParams(location.search).get("tv") || window.CREEL_TV || guardada());
   const forma = document.getElementById("creel-tv"), campo = document.getElementById("creel-tv-url"), aviso = document.getElementById("creel-tv-estado"), off = document.getElementById("creel-tv-off");
   if (campo && tv) campo.value = tv;
-  if (aviso) aviso.textContent = tv ? "Conectada a admira.tv · " + tv.replace("https://", "") : "Sin señal · fondo Stranger Things";
+  if (aviso) aviso.textContent = tv ? "Conectada a admira.tv · " + tv.replace("https://", "") : "Playlist hotel-creel de admira.tv en la pared";
   if (off) off.hidden = !tv;
   if (forma) forma.addEventListener("submit", e => {
     e.preventDefault(); const u = valida(campo.value.trim());
@@ -135,7 +176,7 @@
     try { localStorage.setItem("creel-tv", u); } catch (er) {}
     const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString();
   });
-  if (off) off.addEventListener("click", () => { try { localStorage.setItem("creel-tv", "off"); } catch (er) {} const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString(); });
+  if (off) off.addEventListener("click", () => { try { localStorage.removeItem("creel-tv"); } catch (er) {} const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString(); });
   const el = document.getElementById("creel-pantalla");
   if (el) { el.replaceChildren(); el.hidden = true; }
   if (tv && el) {
