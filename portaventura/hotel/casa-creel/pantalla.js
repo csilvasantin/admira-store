@@ -52,12 +52,13 @@
     cielo(s);
     g.fillStyle = "rgba(243,230,255,.75)";
     for (const e of esporas) { const y = ((e.y - s * e.v) % 1 + 1) % 1; g.beginPath(); g.arc(e.x * W + Math.sin(s + e.y * 9) * 12, y * H, e.r, 0, 7); g.fill(); }
-    g.save(); g.translate(W / 2, H * .2); if (nivel === "puerta" && !once) g.scale(1, -1);
+    // Título y subtítulo más arriba (Carlos, 13-nov-2026): dejan sitio al retrato y a la HUD.
+    g.save(); g.translate(W / 2, H * .13); if (nivel === "puerta" && !once) g.scale(1, -1);
     g.font = "900 128px Georgia, 'Times New Roman', serif"; g.textAlign = "center"; g.textBaseline = "middle";
     g.shadowColor = once ? "#3fd2ff" : "#ff2a1f"; g.shadowBlur = 30; g.lineWidth = 4; g.strokeStyle = once ? "#9be3ff" : "#ff3326";
     g.strokeText("STRANGER THINGS", 0, 0); g.restore();
     g.font = "700 28px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "#ffb3a8"; g.shadowBlur = 0;
-    g.fillText("H A W K I N S   ·   H O T E L   C R E E L", W / 2, H * .35);
+    g.fillText("H A W K I N S   ·   H O T E L   C R E E L", W / 2, H * .265);
     if (estado.cara) retrato(cara(estado.cara.slug), estado.cara.quien, s);
     if (nivel !== "lejos") { g.font = "800 46px ui-monospace, monospace"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 16; g.fillText(MSG[nivel](quien), W / 2, H * .72); g.shadowBlur = 0; }
     const paso = nivel === "puerta" ? .25 : nivel === "cerca" ? .6 : 3;
