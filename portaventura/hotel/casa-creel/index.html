@@ -7,9 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Expediente Hawkins · PortAventura NeXT</title>
-<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261112-11">
-<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261112-11"></script>
-<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261112-11"></script>
+<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-1">
+<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-1"></script>
+<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-1"></script>
+<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-1"></script>
 <style>
 .nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
 .nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
@@ -204,6 +205,7 @@
         <canvas id="creel-canvas" aria-label="Casa Creel en 3D. Usa los botones de giro o arrastra para cambiar la vista."></canvas>
         <img id="creel-fallback" src="/portaventura/hotel/casa-creel/creel-respaldo.jpg" alt="Render de la maqueta conceptual de la Casa Creel">
         <div id="creel-atmosphere" aria-hidden="true"></div>
+        <canvas id="creel-lluvia" aria-hidden="true"></canvas>
         <div id="creel-portal" aria-hidden="true"></div>
         <div id="creel-pins" hidden></div>
         <span class="plan-label">BASE CENITAL · 120 × 90 CM · CUADRÍCULA 5 CM</span>
@@ -226,6 +228,7 @@
         <section class="creel-mission" aria-label="Reglas de la escena">
           <div class="creel-mission-title"><strong>IF · THEN · DO THAT</strong><span id="creel-clues">0 / 3 pistas</span></div>
           <p><b>IF</b> <span id="creel-event">Elige una figura</span></p>
+          <p><b>IF</b> clima <span id="creel-clima-regla">…</span></p>
           <p role="status"><b>DO</b> <span id="creel-result">Encuentra las tres pistas para abrir el portal.</span></p>
           <div id="creel-cast" aria-label="13 personajes" hidden></div>
           <div class="creel-mission-controls">
@@ -234,15 +237,21 @@
           </div>
           <small>Reglas XPL de Admira.store · figuras 3D conceptuales basadas en el reparto del set LEGO 11370.</small>
         </section>
-        <small>Modelo conceptual a partir del Blender del proyecto. Escala y ubicación orientativas.</small>
+        <div class="creel-clima" role="group" aria-label="Clima: real de PortAventura o forzado">
+          <span class="creel-clima-t">CLIMA</span>
+          <button type="button" class="action" data-clima="real" title="Clima real de PortAventura" aria-pressed="true">🛰️</button>
+          <button type="button" class="action" data-clima="sol" title="Forzar sol" aria-pressed="false">☀️</button>
+          <button type="button" class="action" data-clima="lluvia" title="Forzar lluvia" aria-pressed="false">🌧️</button>
+          <button type="button" class="action" data-clima="tormenta" title="Forzar tormenta (truenos)" aria-pressed="false">⛈️</button>
+        </div>
       </aside>
     </div>
   </dialog>
-  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261112-11"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261112-11"></script>
-  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261112-11"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261112-11"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261112-11"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-1"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-1"></script>
+  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-1"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-1"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-1"></script>
   <footer>ESTUDIO CONCEPTUAL · STRANGER THINGS · ZONA 1 DE 6</footer>
 </main>
 </body>
