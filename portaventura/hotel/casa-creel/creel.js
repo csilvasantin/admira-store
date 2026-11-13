@@ -6,7 +6,7 @@
   const fallback = document.getElementById("creel-fallback");
   const status = document.getElementById("model-status");
   const slider = document.getElementById("stage");
-  const controls = Object.fromEntries(["remove-piece", "add-piece", "turn-left", "turn-right", "top-model", "reset-model"]
+  const controls = Object.fromEntries(["remove-piece", "add-piece", "turn-left", "turn-right", "top-model", "reset-model", "front-model"]
     .map(id => [id, document.getElementById(id)]));
   const descriptions = [
     "Implantación esquemática junto al lago. El plano sitúa el hito dentro de la zona existente.",
@@ -77,6 +77,8 @@
   controls["turn-left"].onclick = () => { yaw -= Math.PI / 12; selectStage(stage, false); };
   controls["turn-right"].onclick = () => { yaw += Math.PI / 12; selectStage(stage, false); };
   controls["top-model"].onclick = () => { yaw = 0; pitch = Math.PI / 2; selectStage(stage, false); };
+  // Vista frontal (Carlos, 13-nov-2026): de cara al porche y a la pantalla, a ras de visitante.
+  controls["front-model"].onclick = () => { yaw = 0; pitch = .3; selectStage(stage, false); };
   controls["reset-model"].onclick = () => { creelScene.reset(); yaw = .44; pitch = .42; selectStage(0, false); };
   document.getElementById("creel-reset").addEventListener("click", creelScene.reset);
   creelScene.bindCamera(actor => {

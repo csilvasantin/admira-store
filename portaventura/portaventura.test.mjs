@@ -121,7 +121,8 @@ test('Hotel Creel: foto del protagonista en cada botón sin cambiar su tamaño (
 
 test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y manda la cara del personaje a la pantalla (Carlos, 13-nov-2026)', () => {
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
-  assert.match(esc, /const ZONE = \{cols: 6, rows: 4, cell: 5 \/ board\.unitCm\}/);
+  assert.match(esc, /const ZONE = \{cols: 8, rows: 7, cell: 5 \/ board\.unitCm\}/);
+  assert.match(esc, /z1: Math\.min\(z0 \+ d, board\.depth \/ board\.unitCm \/ 2\)/); // hasta el borde delantero de la base
   assert.match(esc, /z0 = house\.z \+ 4\.5/);                       // pegada al borde delantero de la huella del hotel
   assert.match(esc, /new CustomEvent\("creel-zona"/);
   assert.match(esc, /presence\(id\); updateZone\(id\);/);            // al arrastrar un personaje se reevalúa la zona
@@ -135,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-10/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-11/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -147,4 +148,18 @@ test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reinicia
   assert.match(esc, /updateZone\(\); grabarPronto\(\);/);              // al mover el hotel
   assert.match(esc, /clearTimeout\(saveTimer\);\n\s+try \{ localStorage\.removeItem\(GUARDA\)/); // reiniciar no vuelve a grabar
   assert.doesNotMatch(esc, /^\s*field\.append\(saveBtn\);/m);   // ya no vive en la rejilla de personajes
+});
+
+test('Hotel Creel: elegir una figura no mueve el mapa y pone su cara en la pantalla; botón Frontal junto a Interior (Carlos, 13-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /button\.addEventListener\("click", \(\) => \{ activate\(actor, false\); select\(actor\.id\); \}\);/);
+  assert.doesNotMatch(esc, /activate\(actor, true\)/);
+  assert.match(esc, /new CustomEvent\("creel-personaje"/);
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /addEventListener\("creel-personaje"/);
+  assert.match(pan, /estado\.cara = estado\.caraZona \|\| estado\.caraSel/);
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  assert.match(html, /Interior<\/a>\s*<button id="front-model" class="action" disabled>Frontal<\/button>/);
+  const js = readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8');
+  assert.match(js, /"front-model"\]/); assert.match(js, /controls\["front-model"\]\.onclick = \(\) => \{ yaw = 0; pitch = \.3;/);
 });
