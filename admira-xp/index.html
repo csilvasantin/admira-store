@@ -926,6 +926,8 @@ html.xp-demo-video :is(.matrix-incident-editor:not(.matrix-ficha), #telegramDock
   #topBar > :is(#projectContextChip,#bbClock,#bbDate,.stat,.sep,.comp-box,#bbStatus,#xpTopNotify){display:none!important}
   #topBar{height:46px;gap:9px;padding:0 10px}
   #topBar .quad-icon{flex-shrink:0}
+  /* Con un gemelo incrustado (PortAventura, Objeto, Computer) el mute de la barra sobra: el gemelo trae su propio sonido (Carlos, 13-nov-2026). */
+  body.xp-twin-open #pfAudio{display:none}
   #topBar.xtore-session-hud{height:46px!important;min-height:0!important;padding:0 10px!important;flex-wrap:nowrap!important}
 </style>
 <div id="altadisAdapt" hidden>

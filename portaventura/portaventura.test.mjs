@@ -226,3 +226,11 @@ test('Hotel Creel: el título STRANGER THINGS y HAWKINS · HOTEL CREEL van más 
   assert.match(pan, /g\.translate\(W \/ 2, H \* \.13\)/);
   assert.match(pan, /H O T E L   C R E E L", W \/ 2, H \* \.265\)/);
 });
+
+test('Xpace: sin «Abrir ↗» encima del gemelo de PortAventura y sin el mute de la barra con un gemelo abierto (Carlos, 13-nov-2026)', () => {
+  const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8');
+  assert.doesNotMatch(sel, /'Open ↗':'Abrir ↗'/);
+  assert.match(sel, /pane\.appendChild\(f\);\};\/\/ Sin «Abrir ↗» encima del gemelo/);
+  const xp = readFileSync(new URL('../admira-xp/index.html', import.meta.url), 'utf8');
+  assert.match(xp, /body\.xp-twin-open #pfAudio\{display:none\}/);
+});
