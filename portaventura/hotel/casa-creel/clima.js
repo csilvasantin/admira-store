@@ -5,7 +5,9 @@
   const URL_CLIMA = "https://api.open-meteo.com/v1/forecast?latitude=41.0868&longitude=1.1548&current=temperature_2m,weather_code,is_day&hourly=temperature_2m,weather_code,is_day&forecast_days=1&timezone=Europe%2FMadrid";
   const ICONO = {sol: "☀️", nubes: "☁️", lluvia: "🌧️", tormenta: "⛈️"}, NOMBRE = {sol: "Sol", nubes: "Nubes", lluvia: "Lluvia", tormenta: "Tormenta"};
   const HACE = {sol: "sale el sol en la pantalla LED", nubes: "se nubla la pantalla LED", lluvia: "llueve en la pantalla LED", tormenta: "tormenta con rayos en la pantalla LED"};
-  const clima = {tipo: "sol", temp: null, dia: true, real: null, forzado: null, ok: false};
+  // activo (Carlos, 13-nov-2026): por defecto no hay clima elegido; al pulsar 🛰️/☀️/🌧️/⛈️ aparecen los datos del Sol
+  // (salida, puesta y trayectoria) y el cielo en la pantalla. Sin elegir, la pantalla solo da temperatura y hora.
+  const clima = {tipo: "sol", temp: null, dia: true, real: null, forzado: null, ok: false, activo: false};
   const tipoDe = c => c >= 95 ? "tormenta" : (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || (c >= 71 && c <= 77) || c === 85 || c === 86 ? "lluvia" : c >= 2 ? "nubes" : "sol";
   const hora = () => new Intl.DateTimeFormat("es-ES", {hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid"}).format(new Date());
   const regla = document.getElementById("creel-clima-regla"), botones = [...document.querySelectorAll("[data-clima]")], tira = document.getElementById("creel-prevision");
@@ -38,7 +40,8 @@
     const t = clima.temp == null ? "—" : `${Math.round(clima.temp)} °C`;
     const cuando = clima.prevision ? `previsión ${String(hSel).padStart(2, "0")}:00` : "real, PortAventura";
     if (regla) regla.textContent = `${ICONO[clima.tipo]} ${NOMBRE[clima.tipo]} · ${t} ${clima.forzado ? "(forzado)" : clima.ok ? `(${cuando})` : "(sin datos)"} → ${HACE[clima.tipo]}`;
-    botones.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.clima === (clima.forzado || "real"))));
+    botones.forEach(b => b.setAttribute("aria-pressed", String(clima.activo && b.dataset.clima === (clima.forzado || "real"))));
+    document.documentElement.classList.toggle("creel-clima-activo", clima.activo);
     dispatchEvent(new CustomEvent("creel-clima", {detail: {...clima}}));
   }
   async function lee() {
@@ -51,8 +54,8 @@
     } catch (e) { clima.ok = false; }
     eligeHora(window.creelSol ? window.creelSol.estado : null);
   }
-  botones.forEach(b => b.addEventListener("click", () => { clima.forzado = b.dataset.clima === "real" ? null : b.dataset.clima; aplica(); }));
-  const f = new URLSearchParams(location.search).get("clima"); if (ICONO[f]) clima.forzado = f;
+  botones.forEach(b => b.addEventListener("click", () => { clima.forzado = b.dataset.clima === "real" ? null : b.dataset.clima; clima.activo = true; aplica(); }));
+  const f = new URLSearchParams(location.search).get("clima"); if (ICONO[f] || f === "real") { clima.forzado = ICONO[f] ? f : null; clima.activo = true; }
 
   // El clima solo afecta a la pantalla LED (Neo, 13-nov-2026): nada de lluvia ni rayos sobre la maqueta.
   window.creelClima = {clima, hora, ICONO, NOMBRE, tipoDe, lee, aplica, get horas() { return horas; }};
