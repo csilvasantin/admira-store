@@ -38,6 +38,16 @@
 
   function pinta(t = performance.now()) {
     const s = t / 1000, {nivel, quien} = estado;
+    if (latestFrame && (reducedMotion.matches || performance.now() - frameAt < 2500)) {
+      g.drawImage(latestFrame, 0, 0, W, H);
+      if (estado.cara) retrato(cara(estado.cara.slug), estado.cara.quien, s);
+      else if (nivel !== "lejos") {
+        g.save(); g.textAlign = "center"; g.fillStyle = "#fff"; g.font = "800 46px ui-monospace, monospace";
+        g.fillText(MSG[nivel](quien), W / 2, H * .72);
+        g.restore();
+      }
+      return lienzo;
+    }
     const once = quien === "Once" && nivel === "puerta", vecna = quien === "Vecna" && nivel !== "lejos";
     const rayo = !once && (nivel === "puerta" ? (s % 1.4) < .08 : (s % 7) < .12);
     const fondo = g.createRadialGradient(W / 2, H * 1.15, 10, W / 2, H * 1.15, W * .75);
@@ -62,7 +72,7 @@
       g.globalAlpha = on ? 1 : .18; g.fillStyle = colores[i % 5]; g.shadowColor = colores[i % 5]; g.shadowBlur = on ? 18 : 0;
       g.beginPath(); g.arc(x, y, 17, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = "#1a0a0a"; g.font = "700 18px Georgia, serif"; g.fillText(l, x, y + 6); g.globalAlpha = 1;
     });
-    g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText("admira.tv · sin señal", W - 16, H - 12);
+    g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText("Fondo local", W - 16, H - 12);
     hud();
     return lienzo;
   }
@@ -104,14 +114,20 @@
   }
 
   // Conexión a admira.tv: iframe sobre la cara de la pantalla (misma posición 3D que la textura).
-  let tv = null;
+  const kiosk = "https://admira.tv/creel/";
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let latestFrame = null, frameAt = -Infinity;
   // Botón «Conectar admira.tv» (Neo 13-nov-2026): la URL se guarda en este navegador (localStorage creel-tv).
   const valida = v => { try { const u = new URL(v); return u.protocol === "https:" && /(^|\.)admira\.tv$/.test(u.hostname) ? u.href : null; } catch (e) { return null; } };
   const guardada = () => { try { return localStorage.getItem("creel-tv") || ""; } catch (e) { return ""; } };
-  tv = valida(new URLSearchParams(location.search).get("tv") || window.CREEL_TV || guardada());
+  const override = new URLSearchParams(location.search).get("tv");
+  const tv = override === "off" ? null : override === "creel" ? kiosk : valida(override || window.CREEL_TV || guardada());
+  const url = tv && new URL(tv);
+  const texture = url && (url.origin === "https://admira.tv" || url.origin === "https://www.admira.tv")
+    && /^\/creel\/?$/.test(url.pathname);
   const forma = document.getElementById("creel-tv"), campo = document.getElementById("creel-tv-url"), aviso = document.getElementById("creel-tv-estado"), off = document.getElementById("creel-tv-off");
   if (campo && tv) campo.value = tv;
-  if (aviso) aviso.textContent = tv ? "Conectada a admira.tv" : "Sin señal · fondo Stranger Things";
+  if (aviso) aviso.textContent = texture ? "Conectando con admira.tv…" : tv ? "Player personalizado de admira.tv" : "Fondo local · Stranger Things";
   if (off) off.hidden = !tv;
   if (forma) forma.addEventListener("submit", e => {
     e.preventDefault(); const u = valida(campo.value.trim());
@@ -119,13 +135,58 @@
     try { localStorage.setItem("creel-tv", u); } catch (er) {}
     const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString();
   });
-  if (off) off.addEventListener("click", () => { try { localStorage.removeItem("creel-tv"); } catch (er) {} const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString(); });
+  const connect = document.getElementById("creel-tv-kiosk");
+  if (connect) connect.addEventListener("click", () => {
+    const q = new URLSearchParams(location.search); q.set("tv", "creel"); location.search = q.toString();
+  });
+  if (off) off.addEventListener("click", () => { try { localStorage.removeItem("creel-tv"); } catch (er) {} const q = new URLSearchParams(location.search); q.set("tv", "off"); location.search = q.toString(); });
   const el = document.getElementById("creel-pantalla");
   if (el) { el.replaceChildren(); el.hidden = true; }
   if (tv && el) {
     const f = document.createElement("iframe"); f.src = tv; f.title = "admira.tv · pantalla del Hotel Creel"; f.allow = "autoplay; fullscreen"; f.tabIndex = -1;
     el.append(f); el.dataset.fuente = "admira.tv";
-    addEventListener("creel-camara", ({detail: k}) => {
+    if (texture) {
+      let sentAt = -Infinity, seq = 0, accepted = 0;
+      const requestFrame = () => {
+        const now = performance.now();
+        if (document.hidden || now - sentAt < 100) return;
+        if (aviso && now - frameAt >= 2500 && aviso.textContent === "Señal de admira.tv") aviso.textContent = "Fondo local · esperando admira.tv";
+        sentAt = now;
+        const weather = window.creelClima && window.creelClima.clima;
+        f.contentWindow.postMessage({
+          type: "creel-frame-request", version: 1, seq: ++seq,
+          scene: {
+            weather: weather && weather.tipo, temperature: weather && weather.temp,
+            forced: weather && !!weather.forzado, forecast: weather && !!weather.prevision,
+            weatherReady: weather && weather.ok, time: window.creelSol && window.creelSol.etiqueta()
+          }
+        }, url.origin);
+      };
+      addEventListener("message", ({origin, source, data}) => {
+        if (origin !== url.origin || source !== f.contentWindow || !data ||
+            data.type !== "creel-frame" || !(data.frame instanceof ImageBitmap)) return;
+        if (data.version !== 1 || !Number.isSafeInteger(data.seq) || data.seq <= accepted ||
+            data.seq > seq || seq - data.seq > 8 || data.frame.width !== W || data.frame.height !== H) {
+          data.frame.close();
+          return;
+        }
+        accepted = data.seq;
+        if (latestFrame) latestFrame.close();
+        latestFrame = data.frame;
+        frameAt = performance.now();
+        if (aviso && aviso.textContent !== "Señal de admira.tv") aviso.textContent = "Señal de admira.tv";
+        if (reducedMotion.matches) dispatchEvent(new Event("creel-tv-frame"));
+      });
+      addEventListener("creel-camara", () => { if (!reducedMotion.matches) requestFrame(); });
+      addEventListener("creel-clima", requestFrame);
+      addEventListener("creel-hora", requestFrame);
+      f.addEventListener("load", () => {
+        requestFrame();
+        setTimeout(() => {
+          if (!latestFrame && aviso) aviso.textContent = "Fondo local · esperando admira.tv";
+        }, 2500);
+      });
+    } else addEventListener("creel-camara", ({detail: k}) => {
       const v = el.parentElement.getBoundingClientRect(); if (!v.width) return;
       const P = (x, y, z) => [(.5 + (x * k.cx - z * k.sx) * k.zoom / k.aspect * .5) * v.width, (.5 - (-x * k.sx * k.sy + (y + k.suelo - k.center) * k.cy - z * k.cx * k.sy) * k.zoom * .5) * v.height];
       const p0 = P(-ANCHO / 2, ALTO, -k.bz), p1 = P(ANCHO / 2, ALTO, -k.bz), p2 = P(-ANCHO / 2, 0, -k.bz);
@@ -137,11 +198,11 @@
   addEventListener("creel-zona", ({detail: d}) => {
     estado.cara = d.id >= 0 ? {slug: d.slug, quien: d.quien} : null;
     if (estado.cara) cara(d.slug);
-    const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-zona", id: d.id, quien: d.quien, slug: d.slug, dentro: d.dentro, foto: d.slug ? location.origin + "/portaventura/hotel/casa-creel/fotos/lego-" + d.slug + ".webp" : ""}, new URL(tv).origin); } catch (e) {}
+    const f = el && el.querySelector("iframe"); if (f && !texture) try { f.contentWindow.postMessage({type: "creel-zona", id: d.id, quien: d.quien, slug: d.slug, dentro: d.dentro, foto: d.slug ? location.origin + "/portaventura/hotel/casa-creel/fotos/lego-" + d.slug + ".webp" : ""}, new URL(tv).origin); } catch (e) {}
   });
   addEventListener("creel-presencia", ({detail: d}) => {
     estado.nivel = d.nivel; estado.quien = d.quien;
-    const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-presencia", ...d}, new URL(tv).origin); } catch (e) {}
+    const f = el && el.querySelector("iframe"); if (f && !texture) try { f.contentWindow.postMessage({type: "creel-presencia", ...d}, new URL(tv).origin); } catch (e) {}
   });
-  window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv};
+  window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv && !texture};
 })();

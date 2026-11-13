@@ -206,6 +206,8 @@
     let figures = figureGeometry();
     gl.bindBuffer(gl.ARRAY_BUFFER, figureBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, figures, gl.STATIC_DRAW);
+    addEventListener("creel-tv-frame", () => { if (reducedMotion.matches) { cancelAnimationFrame(frame); draw(); } });
+
     // Personajes arrastrables (12-nov-2026): al moverse uno se rehacen las figuras y se repinta.
     creelScene.onMove(() => { figures = figureGeometry(); gl.bindBuffer(gl.ARRAY_BUFFER, figureBuffer); gl.bufferData(gl.ARRAY_BUFFER, figures, gl.DYNAMIC_DRAW); cancelAnimationFrame(frame); draw(); });
 
