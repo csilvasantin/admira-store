@@ -254,3 +254,12 @@ test('Hotel Creel: la pantalla es la pared: pinta la playlist hotel-creel de adm
   assert.match(pan, /g\.fillStyle = "rgba\(140,11,20,\.42\)"; g\.fillRect\(0, 0, W, H\); \/\/ tinte Hawkins/);
   assert.match(pan, /tv = valida\(new URLSearchParams\(location\.search\)\.get\("tv"\) \|\| window\.CREEL_TV \|\| guardada\(\)\);/);
 });
+
+test('Modo experto: /presentation y /presentaciones saltan a la presentación DMZ de PortAventura NeXT (Carlos, 13-nov-2026)', () => {
+  const xp = readFileSync(new URL('../admira-xp/index.html', import.meta.url), 'utf8');
+  assert.match(xp, /\{name:'presentation',alias:\['presentaciones','presentación','presentations'\]/);
+  assert.match(xp, /window\.open\('https:\/\/www\.portaventuranext\.com\/dmz\/presentation\/','_blank','noopener'\)/.source ? /var url='https:\/\/www\.portaventuranext\.com\/dmz\/presentation\/';var w=window\.open\(url,'_blank','noopener'\)/ : /x/);
+  const creel = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  assert.match(creel, /\['presentation', 'presentaciones', 'presentación', 'presentacion'\]\.includes\(command\)/);
+  assert.match(creel, /window\.open\('https:\/\/www\.portaventuranext\.com\/dmz\/presentation\/', '_blank', 'noopener'\)/);
+});
