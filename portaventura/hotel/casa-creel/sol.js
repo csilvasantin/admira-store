@@ -67,13 +67,22 @@
     // Marcas de salida y puesta.
     g.font = "700 12px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "rgba(255,225,160,.9)";
     for (const [m, txt] of [[sale, "↑ "], [pone, "↓ "]]) if (m != null) { const [sx, sy] = proyecta(punto(solar(instante(m))), w, h); g.beginPath(); g.arc(sx, sy, 3, 0, 7); g.fill(); g.fillText(txt + hhmm(m), sx, sy - 10); }
-    // El Sol en la hora del slider.
-    const s = solar(instante(estado.min));
+    // El Sol en la hora del slider. De noche (Carlos, 13-nov-2026) algo tiene que verse al elegir clima: la Luna,
+    // en el punto opuesto al Sol sobre el mismo arco, con su etiqueta.
+    const s = solar(instante(estado.min)), r = Math.max(10, 22 * cam.zoom * 1.4);
     if (s.el > -.833) {
-      const [sx, sy] = proyecta(punto(s), w, h), r = Math.max(10, 22 * cam.zoom * 1.4);
+      const [sx, sy] = proyecta(punto(s), w, h);
       const luz = g.createRadialGradient(sx, sy, 2, sx, sy, r * 4); luz.addColorStop(0, "rgba(255,230,140,.9)"); luz.addColorStop(.3, "rgba(255,180,60,.35)"); luz.addColorStop(1, "rgba(255,150,0,0)");
       g.fillStyle = luz; g.beginPath(); g.arc(sx, sy, r * 4, 0, 7); g.fill();
       g.fillStyle = "#ffd65c"; g.shadowColor = "#ffb020"; g.shadowBlur = 24; g.beginPath(); g.arc(sx, sy, r, 0, 7); g.fill(); g.shadowBlur = 0;
+    } else {
+      const [mx, my] = proyecta(punto({el: -s.el, az: (s.az + 180) % 360}), w, h), rl = r * .8;
+      const halo = g.createRadialGradient(mx, my, 2, mx, my, rl * 4); halo.addColorStop(0, "rgba(220,232,255,.55)"); halo.addColorStop(.35, "rgba(170,195,240,.2)"); halo.addColorStop(1, "rgba(120,150,220,0)");
+      g.fillStyle = halo; g.beginPath(); g.arc(mx, my, rl * 4, 0, 7); g.fill();
+      g.fillStyle = "#e9eef9"; g.shadowColor = "#b9c9ff"; g.shadowBlur = 20; g.beginPath(); g.arc(mx, my, rl, 0, 7); g.fill();
+      g.fillStyle = "rgba(90,105,150,.35)"; g.shadowBlur = 0; // sombra para la fase (menguante, decorativa)
+      g.beginPath(); g.arc(mx - rl * .35, my - rl * .1, rl * .82, 0, 7); g.fill();
+      g.font = "700 12px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "rgba(225,232,255,.9)"; g.fillText("🌙 " + hhmm(estado.min) + " · noche", mx, my - rl - 10);
     }
   }
 
