@@ -21,6 +21,7 @@
     fondo.addColorStop(0, c[0]); fondo.addColorStop(.35, c[1]); fondo.addColorStop(1, c[2]);
     g.fillStyle = fondo; g.fillRect(0, 0, W, H);
     if (rayo) { g.fillStyle = "rgba(255,240,240,.35)"; g.fillRect(0, 0, W, H); }
+    cielo(s);
     g.fillStyle = "rgba(243,230,255,.75)";
     for (const e of esporas) { const y = ((e.y - s * e.v) % 1 + 1) % 1; g.beginPath(); g.arc(e.x * W + Math.sin(s + e.y * 9) * 12, y * H, e.r, 0, 7); g.fill(); }
     g.save(); g.translate(W / 2, H * .36); if (nivel === "puerta" && !once) g.scale(1, -1);
@@ -37,7 +38,47 @@
       g.beginPath(); g.arc(x, y, 17, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = "#1a0a0a"; g.font = "700 18px Georgia, serif"; g.fillText(l, x, y + 6); g.globalAlpha = 1;
     });
     g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText("admira.tv · sin señal", W - 16, H - 12);
+    hud();
     return lienzo;
+  }
+
+  // Clima real (clima.js, 13-nov-2026): IF sol/nubes/lluvia/tormenta THEN la pantalla lo pinta, con temperatura y hora.
+  const gotas = Array.from({length: 220}, () => ({x: Math.random(), y: Math.random(), v: .5 + Math.random() * .7, l: 18 + Math.random() * 26}));
+  function cielo(s) {
+    const C = window.creelClima && window.creelClima.clima; if (!C) return;
+    const tipo = C.tipo;
+    if (tipo === "sol") {
+      const sx = W * .09, sy = H * .55, r = 55 + Math.sin(s * 2) * 4;
+      const luz = g.createRadialGradient(sx, sy, 10, sx, sy, W * .55); luz.addColorStop(0, "rgba(255,214,92,.75)"); luz.addColorStop(.3, "rgba(255,150,40,.28)"); luz.addColorStop(1, "rgba(255,120,0,0)");
+      g.fillStyle = luz; g.fillRect(0, 0, W, H);
+      g.save(); g.translate(sx, sy); g.rotate(s * .15); g.strokeStyle = "rgba(255,228,140,.8)"; g.lineWidth = 6;
+      for (let i = 0; i < 12; i++) { g.rotate(Math.PI / 6); g.beginPath(); g.moveTo(r + 16, 0); g.lineTo(r + 46, 0); g.stroke(); }
+      g.restore(); g.fillStyle = "#ffd65c"; g.shadowColor = "#ffb020"; g.shadowBlur = 40; g.beginPath(); g.arc(sx, sy, r, 0, 7); g.fill(); g.shadowBlur = 0;
+    } else {
+      g.fillStyle = tipo === "nubes" ? "rgba(70,70,85,.45)" : tipo === "lluvia" ? "rgba(20,35,70,.55)" : "rgba(10,10,30,.68)"; g.fillRect(0, 0, W, H);
+      g.fillStyle = tipo === "nubes" ? "rgba(200,200,215,.55)" : "rgba(90,95,120,.75)";
+      for (let i = 0; i < 6; i++) { const x = ((i * .19 + s * .01) % 1.2 - .1) * W, y = H * (.12 + (i % 2) * .08); for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(x + k * 46, y + (k % 2) * 12, 44, 0, 7); g.fill(); } }
+      if (tipo !== "nubes") {
+        g.strokeStyle = "rgba(190,215,255,.6)"; g.lineWidth = 2.2; g.beginPath();
+        for (const d of gotas) { const y = ((d.y + s * d.v) % 1) * H, x = d.x * W; g.moveTo(x, y); g.lineTo(x - d.l * .3, y + d.l); }
+        g.stroke();
+      }
+      if (tipo === "tormenta" && (s % 3.1) < .14) {
+        g.fillStyle = "rgba(230,235,255,.45)"; g.fillRect(0, 0, W, H);
+        let x = W * (.3 + ((Math.floor(s / 3.1) * .37) % .5)), y = 0; g.strokeStyle = "#f4f6ff"; g.lineWidth = 6; g.shadowColor = "#9fb4ff"; g.shadowBlur = 24; g.beginPath(); g.moveTo(x, y);
+        while (y < H * .8) { x += (Math.sin(y * 7.3 + s) * 38); y += 34; g.lineTo(x, y); } g.stroke(); g.shadowBlur = 0;
+      }
+    }
+  }
+  function hud() {
+    const K = window.creelClima; if (!K) return;
+    const C = K.clima, t = C.temp == null ? "— °C" : `${Math.round(C.temp)} °C`;
+    g.save(); g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = 10; g.fillStyle = "#fff";
+    g.font = "800 64px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "top"; g.fillText(K.hora(), W - 26, 18);
+    g.font = "800 50px ui-monospace, monospace"; g.textAlign = "left"; g.fillText(`${K.ICONO[C.tipo]} ${t}`, 26, 22);
+    g.font = "600 20px ui-monospace, monospace"; g.fillStyle = "rgba(255,255,255,.75)";
+    g.fillText(`PORTAVENTURA · ${K.NOMBRE[C.tipo].toUpperCase()}${C.forzado ? " · FORZADO" : C.ok ? " · EN DIRECTO" : ""}`, 28, 84);
+    g.restore();
   }
 
   // Conexión a admira.tv: iframe sobre la cara de la pantalla (misma posición 3D que la textura).

@@ -81,3 +81,10 @@ test('Casa Creel: grabar posición de hotel y personajes (localStorage) y Reinic
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
   assert.match(esc, /Grabar posición/); assert.match(esc, /localStorage\.setItem\(GUARDA/); assert.match(esc, /localStorage\.getItem\(GUARDA/); assert.match(esc, /localStorage\.removeItem\(GUARDA/);
 });
+test('Casa Creel: clima real de PortAventura (Open-Meteo) en la pantalla y iconos para forzarlo (Neo 13-nov-2026)', () => {
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  assert.match(html, /clima\.js/); for (const k of ['real','sol','lluvia','tormenta']) assert.match(html, new RegExp(`data-clima="${k}"`));
+  assert.doesNotMatch(html, /Modelo conceptual a partir del Blender/);
+  const cl = readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8'); assert.match(cl, /api\.open-meteo\.com/); assert.match(cl, /latitude=41\.08/); assert.match(cl, /creel-clima/);
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /function cielo/); assert.match(pan, /K\.hora\(\)/);
+});
