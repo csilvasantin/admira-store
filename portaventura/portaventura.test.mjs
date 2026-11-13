@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-15/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-16/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -205,4 +205,10 @@ test('Hotel Creel: nombre del elegido a la izquierda del retrato y la pantalla c
   const css = readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8');
   assert.match(css, /#creel-pantalla\[data-fuente="admira\.tv"\]\{z-index:1\}/);
   assert.match(css, /#creel-atmosphere,#creel-sol,#creel-portal,#creel-pins\{z-index:2\}/);
+});
+
+test('Hotel Creel: al elegir clima siempre se ve un astro: el Sol de día y la Luna de noche, opuesta al Sol sobre el arco (Carlos, 13-nov-2026)', () => {
+  const sol = readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8');
+  assert.match(sol, /if \(s\.el > -\.833\) \{[\s\S]*\} else \{[\s\S]*punto\(\{el: -s\.el, az: \(s\.az \+ 180\) % 360\}\)/);
+  assert.match(sol, /"🌙 " \+ hhmm\(estado\.min\) \+ " · noche"/);
 });
