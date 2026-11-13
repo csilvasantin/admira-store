@@ -40,6 +40,11 @@ const creelScene = (() => {
   let camera = null;
   const home = new Map();
   const house = {x:0, z:0};
+  // Cuadrícula del plano (Carlos, 13-nov-2026): cuadrados de 5 cm = 2 unidades de tablero, con líneas en los pares.
+  // Todo se ajusta a ella: el hotel y la zona a las líneas, los personajes al centro de su cuadrado.
+  const CELL = 5 / board.unitCm;
+  const snapLine = v => Math.round(v / CELL) * CELL;
+  const snapCenter = v => Math.round((v - CELL / 2) / CELL) * CELL + CELL / 2;
   // Slug del personaje (fotos/<slug>.jpg · fotos/lego-<slug>.webp): «Sr. Whatsit» → sr-whatsit.
   const slugOf = a => a.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const handle = document.createElement("button");
@@ -209,17 +214,23 @@ const creelScene = (() => {
   function moveActor(id, x, z) {
     const a = cast[id]; if (!a) return;
     if (!home.has(id)) home.set(id, [a.x, a.z]);
+    const bx = board.width / board.unitCm / 2 - CELL / 2, bz = board.depth / board.unitCm / 2 - CELL / 2;
+    x = Math.max(-bx, Math.min(bx, snapCenter(x))); z = Math.max(-bz, Math.min(bz, snapCenter(z)));
+    if (a.x === x && a.z === z) return;
     a.x = x; a.z = z; lastMoved = id; moved(); presence(id); updateZone(id); grabarPronto();
   }
 
   // ── Zona de influencia de la puerta (Carlos, 13-nov-2026): cuadrados de 5 cm de la cuadrícula, pegados al
   // porche (borde delantero de la huella del hotel, z = casa + 4,5) y centrados en la puerta. El suelo la pinta de
   // otro color (creel.js) y, si un personaje entra arrastrado, su cara sale en la pantalla gigante (pantalla.js). ──
-  // 13-nov-2026 (Carlos, vista cenital): más zona: 8 × 7 cuadrados, todo el ancho del hotel y hasta el borde de la base.
-  const ZONE = {cols: 8, rows: 7, cell: 5 / board.unitCm};
+  // 13-nov-2026 (Carlos, vista cenital): más zona: 9 × 7 cuadrados, todo el ancho del hotel y hasta el borde de la base.
+  // 9 columnas: centrada en la puerta (x = casa + 1) y con los bordes en líneas de la cuadrícula (−8 … 10 con el hotel en 0).
+  const ZONE = {cols: 9, rows: 7, cell: CELL};
   function zoneRect() {
-    const w = ZONE.cols * ZONE.cell, d = ZONE.rows * ZONE.cell, cx = house.x + 1, z0 = house.z + 4.5;
-    return {x0: cx - w / 2, x1: cx + w / 2, z0, z1: Math.min(z0 + d, board.depth / board.unitCm / 2)};
+    // Ajustada a la cuadrícula: empieza en la línea que queda bajo el borde delantero de la base del hotel (z = casa + 4,5)
+    // y se centra en la puerta a cuadrados enteros.
+    const w = ZONE.cols * ZONE.cell, d = ZONE.rows * ZONE.cell, x0 = snapLine(house.x + 1 - w / 2), z0 = Math.floor((house.z + 4.5) / CELL) * CELL;
+    return {x0, x1: x0 + w, z0, z1: Math.min(z0 + d, board.depth / board.unitCm / 2)};
   }
   const inZone = a => { const r = zoneRect(); return a.x >= r.x0 && a.x <= r.x1 && a.z >= r.z0 && a.z <= r.z1; };
   let zoneActor = -1;
@@ -237,7 +248,9 @@ const creelScene = (() => {
   // Mover la casa: asa 🏠 arrastrable y flechas del teclado (X e Y del tablero). La presencia se mide desde aquí.
   function moveHouse(x, z) {
     const bx = board.width / board.unitCm / 2 - 6, bz = board.depth / board.unitCm / 2 - 5;
-    house.x = Math.max(-bx, Math.min(bx, x)); house.z = Math.max(-bz, Math.min(bz, z));
+    x = Math.max(-bx, Math.min(bx, snapLine(x))); z = Math.max(-bz, Math.min(bz, snapLine(z)));
+    if (house.x === x && house.z === z) return;
+    house.x = x; house.z = z;
     moved(); if (lastMoved != null) presence(lastMoved); updateZone(); grabarPronto();
   }
   let lastMoved = null;
@@ -287,10 +300,9 @@ const creelScene = (() => {
     if (sel == null || layers.hidden || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     const d = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key]; if (!d) return;
     e.preventDefault();
-    const n = e.shiftKey ? 4 : 1;
+    const n = (e.shiftKey ? 4 : 1) * CELL; // un cuadrado por pulsación (Mayús = 4)
     if (sel === "casa") moveHouse(house.x + d[0] * n, house.z + d[1] * n);
-    else { const a = cast[sel], bx = board.width / board.unitCm / 2 - .5, bz = board.depth / board.unitCm / 2 - .5;
-      moveActor(sel, Math.max(-bx, Math.min(bx, a.x + d[0] * n)), Math.max(-bz, Math.min(bz, a.z + d[1] * n))); }
+    else { const a = cast[sel]; moveActor(sel, a.x + d[0] * n, a.z + d[1] * n); }
   });
   handle.addEventListener("pointerdown", event => {
     if (event.button !== 0 || !camera) return;
