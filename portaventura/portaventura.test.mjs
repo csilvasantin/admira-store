@@ -135,5 +135,16 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-9/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-10/);
+});
+
+test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /missionControls\.insertBefore\(saveBtn, document\.getElementById\("creel-reset"\)\)/);
+  assert.match(esc, /saveBtn\.className = "action creel-guardar-btn"/);
+  assert.match(esc, /const grabarPronto = \(\) => \{ clearTimeout\(saveTimer\); saveTimer = setTimeout\(\(\) => grabar\(true\), 400\); \};/);
+  assert.match(esc, /updateZone\(id\); grabarPronto\(\);/);            // al mover un personaje
+  assert.match(esc, /updateZone\(\); grabarPronto\(\);/);              // al mover el hotel
+  assert.match(esc, /clearTimeout\(saveTimer\);\n\s+try \{ localStorage\.removeItem\(GUARDA\)/); // reiniciar no vuelve a grabar
+  assert.doesNotMatch(esc, /^\s*field\.append\(saveBtn\);/m);   // ya no vive en la rejilla de personajes
 });
