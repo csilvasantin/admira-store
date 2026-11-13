@@ -6,7 +6,7 @@
   const LAT = 41.0868, LON = 1.1548, RAD = Math.PI / 180, R = 30; // R: radio de la semiesfera en unidades de tablero
   // Arco alto (Neo, 13-nov-2026): la semiesfera arranca por encima del borde superior de la pantalla LED y su altura
   // se exagera, así el Sol nunca pasa por delante de la pantalla.
-  const BASE = 19, ALZA = .75;
+  const BASE = 21, ALZA = .75; // 21: por encima de la pantalla, que ahora sube un 10 % (Carlos, 13-nov-2026)
   const capa = document.getElementById("creel-sol"), g = capa && capa.getContext("2d");
   const slider = document.getElementById("creel-hora"), salida = document.getElementById("creel-hora-out"), ahora = document.getElementById("creel-ahora"), info = document.getElementById("creel-sol-info");
   const estado = {min: 0, vivo: true};
