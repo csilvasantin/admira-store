@@ -1,16 +1,16 @@
 <!doctype html>
 <html lang="es">
-<head><!-- Hotel Casa Creel (NetflixVentura). Copia de admira-next-web demo/PortAventuraNeXT (12-nov-2026). -->
+<head><!-- Hotel Creel (NetflixVentura). Copia de admira-next-web demo/PortAventuraNeXT (12-nov-2026). -->
 <script>/* ?maqueta=1: marca antes de pintar para no enseñar el cómic mientras carga la 3D (Neo 12-nov-2026) */if(/[?&]maqueta=1/.test(location.search))document.documentElement.classList.add("solo-maqueta")</script>
-<style>.solo-maqueta,.solo-maqueta body{background:#17151c}.solo-maqueta body :not(dialog,dialog *){visibility:hidden}.solo-maqueta dialog{visibility:visible}</style>
+<style>.solo-maqueta,.solo-maqueta body{background:#17151c}.solo-maqueta body :not(dialog,dialog *){visibility:hidden}.solo-maqueta dialog{visibility:visible}.solo-maqueta:not(.creel-listo) dialog{visibility:hidden}</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Expediente Hawkins · PortAventura NeXT</title>
-<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-2">
-<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-2"></script>
-<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-2"></script>
-<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-2"></script>
+<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-4">
+<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-4"></script>
+<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-4"></script>
+<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-4"></script>
 <style>
 .nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
 .nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
@@ -40,8 +40,8 @@
   <details><summary aria-label="Avanzado" data-tooltip="Avanzado"><span aria-hidden="true">▤</span></summary><div class="nv-panel nv-right"><div class="nv-grip" role="separator" tabindex="0" aria-label="Tamaño de Avanzado" aria-orientation="vertical"></div>
     <a href="/portaventura/store/hawkins/?vista=2d" target="_top">Planta de Hawkins</a>
     <a href="/portaventura/store/hawkins/?vista=recorrido" target="_top">Recorrido en primera persona</a>
-    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/dmz/netflix/detalle" target="_top">Cómic de Casa Creel</a>
-    <a href="/portaventura/hotel/casa-creel/dentro/">Hotel Casa Creel por dentro</a>
+    <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/dmz/netflix/detalle" target="_top">Cómic de Hotel Creel</a>
+    <a href="/portaventura/hotel/casa-creel/dentro/">Hotel Creel por dentro</a>
     <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflixventura/restaurante/marketing" target="_top">Restaurante: marketing y Serie 1984</a>
     <a href="https://www.admiranext.com/demo/PortAventuraNeXT/xp/dmz/netflix/dia-visitante" target="_top">Día del visitante</a>
   </div></details>
@@ -189,23 +189,22 @@
     </aside>
   </section>
   <section class="landmark" aria-labelledby="landmark-title">
-    <div><p class="eyebrow">HITO INTERPRETATIVO · UBICACIÓN PROPUESTA</p><h2 id="landmark-title">La Casa Creel</h2></div>
-    <p>Abre el plano de Mediterrània y monta la casa por piezas.</p>
+    <div><p class="eyebrow">HITO INTERPRETATIVO · UBICACIÓN PROPUESTA</p><h2 id="landmark-title">El Hotel Creel</h2></div>
+    <p>Abre el plano de Mediterrània y monta el hotel por piezas.</p>
     <button id="open-creel" class="action">Abrir maqueta 3D ↗</button>
     <a class="action" href="/portaventura/hotel/casa-creel/dentro/" style="text-decoration:none">Entrar en el hotel →</a>
   </section>
   <dialog id="creel-dialog" aria-labelledby="creel-title">
     <header class="model-header">
-      <div><p class="eyebrow">ANEXO · LA SEÑAL</p><h2 id="creel-title">Casa Creel</h2></div>
+      <div><p class="eyebrow">ANEXO · LA SEÑAL</p><h2 id="creel-title">Hotel Creel</h2></div>
       <button id="close-creel" class="action">Cerrar ×</button>
     </header>
     <div class="model-grid">
       <div class="viewer">
-        <div id="creel-pantalla" hidden aria-label="Pantalla de fondo (admira.tv)"><div class="cp-cielo"></div><div class="cp-esporas"></div><div class="cp-titulo">STRANGER THINGS</div><div class="cp-sub">HAWKINS · CASA CREEL</div><div class="cp-luces"></div><div class="cp-msg" aria-live="polite"></div><span class="cp-marca">admira.tv · sin señal</span></div>
-        <canvas id="creel-canvas" aria-label="Casa Creel en 3D. Usa los botones de giro o arrastra para cambiar la vista."></canvas>
-        <img id="creel-fallback" src="/portaventura/hotel/casa-creel/creel-respaldo.jpg" alt="Render de la maqueta conceptual de la Casa Creel">
+        <div id="creel-pantalla" hidden aria-label="Pantalla de fondo (admira.tv)"><div class="cp-cielo"></div><div class="cp-esporas"></div><div class="cp-titulo">STRANGER THINGS</div><div class="cp-sub">HAWKINS · HOTEL CREEL</div><div class="cp-luces"></div><div class="cp-msg" aria-live="polite"></div><span class="cp-marca">admira.tv · sin señal</span></div>
+        <canvas id="creel-canvas" aria-label="Hotel Creel en 3D. Usa los botones de giro o arrastra para cambiar la vista."></canvas>
+        <img id="creel-fallback" src="/portaventura/hotel/casa-creel/creel-respaldo.jpg" alt="Render de la maqueta conceptual del Hotel Creel">
         <div id="creel-atmosphere" aria-hidden="true"></div>
-        <canvas id="creel-lluvia" aria-hidden="true"></canvas>
         <div id="creel-portal" aria-hidden="true"></div>
         <div id="creel-pins" hidden></div>
         <span class="plan-label">BASE CENITAL · 120 × 90 CM · CUADRÍCULA 5 CM</span>
@@ -213,7 +212,7 @@
       <aside class="model-notes">
         <p id="model-status" role="status">Preparando maqueta…</p>
         <h3 id="stage-name">Plano de implantación</h3>
-        <p id="stage-detail">La casa emerge como hito interpretativo dentro de Mediterrània.</p>
+        <p id="stage-detail">El hotel emerge como hito interpretativo dentro de Mediterrània.</p>
         <label for="stage">Etapa <output id="stage-number" for="stage">0 / 6</output></label>
         <input type="range" id="stage" min="0" max="6" value="0" disabled>
         <div class="model-controls">
@@ -254,11 +253,11 @@
       </aside>
     </div>
   </dialog>
-  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-2"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-2"></script>
-  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-2"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-2"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-2"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-4"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-4"></script>
+  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-4"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-4"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-4"></script>
   <footer>ESTUDIO CONCEPTUAL · STRANGER THINGS · ZONA 1 DE 6</footer>
 </main>
 </body>

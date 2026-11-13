@@ -97,7 +97,7 @@ tiers.choose=mode=>{
     syncCafeteriaTierControls();
     return chooseDirect('good');
   }
-  if(typeof document.startViewTransition!=='function'||transitionActive)return fuseWithoutNative(mode);
+  if(typeof document.startViewTransition!=='function'||transitionActive||document.documentElement.classList.contains('xp-pa-boot'))return fuseWithoutNative(mode);
   let outcome;transitionActive=true;
   try{
     const transition=document.startViewTransition(()=>{outcome=chooseDirect(mode);return outcome;});

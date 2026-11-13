@@ -94,3 +94,10 @@ test('Casa Creel: pantalla LED de lado a lado (+20 % alto), título arriba y bot
   const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.match(html, /Conectar admira\.tv/); assert.match(html, /id="creel-tv-url"/);
   const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8'); assert.match(sel, /topSync/);
 });
+test('Hotel Creel: sin «Casa Creel» visible, clima solo en la pantalla y telón sin destellos en el Xpace (Neo 13-nov-2026)', () => {
+  for (const f of ['./hotel/casa-creel/index.html','./hotel/casa-creel/dentro/index.html','./pa.js','./hotel/casa-creel/pantalla.js']) assert.doesNotMatch(readFileSync(new URL(f, import.meta.url), 'utf8'), /Casa Creel|CASA CREEL/);
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.doesNotMatch(html, /creel-lluvia/); assert.match(html, /solo-maqueta:not\(\.creel-listo\) dialog\{visibility:hidden\}/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8'), /type: "creel-listo"/);
+  const xp = readFileSync(new URL('../admira-xp/index.html', import.meta.url), 'utf8'); assert.match(xp, /xp-pa-boot/);
+  assert.match(readFileSync(new URL('../admira-xp/scripts/xtanco-premium-ui.mjs', import.meta.url), 'utf8'), /xp-pa-boot/);
+});
