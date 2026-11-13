@@ -113,3 +113,8 @@ test('Hotel Creel: arco del Sol por encima de la pantalla y fichas gráficas de 
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'); assert.match(esc, /creel-ficha/); assert.match(esc, /<svg viewBox="0 0 24 34"/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-solbar>small/);
 });
+test('Hotel Creel: foto del personaje al pasar el ratón, con hueco de fotos con licencia (Neo 13-nov-2026)', () => {
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.match(html, /fotos\.js/);
+  const f = readFileSync(new URL('./hotel/casa-creel/fotos.js', import.meta.url), 'utf8'); assert.match(f, /pointerenter/); assert.match(f, /\/fotos\//); assert.match(f, /Millie Bobby Brown/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/fotos/LEEME.md', import.meta.url), 'utf8'), /Licencia/);
+});
