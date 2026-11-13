@@ -97,6 +97,12 @@ dialog::backdrop{background:#0d0a10e0}
 /* admira.store: ?maqueta=1 → la maqueta ocupa toda la ventana */
 .solo-maqueta dialog{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border:0}
 .solo-maqueta #close-creel{display:none}
+/* Modo maqueta (Carlos, 13-nov-2026): sin la cabecera del diálogo (gana espacio la escena); el título «ANEXO · LA SEÑAL / Hotel Creel» baja a la propia Xperiencia, arriba a la izquierda. */
+.solo-maqueta .model-header{display:none}
+.creel-rotulo{display:none;position:absolute;top:12px;left:14px;z-index:3;pointer-events:none;text-shadow:0 1px 8px #000c}
+.solo-maqueta .creel-rotulo{display:block}
+.creel-rotulo .eyebrow{margin:0 0 2px;font:700 10px var(--mono);letter-spacing:.18em;color:#f4b392}
+.creel-rotulo h2{margin:0;font:700 26px/1 Georgia,serif;letter-spacing:-.045em;color:#f8e9d7}
 /* Pantalla de fondo (admira.store, 12-nov-2026): detrás de la maqueta; ?tv=<admira.tv> la conecta a un player */
 #creel-pantalla{position:absolute;left:8%;right:8%;top:4%;height:46%;border:6px solid #0b0b10;border-radius:6px;box-shadow:0 0 0 1px #3a3346,0 0 60px #ff2a2a55;overflow:hidden;pointer-events:none;background:#0a0204}
 #creel-pantalla iframe{width:100%;height:100%;border:0;display:block}
