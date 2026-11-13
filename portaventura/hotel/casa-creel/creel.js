@@ -224,8 +224,8 @@
       gl.linkProgram(sp);
       const su = Object.fromEntries(["center", "right", "up", "view", "scale", "tex"].map(n => [n, gl.getUniformLocation(sp, n)]));
       const sa = {point: gl.getAttribLocation(sp, "point"), uv: gl.getAttribLocation(sp, "uv")};
-      // Un 10 % más alta (Carlos, 13-nov-2026): la pantalla no nace en el suelo, sube ALTO × 0,1.
-      const x0 = -P.ANCHO / 2, x1 = P.ANCHO / 2, z = -boardZ + .02, y0 = y + P.ALTO * .1, y1 = y0 + P.ALTO, f = .35; // f: grosor del marco
+      // Más alta (Carlos, 13-nov-2026: +10 % y luego +15 %): la pantalla no nace en el suelo, sube ALTO × 0,25.
+      const x0 = -P.ANCHO / 2, x1 = P.ANCHO / 2, z = -boardZ + .02, y0 = y + P.ALTO * .25, y1 = y0 + P.ALTO, f = .35; // f: grosor del marco
       const quad = (a, b, c, d, uvs) => [a, b, c, a, c, d].map((p, i) => [...p, ...uvs[[0, 1, 2, 0, 2, 3][i]]]).flat();
       const cara = [[0, 1], [1, 1], [1, 0], [0, 0]], negro = [[.001, .001], [.001, .001], [.001, .001], [.001, .001]];
       const data = new Float32Array([

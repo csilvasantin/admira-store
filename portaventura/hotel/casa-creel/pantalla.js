@@ -53,7 +53,7 @@
     g.fillStyle = "rgba(243,230,255,.75)";
     for (const e of esporas) { const y = ((e.y - s * e.v) % 1 + 1) % 1; g.beginPath(); g.arc(e.x * W + Math.sin(s + e.y * 9) * 12, y * H, e.r, 0, 7); g.fill(); }
     // Título y subtítulo más arriba (Carlos, 13-nov-2026): dejan sitio al retrato y a la HUD.
-    g.save(); g.translate(W / 2, H * .145); if (nivel === "puerta" && !once) g.scale(1, -1);
+    g.save(); g.translate(W / 2, H * .165); if (nivel === "puerta" && !once) g.scale(1, -1);
     g.font = "900 128px Georgia, 'Times New Roman', serif"; g.textAlign = "center"; g.textBaseline = "middle";
     g.shadowColor = once ? "#3fd2ff" : "#ff2a1f"; g.shadowBlur = 30; g.lineWidth = 4; g.strokeStyle = once ? "#9be3ff" : "#ff3326";
     g.strokeText("STRANGER THINGS", 0, 0); g.restore();
@@ -66,9 +66,9 @@
     const paso = nivel === "puerta" ? .25 : nivel === "cerca" ? .6 : 3;
     const nombre = estado.cara ? estado.cara.quien.toUpperCase().normalize("NFD").replace(/[^A-Z]/g, "") : "";
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((l, i) => {
-      const x = W * .05 + i * (W * .9 / 25), y = H * .035, on = nombre ? nombre.includes(l) : ((s + i * .37) % paso) / paso < .7;
+      const x = W * .05 + i * (W * .9 / 25), y = H * .026, on = nombre ? nombre.includes(l) : ((s + i * .37) % paso) / paso < .7;
       g.globalAlpha = on ? 1 : nombre ? .12 : .18; g.fillStyle = colores[i % 5]; g.shadowColor = colores[i % 5]; g.shadowBlur = on ? (nombre ? 26 : 18) : 0;
-      g.beginPath(); g.arc(x, y, 14, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = "#1a0a0a"; g.font = "700 15px Georgia, serif"; g.textAlign = "center"; g.fillText(l, x, y + 5); g.globalAlpha = 1;
+      g.beginPath(); g.arc(x, y, 12, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = "#1a0a0a"; g.font = "700 13px Georgia, serif"; g.textAlign = "center"; g.fillText(l, x, y + 4.5); g.globalAlpha = 1;
     });
     g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText("admira.tv · sin señal", W - 16, H - 12);
     hud();
@@ -139,7 +139,7 @@
     addEventListener("creel-camara", ({detail: k}) => {
       const v = el.parentElement.getBoundingClientRect(); if (!v.width) return;
       const P = (x, y, z) => [(.5 + (x * k.cx - z * k.sx) * k.zoom / k.aspect * .5) * v.width, (.5 - (-x * k.sx * k.sy + (y + k.suelo - k.center) * k.cy - z * k.cx * k.sy) * k.zoom * .5) * v.height];
-      const p0 = P(-ANCHO / 2, ALTO * 1.1, -k.bz), p1 = P(ANCHO / 2, ALTO * 1.1, -k.bz), p2 = P(-ANCHO / 2, ALTO * .1, -k.bz); // pantalla un 10 % más alta
+      const p0 = P(-ANCHO / 2, ALTO * 1.25, -k.bz), p1 = P(ANCHO / 2, ALTO * 1.25, -k.bz), p2 = P(-ANCHO / 2, ALTO * .25, -k.bz); // pantalla un 25 % más alta
       el.style.height = H + "px"; el.style.width = W + "px";
       el.style.transform = `matrix(${(p1[0]-p0[0])/W},${(p1[1]-p0[1])/W},${(p2[0]-p0[0])/H},${(p2[1]-p0[1])/H},${p0[0]},${p0[1]})`;
       el.hidden = false;
