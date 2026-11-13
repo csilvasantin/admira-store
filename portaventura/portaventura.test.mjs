@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-25/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-26/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -273,4 +273,15 @@ test('Hotel Creel: el bloque de etapa va plegado y el titular lo despliega u ocu
   assert.match(js, /localStorage\.setItem\("creel-etapa-abierta"/);
   const css = readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8');
   assert.match(css, /#stage-name\[aria-expanded=false\]::after\{transform:rotate\(-90deg\)\}/);
+});
+
+test('Hotel Creel: botón «📺 Pantallas» junto a «Hotel» para emitir o parar el contenido de admira.tv en la pared (Carlos, 13-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /field\.append\(hotelBtn\);\n[\s\S]{0,200}const tvBtn = document\.createElement\("button"\);/);
+  assert.match(esc, /window\.creelPantalla\.contenido\(!window\.creelPantalla\.contenidoOn\)/);
+  assert.match(esc, /"📺 Pantallas · ON" : "📺 Pantallas · OFF"/);
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /localStorage\.setItem\("creel-contenido", contenidoOn \? "1" : "0"\)/);
+  assert.match(pan, /if \(!contenidoOn\) return;/);
+  assert.match(pan, /contenido, get contenidoOn\(\) \{ return contenidoOn; \}/);
 });

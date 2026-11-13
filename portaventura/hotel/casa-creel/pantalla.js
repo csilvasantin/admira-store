@@ -13,6 +13,14 @@
   // se reproduce en bucle detrás del título con tinte Hawkins; vídeo mudo, imágenes su tiempo; se relee cada minuto.
   const PLAYLIST_API = "https://admira.tv/api/playlist?screen=hotel-creel";
   let lista = [], listaNombre = "", listaRev = null, idx = -1, media = null, mediaOk = false, mediaTimer = null;
+  // Botón «📺 Pantallas» (Carlos, 13-nov-2026): emitir o parar el contenido de admira.tv en la pared. Se recuerda aquí.
+  let contenidoOn = (() => { try { return localStorage.getItem("creel-contenido") !== "0"; } catch (e) { return true; } })();
+  function contenido(on) {
+    contenidoOn = !!on;
+    try { localStorage.setItem("creel-contenido", contenidoOn ? "1" : "0"); } catch (e) {}
+    if (!contenidoOn) { lista = []; listaRev = null; siguiente(); } else cargaLista();
+    return contenidoOn;
+  }
   function siguiente() {
     clearTimeout(mediaTimer); mediaTimer = null;
     if (media && media.tagName === "VIDEO") { try { media.pause(); media.removeAttribute("src"); media.load(); } catch (e) {} }
@@ -33,6 +41,7 @@
     el.src = it.asset; media = el;
   }
   async function cargaLista() {
+    if (!contenidoOn) return;
     try {
       const d = await (await fetch(PLAYLIST_API, {cache: "no-store"})).json(), dr = d && d.draft;
       if (!d || !d.ok || !dr || !Array.isArray(dr.items) || dr.rev === listaRev) return;
@@ -205,5 +214,5 @@
     estado.nivel = d.nivel; estado.quien = d.quien;
     const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-presencia", ...d}, new URL(tv).origin); } catch (e) {}
   });
-  window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv};
+  window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }};
 })();

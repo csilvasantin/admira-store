@@ -270,6 +270,17 @@ const creelScene = (() => {
   hotelBtn.title = "Seleccionar el hotel y moverlo con las flechas"; hotelBtn.setAttribute("aria-pressed", "false");
   hotelBtn.addEventListener("click", () => { select("casa"); handle.focus({preventScroll:true}); });
   field.append(hotelBtn);
+  // Botón «📺 Pantallas» al lado de «Hotel» (Carlos, 13-nov-2026): la pared emite o deja de emitir el contenido de admira.tv.
+  const tvBtn = document.createElement("button");
+  tvBtn.type = "button"; tvBtn.className = "creel-hotel-btn creel-tv-btn";
+  const pintaTv = () => {
+    const on = !!(window.creelPantalla && window.creelPantalla.contenidoOn);
+    tvBtn.textContent = on ? "📺 Pantallas · ON" : "📺 Pantallas · OFF";
+    tvBtn.setAttribute("aria-pressed", String(on));
+    tvBtn.title = on ? "La pantalla LED emite el contenido de admira.tv: pulsa para parar" : "La pantalla LED no emite contenido de admira.tv: pulsa para emitir";
+  };
+  tvBtn.addEventListener("click", () => { if (window.creelPantalla && window.creelPantalla.contenido) window.creelPantalla.contenido(!window.creelPantalla.contenidoOn); pintaTv(); });
+  pintaTv(); field.append(tvBtn);
   // Grabar posición (Neo, 12-nov-2026): hotel + personajes en localStorage; se recupera al cargar. «Reiniciar escena» la borra.
   // Desde el 13-nov-2026 (Carlos) va entre «Activar sonido» y «Reiniciar escena» y se graba SOLA la última posición
   // cada vez que se mueve el hotel o un personaje; el botón sigue valiendo para grabar a mano y enseña el estado.
