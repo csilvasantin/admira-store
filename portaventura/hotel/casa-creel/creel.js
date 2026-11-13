@@ -68,6 +68,18 @@
     draw();
   });
   document.getElementById("close-creel").addEventListener("click", () => dialog.close());
+  // Bloque de etapa plegable (Carlos, 13-nov-2026): compacto por defecto; el titular («Cubiertas, tablones y luces»)
+  // despliega u oculta la descripción, el deslizador y los mandos. Se recuerda en este navegador.
+  {
+    const stageName = document.getElementById("stage-name"), stageBody = document.getElementById("stage-body");
+    const abierto = () => { try { return localStorage.getItem("creel-etapa-abierta") === "1"; } catch (e) { return false; } };
+    const pliega = open => { stageBody.hidden = !open; stageName.setAttribute("aria-expanded", String(open)); try { localStorage.setItem("creel-etapa-abierta", open ? "1" : "0"); } catch (e) {} };
+    if (stageName && stageBody) {
+      pliega(abierto());
+      stageName.addEventListener("click", () => pliega(stageBody.hidden));
+      stageName.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pliega(stageBody.hidden); } });
+    }
+  }
   // admira.store (12-nov-2026): ?maqueta=1 abre directamente el Hotel Creel 3D con los personajes, a pantalla completa.
   if (/[?&]maqueta=1/.test(location.search)) { document.documentElement.classList.add("solo-maqueta"); document.getElementById("open-creel").click(); }
   dialog.addEventListener("close", () => cancelAnimationFrame(frame));
