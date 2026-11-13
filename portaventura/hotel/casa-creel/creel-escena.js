@@ -161,7 +161,10 @@ const creelScene = (() => {
 
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = `${actor.id + 1} · ${actor.name}`;
+    // Previo gráfico del personaje (Neo, 13-nov-2026): minifigura con su chaqueta y su pelo, no solo el nombre.
+    const piel = actor.name === "Vecna" ? "#9a5a52" : "#f0c38c";
+    button.classList.add("creel-ficha");
+    button.innerHTML = `<svg viewBox="0 0 24 34" width="24" height="34" aria-hidden="true"><rect x="7" y="2" width="10" height="4" rx="2" fill="${actor.hair}"/><rect x="7" y="5" width="10" height="9" rx="2" fill="${piel}"/><rect x="6" y="4" width="2" height="6" fill="${actor.hair}"/><circle cx="10" cy="9.5" r="1" fill="#1b1410"/><circle cx="14" cy="9.5" r="1" fill="#1b1410"/><path d="M10 12q2 1.4 4 0" stroke="#1b1410" stroke-width=".8" fill="none"/><path d="M5 15h14l2 9H3z" fill="${actor.coat}"/><rect x="2" y="16" width="3" height="8" rx="1.5" fill="${actor.coat}"/><rect x="19" y="16" width="3" height="8" rx="1.5" fill="${actor.coat}"/><rect x="6" y="24" width="5.5" height="9" fill="#2b2b38"/><rect x="12.5" y="24" width="5.5" height="9" fill="#2b2b38"/></svg><span><b>${actor.id + 1}</b> ${actor.name}</span>`;
     button.title = actor.zone;
     button.setAttribute("aria-pressed", "false");
     button.addEventListener("click", () => { activate(actor, true); select(actor.id); });
