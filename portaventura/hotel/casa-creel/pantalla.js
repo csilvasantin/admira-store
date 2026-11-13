@@ -144,7 +144,7 @@
     addEventListener("creel-camara", ({detail: k}) => {
       const v = el.parentElement.getBoundingClientRect(); if (!v.width) return;
       const P = (x, y, z) => [(.5 + (x * k.cx - z * k.sx) * k.zoom / k.aspect * .5) * v.width, (.5 - (-x * k.sx * k.sy + (y + k.suelo - k.center) * k.cy - z * k.cx * k.sy) * k.zoom * .5) * v.height];
-      const p0 = P(-ANCHO / 2, ALTO * 1.25, -k.bz), p1 = P(ANCHO / 2, ALTO * 1.25, -k.bz), p2 = P(-ANCHO / 2, ALTO * .25, -k.bz); // pantalla un 25 % más alta
+      const p0 = P(-ANCHO / 2, ALTO, -k.bz), p1 = P(ANCHO / 2, ALTO, -k.bz), p2 = P(-ANCHO / 2, 0, -k.bz);
       el.style.height = H + "px"; el.style.width = W + "px";
       el.style.transform = `matrix(${(p1[0]-p0[0])/W},${(p1[1]-p0[1])/W},${(p2[0]-p0[0])/H},${(p2[1]-p0[1])/H},${p0[0]},${p0[1]})`;
       el.hidden = false;

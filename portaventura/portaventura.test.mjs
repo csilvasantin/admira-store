@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-22/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-23/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -235,14 +235,14 @@ test('Xpace: sin «Abrir ↗» encima del gemelo de PortAventura y sin el mute d
   assert.match(xp, /body\.xp-twin-open #pfAudio\{display:none\}/);
 });
 
-test('Hotel Creel: pantalla un 10 % más alta, luces A–Z arriba que iluminan el nombre del personaje elegido (Carlos, 13-nov-2026)', () => {
+test('Hotel Creel: pantalla tocando tierra, luces A–Z arriba que iluminan el nombre del personaje elegido (Carlos, 13-nov-2026)', () => {
   const js = readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8');
-  assert.match(js, /y0 = y \+ P\.ALTO \* \.25, y1 = y0 \+ P\.ALTO/);
+  assert.match(js, /y0 = y, y1 = y \+ P\.ALTO/); // tocando tierra
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
-  assert.match(pan, /P\(-ANCHO \/ 2, ALTO \* 1\.25, -k\.bz\), p1 = P\(ANCHO \/ 2, ALTO \* 1\.25, -k\.bz\), p2 = P\(-ANCHO \/ 2, ALTO \* \.25, -k\.bz\)/);
+  assert.match(pan, /P\(-ANCHO \/ 2, ALTO, -k\.bz\), p1 = P\(ANCHO \/ 2, ALTO, -k\.bz\), p2 = P\(-ANCHO \/ 2, 0, -k\.bz\)/);
   assert.match(pan, /y = H \* \.026, on = nombre \? nombre\.includes\(l\)/);
   assert.doesNotMatch(pan, /y = H \* \.88/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'), /const BASE = 24/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'), /const BASE = 19/);
 });
 
 test('Hotel Creel: la pantalla gigante va por defecto conectada al kiosko /creel de admira.tv (contenido del mando) y se puede desconectar (Carlos, 13-nov-2026)', () => {
