@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-21/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-22/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -224,7 +224,7 @@ test('Hotel Creel en modo maqueta: sin cabecera del diálogo y el título baja a
 test('Hotel Creel: el título STRANGER THINGS y HAWKINS · HOTEL CREEL van más arriba en la pantalla (Carlos, 13-nov-2026)', () => {
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
   assert.match(pan, /g\.translate\(W \/ 2, H \* \.165\)/);
-  assert.match(pan, /H O T E L   C R E E L", W \/ 2, H \* \.265\)/);
+  assert.match(pan, /H O T E L   C R E E L", W \/ 2, H \* \.365\)/);
 });
 
 test('Xpace: sin «Abrir ↗» encima del gemelo de PortAventura y sin el mute de la barra con un gemelo abierto (Carlos, 13-nov-2026)', () => {
@@ -243,4 +243,11 @@ test('Hotel Creel: pantalla un 10 % más alta, luces A–Z arriba que iluminan e
   assert.match(pan, /y = H \* \.026, on = nombre \? nombre\.includes\(l\)/);
   assert.doesNotMatch(pan, /y = H \* \.88/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'), /const BASE = 24/);
+});
+
+test('Hotel Creel: la pantalla gigante va por defecto conectada al kiosko /creel de admira.tv (contenido del mando) y se puede desconectar (Carlos, 13-nov-2026)', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /const TV_DEFECTO = "https:\/\/admira\.tv\/creel\/";/);
+  assert.match(pan, /tv = elegida === "off" \? null : valida\(elegida \|\| TV_DEFECTO\);/);
+  assert.match(pan, /localStorage\.setItem\("creel-tv", "off"\)/);
 });

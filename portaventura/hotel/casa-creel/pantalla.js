@@ -58,7 +58,7 @@
     g.shadowColor = once ? "#3fd2ff" : "#ff2a1f"; g.shadowBlur = 30; g.lineWidth = 4; g.strokeStyle = once ? "#9be3ff" : "#ff3326";
     g.strokeText("STRANGER THINGS", 0, 0); g.restore();
     g.font = "700 28px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "#ffb3a8"; g.shadowBlur = 0;
-    g.fillText("H A W K I N S   ·   H O T E L   C R E E L", W / 2, H * .265);
+    g.fillText("H A W K I N S   ·   H O T E L   C R E E L", W / 2, H * .365); // un 10 % más abajo (Carlos, 13-nov-2026)
     if (estado.cara) retrato(cara(estado.cara.slug), estado.cara.quien, s);
     if (nivel !== "lejos") { g.font = "800 46px ui-monospace, monospace"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 16; g.fillText(MSG[nivel](quien), W / 2, H * .72); g.shadowBlur = 0; }
     // Luces A–Z en la franja superior (Carlos, 13-nov-2026). Con un personaje elegido se encienden fijas las letras de su
@@ -118,11 +118,16 @@
   let tv = null;
   // Botón «Conectar admira.tv» (Neo 13-nov-2026): la URL se guarda en este navegador (localStorage creel-tv).
   const valida = v => { try { const u = new URL(v); return u.protocol === "https:" && /(^|\.)admira\.tv$/.test(u.hostname) ? u.href : null; } catch (e) { return null; } };
+  // Por defecto (Carlos, 13-nov-2026) la pantalla gigante va conectada al kiosko /creel de admira.tv, que reproduce la
+  // playlist «hotel-creel» del mando con el título, las luces y los personajes. «Desconectar» guarda «off» y vuelve al
+  // lienzo local; «Conectar» con otra URL https de admira.tv la sustituye.
+  const TV_DEFECTO = "https://admira.tv/creel/";
   const guardada = () => { try { return localStorage.getItem("creel-tv") || ""; } catch (e) { return ""; } };
-  tv = valida(new URLSearchParams(location.search).get("tv") || window.CREEL_TV || guardada());
+  const elegida = new URLSearchParams(location.search).get("tv") || window.CREEL_TV || guardada();
+  tv = elegida === "off" ? null : valida(elegida || TV_DEFECTO);
   const forma = document.getElementById("creel-tv"), campo = document.getElementById("creel-tv-url"), aviso = document.getElementById("creel-tv-estado"), off = document.getElementById("creel-tv-off");
   if (campo && tv) campo.value = tv;
-  if (aviso) aviso.textContent = tv ? "Conectada a admira.tv" : "Sin señal · fondo Stranger Things";
+  if (aviso) aviso.textContent = tv ? "Conectada a admira.tv · " + tv.replace("https://", "") : "Sin señal · fondo Stranger Things";
   if (off) off.hidden = !tv;
   if (forma) forma.addEventListener("submit", e => {
     e.preventDefault(); const u = valida(campo.value.trim());
@@ -130,7 +135,7 @@
     try { localStorage.setItem("creel-tv", u); } catch (er) {}
     const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString();
   });
-  if (off) off.addEventListener("click", () => { try { localStorage.removeItem("creel-tv"); } catch (er) {} const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString(); });
+  if (off) off.addEventListener("click", () => { try { localStorage.setItem("creel-tv", "off"); } catch (er) {} const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString(); });
   const el = document.getElementById("creel-pantalla");
   if (el) { el.replaceChildren(); el.hidden = true; }
   if (tv && el) {
