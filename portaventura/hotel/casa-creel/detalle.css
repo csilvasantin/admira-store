@@ -157,14 +157,6 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-cast .creel-ficha svg{flex:none;filter:drop-shadow(0 1px 1px #0008)}
 #creel-cast .creel-ficha span{line-height:1.15}
 #creel-cast .creel-ficha b{opacity:.6;font-weight:700}
-/* Foto del personaje al pasar el ratón (Neo, 13-nov-2026) */
-.creel-foto{position:fixed;z-index:50;width:200px;margin:0;padding:8px;border:1px solid #805260;border-radius:8px;background:#140d18f2;box-shadow:0 12px 40px #000a;pointer-events:none;color:#ffe9df}
-.creel-foto .cf-img{position:relative;height:190px;border-radius:5px;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#5a1a22,#140d18)}
-.creel-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
-.creel-foto.con-foto img{display:block}
-.creel-foto.con-foto .cf-ilustra{display:none}
-.creel-foto .cf-ilustra{position:absolute;inset:0;display:grid;place-items:center}
-.creel-foto .cf-ilustra svg{width:96px;height:136px;filter:drop-shadow(0 6px 10px #000c)}
-.creel-foto figcaption{display:flex;flex-direction:column;gap:2px;margin-top:7px;font:12px/1.3 system-ui,sans-serif}
-.creel-foto figcaption b{font:700 14px Georgia,serif}
-.creel-foto figcaption small{opacity:.65}
+/* Foto del protagonista dentro del botón, sin cambiar su tamaño (Neo, 13-nov-2026) */
+#creel-cast .creel-ficha-foto{flex:none;width:28px;height:34px;object-fit:cover;object-position:50% 15%;border-radius:4px;background:#2a192c}
+#creel-cast .creel-ficha.con-foto svg{display:none}
