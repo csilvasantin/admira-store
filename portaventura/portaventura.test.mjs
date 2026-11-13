@@ -101,3 +101,10 @@ test('Hotel Creel: sin «Casa Creel» visible, clima solo en la pantalla y teló
   const xp = readFileSync(new URL('../admira-xp/index.html', import.meta.url), 'utf8'); assert.match(xp, /xp-pa-boot/);
   assert.match(readFileSync(new URL('../admira-xp/scripts/xtanco-premium-ui.mjs', import.meta.url), 'utf8'), /xp-pa-boot/);
 });
+test('Hotel Creel: Sol 3D real sobre la pantalla con slider de 24 h y previsión por horas (Neo 13-nov-2026)', () => {
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8');
+  assert.match(html, /sol\.js/); assert.match(html, /id="creel-hora" type="range" min="0" max="1439"/); assert.match(html, /id="creel-prevision"/);
+  assert.ok(html.indexOf('data-clima="tormenta"') < html.indexOf('id="creel-hora"') && html.indexOf('id="creel-hora"') < html.indexOf('PANTALLA LED'));
+  const sol = readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'); assert.match(sol, /LAT = 41\.08/); assert.match(sol, /creel-hora/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8'), /hourly=temperature_2m,weather_code/);
+});
