@@ -183,3 +183,10 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-sol-info[aria-expanded=true]::after{content:" ▴"}
 #creel-sol-info:focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
 .solo-maqueta #model-status{display:none}
+/* CLIMA y HORA · SOL compactos (Carlos, 14-nov-2026): el rótulo manda. */
+.creel-clima-t[role=button]{cursor:pointer;user-select:none}
+.creel-clima-t[role=button]::after{content:" ▾";opacity:.7}
+.creel-clima-t[aria-expanded=true]::after{content:" ▴"}
+.creel-clima-t[role=button]:focus-visible{outline:2px solid #ffd1aa;outline-offset:2px}
+.creel-clima.plegado>:not(.creel-clima-t),.creel-solbar.plegado>:not(.creel-clima-t){display:none}
+.creel-solbar[hidden]{display:none} /* sin clima elegido no hay datos del Sol: ni el rótulo */

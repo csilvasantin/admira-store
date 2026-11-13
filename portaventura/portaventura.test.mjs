@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261114-1/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261114-2/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -294,4 +294,13 @@ test('Hotel Creel: sin «MAQUETA 3D · piezas» en modo maqueta y la previsión 
   assert.match(clima, /if \(!horas\.length \|\| !previsionAbierta\) \{ tira\.hidden = true; return; \}/);
   assert.match(clima, /solInfo\.addEventListener\("click", \(\) => pliegaPrevision\(!previsionAbierta\)\);/);
   assert.match(clima, /localStorage\.setItem\("creel-prevision-abierta"/);
+});
+
+test('Hotel Creel: CLIMA y HORA · SOL van compactos y su rótulo los despliega u oculta (Carlos, 14-nov-2026)', () => {
+  const clima = readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8');
+  assert.match(clima, /document\.querySelectorAll\("\.creel-clima, \.creel-solbar"\)/);
+  assert.match(clima, /const clave = "creel-plegado:" \+ \(bloque\.classList\.contains\("creel-solbar"\) \? "solbar" : "clima"\);/);
+  assert.match(clima, /rotulo\.addEventListener\("click", \(\) => pon\(bloque\.classList\.contains\("plegado"\)\)\);/);
+  const css = readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8');
+  assert.match(css, /\.creel-clima\.plegado>:not\(\.creel-clima-t\),\.creel-solbar\.plegado>:not\(\.creel-clima-t\)\{display:none\}/);
 });

@@ -14,6 +14,17 @@
   // Previsión plegable (Carlos, 14-nov-2026): la tira por horas va escondida; la línea «Sale hh:mm · se pone hh:mm»
   // la despliega u oculta al pulsarla. Se recuerda en este navegador.
   const solInfo = document.getElementById("creel-sol-info");
+  // Bloques CLIMA y HORA · SOL compactos (Carlos, 14-nov-2026): su rótulo despliega u oculta el resto de la fila.
+  for (const bloque of document.querySelectorAll(".creel-clima, .creel-solbar")) {
+    const rotulo = bloque.querySelector(".creel-clima-t"); if (!rotulo) continue;
+    const clave = "creel-plegado:" + (bloque.classList.contains("creel-solbar") ? "solbar" : "clima");
+    const abierto = () => { try { return localStorage.getItem(clave) === "1"; } catch (e) { return false; } };
+    const pon = open => { bloque.classList.toggle("plegado", !open); rotulo.setAttribute("aria-expanded", String(open)); try { localStorage.setItem(clave, open ? "1" : "0"); } catch (e) {} };
+    rotulo.setAttribute("role", "button"); rotulo.tabIndex = 0; rotulo.title = "Mostrar u ocultar";
+    rotulo.addEventListener("click", () => pon(bloque.classList.contains("plegado")));
+    rotulo.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pon(bloque.classList.contains("plegado")); } });
+    pon(abierto());
+  }
   let previsionAbierta = (() => { try { return localStorage.getItem("creel-prevision-abierta") === "1"; } catch (e) { return false; } })();
   function pliegaPrevision(open) {
     previsionAbierta = !!open;
