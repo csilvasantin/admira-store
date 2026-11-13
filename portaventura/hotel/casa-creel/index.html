@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Expediente Hawkins · PortAventura NeXT</title>
-<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-1">
-<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-1"></script>
-<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-1"></script>
-<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-1"></script>
+<link rel="stylesheet" href="/portaventura/hotel/casa-creel/detalle.css?v=20261113-2">
+<script defer src="/portaventura/hotel/casa-creel/comic.js?v=20261113-2"></script>
+<script defer src="/portaventura/hotel/casa-creel/pantalla.js?v=20261113-2"></script>
+<script defer src="/portaventura/hotel/casa-creel/clima.js?v=20261113-2"></script>
 <style>
 .nv-quad{position:sticky;top:0;z-index:1200;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px clamp(8px,2vw,22px);border-bottom:1px solid #805260;background:#180f1e;color:#ffe9df;font:650 13px/1.35 system-ui,sans-serif;text-align:left}
 .nv-quad *, .nv-quad *::before{box-sizing:border-box}.nv-quad .nv-spacer{flex:1 1 auto}
@@ -244,14 +244,21 @@
           <button type="button" class="action" data-clima="lluvia" title="Forzar lluvia" aria-pressed="false">🌧️</button>
           <button type="button" class="action" data-clima="tormenta" title="Forzar tormenta (truenos)" aria-pressed="false">⛈️</button>
         </div>
+        <form id="creel-tv" class="creel-tv" aria-label="Conectar la pantalla de fondo a admira.tv">
+          <span class="creel-clima-t">PANTALLA LED</span>
+          <input id="creel-tv-url" type="url" placeholder="https://….admira.tv/…" aria-label="URL del player de admira.tv">
+          <button type="submit" class="action">📺 Conectar admira.tv</button>
+          <button type="button" class="action" id="creel-tv-off" hidden>Desconectar</button>
+          <small id="creel-tv-estado" role="status"></small>
+        </form>
       </aside>
     </div>
   </dialog>
-  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-1"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-1"></script>
-  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-1"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-1"></script>
-  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-1"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-geometria.js?v=20261113-2"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-mallas.js?v=20261113-2"></script>
+  <script defer src="/portaventura/hotel/casa-creel/xpl-runtime.js?v=20261113-2"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel-escena.js?v=20261113-2"></script>
+  <script defer src="/portaventura/hotel/casa-creel/creel.js?v=20261113-2"></script>
   <footer>ESTUDIO CONCEPTUAL · STRANGER THINGS · ZONA 1 DE 6</footer>
 </main>
 </body>

@@ -3,8 +3,8 @@
 // con la textura de este lienzo. Punto de conexión: ?tv=<URL https de admira.tv> (o window.CREEL_TV) → el player
 // de admira.tv va en un iframe colocado sobre esa misma cara (la textura no puede leer un iframe de otro dominio).
 (() => {
-  const ANCHO = 44, ALTO = 15;           // unidades de tablero (× 2,5 cm): 110 × 37 cm
-  const W = 1320, H = Math.round(W * ALTO / ANCHO);
+  const ANCHO = 48, ALTO = 18;           // unidades de tablero (× 2,5 cm): 120 × 45 cm, todo el ancho de la base (Neo 13-nov: +20 % de alto)
+  const W = 1440, H = Math.round(W * ALTO / ANCHO);
   const lienzo = document.createElement("canvas"); lienzo.width = W; lienzo.height = H;
   const g = lienzo.getContext("2d");
   const estado = {nivel: "lejos", quien: ""};
@@ -24,12 +24,12 @@
     cielo(s);
     g.fillStyle = "rgba(243,230,255,.75)";
     for (const e of esporas) { const y = ((e.y - s * e.v) % 1 + 1) % 1; g.beginPath(); g.arc(e.x * W + Math.sin(s + e.y * 9) * 12, y * H, e.r, 0, 7); g.fill(); }
-    g.save(); g.translate(W / 2, H * .36); if (nivel === "puerta" && !once) g.scale(1, -1);
+    g.save(); g.translate(W / 2, H * .2); if (nivel === "puerta" && !once) g.scale(1, -1);
     g.font = "900 128px Georgia, 'Times New Roman', serif"; g.textAlign = "center"; g.textBaseline = "middle";
     g.shadowColor = once ? "#3fd2ff" : "#ff2a1f"; g.shadowBlur = 30; g.lineWidth = 4; g.strokeStyle = once ? "#9be3ff" : "#ff3326";
     g.strokeText("STRANGER THINGS", 0, 0); g.restore();
     g.font = "700 28px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "#ffb3a8"; g.shadowBlur = 0;
-    g.fillText("H A W K I N S   ·   C A S A   C R E E L", W / 2, H * .58);
+    g.fillText("H A W K I N S   ·   C A S A   C R E E L", W / 2, H * .35);
     if (nivel !== "lejos") { g.font = "800 46px ui-monospace, monospace"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 16; g.fillText(MSG[nivel](quien), W / 2, H * .72); g.shadowBlur = 0; }
     const paso = nivel === "puerta" ? .25 : nivel === "cerca" ? .6 : 3;
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((l, i) => {
@@ -48,7 +48,7 @@
     const C = window.creelClima && window.creelClima.clima; if (!C) return;
     const tipo = C.tipo;
     if (tipo === "sol") {
-      const sx = W * .09, sy = H * .55, r = 55 + Math.sin(s * 2) * 4;
+      const sx = W * .08, sy = H * .68, r = 48 + Math.sin(s * 2) * 4;
       const luz = g.createRadialGradient(sx, sy, 10, sx, sy, W * .55); luz.addColorStop(0, "rgba(255,214,92,.75)"); luz.addColorStop(.3, "rgba(255,150,40,.28)"); luz.addColorStop(1, "rgba(255,120,0,0)");
       g.fillStyle = luz; g.fillRect(0, 0, W, H);
       g.save(); g.translate(sx, sy); g.rotate(s * .15); g.strokeStyle = "rgba(255,228,140,.8)"; g.lineWidth = 6;
@@ -74,16 +74,30 @@
     const K = window.creelClima; if (!K) return;
     const C = K.clima, t = C.temp == null ? "— °C" : `${Math.round(C.temp)} °C`;
     g.save(); g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = 10; g.fillStyle = "#fff";
-    g.font = "800 64px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "top"; g.fillText(K.hora(), W - 26, 18);
-    g.font = "800 50px ui-monospace, monospace"; g.textAlign = "left"; g.fillText(`${K.ICONO[C.tipo]} ${t}`, 26, 22);
+    g.font = "800 64px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "top"; g.fillText(K.hora(), W - 26, H * .44);
+    g.font = "800 50px ui-monospace, monospace"; g.textAlign = "left"; g.fillText(`${K.ICONO[C.tipo]} ${t}`, 26, H * .44);
     g.font = "600 20px ui-monospace, monospace"; g.fillStyle = "rgba(255,255,255,.75)";
-    g.fillText(`PORTAVENTURA · ${K.NOMBRE[C.tipo].toUpperCase()}${C.forzado ? " · FORZADO" : C.ok ? " · EN DIRECTO" : ""}`, 28, 84);
+    g.fillText(`PORTAVENTURA · ${K.NOMBRE[C.tipo].toUpperCase()}${C.forzado ? " · FORZADO" : C.ok ? " · EN DIRECTO" : ""}`, 28, H * .44 + 62);
     g.restore();
   }
 
   // Conexión a admira.tv: iframe sobre la cara de la pantalla (misma posición 3D que la textura).
   let tv = null;
-  try { const u = new URL(new URLSearchParams(location.search).get("tv") || window.CREEL_TV || ""); if (u.protocol === "https:" && /(^|\.)admira\.tv$/.test(u.hostname)) tv = u.href; } catch (e) {}
+  // Botón «Conectar admira.tv» (Neo 13-nov-2026): la URL se guarda en este navegador (localStorage creel-tv).
+  const valida = v => { try { const u = new URL(v); return u.protocol === "https:" && /(^|\.)admira\.tv$/.test(u.hostname) ? u.href : null; } catch (e) { return null; } };
+  const guardada = () => { try { return localStorage.getItem("creel-tv") || ""; } catch (e) { return ""; } };
+  tv = valida(new URLSearchParams(location.search).get("tv") || window.CREEL_TV || guardada());
+  const forma = document.getElementById("creel-tv"), campo = document.getElementById("creel-tv-url"), aviso = document.getElementById("creel-tv-estado"), off = document.getElementById("creel-tv-off");
+  if (campo && tv) campo.value = tv;
+  if (aviso) aviso.textContent = tv ? "Conectada a admira.tv" : "Sin señal · fondo Stranger Things";
+  if (off) off.hidden = !tv;
+  if (forma) forma.addEventListener("submit", e => {
+    e.preventDefault(); const u = valida(campo.value.trim());
+    if (!u) { aviso.textContent = "Pon una URL https de admira.tv"; return; }
+    try { localStorage.setItem("creel-tv", u); } catch (er) {}
+    const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString();
+  });
+  if (off) off.addEventListener("click", () => { try { localStorage.removeItem("creel-tv"); } catch (er) {} const q = new URLSearchParams(location.search); q.delete("tv"); location.search = q.toString(); });
   const el = document.getElementById("creel-pantalla");
   if (el) { el.replaceChildren(); el.hidden = true; }
   if (tv && el) {

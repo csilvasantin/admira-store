@@ -88,3 +88,9 @@ test('Casa Creel: clima real de PortAventura (Open-Meteo) en la pantalla y icono
   const cl = readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8'); assert.match(cl, /api\.open-meteo\.com/); assert.match(cl, /latitude=41\.08/); assert.match(cl, /creel-clima/);
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8'); assert.match(pan, /function cielo/); assert.match(pan, /K\.hora\(\)/);
 });
+test('Casa Creel: pantalla LED de lado a lado (+20 % alto), título arriba y botón Conectar admira.tv (Neo 13-nov-2026)', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /const ANCHO = 48, ALTO = 18;/); assert.match(pan, /g\.translate\(W \/ 2, H \* \.2\)/); assert.match(pan, /localStorage\.setItem\("creel-tv"/);
+  const html = readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'); assert.match(html, /Conectar admira\.tv/); assert.match(html, /id="creel-tv-url"/);
+  const sel = readFileSync(new URL('../admira-xp/scripts/project-selector.mjs', import.meta.url), 'utf8'); assert.match(sel, /topSync/);
+});
