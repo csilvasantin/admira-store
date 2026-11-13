@@ -121,7 +121,7 @@ test('Hotel Creel: foto del protagonista en cada botón sin cambiar su tamaño (
 
 test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y manda la cara del personaje a la pantalla (Carlos, 13-nov-2026)', () => {
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
-  assert.match(esc, /const ZONE = \{cols: 9, cell: CELL\}/);
+  assert.match(esc, /const ZONE = \{cols: 8, cell: CELL\}/);               // el ancho de la base del hotel
   assert.match(esc, /z1: board\.depth \/ board\.unitCm \/ 2\}/); // siempre hasta el borde delantero de la base
   assert.match(esc, /z0 = Math\.floor\(\(house\.z \+ 4\.5\) \/ CELL\) \* CELL/); // línea bajo el borde delantero de la base
   assert.match(esc, /new CustomEvent\("creel-zona"/);
@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-17/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-18/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -169,7 +169,7 @@ test('Hotel Creel: todo ajustado a la cuadrícula de 5 cm: zona y hotel a las l�
   assert.match(esc, /const CELL = 5 \/ board\.unitCm;/);
   assert.match(esc, /const snapLine = v => Math\.round\(v \/ CELL\) \* CELL;/);
   assert.match(esc, /const snapCenter = v => Math\.round\(\(v - CELL \/ 2\) \/ CELL\) \* CELL \+ CELL \/ 2;/);
-  assert.match(esc, /x0 = snapLine\(house\.x \+ 1 - w \/ 2\)/);
+  assert.match(esc, /x0 = Math\.floor\(\(house\.x \+ 1 - w \/ 2\) \/ CELL\) \* CELL/); // −8 … 8 con el hotel en 0
   assert.match(esc, /snapCenter\(x\)\)\); z = Math\.max\(-bz, Math\.min\(bz, snapCenter\(z\)\)\);/);
   assert.match(esc, /snapLine\(x\)\)\); z = Math\.max\(-bz, Math\.min\(bz, snapLine\(z\)\)\);/);
   assert.match(esc, /const n = \(e\.shiftKey \? 4 : 1\) \* CELL;/);

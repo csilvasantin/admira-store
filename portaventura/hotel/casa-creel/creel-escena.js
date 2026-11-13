@@ -223,12 +223,12 @@ const creelScene = (() => {
   // ── Zona de influencia de la puerta (Carlos, 13-nov-2026): cuadrados de 5 cm de la cuadrícula, pegados al
   // porche (borde delantero de la huella del hotel, z = casa + 4,5) y centrados en la puerta. El suelo la pinta de
   // otro color (creel.js) y, si un personaje entra arrastrado, su cara sale en la pantalla gigante (pantalla.js). ──
-  // 13-nov-2026 (Carlos, vista cenital): 9 columnas centradas en la puerta (x = casa + 1) con los bordes en líneas de la
-  // cuadrícula (−8 … 10 con el hotel en 0) y, hacia delante, SIEMPRE hasta el borde de la base, esté donde esté el hotel.
-  const ZONE = {cols: 9, cell: CELL};
+  // 13-nov-2026 (Carlos, vista cenital): la prolongación exacta de la base del hotel: 8 columnas (40 cm, el ancho de la
+  // base, −8 … 8 con el hotel en 0), bordes en líneas de la cuadrícula y, hacia delante, SIEMPRE hasta el borde de la base.
+  const ZONE = {cols: 8, cell: CELL};
   function zoneRect() {
     // Ajustada a la cuadrícula: empieza en la línea que queda bajo el borde delantero de la base del hotel (z = casa + 4,5).
-    const w = ZONE.cols * ZONE.cell, x0 = snapLine(house.x + 1 - w / 2), z0 = Math.floor((house.z + 4.5) / CELL) * CELL;
+    const w = ZONE.cols * ZONE.cell, x0 = Math.floor((house.x + 1 - w / 2) / CELL) * CELL, z0 = Math.floor((house.z + 4.5) / CELL) * CELL;
     return {x0, x1: x0 + w, z0, z1: board.depth / board.unitCm / 2};
   }
   const inZone = a => { const r = zoneRect(); return a.x >= r.x0 && a.x <= r.x1 && a.z >= r.z0 && a.z <= r.z1; };
