@@ -11,7 +11,10 @@
   const estado = {nivel: "lejos", quien: "", cara: null, caraZona: null, caraSel: null};
   // Contenido de admira.tv en la pared (Carlos, 13-nov-2026): la playlist de la pantalla LED (hotel-creel, la del mando)
   // se reproduce en bucle detrás del título con tinte Hawkins; vídeo mudo, imágenes su tiempo; se relee cada minuto.
-  const PLAYLIST_API = "https://admira.tv/api/playlist?screen=hotel-creel";
+  // ?playlist=<pantalla> (Carlos, 14-nov-2026): la pared puede emitir la playlist de otra pantalla de admira.tv
+  // (p. ej. corsair-galleon-100, el teclado del Mac Studio). Por defecto, la de la LED del hotel (hotel-creel).
+  const PLAYLIST_SCREEN = (() => { const v = new URLSearchParams(location.search).get("playlist") || ""; return /^[a-z0-9][a-z0-9-]{1,79}$/.test(v) ? v : "hotel-creel"; })();
+  const PLAYLIST_API = "https://admira.tv/api/playlist?screen=" + PLAYLIST_SCREEN;
   let lista = [], listaNombre = "", listaRev = null, idx = -1, media = null, mediaOk = false, mediaTimer = null;
   // Botón «📺 Pantallas» (Carlos, 13-nov-2026): emitir o parar el contenido de admira.tv en la pared. Se recuerda aquí.
   let contenidoOn = (() => { try { return localStorage.getItem("creel-contenido") !== "0"; } catch (e) { return true; } })();
@@ -46,7 +49,10 @@
       const d = await (await fetch(PLAYLIST_API, {cache: "no-store"})).json(), dr = d && d.draft;
       if (!d || !d.ok || !dr || !Array.isArray(dr.items) || dr.rev === listaRev) return;
       listaRev = dr.rev; listaNombre = String(dr.name || "");
-      lista = dr.items.filter(i => i && /^https:\/\//.test(i.asset || "") && ["video", "image", "animation"].includes(i.assetType));
+      const todas = dr.items.filter(i => i && /^https:\/\//.test(i.asset || "") && ["video", "image", "animation"].includes(i.assetType));
+      // La pared es apaisada: si la playlist trae parejas H·V (como la del Galleon), se emiten solo las horizontales.
+      const horizontales = todas.filter(i => !(i.tags || []).some(t => t === "vertical" || t === "portrait"));
+      lista = horizontales.length ? horizontales : todas;
       idx = -1; siguiente();
     } catch (e) { /* sin red o sin CORS: se queda el fondo rojo */ }
   }
