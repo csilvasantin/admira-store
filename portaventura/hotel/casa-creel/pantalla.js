@@ -1,4 +1,4 @@
-// Pantalla de fondo de la Casa Creel (Neo, 12-nov-2026): una pantalla física de pie en el borde trasero de la base,
+// Pantalla de fondo del Hotel Creel (Neo, 12-nov-2026): una pantalla física de pie en el borde trasero de la base,
 // parte de la escena 3D (gira y se mueve con la parrilla; la cámara no la recoloca). creel.js la pinta en WebGL
 // con la textura de este lienzo. Punto de conexión: ?tv=<URL https de admira.tv> (o window.CREEL_TV) → el player
 // de admira.tv va en un iframe colocado sobre esa misma cara (la textura no puede leer un iframe de otro dominio).
@@ -29,7 +29,7 @@
     g.shadowColor = once ? "#3fd2ff" : "#ff2a1f"; g.shadowBlur = 30; g.lineWidth = 4; g.strokeStyle = once ? "#9be3ff" : "#ff3326";
     g.strokeText("STRANGER THINGS", 0, 0); g.restore();
     g.font = "700 28px ui-monospace, monospace"; g.textAlign = "center"; g.fillStyle = "#ffb3a8"; g.shadowBlur = 0;
-    g.fillText("H A W K I N S   ·   C A S A   C R E E L", W / 2, H * .35);
+    g.fillText("H A W K I N S   ·   H O T E L   C R E E L", W / 2, H * .35);
     if (nivel !== "lejos") { g.font = "800 46px ui-monospace, monospace"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 16; g.fillText(MSG[nivel](quien), W / 2, H * .72); g.shadowBlur = 0; }
     const paso = nivel === "puerta" ? .25 : nivel === "cerca" ? .6 : 3;
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((l, i) => {
@@ -101,7 +101,7 @@
   const el = document.getElementById("creel-pantalla");
   if (el) { el.replaceChildren(); el.hidden = true; }
   if (tv && el) {
-    const f = document.createElement("iframe"); f.src = tv; f.title = "admira.tv · pantalla de la Casa Creel"; f.allow = "autoplay; fullscreen"; f.tabIndex = -1;
+    const f = document.createElement("iframe"); f.src = tv; f.title = "admira.tv · pantalla del Hotel Creel"; f.allow = "autoplay; fullscreen"; f.tabIndex = -1;
     el.append(f); el.dataset.fuente = "admira.tv";
     addEventListener("creel-camara", ({detail: k}) => {
       const v = el.parentElement.getBoundingClientRect(); if (!v.width) return;

@@ -3,6 +3,8 @@
 <head>
 <script type="module" src="/admira-xp/scripts/sprite-import.mjs?v=20261027-1"></script>
 <script>if(new URLSearchParams(location.search).get('autostart')==='sneakerstore'){location.replace('/xpacios/sneakerstore/'+location.search);}</script>
+<script>/* PortAventura directo (Neo, 13-nov-2026): telón negro desde el primer pintado hasta que el destino está listo; sin destellos del Xpace de debajo */(function(){var q=new URLSearchParams(location.search);if(q.get('xpace')!=='portaventura'||!q.get('venue'))return;var h=document.documentElement;h.classList.add('xp-pa-boot');var fin=function(){h.classList.remove('xp-pa-boot');};addEventListener('message',function(e){if(e.data&&e.data.type==='creel-listo')fin();});window.xpPaBootDone=fin;setTimeout(fin,15000);})();</script>
+<style>html.xp-pa-boot::after{content:"";position:fixed;inset:0;z-index:2147483647;background:#17151c;pointer-events:none}</style>
   <link rel="stylesheet" href="scripts/media-drag.css?v=20261006-alsea-repair-2">
   <link rel="stylesheet" data-expert-legibility href="/assets/expert-legibility.css?v=20261006-alsea-repair-1">
   <script src="/admira-xp/scripts/session-access.js?v=20261005-session-1"></script>

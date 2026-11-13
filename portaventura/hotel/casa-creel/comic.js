@@ -16,7 +16,7 @@ const chapters = [
     name: "Port de la Drassana", title: "El lago devuelve la señal",
     existing: "Embarcadero de Mediterrània para el paseo en barco por el parque.",
     proposal: "Reflejos y sonido convierten la travesía en un paso por Lover’s Lake. El muelle y el recorrido sirven de base.",
-    detail: "Un reflejo de la Casa Creel aparece en el agua y apunta hacia el andén.",
+    detail: "Un reflejo del Hotel Creel aparece en el agua y apunta hacia el andén.",
     scenes: [
       ["boat", "La embarcación se aleja del muelle. El agua parece un espejo."],
       ["reflection", "Mirad abajo. Esa casa solo está en el reflejo.", "Max"],
@@ -27,11 +27,11 @@ const chapters = [
     name: "Estació del Nord", title: "El último andén",
     existing: "Estación de Mediterrània del tren interno que comunica zonas del parque.",
     proposal: "El andén se viste como una llegada a Hawkins. La circulación del tren se conserva.",
-    detail: "La Casa Creel se revela como hito en la maqueta conceptual de Mediterrània.",
+    detail: "El Hotel Creel se revela como hito en la maqueta conceptual de Mediterrània.",
     scenes: [
       ["train", "El convoy entra en la estación. El reloj se para a las 23:59."],
       ["clock", "La señal no quiere que subamos. Quiere que miremos.", "Once"],
-      ["house", "En el plano, la Casa Creel se alza junto al lago. Hawkins vuelve a respirar."],
+      ["house", "En el plano, el Hotel Creel se alza junto al lago. Hawkins vuelve a respirar."],
     ],
   },
 ];

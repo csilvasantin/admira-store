@@ -6,7 +6,7 @@ ES: En admira.store/admira-xp, combo **Xpaces → PortAventura**; el combo **Ven
 |---|---|---|
 | Store · Stranger Things | `store` | https://www.portaventuranext.com/dmz/netflix/strangerthings/merchandising |
 | Restaurant · Benny's Burgers | `restaurant` (alias `restaurante`) | https://www.portaventuranext.com/dmz/netflixventura/restaurante |
-| Hotel · Casa Creel | `hotel` | https://www.portaventuranext.com/dmz/netflixventura/hotel |
+| Hotel · Hotel Creel (evolución del Hotel Lucy) | `hotel` | https://www.portaventuranext.com/dmz/netflixventura/hotel |
 | Atracciones | `atracciones` (alias `atraccion`) | https://www.portaventuranext.com/dmz/netflixventura (provisional: aún no hay ruta propia) |
 
 **Style** (entre Venue y Quality): `netflix` (contenido actual), `universal`, `sony`, `skydance` (paleta propia y «próximamente», sin logos ni arte de esas marcas). Parámetro `&style=`.

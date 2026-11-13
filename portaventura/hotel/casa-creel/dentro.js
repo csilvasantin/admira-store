@@ -1,4 +1,4 @@
-// Casa Creel · Hotel por dentro. Recorrido en primera persona, suites que giran
+// Hotel Creel · Hotel por dentro. Recorrido en primera persona, suites que giran
 // entre 1959 y el Upside Down, y la noche de las cuatro campanadas.
 import * as THREE from '/portaventura/store/hawkins/three.module.min.js';
 
@@ -29,7 +29,7 @@ const CHIMES = [
   {hour: 0, word: 'UNA', text: 'Primera campanada. Las luces parpadean y la Suite I cruza al Otro Lado.'},
   {hour: 1, word: 'RADIO', text: 'Segunda campanada. La radio WSQK se enciende sola y la Suite II se da la vuelta.'},
   {hour: 2, word: 'RELOJ', text: 'Tercera campanada. El reloj de pie marca la hora de Victor: la Suite III gira.'},
-  {hour: 3, word: 'CORRE', text: 'Cuarta campanada. Toda la casa cruza y el portal del ático se abre.'},
+  {hour: 3, word: 'CORRE', text: 'Cuarta campanada. Todo el hotel cruza y el portal del ático se abre.'},
 ];
 
 // ---------- Utilidades ----------
@@ -90,7 +90,7 @@ const windowTex = up => tex((g, w, h) => {
 // ---------- Escena ----------
 let renderer;
 try { renderer = new THREE.WebGLRenderer({canvas, antialias: true}); }
-catch (error) { loading.textContent = 'Tu navegador no puede mostrar la casa en 3D.'; throw error; }
+catch (error) { loading.textContent = 'Tu navegador no puede mostrar el hotel en 3D.'; throw error; }
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.1;
@@ -421,13 +421,13 @@ let radioPulse = 0, clockSwing = 0;
 function startNight() {
   dawn(true);
   state.running = true; state.speed = 270 / 75; // 23:00 → 03:30 en 75 s
-  say('Empieza la noche en la Casa Creel. Escucha el reloj.');
+  say('Empieza la noche en el Hotel Creel. Escucha el reloj.');
   renderPanel();
 }
 function dawn(silent) {
   state.running = false; state.minutes = 23 * 60; state.rung = 0;
   for (const id of ORDER) { ROOMS[id].target = 0; ROOMS[id].flicker = 0; }
-  if (!silent) say('Amanece. La casa vuelve a 1959.');
+  if (!silent) say('Amanece. El hotel vuelve a 1959.');
   renderPanel();
 }
 function jumpTo(n) {
@@ -518,7 +518,7 @@ function frame(now) {
     state.minutes += dt * state.speed * 60 / 60 * 1;
     const next = CHIMES[state.rung];
     if (next && state.minutes >= 24 * 60 + next.hour * 60) ring(state.rung + 1);
-    if (state.minutes >= 27.5 * 60) { state.running = false; say('Son las 03:30. La casa entera está al otro lado. Pulsa «Amanecer» para volver a 1959.'); }
+    if (state.minutes >= 27.5 * 60) { state.running = false; say('Son las 03:30. El hotel entero está al otro lado. Pulsa «Amanecer» para volver a 1959.'); }
     $('hora').textContent = fmt(state.minutes); $('noche').disabled = state.running;
   }
   const mins = state.minutes % 720;

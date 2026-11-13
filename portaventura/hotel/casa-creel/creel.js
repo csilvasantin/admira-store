@@ -60,6 +60,7 @@
         status.textContent = "Vista estática de la maqueta";
         fallback.hidden = false;
         canvas.hidden = true;
+        listo();
       });
     }
     await opening;
@@ -67,7 +68,7 @@
     draw();
   });
   document.getElementById("close-creel").addEventListener("click", () => dialog.close());
-  // admira.store (12-nov-2026): ?maqueta=1 abre directamente la Casa Creel 3D con los personajes, a pantalla completa.
+  // admira.store (12-nov-2026): ?maqueta=1 abre directamente el Hotel Creel 3D con los personajes, a pantalla completa.
   if (/[?&]maqueta=1/.test(location.search)) { document.documentElement.classList.add("solo-maqueta"); document.getElementById("open-creel").click(); }
   dialog.addEventListener("close", () => cancelAnimationFrame(frame));
   slider.addEventListener("input", () => selectStage(Number(slider.value)));
@@ -115,6 +116,12 @@
     fallback.hidden = true;
     status.textContent = `Maqueta 3D · ${creelGeometry.stages.reduce((n, group) => n + group.pieces.length, 0).toLocaleString("es-ES")} piezas`;
     selectStage(6, false);
+    requestAnimationFrame(() => requestAnimationFrame(listo));
+  }
+  // Sin destellos (Neo, 13-nov-2026): con ?maqueta=1 todo queda en negro hasta que el hotel está pintado; avisa al Xpace.
+  function listo() {
+    document.documentElement.classList.add("creel-listo");
+    try { if (parent !== window) parent.postMessage({type: "creel-listo"}, "*"); } catch (e) {}
   }
 
   function createRenderer(gl, geometry) {

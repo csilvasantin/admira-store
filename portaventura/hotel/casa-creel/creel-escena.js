@@ -6,7 +6,7 @@ const creelScene = (() => {
     // Celda, x cm, z cm, chaqueta, pelo, zona, reacción, efecto
     ["Will", "D14", 17.5, 67.5, "#dc9b38", "#392617", "Jardín", "El lago refleja una sombra que no está en el jardín.", "lago"],
     ["Mike", "G15", 32.5, 72.5, "#266aa0", "#201a24", "Sendero", "Las balizas del sendero señalan el porche.", "sendero"],
-    ["Lucas", "L15", 57.5, 72.5, "#366c52", "#272027", "Entrada", "Una linterna ilumina la entrada de la casa.", "linterna"],
+    ["Lucas", "L15", 57.5, 72.5, "#366c52", "#272027", "Entrada", "Una linterna ilumina la entrada del hotel.", "linterna"],
     ["Dustin", "D09", 17.5, 42.5, "#365b9d", "#dd763f", "Puesto de radio", "La radio WSQK recibe la primera pista.", "radio", "creelRadio"],
     ["Nancy", "E06", 22.5, 27.5, "#5e394c", "#663a26", "Lateral oeste", "Una luz en las ventanas marca la dirección de la torre.", "ventanas"],
     ["Jonathan", "H04", 37.5, 17.5, "#7d4b32", "#38251e", "Parte trasera", "El flash de la cámara revela una silueta.", "flash"],
@@ -15,7 +15,7 @@ const creelScene = (() => {
     ["Holly", "P12", 77.5, 57.5, "#ca6986", "#b4853b", "Porche", "Las luces cálidas del porche marcan un refugio.", "porche"],
     ["Sr. Whatsit", "T06", 97.5, 27.5, "#ac9b77", "#694831", "Lateral este", "El jardín cambia de tono y aparece una grieta.", "grieta"],
     ["Max", "P04", 77.5, 17.5, "#a23d46", "#a64d26", "Refugio trasero", "Un pulso de música mantiene a Max a salvo. Tercera pista.", "pulso", "creelPulse"],
-    ["Vecna", "M05", 62.5, 22.5, "#714148", "#995956", "Estación de la torre", "El reloj se detiene y el portal se abre sobre la casa.", "portal", "creelPortal"],
+    ["Vecna", "M05", 62.5, 22.5, "#714148", "#995956", "Estación de la torre", "El reloj se detiene y el portal se abre sobre el hotel.", "portal", "creelPortal"],
     ["Once", "U14", 102.5, 67.5, "#744a92", "#40291f", "Junto al lago", "Once cierra el portal. Las luces de Hawkins vuelven.", "cierre", "creelClosed"],
   ].map(([name,cell,xCm,zCm,coat,hair,zone,message,effect,fact],id) => ({
     id,name,cell,xCm,zCm,coat,hair,zone,message,effect,fact,
