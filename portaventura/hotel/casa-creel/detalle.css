@@ -108,6 +108,9 @@ dialog::backdrop{background:#0d0a10e0}
 #creel-pantalla .cp-luces b{font:700 clamp(7px,1vw,11px) Georgia,serif;color:#1a0a0a;background:var(--c);border-radius:50%;width:1.7em;height:1.7em;display:grid;place-items:center;box-shadow:0 0 10px var(--c);animation:cp-luz 3s infinite}
 #creel-pantalla .cp-marca{position:absolute;right:8px;bottom:5px;font:9px ui-monospace,monospace;color:#ffffff66;letter-spacing:.12em}
 #creel-pantalla[data-fuente="admira.tv"] .cp-marca{display:none}
+/* Conexión con admira.tv (Carlos, 13-nov-2026): el iframe va ENCIMA del lienzo 3D (antes quedaba debajo y nunca se veía) y por debajo de pines, Sol y portal. */
+#creel-pantalla[data-fuente="admira.tv"]{z-index:1}
+#creel-atmosphere,#creel-sol,#creel-portal,#creel-pins{z-index:2}
 @keyframes cp-flota{from{translate:0 0}to{translate:30px -140px;opacity:0}}
 @keyframes cp-luz{0%,60%,100%{opacity:1}70%,90%{opacity:.15}}
 @keyframes cp-rayo{0%,93%,100%{filter:none}95%{filter:brightness(2.2) saturate(.6)}}

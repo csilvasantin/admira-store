@@ -31,8 +31,10 @@
     } else { g.fillStyle = "#3a0a12"; g.fillRect(x, y, w, h); g.fillStyle = "#ffb3a8"; g.font = "800 40px ui-monospace, monospace"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(nombre.toUpperCase(), x + w / 2, y + h / 2); }
     g.restore();
     g.lineWidth = 5; g.strokeStyle = "#ff3326"; marco(); g.stroke();
-    g.font = "800 26px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "alphabetic"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 14;
-    g.fillText(nombre.toUpperCase() + " · " + (estado.cara.texto || "EN LA PUERTA"), W - 26, y - 14); g.shadowBlur = 0;
+    // Nombre y zona a la IZQUIERDA del retrato (Carlos, 13-nov-2026): sobre el fondo, sin pisar el título ni las luces.
+    g.textAlign = "right"; g.textBaseline = "middle"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 14;
+    g.font = "900 44px ui-monospace, monospace"; g.fillText(nombre.toUpperCase(), x - 26, y + h * .42);
+    g.font = "700 24px ui-monospace, monospace"; g.fillStyle = "#ffd9c7"; g.fillText(estado.cara.texto || "EN LA PUERTA", x - 26, y + h * .42 + 44); g.shadowBlur = 0;
   }
   const esporas = Array.from({length: 46}, () => ({x: Math.random(), y: Math.random(), v: .02 + Math.random() * .05, r: 2 + Math.random() * 4}));
   const colores = ["#ff4a3d", "#ffd23f", "#3fd2ff", "#5dff8a", "#ff6ad5"];
@@ -140,10 +142,14 @@
     });
   }
   const eligeCara = () => { estado.cara = estado.caraZona || estado.caraSel; if (estado.cara) cara(estado.cara.slug); };
-  addEventListener("creel-personaje", ({detail: d}) => { estado.caraSel = d.id >= 0 ? {slug: d.slug, quien: d.quien, texto: String(d.zona || "").toUpperCase()} : null; eligeCara(); });
+  const fotoDe = slug => slug ? location.origin + "/portaventura/hotel/casa-creel/fotos/lego-" + slug + ".webp" : "";
+  addEventListener("creel-personaje", ({detail: d}) => {
+    estado.caraSel = d.id >= 0 ? {slug: d.slug, quien: d.quien, texto: String(d.zona || "").toUpperCase()} : null; eligeCara();
+    const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-personaje", id: d.id, quien: d.quien, slug: d.slug, zona: d.zona, foto: fotoDe(d.slug)}, new URL(tv).origin); } catch (e) {}
+  });
   addEventListener("creel-zona", ({detail: d}) => {
     estado.caraZona = d.id >= 0 ? {slug: d.slug, quien: d.quien, texto: "EN LA PUERTA"} : null; eligeCara();
-    const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-zona", id: d.id, quien: d.quien, slug: d.slug, dentro: d.dentro, foto: d.slug ? location.origin + "/portaventura/hotel/casa-creel/fotos/lego-" + d.slug + ".webp" : ""}, new URL(tv).origin); } catch (e) {}
+    const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-zona", id: d.id, quien: d.quien, slug: d.slug, dentro: d.dentro, foto: fotoDe(d.slug)}, new URL(tv).origin); } catch (e) {}
   });
   addEventListener("creel-presencia", ({detail: d}) => {
     estado.nivel = d.nivel; estado.quien = d.quien;
