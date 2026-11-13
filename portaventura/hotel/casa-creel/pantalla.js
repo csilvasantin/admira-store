@@ -48,12 +48,9 @@
     const C = window.creelClima && window.creelClima.clima; if (!C) return;
     const tipo = C.tipo;
     if (tipo === "sol") {
-      const sx = W * .08, sy = H * .68, r = 48 + Math.sin(s * 2) * 4;
-      const luz = g.createRadialGradient(sx, sy, 10, sx, sy, W * .55); luz.addColorStop(0, "rgba(255,214,92,.75)"); luz.addColorStop(.3, "rgba(255,150,40,.28)"); luz.addColorStop(1, "rgba(255,120,0,0)");
+      // El Sol va fuera, en 3D sobre la pantalla (sol.js, Neo 13-nov-2026); aquí solo su luz cálida.
+      const luz = g.createRadialGradient(W / 2, -H * .2, 10, W / 2, -H * .2, W * .7); luz.addColorStop(0, "rgba(255,214,92,.6)"); luz.addColorStop(.4, "rgba(255,150,40,.22)"); luz.addColorStop(1, "rgba(255,120,0,0)");
       g.fillStyle = luz; g.fillRect(0, 0, W, H);
-      g.save(); g.translate(sx, sy); g.rotate(s * .15); g.strokeStyle = "rgba(255,228,140,.8)"; g.lineWidth = 6;
-      for (let i = 0; i < 12; i++) { g.rotate(Math.PI / 6); g.beginPath(); g.moveTo(r + 16, 0); g.lineTo(r + 46, 0); g.stroke(); }
-      g.restore(); g.fillStyle = "#ffd65c"; g.shadowColor = "#ffb020"; g.shadowBlur = 40; g.beginPath(); g.arc(sx, sy, r, 0, 7); g.fill(); g.shadowBlur = 0;
     } else {
       g.fillStyle = tipo === "nubes" ? "rgba(70,70,85,.45)" : tipo === "lluvia" ? "rgba(20,35,70,.55)" : "rgba(10,10,30,.68)"; g.fillRect(0, 0, W, H);
       g.fillStyle = tipo === "nubes" ? "rgba(200,200,215,.55)" : "rgba(90,95,120,.75)";
@@ -74,10 +71,10 @@
     const K = window.creelClima; if (!K) return;
     const C = K.clima, t = C.temp == null ? "— °C" : `${Math.round(C.temp)} °C`;
     g.save(); g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = 10; g.fillStyle = "#fff";
-    g.font = "800 64px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "top"; g.fillText(K.hora(), W - 26, H * .44);
+    g.font = "800 64px ui-monospace, monospace"; g.textAlign = "right"; g.textBaseline = "top"; g.fillText(window.creelSol ? window.creelSol.etiqueta() : K.hora(), W - 26, H * .44);
     g.font = "800 50px ui-monospace, monospace"; g.textAlign = "left"; g.fillText(`${K.ICONO[C.tipo]} ${t}`, 26, H * .44);
     g.font = "600 20px ui-monospace, monospace"; g.fillStyle = "rgba(255,255,255,.75)";
-    g.fillText(`PORTAVENTURA · ${K.NOMBRE[C.tipo].toUpperCase()}${C.forzado ? " · FORZADO" : C.ok ? " · EN DIRECTO" : ""}`, 28, H * .44 + 62);
+    g.fillText(`PORTAVENTURA · ${K.NOMBRE[C.tipo].toUpperCase()}${C.forzado ? " · FORZADO" : C.prevision ? " · PREVISIÓN" : C.ok ? " · EN DIRECTO" : ""}`, 28, H * .44 + 62);
     g.restore();
   }
 
