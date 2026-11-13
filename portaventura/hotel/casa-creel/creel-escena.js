@@ -117,6 +117,7 @@ const creelScene = (() => {
     selectors.forEach((button,i) => button.setAttribute("aria-pressed", String(i === active)));
     if (focusCamera) turnTo(actor);
     eventText.textContent = `${actor.name} · ${actor.cell} · ${actor.zone}`;
+    window.dispatchEvent(new CustomEvent("creel-personaje", {detail: {id: actor.id, quien: actor.name, slug: slugOf(actor), zona: actor.zone}}));
     if (state.has("creelClosed") && (actor.fact === "creelPortal" || actor.fact === "creelClosed")) {
       actionText.textContent = "El portal está cerrado. Reinicia la escena para volver a abrirlo.";
       return;
@@ -179,7 +180,8 @@ const creelScene = (() => {
     }
     button.title = actor.zone;
     button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => { activate(actor, true); select(actor.id); });
+    // Sin mover la cámara (Carlos, 13-nov-2026): elegir una figura no gira el mapa; su cara sale en la pantalla gigante.
+    button.addEventListener("click", () => { activate(actor, false); select(actor.id); });
     selectors.push(button);
     field.append(button);
   }
@@ -210,13 +212,14 @@ const creelScene = (() => {
     a.x = x; a.z = z; lastMoved = id; moved(); presence(id); updateZone(id); grabarPronto();
   }
 
-  // ── Zona de influencia de la puerta (Carlos, 13-nov-2026): 6 × 4 cuadrados de 5 cm de la cuadrícula, pegados al
+  // ── Zona de influencia de la puerta (Carlos, 13-nov-2026): cuadrados de 5 cm de la cuadrícula, pegados al
   // porche (borde delantero de la huella del hotel, z = casa + 4,5) y centrados en la puerta. El suelo la pinta de
   // otro color (creel.js) y, si un personaje entra arrastrado, su cara sale en la pantalla gigante (pantalla.js). ──
-  const ZONE = {cols: 6, rows: 4, cell: 5 / board.unitCm};
+  // 13-nov-2026 (Carlos, vista cenital): más zona: 8 × 7 cuadrados, todo el ancho del hotel y hasta el borde de la base.
+  const ZONE = {cols: 8, rows: 7, cell: 5 / board.unitCm};
   function zoneRect() {
     const w = ZONE.cols * ZONE.cell, d = ZONE.rows * ZONE.cell, cx = house.x + 1, z0 = house.z + 4.5;
-    return {x0: cx - w / 2, x1: cx + w / 2, z0, z1: z0 + d};
+    return {x0: cx - w / 2, x1: cx + w / 2, z0, z1: Math.min(z0 + d, board.depth / board.unitCm / 2)};
   }
   const inZone = a => { const r = zoneRect(); return a.x >= r.x0 && a.x <= r.x1 && a.z >= r.z0 && a.z <= r.z1; };
   let zoneActor = -1;

@@ -7,7 +7,8 @@
   const W = 1440, H = Math.round(W * ALTO / ANCHO);
   const lienzo = document.createElement("canvas"); lienzo.width = W; lienzo.height = H;
   const g = lienzo.getContext("2d");
-  const estado = {nivel: "lejos", quien: "", cara: null};
+  // cara: quien está en la zona de la puerta manda; si no hay nadie, la figura elegida (clic en su ficha o en su pin).
+  const estado = {nivel: "lejos", quien: "", cara: null, caraZona: null, caraSel: null};
   // Cara del personaje que entra en la zona de la puerta (Carlos, 13-nov-2026): fotos/<slug>.jpg → lego-<slug>.webp.
   const caras = new Map();
   function cara(slug) {
@@ -30,7 +31,7 @@
     g.restore();
     g.lineWidth = 5; g.strokeStyle = "#ff3326"; marco(); g.stroke();
     g.font = "800 34px ui-monospace, monospace"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.fillStyle = "#fff"; g.shadowColor = "#ff2a1f"; g.shadowBlur = 14;
-    g.fillText(nombre.toUpperCase() + " · EN LA PUERTA", W / 2, y + h + 40); g.shadowBlur = 0;
+    g.fillText(nombre.toUpperCase() + " · " + (estado.cara.texto || "EN LA PUERTA"), W / 2, y + h + 40); g.shadowBlur = 0;
   }
   const esporas = Array.from({length: 46}, () => ({x: Math.random(), y: Math.random(), v: .02 + Math.random() * .05, r: 2 + Math.random() * 4}));
   const colores = ["#ff4a3d", "#ffd23f", "#3fd2ff", "#5dff8a", "#ff6ad5"];
@@ -134,9 +135,10 @@
       el.hidden = false;
     });
   }
+  const eligeCara = () => { estado.cara = estado.caraZona || estado.caraSel; if (estado.cara) cara(estado.cara.slug); };
+  addEventListener("creel-personaje", ({detail: d}) => { estado.caraSel = d.id >= 0 ? {slug: d.slug, quien: d.quien, texto: String(d.zona || "").toUpperCase()} : null; eligeCara(); });
   addEventListener("creel-zona", ({detail: d}) => {
-    estado.cara = d.id >= 0 ? {slug: d.slug, quien: d.quien} : null;
-    if (estado.cara) cara(d.slug);
+    estado.caraZona = d.id >= 0 ? {slug: d.slug, quien: d.quien, texto: "EN LA PUERTA"} : null; eligeCara();
     const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-zona", id: d.id, quien: d.quien, slug: d.slug, dentro: d.dentro, foto: d.slug ? location.origin + "/portaventura/hotel/casa-creel/fotos/lego-" + d.slug + ".webp" : ""}, new URL(tv).origin); } catch (e) {}
   });
   addEventListener("creel-presencia", ({detail: d}) => {
