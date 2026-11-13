@@ -121,9 +121,9 @@ test('Hotel Creel: foto del protagonista en cada botón sin cambiar su tamaño (
 
 test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y manda la cara del personaje a la pantalla (Carlos, 13-nov-2026)', () => {
   const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
-  assert.match(esc, /const ZONE = \{cols: 8, rows: 7, cell: 5 \/ board\.unitCm\}/);
+  assert.match(esc, /const ZONE = \{cols: 9, rows: 7, cell: CELL\}/);
   assert.match(esc, /z1: Math\.min\(z0 \+ d, board\.depth \/ board\.unitCm \/ 2\)/); // hasta el borde delantero de la base
-  assert.match(esc, /z0 = house\.z \+ 4\.5/);                       // pegada al borde delantero de la huella del hotel
+  assert.match(esc, /z0 = Math\.floor\(\(house\.z \+ 4\.5\) \/ CELL\) \* CELL/); // línea bajo el borde delantero de la base
   assert.match(esc, /new CustomEvent\("creel-zona"/);
   assert.match(esc, /presence\(id\); updateZone\(id\);/);            // al arrastrar un personaje se reevalúa la zona
   assert.match(esc, /zone\(\) \{ return \{\.\.\.zoneRect\(\), actor: zoneActor\}; \}/);
@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-11/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-12/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -162,4 +162,19 @@ test('Hotel Creel: elegir una figura no mueve el mapa y pone su cara en la panta
   assert.match(html, /Interior<\/a>\s*<button id="front-model" class="action" disabled>Frontal<\/button>/);
   const js = readFileSync(new URL('./hotel/casa-creel/creel.js', import.meta.url), 'utf8');
   assert.match(js, /"front-model"\]/); assert.match(js, /controls\["front-model"\]\.onclick = \(\) => \{ yaw = 0; pitch = \.3;/);
+});
+
+test('Hotel Creel: todo ajustado a la cuadrícula de 5 cm: zona y hotel a las líneas, personajes al centro del cuadrado (Carlos, 13-nov-2026)', () => {
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8');
+  assert.match(esc, /const CELL = 5 \/ board\.unitCm;/);
+  assert.match(esc, /const snapLine = v => Math\.round\(v \/ CELL\) \* CELL;/);
+  assert.match(esc, /const snapCenter = v => Math\.round\(\(v - CELL \/ 2\) \/ CELL\) \* CELL \+ CELL \/ 2;/);
+  assert.match(esc, /x0 = snapLine\(house\.x \+ 1 - w \/ 2\)/);
+  assert.match(esc, /snapCenter\(x\)\)\); z = Math\.max\(-bz, Math\.min\(bz, snapCenter\(z\)\)\);/);
+  assert.match(esc, /snapLine\(x\)\)\); z = Math\.max\(-bz, Math\.min\(bz, snapLine\(z\)\)\);/);
+  assert.match(esc, /const n = \(e\.shiftKey \? 4 : 1\) \* CELL;/);
+  // el reparto inicial ya está en centros de cuadrado (x·2,5 cm impar)
+  const cm = [...esc.matchAll(/\["[^"]+", "[A-Z]\d\d", ([\d.]+), ([\d.]+),/g)].map(m => [Number(m[1]), Number(m[2])]);
+  assert.equal(cm.length, 13);
+  for (const [x, z] of cm) { assert.equal(((x - 60) / 2.5) % 2 && 1, 1, x); assert.equal(((z - 45) / 2.5) % 2 && 1, 1, z); }
 });
