@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-26/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261114-1/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -284,4 +284,14 @@ test('Hotel Creel: botón «📺 Pantallas» junto a «Hotel» para emitir o par
   assert.match(pan, /localStorage\.setItem\("creel-contenido", contenidoOn \? "1" : "0"\)/);
   assert.match(pan, /if \(!contenidoOn\) return;/);
   assert.match(pan, /contenido, get contenidoOn\(\) \{ return contenidoOn; \}/);
+});
+
+test('Hotel Creel: sin «MAQUETA 3D · piezas» en modo maqueta y la previsión por horas plegada bajo la línea del Sol (Carlos, 14-nov-2026)', () => {
+  const css = readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8');
+  assert.match(css, /\.solo-maqueta #model-status\{display:none\}/);
+  assert.match(css, /#creel-sol-info\[aria-expanded=true\]::after\{content:" ▴"\}/);
+  const clima = readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8');
+  assert.match(clima, /if \(!horas\.length \|\| !previsionAbierta\) \{ tira\.hidden = true; return; \}/);
+  assert.match(clima, /solInfo\.addEventListener\("click", \(\) => pliegaPrevision\(!previsionAbierta\)\);/);
+  assert.match(clima, /localStorage\.setItem\("creel-prevision-abierta"/);
 });
