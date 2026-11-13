@@ -108,3 +108,8 @@ test('Hotel Creel: Sol 3D real sobre la pantalla con slider de 24 h y previsión
   const sol = readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'); assert.match(sol, /LAT = 41\.08/); assert.match(sol, /creel-hora/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/clima.js', import.meta.url), 'utf8'), /hourly=temperature_2m,weather_code/);
 });
+test('Hotel Creel: arco del Sol por encima de la pantalla y fichas gráficas de personajes (Neo 13-nov-2026)', () => {
+  const sol = readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'); assert.match(sol, /const BASE = (\d+)/); assert.ok(+sol.match(/const BASE = (\d+)/)[1] > 18);
+  const esc = readFileSync(new URL('./hotel/casa-creel/creel-escena.js', import.meta.url), 'utf8'); assert.match(esc, /creel-ficha/); assert.match(esc, /<svg viewBox="0 0 24 34"/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-solbar>small/);
+});

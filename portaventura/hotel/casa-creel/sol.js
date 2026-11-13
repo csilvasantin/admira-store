@@ -4,6 +4,9 @@
 // su órbita del día. Emite "creel-hora" {min, vivo}; clima.js usa esa hora para la previsión por horas.
 (() => {
   const LAT = 41.0868, LON = 1.1548, RAD = Math.PI / 180, R = 30; // R: radio de la semiesfera en unidades de tablero
+  // Arco alto (Neo, 13-nov-2026): la semiesfera arranca por encima del borde superior de la pantalla LED y su altura
+  // se exagera, así el Sol nunca pasa por delante de la pantalla.
+  const BASE = 19, ALZA = .75;
   const capa = document.getElementById("creel-sol"), g = capa && capa.getContext("2d");
   const slider = document.getElementById("creel-hora"), salida = document.getElementById("creel-hora-out"), ahora = document.getElementById("creel-ahora"), info = document.getElementById("creel-sol-info");
   const estado = {min: 0, vivo: true};
@@ -44,7 +47,7 @@
     if (info) info.textContent = sale != null ? `Sale ${hhmm(sale)} · se pone ${hhmm(pone)} (hoy en PortAventura)` : "";
   }
   // Dirección en la escena: norte = +z (hacia el espectador), sur = −z (detrás de la pantalla), este = −x (izquierda).
-  const punto = ({el, az}) => { const e = el * RAD, a = az * RAD; return [-Math.sin(a) * Math.cos(e) * R, Math.sin(e) * R, Math.cos(a) * Math.cos(e) * R]; };
+  const punto = ({el, az}) => { const e = el * RAD, a = az * RAD; return [-Math.sin(a) * Math.cos(e) * R, BASE + Math.max(0, Math.sin(e)) * R * ALZA, Math.cos(a) * Math.cos(e) * R]; };
   function proyecta([x, y, z], w, h) {
     const k = cam; return [(.5 + (x * k.cx - z * k.sx) * k.zoom / k.aspect * .5) * w, (.5 - (-x * k.sx * k.sy + (y + k.suelo - k.center) * k.cy - z * k.cx * k.sy) * k.zoom * .5) * h];
   }
