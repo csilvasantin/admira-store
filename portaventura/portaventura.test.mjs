@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-23/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261113-24/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -245,9 +245,12 @@ test('Hotel Creel: pantalla tocando tierra, luces A–Z arriba que iluminan el n
   assert.match(readFileSync(new URL('./hotel/casa-creel/sol.js', import.meta.url), 'utf8'), /const BASE = 19/);
 });
 
-test('Hotel Creel: la pantalla gigante va por defecto conectada al kiosko /creel de admira.tv (contenido del mando) y se puede desconectar (Carlos, 13-nov-2026)', () => {
+test('Hotel Creel: la pantalla es la pared: pinta la playlist hotel-creel de admira.tv en su textura 3D y el iframe queda como opción manual (Carlos, 13-nov-2026)', () => {
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
-  assert.match(pan, /const TV_DEFECTO = "https:\/\/admira\.tv\/creel\/";/);
-  assert.match(pan, /tv = elegida === "off" \? null : valida\(elegida \|\| TV_DEFECTO\);/);
-  assert.match(pan, /localStorage\.setItem\("creel-tv", "off"\)/);
+  assert.doesNotMatch(pan, /TV_DEFECTO/);
+  assert.match(pan, /const PLAYLIST_API = "https:\/\/admira\.tv\/api\/playlist\?screen=hotel-creel";/);
+  assert.match(pan, /el\.crossOrigin = "anonymous";/);
+  assert.match(pan, /const conContenido = fondoContenido\(\);/);
+  assert.match(pan, /g\.fillStyle = "rgba\(140,11,20,\.42\)"; g\.fillRect\(0, 0, W, H\); \/\/ tinte Hawkins/);
+  assert.match(pan, /tv = valida\(new URLSearchParams\(location\.search\)\.get\("tv"\) \|\| window\.CREEL_TV \|\| guardada\(\)\);/);
 });
