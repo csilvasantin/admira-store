@@ -15,13 +15,13 @@
   // (p. ej. corsair-galleon-100, el teclado del Mac Studio). Por defecto, la de la LED del hotel (hotel-creel).
   const PLAYLIST_SCREEN = (() => { const v = new URLSearchParams(location.search).get("playlist") || ""; return /^[a-z0-9][a-z0-9-]{1,79}$/.test(v) ? v : "hotel-creel"; })();
   const PLAYLIST_API = "https://admira.tv/api/playlist?screen=" + PLAYLIST_SCREEN;
-  let lista = [], listaNombre = "", listaRev = null, idx = -1, media = null, mediaOk = false, mediaTimer = null;
+  let lista = [], listaBase = [], listaSlug = "", listaNombre = "", listaRev = null, idx = -1, media = null, mediaOk = false, mediaTimer = null;
   // Botón «📺 Pantallas» (Carlos, 13-nov-2026): emitir o parar el contenido de admira.tv en la pared. Se recuerda aquí.
   let contenidoOn = (() => { try { return localStorage.getItem("creel-contenido") !== "0"; } catch (e) { return true; } })();
   function contenido(on) {
     contenidoOn = !!on;
     try { localStorage.setItem("creel-contenido", contenidoOn ? "1" : "0"); } catch (e) {}
-    if (!contenidoOn) { lista = []; listaRev = null; siguiente(); } else cargaLista();
+    if (!contenidoOn) { lista = []; listaBase = []; listaSlug = ""; listaRev = null; siguiente(); } else cargaLista();
     return contenidoOn;
   }
   function siguiente() {
@@ -52,9 +52,18 @@
       const todas = dr.items.filter(i => i && /^https:\/\//.test(i.asset || "") && ["video", "image", "animation"].includes(i.assetType));
       // La pared es apaisada: si la playlist trae parejas H·V (como la del Galleon), se emiten solo las horizontales.
       const horizontales = todas.filter(i => !(i.tags || []).some(t => t === "vertical" || t === "portrait"));
-      lista = horizontales.length ? horizontales : todas;
-      idx = -1; siguiente();
+      listaBase = horizontales.length ? horizontales : todas;
+      listaSlug = null; filtraPorPersonaje();
     } catch (e) { /* sin red o sin CORS: se queda el fondo rojo */ }
+  }
+  // Piezas por personaje (Carlos, 14-nov-2026): las piezas del Stock etiquetadas personaje:<slug> (hechas con la
+  // herramienta «creel» de admira.studio) se emiten solas mientras ese personaje manda en la pared (en la zona de la
+  // puerta o elegido); sin ninguna suya, la playlist entera. Al cambiar de personaje se vuelve a empezar.
+  const piezasDe = slug => slug ? listaBase.filter(i => (i.tags || []).includes("personaje:" + slug)) : [];
+  function filtraPorPersonaje() {
+    const slug = estado.cara && piezasDe(estado.cara.slug).length ? estado.cara.slug : "";
+    if (slug === listaSlug) return;
+    listaSlug = slug; lista = slug ? piezasDe(slug) : listaBase; idx = -1; siguiente();
   }
   cargaLista(); setInterval(cargaLista, 60000);
   function fondoContenido() {
@@ -128,7 +137,7 @@
       g.globalAlpha = on ? 1 : nombre ? .12 : .18; g.fillStyle = colores[i % 5]; g.shadowColor = colores[i % 5]; g.shadowBlur = on ? (nombre ? 26 : 18) : 0;
       g.beginPath(); g.arc(x, y, 12, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = "#1a0a0a"; g.font = "700 13px Georgia, serif"; g.textAlign = "center"; g.fillText(l, x, y + 4.5); g.globalAlpha = 1;
     });
-    g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText(conContenido && lista[idx] ? "admira.tv · " + String(lista[idx].title || listaNombre).slice(0, 60) : "admira.tv · sin señal", W - 16, H - 12);
+    g.font = "18px ui-monospace, monospace"; g.textAlign = "right"; g.fillStyle = "rgba(255,255,255,.45)"; g.fillText(conContenido && lista[idx] ? "admira.tv · " + String(lista[idx].title || listaNombre).slice(0, 60) + (listaSlug ? " · PIEZA DE " + listaSlug.toUpperCase() : "") : "admira.tv · sin señal", W - 16, H - 12);
     hud();
     return lienzo;
   }
@@ -206,7 +215,7 @@
       el.hidden = false;
     });
   }
-  const eligeCara = () => { estado.cara = estado.caraZona || estado.caraSel; if (estado.cara) cara(estado.cara.slug); };
+  const eligeCara = () => { estado.cara = estado.caraZona || estado.caraSel; if (estado.cara) cara(estado.cara.slug); filtraPorPersonaje(); };
   const fotoDe = slug => slug ? location.origin + "/portaventura/hotel/casa-creel/fotos/lego-" + slug + ".webp" : "";
   addEventListener("creel-personaje", ({detail: d}) => {
     estado.caraSel = d.id >= 0 ? {slug: d.slug, quien: d.quien, texto: String(d.zona || "").toUpperCase()} : null; eligeCara();
@@ -220,5 +229,5 @@
     estado.nivel = d.nivel; estado.quien = d.quien;
     const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-presencia", ...d}, new URL(tv).origin); } catch (e) {}
   });
-  window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }};
+  window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }, piezasDe, get listaSlug() { return listaSlug; }};
 })();

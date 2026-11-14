@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261114-3/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261114-4/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -250,7 +250,7 @@ test('Hotel Creel: la pantalla es la pared: pinta la playlist hotel-creel de adm
   assert.doesNotMatch(pan, /TV_DEFECTO/);
   assert.match(pan, /const PLAYLIST_API = "https:\/\/admira\.tv\/api\/playlist\?screen=" \+ PLAYLIST_SCREEN;/);
   assert.match(pan, /get\("playlist"\) \|\| ""; return \/\^\[a-z0-9\]\[a-z0-9-\]\{1,79\}\$\/\.test\(v\) \? v : "hotel-creel";/); // ?playlist=<pantalla>
-  assert.match(pan, /lista = horizontales\.length \? horizontales : todas;/);
+  assert.match(pan, /listaBase = horizontales\.length \? horizontales : todas;/); // (14-nov: la base; la pared filtra por personaje)
   assert.match(pan, /el\.crossOrigin = "anonymous";/);
   assert.match(pan, /const conContenido = fondoContenido\(\);/);
   assert.match(pan, /g\.fillStyle = "rgba\(140,11,20,\.42\)"; g\.fillRect\(0, 0, W, H\); \/\/ tinte Hawkins/);
@@ -305,4 +305,15 @@ test('Hotel Creel: CLIMA y HORA · SOL van compactos y su rótulo los despliega 
   assert.match(clima, /rotulo\.addEventListener\("click", \(\) => pon\(bloque\.classList\.contains\("plegado"\)\)\);/);
   const css = readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8');
   assert.match(css, /\.creel-clima\.plegado>:not\(\.creel-clima-t\),\.creel-solbar\.plegado>:not\(\.creel-clima-t\)\{display:none\}/);
+});
+
+test('Hotel Creel: piezas por personaje · la pared emite solas las piezas del Stock etiquetadas personaje:<slug> mientras ese personaje manda (Carlos, 14-nov-2026)', () => {
+  const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
+  assert.match(pan, /const piezasDe = slug => slug \? listaBase\.filter\(i => \(i\.tags \|\| \[\]\)\.includes\("personaje:" \+ slug\)\) : \[\];/);
+  assert.match(pan, /listaSlug = slug; lista = slug \? piezasDe\(slug\) : listaBase; idx = -1; siguiente\(\);/); // al cambiar de personaje se vuelve a empezar
+  assert.match(pan, /if \(slug === listaSlug\) return;/);                                                   // sin cambio, sigue la pieza en curso
+  assert.match(pan, /listaBase = horizontales\.length \? horizontales : todas;/);                          // la playlist entera queda de base
+  assert.match(pan, /estado\.cara = estado\.caraZona \|\| estado\.caraSel; if \(estado\.cara\) cara\(estado\.cara\.slug\); filtraPorPersonaje\(\);/);
+  assert.match(pan, /" · PIEZA DE " \+ listaSlug\.toUpperCase\(\)/);                                         // el pie lo dice
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /pantalla\.js\?v=20261114-4/);
 });
