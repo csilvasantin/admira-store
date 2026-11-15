@@ -136,7 +136,7 @@ test('Hotel Creel: zona de influencia 6×4 ante la puerta que cambia de color y 
   assert.match(pan, /fotos\/\$\{slug\}\.jpg`, `\/portaventura\/hotel\/casa-creel\/fotos\/lego-\$\{slug\}\.webp`/);
   assert.match(pan, /if \(estado\.cara\) retrato\(cara\(estado\.cara\.slug\), estado\.cara\.quien, s\);/);
   assert.match(readFileSync(new URL('./hotel/casa-creel/detalle.css', import.meta.url), 'utf8'), /\.creel-pin\.creel-en-zona/);
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261115-1/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /creel-escena\.js\?v=20261115-5/);
 });
 
 test('Hotel Creel: «Grabar posición» va entre «Activar sonido» y «Reiniciar escena» y la última posición se graba sola (Carlos, 13-nov-2026)', () => {
@@ -315,7 +315,7 @@ test('Hotel Creel: piezas por personaje · la pared emite solas las piezas del S
   assert.match(pan, /listaBase = horizontales\.length \? horizontales : todas;/);                          // la playlist entera queda de base
   assert.match(pan, /estado\.cara = estado\.caraZona \|\| estado\.caraSel; if \(estado\.cara\) cara\(estado\.cara\.slug\); filtraPorPersonaje\(\);/);
   assert.match(pan, /" · PIEZA DE " \+ listaSlug\.toUpperCase\(\)/);                                         // el pie lo dice
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /pantalla\.js\?v=20261115-4/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /pantalla\.js\?v=20261115-5/);
 });
 
 test('Hotel Creel: elegir personaje en la store avisa al iPhone, al Fold y a la pared LED de la TCL', () => {
