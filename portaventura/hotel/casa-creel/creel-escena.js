@@ -50,16 +50,28 @@ const creelScene = (() => {
   const handle = document.createElement("button");
   let audio;
   const sound = document.getElementById("creel-sound");
-  let soundOn = false;
-  sound.addEventListener("click", () => {
-    soundOn = !soundOn;
+  // Preferencia de la página (Carlos, 15-nov-2026). El clic además silencia o restaura TCL, iPhone y Fold.
+  let soundOn = (() => { try { return localStorage.getItem("creel-sonido") === "1"; } catch (e) { return false; } })();
+  const pintaSonido = () => {
+    if (!sound) return;
+    sound.textContent = soundOn ? "🔊 Sonido · ON" : "🔊 Sonido · OFF";
+    sound.setAttribute("aria-pressed", String(soundOn));
+    sound.title = soundOn ? "Sonido en la web, la TCL, el iPhone y el Fold: pulsa para silenciar" : "Sonido silenciado: pulsa para activarlo en la web, la TCL, el iPhone y el Fold";
+  };
+  function aplicarSonido(on, enviar) {
+    soundOn = !!on;
+    try { localStorage.setItem("creel-sonido", soundOn ? "1" : "0"); } catch (e) {}
     if (soundOn && typeof AudioContext === "function") {
       audio ||= new AudioContext();
       audio.resume().catch(() => {});
+    } else if (audio && audio.state === "running") {
+      audio.suspend().catch(() => {});
     }
-    sound.textContent = soundOn ? "Sonido activado" : "Activar sonido";
-    sound.setAttribute("aria-pressed", String(soundOn));
-  });
+    pintaSonido();
+    if (enviar !== false) window.dispatchEvent(new CustomEvent("creel-sonido", {detail: {on: soundOn}}));
+  }
+  if (sound) sound.addEventListener("click", () => aplicarSonido(!soundOn));
+  pintaSonido();
 
   function tone(effect) {
     if (!soundOn || audio?.state !== "running") return;
