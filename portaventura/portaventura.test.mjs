@@ -315,14 +315,17 @@ test('Hotel Creel: piezas por personaje · la pared emite solas las piezas del S
   assert.match(pan, /listaBase = horizontales\.length \? horizontales : todas;/);                          // la playlist entera queda de base
   assert.match(pan, /estado\.cara = estado\.caraZona \|\| estado\.caraSel; if \(estado\.cara\) cara\(estado\.cara\.slug\); filtraPorPersonaje\(\);/);
   assert.match(pan, /" · PIEZA DE " \+ listaSlug\.toUpperCase\(\)/);                                         // el pie lo dice
-  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /pantalla\.js\?v=20261115-2/);
+  assert.match(readFileSync(new URL('./hotel/casa-creel/index.html', import.meta.url), 'utf8'), /pantalla\.js\?v=20261115-3/);
 });
 
-test('Hotel Creel: elegir personaje en la store avisa al iPhone y a la pared LED de la TCL', () => {
+test('Hotel Creel: elegir personaje en la store avisa al iPhone, al Fold y a la pared LED de la TCL', () => {
   const pan = readFileSync(new URL('./hotel/casa-creel/pantalla.js', import.meta.url), 'utf8');
   assert.match(pan, /https:\/\/api\.admira\.store\/locations\/cmd/);
   assert.match(pan, /MUPI = "iphone-carlos-pruebas"/);
+  assert.match(pan, /FOLD = "fold-carlos-pruebas"/);
+  assert.match(pan, /orden\(FOLD, "tag-creel-" \+ slug\)/);
   assert.match(pan, /PARED_LED = "hotel-creel-pared-led"/);
+  assert.match(pan, /TOTAL = \[PARED_LED, MUPI, FOLD,/);
   assert.match(pan, /"tag-creel-fondo"/);
   assert.match(pan, /ahora - mupiT < 16000/);
   assert.match(pan, /if \(!slug && !paredUltimo\) return;/);

@@ -229,18 +229,18 @@
     estado.nivel = d.nivel; estado.quien = d.quien;
     const f = el && el.querySelector("iframe"); if (f) try { f.contentWindow.postMessage({type: "creel-presencia", ...d}, new URL(tv).origin); } catch (e) {}
   });
-  // Mupi + pantalla LED real (Carlos, 15-nov-2026): elegir o arrastrar un personaje en admira.store hace lo mismo que la
-  // figura Lego ante la cámara. El iPhone (iphone-carlos-pruebas) anuncia «Ha entrado X» con tag-creel-<slug> (sin
-  // repetir en 16 s) y la pared LED de la TCL (cola hotel-creel-pared-led, admira.tv/creel) cambia al mismo personaje
-  // que pinta la pared de la escena; cuando la escena se queda sin nadie, la TCL vuelve al cartel (tag-creel-fondo).
-  const CMD_API = "https://api.admira.store/locations/cmd", MUPI = "iphone-carlos-pruebas", PARED_LED = "hotel-creel-pared-led";
+  // Mupi + Fold + pantalla LED real (Carlos, 15-nov-2026): elegir o arrastrar un personaje en admira.store hace lo mismo que la
+  // figura Lego ante la cámara. El iPhone (iphone-carlos-pruebas) y el Fold (fold-carlos-pruebas) anuncian «Ha entrado X»
+  // con tag-creel-<slug> (sin repetir en 16 s) y la pared LED de la TCL (cola hotel-creel-pared-led, admira.tv/creel)
+  // cambia al mismo personaje que pinta la pared de la escena; cuando la escena se queda sin nadie, la TCL vuelve al cartel (tag-creel-fondo).
+  const CMD_API = "https://api.admira.store/locations/cmd", MUPI = "iphone-carlos-pruebas", FOLD = "fold-carlos-pruebas", PARED_LED = "hotel-creel-pared-led";
   const orden = (scr, cmd) => fetch(CMD_API, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id: scr, screen: scr, cmd})}).catch(() => {});
   const okSlug = slug => /^[a-z0-9-]{2,30}$/.test(slug || "");
   let mupiUltimo = "", mupiT = 0, paredUltimo = "";
   const mupi = slug => {
     if (!okSlug(slug)) return;
     const ahora = Date.now(); if (slug === mupiUltimo && ahora - mupiT < 16000) return;   // sin repetir el anuncio
-    mupiUltimo = slug; mupiT = ahora; orden(MUPI, "tag-creel-" + slug);
+    mupiUltimo = slug; mupiT = ahora; orden(MUPI, "tag-creel-" + slug); orden(FOLD, "tag-creel-" + slug);
   };
   const paredLed = () => {   // solo cambios de lo que muestra la pared de la escena; al cargar la página no se vacía la TCL
     const slug = estado.cara && okSlug(estado.cara.slug) ? estado.cara.slug : "";
@@ -248,9 +248,9 @@
     if (!slug && !paredUltimo) return;
     paredUltimo = slug; orden(PARED_LED, slug ? "tag-creel-" + slug : "tag-creel-fondo");
   };
-  // «🏠 Hotel» (Carlos, 15-nov-2026): sin ningún personaje y la intro de Stranger Things A LA VEZ en la pared LED, el iPhone
-  // y los 5 AdmiraNeXT (mismo alcance que Vecna). tag-intro = la pieza del Stock etiquetada «intro».
-  const TOTAL = [PARED_LED, MUPI, "admiranext01-a", "admiranext02-a", "admiranext03-a", "admiranext04-a", "admiranext05-a"];
+  // «🏠 Hotel» (Carlos, 15-nov-2026): sin ningún personaje y la intro de Stranger Things A LA VEZ en la pared LED, el iPhone,
+  // el Fold y los 5 AdmiraNeXT (mismo alcance que Vecna). tag-intro = la pieza del Stock etiquetada «intro».
+  const TOTAL = [PARED_LED, MUPI, FOLD, "admiranext01-a", "admiranext02-a", "admiranext03-a", "admiranext04-a", "admiranext05-a"];
   addEventListener("creel-hotel", () => {
     estado.caraSel = null; estado.caraZona = null; eligeCara();
     paredUltimo = ""; mupiUltimo = ""; mupiT = 0;
