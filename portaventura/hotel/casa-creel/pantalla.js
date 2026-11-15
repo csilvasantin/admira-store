@@ -257,7 +257,8 @@
     TOTAL.forEach(scr => orden(scr, "tag-intro"));
   });
   // «📺 Pantallas ON/OFF» (Carlos, 15-nov-2026): además del contenido de la escena, apaga (negro total) o enciende la TCL.
-  addEventListener("creel-pantalla-led", ({detail: d}) => orden(PARED_LED, d && d.on ? "pantalla-on" : "pantalla-off"));
+  // Desde las 16:45 (Carlos) también el iPhone y el Fold: off = negro total, on = vuelve lo que había.
+  addEventListener("creel-pantalla-led", ({detail: d}) => [PARED_LED, MUPI, FOLD].forEach(scr => orden(scr, d && d.on ? "pantalla-on" : "pantalla-off")));
   addEventListener("creel-personaje", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   addEventListener("creel-zona", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }, piezasDe, get listaSlug() { return listaSlug; }};
