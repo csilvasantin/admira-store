@@ -268,7 +268,16 @@ const creelScene = (() => {
   const hotelBtn = document.createElement("button");
   hotelBtn.type = "button"; hotelBtn.className = "creel-hotel-btn"; hotelBtn.textContent = "🏠 Hotel";
   hotelBtn.title = "Seleccionar el hotel y moverlo con las flechas"; hotelBtn.setAttribute("aria-pressed", "false");
-  hotelBtn.addEventListener("click", () => { select("casa"); handle.focus({preventScroll:true}); });
+  hotelBtn.addEventListener("click", () => {
+    select("casa"); handle.focus({preventScroll:true});
+    // Carlos, 15-nov-2026: «Hotel» quita a todos los personajes y lanza la intro de Stranger Things en todas las pantallas.
+    active = -1;
+    pins.forEach(pin => pin.setAttribute("aria-pressed", "false"));
+    selectors.forEach(button => button.setAttribute("aria-pressed", "false"));
+    hotelBtn.setAttribute("aria-pressed", "true");
+    eventText.textContent = "Hotel Creel · intro de Stranger Things";
+    window.dispatchEvent(new CustomEvent("creel-hotel"));
+  });
   field.append(hotelBtn);
   // Botón «📺 Pantallas» al lado de «Hotel» (Carlos, 13-nov-2026): la pared emite o deja de emitir el contenido de admira.tv.
   const tvBtn = document.createElement("button");
@@ -279,7 +288,11 @@ const creelScene = (() => {
     tvBtn.setAttribute("aria-pressed", String(on));
     tvBtn.title = on ? "La pantalla LED emite el contenido de admira.tv: pulsa para parar" : "La pantalla LED no emite contenido de admira.tv: pulsa para emitir";
   };
-  tvBtn.addEventListener("click", () => { if (window.creelPantalla && window.creelPantalla.contenido) window.creelPantalla.contenido(!window.creelPantalla.contenidoOn); pintaTv(); });
+  tvBtn.addEventListener("click", () => {
+    if (window.creelPantalla && window.creelPantalla.contenido) window.creelPantalla.contenido(!window.creelPantalla.contenidoOn);
+    pintaTv();
+    window.dispatchEvent(new CustomEvent("creel-pantalla-led", {detail: {on: !!(window.creelPantalla && window.creelPantalla.contenidoOn)}}));   // la TCL también
+  });
   pintaTv(); field.append(tvBtn);
   // Grabar posición (Neo, 12-nov-2026): hotel + personajes en localStorage; se recupera al cargar. «Reiniciar escena» la borra.
   // Desde el 13-nov-2026 (Carlos) va entre «Activar sonido» y «Reiniciar escena» y se graba SOLA la última posición

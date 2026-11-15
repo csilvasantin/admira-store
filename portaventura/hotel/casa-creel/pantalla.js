@@ -248,6 +248,16 @@
     if (!slug && !paredUltimo) return;
     paredUltimo = slug; orden(PARED_LED, slug ? "tag-creel-" + slug : "tag-creel-fondo");
   };
+  // «🏠 Hotel» (Carlos, 15-nov-2026): sin ningún personaje y la intro de Stranger Things A LA VEZ en la pared LED, el iPhone
+  // y los 5 AdmiraNeXT (mismo alcance que Vecna). tag-intro = la pieza del Stock etiquetada «intro».
+  const TOTAL = [PARED_LED, MUPI, "admiranext01-a", "admiranext02-a", "admiranext03-a", "admiranext04-a", "admiranext05-a"];
+  addEventListener("creel-hotel", () => {
+    estado.caraSel = null; estado.caraZona = null; eligeCara();
+    paredUltimo = ""; mupiUltimo = ""; mupiT = 0;
+    TOTAL.forEach(scr => orden(scr, "tag-intro"));
+  });
+  // «📺 Pantallas ON/OFF» (Carlos, 15-nov-2026): además del contenido de la escena, apaga (negro total) o enciende la TCL.
+  addEventListener("creel-pantalla-led", ({detail: d}) => orden(PARED_LED, d && d.on ? "pantalla-on" : "pantalla-off"));
   addEventListener("creel-personaje", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   addEventListener("creel-zona", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }, piezasDe, get listaSlug() { return listaSlug; }};
