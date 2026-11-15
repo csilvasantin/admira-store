@@ -259,6 +259,12 @@
   // «📺 Pantallas ON/OFF» (Carlos, 15-nov-2026): además del contenido de la escena, apaga (negro total) o enciende la TCL.
   // Desde las 16:45 (Carlos) también el iPhone y el Fold: off = negro total, on = vuelve lo que había.
   addEventListener("creel-pantalla-led", ({detail: d}) => [PARED_LED, MUPI, FOLD].forEach(scr => orden(scr, d && d.on ? "pantalla-on" : "pantalla-off")));
+  // «🔊 Sonido ON/OFF» (Carlos, 15-nov-2026): un clic silencia o restaura a la vez la TCL, el iPhone y el Fold.
+  // Órdenes desnudas sonido-off / sonido-on (sin @ms): el mute debe ser inmediato. En paralelo a las tres colas.
+  addEventListener("creel-sonido", ({detail: d}) => {
+    const cmd = d && d.on ? "sonido-on" : "sonido-off";
+    [PARED_LED, MUPI, FOLD].forEach(scr => orden(scr, cmd));
+  });
   addEventListener("creel-personaje", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   addEventListener("creel-zona", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }, piezasDe, get listaSlug() { return listaSlug; }};
