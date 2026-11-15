@@ -234,13 +234,19 @@
   // con tag-creel-<slug> (sin repetir en 16 s) y la pared LED de la TCL (cola hotel-creel-pared-led, admira.tv/creel)
   // cambia al mismo personaje que pinta la pared de la escena; cuando la escena se queda sin nadie, la TCL vuelve al cartel (tag-creel-fondo).
   const CMD_API = "https://api.admira.store/locations/cmd", MUPI = "iphone-carlos-pruebas", FOLD = "fold-carlos-pruebas", PARED_LED = "hotel-creel-pared-led";
-  const orden = (scr, cmd) => fetch(CMD_API, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id: scr, screen: scr, cmd})}).catch(() => {});
+  // Arranque a la vez en iPhone y Fold: mismo executeAt (ahora+2,5 s) metido en cmd como `tag-…@<epochMs>`.
+  // La TCL (PARED_LED) y cualquier cola que aún no parsee @ms reciben el comando desnudo.
+  // NO publicar en vivo hasta que el iPhone tenga la app que entiende `cmd@ms` (si no, ignora la orden).
+  const RETARDO_SALIDA_MS = 2500;
+  const salidaDe = (scr, cmd, en) => (!en || scr === PARED_LED ? cmd : cmd + "@" + en);
+  const orden = (scr, cmd, en) => fetch(CMD_API, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id: scr, screen: scr, cmd: salidaDe(scr, cmd, en)})}).catch(() => {});
   const okSlug = slug => /^[a-z0-9-]{2,30}$/.test(slug || "");
   let mupiUltimo = "", mupiT = 0, paredUltimo = "";
   const mupi = slug => {
     if (!okSlug(slug)) return;
     const ahora = Date.now(); if (slug === mupiUltimo && ahora - mupiT < 16000) return;   // sin repetir el anuncio
-    mupiUltimo = slug; mupiT = ahora; orden(MUPI, "tag-creel-" + slug); orden(FOLD, "tag-creel-" + slug);
+    const en = ahora + RETARDO_SALIDA_MS;
+    mupiUltimo = slug; mupiT = ahora; orden(MUPI, "tag-creel-" + slug, en); orden(FOLD, "tag-creel-" + slug, en);
   };
   const paredLed = () => {   // solo cambios de lo que muestra la pared de la escena; al cargar la página no se vacía la TCL
     const slug = estado.cara && okSlug(estado.cara.slug) ? estado.cara.slug : "";
@@ -254,11 +260,12 @@
   addEventListener("creel-hotel", () => {
     estado.caraSel = null; estado.caraZona = null; eligeCara();
     paredUltimo = ""; mupiUltimo = ""; mupiT = 0;
-    TOTAL.forEach(scr => orden(scr, "tag-intro"));
+    const en = Date.now() + RETARDO_SALIDA_MS;
+    TOTAL.forEach(scr => orden(scr, "tag-intro", en));
   });
   // «📺 Pantallas ON/OFF» (Carlos, 15-nov-2026): además del contenido de la escena, apaga (negro total) o enciende la TCL.
   // Desde las 16:45 (Carlos) también el iPhone y el Fold: off = negro total, on = vuelve lo que había.
-  addEventListener("creel-pantalla-led", ({detail: d}) => [PARED_LED, MUPI, FOLD].forEach(scr => orden(scr, d && d.on ? "pantalla-on" : "pantalla-off")));
+  addEventListener("creel-pantalla-led", ({detail: d}) => { const en = Date.now() + RETARDO_SALIDA_MS; [PARED_LED, MUPI, FOLD].forEach(scr => orden(scr, d && d.on ? "pantalla-on" : "pantalla-off", en)); });
   addEventListener("creel-personaje", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   addEventListener("creel-zona", ({detail: d}) => { if (d && d.id >= 0) mupi(d.slug); paredLed(); });
   window.creelPantalla = {ANCHO, ALTO, lienzo, pinta, estado, tv: !!tv, contenido, get contenidoOn() { return contenidoOn; }, piezasDe, get listaSlug() { return listaSlug; }};
