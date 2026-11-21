@@ -13,7 +13,7 @@ const selector = readFileSync(join(root, 'admira-xp/scripts/project-selector.mjs
 test('Objeto Xpace apunta al gemelo Stream Deck', () => {
   assert.match(xpace, /OBJET_ID = 'objeto'/);
   assert.match(xpace, /id: 'stream-deck'/);
-  assert.match(xpace, /url: '\/objeto\/stream-deck\/'/);
+  assert.match(xpace, /url: 'https:\/\/www\.ainimation\.studio\/digital-twins\/stream-deck\/'/);
 });
 
 test('el gemelo Stream Deck es HUD 3D con serial AdmiraNeXT01 (antes METAHUMAN) e Indiana Jones', () => {

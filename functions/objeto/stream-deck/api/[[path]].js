@@ -40,6 +40,12 @@ export async function onRequest({request,env,params},fetcher=fetch){
   const url=new URL(request.url);
   if(!siteForHost(url.hostname))return reply({ok:false,error:'host'},421);
   const ruta=[].concat(params?.path||[]).join('/');
+  // AInimation hosts the public twin. Only its read-only face/state can cross origins.
+  const origin=request.headers.get('Origin');
+  const twin=['https://www.ainimation.studio','https://ainimation.studio'].includes(origin);
+  const readable=['estado','face.png'].includes(ruta);
+  const cors=twin&&readable?{'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, OPTIONS','Access-Control-Allow-Headers':'If-None-Match','Access-Control-Expose-Headers':'ETag, X-Visto, X-En-Linea'}:{};
+  if(request.method==='OPTIONS'&&twin&&readable)return new Response(null,{status:204,headers:cors});
   const destino=destinoStreamDeck(request.method,ruta);
   if(!destino)return reply({ok:false,error:'not_found'},404);
   const nube=String(env.SUPERCOMPUTER_API||NUBE).replace(/\/$/,'');
@@ -60,7 +66,7 @@ export async function onRequest({request,env,params},fetcher=fetch){
   }
   const r=await fetcher(nube+destino,{...init,signal:AbortSignal.timeout(8000)}).catch(()=>null);
   if(!r)return reply({ok:false,error:'nube_inalcanzable'},502);
-  const out={'Content-Type':r.headers.get('content-type')||'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
+  const out={...cors,'Content-Type':r.headers.get('content-type')||'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
   for(const k of ['etag','x-visto','x-en-linea'])if(r.headers.get(k))out[k]=r.headers.get(k);
   return new Response(r.status===304?null:r.body,{status:r.status,headers:out});
 }
