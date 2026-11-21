@@ -656,7 +656,13 @@
     root.XpaceShell = Object.assign(shared, {inline: true});
     let enIframe = false;
     try { enIframe = root.self !== root.top; } catch (_) { enIframe = true; }
-    if (!enIframe) {cargarCargador();const engine=doc.createElement('script');engine.src='/suite/loader.js?v=20261014-suite-validation-1';doc.head.appendChild(engine);}
+    if (!enIframe) {
+      cargarCargador();
+      // El motor de la suite (consola Experto) viene del cargador central de admiranext.com, el mismo que el gemelo
+      // ya trae en su <script>; si la página ya lo tiene no se repite (antes se pedía /suite/loader.js relativo, que en
+      // admira.store no existe: 404 en cada carga del gemelo).
+      if (!doc.querySelector('script[src*="/suite/loader.js"]')) {const engine=doc.createElement('script');engine.src='https://www.admiranext.com/suite/loader.js?v=20261014-suite-validation-1';doc.head.appendChild(engine);}
+    }
     return;
   }
   if (root.XpaceShell) return;
