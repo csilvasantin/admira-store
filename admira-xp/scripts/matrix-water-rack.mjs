@@ -1,5 +1,5 @@
-import {WATER_INITIAL,WATER_MODEL,WATER_ITIL,occupiedWaterSlots,waterRemaining} from './pos-water.mjs?v=water-2';
-import {POS_PRODUCTS} from './pos-basket.mjs?v=water-2';
+import {WATER_INITIAL,WATER_MODEL,WATER_ITIL,occupiedWaterSlots,waterRemaining} from './pos-water.mjs?v=water-finish-3';
+import {POS_PRODUCTS} from './pos-basket.mjs?v=water-finish-3';
 // The live pile uses the existing ITIL meshes; the original 19-piece visual filling
 // is left intact in the catalogue. Only this local POS composition starts at 13.
 export function mountWaterRack(surface,{onReady=()=>{},onFocus=()=>{}}={}){

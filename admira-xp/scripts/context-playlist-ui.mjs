@@ -1,4 +1,4 @@
-import {contextPlaylist,playlistContext} from './context-playlist-client.mjs?v=local-playlist-349';
+import {contextPlaylist,playlistContext} from './context-playlist-client.mjs?v=three-venues-20261016';
 import {mountContextPlaylistEditor} from './context-playlist-editor.mjs?v=local-playlist-349';
 import {contextSurfaces,channelForSurface,mountSurfacePlaylistRemote} from './context-surfaces.mjs?v=local-playlist-349';
 import {starbucksMusic} from './starbucks-music.mjs?v=local-playlist-349';

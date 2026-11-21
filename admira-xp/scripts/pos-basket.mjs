@@ -1,4 +1,4 @@
-import {WATER_INITIAL,waterRemaining,occupiedWaterSlots} from './pos-water.mjs?v=water-1';
+import {WATER_INITIAL,waterRemaining,occupiedWaterSlots} from './pos-water.mjs?v=water-finish-3';
 // Local basket of the digital twin. No physical inventory, checkout or payment writes.
 export const POS_ID='starbucks-tpv-01';
 export const POS_LOC='alsea-sbux-021';

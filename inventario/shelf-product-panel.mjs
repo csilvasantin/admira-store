@@ -1,4 +1,4 @@
-import {mountPixeriaPicker} from '../admira-xp/scripts/pixeria-picker.mjs';
+import {mountPixeriaPicker} from '../admira-xp/scripts/pixeria-picker.mjs?v=drop-1';
 import {BINDINGS_KEY,PREVIEW_CHANNEL,loadBindings,saveBinding,removeBinding,sendPreview} from './product-bindings.mjs';
 export function mountShelfProductPanel(host,doc,{onSelect=()=>{},onClose=()=>{},autoOpen=false}={}){
  const abort=new AbortController(),{signal}=abort,en=document.documentElement.lang==='en',t=(es,english)=>en?english:es;

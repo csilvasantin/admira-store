@@ -1,4 +1,4 @@
-import {WATER_MODEL,WATER_INITIAL} from './pos-water.mjs?v=water-2';
+import {WATER_MODEL,WATER_INITIAL} from './pos-water.mjs?v=water-finish-3';
 const PHOTO=new URL('../../inventario/starbucks/photos/sb-water-rack.webp',import.meta.url).href;
 let dialog,cleanup;
 export async function openWaterConversion({lang='es'}={}){
