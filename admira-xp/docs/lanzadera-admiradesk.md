@@ -66,3 +66,7 @@ La fila inferior de las páginas con carrusel lleva ‹, los destinos, «Todos»
 - **Login and signing**: the twin requires Google login and signs as `gemelo`. The deck uses the machine Bearer key and signs as `fisico`.
 - **Safety**: everything runs dry until `LANZADERA_EN_VIVO=1` is set. Power keys require a double press. There are no keys for the Mac Studio or the Mac Mini.
 - **Parity tests**: `tests/lanzadera.test.mjs` and `scripts/lanzadera-paridad.mjs`.
+
+## Perímetro (26-nov-2026)
+
+Todo `/control/**` pide login, también los archivos estáticos (`lanzadera.json`, `lanzadera.mjs`, `gemelo.js`, `gemelo.css`): sin sesión, 302 al login (`PRIVATE_ASSET_PREFIXES` en `functions/_perimetro.js`). El XL sigue entrando por `/objeto/stream-deck/api/lanzadera/` con su clave. Pendiente antes de instalar `escucha-sala.py` (admira-tv): hoy lee `lanzadera.json` público, así que necesitará otra fuente con clave o la variable `ADMIRADESK_LANZADERA` apuntando a una copia local.

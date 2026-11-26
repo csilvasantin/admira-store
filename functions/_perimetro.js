@@ -93,6 +93,15 @@ export function siteForHost(hostname) {
 
 const underPrefix = (pathname, prefix) => pathname === prefix || pathname.startsWith(prefix + '/');
 
+// Carpetas privadas ENTERAS, también sus assets (Carlos, 26-nov-2026: «Pon lanzadera.json detrás del login»).
+// En /control viven los paneles de control (AdmiraDesk: lanzadera.json con los nombres de las pantallas,
+// lanzadera.mjs, gemelo.js…). Sin sesión, cualquier archivo de aquí va al login igual que la página.
+// La máquina (Stream Deck XL) no entra por aquí: usa /objeto/stream-deck/api/lanzadera/ con su clave.
+export const PRIVATE_ASSET_PREFIXES = ['/control'];
+export function isPrivateAssetPath(pathname) {
+  return PRIVATE_ASSET_PREFIXES.some((prefix) => underPrefix(pathname, prefix));
+}
+
 export function isPublicPath(pathname) {
   if (PRIVATE_PREFIXES.some((prefix) => underPrefix(pathname, prefix))) return false;
   return PUBLIC_PREFIXES.some((prefix) => underPrefix(pathname, prefix));
@@ -790,7 +799,7 @@ export async function perimetro(context, fetchImpl = fetch) {
   if (isInternalPath(path)) return notFound();
   // Manda la RUTA, no lo que diga el cliente: con Accept:*/* un bot se llevaba
   // la página entera en Pixeria hasta el 1-sep-2026 (FLT-1484).
-  const wantsDocument = isDocumentPath(path) ||
+  const wantsDocument = isDocumentPath(path) || isPrivateAssetPath(path) ||
     request.headers.get('Sec-Fetch-Dest') === 'document' ||
     (request.headers.get('Accept') || '').includes('text/html');
   // Only the interactive top-level application enters with an identified user.
