@@ -12,6 +12,7 @@
 // Guía: admira-xp/docs/objeto-stream-deck.md.
 import {siteForHost} from '../../../_perimetro.js';
 import {NUBE} from '../../../supercomputer/api/[[path]].js';
+import {almacenNube, atender, leerCuerpo} from '../../../_lanzadera.js';
 
 const HEADERS={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const reply=(body,status=200)=>Response.json(body,{status,headers:HEADERS});
@@ -46,6 +47,9 @@ export async function onRequest({request,env,params},fetcher=fetch){
   const readable=['estado','face.png'].includes(ruta);
   const cors=twin&&readable?{'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, OPTIONS','Access-Control-Allow-Headers':'If-None-Match','Access-Control-Expose-Headers':'ETag, X-Visto, X-En-Linea'}:{};
   if(request.method==='OPTIONS'&&twin&&readable)return new Response(null,{status:204,headers:cors});
+  // AdmiraDesk (26-nov-2026): el plugin del XL pide la cara y manda las pulsaciones por aquí, con la clave Bearer
+  // de la máquina, que valida la nube. Sin CORS: el gemelo público no puede leer ni pulsar la lanzadera.
+  if(ruta.startsWith('lanzadera/'))return lanzaderaMaquina(request,env,ruta.slice(10),fetcher);
   const destino=destinoStreamDeck(request.method,ruta);
   if(!destino)return reply({ok:false,error:'not_found'},404);
   const nube=String(env.SUPERCOMPUTER_API||NUBE).replace(/\/$/,'');
@@ -69,4 +73,20 @@ export async function onRequest({request,env,params},fetcher=fetch){
   const out={...cors,'Content-Type':r.headers.get('content-type')||'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
   for(const k of ['etag','x-visto','x-en-linea'])if(r.headers.get(k))out[k]=r.headers.get(k);
   return new Response(r.status===304?null:r.body,{status:r.status,headers:out});
+}
+
+export async function lanzaderaMaquina(request,env,ruta,fetcher=fetch,opciones={}){
+  const auth=request.headers.get('Authorization')||'';
+  if(!/^Bearer\s+sc_[a-f0-9]{64}$/i.test(auth))return reply({ok:false,error:'unauthorized'},401);
+  if(!['GET','POST'].includes(request.method))return reply({ok:false,error:'method'},405);
+  const nube=String(env.SUPERCOMPUTER_API||NUBE).replace(/\/$/,'');
+  const almacen=opciones.almacen||almacenNube(nube,{Authorization:auth},fetcher);
+  let cuerpo;
+  if(request.method==='POST'){
+    const leido=await leerCuerpo(request);
+    if(leido.error)return reply({ok:false,error:leido.error},400);
+    cuerpo={...leido.cuerpo,origen:'fisico'};   // el plugin siempre firma como físico
+  }
+  try{return await atender({ruta,method:request.method,cuerpo,almacen,env,fetcher,ahora:opciones.ahora});}
+  catch(e){return reply({ok:false,error:String(e.message||e).slice(0,80)},502);}
 }
