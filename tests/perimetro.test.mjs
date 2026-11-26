@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {perimetro, siteForHost, isPublicPath, isInternalPath, safeReturnTo, servedPath} from '../functions/_perimetro.js';
+import {perimetro, siteForHost, isPublicPath, isPrivateAssetPath, isInternalPath, safeReturnTo, servedPath} from '../functions/_perimetro.js';
 
 const env = {PERIMETRO_SIGNING_KEY:'k'.repeat(64), WHITELIST_SITE_TOKEN:'t'.repeat(64)};
 const ctx = (url, headers = {}) => ({
@@ -485,4 +485,27 @@ test('cada web firma su solicitud', async () => {
   await perimetro(solicitud(completa, {Origin:'https://www.xpaceos.com'}, 'https://www.xpaceos.com'), recogeLeads(leads));
   assert.equal(leads[0].body.source, 'xpaceos-login');
   assert.match(leads[0].body.notes, /Solicitud de acceso a XpaceOS/);
+});
+
+test('/control entero pide login, también lanzadera.json, lanzadera.mjs y gemelo.js; con sesión salen', async () => {
+  assert.ok(isPrivateAssetPath('/control/admiradesk/lanzadera.json'));
+  assert.ok(!isPrivateAssetPath('/controlfalso/x.json'));
+  assert.ok(!isPrivateAssetPath('/objeto/stream-deck/api/lanzadera/cara'));
+  for (const ruta of ['/control/admiradesk/lanzadera.json', '/control/admiradesk/lanzadera.mjs', '/control/admiradesk/gemelo.js',
+    '/control/admiradesk/gemelo.css', '/control/admiradesk/', '/control/admiradesk/api/cara', '/control//admiradesk/lanzadera.json',
+    '/control/admiradesk/%6canzadera.json']) {
+    const r = await perimetro({...ctx('https://www.admira.store' + ruta, {Accept:'*/*'}), next:async () => Response.json({filtrado:true})}, noFetch);
+    assert.equal(r.status, 302, ruta);
+    assert.match(r.headers.get('location'), /^https:\/\/www\.admira\.store\/auth\/login\?return_to=/, ruta);
+    assert.ok(!(await r.text()).includes('filtrado'), ruta);
+  }
+  const f = lista(['ana@admira.com']);
+  const cookie = await sesion('ana@admira.com', 'admira-store');
+  const ok = await perimetro({...ctx('https://www.admira.store/control/admiradesk/lanzadera.json', {Cookie:cookie, Accept:'*/*'}), next:async () => Response.json({ok:true})}, f);
+  assert.equal(ok.status, 200);
+  assert.equal(ok.headers.get('cache-control'), 'private, no-store');
+  const xl = await perimetro({...ctx('https://www.admira.store/objeto/stream-deck/api/lanzadera/cara', {Accept:'application/json', Authorization:'Bearer sc_prueba'}), next:async () => Response.json({ok:true})}, noFetch);
+  assert.equal(xl.status, 200);
+  const publico = await perimetro(ctx('https://www.admira.store/objeto/stream-deck/', {Accept:'text/html'}), noFetch);
+  assert.equal(publico.status, 200);
 });
