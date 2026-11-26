@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AdmiraDesk · Lanzadera de la zona Terminator</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Gemelo de control del Stream Deck XL de AdmiraNeXT01: las mismas teclas, la misma página y la misma acción que el físico.">
+<link rel="stylesheet" href="./gemelo.css">
+</head>
+<body>
+<header>
+  <div class="logo">ADMIRA<span>DESK</span> <small>Lanzadera · Planeta 7 · zona Terminator</small></div>
+  <div class="grow"></div>
+  <span id="modo" class="pill">—</span>
+  <span id="fisico" class="pill">XL —</span>
+</header>
+<main>
+  <section class="deck-wrap" aria-label="Stream Deck XL (gemelo de control)">
+    <div class="deck">
+      <div class="marca">STREAM DECK XL · gemelo de control</div>
+      <div id="rejilla" class="rejilla" role="grid" aria-label="Teclas 8 × 4"></div>
+    </div>
+    <p class="pie"><b id="pagina">—</b> · rev <span id="rev">—</span> · huella <code id="huella">—</code></p>
+  </section>
+  <aside class="panel">
+    <h2>Átomos = bits</h2>
+    <p>Esta cara es la misma que pinta el plugin en el Stream Deck XL del AdmiraNeXT01: las dos piden la cara al mismo servidor y mandan cada pulsación por la misma ruta. Lo que pulses aquí se ve en el físico y al revés.</p>
+    <div class="kv"><span>Última</span><b id="ultima">—</b></div>
+    <div class="kv"><span>Armado</span><b id="armado">—</b></div>
+    <h3>Registro</h3>
+    <ol id="registro" class="registro"></ol>
+    <p class="nota">Las teclas de energía piden doble pulsación. No hay teclas para el Mac Studio ni el Mac Mini. Mientras el modo sea <b>DRY</b> no sale ninguna orden real.</p>
+  </aside>
+</main>
+<script type="module" src="./gemelo.js"></script>
+</body>
+</html>

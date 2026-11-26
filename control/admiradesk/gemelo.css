@@ -1,0 +1,28 @@
+:root{color-scheme:dark;--bg:#05090d;--ink:#e6f1f8;--mut:#8ba3b3;--line:rgba(120,243,255,.18);--brand:#63e6d5}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 30% 20%,#10202c,#05090d);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+header{display:flex;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line)}
+.logo{font:700 15px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;color:#ffd866}.logo span{color:var(--brand)}
+.logo small{color:var(--mut);font-weight:400;letter-spacing:.06em;margin-left:10px;font-size:11px}
+.grow{flex:1}
+.pill{font:600 12px ui-monospace,Menlo,monospace;padding:5px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
+.pill.dry{color:#3fa7ff;border-color:#3fa7ff}.pill.vivo{color:#ff5e5e;border-color:#ff5e5e}.pill.on{color:#2ecc71;border-color:#2ecc71}
+main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;padding:24px}
+@media (max-width:1000px){main{grid-template-columns:1fr}}
+.deck-wrap{display:flex;flex-direction:column;align-items:center}
+.deck{background:linear-gradient(#1a1d21,#0c0e10);border-radius:28px;padding:26px 30px 30px;box-shadow:0 30px 80px #000c,inset 0 1px 0 #ffffff14;transform:perspective(1600px) rotateX(10deg);width:min(100%,980px)}
+.marca{font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.2em;color:#5c666f;text-align:center;margin-bottom:14px}
+.rejilla{display:grid;grid-template-columns:repeat(8,1fr);gap:12px}
+.tecla{all:unset;cursor:pointer;aspect-ratio:1;border-radius:14px;background:#000;box-shadow:0 4px 0 #000,0 6px 14px #0008;overflow:hidden;transition:transform .06s}
+.tecla:active,.tecla.pulsada{transform:translateY(3px);box-shadow:0 1px 0 #000}
+.tecla:focus-visible{outline:2px solid var(--brand)}
+.tecla img{width:100%;height:100%;display:block}
+.tecla.vacia{cursor:default}
+.pie{color:var(--mut);font-size:12px;margin-top:22px}
+.panel{background:#0a1620cc;border:1px solid var(--line);border-radius:16px;padding:18px}
+.panel h2{margin:0 0 8px;font-size:18px}.panel h3{margin:16px 0 6px;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
+.panel p{color:var(--mut);font-size:13px;line-height:1.5}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid #ffffff10}.kv span{color:var(--mut)}
+.registro{list-style:none;margin:0;padding:0;font:12px ui-monospace,Menlo,monospace;max-height:300px;overflow:auto}
+.registro li{padding:4px 0;border-bottom:1px solid #ffffff0d}.registro .fisico{color:#ffd866}.registro .gemelo{color:var(--brand)}
+.nota{font-size:12px!important}
