@@ -11,7 +11,7 @@ import {STARBUCKS_IPAD_PLAYLIST} from './starbucks-ipad.mjs?v=ipad-1';
 import {watchIPadPlaylist} from './ipad-physical-playlist.mjs?v=shared-ipad-20261015';
 import {watchMatrixState} from './matrix-remote.mjs?v=ipad-20261005-1';
 import {getScreenDisplayMode,screenSlice} from './screen-display.mjs?v=number-layout-1';
-import {createPainterPool,sceneTrack,coverRect,containRect} from './playlist-painter.mjs?v=hiperreal-vivo-1';
+import {createPainterPool,sceneTrack,coverRect,containRect} from './playlist-painter.mjs?v=local-playlist-349';
 export {sceneTrack,coverRect,containRect};
 
 export const SCENE_PLAYLISTS_KEY='xpaceos.scene-playlists.v1';

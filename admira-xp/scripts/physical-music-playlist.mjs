@@ -1,4 +1,4 @@
-import {contextPlaylist} from './context-playlist-client.mjs?v=local-playlist-349';
+import {contextPlaylist} from './context-playlist-client.mjs?v=three-venues-20261016';
 export const MUSIC_SCREEN='iphone17-mupi',MUSIC_PLAYLIST_URL='/admira-xp/api/music-playlist';
 const safe=value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch{return '';}};
 export function physicalMusicTracks(data,catalog=[]){

@@ -6192,7 +6192,7 @@ function powerDownEnvironment(opts){
       return;
     }catch(e){}
   }
-  try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:0}]})}).catch(()=>{});}catch(e){}
+  try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:0}]})}).catch(()=>{}).catch(()=>{});}catch(e){}
   try{if(HUE.enabled){HUE.lastSent=0;hueAll({on:false});}}catch(e){}
 }
 powerDownEnvironment._done=false;
@@ -6670,6 +6670,12 @@ async function hueSend(lightId,stateObj){
   if(!isHTTPS&&HUE.bridgeIP&&HUE.apiKey) urls.push(`http://${HUE.bridgeIP}/api/${HUE.apiKey}/lights/${lightId}/state`);
   if(!isLocal&&LOCAL_BRIDGE) urls.push(`http://localhost:${ELGATO.proxyPort}/hue/lights/${lightId}/state`);
 
+  if(!urls.length){
+    // Sin puente ni bridge alcanzable (https sin ?local=1): se dice una vez por luz, no un error por tick.
+    if(!hueSend._avisadas) hueSend._avisadas=new Set();
+    if(!hueSend._avisadas.has(lightId)){hueSend._avisadas.add(lightId);console.warn(`[Hue] sin puente para la luz ${lightId}: se ignora en esta sesión`);}
+    HUE.error=true;hueProxyOk=false;return;
+  }
   for(const url of urls){
     try{
       const res=await fetch(url,opts);
@@ -11472,7 +11478,7 @@ function doAction(id){
     G.gameTime=9;
     if(!hasLampOverride()){
       elgatoState.on=false;G.lampIntensity=0;
-      try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:0}]})});}catch(e){}
+      try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:0}]})}).catch(()=>{});}catch(e){}
     }
     // Hue: mañana → apagada
     HUE.notify=90;HUE.lastSent=0;
@@ -11496,7 +11502,7 @@ function doAction(id){
     G.gameTime=19;
     if(!hasLampOverride()){
       elgatoState.on=true;elgatoState.manualOff=false;G.lampIntensity=100;
-      try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:1,brightness:100}]})});}catch(e){}
+      try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:1,brightness:100}]})}).catch(()=>{});}catch(e){}
     }
     // Hue: noche → 100% cálida
     HUE.notify=90;HUE.lastSent=0;
@@ -11877,11 +11883,11 @@ function endWeek(){
     elgatoState.on=LIGHT_OVERRIDE.lamp;
     elgatoState.manualOff=!LIGHT_OVERRIDE.lamp;
     G.lampIntensity=LIGHT_OVERRIDE.lamp?100:0;
-    try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:LIGHT_OVERRIDE.lamp?1:0,brightness:LIGHT_OVERRIDE.lamp?100:0}]})});}catch(e){}
+    try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:LIGHT_OVERRIDE.lamp?1:0,brightness:LIGHT_OVERRIDE.lamp?100:0}]})}).catch(()=>{});}catch(e){}
   } else {
     elgatoState.manualOff=false;
     elgatoState.on=false;
-    try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:0}]})});}catch(e){}
+    try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({numberOfLights:1,lights:[{on:0}]})}).catch(()=>{});}catch(e){}
   }
   if(hasHueOverride()){
     HUE.on=LIGHT_OVERRIDE.hue;
@@ -13256,7 +13262,7 @@ function updateGame(){
   if(elgatoState.on&&lampIntensity>0&&!elgatoState.manualOff&&tt%60===0){
     try{elgatoFetch('/elgato/lights',{method:'PUT',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({numberOfLights:1,lights:[{on:1,brightness:Math.round(lampIntensity)}]})
-    });}catch(e){}
+    }).catch(()=>{});}catch(e){}
   }
   // Update wall clock from game time
   _clockH=Math.floor(G.gameTime)%12;

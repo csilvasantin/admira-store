@@ -5,7 +5,7 @@
 // (XpaceScreenMedia) siempre gana y se resuelve fuera de aquí.
 // Sólo lectura: un <video> oculto y mudo por canal en uso; no publica, no guarda y no cambia el Stock ni los pines.
 // Guía: admira-xp/docs/hiperreal-vivo.md
-import {createPainterPool,sceneTrack,coverRect} from './playlist-painter.mjs?v=hiperreal-vivo-1';
+import {createPainterPool,sceneTrack,coverRect} from './playlist-painter.mjs?v=local-playlist-349';
 
 export const XTANCO_PLAYERS_KEY='xpaceos.xtanco-players.v1';
 export const XTANCO_STORE_TAG='XT-GRACIA';

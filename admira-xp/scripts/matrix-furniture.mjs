@@ -1,7 +1,7 @@
 import {createLifeSnapshot} from './life-snapshot.mjs?v=actor-collision-20261004-1';
 import {buildCustomerNavigation} from './customer-navigation.mjs?v=actor-collision-20261004-1';
 import {assetForInstance} from '../../inventario/model.mjs?v=ipad-20261005-1';
-import {projectMatrixFloor} from './matrix-floor.mjs?v=matrix-furniture-1';
+import {projectMatrixFloor} from './matrix-floor.mjs?v=hiperreal-vivo-1';
 import {MATRIX_ATLAS_URL,MATRIX_ATLAS_SIZE,MATRIX_ARCHITECTURE_DETAILS,photoPieceFor} from './matrix-photo-pieces.mjs?v=hiperreal-vivo-1';
 import {quadTransform} from './matrix-mapping.mjs?v=surface-fit-1';
 

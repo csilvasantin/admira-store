@@ -1,4 +1,4 @@
-import {contextPlaylist} from './context-playlist-client.mjs?v=local-playlist-349';
+import {contextPlaylist} from './context-playlist-client.mjs?v=three-venues-20261016';
 const messages={login_required:['Inicia sesión en Admira para editar','Sign in to Admira to edit'],select_venue_and_channel:['Selecciona proyecto y establecimiento','Choose a project and venue'],forbidden:['No tienes permiso para editar este establecimiento','You cannot edit this venue'],revision_conflict:['La playlist cambió. Se ha actualizado; revisa antes de repetir.','The playlist changed. It has been refreshed; review before retrying.'],context_changed:['Cambió el establecimiento; no se aplicó aquí','The venue changed; this result was not applied here'],physical_binding_pending:['Preparando la asociación de este establecimiento','Preparing the venue association']};
 export function mountContextPlaylistEditor(host,{client=contextPlaylist(),t=es=>es,signal}={}){
  if(!client)return {dispose(){}};const doc=host.ownerDocument,make=(tag,text)=>{const el=doc.createElement(tag);if(text)el.textContent=text;return el;};
