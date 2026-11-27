@@ -85,6 +85,24 @@ y el puente de PC-COCINA (`AdmiraNeXT\player-ventiladores-pc-cocina`) emitiendo 
 a su Worker por `www.admira.store/supercomputer/pc-cocina/api` (ruta pública publicada en el PR #189). El puente
 arranca solo al iniciar sesión (tarea «Admira Player Ventiladores», que para L-Connect antes de emitir).
 
+### PC-COCINA · gemelo en vivo desde AInimation Studio (27-nov-2026)
+
+El gemelo de AdmiraNeXT05 de `https://www.ainimation.studio/digital-twins/admiranext05/` es un tercer cliente de
+`/supercomputer/pc-cocina/api` (Carlos, 26-nov-2026: «lo que pasa en el virtual tiene reflejo en el real y viceversa»).
+La cookie de sesión de admira.store no viaja desde otro dominio, así que solo desde los orígenes de `ORIGENES_GEMELO`
+(`https://www.ainimation.studio` y `https://ainimation.studio`):
+
+| Qué | Cómo |
+|---|---|
+| Mirar | `GET estado` y `GET miniatura/<n>.jpg` sin sesión. El estado sale sin el correo de quien hizo el último cambio (`deseado.por`) ni las salidas de audio del PC (`informe.audio.salidas`). |
+| Mandar | `POST escena` y `POST luz` con `Authorization: Bearer gm_…`. Sin pase: 401 `enlace_required` con la URL de `enlace`. |
+| Pase | `GET enlace?o=<origen>` se abre en una ventana de admira.store, comprueba la sesión (si no hay, pasa por el login) y entrega el pase al gemelo por `postMessage`, dirigido solo a su origen. Dura 1 h, va firmado con `PERIMETRO_SIGNING_KEY` y solo vale para PC-COCINA. Una sesión de solo lectura no recibe pase. |
+
+El origen lo declara el navegador: «mirar» es, a efectos prácticos, público (es lo que ya se ve por el cristal de la
+caja). El gemelo de admira.store (`/supercomputer/pc-cocina/`) no cambia: sesión para todo y `POST` solo desde la
+propia web. Tests: `tests/supercomputer-pc-cocina-gemelo.test.mjs`. Pendiente: la ayuda web, el tutorial, la ayuda CLI
+y el catálogo MCP aún no mencionan este tercer cliente.
+
 **Disposición de PC-COCINA** (foto de Carlos del 6-nov-2026, vista desde el cristal delantero): placa base al
 fondo; a su izquierda, los conectores de corriente con el **ventilador 1** encima (el único del puerto 0); a la
 derecha, **5-6-7** en vertical, de abajo arriba (el 5 junto al 4); en el suelo, **2-3-4** horizontales, de izquierda a derecha. Los 7
@@ -209,3 +227,5 @@ Simulation mode («Solo gemelo · simulación», `localStorage` key `admira.supe
 Sim pseudostream cache: with «Solo gemelo · simulación» on, each fan (3D, strip, detail) shows the real piece from `api.admira.store/stock/list` (`thumbnail` poster first, then `url` video/image) downloaded **once** into Cache API `admira-sc-sim-v1` (key = asset url) with an on-screen progress bar, then replayed from cache («✓ en caché»); it is gemelo-only, never PC bridge frames, and the SIM title card remains only as fallback when no media URL exists.
 
 PC-COCINA (6-nov-2026) is an independent copy with the same design: twin `/supercomputer/pc-cocina/`, API `/supercomputer/pc-cocina/api/*` (public in the perimeter so its bridge can `POST /maquina` with its Bearer key), Worker `supercomputer-pc-cocina`, Pages secret `SUPERCOMPUTER_PC_COCINA_PROXY_KEY`, machine key `~/.admira_supercomputer_pc_cocina_key` and admira.tv screens `supercomputer-pc-cocina-ventilador(es)…`. Verified: Worker deployed, secrets set, bridge emitting to its 7 fans and reporting to its Worker. The bridge starts on login (scheduled task that stops L-Connect first). Layout (photo, 6-nov-2026, seen through the front glass): motherboard at the back; fan 1 alone on the back wall left of the board, above the power connectors; 5-6-7 vertical on the right wall, top to bottom; 2-3-4 horizontal on the floor, left to right. All 7 show video. Confirmed on 6-nov with Identify. PC-COCINA adds Sequence mode (sequence, secuencial): one video plays in full on fan 1, then on fan 2… up to 7, and loops; the light always follows it, so only the fan playing it is lit. The scene page measures the duration (duracion, s) and posts it to the bridge (POST /duracion). Its Worker runs on its own Durable Object (pc-cocina).
+
+PC-COCINA live twin from AInimation Studio (27-Nov-2026): the AdmiraNeXT05 twin at `https://www.ainimation.studio/digital-twins/admiranext05/` is a third client of `/supercomputer/pc-cocina/api`, only from the `ORIGENES_GEMELO` origins. Watching is public (`GET estado`, `GET miniatura/<n>.jpg`; the state omits `deseado.por` and `informe.audio.salidas`). Sending (`POST escena`, `POST luz`) needs `Authorization: Bearer gm_…`: `GET enlace?o=<origin>` opens on admira.store, checks the session and hands a 1-hour pass to the twin through `postMessage`, targeted at its origin; read-only sessions get none. The admira.store twin is unchanged. Pending: web help, tutorial, CLI help and the MCP catalog do not mention this third client yet.
