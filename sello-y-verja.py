@@ -230,10 +230,18 @@ s = exige(s, '<a class="brand-logo" href="#top" aria-label="XpaceOS">\n      <im
 s = exige(s, '<a class="footer-logo" href="#top" aria-label="XpaceOS"><img src="/assets/xpaceos-logo-transparent.webp" alt="XpaceOS"></a>',
           '<a class="footer-logo" href="#top" aria-label="' + MARCA + '">' + WORDMARK + '</a>', "el pie")
 s = exige(s, '<span>© 2026 ADmiraNeXT · XpaceOS</span>', '<span>© 2026 ADmiraNeXT · ' + MARCA + '</span>', "el pie")
-# Tarjeta «estás aquí» (capa C de la suite): aquí estás en admira.store
-s = exige(s, '<h3>admira.live</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>',
-          '<h3>' + MARCA + '</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.admira.store/">' + MARCA + '</a></div>', "la tarjeta «estás aquí»")
-s = exige(s, '<a class="more" href="https://admira.live/" target="_blank" rel="noopener">→ admira.live</a>', '<a class="more" href="https://www.admira.store/">→ ' + MARCA + '</a>', "la tarjeta «estás aquí»")
+# Tarjeta «estás aquí» de la suite: aquí estás en admira.store. Desde el 21-nov-2026 el origen ya la llama
+# admira.store (suite de cinco soluciones, ficha B) y solo cambia el enlace de la marca y el «→»; si el origen que se
+# espeja es anterior (cuatro fichas, admira.live en la C), se acepta también esa forma. Ninguna de las dos: el espejado para.
+AQUI_NUEVO = '<h3>' + MARCA + '</h3>\n        <div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.admira.store/">' + MARCA + '</a></div>'
+WHO_XPACEOS = '<div class="who dom"><span class="lbl" data-i18n="platform.brand">marca</span> · <a href="https://www.xpaceos.com" target="_blank" rel="noopener">XpaceOS.com</a></div>'
+MAS_NUEVO = '<a class="more" href="https://www.admira.store/">→ ' + MARCA + '</a>'
+if '<h3>admira.store</h3>\n        ' + WHO_XPACEOS in s or AQUI_NUEVO in s:
+    s = exige(s, '<h3>admira.store</h3>\n        ' + WHO_XPACEOS, AQUI_NUEVO, "la tarjeta «estás aquí» (suite de cinco)")
+    s = exige(s, '<a class="more" href="https://www.admira.store/" target="_blank" rel="noopener">→ admira.store</a>', MAS_NUEVO, "la tarjeta «estás aquí» (suite de cinco)")
+else:
+    s = exige(s, '<h3>admira.live</h3>\n        ' + WHO_XPACEOS, AQUI_NUEVO, "la tarjeta «estás aquí»")
+    s = exige(s, '<a class="more" href="https://admira.live/" target="_blank" rel="noopener">→ admira.live</a>', MAS_NUEVO, "la tarjeta «estás aquí»")
 # El logo de XpaceOS ya no se usa en el espejo: su preload sobra (Chrome avisa en la consola en cada carga).
 s = re.sub(r'[ \t]*<link rel="preload" as="image" href="/assets/xpaceos-logo-transparent\.webp"[^>]*>\n?', '', s, count=1)
 # Estilo de la palabra (misma familia que el shell cuadrático)
